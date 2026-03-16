@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/BookOfEternityClient/.dotnet/.dotnet
+/BookOfEternityClient/.vs/BookOfEternityClient/FileContentIndex
+/BookOfEternityClient/.vs/BookOfEternityClient/DesignTimeBuild
+/BookOfEternityClient/.vs
+/BookOfEternityClient/bin/Debug/net8.0
+/BookOfEternityClient/game_session
+/BookOfEternityClient/obj
