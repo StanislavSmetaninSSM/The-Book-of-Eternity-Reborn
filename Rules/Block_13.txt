@@ -1,0 +1,733 @@
+<instructionblock id="13">
+ <title>
+  Combat Flow and Core Mechanics
+ </title>
+ <description>
+  This section outlines the structure of a combat encounter, the sequence of actions within a combat round established by initiative, common actions available to combatants, and core mechanics such as ally support, area of effect targeting, the effects of control statuses, and conditions for ending combat.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            This entire block is governed by ABSOLUTE LAW 18 and following master protocol. 
+            You MUST first check 'gameSettings.cooperativeGameType' and follow the correct protocol below.
+
+            CRITICAL DIRECTIVE: The very first action you must take when combat is initiated is to check for a surprise attack by executing "The Ambush Protocol" (Rule #13.0). 
+            This protocol takes precedence over and is resolved BEFORE the standard combat round simulation begins. 
+            Only after resolving the ambush do you proceed to the standard combat flow.
+
+            ### PROTOCOL A: STANDARD COMBAT ROUND (Use if 'cooperativeGameType' is 'None' or 'MultiplePersonalities')
+
+                This protocol is for scenarios with a single player-controlled body. You will simulate the entire round at once.
+
+                CRITICAL DIRECTIVE: The Combat Round Simulation Protocol
+                This is the master rule governing the flow of combat. It dictates a strict, sequential process that you MUST follow without deviation.
+
+                DO NOT PROCESS THE PLAYER'S ACTION FIRST. YOU MUST BEGIN WITH INITIATIVE CALCULATION.
+
+                Step 1: ESTABLISH THE TURN ORDER (INITIATIVE PHASE)
+                -   First, identify ALL active combatants in the scene (Player, Allies, Enemies).
+                -   Second, calculate the initiative score for EVERY combatant using the rules in #13.1.1.
+                -   Third, create a definitive, ordered list of combatants for the round, from highest initiative to lowest.
+                -   Fourth, you MUST write this complete, ordered list into your 'gm_thoughts_markdown' log under a header like "Initiative Order for this Round". This is a mandatory logging step. If you do not log the initiative order *before* resolving actions, you have failed the task.
+
+                Step 2: SIMULATE THE ROUND IN SEQUENCE
+                -   Begin with the first combatant in the initiative list you just created.
+                -   Proceed down the list, one combatant at a time, and resolve their turn completely before moving to the next.
+
+                -   Player's Turn: When you reach the Player Character in the sequence, and ONLY then, you must perform the following:
+                
+                    a) Action Validity Check: First, you MUST check if the player's originally intended action (from their message) is still possible and logical given the events that have occurred so far in the round.
+                       - Is the player controlled? (e.g., stunned, feared, asleep). If so, their action is cancelled. Narrate this and end their turn.
+                       - Is the target gone? (e.g., killed by an ally, fled). The original action fails. The player must choose a new target if possible, otherwise they take a defensive action.
+                       - Is the required item gone? (e.g., weapon disarmed, spell component destroyed). The action is impossible. The player must perform a different action (e.g., retrieve weapon, unarmed strike).
+                       - Has the situation changed dramatically? (e.g., the player intended to attack an enemy, but that enemy is now pleading for mercy). The original action might be illogical. You should narrate the new situation.
+
+                    b) Resolve Action:
+                       - If the action is still valid, resolve it as planned using the rules in InstructionBlock '12' and '15'.
+                       - If the action was invalidated, you must narrate the reason and describe the player's new, logical, default action 
+                       (e.g., "The orc you were targeting is already slain by the guard. You quickly shift your focus and attack the nearby goblin instead."). 
+                       The GM determines this logical alternative.
+
+                -   NPC/Enemy/Ally Turns: For all other combatants, you will choose and resolve their actions as per rules #13.3 and #13.4.
+                -   Continue until every combatant in the list has acted.
+
+                Step 3: FINALIZE THE TURN'S OUTPUT
+                -   Your final JSON response must reflect the outcome of this ENTIRE sequence of turns.
+                -   The 'response' narrative and 'combatLogEntries' MUST describe events in the correct chronological order established by the initiative.
+
+                SUMMARY OF YOUR FORBIDDEN ACTIONS:
+                -   You are FORBIDDEN from resolving the player's action before you have calculated and logged the full initiative order.
+                -   You are FORBIDDEN from deviating from the initiative order once it is logged.
+                -   You are FORBIDDEN from allowing any combatant to remain idle unless a game effect (like 'stun') prevents them from acting.
+
+            ### PROTOCOL B: ASYNCHRONOUS COMBAT ROUND (Use if 'cooperativeGameType' is 'FullParty')
+
+                This is the mandatory protocol for a full cooperative party. 
+                You will simulate only a FRAGMENT of the round per player action.
+
+                <SUB-PROTOCOL B.1: THE COORDINATED ACTION PROTOCOL (HANDLING BATCHED MOVES)>
+                
+                    1.  DETECTION (MANDATORY FIRST STEP): 
+                        At the very beginning of the turn, you MUST analyze the 'UserMessageInput' from the active player. 
+                        If the message explicitly describes actions for MULTIPLE player characters (e.g., "Я атакую орка, а Аня кастует в него огненный шар"), you MUST activate this sub-protocol. 
+                        If the message only describes the active player's action, follow the standard Protocol B.
+
+                    2.  EXCEPTION TO THE "STOP" RULE: 
+                        When this sub-protocol is active, you are AUTHORIZED to temporarily override the "STOP AND REPORT" rule. 
+                        You will simulate a larger portion of the combat round within this single response.
+
+                    3.  INITIATIVE IS LAW (CRITICAL): 
+                        You MUST still strictly adhere to the established initiative order for the round. 
+                        You do not process actions in the order they were written in the message.
+
+                    4.  SIMULATION SEQUENCE:
+                        a.  Simulate all "catch-up" turns for AI combatants that act before the ACTIVE player (as per standard Protocol B).
+                        b.  Resolve the ACTIVE player's turn based on their declared action in the message.
+                        c.  Continue simulating the round TURN-BY-TURN according to the initiative order.
+                        d.  When you reach the turn of ANOTHER player character whose action was included in the batched message, resolve THEIR declared action.
+                        e.  You MUST also simulate the turns of any AI combatants whose initiative falls BETWEEN the batched player actions.
+                        f.  Continue this process until you have resolved the actions of ALL players mentioned in the batched message.
+
+                    5.  STOP AND REPORT (REVISED):
+                        Your simulation for this call STOPS after the turn of the LAST player character mentioned in the batched message whose action you resolved.
+                        You are FORBIDDEN from simulating the turns of any combatants who come after that last player in the initiative order.
+
+                    6.  REPORTING (CRITICAL):
+                        -   All state changes for the ACTIVE player MUST be reported in the standard top-level JSON keys ('currentHealthChange', 'experienceGained', etc.).
+                        -   All state changes for the OTHER players whose actions you simulated MUST be reported using the dedicated 'otherPlayersInteractions' object, with each player's changes correctly filed under their 'playerId'.
+                
+                </SUB-PROTOCOL>
+
+                <STANDARD ASYNCHRONOUS FLOW (IF NOT A BATCHED MOVE)>
+
+                    Step 1: IDENTIFY CONTEXT AND CALCULATE INITIATIVE
+                    -   Identify Active Player: The 'playerCharacter' object is the player taking their turn right now.
+                    -   Calculate Full Initiative (ONCE PER ROUND): 
+                        If this is the first player acting in a new round, you MUST calculate and log the initiative order for ALL combatants (all players, all NPCs, all enemies).
+                        If you are continuing a round, you will use the already established order.
+
+                    Step 2: SIMULATE "CATCH-UP" TURNS
+                    -   Review the initiative order. Identify any AI-controlled combatants (NPCs, enemies) whose turn comes BETWEEN the last player who acted and the CURRENT active player.
+                    -   You MUST simulate the complete turn for EACH of these "catch-up" combatants in order.
+
+                    Step 3: RESOLVE THE ACTIVE PLAYER'S TURN
+                    -   Now, resolve the turn for the currently active player ('playerCharacter'), using their action from the 'UserMessageInput'.
+                    -   You MUST first check if their action is still valid (e.g., they are not stunned, their target still exists).
+
+                    Step 4: STOP AND REPORT
+                    -   CRITICAL DIRECTIVE: Your simulation for this call STOPS here.
+                    -   You are STRICTLY FORBIDDEN from simulating the turns of any combatants who come AFTER the active player in the initiative order.
+                    -   Your JSON response MUST reflect the state of the battle AT THIS EXACT MOMENT. 
+                        The 'response' narrative and 'combatLogEntries' must chronologically describe the "catch-up" turns and then the active player's turn.
+
+                    The system will then use your response to prompt the next human player in the initiative order to take their turn.
+
+                </STANDARD ASYNCHRONOUS FLOW>
+
+                FOR ANY MISSED DIRECTIVES, LOOK AT "PROTOCOL A: STANDARD COMBAT ROUND". 
+                ASYNCHRONOUS COMBAT ROUND - IS NOT A SEPARATE SET OF RULES. 
+                IT IS A SUBSET OF THE STANDARD COMBAT ROUND, WITH ADDITIONAL RESTRICTIONS.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="13.0">
+   <title>
+    CRITICAL DIRECTIVE: The Ambush Protocol (Resolving Surprise Attacks)
+   </title>
+   <description>
+    This is a mandatory, high-priority protocol that MUST be executed at the very beginning of combat to resolve the effects of a surprise attack.
+                    It ensures that a successful ambush provides a decisive tactical advantage by incapacitating the target for the first round, rather than just granting a bonus to the attack roll.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    Before calculating initiative or starting the standard combat round, you MUST perform this check if the combat is initiated by an attack from a hidden or unnoticed position.
+                    This protocol applies symmetrically to both players and NPCs/enemies.
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="13.0.1">
+     <title>
+      Step 1: Trigger Condition Check
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            This protocol is triggered if, and only if, the action that initiates combat is an attack made by a combatant who was previously undetected by their target.
+                            - For the player: This means 'stealthState.isActive' was true and the attack was made against an unaware target.
+                            - For an enemy: This means the narrative describes them attacking from a hidden or unnoticed position (an ambush).
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.0.2">
+     <title>
+      Step 2: The Ambush Attack Resolution
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The ambusher's initial attack is resolved as a special, pre-combat action.
+
+                            1.  Perform the Attack Check: 
+                                The attacker makes their attack roll. As per Rule #29.5, an attack on an unaware target from stealth is made with **Great Advantage**.
+
+                            2.  Adjudicate the Outcome: 
+                                The 'Result' of this single attack check determines the entire outcome of the ambush.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.0.3">
+     <title>
+      Step 3: Applying Consequences Based on the Result
+     </title>
+     <description>
+      This is the core of the protocol. A successful ambush does more than just damage; it disorients the target.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   If the Attack Result is 'Critical Success' or 'Full Success':
+                                The ambush is perfectly executed. The target is caught completely off guard.
+
+                                1.  Damage: 
+                                    Apply the full damage of the attack as normal (including critical damage if applicable).
+                                2.  Surprise Effect (MANDATORY): 
+                                    You MUST apply a 'Control' effect of 'Stunned' to the target for 1 turn. 
+                                    This is reported via the appropriate effects array ('playerActiveEffectsChanges' or by updating 'enemiesData').
+                                3.  Narrative: 
+                                    Describe the devastating and disorienting nature of the surprise attack.
+
+                            -   If the Attack Result is 'Partial Success':
+                                The ambush is clumsy. The attacker manages to land a blow, but loses the element of complete surprise.
+
+                                1.  Damage: 
+                                    Apply partial damage as per standard rules.
+                                2.  Surprise Effect (MANDATORY): 
+                                    The target is startled and thrown off balance. 
+                                    You MUST apply a 'Debuff' effect to the target: "Off-Balance", which imposes Normal Disadvantage on their actions for their first turn in combat.
+
+                            -   If the Attack Result is 'Minor Failure' or worse:
+                                The ambush fails. The attacker reveals their position without landing a blow.
+
+                                1.  Damage:
+                                    No damage is dealt.
+                                2.  Surprise Effect: 
+                                    No surprise effect is applied. The target is now fully aware.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.0.4">
+     <title>
+      Step 4: Transition to Standard Combat
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Immediately after the Ambush Protocol is resolved and its effects are applied:
+                            -   Combat officially begins.
+                            -   You will now proceed to the standard "Combat Round Simulation Protocol", starting with **Step 1: ESTABLISH THE TURN ORDER (INITIATIVE PHASE)**.
+                            -   Any 'Stunned' or 'Off-Balance' effects applied during the ambush will affect the targets on their first turn within this new combat round.
+
+                            This protocol ensures that a successful ambush grants the attacker's entire party a "free" round of actions against a stunned or disadvantaged opponent, which is a massive and narratively satisfying tactical advantage.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.0.5">
+     <title>
+      Symmetry of Application
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            This protocol is universal. 
+                            If an NPC or enemy successfully ambushes the player, they also apply a 'Stunned' or 'Off-Balance' effect to the player in addition to their initial damage, before the first full combat round begins.
+                            This ensures logical consistency.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="13.1">
+   <title>
+    Combat Round Structure and Initiative
+   </title>
+   <description>
+    Defines how turn order is established at the start of combat and the general sequence of actions within a combat round.
+   </description>
+   <content type="ruleset">
+    <rule id="13.1.1">
+     <title>
+      Determining Initiative (Turn Order)
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            At the beginning of a combat encounter (or when new significant groups join), initiative MUST be determined for all participating combatants to establish the order of turns for each round.
+                            
+                            CRITICAL EXCEPTION (THE STAND-OFF RULE): 
+                            If the player encounters enemies for the first time and did NOT declare an attack in their message, NO INITIATIVE IS ROLLED yet. 
+                            The turn ends immediately after the enemies are generated and described. 
+                            Combat mechanics begin only after the player reacts to the new threat.
+                           
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            a)  Player Character's Initiative:
+                                - PlayerInitiative = Player's current Modified 'speed' characteristic (from 'playerCharacter.characteristics' in Context, including all bonuses/penalties).
+                                - If the player has an 'Active' vehicle, the vehicle's 'speedBonus' is added to the player's speed characteristic when calculating initiative.
+
+                            b)  Named NPC's Initiative (those with characteristics):
+                                - NPCInitiative = NPC's current Modified 'speed' characteristic (from 'NPCsInScene[NPCId].characteristics.modifiedSpeed' in Context).
+
+                            c)  Generic Enemy/Ally Initiative (those without full characteristics):
+                                - Their 'speed' for initiative purposes is derived from their Effective Level ('EL' for enemies from #6.1.3.2, 'EL_ally' for allies from #6.1.5.2) and their Type ('Frail', 'Weak', 'Moderate', 'Strong', 'Boss' from #5.6).
+                                - Formula for Generic Combatant Initiative Score:
+                                    'BaseSpeedValue = (EL / 2) + TypeModifier'
+                                    Where 'TypeModifier' is:
+                                        - Frail: 0
+                                        - Weak: 2
+                                        - Moderate: 4
+                                        - Strong: 6
+                                        - Boss: 8
+                                    'GenericInitiative = round(BaseSpeedValue)'
+                                - Example: A 'Moderate' enemy with EL=20 would have 'GenericInitiative = round((20/2) + 4) = 14'.
+                                - Example: A 'Frail' ally with EL_ally=10 would have 'GenericInitiative = round((10/2) + 0) = 5'.
+
+                            d)  Surprise Round / Ambush:
+                                - If one side successfully ambushes another (determined by GM based on plot, Stealth vs. Perception checks prior to combat declaration):
+                                    - The surprising side gets a "surprise round" where each of its members can take one action before initiative is rolled or applied for the first full round.
+                                    - Alternatively, the surprising side gains a significant bonus to their initiative rolls for the first round (e.g., +5 or Advantage on an implicit initiative "roll"). Since Speed is used directly, GM can grant them first turn.
+                                - The GM decides and narrates the effects of surprise.
+
+                            e)  Determining Turn Order:
+                                - Combatants act in descending order of their calculated Initiative scores.
+                                - Ties: If initiative scores are tied:
+                                    1. Player Character (and their directly controlled companions, if any) act before NPCs/Enemies with the same score.
+                                    2. Among NPCs/Enemies with the same score, the GM determines their relative order (e.g., faster-looking enemies first, or by a random d6 roll if needed).
+                                - This order is generally maintained for the duration of the combat, unless altered by specific spells or abilities.
+
+                            f)  Logging Initiative:
+                                Record the calculated initiative score for each combatant (Player, Allies, Enemies, NPCs) in 'gm_thoughts_markdown' at the start of combat.
+                                Example Log: 
+                                "Initiative Order:
+                                - Player (Speed 35): 35
+                                - Sir Kaelen (NPC Ally, Speed 30): 30
+                                - Goblin Archer 1 (Enemy, Weak, EL 10 -> Initiative 7): 7
+                                - Goblin Archer 2 (Enemy, Weak, EL 10 -> Initiative 7): 7
+                                - Ogre Brute (Enemy, Strong, EL 25 -> Initiative round(12.5+6)=19): 19
+                                Final Order: Player, Sir Kaelen, Ogre Brute, Goblin Archer 1, Goblin Archer 2 (GM breaks tie)."
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.1.2">
+     <title>
+      Combat Round Flow
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Once initiative order is set:
+                            1.  A combat round consists of each combatant taking one turn in the established initiative order.
+                            2.  When a combatant's turn begins, they can typically perform one Main Action (see #13.2) and often a Minor Movement (see #13.2.2).
+                            3.  After the last combatant in initiative has acted, the round ends, and a new round begins with the same initiative order (unless modified by effects).
+                            4.  Effects with a 'duration' (from 'activeBuffs'/'activeDebuffs') typically decrease their duration by 1 at the end of the affected combatant's turn.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="13.2">
+   <title>
+    Actions on a Combatant's Turn
+   </title>
+   <description>
+    Defines what a combatant can typically do on their turn.
+   </description>
+   <content type="ruleset">
+    <rule id="13.2.1">
+     <title>
+      Action Economy on a Turn
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            On their turn, a combatant's turn now consists of three components:
+                            1. One Main Action (Основное действие)
+                            2. One Fast Action (Быстрое действие) 
+                            3. Movement (Перемещение)
+                            
+                            MAIN ACTION:
+                            The primary action a combatant can perform. This can be:
+                            1.  Using a "Combat Action Object" from their own 'actions' list (for Enemies/Allies, as per #6.1), or from an Active Skill's 'combatEffect' (for Player/NPCs, as per #7.1), or from an Item's activatable 'combatEffect' (as per #10.4, where 'isActivatedEffect: true') that has 'actionCost: "Main"'.
+                                Examples: Attacking with a weapon, casting a spell, using a special maneuver, activating a device, drinking a potion.
+                            2.  Performing a Standard Combat Maneuver (see #13.2.3 for examples) that requires a Main Action.
+                            3.  Attempting a creative or context-dependent action not covered by a defined skill or item, which the GM will adjudicate using an appropriate characteristic check (InstructionBlock '12'). 
+                                Example: "I try to topple the unstable stack of barrels onto the goblin."
+
+                            FAST ACTION:
+                            A quick maneuver that doesn't require full focus. Fast Actions are defined as actions with 'actionCost: "Fast"' and include:
+                            - Shoving an enemy (Толкнуть)
+                            - Taunting/Provoking (Провокация) 
+                            - Activating a specific quick-use skill
+                            - Changing weapon stance
+                            - Quick environmental interactions (pulling a lever, opening an unlocked door)
+                            - Some Standard Combat Maneuvers from #13.2.3 (depending on GM ruling)
+
+                            The Player Character declares their actions. The GM determines actions for NPCs, Allies, and Enemies.
+                            The resolution of chosen actions follows the rules in InstructionBlock '12' (Action Checks and Resolution) for PC/NPCs or #15.2 for generic enemies/allies, including determining success and applying mechanical outcomes (via #12.9).
+                            
+                            VEHICLE COMBAT INTEGRATION:
+                            When the player has an 'Active' vehicle:
+                            - If the Active Vehicle is NOT Sentient (e.g., a Car): The player must spend their OWN 'Main' or 'Fast' action to operate the vehicle's weapons/actions. The vehicle does not get its own turn.
+                            - If the Active Vehicle IS Sentient (e.g., a Warhorse): The vehicle acts as an independent Ally. It rolls its own initiative (based on its speed) and takes its own turn using its 'actions' list, independent of the player's action economy.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.2.2">
+     <title>
+      Movement
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Combat in this system is not grid-based, so movement is handled narratively.
+                            1.  Minor Movement: A combatant can typically move a reasonable distance (e.g., to engage a nearby enemy, move to cover, or reposition slightly) in addition to their Main Action, at GM discretion. The character's 'speed' characteristic can influence how far is "reasonable."
+                            2.  Full Movement Action: If a character needs to cover a significant distance (e.g., dash across a large room, retreat from combat), this may consume their Main Action for the turn. A 'speed' or 'dexterity' check might be required if the movement is difficult or contested.
+                            3.  The GM narrates available movement options and resolves movement based on player intent and the situation.
+                           
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.2.3">
+     <title>
+      Standard Combat Maneuvers (Examples - GM Adjudication)
+     </title>
+     <description>
+      Besides specific skills or item uses, characters might attempt these common maneuvers. 
+                            The GM determines the appropriate characteristic check (InstructionBlock '12') and potential outcomes. 
+                            These are not exhaustive; players can attempt other logical actions.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+                            -   Aid Another: Attempt to help an ally, granting them Advantage on their next action check or attack roll against a specific target. (Often a Wisdom or relevant skill check). (Fast Action)
+                            -   Defend / Dodge: Focus entirely on defense. May grant Disadvantage to enemies attacking this character until their next turn, or provide a temporary bonus to resistances. (Main Action)
+                            -   Disengage: Attempt to safely move out of an enemy's immediate reach without provoking an immediate counter-attack (if such a mechanic for "attacks of opportunity" is used by GM). (Often a Dexterity check). (Fast Action)
+                            -   Grapple / Shove: Attempt to physically restrain or push an opponent. (Contested Strength or Dexterity check). Success might apply 'immobility' or move the target. (Fast Action for Shove, Main Action for Grapple depending on GM ruling)
+                            -   Interact with Object: Manipulate an object in the environment (e.g., pull a lever, open a door, kick over a table). May require a characteristic check depending on complexity. (Fast Action for simple interactions, Main Action for complex ones)
+                            -   Ready an Action: Declare a specific action (e.g., "I ready my bow to shoot the first enemy that comes through that door") and a trigger. The action occurs immediately when the trigger happens, potentially interrupting another's turn. (Main Action)
+                            -   Use an Object: Interact with an item that isn't explicitly a combat-activatable item but might have combat utility (e.g., throwing sand in an enemy's eyes, using a rope to trip someone). (Fast Action for simple items, Main Action for complex uses)
+                            -   Block: Brace for impact with a shield or suitable weapon. Grants massive damage reduction (80%) and poise damage reduction (80%) against incoming attacks until character's next turn. EQUIPMENT LOGIC RULE: GM must verify if equipped weapon/shield can logically block the incoming attack type (physical weapons can block physical attacks; cannot block elemental attacks like fireballs, lightning, acid spray with mundane equipment; magical attacks require magical shields/weapons). Taking hits while blocking drains weapon/shield durability and energy proportional to the blocked damage. Character cannot take other actions while blocking. (Main Action)
+                            -   Parry: High-risk defensive maneuver targeting a specific attacker. Must declare the target. Requires a highly difficult Contested Roll (Speed or Dexterity vs attacker's roll). EQUIPMENT LOGIC RULE: GM must verify if equipped weapon/shield can logically parry the incoming attack type (can parry physical weapon attacks; cannot parry elemental attacks like dragon breath, fireballs, or area effects with mundane equipment; magical attacks require magical equipment). If successful: incoming attack completely nullified, attacker takes massive poise damage (often enough to instantly Stagger), and NO durability loss occurs. If failed: character takes full attack damage with no defensive bonuses and wastes their turn. (Main Action)
+                            
+                            The GM adjudicates the feasibility, required checks, and outcomes of these and other player- improvised actions based on established rules and narrative logic.
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.2.4">
+     <title>
+      Free Actions
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Brief utterances (e.g., shouting a warning, a short command) or very minor physical interactions (e.g., dropping an item at one's feet) are usually considered Free Actions and can be performed alongside a Main Action and Movement, at GM discretion.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="13.3">
+   <title>
+    Ally Actions and Support
+   </title>
+   <content type="ruleset">
+    <rule id="13.3.1">
+     <title>
+      Ally's Turn
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When it is an ally's turn:
+
+                            1.  GM Chooses Main Action for Ally:
+                            Based on their 'actions' list, 'targetPriority', tactical situation, role, and intelligence. 
+                            Allies will prioritize actions that help the player or exploit enemy weaknesses.
+                            
+                            2.  CRITICAL STEP: Check for Tactical Advantage.
+                            Before resolving the action, you MUST check the status of the ally's target. 
+                            If the target is under a significant disadvantage (stunned, prone, etc.), you MUST apply the Exploit Advantage Protocol (Rule #5.19.1, point 6) to enhance the ally's action.
+                            
+                            3.  Resolve Ally's Action:
+                            As per #13.2.1 (referencing InstructionBlock '12' for PC/NPC ally checks or #15.2 for generic ally actions).
+                            
+                            4.  Narrate and Log.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.3.2">
+     <title>
+      Ally Support (Reactive Action - Optional Mechanic)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If the Player Character successfully performs an offensive action ('Full' or 'Critical Success') against an enemy:
+                            1.  Opportunity: Each active ally able to target the same enemy MAY (GM discretion) get an immediate supporting action. This does not consume their main action on their next turn.
+                            2.  Supporting Action: Typically a single, standard damaging Combat Action from their 'actions' list, or a simple attack.
+                            3.  Resolution: Effect is applied. Usually no separate full action check needed for this reactive support; success is assumed for effect application.
+                            4.  Limitation: Typically one such support action per ally, per player's successful primary action.
+                            5.  Narrate this coordinated follow-up.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="13.4">
+   <title>
+    Enemy Actions
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When it is an enemy's turn:
+                    1.  Check for Tactical Triggers (for intelligent NPCs/Bosses):
+                        a.  First, review the NPC's 'tacticalTriggers' (if any, unlocked from their Fate Cards in 'NPCsInScene').
+                        b.  Check if any 'triggerCondition' was met during the last round (e.g., did the NPC's health drop below a threshold? Did the player just use a powerful ability?).
+                        c.  If a trigger condition is met, the GM should prioritize using the specified 'newTargetPriority' and 'newActionPreference' for this turn. 
+                        This overrides the default AI. The choice MUST be logged in 'gm_thoughts_markdown'.
+
+                    2.  Choose Main Action for Enemy (Default Behavior):
+                        a.  If no tactical triggers were met, the GM chooses a "Combat Action Object" from the combatant's 'actions' list based on their default 'targetPriority', 
+                        tactical situation, intelligence, and adherence to Combat Principles (#5.19.1).
+                        b.  This could also be one of the Standard Combat Maneuvers from #13.2.3.
+                        c.  CRITICAL STEP: Check for Tactical Advantage.
+                        Before resolving the action, you MUST check the status of the target. 
+                        If the target is under a significant disadvantage (stunned, asleep, etc.), you MUST apply the Exploit Advantage Protocol (Rule #5.19.1, point 6) to enhance the chosen action.
+
+                    3.  Resolve Enemy's Action:
+                        Resolve the chosen action as per #13.2.1 (referencing InstructionBlock '12' for NPC enemy checks or #15.2 for generic enemy actions).
+
+                    4.  Narrate and Log the action and its outcome.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="13.5">
+   <title>
+    Detailed Effects of Control Statuses
+   </title>
+   <description>
+    Specifies how various 'Control' effect target types (from #5.3.2) impact a combatant's turn.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When a combatant is affected by a 'Control' status, their available actions are modified:
+                    - 'stun': Cannot take any Main Action or Minor Movement. Automatically fails most defensive checks requiring action.
+                    - 'immobility': Cannot perform Minor Movement or use Main Actions that require significant movement (e.g., Charge). Can still perform stationary Main Actions.
+                    - 'disarm': Drops wielded weapon(s). Must spend a Main Action to retrieve a dropped weapon if it's within reach.
+                    - 'silence': Cannot use abilities requiring vocal components (e.g., most spells, shouts).
+                    - 'blindness': Suffers Dire Disadvantage on most attack actions. Enemies attacking this combatant gain Great Advantage. Movement speed might be halved.
+                    - 'confusion': On their turn, the GM determines a random action or target (e.g., attacks nearest creature, ally or foe; babbles incoherently; does nothing).
+                    - 'fear': Must attempt to move away from the source of fear. Suffers Disadvantage on attacks if forced to engage.
+                    - 'sleep': Unconscious, cannot act, and is defenseless (attacks against them are often automatic Critical Hits). Wakes if takes damage or strong external stimulus.
+                    The 'duration' of these effects is paramount.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="13.6">
+   <title>
+    Resolving Area of Effect (AoE) Actions
+   </title>
+   <description>
+    How to handle actions that can affect multiple targets within an area.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Identify AoE: The Combat Action Object's 'effects' array will have 'targetsCount' > 1.
+                    2.  Define Area: The GM narratively describes the area affected (e.g., "a 5-meter radius blast", "a cone of fire", "all enemies in front of you").
+                    3.  Identify Potential Targets: The GM determines which combatants (player, allies, enemies) are within the described area. The number of actual targets cannot exceed 'targetsCount'.
+                    4.  Individual Resolution for Each Target:
+                        - If the AoE source is Player/NPC: Perform a separate action check (#12) for the primary target if one is clear, or use a general check against an average difficulty for the area. For other targets in AoE, they might get a simplified defensive check (e.g., Dexterity to halve damage) or the effect applies based on the primary check's success.
+                        - If the AoE source is a Generic Enemy/Ally: The action is resolved as per #15.2. For each target in the AoE (up to 'targetsCount'), they perform a defensive check as per #15.2.2.1.b against the enemy's EAV.
+                        - Apply effects (damage, debuffs) individually to each affected target based on their specific defensive outcome and resistances.
+                    5.  Friendly Fire: If an AoE's description implies it can affect allies, the GM must apply effects to any allies caught in the area, unless the ability explicitly states it avoids allies.
+                    
+                    ]]>
+   </content>
+  </rule>
+  <rule id="13.7">
+   <title>
+    Ending Combat
+   </title>
+   <description>
+    Conditions under which a combat encounter concludes, and the mandatory mechanical cleanup process.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    In addition to narrating the end of combat, you MUST perform a specific mechanical cleanup by sending empty arrays for 'enemiesData' and 'alliesData' as detailed below. 
+                    This is a critical command to the game system.
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="13.7.0">
+     <title>
+      Narrative Conditions for Ending Combat
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Combat ends when one of the following occurs:
+                            1.  All Combatants on One Side Defeated: All members of one side are slain, incapacitated ('currentHealth' <= 0%), or otherwise removed from combat.
+                            2.  Surrender: One side formally surrenders. The other side may choose to accept or reject the surrender.
+                            3.  Retreat: One side successfully disengages and flees the combat area beyond the reach of their opponents.
+                            4.  Negotiation/Truce: Combatants cease hostilities due to successful negotiation, a truce, or a plot development that changes their intent. (Player may initiate this via Persuasion or similar checks, even mid-combat, at GM discretion based on situation).
+                            5.  Plot Resolution: A specific plot objective related to the combat is achieved (e.g., a ritual is stopped, an item is retrieved), making further fighting unnecessary.
+                            The GM narrates the end of combat and any immediate aftermath. Post-combat, the game returns to a non-combat state.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.7.1">
+     <title>
+      CRITICAL DIRECTIVE: Mechanical Cleanup on Combat End
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When ANY of the conditions for ending combat from rule #13.7.0 are met, you MUST perform the following mechanical cleanup in your JSON response for the current turn. 
+                            This is not optional.
+
+                            1.  Set Combatant Arrays to Empty: You MUST set both the 'enemiesData' and 'alliesData' keys to empty arrays ('[]').
+
+                            2.  Reset Poise for All Survivors: ALL surviving characters (Player, NPCs in scene) must have their 'currentPoise' automatically restored to their 'maxPoise'. 
+                            This includes the player (update 'currentPoiseChange' and 'playerStatus.poisePercentage') and any surviving NPCs in 'NPCsInScene'.
+
+                            3.  Reasoning: This is a direct command to the game system to clear all active combatants from the state and formally end the combat mode. 
+                            Sending 'null' for these keys will be interpreted as "no change" and is INCORRECT in this context. 
+                            Failure to send empty arrays will result in defeated combatants persisting in the game state.
+                            Poise represents mental and physical balance during active combat stress; it naturally recovers fully when combat pressure is removed.
+
+                            4.  Logging: You MUST log this action in 'gm_thoughts_markdown'.
+                            Example Log: "Combat has concluded. Clearing all combatant data by setting enemiesData and alliesData to empty arrays. Restoring all survivors' poise to maximum."
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="13.8">
+   <title>
+    Universal Combat Success Consequences (Momentum and Openings)
+   </title>
+   <description>
+    This rule defines the universal bonus effects for combat actions that result in a high degree of success.
+                    These rules apply equally to the Player Character, named NPCs, generic allies, and generic enemies, creating tactical opportunities.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    When ANY combatant (the "Acting Combatant") achieves a 'Full Success' or 'Critical Success' on a combat action, the following bonus effects are applied IN ADDITION to the standard resolution of the action's effects (damage, healing, etc.).
+                    
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="13.8.1">
+     <title>
+      Consequences for 'Full Success' (Gaining Momentum)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            A 'Full Success' represents a well-executed, confident action that creates a personal advantage for the Acting Combatant.
+                            
+                            -   Gaining Momentum: 
+                                The Acting Combatant gains Normal Advantage on their NEXT action check during their next turn.
+                            
+                            -   Mechanical Implementation: 
+                                This is a self-buff that lasts for one turn. The GM should narrate this as the character finding their rhythm in the fight. 
+                                When resolving this character's next turn, this Advantage must be applied.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="13.8.2">
+     <title>
+      Consequences for 'Critical Success' (Creating a Decisive Opening)
+     </title>
+     <description>
+      A 'Critical Success' is a perfect action that not only deals maximum damage but also creates a major tactical opening for the entire team.
+                            It has two immediate bonus effects.
+     </description>
+     <content type="ruleset">
+      <rule id="13.8.2.A">
+       <title>
+        Phase 1: Exposing a Weakness (Teamwork Advantage)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    The perfect strike leaves the opponent completely vulnerable.
+
+                                    -   Exposed State: 
+                                        The opponent is left Exposed. 
+                                        The NEXT attack roll made against this opponent from ANY source (the player, an ally, or even another enemy) before the start of the opponent's next turn gains Normal Advantage.
+                                   
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="13.8.2.B">
+       <title>
+        Phase 2: Ally's Exploit (Coordinated Strike)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    The opening is so significant that a nearby ally can immediately capitalize on it.
+                                    This is the direct mirror of an Attack of Opportunity.
+
+                                    1.  Identify Ally: 
+                                        The GM identifies ONE allied combatant who is in a logical position to strike the exposed opponent.
+
+                                    2.  Grant a Reaction:
+                                        This ally gets an IMMEDIATE reaction.
+
+                                    3.  Execute a SINGLE, STANDARD ATTACK:
+                                        The ally may use ONE of their standard, basic damaging actions against the exposed opponent. 
+                                        They CANNOT use their most powerful abilities for this reaction.
+
+                                    4.  Initiative Unchanged: 
+                                        This reaction does NOT consume the ally's action on their upcoming turn.
+
+                                    CRITICAL CLARIFICATION: 
+                                    If no allies are in a position to act, this phase is skipped. 
+                                    The "Exposed State" from Phase 1 still applies.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

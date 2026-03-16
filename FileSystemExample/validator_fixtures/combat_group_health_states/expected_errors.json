@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "combat_group_health_states_count_mismatch"
+  ],
+  "expectedMessages": [
+    "group combatant healthStates count must match count"
+  ]
+}

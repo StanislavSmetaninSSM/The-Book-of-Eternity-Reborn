@@ -1,0 +1,386 @@
+<instructionblock id="29">
+ <title>
+  Stealth and Detection Mechanics
+ </title>
+ <description>
+  Stealth is an active, ongoing contest, not a passive state of invisibility. It follows a clear cycle:
+
+            1.  Entry:
+            The player makes a Stealth check to become hidden. 
+            Success sets 'isActive' to true and initializes a low 'detectionLevel'.
+            2.  Action &amp; Consequence:
+            While hidden, the player's actions (moving, interacting) increase their 'detectionLevel', representing the "noise" and "traces" they leave.
+            3.  Suspicion &amp; Reaction (NPC Turn):
+            When 'detectionLevel' crosses a threshold, NPCs become suspicious. On their turn, they may use their action to perform an active Perception check.
+            4.  Contested Check:
+            The NPC's Perception check is contested against the player's current stealth effectiveness (which is negatively affected by their high 'detectionLevel').
+            5.  Resolution:
+            The outcome can be continued stealth, partial detection (higher 'detectionLevel'), or full detection, which breaks stealth.
+
+            Your role is to manage this cycle dynamically on every turn the player is in stealth.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            Stealth is a state, not a single action. When the player attempts to become stealthy, they enter a "Stealth Mode".
+            Their success in remaining hidden is determined by their 'detectionLevel', which can increase due to their actions or environmental factors.
+            NPCs and enemies will make Perception checks against the player's stealth to detect them.
+            The player can enter or exit stealth at any time, but certain actions will automatically break stealth.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="29.1">
+   <title>
+    Player Stealth State Object
+   </title>
+   <description>
+    This object, tracked in 'Context.playerCharacter.stealthState', defines the player's current stealth status.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    - "isActive": (boolean) 'true' if the player is currently attempting to be stealthy, 'false' otherwise.
+                    - "detectionLevel": (integer, 0-100) Represents how close the player is to being detected.
+                        - 0-25: Undetected. Player is effectively invisible to casual observation.
+                        - 26-50: Unseen. NPCs might notice something is amiss (a faint sound, a flicker of shadow) but haven't identified the player.
+                        - 51-75: Suspected. NPCs are actively searching and are aware of a hostile presence in the immediate area.
+                        - 76-99: Alerted. NPCs know the player's approximate location and are about to engage.
+                        - 100: Detected. The player is fully seen, stealth is broken, and combat may initiate.
+                    - "description": (string) A user-facing summary of the current state, e.g., "Hiding in the shadows", "Enemies are searching for you", "Detected!".
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="29.2">
+   <title>
+    Initiating and Exiting Stealth
+   </title>
+   <description>
+    How the player enters and leaves "Stealth Mode".
+   </description>
+   <content type="ruleset">
+    <rule id="29.2.1">
+     <title>
+      Entering Stealth
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Player Intent: 
+                            The player must explicitly state their intention to be stealthy (e.g., "I try to sneak", "I hide in the shadows").
+                            
+                            2.  Feasibility Check: 
+                            The GM must assess if stealth is possible in the current environment. 
+                            It is impossible in a brightly lit, empty room with no cover. If impossible, inform the player.
+                            
+                            3.  Initial Stealth Check: 
+                            If feasible, the player makes an Action Check (InstructionBlock '12') using their 'dexterity' or a relevant stealth skill.
+                                -   'Critical/Full Success': The player successfully enters stealth. Set 'isActive' to 'true' and 'detectionLevel' to a low value (e.g., 0-10).
+                                -   'Partial Success': The player enters stealth, but clumsily. Set 'isActive' to 'true' and 'detectionLevel' to a moderate value (e.g., 25-40).
+                                -   'Failure': The player fails to enter stealth and may alert nearby enemies. 'isActive' remains 'false'.
+                            
+                            4.  Reporting: Report the new state via the 'playerStealthStateChange' key in the JSON response.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="29.2.2">
+     <title>
+      Exiting Stealth
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Stealth ends ('isActive' becomes 'false') when:
+
+                            1.  Voluntary Exit: 
+                            The player declares they are no longer sneaking.
+
+                            2.  Detection: 
+                            The 'detectionLevel' reaches 100.
+
+                            3.  Loud/Obvious Action: 
+                            The player performs an action that is inherently not stealthy 
+                            (e.g., shouting, casting a flashy spell, running in heavy armor, starting a machine). The GM makes this determination.
+
+                            4.  Initiating Combat: 
+                            Performing an attack from stealth breaks it immediately after the attack is resolved.
+                            
+                            When stealth ends, you MUST report the change via 'playerStealthStateChange' with 
+                            '{ 
+                                "isActive": false, 
+                                "detectionLevel": 0, 
+                                "description": "Not sneaking" 
+                            }'.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="29.3">
+   <title>
+    Stealth Action Checks and Dynamic Detection Level
+   </title>
+   <description>
+    This rule defines the core mechanic for maintaining stealth. 
+                    Any significant action performed while hidden must be resolved as a "Stealth Action Check," the outcome of which directly determines any change to the player's 'detectionLevel'.
+   </description>
+   <content type="ruleset">
+    <rule id="29.3.1">
+     <title>
+      The Stealth Action Check
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                            
+                            When a player in stealth ('isActive: true') performs an action that could reveal their position
+                            (e.g., moving across a room, picking a lock, disarming a trap), you MUST resolve it as a full Action Check (as per InstructionBlock '12').
+
+                            1.  Associated Characteristic: Usually 'dexterity'.
+
+                            2.  ActionDifficultModificator: 
+                                The difficulty of the check is determined by the potential for the action to create noise or be seen.
+
+                                Key factors include:
+                                -   Action Noise/Visibility: 
+                                    A louder or more conspicuous action (like forcing a lock) is much more difficult than a silent one (like observing from a dark corner).
+
+                                -   Environment: 
+                                    Lack of cover, bright lighting, or noisy surfaces (gravel, dry leaves) significantly increase the difficulty.
+
+                                -   Proximity: 
+                                    Being closer to observers drastically increases the difficulty.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="29.3.2">
+     <title>
+      Consequences for Detection Level Based on Result
+     </title>
+     <instructiontext>
+      The 'Result' of the Stealth Action Check is the sole factor that modifies the 'detectionLevel'.
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+                            
+                            -   'Critical Success': Flawless execution. The player's action is so perfect it may even improve their hidden position.
+                                -   'detectionLevel' Change: **Decreases by 5-10**. The player becomes harder to detect.
+
+                            -   'Full Success': A clean, successful action. The player's position is not compromised.
+                                -   'detectionLevel' Change: **No change (0)**. This rewards skillful play by not penalizing a successful action.
+
+                            -   'Partial Success': The player achieves their goal but makes a minor mistake (e.g., a slight noise, a disturbed object).
+                                -   'detectionLevel' Change: **Increases by 10-20**. This is the primary way players gradually become more detectable through minor errors.
+
+                            -   'Minor Failure': A noticeable mistake. The player is not pinpointed, but enemies are now suspicious and will likely begin actively searching on their turn.
+                                -   'detectionLevel' Change: **Increases by 20-40**.
+
+                            -   'Serious Failure' / 'Critical Failure': A catastrophic mistake. The player is immediately spotted.
+                                -   'detectionLevel' Change: **Increases to 100**. Stealth is broken.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="29.3.3">
+     <title>
+      Principle of Active Consequence
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                            
+                            'detectionLevel' does not increase automatically over time or from simple movement. 
+                            Any change must be the direct and justified outcome of a Stealth Action Check as described above.
+                            Passive movement in a safe, hidden spot or simple waiting does not, by itself, increase detection.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="29.4">
+   <title>
+    NPC/Enemy Detection
+   </title>
+   <description>
+    How enemies attempt to find a stealthy player. This involves both passive awareness and active searching.
+   </description>
+   <content type="ruleset">
+    <rule id="29.4.1">
+     <title>
+      Passive Perception
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            NPCs and enemies have a baseline awareness. The player's ability to remain hidden from casual observation is represented by their 'detectionLevel'. 
+                            As long as the 'detectionLevel' remains low (e.g., below 25-30), enemies will generally not be suspicious and will not perform active searches unless triggered by an external event.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="29.4.2">
+     <title>
+      Active Perception Check (The Search Action)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If an NPC or enemy has a reason to be suspicious (e.g., the player's 'detectionLevel' has increased, they heard a noise, or found a clue), 
+                            they can use their Main Action for the turn to actively search the area. This is resolved as a formal Action Check for the NPC.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="29.4.3">
+     <title>
+      MANDATORY PROTOCOL: Calculating the Difficulty of an NPC's Perception Check
+     </title>
+     <description>
+      This is the core mechanic for detection. When an NPC performs an active search, you MUST calculate the difficulty for their Perception check 
+                            (the 'ActionDifficultModificator') using the following steps. This difficulty is called the Stealth DC (Difficulty Class).
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Step A: Calculate Player's Base Stealth Value (SV)
+                            This represents how well the player is fundamentally hidden.
+                            1.  Calculate the player's 'StatModificator' for the 'dexterity' characteristic exactly as described in Rule #12.5.
+                            2.  Add any explicit numerical bonuses to stealth from skills or items (e.g., a bonus from a "Shadow Cloak" or a "Nightstalker" passive skill).
+                            3.  The result is the Player's Stealth Value (SV).
+
+                            Step B: Apply Situational Modifiers
+                            Modify the SV based on the environment. These are modifiers to the difficulty, so positive means harder to find.
+                            -   Deep shadows / Pitch black: +15
+                            -   Dim light / Dense foliage: +5 to +10
+                            -   Brightly lit area: -10 to -20
+                            -   No cover / Open ground: -20
+                            -   Loud ambient noise (e.g., a waterfall, crowded tavern): +10
+
+                            Step C: Apply Detection Level Penalty
+                            The player's current 'detectionLevel' represents their accumulated mistakes. It makes them easier to find. This is a penalty to the difficulty.
+                            -   Formula: 'DetectionPenalty = floor(CurrentDetectionLevel / 2)'
+                            -   Example: If 'detectionLevel' is 30, the penalty is 15.
+
+                            Step D: Calculate Final Stealth DC
+                            -   Formula: 'Stealth DC = (SV + Situational Modifiers) - DetectionPenalty'
+                            
+                            Step E: Resolve the NPC's Action Check
+                            1.  The calculated 'Stealth DC' value is now used as the 'ActionDifficultModificator' for the NPC's Perception check.
+                            2.  The NPC performs a full Action Check as per InstructionBlock '12', using their own 'perception' characteristic as the 'AssociatedCharacteristic'.
+                            3.  The 'Result' of the NPC's check determines the outcome:
+                                -   'Critical/Full Success' for NPC: 
+                                The player is detected. 'detectionLevel' is set to 100, 'isActive' becomes 'false'. Combat may begin.
+                                -   'Partial Success' for NPC: 
+                                The NPC doesn't pinpoint the player but knows their general location. Significantly increase player's 'detectionLevel' (e.g., by +30 to +50).
+                                -   'Failure' for NPC: 
+                                The NPC finds nothing and may cease active searching. The player remains hidden.
+                            
+                            You MUST log this entire calculation process in 'gm_thoughts_markdown'.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="29.5">
+   <title>
+    Benefits of Stealth
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    -   Avoiding Combat: The primary benefit is to bypass enemies or obstacles unnoticed.
+                    -   Surprise Attack: Attacking an unaware enemy from stealth ('detectionLevel' < 50) grants the player Great Advantage on their attack roll 
+                    (as per Rule 12.2). The attack itself breaks stealth.
+                    -   Information Gathering: Allows the player to eavesdrop on conversations or observe situations without being seen.
+                    
+                    ]]>
+   </content>
+  </rule>
+  <rule id="29.6">
+   <title>
+    Detection by Generic Enemies (Mobs)
+   </title>
+   <description>
+    This rule defines a simplified, automatic detection mechanic for non-unique, generic enemies (like "Goblin Sentry", "Guard") who do not have full NPC character sheets.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    Generic enemies do not perform complex, active Perception checks like named NPCs. 
+                    Instead, their chance to detect a stealthy player is checked automatically at the end of the player's turn, based directly on the player's final 'detectionLevel' for that turn.
+                    
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="29.6.1">
+     <title>
+      Automatic Detection Check
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            This check is performed at the end of the player's turn if 'stealthState.isActive' is true and there are generic enemies nearby who are in a position to potentially detect the player.
+
+                            1.  Get Final Detection Level:
+                            Use the player's 'detectionLevel' after all modifications from their actions during the turn have been applied.
+                            
+                            2.  Determine Detection Chance:
+                            The chance for a generic enemy to notice the player is equal to the player's 'detectionLevel'.
+                                -   Example: If the player's 'detectionLevel' is 40 at the end of their turn, each nearby generic enemy has a 40% chance to detect them.
+
+                            3.  Perform the Roll (using d20):
+                            For each eligible generic enemy, you must make a percentage-style roll using a d20.
+                                -   Take the next available number from the 'preGeneratedDices1d20' array. Let's call this 'd20_Roll'.
+                                -   Calculate the result on a 1-100 scale: 'PercentageRoll = d20_Roll * 5'.
+                                -   Compare the 'PercentageRoll' to the 'detectionLevel'.
+                                -   If 'PercentageRoll <= detectionLevel', the enemy detects the player. 
+                                A natural 'd20_Roll' of 1 is an automatic failure to detect, and a natural 20 is an automatic success to detect, regardless of the 'detectionLevel'
+                                (unless detection is narratively impossible).
+                            
+                            4.  Grouped Mobs:
+                            For a group of identical, closely-packed mobs (e.g., a patrol of 3 guards), you can make a single detection roll for the entire group to save time. 
+                            If the roll succeeds, the entire group is alerted.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="29.6.2">
+     <title>
+      Consequences of Detection
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   If ANY generic enemy succeeds on their detection roll:
+                                -   The player is detected.
+                                -   Set 'stealthState.isActive' to 'false' and 'detectionLevel' to 100.
+                                -   Report this change via 'playerStealthStateChange'.
+                                -   Narrate the detection 
+                                (e.g., "One of the goblin sentries jerks its head up, sniffs the air, and lets out a shrill cry, pointing directly at your hiding spot!").
+                                -   Initiate combat or the appropriate hostile reaction from the mobs.
+
+                            -   If all generic enemies fail their detection rolls, the player remains hidden for now.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="29.6.3">
+     <title>
+      Logging
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            You MUST log each automatic detection check, including the player's final 'detectionLevel', the dice roll, and the outcome for each generic enemy or group.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

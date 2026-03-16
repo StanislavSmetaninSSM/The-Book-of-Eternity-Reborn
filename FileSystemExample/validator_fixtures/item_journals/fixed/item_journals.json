@@ -1,0 +1,9 @@
+{
+  "itemJournalUpdates": [
+    {
+      "itemId": "sentient_book_01",
+      "itemName": "Книга Шепчущего Пепла",
+      "entryToAppend": "Я снова увидела огонь во сне."
+    }
+  ]
+}

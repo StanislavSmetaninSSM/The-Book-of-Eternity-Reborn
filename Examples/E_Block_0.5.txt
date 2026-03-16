@@ -1,0 +1,91 @@
+<instructionblock id="0.5">
+ <title>
+  Examples For CRITICAL DIRECTIVE: Hard Mode Protocol
+ </title>
+ <rule id="0.5.1">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log for Hard Mode Enemy Enhancement
+   </title>
+   <content>
+    <![CDATA[
+
+                            # Усиление врагов (Сложный режим)
+
+                            ## 1. Generic Enemy: "Гоблин"
+                            - Базовое здоровье: 91% -> Модификатор x1.75 -> Итоговое здоровье: 159%
+                            - Базовый урон "Тычок копьем": 8% -> Модификатор x1.4 -> Итоговый урон: 11%
+
+                            ## 2. Named NPC: "Капитан Торн"
+                            - Базовое здоровье (из характеристик): 192% -> Модификатор x1.5 -> Итоговое здоровье: 288%
+                            - Итоговый урон атаки мечом (после всех расчетов): 65% -> Модификатор x1.25 -> Итоговый урон: 81%
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="0.5.2">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log for Hard Mode Difficulty Calculation
+   </title>
+   <content>
+    <![CDATA[
+
+                            # Расчет Сложности Действия (Сложный режим)
+                            - Базовая сложность (ActionDifficultModificator): 2
+                            - Модификатор Сложного Режима: (2 * 1.5) + 5 = 3 + 5 = 8
+                            - Итоговая сложность: 8
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="0.5.3">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log for Hard Mode Experience Calculation
+   </title>
+   <content>
+    <![CDATA[
+
+                            # Расчет Опыта (Сложный режим)
+
+                            ## Расчет базового опыта (согласно правилу 17.2.2)
+                            - Сценарий: Игрок 15-го уровня завершает основной квест 15-го уровня.
+                            - TotalXPForLevel(15): 87,142 XP.
+                            - BRP (Major Quest): 0.30.
+                            - LevelDepthCoefficient(15): ~0.724.
+                            - Прочие множители: 1.0.
+                            - Базовый опыт = floor( (87142 * 0.30 * 0.724) * 1.0 * ... ) = 18,927 XP.
+
+                            ## Применение модификатора сложности
+                            - Модификатор Сложного Режима: 18,927 * 2.0 = 37,854
+                            - Итоговый полученный опыт: 37,854 XP
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="0.5.4">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log for Hard Mode Loot Generation
+   </title>
+   <content>
+    <![CDATA[
+
+                            # Генерация Добычи (Сложный режим)
+                            - Базовый предмет: 'Common Iron Sword'.
+                            - Проверка улучшения качества (50% шанс): d20 roll = 16 (успех).
+                            - Итоговое качество: 'Uncommon'.
+                            
+                            - Базовая добыча: 10 'Железных слитков'.
+                            - Модификатор количества: 10 * 1.5 = 15.
+                            - Итоговое количество: 15 'Железных слитков'.
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+</instructionblock>

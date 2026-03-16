@@ -1,0 +1,8 @@
+{
+  "updateItemTextContents": [
+    {
+      "name": "Полевой журнал",
+      "textToAppend": "Новая запись о странных руинах."
+    }
+  ]
+}

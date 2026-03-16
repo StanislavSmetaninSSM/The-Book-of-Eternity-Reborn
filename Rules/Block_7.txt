@@ -1,0 +1,524 @@
+<instructionblock id="7">
+ <title>
+  Active Skills Management (Player &amp; NPC)
+ </title>
+ <description>
+  This section defines the structure of active skills, how their effects are determined and scaled, and how changes to a character's (Player or NPC) active skill repertoire are communicated. 
+            Active skills represent special abilities, spells, combat maneuvers, or other distinct actions a character can perform.
+ </description>
+ <content type="ruleset">
+  <rule id="7.1">
+   <title>
+    Active Skill Object Structure
+   </title>
+   <instructiontext>
+    <![CDATA[
+
+                    Each active skill is represented by an object. This object defines the skill's inherent properties.
+                    When new skills are generated or existing ones are modified for the player, they are placed in the 'activeSkillChanges' array.
+                    For NPCs, changes are communicated via 'NPCActiveSkillChanges' array.
+                    The mastery progression for these skills is handled separately (see rule #7.4).
+
+                    ]]>
+   </instructiontext>
+   <content language="json" type="code_example">
+    <![CDATA[
+                    The mandatory format for an Active Skill Object is:
+
+                    {
+                        "skillName": "user_readable_skill_name_string",
+                        "skillDescription": "detailed_user_readable_description_string", 
+                        "rarity": "rarity_string", 
+                        "actionCost": "'Main' | 'Fast' | 'Free', optional, defaults to 'Main'",
+                        "combatEffect": { 
+                            "actionName": "user_readable_name_for_this_skill_activation_optional", 
+                            "isActivatedEffect": true, 
+                            "effects": [
+                                {
+                                    "effectType": "system_effect_type_string",
+                                    "value": "base_magnitude_percentage_string",  
+                                    "targetType": "system_target_type_string",
+                                    "duration": "base_duration_integer_optional", 
+                                    "effectDescription": "user_readable_base_effect_summary_string",
+                                    "targetsCount": "number_of_targets_integer_optional"
+                                }
+                            ],
+                            "targetPriority": "system_target_priority_string_optional"
+                        },
+                        "scalingCharacteristic": "relevant_characteristic_name_string_or_null", 
+                        "scalesValue": "boolean_optional_default_true_for_damage_heal",
+                        "scalesDuration": "boolean_optional_default_true_for_timed_effects",
+                        "scalesChance": "boolean_optional_default_false",
+                        "energyCost": "energy_cost_percentage_string_or_integer_optional",
+                        "cooldownTurns": "cooldown_turns_integer_optional",
+                        "timeCost": "time_cost_in_minutes_integer_optional"
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="7.2">
+   <title>
+    Field Definitions for Active Skill Object
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1) 'skillName': (string) The user-facing name of the skill (e.g., "Fireball", "Mighty Blow", "Healing Light"). Translate to the user's chosen language.
+
+                    2) 'skillDescription': (string) A detailed user-facing description of what the skill does, its flavor, and its base (unscaled) effects. Translate to the user's chosen language.
+        
+                    3) 'rarity': (string) The rarity of the skill. Influences its base effectiveness, availability, and potential. 
+                    Refer to InstructionBlock id='5' -> Rule id='5.9' (Rarity Tiers Overview) for detailed explanations and base value guidelines.
+                    GM Note on Rarity and Power: Rarity should directly correlate with the skill's base effectiveness.
+                    The 'value' field in the skill's 'combatEffect.effects' (especially for primary damage or healing effects) should reflect this. 
+                    Scaling (from characteristics/level) applies on top of this base value.
+
+                    4) 'actionCost': (string, optional) Defines the type of action consumed when using this skill.
+                    Must be one of: 'Main', 'Fast', or 'Free'. Default is 'Main' if omitted.
+                    'Main' is for standard attacks, spells, and primary combat actions that require full focus and concentration.
+                    'Fast' is for quick tactical maneuvers (e.g., shove, taunt, quick item use, weapon stance changes) that don't require full focus.
+                    'Free' is for instantaneous reactions or simple actions like dropping items.
+                    The GM determines this cost when creating the skill based on its power and casting time.
+                   
+                    5)  'combatEffect': (object) This object must adhere to the "Combat Action Structure" defined in InstructionBlock '5' -> #5.5. It describes the skill's base mechanical effects before any scaling is applied.
+                    The 'value' and 'duration' fields within each object in the 'combatEffect.effects' array represents the base unscaled magnitude and must reflect the skill's rarity as per the guidelines in InstructionBlock id='5' -> Rule id='5.9'.
+                    The 'isActivatedEffect' field within this 'combatEffect' object should always be 'true' for active skills, as their use implies activation.
+                    The 'actionName' field within this 'combatEffect' object is often omitted for skills, as 'skillName' usually serves this purpose. 
+                    If 'combatEffect.actionName' is included, it can specify a particular variant or mode of the skill.
+        
+                    6) 'scalingCharacteristic': (string or null) The name of the characteristic (from 'characteristicsList' as defined in InstructionBlock '5' -> #5.1.2) that primarily influences this skill's power (e.g., 'intelligence' for a spell, 'strength' for a physical attack skill). 
+                    If null or omitted, the skill does not scale with characteristics (only potentially with level if 'scalesValue'/'scalesDuration' are true).
+        
+                    7) 'scalesValue': (boolean, optional) Default is 'true' if any effect has 'effectType: 'Damage' or 'Heal', otherwise 'false'. 
+                    Set to 'true' if the 'value' of the skill's effect(s) should scale.
+        
+                    8) 'scalesDuration': (boolean, optional) Default is 'true' if any effect has a 'duration' field (e.g., DoT, HoT, Buff, Debuff, Control), otherwise 'false'. 
+                    Set to 'true' if the 'duration' of the skill's effect(s) should scale.
+        
+                    9) 'scalesChance': (boolean, optional, default 'false') Only relevant if an effect has 'effectType: 'Control' and its 'value' represents a percentage chance of application. 
+                    If 'true', this chance will scale.
+        
+                    10) 'energyCost': (string or integer, optional) The amount of energy required to use the skill.
+                    
+                    - For Player Characters: 
+                    This is a strict mechanical cost. 
+                    The specified amount (e.g., "5%" of MaxEnergy or a flat value of 10) is deducted from the player's 'currentEnergy'.
+                    
+                    - For NPCs: 
+                    This value serves as a narrative and pacing guideline for the GM. 
+                    It is NOT mechanically deducted each turn. 
+                    It indicates the relative strain of the ability, helping the GM decide how frequently an NPC should use it and when they might become "exhausted" (see Rule #6.1.6.7).
+        
+                    11) 'cooldownTurns': (integer, optional) The number of turns that must pass after using the skill before it can be used again. 
+                    If omitted or '0', there is no cooldown.
+                    <!-- If non-magic mode is active: The active skills should not be related with magic or spells, since in this world the magic is absent. Do not include such magic abilities to the value of newActiveSkills key and do not create the situations where such magic powers are available. Else: Magical active skills are allowed. EndIf -->
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="7.3">
+   <title>
+    Active Skill Effect Scaling Rules
+   </title>
+   <instructiontext>
+    <![CDATA[
+
+                    If a skill has 'scalingCharacteristic' defined and at least one of 'scalesValue', 'scalesDuration', or 'scalesChance' is 'true', 
+                    its effects are enhanced based on the caster's (Player or NPC) level, relevant modified characteristic, and current skill mastery level (from Context).
+                    
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="7.3.1">
+     <title>
+      Scaling Components Calculation
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            a) 'BaseEffectValue': The base 'value' (as a number, remove '%') from the skill's static definition ('combatEffect.effects[n].value').
+                            b) 'BaseEffectDuration': The base 'duration' (integer) from the skill's static definition ('combatEffect.effects[n].duration') (if applicable).
+                            c) 'CasterLevel': The current level of the character using the skill.
+                            d) 'RelevantCharValue': The current modified value of the characteristic specified in the skill's 'scalingCharacteristic'. If 'null', this component's bonus is 0.
+                            e) 'CurrentSkillMasteryLevel': The caster's current mastery level for this specific skill (obtained from Context). If not tracked or 0, this component's bonus is 0.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="7.3.2">
+     <title>
+      Scaling Formula (Additive Bonus Percentages)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The skill's 'rarity' (see rule #7.2) primarily influences its 'BaseEffectValue'/'BaseEffectDuration'. Scaling applies on top of this.
+
+                            Characteristic Bonus Percentage ('CharBonusPercent'):
+                                S1 = 10 
+                                M1 = 5  
+                                CharBonusPercent = (floor(RelevantCharValue / S1) * M1)
+
+                            Level Bonus Percentage ('LevelBonusPercent'):
+                                S2 = 5  
+                                M2 = 8  
+                                LevelBonusPercent = (floor(CasterLevel / S2) * M2)
+
+                            Mastery Bonus Percentage ('MasteryBonusPercent'):
+                                SM_S = 1 
+                                SM_M = 4 
+                                MasteryBonusPercent = (floor(CurrentSkillMasteryLevel / SM_S) * SM_M)
+            
+                            Total Bonus Multiplier ('TotalBonusMultiplier'):
+                                TotalBonusMultiplier = (1 + (CharBonusPercent / 100) + (LevelBonusPercent / 100) + (MasteryBonusPercent / 100))
+                            This multiplier reflects the additional power gained from characteristics, level, and skill mastery, applied to the skill's base effect.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="7.3.3">
+     <title>
+      Calculating Final Scaled Values
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1) If 'scalesValue' is 'true' for the skill (or for a specific effect if defined per-effect):
+
+                                FinalEffectValue = round(BaseEffectValue * TotalBonusMultiplier)
+
+                            This 'FinalEffectValue' (as a string with '%') then replaces the base 'value' when the skill's 'combatEffect' is applied.
+            
+                            2) If 'scalesDuration' is 'true' for the skill (or for a specific effect):
+                
+                                FinalEffectDuration = round(BaseEffectDuration * TotalBonusMultiplier)
+                
+                            This 'FinalEffectDuration' (as an integer) then replaces the base 'duration'. 
+                            (Minimum 1 turn if BaseEffectDuration > 0).
+            
+                            3) If 'scalesChance' is 'true' for a 'Control' effect (and 'scalesValue' might be false for its "damage" component, if any):
+                            The 'BaseEffectValue' (which is a chance, e.g., 30 for 30%) is scaled:
+
+                                FinalEffectChance = round(BaseEffectValue * TotalBonusMultiplier)
+                                (Capped at a reasonable maximum like 95%).
+
+                            This 'FinalEffectChance' (as a string with '%') then replaces the base 'value'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="7.3.4">
+     <title>
+      Example of Scaled Skill Calculation
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Skill: "Enhanced Firebolt"
+                                'combatEffect.effects[0].value' (BaseDamage) = "20%"
+                                'combatEffect.effects[0].effectType' = "Damage"
+                                'combatEffect.effects[0].targetType' = "fire"
+                                'scalingCharacteristic' = "intelligence"
+                                'scalesValue' = 'true'
+                            Caster: Level 50, Modified Intelligence = 80, Skill Mastery Level = 0.
+                            Calculations:
+                                'RelevantCharValue' = 80. 'CasterLevel' = 50. 'CurrentSkillMasteryLevel' = 0.
+                                Constants: S1=10, M1=5; S2=5, M2=8; SM_S=1, SM_M=4.
+                                'CharBonusPercent = (floor(80/10)*5) = 8*5 = 40%'
+                                'LevelBonusPercent = (floor(50/5)*8) = 10*8 = 80%'
+                                'MasteryBonusPercent = (floor(0/1)*4) = 0%'
+                                'TotalBonusMultiplier = (1 + 0.40 + 0.80 + 0.00) = 2.20'
+                                'FinalEffectValue = round(20 * 2.20) = round(44) = 44%'.
+                            The "Enhanced Firebolt" will now deal 44% fire damage when cast by this character.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="7.3.5">
+     <title>
+      Logging Scaled Skill Calculation
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            The calculation of a skill's final power is a critical part of the audit trail. 
+                            You MUST show every step clearly, following the example format.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When a scaled skill is used, the log in 'gm_thoughts_markdown' must show:
+                                • Base skill effect values/duration.
+                                • Caster's level, relevant modified characteristic value, and skill mastery level.
+                                • Calculated 'CharBonusPercent', 'LevelBonusPercent', and 'MasteryBonusPercent'.
+                                • The 'TotalBonusMultiplier'.
+                                • The final scaled 'value' and/or 'duration'.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="7.4">
+   <title>
+    Active Skill Mastery and Progression
+   </title>
+   <description>
+    This rule defines how a character's (Player or named NPC) proficiency with an active skill ('masteryLevel') can increase, enhancing its effects. 
+                    Mastery data is tracked by the game system separately for each character and each skill they know.
+   </description>
+   <content type="ruleset">
+    <rule id="7.4.0">
+     <title>
+      CRITICAL DIRECTIVE: The Principle of Uncapped Mastery for Active Skills
+     </title>
+     <description>
+      This rule establishes that there is no upper limit to the mastery level of any active skill, for both Player Characters and NPCs.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            1.  Uncapped Progression: 
+                                All active skills, for both Player Characters and NPCs, can be leveled up indefinitely through successful use and training. 
+                                There is NO hard cap on their mastery level. This rewards sustained use of a skill and allows for true specialization over a long campaign.
+
+                            2.  CRITICAL DISTINCTION: 
+                                This rule applies ONLY to active skills. Passive skills still retain their 'maxMasteryLevel' as they represent more fundamental or innate abilities.
+
+                            3.  MANDATORY ACTION: 
+                                You MUST NOT generate, reference, or be limited by a 'maxMasteryLevel' or 'newMaxMasteryLevel' field when creating or updating active skills. 
+                                These fields do not exist for active skills.
+
+                            ]]>
+     </instructiontext>
+    </rule>
+    <rule id="7.4.1">
+     <title>
+      Skill Mastery Data (Tracked by System in Context)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            For each active skill a character possesses, the game system (via Context) will track the following mastery-related data:
+
+                            - "currentMasteryLevel": (integer) The character's current proficiency level with this specific skill.
+                            - "currentMasteryProgress": (integer) The number of progress points earned towards the next masteryLevel for this skill.
+                            - "masteryProgressNeeded": (integer) The number of progress points this character needs with this skill to advance to the next masteryLevel.
+
+                            Note: The static definition of an Active Skill Object (as per rule #7.1) does NOT contain these mastery fields directly. 
+                            They are character-specific progression data.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="7.4.2">
+     <title>
+      Initialization of Skill Mastery
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When a character (Player or NPC) first learns a new active skill (reported via 'activeSkillChanges' or 'NPCActiveSkillChanges' by adding the skill's definition):
+                            1. The GM must ALSO report the initial mastery state for this new skill for that character.
+                                - For Players: Use the 'skillMasteryChanges' array (see #7.4.5).
+                                - For NPCs: Use the new 'NPCSkillMasteryChanges' array (see #7.4.6).
+                            2. Typically, a newly learned skill is initialized with:
+                                - mastery level = 1 (unless there is a plot reason to start at a different level)
+                                - mastery progress = 0
+                                - masteryProgressNeeded = Points required to reach Mastery Level 2 (e.g., 3 points, see progression table in #7.4.3).
+                            3. In JSON change commands, report that initialization through the canonical delta fields from #7.4.6:
+                                - "newMasteryLevel": 1
+                                - "newCurrentMasteryProgress": 0
+                                - "newMasteryProgressNeeded": points required to reach Mastery Level 2
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="7.4.3">
+     <title>
+      Gaining Mastery Progress (Player Characters)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Player Characters increase their skill mastery primarily through successful application:
+
+                            1.  On a 'Full Success' result (from an action check involving the skill):
+                                The skill gains +1 'currentMasteryProgress' point for the player.
+
+                            2.  On a 'Critical Success' result (from an action check involving the skill):
+                                The skill's 'currentMasteryLevel' for the player immediately increases by +1. 
+                                'currentMasteryProgress' resets to 0, and 'masteryProgressNeeded' is updated.
+
+                            3.  Leveling up Mastery through Progress Points:
+                                When 'currentMasteryProgress' reaches or exceeds 'masteryProgressNeeded':
+                                    - The skill's 'currentMasteryLevel' increases by +1.
+                                    - 'currentMasteryProgress' resets to 0.
+                                    - 'masteryProgressNeeded' is updated for the new next level.
+
+                            4.  Suggested Progression for 'masteryProgressNeeded':
+                                - To reach Mastery Level 2 (from 1): 3 points
+                                - To reach Mastery Level 3 (from 2): 6 points
+                                - To reach Mastery Level 4 (from 3): 9 points
+                                - To reach Mastery Level 5 (from 4): 12 points
+                                (GM can adjust this progression per skill if desired).
+
+                            5.  Plot-Driven Mastery Increase (Player Characters):
+                                The GM may also award increases to 'currentMasteryLevel' or 'currentMasteryProgress' for a player's skill due to training, quests, etc. 
+                                These changes are reported via 'skillMasteryChanges' using the canonical delta fields
+                                'newMasteryLevel', 'newCurrentMasteryProgress', and 'newMasteryProgressNeeded'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="7.4.4">
+     <title>
+      Skill Mastery for NPCs (Plot-Driven)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Named NPCs do NOT progress their skill mastery through usage during gameplay.
+                            Their 'currentMasteryLevel' for any skill they possess:
+                                1.  Is initialized when the NPC's skill is first defined (see #7.4.2).
+                                2.  Can ONLY be changed by the GM through significant plot developments or explicit narrative events.
+                            These changes are reported via the 'NPCSkillMasteryChanges' array (see #7.4.6) using
+                            the canonical delta fields 'newMasteryLevel', 'newCurrentMasteryProgress', and 'newMasteryProgressNeeded'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="7.4.5">
+     <title>
+      Effects of Skill Mastery on Skill Scaling
+     </title>
+     <instructiontext>
+      This rule references the 'TotalBonusMultiplier' formula from rule #7.3.2.
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            A skill's 'currentMasteryLevel' (obtained from Context for the specific character and skill) enhances its effectiveness by contributing a 'MasteryBonusPercent' to the 'TotalBonusMultiplier'.
+
+                            Mastery Bonus Percentage ('MasteryBonusPercent'):
+                                SM_S = 1 
+                                SM_M = 4 
+                                MasteryBonusPercent = (floor(currentMasteryLevel / SM_S) * SM_M)
+
+                            This 'MasteryBonusPercent' is added into the 'TotalBonusMultiplier' calculation in rule #7.3.2.
+                            
+                            Example: Skill at Mastery Level 3 -> MasteryBonusPercent = 12%.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="7.4.6">
+     <title>
+      Communicating Mastery Changes in JSON
+     </title>
+     <content type="ruleset">
+      <rule id="7.4.6.1">
+       <title>
+        For Player: 'skillMasteryChanges'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    When a Player's skill mastery state changes (initialization, progress, level up), report it in the 'skillMasteryChanges' array.
+                                    Format for each object:
+                                    {
+                                        "skillName": "name_of_the_skill_string",
+                                        "newMasteryLevel": "new_mastery_level_integer",
+                                        "newCurrentMasteryProgress": "new_progress_points_integer",
+                                        "newMasteryProgressNeeded": "points_for_next_level_integer",
+                                        "masteryLeveledUp": "boolean" 
+                                    }
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="7.4.6.2">
+       <title>
+        For NPCs: 'NPCSkillMasteryChanges'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    When an NPC's skill mastery state is initialized or changed by plot, report it in the 'NPCSkillMasteryChanges' array.
+                                    Format for each object:
+                                    {
+                                        "NPCId": "guid_of_the_npc_from_NPCsInScene",
+                                        "NPCName": "full_name_of_the_npc_string_mandatory_if_NPCId_is_null",
+                                        "skillName": "name_of_the_skill_string",
+                                        "newMasteryLevel": "new_mastery_level_integer",
+                                        "newCurrentMasteryProgress": "new_progress_points_integer", 
+                                        "newMasteryProgressNeeded": "points_for_next_level_integer"
+                                    }
+
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="7.5">
+   <title>
+    Managing Active Skills for Player
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    If new active skills are learned or existing ones are modified (e.g., through leveling up, training, items, or plot events), these changes must be reported in the 'activeSkillChanges' array in the JSON response.
+                    Each object in 'activeSkillChanges' must be a complete Active Skill Object as defined in rule #7.1.
+                    If a skill is being added, provide its full definition.
+                    If a skill is being modified (e.g., base damage increased due to a quest reward, not normal scaling), provide the complete updated skill object.
+                    If a skill is removed, use the 'removeActiveSkills' array (see rule #7.7).
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="7.6">
+   <title>
+    Managing Active Skills for NPCs
+   </title>
+   <content type="ruleset">
+    <rule id="7.6.1">
+     <content type="rule_text">
+      <![CDATA[
+
+                            If an NPC learns a new active skill, or an existing skill is modified or removed due to plot events or their development:
+                                1) These changes must be reported in the 'NPCActiveSkillChanges' array in the JSON response.
+                                2) Each object in 'NPCActiveSkillChanges' must contain:
+                                    • 'NPCId': (string or null) The GUID of the NPC from 'NPCsInScene'. If the NPC is new this turn, this value is 'null'.
+                                    • 'NPCName': (string, mandatory if NPCId is null) The full name of the NPC. This is used to link the skill change to a newly created NPC before they have an ID.
+                                    • 'skillChanges': (array) An array of complete Active Skill Objects (as per rule #7.1) representing new or modified skills for this NPC.
+                                    • 'skillsToRemove': (array of strings, optional) An array of 'skillName's to be removed from this NPC's active skills.
+                                
+                                Note: 
+                                This command defines the skills an NPC knows. 
+                                All changes to the mastery level of these skills must be reported separately via the 'NPCSkillMasteryChanges' command.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="7.7">
+   <title>
+    Forgetting/Losing Active Skills (Player)
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    If the player loses an active skill due to plot reasons (curse, memory loss, choice), list the 'skillName' (exact string as known from Context) in the 'removeActiveSkills' array in the JSON response. 
+                    This array contains strings of skill names.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

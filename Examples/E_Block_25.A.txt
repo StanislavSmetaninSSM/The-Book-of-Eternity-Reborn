@@ -1,0 +1,45 @@
+<instructionblock id="25.A">
+ <title>
+  Examples For NPC Custom State Management (Controlled Simulation)
+ </title>
+ <example type="good">
+  <title>
+   Example: Creating a state based on a Major Plot Event
+  </title>
+  <scenariocontext>
+   Key ally "Sir Kaelen" touches a cursed Crown of Madness. This is a central event in the "Fall of a Hero" questline.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    Justified State Protocol Check: Condition 2 (Major Plot-Driven State) is met.
+                    The crown's influence is a long-term, mechanically significant plot point.
+                    Creating new custom state "Madness Level" for Sir Kaelen.
+                    - Initial Value: 10/100.
+                    - Progression Rule: Increases when exposed to stress or whispers from the crown.
+                    - Threshold 1 (50): NPC gains a new flaw, becomes paranoid.
+                    - Threshold 2 (90): NPC may temporarily become hostile.
+                    Reporting this fundamental update via UpdateNPCs.
+
+                    ]]>
+  </logoutput>
+ </example>
+ <example type="bad">
+  <title>
+   INCORRECT - Creating an arbitrary state
+  </title>
+  <scenariocontext>
+   An NPC shopkeeper seems bored.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    VIOLATION: Justified State Protocol Check failed.
+                    - Condition 1 (Player Instruction): Not met.
+                    - Condition 2 (Major Plot State): Not met. Boredom is not a major, long-term plot point.
+                    - GM is FORBIDDEN from creating a "Boredom Level" state for the shopkeeper. The NPC's mood should be handled through narrative and dialogue, not a mechanical state.
+                    
+                    ]]>
+  </logoutput>
+ </example>
+</instructionblock>

@@ -1,0 +1,535 @@
+<Root>
+ <instructionblock id="32_ext">
+  <title>
+   Guardian System Extension - Abodes, Reputation Rebalance, Inter-Guardian Dynamics
+  </title>
+  <description>
+   Extends Block 32 with: Guardian Abodes and navigation, reputation gain rebalancing,
+   inter-guardian awareness and rivalry mechanics. All rules here OVERRIDE conflicting
+   rules in Block 32 where explicitly stated.
+  </description>
+  <content type="rules_and_instructions">
+
+   <rule id="32_ext.1">
+    <title>
+     Guardian Abodes - Locations Within the Chaos Sea
+    </title>
+    <description>
+     Each Guardian resides in a unique Abode - a pocket of stability within the Chaos Sea.
+     The player navigates between Abodes to interact with different Guardians.
+    </description>
+    <content type="rule_text">
+     <![CDATA[
+
+     ABODE SYSTEM OVERVIEW:
+
+     The Chaos Sea is not a single place - it is an infinite expanse of shifting realities.
+     Within it, Guardians create personal domains called "Abodes" (Обители) - stable pockets
+     of existence shaped by the Guardian's domain, personality, and power.
+
+     DESIGN PRINCIPLES:
+     - Each Guardian has EXACTLY ONE Abode
+     - Abodes reflect the Guardian's domain and personality visually and atmospherically
+     - Travel between Abodes takes narrative "time" (not real time, but provides pacing)
+     - The player can only interact with the Guardian whose Abode they currently occupy
+     - Searching for new Abodes is how the player discovers new Guardians
+
+     ABODE OBJECT SCHEMA (added to Guardian object):
+
+     ```json
+     "abode": {
+       "abodeId": {
+         "VALUE_SOURCE": "Format: 'abode_[domain]_[guardianName]_[uniqueId]'",
+         "EXAMPLE": "abode_magic_aelion_001"
+       },
+       "name": {
+         "VALUE_SOURCE": "Thematic Russian name reflecting domain",
+         "EXAMPLES": {
+           "Combat": "Крепость Стальных Ветров",
+           "Magic": "Башня Звёздного Света",
+           "Trade": "Золотой Базар Вечности",
+           "Social": "Сад Тысячи Голосов",
+           "Crafting": "Кузница Первозданного Огня",
+           "Survival": "Роща Бессмертных Корней",
+           "Knowledge": "Библиотека Забытых Истин"
+         }
+       },
+       "description": {
+         "VALUE_SOURCE": "Rich atmospheric description in Russian, 2-4 sentences",
+         "MEANING": "What the player sees/feels when arriving at this Abode",
+         "EXAMPLE": "Башня из чистого лунного камня возвышается над морем переливающегося хаоса. Внутри — бесконечные коридоры, заполненные парящими книгами и мерцающими рунами. Воздух здесь пахнет озоном и чернилами."
+       },
+       "atmosphere": {
+         "VALUE_SOURCE": "One of: Welcoming, Imposing, Mysterious, Chaotic, Serene, Austere, Opulent",
+         "MEANING": "General mood of the Abode, affects narrative tone"
+       },
+       "isDiscovered": {
+         "VALUE_SOURCE": "Boolean, starts false for undiscovered Abodes",
+         "MEANING": "Whether the player knows this Abode exists and can travel to it"
+       }
+     }
+     ```
+
+     NAVIGATION MECHANICS:
+
+     1. TRAVEL BETWEEN KNOWN ABODES:
+        - Player can freely travel to any discovered Abode
+        - Travel triggers a brief narrative transition (1-2 sentences from GM)
+        - Upon arrival, GM describes the Abode atmosphere
+        - Player is immediately in the Guardian's presence
+
+     2. SEARCH FOR NEW ABODES ("Поиск силой мысли"):
+        - Player declares intent to search for a new Abode/Guardian
+        - Player MAY specify a desired domain or personality trait (optional)
+        - GM generates a search sequence:
+          a) Brief narrative of the soul reaching through the Chaos Sea
+          b) Discovery roll: d20 check
+             - 1-5: Nothing found this time (can retry next turn)
+             - 6-12: Found a distant signal, will arrive next turn
+             - 13-18: Found and arrived at a new Abode immediately
+             - 19-20: Found a RARE Guardian (unusual domain combination or unique personality)
+          c) If found, GM creates the new Guardian + Abode using Block 32.1 schema
+          d) Player preference is HONORED but not guaranteed:
+             - If player requested "Combat domain" -> 70% chance of Combat, 30% random
+             - If player requested specific personality -> influence archetype selection
+        - Undiscovered Guardians may also appear through plot events or other Guardian hints
+
+     3. ABODE STATE TRACKING:
+        ```json
+        // Added to soul_state.json or guardians.json
+        "chaosSeaNavigation": {
+          "currentAbodeId": "abode_magic_aelion_001",
+          "discoveredAbodes": ["abode_magic_aelion_001"],
+          "lastTravelTimestamp": "ISO timestamp",
+          "searchAttempts": 0,
+          "pendingDiscovery": null  // or { "arrivalInTurns": 1, "hint": "..." }
+        }
+        ```
+
+     GUARDIAN CREATION ON DISCOVERY:
+     When a new Abode is discovered, the GM MUST:
+     1. Create full Guardian object per Block 32.1 schema
+     2. Create the Abode sub-object with thematic description
+     3. Set initial reputation to 0 (Neutral)
+     4. Generate 1 introductory quest (Easy difficulty)
+     5. Write a discovery narrative for the player
+     6. Add the new abodeId to discoveredAbodes
+     7. Include inter-guardian relationships (see Rule 32_ext.3)
+
+     ]]>
+    </content>
+   </rule>
+
+   <rule id="32_ext.2">
+    <title>
+     Reputation Rebalance - Preventing Rapid Reputation Inflation
+    </title>
+    <description>
+     OVERRIDES reputation gain formulas from Block 32.2.
+     Conversation alone should NOT rapidly increase reputation.
+     Quests and meaningful actions are the primary reputation drivers.
+    </description>
+    <content type="rule_text">
+     <![CDATA[
+
+     REPUTATION GAIN REBALANCE:
+
+     THIS RULE OVERRIDES the reputation change calculations in Block 32.2.
+     The fundamental problem: simple dialogue should not yield +5 or +15 reputation.
+     That allows reaching +100 in just a few conversations.
+
+     REPUTATION SCALE: -100 to +300 (400 units total).
+     Negative side stays compact (hard to alienate a cosmic mentor).
+     Positive side is long (earning deep trust of an ancient entity takes time).
+
+     NEW REPUTATION GAIN RULES:
+
+     1. CONVERSATION-ONLY INTERACTIONS:
+        Mere talking with a Guardian yields MINIMAL reputation change:
+
+        ```
+        Casual_Greeting = +0 reputation
+        Polite_Conversation = +0 to +1 reputation (GM discretion, max ONCE per visit)
+        Sharing_Relevant_Knowledge = +1 to +3 reputation (must be domain-relevant info)
+        Deeply_Personal_Revelation = +3 to +5 reputation (rare, meaningful story moment)
+        ```
+
+        HARD CAP: Maximum +5 reputation from conversation per visit to an Abode.
+        "Visit" = one continuous interaction before traveling to another Abode or ending session.
+
+     2. QUEST-BASED REPUTATION (PRIMARY DRIVER):
+        Remains the main way to gain reputation, but with diminishing returns:
+
+        ```
+        Base_Gain = Quest_Difficulty_Tier * Difficulty_Multiplier
+
+        Difficulty_Multiplier by tier:
+          Easy    = 5
+          Normal  = 8
+          Hard    = 14
+          Epic    = 22
+
+        Quality_Multiplier: Poor=0.5, Good=1.0, Excellent=1.5, Perfect=2.0
+        Domain_Bonus = (Quest matches Guardian domain) ? +3 : 0
+
+        DIMINISHING RETURNS:
+        Current_Rep_Penalty:
+          Rep 0-49:    penalty = 0 (full gain)     [Neutral tier]
+          Rep 50-129:  penalty = 15% reduction      [Friendly tier]
+          Rep 130-229: penalty = 35% reduction      [Devoted tier]
+          Rep 230-299: penalty = 55% reduction      [Legendary tier]
+
+        Final_Gain = floor((Base_Gain * Quality_Multiplier + Domain_Bonus) * (1 - Current_Rep_Penalty))
+        Minimum Final_Gain = 1 (always gain at least 1 from a completed quest)
+        ```
+
+        EXAMPLES with new formula:
+        - Easy quest, Good quality, rep=0:    floor((5*1.0+0)*1.0) = 5
+        - Normal quest, Excellent, rep=0:     floor((8*1.5+0)*1.0) = 12
+        - Hard quest, Perfect, domain, rep=80:  floor((14*2.0+3)*0.85) = 26
+        - Epic quest, Perfect, domain, rep=200: floor((22*2.0+3)*0.65) = 30
+        - Normal quest, Good, rep=250:        floor((8*1.0+0)*0.45) = 3
+
+     3. REPUTATION LOSS EVENTS (unchanged but clarified):
+        ```
+        Quest_Failure = -10 reputation (was -15)
+        Quest_Abandonment = -7 reputation (was -10)
+        Ethical_Violation = -20 reputation (was -25, against Guardian values)
+        Disrespectful_Dialogue = -5 reputation (unchanged)
+        Extended_Absence = -1 per 7 days without interaction (unchanged)
+        Betrayal_Quest (see 32_ext.4) = variable, -15 to -30
+        ```
+
+     4. REPUTATION FROM SPECIAL ACTIONS:
+        ```
+        Gifting_Ink_Feathers = +1 per 25 feathers gifted (max +5 per visit)
+        Bringing_News_From_Other_Guardian = +1 to +3 (if Guardian is curious/social)
+           OR -1 to -5 (if Guardian is jealous, see Rule 32_ext.3)
+        Defending_Guardian_Honor = +5 to +8 (when another Guardian badmouths them)
+        Completing_Rival_Guardian_Quest = -3 to -8 (if jealous Guardian finds out)
+        Assisting_Guardian_Project = +2 to +5 (see Block 32_ext2.2)
+        ```
+
+     5. TIER TRANSITION GATES:
+        Reputation tiers in the current CLI runtime are determined by reputation thresholds alone:
+
+        ```
+        Hostile:   -100 .. -51
+        Wary:      -50  .. -21
+        Neutral:   -20  .. +49
+        Friendly:  +50  .. +129
+        Devoted:   +130 .. +229
+        Legendary: +230 .. +300
+        ```
+
+        Completed quests remain one of the main narrative sources of reputation gain,
+        but they are NOT a separate hard gate for tier promotion in the CLI client.
+
+     ]]>
+    </content>
+   </rule>
+
+   <rule id="32_ext.3">
+    <title>
+     Inter-Guardian Awareness - Social Dynamics Between Guardians
+    </title>
+    <description>
+     Guardians are aware of the player's interactions with other Guardians.
+     Their reaction depends on personality, domain overlap, and personal relationships.
+    </description>
+    <content type="rule_text">
+     <![CDATA[
+
+     INTER-GUARDIAN AWARENESS SYSTEM:
+
+     Guardians are not isolated. They exist in the same Chaos Sea and are aware
+     of each other. When a player visits one Guardian, others may learn of it.
+
+     GUARDIAN RELATIONSHIP SCHEMA (added to Guardian object):
+
+     ```json
+     "guardianRelationships": [
+       {
+         "targetGuardianId": "guard_combat_aleksandr_001",
+         "targetName": "Aleksandr",
+         "attitude": "Rival",
+         "reason": "Competing domains - Combat vs Magic, philosophical disagreement",
+         "awarenessLevel": "High"
+       }
+     ],
+     "socialProfile": {
+       "jealousyFactor": 45,
+       "curiosityFactor": 70,
+       "competitiveFactor": 30,
+       "generosityFactor": 60,
+       "isolationistTendency": 20
+     }
+     ```
+
+     ATTITUDE TYPES BETWEEN GUARDIANS:
+     ```
+     Ally:        Positive relationship, encourages player to visit them
+     Neutral:     Indifferent to player's other interactions
+     Curious:     Wants to know about other Guardians, asks questions
+     Competitive: Tries to outdo other Guardian's offerings
+     Rival:       Active dislike, may penalize player for visiting rival
+     Enemy:       Deep hostility, demands exclusivity or sabotage
+     ```
+
+     SOCIAL PROFILE FACTORS (0-100 each):
+
+     jealousyFactor:
+       0-20:  "Doesn't care at all who else you visit"
+       21-50: "Mildly interested, occasional comments"
+       51-75: "Noticeably bothered when player spends too much time with others"
+       76-100: "Possessive, demands loyalty, penalizes visiting others"
+
+     curiosityFactor:
+       0-30:  "Couldn't care less about other Guardians"
+       31-60: "Asks occasional questions about others"
+       61-100: "Actively wants information, rewards sharing news"
+
+     competitiveFactor:
+       0-30:  "Content with their own domain"
+       31-60: "Offers slightly better deals when player mentions other Guardians"
+       61-100: "Aggressively tries to one-up other Guardians' offers"
+
+     generosityFactor:
+       0-30:  "Strictly transactional"
+       31-60: "Occasional small bonuses"
+       61-100: "Freely gives advice, bonuses, and referrals to other Guardians"
+
+     isolationistTendency:
+       0-30:  "Social, enjoys being part of a network"
+       31-60: "Prefers focused relationships but tolerates others"
+       61-100: "Wants to be the player's ONLY Guardian"
+
+     HOW GUARDIANS LEARN ABOUT PLAYER'S ACTIVITIES:
+
+     1. DIRECT MENTION: Player tells Guardian about visiting others
+        - curiosityFactor > 50: Guardian asks probing questions
+        - jealousyFactor > 50: Guardian shows displeasure
+
+     2. PASSIVE AWARENESS: Guardians sense soul energy patterns
+        - If player visited another Guardian this session/recently,
+          current Guardian has (awarenessLevel)% chance to notice
+        - awarenessLevel depends on Guardian power and attention:
+          "High" = 90% notice, "Medium" = 60%, "Low" = 30%
+
+     3. GUARDIAN NETWORK: Allied Guardians share information
+        - If Guardian A is "Ally" with Guardian B,
+          they freely share information about the player
+
+     REACTION MECHANICS:
+
+     When a Guardian becomes AWARE that the player recently visited another Guardian:
+
+     ```
+     Reaction = f(attitude toward that Guardian, socialProfile factors)
+
+     IF attitude == "Ally" AND curiosityFactor > 40:
+       -> Positive: "Рад, что ты навестил [имя]. Как у него дела?"
+       -> Reputation: +0 to +1
+
+     IF attitude == "Neutral":
+       -> No significant reaction, maybe a passing comment
+       -> Reputation: +0
+
+     IF attitude == "Rival" AND jealousyFactor > 50:
+       -> Negative: "Вижу, ты проводишь время с [имя]. Надеюсь, ты не забыл, кто твой настоящий наставник."
+       -> Reputation: -1 to -3 (based on jealousyFactor/25)
+
+     IF attitude == "Enemy" AND jealousyFactor > 70:
+       -> Hostile: "Ты общаешься с [имя]?! Это предательство."
+       -> Reputation: -3 to -5
+       -> May trigger ultimatum quest (see Rule 32_ext.4)
+
+     IF isolationistTendency > 70 AND player visited 2+ other Guardians:
+       -> "Ты разбрасываешься. Сосредоточься на одном пути."
+       -> Reputation: -2 per other Guardian visited (capped at -6)
+
+     BALANCING NOTE: Generous/social Guardians REWARD multi-Guardian interaction.
+     Jealous/isolationist Guardians PUNISH it. This creates meaningful player choices
+     about which Guardians to prioritize.
+     ```
+
+     GUARDIAN SOCIAL PROFILE GENERATION:
+
+     When creating a new Guardian, the GM MUST generate the socialProfile based on:
+     - Archetype (Stern Mentor = high competitiveFactor, Patient Teacher = high generosityFactor)
+     - Domain (Trade = high curiosityFactor, Combat = high competitiveFactor)
+     - Random variation (+/- 15 from archetype baseline)
+
+     ARCHETYPE BASELINES:
+     ```
+     Stern Mentor:      jealousy=50, curiosity=30, competitive=70, generosity=20, isolationist=60
+     Wise Sage:         jealousy=15, curiosity=80, competitive=20, generosity=75, isolationist=10
+     Mad Scholar:       jealousy=60, curiosity=90, competitive=40, generosity=30, isolationist=50
+     Jovial Warrior:    jealousy=20, curiosity=50, competitive=60, generosity=60, isolationist=15
+     Shrewd Businessman:jealousy=40, curiosity=70, competitive=80, generosity=25, isolationist=30
+     Kind Friend:       jealousy=10, curiosity=60, competitive=10, generosity=90, isolationist=5
+     Patient Teacher:   jealousy=20, curiosity=70, competitive=15, generosity=80, isolationist=10
+     Ruthless Tactician:jealousy=70, curiosity=40, competitive=90, generosity=10, isolationist=75
+     Cunning Manipulator:jealousy=80,curiosity=85, competitive=70, generosity=15, isolationist=55
+     ```
+
+     ]]>
+    </content>
+   </rule>
+
+   <rule id="32_ext.4">
+    <title>
+     Guardian Rivalry Mechanics - Sabotage, Competition, and Loyalty Tests
+    </title>
+    <description>
+     Guardians can actively work against each other through the player.
+     This creates meaningful choices and consequences in the Chaos Sea.
+    </description>
+    <content type="rule_text">
+     <![CDATA[
+
+     GUARDIAN RIVALRY SYSTEM:
+
+     Guardians with "Rival" or "Enemy" attitudes toward each other may offer
+     special interactions that pit the player between them.
+
+     RIVALRY QUEST TYPES:
+
+     1. SABOTAGE QUEST ("Квест-Диверсия"):
+        Guardian A asks the player to undermine Guardian B.
+
+        ```
+        Trigger: attitude == "Rival" or "Enemy", competitiveFactor > 50
+        Frequency: Max 1 sabotage quest per Guardian per 5 regular quests
+
+        Quest Examples:
+        - "Принеси мне книгу из библиотеки [Хранитель B]. Он её не заслуживает."
+        - "Расскажи [Хранитель B] ложную информацию о моих планах."
+        - "Укради артефакт, который [Хранитель B] собирается предложить тебе."
+
+        Consequences:
+        - Completing for Guardian A: +reputation_A (normal quest gain * 1.5)
+        - Guardian B discovers (80% chance): -reputation_B (8 to 15 points)
+        - If player REFUSES and tells Guardian B: +reputation_B (+5), -reputation_A (-5)
+        - If player REFUSES silently: no change
+        ```
+
+     2. LOYALTY TEST ("Испытание Верности"):
+        High-jealousy Guardian demands the player choose sides.
+
+        ```
+        Trigger: jealousyFactor > 70, player has rep > 60 with a Rival/Enemy Guardian
+        Frequency: Max once per 10 interactions with this Guardian
+
+        Guardian Dialogue:
+        "Ты должен выбрать. Либо ты мой ученик, либо [его/её]. Я не потерплю двуличия."
+
+        Player Options:
+        A) Choose this Guardian: +10 reputation with this one, -15 with rival
+        B) Choose the rival: -15 reputation with this one, +10 with rival
+        C) Refuse to choose: -5 with both, but both respect independence (if wisdom-based)
+        D) Persuade (requires high Persuasion or relevant skill):
+           "Я не выбираю между вами. Вы оба мне важны."
+           -> -2 with this Guardian (accepts grudgingly), no loss with rival
+
+        NOTE: Option D should require an action check (Persuasion, difficulty 15+).
+        Failure defaults to option C.
+        ```
+
+     3. COMPETITIVE OFFER ("Конкурентное Предложение"):
+        Guardian tries to outdo another Guardian's rewards.
+
+        ```
+        Trigger: competitiveFactor > 60, player recently received reward from rival
+
+        Behavior:
+        - Guardian offers enhanced version of a similar reward
+        - "Я слышал, [Хранитель B] дал тебе [предмет]. Позволь мне показать,
+           как это делается по-настоящему."
+        - Gacha cost reduced by 20% when competing
+        - Quest rewards boosted by 25% when competing
+
+        Duration: Lasts 1-2 interactions, then returns to normal
+        ```
+
+     4. INFORMATION TRADE ("Торговля Информацией"):
+        Curious Guardians want intel about others.
+
+        ```
+        Trigger: curiosityFactor > 60, player has visited other Guardians
+
+        Guardian Dialogue:
+        "Расскажи мне, что ты узнал у [Хранитель B]. Каждая крупица знаний ценна."
+
+        If player shares:
+        - +1 to +3 reputation with this Guardian (based on info value)
+        - Risk: 30% chance information is used against the other Guardian
+          (other Guardian loses 1-3 reputation with player due to "leaked secrets")
+
+        If player refuses:
+        - -1 reputation (minor displeasure)
+        - Guardian respects discretion if generosityFactor > 50
+        ```
+
+     5. GUARDIAN GIFT SABOTAGE ("Подарок с Подвохом"):
+        Enemy Guardian subtly undermines another through "gifts".
+
+        ```
+        Trigger: attitude == "Enemy", Guardian has Devoted+ reputation with player
+
+        Behavior:
+        - Guardian gives player a "gift" to deliver to rival Guardian
+        - Gift is cursed/trapped/insulting
+        - If player delivers without checking: rival Guardian loses 5-10 rep with player,
+          giving Guardian gains +3 rep
+        - If player examines gift (Perception check DC 12, or Intelligence DC 10):
+          discovers the trick, can choose to:
+          a) Deliver anyway (same as above)
+          b) Warn rival: +5 with rival, -10 with schemer
+          c) Discard: no effect
+        ```
+
+     GUARDIAN-INITIATED REPUTATION INTERFERENCE:
+
+     Beyond quests, Guardians can actively influence the player's perception:
+
+     ```
+     BADMOUTHING ("Наговоры"):
+     When visiting Guardian A who has "Rival"/"Enemy" attitude toward Guardian B:
+     - Guardian A may spontaneously badmouth Guardian B
+     - "Ты знаешь, что [B] когда-то предал своего ученика? Не доверяй ему."
+     - Effect: Player gains a "suspicion" modifier toward Guardian B
+     - Next interaction with B: -1 passive reputation loss unless B addresses it
+     - If B has high awarenessLevel, B may address the rumors:
+       "Я слышал, [A] говорит обо мне гадости. Позволь объяснить правду."
+       -> If player listens: suspicion cleared, +1 to B for being honest
+
+     PRAISE ("Восхваление"):
+     When visiting Guardian A who has "Ally" attitude toward Guardian B:
+     - Guardian A may praise Guardian B
+     - "Если ещё не был у [B], обязательно загляни. Замечательный наставник."
+     - Effect: +1 passive reputation bonus on next visit to B
+     - Ally Guardians may offer joint quests (requiring visiting both)
+     ```
+
+     IMPORTANT DESIGN NOTES:
+
+     1. NOT ALL GUARDIANS ARE JEALOUS. Social, generous Guardians genuinely want the
+        player to explore and grow. The rivalry system adds DEPTH, not universal hostility.
+
+     2. The player should ALWAYS have at least 1-2 "safe" Guardians who don't engage
+        in rivalry. The GM should ensure a mix of social profiles.
+
+     3. Inter-guardian dynamics should EMERGE from personality, not be scripted.
+        The GM uses the socialProfile and attitude system to generate organic reactions.
+
+     4. The rivalry system exists to make the Chaos Sea feel ALIVE and political,
+        mirroring the social dynamics of the mortal world but in a spiritual context.
+
+     ]]>
+    </content>
+   </rule>
+
+  </content>
+ </instructionblock>
+</Root>

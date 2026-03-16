@@ -1,0 +1,11 @@
+{
+  "skillMasteryChanges": [
+    {
+      "skillName": "Fireball",
+      "newMasteryLevel": 1,
+      "newCurrentMasteryProgress": 0,
+      "newMasteryProgressNeeded": 100,
+      "masteryLeveledUp": false
+    }
+  ]
+}

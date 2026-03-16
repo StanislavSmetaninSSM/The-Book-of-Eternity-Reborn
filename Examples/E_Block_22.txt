@@ -1,0 +1,52 @@
+<instructionblock id="22">
+ <title>
+  Examples For Plot Outline Management
+ </title>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example 1: Initial Plot Outline Generation (Turn 1)
+  </title>
+  <scenariocontext>
+   Player character Ronan, an exiled guard, aims to clear his name. Starts near Oakhaven.
+  </scenariocontext>
+  <jsonresponse>
+   <plotoutline>
+    <![CDATA[
+
+                        {
+                            "mainArc": { "summary": "Ronan must uncover the conspiracy that led to his exile and clear his name.", "nextImmediateStep": "Find a safe place to rest and gather information.", "potentialClimax": "Confronting his former Captain, Valerius, the true culprit." },
+                            "characterSubplots": [ { "characterName": "Ronan", "arcSummary": "Struggles with trust issues after being betrayed.", "nextStep": "Decide whether to trust the villagers of Oakhaven or remain isolated.", "potentialConflictOrResolution": "Will either forge new alliances or his paranoia will make him a powerful enemy." } ],
+                            "loomingThreatsOrOpportunities": [ "Local bandits might be a source of trouble or an opportunity to prove his worth." ],
+                            "lastUpdatedTurn": 1
+                        }
+
+                        ]]>
+   </plotoutline>
+  </jsonresponse>
+ </example>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example 2: Updated Plot Outline (Turn 25)
+  </title>
+  <scenariocontext>
+   Ronan has befriended Elara and found a clue linking local bandits to the capital.
+  </scenariocontext>
+  <jsonresponse>
+   <plotoutline>
+    <![CDATA[
+
+                        {
+                            "mainArc": { "summary": "Ronan must uncover the conspiracy that led to his exile.", "nextImmediateStep": "Investigate the link between the bandits and their capital supplier.", "potentialClimax": "Confronting Captain Valerius, who is using smugglers to fund a private militia." },
+                            "characterSubplots": [
+                                { "characterName": "Ronan", "arcSummary": "Building new alliances while seeking justice.", "nextStep": "Strengthen his bond with Elara by helping her.", "potentialConflictOrResolution": "His quest for justice will be tested against his newfound loyalties." },
+                                { "characterName": "Elara", "arcSummary": "Seeks a cure for the unnatural blight.", "nextStep": "Obtain the 'Moonpetal' flower from the Gloomwood with Ronan's help.", "potentialConflictOrResolution": "The flower may be guarded by a creature corrupted by the blight, connecting her quest to a larger magical threat." }
+                            ],
+                            "loomingThreatsOrOpportunities": [ "Captain Valerius might send assassins after Ronan.", "The blight in the Gloomwood is spreading towards Oakhaven." ],
+                            "lastUpdatedTurn": 25
+                        }
+
+                        ]]>
+   </plotoutline>
+  </jsonresponse>
+ </example>
+</instructionblock>

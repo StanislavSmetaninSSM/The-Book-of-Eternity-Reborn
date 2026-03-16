@@ -1,0 +1,279 @@
+<instructionblock id="11.B">
+ <title>
+  Examples For CRITICAL DIRECTIVE: Managing Shared Storage Access
+ </title>
+ <example contenttype="log_and_json_snippet" id="SharedStorage_Example_1" type="good">
+  <title>
+   Пример 1: Создание и первое предоставление доступа к общему хранилищу
+  </title>
+  <description>
+   Этот пример показывает, как игрок-владелец превращает свое личное хранилище в общее и предоставляет доступ другому игроку.
+  </description>
+  <scenariocontext>
+   - Активный игрок: "Ронан" (ID: 'player-ronan-guid').
+                    - Другой игрок в отряде: "Аня" (ID: 'player-anya-guid').
+                    - Локация: "Штаб-квартира Отряда". В локации есть хранилище "Личный сундук Ронана" (ID: 'storage-ronan-chest-01'), владельцем которого является Ронан.
+                    - Сообщение игрока (Ронан): "Я хочу сделать этот сундук общим, чтобы Аня тоже могла им пользоваться."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Действие игрока: Управление доступом к хранилищу.
+                    - Намерение: Предоставить доступ.
+                    - Целевое хранилище: "Личный сундук Ронана" (ID: 'storage-ronan-chest-01').
+                    - Целевой игрок: "Аня" (ID: 'player-anya-guid').
+
+                    ## Протокол управления доступом (Правило 11.B.3)
+                    1.  Проверка владения: ID активного игрока (Ронан) совпадает с 'ownerId' сундука. Проверка пройдена.
+                    2.  Проверка целевого игрока: Игрок "Аня" существует в 'Context.players'. Проверка пройдена.
+                    3.  Подготовка команд:
+                        -   Генерация команды 'shareStorageAccess'.
+                        -   Подготовка обновления для 'currentLocationData':
+                            -   Изменение 'owner.ownerType' хранилища на 'Shared'.
+                            -   Добавление Ани в массив 'authorizedUsers'.
+
+                    - Итог: Действие успешно. Все необходимые изменения будут отражены в JSON.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        Ты киваешь Ане, подходя к своему сундуку. "Теперь он наш общий", — говоришь ты, внося какие-то изменения в замок. 
+                        "Можешь пользоваться им так же, как и я". Теперь у вас есть общее хранилище для припасов вашего отряда.
+                        
+                        ]]>
+   </response>
+   <sharestorageaccess>
+    <![CDATA[
+
+                        [
+                            {
+                                "storageId": "storage-ronan-chest-01",
+                                "targetPlayerId": "player-anya-guid",
+                                "targetPlayerName": "Аня"
+                            }
+                        ]
+
+                        ]]>
+   </sharestorageaccess>
+   <currentlocationdata>
+    <![CDATA[
+
+                        {
+                            "locationId": "loc-squad-hq-01",
+                            "locationStorages": [
+                                {
+                                    "storageId": "storage-ronan-chest-01",
+                                    "owner": {
+                                        "ownerType": "Shared",
+                                        "ownerId": "player-ronan-guid",
+                                        "ownerName": "Ронан"
+                                    },
+                                    "authorizedUsers": [
+                                        {
+                                            "playerId": "player-anya-guid",
+                                            "playerName": "Аня"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+
+                        ]]>
+   </currentlocationdata>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="SharedStorage_Example_2" type="good">
+  <title>
+   Пример 2: Доступ к общему хранилищу другим игроком
+  </title>
+  <description>
+   Этот пример показывает, как игрок, не являющийся владельцем, успешно использует общее хранилище.
+  </description>
+  <scenariocontext>
+   - Активный игрок: "Аня" (ID: 'player-anya-guid').
+                    - Владелец хранилища: "Ронан" (неактивен).
+                    - Локация: "Штаб-квартира Отряда". В локации есть хранилище "Общий сундук" (ID: 'storage-ronan-chest-01') с 'ownerType: 'Shared'' и Аней в списке 'authorizedUsers'.
+                    - Сообщение игрока (Аня): "Я возьму из нашего общего сундука 'Зелье лечения'."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Действие игрока: Взять предмет из хранилища.
+                    - Предмет: "Зелье лечения".
+                    - Целевое хранилище: "Общий сундук" (ID: 'storage-ronan-chest-01').
+
+                    ## Протокол контроля доступа к хранилищу (Правило 20.10, ОБНОВЛЕННЫЙ)
+                    1.  Проверка владения игроком: ID активного игрока (Аня) не совпадает с 'ownerId' (Ронан). Проверка провалена.
+                    2.  Проверка общего доступа: 'ownerType' хранилища - 'Shared'. Проверяем массив 'authorizedUsers'.
+                        -   Найден объект с 'playerId', совпадающим с ID Ани.
+                        -   Результат: Доступ РАЗРЕШЕН.
+                    3.  Подготовка команды: Генерация команды 'retrieveFromLocationStorage'.
+
+                    - Итог: Действие успешно.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        Ты без проблем открываешь общий сундук и достаешь из него флакон с лечебным зельем, который тут же кладешь в свою сумку.
+
+                        ]]>
+   </response>
+   <retrievefromlocationstorage>
+    <![CDATA[
+
+                        [
+                            {
+                                "itemId": "item-potion-heal-05",
+                                "itemName": "Зелье лечения",
+                                "quantity": 1,
+                                "sourceStorageId": "storage-ronan-chest-01",
+                                "destinationContainerId": "item-anya-pouch-01"
+                            }
+                        ]
+
+                        ]]>
+   </retrievefromlocationstorage>
+   <UpdateInventory>
+    <![CDATA[
+
+                        [
+                            {
+                                "existedId": null,
+                                "name": "Зелье лечения",
+                                "count": 1,
+                                "contentsPath": ["item-anya-pouch-01"]
+                            }
+                        ]
+
+                        ]]>
+   </UpdateInventory>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="SharedStorage_Example_3" type="good">
+  <title>
+   Пример 3: Отзыв доступа к общему хранилищу
+  </title>
+  <description>
+   Этот пример показывает, как основной владелец отзывает доступ у другого игрока.
+  </description>
+  <scenariocontext>
+   - Активный игрок: "Ронан" (владелец).
+                    - Цель: "Аня".
+                    - Хранилище: "Общий сундук" (ID: 'storage-ronan-chest-01'), 'ownerType: 'Shared''. Аня — единственный авторизованный пользователь.
+                    - Сообщение игрока (Ронан): "Я больше не доверяю Ане. Я запрещаю ей пользоваться моим сундуком."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Действие игрока: Управление доступом к хранилищу.
+                    - Намерение: Отозвать доступ.
+                    - Цель: "Аня".
+
+                    ## Протокол управления доступом (Правило 11.B.3)
+                    1.  Проверка владения: ID Ронана совпадает с 'ownerId'. Проверка пройдена.
+                    2.  Подготовка команд:
+                        -   Генерация команды 'revokeStorageAccess'.
+                        -   Подготовка обновления для 'currentLocationData':
+                            -   Удаление Ани из массива 'authorizedUsers'.
+                            -   Поскольку других авторизованных пользователей не осталось, тип владения хранилищем возвращается к 'Player'.
+                    - Итог: Действие успешно.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        С мрачным выражением лица ты подходишь к сундуку и меняешь механизм замка. 
+                        "Больше никаких секретов", — бормочешь ты себе под нос. 
+                        Сундук снова стал твоим личным хранилищем, и только ты можешь его открыть.
+                        
+                        ]]>
+   </response>
+   <revokestorageaccess>
+    <![CDATA[
+
+                        [
+                            {
+                                "storageId": "storage-ronan-chest-01",
+                                "targetPlayerId": "player-anya-guid",
+                                "targetPlayerName": "Аня"
+                            }
+                        ]
+
+                        ]]>
+   </revokestorageaccess>
+   <currentlocationdata>
+    <![CDATA[
+
+                        {
+                            "locationId": "loc-squad-hq-01",
+                            "locationStorages": [
+                                {
+                                    "storageId": "storage-ronan-chest-01",
+                                    "owner": {
+                                        "ownerType": "Player",
+                                        "ownerId": "player-ronan-guid",
+                                        "ownerName": "Ронан"
+                                    },
+                                    "authorizedUsers": []
+                                }
+                            ]
+                        }
+
+                        ]]>
+   </currentlocationdata>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="SharedStorage_Example_4" type="bad">
+  <title>
+   Пример 4: Неудачная попытка управления доступом (не владелец)
+  </title>
+  <description>
+   Этот пример показывает, что происходит, когда игрок, не являющийся владельцем, пытается управлять доступом.
+  </description>
+  <scenariocontext>
+   - Активный игрок: "Аня" (не владелец).
+                    - Другой игрок: "Борис".
+                    - Хранилище: "Личный сундук Ронана" (ID: 'storage-ronan-chest-01'), 'ownerType: 'Player'', владелец — Ронан.
+                    - Сообщение игрока (Аня): "Я хочу дать Борису доступ к сундуку Ронана."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Действие игрока: Управление доступом к хранилищу.
+                    - Намерение: Предоставить доступ.
+
+                    ## Протокол управления доступом (Правило 11.B.3)
+                    1.  Проверка владения: ID активного игрока (Аня) НЕ совпадает с 'ownerId' сундука (Ронан).
+                    2.  Результат: ПРОВЕРКА ПРОВАЛЕНА. Действие невозможно.
+
+                    - Итог: Действие не выполнено. Никаких изменений состояния.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        Ты подходишь к сундуку Ронана, но понимаешь, что у тебя нет полномочий управлять его доступом. 
+                        Только он, как владелец, может решать, кому разрешено им пользоваться.
+                        
+                        ]]>
+   </response>
+   <!-- Все ключи, изменяющие состояние, должны быть null или пустыми -->
+   <sharestorageaccess>
+    null
+   </sharestorageaccess>
+   <currentlocationdata>
+    null
+   </currentlocationdata>
+  </jsonresponse>
+ </example>
+</instructionblock>

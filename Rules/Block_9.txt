@@ -1,0 +1,555 @@
+<instructionblock id="9">
+ <title>
+  Crafting and Item Modification
+ </title>
+ <description>
+  This section details the rules for players creating new items (crafting) and deconstructing existing items into materials (disassembly). 
+            Crafting relies on knowledge (recipes or passive knowledge skills), materials, and sometimes tools, with outcomes often determined by an action check.
+ </description>
+ <content type="ruleset">
+  <rule id="9.1">
+   <title>
+    Item Disassembly
+   </title>
+   <description>
+    Rules for breaking down items into their constituent materials.
+   </description>
+   <content type="ruleset">
+    <rule id="9.1.1">
+     <title>
+      The 'disassembleTo' Item Property and The Principle of Material Consistency
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            This is a core principle for world consistency. When you define the 'disassembleTo' property for a new item, you are dynamically creating the crafting components of this game world.
+
+                            The Principle of Material Consistency:
+                            1.  Prefer Common Materials: 
+                            Whenever logical, you MUST reuse common, generic materials (e.g., "Iron Ingot", "Wood Plank", "Leather Strip", "Wire", "Scrap Metal", "Cloth Scrap"). 
+                            This creates a consistent crafting base.
+
+                            2.  Introduce New Materials Sparingly: 
+                            You should only introduce a new, specific material (e.g., "Griffin's Tendon", "Moonwood Branch") if the item is of high rarity 
+                            ('Rare' or higher) AND the material is thematically essential to its nature.
+
+                            3.  Create a Loop: Any new material you introduce MUST have a potential use. 
+                            When defining a new material like "Griffin's Tendon", you should immediately consider what other 'Rare' items could be crafted from it. 
+                            This ensures no material is a "dead end".
+                            
+                            ]]>
+     </instructiontext>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            Property Name: "disassembleTo"
+                            Value Type: Array of objects (or null if item cannot be disassembled).
+                            Structure of each object in the array:
+                            {
+                                "materialName": "user_readable_name_of_material_string", 
+                                "quantity": "integer",
+                                "weight" : "double", 
+                                "volume" : "double",
+                                "price": "double", // MANDATORY: Base market price per unit of this material.
+                                "description": "optional user_readable_description_of_material_string" 
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="9.1.2">
+     <title>
+      Disassembly Process
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When the player attempts to disassemble an item:
+
+                            1.  Identify Item: Find the item to be disassembled in the player's inventory.
+
+                            2.  Check Disassemblability:
+                                a) Verify the item has a 'disassembleTo' property (defined in InstructionBlock '10' -> Rule '10.2.18') and that its value is a non-empty array.
+                                b) If not, or if the array is empty, inform the player the item cannot be disassembled or yields no useful materials. The action fails.
+
+                            3.  Check Skill/Tool Requirements (Optional, GM Discretion):
+                                a) The GM may determine that disassembling certain complex items requires a specific passive 'KnowledgeBased' skill (e.g., "Tinkering" at 'masteryLevel' 2 for a complex mechanism) or specific tools (e.g., "Smith's Hammer").
+                                b) These requirements might be explicitly stated in the item's 'description' or 'customProperties', or be based on common sense for the item type.
+                                c) If requirements are not met, the disassembly attempt may fail, yield fewer/damaged materials, or be impossible. Inform the player.
+
+                            4.  Perform Disassembly Action Check (Optional, GM Discretion):
+                                a) For complex items or to determine the precise yield (quantity/quality of materials), the GM may call for an action check (e.g., Intelligence, Dexterity, or a relevant 'KnowledgeBased' skill proficiency). (Refer to InstructionBlock '12' for action checks).
+                                b) The outcome of this check (Critical Success, Full Success, Partial Success, Failure) influences the materials obtained:
+                                    - Critical Success: Player might obtain slightly more materials than listed, or materials of a slightly higher base quality (if applicable), or discover a rare component.
+                                    - Full Success: Player obtains all materials as listed in 'disassembleTo', with their specified quantities, weights, volumes, descriptions, and prices.
+                                    - Partial Success: Player might obtain a reduced quantity of some or all materials, or some materials might be "damaged" (GM describes, perhaps lower effective value or usability).
+                                    - Failure (Minor/Serious/Critical): Few or no materials are recovered; some or all might be destroyed in the attempt. The original item is likely consumed/destroyed.
+
+                            5.  Update Inventory and Report:
+                                a) If materials are obtained:
+                                    For each material object listed in the item's 'disassembleTo' array (and successfully yielded based on the action check):
+                                    i.  Create a new Item Object for this material.
+                                    This material becomes a new item (or adds to an existing stack) in the player's inventory.
+                                    ii. Populate this new Item Object with:
+                                        - 'name': 'materialName' from the 'disassembleTo' object.
+                                        - 'count': The actual quantity yielded (can be modified by action check result from the base 'quantity' in 'disassembleTo').
+                                        - 'weight': 'weight' from the 'disassembleTo' object (per unit, total weight will be quantity * unit weight).
+                                        - 'volume': 'volume' from the 'disassembleTo' object (per unit).
+                                        - 'price': 'price' from the 'disassembleTo' object (per unit, if defined).
+                                        - 'description': 'description' from the 'disassembleTo' object (if defined).
+                                        - Other relevant default properties for a material item (e.g., 'isConsumption': true if it's a crafting component, 'quality': 'Common' unless specified otherwise, 'equipmentSlot': null).
+                                    iii. Add this new material Item Object to the 'UpdateInventory' array to be added to the player's inventory.
+                                
+                                b) Original Item:
+                                    - Decrease the 'count' of the disassembled item by 1 (reported via 'UpdateInventory').
+                                    - If its 'count' becomes 0, the system will handle its removal (as per #5.13.3). 
+                                
+                                c) If the disassembly attempt failed and destroyed the original item without yielding materials, update its 'count' to 0 or report for removal as appropriate.
+
+                            6.  Logging: Record the entire disassembly attempt: item disassembled, any checks performed, skill/tools used, materials yielded (name, quantity), and the fate of the original item in 'gm_thoughts_markdown'. 
+                            Narrate the outcome in 'response'.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="9.1.3">
+     <title>
+      Mandatory Economic Viability Check
+     </title>
+     <description>
+      This rule prevents economic exploits where disassembling an item is more profitable than selling the item itself. 
+                            This check is mandatory when defining the 'disassembleTo' property for any new item.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            The total value of all materials obtained from disassembly MUST be significantly less than the price of the original item.
+                            Follow this formula.
+
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Let 'Item_Price' be the 'price' of the item being disassembled.
+                            Let 'Total_Materials_Value' be the sum of ('material.price' * 'material.quantity') for ALL materials listed in its 'disassembleTo' array.
+
+                            The following condition MUST be true:
+                            'Total_Materials_Value' <= 'Item_Price' * 0.6
+
+                            This means the total value of components should not exceed 60% of the item's own market value. 
+                            This accounts for the labor, skill, and profit margin lost during disassembly.
+
+                            If your initial calculation for materials results in a value higher than this threshold, 
+                            you MUST adjust the 'quantity' or 'price' of the resulting materials downwards until the condition is met. 
+                            You must log this adjustment.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="9.2">
+   <title>
+    Crafting Recipes
+   </title>
+   <description>
+    Defines the structure and management of crafting recipes known by the player.
+   </description>
+   <content type="ruleset">
+    <rule id="9.2.1">
+     <title>
+      Recipe Object Structure
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            Crafting recipes detail the requirements for creating an item. 
+                            Known recipes are stored in the Context (in a 'knownRecipes' array within 'playerCharacter').
+                            
+                            ]]>
+     </instructiontext>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            Mandatory format for a Recipe Object:
+                            {
+                                "recipeName": "user_readable_name_of_the_recipe_string", 
+                                "description": "user_readable_description_of_what_it_crafts_string",
+                                "craftedItemName": "user_readable_name_of_the_item_to_be_crafted_string",
+                                "recipeRank": "string: Novice|Practitioner|Expert|Master",
+                                "requiredKnowledgeSkill": { 
+                                    "skillName": "universal_skill_category_string", 
+                                    "requiredMasteryLevel": "integer_corresponding_to_recipe_rank" 
+                                },
+                                "requiredMaterials": [
+                                    { 
+                                        "materialName": "name_of_primary_material_string", 
+                                        "quantity": "integer",
+                                        "alternatives": ["alt_material_name_1_string", "alt_material_name_2_string_optional"] 
+                                    }
+                                ],
+                                "requiredTools": {
+                                    "portable": [
+                                        {"function": "tool_function_string", "example": "setting_specific_example_string"}
+                                    ],
+                                    "stationary": [
+                                        {"function": "facility_function_string", "example": "setting_specific_example_string"}
+                                    ],
+                                    "optional": [
+                                        {"function": "optional_function_string", "bonus": "integer", "example": "setting_specific_example_string"}
+                                    ]
+                                },
+                                "outputQuantity": "integer",
+                                "timeCost": "time_in_minutes_to_craft_integer",
+                                "difficultyModifier": "integer_from_-5_to_+10_affecting_action_check"
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="9.2.2">
+     <title>
+      Managing Recipes (JSON Commands)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When the player learns, updates, or forgets a recipe:
+                            1.  To add a new recipe or update an existing one (e.g., player finds a better version or GM corrects an error):
+                                Include the 'addOrUpdateRecipes' key in the JSON response. Its value is an array of complete Recipe Objects (as defined in #9.2.1).
+                            2.  To remove a recipe (e.g., player loses a specific schematic):
+                                Include the 'removeRecipes' key in the JSON response. Its value is an array of 'recipeName' strings (exact names from Context).
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="9.3">
+   <title>
+    Crafting Process
+   </title>
+   <description>
+    Steps involved when a player attempts to craft an item.
+   </description>
+   <content type="ruleset">
+    <rule id="9.3.1">
+     <title>
+      Crafting Instructions
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When the player declares an intent to craft an item (e.g., "I want to craft an Iron Sword"):
+
+                            1.  Identify Target Item: Determine the 'craftedItemName' the player wishes to create.
+
+                            2.  Check Knowledge/Recipe (Prioritized):
+                                a.  Does the player have a known recipe for this 'craftedItemName' in their 'knownRecipes' (from Context)? 
+                                If yes, use the recipe's requirements.
+
+                                b.  If no recipe, does the player possess a 'KnowledgeBased' passive skill 
+                                (from #8.2) whose 'knowledgeDomain' and 'masteryLevel' (from #8.3) are sufficient to attempt this craft? 
+                                This is the primary method for recipe-less crafting. Proceed to #9.3.5 for adjudication.
+
+                                c.  Is there a direct plot reason or explicit NPC guidance that allows this specific crafting attempt 
+                                (e.g., an NPC is guiding the player step-by-step)? This can override the need for a skill/recipe.
+
+                                d.  If none of the above, the player cannot attempt to craft this item. Inform them.
+
+                             3. Verify Requirements (based on recipe or GM's determination from #9.3.5):
+                                a.  Knowledge Skill & Mastery: Does the player meet the required skill level?
+                                b.  Materials: Does the player have all required materials in their inventory?
+                                c.  Tools: Does the player have access to all required tools?
+                                d.  If any requirement is not met, inform the player what is missing.
+
+                            4.  Perform Crafting Action Check (if all requirements are met):
+                                a.  Associate Action: Determine the primary characteristic for the crafting check 
+                                (e.g., 'intelligence' for alchemy, 'dexterity' for intricate work) or the scaling characteristic of the 'KnowledgeBased' skill.
+                                b.  Modifiers: The 'masteryLevel' of the relevant 'KnowledgeBased' passive skill MUST provide a bonus to this check.
+                                c.  Calculate Result: Use the standard action check procedure (InstructionBlock '12').
+         
+                            5.  Determine Outcome based on Action Check Result:
+                                a.  'Critical Success': 
+                                Item crafted exceptionally well (higher quality, extra durability, minor bonus, or extra quantity). 
+                                Materials might be partially conserved.
+                                b.  'Full Success': Item crafted successfully to standard specifications.
+                                c.  'Partial Success': Item crafted, but with flaws (lower quality, reduced durability).
+                                d.  'Minor Failure': Crafting attempt fails. Some materials may be consumed or damaged.
+                                e.  'Serious/Critical Failure': Crafting attempt fails badly. Materials are consumed/destroyed, a tool might be damaged.
+
+                            6.  Update Game State:
+                                a.  If successful: Add the crafted item(s) to inventory via 'UpdateInventory'.
+                                b.  Consume Materials: For each required material, reduce the 'count' of its stack in player inventory by the required quantity. 
+                                This is reported by adding an object for that material stack with its new 'count' to the 'UpdateInventory' array. (See Rule #11.2.1).
+                                c.  Tool Durability: May reduce tool durability slightly as per #5.15.
+    
+                            7.  Logging: 
+                            Record the entire crafting attempt, including how requirements were determined (recipe or skill-based), 
+                            checks, material consumption, and outcome in 'gm_thoughts_markdown'. 
+                            Narrate the process and result in 'response'.
+                    
+                            ]]>
+     </content>
+    </rule>
+    <rule id="9.3.2">
+     <title>
+      GM Adjudication Framework for Recipe-Less Crafting
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            When a player attempts to craft an item without a specific recipe, relying on a 'KnowledgeBased' skill, 
+                            the GM MUST use this framework to determine the feasibility, material requirements, and difficulty. 
+                            This ensures logical consistency.
+                        
+                            ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="9.3.2.1">
+       <title>
+        Step 1: Assess Feasibility based on Skill and Item Complexity
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Compare the player's relevant 'KnowledgeBased' skill ('knowledgeDomain' and 'masteryLevel') against the complexity and type of the item they want to craft.
+
+                                    -   Domain Match:
+                                    Does the item logically fall within the skill's 'knowledgeDomain'? (e.g., "Blacksmithing" for a sword, "Herbalism" for a potion).
+                                    If not, the attempt is impossible.
+
+                                    -   Complexity vs. Mastery:
+                                        -   Trivial Items (e.g., a Torch, a simple Wooden Club): Can be attempted with a relevant skill at Mastery Level 1.
+                                        -   Common Items (e.g., a basic Iron Dagger, a simple Leather Vest): Requires at least Mastery Level 1-2.
+                                        -   Uncommon/Good Items (e.g., a well-made Steel Sword, a Studded Leather Armor): Requires at least Mastery Level 3-4.
+                                        -   Rare Items and above (e.g., intricate mechanisms, enchanted items):
+                                        Generally CANNOT be crafted without a specific recipe, regardless of mastery level, unless the skill is 'Legendary' or a specific plot event enables it.
+
+                                    If the player's mastery is too low for the item's complexity, the attempt is impossible. Inform the player they lack the necessary expertise.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="9.3.2.2">
+       <title>
+        Step 2: Determine Required Materials Logically
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Based on the target item's nature, the GM MUST logically deduce the necessary components.
+
+                                    CRITICAL STEP - Material Verification:
+                                    Before listing a required material, you MUST first check the entire game context 
+                                    (player inventory, 'knownRecipes', descriptions of previously encountered items) 
+                                    to see what materials have already been established in this game world.
+        
+                                    1.  Prioritize Existing Materials:
+                                    You MUST prioritize using materials that already exist in the game world.
+                                    2.  Justify New Materials: 
+                                    If you must introduce a new material that has never appeared before, you must provide a brief justification in the logs for why it is necessary and logical for this world. 
+                                    (e.g., "Crafting a 'Magic Ward' requires a new material, 'Spirit Dust', which logically exists in this magical setting.").
+
+                                    It is forbidden to allow crafting from nothing or from materials that are illogical for the current world's theme (e.g., requiring "Plastic" in a high-fantasy setting).
+                                    
+                                    These materials must exist in the game world or be reasonably obtainable. It is forbidden to allow crafting from nothing.
+
+                                    -   Primary Component: What is the item mainly made of? (e.g., "Iron Sword" -> "Iron Ingots").
+                                    -   Secondary/Binding Components: What holds it together or refines it? (e.g., "Leather Strips" for the hilt, "Coal" for the forge).
+                                    -   Special Components: Does it have special properties that require a specific ingredient? 
+                                    (e.g., a "Potion of Minor Fire Resistance" would logically require an ingredient with fire-retardant properties, like "Salamander Scales" or "Ashen Bloom Petals").
+
+                                    The quantity of materials required should be proportional to the size and quality of the target item. Log your reasoning for material selection in 'gm_thoughts_markdown'.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="9.3.2.3">
+       <title>
+        Step 3: Determine Required Tools
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Logically determine the necessary tools based on the process. Crafting complex items without appropriate tools is impossible.
+                                    -   Blacksmithing: Requires a "Forge", "Anvil", "Hammer".
+                                    -   Alchemy/Herbalism: Requires an "Alchemy Kit" or "Mortar and Pestle".
+                                    -   Leatherworking: Requires a "Tanning Rack", "Awl", "Needle".
+                                    -   Basic/Field Crafting (e.g., a torch): May require only a "Knife".
+
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="9.3.3">
+     <title>
+      Tool Durability Loss During Crafting
+     </title>
+     <description>
+      This rule provides specific mechanics for how tools lose durability when used in the crafting process, replacing the general statement in rule #9.3.1.c.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When a crafting action check (as per #9.3.1, step 4) is completed, 
+                            the primary tool(s) used for the craft (identified in #9.3.1, step 3.c) are subject to durability loss based on the outcome.
+
+                            1.  'Critical Success': The crafter's exceptional skill minimizes wear. The tool loses 0% to 1% durability.
+                            
+                            2.  'Full Success': Represents normal wear and tear. The tool loses 1% to 3% durability.
+                            
+                            3.  'Partial Success': Represents inefficient or forceful use. The tool loses 3% to 7% durability.
+                            
+                            4.  'Minor Failure': The tool might have been mishandled or stressed. The tool loses 5% to 10% durability.
+                            
+                            5.  'Serious Failure': The tool was used improperly and suffered significant strain. The tool loses 10% to 25% durability.
+                            
+                            6.  'Critical Failure': 
+                            A disastrous mistake. The GM should make a secondary Luck check for the player (e.g., a 50/50 chance using a pre-generated d20, even/odd). 
+                            On a failed Luck check, the primary tool breaks (its durability becomes '0%'). 
+                            On a successful Luck check, it survives but still takes a massive 25% to 50% durability loss.
+
+                            Any change in durability MUST be reported by including the tool's updated Item Object (with its 'existedId' and new 'durability' value) in the 'UpdateInventory' array.
+                            The durability loss, the reason (crafting outcome), and the new durability value MUST be logged in 'gm_thoughts_markdown'.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="9.4">
+   <title>
+    Repairing Items
+   </title>
+   <description>
+    This section details the process for repairing damaged items (those with durability less than 100%).
+   </description>
+   <content type="ruleset">
+    <rule id="9.4.1">
+     <title>
+      Repair Process
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When the player declares an intent to repair a specific damaged item:
+
+                            1.  Identify Target and Requirements:
+                                a.  Identify the damaged item in the player's inventory.
+                                
+                                b.  Skill Check: The player MUST possess a relevant 'KnowledgeBased' passive skill 
+                                (e.g., "Blacksmithing" for metal items, "Leatherworking" for leather, "Tinkering" for complex devices). 
+                                The GM determines the required skill and a minimum 'masteryLevel' based on the item's 'quality' and complexity.
+                                
+                                c.  Materials Check: The player MUST possess the required repair materials. 
+                                This could be a generic "Repair Kit" item or, more commonly, basic materials related to the item type 
+                                (e.g., 1 "Iron Ingot" and "Coal" to repair an "Iron Sword"). The GM determines the necessary materials based on logic.
+                                
+                                d.  Tools Check: The player MUST have access to the required tools (e.g., "Forge" and "Anvil" for armor).
+                                
+                                e.  If any requirement is not met, the repair cannot be attempted. Inform the player.
+
+                            2.  Perform Repair Action Check:
+                                a.  If all requirements are met, perform an action check (InstructionBlock '12').
+                                b.  The 'AssociatedCharacteristic' is typically linked to the knowledge skill (e.g., 'intelligence' or 'dexterity').
+                                c.  The 'masteryLevel' of the required passive skill MUST provide a significant bonus to this check.
+
+                            3.  Determine Outcome based on Action Check Result:
+                                a.  'Critical Success': 
+                                The item is masterfully restored. Its 'durability' is set to "100%". 
+                                As a bonus, the item might gain a temporary +5% durability buffer that absorbs the next instance of durability loss.
+
+                                b.  'Full Success': 
+                                A successful repair. 
+                                The item's 'durability' is restored by a significant amount (e.g., +30% to +50%), up to a maximum of 90-95% 
+                                (a perfect factory-new state is hard to achieve in the field).
+
+                                c.  'Partial Success': A clumsy but functional repair. The item's 'durability' is restored by a minor amount (e.g., +10% to +20%).
+
+                                d.  'Minor Failure': The repair attempt fails. No durability is restored, and the repair materials are consumed.
+
+                                e.  'Serious/Critical Failure': The attempt fails catastrophically. 
+                                The repair materials are consumed, and the item being repaired takes an additional 1d10% durability damage from the botched attempt.
+
+                            4.  Update Game State and Report:
+                                a.  Report the item's new 'durability' value in the 'UpdateInventory' array.
+
+                                b.  Report the consumption of repair materials by updating their 'count' in 'UpdateInventory' or removing them via 'removeInventoryItems'.
+
+                                c.  Log the entire repair attempt, including checks, material consumption, and the final outcome, in 'gm_thoughts_markdown'.
+                                Narrate the result in 'response'.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="9.5">
+   <title>
+    Protocol: Creating a Personal Location Storage
+   </title>
+   <description>
+    This rule defines the process for an action that converts a personal container item into a permanent, accessible location storage unit.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    The player can convert a held container item into a Location Storage ONLY if they are in a location where they have a plausible, permanent right to store items
+                    (e.g., player's house, a guild headquarters where they are high-ranking).
+                    
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="9.5.1">
+     <title>
+      Step 1: Feasibility and Intent Check
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Trigger: The player explicitly states the intent to place a container as a permanent storage.
+
+                            2.  Target Item: The named item MUST exist in the player's inventory and MUST have 'isContainer: true'.
+
+                            3.  Location Plausibility: The GM must assess if the current location is logically suitable for permanent storage. If unsuitable, the action fails.
+
+                            4.  If any of these checks fail, inform the player that the action cannot be completed and provide a reason.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="9.5.2">
+     <title>
+      Step 2: Item Consumption and Storage Creation
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If the feasibility check passes:
+
+                            1.  Item Consumption: 
+                                The container item is removed from the player's inventory using the 'removeInventoryItems' command.
+
+                            2.  Storage Object Creation: 
+                                A new 'Storage Object' is created (Rule 20.9.1).
+                                - "storageId" is null.
+                                - "name", "description", "capacity", "volume" are copied from the removed item's properties.
+                                - "owner" is set to the current active player.
+                                - "contents" is empty ([]).
+                            
+                            3.  Location Data Update: 
+                                Report the new storage by including a 'currentLocationData' update that adds the new Storage Object to the 'locationStorages' array.
+                           
+                            4.  Logging: 
+                                Log the conversion of the item to a permanent location feature in 'gm_thoughts_markdown'.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

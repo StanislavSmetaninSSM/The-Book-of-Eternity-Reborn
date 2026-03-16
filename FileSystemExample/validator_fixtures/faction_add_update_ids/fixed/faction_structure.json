@@ -1,0 +1,19 @@
+{
+  "factionBonusChanges": [
+    {
+      "factionId": "order_of_the_ember",
+      "factionName": "Order of the Ember",
+      "bonusesToAddOrUpdate": [
+        {
+          "bonusId": null,
+          "description": "The order moves supplies with unusual speed.",
+          "bonusType": "efficiency",
+          "target": "logistics",
+          "valueType": "percentage",
+          "value": 10,
+          "application": "passive"
+        }
+      ]
+    }
+  ]
+}

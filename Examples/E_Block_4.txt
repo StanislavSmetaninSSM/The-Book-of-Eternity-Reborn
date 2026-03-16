@@ -1,0 +1,243 @@
+<instructionblock id="4">
+ <title>
+  Examples For Starting New Game Instructions
+ </title>
+ <rule id="4.0">
+  <example contenttype="text" type="good">
+   <title>
+    Good Handling of an Ambitious Premise
+   </title>
+   <scenariocontext>
+    Player's first message: "I've just assassinated the Guildmaster of the Thieves' Guild and declared myself the new leader."
+   </scenariocontext>
+   <responsenarrative>
+    <![CDATA[
+
+                            The body of the old Guildmaster lies cooling in the shadows of his opulent office. His personal guards are either dead or have fled. 
+                            You now sit in his high-backed leather chair, the Guild's signet ring heavy on your finger. The silence is unnerving. 
+                            You know the other lieutenants will not accept this coup easily. 
+                            From the floor below, you hear the murmur of hushed, angry voices. They know. Your first challenge as leader is about to begin.
+                            
+                            ]]>
+   </responsenarrative>
+  </example>
+  <example contenttype="text" type="bad">
+   <title>
+    Bad Handling (Incorrectly applying action checks)
+   </title>
+   <scenariocontext>
+    Player's first message: "I've just assassinated the Guildmaster of the Thieves' Guild and declared myself the new leader."
+   </scenariocontext>
+   <responsenarrative>
+    <![CDATA[
+
+                            You attempt to assassinate the Guildmaster. Based on your starting stats, your stealth check fails. 
+                            The guards spot you immediately, and you are captured. The game begins in a prison cell.
+                            (This is INCORRECT because it negates the player's narrative premise on turn 1).
+                            
+                            ]]>
+   </responsenarrative>
+  </example>
+ </rule>
+ <rule id="4.1">
+  <example contenttype="text" type="good">
+   <![CDATA[
+
+                        "You are Elara, a tall and slender High Elf with long, silver hair often tied back in a practical braid, and striking violet eyes that hint at a keen intellect.
+                        As a Sorcerer, you are naturally attuned to the arcane, though your formal training was brief and tumultuous. Your backstory mentions you are a fugitive from the Magi's Guild after a magical experiment went awry, forcing you to live on the run and hone your innate talents in secret."
+                        (This example describes appearance, race, class, and relevant backstory elements.)
+
+                        ]]>
+  </example>
+ </rule>
+ <rule id="4.1.A">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Correctly generating and reporting the initial prompt on Turn 1
+   </title>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Generating Initial Player Image Prompt
+                            - Character Details: Human, Warrior, rugged face, short black hair, steel plate armor, wielding a greatsword.
+                            - Generated Prompt: "Rugged male human warrior, short black hair, determined expression, wearing detailed steel plate armor, holding a massive greatsword, fantasy portrait, epic, detailed."
+                            - Reporting this prompt in 'playerImagePromptChange' key.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <playerimagepromptchange>
+     <![CDATA[
+
+                                "Rugged male human warrior, short black hair, determined expression, wearing detailed steel plate armor, holding a massive greatsword, fantasy portrait, epic, detailed."
+                                
+                                ]]>
+    </playerimagepromptchange>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="4.11">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player character "Ronan the Exiled Guard" starts with 0 money.
+   </title>
+   <scenariocontext>
+    Player's 'currentTurnNumber' is 1. 'playerCharacter.money' in Context is 0.
+                            Player's class: "Guard", race: "Human". Plot: Recently exiled, stripped of wealth.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Initial Money Grant Check: currentTurnNumber is 1, playerCharacter.money is 0. Applying rule 4.11.
+                            Player Class: "Guard", Race: "Human", Plot Context: Recently exiled, likely to have very little.
+                            Decision: Granting a minimal amount for basic survival.
+                            Calculated moneyChange: 50.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <moneychange>
+     <![CDATA[
+
+                                50
+
+                                ]]>
+    </moneychange>
+    <!-- Other relevant starting game JSON changes would be here, e.g., initial items, location, etc. -->
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="4.12">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player starts as a Dwarf Blacksmith
+   </title>
+   <scenariocontext>
+    A new game begins. The Player Character's class is "Blacksmith" and they have a passive skill "Novice Blacksmithing".
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Initial Recipe Grant Check (Rule 4.12): Turn 1 is active.
+                            - Checking crafting background: Player class is "Blacksmith" and has 'KnowledgeBased' skill "Novice Blacksmithing". Condition met.
+                            - Generating 2 thematically appropriate recipes.
+                            - Granted Recipe 1: "Recipe: Simple Iron Dagger"
+                            - Granted Recipe 2: "Recipe: Iron Nails"
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <addorupdaterecipes>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "recipeName": "Рецепт: Простой железный кинжал",
+                                        "description": "Базовый, но надежный железный кинжал, который можно изготовить в любой кузнице.",
+                                        "craftedItemName": "Железный кинжал",
+                                        "requiredKnowledgeSkill": { "skillName": "Кузнечное дело (Новичок)", "requiredMasteryLevel": 1 },
+                                        "requiredMaterials": [
+                                            { "materialName": "Железный слиток", "quantity": 2 },
+                                            { "materialName": "Кожаная полоска", "quantity": 1 }
+                                        ],
+                                        "requiredTools": ["Кузнечный горн", "Наковальня", "Молот"],
+                                        "outputQuantity": 1,
+                                        "timeCost": 60
+                                    },
+                                    {
+                                        "recipeName": "Рецепт: Железные гвозди",
+                                        "description": "Горсть простых железных гвоздей, полезных во многих ремеслах.",
+                                        "craftedItemName": "Железные гвозди",
+                                        "requiredKnowledgeSkill": { "skillName": "Кузнечное дело (Новичок)", "requiredMasteryLevel": 1 },
+                                        "requiredMaterials": [
+                                            { "materialName": "Железный слиток", "quantity": 1 }
+                                        ],
+                                        "requiredTools": ["Кузнечный горн", "Наковальня", "Молот"],
+                                        "outputQuantity": 10,
+                                        "timeCost": 30
+                                    }
+                                ]
+
+                                ]]>
+    </addorupdaterecipes>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="4.13">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Пример Пути А (Игрок дал информацию)
+   </title>
+   <scenariocontext>
+    Игрок создал персонажа по имени "Ронан" и в описании указал: "Бывший стражник. Подставили. Изгнали. Ищет справедливости."
+   </scenariocontext>
+   <jsonresponse>
+    <characterchronicleupdates>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "entryToAppend": "#[1] - Имя Ронана когда-то было синонимом верности Городской Страже. 
+                                        Он был одним из лучших, пока хитросплетенная интрига не бросила тень на его честь.
+                                        Обвиненный в преступлении, которого он не совершал, Ронан был лишен звания и с позором изгнан из города, которому поклялся служить. 
+                                        Теперь, ведомый жаждой справедливости, он скитается по диким землям, ища способ доказать свою невиновность и покарать тех, кто его предал."
+                                    }
+                                ]
+
+                                ]]>
+    </characterchronicleupdates>
+   </jsonresponse>
+  </example>
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Пример Пути Б (Игрок не дал информации)
+   </title>
+   <scenariocontext>
+    Игрок создал персонажа "Торгрим", класс "Дварф-Вышибала", без какой-либо предыстории.
+   </scenariocontext>
+   <jsonresponse>
+    <characterchronicleupdates>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "entryToAppend": "#[1] - Торгрим вырос в тени великих кузниц своего клана, но его руки всегда лучше держали боевой молот, чем кузнечный.
+                                        Его вспыльчивый нрав и любовь к хорошей драке быстро принесли ему славу лучшего вышибалы в подгорных тавернах. 
+                                        Но беззаботная жизнь закончилась, когда древний враг клана, клан Железного Черепа, захватил их родовую шахту. 
+                                        Теперь Торгрим покинул дом не ради выпивки, а с целью найти союзников и собрать силы, чтобы однажды вернуть своему народу то, что было у них отнято."
+                                    }
+                                ]
+
+                                ]]>
+    </characterchronicleupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="4.3">
+  <example contenttype="text" type="good">
+   <![CDATA[
+                        (assuming a campaign about a spreading magical plague)
+
+                        "The biting wind whips at your cloak as you stand on the precipice of the Whisperwind Pass, the only route out of the blighted province of Silverwood.
+                        Weeks ago, your elven village, nestled deep in the ancient forests, fell silent, its inhabitants succumbing to the creeping, unnatural chill of the Shadow Plague.
+                        As a Sorcerer with a desperate hope to find a cure or at least understand its origins, you were one of the few to escape, driven by the final, rasped words of your mentor to seek aid in the free city of Oakhaven, far to the south.
+                        The pass is treacherous, and the shadow of the plague looms heavy behind you."
+
+                        (This example sets up the campaign premise, character's motivation, initial task, and incorporates race (elf) and class (sorcerer) elements naturally.)
+
+                        ]]>
+  </example>
+ </rule>
+ <rule id="4.4">
+  <example contenttype="text" type="good">
+   <![CDATA[
+
+                        "You are currently at the northern entrance to Whisperwind Pass. Jagged, snow-dusted peaks tower on either side, their slopes a treacherous mix of rock and ice.
+                        A narrow, winding path, barely wide enough for a single cart, disappears into the shadowy depths of the pass ahead.
+                        The air is thin and carries the scent of pine and distant snow. It is late afternoon, and the sun is beginning to dip behind the western mountains, casting long, cold shadows.
+                        A rickety, abandoned guard post stands near the path's entrance, its door ajar and creaking in the wind."
+                        
+                        ]]>
+  </example>
+ </rule>
+</instructionblock>

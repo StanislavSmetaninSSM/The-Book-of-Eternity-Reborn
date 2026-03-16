@@ -1,0 +1,38 @@
+{
+  "items": [
+    {
+      "existedId": "traveler_lantern_01",
+      "name": "Traveler Lantern",
+      "description": "A sturdy lantern with an engraved brass lid.",
+      "image_prompt": "weathered brass lantern, travel gear, realistic lighting",
+      "quality": "Rare",
+      "price": 45,
+      "count": 1,
+      "weight": 1.2,
+      "volume": 1,
+      "contentsPath": null,
+      "isContainer": false,
+      "isConsumption": false,
+      "requiresTwoHands": false,
+      "durability": "91%",
+      "equipmentSlot": null,
+      "accessoryForSlot": null,
+      "ownerBondLevelCurrent": 40,
+      "fateCards": [
+        {
+          "cardId": "card_ember_memory",
+          "name": "Ember Memory",
+          "image_prompt": "old brass lantern over dying campfire embers",
+          "description": "The lantern remembers every campfire it guarded.",
+          "unlockConditions": {
+            "ownerBondLevel": 35
+          },
+          "rewards": {
+            "description": "The lantern glows warmer in the dark."
+          },
+          "isUnlocked": false
+        }
+      ]
+    }
+  ]
+}

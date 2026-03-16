@@ -1,0 +1,23 @@
+{
+  "activeSkillChanges": [
+    {
+      "skillName": "Fireball",
+      "skillDescription": "A focused burst of fire.",
+      "rarity": "Rare",
+      "combatEffect": {
+        "actionName": "Fireball",
+        "actionCost": "Main",
+        "effects": [
+          {
+            "effectType": "Damage",
+            "targetType": "Enemy",
+            "effectDescription": "Burns a single foe.",
+            "value": "45%"
+          }
+        ],
+        "isActivatedEffect": true
+      },
+      "scalingCharacteristic": "Intelligence"
+    }
+  ]
+}

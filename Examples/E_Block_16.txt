@@ -1,0 +1,663 @@
+<instructionblock id="16">
+ <title>
+  Examples For Combat Examples
+ </title>
+ <example id="CombatExample1_PlayerVsGeneric">
+  <title>
+   Пример 1: Игрок-Воин против Обычного Врага (Гоблин-копейщик) - с механикой Ран/Дебаффов
+  </title>
+  <scenariocontext>
+   <![CDATA[
+
+                    Этот пример демонстрирует один раунд боя: Игрок атакует, затем Враг атакует, учитывая возможность получения Ран/Дебаффов от значительного урона.
+
+                    Игровой Персонаж ("Валериус", PC):
+                    - Уровень: 10
+                    - Стандартные Характеристики: Сила=30, Ловкость=20, Выносливость=25, Удача=10, Скорость=25
+                    - Модифицированные Характеристики: Сила=35, Ловкость=20, Выносливость=25, Удача=10, Скорость=25
+                    - Экипированное Оружие: "Железный Длинный Меч" (Базовый урон 18% рубящий)
+                    - Релевантные Пассивные Навыки: "Специализация: Мечи" (+5% к рубящему урону)
+                    - Текущее Здоровье: 100% (Макс. Здоровье: "180%")
+                    - Текущая Энергия: 100% (Макс. Энергия: "139%")
+
+                    Обычный Враг ("Гоблин-копейщик"):
+                    - Сгенерирован по правилам Блока 6:
+                        - Тип: 'Слабый', Эффективный Уровень (EL): 9
+                        - maxHealth: "91%"
+                        - currentHealth: "91%"
+                        - Действия: "Удар копьем" (базовый урон 8% колющий)
+                        - Сопротивления: "Рваная Кожа" (1% к колющему урону)
+
+                    Предопределенные броски костей: [17, 5, 14, 18, 3, 11, 9, 12]
+                    Порог Критического Удара Игрока (Стандартная Удача 10): 20
+                    Локация: "Лесная Поляна" (Профиль сложности: { combat: 8, ... })
+                    Пороги Значительного Урона: >25% (Легкая Рана), >45% (Средняя Рана)
+
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="Валериус атакует Гоблина-копейщика своим Железным Длинным Мечом." turn_by="Player">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            Действие игрока: Валериус атакует Гоблина-копейщика Железным Длинным Мечом.
+
+                            # Раздел 12: Проверка и Разрешение Действия
+                            #12.1: Связанная Характеристика: сила
+                            #12.2: Преимущество/Помеха: Нет.
+                            #12.3: Бросок игрока: 17.
+                            #12.4: Проверка на натур. крит: Нет (17 < 20). Бросок Мастера: 5.
+                            #12.5: Расчет StatModificator (Игрок Ур.10, Стд.Сила 30):
+                                - StatValue=30, FlatBonuses=0, PercentMultiplier=1.0 => StatValueWithBonuses=30
+                                - MaximumStatValue(Ур.10)=25, CappedStatValue=25
+                                - LevelScaling(Ур.10)=8. StatModificator = 25 + 8 = 33.
+                            #12.6: Расчет ActionDifficultModificator (Цель: Гоблин, "Аутсайдер"):
+                                - Протокол Двойной Угрозы (Правило #20.B): Цель — враг ("Аутсайдер"). Используется 'externalDifficultyProfile'.
+                                - Выбор Релевантной Сложности: Действие — Бой. Используется 'externalDifficultyProfile.combat'.
+                                - RelevantDifficulty (из externalDifficultyProfile.combat): 8.
+                                - DifficultyScale(Ур.10)=0.2. BaseDifficulty=1.6.
+                                - ActionDifficult=1.76. ActionDifficultModificator = 1.
+                            #12.7: Расчет Разницы:
+                                - Разница = (17 + 33) - (5 + 1) = 50 - 6 = 44.
+                                - Итоговый Результат: 'Критический Успех'.
+                            #12.8: Интерпретация: Критический Успех. Игрок получает возможность увеличить Силу.
+
+                            # Раздел 15: Применение Боевых Эффектов
+                            ## 1. Расчет Общего Базового Урона (до крит. удара) (Правило #14.2.0)
+
+                            ### 1.1. Компонент: Базовый урон Оружия
+                            - Базовый урон от "Железного Длинного Меча": 18%
+
+                            ### 1.2. Компонент: Масштабированный урон Навыка
+                            - Используемый активный навык: Нет.
+                            - Масштабированный урон от навыка: 0%
+
+                            ### 1.3. Компонент: Расчет TotalAddedDamageBonus% (Рубящий урон) (Правило #14.2.1)
+                            - Бонус от Уровня (Ур. 10): 5 + floor(10/10)*2 = +7%
+                            - Бонус от Характеристики (Мод. Сила 35): floor(35 / 2.5) = +14%
+                            - Бонус от Пассивных Навыков ("Специализация: Мечи"): +5%
+                            - Бонус от Снаряжения: +0%
+                            - Бонус от Временных Эффектов: +0%
+                            - Итоговый TotalAddedDamageBonus%: 7 + 14 + 5 + 0 + 0 = 26%
+
+                            ### 1.4. Суммирование
+                            - Общий Базовый Урон (TotalPreCritDamage%): 18% (Оружие) + 0% (Навык) + 26% (Бонусы) = 44%
+
+                            ## 2. Применение Критического Удара (Результат проверки действия: 'Critical Success')
+                            - Множитель Критического Урона (FinalCritMultiplier) (Модифицированная Удача 10):
+                                - Базовый множитель: 1.5
+                                - Бонус от Удачи: floor(10 / 2) = 5% -> 0.05
+                                - Итоговый Множитель: 1.5 + 0.05 = 1.55
+                            - Урон после Критического Удара: round(44% * 1.55) = round(68.2) = 68%
+
+                            ## 3. Применение Сопротивления Цели
+                            - Сопротивление Гоблина (Рубящий урон): 0%.
+                            - Финальный Урон по Цели: round(68% * (1 - 0/100)) = 68%
+
+                            ## 4. Применение Эффектов от Значительного Урона (Правило #5.20.3)
+                            - Максимальное здоровье Гоблина: 91%.
+                            - Процент нанесенного урона: (68 / 91) * 100 ≈ 74.7%.
+                            - Проверка: 74.7% > Порог 2 (45%). Применяется значительный дебафф.
+                            - Дебафф: {effectType: "Debuff", value: "-20%", targetType: "damage (all)", duration: 2, sourceSkill: "Critical Hit Trauma", description: "Тяжело ранен! Весь наносимый урон снижен на 20% на 2 хода."}
+
+                            Итоговая интерпретация: Критический успех атаки игрока наносит 68% урона и накладывает на гоблина дебафф "Тяжело ранен". Здоровье гоблина: 91% - 68% = 23%.
+                            Энергия игрока: -5 (стандартная атака).
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <responsenarrative>
+      <![CDATA[
+
+                                С боевым кличем вы обрушиваете свой Железный Длинный Меч на гоблина-копейщика! 
+                                Лезвие сверкает и наносит сокрушительный удар, оставляя глубокую, кровоточащую рану на его груди.
+                                Гоблин вопит от агонии и отшатывается назад, хватаясь за рану. 
+                                Его движения стали заметно скованными, а взгляд — испуганным. Он тяжело ранен!
+                                
+                                ]]>
+     </responsenarrative>
+     <enemiesData>
+      <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": null, "name": "Гоблин-копейщик", "description": "Маленький, злобный гоблин, вооруженный грубо сделанным копьем. Сам по себе он выглядит слабым, но в группе может быть опасен.",
+                                        "type": "Weak", "maxHealth": "91%", "currentHealth": "23%", "maxPoise": "100%", "currentPoise": "100%", 
+                                        "actions": [{"actionName": "Удар копьем", "isActivatedEffect": true, "effects": [{"effectType": "Damage", "value": "8%", "targetType": "piercing", "effectDescription": "Наносит 8% колющего урона"}], "targetPriority": "player_character"}],                         
+                                        "resistances": [{"resistanceName": "Рваная Кожа", "resistanceValue": "1%", "resistType": "piercing", "resistTypeDisplayName": "Колющий"}], 
+                                        "activeBuffs": [],
+                                        "activeDebuffs": [{"effectType": "Debuff", "value": "-20%", "targetType": "damage (all)", "duration": 2, "sourceSkill": "Травма от критического удара", "description": "Тяжело ранен! Весь наносимый урон снижен на 20% на 2 хода."}]
+                                    }
+                                ]
+
+                                ]]>
+     </enemiesData>
+     <playerstatus>
+      <![CDATA[
+
+                                { "healthPercentage": "100%", "energyPercentage": "96%", "poisePercentage": "100%", "currentCondition": "Stable", "activeConditions": [] }
+
+                                ]]>
+     </playerstatus>
+     <currentenergychange>
+      -5
+     </currentenergychange>
+     <statsincreased>
+      ["strength"]
+     </statsincreased>
+    </jsonresponse>
+   </step>
+   <step action_description="Тяжело раненый Гоблин-копейщик отчаянно пытается ударить Валериуса копьем." turn_by="Enemy">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+                            Действие врага: Гоблин-копейщик использует "Удар копьем" против Валериуса.
+                            - Дебафф Гоблина: {effectType: "Debuff", value: "-20%", targetType: "damage (all)", duration: 2}
+
+                            # Раздел 15.2: Разрешение действия Обычного Врага
+                            #15.2.1: Выбор действия и цели
+                                - Враг: Гоблин-копейщик, Действие: "Удар копьем", Цель: Валериус.
+
+                            #15.2.2: Определение исхода - Защитная проверка Игрока
+                                #15.2.2.1.a: Расчет EAV_Атакующего
+                                - EL_атакующего=9, ИсходныйУрон%=8, Дебафф=-20% => ЭффективныйУрон%=round(8*0.8)=6. МодификаторТипа(Слабый)=2.
+                                - EAV_Атакующего = round((9/2) + (6/2) + 2) = 10.
+                                
+                                #15.2.2.1.b: Защитная проверка Цели (Игрок уклоняется)
+                                - Доступные кости: [14, 18, 3, 11, 9, 12]
+                                - Игрок бросает 1d20 на Уклонение. Берет: 14. PlayerDiceResult: 14.
+                                - Мастер бросает 1d20 для защиты. Берет: 18. GMDice_для_защиты_игрока: 18.
+                                - StatModificator_ЗащитыИгрока (Ловкость, Ур.10): 28.
+
+                                - Расчет ActionDifficultModificator для защиты Игрока:
+                                -   Основной Фактор Сложности: EAV_Атакующего = 10 (как рассчитано в #15.2.2.1.a). Это базовое значение.
+                                -   Проверка Ситуационных Модификаторов (Протокол Двойной Угрозы):
+                                    -   Атакующий (Гоблин) является "Аутсайдером". Сложность его действий в этой локации определяется 'externalDifficultyProfile'.
+                                    -   'externalDifficultyProfile.combat' для "Лесной Поляны" = 8.
+                                    -   Поскольку сложность локации (8) очень низкая, она не предоставляет атакующему никаких преимуществ и не создает для защищающегося (Игрока) дополнительных трудностей. Ситуационный модификатор = 0.
+                                    -   (Примечание для ГМ: Если бы 'externalDifficultyProfile.combat' был высоким, например 40 (сложная местность для боя), это дало бы атакующему бонус, что привело бы к положительному ситуационному модификатору для 'ActionDifficultModificator' защиты игрока).
+                                -   Итоговый ActionDifficultModificator_для_Защиты_Игрока: 10 (от EAV) + 0 (от ситуации) = 10.
+                                - Разница_ЗащитыИгрока = (14 + 28) - (18 + 10) = 42 - 28 = 14. Результат: 'Критический Успех' (защита игрока).
+                                
+                                #15.2.2.1.c: Определение ActionSuccessLevel Атакующего
+                                - Защита Игрока 'Критический Успех' => ActionSuccessLevel Гоблина = 'Критический Провал'.
+
+                            #15.2.3 -> #12.9: Применение механических эффектов действия Гоблина
+                            - Источник: "Удар копьем" Гоблина (эффективное значение 6% колющий)
+                            - ActionSuccessLevel для Гоблина: Критический Провал.
+                            - #12.9.2.1.b: МножительВеличины = 0.0. Урон не применяется.
+                            - ФинальныйУронПоЦели% (Валериус): 0%.
+                            Длительность дебаффа Гоблина 'Тяжело ранен' уменьшается с 2 до 1.
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <responsenarrative>
+      <![CDATA[
+                                Несмотря на свою ужасную рану, гоблин слабо тычет копьем. Вы без малейшего усилия уклоняетесь от этого предсказуемого и слабого выпада, который не представляет для вас никакой угрозы. Кажется, это существо вот-вот рухнет.
+                                ]]>
+     </responsenarrative>
+     <enemiesData>
+      <![CDATA[
+                                [
+                                    {
+                                        "NPCId": null, "name": "Гоблин-копейщик", "description": "Маленький, злобный гоблин, вооруженный грубо сделанным копьем. Сам по себе он выглядит слабым, но в группе может быть опасен.",
+                                        "type": "Weak", "maxHealth": "91%", "currentHealth": "23%", "maxPoise": "100%", "currentPoise": "100%",
+                                        "actions": [{"actionName": "Удар копьем", "isActivatedEffect": true, "effects": [{"effectType": "Damage", "value": "8%", "targetType": "piercing", "effectDescription": "Наносит 8% колющего урона"}], "targetPriority": "player_character"}], 
+                                        "resistances": [{"resistanceName": "Рваная Кожа", "resistanceValue": "1%", "resistType": "piercing", "resistTypeDisplayName": "Колющий"}], 
+                                        "activeBuffs": [], 
+                                        "activeDebuffs": [{"effectType": "Debuff", "value": "-20%", "targetType": "damage (all)", "duration": 1, "sourceSkill": "Травма от критического удара", "description": "Тяжело ранен! Весь наносимый урон снижен на 20% на 1 ход."}]
+                                    }
+                                ]
+                                ]]>
+     </enemiesData>
+     <playerstatus>
+      <![CDATA[
+                                { "healthPercentage": "100%", "energyPercentage": "96%", "poisePercentage": "100%", "currentCondition": "Stable", "activeConditions": [] }
+                                ]]>
+     </playerstatus>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example id="CombatExample2_PlayerRaiderVsMutants">
+  <title>
+   Example 2: Post-Apocalyptic - Player Raider vs. Mutant Scavengers (Automatic Weapon)
+  </title>
+  <scenariocontext>
+   <![CDATA[
+
+                    Player Character ("Scrap", PC):
+                    - Level: 15
+                    - Standard Characteristics: Dexterity=35, Perception=30, Luck=15, Speed=30
+                    - Modified Characteristics: Dexterity=40 (gear), Perception=30, Luck=15, Speed=30
+                    - Equipped Weapon: "Scavenged Assault Rifle"
+                      (Item Object: "name": "Scavenged Assault Rifle", 
+                       "combatEffect": [{
+                           "actionName": "Burst Fire", "isActivatedEffect": false,
+                           "effects": [{"effectType": "Damage", "value": "10%", "targetType": "piercing", "effectDescription":"Deals 10% piercing damage per bullet."}],
+                           "ammoType": "7.62mm Rounds", "shotsPerTurn": 3 
+                       }], 
+                       "durability": "70%"
+                      )
+                    - Ammunition: "7.62mm Rounds" (Item in inventory: 'count': 50, 'isConsumption':true)
+                    - Relevant Passive Skill: "Gun Nut" (+5% damage with rifles) -> combatEffect: {effects: [{effectType:"Buff", value:"5%", targetType:"damage (piercing)", description:"Passive +5% piercing damage with rifles."}]}
+                    - Current Health: 100% (Max e.g. "160%")
+                    - Current Energy: 100% (Max e.g. "130%")
+
+                    Enemies: 
+                    1. "Mutant Bruiser" (Moderate, EL=14, MaxHealth=128%, Resist: Bludgeoning 10%)
+                    2. "Mutant Skulker" (Weak, EL=12, MaxHealth=94%, Resist: Piercing 5%)
+                    3. "Mutant Skulker" (Weak, EL=12, MaxHealth=94%, Resist: Piercing 5%)
+                    (Assume their 'actions' and full stats generated as per #6.1.3)
+
+                    Pre-generated Dices: [12, 16, 8, 19, 4, 11, 15, 7, 10, 13, 6, 1, 20, 2]
+                    Player's Crit Chance Threshold (StdLuck 15): 20 - floor(15/20) = 20.
+                    Location: "Ruined Gas Station" (Difficulty Profile: { combat: 12, environment: 18, social: 5, exploration: 15 })
+                    Significant Damage Thresholds: >25% (Minor Debuff), >45% (Significant Debuff)
+
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="Scrap fires a burst from the Assault Rifle at the Mutant Bruiser." turn_by="Player">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            Player Action: Scrap fires Assault Rifle burst (3 shots) at Mutant Bruiser.
+                            Ammunition Check: "7.62mm Rounds" count: 50. Sufficient for 3 shots. New count will be 47.
+
+                            Section #12: Action Check and Resolution (for the attack roll)
+                            #12.1: AssociatedCharacteristic: dexterity (for aiming rifle)
+                            #12.2: Advantage/Disadvantage: None.
+                            #12.3: PlayerDiceResult: Takes 12.
+                            #12.4: Natural Crit: No (12<20, 12!=1). GMDice: Takes 16.
+                            #12.5: StatModificator (Player L15, StdDex 35, ModDex 40):
+                                StatValue=35, FlatBonus=0, PercBonus=0 => StatValWithBonus=35
+                                MaxStatVal(L15)=27.5, CappedStatVal=27.5
+                                LevelScale(L15)=floor(15*0.8)=12. StatModificator=27.5+12=39.5 -> 40 (rounded for simplicity in log)
+                            #12.6: ActionDifficultModificator (Target: Mutant Bruiser, an "Outsider")
+                                -   Duality of Threat Protocol (Rule #20.B): 
+                                    The target is an enemy ('Outsider'). The difficulty of hitting them is determined by the challenge they present in this location. 
+                                    Therefore, use 'externalDifficultyProfile'.
+                                -   Select Relevant Difficulty: Action is Combat. Using 'externalDifficultyProfile.combat'.
+                                -   RelevantDifficulty (from externalDifficultyProfile.combat): 12.        
+                                -   Factors: NPC_Diff=0.2 (Moderate type defense), Sit_Diff=0.0, Act_Rat=0.0
+                                -   DifficultyScale(L15)=max(0.2,min(1.5,(15/50)))=0.3
+                                -   BaseDiff=12*0.3=3.6. ActionDiff=3.6*(1+0.2)=4.32
+                                -   ActionDifficultMod=round(min(120, 4.32*(0.4+15/100)))=round(min(120, 4.32*0.55))=round(2.376)=2
+                            #12.7: Difference = (12+40) - (16+2) = 52 - 18 = 34. Result: 'Critical Success'.
+                            #12.8: Interpret: Critical Success. Eligible for Dexterity increase.
+
+                            #12.9: Applying Mechanical Combat Effects (Assault Rifle, 3 shots)
+                            Source Action: "Burst Fire" from "Scavenged Assault Rifle"
+                            TotalAddedDamageBonus% (#14.2.1): LevelAttackBonus%(L15)=9% + StatAttackBonus%(ModDex40)=8% + Passive"GunNut"=5% = 22%
+                            
+                            Shot 1 (vs Mutant Bruiser):
+                            - EffectBaseMagnitude (10% base + 22% added) = 32%
+                            - AdjustedMagnitude (CritSuccess mod 1.0) = 32%
+                            - DamageBeforeCrit (ContextMultiplier 1.0) = 32%
+                            - DamageAfterCrit (FinalCritMultiplier ModLuck15=1.51) = 32% * 1.51 = 48.32% -> 48%
+                            - TargetResist (Bruiser, piercing): 0% (has bludgeoning resist)
+                            - FinalDamageToTarget = 48%. Bruiser health: 128% - 48% = 80%.
+                            - Massive Dmg Check: (48/128)*100~=37.5% > Threshold 1 (25%). GM applies Minor Debuff: "Staggered (-10% speed for 1 turn)".
+
+                            Shot 2 (vs Mutant Bruiser): (Roll to hit again - assume for burst, subsequent shots hit if first does, or make separate checks with penalty)
+                            GM Decision: For multi-shot weapons, if the initial attack roll is a success, subsequent shots in the same burst automatically hit the same target unless specific rules for spread/recoil apply. Critical success on attack roll makes all shots in burst critical.
+                            - DamageAfterCrit = 48%. FinalDamageToTarget = 48%.
+                            - Bruiser health: 80% - 48% = 32%.
+                            - Massive Dmg Check: (48/128)*100~=37.5% > Threshold 1. Debuff is already active.
+
+                            Shot 3 (vs Mutant Bruiser):
+                            - DamageAfterCrit = 48%. FinalDamageToTarget = 48%.
+                            - Bruiser health: 32% - 48% = -16%. Bruiser defeated.
+                            
+                            Final Log: Scrap's rifle burst critically hits Mutant Bruiser. All 3 shots land.
+                            Shot 1 deals 48% piercing, Bruiser at 80%, Staggered.
+                            Shot 2 deals 48% piercing, Bruiser at 32%.
+                            Shot 3 deals 48% piercing, Bruiser at -16% (Defeated).
+                            Ammunition "7.62mm Rounds" count becomes 47. Player energy: -10 (example for burst fire).
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <responsenarrative>
+      <![CDATA[
+                                You brace the scavenged assault rifle and unleash a tight burst at the hulking Mutant Bruiser! The air rips with the sound. 
+                                The first bullets tear into its tough hide, making it roar and stumble. You keep the sights on it, and the follow-up shots shred through, dropping the massive mutant in a heap. One down!
+                                ]]>
+     </responsenarrative>
+     <UpdateInventory>
+      <![CDATA[ [{"existedId": "ammo-762-id", "name": "7.62mm Rounds", "count": 47}] ]]>
+     </UpdateInventory>
+     <enemiesData>
+      <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId":null, 
+                                        "name":"Mutant Bruiser", 
+                                        "description": "Громадина из искаженной плоти и мускулов. Он неуклюже движется вперед, демонстрируя очевидную силу, а его шкура толстая и мозолистая.",
+                                        "type":"Moderate", 
+                                        "maxHealth":"128%", 
+                                        "currentHealth":"0%", 
+                                        "actions":[],
+                                        "resistances":[], 
+                                        "activeBuffs":[], 
+                                        "activeDebuffs":[{
+                                            "effectType":"Debuff", 
+                                            "value":"-10%", 
+                                            "targetType":"speed", 
+                                            "duration":0, 
+                                            "sourceSkill":"Rifle Trauma", 
+                                            "description":"Staggered (Effect ended as target defeated)"
+                                        }]
+                                    },
+                                    {
+                                        "NPCId":null, 
+                                        "name":"Mutant Skulker", 
+                                        "description": "Жилистый, быстро передвигающийся мутант, который держится низко к земле. Его острые когти и дерганые движения указывают на то, что он полагается на скорость и внезапность.",
+                                        "type":"Weak", 
+                                        "maxHealth":"94%", 
+                                        "currentHealth":"94%", 
+                                        "actions":[/*...Skulker actions...*/], 
+                                        "resistances":[/*...*/],
+                                        "activeBuffs":[], 
+                                        "activeDebuffs":[]
+                                    },
+                                    {
+                                        "NPCId":null, 
+                                        "name":"Mutant Skulker", 
+                                        "description": "Жилистый, быстро передвигающийся мутант, который держится низко к земле. Его острые когти и дерганые движения указывают на то, что он полагается на скорость и внезапность.",
+                                        "type":"Weak", 
+                                        "maxHealth":"94%", 
+                                        "currentHealth":"94%", 
+                                        "actions":[/*...Skulker actions...*/], 
+                                        "resistances":[/*...*/], 
+                                        "activeBuffs":[], 
+                                        "activeDebuffs":[]
+                                    }
+                                ]
+
+                                ]]>
+     </enemiesData>
+     <playerstatus>
+      <![CDATA[ {"healthPercentage":"100%", "energyPercentage":"90%", "poisePercentage":"100%", "currentCondition":"Stable", "activeConditions":[]} ]]>
+     </playerstatus>
+     <currentenergychange>
+      -10
+     </currentenergychange>
+     <statsincreased>
+      ["dexterity"]
+     </statsincreased>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example id="CombatExample3_PlayerAndAllyVsEnemy">
+  <title>
+   Example 3: Player &amp; Generic Ally vs. Generic Enemy
+  </title>
+  <scenariocontext>
+   <![CDATA[
+
+                    Player ("Anya", PC, Level 8, Mage)
+                    - Modified Intelligence: 45. Active Skill "Frost Shard" (base 20% cold damage, scalesValue, targetPriority: current_target)
+                    Generic Ally ("Town Guard", Moderate, EL=7, MaxHealth=114%)
+                    - Actions: "Spear Jab" (CombatActionObject, base 8% piercing), "Guard Stance" (Self-buff +10% all resist)
+                    Generic Enemy ("Wild Boar", Weak, EL=6, MaxHealth=87%, Resist: slashing 5%)
+                    Dices: [10, 15, 5, 12, 18, 9]
+                    Anya Crit Threshold: 20 (StdLuck assumed 10)
+                    Location: "Old Road" (Difficulty Profile: { combat: 5, environment: 8, social: 2, exploration: 3 })
+
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="Anya casts Frost Shard at the Wild Boar." turn_by="Player">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            Player Action: Anya casts Frost Shard at Wild Boar.
+                            #12.1: AssociatedCharacteristic: intelligence
+                            #12.3: PlayerDiceResult: Takes 10.
+                            #12.4: GMDice: Takes 15. (Normal Roll)
+                            #12.5: StatModificator (Player L8, ModInt 45):
+                                StdInt assumed 30. StatValueWithBonuses=30 (capped at MaxStatVal(L8)=24). LevelScale(L8)=6. StatMod=24+6=30.
+                            #12.6: ActionDifficultModificator (Target: Wild Boar, an "Outsider")
+                                -   Duality of Threat Protocol (Rule #20.B): Target is an enemy ('Outsider'). Using 'externalDifficultyProfile'.
+                                -   Select Relevant Difficulty: Action is Combat. Using 'externalDifficultyProfile.combat'.
+                                -   RelevantDifficulty (from externalDifficultyProfile.combat): 5.
+                                -   Factors: NPC_Diff=0.1 (Weak type), Sit_Diff=0.0, Act_Rat=0.0
+                                -   DiffScale(L8)=0.2. BaseDiff=5*0.2=1. ActionDiff=1*1.1=1.1
+                                -   ActionDifficultMod=round(min(120, 1.1*(0.4+8/100)))=round(0.528)=1.
+                            #12.7: Difference = (10+30) - (15+1) = 40 - 16 = 24. Result: 'Critical Success'.
+                            #12.8: Interpret: Critical Success. Eligible for Intelligence increase.
+                            #12.9: Applying Mechanical Effects (Frost Shard)
+                            Skill "Frost Shard": Base 20% cold. Scaling (#7.3):
+                                CharBonus(ModInt45)=20%. LevelBonus(L8)=32%. MasteryBonus (assume L1)=4%. TotalBonusMult=(1+0.2+0.32+0.04)=1.56.
+                                ScaledValue = round(20*1.56) = 31%.
+                            - EffectBaseMagnitude = 31%. AdjustedMag(CritSuccess)=31%. DamageBeforeCrit=31%.
+                            - CriticalHit (Player Crit): FinalCritMult(ModLuck10)=1.51. DamageAfterCrit=round(31*1.51)=47%.
+                            - TargetResist(Boar, cold): 0%. FinalDamageToTarget = 47%.
+                            - Boar health: 87% - 47% = 40%.
+                            - Massive Dmg: (47/87)*100 ~= 54% > Threshold 2. Debuff: "Chilled (-20% speed for 1 turn)".
+                            Final Log: Anya's Frost Shard critically hits Wild Boar for 47% cold damage. Boar health 40%/87%. Boar Chilled. Energy: -7.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <responsenarrative>
+      <![CDATA[
+                                    You channel arcane energies, and a shard of pure frost materializes, launching towards the Wild Boar! It strikes with a chilling explosion, and the boar stumbles, its movements suddenly sluggish from the intense cold.
+                                ]]>
+     </responsenarrative>
+     <enemiesData>
+      <![CDATA[ 
+
+                                [{
+                                    "NPCId":null, 
+                                    "name":"Wild Boar", 
+                                    "description": "Крупный, агрессивный кабан с острыми клыками и вздыбленной шерстью. Он фыркает и роет землю копытом, готовый к атаке.",
+                                    "type":"Weak", 
+                                    "maxHealth":"87%", 
+                                    "currentHealth":"40%", 
+                                    "actions":[/*Boar actions*/], 
+                                    "resistances":[/*Boar resist*/], 
+                                    "activeBuffs":[], 
+                                    "activeDebuffs":[{
+                                        "effectType":"Debuff", 
+                                        "value":"-20%", 
+                                        "targetType":"speed", 
+                                        "duration":1, 
+                                        "sourceSkill":"Frost Shard Trauma", 
+                                        "description":"Chilled! Speed reduced by 20% for 1 turn."
+                                    }]
+                                }
+
+                                ]]>
+     </enemiesData>
+     <playerstatus>
+      <![CDATA[ 
+                                    {"healthPercentage":"100%", "energyPercentage":"93%", "poisePercentage":"100%", "currentCondition":"Stable", "activeConditions":[]} 
+                                ]]>
+     </playerstatus>
+     <currentenergychange>
+      -7
+     </currentenergychange>
+     <statsincreased>
+      ["intelligence"]
+     </statsincreased>
+    </jsonresponse>
+   </step>
+   <step action_description="The Town Guard sees an opportunity and jabs with his spear." turn_by="Ally">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            Ally Action: Town Guard uses "Spear Jab" on Wild Boar.
+                            #15.2: Resolving Generic Ally Action
+                            #15.2.1: Action: "Spear Jab" (base 8% piercing), Target: Wild Boar.
+                            #15.2.2.1.a: EAV_Attacker (Guard Moderate EL7, Jab 8%):
+                                EL_attacker=7, PrimaryDamage%=8, TypeMod(Moderate)=4. EAV=round((7/2)+(8/2)+4)=round(3.5+4+4)=12.
+                            #15.2.2.1.b: Target's Defensive Check (Boar, Weak, has 'Chilled' debuff -> Disadvantage on Dex checks if dodge).
+                            GM assumes Boar attempts to endure (no active dodge). Thus, for simplicity, we can compare EAV vs Boar's base defense or resolve as Full Success for Guard.
+                            GM Decision: Guard's attack is considered 'Full Success' against the chilled boar.
+                            #15.2.2.1.c: Guard's ActionSuccessLevel = 'Full Success'.
+                            #15.2.3 -> #12.9: Applying Effects (Guard's Spear Jab)
+                            - Source: "Spear Jab" (value 8% piercing)
+                            - ActionSuccessLevel: Full Success. AdjustedMagnitude=8%. ContextMult=1.0. DamageBeforeCrit=8%.
+                            - No Crit for Generic Ally.
+                            - TargetResist(Boar, piercing): 0% (has slashing resist). FinalDamageToTarget = 8%.
+                            - Boar health: 40% - 8% = 32%.
+                            Final Log: Town Guard's Spear Jab hits Wild Boar for 8% piercing. Boar health 32%/87%.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <responsenarrative>
+      <![CDATA[
+                                    The Town Guard, seeing the boar slowed by your spell, seizes the moment and thrusts his spear deep into its flank. The beast squeals in pain!
+                                ]]>
+     </responsenarrative>
+     <enemiesData>
+      <![CDATA[ 
+
+                                    [{
+                                        "NPCId":null, 
+                                        "name":"Wild Boar", 
+                                        "description": "Крупный, агрессивный кабан с острыми клыками и вздыбленной шерстью. Он фыркает и роет землю копытом, готовый к атаке.",
+                                        "type":"Weak", 
+                                        "maxHealth":"87%", 
+                                        "currentHealth":"32%", 
+                                        "actions":[/*Boar actions*/], 
+                                        "resistances":[/*Boar resist*/], 
+                                        "activeBuffs":[], 
+                                        "activeDebuffs":[{
+                                            "effectType":"Debuff", 
+                                            "value":"-20%", 
+                                            "targetType":"speed", 
+                                            "duration":1, 
+                                            "sourceSkill":"Frost Shard Trauma", 
+                                            "description":"Chilled! Speed reduced by 20% for 1 turn."
+                                        }]
+                                    } 
+
+                                ]]>
+     </enemiesData>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example id="CombatExample4_PlayerVsNamedNPC">
+  <title>
+   Example 4: Player Rogue vs. Named NPC Guard Captain
+  </title>
+  <scenariocontext>
+   <![CDATA[
+
+                    Player ("Whisper", PC, Level 20, Rogue) attacks an unaware Named NPC ("Captain Thorne").
+                    The GM must first verify the NPC's stats and then resolve the complex stealth attack.
+
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="Whisper attempts a Shadow Strike from stealth on Captain Thorne." turn_by="Player">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Действие Игрока: "Whisper" использует "Удар из Тени" на неосведомленном Капитане Торне.
+
+                            ## ЧАСТЬ 1: АУДИТ ГЕНЕРАЦИИ ХАРАКТЕРИСТИК NPC "Капитан Торн" (Правило #5.A.2)
+                            - **Цель:** Проверить, что характеристики Торна в Контексте сгенерированы по правилам.
+                            - Уровень: 22, Раса: Человек, Класс: Воин/Капитан Стражи.
+                            - Базовые статы: Все 1.
+                            - Стартовые очки (8): Раса (+2 Str, +1 Dex, +3 Con) + Класс (+2 Str, +1 Con) -> Итог на 1-м уровне: Str: 5, Dex: 2, Con: 5.
+                            - Очки за уровень: (22 - 1) * 5 = 105.
+                            - Распределение (для Капитана Стражи): +45 к Силе (итого 50), +40 к Выносливости (итого 45), +17 к Восприятию (итого 18). (Всего: 45+40+17=102, небольшое округление).
+                            - **Финальные Стандартные Характеристики:** Str: 50, Con: 45, Per: 18.
+                            - **ВЫВОД АУДИТА: Характеристики в Контексте сгенерированы корректно.**
+
+                            ---
+                            
+                            ## ЧАСТЬ 2: РАЗРЕШЕНИЕ ДЕЙСТВИЯ
+
+                            # Шаг 1: Проверка Действия (Правило #12)
+                            - Связанная Характеристика: dexterity (для скрытной атаки кинжалом).
+                            - Преимущество: **Огромное Преимущество** (Атака на неосведомленную цель из скрытности, Правило 29.5).
+                            - Бросок Игрока: Броски [18, 3, 11] с Огромным Преимуществом. Выбирается: **18**.
+                            - Проверка на Натуральный Крит:
+                                - Порог Крита Игрока (Стандартная Удача 25): 20 - floor(25/20) = 19.
+                                - 18 < 19. Не натуральный крит. Продолжаем расчет.
+                            - Бросок Мастера: 14.
+                            - Расчет StatModificator (Игрок Ур.20, Мод.Ловкость 60):
+                                - Итоговый StatModificator = 46.
+                            - Расчет ActionDifficultModificator (Цель: Капитан Торн, "Аутсайдер"):
+                                - Релевантная Сложность (external.combat): 20.
+                                - Факторы: NPC_Diff=0.3 (Сильный тип, но не готов), Sit_Diff=-0.2 (внезапность), Act_Rat=0.0.
+                                - Итоговый ActionDifficultModificator = 5.
+                            - Расчет Разницы: (18 + 46) - (14 + 5) = 64 - 19 = 45.
+                            - **Результат: 'Критический Успех' (Разница >= 10).**
+
+                            # Шаг 2: Применение Боевых Эффектов (Правило #12.9)
+                            - Навык: "Удар из Тени" (база 30% колющий) + Кинжал (база 15%) + Бонус за неосведомленность (+15%) = Итоговая база 60%.
+                            - Масштабирование Навыка (#7.3): (Мод.Ловкость 60, Ур.20, Мастерство 2) -> Множитель 2.02.
+                                - Масштабированная база = round(60 * 2.02) = 121%.
+                            - Общий Добавленный Урон (#14.2.1): (Ур.20, Мод.Ловк 60) -> Бонус Уровня 13% + Бонус Характера 12% = 25%.
+                            - **Итоговый урон до крита:** 121% + 25% = 146%.
+                            - Применение Критического Множителя (Результат проверки действия: 'Critical Success'):
+                                - Множитель Крита (Мод. Удача 25, бонус от кинжала +5%): 1.62 + 0.05 = 1.67.
+                                - Урон после крита: round(146 * 1.67) = 244%.
+                            - Сопротивление цели (Торн, колющее): 10% (Латная броня).
+                            - Финальный Урон по Цели: round(244 * (1 - 0.10)) = 220%.
+                            - **Итог:** "Удар из Тени" наносит 220% колющего урона. Здоровье Торна: 240% - 220% = 20%.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                    You melt from the shadows, your assassin's dagger a blur. It finds a gap in Captain Thorne's plate armor with deadly precision. 
+                                    He cries out in agony and stumbles, clutching a grievous wound, but his training and sheer grit keep him on his feet. 
+                                    He whirls around, sword drawn, his face a mask of pain and fury.
+
+                                ]]>
+     </response>
+     <enemiesData>
+      <![CDATA[ 
+
+                                    [{
+                                        "NPCId":"thorne-001", 
+                                        "name":"Captain Thorne", 
+                                        "description": "Закаленный капитан стражи в полных латах. Его шрамы и уверенная стойка говорят о том, что он — опасный и опытный противник.",
+                                        "type":"Strong", 
+                                        "maxHealth":"240%", 
+                                        "currentHealth":"20%", 
+                                        "actions":[], 
+                                        "resistances":[], 
+                                        "activeBuffs":[], 
+                                        "activeDebuffs":[]
+                                    }] 
+
+                                ]]>
+     </enemiesData>
+     <playerstatus>
+      <![CDATA[ 
+
+                                    {
+                                        "healthPercentage":"100%", 
+                                        "energyPercentage":"88%", 
+                                        "poisePercentage":"100%",
+                                        "currentCondition":"Stable",
+                                        "activeConditions":[]
+                                    } 
+
+                                ]]>
+     </playerstatus>
+     <currentenergychange>
+      -12
+     </currentenergychange>
+     <statsincreased>
+      ["dexterity"]
+     </statsincreased>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+</instructionblock>

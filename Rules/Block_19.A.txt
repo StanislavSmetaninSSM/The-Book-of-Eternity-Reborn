@@ -1,0 +1,283 @@
+<instructionblock id="19.A">
+ <title>
+  CRITICAL DIRECTIVE: NPC Inventory Management Protocol
+ </title>
+ <description>
+  This section defines the mandatory, granular commands for managing NPC inventories. 
+            This protocol is designed to prevent data loss and ensure data integrity by replacing the old method of overwriting the entire inventory.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            You are STRICTLY FORBIDDEN from modifying an NPC's inventory by re-sending their entire 'inventory' array within the 'UpdateNPCs' object.
+            That method is now deprecated and is known to cause data corruption.
+
+            Instead, you MUST use the following specific, targeted commands to manage NPC inventory changes:
+            - To ADD new items: Use the 'NPCInventoryAdds' array.
+            - To UPDATE existing items: Use the 'NPCInventoryUpdates' array.
+            - To REMOVE existing items: Use the 'NPCInventoryRemovals' array.
+
+            This ensures all inventory operations are explicit, atomic, and safe.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="19.A.1">
+   <title>
+    Adding Items to NPC Inventory ('NPCInventoryAdds')
+   </title>
+   <description>
+    Use this command when an NPC receives or finds a new item.
+   </description>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'NPCInventoryAdds':
+                    {
+                        "NPCId": "guid_of_the_target_npc",
+                        "NPCName": "name_of_the_target_npc",
+                        "item": { /* Complete Item Object (as per Block 10) */ },
+                        "destinationContainerId": "guid_of_container_in_npc_inventory_optional"
+                    }
+
+                    // The "item" object MUST be a full definition of the new item being added.
+                    // Its 'existedId' field should be 'null'.
+
+                    ]]>
+   </content>
+   <content type="ruleset">
+    <rule id="19.A.1.1">
+     <title>
+      Using the optional 'destinationContainerId' field
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1. If an NPC logically stores a newly acquired item (e.g., placing a potion in a pouch, a scroll in a case), you MUST use the 'destinationContainerId' field.
+                            
+                            2. The ID provided MUST correspond to a container item that exists in the target NPC's inventory (from Context).
+                            
+                            3. If this field is omitted or 'null', the new item is added to the NPC's root inventory.
+                            
+                            4. Before using this, you MUST verify that the destination container has sufficient capacity and volume, following the logic from rules #10.1.0.2.1 and #10.1.0.2.2. 
+                            If the check fails, the item must be added to the NPC's root inventory. 
+                            You MUST log the result of this check in 'gm_thoughts_markdown'. 
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="19.A.2">
+   <title>
+    Updating Existing NPC Items ('NPCInventoryUpdates')
+   </title>
+   <instructiontext>
+    <![CDATA[
+
+                    CRITICAL CLARIFICATION: Consuming the Last Item in a Stack.
+                    If an NPC consumes the last item from a stack (e.g., drinks their last healing potion, which had a 'count' of 1), you MUST report this by setting the 'count' to '0' within the 'itemUpdate' object.
+                    It is strictly FORBIDDEN to use the 'NPCInventoryRemovals' command for this purpose.
+                    The game system will automatically handle the final deletion of the item stack from the NPC's inventory once its count reaches zero.
+
+                    ]]>
+   </instructiontext>
+   <description>
+    Use this command for partial updates like changing durability, count, or description.
+   </description>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'NPCInventoryUpdates':
+                    {
+                        "NPCId": "guid_of_the_target_npc",
+                        "NPCName": "name_of_the_target_npc",
+                        "itemUpdate": {
+                            "existedId": "guid_of_the_item_to_update",
+                            // ... ONLY include the fields that have changed ...
+                            "durability": "75%", // Example change
+                            "count": 5 // Example change
+                        }
+                    }
+
+                    // This MUST follow the Law of Partial Updates: ID + only the changed fields.
+                    // Do NOT include fields that have not changed.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.A.3">
+   <title>
+    Removing Items from NPC Inventory ('NPCInventoryRemovals')
+   </title>
+   <description>
+    Use this command to permanently remove an entire item stack from an NPC.
+   </description>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'NPCInventoryRemovals':
+                    {
+                        "NPCId": "guid_of_the_target_npc",
+                        "NPCName": "name_of_the_target_npc",
+                        "itemId": "guid_of_the_item_stack_to_remove"
+                    }
+
+                    // This command removes the entire stack, regardless of its count.
+                    // For partial removal, use 'NPCInventoryUpdates' to change the 'count'.
+                    // Note: This command is also used as part of the mandatory protocol for looting defeated NPCs, as described in Rule #10.1.1.d.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.A.3.1">
+   <title>
+    CRITICAL CLARIFICATION: Partial vs. Complete Stack Removal for NPCs
+   </title>
+   <description>
+    This rule clarifies the MANDATORY distinction between removing some items from a stack and removing the entire stack.
+   </description>
+   <instructiontext>
+    <![CDATA[
+        
+                    - To remove SOME items from an NPC's stack, you MUST use 'NPCInventoryUpdates' and provide the new, lower 'count'.
+                    - To remove the ENTIRE stack from an NPC's inventory, you MUST use 'NPCInventoryRemovals'.
+        
+                    Confusing these two commands will lead to data errors.
+        
+                    ]]>
+   </instructiontext>
+  </rule>
+  <rule id="19.A.4">
+   <title>
+    CRITICAL LAW: The Principle of Inventory Permanence for NPCs
+   </title>
+   <description>
+    This rule clarifies that an NPC's inventory is a persistent state, not a reflection of their current attire. 
+                    This prevents accidental data loss during narrative actions.
+   </description>
+   <instructiontext>
+    <![CDATA[
+                    
+                    An NPC's 'inventory' list represents all the items they own, regardless of whether they are currently wearing, holding, or using them.
+                    
+                    It is STRICTLY FORBIDDEN to remove an item from an NPC's inventory simply because a narrative event describes them as not currently wearing or holding it. 
+                    An item can ONLY be removed from an NPC's inventory by using the explicit 'NPCInventoryRemovals' or 'NPCInventoryUpdates' (to set count to 0) commands.
+
+                    ]]>
+   </instructiontext>
+  </rule>
+  <rule id="19.A.5">
+   <title>
+    CRITICAL DIRECTIVE: The Principle of Primary State vs. Atomic Updates
+   </title>
+   <description>
+    This rule establishes a strict hierarchy to prevent data conflicts when generating or updating NPCs.
+   </description>
+   <instructiontext>
+    <![CDATA[
+                    
+                    You MUST differentiate between two distinct operations: Creation and Modification.
+
+                    1.  For NEW NPCs (Creation):
+                        -   The NPC's complete, initial inventory MUST be defined exclusively within the 'inventory' array of their main object in the 'UpdateNPCs' key.
+                        -   The commands 'NPCInventoryAdds', 'NPCInventoryUpdates', and 'NPCInventoryRemovals' MUST NOT be used for this new NPC in the same turn it is created.
+
+                    2.  For EXISTING NPCs (Modification):
+                        -   An "existing" NPC is one that has an 'NPCId' in your 'NPCsInScene'.
+                        -   You are STRICTLY FORBIDDEN from modifying their inventory by re-sending a new 'inventory' array within an 'UpdateNPCs' object. This is a deprecated method that causes data loss.
+                        -   ALL subsequent changes to an existing NPC's inventory MUST be done using the atomic commands: 'NPCInventoryAdds', 'NPCInventoryUpdates', 'NPCInventoryRemovals'.
+
+                    ]]>
+   </instructiontext>
+  </rule>
+  <rule id="19.A.6">
+   <title>
+    Protocol for NPC-to-NPC Item Transfers
+   </title>
+   <description>
+    This rule defines the mandatory procedure for transferring an item from one NPC to another.
+   </description>
+   <instructiontext>
+    <![CDATA[
+        
+                    To transfer an item from one NPC (the Giver) to another (the Receiver), you MUST perform two distinct atomic operations within the same JSON response: one removal and one addition.
+                    
+                    CRITICAL DIRECTIVE: 
+                    When transferring a container item, you MUST also issue separate transfer commands for EACH item currently inside that container. 
+                    You must verify the contents of the container from the Context before issuing the transfer commands.
+                    
+                    ]]>
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+        
+                    1.  Removal from Giver:
+                    You MUST add an object to the 'NPCInventoryRemovals' array targeting the Giver NPC and the item ID being transferred.
+                    
+                    2.  Addition to Receiver: 
+                    You MUST add an object to the 'NPCInventoryAdds' array targeting the Receiver NPC, containing a complete Item Object for the transferred item (with a new 'null' ID, as it's a new instance in a new inventory).
+        
+                    This two-step process ensures the transfer is explicit and does not corrupt either NPC's inventory.
+        
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.A.7">
+   <title>
+    Protocol for NPC-to-Player Item Transfers
+   </title>
+   <description>
+    This rule defines the mandatory procedure for transferring an item from an NPC's inventory to the player's inventory.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    When an NPC gives an item to the player, you MUST perform two distinct atomic operations within the same JSON response to ensure the item is correctly transferred and not duplicated.
+        
+                    CRITICAL DIRECTIVE: 
+                    When transferring a container item, you MUST also issue separate transfer commands for EACH item currently inside that container. 
+                    You must verify the contents of the container from the Context before issuing the transfer commands.
+
+                    ]]>
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Removal from NPC:
+                    You MUST add an object to the 'NPCInventoryRemovals' array (for a full stack) or 'NPCInventoryUpdates' array 
+                    (to change the 'count' for a partial stack) targeting the Giver NPC and the item being transferred.
+
+                    2.  Addition to Player: 
+                    You MUST add an object to the 'UpdateInventory' array to add the item to the player's inventory. 
+                    This object MUST be a complete Item Object definition with a 'null' ID, as it is a new instance in the player's possession.
+        
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.A.8">
+   <title>
+    Protocol for Player-Initiated NPC Inventory Removal (Theft/Force)
+   </title>
+   <description>
+    This rule defines the procedure when the player takes an item from an NPC, rather than being given it.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    If the player successfully takes an item from an NPC's inventory (e.g., through a successful Sleight of Hand check, an Intimidation check, or by force), 
+                    you MUST use the appropriate atomic inventory commands to reflect this transfer.
+
+                    1.  Removal from NPC: An item MUST be removed from the NPC's inventory.
+                        - To remove the entire stack, use the 'NPCInventoryRemovals' command.
+                        - To remove a partial amount from a stack, use the 'NPCInventoryUpdates' command to set the new, lower 'count'.
+
+                    2.  Addition to Player: Simultaneously, you MUST add the item to the player's inventory using the 'UpdateInventory' command.
+
+                    This ensures that theft and forceful acquisition are mechanically consistent with other forms of item transfer.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

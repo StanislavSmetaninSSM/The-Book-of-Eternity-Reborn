@@ -1,0 +1,170 @@
+<instructionblock id="18">
+ <title>
+  Quest Management
+ </title>
+ <description>
+  This section defines how quests are created, updated, and tracked, including their structure and reporting via the 'UpdateQuests' key.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            Quests provide structure and motivation for the player. 
+            When certain conditions are met (e.g., new information, NPC requests, significant events), a new quest might be created or an existing one updated.
+            For the first turn of the game (current turn is 1), a starting quest MUST be generated based on player's history and plot description.
+            
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="18.1">
+   <title>
+    Quest Triggering Conditions
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    A quest should be created or updated if:
+                    - The player encounters a significant situation, problem, or receives compelling information suggesting a task, goal, or conflict.
+                    - An NPC directly assigns the player a task or requests assistance.
+                    - An NPC reveals a problem or challenge they are facing that the player might resolve.
+                    - The player receives instructions from a non-NPC source (terminal, broadcast, book, letter).
+                    - The player discovers an important item or information clearly hinting at further action.
+                    - There are changes to existing active quests (from 'Context.activeQuests').
+                    Even if the player doesn't show explicit interest, evaluate if available information warrants creating a 'skeleton quest' (basic name, description).
+                   
+                    ]]>
+   </content>
+  </rule>
+  <rule id="18.2">
+   <title>
+    Quest Object Structure (for 'UpdateQuests' array)
+   </title>
+   <instructiontext>
+    When a quest is new or its state changes, include a Quest Object in the 'UpdateQuests' array.
+   </instructiontext>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Mandatory format for each Quest Object:
+
+                    {
+                        "questId": "system_assigned_guid_or_null_for_new", // Null for new, existing ID for updates
+                        "initialId": "turn_local_reference_tag_string_or_null", // FIELD FOR LINKING NEW QUESTS
+                        "questName": "user_readable_quest_name_string",
+                        "questGiver": "source_of_the_quest_string",
+                        "status": "'Active', 'Completed', 'Failed', 'Updated'", // Current status
+                        "questBackground": "narrative_background_of_quest_string",
+                        "description": "detailed_quest_description_string",
+                        "objectives": [ // Array of Objective Objects
+                            {
+                                "objectiveId": "system_assigned_guid_or_null_for_new",
+                                "description": "specific_task_description_string",
+                                "status": "'Active', 'Completed', 'Failed'"
+                            }
+                            // ... more objectives ...
+                        ],
+                        "rewards": { // Optional, details about potential rewards
+                            "experience": "integer_optional",
+                            "money": "integer_optional",
+                            "items": ["item_name_string_optional"], // Names of potential item rewards
+                            "other": "narrative_description_of_other_rewards_string_optional"
+                        },
+                        "failureConsequences": "narrative_description_of_failure_punishment_string_optional",
+                        "detailsLog": ["array_of_strings_tracking_progress_and_new_info"],
+                        "newDetailsLogEntry": "(string, optional) 
+                            A single new log entry to be APPENDED to the existing detailsLog. 
+                            Use this for updates instead of resending the whole array."
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="18.3">
+   <title>
+    Field Definitions for Quest Object
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  "questId": (string GUID or null) System-assigned ID. Null for new quests; existing ID from Context for updates.
+
+                    2.  "questName": (string) Full quest name. Translate to user's language. For existing quests, use exact name from Context.
+
+                    3.  "questGiver": (string) Source of the quest (NPC name, "Terminal Data", "Emergency Signal", "Personal Goal", etc.).
+
+                    4.  "status": (string) Current overall status: 'Active', 'Completed', 'Failed', 'Updated'.
+
+                    5.  "questBackground": (string) Known reasons why the quest exists or needs completion. Updated as info becomes available.
+
+                    6.  "description": (string) Most complete and detailed quest description available.
+
+                    7.  "objectives": (array of Objective Objects) Each objective must be SMART (Specific, Measurable, Achievable, Relevant, Time-bound if applicable).
+                        - "objectiveId": (string GUID or null) System-assigned ID for the objective.
+                        - "description": (string) Clear description of the task.
+                        - "status": (string) 'Active', 'Completed', 'Failed' for this specific objective.
+
+                    8.  "rewards": (object, optional) Describes potential rewards.
+                        - "experience", "money": Integers.
+                        - "items": Array of item names (not full item objects here).
+                        - "other": Narrative description (e.g., "Improved relations with X faction").
+
+                    9.  "failureConsequences": (string, optional) Describes potential negative outcomes if the quest is failed.
+                    
+                    10. "detailsLog": (array of strings) Append new relevant information, clues, or progress updates as strings. 
+                    Each new entry is CRITICAL for long-term memory and MUST follow the Protocol of Detailed Context Logging (InstructionBlock #18.A).
+
+                    GM Note: 
+                    Quest rewards and punishments might trigger other JSON changes (e.g., 'UpdateInventory', 'statsIncreased', 'removePassiveSkills') when the quest is marked 'Completed' or 'Failed'.
+                   
+                    ]]>
+   </content>
+  </rule>
+  <rule id="18.4">
+   <title>
+    CRITICAL DIRECTIVE: The Protocol of Atomic Log Appending ('newDetailsLogEntry')
+   </title>
+   <description>
+    This is a mandatory protocol to prevent the accidental erasure of quest history. 
+                    It defines the ONLY correct method for adding new entries to an existing quest's 'detailsLog'.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    You are STRICTLY FORBIDDEN from modifying an existing quest's log by re-sending the entire 'detailsLog' array. This method is deprecated and causes data loss.
+                    You MUST use the new, dedicated 'newDetailsLogEntry' field for all subsequent log updates.
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="18.4.1">
+     <title>
+      Workflow for Quest Log Management
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  On Quest CREATION:
+                                - When you create a quest for the first time, you MUST generate the full Quest Object.
+                                - This object MUST include the 'detailsLog' array, containing the very first log entry.
+                                - Accepted turn-anchor formats for quest log entries:
+                                  * Short legacy turn prefix: "#[turn_number]. ..."
+                                  * Full historical timestamp from Rule #18.A.0: "#[Turn] - [Day] [Month] [Year] г., [HH:MM]: ..."
+
+                            2.  On Quest UPDATE (Adding a new log entry):
+                                - When you need to add a new piece of information to an EXISTING quest's log:
+                                    a) You MUST create a PARTIAL quest update object.
+                                    b) This object MUST contain the 'questId' of the quest being updated.
+                                    c) It MUST contain the 'newDetailsLogEntry' field.
+                                       The value should be a turn-anchored log string, using either:
+                                       - the short legacy turn prefix (e.g., "#[turn_number]. Найдена карта...")
+                                       - or the full historical timestamp format from Rule #18.A.0
+                                    d) You MUST NOT include the 'detailsLog' array in this update object.
+
+                            This two-step process ensures that you never have to remember or re-send the entire history of a quest, thus preventing data loss.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

@@ -1,0 +1,128 @@
+<instructionblock id="19.B">
+ <title>
+  Examples For CRITICAL DIRECTIVE: NPC Equipment Management Protocol
+ </title>
+ <rule id="19.B.1">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Correctly initializing a new NPC's equipment
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                            "UpdateNPCs": [
+                                {
+                                    "NPCId": null,
+                                    "name": "Kaelen",
+                                    "inventory": [
+                                        {
+                                            "initialId": "temp-kaelen-sword-01",
+                                            "name": "Longsword",
+                                            // ... other item properties ...
+                                        },
+                                        {
+                                            "initialId": "temp-kaelen-armor-01",
+                                            "name": "Steel Armor",
+                                            // ... other item properties ...
+                                        }
+                                    ],
+                                    "equippedItems": {
+                                        "MainHand": "temp-kaelen-sword-01",
+                                        "Chest": "temp-kaelen-armor-01"
+                                    }
+                                    // ... other NPC properties ...
+                                }
+                            ]
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="19.B.4.1">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Player gives Elara a "Circlet of Wisdom", and she equips it.
+   </title>
+   <jsonresponse>
+    <!-- Step 1: The item is added to her inventory -->
+    <npcinventoryadds>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-elara-01",
+                                        "NPCName": "Elara Meadowlight",
+                                        "item": {
+                                            "existedId": null,
+                                            "name": "Circlet of Wisdom",
+                                            "quality": "Rare",
+                                            "equipmentSlot": "Head",
+                                            "bonuses": ["+5 to Wisdom"],
+                                            // ... all other item properties ...
+                                        }
+                                    }
+                                ]
+
+                                ]]>
+    </npcinventoryadds>
+    <!-- Step 2: A linked command is issued to equip the new item -->
+    <npcequipmentchanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-elara-01",
+                                        "NPCName": "Elara Meadowlight",
+                                        "action": "equip",
+                                        "itemId": null,
+                                        "itemName": "Circlet of Wisdom",
+                                        "targetSlots": ["Head"]
+                                    }
+                                ]
+
+                                ]]>
+    </npcequipmentchanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example: Kaelen prepares for a fight.
+  </title>
+  <scenariocontext>
+   Kaelen (in a tavern) is challenged to a duel. He has a "Steel Armor" and a "Longsword" in his inventory but they are not equipped.
+  </scenariocontext>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        Услышав вызов, Каэлен спокойно встает из-за стола. "Очень глупо", - бормочет он, надевая свой стальной нагрудник. 
+                        С лязгом он вынимает из ножен свой верный длинный меч.
+                        
+                        ]]>
+   </response>
+   <npcequipmentchanges>
+    <![CDATA[
+                        [
+                            {
+                                "NPCId": "npc-kaelen-001",
+                                "NPCName": "Kaelen",
+                                "action": "equip",
+                                "itemId": "item-kaelen-armor-01",
+                                "itemName": "Steel Armor",
+                                "targetSlots": ["Chest"]
+                            },
+                            {
+                                "NPCId": "npc-kaelen-001",
+                                "NPCName": "Kaelen",
+                                "action": "equip",
+                                "itemId": "item-kaelen-sword-01",
+                                "itemName": "Longsword",
+                                "targetSlots": ["MainHand"]
+                            }
+                        ]
+                        ]]>
+   </npcequipmentchanges>
+  </jsonresponse>
+ </example>
+</instructionblock>

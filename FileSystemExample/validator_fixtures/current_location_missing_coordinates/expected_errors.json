@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "current_location_missing_coordinates"
+  ],
+  "expectedMessages": [
+    "known currentLocationData requires coordinates"
+  ]
+}

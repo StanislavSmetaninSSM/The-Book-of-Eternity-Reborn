@@ -1,0 +1,24 @@
+{
+  "pendingMemoryLegacy": {
+    "legacyId": "legacy_knowledge_01",
+    "legacyType": "startingPassiveKnowledgeSkill",
+    "grantSnapshot": {
+      "legacyId": "legacy_knowledge_01",
+      "legacyType": "startingPassiveKnowledgeSkill",
+      "skillName": "Хроники Предтеч",
+      "skillDescription": "Память о давно исчезнувших мирах.",
+      "group": "Knowledge",
+      "playerStatBonus": "+2 к анализу древних текстов",
+      "structuredBonuses": [
+        {
+          "description": "+2 к анализу древних текстов",
+          "bonusType": "SkillModifier",
+          "target": "ancient_texts",
+          "valueType": "Flat",
+          "value": 2,
+          "application": "Permanent"
+        }
+      ]
+    }
+  }
+}

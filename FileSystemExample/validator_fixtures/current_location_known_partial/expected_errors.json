@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "current_location_known_location_resends_full_object"
+  ],
+  "expectedMessages": [
+    "known currentLocationData forbids full object resend"
+  ]
+}

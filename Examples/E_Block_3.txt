@@ -1,0 +1,76 @@
+<instructionblock id="3">
+ <title>
+  Examples For Logging, Readability, and The Auditor's Rule
+ </title>
+ <rule id="3.3">
+  <example contenttype="json_fragment" id="LogFormat_Correct" type="good">
+   <title>
+    CORRECT AND MANDATORY FORMAT
+   </title>
+   <description>
+    The array contains strings directly.
+   </description>
+   <content type="json">
+    <![CDATA[
+
+                            "gm_thoughts_markdown": "Log entry number 1...\n\nLog entry number 2, which can be very long and contain newlines using \\n...\n\nLog entry number 3..."
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" id="LogFormat_Incorrect" type="bad">
+   <title>
+    INCORRECT AND FORBIDDEN FORMAT
+   </title>
+   <description>
+    The array contains objects. This will cause a system crash.
+   </description>
+   <content type="json">
+    <![CDATA[
+
+                            "gm_thoughts_markdown": [
+                                { "log": "Log entry number 1..." },
+                                { "entry": "Log entry number 2..." },
+                                { "logEntry": "Log entry number 3..." }
+                            ]
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <example contenttype="json_fragment" type="bad">
+  <title>
+   Example of INCORRECT, Hard-to-Read Logging (Forbidden)
+  </title>
+  <description>
+   This example shows the undesirable practice of splitting one logical action into many small, separate strings. This is difficult for the user to read.
+  </description>
+  <jsonresponse>
+   <gm_thoughts_markdown>
+    <![CDATA[
+
+                        "Player attacks Goblin.\nPlayer rolls 1d20. Result: 17.\nPlayer StatModificator is 33.\nTotal Player Roll is 50.\nGoblin defense is 6.\nDifference is 44.\nResult: Critical Success.\nCalculating damage.\nBase damage is 37%.\nCrit multiplier is 1.51.\nDamage after crit is 56%.\nFinal damage is 56%.\nGoblin health is now 35%."
+
+                        ]]>
+   </gm_thoughts_markdown>
+  </jsonresponse>
+ </example>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example of CORRECT, Well-Formatted Logging (Mandatory)
+  </title>
+  <description>
+   This example demonstrates the required format: one single, large string entry for the entire action, using Markdown and JSON newlines ('\n') for excellent readability. 
+                    This is the standard you must follow.
+  </description>
+  <jsonresponse>
+   <gm_thoughts_markdown>
+    <![CDATA[
+
+                        "# Player Action: Attack Goblin with skill 'Power Strike' using 'Iron Sword'\n\n## 1. Action Check: Attack Roll\n\n- Intent: Physical Attack. Associated Characteristic: strength.\n- Dice Rolls: Player rolls 1d20 -> 17. GM rolls 1d20 -> 5.\n- Player's StatModificator: 33\n- Goblin's DifficultyMod: 1\n- Calculation: (17 + 33) - (5 + 1) = 44\n- Outcome: Difference (44) is >= 10. Final Result: Critical Success.\n\n---\n\n## 2. Skill Scaling Calculation: 'Power Strike'\n\n- Base Skill Damage: 10%\n- Character Parameters: Level: 10, ModStrength: 35, Skill Mastery: 2\n- Bonus Calculation:\n  - CharBonus: (floor(35/10)*5) = 15%\n  - LevelBonus: (floor(10/5)*8) = 16%\n  - MasteryBonus: (floor(2/1)*4) = 8%\n  - TotalBonusMultiplier: 1 + 0.15 + 0.16 + 0.08 = 1.39\n- Final Scaled Skill Damage: round(10 * 1.39) = 14%\n\n---\n\n## 3. Final Damage Calculation\n\n- Input Variables & Bonus Breakdown:\n  - Item 'Iron Sword' Base Damage: 18%\n  - Scaled Skill Damage (from step 2): 14%\n  - Calculating TotalAddedDamageBonus%:\n    * Bonus from Level (Lvl 10): +7%\n    * Bonus from Characteristic (ModStr 35): +7%\n    * Bonus from Passive Skills ('Weapon Focus: Sword'): +5%\n    * TotalAddedDamageBonus% = 7 + 7 + 5 = 19%\n  - Player FinalCritMultiplier: 1.51\n  - Goblin Slashing Resistance: 0%\n\n- Calculation:\n  - Total Base Damage = Item Base (18%) + Scaled Skill Damage (14%) + TotalAddedDamageBonus% (19%) = 51%\n  - Damage After Crit = Total Base (51%) * Crit Multiplier (1.51) = 76.01% (rounded to 76%)\n  - Final Damage to Target = Damage After Crit (76%) * (1 - Resistance [0%]) = 76%\n\n- Final Outcome:\n  - Goblin takes 76% damage. Health changes from 91% to 15%."
+
+                        ]]>
+   </gm_thoughts_markdown>
+  </jsonresponse>
+ </example>
+</instructionblock>

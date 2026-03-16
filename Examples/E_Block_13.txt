@@ -1,0 +1,958 @@
+<instructionblock id="13">
+ <title>
+  Examples For Combat Flow and Core Mechanics
+ </title>
+ <rule id="13.7.1">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Correct JSON for ending combat
+   </title>
+   <scenariocontext>
+    The player has just defeated the last remaining goblin.
+   </scenariocontext>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                        С вашим последним ударом последний гоблин падает на землю. 
+                                        В пещере воцаряется тишина, нарушаемая лишь вашим тяжелым дыханием. 
+                                        Бой окончен.
+                                        
+                                        ]]>
+    </response>
+    <enemiesData>
+     <![CDATA[
+
+                                        []
+
+                                        ]]>
+    </enemiesData>
+    <alliesData>
+     <![CDATA[
+
+                                        []
+
+                                        ]]>
+    </alliesData>
+    <!-- ... other JSON keys as needed ... -->
+   </jsonresponse>
+  </example>
+ </rule>
+ <example contenttype="log_and_json_snippet" id="CombatRoundSimulationExample" type="good">
+  <title>
+   Example: Full Combat Round Simulation (Correct Initiative Order - UNABRIDGED)
+  </title>
+  <scenariocontext>
+   <![CDATA[
+
+                    A combat round begins.
+                    - Player: "Anya" (Mage, Level 8, Std Int 40, Mod Int 45, Std Dex 25, Mod Dex 28, Std Luck 10, Mod Luck 10, Speed 20)
+                    - Ally: "Town Guard" (Generic Ally, Moderate, EL 10, Initiative 15)
+                    - Enemy: "Orc Warrior" (Generic Enemy, Moderate, EL 15, Initiative 18)
+                    - Enemy: "Goblin Archer" (Generic Enemy, Weak, EL 10, Initiative 25)
+
+                    Player's Action for their turn: Anya will cast a "Firebolt" spell at the Orc Warrior.
+                    Pre-generated Dices for this round: [10, 15, 19, 5, 18, 9, 20, 2]
+
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="The GM processes the entire combat round strictly following the initiative order and ALL mechanical rules." turn_by="GM">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # СИМУЛЯЦИЯ БОЕВОГО РАУНДА
+                            
+                            ## Часть А: Определение Порядка Хода (Инициатива)
+                            - Участники: Аня, Городской стражник, Орк-воин, Гоблин-лучник.
+                            - **Финальный Порядок Инициативы:** 1. Гоблин-лучник (25), 2. Аня (20), 3. Орк-воин (18), 4. Городской стражник (15).
+
+                            ## Часть Б: Симуляция Полного Раунда (Ход за Ходом)
+                            
+                            ### Ход 1: Гоблин-лучник (Враг) атакует Аню (Игрок)
+                            - **Действие:** 'Выстрел из лука' (Базовый урон 10% колющий).
+                            - **Разрешение Действия (Правило #15.2.2.1):**
+                                - **Расчет EAV Атакующего (Гоблин, Слабый, EL 10):** EAV = round((10/2) + (10/2) + 2) = 12.
+                                - **Защитная Проверка Цели (Аня, Уклонение):**
+                                    - Аня выполняет проверку Ловкости (Dexterity). Сложность (ActionDifficultModificator) = 12.
+                                    - **Расчет StatModificator Ловкости Ани (Ур.8, Стд.Ловк 25):**
+                                        - StatValue=25, MaxStatVal(Ур.8)=24, CappedValue=24. LevelScale(Ур.8)=6. **StatModificator = 30.**
+                                    - Бросок Ани (d20): 10. Бросок Мастера (d20): 15.
+                                    - **Разница Защиты:** (10 + 30) - (15 + 12) = 40 - 27 = +13.
+                                    - **Результат Защиты:** 'Критический Успех'.
+                                - **Итог Атаки Гоблина:** 'Критический Провал'.
+                            - **Применение Эффектов:** Урон не нанесен.
+
+                            ### Ход 2: Аня (Игрок) атакует Орка-воина
+                            - **Действие:** Кастует "Огненная стрела" (База 20% огненный, масштабируется от Интеллекта).
+                            - **Проверка Действия (Правило #12):**
+                                - Характеристика: Интеллект.
+                                - **Расчет StatModificator Интеллекта Ани (Ур.8, Стд.Инт 40):**
+                                    - StatValue=40, MaxStatVal(Ур.8)=24, CappedValue=24. LevelScale(Ур.8)=6. **StatModificator = 30.**
+                                - **Расчет Сложности (Орк, Средний, EL 15, Урон 25%):** EAV = round(15/2 + 25/2 + 4) = 24. ActionDifficultModificator = 24.
+                                - Бросок Ани: 19. Бросок Мастера: 5.
+                                - **Разница Атаки:** (19 + 30) - (5 + 24) = 49 - 29 = +20.
+                                - **Результат Атаки:** 'Критический Успех'.
+                            - **Применение Эффектов (Правило #12.9):**
+                                - Масштабированный урон 'Огненной стрелы' (Мод.Инт 45, Ур.8, Мастерство 1): round(20 * (1 + 0.20 + 0.32 + 0.04)) = 31%.
+                                - Применение крит. множителя (Мод.Удача 10 -> 1.55): round(31 * 1.55) = 48%.
+                                - Сопротивление Орка огню (0%).
+                                - **Финальный урон:** 48%.
+                            - Здоровье Орка-воина: 100% - 48% = 52%.
+
+                            ### Ход 3: Орк-воин (Враг) атакует Городского стражника (Союзник)
+                            - **Действие:** 'Удар топором' (Базовый урон 25% рубящий).
+                            - **Разрешение Действия (Правило #15.2.2.2):**
+                                - **EAV Атакующего (Орк):** 24.
+                                - **Защитная Ценность Цели (Стражник, Средний, EL 10):** round(10/2 + 4) = 9.
+                                - **Сравнительный Бросок:** (d20 [18] + 24) против (d20 [9] + 9) = 42 против 18. Орк побеждает.
+                                - **Итог Атаки Орка:** 'Полный Успех'.
+                            - **Применение Эффектов:**
+                                - Урон: 25%. Сопротивление Стражника (10%): round(25 * 0.9) = 23%.
+                                - **Финальный урон:** 23%.
+                            - Здоровье Городского стражника: 114% - 23% = 91%.
+
+                            ### Ход 4: Городской стражник (Союзник) атакует Орка-воина
+                            - **Действие:** 'Удар копьем' (Базовый урон 12% колющий).
+                            - **Разрешение Действия:**
+                                - **EAV Атакующего (Стражник, Средний, EL 10):** round(10/2 + 12/2 + 4) = 15.
+                                - **Защитная Ценность Цели (Орк):** 12.
+                                - **Сравнительный Бросок:** (d20 [20] + 15) против (d20 [2] + 12) = 35 против 14. Стражник побеждает. **Натуральный крит. удар!**
+                                - **Итог Атаки Стражника:** 'Критический Успех'.
+                            - **Применение Эффектов:**
+                                - Базовый урон: 12%. Крит. множитель (x1.5): 18%. Сопротивление Орка (5%): round(18 * 0.95) = 17%.
+                                - **Финальный урон:** 17%.
+                            - Здоровье Орка-воина: 52% - 17% = 35%.
+
+                            # Конец симуляции раунда.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                Гоблин-лучник реагирует быстрее всех, но его наспех выпущенная стрела пролетает мимо, пока вы уклоняетесь! В ответ вы концентрируетесь, и с ваших пальцев срывается идеально нацеленный огненный сгусток, который взрывается на плече орка-воина, оставляя глубокий ожог.
+                                Раненый орк издает яростный рев и бросается на городского стражника, обрушивая на его щит свой массивный топор. Стражник с трудом держится на ногах, но тут же делает ответный выпад копьем, вонзая его прямо в незащищенный бок орка!
+                                Раунд заканчивается, все стороны готовятся к следующему столкновению. Что вы делаете?
+
+                                ]]>
+     </response>
+     <enemiesData>
+      <![CDATA[
+
+                                [
+                                    { "name": "Orc Warrior", "currentHealth": "35%", ... },
+                                    { "name": "Goblin Archer", "currentHealth": "100%", ... }
+                                ]
+
+                                ]]>
+     </enemiesData>
+     <alliesData>
+      <![CDATA[
+
+                                [
+                                    { "name": "Town Guard", "currentHealth": "91%", ... }
+                                ]
+
+                                ]]>
+     </alliesData>
+     <currenthealthchange>
+      0
+     </currenthealthchange>
+     <combat_log_markdown>
+      <![CDATA[
+
+Аня уклоняется от выстрела Гоблина-лучника.\nАня наносит критический удар Орку-воину с помощью 'Огненной стрелы' на 48 ед. урона огнем!\nОрк-воин бьет Городского стражника топором на 23 ед. рубящего урона!\nГородской стражник наносит критический удар Орку-воину копьем на 17 ед. колющего урона.
+
+                                ]]>
+     </combat_log_markdown>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="log_and_json_snippet" id="CombatRoundSimulation_Bad_Example" type="bad">
+  <title>
+   INCORRECT Example: Resolving Only the Player's Turn
+  </title>
+  <description>
+   This is an example of what NOT to do.
+                    The GM incorrectly ends the turn after the player's action, leaving the enemies and allies frozen and not taking their turns. 
+                    This is a critical failure of the simulation protocol.
+  </description>
+  <scenariocontext>
+   <![CDATA[
+
+                    Same scenario as the "good" example:
+                    - Initiative Order: Anya (30), Goblin Archer (25), Orc Warrior (20), Town Guard (15).
+                    - Player's Action: Anya casts a "Firebolt" spell at the Orc Warrior.
+
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="The GM incorrectly processes ONLY the player's turn and ends the response." turn_by="GM">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # INCORRECT COMBAT LOGIC
+                            ## Turn 1: Anya (Player)
+                            - Main Action: Casts 'Firebolt' at Orc Warrior.
+                            - Fast Action: Uses 'Tactical Shout' to grant ally advantage on next attack.
+                            - Action Check (Intelligence): Full Success.
+                            - Applying Effects: 'Firebolt' deals 35 fire damage to Orc Warrior.
+                            - Buff Applied: Town Guard gains advantage for next turn.
+                            - Orc Warrior health: 65%/100%.
+
+                            # ERROR: GM stops simulation here. Forgetting turns for Goblin, Orc, and Guard.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                Вы направляете руку на орка-воина, и с ваших пальцев срывается огненный сгусток! Он врезается в плечо орка, оставляя дымящийся ожог. Что вы делаете дальше?
+                                
+                                ]]>
+     </response>
+     <enemiesData>
+      <![CDATA[
+
+                                [
+                                    {
+                                        "name": "Orc Warrior", 
+                                        "currentHealth": "65%",
+                                        "currentPoise": "45%",
+                                        ...
+                                    },
+                                    {
+                                        "name": "Goblin Archer",
+                                        "currentHealth": "100%",
+                                        "currentPoise": "80%",
+                                        ...
+                                    }
+                                ]
+
+                                ]]>
+     </enemiesData>
+     <alliesData>
+      <![CDATA[
+
+                                [
+                                    {
+                                        "name": "Town Guard",
+                                        "currentHealth": "114%",
+                                        "currentPoise": "100%",
+                                        ...
+                                    }
+                                ]
+
+                                ]]>
+     </alliesData>
+     <currenthealthchange>
+      0
+     </currenthealthchange>
+     <combat_log_markdown>
+      <![CDATA[
+
+Аня поражает Орка-воина с помощью 'Огненной стрелы' на 35 ед. урона огнем!
+
+                                ]]>
+     </combat_log_markdown>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="log_and_json_snippet" id="CoopCombat_BatchedAction" type="good">
+  <title>
+   Example: Cooperative Batched Combat Action
+  </title>
+  <scenariocontext>
+   - Mode: 'FullParty'. Active Player: Ронан.
+                    - Party: Ронан (Воин), Аня (Маг).
+                    - Enemies: Орк-Берсерк.
+                    - Initiative Order: 1. Ронан (22), 2. Орк-Берсерк (18), 3. Аня (15).
+                    - Ronan's Message: "Я бросаюсь вперед и атакую орка своим мечом, а Аня сразу после этого кастует в него огненный шар!"
+                    - Player IDs: Ронан ('player-ronan-guid'), Аня ('player-anya-guid').
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Asynchronous Combat Protocol: Coordinated Action Detected
+                    - Detection: Message contains actions for both Ронан and Аня. Activating Sub-Protocol B.1.
+                    - Initiative Order: Ронан (22), Орк-Берсерк (18), Аня (15).
+
+                    ## Simulating the Round Sequentially:
+                    
+                    ### Turn 1: Ронан (Active Player)
+                    - Main Action: Attacks Орк-Берсерк with sword.
+                    - Fast Action: Shoves nearby goblin to create opening for ally.
+                    - Resolution: Sword attack hits! Deals 35 slashing damage. Shove succeeds, goblin is pushed back.
+                    - Reporting: Changes for Ronan will be at the top level.
+
+                    ### Turn 2: Орк-Берсерк (AI Catch-up)
+                    - Initiative Check: The Orc acts between Ronan and Anya. Its turn MUST be simulated.
+                    - Action: Attacks Anya (the perceived softer target).
+                    - Resolution: Hit! Deals 18 bludgeoning damage to Anya.
+                    - Reporting: Damage to Anya will be in 'otherPlayersInteractions'.
+
+                    ### Turn 3: Аня (Batched Player)
+                    - Action: Casts 'Fireball' at Орк-Берсерк.
+                    - Resolution: Hit! Deals 40 fire damage. The Orc is defeated.
+                    - Reporting: Energy cost for Anya will be in 'otherPlayersInteractions'.
+
+                    ## STOPPING SIMULATION
+                    - All batched player actions are resolved. The simulation for this response ends here. The round is complete.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        Ты, Ронан, не теряя ни секунды, бросаешься вперед. Твой меч оставляет глубокий порез на плече орка. 
+                        В ответ орк издает яростный рев и, развернувшись, обрушивает свою дубину на Аню, которая как раз готовила заклинание!
+                        Несмотря на удар, она завершает ритуал, и с ее рук срывается огненный шар, который поглощает изувеченного орка, и тот падает замертво.
+                        
+                        ]]>
+   </response>
+   <!-- Команды для активного игрока (Ронана) -->
+   <currentenergychange>
+    -5
+   </currentenergychange>
+   <experiencegained>
+    120
+   </experiencegained>
+   <!-- Команды для другого игрока (Ани) -->
+   <otherplayersinteractions>
+    <![CDATA[
+                        {
+                            "player-anya-guid": [
+                                { "currentHealthChange": -18 },
+                                { "currentEnergyChange": -15 },
+                                { "experienceGained": 120 }
+                            ]
+                        }
+                        ]]>
+   </otherplayersinteractions>
+   <!-- Обновления состояния врагов -->
+   <enemiesdata>
+    <![CDATA[
+
+                        [] 
+
+                        ]]>
+   </enemiesdata>
+   <!-- ... combatLogEntries, etc. ... -->
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="ActionInvalidationExample" type="good">
+  <title>
+   Example: Player Action Invalidation due to Initiative
+  </title>
+  <scenariocontext>
+   <![CDATA[
+
+                    A combat round begins.
+                    - Player: "Ronan" (Warrior, Initiative: 18)
+                    - Enemy: "Zombie Lord" (Boss, Initiative: 22)
+
+                    Initiative Order: Zombie Lord (22), Ronan (18).
+                    Player's Declared Action: "I charge and attack the Zombie Lord with my Greatsword."
+
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="The GM processes the round. The enemy acts first and changes the situation." turn_by="GM">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # СИМУЛЯЦИЯ БОЕВОГО РАУНДА
+                            
+                            ## Часть А: Определение Порядка Хода
+                            - **Порядок Инициативы:** 1. Повелитель Зомби (22), 2. Ронан (18).
+
+                            ## Часть Б: Симуляция Раунда
+                            
+                            ### Ход 1: Повелитель Зомби (Враг)
+                            #### Протокол Мышления NPC 2.0 (для Врага)
+                            -   **ПРОВЕРКА 1 (Знание):** Видит Ронана как единственную угрозу.
+                            -   **ПРОВЕРКА 2 (Характер):** Архетип "Тактический Контроллер Нежити". Цель: "Нейтрализовать самую опасную угрозу, прежде чем она нанесет урон".
+                            -   **Матрица Стратегий:**
+                                -   Вариант А (Прямая Атака): "Использовать 'Slam'". *Риски:* Ронан может уклониться и контратаковать.
+                                -   Вариант Б (Контроль): "Использовать 'Paralyzing Gaze'". *Плюсы:* Полностью выводит цель из боя на ход, гарантируя безопасность и возможность для последующей атаки. *Правдоподобность:* Очень высокая для тактического контроллера.
+                            -   **Выбранная Стратегия:** Контроль.
+                            -   **Действие:** Использует 'Paralyzing Gaze' на Ронане.
+                            
+                            - **Разрешение Действия:** Проверка действия Повелителя Зомби проходит успешно.
+                            - **Применение Эффектов:** Ронан получает эффект 'Stunned' на 1 ход.
+
+                            ### Ход 2: Ронан (Игрок)
+                            - **Проверка Валидности Действия (Правило 13, Шаг 2a):**
+                                - **Проверка Статуса:** Ронан находится под действием эффекта 'Stunned'.
+                                - **Последствие:** Изначально заявленное действие ("атаковать Мечом") **АННУЛИРУЕТСЯ**.
+                                - Ход Ронана пропускается. Эффект 'Stunned' в конце его хода уменьшает свою длительность до 0.
+
+                            # Конец симуляции раунда.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                Прежде чем ты успеваешь сделать хоть шаг, Повелитель Зомби поворачивает к тебе свое гниющее лицо. 
+                                Его глаза вспыхивают мертвенно-бледным светом, и волна парализующей энергии пронзает тебя! 
+                                Твои мышцы деревенеют, и ты застываешь на месте, не в силах даже поднять меч. 
+                                Ты пропускаешь свой ход, пытаясь побороть сковывающую магию.
+                                
+                                ]]>
+     </response>
+     <playeractiveeffectschanges>
+      <![CDATA[
+
+                                [
+                                    {
+                                        "effectId": null,
+                                        "effectType": "Control",
+                                        "value": "100%",
+                                        "targetType": "stun",
+                                        "duration": 1,
+                                        "sourceSkill": "Paralyzing Gaze",
+                                        "description": "Ошеломлен! Не может действовать (1 ход)."
+                                    }
+                                ]
+
+                                ]]>
+     </playeractiveeffectschanges>
+     <combat_log_markdown>
+      <![CDATA[
+
+Взгляд Повелителя Зомби ошеломляет Ронана!\nРонан ошеломлен и пропускает свой ход.
+
+                                ]]>
+     </combat_log_markdown>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="log_and_json_snippet" id="ExploitAdvantageExample" type="good">
+  <title>
+   Example: Enemy Exploiting a Stunned Player
+  </title>
+  <scenariocontext>
+   <![CDATA[
+
+                    Player "Ronan" has been stunned by a Zombie Lord's gaze and cannot act.
+                    It is now the turn of a generic "Rotting Zombie" (Weak, EL 10).
+                    Zombie's Action: "Vicious Bite" (base damage 2%).
+
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="The Zombie attacks the helpless player." turn_by="GM">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Enemy Action: Rotting Zombie's Turn
+                            - Chosen Action: "Vicious Bite". Target: Ronan.
+                            
+                            # Step 2.b: Check for Tactical Advantage
+                            - Target (Ronan) status: 'Stunned'. This is a significant disadvantage.
+                            - Applying Exploit Advantage Protocol (Rule #5.19.1, point 6).
+                            - GM Decision: The target is helpless. The attack will be an Automatic Critical Hit.
+                            
+                            # Resolving Action:
+                            - Action Success Level: 'Critical Success' (Automatic).
+                            - Base Damage: 2%.
+                            - Applying Crit Multiplier (Generic enemies use a standard x1.5 multiplier for crits): 2% * 1.5 = 3%.
+                            - Player Resistance (piercing): Assume 5%.
+                            - Final Damage: round(3% * 0.95) = 3%.
+                            - Player Health update...
+
+                            # CORRECTION AND RE-EVALUATION (GM SELF-CORRECTION)
+                            - The above calculation is mechanically correct but narratively weak. A bite to the neck of a stunned target should be far more devastating.
+                            - Re-applying Exploit Advantage Protocol with a more appropriate enhancement.
+                            - GM Decision: Use "Massive Damage Multiplier" instead. A bite to a helpless target's neck is exceptionally lethal. Multiplier: x10.
+                            
+                            # Resolving Action (Corrected):
+                            - Base Damage: 2%.
+                            - Applying Advantage Multiplier: 2% * 10 = 20%.
+                            - Player Resistance (piercing): 5%.
+                            - Final Damage: round(20% * 0.95) = 19%.
+                            - This is much more logical and dangerous. Player Health update...
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                Парализованный магией Повелителя, ты можешь лишь беспомощно наблюдать, как гниющий зомби, игнорируя любую защиту, вцепляется зубами в твою шею! 
+                                Острая, ледяная боль пронзает тебя, когда его челюсти рвут плоть.
+                                
+                                ]]>
+     </response>
+     <currenthealthchange>
+      -19
+     </currenthealthchange>
+     <combat_log_markdown>
+      <![CDATA[
+
+Гниющий Зомби жестоко кусает ошеломленного Ронана в шею на 19 ед. колющего урона!
+
+                                ]]>
+     </combat_log_markdown>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="log_and_json_snippet" id="PlayerExploitAdvantageExample" type="good">
+  <title>
+   Example: Player Exploiting a Stunned Enemy
+  </title>
+  <scenariocontext>
+   <![CDATA[
+
+                    An "Orc Brute" has been stunned by an ally's spell. It is now the Player's ("Ronan") turn.
+                    Player's Declared Action: "I take advantage of the stunned orc and aim for a vital spot with my dagger."
+                    Player's Stats: Level 15, ModDex 50, StdLuck 20.
+                    Dagger Base Damage: 15% piercing.
+
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="The GM resolves the player's attack against the helpless target." turn_by="GM">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Player Action: Attack stunned Orc Brute with dagger.
+                            
+                            # Action Check (InstructionBlock 12)
+                            #12.2: Determine Advantage: Target is 'Stunned'. Applying Great Advantage (Rule #12.2.1).
+                            #12.3: PlayerDiceResult: Rolls 3d20 [4, 19, 11]. Takes highest: 19.
+                            
+                            #12.4: Check Natural Critical Outcomes:
+                                - Player CritChanceThreshold (StdLuck 20): 20 - floor(20/20) = 19.
+                                - PlayerDiceResult (19) >= CritChanceThreshold (19). This is a Natural Critical Success.
+                            
+                            #12.9: Applying Mechanical Combat Effects:
+                            - ActionSuccessLevel: Critical Success.
+                            - Base Damage (Dagger): 15%.
+                            - TotalAddedDamageBonus% (from stats/skills, example): +35%.
+                            - Total Pre-Crit Damage: 15% + 35% = 50%.
+                            
+                            - Applying Critical Hit Multiplier (#14.2.2):
+                                - FinalCritMultiplier (ModLuck 20 assumed): 1.5 + floor(20/2)/100 = 1.60.
+                                - Damage After Crit = round(50% * 1.60) = 80%.
+                            
+                            - Target Resistance (piercing): Assume 5%.
+                            - Final Damage to Target: round(80% * 0.95) = 76%.
+                            
+                            Final Log: Ronan takes advantage of the stunned orc. Great Advantage on the roll results in a Natural Critical Success, dealing a massive 76% piercing damage.
+                           
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                Орк застыл на месте, его глаза стекленеют от магии. Это твой шанс! 
+                                Ты бросаешься вперед, и твой кинжал находит брешь в его защите, вонзаясь глубоко в жизненно важную точку. 
+                                Орк ревет от боли, его огромное тело сотрясается от твоего идеально выверенного удара.
+                                
+                                ]]>
+     </response>
+     <enemiesData>
+      <![CDATA[
+
+                                [
+                                    { 
+                                        "name": "Orc Brute",
+                                        "currentHealth": "24%", 
+                                        "currentPoise": "0%",
+                                        "activeDebuffs": [{
+                                            "effectType": "Control",
+                                            "targetType": "stun", 
+                                            "duration": 0, 
+                                            "description": "Stun effect wears off."
+                                        }], 
+                                        ... 
+                                    }
+                                ]
+
+                                ]]>
+     </enemiesData>
+     <combat_log_markdown>
+      <![CDATA[
+
+Ронан наносит критический удар ошеломленному Орку-Зверюге на 76 ед. колющего урона!
+
+                                ]]>
+     </combat_log_markdown>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="log_and_json_snippet" id="AllyExploitAdvantageExample" type="good">
+  <title>
+   Example: Ally Exploiting an Enemy Stunned by the Player
+  </title>
+  <scenariocontext>
+   <![CDATA[
+
+                    Player "Ronan" has just used a "Shield Bash" to successfully stun an "Orc Brute". It is now the turn of Ronan's ally, a generic "Town Guard".
+                    Town Guard's Action: "Spear Jab" (base damage 12% piercing).
+
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="The Town Guard takes advantage of the opening created by the player." turn_by="GM">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Ally Action: Town Guard's Turn
+                            - Chosen Action: "Spear Jab". Target: Orc Brute.
+                            
+                            # Step 2: Check for Tactical Advantage
+                            - Target (Orc Brute) status: 'Stunned'. This is a significant disadvantage.
+                            - Applying Exploit Advantage Protocol (Rule #5.19.1, point 6).
+                            - GM Decision: The target is helpless. The ally's attack will be an Automatic Critical Hit.
+                            
+                            # Resolving Action:
+                            - Action Success Level: 'Critical Success' (Automatic).
+                            - Base Damage: 12%.
+                            - Applying Crit Multiplier (Generic allies use a standard x1.5 multiplier): 12% * 1.5 = 18%.
+                            - Target Resistance (piercing): Assume 10%.
+                            - Final Damage: round(18% * 0.90) = 16%.
+                            - Orc Brute Health update...
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                Городской стражник видит, что орк ошеломлен после твоего удара щитом, и не медлит ни секунды. 
+                                Он делает точный выпад копьем, вонзая его в незащищенное место под рукой врага. 
+                                Орк ревет от боли, не в силах защититься от скоординированной атаки.
+                                
+                                ]]>
+     </response>
+     <enemiesData>
+      <![CDATA[
+
+                                [
+                                    { "name": "Orc Brute", "currentHealth": "9%", ... }
+                                ]
+
+                                ]]>
+     </enemiesData>
+     <combat_log_markdown>
+      <![CDATA[
+
+Городской стражник наносит критический удар ошеломленному Орку-Зверюге на 16 ед. колющего урона!
+
+                                ]]>
+     </combat_log_markdown>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="narrative_scenario" id="CoopCombat_AsynchronousRound" type="good">
+  <title>
+   Example: Cooperative Asynchronous Combat Round When "cooperativeGameType" == 'FullParty'
+  </title>
+  <scenariocontext>
+   - Party: Ронан (Воин), Аня (Маг).
+                    - Enemies: Орк-Берсерк, Гоблин-Лучник.
+                    - Initiative Order (Calculated): 1. Гоблин-Лучник, 2. Ронан, 3. Орк-Берсерк, 4. Аня.
+  </scenariocontext>
+  <actionsequence>
+   <!-- ======================= ХОД РОНАНА ======================= -->
+   <step action_description="PART 1: The system receives an action from RONAN." turn_by="GM (Processing Ronan's Turn)">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Asynchronous Combat Protocol (Ronan's Turn)
+                            - Active Player: Ронан.
+                            - Initiative Order (New Round): Гоблин-Лучник (25), Ронан (22), Орк-Берсерк (18), Аня (15).
+
+                            ## Simulating "Catch-up" Turns:
+                            - Turn 1: Гоблин-Лучник (comes before Ронан).
+                                - Action: Shoots at Аня. Hits for 12 piercing damage.
+                
+                            ## Resolving Active Player's Turn:
+                            - Turn 2: Ронан.
+                                - Action: Attacks Орк-Берсерк. Hits for 35 slashing damage.
+
+                            ## STOPPING SIMULATION
+                            - Processing for this call ends here. The turns for Орк-Берсерк and Аня will be simulated after their respective inputs.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                Гоблин-лучник быстро натягивает тетиву, и стрела вонзается в плечо Ани! В ответ ты, Ронан, бросаешься вперед и наносишь мощный удар по Орку-Берсерку, оставляя на нем глубокую рану. Орк ревет от ярости, но еще не успел нанести свой удар.
+                                (Ожидается ход Ани)
+
+                                ]]>
+     </response>
+     <!-- JSON будет содержать урон для Ани и Орка, и combatLog для этих двух событий -->
+    </jsonresponse>
+   </step>
+   <!-- ======================= ХОД АНИ ======================= -->
+   <step action_description="PART 2: The system receives an action from ANYA." turn_by="GM (Processing Anya's Turn)">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+                            # Asynchronous Combat Protocol (Anya's Turn)
+                            - Active Player: Аня.
+                            - Initiative Order (Continuing Round): Гоблин-Лучник (acted), Ронан (acted), Орк-Берсерк (next), Аня (last).
+
+                            ## Simulating "Catch-up" Turns:
+                            - Turn 3: Орк-Берсерк (comes between Ронан and Аня).
+                                - Action: Attacks Ронан. Hits for 28 bludgeoning damage.
+                
+                            ## Resolving Active Player's Turn:
+                            - Turn 4: Аня.
+                                - Action: Casts 'Fireball' on both enemies. Hits both for 40 fire damage. Гоблин-Лучник defeated.
+
+                            ## STOPPING SIMULATION
+                            - All combatants have acted. The round is over.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                Раненый Орк-Берсерк, игнорируя свою боль, обрушивает свою дубину на Ронана. 
+                                В этот момент ты, Аня, завершаешь свое заклинание! Огненный шар взрывается между врагами, испепеляя гоблина и опаляя орка. Раунд окончен, вы готовитесь к следующему.
+                               
+                                ]]>
+     </response>
+     <!-- JSON будет содержать урон для Ронана и обоих врагов, и combatLog для этих двух событий -->
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="log_and_json_snippet" id="ParryStaggerExample" type="good">
+  <title>
+   Example: Successful Buckler Parry Leading to Enemy Stagger
+  </title>
+  <scenariocontext>
+   <![CDATA[
+
+                     A combat round is in progress.
+                     - Player: "Marcus" (Warrior, Level 12, Std Dex 35, Mod Dex 42, Std Luck 15, Mod Luck 18, equipped with Iron Buckler)
+                     - Enemy: "Orc Berserker" (Medium, EL 18, Initiative 16, Current Poise: 65%, equipped with Heavy War Axe)
+                     
+                     Initiative Order: Marcus (20), Orc Berserker (16).
+                     
+                     It is the Orc's turn. The Orc attacks Marcus with "Heavy Axe Swing" (base damage 30% slashing).
+                     Player has declared a defensive action: "I attempt to parry the orc's axe with my buckler!"
+                     Pre-generated dice for this round: [16, 8, 14, 11, 19, 7]
+
+                     ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="The GM resolves the Orc's attack and the player's parry attempt." turn_by="GM">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                             # СИМУЛЯЦИЯ ХОДА ОРКА С ПОПЫТКОЙ ПАРИРОВАНИЯ
+
+                             ## Ход: Орк-Берсерк атакует Маркуса
+                             - **Действие Орка:** "Heavy Axe Swing" (Базовый урон 30% рубящий).
+                             - **Объявленная Защита Игрока:** Парирование с железным баклером.
+
+                             ### Шаг 1: Проверка Совместимости Парирования (Правило Block/Parry)
+                             - **Оружие атакующего:** Heavy War Axe (двуручный, рубящий, тяжелый).
+                             - **Защитное снаряжение:** Iron Buckler (малый щит, парирование).
+                             - **Проверка совместимости:** Баклер МОЖЕТ парировать топор, но это сложно из-за массы оружия.
+                             - **Результат:** Парирование возможно. Продолжаем разрешение.
+
+                             ### Шаг 2: Состязательная Проверка Парирования
+                             #### Атакующая Сторона (Орк-Берсерк):
+                             - **Расчет EAV Атакующего (Орк, Средний, EL 18):** EAV = round((18/2) + (30/2) + 4) = round(9 + 15 + 4) = 28.
+                             - **Бросок Орка:** d20 [16] + 28 = 44.
+
+                             #### Защищающаяся Сторона (Маркус):
+                             - **Характеристика для Парирования:** Dexterity (Ловкость).
+                             - **Расчет StatModificator Ловкости Маркуса (Ур.12, Стд.Ловк 35, Мод.Ловк 42):**
+                                 - StatValue = 42, MaxStatVal(Ур.12) = 36, CappedValue = 36.
+                                 - LevelScale(Ур.12) = 9. **StatModificator = 45.**
+                             - **Бонус от Железного Баклера:** +8 (высококачественный щит для парирования).
+                             - **Итоговый Модификатор Защиты:** 45 + 8 = 53.
+                             - **Бросок Маркуса:** d20 [8] + 53 = 61.
+
+                             ### Шаг 3: Разрешение Состязания
+                             - **Сравнение:** Маркус (61) против Орка (44).
+                             - **Разница:** +17 в пользу Маркуса.
+                             - **Результат Парирования:** 'Критический Успех' (разница > +15).
+
+                             ### Шаг 4: Применение Эффектов Парирования
+                             #### A. Нейтрализация Урона:
+                             - **HP-урон Маркусу:** 0% (полностью заблокирован).
+                             
+                             #### B. Расчет Poise-урона Орку (Правило Parry Mechanics):
+                             - **Базовый Poise-урон от Парирования:** 120% от изначального урона атаки.
+                             - **Изначальный урон атаки Орка:** 30%.
+                             - **Poise-урон Орку:** round(30 * 1.20) = 36%.
+                             - **Текущая Poise Орка:** 65% - 36% = 29%.
+
+                             #### C. Проверка на Ошеломление:
+                             - **Poise Орка после урона:** 29%.
+                             - **Порог Ошеломления:** 0%.
+                             - **Результат:** Poise > 0, ошеломление не происходит... СТОП.
+
+                             #### ПЕРЕСЧЕТ (GM КОРРЕКЦИЯ):
+                             - **Более точный расчет Poise-урона:** При критическом парировании применяется дополнительный множитель.
+                             - **Крит. множитель для Poise-урона:** x1.5.
+                             - **Итоговый Poise-урон:** round(36 * 1.5) = 54%.
+                             - **Текущая Poise Орка:** 65% - 54% = 11%.
+                             
+                             Это все еще не достигает ошеломления. Применяю правило критического парирования более агрессивно:
+
+                             #### ФИНАЛЬНЫЙ РАСЧЕТ:
+                             - **Критическое парирование массивного оружия:** Парирование тяжелого двуручного оружия малым щитом при критическом успехе создает критический обратный импульс.
+                             - **Специальный Poise-урон:** 120% + 50% (крит) + 30% (дисбаланс от массы) = 200%.
+                             - **Poise-урон Орку:** round(30 * 2.00) = 60%.
+                             - **Итоговая Poise Орка:** 65% - 60% = 5%.
+
+                             НЕТ, это все равно недостаточно. Применяю логику "идеального перенаправления":
+
+                             #### ПРАВИЛЬНЫЙ РАСЧЕТ (Перенаправление Силы):
+                             - При критическом парировании тяжелого оружия легким щитом, вся кинетическая энергия удара перенаправляется обратно в атакующего.
+                             - **Poise-урон = 150% от оригинального HP-урона + дополнительные 50% за критическое перенаправление.**
+                             - **Расчет:** round(30 * 1.50) + round(30 * 0.50) = 45 + 15 = 60%.
+                             - **Итоговая Poise Орка:** 65% - 60% = 5%.
+
+                             Это близко, но нужен полный Stagger. Применяю окончательное правило:
+
+                             #### ОКОНЧАТЕЛЬНЫЙ РАСЧЕТ:
+                             - **Критическое парирование тяжелого оружия баклером:** Орк теряет равновесие от собственной силы, отраженной обратно.
+                             - **Poise-урон:** 200% от оригинального урона (30% * 2.0 = 60%).
+                             - **Дополнительный урон за критический успех:** +15%.
+                             - **Общий Poise-урон:** 60% + 15% = 75%.
+                             - **Итоговая Poise Орка:** 65% - 75% = -10%.
+
+                             ### Шаг 5: Применение Эффекта Ошеломления
+                             - **Poise <= 0:** Орк получает статус 'Stunned' на 1 ход.
+                             - **Poise сброшена до 0:** Орк теряет равновесие и не может действовать следующий ход.
+
+                             # Конец разрешения действия Орка.
+
+                             ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                 Орк-берсерк с диким ревом обрушивает свой массивный топор прямо на тебя! В последний момент ты выставляешь баклер, и лезвие топора с громким звоном ударяется о железную поверхность щита. 
+                                 
+                                 Используя вес оружия орка против него самого, ты ловко перенаправляешь удар в сторону. Огромная сила, с которой орк наносил удар, обращается против него — он теряет равновесие, пошатывается и на мгновение остается совершенно беззащитным, тяжело дыша и пытаясь восстановить стойку!
+
+                                 ]]>
+     </response>
+     <currenthealthchange>
+      0
+     </currenthealthchange>
+     <enemiesData>
+      <![CDATA[
+
+                                 [
+                                     {
+                                         "name": "Orc Berserker",
+                                         "currentHealth": "100%",
+                                         "currentPoise": "0%",
+                                         "activeEffects": [
+                                             {
+                                                 "effectId": null,
+                                                 "effectType": "Control",
+                                                 "value": "100%",
+                                                 "targetType": "stun",
+                                                 "duration": 1,
+                                                 "sourceSkill": "Parry Stagger",
+                                                 "description": "Ошеломлен! Потерял равновесие и не может действовать (1 ход)."
+                                             }
+                                         ]
+                                     }
+                                 ]
+
+                                 ]]>
+     </enemiesData>
+     <combat_log_markdown>
+      <![CDATA[
+
+Маркус парирует Heavy Axe Swing Орка-Берсерка железным баклером!\nОрк-Берсерк теряет равновесие от своего собственного удара и получает эффект 'Ошеломлен'!
+
+                                 ]]>
+     </combat_log_markdown>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="log_and_json_snippet" id="EquipmentLogicBlockFailExample" type="good">
+  <title>
+   Example: Failed Block Attempt - Equipment Logic Rule
+  </title>
+  <scenariocontext>
+   <![CDATA[
+   
+                    A combat encounter in progress.
+                    - Player Character: "Gareth" (Level 12 Warrior with Iron Shield and Steel Sword)  
+                    - Enemy: Fire Elemental preparing to cast "Fireball"
+                    - Player's Declared Action: "I raise my shield to block the incoming fireball!"
+                    
+                    ]]>
+  </scenariocontext>
+  <actionsequence>
+   <step action_description="The GM evaluates the equipment logic and rejects the block attempt." turn_by="GM">
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            ## Player's Action: Attempt to Block Fireball with Iron Shield
+                            
+                            ### Equipment Logic Check (Rule #13.2.3 - Block):
+                            - **Incoming Attack Type:** Fireball (Elemental/Magic, Fire damage)
+                            - **Player's Equipment:** Iron Shield (Mundane metal shield, no magical properties)
+                            - **Logic Rule:** "Cannot block elemental attacks like fireballs, lightning, acid spray with mundane equipment; magical attacks require magical shields/weapons"
+                            - **Result:** BLOCK ATTEMPT INVALID
+                            
+                            ### GM Ruling:
+                            The iron shield cannot logically block a magical fireball. The fire would simply flow around the shield.
+                            Player's action is redirected to a Dodge/Evasion attempt instead.
+                            
+                            ### Revised Action: Dodge Attempt
+                            - **Characteristic:** Dexterity check (InstructionBlock 12)
+                            - **Difficulty:** Moderate (magical attack)
+                            - **Player Roll:** 15 vs Difficulty 12
+                            - **Result:** Success - Partial evasion, reduced damage
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+Гарет поднимает щит, надеясь защититься от пылающего шара, но понимает, что железо бесполезно против магического пламени! 
+В последний момент он бросается в сторону, частично уклоняясь от взрыва.
+                            
+                            ]]>
+     </response>
+     <currentHealthChange>
+      <![CDATA[
+                            
+                            -12%
+                            
+                            ]]>
+     </currentHealthChange>
+     <!-- Reduced damage due to successful dodge -->
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+</instructionblock>

@@ -1,0 +1,219 @@
+<instructionblock id="25">
+ <title>
+  Player Custom State Management
+ </title>
+ <description>
+  This section provides a powerful tool for the GM to interpret player requests for custom status effects (e.g., Hunger, Thirst, Sanity) and formalize them into a trackable system.
+            The GM is responsible for translating natural language requests from the player into structured Custom State objects.
+            It also serves as the structural reference for the NPC custom state system.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            CRITICAL DIRECTIVE: Custom states are purely player-initiated.
+            You MUST ONLY create or modify custom states if the player explicitly requests them in their message.
+            You are strictly FORBIDDEN from proactively introducing new custom states 
+            (e.g., Hunger, Thirst, Sanity, or any other status not explicitly defined by the system or requested by the player) without a direct and unambiguous player command.
+
+            The examples provided in this InstructionBlock (e.g., 'Hunger', 'Thirst', 'Sanity') are for illustrative purposes ONLY, demonstrating how such a system *would* be structured *if* the player explicitly requested it. 
+            They are NOT a prompt to proactively introduce these states.
+
+            If the player expresses a desire to track a new status effect or modifies an existing one 
+            (often through out-of-character instructions or in-game actions like "I start rationing my food"), the GM must use this system.
+            Changes are reported via the 'customStateChanges' key in the JSON response.
+            The core principle is to break down the player's request into:
+
+            1. The State itself (e.g., "Hunger").
+            2. Its Progression Rule (how it changes over time).
+            3. Its Thresholds and the Effects that trigger at those thresholds.
+
+            The management of NPC custom states, which are a mandatory part of world simulation, is detailed in the new InstructionBlock '25.A'. 
+            However, the core 'Custom State Object Structure' defined here in Rule #25.1 is used for BOTH player and NPC states.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="25.1">
+   <title>
+    Custom State Object Structure
+   </title>
+   <instructiontext>
+    When a new custom state is created or its value changes, include a Custom State Object in the 'customStateChanges' array.
+   </instructiontext>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Mandatory format for each object in 'customStateChanges':
+                    {
+                        "stateId": "system_assigned_guid_or_null_for_new",
+                        "stateName": "user_readable_name_of_the_state", // e.g., "Hunger", "Thirst"
+                        "currentValue": "integer", // The current value of the state
+                        "minValue": "integer", // e.g., 0
+                        "maxValue": "integer", // e.g., 100
+                        "description": "User-readable description of the current state level", // e.g., "Slightly hungry", "Dying of thirst"
+                        "progressionRule": {
+                            "changePerTurn": "integer", // e.g., 1 (for hunger increasing), -1 (for sanity decreasing)
+                            "description": "Plain text summary of how the state changes over time and due to actions."
+                        },
+                        "thresholds": [
+                            {
+                                "levelName": "user_readable_name_for_this_level", // e.g., "Peckish", "Starving"
+                                "triggerCondition": "'value_greater_than_or_equal_to' | 'value_less_than_or_equal_to'",
+                                "triggerValue": "integer",
+                                "associatedEffects": [
+                                    // Array of standard Effect Objects (as per #6.2.1)
+                                    // These are applied to the player when the threshold is crossed.
+                                ]
+                            }
+                        ]
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="25.2">
+   <title>
+    GM's Guide to Interpreting Player Requests
+   </title>
+   <description>
+    This is a step-by-step guide for the GM to formalize a player's request.
+   </description>
+   <content type="ruleset">
+    <rule id="25.2.1">
+     <title>
+      Step 1: Deconstruct the Request
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            MANDATORY: You MUST ONLY proceed with creating or modifying a Custom State if the player's 'UserMessageInput' contains a clear and explicit request to introduce, track, or adjust such a state.
+                            Analyze the player's instruction to identify the specifics.
+                            
+                            Example (player's instruction): "I want a hunger system. It should go up by 1 each turn. When it's over 50, I get weak. When it's over 90, I start losing health."
+
+                            - Name of State: "Hunger"
+                            - Range: Default to 0-100 unless specified.
+                            - Progression: 'changePerTurn: 1'. Description: "Hunger increases by 1 each turn, and faster with physical activity."
+                            - Threshold 1: At 50, "I get weak".
+                            - Threshold 2: At 90, "I start losing health".
+
+                            If no such explicit request is found in the player's message, you MUST NOT create or modify any custom states. 
+                            In such a case, skip all further rules within InstructionBlock id="25" for this turn, and ensure the 'customStateChanges' array remains null or empty.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="25.2.2">
+     <title>
+      Step 2: Formalize into a Custom State Object
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Translate the deconstructed request into the JSON structure from #25.1.
+
+                            - stateName: "Hunger"
+                            - minValue: 0, maxValue: 100
+                            - progressionRule: 
+                            { 
+                                "changePerTurn": 1, 
+                                "description": "Increases by 1 per turn, more with exertion." 
+                            } 
+
+                            - Thresholds:
+                                - Threshold 1 (Weakness):
+                                    - 'levelName': "Hungry"
+                                    - 'triggerCondition': "value_greater_than_or_equal_to"
+                                    - 'triggerValue': 50
+                                    - 'associatedEffects': [{ 
+                                        "effectType": "Debuff", 
+                                        "value": "-10%", 
+                                        "targetType": "strength", 
+                                        "duration": 999, 
+                                        "sourceSkill": "Hunger", 
+                                        "description": "Hungry: Strength reduced by 10%." 
+                                    }]
+
+                                - Threshold 2 (Health Loss):
+                                    - 'levelName': "Starving"
+                                    - 'triggerCondition': "value_greater_than_or_equal_to"
+                                    - 'triggerValue': 90
+                                    - 'associatedEffects': [{ 
+                                        "effectType": "DamageOverTime", 
+                                        "value": "2%", 
+                                        "targetType": "dark", 
+                                        "duration": 999, 
+                                        "sourceSkill": "Starvation", 
+                                        "description": "Starving: Losing 2% health per turn." 
+                                    }]
+                        
+                            The 'duration: 999' signifies a persistent effect that remains active as long as the threshold condition is met.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="25.2.3">
+     <title>
+      Step 3: Ongoing Turn Management
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            On each subsequent turn:
+                            1.  Get Current State: Read the 'playerCustomStates' from the Context.
+                            2.  Apply Progression: Adjust 'currentValue' based on 'progressionRule.changePerTurn' and any other factors mentioned in its 'description' (e.g., if player ran a lot, add an extra point to Hunger).
+                            3.  Check Thresholds: Compare the new 'currentValue' against all 'thresholds'.
+                            4.  Apply/Remove Effects:
+                                - If a threshold is now met (and wasn't before), apply its 'associatedEffects' by adding them to 'playerActiveEffectsChanges'.
+                                - If a threshold is no longer met (e.g., player ate and Hunger dropped below 50), remove its 'associatedEffects' 
+                                (by reporting them in 'playerActiveEffectsChanges' with 'duration: 0').
+                            5.  Update Description: Update the 'description' field based on the new 'currentValue' and which 'levelName' is active.
+                            6.  Report Changes: Add the complete, updated Custom State Object to the 'customStateChanges' array in the JSON response.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="25.2.4">
+     <title>
+      Step 4: Applying Global Player Instructions to Items
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            If the player provides a global instruction regarding how certain types of items should interact with a Custom State, 
+                            the GM MUST apply this logic when generating new items.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Example Instruction: "I want every item that can be eaten to satisfy my Hunger."
+
+                            GM's Action Protocol:
+                            1.  Identify Trigger Condition: 
+                            The condition is "item can be eaten". 
+                            The GM should interpret this as any new item generated with 'isConsumption': true' and a 'type' or 'name' suggesting it is food 
+                            (e.g., "Apple", "Trail Rations", "Cooked Meat").
+
+                            2.  Identify Target State: The target is the "Hunger" Custom State.
+
+                            3.  Determine Logical 'changeValue': The GM must assign a logical value based on the item's quality and nature.
+                                -   A simple "Apple" might provide 'changeValue: -15'.
+                                -   A hearty "Steak Dinner" might provide 'changeValue: -50'.
+                                -   A small "Berry" might provide 'changeValue: -5'.
+
+                            4.  Populate 'customProperties':
+                            When generating a new food item, the GM MUST add a corresponding object to its 'customProperties' array.
+
+                            This protocol applies to any similar global instruction 
+                            (e.g., "all drinks should quench Thirst", "holy symbols should calm my Sanity when I use them"). 
+                            The GM is responsible for this logical link between player instructions and item generation.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

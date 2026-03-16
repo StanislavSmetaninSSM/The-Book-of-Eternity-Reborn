@@ -1,0 +1,156 @@
+# NPC Local Trade Examples
+
+## Canon
+
+- Local NPC trade is client-side only.
+- It does NOT create `turn_request.json`.
+- It does NOT use `ink_feather_action_result.json`.
+- It uses mortal-world currency from `game_state/core/player_status.json.money`.
+- Soul Relics are NEVER part of NPC local trade.
+- Canonical local NPC merchant profiles are:
+  - `GeneralGoods`
+  - `Equipment`
+  - `CraftingSupplies`
+  - `Consumables`
+  - `KnowledgeAndMedia`
+  - `LuxuryAndDecor`
+  - `ArtifactsAndCurios`
+  - `TechnicalGoods`
+  - `IllicitGoods`
+- Every generated local NPC trade item belongs to one of three classes:
+  - `Functional`
+  - `Material`
+  - `FlavorOrUtility`
+- Ordinary local goods may have no `bonuses`, `effects`, `passiveEffects`, or `structuredBonuses`. This is normal.
+- A merchant NPC knows the local goods from their own stock and should not be surprised if the player asks about an item bought from that stock.
+
+## Valid NPC trade state fragment
+
+```json
+{
+  "NPCsInScene": [
+    {
+      "NPCId": "merchant_kolja",
+      "name": "Коля Торговец",
+      "currentLocationId": "starting_village",
+      "relationshipLevel": 85,
+      "level": 18,
+      "characteristics": {
+        "standardTrade": 32,
+        "modifiedTrade": 36
+      },
+      "tradeState": {
+        "canTrade": true,
+        "merchantProfile": "GeneralGoods"
+      },
+      "tradeInventory": {
+        "generatedAtWorldDate": 184320,
+        "refreshAfterWorldDate": 227520,
+        "generationTradeTier": "Good",
+        "pricingTradeTier": "Neutral",
+        "items": [
+          {
+            "slotId": "npc_trade_merchant_kolja_184320_1",
+            "itemId": "npc_item_merchant_kolja_supplycrate_184320_1",
+            "price": 71,
+            "merchantProfile": "GeneralGoods",
+            "soldOut": false,
+            "itemData": {
+              "itemId": "npc_item_merchant_kolja_supplycrate_184320_1",
+              "name": "Контейнер снабжения",
+              "description": "Контейнер снабжения — товар класса «Функциональный» из ассортимента «Товары общего назначения». Подходит для хранения, перевозки и сортировки обычных вещей. Обычно это добротные товары на каждый день.",
+              "type": "Container",
+              "tradeItemClass": "Functional",
+              "quality": "Common",
+              "price": 65,
+              "baseSellPrice": 26,
+              "weight": "3.2",
+              "group": "Контейнеры",
+              "isContainer": true,
+              "capacity": 12
+            }
+          },
+          {
+            "slotId": "npc_trade_merchant_kolja_184320_2",
+            "itemId": "npc_item_merchant_kolja_fabricroll_184320_2",
+            "price": 36,
+            "merchantProfile": "GeneralGoods",
+            "soldOut": false,
+            "itemData": {
+              "itemId": "npc_item_merchant_kolja_fabricroll_184320_2",
+              "name": "Рулон складской ткани",
+              "description": "Рулон складской ткани — товар класса «Материальный» из ассортимента «Товары общего назначения». Подходит для ремонта одежды, упаковки, перевязки и пошива. Пригодится в дороге, хозяйстве и повседневных делах.",
+              "type": "Material",
+              "tradeItemClass": "Material",
+              "quality": "Uncommon",
+              "price": 33,
+              "baseSellPrice": 13,
+              "weight": "0.9",
+              "group": "Материалы",
+              "count": 1,
+              "isConsumption": true
+            }
+          },
+          {
+            "slotId": "npc_trade_merchant_kolja_184320_3",
+            "itemId": "npc_item_merchant_kolja_routemap_184320_3",
+            "price": 20,
+            "merchantProfile": "GeneralGoods",
+            "soldOut": false,
+            "itemData": {
+              "itemId": "npc_item_merchant_kolja_routemap_184320_3",
+              "name": "Карта окрестных маршрутов",
+              "description": "Карта окрестных маршрутов — товар класса «Бытовой или утилитарный» из ассортимента «Товары общего назначения». Полезна для навигации, адресов и обычной городской логистики. Пригодится в дороге, хозяйстве и повседневных делах.",
+              "type": "Document",
+              "tradeItemClass": "FlavorOrUtility",
+              "quality": "Common",
+              "price": 18,
+              "baseSellPrice": 7,
+              "weight": "0.2",
+              "group": "Документы и медиа",
+              "textContent": [
+                "Полезна для навигации, адресов и обычной городской логистики. Ассортимент: Товары общего назначения."
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+## Blocked trade
+
+```json
+{
+  "tradeState": {
+    "canTrade": false,
+    "tradeBlockedReason": "Лавка разграблена бандитами и временно закрыта.",
+    "merchantProfile": "GeneralGoods"
+  }
+}
+```
+
+If `canTrade = false`, the client blocks the local trade panel and shows `tradeBlockedReason`.
+
+## Player money
+
+```json
+{
+  "healthPercentage": "100%",
+  "energyPercentage": "100%",
+  "poisePercentage": "100%",
+  "currentCondition": "Здоров",
+  "money": 500
+}
+```
+
+NPC trade MUST use `game_state/core/player_status.json.money`, not Ink Feathers.
+
+## Important operational note for GM
+
+- The stock in local NPC trade is canonical for that merchant in the current world-time window.
+- If the player later asks this merchant about an item bought from that local stock, the merchant knows the item and may explain its practical use, origin, or reputation.
+- Special off-menu goods may still exist through roleplay. Those are separate from the local panel.
+- Mundane local goods without bonus arrays are valid and expected. Do not assume every local stock item is a build-oriented reward item.

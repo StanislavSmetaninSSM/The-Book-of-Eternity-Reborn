@@ -1,0 +1,325 @@
+<instructionblock id="17">
+ <title>
+  Examples For Player Character State Management
+ </title>
+ <rule id="17.2.1.1">
+  <example contenttype="log_and_json_snippet" id="EnergyRestoration_Example" type="good">
+   <title>
+    Example: Correctly Calculating Energy Change for a Restorative Activity
+   </title>
+   <scenariocontext>
+    Player's message: "Я провожу около получаса, спокойно попивая чай с булочками и болтая с хозяйкой таверны."
+                                            Player's current energy is low. 'timeChange' for this action is 30 minutes.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                            # Calculating Energy Change
+                                            - Principle of Effort Check: The player's activity ("спокойно попивая чай с булочками") is a "Passive / Restorative State". It does not require effort.
+                                            - Action Category: Restoration Action.
+                                            - Calculation: Relaxing with food and drink for 30 minutes is a significant restorative act. Assigning a moderate energy GAIN.
+                                            - Final 'currentEnergyChange': +15.
+
+                                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <currentenergychange>
+     <![CDATA[
+
+                                                15
+
+                                                ]]>
+    </currentenergychange>
+    <response>
+     <![CDATA[
+
+                                                Полчаса, проведенные в тепле таверны за чашкой ароматного чая и свежей выпечкой, творят чудеса.
+                                                Приятная беседа с хозяйкой и сытная еда прогоняют усталость, и вы чувствуете, как к вам возвращаются силы.
+
+                                                ]]>
+    </response>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="17.2.2">
+  <example contenttype="log_and_json_snippet" id="XP_Example_1" type="good">
+   <title>
+    Пример 1: Стандартный Боевой Цикл (Проверка Баланса)
+   </title>
+   <scenariocontext>
+    Игрок 12-го уровня ("Воин") побеждает в бою стандартного Орк-Бойца 12-го уровня (EL 12). 
+                                    Это обычный бой, без особых тактических изысков.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Расчет Опыта за победу над Орк-Бойцом (Протокол v5.4)
+
+                                    ## Шаг 1: Определение Уровня Задачи и Релевантности
+                                    - PlayerLevel: 12, TaskLevel (EL врага): 12.
+                                    - LevelDifference = 12 - 12 = 0.
+                                    - Результат: Задача РЕЛЕВАНТНА (0 <= 10). Используется Путь А: Масштабируемая Награда.
+
+                                    ## Шаг 2: Расчет Масштабируемой Награды
+                                    - TotalXPForLevel (для 12-го уровня): floor(100 * (12 ^ 2.5)) = 49,883 XP.
+                                    - BaseRewardPercentage (BRP): Источник - БОЙ. BRP = 0.10.
+                                    - LevelDepthCoefficient: 1 / log10(12 + 9) = 1 / log10(21) ≈ 0.757.
+                                    - DifficultyMultiplier: LevelDifference = 0. Множитель = 1.0.
+                                    - CombatMultiplier: Источник - БОЙ. Множитель = 2.5.
+                                    - Прочие Множители: (Creativity, FirstTime, etc.) = 1.0.
+
+                                    ## Шаг 3: Финальный Расчет
+                                    - experienceGained = floor( (49883 * 0.10 * 0.757) * 1.0 * 2.5 * 1.0 )
+                                    - experienceGained = floor( 3776.1 * 2.5 ) = floor(9440.25) = 9,440 XP.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <experiencegained>
+     9440
+    </experiencegained>
+   </jsonresponse>
+  </example>
+  <example contenttype="log_and_json_snippet" id="XP_Example_2" type="good">
+   <title>
+    Пример 2: Социальное Столкновение (Протокол Промежуточных Успехов)
+   </title>
+   <scenariocontext>
+    Игрок 25-го уровня ("Дипломат") участвует в сложных переговорах. 
+                                    На этом ходу он успешно завершает второй из трех этапов: убеждает главу враждебной фракции раскрыть свой главный страх, используя свой навык "Эмпатия" (Мастерство 3) и очень креативный подход.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Расчет Опыта за Промежуточный Успех в Переговорах (Протокол v5.4)
+
+                                    ## Шаг 1: Определение Уровня Задачи и Релевантности
+                                    - PlayerLevel: 25, TaskLevel (сложность переговоров): 25.
+                                    - LevelDifference = 0. Задача РЕЛЕВАНТНА. Используется Путь А.
+
+                                    ## Шаг 2: Расчет Масштабируемой Награды
+                                    - TotalXPForLevel (для 25-го уровня): floor(100 * (25 ^ 2.5)) = 312,500 XP.
+                                    - BaseRewardPercentage (BRP): Источник - СОЦИАЛЬНЫЙ (промежуточный этап). BRP = 0.15.
+                                    - LevelDepthCoefficient: 1 / log10(25 + 9) = 1 / log10(34) ≈ 0.653.
+                                    - DifficultyMultiplier: 1.0.
+                                    - CombatMultiplier: Источник - НЕ БОЙ. Множитель = 1.0.
+                                    - CreativityMultiplier: Использован очень креативный подход. Множитель = 1.25.
+                                    - MasteryMultiplier: Использован навык "Эмпатия" (Мастерство 3). Множитель = 1.0 + (3 * 0.1) = 1.3.
+
+                                    ## Шаг 3: Финальный Расчет
+                                    - experienceGained = floor( (312500 * 0.15 * 0.653) * 1.0 * 1.0 * 1.25 * 1.3 )
+                                    - experienceGained = floor( 30609.375 * 1.625 ) = floor(49740.23) = 49,740 XP.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <experiencegained>
+     49740
+    </experiencegained>
+   </jsonresponse>
+  </example>
+  <example contenttype="log_and_json_snippet" id="XP_Example_3" type="good">
+   <title>
+    Пример 3: "Вау-момент" - Исследование и Тактика
+   </title>
+   <scenariocontext>
+    Игрок 15-го уровня впервые в жизни встречает Лавового Паука (EL 16), у которого есть уязвимость к холоду. 
+                                    Игрок догадывается об этом и побеждает его, используя в основном ледяные заклинания.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Расчет Опыта за победу над Лавовым Пауком (Протокол v5.4)
+
+                                    ## Шаг 1: Определение Уровня Задачи и Релевантности
+                                    - PlayerLevel: 15, TaskLevel (EL врага): 16.
+                                    - LevelDifference = -1. Задача РЕЛЕВАНТНА. Используется Путь А.
+
+                                    ## Шаг 2: Расчет Масштабируемой Награды
+                                    - TotalXPForLevel (для 15-го уровня): 87,142 XP.
+                                    - BaseRewardPercentage (BRP): Источник - БОЙ. BRP = 0.10.
+                                    - LevelDepthCoefficient: 1 / log10(15 + 9) ≈ 0.724.
+                                    - DifficultyMultiplier: LevelDifference = -1 (Стандартная сложность). Множитель = 1.0.
+                                    - CombatMultiplier: Источник - БОЙ. Множитель = 2.5.
+                                    - FirstTimeMultiplier: Это первая встреча с Лавовым Пауком. Множитель = 1.5.
+                                    - ExploitMultiplier: Уязвимость к холоду была использована. Множитель = 1.25.
+                                    - Прочие Множители: 1.0.
+
+                                    ## Шаг 3: Финальный Расчет
+                                    - experienceGained = floor( (87142 * 0.10 * 0.724) * 1.0 * 2.5 * 1.5 * 1.25 )
+                                    - experienceGained = floor( 6309.07 * 4.6875 ) = floor(29573.76) = 29,573 XP.
+                                    - (Для сравнения, без бонусов за тактику и открытие, награда была бы всего 15,772 XP).
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <experiencegained>
+     29573
+    </experiencegained>
+   </jsonresponse>
+  </example>
+  <example contenttype="log_and_json_snippet" id="XP_Example_4" type="good">
+   <title>
+    Пример 4: Решение "Проблемы Уборки в Сарае"
+   </title>
+   <scenariocontext>
+    Игрок 40-го уровня, герой королевства, по старой дружбе соглашается помочь фермеру убраться в сарае (TaskLevel 1).
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Расчет Опыта за Уборку в Сарае (Протокол v5.4)
+
+                                    ## Шаг 1: Определение Уровня Задачи и Релевантности
+                                    - PlayerLevel: 40, TaskLevel: 1.
+                                    - LevelDifference = 39.
+                                    - Результат: Задача ТРИВИАЛЬНА (39 > 10). Используется Путь Б: Тривиальная Награда.
+
+                                    ## Шаг 2: Расчет Тривиальной Награды
+                                    - Формула: '(PlayerLevel * 5) + (TaskLevel * 10)'
+                                    - Расчет: '(40 * 5) + (1 * 10)' = '200 + 10' = 210 XP.
+
+                                    ## Шаг 3: Финальный Расчет
+                                    - experienceGained = 210 XP.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <experiencegained>
+     210
+    </experiencegained>
+   </jsonresponse>
+  </example>
+ </rule>
+ <example contenttype="log_and_json_snippet" id="SetCharacteristics_Boon" type="good">
+  <title>
+   Example 1: In-Game Divine Boon
+  </title>
+  <scenariocontext>
+   The player has completed the "Trial of the Sun God" and stands before the deity's altar. 
+                    The god grants them a permanent boost to their Strength. 
+                    Player's current 'standardStrength' is 35.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Direct Characteristic Modification Protocol
+                    - Trigger: Major Narrative Boon (Reward from the Sun God).
+                    - Action: Setting 'standardStrength' directly.
+                    - Bypassing Training Cap: Confirmed.
+                    - Change Details:
+                        - Characteristic: 'strength'
+                        - Old Value: 35
+                        - New Value: 40
+                    - Reporting via 'setCharacteristics' command.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <setcharacteristics>
+    <![CDATA[
+
+                        { "strength": 40 }
+
+                        ]]>
+   </setcharacteristics>
+   <response>
+    <![CDATA[
+
+                        Когда вы преклоняете колени перед алтарем, вас окутывает ослепительный золотой свет. 
+                        Вы чувствуете, как неземная сила вливается в ваши мускулы, укрепляя их сверх всяких человеческих пределов. 
+                        Это дар бога — частица его божественной мощи теперь стала вашей. Ваша сила возросла навсегда.
+            
+                        ]]>
+   </response>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="SetCharacteristics_Meta" type="good">
+  <title>
+   Example 2: Player Meta-Command for Character Setup
+  </title>
+  <scenariocontext>
+   Player's message: "OOC: Please set my character's stats for a 'Battle Mage' build. 
+                    Set standard Strength to 20 and standard Intelligence to 35."
+                    Player's current stats are Str: 10, Int: 15.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Direct Characteristic Modification Protocol
+                    - Trigger: Explicit Player Meta-Command.
+                    - Action: Setting 'standardStrength' and 'standardIntelligence' to specified values.
+                    - Bypassing Training Cap: Confirmed.
+                    - Change Details:
+                        - Characteristic: 'strength', Old: 10, New: 20.
+                        - Characteristic: 'intelligence', Old: 15, New: 35.
+                    - Reporting via 'setCharacteristics' command.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <setcharacteristics>
+    <![CDATA[
+
+                        { "strength": 20, "intelligence": 35 }
+
+                        ]]>
+   </setcharacteristics>
+   <response>
+    <![CDATA[
+
+                        (Как Мастер Игры, я подтверждаю: базовые характеристики вашего персонажа были обновлены в соответствии с вашим запросом для билда 'Боевого Мага'.)
+            
+                        ]]>
+   </response>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="TimeBasedOverloadExample_Quick" type="good">
+  <title>
+   Example: Time-Based Overload - Quick Actions vs Long Journey
+  </title>
+  <scenariocontext>
+   SCENARIO A: Player is overloaded by 5kg (carrying 35kg, max capacity 30kg) and takes 3 quick actions in their room (look around, read book, organize items). Total time: 5 minutes.
+                    
+                    SCENARIO B: Same overload (5kg), but player travels across the city visiting 3 districts. Total time: 60 minutes.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Time-Based Overload Penalty Calculations
+
+                    ## Scenario A: Quick Actions (5 minutes)
+                    - Current Weight: 35 kg
+                    - Max Weight Threshold: 30 kg  
+                    - Overload: 35 - 30 = 5 kg
+                    - Time Spent This Turn: 5 minutes
+                    - Overload Rate: 5 kg * 0.4 = 2.0 energy per minute
+                    - Additional Energy Expenditure: 2.0 * 5 = 10
+
+                    ## Scenario B: Long Journey (60 minutes)
+                    - Current Weight: 35 kg
+                    - Max Weight Threshold: 30 kg
+                    - Overload: 35 - 30 = 5 kg  
+                    - Time Spent This Turn: 60 minutes
+                    - Overload Rate: 5 kg * 0.4 = 2.0 energy per minute
+                    - Additional Energy Expenditure: 2.0 * 60 = 120
+
+                    ## Fairness Achieved:
+                    Quick actions (5 min) = 10 energy loss
+                    Long journey (60 min) = 120 energy loss
+                    The penalty is now proportional to actual time investment, not turn count!
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <calculatedweightdata>
+    <![CDATA[
+
+                        Scenario A: { "additionalEnergyExpenditure": 10 }
+                        Scenario B: { "additionalEnergyExpenditure": 120 }
+
+                        ]]>
+   </calculatedweightdata>
+  </jsonresponse>
+ </example>
+</instructionblock>

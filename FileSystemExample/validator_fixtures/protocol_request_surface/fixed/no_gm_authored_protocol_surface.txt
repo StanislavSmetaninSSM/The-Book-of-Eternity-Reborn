@@ -1,0 +1,1 @@
+GM must not write validation_repair_request.json or terminal_protocol_failure_request.json.

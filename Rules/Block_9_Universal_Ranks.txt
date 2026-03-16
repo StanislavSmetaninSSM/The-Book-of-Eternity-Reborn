@@ -1,0 +1,119 @@
+<instructionblock id="9.2.5">
+ <title>
+  Universal Hierarchical Mastery Rank System
+ </title>
+ <description>
+  This system defines how crafting mastery ranks work hierarchically across ANY setting, from cyberpunk to fantasy to space opera.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+                        The crafting system uses a universal hierarchical rank structure based on skill complexity rather than specific professions.
+                        This allows the system to work in any setting while maintaining the hierarchical principle.
+                        
+                        ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="9.2.5.1">
+   <title>
+    Universal Mastery Rank Levels
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                             1. Novice (Levels 1-2):
+                                - Can craft only "Novice" rank recipes
+                                - Basic understanding of principles
+                                - 5% critical success chance
+                                - Examples vary by setting:
+                                  * Fantasy: Simple club, torch
+                                  * Cyberpunk: Basic radio, simple chip  
+                                  * Space Opera: Emergency beacon, basic multitool
+                                  * Modern: Sandwich, simple DIY project
+
+                             2. Practitioner (Levels 3-4):
+                                - Can craft "Novice" AND "Practitioner" rank recipes  
+                                - Solid skills, works independently
+                                - 10% critical success chance
+                                - +2 bonus to crafting checks from mastery
+                                - Examples vary by setting:
+                                  * Fantasy: Iron sword, leather armor
+                                  * Cyberpunk: Hacker deck, low-level cyber-implant
+                                  * Space Opera: Standard laser pistol, space suit
+                                  * Modern: Computer, car engine
+
+                             3. Expert (Levels 5-6):
+                                - Can craft "Novice", "Practitioner", AND "Expert" rank recipes
+                                - High skill level, recognized specialist
+                                - 15% critical success chance
+                                - +4 bonus to crafting checks from mastery
+                                - Examples vary by setting:
+                                  * Fantasy: Magic sword, enchanted armor  
+                                  * Cyberpunk: Military cyber-brain, quantum processor
+                                  * Space Opera: Plasma rifle, power armor
+                                  * Modern: Supercomputer, jet engine
+
+                             4. Master (Levels 7+):
+                                - Can craft ALL ranks INCLUDING "Master" recipes
+                                - Peak of mastery, creates unique solutions
+                                - 20% critical success chance
+                                - +6 bonus to crafting checks from mastery
+                                - Can create unique recipes
+                                - Examples vary by setting:
+                                  * Fantasy: Legendary artifacts, divine relics
+                                  * Cyberpunk: AI personalities, reality matrix
+                                  * Space Opera: Star destroyers, godtech
+                                  * Modern: World-changing breakthrough tech
+
+                             ]]>
+   </content>
+  </rule>
+  <rule id="9.2.5.2">
+   <title>
+    Universal Recipe Accessibility Rule
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                             When checking if a player can use a recipe (universal algorithm):
+                             
+                             1. Compare player's skill mastery level with recipe's requiredMasteryLevel
+                             2. If player_mastery_level >= recipe_required_level: Recipe is ACCESSIBLE  
+                             3. Apply bonuses for higher-level crafters making lower-level items:
+                                
+                                - Auto-Success: If player rank is 2+ levels above required, automatic success (no action check needed)
+                                - Quality Bonus: 10% chance for improved item quality when crafting lower-rank items
+                                - Material Economy: 20% chance to save 1 unit of material when rank difference >= 2
+
+                             This ensures masters can craft everything novices can, regardless of setting.
+
+                             ]]>
+   </content>
+  </rule>
+  <rule id="9.2.5.3">
+   <title>
+    Universal Tool Function Categories
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                             Tools are categorized by FUNCTION rather than specific implementation, ensuring setting independence:
+
+                             PORTABLE TOOL FUNCTIONS:
+                             - "Shaping": Physical manipulation of materials (examples vary by setting)
+                             - "Precision": Fine detail work and finishing
+                             - "Measurement": Analysis and precise measurement  
+                             - "Processing": Chemical/biological processes, mixing
+
+                             STATIONARY FACILITY FUNCTIONS:
+                             - "Energy Source": Power for complex processes
+                             - "Work Surface": Stable platform for complex work
+                             - "Controlled Environment": Special conditions (temperature, pressure, etc.)
+
+                             The GM determines setting-appropriate examples for each function.
+                             
+                             ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

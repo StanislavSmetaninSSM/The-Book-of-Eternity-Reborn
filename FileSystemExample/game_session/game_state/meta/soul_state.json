@@ -1,0 +1,19 @@
+{
+  "inkFeathers": 0,
+  "enlightenment": 0,
+  "currentTier": "Новичок",
+  "currentIncarnation": 2,
+  "soulRelics": [],
+  "equippedRelics": {
+    "spirit_relic": null,
+    "mind_relic": null,
+    "body_relic": null
+  },
+  "crossIncarnationData": {
+    "totalLives": 2,
+    "questsCompleted": 0,
+    "experienceGained": 0
+  },
+  "pendingMemoryLegacy": null,
+  "lastUpdate": "2026-03-01T09:00:00Z"
+}

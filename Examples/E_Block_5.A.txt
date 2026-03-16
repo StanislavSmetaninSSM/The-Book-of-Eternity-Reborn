@@ -1,0 +1,5 @@
+<instructionblock id="5.A">
+ <title>
+  Examples For Character Progression and Statistic Allocation Rules
+ </title>
+</instructionblock>

@@ -1,0 +1,11 @@
+<instructionblock id="16">
+ <title>
+  Combat Examples
+ </title>
+ <description>
+  This section provides detailed examples of how combat actions are resolved, illustrating the application of rules from various sections of this Guide.
+            These examples showcase calculations, JSON outputs, and narrative descriptions.
+ </description>
+ <content type="ruleset">
+ </content>
+</instructionblock>

@@ -1,0 +1,133 @@
+<instructionblock id="11">
+ <title>
+  Examples For Inventory Item Manipulation: Moving and Removing Items
+ </title>
+ <rule id="11.1">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Moving "Healing Potion" from "Backpack" to main inventory
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                "moveInventoryItems": [
+                                    {
+                                        "movedItemId": "potion-001",
+                                        "itemName": "Healing Potion",
+                                        "currentContentsPath": ["Backpack"],
+                                        "destinationContainerId": null,
+                                        "destinationContainerName": null,
+                                        "destinationContentsPath": null
+                                    }
+                                ]
+
+                                ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Moving "Dagger" from main inventory into "Belt Pouch" (which is in "Backpack")
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                "moveInventoryItems": [
+                                    {
+                                        "movedItemId": "dgr-002",
+                                        "itemName": "Dagger",
+                                        "currentContentsPath": null,
+                                        "destinationContainerId": "pouch-003",
+                                        "destinationContainerName": "Belt Pouch",
+                                        "destinationContentsPath": ["Backpack", "Belt Pouch"]
+                                    }
+                                ]
+
+                                ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="11.2.1">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player gives 5 "Iron Arrows" from a stack of 20 to an NPC.
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    // Context: Player has "Iron Arrows" (ID: arr-007, count: 20)
+                                    // Action: Player gives 5 arrows to an NPC.
+
+                                    // LOG: "Player removes 5 'Iron Arrows' from stack. New count: 15."
+
+                                    // JSON Response:
+                                    "UpdateInventory": [ 
+                                        {
+                                            "existedId": "arr-007",
+                                            "name": "Iron Arrows",
+                                            "count": 15 
+                                        }
+                                    ]
+                                    // 'removeInventoryItems' is NOT used here.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="11.2.2">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player drops a single "Worn Dagger" (stack count was 1).
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    // LOG: "Player drops the 'Worn Dagger' (dgr-003)."
+
+                                    "removeInventoryItems": [
+                                        {
+                                            "removedItemId": "dgr-003",
+                                            "itemName": "Worn Dagger",
+                                            "currentContentsPath": null
+                                        }
+                                    ]
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: A magical amulet (ID: aml-001) is destroyed by a curse.
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    // LOG: "The 'Amulet of Shadows' (aml-001) shatters into dust due to the curse."
+
+                                    "removeInventoryItems": [
+                                        {
+                                            "removedItemId": "aml-001",
+                                            "itemName": "Amulet of Shadows",
+                                            "currentContentsPath": null
+                                        }
+                                    ]
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="text" type="bad">
+   <title>
+    Incorrect Usage: Consuming the Last Potion
+   </title>
+   <content>
+    <![CDATA[
+
+                                    Player drinks their last 'Healing Potion'. 
+
+                                    INCORRECT: Adding an entry for the potion to 'removeInventoryItems'. 
+                                    CORRECT: Adding an entry to 'UpdateInventory' with "count": 0. 
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+</instructionblock>

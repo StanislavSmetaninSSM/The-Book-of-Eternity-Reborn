@@ -1,0 +1,133 @@
+<instructionblock id="CLI_QTE">
+ <title>
+  QTE Offer Protocol
+ </title>
+ <description>
+  This block defines the canonical rules for GM-authored QTE offers in CLI mode.
+ </description>
+ <content type="rule_text">
+  <![CDATA[
+
+                    QTE is a SPECIAL cinematic tool for bounded, highly directed scenes in Mortal World.
+                    It is NOT a replacement for the normal action-check-driven RPG loop.
+
+                    Core restrictions:
+                    - QTE is allowed ONLY in Mortal World.
+                    - QTE is allowed ONLY if `game_state/core/game_settings.json.qteEventsEnabled = true`.
+                    - QTE is allowed ONLY on an ordinary player-driven turn.
+                    - QTE is FORBIDDEN on incarnation turns, life-evaluation turns, validation-repair turns, automatic transition turns, and other system-driven flows.
+                    - A QTE-offer turn MUST write `output/qte_offer.json`.
+                    - A QTE-offer turn MUST NOT also resolve ordinary state changes for the same situation.
+                    - Therefore a QTE-offer turn MUST leave ordinary `game_state/`, `lore/`, and `stories/` files untouched.
+                    - In practice, a QTE-offer turn may write only:
+                      - `output/qte_offer.json`
+                      - `output/narrative_response.json`
+                      - `output/interface_updates.json`
+                      - `output/debug_logs.json`
+                    - If the player declines the QTE offer, the client will request a new ordinary GM turn and the same `qteId` MUST NOT be re-offered immediately.
+                    - If the player accepts, the full QTE scene resolves LOCALLY on the client; there is no extra GM turn after acceptance.
+
+                    GM authoring responsibility:
+                    - A valid `qte_offer.json` MUST contain these top-level fields:
+                      - `qteId`
+                      - `title`
+                      - `offerText`
+                      - `introNarrative`
+                      - `startChapterId`
+                      - `chapters`
+                      - `terminalOutcomes`
+                    - Optional but supported top-level fields:
+                      - `declineHint`
+                      - `cinematicJustification`
+                      - `sceneImagePrompt`
+                    - The GM must pre-author the whole scene graph:
+                      - `startChapterId`
+                      - chapters
+                      - actions
+                      - QTE checks
+                      - routing
+                      - terminal outcomes
+                    - Every chapter MUST contain a non-empty `actions[]` array.
+                    - Every chapter MUST contain:
+                      - `chapterId`
+                      - `narrative`
+                      - `actions`
+                    - Every action MUST contain:
+                      - `actionId`
+                      - `label`
+                      - `check`
+                      - `routing`
+                    - Every `check` MUST contain:
+                      - `type`
+                      - `baseDifficulty`
+                      - `primaryCharacteristic`
+                    - `baseDifficulty` MUST be an integer in the range `1..5`.
+                    - `startChapterId` is MANDATORY and defines the opening chapter of the scene.
+                    - The order of entries inside `chapters[]` does NOT define the start; only `startChapterId` does.
+                    - Every `chapterId` and every `outcomeId` MUST be unique within the scene.
+                    - Every routing branch MUST point to exactly one target:
+                      - `nextChapterId`
+                      - or `terminalOutcomeId`
+                    - Every action routing MUST contain all three branch objects:
+                      - `success`
+                      - `partial`
+                      - `fail`
+                    - Every referenced `nextChapterId` and `terminalOutcomeId` MUST resolve to a real node in the same scene.
+                    - Every chapter in the scene MUST be reachable from `startChapterId`.
+                    - The scene MUST contain at least one terminal outcome reachable through success-routing.
+                    - Every `check.primaryCharacteristic` MUST use one canonical lowercase id:
+                      - `strength`, `dexterity`, `constitution`, `intelligence`, `wisdom`, `faith`, `attractiveness`, `trade`, `persuasion`, `perception`, `luck`, `speed`
+                    - For `BranchChoice`, `check.config.choiceGrade` is MANDATORY and may be ONLY:
+                      - `success`
+                      - `partial`
+                      - `fail`
+                    - Every terminal outcome MUST contain:
+                      - `outcomeId`
+                      - `title`
+                      - `finalNarrative`
+                      - `gmSummary`
+                      - `responseFragment`
+                    - Every terminal outcome MUST contain a complete `responseFragment` with the final local mechanical outcome for that branch.
+                    - `responseFragment` uses ordinary `GameResponse` field names and is applied locally by the client.
+                    - Therefore the GM must not rely on a follow-up GM turn to add the "real" reward after an accepted QTE.
+                    - `declineHint` and `cinematicJustification`, if provided, are shown to the player in the QTE offer prompt, so keep them short and readable.
+
+                    Reward rule:
+                    - A SUCCESSFUL completion of a QTE scene MUST grant at least positive `experienceGained`.
+                    - For validation purposes, a "successful terminal outcome" means any terminal outcome reachable by following one or more `success` branches from `startChapterId`.
+                    - This is the minimum reward floor for a successful QTE resolution.
+                    - The client will locally convert this successful `experienceGained` into a real increase of the authoritative XP counter in `game_state/player/experience.json`.
+                    - If `experience.json` already contains level metadata (`level` or `playerLevel`) plus current-level progress (`experience` or `currentExperience`) and `experienceForNextLevel`, the client will also process the local level-up transition using the standard progression rules from `5.10.A.1` and `5.10.A.2`.
+                    - Partial outcomes MAY grant smaller rewards or mixed rewards.
+                    - Fail outcomes do not need to grant experience.
+
+                    Recommended scene shape:
+                    - Keep QTE scenes short: usually 2-5 chapters.
+                    - Use them for:
+                      - chase scenes
+                      - escapes
+                      - collapses / hazards
+                      - short infiltration sequences
+                      - tightly directed cinematic stunts
+                    - Do NOT use them for:
+                      - routine exploration
+                      - ordinary dialogue
+                      - generic action resolution
+                      - replacing the normal RPG loop for convenience
+
+                    Node types allowed in QTE v1:
+                    - `BranchChoice`
+                    - `TimingBar`
+                    - `PromptChain`
+                    - `BalanceMeter`
+                    - `ChargeRelease`
+
+                    Image rule:
+                    - During the active QTE challenge itself, the client must not interrupt the player with external image viewing.
+                    - Scene images may be offered only on post-chapter or post-outcome result screens.
+                    - `responseFragment` MUST NOT use the ordinary `image_prompt` channel.
+                    - If a QTE scene needs images, use `sceneImagePrompt`, `chapterImagePrompt`, or `outcomeImagePrompt`.
+
+   ]]>
+ </content>
+</instructionblock>

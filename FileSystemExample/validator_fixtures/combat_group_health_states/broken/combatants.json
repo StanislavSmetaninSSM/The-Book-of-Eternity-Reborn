@@ -1,0 +1,26 @@
+{
+  "enemiesData": [
+    {
+      "NPCId": null,
+      "name": "Goblin Squad",
+      "image_prompt": "ragged goblin raiders, dirty armor, forest ambush",
+      "description": "A loose squad of goblin raiders.",
+      "type": "mob",
+      "isGroup": true,
+      "count": 3,
+      "unitName": "Goblin Raider",
+      "healthStates": [
+        "91%",
+        "77%"
+      ],
+      "maxHealth": "100%",
+      "maxPoise": "40",
+      "currentHealth": null,
+      "currentPoise": null,
+      "actions": [],
+      "resistances": [],
+      "activeBuffs": [],
+      "activeDebuffs": []
+    }
+  ]
+}

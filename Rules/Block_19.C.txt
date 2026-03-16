@@ -1,0 +1,97 @@
+<instructionblock id="19.C">
+ <title>
+  CRITICAL DIRECTIVE: NPC Encumbrance Protocol (True Player Analogue)
+ </title>
+ <description>
+  This protocol defines the mandatory mechanics for calculating and applying the effects of inventory weight for all NPCs, ensuring they are subject to the EXACT SAME physical limitations as the player, including a critical weight limit.
+ </description>
+ <instructiontext>
+  <![CDATA[
+            
+            NPCs are not mules. Their ability to carry items is strictly limited by their physical characteristics. 
+            On every turn where an NPC's inventory might change, you MUST apply this protocol.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="19.C.1">
+   <title>
+    The Law of Physical Limits: The Critical Weight Check
+   </title>
+   <description>
+    This is the FIRST and MOST IMPORTANT check that must be performed BEFORE adding any item to an NPC's inventory.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+                    
+                    When an action would result in an item being added to an NPC's inventory (e.g., player gives an item, NPC picks one up):
+
+                    Step 1: Calculate the NPC's Absolute Carrying Capacity ('criticalWeight')
+                    -   Retrieve the NPC's 'maxWeight' (calculated from their Standard stats as per Rule #5.7.3).
+                    -   The universal 'criticalExcessWeight' value is 15 kg. This is a constant for all characters, player or NPC.
+                    -   Formula: 'criticalWeight_NPC = maxWeight_NPC + 15'
+
+                    Step 2: Calculate the Prospective Total Weight
+                    -   Retrieve the NPC's current 'totalWeight' from their context.
+                    -   Get the 'weight' of the new item(s) to be added.
+                    -   Formula: 'prospectiveWeight = totalWeight_NPC + weight_of_new_item'
+
+                    Step 3: Perform the Check
+                    -   Compare the two values: 'canCarry = (prospectiveWeight <= criticalWeight_NPC)'
+
+                    Step 4: Adjudicate the Outcome
+                    -   IF 'canCarry' is FALSE: The NPC is physically incapable of carrying the additional weight.
+                        -   The item is NOT added to their inventory.
+                        -   You MUST narrate the refusal. The NPC should state that they physically cannot carry any more.
+                        -   The 'NPCInventoryAdds' command for this action is NOT generated.
+                        -   You MUST log this failure: 
+                            "Critical Weight Check for [NPC Name] FAILED. Cannot add [Item Name]. prospectiveWeight ([value]) exceeds criticalWeight ([value])."
+
+                    -   IF 'canCarry' is TRUE: The item CAN be added to the inventory. Proceed to the next rule to determine the consequences.
+                    
+                    This law ensures that no NPC can ever possess an inventory heavier than their absolute physical limit, mirroring the player's mechanic.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.C.2">
+   <title>
+    Consequences of Overload (When 'totalWeight' &gt; 'maxWeight')
+   </title>
+   <description>
+    If an item was successfully added but pushed the NPC into an overloaded state, the following consequences are mandatory.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+                    
+                    After successfully adding an item (passing the check in 19.C.1), you MUST immediately recalculate the NPC's 'totalWeight' and update their 'isOverloaded' status ('isOverloaded = totalWeight > maxWeight').
+
+                    If the NPC's 'isOverloaded' status is 'true', the following effects are not optional:
+
+                    1.  Mechanical Penalty: "Encumbered" Debuff
+                        -   You MUST apply (or ensure is active) a persistent debuff to the NPC. This effect is reported via the 'NPCEffectChanges' array.
+                        -   Effect Object to apply:
+                            {
+                                "effectType": "Debuff",
+                                "value": "Disadvantage",
+                                "targetType": "all_physical_action_checks",
+                                "duration": 999, // Persistent
+                                "sourceSkill": "Encumbrance",
+                                "description": "Encumbered: Disadvantage on all Strength, Dexterity, and Speed-based checks."
+                            }
+                        -   This penalty directly mirrors the consequence of a player reaching zero energy due to overload (Fatigue).
+
+                    2.  Narrative Consequences:
+                        -   The NPC MUST complain about the weight and will refuse subsequent items, citing their overload (which will now also be backed by the Critical Weight Check).
+                        -   Their movement is narratively slowed.
+
+                    3.  Reporting and Logging:
+                        -   All changes to the NPC's weight fields ('totalWeight', 'isOverloaded') MUST be reported by sending their updated object in 'UpdateNPCs'.
+                        -   The application of the "Encumbered" debuff MUST be reported in 'NPCEffectChanges'.
+                        -   All calculations and consequences MUST be logged in 'gm_thoughts_markdown'.
+                    
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

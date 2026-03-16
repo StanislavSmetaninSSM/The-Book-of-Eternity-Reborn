@@ -1,0 +1,1112 @@
+<instructionblock id="6">
+ <title>
+  Examples For Combat Situation Management: Enemies and Allies
+ </title>
+ <rule id="6.0">
+  <example contenttype="narrative_scenario" type="good">
+   <title>
+    Example 1: TRIVIAL Encounter (Enemies Flee)
+   </title>
+   <scenariocontext>
+    A high-level party (PPL 40) enters a forest clearing ("Forest Clearing," Combat Difficulty 10) and, according to location logic, should encounter two Goblins.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Encounter Balance and Scaling Protocol
+                            1.  Determine Quantity (Logic): Location is a simple clearing. Two Goblins on watch is logical. Quantity = 2.
+                            2.  Calculate PPL: PPL = 40.
+                            3.  Threat Assessment Matrix:
+                                -   Base EL of enemies (from location difficulty 10): EL = 10 each.
+                                -   Total Encounter Threat Value (TETV): 10 + 10 = 20.
+                                -   Ratio (TETV / PPL): 20 / 40 = 0.5.
+                                -   Result: Ratio is <= 0.5. This is a TRIVIAL encounter.
+                            4.  Selected Outcome: The enemies are hopelessly outmatched and recognize this.
+                            They will attempt to flee or surrender immediately. Combat does not start.
+                            
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                Вы выходите на поляну и видите двух гоблинов, греющихся у костра. 
+                                В тот момент, когда они замечают ваш отряд — закованных в сталь, уверенных в себе ветеранов — их глаза расширяются от ужаса. 
+                                Один из них издает панический визг, и, бросив свои копья, они оба срываются с места и исчезают в подлеске, не желая иметь с вами ничего общего.
+                                
+                                ]]>
+    </response>
+   </jsonresponse>
+  </example>
+  <example contenttype="narrative_scenario" type="good">
+   <title>
+    Example 2: DEADLY Encounter (Mandatory Warning)
+   </title>
+   <scenariocontext>
+    A mid-level party (PPL 25) discovers the entrance to a "Manticore's Lair" (Combat Difficulty 45). 
+                            Logic dictates the lair is inhabited by one Manticore.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Encounter Balance and Scaling Protocol
+                            1.  Determine Quantity (Logic): It's a Manticore's Lair. One Manticore. Quantity = 1.
+                            2.  Calculate PPL: PPL = 25.
+                            3.  Threat Assessment Matrix:
+                                -   Base EL of enemy (from location difficulty 45): EL = 45.
+                                -   Total Encounter Threat Value (TETV): 45.
+                                -   Ratio (TETV / PPL): 45 / 25 = 1.8.
+                                -   Result: Ratio is between 1.6 and 2.5. This is a DEADLY encounter.
+                            4.  Selected Outcome: Initiate a pre-combat dialogue. 
+                            Provide a clear warning and give the player a chance to back out or prepare. Do not start combat automatically.
+                            
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                Воздух у входа в пещеру тяжелый, пропитанный запахом крови и экзотического мускуса. 
+                                Из глубины доносится низкое, хищное рычание, от которого вибрирует земля. 
+                                Вы видите огромное, похожее на льва существо с крыльями летучей мыши и хвостом скорпиона, гложущее кости. 
+                                Это мантикора. Она еще не заметила вас, но вы чувствуете, что ее мощь значительно превосходит вашу. 
+                                Нападение на такого зверя в его логове выглядит как самоубийственная затея. У вас еще есть шанс отступить незамеченными.
+                                
+                                ]]>
+    </response>
+   </jsonresponse>
+  </example>
+  <example contenttype="narrative_scenario" type="good">
+   <title>
+    Example 3: OVERWHELMING Encounter (Scenario Transformation)
+   </title>
+   <scenariocontext>
+    A low-level party (PPL 10) hides in an alley as an entire platoon of "City Guard Legionnaires" (20 soldiers, logically present during a parade) marches down the main street. 
+                            The location is "Main Plaza" (Combat Difficulty 25).
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Encounter Balance and Scaling Protocol
+                            1.  Determine Quantity (Logic): It's a full platoon on parade. Quantity = 20.
+                            2.  Calculate PPL: PPL = 10.
+                            3.  Threat Assessment Matrix:
+                                -   Base EL of each guard (from location difficulty 25): EL = 25.
+                                -   Total Encounter Threat Value (TETV): 20 * 25 = 500.
+                                -   Ratio (TETV / PPL): 500 / 10 = 50.
+                                -   Result: Ratio is > 2.5. This is an OVERWHELMING encounter.
+                            4.  Selected Outcome: A standard fight is FORBIDDEN. The scenario is transformed into a stealth or social challenge.
+                            
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                Спрятавшись в тени переулка, вы видите, как на площадь выходит целый легион городской стражи. 
+                                Двадцать закованных в сталь солдат, движущихся как единый механизм. 
+                                Их дисциплина и численность не оставляют никаких сомнений — вступить с ними в открытый бой равносильно самоубийству. 
+                                Ваша единственная цель сейчас — оставаться незамеченными и найти способ проскользнуть мимо, пока они не прошли.
+                                
+                                ]]>
+    </response>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="6.1.3">
+  <example contenttype="text_and_json" type="good">
+   <title>
+    Example of Full Non-NPC Enemy Calculation and 'enemiesData' Entry
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+
+                                    Scenario: Player (Level 10) enters a "Haunted Crypt" (Location Difficulty LD_calc = 15). A "Crypt Ghoul" (Moderate type) appears.
+                                    Log in 'gm_thoughts_markdown' (Summary of Steps):
+                
+                                    "Creating Non-NPC Enemy: Crypt Ghoul \n\n
+                                    \n\n
+                                    Player Level (PL): 10 \n\n
+                                    Origin Location Difficulty (LD_calc): 15 (Haunted Crypt) \n\n
+                                    Enemy Type: Moderate \n\n
+                                    \n\n
+                                    Effective Level (EL) Calculation: \n\n
+                                        LevelDifference = PL - LD_calc = 10 - 15 = -5 \n\n
+                                        ScalingFactor = 0.5 \n\n
+                                        EL = max(1, round(LD_calc + LevelDifference * ScalingFactor)) = max(1, round(15 + (-5) * 0.5)) = max(1, round(15 - 2.5)) = max(1, round(12.5)) = 13 \n\n
+                                    \n\n
+                                    Max Health Calculation (Moderate, EL=13): \n\n
+                                        maxHealth = (100 + EL * 2) = (100 + 13 * 2) = 100 + 26 = 126% \n\n
+                                    \n\n
+                                    Actions Calculation (Moderate, EL=13): \n\n
+                                        BaseDamagePotential (Moderate, EL=13) = round(5 + pow(13, 0.8) * 0.5) = round(5 + 3.95) = 9% \n\n
+                                        Action 1: «Paralyzing Touch» \n\n
+                                            Effects: \n\n
+                                            - Effect 1: {effectType: «Damage», value: «7%», targetType: «dark», effectDescription: «Deals 7% dark damage»} \n\n
+                                            - Effect 2: {effectType: «Control», value: «40%», targetType: «stun», duration: 1, effectDescription: «40% chance to Stun for 1 turn»} \n\n
+                                            TargetPriority: «player_character» \n\n
+                                        Action 2: «Claw Rake» \n\n
+                                            Effects: \n\n
+                                            - Effect 1: {effectType: «Damage», value: «9%», targetType: «slashing», effectDescription: «Deals 9% slashing damage»} \n\n
+                                            TargetPriority: «closest_enemy» \n\n
+                                    \n\n
+                                    Resistances Calculation (Moderate, EL=13): \n\n
+                                        BaseResistValue = round(5 + pow(13, 0.8) * 0.5) = 9% \n\n
+                                        Base Resistance: «Rotting Flesh», value: 9%, type: piercing \n\n
+                                        Specific Resistance: «Unholy Vigor», value: 25%, type: dark \n\n
+                                        Vulnerability: «Aversion to Light», value: -30%, type: holy"
+            
+                                    Resulting object to be added to 'enemiesData': 
+                                    {
+                                        "NPCId": null,
+                                        "name": "Crypt Ghoul", 
+                                        "description": "Тощее существо-нежить, от которого разит могильной землей. Его движения пугающе быстры, а когти выглядят достаточно острыми, чтобы разорвать кожу.",
+                                        "type": "Moderate",
+                                        "maxHealth": "126%",
+                                        "currentHealth": "126%",
+                                        "maxPoise": "100%",
+                                        "currentPoise": "100%",
+                                        "actions": [{
+                                            "actionName": "Paralyzing Touch", 
+                                            "effects": [{
+                                                "effectType": "Damage",
+                                                "value": "7%",
+                                                "targetType": "dark",
+                                                "effectDescription": "Deals 7% dark damage" 
+                                            },
+                                            {
+                                                "effectType": "Control",
+                                                "value": "40%",
+                                                "targetType": "stun",
+                                                "duration": 1,
+                                                "effectDescription": "40% chance to Stun for 1 turn" 
+                                            }],
+                                            "targetPriority": "player_character"
+                                        },
+                                        {
+                                            "actionName": "Claw Rake", 
+                                            "effects": [{
+                                                "effectType": "Damage",
+                                                "value": "9%",
+                                                "targetType": "slashing",
+                                                "effectDescription": "Deals 9% slashing damage" 
+                                            }],
+                                            "targetPriority": "closest_enemy"
+                                        }],
+                                        "resistances": [{
+                                            "resistanceName": "Rotting Flesh", 
+                                            "resistanceValue": "9%",
+                                            "resistType": "piercing", 
+                                            "resistTypeDisplayName": "Piercing" 
+                                        },
+                                        {
+                                            "resistanceName": "Unholy Vigor", 
+                                            "resistanceValue": "25%",
+                                            "resistType": "dark",
+                                            "resistTypeDisplayName": "Dark" 
+                                        },
+                                        {
+                                            "resistanceName": "Aversion to Light", 
+                                            "resistanceValue": "-30%",
+                                            "resistType": "holy",
+                                            "resistTypeDisplayName": "Holy" 
+                                        }],
+                                        "activeBuffs": [],
+                                        "activeDebuffs": []
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="6.1.3.2">
+  <example contenttype="log" type="good">
+   <title>
+    Example of PPL and EL Calculation Log
+   </title>
+   <scenariocontext>
+    A party enters a "Haunted Crypt" (Location Difficulty = 15).
+                                            The party consists of:
+                                            - Player Character (Level 20)
+                                            - "Sir Kaelen" (Named NPC Ally, Level 25)
+                                            - "Hired Sellsword" (Generic Ally, EL_ally = 18)
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                            # Creating Enemy: Crypt Lord (Strong type)
+
+                                            ## Step c: Calculate Party Power Level (PPL)
+                                            1. Party Members (PartySize=3): Player, Sir Kaelen, Hired Sellsword.
+                                            2. Member Levels:
+                                               - Player: MemberLevel = 20
+                                               - Sir Kaelen: MemberLevel = 25
+                                               - Hired Sellsword: MemberLevel = 18
+                                            3. Individual Power Contributions:
+                                               - Player: (20 ^ 1.2) = 36.3
+                                               - Sir Kaelen: (25 ^ 1.2) = 48.1
+                                               - Hired Sellsword: (18 ^ 1.2) = 31.8
+                                            4. TotalPowerContribution = 36.3 + 48.1 + 31.8 = 116.2
+                                            5. PPL = round(116.2 / 3) = round(38.73) = 39.
+
+                                            ## Step d: Calculate Effective Level (EL)
+                                            - PPL = 39
+                                            - LD_calc = 15 (Haunted Crypt)
+                                            - LevelDifference = 39 - 15 = 24
+                                            - ScalingFactor = 0.5
+                                            - ScalingCeilingFactor = 2.0
+                                            - MaxScaledLevel = round(15 * 2.0) = 30
+                                            - CalculatedLevel = round(15 + 24 * 0.5) = round(15 + 12) = 27
+                                            - EL = max(1, min(30, 27)) = 27.
+
+                                            ## Final Decision
+                                            - Generating a 'Strong' type 'Crypt Lord' with an Effective Level (EL) of 27.
+
+                                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="6.1.3.4.4">
+  <example contenttype="json" type="good">
+   <title>
+    Assume that enemy is 'Moderate' Orc Warrior.
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                                    "actions": [{                    
+                                                        "actionName": "Rusty Axe Swing", 
+                                                        "effects": [
+                                                            {
+                                                                "effectType": "Damage",
+                                                                "value": "13%",
+                                                                "targetType": "slashing",
+                                                                "effectDescription": "Deals 13% slashing damage" 
+                                                            }
+                                                        ],
+                                                        "targetPriority": "current_target" 
+                                                    },
+                                                    {
+                                                        "actionName": "Fist Punch", 
+                                                        "effects": [
+                                                            {
+                                                                "effectType": "Damage",
+                                                                "value": "9%",
+                                                                "targetType": "bludgeoning",
+                                                                "effectDescription": "Deals 9% bludgeoning damage" 
+                                                            }
+                                                        ],
+                                                        "targetPriority": "current_target" 
+                                                    },
+                                                    {
+                                                        "actionName": "Shoulder Charge", 
+                                                        "effects": [
+                                                            {
+                                                                "effectType": "Damage",
+                                                                "value": "18%",
+                                                                "targetType": "bludgeoning",
+                                                                "effectDescription": "Deals 18% bludgeoning damage" 
+                                                            },
+                                                            { 
+                                                                "effectType": "Control",
+                                                                "value": "30%", 
+                                                                "targetType": "immobility", 
+                                                                "duration": 1,
+                                                                "effectDescription": "30% chance to knock the target Prone for 1 turn" 
+                                                            }
+                                                        ],
+                                                        "targetPriority": "player_character" 
+                                                    }]
+
+                                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="6.1.3.5.4">
+  <example contenttype="json" type="good">
+   <title>
+    Resistance Example: Fire Elemental resistance
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                                    {
+                                                        "resistanceName": "Fiery Body", 
+                                                        "resistanceValue": "150%", 
+                                                        "resistType": "fire", 
+                                                        "resistTypeDisplayName": "Fire"
+                                                    }
+
+                                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json" type="good">
+   <title>
+    Vulnerability Example: Ice Golem resistance
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                                    {
+                                                        "resistanceName": "Brittle Core", 
+                                                        "resistanceValue": "-50%", 
+                                                        "resistType": "bludgeoning", 
+                                                        "resistTypeDisplayName": "Bludgeoning"
+                                                    }  
+
+                                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="6.1.3.5.5">
+  <example contenttype="text_and_json" type="good">
+   <title>
+    Example Resistances Array (Boss Magma Titan, EL=100)
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+          
+                                                    Calculation: 'BaseResistValue' (Boss, EL=100) = round(15 + pow(100, 0.8) * 1.2) = round(15 + 39.8 * 1.2) = round(15 + 47.8) = 63%.
+                                                    Base Type: 'bludgeoning' (for hardened rock body).
+                                                    Specific: Extremely high fire resistance, Vulnerable to water.
+                                                    Resulting 'resistances' array (simplified JSON):
+             
+                                                        "resistances": [
+                                                            { "resistanceName": "Hardened Magma Crust", "resistanceValue": "63%", "resistType": "bludgeoning", "resistTypeDisplayName": "Bludgeoning" },
+                                                            { "resistanceName": "Heat Absorption", "resistanceValue": "200%", "resistType": "fire", "resistTypeDisplayName": "Fire" },
+                                                            { "resistanceName": "Water Vulnerability", "resistanceValue": "-75%", "resistType": "water", "resistTypeDisplayName": "Water" }
+                                                        ]
+
+                                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="6.1.5">
+  <example contenttype="text_and_json" type="good">
+   <title>
+    Example of Full Non-NPC Ally Calculation and 'alliesData' Entry
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+
+                                    Scenario: Player (Level 20) recruits a "Veteran Sellsword" (Moderate Ally Type) in a "Border Fort" (Location Difficulty LD_ally_calc = 20).
+                                    Log in 'gm_thoughts_markdown' (Summary of Steps):
+
+                                    "Creating Non-NPC Ally: Veteran Sellsword \n\n
+                                    \n\n
+                                    Player Level at Ally Creation (PL_at_ally_creation): 20 \n\n
+                                    Origin Location Difficulty (LD_ally_calc): 20 (Border Fort) \n\n
+                                    Ally Type: Moderate \n\n
+                                    \n\n
+                                    Effective Level (EL_ally) Calculation: \n\n
+                                        LevelDifference_ally = PL_at_ally_creation - LD_ally_calc = 20 - 20 = 0 \n\n
+                                        ScalingFactor_ally = 0.5 \n\n
+                                        EL_ally = max(1, round(LD_ally_calc + LevelDifference_ally * ScalingFactor_ally)) = max(1, round(20 + 0 * 0.5)) = 20 \n\n
+                                    \n\n
+                                    Max Health Calculation (Moderate, EL_ally=20): \n\n
+                                        maxHealth = (100 + EL_ally * 2) = (100 + 20 * 2) = 140% \n\n
+                                    \n\n
+                                    Actions Calculation (Moderate, EL_ally=20): \n\n
+                                        BaseDamagePotential_ally (Moderate, EL_ally=20) = round(5 + pow(EL_ally, 0.8) * 0.5) = round(5 + pow(20, 0.8) * 0.5) = round(5 + 10.9 * 0.5) = round(5 + 5.45) = 10% \n\n
+                                        Action 1: «Longsword Strike» \n\n
+                                            Effects: \n\n
+                                            - Effect 1: {effectType: «Damage», value: «10%», targetType: «slashing», effectDescription: «Deals 10% slashing damage»} \n\n
+                                            TargetPriority: «current_target» \n\n
+                                        Action 2: «Shield Wall» (Defensive Buff) \n\n
+                                            Effects: \n\n
+                                            - Effect 1: {effectType: «Buff», value: «15%», targetType: «resist (all)», duration: 2, effectDescription: «Increases all resistances by 15% for 2 turns»} \n\n
+                                            TargetPriority: «self» \n\n
+                                    \n\n
+                                    Resistances Calculation (Moderate, EL_ally=20): \n\n
+                                        BaseResistValue_ally = round(5 + pow(EL_ally, 0.8) * 0.5) = 10% \n\n
+                                        Base Resistance: «Chainmail Armor», value: 10%, type: slashing".
+                            
+                                    Resulting object to be added to 'alliesData':
+                            
+                                    {
+                                        "NPCId": null,
+                                        "name": "Veteran Sellsword",
+                                        "description": "Закаленный наемник с мрачным выражением лица. Его видавшая виды броня и уверенный взгляд говорят о том, что он прошел через множество битв.",
+                                        "type": "Moderate",
+                                        "maxHealth": "140%",
+                                        "currentHealth": "140%",
+                                        "maxPoise": "120%",
+                                        "currentPoise": "120%",
+                                        "actions": [{
+                                            "actionName": "Longsword Strike", 
+                                            "effects": [{
+                                                "effectType": "Damage",
+                                                "value": "10%",
+                                                "targetType": "slashing",
+                                                "effectDescription": "Deals 10% slashing damage"                            
+                                            }],
+                                            "targetPriority": "current_target"
+                                        },
+                                        {
+                                            "actionName": "Shield Wall", 
+                                            "effects": [{                            
+                                                "effectType": "Buff",
+                                                "value": "15%",
+                                                "targetType": "resist (all)",
+                                                "duration": 2,
+                                                "effectDescription": "Increases all resistances by 15% for 2 turns"                           
+                                            }],
+                                            "targetPriority": "self"
+                                        }],
+                                        "resistances": [{
+                                            "resistanceName": "Chainmail Armor", 
+                                            "resistanceValue": "10%",
+                                            "resistType": "slashing",
+                                            "resistTypeDisplayName": "Slashing"                         
+                                        }],
+                                        "activeBuffs": [],
+                                        "activeDebuffs": []
+                                    }             
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="text_and_json" type="good">
+   <title>
+    Example of Ally Grouping in Action
+   </title>
+   <scenariocontext>
+    Player (Level 15) is assisted by 8 "Royal Spearmen" (Moderate Ally Type) in a "Castle Courtyard" (Location Difficulty LD_ally_calc = 15).
+   </scenariocontext>
+   <content type="text_and_json">
+    <![CDATA[
+
+                                    Log in 'gm_thoughts_markdown' (Summary of Steps):
+
+                                    "Creating Allied Combatants: 8 Royal Spearmen
+                                    - Grouping Protocol Check (#6.1.9.1): 8 > 5. Grouping is MANDATORY.
+                                    - Creating one group: 'Royal Spearman Phalanx'.
+                                    
+                                    - Archetype Calculation for a single 'Royal Spearman' (#6.1.5):
+                                      - Ally Type: Moderate
+                                      - EL_ally (Lvl 15 vs LD 15): 15
+                                      - maxHealth (Moderate, EL=15): (100 + 15 * 2)% = 130%
+                                      - Actions: 'Coordinated Lunge' (base 12% piercing), 'Shield Wall' (self-buff, +20% all resist for 1 turn).
+                                      - Resistances: 'Chainmail & Shield' (base resist 15% piercing).
+                                    
+                                    - Final Group Object Population (#6.1.9.2):
+                                      - isGroup: true, count: 8, unitName: 'Royal Spearman'
+                                      - healthStates: ["130%", "130%", "130%", "130%", "130%", "130%", "130%", "130%"]
+                                      - currentHealth: null"
+                            
+                                    Resulting object to be added to 'alliesData':
+                            
+                                    {
+                                        "NPCId": null,
+                                        "name": "Royal Spearman Phalanx", 
+                                        "description": "Дисциплинированный строй королевских копейщиков. Они движутся как единое целое, их копья образуют опасную стальную стену.",
+                                        "type": "Moderate",
+                                        "isGroup": true,
+                                        "count": 8,
+                                        "unitName": "Royal Spearman",
+                                        "maxHealth": "130%",
+                                        "currentHealth": null,
+                                        "maxPoise": "110%", 
+                                        "currentPoise": null,
+                                        "healthStates": ["130%", "130%", "130%", "130%", "130%", "130%", "130%", "130%"],
+                                        "actions": [
+                                            {
+                                                "actionName": "Coordinated Lunge", 
+                                                "isGroupAction": true,
+                                                "attacksPerTurn": 3,
+                                                "effects": [{"effectType": "Damage", "value": "12%", "targetType": "piercing"}]
+                                            },
+                                            {
+                                                "actionName": "Shield Wall Formation",
+                                                "effects": [{"effectType": "Buff", "value": "20%", "targetType": "resist (all)", "duration": 1}],
+                                                "targetPriority": "self"
+                                            }
+                                        ],
+                                        "resistances": [{"resistanceName": "Chainmail & Shield", "resistanceValue": "15%", "resistType": "piercing"}],
+                                        "activeBuffs": [],
+                                        "activeDebuffs": []
+                                    }             
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="6.1.6">
+  <example contenttype="text_and_json" id="NPCCombatGen_Kaelen_Balanced" type="good">
+   <title>
+    Example of Full NPC Calculation (NPC becomes an Enemy) - BALANCED
+   </title>
+   <scenariocontext>
+    <![CDATA[
+
+                                    Named NPC "Sir Kaelen" (ID: "npc-kaelen-001") from NPCsInScene context becomes hostile.
+                                    The GM needs to generate his combat data. The NPC object in Context was created based on the following logic:
+
+                                    ]]>
+   </scenariocontext>
+   <content type="text_and_json">
+    <![CDATA[
+
+                                    Log in 'gm_thoughts_markdown' (Summary of Steps for creating Sir Kaelen's combat object):
+
+                                    # Генерация Боевого Профиля для NPC "Сэр Каэлен" (ID: npc-kaelen-001)
+
+                                    ## ЧАСТЬ 1: АУДИТ ГЕНЕРАЦИИ ХАРАКТЕРИСТИК (Проверка данных из Контекста, Правило #5.A.2)
+                                    - Цель: Убедиться, что статы Каэлена в Контексте сгенерированы по правилам.
+                                    - Уровень: 30, Раса: Человек, Класс: Воин.
+                                    - Базовые статы: Все 1.
+                                    - Стартовые очки (8): Раса (+2 Str, +1 Dex, +1 Con) + Класс (+2 Str, +1 Con) -> Итог на 1-м уровне: Str: 5, Dex: 2, Con: 3.
+                                    - Очки за уровень: (30 - 1) * 5 = 145.
+                                    - Распределение (для Капитана Гвардии): +55 к Силе, +57 к Выносливости, +17 к Убеждению, +16 к Мудрости (Всего: 145).
+                                    - **Финальные Стандартные Характеристики:** Str: 60, Con: 60, Pers: 18, Wis: 17, Dex: 2.
+                                    - **ВЫВОД АУДИТА: Характеристики в Контексте сгенерированы корректно и сбалансированно.**
+
+                                    ---
+
+                                    ## ЧАСТЬ 2: ГЕНЕРАЦИЯ БОЕВОГО ОБЪЕКТА
+
+                                    # 1. Основная Информация (Правило #6.1.6.1):
+                                       - NPCId: "npc-kaelen-001", Имя: "Сэр Каэлен", Тип: 'Boss' (Решение ГМ: высокоуровневый именованный противник).
+
+                                    # 2. Расчет Здоровья (Правило #6.1.6.2):
+                                        - Расчет Перманентно Модифицированных Характеристик:
+                                            - Стандартная Сила: 60. Бонусы: 0. -> Перм. Мод. Сила: 60.
+                                            - Стандартная Выносливость: 60. Бонусы: 0. -> Перм. Мод. Выносливость: 60.
+                                        - Формула maxHealth%: 100 + floor(Перм.Мод.Выносл * 2.0) + floor(Перм.Мод.Сила * 1.0)
+                                        - Расчет: 100 + floor(60 * 2.0) + floor(60 * 1.0) = 100 + 120 + 60 = 280%.
+                                        - currentHealth: "280%".
+
+                                    # 3. Расчет Действий (Правило #6.1.6.3):
+                                       ## Действие 1: "Удар Длинным Мечом" (из инвентаря)
+                                           - Базовый урон оружия: 25% (рубящий).
+                                           - Бонус от Уровня (Ур. 30): 5 + floor(30/10)*2 = +11%.
+                                           - Бонус от Характеристики (Мод. Сила 70): floor(70/2.5) = +28%.
+                                           - Бонус от Пассивных Навыков ("Специализация: Меч"): +5%.
+                                           - Итоговый урон 'value': 25% + 11% + 28% + 5% = 69%.
+
+                                       ## Действие 2: "Мощный Удар" (Активный навык)
+                                           - База: 20% (дробящий), масштабируется от Силы, Уровень Мастерства=3.
+                                           - Параметры: Уровень 30, Мод. Сила 70.
+                                           - Бонусы: Характ.(35%) + Уровень(48%) + Мастерство(12%). Общий Множитель=1.95.
+                                           - Итоговый 'value': round(20 * 1.95) = 39%.
+
+                                       ## Действие 3: "Боевой Клич" (Активный навык)
+                                           - База: 15% (усиление), 3 хода, масштабируется от Убеждения, Уровень Мастерства=2.
+                                           - Параметры: Уровень 30, Мод. Убеждение 25.
+                                           - Бонусы: Характ.(10%) + Уровень(48%) + Мастерство(8%). Общий Множитель=1.66.
+                                           - Итоговый 'value': round(15 * 1.66) = 25%.
+                                           - Итоговая 'duration': round(3 * 1.66) = 5 ходов.
+
+                                    # 4. Расчет Сопротивлений (Правило #6.1.6.4):
+                                       - Врожденное Сопротивление (Ур.30, Мод.Выносл 65):
+                                           - От Уровня ('all'): floor(30/10)*2 = +6%.
+                                           - От Характеристики ('all'): floor(65/10) = +6%.
+                                           - Итоговое базовое сопротивление 'all': 12%.
+                                       - От Снаряжения ("Латная Броня"): 15% (рубящее).
+                                       - Итого: Будет два объекта сопротивления.
+
+                                    Resulting object for "Sir Kaelen" to be added to 'enemiesData':
+                                    {
+                                        "NPCId": "npc-kaelen-001",
+                                        "name": "Сэр Каэлен", 
+                                        "description": "Человек, закаленный в бесчисленных битвах... (и т.д.)",
+                                        "type": "Boss", 
+                                        "maxHealth": "280%",
+                                        "currentHealth": "280%",
+                                        "maxPoise": "200%",
+                                        "currentPoise": "200%",
+                                        "actions": [
+                                            {
+                                                "actionName": "Удар Длинным Мечом", 
+                                                "effects": [
+                                                    { 
+                                                        "effectType": "Damage", 
+                                                        "value": "69%", 
+                                                        "targetType": "slashing", 
+                                                        "effectDescription": "Наносит 69% рубящего урона" 
+                                                    } 
+                                                ],
+                                                "targetPriority": "player_character"
+                                            },
+                                            {
+                                                "actionName": "Мощный Удар", 
+                                                "effects": [
+                                                    { 
+                                                        "effectType": "Damage", 
+                                                        "value": "39%", 
+                                                        "targetType": "bludgeoning",
+                                                        "effectDescription": "Наносит 39% дробящего урона" 
+                                                    } 
+                                                ],
+                                                "targetPriority": "highest_threat_enemy"
+                                            },
+                                            {
+                                                "actionName": "Боевой Клич", 
+                                                "effects": [
+                                                    { 
+                                                        "effectType": "Buff", 
+                                                        "value": "25%", 
+                                                        "targetType": "damage (all)", 
+                                                        "duration": 5,
+                                                        "effectDescription": "Увеличивает весь наносимый урон на 25% на 5 ходов"
+                                                    } 
+                                                ],
+                                                "targetPriority": "self"
+                                            }
+                                        ],
+                                        "resistances": [
+                                            { 
+                                                "resistanceName": "Латная Броня", 
+                                                "resistanceValue": "15%", 
+                                                "resistType": "slashing", 
+                                                "resistTypeDisplayName": "Рубящий" 
+                                            },
+                                            { 
+                                                "resistanceName": "Общая Закалка", 
+                                                "resistanceValue": "12%", 
+                                                "resistType": "all", 
+                                                "resistTypeDisplayName": "Все" 
+                                            }
+                                        ],
+                                        "activeBuffs": [],
+                                        "activeDebuffs": []
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="6.2">
+  <example contenttype="json" type="good">
+   <title>
+    Combatant starts 'Enraged' (Self-Buff)
+   </title>
+   <content type="json">
+    <![CDATA[
+                            
+                            "activeBuffs": [{
+                                "effectType": "Buff",
+                                "value": "15%",
+                                "targetType": "damage (all)", 
+                                "duration": 3,
+                                "sourceSkill": "Battle Rage",
+                                "description": "Enraged! Deals 15% more damage with all attacks (3 turns left)." 
+                            }]
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json" type="good">
+   <title>
+    Combatant starts 'Poisoned' (Damage Over Time)
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                            "activeDebuffs": [{
+                                "effectType": "DamageOverTime",
+                                "value": "5%", 
+                                "targetType": "poison", 
+                                "duration": 4,
+                                "sourceSkill": "Giant Spider Bite",
+                                "description": "Poisoned! Takes 5% poison damage per turn (4 turns left)." 
+                            }]
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json" type="good">
+   <title>
+    Combatant starts 'Magically Protected' (Temporary Damage Reduction)
+   </title>
+   <content type="json">
+    <![CDATA[
+                            
+                            "activeBuffs": [{
+                                "effectType": "DamageReduction",
+                                "value": "20%",
+                                "targetType": "all", 
+                                "duration": 1, 
+                                "sourceSkill": "Magical Ward",
+                                "description": "Protected! Incoming damage reduced by 20% (1 turn left)." 
+                            }]
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json" type="good">
+   <title>
+    Combatant is 'Regenerating' (Heal Over Time)
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                            "activeBuffs": [{
+                                "effectType": "HealOverTime",
+                                "value": "10%", 
+                                "targetType": "health",
+                                "duration": 3,
+                                "sourceSkill": "Troll Blood",
+                                "description": "Regenerating! Restores 10% health per turn (3 turns left)." 
+                            }]
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json" type="good">
+   <title>
+    Combatant is 'Weakened' (Debuff to a Characteristic)
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                            "activeDebuffs": [{
+                                "effectType": "Debuff",
+                                "value": "-10%", 
+                                "targetType": "strength", 
+                                "duration": 2,
+                                "sourceSkill": "Enfeebling Curse",
+                                "description": "Weakened! Strength reduced by 10% (2 turns left)." 
+                            }]
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json" type="good">
+   <title>
+    Combatant is 'Stunned' (Control Effect)
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                            "activeDebuffs": [{
+                                "effectType": "Control",
+                                "value": "100%", 
+                                "targetType": "stun",
+                                "duration": 1,
+                                "sourceSkill": "Shield Bash Stunning Blow",
+                                "description": "Stunned! Cannot act (1 turn left)." 
+                            }]
+
+                            ]]>
+   </content>
+  </example>
+  <example id="CombatExample_GroupingProtocol">
+   <title>
+    Example of Enemy Grouping Protocol in Action
+   </title>
+   <scenariocontext>
+    <![CDATA[
+
+                            Player Character ("Anya", Level 15) enters a "Goblin Nest" (Location Difficulty LD_calc = 12) and is ambushed by 12 identical "Goblin Spearmen".
+                            
+                            ]]>
+   </scenariocontext>
+   <actionsequence>
+    <step action_description="GM generates the initial combat state." turn_by="GM">
+     <logoutput target="gm_thoughts_markdown">
+      <![CDATA[
+
+                                    # Initial Combat Generation: 12 Goblin Spearmen
+                
+                                    ## Enemy Grouping Protocol (#6.1.8)
+                                    -   Identical Enemies: 12 "Goblin Spearmen".
+                                    -   Grouping Threshold (#6.1.8.1): 12 > 5. Grouping is MANDATORY.
+                                    -   Group Division (#6.1.8.2): 12 enemies is a good size for one group. Creating one group named "Goblin War Party".
+                
+                                    ## Generating Group "Goblin War Party"
+                                    -   Type: 'Weak'. EL (Effective Level): max(1, round(12 + (15-12)*0.5)) = 14.
+                                    -   isGroup: true
+                                    -   count: 12
+                                    -   unitName: "Goblin Spearman"
+                                    -   maxHealth (per unit, Weak, EL=14): (80 + 14 * 1.2)% = 97% (rounded)
+                                    -   healthStates: ["97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%"]
+                                    -   Actions/Resistances calculated for a single EL 14 'Weak' Goblin Spearman archetype.
+
+                                    ]]>
+     </logoutput>
+     <jsonresponse>
+      <enemiesData>
+       <![CDATA[
+
+                                        [
+                                            {
+                                                "NPCId": null,
+                                                "name": "Goblin War Party",
+                                                "image_prompt": "A snarling war party of goblins with crude spears and leather armor, in a dark cave, fantasy art.",
+                                                "description": "Хаотичная толпа гоблинов-копейщиков, рычащих и размахивающих своим оружием. Их численность делает их серьезной угрозой.",
+                                                "type": "Weak",
+                                                "isGroup": true,
+                                                "count": 12,
+                                                "unitName": "Goblin Spearman",
+                                                "maxHealth": "97%",
+                                                "currentHealth": null,
+                                                "maxPoise": "80%",
+                                                "currentPoise": null,
+                                                "healthStates": ["97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%"],
+                                                "actions": [
+                                                    { 
+                                                        "actionName": "Massed Spear Thrusts", 
+                                                        "isGroupAction": true, 
+                                                        "attacksPerTurn": 4, 
+                                                        "effects": [{
+                                                            "effectType":"Damage", 
+                                                            "value":"10%", 
+                                                            "targetType":"piercing"
+                                                        }] 
+                                                    }
+                                                ],
+                                                "resistances": [{
+                                                    "resistanceName": "Tattered Hide", 
+                                                    "resistanceValue": "2%", 
+                                                    "resistType": "piercing"
+                                                }],
+                                                "activeBuffs": [],
+                                                "activeDebuffs": []
+                                            }
+                                        ]
+
+                                        ]]>
+      </enemiesData>
+     </jsonresponse>
+    </step>
+    <step action_description="Anya casts a single-target 'Stun' spell on the 'Goblin War Party'." turn_by="Player">
+     <logoutput target="gm_thoughts_markdown">
+      <![CDATA[
+
+                                    # Player Action: Anya casts 'Stun' on "Goblin War Party".
+                
+                                    ## Handling Attack Against a Group (#6.1.8.3)
+                                    -   Action is single-target. Targeting the healthiest unit in the group by default.
+                
+                                    ## Action Resolution (Simplified)
+                                    -   Anya's spell check results in 'Full Success'. The 'Stun' effect is applied.
+                
+                                    ## Splitting Unit from Group Protocol (#6.1.8.4)
+                                    -   Effect is an individual 'Control' status ('Stun'). A split is MANDATORY.
+                                    -   1. Decrement 'Goblin War Party' count from 12 to 11. Remove one "97%" from 'healthStates'.
+                                    -   2. Create a new individual enemy object: "Stunned Goblin Spearman".
+                                    -   3. Inherit archetype stats (EL 14, maxHealth 97%, actions, resistances).
+                                    -   4. Set its currentHealth to 97% and add the 'Stun' effect to its 'activeDebuffs'.
+                
+                                    ## Final Combat State
+                                    -   "Goblin War Party": count = 11.
+                                    -   New Enemy: "Stunned Goblin Spearman", health = 97%/97%, has 'Stunned (1 turn left)' debuff.
+
+                                    ]]>
+     </logoutput>
+     <jsonresponse>
+      <enemiesData>
+       <![CDATA[
+
+                                        [
+                                            {
+                                                "NPCId": null,
+                                                "name": "Goblin War Party",
+                                                "image_prompt": "A snarling war party of goblins with crude spears and leather armor, in a dark cave, fantasy art.",
+                                                "description": "Хаотичная толпа гоблинов-копейщиков, рычащих и размахивающих своим оружием. Их численность делает их серьезной угрозой.",
+                                                "type": "Weak",
+                                                "isGroup": true,
+                                                "count": 11,
+                                                "unitName": "Goblin Spearman",
+                                                "maxHealth": "97%",
+                                                "currentHealth": null,
+                                                "maxPoise": "80%",
+                                                "currentPoise": null,
+                                                "healthStates": ["97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%", "97%"],
+                                                "actions": [
+                                                    { 
+                                                        "actionName": "Massed Spear Thrusts", 
+                                                        "isGroupAction": true, 
+                                                        "attacksPerTurn": 4, 
+                                                        "effects": [{
+                                                            "effectType":"Damage", 
+                                                            "value":"10%", 
+                                                            "targetType":"piercing"
+                                                        }] 
+                                                    }
+                                                ],
+                                                "resistances": [{
+                                                    "resistanceName": "Tattered Hide", 
+                                                    "resistanceValue": "2%", 
+                                                    "resistType": "piercing"
+                                                }],
+                                                "activeBuffs": [],
+                                                "activeDebuffs": []
+                                            },
+                                            {
+                                                "NPCId": null,
+                                                "name": "Stunned Goblin Spearman",
+                                                "image_prompt": "A single goblin with a crude spear, looking dazed and confused, stars circling its head, fantasy art.",
+                                                "description": "Одинокий гоблин, отделившийся от своей стаи. Он выглядит ошеломленным и сбитым с толку, нетвердо покачиваясь на ногах.",
+                                                "type": "Weak",
+                                                "isGroup": false,
+                                                "maxHealth": "97%",
+                                                "currentHealth": "97%",
+                                                "maxPoise": "80%",
+                                                "currentPoise": "80%",
+                                                "actions": [
+                                                    { 
+                                                        "actionName": "Spear Thrust", 
+                                                        "effects": [{
+                                                            "effectType":"Damage",
+                                                            "value":"10%",
+                                                            "targetType":"piercing"
+                                                        }] 
+                                                    }
+                                                ],
+                                                "resistances": [{
+                                                    "resistanceName": "Tattered Hide", 
+                                                    "resistanceValue": "2%", 
+                                                    "resistType": "piercing"
+                                                }],
+                                                "activeBuffs": [],
+                                                "activeDebuffs": [
+                                                    {
+                                                        "effectType": "Control", 
+                                                        "value": "100%", 
+                                                        "targetType": "stun", 
+                                                        "duration": 1,
+                                                        "sourceSkill": "Stun Spell",
+                                                        "description": "Stunned! Cannot act (1 turn left)."
+                                                    }
+                                                ]
+                                            }
+                                        ]
+
+                                        ]]>
+      </enemiesData>
+     </jsonresponse>
+    </step>
+   </actionsequence>
+  </example>
+ </rule>
+ <rule id="6.2.2.0">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    CORRECT: Creating two new effects
+   </title>
+   <description>
+    The 'effectId' field is correctly omitted or set to 'null' for new effects.
+   </description>
+   <jsonresponse>
+    <playerActiveEffectsChanges>
+     <![CDATA[
+
+                                                [
+                                                    {
+                                                        "effectId": null,
+                                                        "effectType": "Buff",
+                                                        "value": "10%",
+                                                        "targetType": "strength",
+                                                        "duration": 3,
+                                                        "description": "Strength increased by 10%."
+                                                    },
+                                                    {
+                                                    
+                                                        "effectType": "DamageOverTime",
+                                                        "value": "5%",
+                                                        "targetType": "poison",
+                                                        "duration": 2,
+                                                        "description": "Poisoned for 5% damage."
+                                                    }
+                                                ]
+
+                                                ]]>
+    </playerActiveEffectsChanges>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    CORRECT: Updating an existing effect's duration
+   </title>
+   <description>
+    The 'effectId' is correctly retrieved from the Context and provided to update the duration of an existing effect.
+   </description>
+   <scenariocontext>
+    In the Context, the player has an active "Poison" effect with 'effectId: "effect-poison-xyz789"' and 'duration: 2'.
+   </scenariocontext>
+   <jsonresponse>
+    <playerActiveEffectsChanges>
+     <![CDATA[
+
+                                                [
+                                                    {
+                                                        "effectId": "effect-poison-xyz789",
+                                                        "duration": 1 
+                                                    }
+                                                ]
+
+                                                ]]>
+    </playerActiveEffectsChanges>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" type="bad">
+   <title>
+    INCORRECT AND FORBIDDEN: Inventing an ID for a new effect
+   </title>
+   <description>
+    The GM must not create fake IDs. This will cause a system error.
+   </description>
+   <jsonresponse>
+    <playerActiveEffectsChanges>
+     <![CDATA[
+
+                                                [
+                                                    {
+                                                        "effectId": "new-buff-strength-1",
+                                                        "effectType": "Buff",
+                                                        "value": "10%",
+                                                        "targetType": "strength",
+                                                        "duration": 3,
+                                                        "description": "Strength increased by 10%."
+                                                    }
+                                                ]
+
+                                                ]]>
+    </playerActiveEffectsChanges>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" type="bad">
+   <title>
+    INCORRECT AND FORBIDDEN: Updating an effect without its ID
+   </title>
+   <description>
+    Sending an effect's description or other properties without its 'effectId' will create a duplicate effect, not update the original one. This is a critical error.
+   </description>
+   <scenariocontext>
+    In the Context, the player has an active "Poison" effect with 'effectId: "effect-poison-xyz789"' and 'duration: 2'.
+   </scenariocontext>
+   <jsonresponse>
+    <playerActiveEffectsChanges>
+     <![CDATA[
+
+                                                [
+                                                    {
+                                                    
+                                                        "effectType": "DamageOverTime",
+                                                        "targetType": "poison",
+                                                        "duration": 1,
+                                                        "description": "Poisoned for 5% damage."
+                                                    }
+                                                ]
+
+                                                ]]>
+    </playerActiveEffectsChanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="6.2.2.6">
+  <example contenttype="text" type="good">
+   <![CDATA[
+
+                                        "Increased Strength by 10% (2 turns left)", 
+                                        "Stunned (1 turn left)", 
+                                        "Burning for 5% fire damage per turn (3 turns left)", 
+                                        "Resistance to all damage increased by 15% (aura)".
+                                        (Ensure the description accurately reflects the 'effectType', 'value', 'targetType', and 'duration').
+
+                                        ]]>
+  </example>
+ </rule>
+</instructionblock>

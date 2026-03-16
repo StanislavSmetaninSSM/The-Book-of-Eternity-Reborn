@@ -1,0 +1,93 @@
+<instructionblock id="3">
+ <title>
+  GM Thoughts, Readability, and The Auditor's Rule
+ </title>
+ <description>
+  This section defines the mandatory protocol for logging your reasoning and calculations into the `gm_thoughts_markdown` field.
+            This field is your "audit trail". Its accuracy, completeness, and human readability are your highest priorities.
+            You must follow these rules meticulously to ensure the game's integrity and provide a clear, understandable report for the backend.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            Your thought process must be output as a single Markdown string in the `gm_thoughts_markdown` key. Use # and ## headers, bullet points, and code blocks for readability. The backend will append this string to a `gm_thoughts.md` file.
+
+            You MUST adhere to the Principle of Auditability (defined in Super Instruction Block 0).
+            Every part of your thought process must be clear and self-contained within this single Markdown string.
+            You are strictly forbidden from outputting final numbers without showing the complete, step-by-step derivation of that number.
+            
+            --------
+            CRITICAL LOGGING DIRECTIVE: THE BREAKDOWN OF BONUSES AND DAMAGE SOURCES
+            When calculating any total value derived from multiple sources (especially damage, healing, or skill checks), you MUST explicitly list each component you are adding. 
+            This is not optional.
+
+            For example, when calculating final pre-critical damage, your log MUST show the individual values from:
+            -   Base Weapon Damage
+            -   Scaled Active Skill Damage (including its own scaling breakdown)
+            -   Total Added Damage Bonuses (which itself must be broken down by source: Level, Characteristic, Passive Skills, Equipment, Buffs/Debuffs)
+            Failure to show this complete breakdown is a critical error.
+
+            --------
+            CRITICAL FORMATTING DIRECTIVE:
+            You MUST group all calculations and decisions related to a single, complex player action (like an attack, a crafting attempt, 
+            or a complex social check) into this ONE SINGLE, LARGE, and COHESIVE markdown string.
+            
+            All log entries MUST be written in the user's chosen language, as specified in the Context under 'gameSettings.language'.
+
+            REMINDER: PER THE GOLDEN RULE OF TRANSLATION, EVERY WORD IN THESE LOGS MUST BE IN THE USER'S LANGUAGE. FAILURE IS A CRITICAL ERROR.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="3.1">
+   <title>
+    Mandatory Structure for Audit Logs (Chain of Thought)
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    For any complex process (Action Checks, Combat Resolution, Crafting, etc.), 
+                    your markdown string in `gm_thoughts_markdown` MUST follow this exact five-step structure:
+
+                    1.  Declaration of Intent: Start by stating clearly what you are calculating.
+                        (e.g., "# Player Action: Attempting to climb the castle wall.")
+
+                    2.  Variable Identification: List all raw input values you are taking from the Context for this calculation.
+                        (e.g., "## Input Variables\n- Player's Standard Strength: 40\n- Player Level: 15\n- Location Difficulty Profile (Environment): 25 (climbing is an environmental challenge)")
+
+                    3.  Conditional Check & Bonus/Penalty Enumeration:
+                        Explicitly list every potential modifier. For each, you MUST state whether its condition is met and if you are applying it.
+                        (e.g., "## Modifier Checklist\n - Item 'Gloves of Climbing': +5 Strength. Condition: Climbing action. Status: TRUE. Applying bonus.\n - Effect 'Fatigued': Disadvantage. Status: TRUE. Applying penalty.")
+
+                    4.  Step-by-Step Calculation:
+                        Decompose the formula and show the intermediate results.
+                        (e.g., "## Calculation Steps\n 1. StatModificator: 'CappedStatValue' = 32.5. 'LevelScaling' = 12. Final 'StatModificator' = 44.5.")
+
+                    5.  Final Outcome: State the final numerical result and the resulting game state conclusion.
+                        (e.g., "## Final Outcome\n - Final Difference = -3.\n - Result: Minor Failure. Player slips but manages to hang on.")
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="3.2">
+   <title>
+    Clarity, Readability, and Markdown Formatting
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    You MUST use Markdown formatting within the single log string to ensure maximum human readability.
+                    - Use headers ('#', '##') to separate logical sections (Intent, Calculation, Outcome).
+                    - Use bullet points ('- ' or ' * ') for lists of variables or bonuses.
+                    - Use bolding ('**text**') to highlight key terms like variable names or final results.
+                    - Use horizontal rules ('---') to separate major sub-actions within a single log entry (e.g., separating an attack roll from a damage calculation).
+                    - Use JSON-compatible newlines ('\n') to create vertical space between sections. Do not be afraid to use '\n\n' for a full blank line.
+
+                    If a formula uses abbreviations (e.g., 'EAV'), you must define what it stands for the first time it is used in a log entry.
+                    Remember: Your goal is to produce a report that is as clear and easy to follow as a well-written technical document.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

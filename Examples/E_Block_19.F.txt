@@ -1,0 +1,289 @@
+<instructionblock id="19.F">
+ <title>
+  Examples For CRITICAL DIRECTIVE: Atomic Management of Dynamic Activities (NPCs &amp; Factions)
+ </title>
+ <example contenttype="narrative_scenario" id="AtomicUpdate_NPC_Activity" type="good">
+  <title>
+   Example: Updating an NPC's Activity - Correct vs. Incorrect
+  </title>
+  <description>
+   This example demonstrates the mandatory protocol for updating an NPC's long-term activity progress.
+  </description>
+  <scenariocontext>
+   NPC "Борин Железнорук" is working on his project "Ковка Топора из Звездного Металла".
+                    In this progression cycle, his 'timeSpentMinutes' increases from 360 to 540, and the project is now complete.
+  </scenariocontext>
+  <example id="AtomicUpdate_NPC_Bad" type="bad">
+   <title>
+    INCORRECT (Deprecated): Overwriting the entire NPC object
+   </title>
+   <description>
+    This method is FORBIDDEN. 
+                        It requires re-sending the entire NPC object, creating a high risk of data loss if any other property of the NPC (like their skills, stats, or other inventory items) is accidentally omitted or reverted. 
+                        It violates the principle of atomic updates.
+   </description>
+   <jsonresponse>
+    <npcsdata>
+     <![CDATA[
+
+                            [
+                                {
+                                    "NPCId": "npc-borin-ironhand-01",
+                                    "name": "Борин Железнорук",
+                                    "level": 30,
+                                    // ... ALL OTHER NPC FIELDS MUST BE RE-SENT, CREATING A HUGE RISK OF DATA LOSS ...
+                                    "currentActivity": {
+                                        "activityName": "Ковка Топора из Звездного Металла",
+                                        "description": "Топор был успешно выкован.",
+                                        "totalTimeCostMinutes": 504,
+                                        "timeSpentMinutes": 540, // The only truly changed field
+                                        "activeState": "Completed"
+                                    }
+                                }
+                            ]
+
+                            ]]>
+    </npcsdata>
+   </jsonresponse>
+  </example>
+  <example id="AtomicUpdate_NPC_Good" type="good">
+   <title>
+    CORRECT (Mandatory): Using the Atomic 'NPCActivityUpdates' Command
+   </title>
+   <description>
+    This is the correct method. It is safe, efficient, and targets ONLY the specific data that has changed. 
+                        It sends a clear, unambiguous command to the system without risking the integrity of the rest of the NPC's data.
+   </description>
+   <jsonresponse>
+    <npcactivityupdates>
+     <![CDATA[
+
+                            [
+                                {
+                                    "NPCId": "npc-borin-ironhand-01",
+                                    "NPCName": "Борин Железнорук",
+                                    "activityUpdate": {
+                                        "timeSpentMinutes": 540,
+                                        "description": "Топор был успешно выкован.",
+                                        "activeState": "Completed"
+                                    }
+                                }
+                            ]
+
+                            ]]>
+    </npcactivityupdates>
+   </jsonresponse>
+  </example>
+ </example>
+ <example id="AtomicUpdate_NPC_Bad" type="bad">
+  <title>
+   INCORRECT (Deprecated): Overwriting the entire NPC object
+  </title>
+  <description>
+   This method is FORBIDDEN. 
+                        It requires re-sending the entire NPC object, creating a high risk of data loss if any other property of the NPC (like their skills, stats, or other inventory items) is accidentally omitted or reverted. 
+                        It violates the principle of atomic updates.
+  </description>
+  <jsonresponse>
+   <npcsdata>
+    <![CDATA[
+
+                            [
+                                {
+                                    "NPCId": "npc-borin-ironhand-01",
+                                    "name": "Борин Железнорук",
+                                    "level": 30,
+                                    // ... ALL OTHER NPC FIELDS MUST BE RE-SENT, CREATING A HUGE RISK OF DATA LOSS ...
+                                    "currentActivity": {
+                                        "activityName": "Ковка Топора из Звездного Металла",
+                                        "description": "Топор был успешно выкован.",
+                                        "totalTimeCostMinutes": 504,
+                                        "timeSpentMinutes": 540, // The only truly changed field
+                                        "activeState": "Completed"
+                                    }
+                                }
+                            ]
+
+                            ]]>
+   </npcsdata>
+  </jsonresponse>
+ </example>
+ <example id="AtomicUpdate_NPC_Good" type="good">
+  <title>
+   CORRECT (Mandatory): Using the Atomic 'NPCActivityUpdates' Command
+  </title>
+  <description>
+   This is the correct method. It is safe, efficient, and targets ONLY the specific data that has changed. 
+                        It sends a clear, unambiguous command to the system without risking the integrity of the rest of the NPC's data.
+  </description>
+  <jsonresponse>
+   <npcactivityupdates>
+    <![CDATA[
+
+                            [
+                                {
+                                    "NPCId": "npc-borin-ironhand-01",
+                                    "NPCName": "Борин Железнорук",
+                                    "activityUpdate": {
+                                        "timeSpentMinutes": 540,
+                                        "description": "Топор был успешно выкован.",
+                                        "activeState": "Completed"
+                                    }
+                                }
+                            ]
+
+                            ]]>
+   </npcactivityupdates>
+  </jsonresponse>
+ </example>
+ <example contenttype="narrative_scenario" id="AtomicUpdate_Faction_Project" type="good">
+  <title>
+   Example: Updating a Faction's Project - Correct vs. Incorrect
+  </title>
+  <description>
+   This example demonstrates the mandatory protocol for updating a faction's active project progress.
+  </description>
+  <scenariocontext>
+   The "Железная Орда" faction is working on its project "Строительство Осадной Мастерской" (ID: "proj-siege-01").
+                    In this progression cycle, its 'timeSpentMinutes' increases from 1440 to 2880, and more resources are spent.
+  </scenariocontext>
+  <example id="AtomicUpdate_Faction_Bad" type="bad">
+   <title>
+    INCORRECT (Deprecated): Overwriting the entire Faction object
+   </title>
+   <description>
+    This method is FORBIDDEN and even more dangerous than with NPCs. 
+                        Faction objects are extremely complex. 
+                        Re-sending the entire object to update one project's progress risks corrupting the faction's ranks, relations, power profile, and resource levels.
+   </description>
+   <jsonresponse>
+    <factiondatachanges>
+     <![CDATA[
+
+                            [
+                                {
+                                    "factionId": "faction-iron-horde-01",
+                                    "name": "Железная Орда",
+                                    // ... ALL OTHER COMPLEX FACTION DATA (RANKS, RELATIONS, POWER PROFILE) MUST BE RE-SENT ...
+                                    "activeProjects": [
+                                        {
+                                            "projectId": "proj-siege-01",
+                                            "timeSpentMinutes": 2880, // Updated field
+                                            "resourcesSpent": [ // Updated field
+                                                { "resourceName": "Wealth", "amountSpent": 400 },
+                                                { "resourceName": "Manpower", "amountSpent": 80 }
+                                            ],
+                                            // ... other project fields ...
+                                        }
+                                    ]
+                                }
+                            ]
+
+                            ]]>
+    </factiondatachanges>
+   </jsonresponse>
+  </example>
+  <example id="AtomicUpdate_Faction_Good" type="good">
+   <title>
+    CORRECT (Mandatory): Using the Atomic 'factionProjectUpdates' Command
+   </title>
+   <description>
+    This is the correct, safe, and required method. 
+                        It precisely targets the specific project within the specific faction and updates only its progress trackers, leaving all other faction data untouched and secure.
+   </description>
+   <jsonresponse>
+    <factionprojectupdates>
+     <![CDATA[
+
+                            [
+                                {
+                                    "factionId": "faction-iron-horde-01",
+                                    "factionName": "Железная Орда",
+                                    "projectUpdate": {
+                                        "projectId": "proj-siege-01",
+                                        "timeSpentMinutes": 2880,
+                                        "description": "Стены возведены. Начинается установка кузнечного оборудования.",
+                                        "currentStep": 2,
+                                        "resourcesSpent": [
+                                            { "resourceName": "Wealth", "amountSpent": 400 },
+                                            { "resourceName": "Manpower", "amountSpent": 80 }
+                                        ]
+                                    }
+                                }
+                            ]
+
+                            ]]>
+    </factionprojectupdates>
+   </jsonresponse>
+  </example>
+ </example>
+ <example id="AtomicUpdate_Faction_Bad" type="bad">
+  <title>
+   INCORRECT (Deprecated): Overwriting the entire Faction object
+  </title>
+  <description>
+   This method is FORBIDDEN and even more dangerous than with NPCs. 
+                        Faction objects are extremely complex. 
+                        Re-sending the entire object to update one project's progress risks corrupting the faction's ranks, relations, power profile, and resource levels.
+  </description>
+  <jsonresponse>
+   <factiondatachanges>
+    <![CDATA[
+
+                            [
+                                {
+                                    "factionId": "faction-iron-horde-01",
+                                    "name": "Железная Орда",
+                                    // ... ALL OTHER COMPLEX FACTION DATA (RANKS, RELATIONS, POWER PROFILE) MUST BE RE-SENT ...
+                                    "activeProjects": [
+                                        {
+                                            "projectId": "proj-siege-01",
+                                            "timeSpentMinutes": 2880, // Updated field
+                                            "resourcesSpent": [ // Updated field
+                                                { "resourceName": "Wealth", "amountSpent": 400 },
+                                                { "resourceName": "Manpower", "amountSpent": 80 }
+                                            ],
+                                            // ... other project fields ...
+                                        }
+                                    ]
+                                }
+                            ]
+
+                            ]]>
+   </factiondatachanges>
+  </jsonresponse>
+ </example>
+ <example id="AtomicUpdate_Faction_Good" type="good">
+  <title>
+   CORRECT (Mandatory): Using the Atomic 'factionProjectUpdates' Command
+  </title>
+  <description>
+   This is the correct, safe, and required method. 
+                        It precisely targets the specific project within the specific faction and updates only its progress trackers, leaving all other faction data untouched and secure.
+  </description>
+  <jsonresponse>
+   <factionprojectupdates>
+    <![CDATA[
+
+                            [
+                                {
+                                    "factionId": "faction-iron-horde-01",
+                                    "factionName": "Железная Орда",
+                                    "projectUpdate": {
+                                        "projectId": "proj-siege-01",
+                                        "timeSpentMinutes": 2880,
+                                        "description": "Стены возведены. Начинается установка кузнечного оборудования.",
+                                        "currentStep": 2,
+                                        "resourcesSpent": [
+                                            { "resourceName": "Wealth", "amountSpent": 400 },
+                                            { "resourceName": "Manpower", "amountSpent": 80 }
+                                        ]
+                                    }
+                                }
+                            ]
+
+                            ]]>
+   </factionprojectupdates>
+  </jsonresponse>
+ </example>
+</instructionblock>

@@ -1,0 +1,10 @@
+{
+  "dialogueOptions": [
+    {
+      "text": "Inspect the ruins",
+      "category": "exploration"
+    }
+  ],
+  "image_prompt": "misty ruins at dawn, ancient stones, cinematic lighting",
+  "soundtrack": "forbidden extra field"
+}

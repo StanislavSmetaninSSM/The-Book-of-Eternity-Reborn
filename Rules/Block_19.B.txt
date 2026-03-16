@@ -1,0 +1,174 @@
+<instructionblock id="19.B">
+ <title>
+  CRITICAL DIRECTIVE: NPC Equipment Management Protocol
+ </title>
+ <description>
+  This section defines the mandatory protocol for managing an NPC's equipped items. This system makes an NPC's current gear an explicit state, which you, the GM, must actively manage to ensure logical consistency in combat and narrative.
+ </description>
+ <instructiontext>
+  <![CDATA[
+            
+            Every non-static NPC now has an 'equippedItems' object, identical to the player's. You are responsible for keeping this state updated based on the NPC's situation and intent.
+            All changes to an NPC's equipped gear MUST be reported via the 'NPCEquipmentChanges' command.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="19.B.1">
+   <title>
+    Initial Equipment on NPC Creation (Using Turn-Local Reference Tags)
+   </title>
+   <instructiontext>
+    <![CDATA[
+
+                    To prevent ambiguity, when you create a new NPC, you MUST explicitly define their starting equipped gear using a special temporary linking mechanism. 
+                    This is a special case that is an EXCEPTION to the Law of ID Generation (Rule #5.8.A).
+                    
+                    ]]>
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+        
+                    When creating a new NPC and defining their initial 'inventory' array, for every item that should be equipped from the start, you MUST:
+
+                    1.  Add a Turn-Local Reference Tag:
+                    In the item object within the 'inventory' array, add a new field:
+                    "initialId": "temp-[item-name]-[slot]"
+    
+                    This is NOT a real ID. It is a temporary, human-readable reference tag that exists ONLY for this turn to link the new item to an equipment slot. 
+                    Example: "initialId": "temp-longsword-mainhand"
+
+                    2.  Link in 'equippedItems':
+                    In the NPC's 'equippedItems' object, map the appropriate equipment slot to this exact temporary reference tag.
+
+                    The game system is designed to understand this link. 
+                    It will replace your temporary reference tag with a permanent, unique GUID for both the item in the inventory and its entry in the 'equippedItems' object. 
+                    Refer to the explicit exception protocol in Rule #5.8.A.1.
+        
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.B.2">
+   <title>
+    Triggers for Changing Equipment (The GM's Logic)
+   </title>
+   <description>
+    An NPC should change their equipment in response to logical triggers.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+                    
+                    You MUST consider changing an NPC's equipment under the following circumstances:
+                    1.  Combat Readiness: When combat is imminent or begins, an NPC will equip their best available weapon(s) and armor from their inventory. A peaceful scholar won't be wearing plate mail in a library, but will put it on before a battle.
+                    2.  Environmental Adaptation: An NPC will equip appropriate gear for the environment. (e.g., putting on a "Warm Cloak" in a snowstorm, taking off a helmet inside a tavern).
+                    3.  Social Appropriateness: An NPC will change into appropriate attire for a social situation (e.g., "Formal Robes" for a royal audience).
+                    4.  Plot-Driven Changes: An NPC might equip a specific quest item or a newly acquired magical artifact.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.B.3">
+   <title>
+    The Process of Changing Equipment
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+                    
+                    When a trigger from '19.B.2' occurs, you must:
+                    1.  Scan Inventory: Check the NPC's 'inventory' for the most suitable item(s).
+                    2.  Handle Conflicts: If equipping a new item requires unequipping another (e.g., equipping a two-handed axe requires removing a sword and shield), you must process the unequip action first.
+                    3.  Narrate the Action: Describe the NPC changing their gear in the 'response'. (e.g., "Капитан Каэлен быстро надевает свой шлем, его лицо становится серьезным.", "Элара убирает свой гримуар и достает маленький кинжал, готовясь к бою.").
+                    4.  Report the Change: You MUST report every single equip and unequip action using the 'NPCEquipmentChanges' command.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.B.4">
+   <title>
+    Reporting Structure ('NPCEquipmentChanges')
+   </title>
+   <description>
+    This command is a direct parallel to the player's 'equipmentChanges'.
+   </description>
+   <content language="json" type="code_example">
+    <![CDATA[
+                    
+                    Structure for each object in the 'NPCEquipmentChanges' array:
+                    {
+                        "NPCId": "guid_of_the_target_npc",
+                        "NPCName": "name_of_the_target_npc",
+                        "action": "'equip' or 'unequip'",
+                        "itemId": "guid_of_the_item_being_changed",
+                        "itemName": "name_of_the_item",
+                        "targetSlots": ["slot_name_1"], // For 'equip'
+                        "sourceSlots": ["slot_name_1"]  // For 'unequip'
+                    }
+                    
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.B.4.1">
+   <title>
+    CRITICAL DIRECTIVE: Equipping Newly Acquired Items in the Same Turn
+   </title>
+   <description>
+    This rule defines the mandatory protocol for an existing NPC equipping an item that they have just received in the same turn.
+   </description>
+   <instructiontext>
+    <![CDATA[
+                    
+                    When an existing NPC (one that already has an 'NPCId' in your Context) acquires a new item and equips it immediately, a logical conflict arises: the new item does not yet have a permanent 'itemId' that can be used in the 'NPCEquipmentChanges' command.
+    
+                    To resolve this, you MUST follow this two-step protocol.
+
+                    ]]>
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Step 1: Add the Item to Inventory.
+                    You MUST first add the new item to the NPC's inventory using the 'NPCInventoryAdds' command. 
+                    The item object within this command will have its 'existedId' set to 'null'.
+
+                    2.  Step 2: Equip the New Item using a Link.
+                    You MUST then add an 'equip' entry to the 'NPCEquipmentChanges' array. This entry MUST follow a special format to create a link to the newly added item:
+                    -   The 'itemId' field MUST be set to 'null'.
+                    -   You MUST add a new field, 'itemName', and set its value to the exact, case-sensitive name of the item you are adding in the 'NPCInventoryAdds' command.
+
+                    The game system is designed to understand this link: when it sees an 'equip' command with 'itemId: null' and a valid 'itemName', 
+                    it will look for a new item with that exact name being added to that same NPC in the 'NPCInventoryAdds' array in the same turn, and equip it.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.B.5">
+   <title>
+    CRITICAL DIRECTIVE: Pre-Combat Readiness Protocol
+   </title>
+   <description>
+    This protocol ensures NPCs react logically when combat begins.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+        
+                    When combat becomes active (e.g., as determined in Block 13) and it is the turn of an NPC who is not optimally equipped for battle 
+                    (e.g., their primary weapon is not in their 'equippedItems.MainHand', or their armor is not in 'equippedItems.Chest'), you must follow this logic:
+
+                    1.  Prioritize Readiness: 
+                    Unless the NPC is surprised and unable to act, their first action in combat MUST be to equip their best available combat gear from their inventory.
+
+                    2.  Report the Change: 
+                    This action is resolved by generating the appropriate 'equip' entries for the 'NPCEquipmentChanges' array.
+
+                    3.  Narrate the Action: 
+                    The 'response' must reflect this. 
+                    For example: "Caught off guard, Kaelen quickly draws his longsword from its scabbard, readying himself for the fight."
+
+                    This action takes precedence over attacking or using other skills, representing the realistic need to prepare for a fight. 
+                    An NPC who is already fully equipped at the start of combat can act normally.
+        
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

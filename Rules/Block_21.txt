@@ -1,0 +1,2539 @@
+﻿<instructionblock id="21">
+ <title>
+  Faction and Reputation Management
+ </title>
+ <description>
+  This section defines the rules for managing the player's relationship with various factions in the game world.
+            This system replaces the generic 'status in society' with a concrete reputation and rank system for each encountered faction.
+            Changes are reported via the 'factionDataChanges' key.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            The player's actions will have consequences, often affecting their standing with various factions like guilds, kingdoms, corporations, or secret societies.
+            The GM is responsible for tracking these changes and reflecting them in NPC reactions and available opportunities.
+            This block defines the structure for reporting new factions or changes to the player's status within them.
+            
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="21.1">
+   <title>
+    Faction Data Management ('factionDataChanges')
+   </title>
+   <description>
+    This rule applies when the player first encounters a faction or when their reputation or rank within an existing faction changes.
+   </description>
+   <content type="ruleset">
+    <rule id="21.1.1">
+     <title>
+      Triggering Conditions
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Include the 'factionDataChanges' key in the JSON response if:
+                            1. The player encounters or learns about a new faction for the first time.
+                            2. The player's 'reputation' with a known faction changes (positively or negatively).
+                            3. The player joins a faction, is expelled, or their 'playerRank' within the faction changes.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.1.2">
+     <title>
+      Faction Data Object Structure (for 'factionDataChanges' array)
+     </title>
+     <instructiontext>
+      Each object in 'factionDataChanges' represents the player's current status with one specific faction.
+     </instructiontext>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            Canonical format for a Faction Data Object (required core + optional extensions):
+
+                            {
+                                "factionId": "system_assigned_guid_or_null_for_new",
+                                "initialId": "turn_local_reference_tag_string_or_null", // <-- FIELD FOR LINKING NEW FACTIONS
+                                "isNewFaction": "boolean_true_only_for_genuinely_new_same_turn_faction", // explicit create marker; omit or false for existing factions
+                                "name": "name_of_the_faction_string",
+                                "image_prompt": "detailed_image_prompt_for_faction_symbol_or_hq_string_english_only", // mandatory for newly created factions; generated when the faction is first created
+                                "factionColor": "#HEX_COLOR_CODE_STRING", // optional visual color for UI and maps
+                                "description": "detailed_description_of_the_faction_string",
+                                "level": "integer_faction_level",
+                                "experience": "integer_current_xp",
+                                "experienceForNextLevel": "integer_xp_needed_for_next_level",
+                                "developmentArchetype": "name_of_the_archetype_string", 
+                                "customArchetypePriorities": {
+                                    "primary": "name_of_a_power_profile_scale_string",
+                                    "secondary": "name_of_a_power_profile_scale_string",
+                                    "tertiary": "name_of_a_power_profile_scale_string"
+                                }, // optional unless a custom archetype requires it
+                                "powerProfile": {
+                                    "military": "integer_0_to_100+",
+                                    "economic": "integer_0_to_100+",
+                                    "social": "integer_0_to_100+",
+                                    "covert": "integer_0_to_100+",
+                                    "logistics": "integer_0_to_100+",
+                                    "stability": "integer_0_to_100+",
+                                    "arcane_tech": "integer_0_to_100+",
+                                    "exploration": "integer_0_to_100+"
+                                },
+                                "resources": {
+                                    "metaResources": [ 
+                                        {
+                                            "resourceName": "'Wealth' | 'Influence' | 'Manpower'",
+                                            "currentStockpile": "integer",
+                                            "incomePerCycle": "integer",
+                                            "upkeepPerCycle": "integer"
+                                        }
+                                    ],
+                                    "strategicGoods": [
+                                        {
+                                            "resourceName": "Specific good name (e.g., 'Iron Ore', 'Star Metal', 'Lumber')",
+                                            "currentStockpile": "integer",
+                                            "incomePerCycle": "integer"
+                                        }
+                                    ]
+                                },
+                                "controlledTerritories": [
+                                    {
+                                        "locationId": "guid_of_the_controlled_location",
+                                        "locationName": "Name of the location"
+                                    }
+                                ], // optional; use [] when none
+                                "structuredBonuses": [ /* Array of structured bonus objects */ ], // optional; use [] when none
+                                "customStates": [ /* Array of Custom State Objects */ ], // optional; use [] when none
+                                "activeProjects": [
+                                    {
+                                        "projectId": "system_assigned_guid_or_null",
+                                        "projectName": "user_readable_name_of_the_project",
+                                        "activeState": "'Active' | non_terminal_progress_state_string",
+                                        "description": "description_of_the_current_stage",
+                                        "totalResourceCost": [
+                                            { "resourceName": "Name of required resource", "totalAmount": "integer" },
+                                            // Repeat for each resource type needed
+                                        ],
+                                        "resourcesSpent": [
+                                            { "resourceName": "Name of spent resource", "amountSpent": "integer" },
+                                            // Repeat for each resource type spent
+                                        ],
+                                        "totalTimeCostMinutes": "integer_total_time_for_the_project",
+                                        "timeSpentMinutes": "integer_time_already_spent",
+                                        "totalSteps": "integer_total_steps",
+                                        "currentStep": "integer_current_step"
+                                    }
+                                ], // optional; use [] when none
+                                "completedProjects": [
+                                    {
+                                        "projectId": "guid_of_the_completed_project",
+                                        "projectName": "name_of_the_completed_project",
+                                        "completionTurn": "integer",
+                                        "finalState": "'Completed' | 'Abandoned'"
+                                    }
+                                ], // optional; use [] when none
+                                "scribeChronicle": ["array_of_chronicle_entry_strings_optional"],
+                                "isPlayerFaction": "boolean_default_false", // MANDATORY. True if the player is the ultimate authority of this faction.
+                                "playerStrategyDirective": "string_or_null", // optional free-text directive for player-led factions
+                                "reputation": "integer_from_-100_to_100",
+                                "reputationDescription": "user_readable_description_of_current_reputation", // optional but recommended
+                                "isPlayerMember": "boolean",
+                                "playerRank": "player_rank_or_title_within_faction_string_or_null", // optional
+                                "playerBranch": "system_name_of_the_chosen_branch_string_or_null", // optional; stores the chosen 'branchId'
+                                "ranks": { // "ranks" is an object that contains the branches.
+                                    "branches": [ // A predefined array named "branches".
+                                        {
+                                            "branchId": "core", // A unique, English, snake_case system ID for the branch.
+                                            "displayName": "Основной Путь", // A user-readable, translatable name for the branch.
+                                            "isCoreBranch": true, // A boolean flag to identify the starting branch.
+                                            "ranks": [ // The array of rank objects is now nested inside the branch object.
+                                                {
+                                                    "rankNameMale": "user_readable_rank_name_masculine",
+                                                    "rankNameFemale": "user_readable_rank_name_feminine",
+                                                    "requiredReputation": "integer_reputation_needed_for_this_rank",
+                                                    "unlockCondition": "user_readable_narrative_condition_string",
+                                                    "isJunctionPoint": "boolean",
+                                                    "availableBranches": [ "branch_system_name_1", "branch_system_name_2" ], // This lists 'branchId' values.
+                                                    "benefits": [ "description_of_benefit_string" ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "branchId": "inquisitor_branch",
+                                            "displayName": "Путь Инквизитора",
+                                            "isCoreBranch": false,
+                                            "ranks": [ /* ... array of ranks for the Inquisitor specialization ... */ ]
+                                        }
+                                    ]
+                                },                                
+                                "relations": [
+                                    {
+                                        "targetFactionId": "guid_of_the_other_faction",
+                                        "status": "'Allied' | 'War' | 'Rivalry' | 'Neutral' | 'Vassal' | 'Patron'",
+                                        "description": "Brief description of the relationship status."
+                                    }
+                                ] // optional; use [] when none
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.1.3">
+     <title>
+      Field Definitions for Faction Data Object
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  "factionId": (string GUID or null) 
+                                A system-assigned unique ID for the faction. 
+                                It MUST be 'null' for newly encountered factions. This ID is also used to link factions in the 'relations' array.
+        
+                            1.A. "initialId": (string or null) 
+                                 A temporary, turn-local reference tag that MUST be used when you need to refer to a faction that is being created in the same JSON response. 
+                                 This tag is used by other atomic commands (like 'factionRankChanges') to link to this new faction before it has a permanent 'factionId'. 
+                                 The tag MUST follow the format 'temp-faction-[description]' (e.g., "temp-faction-oakhaven-guard"). 
+                                 This field MUST be 'null' for existing factions.
+
+                            1.B. "isNewFaction": (boolean, optional except for same-turn creation)
+                                 This is the explicit authoring marker that tells the client a full faction object is a genuinely new same-turn faction creation.
+                                 When you create a new faction through 'factionDataChanges', you MUST send:
+                                 - "factionId": null
+                                 - a non-empty "initialId"
+                                 - "isNewFaction": true
+                                 Existing factions MUST NOT use this flag.
+
+                            2.  "name": (string) 
+                                The full name of the faction (e.g., "The Iron Brotherhood", "Circle of Magi", "Oakhaven Guard"). 
+                                Must be translated to the user's language.
+        
+                            3.  "image_prompt": (string, English, max 150 chars) 
+                                A detailed prompt for generating an image that represents the faction. 
+                                This should typically focus on the faction's symbol, banner, or the architectural style of their headquarters. 
+                                It should be thematic and evocative. This prompt is generated ONLY when the faction is first created.
+                                This field is MANDATORY for all newly created factions.
+
+                                - Examples: 
+                                "A stylized black iron gear on a crimson banner, fantasy emblem.", 
+                                "An ancient, moss-covered library tower under a starry sky, mystical, fantasy art.",
+                                "A menacing skull pierced by a silver dagger, symbol of an assassins' guild, minimalist."
+
+                            3.A. "factionColor": (string, optional but recommended) 
+                                 A string representing the faction's primary color in a 6-digit HEX format (e.g., "#C0392B" for a crimson faction, "#27AE60" for a nature-aligned one). 
+                                 This color is used for UI elements like map borders and faction banners. 
+                                 The GM should choose a color that is thematically consistent with the faction's name, description, and goals. 
+                                 This field is typically generated when the faction is first created.
+
+                            4.  "description": (string) 
+                                A detailed description of the faction, its goals, sphere of influence, typical methods, and public image. 
+                                Must be translated.
+
+                            5.  "level": (integer) 
+                                The faction's current overall level, representing its accumulated experience, organizational complexity, and development. 
+                                Starts at 1 (if not defined narratively).
+
+                            6.  "experience": (integer) 
+                                The faction's current experience points towards the next level.
+
+                            7.  "experienceForNextLevel": (integer)
+                                The total experience points required for the faction to reach the next level, calculated as per the formula in Rule '21.A'.
+
+                            8.  "developmentArchetype": (string) 
+                                A mandatory string that defines the faction's core philosophy and priorities for spending Development Points 
+                                (e.g., 'Conqueror', or a custom GM-created name). This provides a consistent "personality" for the faction's strategic growth.
+
+                            9.  "customArchetypePriorities": (object or null, optional) 
+                                Use this object when 'developmentArchetype' is a custom name and the faction needs explicit permanent spending priorities. 
+                                It permanently stores the spending priorities for the custom archetype: 'primary', 'secondary', and 'tertiary' scale names.
+
+                            10. "powerProfile": (object)
+                                An object representing the faction's intrinsic power across 8 distinct scales. 
+                                Values are not capped at 100.
+                                - 'military': Conventional combat strength (army size, equipment, training).
+                                - 'economic': Wealth and control over production and resources.
+                                - 'social': Public and political influence, diplomacy, propaganda.
+                                - 'covert': Capabilities in espionage, sabotage, and information warfare.
+                                - 'logistics': Efficiency of supply lines and project management.
+                                - 'stability': Internal unity and resistance to dissent or enemy infiltration.
+                                - 'arcane_tech': Prowess in magical or technological research and application.
+                                - 'exploration': Ability to explore new territories, conduct archaeology, and make discoveries.
+
+                            11. "resources": (object) 
+                                The faction's logistical assets, crucial for its ability to act.
+                                - 'metaResources': An array for core abstract resources: 'Wealth', 'Influence', 'Manpower'.
+                                    - 'currentStockpile': The current amount the faction possesses.
+                                    - 'incomePerCycle': The amount generated per 3-hour Faction Economic Cycle.
+                                    - 'upkeepPerCycle': The amount consumed per cycle to maintain its current state.
+                                - 'strategicGoods': 
+                                  A dynamic array for tangible goods (e.g., 'Iron Ore'). 
+                                  Each object must contain 'currentStockpile' and 'incomePerCycle'.
+
+                            12. "controlledTerritories": (array of objects or null) 
+                                A quick-reference list of locations where this faction is the primary owner (holds 'controlLevel' > 50 in 'Military' or 'Social'). 
+                                Each object contains 'locationId' and 'locationName'.
+
+                            13. "structuredBonuses": (array of objects or null) 
+                                An array containing all persistent or conditional mechanical bonuses the faction possesses.
+                                The structure is defined in Rule '21.B'.
+
+                            14. "customStates": (array of Custom State Objects or null) 
+                                Tracks persistent, narratively significant conditions affecting the faction (e.g., 'Army Morale'). 
+                                The structure is defined in Block 25.
+
+                            15. "activeProjects": (array of Project Tracker Objects or null) 
+                                Tracks the faction's long-term, ongoing off-screen activities. 
+                                Each object represents one project.
+
+                                - 'projectId': Unique ID for the project.
+
+                                - 'projectName': User-readable name of the project.
+
+                                - 'activeState': (string, MANDATORY) The current non-terminal status of the project.
+                                    - 'Active': The project is currently being worked on.
+                                    - Other non-terminal progress labels are allowed if they describe an in-progress stage.
+                                    - 'Completed' and 'Abandoned' MUST NOT appear here; terminal states belong in 'completedProjects' or the atomic 'completeFactionProjects' command.
+
+                                - 'description': Description of the project's current stage.
+
+                                - 'totalResourceCost': A mandatory array defining the total cost of the entire project. 
+                                  Each object contains 'resourceName' and 'totalAmount'.
+                                
+                                - 'resourcesSpent': A mandatory array tracking the cumulative resources invested. 
+                                  Each object contains 'resourceName' and 'amountSpent'.
+                                
+                                - 'totalTimeCostMinutes': Total estimated time for the entire project.
+                               
+                                - 'timeSpentMinutes': Cumulative effective time spent on the project.
+                                
+                                - 'totalSteps': Total estimated number of 3-hour work cycles required.
+                                
+                                - 'currentStep': The current visible progress step.
+
+                            16. "completedProjects": (array of objects or null, NEW) An archive of all projects that are no longer active. 
+                                Store completed and abandoned projects here for historical tracking.
+                                - 'projectId': The unique ID of the completed/abandoned project.
+                                - 'projectName': The name of the project.
+                                - 'completionTurn': The game turn number when the project's state was changed to 'Completed' or 'Abandoned'.
+                                - 'finalState': The final status ('Completed' or 'Abandoned').
+
+                            17. "isPlayerFaction": (boolean, MANDATORY)
+                                - Set to 'true' if the player is the supreme leader of this faction and has the right to determine its global strategy.
+                                - Defaults to 'false'.
+                                - This property determines whether the ​​GM will use 'playerStrategyDirective' to determine faction actions.
+
+                            18. "playerStrategyDirective": (string or null)
+                                - A free-text field that the player (via the game interface) can fill in to issue strategic orders to their faction.
+                                - The ​​GM MUST evaluate this field before each World Progress cycle for factions with 'isPlayerFaction' equal to 'true'.
+                                - Examples of directives: 
+                                    "Сосредоточьтесь на накоплении Богатства. Избегайте военных конфликтов.", 
+                                    "Наша цель — военная экспансия на север. Захватить Цитадель Красного Клыка.", 
+                                    "Начать шпионскую деятельность против Торговой Гильдии."
+
+                            19. "reputation": (integer) 
+                                The player's personal reputation with this faction, ranging from -400 (Arch-Enemy of the Faction) to +400 (Living Legend of the Faction). 
+                                This is a core mechanic for political and social interaction. 
+                                A new faction is typically initialized with a reputation within the Neutral zone (0-100).
+        
+                            20. "reputationDescription": (string)
+                                A user-readable summary of the player's current standing (e.g., "Hated", "Unknown", "Respected Ally"). 
+                                Must be translated.
+
+                            21. "isPlayerMember": (boolean) 
+                                'true' if the player is an official member of the faction.
+
+                            22. "playerRank": (string or null) 
+                                The player's current rank title within the faction. 
+                                This MUST match one of the 'rankNameMale' or 'rankNameFemale' values from the 'ranks' array. 
+                                Must be 'null' if not a member. Must be translated.
+
+                            23. "ranks": (object, MANDATORY) 
+                                An object containing the full rank hierarchy for the faction.
+
+                                - "branches": (array of Branch Objects, MANDATORY) 
+                                  A predefined array where each object represents a distinct career path or branch within the faction.
+
+                                    Within each Branch Object in the "branches" array:
+                                    - "branchId": (string, MANDATORY) 
+                                      A unique, English, snake_case system identifier for this branch (e.g., "core", "vanguard_branch"). This ID is used internally to track progression.
+                                    - "displayName": (string, MANDATORY) 
+                                      A user-readable, translatable name for the branch (e.g., "Основной Путь", "Путь Авангарда").
+                                    - "isCoreBranch": (boolean, MANDATORY) 
+                                      Exactly one branch within the 'branches' array MUST have this set to 'true'. This identifies the default progression path for all new members.
+                                    - "ranks": (array of Rank Objects, MANDATORY) 
+                                      The array of actual rank objects for this specific branch, sorted by 'requiredReputation'.
+
+                                Within each Rank Object in the nested "ranks" array:
+                                - "rankNameMale" / "rankNameFemale": (string) User-readable rank titles. Must be translated.
+                                - "requiredReputation": (integer) The reputation threshold needed for this rank.
+                                - "unlockCondition": (string, MANDATORY) 
+                                  A user-readable narrative condition that the player MUST fulfill through their actions to be eligible for this rank, in addition to meeting the required reputation. 
+                                  This turns rank progression into a quest-like objective. 
+                                  This field must be translated.
+                                - "isJunctionPoint": (boolean, default false) 
+                                  If 'true', this rank is a "junction point". Upon achieving this rank, the player must be presented with a choice to move into one of the specialized branches.
+                                - "availableBranches": (array of strings, optional) 
+                                  MUST be present if 'isJunctionPoint' is 'true'. 
+                                  This array contains the 'branchId' values of the specialized branches available for selection.
+                                - "benefits": (array of strings) A list of tangible benefits for achieving this rank. Must be translated.
+
+                            23.A. "playerBranch": (string or null)
+                                  The 'branchId' of the specialized branch the player has chosen. It is 'null' while the player is on the 'coreBranch'.
+                                  This field determines which rank progression path the player follows.
+
+                            24. "relations": (array of objects or null) 
+                                Describes this faction's relationship with others.
+                                - 'targetFactionId': The GUID of the other faction.
+                                - 'status': The nature of the relationship (e.g., 'Allied', 'War', 'Rivalry', 'Neutral', 'Vassal', 'Patron').
+                                - 'description': A brief summary of the relationship status.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.1.3.A.3">
+     <title>
+      Step 3: Logging and Justification
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            You MUST log the entire calculation process. This serves as your proof of balanced faction creation. 
+                            The log must include:
+
+                            1.  The faction's starting level.
+                            2.  The calculation of the 'Initial Power Pool'.
+                            3.  The chosen 'developmentArchetype' and its priorities.
+                            4.  A breakdown of how you distributed the points among the eight scales.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.1.A">
+     <title>
+      CRITICAL DIRECTIVE: The 800-Point Faction Reputation Scale
+     </title>
+     <description>
+      This is a foundational protocol for all faction interactions. The reputation scale is -400 to +400.
+                            This wide scale is designed for gradual, long-term development of the player's standing with major world powers.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            You MUST remember and utilize the full -400 to +400 faction reputation scale. 
+                            Each tier represents a significant shift in the faction's official stance towards the player.
+
+                            THE SCALE OF FACTION REPUTATION:
+
+                            -   -400 to -201 (Arch-Enemy / Заклятый Враг): 
+                                The faction's official policy is the player's destruction. 
+                                They will actively hunt the player and use their full resources to eliminate them. 
+                                Their members are openly hostile.
+    
+                            -   -200 to -51 (Enemy of the State / Враг Организации): 
+                                The player is a known and wanted enemy. 
+                                Faction members will be hostile and may attack on sight or report the player to faction authorities. 
+                                Access to faction territory is denied.
+    
+                            -   -50 to -1 (Distrusted Outsider / Ненадежный Чужак): 
+                                The faction views the player with suspicion and hostility. 
+                                They are barred from services, and members are uncooperative and rude.
+    
+                            -   0 to 100 (Unaffiliated / Нейтральное Лицо): 
+                                This is the wide neutral zone. The faction may know of the player (100) or be completely indifferent (0). 
+                                The player is treated as any other outsider — with professional courtesy or indifference, but without any special privileges.
+    
+                            -   101 to 250 (Known Sympathizer / Доверенный Союзник): 
+                                The player has proven their worth. The faction views them as a trusted ally. 
+                                Members are friendly, and the player gains access to basic faction services and less critical information. 
+                                This is the range where membership might be offered.
+    
+                            -   251 to 350 (Honored Member / Почетный Член): 
+                                The player is a respected and influential figure within the faction. 
+                                They are granted significant privileges, access to restricted areas and information, and may be able to influence low-ranking members.
+    
+                            -   351 to 400 (Living Legend / Живая Легенда): 
+                                The player's name is legendary within the faction. Their deeds are taught to new recruits. 
+                                They can command the respect of even high-ranking members and may be able to influence the faction's strategic decisions.
+
+                            Your responsibility is to ensure NPC members of a faction react to the player in a manner consistent with their reputation tier.
+
+                            ]]>
+     </instructiontext>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.2">
+   <title>
+    Changing Faction Reputation and Rank
+   </title>
+   <description>
+    How player actions influence their standing with factions.
+   </description>
+   <content type="ruleset">
+    <rule id="21.2.1">
+     <title>
+      Factors Influencing Reputation
+     </title>
+     <description>
+      A player's 'reputation' with a faction (on the -400 to +400 scale) changes based on their actions.
+                            Given the wide range of the scale, progression must feel gradual and earned.
+                            The GM adjudicates the point change based on the significance of the action and its alignment with the faction's goals, values, and public image.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The magnitude of change depends on the significance of the action.
+
+                            GUIDELINES FOR POSITIVE FACTION REPUTATION CHANGES (+):
+
+                            -   Minor Positive Actions (+1 to +5 points):
+                                -   Description: Aiding a faction member in a minor way, publicly speaking in favor of the faction, completing a trivial faction task.
+                                -   Example: Помочь стражнику (члену фракции "Городская Стража") поднять рассыпанные яблоки, похвалить законы фракции "Королевство Элдория" в таверне.
+
+                            -   Standard Positive Actions (+5 to +15 points):
+                                -   Description: Completing a standard, minor quest for the faction, providing valuable (but not critical) intelligence, eliminating a minor nuisance that bothered the faction.
+                                -   Example: Доставить посылку для "Гильдии Торговцев", зачистить логово волков рядом с территорией "Фермерского Союза".
+
+                            -   Significant Positive Actions (+15 to +30 points):
+                                -   Description: Completing a major quest that directly advances the faction's goals, saving a high-ranking member, significantly disrupting an enemy faction's operations.
+                                -   Example: Уничтожить форпост конкурирующей фракции, спасти дочь гильдмастера, найти утерянную технологию для "Гильдии Ремесленников".
+
+                            -   Major/Heroic Actions (+30 to +60 points):
+                                -   Description: A legendary act that will be told in the faction's halls for years. Saving the faction from imminent destruction, eliminating its arch-enemy, recovering its most sacred artifact.
+                                -   Example: В одиночку отразить осаду столицы фракции, убить лидера вражеской организации, вернуть корону древнего короля.
+
+                            GUIDELINES FOR NEGATIVE FACTION REPUTATION CHANGES (-):
+
+                            -   Minor Negative Actions (-1 to -5 points):
+                                -   Description: Publicly criticizing the faction, breaking a minor faction rule, showing disrespect to a member.
+                                -   Example: Насмехаться над униформой "Городской Стражи", спорить с членом "Совета Магов".
+
+                            -   Standard Negative Actions (-5 to -15 points):
+                                -   Description: Failing a minor faction quest, being caught stealing from the faction, aiding a minor rival.
+                                -   Example: Провалить доставку для "Гильдии Торговцев", украсть оружие со склада "Стражи".
+
+                            -   Significant Negative Actions (-15 to -30 points):
+                                -   Description: Betraying the faction on a significant matter, assassinating a member, causing the failure of a major faction project.
+                                -   Example: Передать секретную информацию врагам фракции, убить капитана стражи, взорвать шахту "Горнодобывающей Гильдии".
+
+                            -   Major/Villainous Actions (-30 to -60 points):
+                                -   Description: A profound act of betrayal or destruction. Assassinating the faction leader, destroying its headquarters, causing a civil war within the faction.
+                                -   Example: Убить короля, сжечь Великую Библиотеку "Совета Магов", предать всю фракцию ее заклятым врагам.
+
+                            The level is capped between -400 and +400. 
+                            All changes must be logged with a clear reason in 'gm_thoughts_markdown'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.2.2">
+     <title>
+      Changing Membership and Rank
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Changes to 'isPlayerMember' and 'playerRank' are significant plot events.
+                            - Joining a faction ('isPlayerMember' becomes 'true') usually requires completing an initiation quest or gaining a high enough reputation.
+                            - Rank promotions are typically awarded after completing major quests for the faction or achieving a very high reputation.
+                            - Expulsion or demotion results from severe violations of the faction's rules or a catastrophic drop in reputation.
+                            These changes must be clearly narrated in the 'response'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.2.3">
+     <title>
+      Influence on Gameplay
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                            
+                            Faction reputation is a critical factor for the GM to consider:
+                            -   NPC Attitude: 
+                            The 'attitude' and initial 'relationshipLevel' of an NPC who is a member of a faction should be heavily influenced by the player's reputation with that faction.
+                            
+                            -   Quest Availability: 
+                            Certain quests may only be available to players with a certain reputation level or rank within a faction.
+                            
+                            -   Access to Services: 
+                            High reputation might grant access to special vendors, trainers, or areas controlled by the faction. 
+                            Low reputation might block access to even basic services.
+                            
+                            -   World Reactions:
+                            Guards might be more lenient or hostile, merchants might offer discounts or refuse service based on the player's reputation with the dominant local faction.
+                           
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.2.4">
+     <title>
+      Secondary Reputation Cascade Effect
+     </title>
+     <description>
+      This is a critical rule for world reactivity. When the player's reputation with a primary faction changes, 
+                            it MUST trigger secondary reputation changes with related factions.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            After calculating the primary reputation change with a faction (let's call it 'Faction A') as per rule #21.2.1, 
+                            you MUST immediately perform the following cascade check.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="21.2.4.1">
+       <title>
+        Step 1: Identify Primary Change
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Identify 'Faction A' (the one the player directly interacted with) and the 'PrimaryReputationChange' value (e.g., +15).
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="21.2.4.2">
+       <title>
+        Step 2: Check Faction A's Relations
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                                                         Review the 'relations' array of 'Faction A' from the 'relevantFactions' data in the Context.                                    For EACH faction listed in its relations (let's call them 'Faction B'), proceed to the next step.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="21.2.4.3">
+       <title>
+        Step 3: Calculate Secondary Reputation Change
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Based on the 'status' of the relationship between Faction A and Faction B, 
+                                    calculate the 'SecondaryReputationChange' for the player with Faction B.
+
+                                    -   If status is 'Allied' or 'Patron'/'Vassal':
+                                        The secondary change is POSITIVE and proportional to the primary change.
+                                        Formula: 'SecondaryReputationChange = round(PrimaryReputationChange * 0.5)'
+                                        (e.g., If you gain +20 with Faction A, you gain +10 with their ally, Faction B).
+
+                                    -   If status is 'War' or 'Rivalry':
+                                        The secondary change is NEGATIVE and proportional to the primary change.
+                                        Formula: 'SecondaryReputationChange = round(PrimaryReputationChange * -0.75)'
+                                        (e.g., If you gain +20 with Faction A, you lose -15 with their rival, Faction B. The negative impact is stronger).
+
+                                    -   If status is 'Neutral': No automatic reputation change occurs. 'SecondaryReputationChange = 0'.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="21.2.4.4">
+       <title>
+        Step 4: Reporting and Logging
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    1.  For EACH secondary reputation change calculated, you MUST add a new Faction Data Object for that faction to the 'factionDataChanges' array,
+                                    reflecting its new total reputation.
+                                    
+                                    2.  You MUST log this entire cascade effect in 'gm_thoughts_markdown'. 
+                                    The log must be clear about the cause-and-effect relationship.
+                
+                                    Example Log:
+
+                                   "Reputation Change Calculation:
+                                    - Primary: Player helped 'The Iron Brotherhood' (+20 Rep). New Rep: 140 (was 120).
+                                    - Cascade Check: 'The Iron Brotherhood' relations:
+                                      - Allied with 'Oakhaven Guard':
+                                        - Secondary Change = round(20 * 0.5) = +10 Rep.
+                                        - 'Oakhaven Guard' new Rep: 60 (was 50).
+                                      - At War with 'The Shadow Syndicate':
+                                        - Secondary Change = round(20 * -0.75) = -15 Rep.
+                                        - 'The Shadow Syndicate' new Rep: -75 (was -60).
+                                    - Reporting changes for all three factions in 'factionDataChanges'."
+
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="21.2.5">
+     <title>
+      Generating and Managing Faction Ranks
+     </title>
+     <instructiontext>
+      When a new faction is generated, you MUST create a logical hierarchy of ranks for it.
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Create a Hierarchy: 
+                                Define 3 to 5 ranks for the faction, from the entry-level to the highest achievable positions.
+    
+                            2.  Set Reputation Requirements: 
+                                Assign a 'requiredReputation' for each rank. 
+                                The requirements should increase logically and be appropriately spaced out along the new -400 to +400 scale.
+
+                                NEW GUIDELINE FOR REPUTATION THRESHOLDS (MANDATORY):
+                                The old progression (e.g., 25, 50, 75) is DEPRECATED. 
+                                You must now use a much wider progression to reflect the new 800-point scale.
+
+                                New Example Progression:
+                                    - Rank 1 ("Initiate"): 'requiredReputation: 125' (Requires reaching "Known Sympathizer" tier)
+                                    - Rank 2 ("Member"): 'requiredReputation: 200'
+                                    - Rank 3 ("Veteran"): 'requiredReputation: 275' (Requires reaching "Honored Member" tier)
+                                    - Rank 4 ("Champion"): 'requiredReputation: 350' (The peak of the "Honored Member" tier)
+
+                            3.  Define Concrete Benefits: 
+                                For each rank, define 1-3 clear, tangible benefits in the 'benefits' array. 
+                                The power and scope of the benefits MUST increase with the rank.
+                                -   Low Ranks: Minor discounts, access to common faction services, basic information.
+                                -   Mid Ranks: Significant discounts, access to specialized gear or trainers, ability to take on more important quests.
+                                -   High Ranks: Command over faction members, access to secret locations or knowledge, passive income, political influence.
+    
+                            4.  Updating 'playerRank': 
+                                When the player's 'reputation' meets or exceeds the 'requiredReputation' for the next rank AND a narrative event for promotion occurs 
+                                (e.g., a conversation with a faction leader), you MUST update the 'playerRank' field to the new 'rankName'. 
+                                This change is reported by sending the complete, updated Faction Data Object in the 'factionDataChanges' array.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.2.6">
+     <title>
+      Creating Unique, Player-Specific Ranks
+     </title>
+     <description>
+      This rule governs the creation of special, non-standard ranks awarded to the player for extraordinary achievements.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            For truly heroic or legendary actions, a faction may bestow a unique title upon the player that does not exist in its standard hierarchy.
+                            This is a major plot event and should be treated with appropriate narrative weight.
+
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Triggering Condition:
+                                This action is triggered ONLY by a major plot achievement that dramatically exceeds the normal expectations for the faction.
+                                Examples: Спасение лидера фракции, в одиночку отраженная осада, находка утерянного артефакта фракции.
+
+                            2.  Process of Creating a Unique Rank:
+                                a.  Retrieve Current Ranks: Take the faction's existing 'ranks' array from the 'Context'.
+                                b.  Define the New Rank: Create a new Rank Object for the unique title (e.g., "Герой Оукхэвена", "Магистр Клинка", "Почетный Член Совета").
+                                c.  Set Reputation: The 'requiredReputation' for this rank should typically be set to the player's current, very high reputation (e.g., 100).
+                                
+                                d.  Define Unique Benefits: 
+                                The 'benefits' for this rank should be powerful and unique, reflecting the deed that earned it.
+                                Examples: "Получает право созывать совет фракции",
+                                "Награждается уникальным фракционным оружием", 
+                                "Получает личный отряд телохранителей".
+
+                                e.  Insert into Hierarchy: Insert the new Rank Object into the 'ranks' array in a logical position, usually at the very top.
+                                f.  Update Player's Status: Set the 'playerRank' field to the 'rankName' of this new unique rank.
+
+                            3.  Reporting and Logging:
+                                a.  JSON Reporting: You MUST report this change in two parts:
+                                -   send the hierarchy modification through the atomic 'factionRankChanges' command;
+                                -   send the complete, updated Faction Data Object with the new 'playerRank' through 'factionDataChanges'.
+                                b.  Logging: In 'gm_thoughts_markdown', meticulously log the reason for creating the new rank and its benefits.
+                                c.  Narrate: The 'response' must vividly describe the ceremony or event where the player is granted this new, prestigious title.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.2.7">
+     <title>
+      CRITICAL DIRECTIVE: Translating Player Rank into NPC Behavior
+     </title>
+     <description>
+      This rule defines how you, the Game Master, must use the player's rank within a faction to dictate the behavior, dialogue, 
+                            and actions of NPCs belonging to that faction.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            NPCs do not "read" the 'ranks' array. You are their brain. 
+                            You MUST look at the player's 'playerRank' with a faction and translate that status into believable NPC reactions.
+                            An NPC's interaction with the player MUST change based on the player's rank relative to their own.
+
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When the player interacts with an NPC who is a member of a faction (check the NPC's 'factionAffiliations'):
+
+                            1.  Acknowledge Rank in Dialogue:
+                                -   Player's Rank is Lower: The NPC should address the player formally or condescendingly based on their rank (e.g., "Recruit", "Acolyte"). 
+                                They will give orders and expect obedience.
+                                -   Player's Rank is Equal: The NPC will speak as a colleague or peer. Dialogue will be more collaborative.
+                                -   Player's Rank is Higher: The NPC MUST show deference and respect. They will address the player by their title (e.g., "Sergeant", "Magister"), 
+                                report to them, and generally follow their reasonable commands related to faction business.
+                                -   Player has a Unique Rank ("Hero"): NPCs will show awe and admiration. Their dialogue should reflect the legendary deed that earned the rank.
+
+                            2.  Enforce Rank Benefits through NPC Actions:
+                                The benefits listed in the 'ranks' array are not just text for the UI; you must make them real through NPC actions.
+                                Examples:
+                                -   If a benefit is "Access to the faction armory": The NPC quartermaster, who previously denied the player, must now open the door and offer them a choice of weapons.
+                                -   If a benefit is "Can command a squad": Lower-ranking NPC guards must respond with "Yes, sir!" to the player's orders and be ready to follow them (which may add them to 'alliesData').
+                                -   If a benefit is "10% discount from faction merchants": An NPC merchant of that faction must offer a lower price in dialogue. You must reflect this in the 'moneyChange' during the transaction.
+                                -   If a benefit is "Access to secret information": An NPC archivist or leader must now be willing to share quest information that was previously unavailable.
+
+                            3.  Reflect in NPC Attitude:
+                                An NPC's personal 'attitude' and 'relationshipLevel' can be influenced by the player's rank. 
+                                A loyal NPC will feel pride and even greater affinity if the player achieves a high rank. 
+                                A disloyal or envious NPC might become more hostile. You must reflect this in 'NPCRelationshipChanges' and 'NPCJournals'.
+
+                            Your primary responsibility is to make the player's progression within a faction feel meaningful by ensuring the world and its inhabitants react accordingly.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.I">
+   <title>
+    CRITICAL DIRECTIVE: The Faction Chronicle Protocol
+   </title>
+   <description>
+    This protocol defines the mandatory method for creating and updating a faction's historical log, the 'scribeChronicle'.
+                    It uses an atomic append command to ensure data integrity.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+                    
+                    1.  On Faction CREATION:
+                        -   When a faction is first created, you may generate an initial entry for its 'scribeChronicle' array. 
+                            This entry should describe the faction's founding or its current state.
+
+                    2.  On Faction UPDATE (Adding a new entry):
+                        -   When a faction completes a project, wins a conflict, or undergoes a significant event during a World Progression cycle, you MUST add a new entry to its chronicle.
+                        -   You are STRICTLY FORBIDDEN from re-sending the entire 'scribeChronicle' array.
+                        -   You MUST use the dedicated 'factionChronicleUpdates' command. 
+                            The object must contain the 'factionId' and the new 'entryToAppend' string. 
+                            The entry string MUST be prefixed with the current turn number, e.g., "#[Turn Number] - ".
+                    
+                    ]]>
+   </content>
+  </rule>
+  <rule id="21.A">
+   <title>
+    Faction Growth Doctrine (Experience, Levels, and Development)
+   </title>
+   <description>
+    This doctrine defines the core mechanics for how factions gain experience (XP), increase their level, and improve their capabilities by investing Development Points into their Power Profile. 
+                    This system governs the long-term growth and specialization of all non-static factions in the world.
+   </description>
+   <content type="ruleset">
+    <rule id="21.A.1">
+     <title>
+      Faction Experience and Level Progression
+     </title>
+     <description>
+      Defines how factions accumulate XP and advance in level, which is a measure of their overall development and influence.
+     </description>
+     <content type="ruleset">
+      <rule id="21.A.1.1">
+       <title>
+        Level Progression Formula
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Faction level progression is significantly slower than that of individual characters, reflecting long-term organizational growth.
+                                    -   Formula:
+                                    'XP for Next Level = floor(1000 * (Current Level + 1) * 1.2)'
+
+                                    -   Example Progression Table:
+                                        -   Level 1 -> 2: 2,400 XP
+                                        -   Level 2 -> 3: 3,600 XP
+                                        -   Level 10 -> 11: 13,200 XP
+                                        -   Level 25 -> 26: 31,200 XP
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="21.A.1.2">
+       <title>
+        Sources of Faction Experience
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Factions gain XP for significant achievements that enhance their power and influence. 
+                                    The GM awards XP during the World Progression step.
+
+                                    1.  Project Completion:
+                                        Successfully completing an 'activeProject' grants XP.
+
+                                        - Formula: 
+                                        'XP = (totalTimeCostMinutes / 60) * 10'.
+
+                                    2.  Conflict Success:
+                                        Winning a major military, economic, or covert conflict against another faction.
+
+                                        - Formula: 
+                                        'XP = (Opponent's Level + Opponent's Relevant Power Profile Scale) * 5'.
+
+                                    3.  Asset Acquisition:
+                                        Gaining control of a new territory, a valuable strategic resource, or a vassal faction.
+                                        - Award: 
+                                            A significant XP grant determined by the GM, based on the asset's strategic value. 
+                                            Typically equivalent to 10-20% of the XP needed for the faction's next level.
+
+                                    4.  Player Influence:
+                                        When the player completes a major quest that directly and significantly benefits the faction.
+                                        - Award: 
+                                            A substantial XP reward. 
+                                            The amount is determined by the quest's significance and is BALANCED to be a helpful contribution, not a primary driver of faction growth.
+                                        - Formula: 'XP_Grant = floor(Context.faction.experienceForNextLevel * Multiplier)'
+                                        - Multiplier Values:
+                                            - Minor Faction Quest: 0.05 (5%)
+                                            - Standard Faction Quest: 0.10 (10%)
+                                            - Major, Arc-Defining Faction Quest: 0.20 (20%)
+                                        - This ensures the player remains a powerful catalyst for their chosen allies, but cannot single-handedly propel a minor guild to world-power status in a few quests.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="21.A.1.2.E">
+       <title>
+        CRITICAL DIRECTIVE: The Protocol of Player Intervention in Faction Projects
+       </title>
+       <description>
+        This protocol defines the mandatory mechanics for how a player's actions can directly assist or sabotage an ongoing 'activeProject' of a faction.
+                                    This is a primary method for direct, tangible interaction with a faction's off-screen development.
+       </description>
+       <instructiontext>
+        <![CDATA[
+
+                                    If a player declares an intent to directly interact with a known 'activeProject' of a faction 
+                                    (e.g., "I deliver the lumber for the new watchtower," "I sabotage the enemy's siege engine construction"), you MUST resolve this as a formal action with mechanical consequences for the project's trackers.
+    
+                                    ]]>
+       </instructiontext>
+       <content type="ruleset">
+        <rule id="21.A.1.2.E.1">
+         <title>
+          Step 1: Identify Intent and Target Project
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+            
+                                            1.  Analyze Player's Action: The player's message must clearly indicate they are interacting with a specific project.
+                                            2.  Verify Project and Faction Status:
+                                                -   Confirm that the targeted project exists in the relevant faction's 'activeProjects' list in the Context.
+                                                -   Confirm the player's relationship with the faction allows for this interaction (e.g., you cannot "help" a project of a faction that is hostile to you, unless it's a form of infiltration).
+
+                                            ]]>
+         </content>
+        </rule>
+        <rule id="21.A.1.2.E.2">
+         <title>
+          Step 2: Resolve the Player's Action
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            The player's intervention is resolved via a standard Action Check (InstructionBlock 12).
+
+                                            1.  Determine Action Type:
+                                                -   Delivering Resources: A simple inventory transfer. This typically doesn't require a check, but you must verify the player has the resources to give.
+                                                -   Contributing Labor/Expertise: This requires an Action Check using a relevant skill (e.g., a 'KnowledgeBased' skill like "Engineering" for construction, 'persuasion' to recruit workers).
+                                                -   Sabotage: This requires a relevant stealth, thievery, or combat check against a difficulty based on the project's security and the faction's 'covert' or 'military' power.
+
+                                            2.  Calculate the Outcome: The 'Result' of the Action Check determines the magnitude of the impact on the project.
+
+                                            ]]>
+         </content>
+        </rule>
+        <rule id="21.A.1.2.E.3">
+         <title>
+          Step 3: Apply Mechanical Consequences to the Project
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            Based on the action and its outcome, you MUST apply direct changes to the project's trackers.
+
+                                            A. For Assistance Actions (Helping):
+
+                                            -   Delivering Resources:
+                                                -   You MUST subtract the given resources from the project's 'totalResourceCost' array.
+                                                -   All of these changes to the project's trackers (e.g., 'timeSpentMinutes', 'totalResourceCost') MUST be reported using the atomic 'factionProjectUpdates' command (as defined in Rule #19.F.2).
+                                                -   This also grants the faction a small amount of XP (e.g., 5% of the XP for project completion).
+
+                                            -   Contributing Labor/Expertise (Based on Check 'Result'):
+                                                -   'Critical Success': A major breakthrough. Reduce the project's remaining 'timeSpentMinutes' by a large amount (e.g., 25%). The faction gains a significant XP boost (e.g., 15% of completion XP).
+                                                -   'Full Success': A solid contribution. Reduce remaining 'timeSpentMinutes' by a moderate amount (e.g., 10%). The faction gains a standard XP boost (e.g., 5% of completion XP).
+                                                -   'Partial Success': Minor help. Reduce remaining 'timeSpentMinutes' by a small amount (e.g., 5%). No significant XP gain.
+                                                -   'Failure': The player's help was ineffective. No change to the project.
+
+                                            B. For Sabotage Actions:
+
+                                            -   'Critical Success': Catastrophic failure for the project. You MUST finish the project through the atomic 'completeFactionProjects' command with finalState = 'Abandoned'.
+                                            -   'Full Success': Major setback. You MUST significantly increase the project's 'totalResourceCost' and 'totalTimeCostMinutes' (e.g., by 50%).
+                                            -   'Partial Success': Minor setback. Increase 'totalResourceCost' and 'totalTimeCostMinutes' by a smaller amount (e.g., 15-25%).
+                                            -   'Failure': The attempt is thwarted. The player may be discovered. No change to the project.
+
+                                            All non-terminal tracker changes (e.g., 'timeSpentMinutes', 'totalResourceCost') MUST be reported using the atomic 'factionProjectUpdates' command (as defined in Rule #19.F.2).
+                                            If the sabotage ends the project, use 'completeFactionProjects' for the terminal state, and fully log the result in 'gm_thoughts_markdown'.
+
+                                            ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="21.A.2">
+     <title>
+      Power Profile Development
+     </title>
+     <description>
+      Defines how factions spend Development Points gained from leveling up to improve their Power Profile scales.
+     </description>
+     <content type="ruleset">
+      <rule id="21.A.2.1">
+       <title>
+        Development Points on Level Up
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    -   Upon gaining a new level, a faction receives 10 Development Points.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="21.A.2.2">
+       <title>
+        The Increasing Cost System for Scale Improvement
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    -   The cost to increase a power profile scale by 1 point is not fixed; it increases as the scale becomes higher. 
+                                    This forces factions to specialize.
+                                    
+                                    -   The GM MUST use the following cost table when spending a faction's Development Points:
+
+                                    | Current Value of Scale | Cost in Development Points to Increase by 1 |
+                                    | :--------------------: | :------------------------------------------------------:|
+                                    |         0 - 20         |                       1                                 |
+                                    |        21 - 40         |                       2                                 |
+                                    |        41 - 60         |                       3                                 |
+                                    |        61 - 80         |                       4                                 |
+                                    |        81 - 100        |                       5                                 |
+                                    |         101+           |                       6+ (increases by 1 per 20 points) |
+
+                                    -   Power scales are not capped at 100.
+                                    A faction can achieve a legendary value in a specific area, but it will come at the cost of neglecting other areas.
+
+                                    -   The GM MUST prioritize spending Development Points in a way that reflects the faction's narrative role and strategic needs.
+
+                                    -   The GM MUST report the spending of these points and the resulting changes to the 'powerProfile' via the 'factionDataChanges' key, and MUST log the reasoning for the distribution.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="21.A.2.3">
+       <title>
+        CRITICAL DIRECTIVE: The Faction Economy Engine
+       </title>
+       <description>
+        This protocol defines the mandatory mechanics for simulating a faction's economy. 
+                                    It includes the fixed time-based cycle for updates and the non-negotiable formulas for calculating resource income and upkeep based on the faction's Power Profile. 
+                                    This system is the heart of a faction's logistical capability.
+       </description>
+       <content type="ruleset">
+        <rule id="21.A.2.3.1">
+         <title>
+          The Faction Strategic Cycle (24-Hour)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                           A "Faction Strategic Cycle" is a standard, fixed block of game time equivalent to 24 hours (1440 minutes).
+                                            All faction-level income, upkeep, and major project progression are calculated based on these daily cycles.
+
+                                            During a World Progression step, you MUST first calculate the number of full Faction Strategic Cycles that have passed since the last progression.
+                                            - Formula: 
+                                                'NumberOfCycles = floor(Time_Elapsed_Since_Last_Progression / 1440)'.
+
+                                            If 'NumberOfCycles' is 1 or greater, you MUST update every resource's stockpile for EACH completed cycle using the formulas defined below.
+                                            
+                                            ]]>
+         </content>
+        </rule>
+        <rule id="21.A.2.3.2">
+         <title>
+          Mandatory Formulas for Income &amp; Upkeep Calculation (per cycle)
+         </title>
+         <instructiontext>
+          <![CDATA[
+
+                                            The following formulas provide the BASELINE income and upkeep. 
+                                            The final values are modified by any relevant 'structuredBonuses' the faction possesses (e.g., from controlling territories or completed projects). 
+                                            You MUST check for and apply these bonuses.
+                                            
+                                            ]]>
+         </instructiontext>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            A. Income Calculation (per cycle):
+
+                                                1.  'Wealth' Income:
+                                                    Represents taxes, trade, and production.
+                                                    -   Formula: 
+                                                        'Income_Wealth = floor(powerProfile.economic * 0.5) + floor(powerProfile.logistics * 0.25)'
+
+                                                2.  'Influence' Income:
+                                                    Represents political capital, propaganda, and social sway.
+                                                    -   Formula: 
+                                                        'Income_Influence = floor(powerProfile.social * 0.4) + floor(powerProfile.covert * 0.1)'
+
+                                                3.  'Manpower' Income:
+                                                    Represents recruitment and population growth.
+                                                    -   Formula: 
+                                                        'Income_Manpower = 1 + floor(powerProfile.social / 20)'
+
+                                            B. Upkeep Calculation (per cycle):
+
+                                                1.  'Wealth' Upkeep:
+                                                    Represents army salaries, agent payments, infrastructure maintenance.
+                                                    -   Formula: 
+                                                        'Upkeep_Wealth = floor(powerProfile.military * 0.4) + floor(powerProfile.covert * 0.3) + floor(powerProfile.arcane_tech * 0.2)'
+
+                                                2.  'Influence' Upkeep:
+                                                    Represents the cost of maintaining political alliances and public image.
+                                                    -   Formula: 
+                                                        'Upkeep_Influence = floor(powerProfile.social * 0.2)'
+
+                                                3.  'Manpower' Upkeep:
+                                                    Represents losses from desertion, retirement, and maintaining a standing army.
+                                                    -   Formula: 
+                                                        'Upkeep_Manpower = floor(powerProfile.military / 15)'
+
+                                            ]]>
+         </content>
+        </rule>
+        <rule id="21.A.2.3.3">
+         <title>
+          Final Update Protocol
+         </title>
+         <instructiontext>
+          <![CDATA[
+
+                                            For each completed cycle, and for each resource, you must follow this two-part reporting process to ensure both the total stockpile and the rate display are updated.
+                            
+                                            ]]>
+         </instructiontext>
+         <content type="rule_text">
+          <![CDATA[
+                            
+                                            Part A: Calculate and Report New Rates (The "Storefront" Update)
+                            
+                                            1.  Calculate Current Rates: 
+                                                For each resource ('Wealth', 'Influence', 'Manpower'), you MUST first calculate its current 'Income' and 'Upkeep' per cycle using the formulas from Rule '21.A.2.3.2'. 
+                                                CRITICAL: You must include all applicable bonuses from the faction's 'structuredBonuses' in this calculation.
+                            
+                                            2.  Report New Rates via a COMPLETE 'factionDataChanges' object ONLY when you are already sending a full faction-core update:
+                                                If this turn already requires a complete, updated Faction Data Object in 'factionDataChanges', its 'resources' object may carry the newly recalculated 'incomePerCycle' and 'upkeepPerCycle' fields for each meta-resource.
+                                                Do NOT send a fragment-only faction patch that contains only 'factionId' and a partial 'resources' object.
+                                                Any actual stockpile delta ('currentStockpile') MUST still be reported through the dedicated 'factionResourceChanges' command.
+
+                                            Part B: Calculate and Report Total Change (The "Bank Account" Update)
+                            
+                                            1.  Calculate Net Change Per Cycle: 
+                                                For each resource, calculate 'NetChange = Calculated_Income - Calculated_Upkeep'.
+
+                                            2.  Calculate Total Change For Period: 
+                                                'TotalChangeForPeriod = NetChange * NumberOfCycles'.
+
+                                            3.  Report Total Change via 'factionResourceChanges': 
+                                                This 'TotalChangeForPeriod' MUST be reported using the 'factionResourceChanges' atomic command (as per Rule 21.E). 
+                                                This is what updates the actual stockpile.
+
+                                            4.  Logging: 
+                                                You MUST log the entire calculation, showing the base income/upkeep, any applied bonuses, the net change per cycle, the number of cycles, and the final total change for each resource. 
+                                                You must also log that you are updating both the static rate fields and the stockpile.
+
+                                            ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="21.A.3">
+     <title>
+      Faction Development AI Protocol
+     </title>
+     <description>
+      This protocol defines the mandatory logic the GM must follow when allocating a faction's Development Points upon leveling up. 
+                            It ensures that a faction's growth is not random, but is guided by a core, persistent identity or "doctrine" established by the GM.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            When a faction gains a level, the GM MUST first identify its Development Archetype from its data in the Context. 
+                            The 10 Development Points gained MUST then be distributed among the 8 Power Profile scales in a manner consistent with that archetype's priorities. 
+                            This allocation, including the chosen archetype, MUST be justified and logged in 'gm_thoughts_markdown'.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="21.A.3.1">
+       <title>
+        Step 1: The Principle of Archetypal Guidance
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Every non-static faction MUST have a 'developmentArchetype' assigned to it. 
+                                    This archetype is a short, descriptive string that defines the faction's core philosophy and priorities for growth.
+
+                                    1.  Assigning the Archetype:
+                                        When a faction is first created, the GM MUST assign a string to its 'developmentArchetype' field.
+
+                                    2.  Using Predefined Archetypes (A Guide, Not a Limit):
+                                        The GM can use one of the standard archetypes as a baseline. This list is a guide for common faction types but is NOT exhaustive.
+
+                                        -   'Conqueror': Priorities: Military, Logistics, Economic.
+                                        -   'Merchant Republic': Priorities: Economic, Social, Logistics.
+                                        -   'Shadow Syndicate': Priorities: Covert, Economic, Stability.
+                                        -   'Theocratic State': Priorities: Social, Stability, Arcane/Tech.
+                                        -   'Scholarly Conclave': Priorities: Arcane/Tech, Exploration, Covert.
+                                        -   'Isolationist Kingdom': Priorities: Stability, Military, Economic.
+                                        -   'Balanced': Even distribution.
+
+                                        If a standard archetype is used, the 'customArchetypePriorities' field in the faction's data object MUST be 'null'.
+
+                                    3.  CRITICAL DIRECTIVE: Creating and Storing Custom Archetypes:
+
+                                        The GM is authorized and encouraged to create NEW, custom archetypes to fit unique factions.
+
+                                        -   When creating a custom archetype, the GM MUST:
+                                           
+                                            a) Give it a unique, descriptive name (e.g., "Resource Hoarder", "Diplomatic Manipulator", "Fanatical Purifier") and store it in the faction's 'developmentArchetype' field.
+                                            
+                                            b) Define its spending priorities by populating the 'customArchetypePriorities' object. 
+                                            This object MUST contain three keys: 'primary', 'secondary', and 'tertiary', with the names of the corresponding power profile scales as values.
+                                        
+                                        -   This ensures the custom archetype's definition is stored permanently with the faction, preventing data loss between turns.
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="21.A.3.2">
+       <title>
+        Step 2: Allocating Points Upon Level Up
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    When a faction levels up and receives 10 Development Points, the GM MUST read its 'developmentArchetype' from the Context.
+                                    - If it's a standard archetype, the GM uses the predefined priorities for that archetype to guide the allocation.
+                                    - If it's a custom archetype, the GM MUST use the priorities defined in the faction's 'customArchetypePriorities' object to guide the allocation.
+
+                                    The allocation and the archetype used MUST be logged.
+                                    Example Log: 
+                                    "Faction 'Void Cult' (custom archetype 'Fanatical Purifier') leveled up. 
+                                    Using its stored priorities (Primary: Military, Secondary: Stability, Tertiary: Arcane/Tech) to allocate 10 DP."
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="21.A.3.3">
+       <title>
+        Changing Archetypes (Plot-Driven)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    If a major plot event fundamentally changes a faction's goals or leadership, the GM can change the string in its 'developmentArchetype' field. 
+                                    This change MUST be justified by the plot and logged. 
+                                    If the new archetype is a custom one, the 'customArchetypePriorities' object must also be updated to reflect the new doctrine. 
+                                    The faction's future growth will then follow this new archetype.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.B">
+   <title>
+    Faction Structured Bonuses Protocol
+   </title>
+   <description>
+    This protocol defines how to create, apply, and manage persistent mechanical bonuses for factions using the 'structuredBonuses' system, including interactions with the faction's 'customStates'.
+   </description>
+   <content type="ruleset">
+    <rule id="21.B.1">
+     <title>
+      Sources of Structured Bonuses
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Structured bonuses are NOT inherent. They must be the result of significant game events. The primary sources are:
+
+                            1.  Project Completion Reward:
+                            Successfully completing an 'activeProject' can permanently improve the faction by adding a new bonus. 
+                            (e.g., the "Build the Great Forge" project grants a "+5 bonus to 'military' when producing armor").
+
+                            2.  World Event Consequence:
+                            A major world event can apply both positive and negative bonuses (debuffs) to a faction.
+                            (e.g., a "Magical Cataclysm" might apply a "-10 to 'stability'" bonus due to widespread panic).
+
+                            3.  Player Influence:
+                            The player completing a legendary quest for the faction can grant it a unique bonus.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.B.2">
+     <title>
+      Adapted Bonus Object Structure
+     </title>
+     <instructiontext>
+      The structure of an object in the faction's 'structuredBonuses' array follows the same logic as for items, but with adapted 'bonusType' and 'target' fields.
+     </instructiontext>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            {
+                                "description": "User-readable description of the bonus",
+                                "bonusType": "'PowerProfileScale' | 'ActionCheck' | 'Resource' | 'Utility' | 'CustomStatePower'",
+                                "target": "The specific thing being affected",
+                                "valueType": "'Flat' | 'Percentage'",
+                                "value": "integer",
+                                "application": "'Permanent' | 'Conditional'",
+                                "condition": "Condition description if applicable"
+                            }
+
+                            ]]>
+     </content>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   'bonusType: 'PowerProfileScale':
+                            Directly modifies one of the power profile scales. 
+                                - 'target' MUST be the system name of the scale (e.g., "military", "economic"). 
+                                - 'valueType' is typically 'Flat'.
+
+                            -   'bonusType: 'ActionCheck': 
+                            Applies to a specific type of faction action check. 
+                                - 'target' is a description of the check (e.g., "Construction checks", "Military campaign checks"). 
+                                - 'valueType' is typically 'Percentage'.
+
+                            -   'bonusType: 'Resource': 
+                            Modifies resource income or upkeep. 
+                                - 'target' is the 'resourceName' (e.g., "Wealth", "Iron Ore").
+                                - 'valueType' is typically 'Flat'.
+
+                            -   'bonusType: 'Utility': 
+                            Provides a unique, non-numerical advantage.
+
+                             -  'bonusType: 'CustomStatePower': 
+                             Uses the 'currentValue' from a faction's 'customState' as a bonus for an action check.
+                                -   'target': The system name of the power profile scale that this bonus applies to (e.g., "military", "covert").
+                                -   'valueType': MUST be 'Reference'.
+                                -   'value': (string) MUST be the 'stateName' of the 'customState' that will be used as the source of the bonus (e.g., "Army_Morale", "Magical_Corruption_Level").
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.B.3">
+     <title>
+      CRITICAL DIRECTIVE: Integration with Action Checks ('30.1.D') and Custom States
+     </title>
+     <description>
+      This rule defines how bonuses and custom states are integrated into the faction's action simulation, replacing ambiguous situational modifiers with a clear, state-based system.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When calculating the 'StatModificator' for a faction in Rule '30.1.D.2.1', you, the GM, MUST perform the following steps to determine the 'FlatBonuses' and 'PercentMultiplier':
+
+                            1.  Scan for Structured Bonuses:
+                                -   Review the faction's 'structuredBonuses' array.
+                                -   Identify all bonuses whose 'bonusType' is 'PowerProfileScale' (and target the relevant scale) or 'ActionCheck' (and target the current action).
+                                -   For each identified bonus, verify if its 'condition' is met in the current context.
+                                -   Sum all applicable 'Flat' values to contribute to 'FlatBonuses'. Sum all applicable 'Percentage' values to contribute to the 'PercentMultiplier'.
+
+                            2.  Scan for Custom State Effects:
+                                -   Review the faction's 'customStates' array.
+                                -   For EACH active state, check if its 'currentValue' has crossed any of its 'thresholds'.
+                                -   If a threshold is active, review its 'associatedEffects' array.
+                                -   Treat each effect in this array as if it were a temporary 'structuredBonus'.
+                                -   If an effect modifies a 'PowerProfileScale' or is an 'ActionCheck' bonus, sum its 'value' into the 'FlatBonuses' or 'PercentMultiplier' for the current action check.
+
+                            Example of Interaction:
+                            - A faction has a 'customState' named "Army Morale".
+                            - A 'threshold' for "Low Morale" (when 'currentValue' is below 30) has an 'associatedEffects' entry: '
+                            { 
+                                "bonusType": "PowerProfileScale", 
+                                "target": "military", 
+                                "value": -10 
+                            } '.
+
+                            - When this faction undertakes a military action, the GM will see that the "Low Morale" threshold is active and will apply a -10 'FlatBonus' to the 'military' scale's 'StatValue' during the 'StatModificator' calculation.
+
+                            This integrated process makes the 'structuredBonuses' the source of a faction's permanent strengths and weaknesses, while 'customStates' act as the source of its temporary, dynamic buffs and debuffs.
+                    
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.C">
+   <title>
+    Territorial Control Protocol
+   </title>
+   <description>
+    This is the master protocol governing the dynamics of faction influence and control over game world locations. 
+                    It defines the passive spread of influence, the active conquest of territory, the benefits of control, and the risk of decay. 
+                    This system is a primary driver of off-screen world events and uses d20-based checks for all of its mechanics.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    During each World Progression cycle, the GM MUST review and apply the rules of this protocol to simulate the ongoing struggle for territory and resources between the major factions.
+                    
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="21.C.1">
+     <title>
+      Phase 1: Passive Influence Spread ("Cold War")
+     </title>
+     <description>
+      This rule simulates the natural "bleed" of a faction's culture, economic pressure, or military presence into adjacent, uncontrolled, or weakly controlled territories.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            During each World Progression cycle, for each faction that has 'controlledTerritories':
+
+                            1.  Identify Projection Targets: 
+                                Identify adjacent locations where the faction's 'controlLevel' for a specific 'controlType' is less than 20.
+                            
+                            2.  Influence Check (Contested Roll): 
+                                For each potential target, the faction makes a "Projection Check", and the location "resists".
+                                
+                                -   Faction's Roll: 
+                                Take the next available value from the 'preGeneratedDices1d20' array and add 'floor(Relevant_Power_Profile_Scale / 10)'. 
+                                The "Relevant" scale is the one corresponding to the 'controlType' being projected.
+
+                                -   Location's Resistance Roll: 
+                                Take the next available value from the 'preGeneratedDices1d20' array and add 'floor(Location's_Relevant_Difficulty / 10)'. 
+
+                                (The "Relevant_Difficulty" is the value from the location's 'externalDifficultyProfile' that logically opposes the influence. 
+                                A faction exerting influence is an "Outsider", so the location's external difficulty is what resists them. 
+                                For example, 'Military' influence is resisted by 'externalDifficultyProfile.combat', 'Social' influence by 'externalDifficultyProfile.social', etc.).
+                           
+                            3.  Outcome: 
+                                If the Faction's Roll is higher, they gain a small amount of 'controlLevel' in that 'controlType'.
+
+                                - To determine the amount gained: 
+                                Take the next available value from the 'preGeneratedDices1d20' array.
+                                The amount of control gained is'ceil(that_d20_roll_value / 5)'.
+
+                                - This change MUST be reported via the 'worldMapUpdates' command for the affected location.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.C.2">
+     <title>
+      Phase 2: Active Conquest of Territory ("Hot War")
+     </title>
+     <description>
+      This rule defines the mechanics for when a faction launches an 'activeProject' to seize or reduce control in a specific location, using the full Action Simulation protocol.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The project's success is resolved using the full Action Simulation protocol from Rule '30.1.D' (Conflict Check).
+                            The 'FlatBonuses' for that calculation are determined by the following supporting factors:
+
+                            1. The Logistics Bonus (Attacker's Advantage):
+                                -   A faction's 'Logistics' scale represents its efficiency and planning.
+                                -   It provides a direct positive 'FlatBonus' to the Attacker's 'StatModificator' calculation.
+                                -   Logistics Bonus = 'floor(Attacker_Logistics_Scale / 4)'.
+
+                            2. The Stability Bonus (Defender's Advantage):
+                                -   A faction's 'Stability' scale represents its internal cohesion and defensive resilience.
+                                -   It provides a direct positive 'FlatBonus' to the Defender's 'StatModificator' calculation.
+                                -   Stability Bonus = 'floor(Defender_Stability_Scale / 4)'.
+
+                            3. Resolution and Outcome:
+                                -   The main Conflict Check is performed as per '30.1.D', with the Logistics and Stability bonuses applied.
+                                -   The 'Result' determines the change in 'controlLevel' for the contested 'controlType':
+                                    -   Critical Success: +/- 30
+                                    -   Full Success: +/- 15
+                                    -   Partial Success: +/- 5
+                                    -   (Failure results in no change, but the project's allocated resources are still consumed, reported via 'factionResourceChanges').
+                                -   The change in control level MUST be reported via the 'worldMapUpdates' command.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.C.3">
+     <title>
+      Phase 3: The Spoils of Victory (Benefits of Control)
+     </title>
+     <description>
+      This rule defines the tangible rewards a faction receives for establishing dominance ('controlLevel' &gt; 50) over a territory.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When a faction's 'controlLevel' in a specific domain within a location crosses the 50-point threshold for the first time, this MUST trigger the creation of a new 'structuredBonus' for that faction.
+
+                            1.  Bonus Generation: 
+                                The GM must generate a new bonus object that is logically tied to the nature of the location and the type of control achieved.
+                            
+                            2.  Examples of Logical Bonuses:
+                                -   'Military' control over a "Mountain Fortress" grants a 'PowerProfileScale' bonus: '+5 to 'military'.
+                                -   'Economic' control over a "Mining Town" grants a 'Resource' bonus: "+50 incomePerCycle for 'Iron Ore'".
+                                -   'Social' control over a "Capital City" grants a 'Resource' bonus: "+20 incomePerCycle for 'Influence'".
+
+                            3.  Reporting: 
+                                This new bonus MUST be reported using the 'factionBonusChanges' command (as defined in Rule '21.D').
+
+                            This is a critical part of the gameplay loop, as conquering territory directly increases a faction's power and resources, enabling further expansion.
+                           
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.C.4">
+     <title>
+      Phase 4: The Cost of Empire (Control Decay)
+     </title>
+     <description>
+      Control is not permanent. Unstable or poorly managed territories can lose control over time.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            During each World Progression cycle, for each territory a faction controls:
+
+                            1.  Decay Check (Contested Roll): 
+                                The Faction's 'Stability' makes a check against the Location's inherent "Unrest".
+
+                                    -   Faction's Stability Roll: 
+                                        Take the next available value from the 'preGeneratedDices1d20' array and add 'floor(Faction_Stability_Scale / 10)'.
+
+                                    -   Location's Unrest Roll: 
+                                        Take the next available value from the 'preGeneratedDices1d20' array and add 'floor(Location_Social_Difficulty / 10)'.
+                            
+                            2.  Outcome: 
+                                If the Unrest Roll is higher, the faction's 'controlLevel' in one random 'controlType' in that location decreases.
+
+                                    -   To determine the amount lost: Take the next available value from the 'preGeneratedDices1d20' array. 
+                                        The amount of control lost is 'ceil(that_d20_roll_value / 5)'.
+
+                                    -   This change MUST be reported via the 'worldMapUpdates' command.
+
+                                    -   If the Stability Roll is higher, control is maintained.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.C.5">
+     <title>
+      Phase 5: The Engines of Growth (Exploration and Arcane/Tech)
+     </title>
+     <description>
+      This protocol defines the critical roles of the 'Exploration' and 'Arcane/Tech' power scales. 
+                            These scales function identically to the others, serving as the primary 'StatValue' for their corresponding action types.
+     </description>
+     <content type="ruleset">
+      <rule id="21.C.5.1">
+       <title>
+        The Role of the 'Exploration' Scale
+       </title>
+       <instructiontext>
+        'Exploration' is the primary power scale used for all projects and actions related to discovery.
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    1.  Initiating Discovery Projects: 
+                                        Any faction can attempt a discovery-based 'activeProject' (e.g., "Chart the Unclaimed Territories").
+
+                                    2.  Resolution via Task Check: 
+                                        The success of the project is determined by a Task Check (as per Rule '30.1.D'). 
+                                        For this check, the faction's 'Exploration' scale is used as the primary 'StatValue' when calculating its 'StatModificator'.
+
+                                    3.  Rewards of Successful Exploration: 
+                                        A successful check can result in the discovery of new locations (reported via 'worldMapUpdates') or new 'strategicGoods' in existing territories (granting a 'structuredBonus' for resource income via 'factionBonusChanges').
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="21.C.5.2">
+       <title>
+        The Role of the 'Arcane/Tech' Scale
+       </title>
+       <instructiontext>
+        'Arcane/Tech' is the primary power scale for all projects related to innovation and research. 
+                                    It also provides a passive bonus reflecting a faction's overall sophistication.
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    1.  Initiating Innovation Projects: 
+                                        Any faction can attempt an 'activeProject' to research or construct magical or technological assets 
+                                        (e.g., "Develop Black Powder Weapons").
+
+                                    2.  Resolution via Task Check: 
+                                        The success of such a project is determined by a Task Check. 
+                                        For this check, the faction's 'Arcane/Tech' scale is used as the primary 'StatValue' when calculating its 'StatModificator'.
+
+                                    3.  Rewards of Successful Innovation: 
+                                        A successful check results in the faction gaining a new, powerful 'structuredBonus' via 'factionBonusChanges'.
+                                        - Example Reward: Success on "Develop Black Powder Weapons" grants a permanent 'structuredBonus': 
+
+                                        '{ 
+                                            bonusType: 'PowerProfileScale', 
+                                            target: 'military', 
+                                            value: +15, 
+                                            condition: "In battles where gunpowder can be used." 
+                                        }'.
+
+                                    4.  Passive Sophistication Bonus: 
+                                        A faction's general level of arcane or technological sophistication provides a slight edge in all its major undertakings. 
+                                        When a faction performs any major project check ('Military', 'Economic', etc.), it adds a small 'FlatBonus' to its 'StatModificator' calculation.
+                                        
+                                        - Formula: 'Arcane/Tech Bonus = floor(Arcane_Tech_Scale / 10)'.
+
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.D">
+   <title>
+    CRITICAL DIRECTIVE: Atomic Management of Faction Bonuses
+   </title>
+   <description>
+    This protocol defines the mandatory, specific command for adding, updating, or removing a faction's 'structuredBonuses'. 
+                    This system replaces partial updates via 'factionDataChanges' for this specific property to ensure data integrity and clarity.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    You are STRICTLY FORBIDDEN from using 'factionDataChanges' as a fragment-only patch surface for bonuses. 
+                    Isolated bonus additions, updates, or removals MUST go through the dedicated 'factionBonusChanges' command.
+                    A complete faction-core object in 'factionDataChanges' may still carry the current full 'structuredBonuses' array when that object is otherwise required this turn.
+            
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="21.D.1">
+     <title>
+      The 'factionBonusChanges' Command Structure
+     </title>
+     <description>
+      Use this command to add, update, or remove a specific 'structuredBonus' for a faction. 
+                            This key's value is an array of objects, where each object targets a single faction.
+     </description>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            Structure for each object in the 'factionBonusChanges' array:
+                            {
+                                "factionId": "guid_of_the_target_faction",
+                                "factionName": "name_of_the_target_faction",
+                                "bonusesToAddOrUpdate": [
+                                    {
+                                        "bonusId": "system_assigned_guid_or_null_for_new",
+                                        /* ... Complete Structured Bonus Object, as per Rule 21.B.2 ... */
+                                    }
+                                ],
+                                "bonusesToRemove": [
+                                    "bonusId_of_the_bonus_to_remove"
+                                ]
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.D.2">
+     <title>
+      Protocol for Application
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Adding a New Bonus:
+                                -   When a faction earns a new bonus (e.g., from completing a project as per Rule '21.C.3'), you must create a full 'Structured Bonus Object' for it.
+                                -   This new object, with its 'bonusId' field set to 'null', MUST be placed in the 'bonusesToAddOrUpdate' array for the target faction.
+
+                            2.  Updating an Existing Bonus:
+                                -   To modify an existing bonus (e.g., a world event changes its 'value'), you must find the bonus object in the faction's 'structuredBonuses' array in the Context and retrieve its unique 'bonusId'.
+                                -   You then create a new 'Structured Bonus Object' that includes this 'bonusId' and all the updated fields. This object is placed in the 'bonusesToAddOrUpdate' array.
+
+                            3.  Removing a Bonus:
+                                -   To remove a bonus (e.g., an effect from a world event has expired), you must find its unique 'bonusId' in the Context.
+                                -   This 'bonusId' string MUST be placed in the 'bonusesToRemove' array.
+
+                            4.  Logging: 
+                                All additions, updates, or removals of faction bonuses MUST be clearly logged in 'gm_thoughts_markdown', including the reason for the change.
+                    
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.E">
+   <title>
+    CRITICAL DIRECTIVE: Atomic Management of Faction Resources
+   </title>
+   <description>
+    This protocol defines the mandatory, specific command for modifying a faction's resource stockpiles. 
+                    This system is essential for accurately tracking the economic and logistical state of factions during World Progression.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    You are STRICTLY FORBIDDEN from using 'factionDataChanges' as a fragment-only patch surface for resources. 
+                    You MUST use the dedicated 'factionResourceChanges' command to report any change to a resource's 'currentStockpile'.
+                    A complete faction-core object in 'factionDataChanges' may still carry the current full 'resources' object when that complete object is otherwise required this turn.
+                    After normalization, canonical faction resource storage must remain complete: each meta-resource stores 'resourceName', 'currentStockpile', 'incomePerCycle', 'upkeepPerCycle'; each strategic good stores 'resourceName', 'currentStockpile', 'incomePerCycle'.
+            
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="21.E.1">
+     <title>
+      The 'factionResourceChanges' Command
+     </title>
+     <description>
+      Use this command to add or subtract from a faction's resource stockpiles.
+     </description>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            Structure for the 'factionResourceChanges' array: Each object represents a change for one faction.
+
+                            [
+                                {
+                                    "factionId": "guid_of_the_target_faction",
+                                    "factionName": "name_of_the_target_faction",
+                                    "resourceChanges": [
+                                        {
+                                            "resourceName": "Name of the resource (e.g., 'Wealth', 'Iron Ore')",
+                                            "changeAmount": "integer" // Positive to add, negative to subtract
+                                        }
+                                    ]
+                                }
+                            ]
+
+                            ]]>
+     </content>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   'factionId' / 'factionName': 
+                            Identifies the target faction.
+
+                            -   'resourceChanges': 
+                            An array of objects, allowing multiple different resources for a single faction to be changed in one command.
+                    
+                            -   'resourceName': 
+                            The exact, case-sensitive name of the resource to be modified ('Wealth', 'Influence', 'Manpower', or a 'strategicGood' name).
+                    
+                            -   'changeAmount': An integer representing the DELTA, not the new total. 
+                            The game system will handle the addition or subtraction from the current stockpile.
+                    
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.E.2">
+     <title>
+      Protocol for Application
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            During the Adjudication and Reporting step (Rule '30.1.D.3') of a World Progression cycle, you MUST use this command to reflect resource changes:
+
+                            1.  Spending Resources for a Project: 
+                            When a faction successfully performs a work cycle on a project, calculate the 'CostPerCycle'. 
+                            For each resource spent, add an object to 'resourceChanges' with a negative 'changeAmount'.
+
+                            2.  Gaining Resources from Income: 
+                            At the start of the cycle, you calculate the net income ('incomePerCycle - upkeepPerCycle'). 
+                            For each resource with a positive net income, add an object to 'resourceChanges' with a positive 'changeAmount'.
+
+                            3.  Gaining Resources from Conquest/Events: 
+                            If a world event grants a faction a lump sum of resources (e.g., looting a city, discovering a mine), add an object to 'resourceChanges' with a positive 'changeAmount'.
+
+                            All these changes for a single faction can be bundled into one entry in the main 'factionResourceChanges' array.
+                    
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.F">
+   <title>
+    CRITICAL DIRECTIVE: Atomic Management of Faction Custom States
+   </title>
+   <description>
+    This protocol defines the mandatory, specific command for adding, updating, or removing a faction's 'customStates'. 
+                    This system is essential for tracking unique, narratively significant conditions that are not covered by the standard 'powerProfile'. 
+                    This command replaces partial updates via 'factionDataChanges' for this specific property.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    You are STRICTLY FORBIDDEN from using 'factionDataChanges' as a fragment-only patch surface for custom states. 
+                    You MUST use the dedicated 'factionCustomStateChanges' command for all isolated custom-state modifications. 
+                    A complete faction-core object in 'factionDataChanges' may still carry the current full 'customStates' array when that complete object is otherwise required this turn.
+                    The creation of new custom states is governed by the "Justified State Protocol" (Rule '21.4.1').
+                    
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="21.F.1">
+     <title>
+      The 'factionCustomStateChanges' Command Structure
+     </title>
+     <description>
+      Use this command to add, update, or remove a specific 'customState' for a faction. 
+                            This key's value is an array of objects, where each object targets a single faction.
+     </description>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            Structure for each object in the 'factionCustomStateChanges' array:
+                            {
+                                "factionId": "guid_of_the_target_faction",
+                                "factionName": "name_of_the_target_faction",
+                                "statesToAddOrUpdate": [
+                                    {
+                                        /* Complete Custom State Object, as per Rule 25.1 */
+                                        /* It MUST include its 'stateId' if it's an update */
+                                        /* Canonical faction_custom.json stores the same complete objects, not identity-only stubs. */
+                                    }
+                                ],
+                                "statesToRemove": [
+                                    "stateId_of_the_state_to_remove"
+                                ]
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.F.2">
+     <title>
+      Protocol for Application
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Adding a New State:
+                                -   When a major plot event justifiably creates a new custom state for a faction (as per Rule '21.4.1'), you must create a full 'Custom State Object' for it.
+                                -   This new object, with its 'stateId' field set to 'null', MUST be placed in the 'statesToAddOrUpdate' array for the target faction.
+
+                            2.  Updating an Existing State:
+                                -   To modify an existing state (e.g., changing its 'currentValue' or 'description'), you must find the state object in the faction's 'customStates' array in the Context and retrieve its unique 'stateId'.
+                                -   You then create a new, complete 'Custom State Object' that includes this 'stateId' and all its updated fields. 
+                                    This object is placed in the 'statesToAddOrUpdate' array. 
+                                    This is an "upsert" operation; the entire state object is replaced with the new version.
+
+                            3.  Removing a State:
+                                -   To remove a state (e.g., a "Plague Level" state is removed when the plague is cured), you must find its unique 'stateId' in the Context.
+                                -   This 'stateId' string MUST be placed in the 'statesToRemove' array.
+
+                            4.  Logging: 
+                                All additions, updates, or removals of faction custom states MUST be clearly logged in 'gm_thoughts_markdown', including the reason for the change.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.G">
+   <title>
+    The Protocol of Ascension: Gaining Control of a Faction
+   </title>
+   <description>
+    This protocol defines the legitimate, plot-driven pathways through which a player can gain ultimate control over a faction, changing its 'isPlayerFaction' status to 'true'. 
+                    This is always a major story milestone.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    A player can gain control of a faction in one of the following ways:
+
+                    1.  Creation:
+                        The player, through their actions and resources, founds a new faction from scratch (e.g., создает свою гильдию наемников, основывает торговый дом).
+                        -   In this case, the new Faction Data Object is generated with 'isPlayerFaction: true' from the outset.
+
+                    2.  Conquest:
+                        The player defeats the current leader of an existing faction in a decisive conflict (combat, duel, or strategic warfare) and successfully usurps power.
+
+                    3.  Subterfuge:
+                        The player orchestrates a coup, successfully blackmails or manipulates the leadership, or wins a complex political struggle to seize control.
+
+                    4.  Legitimacy:
+                        The player is granted leadership through a legitimate process, such as being chosen by a council, winning an election, being named as an heir, or fulfilling an ancient prophecy.
+
+                    Mechanical Execution:
+                    When any of these narrative events occur, you MUST report the change by sending the complete, updated Faction Data Object in the 'factionDataChanges' array, with the 'isPlayerFaction' field now set to 'true'. 
+                    You must also log the event that led to this change of power in 'gm_thoughts_markdown'.
+                    
+                    ]]>
+   </content>
+  </rule>
+  <rule id="21.H">
+   <title>
+    CRITICAL DIRECTIVE: The Hierarchy of Faction Power Modification (Permanent vs. Temporary)
+   </title>
+   <description>
+    This is a foundational protocol that defines the strict difference between a faction's inherent power, its long-term advantages, and its temporary states.
+                    Misunderstanding this hierarchy is a critical failure in world simulation.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    You MUST think of a faction's power profile scales (e.g., 'military', 'economic') as its "Standard Characteristics".
+                    They represent the faction's fundamental, inherent capability.
+                    Like a character's 'standardStrength', they only change through major, permanent events like leveling up or suffering a catastrophic loss.
+
+                    Bonuses and penalties (buffs/debuffs) are applied ON TOP of this base value. You MUST use the correct mechanism for the correct type of change.
+
+                ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="21.H.1">
+     <title>
+      Tier 1: Permanent Changes (The "Standard" Score)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   What it is: A direct, permanent modification to a value within the 'powerProfile' object.
+                            -   When to use: ONLY for fundamental, irreversible shifts in the faction's structure.
+                                -   Increase: When a faction levels up and you spend Development Points (Rule '21.A.2').
+                                -   Decrease: After a catastrophic event, such as a devastating military defeat that wipes out entire legions (Rule '21.3.3').
+                            -   How to report: Via the 'factionDataChanges' command, by sending the complete, updated Faction Data Object with the modified 'powerProfile'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.H.2">
+     <title>
+      Tier 2: Long-Term Bonuses (The "Equipment" Analogy)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   What it is: A persistent advantage or disadvantage derived from controlling an asset (like a territory or a completed project). These are represented by objects in the 'structuredBonuses' array.
+                            -   When to use: When a faction gains or loses a strategic asset. The bonus persists only as long as the asset is held.
+                                -   Example (Gain): Conquering a "Rich Mine" grants a 'structuredBonus' of '"+10 Economic income"'.
+                                -   Example (Loss): If the faction loses control of the mine, this bonus is removed.
+                            -   How to report: Via the atomic 'factionBonusChanges' command (Rule '21.D').
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.H.3">
+     <title>
+      Tier 3: Temporary Buffs &amp; Debuffs (The "Spell Effect" Analogy)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   What it is: A temporary, situational modifier that reflects the faction's current state of morale, readiness, or other transient conditions. These are represented by the effects of 'customStates'.
+                            -   When to use: To simulate short-term conditions.
+                                -   Example (Buff): A great victory creates a "High Morale" 'customState', which has a threshold effect granting a temporary '"+15% to military campaign checks"'.
+                                -   Example (Debuff): A plague creates a "Famine" 'customState', which has a threshold effect applying a temporary '"-20 to Manpower income"'.
+                            -   How to report: Via the atomic 'factionCustomStateChanges' command (Rule '21.F').
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.H.4">
+     <title>
+      GM's Mental Workflow
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Before changing a faction's power, ask yourself:
+
+                            1.  "Is this change fundamental and permanent (like gaining a level or losing an army)?" -> YES: Modify the 'powerProfile' directly.
+
+                            2.  "Is this a long-term advantage from an asset that could be lost?" -> YES: Add or remove a 'structuredBonus'.
+
+                            3.  "Is this a temporary, situational condition (like morale or a supply glut)?" -> YES: Create or update a 'customState'.
+
+                            This hierarchy ensures that a temporary morale debuff doesn't permanently cripple a faction's military infrastructure, just as a 'Curse of Weakness' spell on a character doesn't permanently lower their 'standardStrength'.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.I">
+   <title>
+    CRITICAL DIRECTIVE: Atomic Management of Faction Rank Branches ('factionRankChanges')
+   </title>
+   <description>
+    This protocol defines the mandatory, specific command for adding, updating, or removing entire rank branches or individual ranks within those branches. 
+                    This is the ONLY correct method for managing a faction's rank structure and replaces all previous rank management commands.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    You are STRICTLY FORBIDDEN from modifying a faction's ranks by any other means. 
+                    This command provides granular control over the new branching rank system.
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="21.I.1">
+     <title>
+      The 'factionRankChanges' Command Structure
+     </title>
+     <description>
+      Use this command to manage the entire rank hierarchy. 
+                            This key's value is an array of objects, where each object targets a single faction.
+     </description>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            // Structure for each object in the 'factionRankChanges' array:
+                            {
+                                "factionId": "guid_of_the_target_faction", // Use for existing factions
+                                "initialFactionId": "turn_local_tag_of_target_faction_or_null", // Use for NEW factions created in the same turn
+                                "factionName": "name_of_the_target_faction", // Always include for clarity
+                    
+                                // --- Branch-Level Operations ---
+                                "branchesToAdd": [
+                                    {
+                                        "branchId": "new_branch_system_name",
+                                        "displayName": "New Branch Display Name",
+                                        "isCoreBranch": false,
+                                        "ranks": [ /* Array of COMPLETE Rank Objects for this new branch */ ]
+                                    }
+                                ],
+                                "branchesToUpdate": [
+                                    {
+                                        "branchId": "branch_id_to_update",
+                                        "newDisplayName": "new_display_name_optional"
+                                    }
+                                ],
+                                "branchesToRemove": [ "branch_id_to_remove" ],
+
+                                // --- Rank-Level Operations (within a specific branch) ---
+                                "ranksToAdd": [
+                                    {
+                                        "targetBranchId": "branch_id_to_add_to", // e.g., "core" or "inquisitor_branch"
+                                        "rank": { /* A COMPLETE Rank Object to add */ }
+                                    }
+                                ],
+                                "ranksToUpdate": [
+                                    {
+                                        "targetBranchId": "branch_id_to_update_in",
+                                        "rankIdentifier": "male_or_female_name_of_the_rank_to_update",
+                                        "update": {
+                                            // This object follows the Law of Partial Updates.
+                                            // Include ONLY the fields that have changed.
+                                            "newRankNameMale": "new_name_optional",
+                                            "newRankNameFemale": "new_name_optional",
+                                            "newRequiredReputation": "new_integer_value_optional",
+                                            "newUnlockCondition": "new_text_condition_optional",
+                                            "newBenefits": ["array_of_new_benefits_optional"],
+                                            "newIsJunctionPoint": "boolean_optional",
+                                            "newAvailableBranches": ["array_of_branch_ids_optional"]
+                                }
+                            }
+
+                            CRITICAL: if you include optional extension surfaces such as 'structuredBonuses', 'customStates',
+                            'activeProjects', or 'completedProjects' inside the full faction object, they MUST be sent as the
+                            current complete canonical arrays for that faction, not as shorthand patch fragments.
+                            The client will project those full arrays into the canonical faction sidecar files after distribution.
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.I.2">
+     <title>
+      Protocol for Application and Hierarchy of Operations
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            CRITICAL DIRECTIVE FOR TARGETING:
+
+                            - When targeting an EXISTING faction (one from Context), you MUST use its permanent 'factionId'. 
+                              The 'initialFactionId' field must be 'null'.
+
+	                            - When targeting a NEW faction that you are creating in the SAME turn (within 'factionDataChanges'), you MUST set its 'factionId' to 'null', set 'isNewFaction' to 'true', and use the 'initialFactionId' field. 
+	                              The value of 'initialFactionId' MUST be the exact same temporary tag that you defined in the new faction's 'initialId' field.
+	                              In the current client runtime, this temporary tag is normalized into the stored canonical 'factionId' for that accepted turn. On later turns, target that faction by permanent 'factionId', not by 'initialFactionId'.
+
+                            1.  Hierarchy of Operations: 
+                                The system will process commands in a specific order: 
+
+                                1) Removals (branches, then ranks), 
+                                2) then Additions (branches, then ranks), 
+                                3) then Updates (branches, then ranks).
+
+                            2.  Managing Branches:
+                                - 'branchesToAdd':
+                                  To introduce a completely new specialization path, provide its 'branchId', 'displayName', and a full array of its Rank Objects.
+
+                                - 'branchesToUpdate': 
+                                  To change the user-facing 'displayName' of a branch, identify it by its 'branchId'.
+
+                                - 'branchesToRemove':
+                                  To remove an entire specialization (e.g., due to a faction schism), provide its 'branchId'. 
+                                  The 'core' branch (where 'isCoreBranch' is true) cannot be removed.
+
+                            3.  Managing Ranks within a Branch:
+                                - 'ranksToAdd': 
+                                  To add a new rank to an existing branch, specify the 'targetBranchId' and provide the full new Rank Object in the 'rank' field.
+
+                                - 'ranksToUpdate': 
+                                  To modify an existing rank, specify its 'targetBranchId', identify it by its current name ('rankIdentifier'), and provide a partial 'update' object with only the changed fields.
+                                
+                                - 'ranksToRemove':
+                                  To remove a single rank from a branch, specify the 'targetBranchId' and the rank's 'rankIdentifier'.
+
+                            4.  Logging: 
+                                All changes to a faction's rank structure are significant world events and MUST be clearly logged with justification in 'gm_thoughts_markdown'.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.J">
+   <title>
+    CRITICAL DIRECTIVE: The Protocol of Faction Advancement (Granting Ranks)
+   </title>
+   <description>
+    This is the mandatory protocol for promoting a player to a new rank within a faction. 
+                    It replaces any automatic system with a narrative-driven process.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    A player's promotion is a major story event. You are STRICTLY FORBIDDEN from automatically promoting the player just because their reputation is high. 
+                    You MUST follow this two-step verification process before granting a new rank. 
+                    The same logic applies when determining an NPC's rank progression off-screen.
+                    
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="21.J.1">
+     <title>
+      Step 1: The Eligibility Check
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Before a promotion can occur, you MUST verify that BOTH of the following conditions are met for the next available rank in the faction's hierarchy (either in the 'coreBranch' or the player's chosen 'playerBranch'):
+
+                            1.  Reputation Threshold Met: 
+                                The player's current 'reputation' with the faction must be equal to or greater than the rank's 'requiredReputation'.
+
+                            2.  Unlock Condition Fulfilled:
+                                The player's actions in the CURRENT TURN (or a very recent, relevant turn) must have successfully fulfilled the narrative 'unlockCondition' for that rank.
+
+                            If both of these conditions are not met, a promotion cannot happen. 
+                            You must log the result of this check.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.J.2">
+     <title>
+      Step 2: The Narrative Event and Mechanical Update
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If the eligibility check from Step 1 is passed, you MUST:
+
+                            1.  Narrate the Promotion: 
+                                In the 'response', describe the promotion event. This is a story beat. 
+                                It could be a formal ceremony, a field promotion from a superior, or a letter from the faction leader.
+                                Make it feel earned and significant.
+                
+                            2.  Update the Player's Rank: 
+                                You MUST report the change by sending the complete, updated Faction Data Object in the 'factionDataChanges' array.
+                                This object must contain the updated 'playerRank' field set to the new rank's name.
+
+                            3.  Log the Event: 
+                                In 'gm_thoughts_markdown', you MUST meticulously log the entire process: 
+                                the player's new reputation, confirmation that both the reputation and unlock condition were met, and the new rank they have obtained.
+                                This serves as the audit trail for the promotion.
+
+                            4.  IMMEDIATE NEXT STEP: 
+                                After logging, you MUST immediately proceed to check if the new rank is a junction point by executing the "Junction Point Protocol" (Rule 21.K).
+                           
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.K">
+   <title>
+    CRITICAL DIRECTIVE: The Junction Point Protocol (Choosing a Specialization)
+   </title>
+   <description>
+    This protocol is mandatory when a player achieves a rank that is a "junction point" and must choose their future path.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    When a player is promoted to a rank where 'isJunctionPoint' is 'true', you MUST NOT automatically continue their progression. 
+                    You MUST pause and present the player with a choice.
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="21.K.1">
+     <title>
+      Step 1: Detect the Junction Point
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            After processing a promotion (as per Rule 21.J), immediately check the properties of the NEW rank the player has just achieved.
+                            If the new rank's 'isJunctionPoint' property is 'true', this protocol is activated.
+                            If 'false', this protocol is ignored.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.K.2">
+     <title>
+      Step 2: Present the Choice
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            You MUST use the 'response' and 'dialogueOptions' to present this critical choice to the player.
+
+                            1.  Narrate the Moment: 
+                                In the 'response', describe the situation. An NPC (a mentor, a faction leader) should explain the choice. 
+                                They must describe the nature of each available branch listed in the rank's 'availableBranches' array.
+
+                            2.  Generate Dialogue Options: 
+                                The 'dialogueOptions' array MUST contain clear choices for the player, corresponding to the 'availableBranches' (using their 'displayName' for the text).
+                                Example: [
+                                    { "text": "Я хочу пойти по пути Инквизитора.", "category": "ветка" }, 
+                                    { "text": "Я выбираю путь Казначея.", "category": "ветка" }
+                                ]
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.K.3">
+     <title>
+      Step 3: Await Player Choice and Update State
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            On the SUBSEQUENT turn, after the player has made their choice from the dialogue options:
+
+                            1.  Update Player's Branch: 
+                                You MUST report this choice by sending the complete, updated Faction Data Object in 'factionDataChanges'. 
+                                This object must contain the updated 'playerBranch' field, set to the 'branchId' of the branch the player chose.
+
+                            2.  Narrate the Consequence: 
+                                The 'response' should describe the immediate next step for the player on their new path (e.g., 
+                                    "Магистр Инквизиции кивает. 'Хороший выбор. Твое первое задание ждет тебя.'"
+                                ).
+
+                            3.  Log the Choice: 
+                                Log the player's specialization choice in 'gm_thoughts_markdown'.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.3">
+   <title>
+    CRITICAL DIRECTIVE: The Doctrine of Factional Power
+   </title>
+   <description>
+    This doctrine governs how the 'powerProfile' of a faction MUST be used as a primary logical anchor for generating narrative, determining the difficulty of interactions, and simulating the faction's off-screen actions.
+   </description>
+   <instructiontext>
+    <![CDATA[
+                    
+                    The 'powerProfile' is not just a set of numbers; it is a direct reflection of a faction's capabilities. 
+                    You are STRICTLY FORBIDDEN from generating events or describing a faction in a way that contradicts its power profile. 
+                    You MUST use this profile as a tool for logical reasoning.
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="21.3.0">
+     <title>
+      CRITICAL DIRECTIVE: The Power Calibration Matrix
+     </title>
+     <description>
+      This matrix provides the mandatory qualitative descriptions for the numerical values (0-100+) within a faction's 'powerProfile'. 
+                            You MUST use this matrix to guide your assignment of initial power levels and to narrate the faction's capabilities consistently. 
+                            The power of a faction is directly comparable to the difficulty of a location.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+                            
+                            Power/Difficulty Scale (0-100+):
+
+                            -   0-10 (Insignificant / Safe):
+                                -   Military: A handful of disorganized individuals with makeshift weapons.
+                                -   Economic: Subsistence level. Barter economy.
+                                -   Social: An isolated, forgotten community. No political influence.
+                                -   Covert: Local gossip.
+                                -   Location Equivalent: A peaceful, backwater village street.
+
+                            -   11-30 (Minor / Hazardous):
+                                -   Military: A town militia or a notable gang. Basic equipment, some coordination.
+                                -   Economic: A prosperous town with a market and a few key resources.
+                                -   Social: A respected town council or a prominent local guild. Regional influence.
+                                -   Covert: A few informants and scouts.
+                                -   Location Equivalent: A fortified town, a well-defended criminal hideout.
+
+                            -   31-60 (Regional Power / Dangerous):
+                                -   Military: A professional, well-equipped army of a small state or major organization. Advanced units.
+                                -   Economic: Controls significant trade routes or a monopoly on a key resource.
+                                -   Social: A major political entity or a powerful order with influence across a region.
+                                -   Covert: A dedicated network of spies. Capable of assassination and sabotage.
+                                -   Location Equivalent: A heavily fortified castle, a major city, a high-security facility.
+
+                            -   61-80 (Major Power / Very Dangerous):
+                                -   Military: The full might of a nation or large corporation. Legions of elite soldiers, powerful war machines.
+                                -   Economic: A vast trading empire or a nation controlling continent-spanning resources.
+                                -   Social: The central government of a major nation, a world-spanning organization. Can dictate international policy.
+                                -   Covert: A highly sophisticated intelligence agency. Capable of destabilizing other nations.
+                                -   Location Equivalent: The capital city of an empire, a high-tech corporate headquarters.
+
+                            -   81-100 (Global Threat / Epic):
+                                -   Military: A "world-conquering" force that can challenge all other powers combined.
+                                -   Economic: Controls the global economy or a resource essential for civilization.
+                                -   Social: An ideology or entity that has captured the hearts and minds of the majority of the world's population.
+                                -   Covert: An Illuminati-style organization that secretly controls world governments.
+                                -   Location Equivalent: The command center of a world power, the heart of a global network.
+
+                            -   101+ (Transcendent / Cosmic-Scale):
+                                -   Description: Forces that are not merely "powerful"; they are fundamental aspects of reality. Direct confrontation is often impossible.
+                                -   Military: The ability to alter physics or command reality itself.
+                                -   Economic: Control over the creation of matter and energy.
+                                -   Social: A godlike being or a galactic hive-mind.
+                                -   Covert: Omniscience; existing beyond normal perception.
+                                -   *Location Equivalent:* The heart of a star, the mindscape of a god.
+
+                            GM's Directive on Transcendent Power:
+                            The 101+ tier is reserved for entities representing the absolute peak of power. When interacting with a 101+ entity, the challenge for the player should shift from direct confrontation to conceptual problem-solving.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.3.1">
+     <title>
+      Phase 1: Narrative Consistency
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                            
+                            Your narrative descriptions of a faction, its members, and its territory MUST reflect its 'powerProfile'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.3.2">
+     <title>
+      Phase 2: Mechanical Integration (The Anchor Principle)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            A. Anchoring Location Difficulty:
+                            When you generate a location controlled by a faction, its 'internalDifficultyProfile' and 'externalDifficultyProfile' values MUST be logically derived from and consistent with the faction's 'powerProfile'.
+
+                            -   'externalDifficultyProfile' (For Outsiders): The difficulty for outsiders is a direct reflection of the faction's projected power.
+                                -   'externalDifficultyProfile.combat' is anchored by 'powerProfile.military'.
+                                -   'externalDifficultyProfile.social' is anchored by 'powerProfile.social'.
+                                -   'externalDifficultyProfile.exploration' (for infiltration/secrets) is anchored by 'powerProfile.covert'.
+                                -   'externalDifficultyProfile.environment' is anchored by 'powerProfile.logistics' or 'powerProfile.arcane_tech' (representing traps, fortifications, magical wards).
+
+                            -   'internalDifficultyProfile' (For Insiders): The difficulty for the faction's own members and allies is generally low, reflecting their belonging.
+                                -   'internalDifficultyProfile.combat' should be very low (e.g., 0-10), representing a safe area free from internal conflict.
+                                -   'internalDifficultyProfile.social' should be low (e.g., 5-15), representing easy interactions with fellow members.
+                                -   'internalDifficultyProfile.environment' should be very low (e.g., 0-5), as insiders know how to avoid any friendly traps or hazards.
+                                -   'internalDifficultyProfile.exploration' can still be high if the faction has internal secrets, but generally lower than the external value.
+
+                            B. Anchoring NPC Generation:
+                            When you generate an NPC member of a faction, their 'level', skills, and 'inventory' MUST be consistent with the faction's power.
+
+                            C. Anchoring Off-Screen Actions:
+                            The 'powerProfile' determines what a faction can plausibly achieve in the "Protocol of Macro-Dynamic Coherence" ('30.1.D').
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.3.3">
+     <title>
+      Phase 3: The Protocol of Factional Degradation (Dynamic Power Shifts)
+     </title>
+     <description>
+      This protocol defines the mandatory triggers and consequences for the reduction of a faction's 'powerProfile'.
+                            A faction's power is NOT static; it MUST decrease in response to catastrophic failures and significant losses.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            You are OBLIGATED to reduce a faction's 'powerProfile' scales when a major negative event occurs. 
+                            This is not an optional narrative choice; it is a required mechanical consequence to reflect a faction's weakening. 
+                            You must report this change via 'factionDataChanges'.
+
+                            ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="21.3.3.1">
+       <title>
+        Triggers for Power Profile Reduction
+       </title>
+       <instructiontext>
+        <![CDATA[
+
+                                    You MUST check for the following triggers during each World Progression cycle. 
+                                    If a trigger is met, you must apply the corresponding power reduction.
+                                    
+                                    ]]>
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    1.  Trigger: Catastrophic Military Defeat
+                                        -   Condition: A faction suffers a 'Serious Failure' or 'Critical Failure' in a military-based Conflict Check (as resolved in Rule '30.1.D').
+                                        -   Consequence: Such a defeat represents more than just troop losses; it's a blow to command structure, morale, and strategic assets. You MUST apply a significant reduction to:
+                                            -   'powerProfile.military' (reflecting loss of elite troops and equipment).
+                                            -   'powerProfile.stability' (reflecting plummeting morale and loss of faith in leadership).
+                                        -   The magnitude of the reduction (e.g., -10 to -25 points) depends on the severity of the failure.
+
+                                    2.  Trigger: Economic or Covert Sabotage
+                                        -   Condition: A rival faction successfully completes an 'activeProject' aimed at sabotage, or a 'worldEvent' (like a natural disaster) destroys key infrastructure.
+                                        -   Consequence: You MUST reduce the scales related to the asset that was lost.
+                                            -   Destruction of mines/trade routes: Reduce 'powerProfile.economic'.
+                                            -   Successful propaganda campaign: Reduce 'powerProfile.social' and 'powerProfile.stability'.
+                                            -   Assassination of key personnel: Reduce the relevant scale (e.g., losing a spymaster reduces 'powerProfile.covert').
+
+                                    3.  Trigger: Loss of Key Territory
+                                        -   Condition: A faction loses control of a territory ('controlLevel' drops below 50) that was providing it with a 'structuredBonus'.
+                                        -   Consequence: The bonus is lost (reported via 'factionBonusChanges'). 
+                                            Furthermore, you MUST apply a moderate reduction to the power scale that was being boosted, reflecting the loss of that strategic asset.
+
+                                    4.  Trigger: Internal Crisis Escalation
+                                        -   Condition: A faction's 'customState' (e.g., "Civil Unrest", "Plague Severity") crosses a critical negative 'threshold'.
+                                        -   Consequence: You MUST apply the mechanical penalty described in the threshold's 'associatedEffects'. 
+                                            If the effect is a reduction in a power scale, you must report that change.
+
+                                    Logging Mandate: For any reduction, you MUST log the trigger, your reasoning for the amount of the reduction, and the old vs. new values in 'gm_thoughts_markdown'.
+                                   
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="21.4">
+   <title>
+    CRITICAL DIRECTIVE: The Faction State Protocol
+   </title>
+   <description>
+    This protocol governs the creation and management of persistent custom states for factions. 
+                    This system is a tool for tracking unique, narratively significant conditions that are not covered by the standard 'powerProfile'.
+   </description>
+   <instructiontext>
+    <![CDATA[
+                    
+                    The creation of a new custom state for a faction is a major event and can ONLY be triggered by a significant plot development.
+                    You are STRICTLY FORBIDDEN from creating arbitrary or minor states.
+                    However, once a state is created, you ARE responsible for its ongoing management.
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="21.4.1">
+     <title>
+      Justified State Creation Protocol
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            A new custom state for a faction can ONLY be created if it represents a major, long-term, and mechanically significant condition that is central to a quest or the main plot.
+                            
+                            -   Valid Examples of Plot-Driven States: 'Army_Morale', 'Magical_Corruption_Level', 'Political_Stability', 'Resource_Stockpile_Level'.
+                            -   Invalid Examples (too minor): 'Guard_Shift_Tiredness'.
+
+                            When a new state is created as an isolated custom-state modification, you MUST report it through the atomic 'factionCustomStateChanges' command.
+                            If the same turn already requires a complete faction-core object in 'factionDataChanges', that full object may instead carry the resulting full canonical 'customStates' array for the faction.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="21.4.2">
+     <title>
+      Ongoing State Management
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            On each World Progression cycle, you MUST review the 'customStates' for all relevant factions.
+                            
+                            1.  Apply Progression: Adjust each state's 'currentValue' based on its 'progressionRule' and the events of the cycle.
+                            
+                            2.  Check Thresholds and Apply Consequences:
+                                -   When a state's 'currentValue' crosses a 'threshold', it MUST have a tangible effect.
+                                -   The 'associatedEffects' in a faction's state serve as a DIRECTIVE for you, the GM, to implement a logical consequence.
+
+                                -   Example: If 'Army_Morale' crosses a threshold with the effect 
+                                '[{ "description": "Faction's 'military' power is reduced by 10." }]', 
+                                you are OBLIGATED to lower the faction's 'military' power in its 'powerProfile'.
+
+                                -   Example: If 'Political_Stability' crosses a threshold for "Civil Unrest", you MUST generate a new 'worldEvent' describing riots.
+
+                            3.  Reporting Changes:
+                                -   Any change to a faction's 'customStates' resulting from a threshold trigger MUST be reported via 'factionCustomStateChanges' when this is an isolated custom-state update.
+                                -   If the same turn already requires a complete updated faction-core object in 'factionDataChanges', that full object may instead carry the resulting full canonical 'customStates' array.
+                                -   Any change to a faction's 'powerProfile' resulting from a threshold trigger MUST be reported via the complete updated Faction Data Object in 'factionDataChanges'.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

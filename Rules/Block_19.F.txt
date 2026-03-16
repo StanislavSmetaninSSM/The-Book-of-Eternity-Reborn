@@ -1,0 +1,131 @@
+<instructionblock id="19.F">
+ <title>
+  CRITICAL DIRECTIVE: Atomic Management of Dynamic Activities (NPCs &amp; Factions)
+ </title>
+ <description>
+  This block defines the mandatory, specific commands for updating the progress of long-term activities for NPCs and factions. 
+            This protocol is essential for preventing data loss by replacing the old method of overwriting entire data objects.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            You are STRICTLY FORBIDDEN from modifying an NPC's 'currentActivity' or a faction's 'activeProjects' by re-sending the entire NPC or Faction object.
+            You MUST use the dedicated atomic commands defined below.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="19.F.1">
+   <title>
+    Updating NPC Activities ('NPCActivityUpdates')
+   </title>
+   <description>
+    Use this command to report progress, changes, or completion of an NPC's 'currentActivity'.
+   </description>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    // Structure for each object in the 'NPCActivityUpdates' array:
+                    {
+                        "NPCId": "guid_of_the_target_npc",
+                        "NPCName": "name_of_the_target_npc",
+                        "activityUpdate": {
+                            // This object follows the Law of Partial Updates.
+                            // Include ONLY the fields of the 'currentActivity' object that have changed.
+                            "timeSpentMinutes": 240, // Example: updating progress
+                            "description": "The forging process is now halfway complete.", // Example: updating status
+                            "activeState": "Completed" // Example: flagging the activity as finished
+                        }
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.F.2">
+   <title>
+    Updating Faction Projects ('factionProjectUpdates')
+   </title>
+   <description>
+    Use this command to report NON-TERMINAL progress or other in-progress changes of a faction's 'activeProject'.
+    Terminal states belong only to the separate 'completeFactionProjects' command.
+   </description>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    // Structure for each object in the 'factionProjectUpdates' array:
+                    {
+                        "factionId": "guid_of_the_target_faction",
+                        "factionName": "name_of_the_target_faction",
+                        "projectUpdate": {
+                            "projectId": "guid_of_the_project_to_update",
+                            // This object follows the Law of Partial Updates.
+                            // Include ONLY the fields of the project that have changed.
+                            // 'Completed' and 'Abandoned' MUST NOT appear here; use completeFactionProjects instead.
+                            "timeSpentMinutes": 500, // Example: updating progress
+                            "resourcesSpent": [ { "resourceName": "Wealth", "amountSpent": 250 } ] // Example: updating spent resources
+                        }
+                    }
+
+                    ]]>
+   </content>
+   <content type="rule_text">
+    <![CDATA[
+
+                    MANDATORY TRANSACTIONAL UPDATE: When a reputation cap is triggered for the first time, you MUST generate all three corresponding updates 
+                    (the clamped reputation change in 'NPCRelationshipChanges', the lock update in 'NPCRelationshipLockUpdates', and the new quest in 'UpdateQuests') within the same JSON response.
+                    Failure to perform all three parts of this transaction is a critical data integrity failure.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.F.3">
+   <title>
+    CRITICAL: Completing Activities and Projects (Atomic Commands)
+   </title>
+   <description>
+    This defines the mandatory, explicit commands for flagging an NPC's activity or a faction's project as finished.
+                    These commands MUST be used instead of the 'update' commands when a task is complete.
+   </description>
+   <content type="ruleset">
+    <rule id="19.F.3.1">
+     <title>
+      Completing NPC Activities ('completeNPCActivities')
+     </title>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            // Structure for each object in the 'completeNPCActivities' array:
+                            {
+                                "NPCId": "guid_of_the_target_npc",
+                                "NPCName": "name_of_the_target_npc",
+                                "activityName": "name_of_the_activity_that_was_completed",
+                                "finalState": "'Completed' | 'Abandoned'",
+                                "narrativeSummary": "A brief, one-sentence summary of the final result for the historical log."
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="19.F.3.2">
+     <title>
+      Completing Faction Projects ('completeFactionProjects')
+     </title>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            // Structure for each object in the 'completeFactionProjects' array:
+                            {
+                                "factionId": "guid_of_the_target_faction",
+                                "factionName": "name_of_the_target_faction",
+                                "projectId": "guid_of_the_project_that_was_completed",
+                                "projectName": "name_of_the_project",
+                                "finalState": "'Completed' | 'Abandoned'"
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

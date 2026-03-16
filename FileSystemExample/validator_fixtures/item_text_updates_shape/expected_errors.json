@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "item_text_update_missing_required_fields"
+  ],
+  "expectedMessages": [
+    "updateItemTextContents uses append-only contract"
+  ]
+}

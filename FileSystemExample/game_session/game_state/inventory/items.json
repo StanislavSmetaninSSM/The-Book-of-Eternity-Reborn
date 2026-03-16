@@ -1,0 +1,16 @@
+{
+  "items": [],
+  "equippedItems": {
+    "weapon_main": null,
+    "weapon_secondary": null,
+    "armor_head": null,
+    "armor_chest": null,
+    "armor_legs": null,
+    "armor_feet": null,
+    "accessory_1": null,
+    "accessory_2": null
+  },
+  "totalWeight": "0.0kg",
+  "maxWeight": "45.0kg",
+  "lastUpdate": "2026-03-01T08:58:00Z"
+}

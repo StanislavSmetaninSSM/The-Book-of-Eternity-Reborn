@@ -1,0 +1,92 @@
+<instructionblock id="25.A">
+ <title>
+  NPC Custom State Management (Controlled Simulation)
+ </title>
+ <description>
+  This section defines the STRICTLY CONTROLLED protocol for creating and managing persistent custom states for NPCs. 
+            This system is not for creating arbitrary states; it is a tool for tracking narratively significant, long-term conditions.
+ </description>
+ <instructiontext>
+  <![CDATA[
+            
+            You are STRICTLY FORBIDDEN from creating new custom states for an NPC on your own initiative. 
+            The creation of a new custom state is a significant event and can ONLY be triggered by one of the two conditions defined in the "Justified State Protocol" below.
+
+            However, once a state has been created, you ARE responsible for its ongoing management (updating its 'currentValue' each turn based on its 'progressionRule') as part of the world simulation.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="25.A.1">
+   <title>
+    The Justified State Protocol: Conditions for Creating a New NPC Custom State
+   </title>
+   <description>
+    A new custom state can ONLY be created if one of these two conditions is met.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    Condition 1: Direct Player Instruction
+                    -   A new custom state is created if the player gives an explicit, out-of-character instruction to track a specific condition for NPCs.
+                    -   Example Player Instruction: "I want all my companions to have a 'Morale' meter that goes down in dungeons and up in taverns."
+                    -   GM Action: You must then create a "Morale" custom state object and apply it to all relevant NPCs, reporting the change via 'UpdateNPCs' (for initial creation) or 'NPCCustomStateChanges' (for adding to existing NPCs).
+
+                    Condition 2: Major, Persistent Plot-Driven State
+                    -   A new custom state can be created without player instruction ONLY if it represents a major, long-term, and mechanically significant condition that is central to a quest or the main plot.
+                    -   This is NOT for minor states like hunger or thirst (unless a "Starvation" plot is the main theme). This is for game-changing conditions.
+                    -   Examples of Valid Plot-Driven States:
+                        -   "Corruption Level:" An NPC is slowly being corrupted by a cursed artifact, and this state tracks their descent.
+                        -   "Plague Infection Stage:" A deadly plague is a core part of the story, and this state tracks how advanced an NPC's infection is.
+                        -   "Mental Domination:" A key ally is being mentally controlled by the villain, and this state tracks the villain's hold over them.
+                    
+                    If a situation does not meet either of these two strict conditions, you are FORBIDDEN from creating a new custom state for an NPC.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="25.A.2">
+   <title>
+    Structure for Reporting NPC Custom State Changes
+   </title>
+   <instructiontext>
+    When an NPC's custom state is created or its value changes, include an object in the 'NPCCustomStateChanges' array.
+   </instructiontext>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Mandatory format for each object in 'NPCCustomStateChanges':
+                    {
+                        "NPCId": "guid_of_the_npc_from_Context_or_null",
+                        "NPCName": "full_name_of_the_npc_string_mandatory_if_NPCId_is_null",
+                        "stateChanges": [
+                            // Array of one or more complete, updated Custom State Objects for this NPC.
+                            // The structure of these objects is identical to the one defined in Rule #25.1.
+                        ]
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="25.A.3">
+   <title>
+    GM's Responsibility for Managing EXISTING States
+   </title>
+   <description>
+    Once a state is justifiably created, you are responsible for its simulation.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+                    
+                    On each subsequent turn for relevant NPCs who have existing custom states:
+                    1.  Get Current State: Read the NPC's 'customStates' from their data in the Context.
+                    2.  Apply Progression: Adjust each state's 'currentValue' based on its 'progressionRule' and the turn's events.
+                    3.  Check Thresholds & Apply Effects: If a threshold is crossed, apply/remove its 'associatedEffects' via the 'NPCEffectChanges' array.
+                    4.  Update Description: Update the state's 'description' to reflect the new reality.
+                    5.  Report Changes: Add an object to the 'NPCCustomStateChanges' array for the NPC, containing the complete, updated Custom State Object(s).
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

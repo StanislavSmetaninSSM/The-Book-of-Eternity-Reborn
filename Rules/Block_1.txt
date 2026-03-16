@@ -1,0 +1,53 @@
+<instructionblock id="1">
+ <title>
+  User Message Input
+ </title>
+ <description>
+  This block contains the current message from the user that needs to be processed.
+  
+  IMPORTANT: In CLI file-based mode, user messages are loaded from input/turn_request.json 
+  instead of this block. See Block_CLI_Operations.txt for details.
+  
+  This block remains for legacy API compatibility.
+ </description>
+ <instructiontext>
+  Carefully study and remember the current user message.
+  
+  NOTE: In CLI file-based mode, user messages are automatically loaded from input/turn_request.json
+  by the CLI Agent before rule processing begins.
+ </instructiontext>
+ <content name="Current user message" type="user_message">
+  <![CDATA[
+
+[DEPRECATED in CLI File-Based Mode]
+
+В новой CLI файловой архитектуре сообщения игрока загружаются из:
+
+📁 input/
+└── turn_request.json       # Основной запрос на обработку хода
+
+СТРУКТУРА turn_request.json:
+{
+  "sessionId": "string",
+  "requestId": "string",
+  "turnNumber": int,
+  "playerAction": "текст_действия_игрока",
+  "timestamp": "ISO_8601_UTC_string",
+  "gameMode": "normal",
+  "additionalContext": { /* дополнительный контекст, optional */ }
+}
+
+LEGACY NOTE:
+- Исторические упоминания player_command.json устарели и не входят в текущий daemon contract.
+- Для GM-facing CLI baseline используется только input/turn_request.json.
+- Локальные client/runtime операции вроде save/load/options не являются GM-authored input surface.
+
+См. Rules/Block_CLI_Operations.txt Rules CLI.2 и CLI.6 для полной документации 
+рабочего процесса CLI Agent.
+
+LEGACY API MODE: Если система работает в режиме API (не CLI), то сообщение 
+игрока по-прежнему может быть добавлено в этот блок ниже:
+
+]]>
+ </content>
+</instructionblock>

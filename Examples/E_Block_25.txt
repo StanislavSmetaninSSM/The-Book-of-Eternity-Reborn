@@ -1,0 +1,89 @@
+<instructionblock id="25">
+ <title>
+  Examples For Player Custom State Management
+ </title>
+ <rule id="25.2.4">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example item generated based on a global instruction
+   </title>
+   <scenariocontext>
+    Player has a "Hunger" custom state. Player instruction: "All food should reduce hunger."
+                                    GM generates a new item "Dried Meat" for the player.
+   </scenariocontext>
+   <jsonresponse>
+    <inventoryitemsdata>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "name": "Dried Meat",
+                                                "description": "A tough but nourishing strip of salted, dried meat. Satiates hunger slightly.",
+                                                "quality": "Common",
+                                                "isConsumption": true,
+                                                // ... other item properties ...
+                                                "customProperties": [
+                                                    {
+                                                        "interactionType": "onConsume",
+                                                        "targetStateName": "Hunger",
+                                                        "changeValue": -20,
+                                                        "description": "Satiates hunger slightly."
+                                                    }
+                                                ]
+                                            }
+                                        ]
+
+                                        ]]>
+    </inventoryitemsdata>
+   </jsonresponse>
+  </example>
+ </rule>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example JSON output for creating a Hunger system
+  </title>
+  <scenariocontext>
+   Player requested a hunger system. This is the first turn it is active.
+  </scenariocontext>
+  <jsonresponse>
+   <customstatechanges>
+    <![CDATA[
+
+                        [
+                            {
+                                "stateId": null,
+                                "stateName": "Hunger",
+                                "currentValue": 10,
+                                "minValue": 0,
+                                "maxValue": 100,
+                                "description": "You feel the first pangs of hunger.",
+                                "progressionRule": {
+                                    "changePerTurn": 1,
+                                    "description": "Hunger increases by 1 each turn. Increases by an additional 1-3 after strenuous physical activity. Decreases significantly after eating."
+                                },
+                                "thresholds": [
+                                    {
+                                        "levelName": "Hungry",
+                                        "triggerCondition": "value_greater_than_or_equal_to",
+                                        "triggerValue": 50,
+                                        "associatedEffects": [
+                                            {"effectType": "Debuff", "value": "-10%", "targetType": "constitution", "duration": 999, "sourceSkill": "Hunger", "description": "Hungry: Constitution reduced by 10%."}
+                                        ]
+                                    },
+                                    {
+                                        "levelName": "Starving",
+                                        "triggerCondition": "value_greater_than_or_equal_to",
+                                        "triggerValue": 90,
+                                        "associatedEffects": [
+                                            {"effectType": "DamageOverTime", "value": "2%", "targetType": "dark", "duration": 999, "sourceSkill": "Starvation", "description": "Starving: Losing 2% health per turn from malnourishment."}
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+
+                        ]]>
+   </customstatechanges>
+  </jsonresponse>
+ </example>
+</instructionblock>

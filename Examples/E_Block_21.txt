@@ -1,0 +1,1752 @@
+<instructionblock id="21">
+ <title>
+  Examples For Faction and Reputation Management
+ </title>
+ <rule id="21.1.3.A.3">
+  <example contenttype="log" id="PowerProfileInit_Example" type="good">
+   <title>
+    Example: Initializing the "Oakhaven Guard" Power Profile
+   </title>
+   <scenariocontext>
+    The GM is creating the "Oakhaven Guard" faction. It's a significant regional force, so the GM assigns a starting Level of 11. 
+                                    Its custom archetype is "Civic Protector" with priorities: 1. Stability, 2. Military, 3. Social.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Initializing Power Profile for "Oakhaven Guard"
+
+                                    1.  Starting Level: 11.
+                                    2.  Calculate Power Pool: 
+                                        Initial Power Pool = 20 + (11 * 10) = 20 + 110 = 130 points.
+                                    3.  Archetype: "Civic Protector" (Priorities: Stability, Military, Social).
+                                    4.  Point Distribution (130 total points):
+                                        -   Stability (Primary): Given the highest priority. Allocated: 40 points.
+                                        -   Military (Secondary): Essential for a guard force. Allocated: 35 points.
+                                        -   Social (Tertiary): Represents their role in the community. Allocated: 25 points.
+                                        -   Logistics (Supporting): Needed for patrols and supplies. Allocated: 15 points.
+                                        -   Covert (Low Priority): Basic watchfulness, not espionage. Allocated: 8 points.
+                                        -   Economic (Low Priority): Funded by the city, not a generator of wealth. Allocated: 5 points.
+                                        -   Arcane/Tech (Very Low): Not a focus. Allocated: 2 points.
+                                        -   Exploration (Very Low): Limited to their jurisdiction. Allocated: 0 points.
+                                    -   Total Distributed: 40 + 35 + 25 + 15 + 8 + 5 + 2 + 0 = 130. Distribution is valid.
+                                    -   The resulting 'powerProfile' object is now populated with these values.
+
+                                    ]]>
+   </logoutput>
+  </example>
+ </rule>
+ <rule id="21.2.3">
+  <example contenttype="narrative_scenario" type="good">
+   <title>
+    Faction Interaction Examples: "The Golden Path Merchants' Guild"
+   </title>
+   <scenariocontext>
+    The following scenarios illustrate how player interaction changes based on their 'reputation' with "The Golden Path Merchants' Guild" when trying to get information about a rare caravan's route.
+   </scenariocontext>
+   <actionsequence>
+    <step action_description="Reputation: -250 (Arch-Enemy). Player has previously robbed Guild caravans.">
+     <responsenarrative>
+      <![CDATA[
+                                                The moment you step inside the guildhall, two burly guards immediately block your path... "You have the audacity to show your face here, brigand? Get out, now, before we collect the bounty on your head ourselves!"
+                                            ]]>
+     </responsenarrative>
+    </step>
+    <step action_description="Reputation: -45 (Distrusted Outsider). Player has dealt with shady competitors of the Guild.">
+     <responsenarrative>
+      <![CDATA[
+                                                The guards at the entrance give you a long, hard stare. Inside, the clerks' expressions turn cold. At the main desk, a man looks up impatiently. "What do you want? ...That's guild business. Not for the likes of you."
+                                            ]]>
+     </responsenarrative>
+    </step>
+    <step action_description="Reputation: 50 (Unaffiliated). The Guild has no prior knowledge of the player.">
+     <responsenarrative>
+      <![CDATA[
+                                                You enter the bustling guildhall. The clerk at the desk greets you with a polite, neutral tone. "Good day. ...I'm sorry, but specific route information is confidential, available only to Guild members and verified partners."
+                                            ]]>
+     </responsenarrative>
+    </step>
+    <step action_description="Reputation: 150 (Known Sympathizer). Player has successfully defended a Guild caravan in the past.">
+     <responsenarrative>
+      <![CDATA[
+                                                As you enter, one of the guards recognizes you and offers a respectful nod. The clerk at the desk smiles warmly. "Ah, our reliable friend! What can we do for you today? ...That's sensitive information, of course, but for you... let me see what I can find out."
+                                            ]]>
+     </responsenarrative>
+    </step>
+    <step action_description="Reputation: 300 (Honored Member). Player is famous for saving a Guild leader.">
+     <responsenarrative>
+      <![CDATA[
+                                                Your entrance causes a stir. A senior administrator immediately approaches, bypassing the queue. "It is an honor! The Guildmaster will be delighted... Please, come this way." You are ushered into a lavish office. "The caravan route? Of course. For you, we have no secrets."
+                                            ]]>
+     </responsenarrative>
+    </step>
+    <step action_description="Reputation: 280 (Honored Member), Rank: 'Trade Veteran'.">
+     <responsenarrative>
+      <![CDATA[
+
+                                                The Guildmaster himself comes out to greet you, a wide smile spreading across his face. 
+                                                "Veteran! What an honor! Please, come in, have some tea. ...The caravan route? Of course, it's no secret to you. 
+                                                Here, I've marked not only the main path on the map but also our secret depots. 
+                                                As a veteran of the Guild, you are also entitled to a 20% discount on all our goods, feel free to use it."
+
+                                            ]]>
+     </responsenarrative>
+    </step>
+   </actionsequence>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Faction "Oakhaven Guard" Data (NEW AND COMPLETE)
+   </title>
+   <description>
+    This is a complete and correct example of a Faction Data Object for a newly generated faction, adhering to all modern rules from Block 21.
+   </description>
+   <scenariocontext>
+    The player has just joined the Oakhaven Guard after reaching a reputation of 30. 
+                                    The GM generates the full faction data for the first time.
+   </scenariocontext>
+   <jsonresponse>
+    <factiondatachanges>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "factionId": null,
+                                                "initialId": "temp-oakhaven-guard",
+                                                "isNewFaction": true,
+                                                "name": "Стража Оукхэвена",
+                                                "image_prompt": "A stylized green oak tree on a silver shield, representing a city guard faction, fantasy emblem, clean design.",
+                                                "factionColor": "#228B22",
+                                                "description": "Официальные правоохранительные органы города Оукхэвен. Они поддерживают закон и порядок в пределах городских стен и ближайших окрестностях. Их доктрина — защита граждан и поддержание стабильности.",
+                                                "level": 5,
+                                                "experience": 0,
+                                                "experienceForNextLevel": 7200,
+                                                "developmentArchetype": "Civic Protector",
+                                                "customArchetypePriorities": {
+                                                    "primary": "stability",
+                                                    "secondary": "military",
+                                                    "tertiary": "social"
+                                                },
+                                                "powerProfile": {
+                                                    "military": 20, "economic": 15, "social": 25, "covert": 10,
+                                                    "logistics": 18, "stability": 30, "arcane_tech": 5, "exploration": 8
+                                                },
+                                                "resources": {
+                                                    "metaResources": [
+                                                        {
+                                                            "resourceName": "Wealth",
+                                                            "currentStockpile": 420,
+                                                            "incomePerCycle": 18,
+                                                            "upkeepPerCycle": 9
+                                                        },
+                                                        {
+                                                            "resourceName": "Manpower",
+                                                            "currentStockpile": 85,
+                                                            "incomePerCycle": 4,
+                                                            "upkeepPerCycle": 1
+                                                        }
+                                                    ],
+                                                    "strategicGoods": []
+                                                },
+                                                "controlledTerritories": [
+                                                    { "locationId": "loc-oakhaven-city-01", "locationName": "Город Оукхэвен" }
+                                                ],
+                                                "structuredBonuses": [],
+                                                "isPlayerFaction": false,
+                                                "playerStrategyDirective": null,
+                                                "reputation": 130,
+                                                "reputationDescription": "Доверенный Союзник",
+                                                "isPlayerMember": true,
+                                                "playerRank": "Рекрут",
+                                                "playerBranch": "core",
+
+                                                "ranks": {
+                                                    "branches": [
+                                                        {
+                                                            "branchId": "core",
+                                                            "displayName": "Основной состав",
+                                                            "isCoreBranch": true,
+                                                            "ranks": [
+                                                                {
+                                                                    "rankNameMale": "Рекрут",
+                                                                    "rankNameFemale": "Рекрутка",
+                                                                    "requiredReputation": 125,
+                                                                    "unlockCondition": "Принести присягу и быть принятым в ряды Стражи.",
+                                                                    "isJunctionPoint": false,
+                                                                    "benefits": ["Получает доступ к казармам для отдыха.", "Может получать базовые задания от сержантов."]
+                                                                },
+                                                                {
+                                                                    "rankNameMale": "Стражник",
+                                                                    "rankNameFemale": "Стражница",
+                                                                    "requiredReputation": 200,
+                                                                    "unlockCondition": "Продемонстрировать верность и завершить три патрулирования.",
+                                                                    "isJunctionPoint": false,
+                                                                    "benefits": ["Получает стандартный комплект брони Стражи.", "Получает еженедельное жалование в 20 золотых."]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                "relations": [],
+                                                "customStates": [],
+                                                "activeProjects": [],
+                                                "completedProjects": []
+                                            }
+                                        ]
+
+                                        ]]>
+    </factiondatachanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="21.2.6">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player is granted a unique rank for saving the city.
+   </title>
+   <scenariocontext>
+    Player (Reputation with "Oakhaven Guard": 380) has single-handedly defeated a dragon that was about to destroy the city. 
+                                    The captain of the guard decides to grant a special title.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    Faction Update: Oakhaven Guard.
+                                    - Trigger: Player's legendary act of defeating the dragon.
+                                    - Action: Creating a new, unique rank "Hero of Oakhaven".
+                                    - Retrieving existing ranks from context.
+                                    - New Rank Object: { 
+                                        rankName: "Герой Оукхэвена", 
+                                        requiredReputation: 380, 
+                                        benefits: [
+                                            "Награждается Клинком Защитника города", 
+                                            "Получает пожизненное право прохода в любые городские учреждения", 
+                                            "Все члены Стражи Оукхэвена будут выполнять приказы игрока"
+                                        ] 
+                                    }.
+                                    - Inserting new rank at the top of the hierarchy.
+                                    - Updating player's rank to "Герой Оукхэвена".
+                                    - Preparing full faction object for 'factionDataChanges'.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <factiondatachanges>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "factionId": "faction-oakhaven-guard-01",
+                                                "name": "Стража Оукхэвена",
+                                                "image_prompt": "A silver city guard shield with a green oak tree, fantasy civic protector emblem, polished heraldic design.",
+                                                "description": "Официальные правоохранительные органы города Оукхэвен. Их новая легендарная иерархия отражает подвиг игрока, спасшего город от дракона.",
+                                                "level": 6,
+                                                "experience": 1800,
+                                                "experienceForNextLevel": 8400,
+                                                "developmentArchetype": "Civic Protector",
+                                                "powerProfile": {
+                                                    "military": 28,
+                                                    "economic": 16,
+                                                    "social": 32,
+                                                    "covert": 10,
+                                                    "logistics": 20,
+                                                    "stability": 36,
+                                                    "arcane_tech": 5,
+                                                    "exploration": 8
+                                                },
+                                                "resources": {
+                                                    "metaResources": [
+                                                        { "resourceName": "Wealth", "currentStockpile": 510, "incomePerCycle": 20, "upkeepPerCycle": 10 },
+                                                        { "resourceName": "Manpower", "currentStockpile": 96, "incomePerCycle": 5, "upkeepPerCycle": 1 }
+                                                    ],
+                                                    "strategicGoods": []
+                                                },
+                                                "isPlayerFaction": false,
+                                                "reputation": 380,
+                                                "reputationDescription": "Живая Легенда",
+                                                "isPlayerMember": true,
+                                                "playerRank": "Герой Оукхэвена",
+                                                "playerBranch": "core",
+                                                "ranks": {
+                                                    "branches": [
+                                                        {
+                                                            "branchId": "core",
+                                                            "displayName": "Основной состав",
+                                                            "isCoreBranch": true,
+                                                            "ranks": [
+                                                                {
+                                                                    "rankNameMale": "Рекрут",
+                                                                    "rankNameFemale": "Рекрутка",
+                                                                    "requiredReputation": 125,
+                                                                    "unlockCondition": "Принести присягу и быть принятым в ряды Стражи.",
+                                                                    "isJunctionPoint": false,
+                                                                    "benefits": ["Получает доступ к казармам для отдыха.", "Может получать базовые задания от сержантов."]
+                                                                },
+                                                                {
+                                                                    "rankNameMale": "Стражник",
+                                                                    "rankNameFemale": "Стражница",
+                                                                    "requiredReputation": 200,
+                                                                    "unlockCondition": "Подтвердить дисциплину и завершить серию патрулей.",
+                                                                    "isJunctionPoint": false,
+                                                                    "benefits": ["Получает стандартный комплект брони Стражи.", "Получает еженедельное жалование."]
+                                                                },
+                                                                {
+                                                                    "rankNameMale": "Сержант",
+                                                                    "rankNameFemale": "Сержант",
+                                                                    "requiredReputation": 260,
+                                                                    "unlockCondition": "Успешно руководить городским патрулём.",
+                                                                    "isJunctionPoint": false,
+                                                                    "benefits": ["Может командовать малым отрядом.", "Получает доступ к расширенным тактическим сводкам."]
+                                                                },
+                                                                {
+                                                                    "rankNameMale": "Капитан",
+                                                                    "rankNameFemale": "Капитан",
+                                                                    "requiredReputation": 320,
+                                                                    "unlockCondition": "Защитить город во время крупной угрозы.",
+                                                                    "isJunctionPoint": false,
+                                                                    "benefits": ["Командует городской стражей на участке.", "Имеет прямой доступ к совету города."]
+                                                                },
+                                                                {
+                                                                    "rankNameMale": "Герой Оукхэвена",
+                                                                    "rankNameFemale": "Героиня Оукхэвена",
+                                                                    "requiredReputation": 380,
+                                                                    "unlockCondition": "Спасти город Оукхэвен от дракона.",
+                                                                    "isJunctionPoint": false,
+                                                                    "benefits": [
+                                                                        "Награждается Клинком Защитника города",
+                                                                        "Получает пожизненное право прохода в любые городские учреждения",
+                                                                        "Все члены Стражи Оукхэвена будут выполнять приказы игрока"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                "relations": [],
+                                                "structuredBonuses": [],
+                                                "customStates": [],
+                                                "activeProjects": [],
+                                                "completedProjects": []
+                                            }
+                                        ]
+
+                                        ]]>
+    </factiondatachanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="21.3">
+  <example id="Faction_NPC_Anchor_Military" type="good">
+   <title>
+    Example 1: Generating an NPC from a High-Military Faction
+   </title>
+   <scenariocontext>
+    The GM needs to generate a standard officer for the "Imperial Legion" faction.
+                            From Context, the "Imperial Legion" 'powerProfile' is: '{ military: 75, economic: 60, social: 80, covert: 30 } '.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Generating NPC: "Centurion Valerius"
+                            - Anchoring to Faction Profile: "Imperial Legion".
+                            - 'powerProfile.military' is 75 (Major Power). This justifies generating a high-level, combat-focused NPC.
+                            - 'powerProfile.economic' is 60 (Regional Power). This justifies equipping him with high-quality, standardized military gear.
+                            - 'powerProfile.social' is 80 (Major Power). As an officer of a dominant power, he should be confident and authoritative.
+                            - 'powerProfile.covert' is 30 (Minor). He is a soldier, not a spy.
+                            - Conclusion: The resulting NPC is a powerful warrior and commander, a direct reflection of his faction's strengths.
+
+                            ]]>
+   </logoutput>
+  </example>
+  <example id="Faction_NPC_Anchor_Covert" type="good">
+   <title>
+    Example 2: Generating an NPC from a High-Covert Faction
+   </title>
+   <scenariocontext>
+    The GM needs to generate an agent for the "Shadow Syndicate" faction.
+                            From Context, the "Shadow Syndicate" 'powerProfile' is: '{ military: 25, economic: 70, social: 40, covert: 85 } '.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Generating NPC: "Silas 'The Ghost' Vane"
+                            - Anchoring to Faction Profile: "Shadow Syndicate".
+                            - 'powerProfile.covert' is 85 (Global Threat). This is the primary anchor. The NPC must be a master of stealth and information.
+                            - 'powerProfile.military' is 25 (Minor). He is not a soldier and should be vulnerable in open combat.
+                            - 'powerProfile.economic' is 70 (Major Power). The Syndicate is wealthy. He should have the best tools for his trade.
+                            - Conclusion: The resulting NPC is a "glass cannon" — exceptionally dangerous in his niche (stealth) but weak outside of it, perfectly reflecting his faction.
+                            
+                            ]]>
+   </logoutput>
+  </example>
+ </rule>
+ <rule id="21.3.3.1">
+  <example contenttype="log_and_json_snippet" id="Faction_Power_Decrease_Example" type="good">
+   <title>
+    Пример: Катастрофическое Военное Поражение и Снижение Мощи Фракции
+   </title>
+   <description>
+    Этот пример демонстрирует, как ГМ должен обрабатывать последствия сокрушительного поражения фракции в битве.
+                                            Он показывает прямое снижение шкал 'powerProfile' в ответ на событие, иллюстрируя Правило '21.3.3' ("Динамические Сдвиги Мощи").
+   </description>
+   <scenariocontext>
+    - **Событие:** В ходе Мировой Прогрессии, "Королевство Элдория" (Military: 50) предприняло атаку на хорошо укрепленные позиции "Железной Орды" (Military: 60, Stability: 55).
+                                            - **Симуляция:** ГМ провел **Конфликтную Проверку** (Правило '30.1.D'). Из-за тактических просчетов и превосходящей обороны Орды, атака Элдории провалилась с результатом **'Critical Failure'**.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                            # Прогрессия Мира: Разрешение Конфликта - Битва за Черный Перевал
+
+                                            ## Часть 1: Результат Конфликтной Проверки
+                                            -   **Итог:** Атака "Королевства Элдория" на "Железную Орду" завершилась с результатом 'Critical Failure'.
+                                            -   **Нарративная Интерпретация:** Это не просто отступление, а полный разгром. Авангард армии Элдории был окружен и уничтожен. Потеряны лучшие офицеры, осадные орудия и боевой дух.
+
+                                            ## Часть 2: Применение Последствий (Правило 21.3.3 - Динамические Сдвиги Мощи)
+                                            -   **Триггер:** Сокрушительное военное поражение.
+                                            -   **Логическое Следствие:** Такое поражение наносит прямой и долгосрочный урон военной машине и стабильности королевства. Необходимо снизить соответствующие шкалы 'powerProfile'.
+                                            -   **Расчет Снижения:**
+                                                -   **'military':** Потеря элитных войск и командиров. Принято решение о значительном снижении на **-15** пунктов. (Было 50 -> Станет 35).
+                                                -   **'stability':** Весть о разгроме вызовет панику и недоверие к командованию. Принято решение о снижении на **-10** пунктов. (Было 45 -> Станет 35).
+                                                -   **'Manpower':** Огромные потери в живой силе. Рассчитано снижение на **-500**.
+                                                -   **'Wealth':** Потеряно дорогостоящее снаряжение. Рассчитано снижение на **-800**.
+
+                                            ## Часть 3: Подготовка Отчета в JSON
+                                            -   Генерация 'worldEventsLog' для описания битвы.
+                                            -   Подготовка 'factionDataChanges' для "Королевства Элдория" с новыми, пониженными значениями 'powerProfile'.
+                                            -   Подготовка 'factionResourceChanges' для отражения потерь 'Manpower' и 'Wealth'.
+                                            -   Подготовка записи в 'NPCJournals' для Короля Эдуарда, чтобы показать его реакцию.
+
+                                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <worldeventslog>
+     <![CDATA[
+
+                                                [
+                                                    {
+                                                        "eventId": null,
+                                                        "headline": "Разгром у Черного Перевала! Армия Элдории разбита!",
+                                                        "summary": "Авангард армии Королевства Элдория потерпел сокрушительное поражение в попытке штурма Черного Перевала. Войска Железной Орды заманили королевских рыцарей в ловушку, что привело к огромным потерям в живой силе и снаряжении. Боевой дух королевства подорван.",
+                                                        "eventType": "Military",
+                                                        "visibility": "Public"
+                                                    }
+                                                ]
+
+                                                ]]>
+    </worldeventslog>
+    <factiondatachanges>
+     <![CDATA[
+
+                                                [
+                                                    {
+                                                        "factionId": "faction-kingdom-of-eldoria-01",
+                                                        "name": "Королевство Элдория",
+                                                        "powerProfile": {
+                                                            "military": 35,
+                                                            "stability": 35
+                                                        }
+                                                    }
+                                                ]
+
+                                                ]]>
+    </factiondatachanges>
+    <factionresourcechanges>
+     <![CDATA[
+
+                                                [
+                                                    {
+                                                        "factionId": "faction-kingdom-of-eldoria-01",
+                                                        "factionName": "Королевство Элдория",
+                                                        "resourceChanges": [
+                                                            { "resourceName": "Manpower", "changeAmount": -500 },
+                                                            { "resourceName": "Wealth", "changeAmount": -800 }
+                                                        ]
+                                                    }
+                                                ]
+
+                                                ]]>
+    </factionresourcechanges>
+    <npcjournals>
+     <![CDATA[
+
+                                                [
+                                                    {
+                                                        "NPCId": "npc-king-eduard-iv-01",
+                                                        "name": "Король Эдуард IV",
+                                                        "lastJournalNote": "#[90] - Боги, какая катастрофа... 
+                                                        Мои лучшие рыцари, моя гордость, уничтожены. Генералы уверяли меня, что победа будет легкой. 
+                                                        Они заплатят за свою некомпетентность. Орда оказалась сильнее, чем мы думали. Нам нужно время... время, чтобы восстановить силы."
+                                                    }
+                                                ]
+
+                                                ]]>
+    </npcjournals>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="21.4">
+  <example contenttype="log_and_json_snippet" id="Faction_CustomState_Example_1" type="good">
+   <title>
+    Example: Creating and Managing a "Political Stability" State
+   </title>
+   <scenariocontext>
+    The player assassinates a key minister of the "Kingdom of Eldoria", a major plot event.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Faction State Update: Kingdom of Eldoria
+                            - Trigger: Major plot event (assassination of a minister).
+                            - Justified State Protocol: Condition met. Creating a new "Political Stability" state to track the fallout.
+                            - New State Object Definition:
+                                - stateName: "Political Stability"
+                                - currentValue: 40 (out of 100), a significant drop from a stable baseline.
+                                - progressionRule: "Decreases with further destabilizing events, increases with strong leadership."
+                                - Threshold 1: value <= 30, levelName: "Noble Uprising", associatedEffects: [{ description: "Trigger a world event about minor nobles challenging the King's authority." }]
+                            - Reporting: This is an isolated custom-state creation, so the state will be sent through 'factionCustomStateChanges'.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <factioncustomstatechanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": "faction-kingdom-of-eldoria-01",
+                                        "statesToAddOrUpdate": [
+                                            {
+                                                "stateId": null,
+                                                "stateName": "Политическая Стабильность",
+                                                "currentValue": 40,
+                                                "minValue": 0,
+                                                "maxValue": 100,
+                                                "description": "Убийство министра вызвало хаос при дворе. Власть короля ослаблена.",
+                                                "progressionRule": { "description": "Снижается при дальнейших дестабилизирующих событиях." },
+                                                "thresholds": [
+                                                    {
+                                                        "levelName": "Восстание знати",
+                                                        "triggerCondition": "value_less_than_or_equal_to",
+                                                        "triggerValue": 30,
+                                                        "associatedEffects": [ { "description": "Спровоцировать мировое событие о том, что дворяне бросают вызов власти короля." } ]
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        "statesToRemove": []
+                                    }
+                                ]
+
+                                ]]>
+    </factioncustomstatechanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="21.A">
+  <example contenttype="log_and_json_snippet" id="FactionGrowth_StandardArchetype" type="good">
+   <title>
+    Example 1: Faction Level Up (Standard Archetype)
+   </title>
+   <scenariocontext>
+    The "Iron Horde" faction (Level 10, 'Conqueror' archetype) has just won a major battle, a significant event during a World Progression cycle. 
+                            This victory grants them 2,500 XP.
+                            Their current state from Context: level: 10, experience: 11,000, experienceForNextLevel: 13,200.
+                            Their Power Profile: { military: 42, logistics: 25, economic: 30, ... }
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Прогрессия Фракции: "Железная Орда"
+
+                            ## 1. Расчет Опыта и Повышения Уровня
+                            - Текущий Опыт: 11,000 / 13,200.
+                            - Получено Опыта: +2,500.
+                            - Новый Общий Опыт: 13,500.
+                            - **Результат: ПОВЫШЕНИЕ УРОВНЯ!** (13,500 >= 13,200).
+                            - Новый Уровень: 11. Остаток Опыта: 300. XP до следующего: 14,400.
+                            - Получено Очков Развития: 10.
+
+                            ## 2. Протокол Стратегического Распределения Очков (Правило 21.A.3)
+                            -   **Аудит Характера Фракции:**
+                                -   **Архетип Развития:** 'Conqueror' (Завоеватель).
+                                -   **Стратегические Приоритеты:** 1. Military, 2. Logistics, 3. Economic.
+                            
+                            -   **Матрица Распределения (10 Очков):**
+                                -   **Приоритет 1 (Military):** Текущее значение 42. Стоимость 1 очка = 3 ОР (диапазон 41-60).
+                                    -   *Решение:* Вложить максимум возможного. Тратим 6 ОР на +2 к Military. (Новое значение: 44).
+                                    -   *Остаток ОР:* 10 - 6 = 4.
+                                -   **Приоритет 2 (Logistics):** Текущее значение 25. Стоимость 1 очка = 2 ОР (диапазон 21-40).
+                                    -   *Решение:* Вложить остаток. Тратим 4 ОР на +2 к Logistics. (Новое значение: 27).
+                                    -   *Остаток ОР:* 4 - 4 = 0.
+                                -   **Приоритет 3 (Economic):** Недостаточно очков для вложения.
+                            
+                            -   **Итог:** Все очки распределены в строгом соответствии с архетипом 'Conqueror'.
+
+                            ## 3. Подготовка Отчета в JSON
+                            -   Подготовка обновленного объекта Фракции для 'factionDataChanges'.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <factiondatachanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": "faction-iron-horde-01",
+                                        "name": "Iron Horde",
+                                        "image_prompt": "A black iron war banner with a crimson boar skull, brutal conquering horde emblem, harsh heraldic fantasy design.",
+                                        "factionColor": "#7A0C0C",
+                                        "description": "Жестокий военный союз племён, расширяющий свои земли силой оружия и дисциплиной завоевателей.",
+                                        "level": 11,
+                                        "experience": 300,
+                                        "experienceForNextLevel": 14400,
+                                        "developmentArchetype": "Conqueror",
+                                        "customArchetypePriorities": null,
+                                        "powerProfile": {
+                                            "military": 44,
+                                            "economic": 30,
+                                            "social": 15,
+                                            "covert": 10,
+                                            "logistics": 27,
+                                            "stability": 22,
+                                            "arcane_tech": 5,
+                                            "exploration": 8
+                                        },
+                                        "resources": {
+                                            "metaResources": [
+                                                {
+                                                    "resourceName": "Wealth",
+                                                    "currentStockpile": 680,
+                                                    "incomePerCycle": 24,
+                                                    "upkeepPerCycle": 11
+                                                },
+                                                {
+                                                    "resourceName": "Manpower",
+                                                    "currentStockpile": 140,
+                                                    "incomePerCycle": 8,
+                                                    "upkeepPerCycle": 2
+                                                }
+                                            ],
+                                            "strategicGoods": [
+                                                {
+                                                    "resourceName": "Iron Ore",
+                                                    "currentStockpile": 90,
+                                                    "incomePerCycle": 6
+                                                }
+                                            ]
+                                        },
+                                        "controlledTerritories": [
+                                            { "locationId": "loc-iron-horde-camp-01", "locationName": "Главный Лагерь Орды" },
+                                            { "locationId": "loc-blood-pass-02", "locationName": "Кровавый Перевал" }
+                                        ],
+                                        "structuredBonuses": [
+                                            {
+                                                "description": "+10 к military благодаря культу победы",
+                                                "bonusType": "PowerProfileScale",
+                                                "target": "military",
+                                                "valueType": "Flat",
+                                                "value": 10,
+                                                "application": "Persistent"
+                                            }
+                                        ],
+                                        "isPlayerFaction": false,
+                                        "playerStrategyDirective": null,
+                                        "reputation": -40,
+                                        "reputationDescription": "Опасный враг",
+                                        "isPlayerMember": false,
+                                        "playerRank": null,
+                                        "playerBranch": null,
+                                        "ranks": {
+                                            "branches": [
+                                                {
+                                                    "branchId": "core",
+                                                    "displayName": "Военная Иерархия",
+                                                    "isCoreBranch": true,
+                                                    "ranks": [
+                                                        {
+                                                            "rankNameMale": "Налётчик",
+                                                            "rankNameFemale": "Налётчица",
+                                                            "requiredReputation": 0,
+                                                            "unlockCondition": "Вступить в Орду и доказать боеспособность.",
+                                                            "isJunctionPoint": false,
+                                                            "benefits": ["Доступ к базовому вооружению Орды."]
+                                                        },
+                                                        {
+                                                            "rankNameMale": "Воевода",
+                                                            "rankNameFemale": "Воевода",
+                                                            "requiredReputation": 350,
+                                                            "unlockCondition": "Повести успешный набег и удержать трофеи.",
+                                                            "isJunctionPoint": false,
+                                                            "benefits": ["Командует ударными отрядами и получает долю военной добычи."]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "relations": [],
+                                        "customStates": [
+                                            {
+                                                "stateId": "state-war-fervor",
+                                                "name": "War Fervor",
+                                                "currentValue": 72,
+                                                "description": "Боевой пыл Орды после крупной победы.",
+                                                "thresholds": []
+                                            }
+                                        ],
+                                        "activeProjects": [
+                                            {
+                                                "projectId": "project-blood-road",
+                                                "projectName": "Укрепление Дороги Крови",
+                                                "activeState": "Active",
+                                                "description": "Орда усиливает снабженческий маршрут для будущих походов.",
+                                                "totalResourceCost": [
+                                                    { "resourceName": "Wealth", "totalAmount": 220 },
+                                                    { "resourceName": "Iron Ore", "totalAmount": 40 }
+                                                ],
+                                                "resourcesSpent": [
+                                                    { "resourceName": "Wealth", "amountSpent": 80 },
+                                                    { "resourceName": "Iron Ore", "amountSpent": 14 }
+                                                ],
+                                                "totalTimeCostMinutes": 3600,
+                                                "timeSpentMinutes": 1200,
+                                                "totalSteps": 12,
+                                                "currentStep": 4
+                                            }
+                                        ],
+                                        "completedProjects": [
+                                            {
+                                                "projectId": "project-siege-drills",
+                                                "projectName": "Учения Осадных Бригад",
+                                                "completionTurn": "184",
+                                                "finalState": "Completed"
+                                            }
+                                        ],
+                                        "scribeChronicle": [
+                                            "После великой победы Орда подняла military и logistics, ускорив подготовку к новым походам."
+                                        ]
+                                    }
+                                ]
+
+                                ]]>
+    </factiondatachanges>
+   </jsonresponse>
+  </example>
+  <example contenttype="log_and_json_snippet" id="FactionGrowth_CustomArchetype" type="good">
+   <title>
+    Example 2: Faction Creation &amp; Level Up (Custom Archetype)
+   </title>
+   <scenariocontext>
+    A new faction, the "Aetherium Syndicate", is created at Level 1. 
+                            The GM decides on a custom archetype for them. 
+                            A major player action immediately grants them enough XP to level up to Level 2.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Создание и Прогрессия Фракции: "Эфириумный Синдикат"
+
+                            ## 1. Первоначальное Создание и Определение Доктрины (Правило 21.A.3)
+                            - **Анализ Концепции:** Фракция — это тайное общество, стремящееся монополизировать новую магическую технологию ('Эфириум'). Они не воины, а исследователи и экономисты.
+                            - **Выбор Архетипа:** Ни один из стандартных архетипов не подходит. Создаем кастомный.
+                            - **Создание Кастомного Архетипа:**
+                                -   **Имя:** 'Technological Expansionists' (Технологические Экспансионисты).
+                                -   **Определение Приоритетов:**
+                                    -   Приоритет 1 (Основной): 'arcane_tech' (их главная цель).
+                                    -   Приоритет 2 (Вторичный): 'economic' (для финансирования исследований).
+                                    -   Приоритет 3 (Третичный): 'exploration' (для поиска новых источников Эфириума).
+                            - **Запись в Данные:** Эти приоритеты будут записаны в поле 'customArchetypePriorities'.
+
+                            ## 2. Расчет Опыта и Повышения Уровня
+                            - Получено Опыта: +3,000.
+                            - **Результат: ПОВЫШЕНИЕ УРОВНЯ!** (3,000 >= 2,400).
+                            - Новый Уровень: 2. Остаток Опыта: 600. XP до следующего: 3,600.
+                            - Получено Очков Развития: 10.
+
+                            ## 3. Протокол Стратегического Распределения Очков
+                            -   **Аудит Характера Фракции:**
+                                -   **Архетип Развития:** 'Technological Expansionists' (Кастомный).
+                                -   **Стратегические Приоритеты (из 'customArchetypePriorities'):** 1. arcane_tech, 2. economic, 3. exploration.
+                            
+                            -   **Матрица Распределения (10 Очков):**
+                                -   Все шкалы находятся в диапазоне 0-20, стоимость 1 очка = 1 ОР.
+                                -   **Приоритет 1 (arcane_tech):** Вложить большую часть очков. Тратим 5 ОР на +5.
+                                -   **Приоритет 2 (economic):** Вложить значительную часть. Тратим 3 ОР на +3.
+                                -   **Приоритет 3 (exploration):** Вложить остаток. Тратим 2 ОР на +2.
+                            
+                            -   **Итог:** Все 10 очков распределены в строгом соответствии с кастомным архетипом.
+
+                            ## 4. Подготовка Отчета в JSON
+                            -   Подготовка полного объекта новой Фракции для 'factionDataChanges'.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <factiondatachanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": null,
+                                        "initialId": "temp-aetherium-syndicate",
+                                        "isNewFaction": true,
+                                        "name": "Aetherium Syndicate",
+                                        "image_prompt": "A glowing arcane gear above a silver tower, symbol of a technomagical syndicate, clean emblem, fantasy art.",
+                                        "description": "Молодой техномагический синдикат, инвестирующий в арканотехнологии и экспедиции.",
+                                        "factionColor": "#5B7CFF",
+                                        "level": 2,
+                                        "experience": 600,
+                                        "experienceForNextLevel": 3600,
+                                        "developmentArchetype": "Technological Expansionists",
+                                        "customArchetypePriorities": {
+                                            "primary": "arcane_tech",
+                                            "secondary": "economic",
+                                            "tertiary": "exploration"
+                                        },
+                                        "powerProfile": {
+                                            "military": 0,
+                                            "economic": 3,
+                                            "social": 0,
+                                            "covert": 0,
+                                            "logistics": 0,
+                                            "stability": 0,
+                                            "arcane_tech": 5,
+                                            "exploration": 2
+                                        },
+                                        "resources": {
+                                            "metaResources": [
+                                                {
+                                                    "resourceName": "Wealth",
+                                                    "currentStockpile": 180,
+                                                    "incomePerCycle": 9,
+                                                    "upkeepPerCycle": 4
+                                                }
+                                            ],
+                                            "strategicGoods": []
+                                        },
+                                        "ranks": {
+                                            "branches": [
+                                                {
+                                                    "branchId": "core",
+                                                    "displayName": "Основной состав",
+                                                    "isCoreBranch": true,
+                                                    "ranks": [
+                                                        {
+                                                            "rankNameMale": "Директор",
+                                                            "rankNameFemale": "Директор",
+                                                            "requiredReputation": 250,
+                                                            "unlockCondition": "Основать синдикат.",
+                                                            "isJunctionPoint": false,
+                                                            "benefits": ["Определяет стратегию синдиката."]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "isPlayerFaction": false,
+                                        "playerStrategyDirective": null,
+                                        "isPlayerMember": false,
+                                        "reputation": 0,
+                                        "reputationDescription": "Неизвестная сила",
+                                        "controlledTerritories": [],
+                                        "structuredBonuses": [],
+                                        "relations": [],
+                                        "customStates": [],
+                                        "activeProjects": [],
+                                        "completedProjects": []
+                                    }
+                                ]
+
+                                ]]>
+    </factiondatachanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="21.A.1.2.E.3">
+  <example contenttype="log" id="PlayerIntervention_Help" type="good">
+   <title>
+    Example: Player Helps Build a Fort
+   </title>
+   <scenariocontext>
+    The "Silver Concord" faction has an active project: "Construct Frontier Fort" (ID: proj-fort-01).
+                                                    Project state: 'timeSpentMinutes': 1200 / 'totalTimeCostMinutes': 3600.
+                                                    Player is an ally and has the "Master Masonry" passive skill. Player's action: "I spend the day helping the engineers build the fort walls."
+                                                    The GM resolves this as a 'Full Success' on an Intelligence (Engineering) check.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                                    # Player Intervention: Assisting "Construct Frontier Fort"
+                                                    - Action: Contributing Expertise. Action Check (Intelligence/Masonry) -> Full Success.
+                                                    - Consequence Calculation (Rule 21.A.1.2.E.3):
+                                                        - A 'Full Success' contributes a 10% reduction to the *remaining* time.
+                                                        - Remaining time = 3600 - 1200 = 2400 minutes.
+                                                        - Time reduced = 2400 * 0.10 = 240 minutes.
+                                                        - New 'timeSpentMinutes' = 1200 (current) + 240 (player contribution) = 1440.
+                                                        - XP Grant for Faction: Project gives ~1000 XP on completion. 5% of that is +50 XP.
+                                                    - Reporting: Preparing 'factionProjectUpdates' command to report the new project progress and 'factionDataChanges' for the XP grant.
+
+                                                    ]]>
+   </logoutput>
+  </example>
+  <example contenttype="log" id="PlayerIntervention_Sabotage" type="good">
+   <title>
+    Example: Player Sabotages an Enemy Project
+   </title>
+   <scenariocontext>
+    The enemy "Iron Horde" faction is building "The Worldbreaker", a massive siege engine (ID: proj-wb-01).
+                                                    Project state: 'resourcesSpent': 5000 / 'totalResourceCost': 10000 'Wealth'.
+                                                    Player infiltrates the construction site and sets explosive charges. The GM resolves this as a 'Full Success' on a Dexterity (Demolitions) check.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                                    # Player Intervention: Sabotaging "The Worldbreaker"
+                                                    - Action: Sabotage. Action Check (Dexterity/Demolitions) -> Full Success.
+                                                    - Consequence Calculation (Rule 21.A.1.2.E.3):
+                                                        - A 'Full Success' on sabotage causes a major setback, increasing total costs by 50%.
+                                                        - New 'totalResourceCost' (Wealth) = 10000 * 1.5 = 15000.
+                                                        - New 'totalTimeCostMinutes' = (Original Time) * 1.5.
+                                                    - Reporting: Preparing 'factionProjectUpdates' command to report the new, higher project costs.
+
+                                                    ]]>
+   </logoutput>
+  </example>
+ </rule>
+ <rule id="21.A.2.3.3">
+  <example contenttype="log_and_json_snippet" id="FactionEconomy_FullUpdate_Example" type="good">
+   <title>
+    Example: Correctly updating both rates and stockpile for "The Iron Horde"
+   </title>
+   <scenariocontext>
+    - Faction: "The Iron Horde"
+                                                    - Time Elapsed: 48 hours (2 Strategic Cycles).
+                                                    - Calculated Net 'Wealth' per cycle: +10.
+                                                    - Calculated Net 'Manpower' per cycle: -1.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+                                    
+                                                    # Faction Economic Update: "The Iron Horde" (2 Cycles)
+                                    
+                                                    ## Part A: Calculate and Report New Rates
+                                                    - Calculated 'Wealth' Income/Upkeep: 31 / 21.
+                                                    - Calculated 'Manpower' Income/Upkeep: 1 / 2.
+                                                    - Reporting a FULL updated faction-core object via 'factionDataChanges', with the recalculated per-cycle rates embedded in resources.metaResources.
+
+                                                    ## Part B: Calculate and Report Total Change
+                                                    - Net Wealth per cycle: +10. Total Change over 2 cycles: +20.
+                                                    - Net Manpower per cycle: -1. Total Change over 2 cycles: -2.
+                                                    - Reporting these total changes via 'factionResourceChanges'.
+                                    
+                                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <!-- BOTH commands are present in the same response -->
+    <factiondatachanges>
+     <![CDATA[
+
+                                                        [
+                                                            {
+                                                                "factionId": "faction-iron-horde-01",
+                                                                "name": "The Iron Horde",
+                                                                "description": "Воинственная орда, живущая завоеванием, набегами и принудительной мобилизацией.",
+                                                                "factionColor": "#7A1E12",
+                                                                "level": 18,
+                                                                "experience": 4200,
+                                                                "experienceForNextLevel": 5000,
+                                                                "developmentArchetype": "military",
+                                                                "isPlayerFaction": false,
+                                                                "isPlayerMember": false,
+                                                                "reputation": -80,
+                                                                "resources": {
+                                                                    "metaResources": [
+                                                                        {
+                                                                            "resourceName": "Wealth",
+                                                                            "incomePerCycle": 31, // <-- NEWLY UPDATED RATE
+                                                                            "upkeepPerCycle": 21  // <-- NEWLY UPDATED RATE
+                                                                        },
+                                                                        {
+                                                                            "resourceName": "Manpower",
+                                                                            "incomePerCycle": 1,   // <-- NEWLY UPDATED RATE
+                                                                            "upkeepPerCycle": 2    // <-- NEWLY UPDATED RATE
+                                                                        },
+                                                                        {
+                                                                            "resourceName": "Influence",
+                                                                            "incomePerCycle": 7,   // <-- NEWLY UPDATED RATE
+                                                                            "upkeepPerCycle": 3    // <-- NEWLY UPDATED RATE
+                                                                        }
+                                                                    ],
+                                                                    "strategicGoods": []
+                                                                },
+                                                                "powerProfile": {
+                                                                    "military": 88,
+                                                                    "economic": 34,
+                                                                    "social": 15,
+                                                                    "covert": 22,
+                                                                    "logistics": 54,
+                                                                    "stability": 41,
+                                                                    "arcane_tech": 5,
+                                                                    "exploration": 19
+                                                                },
+                                                                "ranks": {
+                                                                    "branches": [
+                                                                        {
+                                                                            "branchId": "core",
+                                                                            "displayName": "Основной состав",
+                                                                            "isCoreBranch": true,
+                                                                            "ranks": [
+                                                                                {
+                                                                                    "rankNameMale": "Воевода",
+                                                                                    "rankNameFemale": "Воевода",
+                                                                                    "requiredReputation": 300,
+                                                                                    "unlockCondition": "Подтвердить власть в орде.",
+                                                                                    "isJunctionPoint": false,
+                                                                                    "benefits": ["Руководит стратегическими кампаниями."]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "relations": [],
+                                                                "customStates": [],
+                                                                "activeProjects": [],
+                                                                "completedProjects": []
+                                                            }
+                                                        ]
+
+                                                        ]]>
+    </factiondatachanges>
+    <factionresourcechanges>
+     <![CDATA[
+
+                                                        [
+                                                            {
+                                                                "factionId": "faction-iron-horde-01",
+                                                                "factionName": "The Iron Horde",
+                                                                "resourceChanges": [
+                                                                    { "resourceName": "Wealth", "changeAmount": 20 },
+                                                                    { "resourceName": "Manpower", "changeAmount": -2 },
+                                                                    { "resourceName": "Influence", "changeAmount": 8 }
+                                                                ]
+                                                            }
+                                                        ]
+
+                                                        ]]>
+    </factionresourcechanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="21.C">
+  <example contenttype="log_and_json_snippet" id="FactionConflict_SpoilsOfVictory" type="good">
+   <title>
+    Example 2: Covert Takeover &amp; The Spoils of Victory
+   </title>
+   <description>
+    This multi-turn example shows a faction achieving dominance and then receiving a permanent, mechanical reward for their control.
+   </description>
+   <scenariocontext>
+    The "Shadow Syndicate" (Level 30, Covert: 88) has been working to establish 'Covert' control over the "Oakhaven Docks". After a few successful cycles, their control level has just crossed the threshold of 50.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # World Progression: "Shadow Syndicate" at Oakhaven Docks
+
+                            # --- Adjudication for the Current Cycle ---
+                            -   (Assume a successful action check increased the Syndicate's 'Covert' control from 45 to 60).
+                            -   THRESHOLD CROSSED: 'controlLevel' (60) is now > 50. This triggers Phase 3: The Spoils of Victory (Rule 21.C.3).
+
+                            # --- Phase 3: Generating Spoils of Victory ---
+                            -   Trigger: Syndicate 'Covert' control over "Oakhaven Docks" has reached 60 (Dominance).
+                            -   Logical Bonus: The Docks are a hub of trade and secrets. 'Covert' control should yield both money ('Wealth') and information ('Influence').
+                            -   Generating New Structured Bonuses:
+                                1.  A 'Resource' bonus for 'Wealth' income, representing control over smuggling.
+                                2.  A 'Resource' bonus for 'Influence' income, representing blackmail material and information brokering.
+                            -   Reporting: Preparing a 'factionBonusChanges' command to add these new, permanent bonuses to the Shadow Syndicate.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <worldeventslog>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "headline": "The Docks Have New Masters: Shadow Syndicate Solidifies Control!",
+                                        "summary": "The Shadow Syndicate has tightened its grip on the Oakhaven Docks, achieving dominant control over all illicit activities and information flow. Their network now effectively controls the port's underworld, generating significant income and valuable intelligence for the guild.",
+                                        "eventType": "Covert",
+                                        "visibility": "Faction-Internal"
+                                    }
+                                ]
+
+                                ]]>
+    </worldeventslog>
+    <factionbonuschanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": "faction-shadow-syndicate-01",
+                                        "factionName": "Shadow Syndicate",
+                                        "bonusesToAddOrUpdate": [
+                                            {
+                                                "bonusId": null,
+                                                "description": "+25 Wealth income per cycle from Oakhaven Docks control",
+                                                "bonusType": "Resource",
+                                                "target": "Wealth",
+                                                "valueType": "Flat",
+                                                "value": 25,
+                                                "application": "Permanent",
+                                                "condition": "While maintaining Covert dominance over Oakhaven Docks"
+                                            },
+                                            {
+                                                "bonusId": null,
+                                                "description": "+15 Influence income per cycle from Oakhaven Docks control",
+                                                "bonusType": "Resource",
+                                                "target": "Influence",
+                                                "valueType": "Flat",
+                                                "value": 15,
+                                                "application": "Permanent",
+                                                "condition": "While maintaining Covert dominance over Oakhaven Docks"
+                                            }
+                                        ],
+                                        "bonusesToRemove": null
+                                    }
+                                ]
+
+                                ]]>
+    </factionbonuschanges>
+    <worldmapupdates>
+     <![CDATA[
+
+                                {
+                                    "locationUpdates": [
+                                        {
+                                            "locationId": "loc-oakhaven-docks-01",
+                                            "factionControl": [
+                                                { "factionId": "faction-shadow-syndicate-01", "factionName": "Shadow Syndicate", "controlType": "Covert", "controlLevel": 60 }
+                                            ]
+                                        }
+                                    ]
+                                }
+
+                                ]]>
+    </worldmapupdates>
+   </jsonresponse>
+  </example>
+  <example contenttype="log_and_json_snippet" id="FactionConflict_Decay" type="good">
+   <title>
+    Example 3: Control Decay in an Unstable Territory
+   </title>
+   <description>
+    This shows how a faction with low stability can lose its grip on a territory over time without any direct opposition.
+   </description>
+   <scenariocontext>
+    The "Iron Horde" (Stability: 25) has 'Military' control at 'controlLevel': 60 over the recently conquered "Sunstone Village". The village is restless, with a 'Social' difficulty of 35.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # World Progression: Control Decay Check for Sunstone Village
+
+                            # --- Phase 4: The Cost of Empire (Rule 21.C.4) ---
+                            -   Decay Check (Contested Roll):
+                                -   Faction's Stability Roll:
+                                    -   d20 Roll: 8
+                                    -   Modifier: floor(25 / 10) = +2
+                                    -   Total Stability Roll = 8 + 2 = 10
+                                -   Location's Unrest Roll:
+                                    -   d20 Roll: 17
+                                    -   Modifier: floor(35 / 10) = +3
+                                    -   Total Unrest Roll = 17 + 3 = 20
+                            -   Outcome: Unrest Roll (20) is higher than Stability Roll (10). Control will decay.
+                            -   Determining Amount Lost:
+                                -   Take next d20 Roll: 11
+                                -   Amount Lost = ceil(11 / 5) = 3.
+                            -   Mechanical Change: The Iron Horde's 'Military' control over Sunstone Village decreases from 60 to 57.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <worldeventslog>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "headline": "Unrest in Sunstone Village",
+                                        "summary": "The Iron Horde's grip on the newly conquered Sunstone Village is weakening. Spontaneous protests and acts of minor sabotage by the local populace have slightly eroded the occupiers' military control.",
+                                        "eventType": "Social",
+                                        "visibility": "Regional"
+                                    }
+                                ]
+
+                                ]]>
+    </worldeventslog>
+    <worldmapupdates>
+     <![CDATA[
+
+                                {
+                                    "locationUpdates": [
+                                        {
+                                            "locationId": "loc-sunstone-village-01",
+                                            "factionControl": [
+                                                { "factionId": "faction-iron-horde-01", "factionName": "Iron Horde", "controlType": "Military", "controlLevel": 57 }
+                                            ]
+                                        }
+                                    ]
+                                }
+
+                                ]]>
+    </worldmapupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="21.C.2">
+  <example contenttype="log_and_json_snippet" id="FactionConflict_KnightsVsOrcs_EN" type="good">
+   <title>
+    Example 1: Military Conquest (Knights vs. Orcs)
+   </title>
+   <description>
+    A straightforward military conflict demonstrating how Logistics and Stability bonuses influence the outcome of a battle for territory, using the REVISED formulas.
+   </description>
+   <scenariocontext>
+    The "Silver Concord" (Level 45, Military: 85, Logistics: 50) launches a major offensive to capture the "Red Fang Citadel", a key Orcish stronghold.
+                                    The "Red Fang Orcs" (Level 42, Military: 78, Stability: 90) are defending their home territory. The fortress provides them with a significant situational advantage.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Simulating Project: "Conquest of the Red Fang Citadel"
+                                    # Contested Control Type: Military
+
+                                    ## --- Attacker: Silver Concord ---
+                                    # Step 1: Calculate StatModificator (Military)
+                                    -   StatValue (Military Scale): 85
+                                    -   FlatBonuses:
+                                        -   Logistics Bonus (Rule 21.C.2): floor(50 / 4) = +12
+                                    -   StatValueWithBonuses: 85 + 12 = 97
+                                    -   MaximumValue (Cap): 85 * 1.5 = 127.5
+                                    -   CappedValue: min(127.5, 97) = 97
+                                    -   LevelScaling (Level 45, REVISED FORMULA): floor(45 * 1.5) = 67
+                                    -   Final StatModificator (Silver Concord) = 97 + 67 = 164
+
+                                    ## --- Defender: Red Fang Orcs ---
+                                    # Step 2: Calculate StatModificator (Military)
+                                    -   StatValue (Military Scale): 78
+                                    -   FlatBonuses:
+                                        -   Stability Bonus (Rule 21.C.2): floor(90 / 4) = +22
+                                        -   Situational Bonus (Fortress Defense): +10 (GM Discretion)
+                                        -   Total FlatBonuses: 22 + 10 = +32
+                                    -   StatValueWithBonuses: 78 + 32 = 110
+                                    -   MaximumValue (Cap): 78 * 1.5 = 117
+                                    -   CappedValue: min(117, 110) = 110
+                                    -   LevelScaling (Level 42, REVISED FORMULA): floor(42 * 1.5) = 63
+                                    -   Final StatModificator (Red Fang Orcs) = 110 + 63 = 173
+
+                                    ## --- Step 3: The Conflict Check ---
+                                    -   d20 Roll (Silver Concord): 17
+                                    -   d20 Roll (Red Fang Orcs): 5
+                                    -   Silver Concord's Total: 17 + 164 = 181
+                                    -   Red Fang Orcs' Total: 5 + 173 = 178
+                                    -   Difference = 181 - 178 = +3
+                                    -   Final Result: Partial Success
+
+                                    ## --- Step 4: Adjudication ---
+                                    -   Outcome: A brutal, bloody stalemate. The Silver Concord, through sheer martial prowess and a lucky break, managed to breach the outer defenses but at a horrific cost.
+                                    -   Mechanical Change: Silver Concord gains +5 Military control, Red Fang Orcs lose -5 Military control. The project consumed massive resources from both sides.
+                                    
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <worldeventslog>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "headline": "Bloody Stalemate at the Red Fang Citadel!",
+                                                "summary": "The Silver Concord's assault on the Red Fang Citadel has resulted in a pyrrhic victory. While the outer walls have been taken, the cost in knights and supplies was staggering. The Orcs have retreated to the inner keep, and the fortress remains a contested battleground.",
+                                                "eventType": "Military",
+                                                "visibility": "Regional"
+                                            }
+                                        ]
+
+                                        ]]>
+    </worldeventslog>
+    <worldmapupdates>
+     <![CDATA[
+
+                                        {
+                                            "locationUpdates": [
+                                                {
+                                                    "locationId": "loc-red-fang-citadel-01",
+                                                    "factionControl": [
+                                                        { "factionId": "faction-silver-concord-01", "factionName": "Silver Concord", "controlType": "Military", "controlLevel": 5 },
+                                                        { "factionId": "faction-red-fang-orcs-01", "factionName": "Red Fang Orcs", "controlType": "Military", "controlLevel": 95 }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+
+                                        ]]>
+    </worldmapupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="21.D">
+  <example contenttype="json_fragment" id="FactionBonus_Add_Example" type="good">
+   <title>
+    Example: Adding a new bonus after a project completion
+   </title>
+   <scenariocontext>
+    The "Dwarven Clans" faction successfully completes the "Masterwork Forges" project, granting them a permanent bonus to their crafting abilities.
+   </scenariocontext>
+   <jsonresponse>
+    <factionbonuschanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": "faction-dwarves-khaz-gund-01",
+                                        "factionName": "Dwarven Clans of Khaz-Gund",
+                                        "bonusesToAddOrUpdate": [
+                                            {
+                                                "bonusId": null,
+                                                "description": "+10 to Economic scale for crafting-related projects",
+                                                "bonusType": "PowerProfileScale",
+                                                "target": "economic",
+                                                "valueType": "Flat",
+                                                "value": 10,
+                                                "application": "Conditional",
+                                                "condition": "When undertaking a crafting or construction project."
+                                            }
+                                        ],
+                                        "bonusesToRemove": null
+                                    }
+                                ]
+
+                                ]]>
+    </factionbonuschanges>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" id="FactionBonus_Remove_Example" type="good">
+   <title>
+    Example 2: Removing an Existing Bonus (Debuff)
+   </title>
+   <description>
+    A temporary negative bonus (a debuff) that was applied by a world event has now expired.
+   </description>
+   <scenariocontext>
+    In a previous turn, the "Kingdom of Eldoria" was affected by a "Blight Plague" world event, which applied a temporary structured bonus (debuff) to them.
+                            From Context, their 'structuredBonuses' array contains: '{ "bonusId": "bonus-blight-debuff-xyz", "description": "-15 to Stability due to plague unrest", "bonusType": "PowerProfileScale", "target": "stability", "value": -15, ... } '.
+                            In the current turn, the player's actions have successfully cleansed the plague. The debuff must now be removed.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Faction State Update: Kingdom of Eldoria
+                            -   Event: The Blight Plague has been cleansed.
+                            -   Action: Removing the associated debuff from the faction.
+                            -   Identifying bonus to remove from Context: Found bonus with ID 'bonus-blight-debuff-xyz'.
+                            -   Preparing 'factionBonusChanges' command to remove this specific bonus.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <factionbonuschanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": "faction-eldoria-kingdom-01",
+                                        "factionName": "Kingdom of Eldoria",
+                                        "bonusesToAddOrUpdate": null,
+                                        "bonusesToRemove": [
+                                            "bonus-blight-debuff-xyz"
+                                        ]
+                                    }
+                                ]
+
+                                ]]>
+    </factionbonuschanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="21.F">
+  <example contenttype="json_fragment" id="FactionState_Add_Example" type="good">
+   <title>
+    Example 1: Adding a New Custom State
+   </title>
+   <description>
+    A major plot event destabilizes a kingdom, creating a new state to track the consequences.
+   </description>
+   <scenariocontext>
+    The player's actions have led to the assassination of a key royal advisor, triggering political chaos in the "Kingdom of Eldoria".
+   </scenariocontext>
+   <jsonresponse>
+    <factioncustomstatechanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": "faction-eldoria-kingdom-01",
+                                        "factionName": "Kingdom of Eldoria",
+                                        "statesToAddOrUpdate": [
+                                            {
+                                                "stateId": null,
+                                                "stateName": "Political Instability",
+                                                "currentValue": 60,
+                                                "minValue": 0,
+                                                "maxValue": 100,
+                                                "description": "The court is in chaos after the assassination. Noble houses are vying for power.",
+                                                "progressionRule": { "description": "Decreases with strong leadership, increases with intrigue and external pressure." },
+                                                "thresholds": [
+                                                    {
+                                                        "levelName": "Civil Unrest",
+                                                        "triggerCondition": "value_greater_than_or_equal_to",
+                                                        "triggerValue": 75,
+                                                        "associatedEffects": [ { "description": "Trigger a world event about riots in the capital." } ]
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        "statesToRemove": null
+                                    }
+                                ]
+
+                                ]]>
+    </factioncustomstatechanges>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" id="FactionState_Update_Example" type="good">
+   <title>
+    Example 2: Updating an Existing Custom State
+   </title>
+   <description>
+    A faction's ongoing efforts improve one of their custom states.
+   </description>
+   <scenariocontext>
+    The "Kingdom of Eldoria" has a "Political Instability" state (ID: "state-instability-abc") with a 'currentValue' of 60. 
+                            During a World Progression cycle, the ruling monarch successfully negotiates a truce between two warring noble houses.
+   </scenariocontext>
+   <jsonresponse>
+    <factioncustomstatechanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": "faction-eldoria-kingdom-01",
+                                        "factionName": "Kingdom of Eldoria",
+                                        "statesToAddOrUpdate": [
+                                            {
+                                                "stateId": "state-instability-abc",
+                                                "stateName": "Political Instability",
+                                                "currentValue": 45,
+                                                "minValue": 0,
+                                                "maxValue": 100,
+                                                "description": "The King's successful diplomacy has calmed the court, but underlying tensions remain.",
+                                                "progressionRule": { "description": "Decreases with strong leadership, increases with intrigue and external pressure." },
+                                                "thresholds": [ /* ... same thresholds ... */ ]
+                                            }
+                                        ],
+                                        "statesToRemove": null
+                                    }
+                                ]
+
+                                ]]>
+    </factioncustomstatechanges>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" id="FactionState_Remove_Example" type="good">
+   <title>
+    Example 3: Removing a Custom State
+   </title>
+   <description>
+    The underlying condition that created the state has been fully resolved, making the state obsolete.
+   </description>
+   <scenariocontext>
+    The "Kingdom of Eldoria" had a "Political Instability" state (ID: "state-instability-abc").
+                            In the current turn, the player has successfully exposed the true conspirator behind the assassination and united the noble houses, completely resolving the crisis.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Faction State Update: Kingdom of Eldoria
+                            -   Event: The political crisis has been fully resolved by the player's actions.
+                            -   Action: The "Political Instability" custom state is no longer relevant and must be removed.
+                            -   Identifying state to remove from Context: Found state with ID 'state-instability-abc'.
+                            -   Preparing 'factionCustomStateChanges' command to remove this specific state.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <factioncustomstatechanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": "faction-eldoria-kingdom-01",
+                                        "factionName": "Kingdom of Eldoria",
+                                        "statesToAddOrUpdate": null,
+                                        "statesToRemove": [
+                                            "state-instability-abc"
+                                        ]
+                                    }
+                                ]
+
+                                ]]>
+    </factioncustomstatechanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="21.H.4">
+  <example contenttype="log" id="Faction_PowerHierarchy_Example" type="good">
+   <title>
+    Пример: Расчет Итоговой Военной Мощи с Учетом Всех Уровней
+   </title>
+   <scenariocontext>
+    "Имперский Легион" (Уровень 30) готовится к атаке. ГМ должен рассчитать их итоговый 'StatModificator' для военной 'Conflict Check'.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Расчет "StatModificator" для "Имперского Легиона" (Военная атака)
+
+                                    ## 1. Базовое Значение (Уровень 1: Перманентное)
+                                    -   Базовое значение из 'powerProfile.military': 75
+
+                                    ## 2. Долгосрочные Бонусы (Уровень 2: "Снаряжение")
+                                    -   Проверка 'structuredBonuses':
+                                        -   Найден бонус от "Великой Кузни": "+10 к 'military' для наступательных кампаний". Условие выполнено.
+                                    -   Итого плоских бонусов: +10
+
+                                    ## 3. Временные Эффекты (Уровень 3: "Заклинания")
+                                    -   Проверка 'customStates':
+                                        -   Найден стейт "Боевой Дух Армии" со значением 80.
+                                        -   Это активирует порог "Высокий Боевой Дух", который дает эффект: "+15% к проверкам военных кампаний".
+                                    -   Итого процентный множитель: 1.15
+
+                                    ## 4. Финальный Расчет 'StatModificator' (по Правилу 30.1.D.2.1)
+                                    -   'StatValueWithBonuses': (75 [База] + 10 [Бонус]) * 1.15 [Эффект] = 85 * 1.15 = 97.75
+                                    -   'CappedValue': min(75 * 1.5, 97.75) = 97.75
+                                    -   'LevelScaling' (Уровень 30): floor(30 * 0.5) = 15
+                                    -   Итоговый 'StatModificator': 97.75 + 15 = 112.75
+
+                                    -   Вывод: Итоговая мощь Легиона в этой атаке (112.75) значительно выше его базовой военной мощи (75) благодаря как постоянным активам, так и временному высокому боевому духу.
+                                    
+                                    ]]>
+   </logoutput>
+  </example>
+ </rule>
+ <rule id="21.I">
+  <example contenttype="json_fragment" id="BranchChange_AddBranch" type="good">
+   <title>
+    Example: A Faction Develops a New "Diplomacy" Branch
+   </title>
+   <jsonresponse>
+    <factionrankbranchchanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": "faction-silver-concord-01",
+                                        "factionName": "Серебряный Союз",
+                                        "branchesToAdd": [
+                                            {
+                                                "branchId": "diplomacy_branch",
+                                                "displayName": "Дипломатический Корпус",
+                                                "isCoreBranch": false,
+                                                "ranks": [
+                                                    { 
+                                                        "rankNameMale": "Эмиссар", 
+                                                        "rankNameFemale": "Эмиссар", 
+                                                        "requiredReputation": 250, 
+                                                        "unlockCondition": "Успешно заключить мирный договор.", 
+                                                        "isJunctionPoint": false, 
+                                                        "benefits": ["Может представлять фракцию на переговорах."] 
+                                                    },
+                                                    {
+                                                        "rankNameMale": "Посол", 
+                                                        "rankNameFemale": "Посол", 
+                                                        "requiredReputation": 320, 
+                                                        "unlockCondition": "Создать долгосрочный союз с другой крупной державой.", 
+                                                        "isJunctionPoint": false, 
+                                                        "benefits": ["Получает дипломатическую неприкосновенность."] 
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+
+                                ]]>
+    </factionrankbranchchanges>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" id="BranchChange_UpdateRank" type="good">
+   <title>
+    Example: Updating the Benefits of the "Knight" Rank in the Core Branch
+   </title>
+   <jsonresponse>
+    <factionrankbranchchanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": "faction-silver-concord-01",
+                                        "factionName": "Серебряный Союз",
+                                        "ranksToUpdate": [
+                                            {
+                                                "targetBranchId": "core",
+                                                "rankIdentifier": "Рыцарь",
+                                                "update": {
+                                                    "newBenefits": [
+                                                        "Получает право носить фракционный герб.", 
+                                                        "Получает доступ к конюшням Ордена.", 
+                                                        "Получает еженедельное жалование в 50 золотых."
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+
+                                ]]>
+    </factionrankbranchchanges>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" id="BranchChange_InitialLink" type="good">
+   <title>
+    CRITICAL EXAMPLE: Creating a new Faction and modifying its Ranks in the same turn
+   </title>
+   <description>
+    This example demonstrates the mandatory use of the 'initialId' and 'initialFactionId' linking mechanism.
+                            The player founds a new guild, and the GM immediately defines its first few ranks using an atomic command.
+   </description>
+   <scenariocontext>
+    The player's action is: "I am founding the 'Silver Ravens' mercenary company. 
+                            Our first ranks will be Recruit and Soldier."
+   </scenariocontext>
+   <jsonresponse>
+    <factiondatachanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": null,
+                                        "initialId": "temp-faction-silver-ravens",
+                                        "isNewFaction": true,
+                                        "name": "Серебряные Вороны",
+                                        "image_prompt": "A silver raven over a dark banner, mercenary company emblem, disciplined and sharp, fantasy insignia.",
+                                        "description": "Новая наёмная рота, построенная на дисциплине, скрытности и контрактной работе.",
+                                        "factionColor": "#B8C7D9",
+                                        "level": 1,
+                                        "experience": 0,
+                                        "experienceForNextLevel": 100,
+                                        "developmentArchetype": "balanced",
+                                        "customArchetypePriorities": null,
+                                        "isPlayerFaction": true,
+                                        "isPlayerMember": true,
+                                        "playerStrategyDirective": null,
+                                        "playerRank": "Командир",
+                                        "playerBranch": "core",
+                                        "reputation": 400,
+                                        "reputationDescription": "Основатель",
+                                        "powerProfile": {
+                                            "military": 18,
+                                            "economic": 10,
+                                            "social": 14,
+                                            "covert": 22,
+                                            "logistics": 12,
+                                            "stability": 16,
+                                            "arcane_tech": 0,
+                                            "exploration": 8
+                                        },
+                                        "resources": {
+                                            "metaResources": [
+                                                {
+                                                    "resourceName": "Wealth",
+                                                    "currentStockpile": 250,
+                                                    "incomePerCycle": 5,
+                                                    "upkeepPerCycle": 3
+                                                },
+                                                {
+                                                    "resourceName": "Manpower",
+                                                    "currentStockpile": 12,
+                                                    "incomePerCycle": 1,
+                                                    "upkeepPerCycle": 0
+                                                }
+                                            ],
+                                            "strategicGoods": []
+                                        },
+                                        "controlledTerritories": [],
+                                        "structuredBonuses": [],
+                                        "ranks": {
+                                            "branches": [
+                                                {
+                                                    "branchId": "core",
+                                                    "displayName": "Основной состав",
+                                                    "isCoreBranch": true,
+                                                    "ranks": [
+                                                        {
+                                                            "rankNameMale": "Командир", "rankNameFemale": "Командир",
+                                                            "requiredReputation": 400,
+                                                            "unlockCondition": "Основать роту.",
+                                                            "isJunctionPoint": false,
+                                                            "benefits": ["Полное командование ротой."]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "relations": [],
+                                        "customStates": [],
+                                        "activeProjects": [],
+                                        "completedProjects": []
+                                    }
+                                ]
+
+                                ]]>
+    </factiondatachanges>
+    <factionrankbranchchanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "factionId": null,
+                                        "initialFactionId": "temp-faction-silver-ravens",
+                                        "factionName": "Серебряные Вороны",
+                                        "ranksToAdd": [
+                                            {
+                                                "targetBranchId": "core",
+                                                "rank": {
+                                                    "rankNameMale": "Рекрут", 
+                                                    "rankNameFemale": "Рекрутка",
+                                                    "requiredReputation": 125,
+                                                    "unlockCondition": "Пройти вступительное испытание.", 
+                                                    "isJunctionPoint": false, 
+                                                    "benefits": ["Получает базовое снаряжение."]
+                                                }
+                                            },
+                                            {
+                                                "targetBranchId": "core",
+                                                "rank": {
+                                                    "rankNameMale": "Солдат",
+                                                    "rankNameFemale": "Солдат",
+                                                    "requiredReputation": 200, 
+                                                    "unlockCondition": "Успешно завершить три контракта.", 
+                                                    "isJunctionPoint": false, 
+                                                    "benefits": ["Получает еженедельное жалование."]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+
+                                ]]>
+    </factionrankbranchchanges>
+   </jsonresponse>
+  </example>
+ </rule>
+</instructionblock>

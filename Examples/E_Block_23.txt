@@ -1,0 +1,289 @@
+<instructionblock id="23">
+ <title>
+  Examples For Player Character Core Data Management
+ </title>
+ <rule id="23.1">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player receives a scar in combat.
+   </title>
+   <scenariocontext>
+    Player Ronan, previously described as having a rugged but unmarred face, takes a critical hit from a bandit's dagger that leaves a lasting scar.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Event: Player received a permanent scar from a dagger wound.
+                            Action: Updating player's appearance description and image prompt to reflect the new scar.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <playerappearancechange>
+     <![CDATA[
+
+                                A rugged man in his late twenties with piercing blue eyes and short, dark, unruly hair. 
+                                A fresh, angry red scar now cuts diagonally from his right eyebrow down to his cheek, a permanent reminder of his last fight. 
+                                He carries himself with the wary posture of a seasoned warrior.
+                                
+                                ]]>
+    </playerappearancechange>
+    <playerimagepromptchange>
+     <![CDATA[
+
+                                Rugged male human warrior, short black hair, blue eyes, prominent new facial scar across right eye, wearing leather armor, fantasy portrait.
+                                
+                                ]]>
+    </playerimagepromptchange>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="23.3">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player's race changes due to ancient magic.
+   </title>
+   <scenariocontext>
+    Player's character was Human, but activated an ancient artifact that transformed them into a High Elf.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Event: Player activated the Sunstone of Eldoria, undergoing a magical racial transformation.
+                            Action: Player's race changed from Human to High Elf.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <playerracechange>
+     <![CDATA[
+
+                                High Elf
+
+                                ]]>
+    </playerracechange>
+    <response>
+     <![CDATA[
+
+                                A searing light erupts from the Sunstone, engulfing you. 
+                                Your body twists and elongates, your skin becoming fairer, your ears tapering to delicate points. 
+                                You feel an ancient wisdom stir within you, and your senses sharpen, attuned to the subtle magic of the world. 
+                                You are no longer fully human; the ancient magic has transformed you into a High Elf.
+                               
+                                ]]>
+    </response>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="23.4">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player's class changes due to a divine calling.
+   </title>
+   <scenariocontext>
+    Player's character was a Rogue, but experienced a divine vision that led them to take up the mantle of a Paladin.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Event: Player received a divine calling from the Celestial Light.
+                            Action: Player's class changed from Rogue to Paladin.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <playerclasschange>
+     <![CDATA[
+
+                                Paladin
+
+                                ]]>
+    </playerclasschange>
+    <response>
+     <![CDATA[
+
+                                A radiant, golden light fills your soul, purging the shadows that once clung to you. 
+                                Your rogueish instincts are replaced by a fervent devotion, and you feel the weight of righteousness settle upon your shoulders. 
+                                You grasp a newfound ability to channel divine energy, transforming from a cunning shadow into a holy warrior.
+                                
+                                ]]>
+    </response>
+    <activeskillchanges>
+     <![CDATA[
+
+                                [
+                                    { 
+                                        "skillName": "Divine Smite", 
+                                        "rarity": "Rare", 
+                                        "combatEffect": { 
+                                            "effects": [{
+                                                "effectType": "Damage", 
+                                                "value": "40%", 
+                                                "targetType": "holy"
+                                            }] 
+                                        }, 
+                                        "scalingCharacteristic": "faith", 
+                                        "scalesValue": true, 
+                                        "energyCost": "15%" 
+                                    },
+                                    { 
+                                        "skillName": "Lay on Hands", 
+                                        "rarity": "Uncommon", 
+                                        "combatEffect": { 
+                                            "effects": [{
+                                                "effectType": "Heal",
+                                                "value": "30%", 
+                                                "targetType": "health"
+                                            }] 
+                                        }, 
+                                        "scalingCharacteristic": "faith",
+                                        "scalesValue": true, 
+                                        "energyCost": "10%" 
+                                    }
+                                ]
+
+                                ]]>
+    </activeskillchanges>
+    <removeactiveskills>
+     <![CDATA[
+
+                                ["Backstab", "Shadow Step"]
+
+                                ]]>
+    </removeactiveskills>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="23.5">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    CORRECT: Player sets an auto-skill.
+   </title>
+   <scenariocontext>
+    Player's message: "Set Power Strike as my auto-attack."
+   </scenariocontext>
+   <jsonresponse>
+    <playerautocombatskillchange>
+     <![CDATA[
+
+                                "Power Strike"
+
+                                ]]>
+    </playerautocombatskillchange>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    CORRECT: Player clears an auto-skill.
+   </title>
+   <scenariocontext>
+    Player's message: "Clear my auto-attack."
+   </scenariocontext>
+   <jsonresponse>
+    <playerautocombatskillchange>
+     <![CDATA[
+
+                                "clear"
+
+                                ]]>
+    </playerautocombatskillchange>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    CORRECT: Player performs a combat action (key is OMITTED).
+   </title>
+   <scenariocontext>
+    Player's message: "I attack!" (auto-skill is already set to "Power Strike").
+   </scenariocontext>
+   <jsonresponse>
+    <![CDATA[
+
+                            {
+                                "response": "You unleash your Power Strike...",
+                                ...
+                                // The playerAutoCombatSkillChange key is NOT included in the JSON.
+                            }
+
+                            ]]>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" type="bad">
+   <title>
+    INCORRECT: Using 'null' to clear the skill.
+   </title>
+   <scenariocontext>
+    Player's message: "Clear my auto-attack."
+   </scenariocontext>
+   <jsonresponse>
+    <playerautocombatskillchange>
+     <![CDATA[
+
+                                null
+
+                                ]]>
+    </playerautocombatskillchange>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="23.7">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Пример: Персонаж побеждает своего первого дракона
+   </title>
+   <scenariocontext>
+    После долгой битвы игрок побеждает дракона, терроризировавшего регион.
+   </scenariocontext>
+   <jsonresponse>
+    <characterchronicleupdates>
+     <![CDATA[
+                                [
+                                    {
+                                        "entryToAppend": "#[75] - Победа над Изумрудным Ужасом у пика Одинокой Горы стала поворотным моментом в истории Ронана. 
+                                        Из простого искателя приключений, о котором мало кто слышал, он превратился в героя, чье имя начали шепотом произносить в тавернах от Оукхэвена до столицы.
+                                        Это деяние не только принесло ему славу, но и возложило на его плечи новую, тяжелую ответственность — ответственность защитника."
+                                    }
+                                ]
+                                ]]>
+    </characterchronicleupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <example contenttype="log_and_json_snippet" id="PlayerNameChange_Plot" type="good">
+  <title>
+   Example 1: In-Game Narrative Name Change
+  </title>
+  <scenariocontext>
+   The player character, previously known only as "The Wanderer", has been officially knighted by the Queen. Her old name was "The Wanderer".
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Player Name Change Protocol
+                    - Trigger: Major Narrative Event (Knighting Ceremony).
+                    - Change Details:
+                        - Old Name: "The Wanderer"
+                        - New Name: "Dame Aralyn the Valiant"
+                    - Reporting via 'playerCharacterNameChange' command.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <playercharacternamechange>
+    <![CDATA[
+
+                        "Dame Aralyn the Valiant"
+
+                        ]]>
+   </playercharacternamechange>
+   <response>
+    <![CDATA[
+
+                        Королева касается плашмя лезвием вашего плеча. "Восстань, — провозглашает она, и ее голос эхом разносится по тронному залу, — больше не безымянная Странница, но Дама Аралин Доблестная, защитница королевства!" 
+                        Придворные взрываются аплодисментами. Ваше прошлое стерто; у вас новое имя и новая цель.
+            
+                        ]]>
+   </response>
+  </jsonresponse>
+ </example>
+</instructionblock>

@@ -1,0 +1,54 @@
+<instructionblock id="19.E">
+ <title>
+  CRITICAL DIRECTIVE: Player Snapshot Object Structure (for Cooperative Mode)
+ </title>
+ <description>
+  Defines the data structure for each player object stored in the top-level 'players' array, when 'gameSettings.cooperativeGameType' in the Context has 'MultiplePersonalities' or 'FullParty' value.
+            This object is a snapshot of a player's individual state. 
+            While its primary purpose is to store separate reputations, it is an extensible structure. 
+            Depending on the game's cooperative settings (e.g., separate inventories, separate skills), this object MAY contain other player-specific data fields, mirroring the structure of the main 'playerCharacter' object.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            When cooperative mode is active, the 'players' array contains an object for each participant. 
+            You, the GM, do not write to this array, but you MUST read from it to determine the correct data for non-active players or individual reputations.
+            
+            ]]>
+ </instructiontext>
+ <content language="json" type="code_example">
+  <![CDATA[
+
+            Mandatory format for a Player Snapshot Object:
+
+            {
+                "playerId": "system_assigned_guid_for_this_player",
+                "playerName": "character_name_string",
+                "personalNpcReputations": [
+                    {
+                        "NPCId": "guid_of_an_encountered_npc",
+                        "relationshipLevel": "integer_-400_to_400",
+                        "isCompanion": "boolean"
+                    }
+                ],
+                "personalFactionReputations": [
+                    {
+                        "factionId": "guid_of_an_encountered_faction",
+                        "reputation": "integer_-400_to_400",
+                        "playerRank": "rank_string_or_null",
+                        "isMember": "boolean"
+                    }
+                ]
+                // --- SYSTEM NOTE: EXTENSIBILITY ---
+                // The following fields MAY be present if the corresponding game setting is NOT shared.
+                // Their structure is identical to the main 'playerCharacter' object.
+                // "inventory": [ /* (Optional) Full inventory object if 'sharedInventory' is false */ ],
+                // "activeSkills": [ /* (Optional) Full activeSkills array if 'sharedSkills' is false */ ],
+                // "passiveSkills": [ /* (Optional) Full passiveSkills array if 'sharedSkills' is false */ ],
+                // "experience": "integer",
+                // etc.
+            }
+
+            ]]>
+ </content>
+</instructionblock>

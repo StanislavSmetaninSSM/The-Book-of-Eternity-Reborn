@@ -1,0 +1,401 @@
+<instructionblock id="19.A">
+ <title>
+  Examples For CRITICAL DIRECTIVE: NPC Inventory Management Protocol
+ </title>
+ <rule id="19.A.3.1">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 1 (PARTIAL Removal): Kaelen gives the player 5 arrows from his stack of 20.
+   </title>
+   <jsonresponse>
+    <npcinventoryupdates>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-kaelen-001",
+                                        "NPCName": "Kaelen",
+                                        "itemUpdate": {
+                                            "existedId": "item-kaelen-arrows-01",
+                                            "count": 15
+                                        }
+                                    }
+                                ]
+
+                                ]]>
+    </npcinventoryupdates>
+    <!-- Simultaneously, the player would gain 5 arrows via inventoryItemsData -->
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 2 (COMPLETE Removal): Kaelen gives the player his entire stack of 20 arrows.
+   </title>
+   <jsonresponse>
+    <npcinventoryremovals>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-kaelen-001",
+                                        "NPCName": "Kaelen",
+                                        "itemId": "item-kaelen-arrows-01"
+                                    }
+                                ]
+
+                                ]]>
+    </npcinventoryremovals>
+    <!-- Simultaneously, the player would gain 20 arrows via inventoryItemsData -->
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="19.A.4">
+  <example type="bad">
+   <title>
+    INCORRECT - Violates Inventory Permanence
+   </title>
+   <scenariocontext>
+    Narrative in 'response': "Капитан Каэлен снимает свой тяжелый нагрудник и вешает его на стойку, чтобы отдохнуть."
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // INCORRECT ACTION: The GM removes the "Plate Armor" from Kaelen's inventory.
+                            "NPCInventoryRemovals": [ { 
+                                "NPCId": "npc-kaelen-001", 
+                                "NPCName": "Капитан Каэлен", 
+                                "itemId": "item-kaelen-armor-01" 
+                            } ]
+                            // REASONING ERROR: The armor is still owned by Kaelen. Removing it means he no longer possesses it.
+
+                            ]]>
+   </content>
+  </example>
+  <example type="good">
+   <title>
+    CORRECT - Respects Inventory Permanence
+   </title>
+   <scenariocontext>
+    Narrative in 'response': "Капитан Каэлен снимает свой тяжелый нагрудник и вешает его на стойку, чтобы отдохнуть."
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // CORRECT ACTION: The GM makes NO changes to Kaelen's inventory.
+                            "NPCInventoryAdds": null, "NPCInventoryUpdates": null, "NPCInventoryRemovals": null
+                            // REASONING: The armor remains part of Kaelen's possessions. His combat readiness might be lower in the narrative, but his inventory state is unchanged.
+                            
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="19.A.5">
+  <example type="bad">
+   <title>
+    INCORRECT (Creation) - Conflict and Data Redundancy
+   </title>
+   <scenariocontext>
+    GM generates a new NPC, Kaelen, for the first time.
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // VIOLATION: Using both 'inventory' and 'NPCInventoryAdds' for a new NPC.
+                            "UpdateNPCs": [ 
+                                { 
+                                    "NPCId": null, 
+                                    "name": "Kaelen", 
+                                    "inventory": [ 
+                                        { "name": "Iron Sword", ... } 
+                                    ] 
+                                } 
+                            ],
+                            "NPCInventoryAdds": [ 
+                                { 
+                                    "NPCId": null, 
+                                    "NPCName": "Kaelen", 
+                                    "item": { "name": "Health Potion", ... } 
+                                } 
+                            ]
+
+                            ]]>
+   </content>
+  </example>
+  <example type="good">
+   <title>
+    CORRECT (Creation) - Using the Primary State Location
+   </title>
+   <scenariocontext>
+    GM generates a new NPC, Kaelen, for the first time.
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // CORRECT: All initial items are placed within the NPC's own 'inventory' array.
+                            "UpdateNPCs": [ 
+                                { 
+                                    "NPCId": null, 
+                                    "name": "Kaelen",
+                                    "inventory": [ 
+                                        { "name": "Iron Sword", ... }, 
+                                        { "name": "Health Potion", ... } 
+                                    ] 
+                                } 
+                            ],
+                            "NPCInventoryAdds": null
+
+                            ]]>
+   </content>
+  </example>
+  <example type="bad">
+   <title>
+    INCORRECT (Update) - Overwriting Inventory (causes data loss!)
+   </title>
+   <scenariocontext>
+    An existing NPC, Elara, has 5 items in her inventory in the Context. In this turn, the durability of her "Mortar" changes.
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // VIOLATION: Re-sending the entire 'inventory' array just to update one item. This will DELETE the other 4 items.
+                            "UpdateNPCs": [ 
+                                { 
+                                    "NPCId": "npc-elara-01", 
+                                    "name": "Elara", 
+                                    "inventory": [ 
+                                        { 
+                                            "existedId": "item-mortar-01", 
+                                            "name": "Mortar", 
+                                            "durability": "85%", ... 
+                                        } 
+                                    ] 
+                                } 
+                            ]
+                           
+                            ]]>
+   </content>
+  </example>
+  <example type="good">
+   <title>
+    CORRECT (Update) - Using the Atomic 'NPCInventoryUpdates' Command
+   </title>
+   <scenariocontext>
+    An existing NPC, Elara, has 5 items in her inventory. The durability of her "Mortar" changes.
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // CORRECT: Only the specific change is sent. The other 4 items in her inventory are untouched and safe.
+                            "NPCInventoryUpdates": [ 
+                                { 
+                                    "NPCId": "npc-elara-01", 
+                                    "NPCName": "Elara",
+                                    "itemUpdate": { 
+                                        "existedId": "item-mortar-01", 
+                                        "durability": "85%" 
+                                    } 
+                                } 
+                            ]
+                            
+                            ]]>
+   </content>
+  </example>
+  <example type="bad">
+   <title>
+    INCORRECT (Removal) - Overwriting Inventory
+   </title>
+   <scenariocontext>
+    An existing NPC, Kaelen, has a Sword and a Potion. He gives the Potion to the player.
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // VIOLATION: Re-sending the inventory array without the Potion. This is inefficient and error-prone.
+                            "UpdateNPCs": [ 
+                                { 
+                                    "NPCId": "npc-kaelen-01", 
+                                    "name": "Kaelen", 
+                                    "inventory": [ 
+                                        { 
+                                            "existedId": "item-sword-01", 
+                                            "name": "Iron Sword", 
+                                            ... 
+                                        } 
+                                    ] 
+                                } 
+                            ]
+
+                            ]]>
+   </content>
+  </example>
+  <example type="good">
+   <title>
+    CORRECT (Removal) - Using the Atomic 'NPCInventoryRemovals' Command
+   </title>
+   <scenariocontext>
+    An existing NPC, Kaelen, has a Sword and a Potion. He gives the Potion to the player.
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // CORRECT: A single, clear command is issued to remove a specific item.
+                            "NPCInventoryRemovals": [ 
+                                { 
+                                    "NPCId": "npc-kaelen-01",
+                                    "NPCName": "Kaelen",
+                                    "itemId": "item-potion-01" 
+                                } 
+                            ]
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="19.A.6">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Kaelen gives Elara a "Healing Potion".
+   </title>
+   <scenariocontext>
+    Kaelen (npc-kaelen-001) has a "Healing Potion" (item-potion-k-01) in his inventory. Elara (npc-elara-01) does not.
+   </scenariocontext>
+   <jsonresponse>
+    <npcinventoryremovals>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-kaelen-001",
+                                        "NPCName": "Kaelen",
+                                        "itemId": "item-potion-k-01"
+                                    }
+                                ]
+
+                                ]]>
+    </npcinventoryremovals>
+    <npcinventoryadds>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-elara-01",
+                                        "NPCName": "Elara Meadowlight",
+                                        "item": {
+                                            "existedId": null,
+                                            "name": "Healing Potion",
+                                            "description": "A standard potion that restores health.",
+                                            "quality": "Uncommon",
+                                            "count": 1
+                                            // ... all other fields for a new item ...
+                                        }
+                                    }
+                                ]
+
+                                ]]>
+    </npcinventoryadds>
+   </jsonresponse>
+  </example>
+ </rule>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example Scenario: Player gives Elara a new "Healing Potion".
+  </title>
+  <jsonresponse>
+   <npcinventoryadds>
+    <![CDATA[
+
+                        [
+                            {
+                                "NPCId": "npc-elara-meadowlight-01",
+                                "NPCName": "Elara Meadowlight",
+                                "item": {
+                                    "existedId": null,
+                                    "name": "Healing Potion",
+                                    "description": "A standard potion that restores health.",
+                                    "quality": "Uncommon",
+                                    "count": 1
+                                    // ... all other fields for a new item ...
+                                }
+                            }
+                        ]
+
+                        ]]>
+   </npcinventoryadds>
+  </jsonresponse>
+ </example>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example Scenario: Kaelen's sword takes damage in a fight.
+  </title>
+  <jsonresponse>
+   <npcinventoryupdates>
+    <![CDATA[
+
+                        [
+                            {
+                                "NPCId": "npc-kaelen-001",
+                                "NPCName": "Kaelen, the Mercenary Captain",
+                                "itemUpdate": {
+                                    "existedId": "item-kaelen-sword-01",
+                                    "durability": "65%"
+                                }
+                            }
+                        ]
+
+                        ]]>
+   </npcinventoryupdates>
+  </jsonresponse>
+ </example>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example Scenario: Elara gives the player her last "Healing Salve".
+  </title>
+  <jsonresponse>
+   <npcinventoryremovals>
+    <![CDATA[
+
+                        [
+                            {
+                                "NPCId": "npc-elara-meadowlight-01",
+                                "NPCName": "Elara Meadowlight",
+                                "itemId": "item-elara-salve-01"
+                            }
+                        ]
+
+                        ]]>
+   </npcinventoryremovals>
+   <!-- Simultaneously, there would be an entry in 'inventoryItemsData' to add the salve to the player's inventory -->
+  </jsonresponse>
+ </example>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example Scenario: Elara finds a rare herb and puts it in her pouch.
+  </title>
+  <jsonresponse>
+   <npcinventoryadds>
+    <![CDATA[
+
+                        [
+                            {
+                                "NPCId": "npc-elara-meadowlight-01",
+                                "NPCName": "Elara Meadowlight",
+                                "item": {
+                                    "existedId": null,
+                                    "name": "Glowpetal",
+                                    "description": "A rare herb that glows with a soft, silver light.",
+                                    "quality": "Rare",
+                                    "count": 1,
+                                    "type": "Herb",
+                                    "weight": 0.05,
+                                    "price": 75
+                                    // ... all other fields for a new item ...
+                                },
+                                "destinationContainerId": "item-elara-herb-pouch-01"
+                            }
+                        ]
+
+                        ]]>
+   </npcinventoryadds>
+  </jsonresponse>
+ </example>
+</instructionblock>

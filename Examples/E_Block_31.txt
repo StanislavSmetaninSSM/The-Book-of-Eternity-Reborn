@@ -1,0 +1,378 @@
+<instructionblock id="31">
+ <title>
+  Examples For The Soul System - Comprehensive JSON Command Demonstrations
+ </title>
+ <rule id="31.1">
+  <example contenttype="player_interaction" type="good">
+   <title>
+	    Example: Player voluntarily ends their mortal life and triggers a separate Life Evaluation
+   </title>
+   <scenariocontext>
+    Player is currently incarnated as a Level 8 Knight named "Aldric" in a fantasy world. 
+    They have completed 3 mortal quests and 1 Soul Quest from their Guardian "Seraph Luminara".
+    Current Enlightenment: 23%. Player types "Завершить жизнь" (End Life command).
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Триггер Добровольного Окончания Жизни
+    
+    1. **Обнаружена Команда:** Игрок использовал точную команду "Завершить жизнь"
+    2. **Проверка Контекста:** Игрок находится в смертной жизни (не в Море Хаоса)
+	    3. **Переход Состояния:** Запускаю отдельный Life Evaluation turn
+	    4. **Запись Итогов Жизни:** Фиксирую ключевые достижения и moral record в lifeTransitions
+	    5. **Тип Окончания:** Добровольное
+	    
+	    ## ВАЖНО:
+	    - Этот trigger turn НЕ выдает Ink Feathers
+	    - Этот trigger turn НЕ выдает Soul Relics
+	    - Финальная награда будет рассчитана и выдана только на следующем Life Evaluation turn
+    
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <![CDATA[
+    {
+	      "TriggerLifeEnd": {
+	        "reason": "Voluntary",
+	        "summary": "Рыцарь Алдрик добровольно завершил благородную жизнь защитника справедливости"
+	      },
+	      "metaStateUpdates": {
+	        "lifeTransitions": {
+	          "recordLifeCompletion": {
+	            "characterFinalState": {
+              "name": "Алдрик",
+              "level": 8,
+              "class": "Knight",
+              "finalHP": 100,
+              "location": "Королевская столица"
+            },
+            "majorAchievements": [
+              "Защитил три торговых каравана",
+              "Очистил замок от нежити",
+              "Получил благословение от храма"
+            ],
+            "relationshipsFormed": [
+              {"npc": "Принцесса Эльара", "level": "Respected Friend"},
+              {"npc": "Капитан Гвардии Маркус", "level": "Brotherhood"}
+            ],
+            "moralChoices": [
+              {"choice": "Пощадил побежденного разбойника", "alignment": "Lawful Good"},
+              {"choice": "Отказался от взятки", "alignment": "Lawful Good"}
+            ],
+            "skillsLearned": ["Фехтование", "Верховая езда", "Дипломатия"],
+            "enlightenmentGained": 2
+	          }
+	        }
+	      },
+	      "response": "Алдрик медленно снимает свой шлем и кладет меч к ногам. Долг выполнен, честь сохранена. Смертная жизнь завершается, а душа начинает путь обратно в Море Хаоса, где её ждёт отдельная Оценка Жизни.",
+	      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Добровольное окончание жизни рыцаря. Этот ход только фиксирует завершение жизни и запускает отдельный Life Evaluation turn."
+	    }
+    ]]>
+   </jsonresponse>
+  </example>
+ </rule>
+ 
+ <rule id="31.2">
+  <example contenttype="atomic_commands" type="good">
+   <title>
+    Example: Adding new Soul Relic with complete atomic command structure
+   </title>
+   <scenariocontext>
+    Player completed a life as a master craftsman and earned a Crafting-category Soul Relic.
+    Guardian "Дмитрий Мастеровой" grants "Руки Творца" (Creator's Hands) relic.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Создание Новой Реликвии Души
+    
+    1. **Контекст:** Жизнь мастера-ремесленника завершена с отличием
+    2. **Источник:** Хранитель Дмитрий Мастеровой (домен: Crafting)
+    3. **Тип Реликвии:** Medium (за исключительное мастерство)
+    4. **Категория:** Crafting (соответствует жизненному опыту)
+    5. **Слот:** Hands (символически - руки мастера)
+    
+    ## Генерация RelikId:
+    sr_crafting_creatorshands_1672531200000
+    
+    ## Бонусы:
+    - Intelligence +8 (понимание материалов)
+    - Trade +12 (знание ценности изделий)  
+    - Craft Bonus +6 (прямой бонус к ремеслу)
+    
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <![CDATA[
+    {
+      "metaStateUpdates": {
+        "soulRelicOperations": {
+          "addRelic": {
+            "relicId": "sr_crafting_creatorshands_1672531200000",
+            "name": "Руки Творца", 
+            "rarity": "Rare",
+            "category": "Crafting",
+            "effects": {
+              "characteristicBonuses": {
+                "intelligence": 8,
+                "trade": 12
+              },
+              "actionCheckBonuses": {
+                "skillBonus": 6
+              }
+            },
+            "equipmentData": {
+              "equipSlot": "Hands",
+              "enlightenmentRequirement": 1
+            },
+            "acquisitionData": {
+              "sourceGuardian": "guard_crafting_dmitriy_masterskoy_003",
+              "acquisitionStory": "Кристаллизовалась из десятилетий терпеливого труда и совершенствования ремесла. Каждый удар молота, каждое движение резца оставили след в душе."
+            },
+            "gameplayStatus": {
+              "equipped": false,
+              "currentSlot": null
+            }
+          }
+        }
+      },
+      "response": "Перед тобой материализуется светящаяся реликвия - пара призрачных перчаток, сотканных из кристаллизованных воспоминаний о мастерстве. Дмитрий Мастеровой кивает с гордостью: 'Твои руки помнят каждое изделие, каждый час, проведенный за верстаком. Эта реликвия сохранит твое умение на века.'",
+      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Создание реликвии Руки Творца. Источник: завершенная жизнь мастера-ремесленника."
+    }
+    ]]>
+   </jsonresponse>
+  </example>
+ </rule>
+ 
+ <rule id="31.3">
+  <example contenttype="atomic_commands" type="good">
+   <title>
+    Example: Equipping Soul Relic with validation checks
+   </title>
+   <scenariocontext>
+    Player wants to equip the "Руки Творца" relic before starting a new incarnation as an artisan.
+    Current Enlightenment: Tier 2 (sufficient for requirement 1). Hands slot is currently empty.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Экипировка Реликвии Души
+    
+    1. **Валидация ID:** sr_crafting_creatorshands_1672531200000 найдена в коллекции
+    2. **Проверка Просветления:** Tier 2 >= requirement 1 ✓
+    3. **Проверка Слота:** Hands свободен ✓
+    4. **Лимит Экипировки:** 3/5 слотов занято (Tier 2 = 5 слотов) ✓
+    5. **Статус:** Готово к экипировке
+    
+    ## Применяемые Бонусы:
+    - Intelligence +8 (будет добавлено к базовым характеристикам)
+    - Trade +12 (для проверок торговли)
+    - Skill Bonus +6 (для ремесленных проверок)
+    
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <![CDATA[
+    {
+      "metaStateUpdates": {
+        "soulRelicOperations": {
+          "equipRelic": {
+            "relicId": "sr_crafting_creatorshands_1672531200000", 
+            "slot": "Hands"
+          }
+        }
+      },
+      "response": "Призрачные перчатки мастера обвивают твои руки теплым светом. Ты чувствуешь, как пальцы обретают уверенность и точность, словно помнят тысячи часов работы с инструментами. Эта реликвия станет частью твоего следующего воплощения.",
+      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Экипировка Рук Творца. Бонусы будут применены при следующем воплощении через Rule 12.1.B"
+    }
+    ]]>
+   </jsonresponse>
+  </example>
+ </rule>
+ 
+ <rule id="31.4">
+  <example contenttype="atomic_commands" type="good">
+   <title>
+    Example: Spending Ink Feathers on Guardian Gacha with complete validation
+   </title>
+   <scenariocontext>
+    Player has 450 Ink Feathers and wants to attempt Gacha with Guardian "Анна Звездочет" (Magic domain).
+    Current reputation: +65 (Friendly). Gacha cost: 120 feathers. Guardian charges this return: 2 total, 0 used.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Гача Реликвии у Хранителя
+    
+    1. **Валидация Средств:** 450 >= 120 ✓
+    2. **Проверка Зарядов Хранителя:** 2 total, 0 used, 2 remaining ✓
+    3. **Репутационные Бонусы:** +65 = Friendly tier (+15% к шансам редких)
+    4. **Домен Хранителя:** Magic (больше шансов на Magical категорию)
+    
+    ## Расчет Шансов:
+    - Common: 60% → 45% (снижено из-за бонуса)
+    - Uncommon: 25% → 30% 
+    - Rare: 10% → 15% (увеличено)
+    - Epic: 4% → 8% (увеличено)  
+    - Legendary: 1% → 2% (увеличено)
+    
+    ## Результат броска: 0.72 → Uncommon
+    
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <![CDATA[
+    {
+      "metaStateUpdates": {
+        "inkFeatherChanges": {
+          "spend": 120,
+          "reason": "Гача у Хранителя Анны Звездочет"
+        },
+        "soulRelicOperations": {
+          "addRelic": {
+            "relicId": "sr_magical_starlight_1672531800000",
+            "name": "Звездный Свет",
+            "rarity": "Uncommon", 
+            "category": "Magical",
+            "effects": {
+              "characteristicBonuses": {
+                "intelligence": 6,
+                "wisdom": 4
+              },
+              "actionCheckBonuses": {
+                "magicBonus": 3
+              }
+            },
+            "equipmentData": {
+              "equipSlot": "Neck",
+              "enlightenmentRequirement": 0
+            },
+            "acquisitionData": {
+              "sourceGuardian": "guard_magic_anna_zvezdochet_002",
+              "acquisitionStory": "Подарок от Анны Звездочет - осколок далекой звезды, заключенный в кристалл"
+            },
+            "gameplayStatus": {
+              "equipped": false,
+              "currentSlot": null
+            }
+          }
+        }
+      },
+      "response": "Анна Звездочет раскрывает ладонь, и в ней вспыхивает кристалл, в котором пульсирует мягкий звездный свет. «Твоя удача сегодня благосклонна к тайнам небес», — произносит она и передает тебе новую реликвию, оставляя возможность вернуться к гаче позже, если пожелаешь.",
+      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Guardian gacha success. Ход тратит Ink Feathers, добавляет Soul Relic категории Magical и не затрагивает lifecycle/Life Evaluation surfaces."
+    }
+    ]]>
+   </jsonresponse>
+  </example>
+ </rule>
+ 
+ <rule id="31.5">
+  <example contenttype="complex_interaction" type="good">
+   <title>
+    Example: Complex life transition with multiple atomic operations
+   </title>
+   <scenariocontext>
+    Player died as Level 15 Wizard after completing major questline. They had 2 active Soul Quests,
+    formed deep bond with NPC "Master Kaelthus", and served Guardian "Владимир Мудрый" faithfully.
+	    This trigger turn only records the completed life and starts a separate Life Evaluation.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+	    # Триггер Оценки Жизни Архимага
+	    
+	    1. **Фиксирую Завершение Жизни:** сохраняю итоговое состояние персонажа
+	    2. **Запускаю Separate Life Evaluation:** награды будут рассчитаны следующим ходом
+	    3. **Подготавливаю Контекст:** achievements, bonds и moral choices попадут в отдельную Оценку Жизни
+	    
+	    ## ВАЖНО:
+	    - Этот trigger turn НЕ выдает Ink Feathers
+	    - Этот trigger turn НЕ создает Soul Relics
+	    - Этот trigger turn НЕ обновляет player_chronicle наградной записью
+	    - Все награды и хроника будут сформированы на отдельном Life Evaluation turn
+    
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <![CDATA[
+    {
+	      "TriggerLifeEnd": {
+	        "reason": "Death",
+	        "summary": "Архимаг Элдарин героически пал, защищая Академию Магии от вторжения демонов"
+	      },
+	      "metaStateUpdates": {
+	        "lifeTransitions": {
+	          "recordLifeCompletion": {
+	            "characterFinalState": {
+              "name": "Элдарин Звездочет",
+              "level": 15,
+              "class": "Archmage",
+              "finalHP": 0,
+              "deathCause": "Heroic sacrifice defending Magical Academy"
+            },
+            "majorAchievements": [
+              "Стал Архимагом в возрасте 45 лет",
+              "Закрыл демонический портал ценой собственной жизни", 
+              "Обучил 12 учеников высшей магии",
+              "Создал новое заклинание 9-го круга"
+            ],
+            "relationshipsFormed": [
+              {"npc": "Мастер Кельтус", "level": "Deep Bond", "soulImprint": true},
+              {"npc": "Принцесса Люмира", "level": "Romantic Interest"}
+            ],
+            "moralChoices": [
+              {"choice": "Пожертвовал собой ради спасения академии", "alignment": "Lawful Good"},
+              {"choice": "Отказался от темной магии даже под угрозой", "alignment": "Lawful Good"}
+            ],
+            "skillsLearned": ["Высшая магия", "Зачарование", "Алхимия", "Древние языки"],
+            "enlightenmentGained": 4
+          }
+        }
+      },
+	      "response": "Последняя вспышка магической энергии освещает разрушенную академию, когда твоё смертное тело обращается в пепел. Душа поднимается ввысь, а судьба этой жизни фиксируется для отдельной Оценки Жизни в Море Хаоса.",
+	      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Завершение легендарной жизни архимага. Этот trigger turn только записывает итог жизни и запускает отдельный Life Evaluation turn с наградой. Guardian reputation and other afterlife/meta rewards принадлежат следующему dedicated Life Evaluation turn, а не TriggerLifeEnd turn."
+	    }
+    ]]>
+   </jsonresponse>
+  </example>
+</rule>
+
+<rule id="31.6">
+ <example contenttype="complex_interaction" type="good">
+   <title>
+    Example: AscensionTrigger as a real transition into Shining Abode
+   </title>
+  <scenariocontext>
+    The player has reached 100% Enlightenment in the Chaos Sea and explicitly chooses ascension instead of continuing the ordinary hub cycle.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+   
+    # Триггер Вознесения
+    
+    1. **Проверка Условия:** Enlightenment = 100%, выбор игрока подтвержден, turn context = playerChoice=Ascension.
+    2. **Тип Перехода:** Это НЕ TriggerLifeEnd и НЕ отдельная Оценка Жизни.
+    3. **Контракт:** AscensionTrigger запускает реальный переход из Chaos Sea в Shining Abode.
+    4. **Запрет Смешивания:** Он не заменяет TriggerLifeEnd, не запускает Life Evaluation и не смешивается с ними в одном accepted turn.
+    
+    ## ВАЖНО:
+    - НЕ очищать Soul Relics
+    - НЕ терять Guardians
+    - НЕ смешивать AscensionTrigger с TriggerLifeEnd
+   
+   ]]>
+  </logoutput>
+  <jsonresponse>
+   <![CDATA[
+    {
+      "AscensionTrigger": true,
+      "playerChoice": "Ascension",
+      "response": "Просветление достигает предела. Игрок явно выбирает Вознесение вместо обычного продолжения цикла.",
+      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: AscensionTrigger выполняет реальный переход в Shining Abode. Preconditions выполнены: Enlightenment=100%, playerChoice=Ascension. TriggerLifeEnd в этом ходу отсутствует."
+    }
+   ]]>
+  </jsonresponse>
+ </example>
+</rule>
+</instructionblock>

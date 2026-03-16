@@ -1,0 +1,55 @@
+<instructionblock id="18">
+ <title>
+  Examples For Quest Management
+ </title>
+ <example contenttype="json_fragment" id="QuestCreation_Example" type="good">
+  <title>
+   Example (Part 1): Creating a New Quest
+  </title>
+  <scenariocontext>
+   Turn 10: The player accepts a quest from an NPC named Elara.
+  </scenariocontext>
+  <jsonresponse>
+   <UpdateQuests>
+    <![CDATA[
+
+                        [
+                            {
+                                "questId": null,
+                                "questName": "Сердце Леса",
+                                "status": "Active",
+                                "description": "Элара просит вас найти редкий цветок 'Сердце Леса', чтобы остановить порчу.",
+                                "detailsLog": [
+                                    "#10. Квест получен от Элары в деревне Оукхэвен.",
+                                    //... Other initial log entries ...
+                                ],
+                                ... // all other fields for a new quest
+                            }
+                        ]
+
+                                                        ]]>
+                           </UpdateQuests>  </jsonresponse>
+ </example>
+ <example contenttype="json_fragment" id="QuestLogAppend_Example" type="good">
+  <title>
+   Example (Part 2): Appending a Log Entry to an Existing Quest
+  </title>
+  <scenariocontext>
+   Turn 15: The player finds a map related to the "Сердце Леса" quest (ID: quest-heartwood-01).
+  </scenariocontext>
+  <jsonresponse>
+   <UpdateQuests>
+    <![CDATA[
+
+                        [
+                            {
+                                "questId": "quest-heartwood-01",
+                                "status": "Updated",
+                                "newDetailsLogEntry": "#[15] - 12 Март 2026 г., 18:40: В сундуке старого охотника найдена карта, на которой отмечено возможное местоположение 'Лунного Луга', где может расти цветок."
+                            }
+                        ]
+
+                                                        ]]>
+                           </UpdateQuests>  </jsonresponse>
+ </example>
+</instructionblock>

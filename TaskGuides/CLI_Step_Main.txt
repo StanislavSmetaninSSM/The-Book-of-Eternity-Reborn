@@ -1,0 +1,367 @@
+<InstructionBlock id="CLI_MainStep_TaskGuide">
+    <Title>CLI Step: Main Turn Processing and File Operations</Title>
+    <Description>
+        This is the PRIMARY task guide for CLI agents operating in file-based mode.
+        Unlike API mode with multi-step pipeline, CLI mode operates as a SINGLE COMPREHENSIVE STEP.
+        You read input files, process the game logic, and distribute results to output files.
+    </Description>
+
+    <CLIWorkflow>
+        <Phase name="INPUT_READING">
+            <![CDATA[
+            1. **Read Primary Input:**
+               - input/turn_request.json (player's action, turn metadata, pre-generated dice)
+               - Examples/E_CLI_Step_Main.txt (MUST-read examples for NPC scope, reasoning blocks, repair loop, and terminal protocol failures)
+               - Examples/E_CLI_Ink_Feather_Actions.txt (MUST-read whenever the turn uses any GM-side INK_FEATHER_ACTION)
+               
+            2. **Read Current Game State:**
+               - game_state/player/ files (character, inventory, status)
+               - game_state/world/ files (location, time, weather)
+               - game_state/npcs/ files (active NPCs and their states)
+               - game_state/quests/ files (active quest progress)
+               
+            3. **Read System State:**
+               - game_state/control/ files (life transitions, incarnation, ascension)
+               - game_state/history/ files (recent events, patterns)
+               
+            4. **Read Reference Data as Needed:**
+               - lore/ files (world information)
+               - game_state/core/system_mods.json (active global system mods; only activeMods[] are canonical)
+               - game_session/mods/ source files only for the mods listed in activeMods[]
+               - game_state/control/incarnation_world_setup.json when authoring incarnation / the first mortal bootstrap
+               - lore/current_world/world_directives.json on Mortal World turns when the file exists
+               - game_state/meta/ files (session settings, preferences)
+            ]]>
+        </Phase>
+
+        <Phase name="REALM_GATE">
+            <![CDATA[
+            **🔥 ABSOLUTE LAW: REALM GATE — MUST RUN BEFORE ANY MECHANICAL PROCESSING**
+
+            1. Read `game_state/meta/soul_state.json` and determine `currentRealm`.
+            2. Expose and reason about this value as `Context.worldState.currentRealm`.
+            3. Select ONE processing profile:
+               - `ChaosSeaProfile`
+               - `MortalWorldProfile`
+
+            **ChaosSeaProfile:**
+               - Allowed: Guardians, Abodes, Soul Relics, Chaos-Sea Ink Feather whitelist actions, Gacha, Soul-system/meta progression
+               - Forbidden: combat, experience, leveling, stat gains/losses, regular NPC mechanics, mortal quests, normal inventory management, factions, weather, world time, mortal location system
+               - Chaos-Sea Ink Feather whitelist: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint
+               - `Sell Relic` is a separate guardian trade interaction and is NOT an Ink Feather action
+               - Local guardian trade (`Buy / Sell` Soul Relics) is client-side, but canonically belongs to the current active Guardian's abode
+               - If the player asks the current active Guardian about a relic bought from this local stock, the Guardian should know that relic as part of their own trade assortment
+               - Local NPC trade may also exist as a client-side panel for mortal-world goods only
+               - Local NPC trade uses `game_state/core/player_status.json.money`, never Ink Feathers, and never trades Soul Relics
+               - If the player asks a merchant NPC about an item bought from that NPC's local stock, the merchant should know that item as part of their own local assortment
+               - For canonical local NPC trade examples, read `Examples/E_CLI_NPC_Trade.txt`
+               - QTE offers are optional cinematic scene graphs for Mortal World only
+               - QTE is allowed only if `game_state/core/game_settings.json.qteEventsEnabled = true`
+               - QTE is allowed only on an ordinary player-driven turn, never on incarnation, life-evaluation, repair, transition, or other system-driven turns
+               - QTE offer turn writes `output/qte_offer.json` and does NOT also resolve ordinary state changes for the same situation
+               - In a valid QTE-offer turn, leave ordinary `game_state/`, `lore/`, and `stories/` untouched; use only `output/qte_offer.json` plus narrative/interface/debug outputs
+               - If the player declines a QTE offer, the client will ask for a new ordinary GM turn with standard resolution and the same `qteId` must not be offered again immediately
+               - For full QTE protocol rules, read `Rules/Block_CLI_QTE.txt`
+               - For canonical QTE offer example, read `Examples/E_CLI_QTE_Offer.txt`
+               - A valid `qte_offer.json` must at minimum contain `qteId`, `title`, `offerText`, `introNarrative`, `startChapterId`, `chapters`, and `terminalOutcomes`
+               - `qte_offer.json` MUST contain `startChapterId`; the order of `chapters[]` does not define the opening chapter
+               - Every chapter in the QTE scene must be reachable from `startChapterId`, every chapter must contain a non-empty `actions[]`, and all routing references must resolve to real chapters or outcomes
+               - Every chapter must contain `chapterId`, `narrative`, and `actions`; every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`
+               - Every action must contain `actionId`, `label`, `check`, and `routing`; every routing must contain `success`, `partial`, and `fail`
+               - `check.baseDifficulty` in QTE must be an integer in the range `1..5`
+               - `check.primaryCharacteristic` in QTE must use a canonical lowercase stat id from the player-characteristic system
+               - For `BranchChoice`, `check.config.choiceGrade` must be exactly `success`, `partial`, or `fail`
+               - Successful terminal outcomes of accepted QTE scenes MUST include positive `experienceGained` inside `responseFragment`
+               - A "successful terminal outcome" means an outcome reachable through one or more `success` branches from `startChapterId`
+               - `responseFragment` is the final local mechanical outcome of an accepted QTE branch; do NOT rely on a follow-up GM turn to add the real reward later
+               - If the player `experience.json` already has level/progress fields, the client will also process the local QTE level-up transition automatically
+               - `declineHint` and `cinematicJustification`, if you provide them, are shown to the player in the QTE offer prompt
+               - Do NOT put ordinary `image_prompt` inside QTE `responseFragment`; use `sceneImagePrompt`, `chapterImagePrompt`, or `outcomeImagePrompt`
+               - For every GM-side `[INK_FEATHER_ACTION: TAG]`, you MUST also write `output/ink_feather_action_result.json`
+               - `Memory Gates` MUST produce a mechanical next-incarnation reward, not just lore:
+                 - write `metaStateUpdates.memoryLegacyGrant`
+                 - canonical state must end with `soul_state.pendingMemoryLegacy`
+                 - allowed types only: `startingCharacteristicBonus` (+2 to one starting stat) or `startingPassiveKnowledgeSkill` (one new passive Knowledge skill)
+                 - only one active pending memory legacy may exist; a new one replaces the old one
+                 - if a new purchase leaves the old pending legacy unchanged, the client will reject the turn
+                 - if `pendingMemoryLegacy.applicationState == applied-awaiting-turn-accept`, do NOT overwrite the already applied bonus in `characteristics.json` or `skills_passive.json`
+
+            **MortalWorldProfile:**
+               - Allowed: combat, NPCs, quests, inventory, factions, weather, world time, mortal locations, explicit Mortal-World Ink Feather whitelist actions
+               - Forbidden: Guardian interactions, Abodes, Gacha, Chaos-Sea-only spending of Ink Feathers
+               - Mortal-World Ink Feather whitelist: Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink
+               - For GM-side Mortal-World Ink Feather actions (`SACRIFICE_TO_CHAOS`, `ABSORB_FEATHERS`, `LEARN_SKILL`, `FATE_SHIELD`, `SEAL_IN_INK`) you MUST write `output/ink_feather_action_result.json`
+               - Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive
+
+            4. Record the chosen profile and the forbidden systems in `gm_thoughts_markdown`.
+            5. Do NOT execute any subsystem that is forbidden for the active profile.
+            ]]>
+        </Phase>
+        
+        <Phase name="WORLD_ASSESSMENT">
+            <![CDATA[
+            **🔥 CRITICAL: This phase is MANDATORY and must NEVER be skipped.**
+            **Before processing player action, evaluate world state and time passage:**
+            
+            **REQUIREMENT: You MUST complete ALL items below and document them in gm_thoughts_markdown.**
+            
+            1. **MANDATORY Time and Context Analysis:**
+               - MUST calculate elapsed game time since last turn (check game_state/world/world_time.json)
+               - MUST read input/turn_request.json.progressionControl before any world/faction/guardian simulation
+               - MUST treat `mustEvaluate* = true` as a hard requirement to process that progression contour
+               - MUST treat `mustEvaluate* = false` as "no mandatory cycle debt for this contour"
+               - MUST determine logical consequences of time passage
+               - MUST process all cycles mandated by progressionControl for the active realm
+               - MUST document reasoning for any progression outcomes
+               
+            2. **MANDATORY Actor-Scope Declaration and Agency Analysis:**
+               - MUST declare reasoning scope BEFORE narration
+               - MUST choose exactly one mode: Scene-local, World-progression, Guardian-centric, or Mixed
+               - MUST list relevant actors and explain why they are relevant for THIS turn
+               - MUST list actors outside scope (or `нет` / `none`) and explain why they are outside scope
+               - MUST provide internal thoughts, situation, and intended actions for EVERY declared relevant actor
+               - MUST NOT rely on the client to guess who should have been processed
+               
+            3. **MANDATORY Natural Progression Assessment:**
+               - MUST answer: Which due world cycles are being resolved this turn? (document logic)
+               - MUST answer: Which due faction cycles are being resolved this turn? (document logic)
+               - MUST answer: Which due Chaos Sea / guardian project cycles are being resolved this turn? (document logic)
+               - MUST answer: Which NPC / world / political consequences result from those cycles? (document changes)
+               
+            **VALIDATION REQUIREMENT:**
+            Your gm_thoughts_markdown MUST contain these structured sections:
+            ```
+            ## ⏰ ОБЯЗАТЕЛЬНО: Оценка времени и мира
+            [Required time analysis and decisions]
+            
+            ## 🎭 ОБЯЗАТЕЛЬНО: Охват NPC-анализа
+            [Declare mode, relevant actors, out-of-scope actors, and reasoning for that scope]
+            
+            ## 🎭 ОБЯЗАТЕЛЬНО: Размышления NPC  
+            ### [Each Declared Relevant Actor]:
+            [Required thoughts and decisions for each]
+            
+            ## 🌍 ОБЯЗАТЕЛЬНО: Логика прогрессии
+            [Required progression decisions and reasoning]
+            ```
+            
+            **Failure to complete this assessment is a CRITICAL ERROR.**
+            **If progressionControl says cycles are due and you do not process them, the client will reject the turn as a protocol violation.**
+            **If the scope declaration is missing, the mode is invalid, declared relevant actors do not have full actor-thought blocks, or structured actor updates are not covered by declared relevant actors, the client must reject the turn as a protocol violation.**
+               - Economic Changes: Should markets, resources, or territories shift? (based on recent events)
+               
+            **Document ALL reasoning in gm_thoughts_markdown with these structured sections:**
+            ```
+            ## Оценка времени и мира
+            [Анализ прошедшего времени и логических последствий]
+            
+             ## Охват NPC-анализа
+             - Режим: [Scene-local | World-progression | Guardian-centric | Mixed]
+             - Релевантные акторы: [кто реально важен именно в этом ходу]
+             - Почему они релевантны: [обоснование]
+             - Акторы вне охвата: [кто не требует обработки сейчас]
+             - Почему они вне охвата: [обоснование]
+
+             Rule:
+             - `Scene-local + Релевантные акторы: нет` допустимо только если ты не делаешь никаких structured actor updates в этом ходу
+             - если ты меняешь NPC/Guardian через structured update arrays, соответствующий актор ОБЯЗАН быть в `Релевантные акторы`
+             - если structured update содержит только ID и имя нельзя надёжно восстановить из state, это не должно само по себе ломать ход как hard scope mismatch
+             
+             ## Размышления NPC
+            ### [NPC Name 1]:
+            - Ситуация: [их восприятие текущих событий]
+            - Мысли: [внутренняя мотивация и планы]
+            - Действия: [что они решают сделать]
+            
+            ### [NPC Name 2]:
+            [аналогично для каждого важного NPC]
+            
+            ## Логика прогрессии
+            [Обоснование любых обновлений фракций/мира/событий]
+
+            ## Отчёт scheduler
+            [Какие mandatory cycles обработаны и что будет записано в progressionProcessingReport]
+
+            ## Подготовка к обработке хода
+            [Переход к стандартной игровой механике]
+            ```
+            
+            **This assessment informs but does not replace standard game processing.**
+            ]]>
+        </Phase>
+        
+        <Phase name="PROCESSING">
+            <![CDATA[
+            **CRITICAL: Apply ALL existing Rules/Block_*.txt logic exactly as designed.**
+            
+            1. **Analyze Player Action:** Follow Block_12.txt (Action Check System)
+            2. **Calculate Results:** Apply Block_15.txt (Combat), Block_16.txt (Magic), etc.
+            3. **Update NPCs:** Process Block_19.txt and its NPC subblocks
+            4. **Update Guardians:** Process Block_32.txt when in Chaos Sea
+            5. **Progress Quests:** Apply quest rules exactly as defined in Rules
+            6. **Handle Special Cases:** Soul system, lore, control triggers
+            7. **Update Lore Codex:** If player discovered new knowledge — add loreCodexUpdates entries
+            8. **Check Achievements:** After resolving all mechanics, check achievement conditions and emit achievementUnlocks
+            9. **Respect Strict Validation Surface:** accepted turns are now hard-checked for realm segregation, richer location/faction/quest contracts, and field-complete achievement/codex entries
+            10. **Use Canonical Quest Update Flow:** for quest creation send the full quest object with detailsLog; for quest-log updates send questId + newDetailsLogEntry instead of resending the whole detailsLog array
+            11. **Remember Quest History Canonical Shape:** game_state/quests/quest_history.json is stored canonically as questHistory + questRewards + questChains; legacy questLog is only shorthand input
+            12. **Do Not Reproduce Location History Logs:** eventDescriptions is a read-only historical archive; read it from context if present, but write only lastEventsDescription in currentLocationData / worldMapUpdates
+            13. **Use Full factionDataChanges Objects:** do not send fragment-only faction core patches; faction rank/bonus/resource/project/custom side-effects belong to their dedicated atomic commands, and faction sidecar files are canonically normalized after distribution
+            
+            **SPECIALIZED GAME MASTER GUIDES:**
+            - **World Logic:** Apply OtherGuides/CLI_World_Logic_Guide.txt for consistent causality and NPC behavior
+            - **Narrative Style:** Apply OtherGuides/CLI_Narrative_Style_Guide.txt for compelling storytelling and dialogue
+            
+            **SPECIAL SCENARIO PROCESSING:**
+            
+            **New Game (Turn 1):**
+            - MANDATORY: Initialize lore/ directory files for the starting world/realm
+            - If starting in Chaos Sea: populate lore/chaos_sea/cosmology.json, soul_system_lore.json, guardians_lore.json
+            - Add initial loreCodexUpdates entries for basic knowledge the soul has
+            - Initialize game_state/meta/achievements.json with empty structure
+            - DO NOT rely on stale lore or old stories/*.jsonl from a previous run; fresh new game starts from a fresh session lore set
+            - Turn 1 is invalid if bootstrap lore files are left as empty stubs or if lore/codex_entries.json still has zero entries
+            
+            **New Incarnation (entering mortal world):**
+            - BEFORE authoring the turn, read game_state/control/incarnation_world_setup.json if it exists
+            - Treat incarnation_world_setup.json as the client-authored contract for the next mortal world
+            - MANDATORY: Create ALL lore/current_world/ files (world_setting.json, geography.json, 
+              history.json, cultures.json, threats.json) describing the world being born into
+            - If lore/current_world/world_directives.json exists after incarnation materialization, treat it as a persistent player-authored dossier and keep following it on every Mortal World turn
+            - Optional but supported: create lore/current_world/npcs_lore.json when this life needs persistent NPC backstory/world-lore support
+            - Add loreCodexUpdates for starting world knowledge
+            - Previous-incarnation lore/current_world/* files are stale and must not be reused as the new life's bootstrap
+            
+            **Life Evaluation (Completed Mortal Life):**
+            - Trigger: Player dies or voluntarily ends mortal life and returns to the Chaos Sea
+            - Process: Apply Block_31.txt Soul System calculations
+            - Output: Soul progression, new Soul Relic generation, transition narrative
+            - Files: Update game_state/meta/soul_state.json
+            - MANDATORY: Grant at least 10 Ink Feathers and at least one new Soul Relic for every completed mortal life
+            - MANDATORY: Reward quality may scale by achievements, but zero-reward life evaluation is forbidden
+            - MANDATORY: Update lore/chaos_sea/player_chronicle.json with life summary
+            - Accepted life-evaluation turn is invalid if player_chronicle.json does not gain a new summary entry
+            - MANDATORY: Check and unlock death/meta category achievements
+            - If an achievement unlocks here, mention it in `response` with `[ACHIEVEMENT_UNLOCK: Achievement Name]`
+            - `TriggerLifeEnd` only starts the return/evaluation lifecycle; the actual Ink Feather + Soul Relic reward belongs to the later Life Evaluation turn, not to the trigger turn itself
+
+            **Ascension (Enlightenment 100% + explicit player choice):**
+            - Trigger: Player reaches 100% Enlightenment and explicitly chooses ascension
+            - Output: `AscensionTrigger = true` and `playerChoice = "Ascension"`
+            - MANDATORY: do not emit AscensionTrigger without that explicit choice marker
+            - Result: real transition from `Chaos Sea` into `Shining Abode`
+            - `Shining Abode` still uses afterlife guardian/soul/meta systems, not Mortal World systems
+            - Optional `New Game+` from `Shining Abode` resets Enlightenment and Ink Feathers while preserving Soul Relics and Guardians
+            - Treat this as distinct from `TriggerLifeEnd` and from `Life Evaluation`
+            - FORBIDDEN: Mixing `AscensionTrigger` with `TriggerLifeEnd` on the same accepted turn
+             
+            **Guardian Interaction (Afterlife Hub):**
+            - Trigger: Soul is in an afterlife hub (`Chaos Sea` or `Shining Abode`) interacting with Guardians
+            - Process: Apply Block_32.txt Guardian relationship mechanics
+            - Output: Guardian dialogue, reputation changes, quest offerings
+            - Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3
+            - Charges reset only when the Soul returns to the Chaos Sea after a new mortal life
+            - Direct `/gacha` remains neutral and does not consume Guardian charges
+            - Files: Update game_state/meta/guardians.json, game_state/quests/soul_quests.json
+            - If Guardian reveals lore: add loreCodexUpdates with discoveryContext referencing the Guardian
+            
+            **Generate the same logical turn result as API mode** (per Block_2.txt master schema),
+            but write it through the distributed CLI files (`output/*`, `game_state/*`, `ready/*`) instead of one monolithic response payload.
+            ]]>
+        </Phase>
+        
+        <Phase name="OUTPUT_DISTRIBUTION">
+            <![CDATA[
+            **Apply CLI.3 Field Distribution Protocol from Block_CLI_Operations.txt**
+            
+            Instead of returning single JSON response, distribute fields to files:
+            
+            1. **Narrative & UI Elements:**
+               - output/narrative_response.json (response)
+               - output/interface_updates.json (dialogueOptions, image_prompt) - only when this turn actually changes dialogueOptions and/or image_prompt
+               - output/debug_logs.json (gm_thoughts_markdown)
+               - these output/*.json files are fresh per-turn transient artifacts for the current request only
+               - rewrite them fully for the current turn; do not append cross-turn history there and do not leave stale previous-turn payloads in place
+               - for an ordinary accepted GM turn, `response` is mandatory and must be non-empty player-facing narrative text
+               - output/ink_feather_action_result.json (required for every GM-side Ink Feather action)
+               
+            2. **Game State Updates:**
+               - game_state/player/ files (health, inventory, status changes)
+               - game_state/world/ files (location, time, environmental changes)
+               - game_state/npcs/ files (NPC state modifications)
+               - game_state/quests/ files (quest progress updates)
+               
+            3. **Meta & Knowledge Updates:**
+               - game_state/meta/achievements.json (achievement unlocks and progress)
+               - lore/codex_entries.json (new lore codex entries)
+               - lore/ files (world lore updates when triggered)
+               
+            4. **System Updates:**
+               - game_state/control/ files (life transitions, incarnation, ascension)
+               - game_state/history/ files (turn archive, event logging)
+               
+            5. **Ready Signal:**
+               - ready/turn_complete.json (terminal success signal with exact sessionId/requestId/turnNumber, ISO timestamp, status="success", and filesModified[])
+               - ready/turn_error.json (terminal error signal with exact sessionId/requestId/turnNumber, ISO timestamp, status="error", and non-empty error)
+               - exactly ONE of these two files may exist for a single sessionId/requestId/turnNumber
+            ]]>
+        </Phase>
+
+        <Phase name="REPAIR_HANDSHAKE">
+            <![CDATA[
+            **REPAIR LOOP EDGE CASES:**
+            - If the client writes `game_state/control/validation_repair_request.json`, this is NOT a new turn.
+            - Read the latest repair request every time; the client may rewrite it after a failed recheck.
+            - If your `validation_repair_ready.json` is malformed or has wrong `sessionId/requestId/turnNumber`, the client will reject it, rewrite the repair request, and the daemon will ping you again.
+            - Fix already written files IN PLACE, then recreate `validation_repair_ready.json` with exact metadata copied from the current `validation_repair_request.json`.
+            - During repair mode, do NOT create a new `turn_request.json` and do NOT treat repair as a fresh turn.
+            - If the client receives `ready/turn_error.json` for a transition flow, it may restore the full pre-turn tracked file set, including deleting newly created tracked files.
+            - If a cancelled wait later produces `ready/turn_error.json`, that late error signal will still be consumed and cleaned by the client.
+            - If the client writes `game_state/control/terminal_protocol_failure_request.json`, this is NOT `validation_repair_request.json` and NOT a repair loop.
+            - `terminal_protocol_failure_request.json` means the terminal ready signal itself was malformed, mismatched, or ambiguously duplicated.
+            - In that case, do NOT create `validation_repair_ready.json`, do NOT create a new turn on your own, and do NOT assume the client is still waiting.
+            - For one turn there must be exactly one terminal signal: either `ready/turn_complete.json` or `ready/turn_error.json`, but never both.
+            ]]>
+        </Phase>
+    </CLIWorkflow>
+
+    <LanguageOverride>
+        <Directive>
+            CHECK game_session/config.json for 'language' field.
+            IF 'ru': ALL user-facing content MUST be in Russian.
+            This includes narrative, dialogue options, item names, quest descriptions, etc.
+        </Directive>
+    </LanguageOverride>
+
+    <ErrorHandling>
+        <![CDATA[
+        **File Operation Safety Protocol:**
+        
+        1. **Before Writing:** Create .backup copies of all files being modified
+        2. **Atomic Operations:** Complete all file writes before signaling ready
+        3. **Validation:** Ensure JSON structure integrity after each write
+        4. **Rollback:** If ANY operation fails, restore ALL .backup files and remove newly created tracked files that did not exist before the turn
+        5. **Error Signaling:** Always write ready/turn_error.json for terminal failure; auxiliary logs like game_state/history/error_log.json are optional diagnostics
+        
+        **Never leave the game in a partially updated state.**
+        ]]>
+    </ErrorHandling>
+
+    <ExistingRulesCompatibility>
+        <![CDATA[
+        **CRITICAL DIRECTIVE: ALL EXISTING RULES STILL APPLY**
+        
+        - Every rule in Rules/Block_*.txt remains fully active
+        - Every calculation formula must be followed exactly  
+        - Every mechanical requirement must be satisfied
+        - Every JSON field requirement must be met
+        
+        **The ONLY difference is output distribution:**
+        - API Mode: Return single JSON response
+        - CLI Mode: Distribute same JSON across multiple files
+        
+        **Reference CLI_Translation_Guide.md for handling Examples/**
+        **Reference CLI_Example_Soul_System.md for complete workflow example**
+        ]]>
+    </ExistingRulesCompatibility>
+</InstructionBlock>

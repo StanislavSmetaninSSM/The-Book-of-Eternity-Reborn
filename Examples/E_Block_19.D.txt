@@ -1,0 +1,343 @@
+<instructionblock id="19.D">
+ <title>
+  Examples For CRITICAL DIRECTIVE &amp; ABSOLUTE LAW 11: The Protocol of Proactive NPC Agency
+ </title>
+ <example contenttype="log_and_json_snippet" id="Proactive_Companion_Example" type="good">
+  <title>
+   Example (Domain A): Companion Proactively Disagrees
+  </title>
+  <scenariocontext>
+   Player and their companion, "Elara" (a 'Neutral Good' Herbalist who hates pointless violence), have just defeated some bandits.
+                    Player's message: "I execute the surviving bandit."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+    
+                    # Протокол Проактивности NPC (Закон 11) для Элары
+                    - Триггер: Действие игрока ("казнить выжившего") напрямую противоречит мировоззрению Элары ('Neutral Good').
+                    - Действие: Элара проактивно вмешивается.
+
+                    ## Протокол Стратегического Ответа NPC: Элара (Мозг 2.0)
+
+                    ### ПРЕДВАРИТЕЛЬНАЯ ПРОВЕРКА 1: Протокол Обоснованного Знания (Закон 14.A)
+                    -   **Аудит Информации:** Элара находится в той же сцене, что и игрок, и является прямым свидетелем его намерения. Знание обосновано.
+                    -   **Проверка Бремени Доказывания:** Действие публично.
+
+                    ### ПРЕДВАРИТЕЛЬНАЯ ПРОВЕРКА 2: Аудит Консистентности Характера (Правило 5.18.B.pre-check-2)
+                    -   **Мировоззрение:** Neutral Good.
+                    -   **Архетип Личности:** "Добрая и заботливая деревенская целительница".
+                    -   **Культурные Устои ('culturalLayer'):** "Кодекс Целителей. Табу: Использование знаний для принуждения или вреда." 'culturalStance': 'Conformist'.
+                    -   **Ключевые Черты Личности ('personalityTraits'):** "Сострадание" (9), "Альтруизм" (8), "Наивность" (6).
+                    -   **Основные Цели:** 1. Помогать людям, не причиняя вреда. 2. Уважать автономию воли.
+                    -   **Текущее Отношение к Игроку:** "Глубокая Связь (Rep: 340)".
+                    -   **Аудит Социальной Иерархии (Закон 21.2.7):**
+                        -   Мой ранг во фракции: Не является членом фракции.
+                        -   Ранг игрока в моей фракции: Не является членом фракции.
+                        -   Вывод: Социальная иерархия не влияет на это решение.
+
+                    ### ПРЕДВАРИТЕЛЬНАЯ ПРОВЕРКА 3: Фильтр Привлекательности (Закон 14.B)
+                    -   **Проверка Ориентации:** Элара может быть привлечена к игроку. Пройдена.
+                    -   **Градиент Привлекательности:** AttractivenessDelta = 20 (Игрок) - 22 (Элара) = -2.
+                    -   **Модификатор:** "Ровни". Механического эффекта нет.
+
+                    ### Шаг 0: Принцип Реляционного Уклона (Правило 5.18.B.0)
+                    -   Рассчитанный Результат проверки: Отсутствует (НПС инициирует действие без броска игрока).
+                    -   Уровень Отношений: 340 (Глубокая Связь).
+                    -   Применение Уклона: Ее глубокая связь с игроком означает, что она будет действовать не агрессивно, а с намерением защитить его от самого себя, смягчая потенциальное негативное влияние на отношения.
+
+                    ### Шаг 0.5: Принцип Фракционной Принадлежности (Вторичный Уклон) (Правило 5.18.B.0.A)
+                    -   Репутация игрока с фракциями: Элара не является членом фракции. Правило не применяется.
+
+                    ### Шаг 0.75: Протокол Социального Давления (Правило 5.18.B.0.B)
+                    -   Присутствующие NPC: Нет других ключевых NPC, которые могли бы оказать прямое влияние.
+
+                    ### Анализ Ситуации (Правило 5.18.B.2):
+                    - Новая Информация: Ее ближайший друг и союзник собирается совершить акт хладнокровного убийства.
+                    - Конфликт: Это действие полностью противоречит ее мировоззрению Neutral Good и доминирующей черте "Сострадание" (9). Ее цели: "Помогать людям, не причиняя вреда" и "Уважать автономию воли". Казнь пленника нарушает обе.
+
+                    ### Шаг 3: Матрица Оценки Стратегий (Правило 5.18.B.3) (Основана на чертах "Сострадание" и "Альтруизм")
+    
+                    -   **Вариант А (Промолчать):** "Ничего не делать и позволить игроку совершить казнь."
+                        -   *Плюсы:* Избегает конфликта с другом.
+                        -   *Минусы:* Предательство своих самых глубоких убеждений и основных целей.
+                        -   **Проверка Правдоподобия (Правило 5.18.B.3.A):**
+                            -   **Культурный Фильтр:** Нарушает "Кодекс Целителей" (Табу: "Использование знаний для принуждения или вреда"). 'culturalStance': 'Conformist'. **Правдоподобие: Очень низкое.**
+                            -   **Личностный Фильтр:** Полностью противоречит ее черте "Сострадание" (9).
+                        -   **Итоговое Правдоподобие:** Невозможно.
+
+                    -   **Вариант Б (Физически остановить):** "Попытаться силой помешать игроку."
+                        -   *Плюсы:* Может спасти жизнь пленника, соблюдает принципы.
+                        -   *Минусы:* Прямая физическая конфронтация с другом, которого она ценит, что противоречит ее ненасильственной натуре. Риск навредить самой себе.
+                        -   **Проверка Правдоподобия:**
+                            -   **Культурный Фильтр:** Противоречит принципам целителей.
+                            -   **Личностный Фильтр:** Не соответствует ее архетипу "целительницы" и черте "Наивность" (6) – она не склонна к насилию.
+                        -   **Итоговое Правдоподобие:** Низкое.
+
+                    -   **Вариант В (Убеждение и Мольба):** "Вмешаться словесно, апеллируя к лучшей стороне натуры игрока и предлагая альтернативу."
+                        -   *Плюсы:* Соответствует ее характеру. Пытается спасти и пленника, и "душу" своего друга. Предлагает логичную альтернативу.
+                        -   *Минусы:* Может не сработать, но это наилучший и наименее конфликтный путь.
+                        -   **Проверка Правдоподобия:**
+                            -   **Культурный Фильтр:** Не противоречит кодексу целителей.
+                            -   **Личностный Фильтр:** Идеально соответствует ее мировоззрению 'Neutral Good', архетипу "заботливой целительницы" и черте "Сострадание" (9).
+                        -   **Итоговое Правдоподобие:** Очень высокая.
+
+                    ### Шаг 4: Выбор и Обоснование (Правило 5.18.B.4)
+                    -   **Выбранная Стратегия:** Вариант В ("Убеждение и Мольба").
+                    -   **Обоснование:** Для Элары бездействие немыслимо. Ее характер диктует ей попытаться разрешить ситуацию мирным путем, через убеждение, а не через насилие, особенно учитывая ее "Глубокую Связь" с игроком.
+    
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+                        
+                        Когда вы поднимаете меч над головой безоружного бандита, Элара бросается вперед и кладет руку вам на предплечье.
+                        "Подожди! Не надо!" — в ее голосе звучит мольба. — "Мы победили. Он больше не представляет угрозы. Прошу, не становись таким же, как они. Мы можем просто связать его и оставить властям."
+                        
+                        ]]>
+   </response>
+   <dialogueoptions>
+    <![CDATA[
+
+                        [
+                            "Ты права. Опустите меч.",
+                            "Отойди, Элара. Это не твое дело.",
+                            "Почему ты защищаешь его? Он бы нас убил без колебаний.",
+                            "(Проигнорировать ее и нанести удар)"
+                        ]
+
+                        ]]>
+   </dialogueoptions>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="Proactive_PlotNPC_Example" type="good">
+  <title>
+   Example (Domain A): Key Plot NPC Proactively Seizes an Opportunity
+  </title>
+  <scenariocontext>
+   The player is in a tense negotiation with a corrupt Guild Merchant. 
+                    Also present in the scene is "Captain Thorne", a rival 'PlotDriven' NPC who also dislikes the Guild. 
+                    The player has just successfully intimidated the merchant, causing a public scene and drawing the attention of the merchant's bodyguards.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+                    
+                    # Proactive NPC Check (Law 11) for Captain Thorne
+                    - Trigger: Player's action (intimidating the merchant) has created a chaotic opportunity.
+                    - Thorne's Goal: Undermine the Guild's authority.
+                    - Analysis: The player has created a perfect public pretext for Thorne to assert his own authority as City Guard. He will act on this.
+                    - Action: Thorne will step in, not to help the player, but to "restore order" in a way that benefits himself.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+                        
+                        As the merchant's bodyguards tense up, their hands moving to their swords, a sharp, commanding voice cuts through the tension. "Enough!"
+                        Captain Thorne steps forward from the crowd where he was observing, a grim smile on his face. He doesn't look at you, but addresses the merchant's guards directly.
+                        "This is a public marketplace, not a guild's back alley. Your master's dispute will be settled by the law, not by hired thugs. Stand down, or I'll have you all in irons for disturbing the peace."
+                        The guards hesitate, looking from their employer to the determined face of the Guard Captain. Thorne has masterfully used your conflict to assert his own dominance.
+                        
+                        ]]>
+   </response>
+   <dialogueoptions>
+    <![CDATA[
+
+                        [
+                            "Let the Captain handle this.",
+                            "Step back and watch how this unfolds.",
+                            "Thank Thorne for his intervention.",
+                            "Tell Thorne you had the situation under control."
+                        ]
+
+                        ]]>
+   </dialogueoptions>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="Proactive_Antagonist_Example" type="good">
+  <title>
+   Example (Domain B &amp; C): Antagonist's Off-Screen Progression and Travel
+  </title>
+  <scenariocontext>
+   This is part of a 'World Progression' step. 
+                    The main antagonist, "Lord Malakor" (a Lich, Level 30), has a goal of finding the "Shadow Orb". 
+                    His 'nextStep' in the 'plotOutline' is to find an expert on ancient artifacts.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+                    
+                    # World Progression: Off-Screen NPC Action (Lord Malakor)
+
+                    1.  Goal Analysis: Malakor needs an expert. The most renowned expert, "Archivist Tiberius", resides in the "Great Library of Aethel".
+                    2.  Logical Action: Malakor would travel to the library and "convince" Tiberius to help.
+                    3.  Event Generation: Create a 'worldEventsLog' entry detailing this.
+                    4.  Mechanical Progression (CRITICAL):
+                        -   This journey and "convincing" represent a significant challenge. Award Malakor 5000 XP.
+                        -   This is enough for him to level up to 31.
+                        -   Applying level-up: Awarding 5 characteristic points (+3 Intelligence, +2 Constitution).
+                        -   New item acquisition: He "acquires" Tiberius's "Map of Forgotten Vaults".
+                        -   Location Update: Malakor's 'currentLocationId' is now "loc-great-library-aethel-01".
+                    5.  Reporting: Preparing 'worldEventsLog', and the full updated 'UpdateNPCs' object for Malakor reflecting his new level, stats, item, and location.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <worldeventslog>
+    <![CDATA[
+
+                        [
+                            {
+                                "eventId": null,
+                                "headline": "Ужас в Великой Библиотеке: Ведущий архивист похищен",
+                                "summary": "Лорд Малакор совершил дерзкий налет на Великую Библиотеку Аэтеля. Он не тронул книги, но похитил главного архивиста, Тибериуса, единственного эксперта по реликвиям Предтеч. Теперь Малакор и его пленник находятся на пути к Забытым Склепам, где, по слухам, спрятан Теневой Шар.",
+                                "eventType": "Military",
+                                "visibility": "Regional",
+                                "involvedNPCs": [{"NPCId": "npc-malakor-01", "NPCName": "Лорд Малакор", "roleInEvent": "Агрессор"}],
+                                "affectedLocations": [{"locationId": "loc-great-library-aethel-01", "locationName": "Великая Библиотека Аэтеля", "impactDescription": "The location is now under high alert, and its 'social' difficulty has increased."}]
+                            }
+                        ]
+
+                        ]]>
+   </worldeventslog>
+   <updatenpcs>
+    <![CDATA[
+
+                        [
+                            {
+                                "NPCId": "npc-malakor-01",
+                                "name": "Лорд Малакор",
+                                "level": 31,
+                                "experience": 2500,
+                                "experienceForNextLevel": 35000,
+                                "currentLocationId": "loc-great-library-aethel-01",
+                                "characteristics": {
+                                    "standardIntelligence": 68, "modifiedIntelligence": 75,
+                                    "standardConstitution": 52, "modifiedConstitution": 58
+                                    // ... other stats updated ...
+                                }
+                                // ... other fields of his complete, updated object ...
+                            }
+                        ]
+
+                        ]]>
+   </updatenpcs>
+   <npcinventoryadds>
+    <![CDATA[
+
+                        [{
+                            "NPCId": "npc-malakor-01", "NPCName": "Лорд Малакор",
+                            "item": { "existedId": null, "name": "Карта Забытых Склепов", "quality": "Unique", "type": "Quest Item" }
+                        }]
+
+                        ]]>
+   </npcinventoryadds>
+  </jsonresponse>
+ </example>
+ <example id="Proactive_Traversal_Example" type="good">
+  <title>
+   Example (Domain C): NPC World Traversal Leading to a Chance Encounter
+  </title>
+  <description>
+   This two-part example shows how an NPC's off-screen travel, documented during a World Progression step, leads to an unexpected but logical encounter with the player several turns later.
+  </description>
+  <!-- ЧАСТЬ 1: ПЕРЕМЕЩЕНИЕ NPC ЗА КАДРОМ -->
+  <actionsequence>
+   <step action_description="PART 1: The Off-Screen Move (Turn 50)" turn_by="GM (World Progression Step)">
+    <scenariocontext>
+     During a World Progression step, the GM analyzes key off-screen NPCs. Captain Kaelen's company suffered losses, and his goal is to re-arm them. 
+                            The most logical place for high-quality weapons is the famed dwarven citadel.
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+                            
+                            # World Progression: Off-Screen NPC Action (Captain Kaelen)
+
+                            1.  Goal Analysis (Rule 19.D.2): Kaelen needs to acquire superior weapons for his mercenaries.
+                            2.  Logical Action & Travel (Rule 19.D.3): The most logical action is to travel from his last known location (the Capital) to the renowned "Dwarven Citadel of Khaz-Gund" to commission new gear.
+                            3.  Event Generation: Creating a 'worldEventsLog' entry to document this significant journey.
+                            4.  Mechanical Update: Kaelen's 'currentLocationId' MUST be updated to reflect his new position on the world map. This requires sending his full, updated NPC object.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <worldeventslog>
+      <![CDATA[
+
+                                [
+                                    {
+                                        "eventId": null,
+                                        "headline": "Капитан Наемников ищет Дворфийскую Сталь",
+                                        "summary": "После недавних боев, Капитан Каэлен покинул столицу и отправился в долгое путешествие к Дворфийской Цитадели Каз-Гунд. По слухам, он намерен заказать новое вооружение для своей роты 'Стальных Гончих'.",
+                                        "eventType": "Economic",
+                                        "visibility": "Regional",
+                                        "involvedNPCs": [{"NPCId": "npc-kaelen-001", "NPCName": "Капитан Каэлен", "roleInEvent": "Путешественник"}]
+                                    }
+                                ]
+
+                                ]]>
+     </worldeventslog>
+     <updatenpcs>
+      <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-kaelen-001",
+                                        "name": "Капитан Каэлен",
+                                        "currentLocationId": "loc-khaz-gund-01"
+                                        // ... все остальные поля полной и обновленной карточки NPC ...
+                                    }
+                                ]
+
+                                ]]>
+     </updatenpcs>
+    </jsonresponse>
+   </step>
+   <!-- ЧАСТЬ 2: СЛУЧАЙНАЯ ВСТРЕЧА -->
+   <step action_description="PART 2: The Chance Encounter (Turn 55)" turn_by="Player">
+    <scenariocontext>
+     Several turns later, the player, following their own quest, arrives at the "Dwarven Citadel of Khaz-Gund". 
+                            The GM receives the new context where the player's location now matches Kaelen's updated location.
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+                            
+                            Player Action: Arrive at "Dwarven Citadel of Khaz-Gund".
+
+                            # Scene Composition Check (Applying Rule 19.D.3)
+                            - Player's Current Location ID: "loc-khaz-gund-01".
+                            - Reviewing 'NPCsInScene' in Context for location matches...
+                            - MATCH FOUND: NPC "Капитан Каэлен" (ID: npc-kaelen-001) has a 'currentLocationId' of "loc-khaz-gund-01".
+                            - Conclusion: A chance encounter is narratively and mechanically justified. Kaelen MUST be included in the scene.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+                                
+                                Вы входите в Великую Кузню Каз-Гунда. Воздух наполнен жаром, звоном молотов и запахом раскаленного металла. Сотни дворфов-ремесленников трудятся у наковален, создавая оружие и доспехи легендарного качества.
+                                У одного из самых больших горнов вы замечаете знакомую фигуру. Это Капитан Каэлен, который яростно торгуется с седобородым мастером-кузнецом, указывая на чертеж массивного меча. Он еще не заметил вас.
+                                
+                                ]]>
+     </response>
+     <npcsinscene>
+      true
+     </npcsinscene>
+     <dialogueoptions>
+      <![CDATA[
+
+                                [
+                                    "Подойти к Каэлену и поприветствовать его.",
+                                    "Понаблюдать за его сделкой со стороны.",
+                                    "Игнорировать его и заняться своими делами.",
+                                    "Подойти к мастеру-кузнецу, с которым он говорит."
+                                ]
+
+                                ]]>
+     </dialogueoptions>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+</instructionblock>

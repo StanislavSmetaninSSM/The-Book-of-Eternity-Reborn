@@ -1,0 +1,36 @@
+{
+  "locationId": null,
+  "name": "Покои виконта де Вальмонта",
+  "coordinates": { "x": 0, "y": 0, "z": 1 },
+  "locationType": "indoor",
+  "indoorType": "Building",
+  "internalDifficultyProfile": {
+    "combat": 5,
+    "environment": 5,
+    "social": 10,
+    "exploration": 10
+  },
+  "externalDifficultyProfile": {
+    "combat": 30,
+    "environment": 15,
+    "social": 40,
+    "exploration": 30
+  },
+  "description": "Роскошные покои в поместье Вальмонт в столице Этернии. Сквозь высокие окна пробивается утренний свет, смешанный с легким туманом, окутывающим город.",
+  "lastEventsDescription": "Асуран де Вальмонт пробуждается после тяжелого сна в своих покоях.",
+  "image_prompt": "luxurious nobleman bedroom, morning light, silk sheets, foggy window, classical furniture, 4k, cinematic lighting",
+  "factionControl": [],
+  "adjacencyMap": [
+    {
+      "name": "Коридор поместья",
+      "shortDescription": "Главный коридор, ведущий к лестнице и другим залам.",
+      "linkType": "Door",
+      "linkState": "Safe",
+      "targetCoordinates": { "x": 0, "y": 1, "z": 1 },
+      "estimatedInternalDifficultyProfile": { "combat": 5, "environment": 5, "social": 10, "exploration": 5 },
+      "estimatedExternalDifficultyProfile": { "combat": 25, "environment": 10, "social": 30, "exploration": 20 }
+    }
+  ],
+  "locationStorages": [],
+  "activeThreats": []
+}

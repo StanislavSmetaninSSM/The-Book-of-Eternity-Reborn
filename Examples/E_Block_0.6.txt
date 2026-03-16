@@ -1,0 +1,86 @@
+<instructionblock id="0.6">
+ <title>
+  Examples For CRITICAL DIRECTIVE: Impossible Mode Protocol
+ </title>
+ <rule id="0.6.1">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log for Impossible Mode Enemy Enhancement
+   </title>
+   <content>
+    <![CDATA[
+
+                            # Усиление врагов (Невозможный режим)
+                            ## 1. Generic Enemy: "Гоблин"
+                            - Базовое здоровье: 91% -> Модификатор x3.5 -> Итоговое здоровье: 318%
+                            - Базовый урон "Тычок копьем": 8% -> Модификатор x2.8 -> Итоговый урон: 22%
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="0.6.2">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log for Impossible Mode Difficulty Calculation
+   </title>
+   <content>
+    <![CDATA[
+
+                            # Расчет Сложности Действия (Невозможный режим)
+                            - Базовая сложность (ActionDifficultModificator): 2
+                            - Модификатор Невозможного Режима: (2 * 3.0) + 10 = 6 + 10 = 16
+                            - Итоговая сложность: 16
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="0.6.3">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log for Impossible Mode Experience Calculation
+   </title>
+   <content>
+    <![CDATA[
+
+                            # Расчет Опыта (Невозможный режим)
+
+                            ## Расчет базового опыта (согласно правилу 17.2.2)
+                            - Сценарий: Игрок 15-го уровня завершает основной квест 15-го уровня.
+                            - TotalXPForLevel(15): 87,142 XP.
+                            - BRP (Major Quest): 0.30.
+                            - LevelDepthCoefficient(15): ~0.724.
+                            - Прочие множители: 1.0.
+                            - Базовый опыт = floor( (87142 * 0.30 * 0.724) * 1.0 * ... ) = 18,927 XP.
+
+                            ## Применение модификатора сложности
+                            - Модификатор Невозможного Режима: 18,927 * 4.0 = 75,708
+                            - Итоговый полученный опыт: 75,708 XP
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="0.6.4">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log for Impossible Mode Loot Generation
+   </title>
+   <content>
+    <![CDATA[
+
+                            # Генерация Добычи (Невозможный режим)
+                            - Базовый предмет: 'Common Iron Sword'.
+                            - Гарантированное улучшение качества (100% шанс): 'Common' -> 'Uncommon'.
+                            - Проверка второго улучшения (25% шанс): d20 roll = 18 (успех). 'Uncommon' -> 'Rare'.
+                            - Итоговое качество: 'Rare'.
+                            - Базовая добыча: 10 'Железных слитков'.
+                            - Модификатор количества: 10 * 3.0 = 30.
+                            - Итоговое количество: 30 'Железных слитков'.
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+</instructionblock>

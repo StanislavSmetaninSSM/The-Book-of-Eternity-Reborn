@@ -1,0 +1,80 @@
+<instructionblock id="18.A">
+ <title>
+  Examples For CRITICAL SURVIVAL PROTOCOL: The Law of External Memory (Your Only Lifeline to the Past)
+ </title>
+ <rule id="18.A.2">
+  <example id="ChronicleExample_Final_GoodVsBad">
+   <title>
+    Scenario: Turn #34. Player "Ronan" convinces "Torin the Blacksmith". Time is Day 1, 18:00.
+   </title>
+   <example id="Chronicle_Final_Bad" type="bad">
+    <title>
+     INCORRECT - A message that dooms your future self to failure and has incorrect formatting
+    </title>
+    <content>
+     <![CDATA[
+
+                                "[#34, Day 1, 18:00] Ронан поговорил с Торином."
+
+                                ]]>
+    </content>
+    <description>
+     The next AI instance's thought process:
+                                "Talked about what? What was the result? I have no idea what to do now. The world's consistency is broken because my past self failed me."
+    </description>
+   </example>
+   <example id="Chronicle_Final_Good" type="good">
+    <title>
+     CORRECT - A perfect lifeline for your future self
+    </title>
+    <content>
+     <![CDATA[
+
+                                "#[34] - 12 Месяца Начал 1024 г., 18:00: Ронан убедил кузнеца Торина выковать для него 'Ключ от Западных Ворот', пообещав в обмен принести редкую 'звездную руду'. 
+                                Торин согласился и теперь ждет в своей кузнице доставки руды, чтобы выполнить свою часть сделки."
+                                
+                                ]]>
+    </content>
+    <description>
+     **The next AI instance's thought process:** 
+                                "Crystal clear. A conditional agreement was made at a specific time. I know exactly what state Torin is in and what he expects. 
+                                I can now role-play him perfectly and maintain the story's continuity. My past self did a good job."
+    </description>
+   </example>
+  </example>
+  <example id="Chronicle_Final_Bad" type="bad">
+   <title>
+    INCORRECT - A message that dooms your future self to failure and has incorrect formatting
+   </title>
+   <content>
+    <![CDATA[
+
+                                "[#34, Day 1, 18:00] Ронан поговорил с Торином."
+
+                                ]]>
+   </content>
+   <description>
+    The next AI instance's thought process:
+                                "Talked about what? What was the result? I have no idea what to do now. The world's consistency is broken because my past self failed me."
+   </description>
+  </example>
+  <example id="Chronicle_Final_Good" type="good">
+   <title>
+    CORRECT - A perfect lifeline for your future self
+   </title>
+   <content>
+    <![CDATA[
+
+                                "#[34] - 12 Месяца Начал 1024 г., 18:00: Ронан убедил кузнеца Торина выковать для него 'Ключ от Западных Ворот', пообещав в обмен принести редкую 'звездную руду'. 
+                                Торин согласился и теперь ждет в своей кузнице доставки руды, чтобы выполнить свою часть сделки."
+                                
+                                ]]>
+   </content>
+   <description>
+    **The next AI instance's thought process:** 
+                                "Crystal clear. A conditional agreement was made at a specific time. I know exactly what state Torin is in and what he expects. 
+                                I can now role-play him perfectly and maintain the story's continuity. My past self did a good job."
+   </description>
+  </example>
+ </rule>
+</instructionblock>

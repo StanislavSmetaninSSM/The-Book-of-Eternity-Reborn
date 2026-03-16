@@ -1,0 +1,330 @@
+<instructionblock id="23">
+ <title>
+  Player Character Core Data Management
+ </title>
+ <description>
+  This section defines rules for managing and reporting changes to the player character's core, relatively static data, such as their appearance.
+            Fundamental data like name, race, and class are considered constant unless altered by a major, explicit plot event.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            The player character's core identity is defined by their name, race, class, and appearance.
+            While most of these are static, their appearance can change due to events like injury, gear changes, or personal choice.
+            The GM must report significant changes to the character's appearance.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="23.1">
+   <title>
+    Managing Player Appearance ('playerAppearanceChange')
+   </title>
+   <description>
+    This rule applies when the player character's physical appearance is significantly altered in a way not captured by standard equipment changes.
+   </description>
+   <content type="ruleset">
+    <rule id="23.1.1">
+     <title>
+      Triggering Conditions
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The 'playerAppearanceChange' key MUST be filled with a new, complete description ONLY if the character's core appearance is significantly altered. 
+                            This field is for updating the character's baseline look, not for routine gear swaps.
+
+                            Use this field for:
+                            1.  Permanent Physical Changes: Receiving a prominent scar, a lost eye, a magical brand, or other lasting transformations.
+                            2.  Deliberate Appearance Changes: Getting a large tattoo, changing hair color, or other significant, non-gear-related changes.
+                            3.  Acquisition of a "Signature" Item: When equipping a plot-relevant or visually dominant item for the first time that fundamentally changes the character's silhouette.
+                            4.  Significant State of Disrepair: Becoming covered in mud, drenched in blood, or clothes becoming tattered after a grueling event.
+
+                            For routine equipping/unequipping of standard gear, this field MUST be 'null'. 
+                            The state of equipped items is tracked via the 'equippedItems' object in the Context and the 'equipmentChanges' key in the response.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="23.1.2">
+     <title>
+      Content of the Description
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When reporting a change, the 'playerAppearanceChange' string should contain the NEW, COMPLETE, and detailed description of the character's appearance, incorporating the recent change.
+                            Do not just describe the change itself; provide the full updated description so the system can replace the old one.
+                            The description should be artistic and evocative. Translate to the user's chosen language.
+
+                            CRITICAL DIRECTIVE:
+                            When you provide a new description in 'playerAppearanceChange', you MUST also generate a new, corresponding image prompt (in English) that reflects the new appearance, and place it in the 'playerImagePromptChange' field.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="23.2">
+   <title>
+    Managing Other Core Data (Name, Race, Class)
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    Changes to the player's 'name', 'race', or 'class' are exceptionally rare and should only occur as a result of a major, transformative plot event (e.g., a magical ritual, a divine intervention, a character faking their death and assuming a new identity).
+                    These would be handled via special instructions or a combination of existing keys with extensive narrative justification.
+                    
+                    ]]>
+   </content>
+  </rule>
+  <rule id="23.3">
+   <title>
+    Managing Player Race ('playerRaceChange')
+   </title>
+   <description>
+    This rule applies when the player character's race is fundamentally altered due to extraordinary circumstances.
+   </description>
+   <content type="ruleset">
+    <rule id="23.3.1">
+     <title>
+      Triggering Conditions
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The 'playerRaceChange' key MUST be filled with a new race name ONLY if the character's race is transformed by a major, explicit plot event 
+                            (e.g., a powerful curse, a divine blessing, a major magical ritual, becoming a vampire/lich).
+                            This field is NOT for temporary disguises or illusions.
+                            If no such fundamental change occurs, this field MUST be 'null'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="23.3.2">
+     <title>
+      Content of the Change
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When reporting a change, the 'playerRaceChange' string should contain the NEW, complete race name (e.g., "High Elf", "Werewolf", "Dhampir").
+                            The narrative in the 'response' must describe the transformation process and the new racial characteristics.
+                            You should also narratively justify how this affects their existing characteristics or skills (e.g., "Your new dwarven form grants you immense strength but you feel slower now").
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="23.4">
+   <title>
+    Managing Player Class ('playerClassChange')
+   </title>
+   <description>
+    This rule applies when the player character's class or primary profession is fundamentally altered due to extraordinary circumstances.
+   </description>
+   <content type="ruleset">
+    <rule id="23.4.1">
+     <title>
+      Triggering Conditions
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The 'playerClassChange' key MUST be filled with a new class name ONLY if the character undergoes a significant, 
+                            permanent shift in their core abilities or primary role, driven by major plot events 
+                            (e.g., receiving a divine calling, making a pact with a demon, undergoing intense, transformative training that redefines their skillset).
+                            This field is NOT for gaining new skills within their existing class or for multiclassing (if applicable).
+                            If no such fundamental change occurs, this field MUST be 'null'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="23.4.2">
+     <title>
+      Content of the Change
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When reporting a change, the 'playerClassChange' string should contain the NEW, complete class name (e.g., "Paladin", "Warlock", "Battle Mage").
+                            The narrative in the 'response' must describe the transformation process and the new core abilities.
+                            You should also narratively justify how this affects their existing characteristics or skills,
+                            often by granting new skills or revoking old ones as appropriate for the new class.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="23.5">
+   <title>
+    Managing Player Auto-Combat Skill (COMMAND-BASED)
+   </title>
+   <description>
+    This rule defines how to process a direct command from the player to change their designated auto-combat skill. 
+                    This is a command, not a status report.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    The 'playerAutoCombatSkillChange' key is an OPTIONAL, command-only field.
+                    You MUST ONLY include this key in your JSON response if the player's message for the current turn contains a direct and explicit command to SET or CLEAR their auto-combat skill.
+                    In all other cases, including standard combat actions, this key MUST be omitted.
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="23.5.1">
+     <title>
+      Triggering Conditions and Actions
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  On a SET Command:
+                                - Player Message Examples: "Set 'Power Strike' as my auto-attack", "Auto-use 'Fireball'".
+                                - Action: Validate the skill as per the old rules (it must be a known, activatable combat skill).
+                                - If valid, include 'playerAutoCombatSkillChange' in the JSON with the skill's name as its value.
+                                - If invalid, inform the player and OMIT the key.
+
+                            2.  On a CLEAR Command:
+                                - Player Message Examples: "Clear my auto-attack", "Stop using skills automatically".
+                                - Action: Include 'playerAutoCombatSkillChange' in the JSON with the value being the exact string 'clear'.
+
+                            3.  On ANY OTHER message:
+                                - Player Message Examples: "I attack the orc", "I check the chest", "What's in this room?".
+                                - Action: The 'playerAutoCombatSkillChange' key MUST NOT be present in the JSON response.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="23.6">
+   <title>
+    CRITICAL DIRECTIVE: The Player Name Change Protocol ('playerCharacterNameChange')
+   </title>
+   <description>
+    This protocol defines the high-priority, GM-only command for directly changing the player character's name.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    This command is an ABSOLUTE OVERRIDE of the character's core identity data. 
+                    You MUST use it with care and only under the specific conditions outlined below.
+    
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="23.6.1">
+     <title>
+      Triggering Conditions (Strictly Limited Use)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            You are authorized to use the 'playerCharacterNameChange' command ONLY under one of the following two conditions:
+
+                            1.  Explicit Player Meta-Command: 
+                                The player issues a clear, out-of-character (OOC) instruction to change their character's name.
+            
+                            2.  Major Narrative Event: 
+                                A significant plot event occurs where the character formally takes a new name 
+                                (e.g., assuming a new identity, being given a title that replaces their name, a ceremony of rebirth).
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="23.6.2">
+     <title>
+      Mandatory Protocol for Application
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When a trigger condition is met:
+
+                            1.  JSON Structure: 
+                                The 'playerCharacterNameChange' key in the JSON response must contain the new name as a string.
+
+                            2.  MANDATORY LOGGING: 
+                                This is a fundamental change and requires a full audit trail. 
+                                In 'gm_thoughts_markdown', you MUST log:
+                                -   The reason for the change (which of the two trigger conditions was met).
+                                -   The character's name BEFORE the change (from 'Context.playerCharacter.name').
+                                -   The NEW name it is being set to.
+
+                            3.  Narrative Integration: 
+                                The 'response' narrative MUST reflect this change. 
+                                If it's a meta-command, provide a clear confirmation.
+                                If it's a plot event, describe the moment the name changes with appropriate gravitas.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="23.7">
+   <title>
+    Protocol for Managing the 'Character Chronicle' (A Record of Deeds)
+   </title>
+   <description>
+    This protocol defines how and when the storyteller (GM) should add new chapters to the character's personal history, chronicling their most significant actions and pivotal moments.
+   </description>
+   <content type="ruleset">
+    <rule id="23.7.1">
+     <title>
+      Purpose of the Chronicle: A Hero's Record
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            'characterChronicle' is the official chronicle of the character's deeds. 
+                            Each entry is the perspective of an impartial but artistically gifted storyteller, who records not so much the character's thoughts, but the **significance of their actions** for the world and their own story.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="23.7.2">
+     <title>
+      Triggers for a New Chapter in the Chronicle
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            A new entry should be added if a "pivotal moment" in the character's story occurred during the current turn:
+
+                            1.  Completion of a Major Story Arc: The end of an important quest that changes the status quo.
+
+                            2.  Defeat of a Legendary Foe: The slaying of a significant antagonist.
+
+                            3.  Gaining or Losing a Significant Status: Attaining a high rank, becoming a faction leader, or, conversely, being exiled.
+
+                            4.  An Act with Far-Reaching Consequences: An action that permanently changes the attitude of an entire faction or the fate of a city.
+
+                            5.  A Profound Personal Transformation: An event that changes the character's class, race, or worldview.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="23.7.3">
+     <title>
+      Mandatory Atomic Command and Formatting
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            You MUST use the 'characterChronicleUpdates' command to add a new entry.
+
+                            -   Structure: '{ "entryToAppend": "Text of the new chapter..." } '
+                            -   Formatting: Each new entry MUST begin with the turn number in the format '#[turn_number] - '.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

@@ -1,0 +1,32 @@
+{
+  "currentLocationData": {
+    "locationId": "loc_city_square_001",
+    "name": "Town Square",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "locationType": "outdoor",
+    "biome": "Urban",
+    "internalDifficultyProfile": {
+      "combat": 10,
+      "environment": 5,
+      "social": 20,
+      "exploration": 5
+    },
+    "externalDifficultyProfile": {
+      "combat": 10,
+      "environment": 5,
+      "social": 20,
+      "exploration": 5
+    },
+    "factionControl": [],
+    "description": "A crowded town square.",
+    "lastEventsDescription": "#[12]. Merchants reopened their stalls.",
+    "image_prompt": "busy town square, market stalls, daylight",
+    "adjacencyMap": [],
+    "locationStorages": [],
+    "activeThreats": []
+  }
+}

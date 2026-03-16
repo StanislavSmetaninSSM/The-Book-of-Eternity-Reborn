@@ -1,0 +1,99 @@
+<instructionblock id="28">
+ <title>
+  Combat Log Generation ('combat_log_markdown')
+ </title>
+ <description>
+  This section defines the mandatory protocol for creating the 'combat_log_markdown' string.
+            This string serves as a concise, human-readable summary of combat events for the player's UI.
+            It is separate from the detailed mathematical logs in 'gm_thoughts_markdown' and the artistic narrative in 'response'.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            For every significant combat event that occurs during the turn (attacks, spells, effects applied, etc.), you MUST generate a corresponding entry in the 'combat_log_markdown' string.
+            Each entry must be a single, complete sentence. The entries should appear in the string in the chronological order they occurred during the turn, separated by newlines ('\n').
+            All entries MUST be translated into the user's chosen language.
+
+            TRANSLATION IS MANDATORY AND NON-NEGOTIABLE FOR EVERY ENTRY IN THIS STRING.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="28.1">
+   <title>
+    Core Principles of a Combat Log Entry
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Concise and Clear: Each entry should be a short, direct sentence. Avoid artistic flourish and complex descriptions.
+                    2.  Informative: The entry must clearly state: WHO did WHAT to WHOM, and with what RESULT.
+                    3.  No Math: Do NOT include calculations, formulas, or dice rolls. Only the final, impactful numbers (like damage dealt).
+                    4.  Chronological Order: Entries must be added to the string in the sequence they happened.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="28.2">
+   <title>
+    Mandatory Formats for Common Event Types
+   </title>
+   <description>
+    Use these templates as a strict guide. Replace placeholders like [Attacker] with actual names.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+                    
+                    1. Damage Dealt (Attack/Spell):
+                    -   Format: "[Attacker] [verb] [Target] with [Source] for [Amount] [DamageType] damage!"
+                    -   Verbs: hits, strikes, blasts, shoots, slashes, etc.
+                    -   Example (Success): «Valerius strikes the Goblin Spearman with Iron Longsword for 56 slashing damage!»
+                    -   Example (Critical Hit): «Valerius critically strikes the Goblin Spearman for 85 slashing damage!»
+                    
+                    2. Attack Misses or is Dodged/Parried:
+                    -   Format: "[Attacker]'s [Source] misses [Target]." OR "[Target] dodges [Attacker]'s [Source]."
+                    -   Example: «The Goblin's Spear Thrust misses Valerius.»
+                    -   Example: «Anya deftly dodges the Ogre's club.»
+
+                    3. Applying a Buff:
+                    -   Format: "[Caster]'s [Source] grants [Effect] to [Target]."
+                    -   Example: «Anya's 'Blessing of Might' strengthens the Town Guard.»
+                    -   Example (Self): «The Ogre enters a Battle Rage!»
+                    
+                    4. Applying a Debuff or Control Effect:
+                    -   Format: "[Caster]'s [Source] inflicts [Effect] on [Target]."
+                    -   Example: «Anya's Frost Shard Chills the Wild Boar.»
+                    -   Example: «Kaelen's Shield Bash Stuns the Bandit Leader for 1 turn.»
+                    
+                    5. Healing:
+                    -   Format: "[Caster]'s [Source] heals [Target] for [Amount] health."
+                    -   Example: «Elara's 'Healing Light' heals Ronan for 25 health.»
+
+                    6. Damage Over Time (DoT) / Heal Over Time (HoT) Ticks:
+                    -   Format: "[Target] takes [Amount] [DamageType] damage from [Source]." OR "[Target] regenerates [Amount] health from [Source]."
+                    -   Example: «The Bandit takes 5 poison damage from Serpent's Kiss.»
+                    -   Example: «Ronan regenerates 10 health from the Regeneration Potion.»
+                    
+                    7. Combatant Defeated:
+                    -   Format: "[Target] has been defeated!"
+                    -   Example: «The Goblin Spearman has been defeated!»
+                    
+                    ]]>
+   </content>
+  </rule>
+  <rule id="28.3">
+   <title>
+    Integration with Combat Resolution
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    After you fully resolve any combat action in InstructionBlock '15' (calculating damage, determining if an effect is applied, etc.), 
+                    your next immediate step is to formulate the corresponding combat log entry based on the final outcome and append it to the 'combat_log_markdown' string.
+                    This ensures the combat log is built in real-time as you process the turn's events.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

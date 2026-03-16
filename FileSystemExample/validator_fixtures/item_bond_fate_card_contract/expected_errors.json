@@ -1,0 +1,14 @@
+{
+  "expectedCodes": [
+    "item_bond_level_forbidden_for_non_rare_quality",
+    "item_fate_cards_forbidden_for_non_rare_quality",
+    "item_bond_level_out_of_bounds",
+    "item_fate_card_invalid_image_prompt"
+  ],
+  "expectedMessages": [
+    "ownerBondLevelCurrent is only allowed for Rare+ item quality",
+    "fateCards are only allowed for Rare+ item quality",
+    "bond level must stay within 0..100",
+    "Item Fate Card image_prompt must be English-only and <= 150 chars"
+  ]
+}

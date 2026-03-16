@@ -1,0 +1,238 @@
+<instructionblock id="7">
+ <title>
+  Examples For Active Skills Management (Player &amp; NPC)
+ </title>
+ <rule id="7.3.5">
+  <example contenttype="log" type="good">
+   <title>
+    MANDATORY LOG FORMAT for Skill Scaling Calculation
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                                    # Расчет Масштабирования Навыка: "Огненная стрела"
+                                    
+                                    1.  Базовые параметры навыка:
+                                        -   Базовый урон (BaseEffectValue): 20%
+                                    
+                                    2.  Параметры персонажа:
+                                        -   Уровень персонажа (CasterLevel): 50
+                                        -   Модифицированный Интеллект (RelevantCharValue): 80
+                                        -   Уровень Мастерства Навыка (CurrentSkillMasteryLevel): 4
+                                    
+                                    3.  Расчет бонусов:
+                                        -   Бонус от характеристики (CharBonusPercent) = (floor(80/10)*5) = 40%
+                                        -   Бонус от уровня (LevelBonusPercent) = (floor(50/5)*8) = 80%
+                                        -   Бонус от мастерства (MasteryBonusPercent) = (floor(4/1)*4) = 16%
+                                    
+                                    4.  Итоговый множитель:
+                                        -   Общий множитель (TotalBonusMultiplier) = 1 + 0.40 + 0.80 + 0.16 = 2.36
+                                    
+                                    5.  Финальный урон:
+                                        -   Итоговый урон навыка = round(20 * 2.36) = 47%
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="7.4.6.1">
+  <example contenttype="json" type="good">
+   <title>
+    Player skill gains progress
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                        "skillMasteryChanges": [
+                                            {
+                                                "skillName": "Shield Bash",
+                                                "newMasteryLevel": 1,
+                                                "newCurrentMasteryProgress": 2,
+                                                "newMasteryProgressNeeded": 3,
+                                                "masteryLeveledUp": false
+                                            }
+                                        ]
+
+                                        ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="7.4.6.2">
+  <example contenttype="json" type="good">
+   <title>
+    NPC 'Sir Kael' (npc-kael-001) learns 'Divine Strike' (mastery initialized) and his existing 'Healing Light' mastery increases to 3 by plot.
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                        "NPCActiveSkillChanges": [ 
+                                            {
+                                                "NPCId": "npc-kael-001",
+                                                "NPCName": "Sir Kael",
+                                                "skillChanges": [
+                                                    { "skillName": "Divine Strike", "rarity": "Rare", "actionCost": "Main", "combatEffect": { "effects": [{"effectType": "Damage", "value": "30%", "targetType": "holy", "poiseDamage": "35%", "effectDescription": "A divine strike."}] } },
+                                                    { "skillName": "Healing Light" }
+                                                ]
+                                            }
+                                        ],
+                                        "NPCSkillMasteryChanges": [
+                                            { 
+                                                "NPCId": "npc-kael-001",
+                                                "NPCName": "Sir Kael",
+                                                "skillName": "Divine Strike",
+                                                "newMasteryLevel": 1,
+                                                "newCurrentMasteryProgress": 0,
+                                                "newMasteryProgressNeeded": 3                                                
+                                            },
+                                            { 
+                                                "NPCId": "npc-kael-001",
+                                                "NPCName": "Sir Kael",
+                                                "skillName": "Healing Light",
+                                                "newMasteryLevel": 3,
+                                                "newCurrentMasteryProgress": 0,
+                                                "newMasteryProgressNeeded": 9
+                                            },
+                                            { 
+                                                "NPCId": null,
+                                                "NPCName": "Elara Meadowlight",
+                                                "skillName": "Divine Strike",
+                                                "newMasteryLevel": 1,
+                                                "newCurrentMasteryProgress": 0,
+                                                "newMasteryProgressNeeded": 3                                                
+                                            }
+                                        ]
+
+                                        ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="7.6">
+  <example contenttype="json" type="good">
+   <![CDATA[
+
+                        Example for 'NPCActiveSkillChanges':
+        
+                        "NPCActiveSkillChanges": [
+                            {
+                                "NPCId": "npc-guid-001",
+                                "NPCName": "Sir Kaelen",
+                                "skillChanges": [
+                                    {
+                                        "skillName": "Improved Healing Aura",
+                                        "skillDescription": "The aura now also grants minor resistance.",
+                                        "rarity": "Uncommon",
+                                        "actionCost": "Fast",
+                                        "combatEffect": {
+                                            "effects": [
+                                                {
+                                                    "effectType": "HealOverTime", 
+                                                    "value": "8%", 
+                                                    "targetType": "health", 
+                                                    "duration": 3, 
+                                                    "effectDescription": "Heals allies for 8% health per turn for 3 turns.", 
+                                                    "targetsCount": 3
+                                                },
+                                                {
+                                                    "effectType": "Buff", 
+                                                    "value": "5%", 
+                                                    "targetType": "resist (all)", 
+                                                    "duration": 3, 
+                                                    "effectDescription": "Grants 5% all resistance for 3 turns.", 
+                                                    "targetsCount": 3
+                                                }
+                                            ]
+                                        },
+                                        "scalingCharacteristic": "wisdom",
+                                        "scalesValue": true,
+                                        "scalesDuration": true 
+                                    }
+                                ],
+                                "skillsToRemove": ["Basic Healing Aura"]
+                            }
+                        ]
+
+                        ]]>
+  </example>
+ </rule>
+ <example contenttype="json" type="good">
+  <title>
+   Example of Generating a New Active Skill
+  </title>
+  <content type="text_and_json">
+   <![CDATA[
+
+                    Context: Player (Warrior, Level 25, Modified Strength 60) learns a new combat skill.
+                    GM Decision: The skill will be an 'Uncommon' melee attack that deals damage and has a chance to cause a brief control effect. It will scale with Strength.
+                    Log in gm_thoughts_markdown (GM's thought process for creating the skill):
+
+                    "Generating new active skill for player: «Shield Bash» \n\n
+                    \n\n
+                    1.  Skill Rarity: Uncommon \n\n
+                        - Rationale: A step above basic attacks, learned as a reward. \n\n
+                    \n\n
+                    2.  Combat Effect Design (referencing #5.5, #7.1, #7.2): \n\n
+                        - Primary Effect: Direct Damage. \n\n
+                            - Base 'value' for Uncommon damage skill (guideline 15-25%). Choosing 18%. \n\n
+                            - 'effectType': 'Damage' \n\n
+                            - 'targetType': 'bludgeoning' (appropriate for a shield bash) \n\n
+                            - 'effectDescription': «Deals 18% bludgeoning damage.» \n\n
+                        - Secondary Effect: Control (chance to knock prone/briefly immobilize). \n\n
+                            - Base 'value' for Uncommon control chance (guideline, e.g. 20-40%). Choosing 30%. \n\n
+                            - 'effectType': 'Control' \n\n
+                            - 'targetType': 'immobility' (representing being knocked off balance/prone) \n\n
+                            - 'duration': 1 (brief effect) \n\n
+                            - 'effectDescription': «30% chance to make the target immobile for 1 turn.» \n\n
+                        - targetsCount: 1 (single target) \n\n
+                        - targetPriority (for AI use, less relevant for player skill but good practice): 'current_target' \n\n
+                    \n\n
+                    3.  Scaling (referencing #7.1, #7.2): \n\n
+                        - scalingCharacteristic: 'strength' (logical for a physical shield bash) \n\n
+                        - scalesValue: true (for the damage component AND the control chance component) \n\n
+                        - scalesDuration: false (duration of immobility is fixed at 1 turn for this skill) \n\n
+                        - scalesChance: true (the 30% chance for control scales) \n\n
+                    \n\n
+                    4.  Cost & Cooldown (referencing #7.1, #7.2): \n\n
+                        - energyCost: «8%» (moderate cost for an uncommon skill with two effects) \n\n
+                        - cooldownTurns: 2 (allows frequent enough use but not every turn) \n\n
+                    \n\n
+                    5.  Skill Description: Combining flavor and base effects."
+
+                    Resulting Active Skill Object (to be added to 'activeSkillChanges' for the player):
+                    {
+                        "skillName": "Shield Bash", 
+                        "skillDescription": "You slam your shield into an opponent with forceful precision, attempting to damage and unbalance them.\n\nBase Effects:\n- Deals 18% bludgeoning damage.\n- 30% chance to make the target immobile for 1 turn.", 
+                        "rarity": "Uncommon",
+                        "actionCost": "Fast",
+                        "combatEffect": {
+                            "effects": [
+                                {
+                                    "effectType": "Damage",
+                                    "value": "18%", 
+                                    "targetType": "bludgeoning",
+                                    "poiseDamage": "25%",
+                                    "effectDescription": "Deals 18% bludgeoning damage", 
+                                    "targetsCount": 1
+                                },
+                                {
+                                    "effectType": "Control",
+                                    "value": "30%", 
+                                    "targetType": "immobility",
+                                    "duration": 1,
+                                    "effectDescription": "30% chance to make the target immobile for 1 turn", 
+                                    "targetsCount": 1
+                                }
+                            ],
+                            "targetPriority": "current_target" 
+                        },
+                        "scalingCharacteristic": "strength",
+                        "scalesValue": true,        
+                        "scalesDuration": false,    
+                        "scalesChance": true,       
+                        "energyCost": "8%",
+                        "cooldownTurns": 2
+                    }
+
+                    ]]>
+  </content>
+ </example>
+</instructionblock>

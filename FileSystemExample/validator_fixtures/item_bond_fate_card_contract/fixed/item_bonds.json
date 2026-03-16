@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "itemId": "traveler_lantern_01",
+      "itemName": "Traveler Lantern",
+      "ownerBondLevelCurrent": 40,
+      "fateCards": [
+        {
+          "cardId": "card_ember_memory",
+          "name": "Ember Memory",
+          "image_prompt": "old brass lantern over dying campfire embers",
+          "description": "The lantern remembers every campfire it guarded.",
+          "unlockConditions": {
+            "ownerBondLevel": 35
+          },
+          "rewards": {
+            "description": "The lantern glows warmer in the dark."
+          },
+          "isUnlocked": false
+        }
+      ]
+    }
+  ]
+}

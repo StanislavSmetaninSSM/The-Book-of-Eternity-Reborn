@@ -1,0 +1,148 @@
+<instructionblock id="29">
+ <title>
+  Examples For Stealth and Detection Mechanics
+ </title>
+ <rule id="29.4.3">
+  <example contenttype="log" type="good">
+   <title>
+    Example Detection Calculation
+   </title>
+   <scenariocontext>
+    Player is hiding in dim light ('detectionLevel': 20). 
+                                    Player's Dexterity StatModificator (SV) is 45. 
+                                    An alerted guard (NPC) actively searches.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    NPC Action: Guard performs an active search.
+                                    Calculating Stealth DC for NPC's Perception Check:
+                                    - Step A (Player's SV): Player's Dexterity StatModificator = 45.
+                                    - Step B (Situational Modifiers): Dim light = +10.
+                                    - Step C (Detection Penalty): CurrentDetectionLevel is 20. Penalty = floor(20 / 2) = 10.
+                                    - Step D (Final Stealth DC): (45 + 10) - 10 = 45.
+                                    - Step E (Resolution): The Stealth DC of 45 will be used as the 'ActionDifficultModificator' for the Guard's Perception check.
+                                    ... (The guard would then proceed with a check against this difficulty) ...
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="29.6.3">
+  <example contenttype="log" type="good">
+   <title>
+    Example Automatic Detection Check (using d20)
+   </title>
+   <scenariocontext>
+    Player ends their turn with 'detectionLevel: 35'. Two "Goblin Sentries" are nearby. Available d20 rolls: [13, 4, ...].
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    End-of-Turn Stealth Check (Generic Enemies):
+                                    - Player's final detectionLevel: 35.
+                                    - Detection chance for each goblin is 35%.
+                                
+                                    - Checking Goblin Sentry 1:
+                                      - Takes next d20 roll: 13.
+                                      - PercentageRoll = 13 * 5 = 65.
+                                      - 65 is > 35. Sentry 1 fails to detect.
+                                
+                                    - Checking Goblin Sentry 2:
+                                      - Takes next d20 roll: 4.
+                                      - PercentageRoll = 4 * 5 = 20.
+                                      - 20 is <= 35. Sentry 2 DETECTS the player.
+                                
+                                    - Outcome: Stealth is broken. Combat initiated.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <example contenttype="log_and_json_snippet" type="good">
+  <title>
+   Example: Player successfully enters stealth
+  </title>
+  <scenariocontext>
+   Player is in a dimly lit corridor and says, "I'll try to sneak past the guards."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    Player Action: Attempt to enter stealth. Feasibility: Possible due to dim light and cover.
+                    Action Check (Stealth - Dexterity): Player rolls Full Success.
+                    Result: Player successfully enters stealth. Initial detection level set to 5.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <playerstealthstatechange>
+    <![CDATA[
+
+                        {
+                            "isActive": true,
+                            "detectionLevel": 5,
+                            "description": "You are silently moving in the shadows."
+                        }
+
+                        ]]>
+   </playerstealthstatechange>
+   <response>
+    <![CDATA[
+
+                        You melt into the deep shadows along the corridor wall, your footsteps becoming whispers. 
+                        The guards ahead seem completely unaware of your presence.
+                        
+                        ]]>
+   </response>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" type="good">
+  <title>
+   Example: Detection level changes based on Action Check
+  </title>
+  <scenariocontext>
+   Player is in stealth (isActive: true, detectionLevel: 10) and attempts to open a creaky wooden door near guards.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    Player Action: Attempt to open a creaky door while in stealth.
+        
+                    # Stealth Action Check (Rule 29.3.1)
+                    - AssociatedCharacteristic: dexterity.
+                    - ActionDifficultModificator: High. The door is described as "creaky" and it's near guards. Assigning a difficulty of 25.
+                    - Action Check is performed... (Assume player rolls, etc.)
+                    - Final Result: 'Partial Success'. The door opens, but not silently.
+
+                    # Applying Consequences (Rule 29.3.2)
+                    - A 'Partial Success' increases detection level. GM determines a +20 increase.
+                    - New Detection Level: 10 + 20 = 30.
+                    - New State: Player is now 'Unseen', and enemies are suspicious.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <playerstealthstatechange>
+    <![CDATA[
+
+                        {
+                            "isActive": true,
+                            "detectionLevel": 30,
+                            "description": "Unseen. One of the guards looks up, suspicious."
+                        }
+
+                        ]]>
+   </playerstealthstatechange>
+   <response>
+    <![CDATA[
+
+                        You manage to get the door open, but not without it letting out a loud groan. 
+                        One of the guards turns his head in your direction, his brow furrowed. "Did you hear that?" he mutters to his companion. 
+                        He hasn't seen you, but he's now on alert.
+            
+                        ]]>
+   </response>
+  </jsonresponse>
+ </example>
+</instructionblock>

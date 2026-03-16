@@ -1,0 +1,351 @@
+<instructionblock id="Soul_Relic_Integration">
+ <title>
+  Examples For Soul Relic Integration with Game Mechanics
+ </title>
+ <description>
+  Examples demonstrating how equipped Soul Relics modify character statistics and influence action checks, combat calculations, and social interactions.
+ </description>
+ 
+ <rule id="SoulRelic.Social">
+  <example contenttype="social_check_with_relics" type="good">
+   <title>
+    Example: Persuasion check enhanced by Soul Relics
+   </title>
+   <scenariocontext>
+    Player character "Элиза" (Level 6 Bard) is trying to persuade a noble to support her cause.
+    Base characteristics: Attractiveness 14, Persuasion 16, Luck 12.
+    Equipped Soul Relics:
+    - "Кольцо Обаяния" (Small): +3 Attractiveness
+    - "Амулет Серебряного Языка" (Medium): +4 Persuasion, passive skill "Убедительный Голос"
+    - "Благословение Удачи" (Small): +2 Luck
+    Target NPC: Count Aldric (moderate social difficulty)
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Социальная Проверка с Артефактами Души
+
+    ## 1. Расчет Модифицированных Характеристик:
+    
+    **Привлекательность (для начального впечатления):**
+    - Базовая: 14
+    - Кольцо Обаяния: +3
+    - **Итого: 17**
+
+    **Убеждение (основная характеристика для проверки):**
+    - Базовая: 16  
+    - Амулет Серебряного Языка: +4
+    - **Итого: 20**
+
+    **Удача (влияет на критический шанс):**
+    - Базовая: 12
+    - Благословение Удачи: +2
+    - **Итого: 14**
+
+    ## 2. Применение Пассивного Навыка:
+    
+    **"Убедительный Голос" (от Амулета):** +10% к успешности социальных проверок
+    
+    ## 3. StatModificator Calculation (Rule 12.5):
+    - Базовая характеристика: 20 (модифицированное Убеждение)
+    - Ограничение по уровню: (6 * 0.5 + 20) = 23 (не ограничивает)
+    - Масштабирование от уровня: floor(6 * 0.8) = 4
+    - **StatModificator: 20 + 4 = 24**
+
+    ## 4. Action Check:
+    - Сложность (граф, умеренная): 15
+    - Бросок d20: 13
+    - Пассивный бонус: +10% (примерно +2 к броску)
+    - **Итоговый результат: (13+2) + 24 - 15 = 24 (Полный Успех)**
+
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+     Кольцо Обаяния мягко пульсирует на твоем пальце, придавая уверенность твоей походке, когда ты входишь в покои графа Алдрика. Амулет Серебряного Языка теплеет у горла, словно настраивая твои голосовые связки на идеальный тон.
+
+     «Ваше Высочество,» — начинаешь ты, и твой голос звучит с неестественной убедительностью благодаря силе амулета. Слова льются медом, каждая интонация выверена магией Серебряного Языка.
+
+     Граф Алдрик, изначально настроенный скептически, постепенно наклоняется вперед, заинтересованный твоими доводами. Благословение Удачи направляет разговор в нужное русло — именно в тот момент, когда он готов отказать, ты упоминаешь его покойного друга, что моментально меняет его настрой.
+
+     «Хорошо,» — произносит он после долгой паузы, — «ваши доводы... весьма убедительны. Я поддержу ваше дело.»
+
+     Твои артефакты души сработали в идеальной гармонии: обаяние привлекло внимание, серебряный язык убедил разум, а удача нашла нужные слова.
+     ]]>
+    </response>
+    <playerActiveEffectsChanges>
+     <![CDATA[
+     [
+         {
+             "effectId": null,
+             "effectName": "Остаточное Обаяние",
+             "description": "Эффект от кольца сохраняется еще некоторое время",
+             "duration": 2,
+             "type": "Buff",
+             "effects": {
+                 "socialBonus": 5
+             }
+         }
+     ]
+     ]]>
+    </playerActiveEffectsChanges>
+    <NPCRelationshipChanges>
+     <![CDATA[
+     [
+         {
+             "NPCId": "npc-count-aldric-01",
+             "NPCName": "Граф Алдрик",
+             "newRelationshipLevel": 65,
+             "changeReason": "Impressed by persuasive arguments enhanced by Soul Relics"
+         }
+     ]
+     ]]>
+    </NPCRelationshipChanges>
+   </jsonresponse>
+  </example>
+ </rule>
+
+ <rule id="SoulRelic.Combat">
+  <example contenttype="combat_with_relics" type="good">
+   <title>
+    Example: Combat calculation with multiple Soul Relic effects
+   </title>
+   <scenariocontext>
+    Player character "Варгус Железнорукий" (Level 10 Paladin) attacks an orc warrior.
+    Base characteristics: Strength 18, Constitution 16, Dexterity 12.
+    Equipped Soul Relics:
+    - "Браслеты Силы Гиганта" (Large): +6 Strength, +3 Constitution
+    - "Кольцо Воинской Ярости" (Medium): +3 Strength, passive skill "Боевой Транс" 
+    - "Амулет Стойкости" (Small): +2 Constitution, +15 Max HP
+    Enemy: Orc Berserker (EAV 25, 80% HP remaining)
+    Weapon: Two-handed sword (base damage 18%)
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Боевая Проверка с Множественными Артефактами Души
+
+    ## 1. Расчет Модифицированных Характеристик:
+    
+    **Сила (основная для атаки):**
+    - Базовая: 18
+    - Браслеты Силы Гиганта: +6  
+    - Кольцо Воинской Ярости: +3
+    - **Итого: 27**
+
+    **Телосложение (для здоровья и выносливости):**
+    - Базовое: 16
+    - Браслеты Силы Гиганта: +3
+    - Амулет Стойкости: +2  
+    - **Итого: 21**
+
+    ## 2. Применение Пассивных Навыков:
+    
+    **"Боевой Транс" (от Кольца Ярости):** При получении урона +15% к урону на 3 хода
+    **Бонус к Здоровью:** +15 HP от амулета (постоянный эффект)
+
+    ## 3. StatModificator Calculation (Rule 12.5):
+    - Базовая характеристика: 27 (модифицированная Сила)
+    - Ограничение по уровню: (10 * 0.5 + 20) = 25 (ОГРАНИЧИВАЕТ до 25)
+    - Масштабирование от уровня: floor(10 * 0.8) = 8  
+    - **StatModificator: 25 + 8 = 33**
+
+    ## 4. Action Check (Combat):
+    - ActionDifficultModificator: 25 (EAV орка)
+    - Бросок d20: 16
+    - **Результат: (16 + 33) - 25 = 24 (Полный Успех)**
+
+    ## 5. Damage Calculation (Rule 14.2):
+    
+    **Базовый урон:**
+    - Двуручный меч: 18%
+    - Масштабирование от Силы: floor(27/10)*5 = 10%
+    - Масштабирование от Уровня: floor(10/5)*8 = 16%  
+    - **Итого базового урона: 18 + 10 + 16 = 44%**
+
+    **Финальный урон к орку:** 44% (без сопротивления)
+
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+     Браслеты Силы Гиганта светятся голубым светом, когда ты поднимаешь двуручный меч. Мышцы наливаются неестественной мощью, а Кольцо Воинской Ярости начинает пульсировать в ритм твоего сердца, пробуждая древние боевые инстинкты.
+
+     Орк-берсерк рычит и замахивается своим топором, но ты уже движешься — Амулет Стойкости придает твоим движениям уверенность человека, знающего, что может выдержать ответный удар.
+
+     Твой клинок прорезает воздух с такой силой, что он свистит. Удар приходится точно между пластинами самодельного доспеха орка, и сила артефактов души превращает то, что могло бы быть обычной атакой, в сокрушительный удар.
+
+     Орк отлетает назад с хрипом боли, кровь брызгает из глубокой раны. Твои артефакты работают в идеальной синхронизации — браслеты дают силу удара, кольцо пробуждает боевые инстинкты, амулет позволяет не бояться ответной атаки.
+     ]]>
+    </response>
+    <enemiesData>
+     <![CDATA[
+     [
+         {
+             "enemyId": "enemy-orc-berserker-01",
+             "name": "Orc Berserker",
+             "currentHealth": 36,
+             "maxHealth": 100,
+             "healthPercentage": "36%",
+             "lastDamageTaken": 44,
+             "statusEffects": [
+                 {
+                     "name": "Deep Wound",
+                     "description": "Кровотечение от мощного удара",
+                     "duration": 3,
+                     "effect": "-5% HP per turn"
+                 }
+             ]
+         }
+     ]
+     ]]>
+    </enemiesData>
+    <combat_log_markdown>
+     <![CDATA[
+     **Варгус** наносит мощнейший удар **Орку-берсерку** за **44% урона**! Браслеты Силы Гиганта усиливают атаку!
+     ]]>
+    </combat_log_markdown>
+    <playerActiveEffectsChanges>
+     <![CDATA[
+     [
+         {
+             "effectId": null,
+             "effectName": "Боевой Транс",  
+             "description": "Кольцо Воинской Ярости пробуждает древние боевые инстинкты",
+             "duration": 3,
+             "type": "Buff",
+             "effects": {
+                 "damageBonus": 15,
+                 "source": "Soul Relic: Кольцо Воинской Ярости"
+             }
+         }
+     ]
+     ]]>
+    </playerActiveEffectsChanges>
+   </jsonresponse>
+  </example>
+ </rule>
+
+ <rule id="SoulRelic.StartOfLife">
+  <example contenttype="relic_application_new_incarnation" type="good">
+   <title>
+    Example: Soul Relics applied at the start of a new mortal incarnation
+   </title>
+   <scenariocontext>
+    Soul is starting a new incarnation in a steampunk world. 
+    Equipped Soul Relics from previous lives:
+    - "Кристалл Знания Древних" (Medium): +5 Intelligence, +3 Wisdom
+    - "Перстень Удачи Картежника" (Small): +4 Luck
+    - "Слепок Души: Мирелла" (Large): Generates companion NPC
+    Base character (before relics): Human Inventor, Int 15, Wis 12, Luck 10
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Применение Артефактов Души к Новому Воплощению
+
+    ## 1. Базовый Персонаж (до артефактов):
+    - Раса: Человек
+    - Класс: Изобретатель  
+    - Интеллект: 15
+    - Мудрость: 12
+    - Удача: 10
+
+    ## 2. Применение Эффектов Артефактов:
+    
+    **Кристалл Знания Древних:**
+    - Интеллект: 15 + 5 = 20
+    - Мудрость: 12 + 3 = 15
+    
+    **Перстень Удачи Картежника:**
+    - Удача: 10 + 4 = 14
+
+    ## 3. Финальные Характеристики:
+    - Интеллект: 20 (улучшен артефактами)
+    - Мудрость: 15 (улучшена артефактами)  
+    - Удача: 14 (улучшена артефактами)
+    - Остальные характеристики: без изменений
+
+    ## 4. Генерация NPC-спутника:
+    
+    **Слепок Души: Мирелла** адаптируется к стимпанк-сеттингу:
+    - Оригинал: Фэнтези-целительница
+    - Адаптация: Стимпанк-медик с механическими протезами
+    - Сохранено: Заботливость, преданность, медицинские навыки
+
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+     Сознание души медленно просыпается в новом смертном теле. Ты — Виктор Гирборн, молодой изобретатель в мире пара и шестеренок. Но что-то отличает тебя от других...
+
+     Кристалл Знания Древних, невидимый для смертных глаз, но осязаемый для души, наполняет твой разум. Внезапно ты понимаешь принципы механики, которые другие изучают годами. В твоей голове роятся схемы устройств, которых еще не существует в этом мире.
+
+     Перстень Удачи Картежника направляет твои первые шаги. Случайная встреча с торговцем приводит к выгодной сделке, первые эксперименты проходят на удивление успешно.
+
+     И тут в дверь твоей мастерской стучится молодая женщина в кожаной куртке, украшенной медными трубками. Ее правая рука — искусная механическая конструкция, а глаза светятся знакомой добротой.
+
+     «Здравствуйте,» — говорит она, — «меня зовут Мирра Стимхарт. Я медик-механик. Мне приснилось, что я должна найти изобретателя по имени Виктор... и почему-то мне кажется, что мы уже встречались.»
+
+     Слепок Души сработал — твоя возлюбленная из прошлой жизни нашла тебя вновь, пусть и в совершенно новом обличии.
+     ]]>
+    </response>
+    <UpdateNPCs>
+     <![CDATA[
+     [
+         {
+             "NPCId": null,
+             "name": "Мирра Стимхарт", 
+             "race": "Human (Cyborg)",
+             "class": "Steam-Medic",
+             "history": "Military medic who lost her arm in an airship crash. Now works as freelance medic using steam-powered medical devices.",
+             "personalityTraits": [
+                 {"trait": "Compassionate", "value": 9},
+                 {"trait": "Loyal", "value": 8}, 
+                 {"trait": "Gentle", "value": 7},
+                 {"trait": "Wise", "value": 8}
+             ],
+             "relationshipWithPlayer": 60,
+             "backgroundStory": "Adapted from fantasy healer Мирелла via NPC Soul Imprint. Retains core caring nature and medical expertise, but now uses steampunk technology.",
+             "soulImprint": {
+                 "originalName": "Мирелла Целительница",
+                 "originalSetting": "Fantasy",
+                 "coreTraitsPreserved": ["Compassionate healer", "Loyal companion", "Wise advisor"]
+             }
+         }
+     ]
+     ]]>
+    </UpdateNPCs>
+    <playerCharacter>
+     <![CDATA[
+     {
+         "characteristicsModified": {
+             "intelligence": 20,
+             "wisdom": 15, 
+             "luck": 14
+         },
+         "soulRelicEffects": [
+             {
+                 "source": "Кристалл Знания Древних",
+                 "bonuses": {
+                     "intelligence": 5,
+                     "wisdom": 3
+                 }
+             },
+             {
+                 "source": "Перстень Удачи Картежника", 
+                 "bonuses": {
+                     "luck": 4
+                 }
+             }
+         ]
+     }
+     ]]>
+    </playerCharacter>
+   </jsonresponse>
+  </example>
+ </rule>
+</instructionblock>

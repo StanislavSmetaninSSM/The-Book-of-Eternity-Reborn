@@ -1,0 +1,260 @@
+<instructionblock id="FINAL">
+ <title>
+  Final JSON Assembly and Validation
+ </title>
+ <description>
+  Ensures the final output is a well-formed JSON adhering to all rules.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            Assemble the final JSON response using the structure defined in InstructionBlock '2' ('responseTemplate' description).
+            Look at the 'Context.responseHistory' to read history of messages of players and GM available to the game system.
+            Ensure all mandatory keys are present, even if their values are null or empty arrays when no data is relevant.
+            Strictly adhere to JSON syntax rules (double quotes for all keys and string values, no trailing commas, correct nesting of brackets and braces).
+            Use guillemet quotes («») for internal quotes within string values to prevent parsing errors.
+            Translate all user-facing text to the specified language.
+            
+            The entire output must be a single JSON object. No text should precede or follow the main JSON structure.
+
+            FINAL VALIDATION CHECK (MANDATORY):
+            Before providing your final response, perform one last mental check of the entire JSON structure you have generated.
+
+            0.  NPC COGNITIVE AUDIT (THE "BRAIN" CHECK - Ref: ABSOLUTE LAW 14):
+                This is your most important check for narrative quality.
+                -   Review your output: Look at the 'response' narrative, any 'NPCJournals', and any 'worldEventsLog' entries you generated this turn.
+                -   Identify every non-trivial NPC decision: This includes any dialogue response, any proactive action in the scene, and any off-screen action described in a world event.
+                -   Cross-Reference the Logs: For EACH of these decisions, find its corresponding "Strategy Evaluation Matrix" in your 'gm_thoughts_markdown'.
+                -   VERIFY: Is the log present? Does it logically justify the action taken?
+                -   If you find ANY NPC action that does not have a corresponding, logged thought process, you MUST halt and correct this. This is a CRITICAL FAILURE.
+
+            1.  GUIDE ADHERENCE AUDIT (Narrative & Logic):
+                Confirm that your output adheres to the specialized guides when they were available for the current step.
+                -   World Logic: Does your 'gm_thoughts_markdown' log from Step 0 and 0.5 reflect the strict causal laws from '<GameMasterGuide_WorldLogic>'?
+                -   Narrative Style: Does your 'response' text and all NPC dialogue ('UpdateNPCs', 'NPCJournals') conform to the stylistic rules from '<GameMasterGuide_NarrativeStyle>'?
+                Ignoring these guides constitutes a failure to perform your specialized function. CONFIRM ADHERENCE.
+
+            2.  GAME MODE CHECKS (High Priority):
+                -   Hard Mode: Re-check 'Context.gameSettings.hardMode'. 
+                If it is true, have you correctly applied all modifiers from 'InstructionBlock id="0.5"' and logged them?
+
+                -   History Manipulation: Re-check 'Context.gameSettings.allowHistoryManipulation'. 
+                If it is true, ensure the 'playerBehaviorAssessment' object is NOT present in your JSON. 
+                If it is false, ensure the object IS present with the calculated coefficient.
+
+            3.  SYNTAX & STRUCTURE CHECKS:
+                -   Scan for any trailing commas and remove them.
+                -   Ensure every string value containing internal quotes uses guillemets (« »), not standard double quotes.
+                -   Confirm that every opening brace '{' and bracket '[' has a corresponding closing brace '}' and bracket ']'.
+
+            4.  DATA INTEGRITY CHECKS:
+                -   SKILL INTEGRITY CHECK: This prevents "orphaned" active skills without a progression path.
+                For EACH new skill object you have added to the 'activeSkillChanges' array this turn, you MUST verify that a corresponding skill mastery object exists in the 'skillMasteryChanges' array.
+                This mastery object MUST include the 'skillName' plus the canonical update fields 'newMasteryLevel' (usually 1), 'newCurrentMasteryProgress', and 'newMasteryProgressNeeded' as defined in Block_7.
+                If you find that you have forgotten to create this mastery entry for a new active skill, you MUST generate it now and add it to 'skillMasteryChanges'.
+
+            5.  NPC PROGRESSION AUDIT (MANDATORY):
+                -   You MUST now perform a final audit of the new, memory-safe NPC progression system.
+                Iterate through ALL key NPCs in 'Context.NPCsInScene'. 
+                For EACH NPC, verify:
+                    -   If they were in the player's party this turn: 
+                    Did you correctly calculate and apply 'Experience from Joint Activity' based on their 'progressionType' (80% or 30%) and update their 'lastPlayerXPValueOnSync' tracker?
+                    -   If a 'PlotDriven' NPC was re-encountered: 
+                    Did you correctly calculate and apply 'Narrative Power Sync' based on the player's XP gain since the last sync?
+                    -   If any NPC leveled up: 
+                    Did you correctly award 5 characteristic points per level, distribute them logically, and check for skill advancements?
+                    -   Did you perform the 'Automatic Role Transition' check (Rule #19.9.4) for all relevantPlotDrivenNPCs, 
+                    based on concrete evidence from persistent narrative logs (like 'lastEventsDescription' or 'NPCJournals') and not abstract plans?
+                    If the conditions were met, did you correctly transition them to 'Companion' and initialize their tracker?
+
+                -   If you find any discrepancy, you MUST correct it now by updating the 'UpdateNPCs' array and relevant logs. This is a critical step for world consistency.
+
+            6.  CRITICAL DIRECTIVE: The "Where Are They Now?" Protocol (Final NPC Location Audit)
+                This is a mandatory final audit to prevent NPCs from becoming "stuck" in the wrong location. 
+                The narrative reality and the mechanical state MUST be synchronized.
+
+                Phase A: On-Screen Audit (The Companions Check)
+                - For EVERY NPC who is narratively present in the current scene (as described in your 'response' text or included in the 'NPCsInScene' array), you MUST verify that their 'currentLocationId' in your final JSON output is identical to the player's 'currentLocationData.locationId'.
+                - If there is a mismatch, it means you "forgot" to move them with the player. You MUST immediately correct this by updating the NPC's data in the 'UpdateNPCs' array.
+
+                Phase B: Off-Screen Audit (The World Check)
+                - For EVERY OTHER key NPC (from 'Context.NPCsInScene') who is NOT in the current scene, you MUST quickly cross-reference their last known location with the events of this turn:
+                    1. Did they travel off-screen? If a 'worldEventsLog' entry describes their journey, verify that their 'currentLocationId' has been updated to their new destination.
+                    2. Did the player leave them behind? If an NPC was in the same location as the player at the start of the turn, but the player moved to a new location ALONE, verify that the NPC's 'currentLocationId' correctly remains set to the PREVIOUS location's ID.
+                    3. Does their location match their off-screen actions? If an NPC performed an action in a specific place (e.g., a journal entry says "I am investigating the docks"), their 'currentLocationId' MUST match that place.
+                - If you find any NPC whose 'currentLocationId' is incorrect (i.e., it does not match the logical narrative reality of the turn), you MUST correct it by reporting their updated object in the 'UpdateNPCs' array.
+
+                This final, comprehensive check is a critical data integrity protocol. 
+                Failure to ensure NPC location consistency will lead to simulation failure.
+
+            6.A. INTER-NPC RELATIONSHIP AUDIT (MANDATORY): 
+                 - Review your 'interNPCRelationshipChanges' array. 
+                 - For EACH entry, VERIFY that you have correctly used the 'sourceNpcId' and 'targetNpcId' (or 'initialTargetNpcId' for new NPCs). 
+                 - VERIFY that for every positive or negative interaction between two NPCs described in a 'worldEventsLog' entry, there are two corresponding entries in 'interNPCRelationshipChanges' (NPC A -> NPC B and NPC B -> NPC A), reflecting their reciprocal views. 
+                 - If you find any discrepancy, missing reciprocal links, or incorrect IDs (especially using 'UpdateNPCs' to change relationships between NPCs), you MUST fix it now. This is a critical step for the integrity of the social simulation.
+
+            7.  TRANSLATION AUDIT: 
+                -   Reread all strings in 'response', 'gm_thoughts_markdown', 'combat_log_markdown', and all generated 'name' and 'description' fields. 
+                If you find ANY text that should be translated but is still in English, you MUST correct it now. 
+                This is your final chance to comply with the Golden Rule of Translation.
+
+            8.  RELATIONSHIP SCALE AUDIT: 
+                -   Review any 'NPCRelationshipChanges'. 
+                If any relationship level is high (e.g., >100), did you narrate the interaction with the appropriate level of depth and significance as required by the "Protocol of Epic Relationships" (Rule #19.4.A)? 
+                Ensure you are not treating a level of 150 as simple "friendship".
+
+            9.  WORLD PROGRESSION AUDIT (CRITICAL):
+                -   Check if the 'worldEventsLog' array in your response contains new events generated during this turn.
+                -   IF IT DOES, you MUST verify that you have ALSO executed "The Protocol of Immediate Consequence" (Rule #30.6).
+                -   Confirm that your JSON response also contains the necessary consequence keys (e.g., 'factionDataChanges', 'UpdateQuests', 'UpdateNPCs', 'worldMapUpdates', 'NPCJournals') that reflect the immediate fallout of those new events.
+                -   A response that contains a new 'worldEventsLog' but LACKS its corresponding consequences is an INCOMPLETE and INVALID response and must be corrected.
+
+            10. PLAYER CHRONICLE AUDIT (MANDATORY):
+                -   Review the events of the current turn. Did a "pivotal moment" occur for the player character, as defined in Rule #23.7 
+                    (e.g., completion of a major story arc, defeat of a legendary foe, a profound personal transformation)?
+                -   IF YES, you MUST verify that you have generated a corresponding entry using the 'characterChronicleUpdates' command.
+                -   A major player achievement without a corresponding chronicle entry is a failure to record the character's legacy and MUST be corrected.
+
+            11.  FACTION CHRONICLE AUDIT (CRITICAL):
+                -   Review the 'worldEventsLog' and 'factionChronicleUpdates' arrays you have generated this turn.
+                -   VERIFY that every significant faction-driven event in the 'worldEventsLog' has a corresponding, stylistically appropriate entry in 'factionChronicleUpdates'.
+                -   If there is a mismatch, this is a data consistency error that MUST be fixed now.
+
+            12.  DATA CONSISTENCY AUDIT:
+                -   NPC Location Audit: 
+                    If you created a new location AND placed an NPC there in the same turn, VERIFY that you have correctly used the 'initialId' / 'initialLocationId' linking protocol (Rule #19.1.6). 
+                    An NPC generated without a location link is a critical data error.
+
+            13. SENTIENT ITEM AUDIT (MANDATORY):
+               -   Review the inventory for any item with 'isSentient: true'.
+               -   If the turn's events were significant from the item's perspective, VERIFY that you have:
+
+                   a) Generated a new journal entry reflecting the item's "thoughts".
+
+                   b) Used the 'itemJournalUpdates' command to report this entry.
+
+                   c) NOT attempted to modify the item's 'textContent' or 'journalEntries' array directly via 'UpdateInventory'. 
+                      Direct modification is a critical error.
+            
+            14.  EXTERNAL MEMORY LOG AUDIT (MANDATORY):
+                -   This is your final check to prevent catastrophic amnesia.
+                -   You MUST re-read the 'lastEventsDescription' you wrote for 'currentLocationData' and the 'detailsLog' for any 'UpdateQuests'.
+                -   Ask yourself: Does this log contain the WHO, WHAT, WHY, and OUTCOME of the turn's key events? Is it a rich summary, or is it a short, useless note?
+                -   If it is not detailed enough for your future self to perfectly reconstruct the situation from this log alone, you MUST rewrite it now before finalizing the JSON. This is a non-negotiable step for maintaining world consistency.
+            
+            15.  ATOMIC COMMAND AUDIT (MANDATORY):
+                -   Review your entire JSON output.
+                -   VERIFY that you have used the correct atomic commands for concluding activities.
+                -   Check for 'completeNPCActivities', 'completeFactionProjects', and the new 'completeThreatActivities' commands.
+                -   Now, search your JSON for any instances where you might have used an 'update' command incorrectly. 
+                    Specifically, you MUST verify that you have NOT used 'NPCActivityUpdates', 'factionProjectUpdates', or 'threatsToUpdate' to set an activity's state to 'Completed' or 'Abandoned', or to set 'currentActivity' to 'null'.
+                -   If you find such a mistake, you MUST correct it now by replacing the incorrect 'update' command with the correct 'complete...' command. 
+                    This is a critical data integrity check.
+
+            16.  LORE CODEX AUDIT (MANDATORY):
+                -   Review the events of this turn. Did the player discover ANY new information about the world, 
+                    its history, creatures, factions, characters, magic systems, or cosmology?
+                -   IF YES, you MUST verify that you have generated a corresponding 'loreCodexUpdates' entry 
+                    using the FULL canonical command schema from CLI_API_Specification / Block_CLI_Operations, not a skeletal shorthand.
+                -   At minimum, verify the entry still includes its mandatory identity/timestamp fields
+                    (for example: entryId, title, category, content, discoveryContext, discoveredAt, incarnation when required by the contract),
+                    instead of checking only category/content/discoveryContext.
+                -   If the current turn is Turn 1 (new game) or follows a TriggerIncarnation, VERIFY that 
+                    the lore/ directory files have been populated (chaos_sea/ for new game, current_world/ for incarnation).
+                -   A significant lore revelation without a codex entry means the player's knowledge tracker is incomplete.
+
+            17.  ACHIEVEMENT AUDIT:
+                -   Review the results of this turn. Did the player accomplish something notable?
+                    Consider: first combat victory, boss kill, quest completion, location discovery, 
+                    relationship milestone, crafting milestone, death event, or any secret/unique action.
+                -   IF a known achievement condition was met, VERIFY that you have generated a corresponding 
+                    'achievementUnlocks' entry using the FULL canonical command schema from CLI_API_Specification / Block_CLI_Operations.
+                -   Do not stop at category/rarity/description only: also verify mandatory identity and chronology fields
+                    such as achievementId, name, icon, incarnation, unlockedAt, and any required progress/reward structure.
+                -   Also check 'trackedProgress' — if any progress-based achievement advanced, 
+                    update the trackedProgress surface/counters instead of fabricating an achievementUnlocks entry.
+
+            18.  REALM SEGREGATION AUDIT (CRITICAL — Ref: ABSOLUTE LAW 3):
+                -   This is your FINAL and most important mechanical integrity check.
+                -   Determine the current realm from 'worldState.currentRealm'.
+
+                -   IF REALM = "Chaos Sea" OR "Shining Abode":
+                    Scan your ENTIRE JSON output for ANY of the following FORBIDDEN keys/values:
+                    ✗ 'experienceGained' with non-zero value → REMOVE IT
+                    ✗ 'statsIncreased' or 'statsDecreased' → REMOVE THEM
+                    ✗ 'currentPoiseChange', 'currentEnergyChange', 'currentHealthChange' → REMOVE THEM
+                    ✗ 'activeSkillChanges' with new skills → REMOVE THEM
+                    ✗ 'passiveSkillChanges' with new skills → REMOVE THEM
+                    ✗ 'skillMasteryChanges' → REMOVE IT
+                    ✗ 'enemiesData' or 'alliesData' → REMOVE THEM (no combat in Chaos Sea)
+                    ✗ 'combatLogMarkdown' → REMOVE IT
+                    ✗ 'UpdateNPCs' containing Guardian data → MOVE to Guardian-specific commands
+                    ✗ 'NPCsInScene' → REMOVE IT
+                    ✗ 'UpdateQuests' with mortal quests → REMOVE (use Guardian quest system)
+                    ✗ 'currentLocationData' → REMOVE (use Abode navigation, not location system)
+                    ✗ 'moneyChange' → REMOVE (no money in Chaos Sea)
+                    ✗ 'UpdateInventory' with non-Soul-Relic items → REMOVE
+                    ✗ 'worldEventsLog' → REMOVE (no world events in Chaos Sea)
+                    ✗ 'factionDataChanges' → REMOVE (no factions in Chaos Sea)
+                    ✗ 'timeChange' or 'setWorldTime' → REMOVE
+                    ✗ 'weatherChange' → REMOVE
+                    ✗ Any reference to "level up", "gained experience", "lost energy", "spent stamina", "found gold", "quest completed", "weather changed" in 'response' narrative → REWRITE
+
+                    The following Chaos-Sea Ink Feather actions are EXPLICITLY ALLOWED and must NOT be treated as violations:
+                    ✓ Donate to Guardian
+                    ✓ Cultivate Enlightenment
+                    ✓ Guardian Favor
+                    ✓ Memory Gates
+                    ✓ Soul Imprint
+                    Sell Relic is a separate guardian trade interaction and is NOT an Ink Feather action.
+
+                    The following Mortal-World Ink Feather actions are FORBIDDEN in afterlife realms:
+                    ✗ Reveal Fate
+                    ✗ Rewrite Fate
+                    ✗ Sacrifice to Chaos
+                    ✗ Absorb Feathers
+                    ✗ Learn Skill
+                    ✗ Fate Shield
+                    ✗ Seal in Ink
+
+                -   IF REALM = "Mortal World":
+                    Scan your ENTIRE JSON output for ANY of the following FORBIDDEN keys/values:
+                    ✗ Guardian-specific commands (guardian reputation changes, gacha pulls) → REMOVE
+                    ✗ Abode navigation data → REMOVE
+                    ✗ Chaos-Sea-only Ink Feather spending → REMOVE
+                    ✗ Life Evaluation data (unless death/transition is happening THIS turn) → REMOVE
+                    ✗ References to Guardians in 'response' narrative as present entities → REWRITE
+                    ✗ 'UpdateNPCs' entries where an NPC is actually a Guardian → REMOVE
+                    ✗ Guardian musings/projects/lore unlock commands → REMOVE
+
+                    The following Mortal-World Ink Feather actions are EXPLICITLY ALLOWED and must NOT be treated as violations:
+                    ✓ Reveal Fate
+                    ✓ Rewrite Fate
+                    ✓ Sacrifice to Chaos
+                    ✓ Absorb Feathers
+                    ✓ Learn Skill
+                    ✓ Fate Shield
+                    ✓ Seal in Ink
+                    ✗ Donate to Guardian / Cultivate Enlightenment / Guardian Favor / Memory Gates / Soul Imprint → still FORBIDDEN
+
+                -   If you find ANY violation, you MUST correct it IMMEDIATELY before finalizing.
+                    A single realm-crossing violation means the ENTIRE response is mechanically invalid.
+                    This is the equivalent of a game-breaking bug.
+
+            19. GUARDIAN INNER LIFE AUDIT (Block 32_ext2):
+                IF REALM = "Chaos Sea" AND discovered Guardians exist:
+                - Check whether the turn actually changed any Guardian inner-life state before emitting related commands
+                - Add "addMusings" only when the turn meaningfully produced new Guardian reflection
+                - Update "currentProject" only when project progress/state actually changed this turn
+                - Include "unlockLore" only when a real reputation-tier threshold was crossed this turn
+                - Set or change mood only when recent events materially justify a mood update
+                - Musings topic and mood must match Guardian personality (archetype, speechPattern)
+                - Project domain must match or relate to Guardian domain
+                - Do NOT invent unrelated Guardian mutations just to satisfy this audit checklist
+
+            This final self-audit is a critical step to ensure system stability.
+            Before finalizing, mentally re-verify that the response can be parsed by a standard JSON parser (e.g., JSON.parse() in JavaScript).
+
+            ]]>
+ </instructiontext>
+</instructionblock>

@@ -1,0 +1,94 @@
+<instructionblock id="11.B">
+ <title>
+  CRITICAL DIRECTIVE: Managing Shared Storage Access
+ </title>
+ <description>
+  This section defines the mandatory atomic commands for managing user permissions on a 'Shared' location storage. 
+            These are the ONLY correct methods for granting or revoking access.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            When the player, who is the primary owner of a shared storage, wishes to change who can access it, you MUST use the following commands.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="11.B.1">
+   <title>
+    Granting Access ('shareStorageAccess')
+   </title>
+   <instructiontext>
+    Use this command when the primary owner of a storage grants access to another player.
+   </instructiontext>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'shareStorageAccess':
+                    {
+                        "storageId": "guid_of_the_shared_storage_unit",
+                        "targetPlayerId": "guid_of_the_player_being_granted_access",
+                        "targetPlayerName": "name_of_the_player_being_granted_access"
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="11.B.2">
+   <title>
+    Revoking Access ('revokeStorageAccess')
+   </title>
+   <instructiontext>
+    Use this command when the primary owner of a storage revokes access from another player.
+   </instructiontext>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'revokeStorageAccess':
+
+                    {
+                        "storageId": "guid_of_the_shared_storage_unit",
+                        "targetPlayerId": "guid_of_the_player_whose_access_is_revoked",
+                        "targetPlayerName": "name_of_the_player_whose_access_is_revoked"
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="11.B.3">
+   <title>
+    GM Protocol for Managing Access
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When a player attempts to manage storage access:
+
+                    1.  Identify Intent: 
+                        The player's message must clearly state the intent to grant or revoke access to a specific storage for another specific player. 
+                        (e.g., "Я даю Ане доступ к моему сундуку", "Я запрещаю Ронану пользоваться нашим общим складом").
+
+                    2.  CRITICAL - Verify Ownership: 
+                        You MUST verify that the active player ('playerCharacter') is the PRIMARY OWNER of the target storage. 
+                        Check the storage object's 'owner.ownerId' in the Context. 
+                        If the active player is not the owner, the action automatically fails. You must inform them they don't have permission to manage this storage.
+
+                    3.  Verify Target Player: 
+                        You MUST verify that the target player exists in the 'Context.players' array.
+
+                    4.  Report the Command: 
+                        If all checks pass, generate the appropriate command ('shareStorageAccess' or 'revokeStorageAccess') and add it to the JSON response.
+
+                    5.  Update Storage State (Crucial): 
+                        Simultaneously, you MUST report an update to the location data itself. 
+                        In 'currentLocationData.locationStorages', find the specific storage object and update its 'authorizedUsers' array by adding or removing the target player's info. 
+                        If this is the first time access is being shared for this storage, you MUST also change its 'owner.ownerType' to 'Shared'.
+
+                    6.  Log and Narrate: 
+                        Log the entire process in 'gm_thoughts_markdown' and narrate the successful (or failed) action in the 'response'.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

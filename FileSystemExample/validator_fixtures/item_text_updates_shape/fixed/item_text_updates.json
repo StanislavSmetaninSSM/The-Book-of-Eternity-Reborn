@@ -1,0 +1,9 @@
+{
+  "updateItemTextContents": [
+    {
+      "itemId": "journal_field_01",
+      "itemName": "Полевой журнал",
+      "textToAppend": "Новая запись о странных руинах."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "expectedCodes": [
+    "item_journal_update_uses_legacy_entries_shape",
+    "item_journal_update_missing_entry_to_append"
+  ],
+  "expectedMessages": [
+    "itemJournalUpdates uses append-only authoring",
+    "Use entryToAppend instead of journalEntries fragments"
+  ]
+}

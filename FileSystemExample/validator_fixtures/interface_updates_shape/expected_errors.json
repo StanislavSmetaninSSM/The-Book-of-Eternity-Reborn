@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "interface_updates_unknown_field"
+  ],
+  "expectedMessages": [
+    "output/interface_updates.json contains unsupported top-level field"
+  ]
+}

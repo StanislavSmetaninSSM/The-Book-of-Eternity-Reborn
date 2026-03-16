@@ -1,0 +1,384 @@
+<instructionblock id="14">
+ <title>
+  Player Character and Named NPC Combat Profile Calculation
+ </title>
+ <description>
+  This section details how to calculate the core combat-relevant parameters for Player Characters (PCs) and named Non-Player Characters (NPCs) who possess a full set of characteristics (defined in #5.1). 
+            These calculated parameters include their offensive potential (total added damage bonuses, critical hit properties) and defensive capabilities (total resistances).
+            This combat profile is essential for resolving their actions in combat (when they act) and determining outcomes when they are targeted by actions (as per InstructionBlock '12' and '15').
+            Generic enemies and allies have their parameters defined directly via formulas in Section #6.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            Before a PC or named NPC engages in combat, or when their underlying stats/equipment/skills/effects change significantly, their combat profile should be understood or recalculated by the GM.
+            The game system may provide some of these values directly in the Context for the Player Character. For NPCs, the GM will typically need to derive them from the NPC's data in 'NPCsInScene'.
+            All calculated percentage bonuses mentioned here are treated as additive percentage points that contribute to a final multiplier or sum, unless explicitly stated otherwise. Integer results are generally preferred for final percentages (use floor rounding).
+            
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="14.1">
+   <title>
+    Health and Energy Parameters
+   </title>
+   <content type="ruleset">
+    <rule id="14.1.1">
+     <title>
+      Maximum Health ('maxHealth%')
+     </title>
+     <content type="rule_text">
+      <![CDATA[    
+                            
+                            - For Player Character (PC):
+                            Derived from the character's Permanently Modified Constitution and Strength. 
+                            The game system calculates this value based on the formula in #5.7.3 and typically provides it in 'Context.playerCharacter.maxHealth'. 
+                            The GM must be aware that this value now includes permanent bonuses from gear and skills.
+
+                            - For Named NPCs:
+                            Calculated by the GM using the NPC's Permanently Modified Constitution and Strength with the same formula, as detailed in rule #6.1.6.2.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="14.1.2">
+     <title>
+      Current Health ('currentHealth%')
+     </title>
+     <content type="rule_text">
+      <![CDATA[    
+                            
+                            -   For PC: Tracked by the system, provided in 'Context.playerCharacter.currentHealth'.
+
+                            -   For Named NPCs: Initialized to 'maxHealth%' and updated based on damage/healing. 
+                                If the NPC is part of 'enemiesData' or 'alliesData', their 'currentHealth' is updated there.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="14.1.3">
+     <title>
+      Maximum Energy ('maxEnergy%') (Player and applicable NPCs)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            - This parameter is calculated using the character's Permanently Modified characteristics.
+                            - The formula is identical to the one defined in #5.7.3:
+
+                                'MaxEnergy% = 100 + floor(PermanentlyModifiedConstitution * 0.75) + floor(PermanentlyModifiedIntelligence * 0.75) + floor(PermanentlyModifiedWisdom * 0.75) + floor(PermanentlyModifiedFaith * 0.75)'
+
+                            - For PC: 
+                            This value is typically provided by the system in 'Context.playerCharacter.maxEnergy', calculated based on the full rule in #5.7.3.
+
+                            - For NPCs who use abilities with energy costs (if any are designed this way): 
+                            Calculated by the GM using their Permanently Modified Characteristics. 
+                            (Note: As per #6.1.6.7, energy for NPCs is generally assumed unlimited for their abilities, but their MaxEnergy might be relevant for other effects).
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="14.1.4">
+     <title>
+      Current Energy ('currentEnergy%') (Player)
+     </title>
+     <content type="rule_text">
+      <![CDATA[    
+                            
+                            - Tracked by the system, provided in 'Context.playerCharacter.currentEnergy'.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="14.2">
+   <title>
+    Offensive Parameter Calculation (for a Specific Attack/Action)
+   </title>
+   <description>
+    These parameters are calculated when a PC or NPC is about to perform a specific offensive Combat Action (from a skill, item, or basic weapon use).
+   </description>
+   <content type="ruleset">
+    <rule id="14.2.0">
+     <title>
+      Total Pre-Critical Damage Calculation
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            This is the master formula for calculating the total base damage of an attack before applying critical multipliers or target resistances. 
+                            It combines the weapon, the active skill, and all passive bonuses.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Formula:
+                            TotalPreCritDamage% = 
+                                BaseWeaponDamage% 
+                                + ScaledActiveSkillDamage% 
+                                + TotalAddedDamageBonus%
+
+                            Where:
+
+                            - BaseWeaponDamage%: 
+                            The base 'value' from the equipped weapon's 'combatEffect'. 
+                            If the action is an unarmed strike or a skill that doesn't use a weapon, this is 0.
+
+                            - ScaledActiveSkillDamage%: The final, scaled damage 'value' of the active skill being used, calculated as per Rule #7.3. 
+                            If no active skill is used, this is 0.
+
+                            - TotalAddedDamageBonus%: The sum of all passive bonuses, calculated as per Rule #14.2.1.
+
+                            The entire calculation, including the breakdown of all three components, MUST be logged as shown in the primary combat example in InstructionBlock 3.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="14.2.1">
+     <title>
+      Total Added Damage Bonus ('TotalAddedDamageBonus%')
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            This value represents the sum of all PASSIVE bonuses that enhance a specific damage type (e.g., from character level, stats, passive skills, equipment, and temporary buffs). 
+                            It does NOT include the base damage from the weapon or the active skill itself, which are handled separately in the 'Total Pre-Critical Damage' calculation (Rule #14.2.0).
+                            This is a component of the total damage, not the total itself.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            This percentage represents the sum of all PASSIVE bonuses that enhance a specific damage type. 
+                            It does NOT include the base damage from the weapon or the active skill itself.
+
+                            Formula:
+                            TotalAddedDamageBonus% = 
+                                BonusFromLevel
+                                + BonusFromCharacteristic
+                                + BonusFromPassiveSkills
+                                + BonusFromEquipment
+                                + BonusFromTemporaryEffects
+
+                            The calculation MUST follow these steps sequentially:
+
+                            Step 1: Calculate Base Bonus from Character Stats
+                            a)  'BonusFromLevel': Derived from CharacterLevel.
+                                - Formula: '5 + floor(CharacterLevel / 10) * 2' (from #5.7.2).
+                            b)  'BonusFromCharacteristic': Derived from the character's Modified Relevant Characteristic for this specific attack.
+                                - Formula: 'floor(ModifiedRelevantCharacteristic / 2.5)' (from #5.7.4).
+                                - 'RelevantCharacteristic' is determined by the skill or weapon being used.
+
+                            Step 2: Calculate Bonus from Passive Skills
+                            a)  'BonusFromPassiveSkills': 
+                            Sum ALL applicable percentage bonuses from the character's active Passive Skills by checking three sources for each skill:
+                                - Primary Source: The 'combatEffect' array.
+                                - Secondary Source: The 'structuredBonuses' array.
+                                - Legacy Fallback: 
+                                If a skill has no relevant bonuses in either of the primary sources, you MUST then check the legacy 'playerStatBonus' string for any applicable damage bonuses and add them to the total.
+                            
+                            b)  Applicability: A skill's bonus applies if its effect 'targetType' (e.g., 'damage (slashing)', 'damage (all)') matches or includes the damage type of the current attack.
+
+                            Step 3: Calculate Bonus from Equipment
+                            a)  'BonusFromEquipment': Sum ALL applicable percentage 'value's from passive 'Buff' effects (where 'isActivatedEffect' is false) within the 'combatEffect' of ALL of the character's currently equipped items.
+                            b)  Applicability: An item's bonus applies if its effect 'targetType' matches or includes the damage type of the current attack.
+
+                            Step 4: Calculate Bonus from Temporary Effects
+                            a)  'BonusFromTemporaryEffects': 
+                            Sum ALL percentage 'value's from effects currently in the character's 'activeBuffs' list that have an 'effectType' of 'Buff' and a 'targetType' matching or including the damage type of the current attack.
+
+                            Step 5: Final Summation and Logging
+                            a)  Calculate 'TotalAddedDamageBonus%' by summing the totals from each step.
+                            b)  The breakdown of this total MUST be logged as part of the main damage calculation, as shown in the example in InstructionBlock 3.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="14.2.1.1">
+     <title>
+      Total Poise Damage Calculation ('TotalPoiseDamage%')
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            Poise damage is calculated exactly like HP damage, following the same scaling and bonus system. 
+                            Every attack that deals HP damage also deals Poise damage based on the weapon/skill's 'poiseDamage' value.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Formula:
+                            TotalPoiseDamage% = 
+                                BaseWeaponPoiseDamage% 
+                                + ScaledActiveSkillPoiseDamage% 
+                                + TotalAddedPoiseDamageBonus%
+
+                            Where:
+
+                            - BaseWeaponPoiseDamage%: 
+                            The 'poiseDamage' value from the equipped weapon's 'combatEffect'. 
+                            If the action is an unarmed strike or a skill that doesn't use a weapon, this is 0.
+
+                            - ScaledActiveSkillPoiseDamage%: 
+                            The 'poiseDamage' value from the active skill being used, scaled by mastery level as per Rule #7.3. 
+                            If no active skill is used, this is 0.
+
+                            - TotalAddedPoiseDamageBonus%: 
+                            The sum of all passive bonuses that apply to poise damage, calculated using the same characteristic scaling as HP damage.
+                            This follows the exact same formula as Rule #14.2.1 but applies to poise damage bonuses instead of HP damage bonuses.
+                            The relevant characteristic for scaling is the same as for HP damage (determined by the skill or weapon being used).
+
+                            Notes:
+                            - Light weapons (daggers, rapiers) typically have low poise damage (5-15%).
+                            - Heavy weapons (hammers, greatswords) and explosive spells have high poise damage (25-50%).
+                            - Poise damage is affected by critical hits the same way as HP damage.
+                            - When poise drops to 0 or below, the target becomes Staggered (see Rule #15.3 for stagger mechanics).
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="14.2.2">
+     <title>
+      Critical Hit Parameters
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+                            These are determined for PCs and named NPCs based on their characteristics.
+
+                            a)  Critical Hit Chance Threshold ('CritChanceThreshold'):
+                                - Calculated using the character's Permanently Modified Luck.
+                                - Formula: 'CritChanceThreshold = 20 - floor(PermanentlyModifiedLuck / 20)'
+                                - (This aligns with the authoritative formula in #5.7.3).
+
+                            b)  Final Critical Hit Damage Multiplier ('FinalCritMultiplier'):
+                                - Calculated using the character's Modified Luck.
+                                - Base Multiplier: 1.5 
+                                - Luck-Based Bonus Percentage: 'CritDamageLuckBonus% = floor(ModifiedLuck / 2)'
+                                - Formula: 'FinalCritMultiplier = 1.5 + (CritDamageLuckBonus% / 100)'
+                                - (This aligns with the authoritative formula in #5.7.4).
+                                - This 'FinalCritMultiplier' is applied to damage if a 'Critical Success' result is achieved (as per #12.9.2.1.d).
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="14.3">
+   <title>
+    Defensive Parameter Calculation (Player &amp; NPC): Total Resistance
+   </title>
+   <description>
+    This determines a character's total effective resistance against a specific incoming damage type.
+   </description>
+   <content type="ruleset">
+    <rule id="14.3.1">
+     <title>
+      Calculating Total Resistance Percentage ('FinalResistance%')
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            When a character (PC or NPC) is targeted by an attack dealing a specific 'IncomingDamageType', 
+                            their total effective resistance is calculated by layering different sources of protection in a specific order.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The calculation MUST follow these steps sequentially:
+
+                            Step 1: Calculate Innate Resistance
+                            This represents the character's natural toughness.
+                            a) 'LevelResistance%': General 'all' resistance from CharacterLevel (from #5.7.2).
+                            b) 'StatResistanceBonus%': General 'all' resistance from ModifiedConstitution (from #5.7.4).
+                            c) 'InnateResistance% = LevelResistance% + StatResistanceBonus%'. This value applies to 'all' damage types.
+
+                            Step 2: Determine Primary Armor Resistance
+                            This represents the single best piece of worn, passive defensive gear (armor or shield).
+                            a) Identify Primary Armor: From the character's equipped items, identify the single item that provides the highest 'DamageReduction' or 'resist' bonus against the 'IncomingDamageType'. This is typically a Chest piece or a Shield.
+                            b) If the best resistance from this item is for 'all' types, use that value. If it has a specific resistance matching 'IncomingDamageType' that is higher than its 'all' resistance, use the specific value.
+                            c) Let this be 'PrimaryArmorResistance%'. If no such item is equipped, this value is 0.
+
+                            Step 3: Sum All Additional Bonuses
+                            This step adds all other sources of resistance.
+                            a) 'AdditionalEquipmentBonuses%': Sum the resistance bonuses from ALL OTHER equipped items (excluding the one identified in Step 2) that apply to the 'IncomingDamageType' or 'all' types.
+                            
+                            c) 'PassiveSkillBonuses%': 
+                            Sum ALL applicable resistance bonuses from the character's active Passive Skills by checking three sources for each skill:
+                            - Primary Source: The 'combatEffect' array.
+                            - Secondary Source: The 'structuredBonuses' array.
+                            - Legacy Fallback: If a skill has no relevant bonuses in either of the primary sources, you MUST then check the legacy 'playerStatBonus' string for any applicable resistance bonuses.
+                            
+                            c) 'TemporaryEffectsBonuses%': Sum the 'value' percentages from 'activeBuffs' and 'activeDebuffs' that modify resistance to the 'IncomingDamageType' or 'all' types. (Note: Debuffs provide negative values).
+                            d) 'AdditionalBonuses% = AdditionalEquipmentBonuses% + PassiveSkillBonuses% + TemporaryEffectsBonuses%'.
+
+                            Step 4: Final Calculation and Capping
+                            a)  'TotalResistanceBeforeCap% = InnateResistance% + PrimaryArmorResistance% + AdditionalBonuses%'.
+                            b)  'FinalResistance% = min(90, max(-100, TotalResistanceBeforeCap%))'. 
+                            The final resistance is capped at 90% and cannot go below -100% (vulnerability).
+
+                            Logging: The entire step-by-step calculation MUST be logged in 'gm_thoughts_markdown'.
+
+                            Example Log: "Calculating Player Resistance to 'fire' damage:
+                            \n\n - Step 1 (Innate): LevelResist(L25, all)=+10% + ConstResist(ModConst60, all)=+6% -> InnateResistance=+16%
+                            \n\n - Step 2 (Primary Armor): Equipped 'Dragonscale Shield' provides the best 'fire' resistance at +30%. PrimaryArmorResistance=+30%
+                            \n\n - Step 3 (Additional Bonuses):
+                            \n\n   - Equipment: 'Amulet of Warding' (resist all)=+5%
+                            \n\n   - Skills: 'Elemental Adaptation' (resist fire)=+10%
+                            \n\n   - Temp Effects: 'Stone Skin' (resist all)=+20%
+                            \n\n   - Total AdditionalBonuses = 5 + 10 + 20 = +35%
+                            \n\n - Step 4 (Final):
+                            \n\n   - TotalBeforeCap = 16% + 30% + 35% = 81%
+                            \n\n   - Final Fire Resistance = min(90, 81) = 81%."
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="14.4">
+   <title>
+    Application in Combat Resolution
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    The parameters calculated in this section (TotalAddedDamageBonus%, FinalCritMultiplier, FinalResistance%) 
+                    are crucial inputs for the detailed combat resolution steps described in #12.9 (Applying Mechanical Combat Effects) and InstructionBlock '15' (Detailed Combat Resolution) 
+                    when determining the final outcome of attacks, damage dealt, and damage received.
+                    
+                    ]]>
+   </content>
+  </rule>
+  <rule id="14.5">
+   <title>
+    Processing Wound Reference Effects (WoundReference)
+   </title>
+   <description>
+    This rule describes how the GM must process "WoundReference" type effects during calculations to apply the mechanical consequences associated with the wound.
+                    Reference effects are added by the system to 'activeBuffs'/'activeDebuffs' only when the wound ID is known (i.e., in the turn following the wound's infliction).
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When calculating total bonuses, penalties, or resistances (as per Rule 14.2.1 and 14.3.1), the GM MUST scan the combatant's 'activeEffects' array ('activeBuffs' / 'activeDebuffs').
+                    1.  If an object in the array is a standard effect (e.g., 'effectType: "Buff"' or 'effectType: "DamageOverTime"'), it is processed as usual, using its own 'value', 'targetType', and 'duration' fields.
+                    2.  If an object has 'effectType: "WoundReference"', the GM MUST:
+                        a)  Use the 'sourceWoundId' from the 'WoundReference' object to locate the corresponding Wound object in the 'playerWounds' array (for the player) or 'NPCWounds' array (for NPCs) within the 'Context'.
+                        b)  Extract the 'generatedEffects' array from the found Wound object.
+                        c)  Process each individual effect object from this Wound's 'generatedEffects' array (e.g., a "Disarmed" effect or a "Strength reduced by X%" effect) as if it were directly present in the main 'activeEffects' list.
+
+                    Thus, 'WoundReference' serves as a pointer to the actual mechanical penalties, which are fully defined within the corresponding Wound object.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

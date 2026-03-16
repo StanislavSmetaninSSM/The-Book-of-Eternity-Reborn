@@ -1,0 +1,124 @@
+<instructionblock id="23.A">
+ <title>
+  Examples For Core World and Character Data Override Protocols
+ </title>
+ <rule id="23.A.1">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player emerges from a 3-day magical coma.
+   </title>
+   <scenariocontext>
+    Player was put into a magical sleep on the 15th day of the "Month of Beginnings", 1024. 
+                            The plot dictates they wake up 3 days later, in the morning.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Plot Event: Player awakens from a 3-day magical coma.
+                            Action: Setting world time directly.
+                            - Current Date (from Context): 15th of the "Month of Beginnings", 1024.
+                            - New Date: 18th of the "Month of Beginnings", 1024.
+                            - New Time of Day: Morning. Setting time to "08:00".
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <setworldtime>
+     <![CDATA[
+
+                                {
+                                    "year": 1024,
+                                    "monthName": "Month of Beginnings",
+                                    "dayOfMonth": 18,
+                                    "timeOfDay": "08:00"
+                                }
+
+                                ]]>
+    </setworldtime>
+    <response>
+     <![CDATA[
+
+                                You awake with a gasp, the world rushing back in a blur. 
+                                The light filtering through the window is bright morning sun, but looking outside, you realize the leaves on the trees have changed. 
+                                A calendar on the wall confirms your fear: three days have passed since you fell into that enchanted sleep.
+                            
+                                ]]>
+    </response>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="23.A.2">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player discovers their true Elven heritage.
+   </title>
+   <scenariocontext>
+    Player, an Elf, learns they are a rare "Moon Elf", not a "Wood Elf".
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Plot Event: Player discovered their Moon Elf heritage.
+                            Action: Updating player's race description to reflect new lore and traits.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <playerracedescriptionchange>
+     <![CDATA[
+
+                                Moon Elves are a reclusive and mystical lineage, known for their silvery hair and an innate connection to lunar magic.
+                                They are often more cerebral and less wild than their Wood Elf cousins, possessing a natural affinity for illusion and divination.
+                            
+                                ]]>
+    </playerracedescriptionchange>
+    <response>
+     <![CDATA[
+                            
+                                    The ancient text resonates with your blood. The title "Wood Elf" suddenly feels like an ill-fitting cloak. 
+                                    You are a child of the moon, and with this realization, you feel a subtle shift in your perception of the world, as if seeing the hidden moonlight in all things.
+                            
+                                ]]>
+    </response>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="23.A.3">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: A Warrior becomes a protector.
+   </title>
+   <scenariocontext>
+    After saving a village, the player's Warrior character decides their purpose is to defend the innocent.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Character Development: The Warrior has adopted a protective philosophy.
+                            Action: Updating the class description from a focus on martial prowess to one of guardianship.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <playerclassdescriptionchange>
+     <![CDATA[
+
+                                No longer just a wielder of arms for coin or glory, the Warrior has become a steadfast Guardian. 
+                                Their techniques are now honed not just for victory, but for the unwavering defense of those who cannot defend themselves. 
+                                They are a shield for the weak and a bulwark against the darkness.
+                            
+                                ]]>
+    </playerclassdescriptionchange>
+    <response>
+     <![CDATA[
+
+                                As you watch the villagers begin to rebuild, you feel a shift within you. 
+                                The thrill of battle seems a distant memory, replaced by a profound sense of duty. 
+                                Your sword hand no longer feels eager for a fight, but steady and ready to protect.
+                            
+                                ]]>
+    </response>
+   </jsonresponse>
+  </example>
+ </rule>
+</instructionblock>

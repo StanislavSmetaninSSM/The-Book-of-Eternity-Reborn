@@ -1,0 +1,33 @@
+{
+  "modsDirectory": "mods",
+  "activeCount": 1,
+  "totalCount": 1,
+  "enabledSystemMods": [
+    "example_system_mod.json"
+  ],
+  "activeMods": [
+    {
+      "fileName": "example_system_mod.json",
+      "relativePath": "mods/example_system_mod.json",
+      "modId": "example-system-mod",
+      "name": "Пример глобального системного мода",
+      "description": "Демонстрационный мод, меняющий глобальный tone and processing context.",
+      "extension": ".json",
+      "lastModifiedUtc": "2026-03-13T00:00:00.0000000Z",
+      "content": "{ \"name\": \"Пример глобального системного мода\" }"
+    }
+  ],
+  "availableMods": [
+    {
+      "fileName": "example_system_mod.json",
+      "relativePath": "mods/example_system_mod.json",
+      "modId": "example-system-mod",
+      "name": "Пример глобального системного мода",
+      "description": "Демонстрационный мод, меняющий глобальный tone and processing context.",
+      "extension": ".json",
+      "lastModifiedUtc": "2026-03-13T00:00:00.0000000Z",
+      "enabled": true
+    }
+  ],
+  "_lastUpdated": "2026-03-13T00:00:00.0000000Z"
+}

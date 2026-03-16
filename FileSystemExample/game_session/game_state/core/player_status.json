@@ -1,0 +1,8 @@
+{
+  "healthPercentage": "100%",
+  "poisePercentage": "100%",
+  "energyPercentage": "100%",
+  "currentCondition": "Здоров",
+  "money": 500,
+  "activeConditions": []
+}

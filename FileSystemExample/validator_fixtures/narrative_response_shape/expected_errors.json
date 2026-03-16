@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "narrative_response_unknown_field"
+  ],
+  "expectedMessages": [
+    "output/narrative_response.json contains unsupported top-level field"
+  ]
+}

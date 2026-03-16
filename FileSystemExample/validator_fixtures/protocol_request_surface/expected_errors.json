@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "client_owned_protocol_surface_modified"
+  ],
+  "expectedMessages": [
+    "runtime-authored protocol surface must not be modified by GM"
+  ]
+}

@@ -1,0 +1,819 @@
+CLI STEP MAIN — EXTENDED EXAMPLE FOR VALIDATION, NPC SCOPE, AND REPAIR LOOP
+
+This file supplements TaskGuides/CLI_Step_Main.txt.
+Read BOTH files before EVERY turn and reread them before EVERY repair attempt and before handling any terminal protocol failure notice.
+
+==================================================
+1. SCENE-LOCAL TURN WITH NPC SCOPE
+==================================================
+
+Example gm_thoughts_markdown:
+
+## Оценка времени и мира
+- Прошло игрового времени: 15 минут
+- Логические последствия: Существенных мировых или фракционных последствий нет
+- Решение о прогрессии: Прогрессия мира и фракций не требуется
+
+## Охват NPC-анализа
+- Режим: Scene-local
+- Релевантные акторы: Марта, Феликс
+- Почему они релевантны: Оба физически присутствуют в сцене и непосредственно реагируют на действие игрока
+- Акторы вне охвата: Капитан стражи, Совет ремесленников
+- Почему они вне охвата: Локальная сцена не затрагивает их решения и не запускает off-screen последствия
+
+## Размышления NPC
+### Марта
+- Ситуация: Она видит, что игрок просит у неё помощь при свидетеле
+- Мысли: Она хочет помочь, но боится потерять репутацию у хозяина лавки
+- Действия: Она отвечает осторожно, даёт неполную информацию и наблюдает за реакцией Феликса
+
+### Феликс
+- Ситуация: Он замечает, что игрок пытается обойти его через Марту
+- Мысли: Он не хочет терять контроль над ситуацией и подозревает скрытый мотив
+- Действия: Он вмешивается в разговор и переводит инициативу на себя
+
+## Логика прогрессии
+- Существенных off-screen обновлений не требуется
+
+==================================================
+2. WORLD-PROGRESSION TURN WITH OFF-SCREEN NPCS
+==================================================
+
+## Оценка времени и мира
+- Прошло игрового времени: 8 часов
+- Логические последствия: Несколько активностей НПС и один фракционный проект должны продвинуться
+- Решение о прогрессии: Нужны world/faction/NPC updates
+
+## Охват NPC-анализа
+- Режим: World-progression
+- Релевантные акторы: Лорд Хавьер, Интендант Ирис, Капитан Рувен
+- Почему они релевантны: Их решения напрямую определяют реакцию гарнизона, снабжения и текущего фракционного проекта
+- Акторы вне охвата: Бармен Йорик, Рыночные торговцы
+- Почему они вне охвата: Этот цикл не меняет их состояние и не создаёт для них новых решений
+
+## Размышления NPC
+### Лорд Хавьер
+- Ситуация: Он получил отчёт о нехватке провизии и угрозе с южной дороги
+- Мысли: Нельзя показывать слабость гарнизона, но и игнорировать снабжение опасно
+- Действия: Он перераспределяет охрану, ускоряет переговоры с Ирис и отменяет второстепенные поставки
+
+### Интендант Ирис
+- Ситуация: Она видит дефицит ресурсов и давление со стороны Хавьера
+- Мысли: Ей нужно сохранить склады и не допустить паники среди поставщиков
+- Действия: Она урезает выдачу припасов и запускает срочную закупку по повышенной цене
+
+### Капитан Рувен
+- Ситуация: На нём лежит ответственность за безопасность караванного пути
+- Мысли: Он считает южную дорогу уязвимой и ждёт нападения
+- Действия: Он усиливает патрули и меняет маршрут сопровождения
+
+## Логика прогрессии
+- Фракционный проект снабжения продвинулся
+- Активности гарнизона и снабжения обновлены
+
+==================================================
+3. GUARDIAN-CENTRIC TURN
+==================================================
+
+## Оценка времени и мира
+- Прошло игрового времени: один hub-cycle Моря Хаоса
+- Логические последствия: Нужно оценить настроение и проект активного Хранителя
+- Решение о прогрессии: Guardian/hub processing требуется
+
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Аэлион
+- Почему они релевантны: Ход целиком сосредоточен на прибытии в его Обитель и его реакции
+- Акторы вне охвата: Прочие Хранители
+- Почему они вне охвата: В этом ходе они не взаимодействуют с душой и не влияют на результат сцены
+
+## Размышления NPC
+### Аэлион
+- Ситуация: Душа прибыла в его Обитель после долгого отсутствия
+- Мысли: Он хочет понять, вернулась ли душа ради знаний или ради выгоды
+- Действия: Он приветствует душу сдержанно, проверяет её настрой и открывает разговор на своих условиях
+
+==================================================
+4. GUARDIAN GACHA CHARGES PER RETURN
+==================================================
+
+Guardian-mediated gacha is limited per Guardian per return from mortal life:
+- Hostile(-100..-51): 0 attempts
+- Wary/Neutral(-50..49): 1 attempt
+- Friendly(50..129): 2 attempts
+- Devoted/Legendary(130..300): 3 attempts
+
+Direct `/gacha` remains neutral and does NOT consume Guardian charges.
+
+Valid guardian state fragment:
+
+```json
+{
+  "guardianId": "guard_magic_aelion_001",
+  "name": "Аэлион",
+  "relationshipData": {
+    "currentReputation": 142
+  },
+  "gachaSystem": {
+    "chargesPerReturn": 3,
+    "chargesUsedThisReturn": 1,
+    "gachaHistory": [
+      {
+        "timestamp": "2026-03-09T18:42:00Z",
+        "costInFeathers": 120,
+        "relicId": "sr_magic_aelion_starglass_001",
+        "finalRarity": "Rare"
+      }
+    ]
+  }
+}
+```
+
+This means:
+- Guardian-mediated pull is still allowed
+- 2 charges remain for this return
+- after the next successful `UpdateGuardians.processGacha`, used charges become `2`
+- canonical guardian history stores compact result entries: `timestamp`, `costInFeathers`, `relicId`, `finalRarity`
+
+If `chargesUsedThisReturn` already equals `chargesPerReturn`, do NOT emit `processGacha` for that Guardian.
+
+==================================================
+4.5 MEMORY GATES — VALID MECHANICAL REWARD
+==================================================
+
+`Memory Gates` is not a lore-only action. It MUST create one pending Memory Legacy for the next mortal life.
+
+Valid `metaStateUpdates.memoryLegacyGrant` example:
+
+```json
+{
+  "metaStateUpdates": {
+    "memoryLegacyGrant": {
+      "legacyId": "memory_legacy_scholar_001",
+      "legacyType": "startingCharacteristicBonus",
+      "sourceLifeHint": "Эхо жизни мудреца, посвятившего десятилетия поиску истины.",
+      "characteristic": "intelligence",
+      "bonus": 2
+    }
+  }
+}
+```
+
+Resulting canonical `soul_state.json` fragment:
+
+```json
+{
+  "pendingMemoryLegacy": {
+    "legacyId": "memory_legacy_scholar_001",
+    "sourceLifeHint": "Эхо жизни мудреца, посвятившего десятилетия поиску истины.",
+    "legacyType": "startingCharacteristicBonus",
+    "grantSource": "memoryLegacyGrant",
+    "grantSnapshot": {
+      "legacyId": "memory_legacy_scholar_001",
+      "legacyType": "startingCharacteristicBonus",
+      "sourceLifeHint": "Эхо жизни мудреца, посвятившего десятилетия поиску истины.",
+      "characteristic": "intelligence",
+      "bonus": 2
+    },
+    "applicationState": "pending",
+    "grantedAtUtc": "2026-03-11T04:15:00Z",
+    "characteristic": "intelligence",
+    "bonus": 2
+  }
+}
+```
+
+Alternative valid skill-based grant:
+
+```json
+{
+  "metaStateUpdates": {
+    "memoryLegacyGrant": {
+      "legacyId": "memory_legacy_archivist_002",
+      "legacyType": "startingPassiveKnowledgeSkill",
+      "sourceLifeHint": "Память архивариуса, запоминавшего забытые языки и тайные родословные.",
+      "skillName": "Echo of Lost Archives",
+      "skillDescription": "Отголоски прошлой жизни помогают тебе быстрее узнавать скрытые связи, древние тексты и забытые факты.",
+      "group": "Knowledge",
+      "playerStatBonus": "+1 к проверкам знания и исследования древних текстов",
+      "structuredBonuses": [
+        {
+          "description": "+1 к проверкам знания и исследования древних текстов",
+          "bonusType": "ActionCheck",
+          "target": "knowledge, investigation, ancient texts",
+          "valueType": "Flat",
+          "value": 1,
+          "application": "Permanent",
+          "condition": null
+        }
+      ]
+    }
+  }
+}
+```
+
+Rules:
+- Only one `pendingMemoryLegacy` may exist at a time
+- A new `Memory Gates` purchase replaces the old pending legacy
+- The client rejects a `Memory Gates` turn if no new valid pending legacy appears
+- If an old `pendingMemoryLegacy` already existed before the turn and remains unchanged after the new purchase, the client rejects the turn as an invalid `Memory Gates` outcome
+- Canonical `pendingMemoryLegacy` stores `grantSource`, `grantSnapshot`, and `applicationState`
+- `applicationAudit` appears later only when the client has already applied the legacy locally during an incarnation turn
+
+Applied-but-not-consumed incarnation state example:
+
+```json
+{
+  "pendingMemoryLegacy": {
+    "legacyId": "memory_legacy_scholar_001",
+    "sourceLifeHint": "Эхо жизни мудреца, посвятившего десятилетия поиску истины.",
+    "legacyType": "startingCharacteristicBonus",
+    "grantSource": "memoryLegacyGrant",
+    "grantSnapshot": {
+      "legacyId": "memory_legacy_scholar_001",
+      "legacyType": "startingCharacteristicBonus",
+      "sourceLifeHint": "Эхо жизни мудреца, посвятившего десятилетия поиску истины.",
+      "characteristic": "intelligence",
+      "bonus": 2
+    },
+    "applicationState": "applied-awaiting-turn-accept",
+    "grantedAtUtc": "2026-03-11T04:15:00Z",
+    "characteristic": "intelligence",
+    "bonus": 2,
+    "applicationAudit": {
+      "expectedCharacteristicValue": 3
+    }
+  }
+}
+```
+
+Skill-based applied state example:
+
+```json
+{
+  "pendingMemoryLegacy": {
+    "legacyId": "memory_legacy_archivist_002",
+    "sourceLifeHint": "Память архивариуса, запоминавшего забытые языки и тайные родословные.",
+    "legacyType": "startingPassiveKnowledgeSkill",
+    "grantSource": "memoryLegacyGrant",
+    "grantSnapshot": {
+      "legacyId": "memory_legacy_archivist_002",
+      "legacyType": "startingPassiveKnowledgeSkill",
+      "sourceLifeHint": "Память архивариуса, запоминавшего забытые языки и тайные родословные.",
+      "skillName": "Echo of Lost Archives",
+      "skillDescription": "Отголоски прошлой жизни помогают тебе быстрее узнавать скрытые связи, древние тексты и забытые факты.",
+      "group": "Knowledge",
+      "playerStatBonus": "+1 к проверкам знания и исследования древних текстов",
+      "masteryLevel": 1,
+      "maxMasteryLevel": 5,
+      "structuredBonuses": [
+        {
+          "description": "+1 к проверкам знания и исследования древних текстов",
+          "bonusType": "ActionCheck",
+          "target": "knowledge, investigation, ancient texts",
+          "valueType": "Flat",
+          "value": 1,
+          "application": "Permanent",
+          "condition": null
+        }
+      ]
+    },
+    "applicationState": "applied-awaiting-turn-accept",
+    "grantedAtUtc": "2026-03-11T04:15:00Z",
+    "skillName": "Echo of Lost Archives",
+    "skillDescription": "Отголоски прошлой жизни помогают тебе быстрее узнавать скрытые связи, древние тексты и забытые факты.",
+    "group": "Knowledge",
+    "playerStatBonus": "+1 к проверкам знания и исследования древних текстов",
+    "masteryLevel": 1,
+    "maxMasteryLevel": 5,
+    "structuredBonuses": [
+      {
+        "description": "+1 к проверкам знания и исследования древних текстов",
+        "bonusType": "ActionCheck",
+        "target": "knowledge, investigation, ancient texts",
+        "valueType": "Flat",
+        "value": 1,
+        "application": "Permanent",
+        "condition": null
+      }
+    ],
+    "applicationAudit": {
+      "expectedPassiveSkillName": "Echo of Lost Archives",
+      "expectedGroup": "Knowledge",
+      "expectedPlayerStatBonus": "+1 к проверкам знания и исследования древних текстов",
+      "expectedStructuredBonusesCount": 1,
+      "expectedStructuredBonusesCanonical": "[{\"description\":\"+1 к проверкам знания и исследования древних текстов\",\"bonusType\":\"ActionCheck\",\"target\":\"knowledge, investigation, ancient texts\",\"valueType\":\"Flat\",\"value\":\"1\",\"application\":\"Permanent\",\"condition\":\"\"}]"
+    }
+  }
+}
+```
+
+Equivalent reordering of fields or bonus entries is acceptable as long as the canonical semantic bonus content remains the same.
+
+==================================================
+4.6 LOCAL GUARDIAN TRADE AWARENESS
+==================================================
+
+Local guardian trade is client-side and does NOT create `turn_request.json`, but it is still canonical to the current active Guardian's abode.
+
+Example persisted fragment in `game_state/meta/guardians.json`:
+
+```json
+{
+  "guardianId": "guard_social_azalia_001",
+  "name": "Азалия",
+  "tradeInventory": {
+    "tradeCycleId": "return_4",
+    "generatedAtUtc": "2026-03-11T08:15:00Z",
+    "generationReputationTier": "Friendly",
+    "pricingReputationTier": "Friendly",
+    "items": [
+      {
+        "slotId": "trade_guard_social_azalia_001_return_4_1",
+        "priceInFeathers": 70,
+        "domainTag": "Social",
+        "soldOut": true,
+        "relicData": {
+          "relicId": "trade_guard_social_azalia_001_social_shelkovogo_golosa_return_4_1",
+          "name": "Печать Шёлкового Голоса",
+          "quality": "Uncommon",
+          "description": "Реликвия усиливает убедительность и оставляет после речи ощущение доверия.",
+          "effects": {
+            "characteristicBonuses": {
+              "Persuasion": 5
+            }
+          }
+        }
+      },
+      {
+        "slotId": "trade_guard_social_azalia_001_return_4_2",
+        "priceInFeathers": 70,
+        "domainTag": "Social",
+        "soldOut": false,
+        "relicData": {
+          "relicId": "trade_guard_social_azalia_001_social_dvorcovoy_ulybki_return_4_2",
+          "name": "Знак Дворцовой Улыбки",
+          "quality": "Uncommon",
+          "description": "Реликвия сглаживает острые углы в разговорах и улучшает первое впечатление."
+        }
+      },
+      {
+        "slotId": "trade_guard_social_azalia_001_return_4_3",
+        "priceInFeathers": 140,
+        "domainTag": "Social",
+        "soldOut": false,
+        "relicData": {
+          "relicId": "trade_guard_social_azalia_001_social_serdechnogo_uzora_return_4_3",
+          "name": "Печать Сердечного Узора",
+          "quality": "Rare",
+          "description": "Реликвия помогает удерживать доверие и мягче направлять эмоциональный тон беседы."
+        }
+      },
+      {
+        "slotId": "trade_guard_social_azalia_001_return_4_4",
+        "priceInFeathers": 140,
+        "domainTag": "Social",
+        "soldOut": false,
+        "relicData": {
+          "relicId": "trade_guard_social_azalia_001_social_salonnoy_gratsii_return_4_4",
+          "name": "Вуаль Салонной Грации",
+          "quality": "Rare",
+          "description": "Реликвия придаёт речи вес и помогает носителю держаться увереннее в светском окружении."
+        }
+      }
+    ]
+  }
+}
+```
+
+Operational rule for GM:
+- if the player asks this same Guardian about a relic bought from that local trade stock, the Guardian knows the item and may explain its purpose, symbolism, or domain connection
+- the Guardian must not act surprised by the relic's existence or by the fact that the player obtained it from that Guardian's own abode stock
+
+==================================================
+5. INVALID CASE — WHAT CLIENT WRITES
+==================================================
+
+If GM output is rejected, client writes:
+game_state/control/validation_repair_request.json
+
+Example:
+{
+  "sessionId": "game-session-123",
+  "requestId": "abc123",
+  "turnNumber": 42,
+  "source": "обработки хода",
+  "detectedAtUtc": "2026-03-09T12:00:00Z",
+  "revalidationAttempt": 1,
+  "gmInstructions": "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. После исправлений создай game_state/control/validation_repair_ready.json с sessionId/requestId/turnNumber. Если клиент переписал этот repair request повторно, используй ТОЛЬКО самые свежие metadata из текущего файла.",
+  "errors": [
+    {
+      "code": "missing_npc_scope",
+      "filePath": "output/debug_logs.json",
+      "severity": "Error",
+      "message": "Отсутствует обязательная секция 'Охват NPC-анализа'",
+      "section": "npc_scope",
+      "expected": "NPC scope declaration section",
+      "actual": "missing",
+      "repairHint": "Добавь секцию '## Охват NPC-анализа' с режимом, релевантными акторами и обоснованием."
+    },
+    {
+      "code": "missing_actor_block",
+      "filePath": "output/debug_logs.json",
+      "severity": "Error",
+      "message": "Отсутствует reasoning block для NPC 'Марта'",
+      "actor": "Марта",
+      "section": "npc_reasoning",
+      "expected": "### Марта block",
+      "actual": "missing",
+      "repairHint": "Добавь блок '### Марта' с ситуацией, мыслями и действиями."
+    }
+  ]
+}
+
+==================================================
+6. HOW GM SIGNALS RECHECK
+==================================================
+
+After fixing files, GM writes:
+game_state/control/validation_repair_ready.json
+
+Example:
+{
+  "sessionId": "game-session-123",
+  "requestId": "abc123",
+  "turnNumber": 42,
+  "updatedAtUtc": "2026-03-09T12:03:15Z",
+  "note": "NPC scope and actor reasoning blocks repaired"
+}
+
+Client behavior:
+- sees validation_repair_ready.json
+- revalidates current files
+- if still invalid:
+  - rewrites validation_repair_request.json with updated errors
+  - deletes validation_repair_ready.json
+  - waits again
+- if valid:
+  - accepts the turn
+  - deletes both repair files
+
+IMPORTANT:
+- declared `Relevant actors` must cover any structured actor updates already written into state, such as `UpdateNPCs`, actor-specific NPC update arrays, and `UpdateGuardians`
+- `Scene-local + Relevant actors: нет` is valid only when no such structured actor updates are emitted
+- unresolved ID-only structured updates should not be hard-rejected solely because the client could not recover a reliable name alias from current state
+
+VALIDATION CONTRACT SUMMARY:
+- client checks correlated `sessionId/requestId/turnNumber`
+- client checks valid JSON
+- client checks realm restrictions
+- client checks `progressionControl` and required progression reports
+- client checks `gm_thoughts_markdown` scope + reasoning blocks
+- client checks that declared relevant actors cover structured actor updates when actor identity is known well enough
+- if rejected, GM must fix files IN PLACE and create a fresh `validation_repair_ready.json`
+
+==================================================
+7. SCENE-LOCAL TURN WITH EMPTY ACTOR SCOPE
+==================================================
+
+This is VALID when the turn is truly local and no NPC or Guardian needs reasoning:
+
+## Оценка времени и мира
+- Прошло игрового времени: 5 минут
+- Логические последствия: Существенных мировых или фракционных последствий нет
+- Решение о прогрессии: Прогрессия не требуется
+
+## Охват NPC-анализа
+- Режим: Scene-local
+- Релевантные акторы: нет
+- Почему они релевантны: В этом ходе нет акторов, которым нужно принимать собственное решение
+- Акторы вне охвата: Все удалённые НПС и Хранители
+- Почему они вне охвата: Ход локальный, не вызывает off-screen последствий и не затрагивает их агентность
+
+No actor blocks are required when relevant actors = нет in Scene-local mode.
+
+==================================================
+8. INVALID READY SIGNALS
+==================================================
+
+If GM writes malformed JSON:
+game_state/control/validation_repair_ready.json
+{
+  "sessionId": "game-session-123",
+  "requestId": "abc123",
+  "turnNumber": 42,
+  "updatedAtUtc": "BROKEN
+}
+
+Client behavior:
+- rejects the ready file
+- rewrites validation_repair_request.json with top code `invalid_repair_ready_json`
+- deletes the bad ready file
+- daemon pings GM again
+
+If GM writes mismatched metadata:
+{
+  "sessionId": "wrong-session",
+  "requestId": "wrong-request",
+  "turnNumber": 999,
+  "updatedAtUtc": "2026-03-09T12:05:00Z"
+}
+
+Client behavior:
+- rejects the ready file
+- rewrites validation_repair_request.json with top code `mismatched_repair_ready_context`
+- deletes the bad ready file
+- daemon pings GM again
+
+Rejected terminal ready example:
+
+ready/turn_complete.json
+{
+  "sessionId": "wrong-session",
+  "requestId": "wrong-request",
+  "turnNumber": 999,
+  "status": "success",
+  "timestamp": "2026-03-09T12:06:00Z",
+  "filesModified": [
+    "output/narrative_response.json",
+    "output/debug_logs.json"
+  ]
+}
+
+Client behavior in active wait:
+- retries reading the file a few times
+- rejects it as a bad terminal ready signal
+- ends the current wait cycle as protocol failure
+- restores rollback state if rollback is available
+- does NOT treat this as a repair loop
+- writes `game_state/control/terminal_protocol_failure_request.json`
+- chooses the final success/error/failure branch only AFTER re-reading the current ready files on disk
+
+Example terminal_protocol_failure_request.json:
+{
+  "sessionId": "game-session-123",
+  "requestId": "abc123",
+  "turnNumber": 42,
+  "source": "terminal protocol failure: turn_complete",
+  "detectedAtUtc": "2026-03-09T12:06:05Z",
+  "gmInstructions": "Клиент отклонил terminal ready signal как protocol failure. Это НЕ validation_repair_request.json и НЕ repair loop. Не создавай validation_repair_ready.json и не пытайся продолжать этот уже закрытый wait cycle. Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt, разберись с terminal protocol problem по списку ошибок ниже и исправь логику для следующего корректного хода.",
+  "errors": [
+    {
+      "code": "mismatched_terminal_ready_context",
+      "filePath": "ready/turn_complete.json",
+      "severity": "Error",
+      "message": "Terminal ready signal содержит metadata, не совпадающие с активным ходом",
+      "section": "terminal_ready",
+      "expected": "sessionId=game-session-123, requestId=abc123, turnNumber=42",
+      "actual": "sessionId=wrong-session, requestId=wrong-request, turnNumber=999",
+      "repairHint": "Копируй sessionId/requestId/turnNumber в terminal ready signal ровно из текущего turn_request.json."
+    }
+  ]
+}
+
+What GM must do next:
+- understand that this was not accepted as a valid terminal signal
+- read `terminal_protocol_failure_request.json`
+- do NOT create `validation_repair_ready.json`
+- do NOT assume the client is still waiting for this exact turn
+- fix the terminal ready metadata logic before the next correct client request
+- not expect the client to keep waiting forever silently
+
+This differs from repair loop:
+- repair loop starts only after a structurally valid terminal completion led to invalid state after validation
+- rejected terminal ready means the client never accepted that terminal signal as valid protocol output
+
+Dual terminal conflict example:
+
+ready/turn_complete.json
+{
+  "sessionId": "game-session-123",
+  "requestId": "abc123",
+  "turnNumber": 42,
+  "status": "success",
+  "timestamp": "2026-03-09T12:06:00Z",
+  "filesModified": [
+    "output/narrative_response.json",
+    "output/debug_logs.json"
+  ]
+}
+
+ready/turn_error.json
+{
+  "sessionId": "game-session-123",
+  "requestId": "abc123",
+  "turnNumber": 42,
+  "status": "error",
+  "timestamp": "2026-03-09T12:06:01Z",
+  "error": "Conflicting terminal result"
+}
+
+Client/daemon behavior:
+- this is NOT a valid choice between success and error
+- for one request there must be exactly one terminal signal
+- client rejects the terminal phase as protocol failure
+- client writes `game_state/control/terminal_protocol_failure_request.json`
+- daemon pings GM about terminal protocol failure instead of treating it as a normal repair loop
+
+Example error payload for the dual-signal case:
+{
+  "code": "dual_terminal_ready_signals",
+  "filePath": "ready/turn_complete.json",
+  "severity": "Error",
+  "message": "Для одного и того же sessionId/requestId/turnNumber одновременно обнаружены ready/turn_complete.json и ready/turn_error.json",
+  "section": "terminal_ready",
+  "expected": "Exactly one terminal signal for the active turn",
+  "actual": "turn_complete(sessionId=game-session-123, requestId=abc123, turnNumber=42, status=success); turn_error(sessionId=game-session-123, requestId=abc123, turnNumber=42, status=error)",
+  "repairHint": "Для одного хода записывай ровно один terminal signal: либо ready/turn_complete.json, либо ready/turn_error.json."
+}
+
+==================================================
+8. SECOND FAILED REPAIR ATTEMPT
+==================================================
+
+If GM fixed some files but state is still invalid:
+- client reads the new ready file
+- revalidates
+- finds remaining errors
+- rewrites validation_repair_request.json with `revalidationAttempt = 2`
+- deletes validation_repair_ready.json
+- waits again
+
+GM must always use the MOST RECENT repair request as the source of truth.
+
+Example of another invalid repair cause after revalidation:
+- `UpdateNPCs` changed `Марта`, but `Марта` is absent from `Relevant actors`
+- client rewrites repair request with `structured_npc_update_out_of_scope`
+- GM must either add `Марта` to scope + reasoning blocks or remove the structural NPC update
+
+Concrete structured NPC mismatch example:
+
+## Охват NPC-анализа
+- Режим: Scene-local
+- Релевантные акторы: Феликс
+- Почему они релевантны: Игрок разговаривает только с Феликсом
+- Акторы вне охвата: Марта
+- Почему они вне охвата: Марта не должна менять состояние в этом ходу
+
+game_state/npcs/npc_core.json
+{
+  "UpdateNPCs": [
+    {
+      "NPCId": "npc_marta_01",
+      "name": "Марта",
+      "worldview": "Игроку можно доверять больше, чем раньше"
+    }
+  ]
+}
+
+Client result:
+- rejects the turn
+- writes `structured_npc_update_out_of_scope`
+- asks GM to either add `Марта` to `Relevant actors` + reasoning blocks or remove that structural NPC update
+
+Concrete structured Guardian mismatch example:
+
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Аэлион
+- Почему они релевантны: Игрок взаимодействует только с Аэлионом
+- Акторы вне охвата: Серит
+- Почему они вне охвата: Серит не участвует в сцене
+
+game_state/meta/guardians.json
+{
+  "UpdateGuardians": [
+    {
+      "command": "setMood",
+      "guardianId": "guardian_serit_01",
+      "mood": {
+        "current": "Suspicious",
+        "intensity": 60,
+        "reason": "Структурное обновление вне объявленного scope",
+        "since": 48
+      }
+    }
+  ]
+}
+
+Client result:
+- rejects the turn
+- writes `structured_guardian_update_out_of_scope`
+- GM must either expand scope to include Серит or remove the guardian update
+
+Example of a non-fatal ID-only edge case:
+- a structured update references only `npcId = npc-7f2a`
+- current state does not provide a reliable name alias for that ID
+- client should not hard-reject solely on that unresolved identity mismatch
+- GM should still prefer adding a name whenever possible to avoid ambiguity and future stricter checks
+
+==================================================
+9. CANCEL AND RESTART BEHAVIOR
+==================================================
+
+Cancel behavior:
+- if rollback backup is available, client restores the last stable files and tells the player that rollback happened
+- if rollback backup is unavailable for that flow, client tells the player explicitly that current files were left as is
+- cancelling the wait does not make an already dispatched GM computation disappear; if GM finishes later, the client may still process it as a late response unless the flow has already been fully closed
+- rollback restores pre-existing tracked files and also removes newly created tracked files from the rejected/aborted turn
+
+Turn error behavior:
+- if GM writes `ready/turn_error.json` for a transition flow, the client restores the last stable tracked file set before continuing
+- this includes reverting local realm transitions and deleting new tracked files created only for the failed transition
+- if GM writes `ready/turn_error.json` after the user already cancelled waiting, the client still consumes that late error signal and cleans it up on the next loop
+
+Concrete late turn_error after cancel example:
+1. Client dispatches turn `turnNumber = 42` and creates pending snapshot.
+2. User presses `Escape` while waiting.
+3. GM still finishes later and writes:
+{
+  "sessionId": "game-session-123",
+  "requestId": "abc123",
+  "turnNumber": 42,
+  "status": "error",
+  "timestamp": "2026-03-09T12:07:00Z",
+  "error": "The CLI agent failed before writing valid state"
+}
+4. On the next game loop iteration, client:
+   - reads and correlates the late `turn_error.json`
+   - shows the GM error
+   - restores rollback snapshot if one still exists
+   - deletes `ready/turn_error.json`
+   - clears pending snapshot artifacts
+
+Valid terminal error example:
+
+ready/turn_error.json
+{
+  "sessionId": "game-session-123",
+  "requestId": "abc123",
+  "turnNumber": 42,
+  "status": "error",
+  "timestamp": "2026-03-09T12:08:00Z",
+  "error": "Rules validation inside the CLI workflow failed before final write"
+}
+
+Correct behavior:
+- daemon treats this as a normal terminal outcome of the turn
+- client shows the GM error
+- client performs cleanup/rollback according to the current flow rules
+
+Daemon-side stale terminal signal example:
+1. Old file remains from a previous turn:
+
+ready/turn_complete.json
+{
+  "sessionId": "game-session-123",
+  "requestId": "old-request",
+  "turnNumber": 41,
+  "status": "success",
+  "timestamp": "2026-03-09T12:06:00Z",
+  "filesModified": [
+    "output/narrative_response.json",
+    "output/debug_logs.json"
+  ]
+}
+
+2. A new turn request arrives with:
+- `sessionId = game-session-123`
+- `requestId = new-request`
+- `turnNumber = 42`
+
+3. Correct daemon behavior:
+- read metadata from the existing terminal file
+- detect that `requestId/turnNumber` do not match the current turn
+- delete the stale `ready/turn_complete.json`
+- continue waiting for a correlated `ready/turn_complete.json` or `ready/turn_error.json`
+
+Important:
+- file existence alone is not enough to complete a turn
+- daemon must correlate terminal files by `sessionId`, `requestId`, and `turnNumber`
+
+Restart behavior:
+- daemon restart: daemon re-checks existing validation_repair_request.json on startup and pings GM again
+- daemon restart: daemon also re-checks existing terminal_protocol_failure_request.json on startup and pings GM again
+- client restart with active repair artifacts:
+  - if pending snapshot manifest + ready/turn_complete.json + repair request still exist, client resumes through the correlated late-response/validation path
+  - if repair files exist without a matching pending snapshot manifest or without ready/turn_complete.json, client treats them as stale and clears them
+- client restart with `terminal_protocol_failure_request.json`:
+  - the file is preserved by default
+  - the client must not delete it only because a pending snapshot manifest still exists
+  - this can be a valid crash/restart state after the protocol failure was already recorded but before later cleanup
+- save/load does NOT preserve repair files or pending turn snapshots
+
+==================================================
+10. PRACTICAL RULE
+==================================================
+
+Do NOT guess what the client wants.
+Do NOT narrate first and think later.
+
+First:
+- decide actor scope
+- explain why those actors matter
+- think from their perspective
+
+Only then:
+- narrate outcomes
+- update files
+- signal readiness

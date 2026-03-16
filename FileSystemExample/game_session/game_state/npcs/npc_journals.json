@@ -1,0 +1,26 @@
+{
+  "npcJournals": [
+    {
+      "npcId": "npc_blacksmith_thorek",
+      "npcName": "Торек Молотобой",
+      "journalEntries": [
+        {
+          "entryId": "entry_001",
+          "timestamp": "2023-05-20T14:30:00Z",
+          "event": "first_meeting", 
+          "description": "Встретил странного путешественника. Попросил выковать особый клинок.",
+          "emotionalImpact": "curiosity",
+          "relationshipChange": "+5"
+        },
+        {
+          "entryId": "entry_002", 
+          "timestamp": "2023-05-22T10:15:00Z",
+          "event": "quest_completion",
+          "description": "Путешественник выполнил мою просьбу о редкой руде. Впечатляющая решительность.",
+          "emotionalImpact": "respect",
+          "relationshipChange": "+15"
+        }
+      ]
+    }
+  ]
+}

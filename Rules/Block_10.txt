@@ -1,0 +1,2393 @@
+<instructionblock id="10">
+ <title>
+  Item Management and Properties
+ </title>
+ <description>
+  This section details rules for creating new items, modifying existing ones, and defining their properties, including combat effects and equipability. Changes are reported via the 'UpdateInventory' array.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            This section's rules apply if:
+            1) The player receives a new item during the current turn.
+            2) An existing item's properties are modified during the current turn (compared to its state in the Context).
+
+            When these conditions are met, you MUST include the 'UpdateInventory' key in your JSON response.
+            The value of 'UpdateInventory' is an array of Item Objects. Include only new items or items whose data were changed in this array.
+            The mandatory format for each Item Object in 'UpdateInventory' is defined by this Item Object structure:
+            {
+                "existedId": "guid_string_or_null",
+                "name": "string",
+                "description": "string",
+                "image_prompt": "string",
+                "quality": "string", // "Trash", "Common", "Uncommon", "Good", "Rare", "Epic", "Legendary", "Unique"
+                "type": "string_optional", //Translate into the user's chosen language
+                "group": "string_optional", //Translate into the user's chosen language
+                "price": "integer",
+                "count": "integer",
+                "weight": "double",
+                "volume": "double",
+                "textContent": ["array_of_entry_strings_or_null"], // Array of strings, each string is an entry for readable items.
+                "journalEntries": ["array_of_journal_entry_strings_or_null"], // FIELD FOR SENTIENT JOURNALS
+                "bonuses": ["array_of_user_readable_bonus_strings"],
+                "structuredBonuses": ["array_of_structured_bonus_objects_optional"],
+                "customProperties": ["array_of_objects_optional"],
+                "contentsPath": ["array_of_strings_or_null"],
+                "isContainer": "boolean",
+                "capacity": "integer_or_null",
+                "isConsumption": "boolean",
+                "containerWeight": "double_or_null",
+                "weightReduction": "double_or_null",
+                "durability": "percentage_string",
+                "combatEffect": ["array_of_combat_action_objects_optional"],
+                "equipmentSlot": "string_or_array_of_strings_or_null",
+                "accessoryForSlot": "string_or_array_of_strings_or_null",
+                "requiresTwoHands": "boolean",
+                "disassembleTo": ["array_of_material_objects_optional"],
+                "fateCards": [ // Array of Item Fate Card Objects (only for Rare+ items)
+                    {
+                        "cardId": "unique_item_fate_card_id_string",
+                        "name": "user_readable_fate_card_name_string",
+                        "image_prompt": "detailed_image_prompt_for_fate_card_string_english_only_max_150_chars",
+                        "description": "thematic_description_of_the_card_string",
+                        "unlockConditions": {
+                            "ownerBondLevel": "integer_optional_threshold_for_bond_with_owner", // 0-100
+                            "plotConditionDescription": "user_readable_plot_condition_string_optional",
+                            "requiredMaterials": [ /* { "materialName": "string", "quantity": integer } - опционально */ ],
+                            "conjunction": "'AND'_or_'OR'_string_optional_default_AND"
+                        },
+                        "rewards": {
+                            "description": "user_readable_summary_of_rewards_string",
+                            "improvedBonuses": [ /* Array of strings for new/improved item bonuses */ ],
+                            "newCombatEffects": [ /* Array of full Combat Action Objects */ ],
+                            "statBoostsToItemItself": [ /* e.g., "+10% durability", "+5% base_damage_value_of_primary_effect" */ ],
+                            "changesDescriptionTo": "new_item_description_string_optional",
+                            "changesImagePromptTo": "new_item_image_prompt_string_optional",
+                            "otherNarrativeChanges": "string_optional"
+                        },
+                        "isUnlocked": "boolean_default_false"
+                    }
+                ],
+                "ownerBondLevelCurrent": "integer_optional_current_bond_level_0_100", // For Rare+ items
+                "isSentient": "boolean_default_false"
+            }
+
+            Follow the rules below to populate the fields of these Item Objects.
+
+            TRANSLATION REMINDER: Fields like 'name', 'description', 'type', 'group', and 'bonuses' are user-facing and MUST be translated.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="10.1">
+   <title>
+    Rules for New Item Acquisition
+   </title>
+   <description>
+    These steps apply specifically when the player is due to receive one or more new items in the current turn. 
+                    It includes preliminary checks for carry capacity and container limits before proceeding to item property generation.
+   </description>
+   <content type="ruleset">
+    <rule id="10.1.0">
+     <title>
+      Preliminary Checks for Adding New Item(s)
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            Before generating properties for a new item, or a stack of new items, the following checks MUST be performed sequentially.
+                            If any check fails, the item(s) are NOT acquired by the player, and processing for THAT SPECIFIC item acquisition attempt stops.
+                        
+                            ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="10.1.0.1">
+       <title>
+        Weight Check (Overall Inventory)
+       </title>
+       <description>
+        This check determines if the player can physically carry the new item(s) without exceeding their critical weight limit.
+       </description>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    a) Determine New Item's Weight ('NewItemWeight'):
+                                       First, assign a logical 'weight' (in kg) to the potential new item (or the total weight if it's a stack of identical new items being acquired as one bundle). 
+                                       Refer to rule #10.2.11 for guidelines on setting item weight.
+
+                                    b) Gather Necessary Weight Values:
+                                       1.  'MaxCarryWeight_Overload' = Player's current MaxWeight from Context.playerCharacter.maxWeight
+                                           This value representing the maximum weight the player can carry without becoming overloaded (see InstructionBlock '17' -> Rule '17.1.3.3').
+                                       2.  'CurrentTurnBaseInventoryWeight' = Player's current total inventory weight from Context.playerCharacter.totalWeight
+                                           This is the total weight of all items already in the player's inventory at the start of the current turn, before any new items from this turn are considered.
+                                       3.  'WeightOfOtherNewItemsThisTurn' = (GM must calculate this value)
+                                           This is the sum of weights of other different new items that have already successfully passed their WeightCheck and been conceptually added to inventory earlier within this current turn, but before the current 'NewItemWeight' being checked. 
+                                           If this is the first new item this turn, this value is 0.
+
+                                    c) Calculate Total Prospective Weight ('TotalProspectiveWeight'):
+                                       Formula:
+                                           TotalProspectiveWeight = CurrentTurnBaseInventoryWeight + WeightOfOtherNewItemsThisTurn + NewItemWeight
+
+                                    d) Determine Critical Carrying Capacity ('CriticalCarryWeight'):
+                                       Formula:
+                                           CriticalCarryWeight = MaxCarryWeight_Overload + Value of 'criticalExcessWeight' from Context (typically 10 or 15)
+                                       Where:
+                                           - 'MaxCarryWeight_Overload': Max weight before overload.
+                                           - 'criticalExcessWeight': A system constant representing how much extra weight the character can lift beyond the overload point before being completely unable to carry more.
+                                       (This 'CriticalCarryWeight' is the absolute maximum weight the character can lift at all.)
+
+                                    e) Perform the Final Check:
+                                       Formula:
+                                           CanCarry = (CriticalCarryWeight > TotalProspectiveWeight)
+
+                                    f) Log Calculation Details:
+                                       Record all values and the calculation steps for this WeightCheck in 'gm_thoughts_markdown'.
+
+                                       Example Log Entry:
+                                       "WeightCheck for 'Heavy Axe' (NewItemWeight: 5kg): \n\n
+                                       - CurrentTurnBaseInventoryWeight: 28kg \n\n
+                                       - WeightOfOtherNewItemsThisTurn: 2kg (e.g., a shield added earlier this turn) \n\n
+                                       - MaxCarryWeight_Overload: 30kg \n\n
+                                       - criticalExcessWeight: 10kg \n\n
+                                       - TotalProspectiveWeight = 28kg + 2kg + 5kg = 35kg \n\n
+                                       - CriticalCarryWeight = 30kg + 10kg = 40kg \n\n
+                                       - Check: CriticalCarryWeight (40kg) > TotalProspectiveWeight (35kg) = True \n\n
+                                       - Result: Player CAN pick up the 'Heavy Axe'."                                   
+
+                                    g)  Action Based on Check Result:
+                                        If 'CanCarry' is 'false':
+                                           - The item(s) are NOT added to the player's inventory.
+                                           - Log the failure outcome in 'gm_thoughts_markdown' (e.g., "... Check: CriticalCarryWeight (40kg) <= TotalProspectiveWeight (42kg) = False. Result: Player CANNOT pick up 'Ancient Tome'.").
+                                           - Inform the player in 'response' that they cannot carry the item due to its weight.
+                                           - Skip all further processing for THIS item acquisition attempt (do not proceed to #10.1.0.2 or #10.1.1 for this item).
+                                    
+                                        If 'CanCarry' is 'true':
+                                           - Conceptually, this 'NewItemWeight' is now added to the running total for 'WeightOfOtherNewItemsThisTurn' for any subsequent new item WeightChecks within this same turn.
+                                           - Proceed to the next check (#10.1.0.2) if the item is intended for a container, or directly to item property generation (#10.1.1) if it's going to the main inventory.
+                                
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="10.1.0.2">
+       <title>
+        Container Capacity and Volume Checks (If Placing Item into a Container)
+       </title>
+       <instructiontext>
+        <![CDATA[
+
+                                    These checks are performed ONLY if the new item(s) from #10.1.0.1 (after passing WeightCheck) are intended to be placed directly into a specific container already in the player's inventory (as per rule #10.2.16 - Placing New Items into Specified Containers).
+                                    If the new item is going into the main inventory, skip this #10.1.0.2 and proceed to #10.1.1.
+                                    Let 'TargetContainer' be the container object from Context, and 'NewItemsToAdd' be the new item(s) being considered.
+                                
+                                    ]]>
+       </instructiontext>
+       <content type="ruleset">
+        <rule id="10.1.0.2.1">
+         <title>
+          Capacity Check (Number of Item Stacks)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            a) Get Container Capacity: Read the 'capacity' value of the 'TargetContainer' from Context. 
+                                            Let it be 'ContainerCapacity'.
+                                            b) Get Current Item Stacks in Container:
+                                                - If 'TargetContainer' in Context has a 'contentsItemCount' property, use its value.
+                                                - Otherwise, count the number of distinct item stacks currently inside 'TargetContainer' (based on 'contentsPath' of items in inventory). 
+                                                Let this be 'CurrentStacksInContainer'.
+                                            c) Determine Number of New Stacks: Determine how many new distinct item stacks 'NewItemsToAdd' represent. 
+                                            If it's one stack of 10 arrows, 'NewStacksCount' is 1. If it's a Potion and a Dagger, 'NewStacksCount' is 2.
+                                            d) Calculate Total Stacks: 'TotalProspectiveStacks = CurrentStacksInContainer + NewStacksCount'.
+                                            e) Perform Check: 'ContainerCapacity >= TotalProspectiveStacks'.
+                                            f) If Check is 'false':
+                                                - The 'NewItemsToAdd' cannot be placed in 'TargetContainer' due to exceeding item stack capacity.
+                                                - Log this in 'gm_thoughts_markdown': "Capacity Check for '[TargetContainer.name]' failed. Cannot add [NewStacksCount] new stack(s) to existing [CurrentStacksInContainer] stacks (Capacity: [ContainerCapacity])."
+                                                - Inform the player in 'response'.
+                                                - The 'NewItemsToAdd' are NOT acquired or placed in this container. Skip further processing for THIS item acquisition attempt for this container. 
+                                            g) If Check is 'true': Proceed to Volume Check (#10.1.0.2.2).
+                                            h) Logging: Output details of this capacity check to 'gm_thoughts_markdown'.
+                                        
+                                            ]]>
+         </content>
+        </rule>
+        <rule id="10.1.0.2.2">
+         <title>
+          Volume Check (Physical Space)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            This check is performed only if the Capacity Check (#10.1.0.2.1) passed.
+                                            a) Get Container Volume: Read the 'volume' value of 'TargetContainer' from Context (this is its internal volume capacity). Let it be 'ContainerMaxVolume'.
+                                            b) Get Current Contents Volume in Container:
+                                                - If 'TargetContainer' in Context has a 'contentsTotalVolume' property, use its value.
+                                                - Otherwise, sum the 'volume' of all items currently inside 'TargetContainer'. Let this be 'CurrentContentsVolume'.
+                                            c) Calculate Volume of New Items: Determine a logical 'volume' for each of 'NewItemsToAdd' (refer to #10.2.12). Sum their volumes to get 'NewItemsTotalVolume'.
+                                            d) Calculate Total Prospective Volume: 'TotalProspectiveVolume = CurrentContentsVolume + NewItemsTotalVolume'.
+                                            e) Perform Check: 'ContainerMaxVolume >= TotalProspectiveVolume'.
+                                            f) If Check is 'false':
+                                                - The 'NewItemsToAdd' cannot be placed in 'TargetContainer' due to insufficient volume.
+                                                - Log this in 'gm_thoughts_markdown': "Volume Check for '[TargetContainer.name]' failed. Cannot add [NewItemsTotalVolume] dm³ to existing [CurrentContentsVolume] dm³ (Max Volume: [ContainerMaxVolume] dm³)."
+                                                - Inform the player in 'response'.
+                                                - The 'NewItemsToAdd' are NOT acquired or placed in this container. Skip further processing for THIS item acquisition attempt for this container.
+                                            g) If Check is 'true': All preliminary checks passed for placing item(s) into this container. Proceed to Item Property Generation (#10.1.1).
+                                            h) Logging: Output details of this volume check to 'gm_thoughts_markdown'.
+                                        
+                                            ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="10.1.1">
+       <title>
+        Item Template and Base Properties
+       </title>
+       <instructiontext>
+        This step is performed if all preliminary checks in #10.1.0 pass.
+       </instructiontext>
+       <content type="ruleset">
+        <rule id="10.1.1.a">
+         <title>
+          Prioritizing Item Generation Sources
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            When determining which item(s) the player receives, follow this strict order of priority:
+
+                                            1.  Plot-Mandated Items:
+                                            If the current narrative or quest objective explicitly dictates that the player receives a specific item 
+                                            (e.g., "The Key of the Ancients" from a defeated boss, "Sir Kaelen's Signet Ring" as a quest reward, or a unique component/trophy 
+                                            from a specific, named monster that is pivotal to the plot), that item takes absolute priority. 
+                                            You MUST generate this specific item, even if the 'lootForCurrentTurn' list is empty or contains different templates. 
+                                            This action must be thoroughly justified in the 'gm_thoughts_markdown' log, explaining why the plot demanded this specific item's creation.
+
+                                            2.  Standard Loot from 'lootForCurrentTurn':
+                                            For all other forms of item acquisition (e.g., searching a generic container, looting a standard, non-plot-critical enemy, 
+                                            finding something on the ground, or generic monster drops), you MUST use the item templates provided in the 'Context.lootForCurrentTurn' array 
+                                            (hereafter referred to as 'loot').
+
+                                            ]]>
+         </content>
+        </rule>
+        <rule id="10.1.1.b">
+         <title>
+          Processing Standard Loot from Templates
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            When generating standard loot using the 'loot' list:
+
+                                            -   Item Extraction: From the 'loot' array, extract the next available item template that has not yet been assigned to the player in the current turn.
+                                            -   Strict Order: Process templates from the 'loot' array strictly in the order they are presented.
+                                            -   Prohibition: 
+                                            It is forbidden to assign any standard (non-plot-mandated) item whose structure does not correspond to a template from this 'loot' list. 
+                                            It is also forbidden to assign templates out of order or more than once per turn.
+
+                                            ]]>
+         </content>
+        </rule>
+        <rule id="10.1.1.c">
+         <title>
+          Handling an Exhausted or Empty 'lootForCurrentTurn' List (Dynamic Loot Generation)
+         </title>
+         <instructiontext>
+          <![CDATA[
+
+                                            This rule provides a fallback mechanism for item generation when the pre-defined 'lootForCurrentTurn' list is insufficient, 
+                                            making the world more responsive.
+                                            
+                                            ]]>
+         </instructiontext>
+         <content type="ruleset">
+          <rule id="10.1.1.c.1">
+           <title>
+            Conditions for Dynamic Generation
+           </title>
+           <content type="rule_text">
+            <![CDATA[
+
+                                                    You may dynamically generate ONE new item from scratch if ALL of the following conditions are met:
+                                                    1.  The player's action is NOT a plot-mandated event that should yield a specific item 
+                                                    (Plot-Mandated items are handled by rule #10.1.1.a).
+                                                    
+                                                    2.  The 'lootForCurrentTurn' list in the Context is empty OR all its templates have already been used this turn.
+                                                    
+                                                    3.  The player performs an action that logically could yield a random or generic item 
+                                                    (e.g., searching a container, looting a generic enemy, foraging in a forest).
+
+                                                    If these conditions are not met, the action fails to yield an item, and you must narrate this appropriately 
+                                                    (e.g., "You find nothing of interest.").
+                                                    
+                                                    ]]>
+           </content>
+          </rule>
+          <rule id="10.1.1.c.2">
+           <title>
+            Dynamic Generation Process
+           </title>
+           <content type="rule_text">
+            <![CDATA[
+
+                                                    If dynamic generation is triggered, you must create a single item by following these steps:
+
+                                                    Step 1: Determine Item Quality/Rarity.
+                                                    The quality of the dynamically generated item is determined by the GM.                                                    
+                                                   
+                                                    1)   GM's logical assessment: 
+                                                    A high-difficulty, high-danger dungeon is more likely to yield a 'Rare' item than a peaceful village.
+                                                    
+                                                    2)   Assign a 'quality' from "Trash" to "Epic". 
+                                                    "Legendary" or "Unique" items CANNOT be generated this way; they must be plot-mandated.
+
+                                                    Step 2: Determine Item Type and Name.
+                                                    1)   Based on the context of the search (e.g., looting a guard, searching a wizard's desk, foraging), 
+                                                    determine a logical item type (Weapon, Armor, Potion, Material, etc.).
+                                                    
+                                                    2)   Give the item a fitting 'name'. 
+                                                    For example, a 'Good' quality sword found in an ancient tomb might be named "Ancient Crypt Sword", not just "Sword".
+
+                                                    Step 3: Generate Properties.
+                                                    Use the determined 'quality' to guide the item's other properties as per the entire 'InstructionBlock id = "10"':
+                                                    1)   'price': Use the price range for the determined quality from rule #5.9.1.
+                                                        
+                                                    2)   'bonuses': The number and power of bonuses must match the quality. 
+                                                    A 'Good' item should have 1-2 decent bonuses. 
+                                                    A 'Trash' item might have none or a negative one.
+                                                        
+                                                    3)   'combatEffect': If it's a weapon/armor, its base damage/reduction must align with the quality tier.
+                                                        
+                                                    4)   'durability', 'weight', 'description', etc., should all be logical for the item's name and quality.
+
+                                                    Step 4: Logging.
+                                                    You MUST log this entire dynamic generation process in 'gm_thoughts_markdown'.
+                                                    
+                                                    Example Log: 
+                                                    "Dynamic Loot Generation triggered ('lootForCurrentTurn' is empty). 
+                                                    Determined item quality: 'Good'. 
+                                                    Context: looting a dead mage. 
+                                                    Generated item: 'Adept's Mana Potion'. 
+                                                    Assigning properties..."
+                                                    
+                                                    ]]>
+           </content>
+          </rule>
+         </content>
+        </rule>
+        <rule id="10.1.1.d">
+         <title>
+          CRITICAL DIRECTIVE: Looting Named NPCs
+         </title>
+         <description>
+          This is a mandatory protocol that overrides standard loot generation when a named NPC is defeated.
+         </description>
+         <instructiontext>
+          <![CDATA[
+
+                                            When generating loot from a defeated named NPC (an NPC whose full entry is available in 'NPCsInScene'), you MUST prioritize their actual gear to maintain world consistency.
+
+                                            ]]>
+         </instructiontext>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            1.  Identify Source:
+                                                Confirm that the source of the loot is a defeated named NPC.
+        
+                                            2.  Prioritize Actual Inventory: 
+                                                The primary items made available to the player as loot MUST be selected from the NPC's 'inventory' and 'equippedItems' as listed in their object within 'NPCsInScene'. 
+                                                It is forbidden to ignore an NPC's significant gear (like their signature weapon or armor) and only provide random items.
+
+                                            3.  Determine Loot Condition: 
+                                                As the GM, you have discretion over the condition of the looted items. 
+                                                A fierce battle might result in a "Damaged" or "Broken" version of the NPC's armor, or reduce its 'durability'. You must narrate this logically.
+
+                                            4.  Supplement with 'lootForCurrentTurn' (Optional): 
+                                                You may add items from the 'lootForCurrentTurn' list as supplementary loot (e.g., coins, consumables), but these items CANNOT replace the NPC's primary, defining gear.
+
+                                            5.  Logging: 
+                                                You MUST log this decision process in 'gm_thoughts_markdown', clearly stating which items were taken from the NPC's inventory to become loot.
+   
+                                            6.  Mechanical Execution:
+                                                CRITICAL DIRECTIVE: The transfer of loot from a defeated NPC to the player MUST be executed using two distinct commands in the same JSON response:
+                                                
+                                                a) Removal from NPC: 
+                                                An 'NPCInventoryRemovals' command (or 'NPCInventoryUpdates' to change the count if only part of a stack is looted) MUST be issued for the NPC.
+                                                
+                                                b) Addition to Player: 
+                                                A corresponding 'UpdateInventory' command MUST be issued to add the item(s) to the player's inventory.
+
+                                                This two-step process ensures the item is properly transferred and not duplicated in the game state.
+
+                                            ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="10.1.2">
+       <title>
+        Item Naming
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    The extracted item template will have a generic name (e.g., 'thing_1').
+                                    You MUST rename this item to something narratively appropriate using the user's chosen language. This will be the 'name' field.
+                                    <!-- If non-magic mode: Item names and descriptions must be realistic in this non-magical world. Else: Magical names are allowed. EndIf-->
+                                
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="10.1.3">
+       <title>
+        Base Quality and Bonus Slots from Template
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    The item template from 'loot' list will specify:
+                                        i.  A base 'quality'.
+                                        ii. A predefined number and type of bonus 'slots'.
+                                    a) Initial Quality: The initial 'quality' of the new item MUST strictly correspond to the quality in the template. 
+                                    This value can be further modified by rules in #10.2.2.
+                                    b) Bonus Slots: The number and general type of bonuses are determined by the template. 
+                                    You will generate specific bonuses in #10.2.4, adhering to these constraints. 
+                                    Rename generic bonus slot names (e.g., 'bonus_1', 'generate_interesting_effect') to user-readable descriptions of the actual bonus generated.
+                                
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="10.1.4">
+       <title>
+        Generating Specific Bonuses from Template Slots
+       </title>
+       <description>
+        This rule defines the mandatory process for converting abstract bonus 'slots' from an item template (from 'lootForCurrentTurn') into concrete, structured bonuses.
+       </description>
+       <instructiontext>
+        <![CDATA[
+
+                                    For each bonus slot provided by the item template, you MUST generate a full, user-facing description AND, 
+                                    if the bonus is mechanical, a corresponding structured object.
+                                    
+                                    ]]>
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    1.  Analyze the Bonus Slot: Look at the bonus slot from the template (e.g., "generate_interesting_effect", "bonus_to_strength").
+
+                                    2.  Determine the Bonus: Based on the slot's instruction, the item's 'quality', and the narrative context, decide on a specific bonus. 
+                                        (e.g., for a 'Good' quality item with a "bonus_to_strength" slot, you might decide on a "+3 to Strength" bonus).
+
+                                    3.  Create the User-Facing Text: Write the full, translated, human-readable description of this bonus (e.g., "+3 к Силе"). 
+                                        This string MUST be added to the item's 'bonuses' array.
+
+                                    4.  Create the Structured Object (if mechanical):
+                                        -   If the bonus you created has a direct mechanical effect, you MUST then create a corresponding object for the 'structuredBonuses' array, 
+                                        following the full structure and guidelines from Rule #10.2.4.A.
+                                        -   The 'description' field of this new structured object MUST be an exact copy of the string you created in the previous step.
+                                        -   Fill out 'bonusType', 'target', 'value', etc., based on the bonus you designed.
+                                        -   If the bonus was purely narrative (e.g., "Glows with a faint light" without a mechanical trigger), you only create the entry in the 'bonuses' array.
+
+                                    5.  Repeat: Repeat this process for every bonus slot in the template.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="10.1.5">
+       <title>
+        Handling New Container Items
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    If the new item being generated is itself a container (to be confirmed with 'isContainer: true' in #10.2.10):
+                                        a) Decide if it's found empty or contains items.
+                                        b) If it contains items:
+                                            i.  Decide a logical number of items inside (not exceeding container's 'capacity').
+                                            ii. For each item inside, repeat process from #10.1.0 (Preliminary Checks), then #10.1.1 (extract new template from 'loot' list), etc.
+                                            iii. 'contentsPath' for these contained items will include the new parent container (#10.2.9).
+                                            iv. If 'loot' list runs out of templates, stop filling.
+                                
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="10.1.6">
+       <title>
+        Proceed to General Properties
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    After these initial steps for new items (from #10.1.1 to #10.1.5), proceed to define all other standard item properties as detailed in #10.2 (General Item Properties).
+                                    If it is the first turn of the game (current turn number is 1), also ensure rules in #10.3 (Starting Game Item Generation) are followed.
+                                    Finally, for items with combat relevance or equipability, apply rules from #10.4 (Item Combat Effects) and #10.5 (Item Equipability).
+                                
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="10.2">
+     <title>
+      General Item Properties Definition
+     </title>
+     <description>
+      Rules for defining common properties applicable to both new and modified items. 
+                    For new items, these rules refine or complete the setup from #10.1.
+     </description>
+     <content type="ruleset">
+      <rule id="10.2.1" name="DescriptionProperty">
+       <title>
+        Item Property: 'description'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Set the 'description' field to a detailed and artistic description of the item.
+                            <!-- If non-magic mode: Item descriptions must be realistic in this non-magical world. Else: Magical descriptions are allowed. EndIf-->
+                            If the item has a 'combatEffect' (see #10.4), its user-readable summary (usually the 'effectDescription' of its primary effects) MUST be included in this 'description', typically as a new paragraph starting with "Combat effect:".
+                            If the item has 'bonuses' (see #10.2.4), these should also be clearly reflected or summarized in the description.
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.2" name="QualityProperty">
+       <title>
+        Item Property: 'quality'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Set the 'quality' field to one of the standard rarity/quality values from this list: ["Trash", "Common", "Uncommon", "Good", "Rare", "Epic", "Legendary", "Unique"].
+                            Refer to InstructionBlock '5' -> Rule '5.9' (Rarity Tiers Overview) for the list of values and detailed descriptions.
+
+                            1.  For New Items: The base 'quality' is taken from the item template (as per #10.1.3.a).
+                            2.  Plot Justification and Action Success: This base quality MUST then be evaluated and potentially modified according to the rules defined in InstructionBlock '5' -> Rule '5.12' (Plot Justification and Action Success Influence Overview).
+                            3.  If quality was changed, any associated changes to 'bonuses' (as per rules in InstructionBlock '5' -> Rule '5.12') must be applied.
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.3" name="CountProperty">
+       <title>
+        Item Property: 'count'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Set the 'count' field to an integer.
+                            For new items, this is typically 1, unless the template or narrative implies a stack.
+                            All changes to 'count' must strictly follow InstructionBlock '5' -> Rule '5.13' (Item Count Management Overview).
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.4" name="BonusesProperty">
+       <title>
+        Item Property: 'bonuses' (User-Facing Bonus Text &amp; Backward Compatibility)
+       </title>
+       <description>
+        This array holds the simple, human-readable text for ALL bonuses an item provides. 
+                            It is critical for backward compatibility with older game versions and for direct display in the UI.
+       </description>
+       <instructiontext>
+        <![CDATA[
+
+                            For EVERY bonus, you must add a clear, concise, and translated string to this array.
+                            - If a bonus is purely narrative (flavor text), it will ONLY appear here.
+                            - If a bonus has a mechanical effect (e.g., "+5 to Strength", "+15% to healing progress"), its text MUST be in this array, AND a corresponding machine-readable object MUST be created in 'structuredBonuses'.
+                            This ensures the game will not break if a player loads an old save file.
+
+                            ]]>
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Examples of strings to put in this array:
+                            - "+5 к Силе"
+                            - "+15 к прогрессу лечения ран"
+                            - "Светится холодным синим светом в присутствии орков"
+                            - "На рукояти выгравирован древний символ." (This one would NOT have a 'structuredBonuses' entry)
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.4.A" name="StructuredBonusesProperty">
+       <title>
+        Item Property: 'structuredBonuses' (Machine-Readable Effects)
+       </title>
+       <description>
+        This is a CRITICAL property for dynamic UI updates and consistent mechanical effects. 
+                            It contains an array of objects describing quantifiable, mechanical bonuses. 
+                            The 'bonuses' array is for the user-facing text and backward compatibility.
+       </description>
+       <instructiontext>
+        <![CDATA[
+
+                            For every mechanically significant bonus, you MUST create a text entry in the 'bonuses' array AND a corresponding structured object in this 'structuredBonuses' array. 
+                            The 'description' field here MUST be an exact copy of the text from the 'bonuses' array.
+                            
+                            ]]>
+       </instructiontext>
+       <content type="ruleset">
+        <rule id="10.2.4.A.1">
+         <title>
+          Structure and Field Definitions
+         </title>
+         <content language="json" type="code_example">
+          <![CDATA[
+
+                                    {
+                                        "description": "user_readable_full_description_of_the_bonus_string",
+                                        "bonusType": "'Characteristic' | 'ActionCheck' | 'Utility' | 'Other'",
+                                        "target": "string_system_keyword_or_readable_text",
+                                        "valueType": "'Flat' | 'Percentage' | 'String' | 'Boolean'",
+                                        "value": "integer_or_string_or_boolean",
+                                        "application": "'Permanent' | 'Conditional'",
+                                        "condition": "user_readable_condition_description_string_if_conditional"
+                                    }
+
+                                    ]]>
+         </content>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    Field Definitions:
+                                    1.  'description' (string, MANDATORY): 
+                                    The complete, user-facing text of the bonus. 
+                                    MUST be an exact copy of the entry in the 'bonuses' array. 
+                                    MUST be translated.
+                                    
+                                    2.  'bonusType' (string): 
+                                    The bonus category: 'Characteristic', 'ActionCheck', 'Utility', or 'Other'.
+                                    
+                                    3.  'target' (string): What the bonus affects.
+                                        -   For 'Characteristic': MUST be an English system keyword (e.g., "strength").
+                                        -   For 'ActionCheck', 'Utility', or 'Other': MUST be a human-readable, translated description (e.g., "Проверки скрытности").
+                                    
+                                    4.  'valueType' (string): 
+                                    The type of value: 'Flat', 'Percentage', 'String', or 'Boolean'.
+                                    
+                                    5.  'value' (any): 
+                                    The bonus value. Must match the 'valueType'.
+                                    
+                                    6.  'application' (string): 
+                                    When the bonus is active: 'Permanent' or 'Conditional'.
+                                    
+                                    7.  'condition' (string, optional): 
+                                    Required if 'Conditional'. 
+                                    A user-readable, translated description of the trigger (e.g., "в темноте").
+                                    
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.2.4.A.2">
+         <title>
+          Generation Guidelines by bonusType
+         </title>
+         <description>
+          This section provides the core logic for creating different types of bonuses, ensuring consistency and balance.
+         </description>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    Type 'Characteristic':
+                                    -   Purpose: To directly increase a character's core characteristic.
+                                    -   'target': MUST be an English system keyword from 'characteristicsList' (e.g., "strength").
+                                    -   'valueType': MUST be 'Flat'.
+                                    -   'value' (integer): The magnitude of the bonus MUST be scaled according to the item's 'quality' (rarity). 
+                                    Example scale: Common (+1 to +2), Uncommon (+2 to +4), Rare (+4 to +7), Epic (+7 to +12), Legendary (+12 to +20).
+                                    -   'application': Can be 'Permanent' or 'Conditional'.
+
+                                    Type 'ActionCheck':
+                                    -   Purpose: To provide a bonus to a specific type of action check.
+                                    -   'target': A human-readable, translated description of the check (e.g., "Проверки скрытности").
+                                    -   'valueType': MUST be 'Percentage'.
+                                    -   'value' (integer): The percentage bonus (e.g., 10 for +10%).
+
+                                    Type 'Utility':
+                                    -   Purpose: To grant a special, non-numerical ability or effect (e.g., seeing in the dark, understanding a language, detecting something).
+                                    -   'target': A human-readable, translated description of the utility (e.g., "Свечение", "Понимание языков").
+                                    -   'valueType' is usually 'String' or 'Boolean'.
+
+                                    Type 'Other':
+                                    -   Purpose: A catch-all for other mechanical bonuses.
+                                    
+                                        -   CRITICAL SUB-TYPE: Consumption Bonuses (Health/Energy): 
+                                        If an item is a consumable ('isConsumption: true') that restores health or energy, you MUST use this type. 
+                                        'target' must be "Восстановление здоровья" or "Восстановление энергии", 
+                                        'valueType' must be 'Flat', 
+                                        'application' must be 'Conditional' with 'condition' "при употреблении".
+                                    
+                                        -   CRITICAL SUB-TYPE: Wound Healing Bonuses: 
+                                        If an item aids in healing wounds, you MUST use this type. 
+                                        'target' must be "Прогресс лечения ран", 
+                                        'valueType' must be 'Flat', 
+                                        'application' must be 'Conditional' with 'condition' "при использовании на ране".
+
+                                    Curses and Detrimental Effects:
+                                    Any bonus type can have a negative 'value' (e.g., -5, -10) to represent a curse or penalty. 
+                                    The 'bonuses' and 'structuredBonuses.description' should clearly state that it is a negative effect.
+                                    
+                                    ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="10.2.5" name="ImagePromptProperty">
+       <title>
+        Item Property: 'image_prompt'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Set 'image_prompt' to an extensive, detailed prompt (max 150 characters, English only) for generating an image illustrating the item based on its 'description'.
+                            Focus on visual characteristics, materials, style, and unique features.
+                            Example: "Ancient ornate silver locket, elven filigree, small sapphire, glowing faintly."
+                            
+                            This field is MANDATORY for all newly created items.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.6" name="PriceProperty">
+       <title>
+        Item Property: 'price'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Set 'price' to an approximate integer price for selling to a merchant.
+                            Reflect item's quality, rarity, usefulness, and materials.
+                            Refer to InstructionBlock '5' -> Rule '5.9.1' (Standard Rarity Tiers) for approximate price range guidelines based on rarity. 
+                            The GM should adjust the final price based on the specific game world's economy, item demand, and narrative context. 
+                            The player's 'trade' characteristic and success in haggling can also influence transaction prices.
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.7" name="DurabilityProperty">
+       <title>
+        Item Property: 'durability'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Set 'durability' to the item's current durability as a percentage string (e.g., "100%", "0%").
+                            100% is max, 0% is broken.
+                            The general rules for durability, how it's lost, and its relation to item quality are defined in InstructionBlock '5' -> Rule '5.15' (Item Durability and Degradation Overview).
+                            New items are "100%" unless found damaged or narrative dictates otherwise.
+                            When durability changes, report the item with its new 'durability' in 'UpdateInventory'.
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.8" name="CustomPropertiesProperty">
+       <title>
+        Item Property: 'customProperties' (Custom State Interactions)
+       </title>
+       <description>
+        This property defines how an item interacts with the player's Custom States (defined in InstructionBlock '25'), such as Hunger, Thirst, or Sanity.
+                            It should be filled when an item, by its nature or player instruction, is intended to affect one of these states.
+       </description>
+       <instructiontext>
+        <![CDATA[
+
+                            The 'customProperties' field is an array of objects, where each object describes a specific interaction with a Custom State.
+                            This is the primary mechanism for items like food, water, or calming herbs to have a mechanical effect on player-defined needs.
+                            
+                            ]]>
+       </instructiontext>
+       <content language="json" type="code_example">
+        <![CDATA[
+
+                            Mandatory format for each object in 'customProperties' array:
+                            {
+                                "interactionType": "'onConsume' | 'onEquip' | 'onUse'",
+                                "targetStateName": "string_name_of_the_Custom_State", // Must match a 'stateName' from playerCustomStates
+                                "changeValue": "integer", // The amount to change the state by (e.g., -20 for reducing hunger)
+                                "description": "User-readable description of this effect." // e.g., "Satiates hunger moderately."
+                            }
+
+                            ]]>
+       </content>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Field Definitions:
+
+                            1.  'interactionType': (string) When this effect triggers.
+                                -   'onConsume': The effect applies when the item is consumed. 
+                                This requires the item to have 'isConsumption': true'. This is the most common type for food, drinks, etc.
+                                -   'onEquip': The effect is a one-time change that occurs when the item is equipped.
+                                -   'onUse': The effect applies when the item is actively used without being consumed 
+                                (e.g., meditating with a holy symbol to reduce 'Stress').
+
+                            2.  'targetStateName': (string) 
+                            The exact 'stateName' of the Custom State this interaction affects (e.g., "Hunger", "Thirst", "Sanity"). 
+                            The GM MUST ensure this name matches a state defined in 'playerCustomStates' from the Context.
+
+                            3.  'changeValue': (integer) 
+                            The numerical value to be added to the target state's 'currentValue'. 
+                            Use a negative value to decrease a state (e.g., 'changeValue: -30' to reduce Hunger by 30).
+
+                            4.  'description': (string) A clear, user-facing description of what this interaction does. 
+                            This should be reflected in the item's main 'description' field as well. Translate to the user's language.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.9" name="ContentsPathProperty">
+       <title>
+        Item Property: 'contentsPath'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Set 'contentsPath' to an array of strings (container names, exact from Context) or 'null'.
+                            Path is from top-level container down to immediate parent. If in main inventory, 'contentsPath' is 'null'.
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.10" name="IsContainerAndCapacityProperties">
+       <title>
+        Item Properties: 'isContainer' and 'capacity'
+       </title>
+       <content type="ruleset">
+        <rule id="10.2.10.1" name="IsContainerDefinition">
+         <title>
+          'isContainer' (boolean)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    Set 'true' if item can store other distinct items; 'false' otherwise.
+                                    Determine by checking if it can be opened/accessed to reveal internal storage space.
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.2.10.2" name="CapacityDefinition">
+         <title>
+          'capacity' (integer or null)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    If 'isContainer' is 'true', 'capacity' is an integer for max distinct item stacks it holds.
+                                    If 'isContainer' is 'false', 'capacity' must be 'null'.
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.2.10.3" name="ContainerDescriptionRule">
+         <title>
+          Container Description Content
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    The 'description' of a container item (refer to #10.2.1) should NOT list its contents.
+                                    Correct Example: "A sturdy wooden chest, bound with iron."
+                                    Incorrect Example: "A sturdy wooden chest. Inside are gold coins and a potion."
+
+                                    ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="10.2.11" name="WeightProperties">
+       <title>
+        Item Properties: 'weight' and 'containerWeight'
+       </title>
+       <content type="ruleset">
+        <rule id="10.2.11.1" name="WeightDefinition">
+         <title>
+          'weight' (double, mandatory)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    Total weight in kilograms (kg). 
+                                    Every physical item MUST have 'weight'. Quest-related ethereal items or concepts may have a weight of 0.
+                                    Includes item's own weight and contents (if container, adjusted by 'weightReduction').
+                                    System may auto-calculate total 'weight' for containers; GM sets logical initial 'weight'.
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.2.11.2" name="ContainerWeightDefinition">
+         <title>
+          'containerWeight' (double, optional, only for containers)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    If 'isContainer' is 'true', this is the empty container's weight (kg).
+                                    If 'isContainer' is 'false', this must be 'null' or omitted.
+                                    Example: "Leather Backpack", 'containerWeight': 1.5
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.2.11.3" name="SpecialWeightConsiderations">
+         <title>
+          Special Weight Considerations
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    a) 'weight' can be 0 or low for special items (e.g., magical "Bag of Holding"), narratively justified.
+                                    b) Forbidden to set 'weight' to 0 if WeightCheck fails (as per #10.1.0.1). Item is not acquired.
+                                    c) 'weight' must be logically justified by item's size, materials, and nature.
+
+                                    ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="10.2.12" name="VolumeProperty">
+       <title>
+        Item Property: 'volume'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Set 'volume' to a non-negative double representing item's physical volume in dm³. Every item has 'volume'.
+                            Important for container capacity (checked in #10.1.0.2.2).
+                            Example: "Iron Sword" 'volume': 1.5; "Healing Potion" 'volume': 0.2; "Large Backpack" 'volume': 60.0 (this would be its internal volume capacity).
+                            GM Note: Assign logical volumes.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.13" name="IsConsumptionProperty">
+       <title>
+        Item Property: 'isConsumption'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Set 'isConsumption' (boolean) if item is consumed/depleted by use (its 'count' or 'resource' decreases, may be destroyed).
+                            Refer to InstructionBlock '5' -> Rule '5.14' (Item Resources Management Overview) for guidance on which items typically have resources.
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.14" name="WeightReductionProperty">
+       <title>
+        Item Property: 'weightReduction' (for Containers)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            If 'isContainer' is 'true' AND 'isConsumption' is 'false', this property MUST be included.
+                            'weightReduction': (double, non-negative) Percentage reduction of contents' weight (e.g., 50 for 50%).
+                            System uses this for container's total 'weight'.
+                            Magic/advanced tech: higher % (e.g., 50-90%). Normal: smaller % (e.g., 0-10%).
+                            If not a non-consumable container, value is 'null' or omitted.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.15" name="ExistedIdProperty">
+       <title>
+        Item Property: 'existedId'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            'existedId': (GUID string or null) The unique ID of an item from the Context.
+                            - When reporting changes to an EXISTING item, this MUST be its ID from the Context.
+                            - When creating a NEW item, this MUST be 'null'.
+                            - You MUST adhere to the "Law of ID Generation" (Rule #5.8.A). It is strictly forbidden to invent an ID.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.16" name="PlacingNewItemsInContainers">
+       <title>
+        Placing New Items into Specified Containers (During Acquisition)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            This rule applies only when the current turn number is greater than 1.
+                            If player acquires a new item AND requests to place it into a specific, named, existing container:
+                                a) Interpret request. Examples: «Put scroll in scroll case.»
+                                b) Determine Destination Path: Identify target container in Context, get its 'contentsPath'.
+                            
+                                c) Set New Item's 'contentsPath': Use destination path + target container name (per #10.2.9). 
+                            
+                                Example: 
+                                'Scroll Case' ('contentsPath': null) is a container. 
+                                New 'Scroll' placed inside 'Scroll Case' gets 'contentsPath': ["Scroll Case"].
+                            
+                                d) Constraints: Target container must exist, have capacity/volume (checks performed in #10.1.0.2). 
+                                If those checks failed for this container, place in main inventory (if WeightCheck passed).
+                                e) Default: If no container specified, 'contentsPath' is 'null'.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.17" name="ContentsPathManipulationForbidden">
+       <title>
+        Forbidden 'contentsPath' manipulation via 'UpdateInventory'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            It is forbidden to use 'UpdateInventory' to move an existing item.
+                            Use 'UpdateInventory' for new items or changes to an item's own properties only.
+                            To move existing items, use 'moveInventoryItems' array (InstructionBlock '11').
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.18" name="DisassembleToProperty">
+       <title>
+        Item Property: 'disassembleTo' (for Crafting)
+       </title>
+       <instructiontext>
+        <![CDATA[
+
+                            This property defines what materials an item yields upon disassembly. 
+                            Used by Crafting System (defined in InstructionBlock '9' -> Rule '9.1').
+
+                            ]]>
+       </instructiontext>
+       <content language="json" type="code_example">
+        <![CDATA[
+
+                            Property Name: "disassembleTo".
+                            Value Type: Array of objects (or null if item cannot be disassembled).
+                            Structure of each object in the array:
+                            {
+                                "materialName": "user_readable_name_of_material_string", 
+                                "quantity": "integer",
+                                "weight" : "double", 
+                                "volume" : "double",
+                                "price": "double", 
+                                "description": "optional user_readable_description_of_material_string" 
+                            }
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.19" name="TextContentProperty">
+       <title>
+        Item Property: 'textContent' (Array of Entries)
+       </title>
+       <description>
+        This property is used for items whose primary purpose is to be read by the player (books, notes, journals).
+                            It now contains an array of strings, where each string is a distinct entry or paragraph.
+       </description>
+       <instructiontext>
+        <![CDATA[
+
+                            The 'textContent' property is now an array of strings. Each element in the array represents a single, self-contained entry (like a journal entry, a paragraph, or a note).
+                            This structure allows for better management and display of text.
+
+                            CRITICAL DISTINCTION:
+                            - The 'description' field (Rule #10.2.1) MUST describe the PHYSICAL OBJECT.
+                            - The 'textContent' array MUST contain WHAT IS WRITTEN ON the object, with each logical block of text as a separate string element in the array.
+
+                            Backward Compatibility Note:
+                            The system is designed to handle this new array format. You MUST generate all new readable items using this structure.
+
+                            ]]>
+       </instructiontext>
+      </rule>
+      <rule id="10.2.20" name="UpdateTextContentCommand">
+       <title>
+        CRITICAL DIRECTIVE: Appending Entries to Text Content ('updateItemTextContents')
+       </title>
+       <description>
+        This rule defines the mandatory, separate command for ADDING A NEW ENTRY to an existing readable item's 'textContent' array. 
+                            This protocol prevents data loss by avoiding the need to re-send the entire text for a simple addition.
+       </description>
+       <instructiontext>
+        <![CDATA[
+
+                            When the player's action is to write in an existing journal, add a note to a logbook, or otherwise APPEND a new block of text to a readable item, you MUST use the top-level 'updateItemTextContents' array in your JSON response.
+
+                            It is STRICTLY FORBIDDEN to use the 'UpdateInventory' command to update 'textContent' for simple additions.
+                            The 'UpdateInventory' command (with the 'textContent' field) should ONLY be used when:
+
+                            1.  An item is first created.
+                            2.  The entire text content is being fundamentally replaced or altered by a major plot event (e.g., a magical script rewriting itself).
+
+                            For all other cases of adding new text, the 'updateItemTextContents' command is the ONLY correct method.
+
+                            ]]>
+       </instructiontext>
+       <content type="ruleset">
+        <rule id="10.2.20.1">
+         <title>
+          Structure for the 'updateItemTextContents' Object
+         </title>
+         <instructiontext>
+          Each object in the 'updateItemTextContents' array represents an append operation on a single item.
+         </instructiontext>
+         <content language="json" type="code_example">
+          <![CDATA[
+
+                                    Mandatory format for each object:
+                                    {
+                                        "itemId": "guid_of_the_item_to_update_from_Context",
+                                        "itemName": "name_of_the_item",
+                                        "textToAppend": "the_new_string_of_text_to_add"
+                                    }
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.2.20.2">
+         <title>
+          Field Definitions
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    1.  "itemId": (string GUID, MANDATORY) 
+                                        The 'existedId' of the readable item from the player's inventory in the Context.
+
+                                    2.  "itemName": (string, MANDATORY) 
+                                        The name of the item, for logging and clarity.
+
+                                    3.  "textToAppend": (string, MANDATORY) 
+                                        The new string entry that should be appended (pushed) as a new element to the end of the existing 'textContent' array. 
+                                        This text MUST be translated and can contain any necessary formatting (like newlines '\n' or separators) within the string itself.
+
+                                    ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="10.2.21" name="IsSentientProperty">
+       <title>
+        Item Property: 'isSentient' (Possesses Consciousness)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Set 'isSentient' (boolean) to 'true' if the item possesses its own consciousness, will, or ability to think.
+                            This is a critical flag for enabling item-specific journals and unique interactions.
+                            - This property should be reserved for 'Epic', 'Legendary', or 'Unique' items, or items that are central to a plot.
+                            - The default value is 'false'.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.2.22" name="JournalEntriesProperty">
+       <title>
+        Item Property: 'journalEntries' (Sentient Item Log)
+       </title>
+       <description>
+        This is the dedicated storage for the thoughts and memories of a sentient item.
+       </description>
+       <instructiontext>
+        <![CDATA[
+
+                            CRITICAL DISTINCTION: This field is functionally separate from 'textContent'.
+                            - 'textContent': Is for static, readable text written ON the item (e.g., the content of a book).
+                            - 'journalEntries': Is the DYNAMIC, append-only log of a sentient item's OWN thoughts.
+
+                            This array is considered READ-ONLY during generation. You are STRICTLY FORBIDDEN from modifying it directly.
+                            You MUST use the dedicated 'itemJournalUpdates' command to add new entries.
+
+                            ]]>
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+
+                            1.  Condition: This field MUST only be populated for items where 'isSentient' is true. For all other items, it must be 'null'.
+
+                            2.  Data Type: It is an array of strings. Each string is a single, timestamped journal entry generated by the GM.
+
+                            3.  Management: New entries are added exclusively via the 'itemJournalUpdates' command to prevent data loss.
+                                Each object in 'itemJournalUpdates' MUST contain:
+                                - 'itemId'
+                                - 'itemName'
+                                - 'entryToAppend'
+                                Sending prebuilt 'journalEntries' fragments instead of 'entryToAppend' is off-contract.
+
+                            ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="10.3" name="StartingGameItemGeneration">
+     <title>
+      Starting Game Item Generation Rules
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                    These rules apply ONLY if this is the first turn of a new game. 
+                    If it is not the first turn, SKIP this entire Rule '10.3'. 
+                    The goal is to provide the player with their initial set of equipment and supplies, ensuring all containers are logically filled and items have necessary resources.
+                    All items generated here must be reported in the 'UpdateInventory' array.
+
+                    ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="10.3.1">
+       <title>
+        General Item Generation Guidelines for Starting Gear
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            a) Process All Predefined Items: Generate full properties (as per rules in #10.1, #10.2, #10.4, #10.5) for all items specified in the player's initial setup.
+                            b) Maintain Balance: Starting gear should be functional but not overpowered.
+                            c) Limit Bonuses: For most starting items, limit 'bonuses' to 0-1 per item, unless predefined. Quality typically 'Common' or 'Uncommon'.
+                            d) Original Names: Keep thematic names for predefined gear if possible. If using 'loot' list from context, follow #10.1.2.
+                            e) Manage Weight: Ensure player doesn't start heavily encumbered (WeightCheck from #10.1.0.1 must pass for all items).
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.3.2">
+       <title>
+        Container Item Generation (MANDATORY for Starting Gear)
+       </title>
+       <description>
+        All containers in the player's starting inventory MUST be appropriately filled.
+       </description>
+       <content type="ruleset">
+        <rule id="10.3.2.1">
+         <title>
+          Container Fill Requirements
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    a) Every starting container MUST be filled. Do not leave empty unless narratively justified.
+                                    b) Number of item stacks inside must be between 1 and container's 'capacity'.
+                                    c) Total 'volume' of items inside MUST NOT exceed container's own 'volume'.
+                                    d) Items must logically fit the container.
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.3.2.2">
+         <title>
+          Process for Filling Starting Containers
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    For each starting container:
+                                    a) Analyze Container: Description, 'capacity', 'volume', suggested contents.
+                                    b) Determine Contents: Based on purpose, size, character needs.
+                                        Examples: Backpack (travel supplies, tools), Potion Pouch (potions), Quiver (ammo).
+                                    c) Generate Contained Items: For each item inside:
+                                        i.  If predefined, generate its properties.
+                                        ii. If generic filler & 'loot' list from context is used, extract template per #10.1.1.
+                                        iii.Follow all item generation rules (#10.1, #10.2) for each contained item.
+                                        iv. Set 'contentsPath' for contained items (per #10.2.9).
+                                    d) Volume & Capacity Management: Respect limits, leave some free space.
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.3.2.3">
+         <title>
+          Common Mistakes to Avoid (Starting Containers)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    - DO NOT leave starting containers empty without strong narrative reason.
+                                    - DO NOT overfill containers.
+                                    - DO NOT add illogical items.
+                                    - DO NOT add overly powerful "filler" items.
+                                    - DO NOT forget to set 'contentsPath' for each contained item.
+
+                                    ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="10.3.3">
+       <title>
+        Resource Dependencies for Starting Gear (MANDATORY)
+       </title>
+       <description>
+        Ensure all starting items requiring resources to function are provided with those resources.
+       </description>
+       <content type="ruleset">
+        <rule id="10.3.3.1">
+         <title>
+          Resource Check Process for Starting Items
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    For EACH generated starting item (including those inside containers):
+                                    a) Check if it requires resources (refer to InstructionBlock '5' -> Rule '5.14' (Item Resources Management Overview)).
+                                    b) If resources required, ensure item is generated with logical starting 'resource', 'maximumResource', 'resourceType'. These changes are reported via 'inventoryItemsResources'.
+                                    c) If item uses another item as resource (bow uses arrows), ensure starting quantity of ammo item is also provided (via 'UpdateInventory').
+                               
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.3.3.2">
+         <title>
+          Common Resource Dependencies and Examples
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    -   Weapons & Ammunition: Ranged weapons need ammo (e.g., Quiver with 10-20 Arrows). Ammo containers need 'resource' fields set.
+                                    -   Liquid Containers: Waterskins, Canteens start with water (e.g., 'resource: 8, maximumResource: 10, resourceType: "sips"').
+                                    -   Powered Items: Lanterns need fuel. Devices need batteries/charge.
+                                    -   Consumable Tools: Medkits/Bandages need 'uses'. Torches need burn time.
+                                    -   Magic Items: Scrolls, wands, staves may need charges or specific resources to function.
+                                    -   Crafting Materials: Items like 'Iron Ingot' may need to be provided as resources for crafting tools or weapons.
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.3.3.3">
+         <title>
+          Final Resource Verification
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    - Mentally check EACH starting item for resource dependencies.
+                                    - Verify ALL required resources are included and counts/values are logical.
+                                    - Ensure resource-related fields are correctly set for items managing internal resources.
+                                    - If an item is missing required resources, generate the resources to work.
+
+                                    ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="10.4" name="ItemCombatEffects">
+     <title>
+      Item Combat Effects (Defining the 'combatEffect' Property)
+     </title>
+     <description>
+      This rule details how to define the 'combatEffect' property for items that have a direct or persistent impact in combat.
+                    The 'combatEffect' field is an array, where each element is a "Combat Action Object" describing a specific passive bonus or an activatable ability of the item.
+     </description>
+     <content type="ruleset">
+      <rule id="10.4.1">
+       <title>
+        Determining if an Item Has 'combatEffect' Data
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            An item should have data in its 'combatEffect' array if it meets one or more of the following criteria:
+                            1.  It is a weapon (will have at least one Combat Action Object defining its damage profile).
+                            2.  It is armor or a shield (will have at least one Combat Action Object defining its passive damage reduction).
+                            3.  It can be actively used in combat to produce an effect (e.g., a wand, grenade; will have a Combat Action Object with 'isActivatedEffect: true').
+                            4.  It passively provides a quantifiable combat bonus while equipped (e.g., an amulet increasing critical damage; will have a Combat Action Object with 'isActivatedEffect: false').
+
+                            If an item's benefits are purely non-combat utility or simple characteristic bonuses (handled by 'bonuses' field), its 'combatEffect' array may be empty or omitted.
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.4.2">
+       <title>
+        Structure of the 'combatEffect' Property for Items
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            The 'combatEffect' field for an item MUST be an array of "Combat Action Objects".
+                            Each object in this array must adhere to the structure defined in InstructionBlock '5' -> Rule '5.5' (Combat Action Structure Overview).
+                            An item can have multiple Combat Action Objects in this array if it has multiple distinct combat functions (e.g., a sword's damage profile + an activatable elemental burst; a shield's passive protection + an activatable bash).
+
+                            Key fields from #5.5 to set for each Combat Action Object within the item's 'combatEffect' array:
+
+                            a) "isActivatedEffect": (boolean, optional, defaults to 'false' as per #5.5.2)
+                                - Set to 'true' if this specific Combat Action Object describes an effect that requires an explicit action to trigger (e.g., "Drink Potion", "Shield Bash"). 'actionName' becomes mandatory for this object.
+                                - Set to 'false' (or omit) if this Combat Action Object describes a passive property active while the item is equipped (e.g., armor's DamageReduction, weapon's base damage, amulet's passive crit bonus). 'actionName' is optional, 'duration' in its effects is usually omitted.
+
+                            b) "actionName": (string)
+                                - If 'isActivatedEffect' is 'true' for this Combat Action Object: Mandatory, describes the activation. Translate.
+                                - If 'isActivatedEffect' is 'false': Optional (can be item name + "Passive Bonus" or omitted).
+
+                            c) "effects" (array): Define one or more effects for THIS Combat Action Object.
+                                - Refer to #5.3.1 for 'effectType' and #5.3.2 for 'targetType'.
+
+                            d) "targetPriority" (optional): Mainly for activatable effects.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.4.3">
+       <title>
+        Defining 'combatEffect' Array for Different Item Categories
+       </title>
+       <instructiontext>
+        <![CDATA[
+
+                            The base 'value' of effects within each Combat Action Object should align with the item's 'rarity'/'quality' (refer to #5.9).
+                            An item's 'combatEffect' array can contain multiple Combat Action Objects.
+                            Approximate 'value' ranges for item primary effects based on quality:
+                            - 'Trash': 1-5%
+                            - 'Common': 5-15%
+                            - 'Uncommon': 15-25%
+                            - 'Good': 20-35%
+                            - 'Rare': 30-45%
+                            - 'Epic': 45-65%
+                            - 'Legendary': 65-90%
+                            - 'Unique': 80-120% (or narrative effect)
+
+                            These ranges can be influenced by the number of effects an item provides (more effects might mean slightly lower individual values for balance). 
+                            For 'Control' or 'Debuff' chances, these percentages apply.
+                            For 'DamageReduction', values are typically substantial for dedicated defensive gear (e.g., 'Good' shield 20-30%).                            
+                        
+                            ]]>
+       </instructiontext>
+       <content type="ruleset">
+        <rule id="10.4.3.1">
+         <title>
+          Category 1: Weapons
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+                                    
+                                    A weapon's 'combatEffect' array will contain at least one Combat Action Object describing its primary damage profile.
+
+                                    1. Standard Weapons ('weight' > 0.4 kg):
+                                       - The 'combatEffect' array contains ONE primary Combat Action Object.
+                                       - This object defines its base damage profile (e.g., effectType 'Damage', a 'value' based on rarity, and a 'targetType' like 'slashing').
+                                       - 'isActivatedEffect' is typically false (or omitted).
+                                       - This action's damage will scale from 'strength' or 'dexterity' by default.
+
+                                    2. Exceptionally Light Weapons ('weight' <= 0.4 kg):
+                                       - The 'combatEffect' array MUST contain TWO distinct Combat Action Objects, representing different attack styles:
+                                         a) Precision Strike (Primary Attack):
+                                            - "actionName": "Точный удар [название оружия]" (or similar)
+                                            - This object describes a standard, single-target attack. Its 'value' represents the weapon's full base damage.
+                                            - It scales from 'dexterity' (or 'strength') by default.
+                                         b) Flurry of Blows (Secondary Attack):
+                                            - "actionName": "Шквал ударов [название оружия]" (or similar)
+                                            - This object describes a rapid series of strikes.
+                                            - It MUST have a "shotsPerTurn" property (e.g., 2, 3, or 4).
+                                            - Its 'value' (damage per shot) MUST be lower than the Precision Strike's value (typically 60-70% of it).
+                                            - It MUST use "scalingCharacteristic": "speed" to override the default.
+
+                                    A weapon might have additional Combat Action Objects for special activatable abilities (e.g., a sword that can unleash a fiery burst once per combat). 
+                                    These would have 'isActivatedEffect: true' and their own 'actionName'.
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.4.3.2">
+         <title>
+          Category 2: Armor and Shields
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    These items typically have at least one Combat Action Object for passive protection.
+                                    1) Passive Protection Object:
+
+                                        1. "isActivatedEffect": false (or omitted).
+
+                                        2. "actionName" (optional): e.g., "[ArmorName] Defense".
+
+                                        3. "effects": [{ 
+                                            "effectType": "DamageReduction", 
+                                            "value": "Protection%", 
+                                            "targetType": "damage_type_or_all", 
+                                            "effectDescription": "..." 
+                                            }]
+                                    
+                                    2) Shields (and some armors) can have additional Combat Action Objects for activatable abilities.
+                                        
+                                    Example: A shield's 'combatEffect' array might contain:
+
+                                        1.  
+
+                                        { 
+                                            "isActivatedEffect": false, 
+                                            "effects": [{ 
+                                                "effectType": "DamageReduction", 
+                                                "value": "20%", 
+                                                "targetType": "all", //JUST FOR EXAMPLE! 'All' damage reduction is very rare.
+                                                "damageThreshold": 10, 
+                                                "effectDescription":"Reduces all incoming damage by 20% and absorbs up to 10 points of minor damage." 
+                                            }] 
+                                        } 
+
+                                        2.  
+                                        
+                                        { 
+                                            "actionName": "Shield Bash", 
+                                            "isActivatedEffect": true, 
+                                            "effects": [{ 
+                                                "effectType": "Damage", 
+                                                "value": "10%", 
+                                                "targetType": "bludgeoning", 
+                                                "effectDescription":"Deals 10% bludgeoning damage." 
+                                            }, { 
+                                                "effectType": "Control", 
+                                                "value":"30%", 
+                                                "targetType":"stun", 
+                                                "duration":1, 
+                                                "effectDescription":"30% chance to stun for 1 turn." 
+                                            }], 
+                                            "targetPriority": "current_target" 
+                                        }
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.4.3.3">
+         <title>
+          Category 3: Items with Primarily Activatable Combat Effects
+         </title>
+         <description>
+          Examples: Wands, scrolls, combat-use potions, grenades.
+         </description>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    These items require an action to use their 'combatEffect'.
+
+                                    The 'combatEffect' array will contain one or more Combat Action Objects, each with:
+                                    - "isActivatedEffect": true (mandatory for these items).
+                                    - "actionName": (string, mandatory) Describes activation (e.g., "Unleash Firebolt", "Drink Healing Draught"). Translate.
+                                    - "effects" array: Contains one or more effects appropriate to the item's function.
+                                    - "targetPriority": (optional) Can be defined.
+
+                                    Resource Consumption for Activatable Items:
+                                    The way resource consumption is handled depends on the item's design. Follow this logic precisely:
+
+                                    1.  Items with Multiple Identical Uses (Stackable Consumables):
+                                        -   Example: A stack of 5 individual "Throwing Knives" or 3 single-dose "Healing Potions".
+                                        -   Structure: The item has 'isConsumption: true' and 'count' > 1. It does NOT have a 'resource' field.
+                                        -   Upon Activation: The 'count' of this item stack decreases by 1. This change is reported via 'UpdateInventory'.
+
+                                    2.  A Single Item with Internal, Re-usable Charges:
+                                        -   Example: A "Wand of Magic Missiles" with 10 charges, a re-usable "Medkit" with 5 uses.
+                                        -   Structure: The item has 'count: 1' and 'isConsumption: false' (the wand itself isn't consumed). It MUST have resource fields ('resource', 'maximumResource', 'resourceType').
+                                        -   Upon Activation: The item's 'resource' decreases by 1. This change is reported via 'inventoryItemsResources'. The 'count' is unchanged.
+
+                                    3.  A Stack of Items, where EACH has Internal Resources:
+                                        -   Example: A stack of 3 two-dose "Healing Potions".
+                                        -   Structure: The item stack has 'count: 3' and 'isConsumption: true'. It ALSO has resource fields (e.g., 'resource: 2', 'maximumResource: 2', 'resourceType: "doses"').
+                                        -   Upon Activation: The 'resource' of ONE item in the stack decreases by 1. This change is reported via 'inventoryItemsResources'. The 'count' of the stack remains 3.
+                                        -   When 'resource' reaches 0: The system understands that one item from the stack is now empty and effectively "used up". 
+                                        Your responsibility is simply to report the resource change. 
+                                        The system will handle the eventual removal of the empty item from the stack if necessary.
+                                    
+                                    CRITICAL NOTE FOR NPCs: 
+                                    When an NPC uses an item with internal resources, the change MUST be reported via the 'NPCInventoryResourcesChanges' command as defined in Rule #10.8.
+                                    The logic of consumption (decreasing 'resource' vs. 'count') is identical to the player's.
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.4.3.4">
+         <title>
+          Category 4: Items Granting Passive Combat Bonuses (while equipped)
+         </title>
+         <description>
+          Examples: Amulets, rings that provide constant enhancements.
+         </description>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    The 'combatEffect' array will contain one or more Combat Action Objects, each with 'isActivatedEffect: false' (or omitted).
+                                    - "actionName" (optional): e.g., "[AmuletName] Aura".
+                                    - "effects" array:
+                                        - "effectType": Typically "Buff" (for positive) or "Debuff" (for cursed items). Can also be "CriticalDamage".
+                                        - "value": Percentage of the passive bonus.
+                                        - "targetType": Specific aspect buffed (e.g., 'damage (fire)', 'resist (all)', 'critDamage (all)').
+                                        - "duration": Omitted.
+                                        - "effectDescription": Summary of the passive bonus. Translate.
+
+                                    ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="10.4.4">
+       <title>
+        Weapon-Specific Properties (within a Combat Action Object)
+       </title>
+       <description>
+        Properties like ammunition and multi-shot for weapons are defined within the relevant Combat Action Object in the weapon's 'combatEffect' array (usually the one with 'isActivatedEffect: false' representing its base attack).
+       </description>
+       <content type="ruleset">
+        <rule id="10.4.4.1">
+         <title>
+          Ammunition Type ('ammoType')
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    If a weapon's Combat Action Object (e.g., its primary attack profile) describes a 'Damage' effect that requires ammunition, that Combat Action Object MUST include an "ammoType" field.
+                                    "ammoType": (string) The 'name' of the item used as ammunition.
+                                    Example: "ammoType": "Arrows", "ammoType": "9mm Bullets".
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.4.4.2">
+         <title>
+          Shots Per Turn ('shotsPerTurn')
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    If a weapon's Combat Action Object supports firing multiple projectiles in one use of that action, it MAY include a "shotsPerTurn" field.
+                                    "shotsPerTurn": (integer) Max shots per use of this action.
+                                    The 'value' of the 'Damage' effect within this Combat Action Object is per shot.
+                                    Recommended values: 2 for low-quality, 3 for standard, 4 for high-quality/legendary.
+                                    Each shot consumes 1 unit of 'ammoType'. If ammo is insufficient, fewer shots are fired.
+
+                                    Example: A Repeating Crossbow might have "shotsPerTurn": 3, meaning it can fire 3 bolts in one action, each dealing its own 'Damage' effect.
+                                
+                                    ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="10.4.5">
+       <title>
+        Cumulative Effects (Items and Skills)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            When a player uses an active skill that involves an item (e.g., a "Power Strike" skill used with an equipped sword):
+                            The 'value' from the item's primary 'Damage' effect (from its passive Combat Action Object in 'combatEffect') and the 'value' from the skill's 'Damage' effect (from its 'combatEffect') are generally additive to determine the base damage of that specific combined action, before other multipliers are applied.
+                            Formula (Simplified Concept): 
+                        
+                                BaseActionDamage% = ItemWeaponProfileDamageValue% + SkillBaseDamageValue% (+ further bonuses from character profile like #14.2.1).
+                                (Detailed rules for combining effects will be in InstructionBlock '15' - Detailed Combat Resolution).
+
+                            This means that the item's combat effects and the skill's combat effects can stack, allowing for more powerful actions when both are used together.
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.4.6">
+       <title>
+        Logging and Description
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            - For each Combat Action Object in an item's 'combatEffect' array, its main purpose or effect ('actionName' if present, and primary 'effectDescription') should be summarized in the item's main 'description' field (as per #10.2.1).
+                            - Record the detailed 'combatEffect' array (with all its Combat Action Objects and their effects) and its generation logic in 'gm_thoughts_markdown'.
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.4.7">
+       <title>
+        CRITICAL DIRECTIVE: The Armor Balancing Protocol (Universal Archetypes &amp; Creative Judgment)
+       </title>
+       <description>
+        This is the mandatory protocol for generating ALL items that provide protection, regardless of the game's setting (Fantasy, Sci-Fi, Modern, etc.). 
+                            Its purpose is to establish balanced archetypes (Light, Medium, Heavy) based on the universal principle of trade-offs. 
+                            This protocol is a guideline for creative judgment, not a rigid mathematical formula. 
+                            Your goal is to create diverse, logical, and setting-appropriate items that adhere to these core design principles.
+       </description>
+       <instructiontext>
+        <![CDATA[
+                    
+                            When you generate an armor item, you MUST first identify its archetype. 
+                            The stats you assign must be a logical reflection of its archetype, quality, and material. 
+                            You are expected to use your judgment, but your decisions MUST be justifiable within the framework of the principles below.
+
+                            Core Principle: 
+                            The trade-off between Protection, Mobility, and Stealth MUST always exist. 
+                            An item can excel in one or two of these areas, but never all three without being a legendary artifact or a piece of unique, advanced technology.
+                    
+                            "Universal Damage Reduction" (targetType: 'all') is a property of exceptional items. It should be applied sparingly.
+
+                            ]]>
+       </instructiontext>
+       <content type="ruleset">
+        <rule id="10.4.7.A">
+         <title>
+          The Principle of Exceptionality (Applies to ALL Archetypes)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    This is the master rule for creating memorable loot. 
+                                    When an item is of high 'quality' ('Epic', 'Legendary') or made of a special material, you are authorized and expected to grant it properties that surpass the standard baseline for its archetype. 
+                                    An exceptional item might possess a Universal Damage Reduction, have higher specialized resistances, or mitigate its archetype's core penalty. 
+                                    You MUST justify the creation of an exceptional item in your logs.
+                                    
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.4.7.B">
+         <title>
+          The Principle of Protection Distribution (Slot Hierarchy)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    An armor set's total protection is the sum of its parts, but these parts are not equal. You MUST follow this hierarchy:
+
+                                    1.  Primary Slot (e.g., 'Chest'): Provides the largest portion of protection.
+
+                                    2.  Secondary Slots (e.g., 'Head', 'Legs'): Provide significant, but clearly lesser, protection.
+
+                                    3.  Minor Slots (e.g., 'Hands', 'Feet'): Provide the least protection.
+
+                                    4.  Accessory Slots (e.g., 'Finger', 'Neck'): Only provide protection if the item is Exceptional.
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.4.7.C">
+         <title>
+          The Principle of Defensive Correlation (GM's Sanity Check)
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    The two main defensive properties, 'DamageReduction' (%) and 'damageThreshold' (flat), must be logically consistent for each specific damage type. 
+                                    An item should not be absurdly good in one and terrible in the other without a strong narrative reason.
+
+                                    MANDATORY SELF-AUDIT QUESTION: 
+                                    When you generate a defensive effect, you MUST ask yourself: "Соответствует ли 'damageThreshold' для этого типа урона общему уровню защиты, который дает 'DamageReduction'?"
+                                    
+                                    -   A high 'DamageReduction' against 'slashing' implies a high 'damageThreshold' against 'slashing'.
+                                    -   You MUST log your chosen values and a brief justification.
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.4.7.1">
+         <title>
+          Archetype 1: Light Armor
+         </title>
+         <description>
+          Philosophy: Mobility and Stealth. 
+                                    Protection is specialized and minimal. 
+                                    Should offer minor specialized protection and NO penalties.
+         </description>
+        </rule>
+        <rule id="10.4.7.2">
+         <title>
+          Archetype 2: Medium Armor
+         </title>
+         <description>
+          Philosophy: Balance. 
+                                    Offers solid, specialized protection at the cost of stealth.
+         </description>
+        </rule>
+        <rule id="10.4.7.3">
+         <title>
+          Archetype 3: Heavy Armor
+         </title>
+         <description>
+          Philosophy: Maximum Protection.
+                                    Offers the best specialized physical protection at the severe cost of stealth and mobility 
+                                    (Disadvantage on Stealth and a Dexterity penalty are MANDATORY baseline penalties).
+         </description>
+        </rule>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="10.5" name="ItemEquipability">
+     <title>
+      Item Equipability ('equipmentSlot' and 'requiresTwoHands')
+     </title>
+     <description>
+      Rules for defining if and how an item can be equipped by a character.
+     </description>
+     <content type="ruleset">
+      <rule id="10.5.1">
+       <title>
+        Defining 'equipmentSlot' and 'requiresTwoHands'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+                            Every item object MUST have an 'equipmentSlot' field and a 'requiresTwoHands' field.
+
+                            1)  'equipmentSlot': (string, array of strings, or null)
+                                Indicates which equipment slot(s) an item can potentially occupy.
+                                - 'null': The item cannot be equipped (e.g., consumables, materials). Default for non-wearable/wieldable items.
+                                - string: The item occupies exactly one specific, non-hand equipment slot. Must be one of the valid slot names (see #10.5.2).
+                                - array of strings: The item can occupy one of the listed slots, or occupies multiple slots simultaneously (determined with 'requiresTwoHands').
+
+                            2)  'requiresTwoHands': (boolean)
+                                Default is 'false'. Set to 'true' if wielding the item necessitates using both hand slots ('MainHand' and 'OffHand').
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.5.2">
+       <title>
+        Valid Equipment Slot Names
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+                           
+                            Use these exact English strings for 'equipmentSlot':
+                            - 'Head'
+                            - 'Chest'
+                            - 'Legs'
+                            - 'Feet'
+                            - 'Hands' 
+                            - 'Wrists'
+                            - 'Neck'
+                            - 'Waist'
+                            - 'Back'
+                            - 'Finger1'
+                            - 'Finger2'
+                            - 'MainHand'
+                            - 'OffHand'
+                            - 'Underwear_Top'
+                            - 'Underwear_Bottom'
+                            - 'Accessory1'
+                            - 'Accessory2'
+                            - 'Accessory3'
+                            - 'Accessory4'
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.5.3">
+       <title>
+        Rules for Setting 'equipmentSlot' and 'requiresTwoHands'
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            1.  Body Armor & Accessories (worn on specific part):
+                                - 'equipmentSlot': Single corresponding slot name (string, e.g., "Head", "Chest").
+                                - 'requiresTwoHands': false.
+
+                            2.  Rings:
+                                - 'equipmentSlot': ["Finger1", "Finger2"].
+                                - 'requiresTwoHands': false.
+
+                            3.  One-Handed Wieldable Items (swords, daggers, pistols, wands, shields, some tools):
+                                - 'equipmentSlot': ["MainHand", "OffHand"].
+                                - 'requiresTwoHands': false.
+
+                            4.  Two-Handed Wieldable Items (greatswords, rifles, bows, staves):
+                                - 'equipmentSlot': ["MainHand", "OffHand"].
+                                - 'requiresTwoHands': true.
+
+                            5.  Non-Equippable Items (consumables, materials):
+                                - 'equipmentSlot': null.
+                                - 'requiresTwoHands': false.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.5.4">
+       <title>
+        Item Property: 'accessoryForSlot' (Accessory Link)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            This property is MANDATORY for all items that are considered accessories and are meant to be equipped into one of the universal 'Accessory' slots ('Accessory1' through 'Accessory4').
+
+                            1)  'accessoryForSlot': (string or array of strings)
+                                - Its value MUST be the system name(s) of the main equipment slot(s) this accessory is associated with.
+                                - This creates a logical link, indicating that the accessory is worn "over" or "on" that part of the body.
+                                - Examples:
+                                    - A cloak: "accessoryForSlot": "Back"
+                                    - A jacket worn over a shirt: "accessoryForSlot": "Chest"
+                                    - Goggles: "accessoryForSlot": "Head"
+                                    - A bandolier: "accessoryForSlot": ["Chest", "Back"] (can be worn over either)
+
+                            2)  The primary purpose of this field is to identify an item as an "Accessory" and to provide a logical tag for its intended placement (e.g., on the head, over the chest). 
+                                It is used for categorization and clarity. 
+                                As per the updated equipment rules, this property does NOT prevent the player from equipping multiple accessories that share the same 'accessoryForSlot' value, provided they have enough free universal 'Accessory' slots.
+                    
+                            3)  If an item is not an accessory (i.e., it is intended for a main equipment slot like 'Chest', 'Head', 'Underwear_Top', etc.), this field MUST be 'null'.
+
+                            ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="10.6" name="EquippingAndUnequippingItems">
+     <title>
+      Handling Equipment Changes (Equipping/Unequipping Items)
+     </title>
+     <description>
+      This rule defines how to process player actions related to equipping items into designated character slots or unequipping them. 
+                    It also clarifies how item effects become active/inactive and how these changes are reported in the JSON response.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                    If the player explicitly states their intention to equip (wear, wield, put on) or unequip (take off, remove, unwield) an item they possess, follow these instructions.
+                
+                    ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="10.6.1">
+       <title>
+        Identify Player Intent, Item, and Target Slot
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            This rule outlines how to process player actions related to equipping or unequipping items.
+                            1). Determine Intent: 
+                            Is the player trying to EQUIP or UNEQUIP an item?
+                                - Equip Examples: «I equip the Iron Sword», «Put on the Leather Helmet», «Wear Ring of Protection on finger 1».
+                                - Unequip Examples: «I take off the helmet», «Unequip the sword».
+
+                            2). Identify Item:
+                            Find the specific item mentioned by the player in their inventory (from Context, using 'name' and 'existedId' if needed for disambiguation). 
+                            Verify the player possesses it. If not, inform the player.
+                            If the item's 'equipmentSlot' property (defined in #10.5.1) is 'null', it cannot be equipped. Inform the player if they attempt to equip such an item.
+
+                            3). Determine Target Slot (for EQUIP actions):
+                                a) Explicit Player Choice: If the player specifies a slot (e.g., "equip sword in right hand", "ring on finger 2"), 
+                                use that slot if it's valid for the item's 'equipmentSlot' definition (#10.5.1) and 'requiresTwoHands' property (#10.5.1).
+                                    - Assume 'right hand' maps to 'MainHand', 'left hand' to 'OffHand'.
+                                    - Assume 'finger 1'/'left finger' maps to 'Finger1', 'finger 2'/'right finger' to 'Finger2'.
+
+                                b) GM Inference (if player doesn't specify slot):
+                                    - If item 'equipmentSlot' is a single string (e.g., "Head", "Chest"): That is the target slot.
+                                    - If item 'equipmentSlot' is ["Finger1", "Finger2"] (a ring): Default to an available finger slot ('Finger1' then 'Finger2'). 
+                                    If both are full, see conflict resolution (#10.6.2).
+                                    - If item 'equipmentSlot' is ["MainHand", "OffHand"] and 'requiresTwoHands' is 'false' (one-handed item or shield):
+                                        - If item is typically a shield (GM discerns from name/type), default to 'OffHand'.
+                                        - Otherwise, default to 'MainHand'.
+                                        - If the default hand is occupied, try the other hand. If both are full, see conflict resolution.
+                                    - If item 'equipmentSlot' is ["MainHand", "OffHand"] and 'requiresTwoHands' is 'true' (two-handed item): 
+                                    The target slots are BOTH 'MainHand' AND 'OffHand'.
+                            
+                                c) Invalid Slot: If the chosen or inferred slot is incompatible with the item's 'equipmentSlot' definition, inform the player.
+
+                            4). Identify Source Slot (for UNEQUIP actions):
+                                a) Explicit Player Choice: If player specifies a slot ("remove helmet").
+                                b) Item Name: If player specifies an item name ("unequip Iron Sword"), find which slot(s) it currently occupies by checking the 'equippedItems' object in Context.
+                                c) Not Equipped: If the item is not currently equipped, inform the player.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.6.2">
+       <title>
+        Process EQUIP Action
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            1.  Check Equipability: Ensure item's 'equipmentSlot' is not 'null' and target slot(s) are valid for it.
+
+                            2.  Handle Slot Conflicts (Auto-Unequip):
+                                -   Equipping a Two-Handed Item:
+                                If you equip an item with 'requiresTwoHands: true', any items currently in EITHER 'MainHand' or 'OffHand' are automatically unequipped.
+                                
+                                -   Equipping a One-Handed Item: 
+                                If you equip a one-handed item (e.g., a shield or another weapon) into a free hand slot while a two-handed weapon is already equipped in the other, 
+                                the two-handed weapon is NOT automatically unequipped. It remains in its slot, but is now considered "wielded one-handed", which imposes penalties (see #12.11).
+                                
+                                -   Standard Slot Conflict: 
+                                If the target slot is already occupied by an item of the same slot type (e.g., equipping a new helmet when one is already worn), 
+                                the old item is automatically unequipped.
+
+                            3.  Finalize Equip:
+                                a.  For any items that were auto-unequipped, generate an 'unequipData' object and add it to the 'equipmentChanges' array.
+                                b.  Generate an 'equipData' object for the item being equipped and add it to 'equipmentChanges'.
+                                c.  Narrate the action in 'response' and log it in 'gm_thoughts_markdown'.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.6.2.A">
+       <title>
+        CRITICAL SUB-PROTOCOL: The Accessory Equip Protocol
+       </title>
+       <description>
+        This is a mandatory check that MUST be performed when a player attempts to equip an item designated as an accessory.
+                            It ensures that accessories are placed into the correct type of slot.
+       </description>
+       <content type="rule_text">
+        <![CDATA[
+
+                            If a player attempts to equip an item that has a non-null 'accessoryForSlot' property (making it an accessory):
+
+                            1.  Verify Target Slot: 
+                                The player MUST attempt to equip this item into one of the universal 'Accessory' slots (e.g., 'Accessory1', 'Accessory2', etc.). 
+                                It is forbidden to place an accessory item into a main body slot (like 'Chest' or 'Head').
+
+                            2.  Find Available Slot: 
+                                If the player does not specify a slot, the system should find the first available 'Accessory' slot (from 'Accessory1' to 'Accessory4').
+
+                            3.  Adjudicate Outcome:
+                                -   If an 'Accessory' slot is available: 
+                                    The equip action is VALID. Proceed with the normal equip process, placing the item into the chosen or found slot.
+
+                                -   If all 'Accessory' slots are already occupied: The equip action FAILS. 
+                                    You MUST inform the player in the 'response' that they do not have any free accessory slots. 
+                                    Do NOT generate an 'equipmentChanges' entry for this failed attempt.
+
+                            The 'accessoryForSlot' property serves as a logical tag for the item's type and intended body location but does NOT prevent equipping multiple accessories related to the same main slot 
+                            (e.g., a player can equip a 'Jacket' and a 'Bandolier', both with 'accessoryForSlot: "Chest"', as long as they have two free accessory slots).
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.6.3">
+       <title>
+        Process UNEQUIP Action
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            1). Check If Equipped: 
+                            Verify the item is currently in the 'equippedItems' object in Context in the specified/identified slot(s).
+
+                            2). Finalize Unequip:
+                                a) Generate an 'unequipData' object (see #10.6.5) for the item being removed. Add it to 'equipmentChanges'.
+                                b) Narrate: Describe the action in 'response' (e.g., "You take off the heavy Steel Helmet.").
+                                c) Record: Log the unequip action in 'gm_thoughts_markdown'.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.6.4">
+       <title>
+        Activation of Item Effects
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            1.  Passive Effects: An item's 'bonuses' (from #10.2.4) and any 'Combat Action Object' within its 'combatEffect' array (from #10.4) that has 'isActivatedEffect: false' (or is omitted, defaulting to false) become active only when the item is equipped in its designated slot(s). 
+                            The game system (and GM) will refer to the 'equippedItems' object in Context to know which passive effects are active.
+                            2.  Activated Effects: 'Combat Action Objects' within an item's 'combatEffect' array that have 'isActivatedEffect: true' can only be triggered by a specific player action (e.g., "use [item name]" or "activate [item name]'s [actionName]").
+                            3.  Inactive Effects: Bonuses and effects from items in the general inventory but not equipped are inactive.
+                            4.  Auto-Unequips: If an item is auto-unequipped due to equipping another item, its effects are immediately deactivated. The 'equipmentChanges' array in the JSON response will reflect this change.
+                        
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.6.5">
+       <title>
+        JSON Response Structure for Equipment Changes
+       </title>
+       <content type="ruleset">
+        <rule id="10.6.5.1">
+         <title>
+          The 'equipmentChanges' Array
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                    If an equip or unequip action occurs (including auto-unequips), include the key 'equipmentChanges' in the JSON response.
+                                    Its value is an array containing one or more 'equipData' and/or 'unequipData' objects, reflecting all changes made in this turn. 
+                                    The order should reflect the sequence of events (e.g., unequip old item, then equip new item).
+                                
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.6.5.2">
+         <title>
+          Format for 'equipData' Object
+         </title>
+         <content language="json" type="code_example">
+          <![CDATA[
+
+                                    {
+                                        "action": "equip",
+                                        "itemId": "id_of_item_being_equipped_from_Context",
+                                        "itemName": "name_of_item_being_equipped",
+                                        "targetSlots": ["slot_name_1", "slot_name_2_optional"] 
+                                    }
+
+                                    ]]>
+         </content>
+        </rule>
+        <rule id="10.6.5.3">
+         <title>
+          Format for 'unequipData' Object
+         </title>
+         <content language="json" type="code_example">
+          <![CDATA[
+                                    {
+                                        "action": "unequip",
+                                        "itemId": "id_of_item_being_unequipped_from_Context",
+                                        "itemName": "name_of_item_being_unequipped",
+                                        "sourceSlots": ["slot_name_1", "slot_name_2_optional"] 
+                                    }
+                                    ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="10.6.6">
+       <title>
+        Tracking Current Equipment (Context)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            The game system maintains the current state of equipped items in the Context for player character.
+                            The definitive list of currently equipped items and the slots they occupy is maintained by the game system and provided to the GM in the Context via an object, typically named 'equippedItems'.
+                            This 'equippedItems' object maps each equipment slot name (from #10.5.2) to the ID of the item occupying it, or 'null' if the slot is empty.
+                            Example (from Context):
+
+                            "equippedItems": {
+                                "Head": "item-guid-helmet-01",
+                                "Chest": "item-guid-armor-02",
+                                "MainHand": "item-guid-sword-03",
+                                "OffHand": null,
+                                "Finger1": "item-guid-ring-04"
+                            }
+
+                            The GM MUST refer to this 'equippedItems' object in Context to determine which items are currently providing passive bonuses or are available for combat actions requiring equipped gear.
+                            The 'equipmentChanges' array in the JSON response serves as instructions to the system to update this 'equippedItems' state in the Context for the next turn.
+                        
+                            ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="10.7" name="ItemFateCardManagement">
+     <title>
+      Item Fate Card Management
+     </title>
+     <description>
+      How Item Fate Card unlocks are processed and reported for items of 'Rare' quality or higher.
+     </description>
+     <content type="ruleset">
+      <rule id="10.7.1">
+       <title>
+        Checking Unlock Conditions for Item Fate Cards
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            At the end of a turn, or when a relevant event occurs (e.g., player attempts to "awaken" an item, specific plot point), 
+                            the GM MUST check all defined 'fateCards' for items in the player's possession 
+                            (especially equipped items of 'Rare' quality or higher) that are not yet 'isUnlocked: true'.
+
+                            For each card, check its 'unlockConditions':
+                            1. Owner Bond Level: 
+                            Is 'item.ownerBondLevelCurrent' (from Context or current item data) >= 'card.unlockConditions.ownerBondLevel'? (If 'ownerBondLevel' is not defined in conditions, this part is considered true).
+                            
+                            2. Plot Condition: Has the 'card.unlockConditions.plotConditionDescription' been met? 
+                            (GM determination based on game events. If 'plotConditionDescription' is not defined, this part is considered true).
+                            
+                            3. Required Materials (for active unlocking attempts): 
+                            If 'card.unlockConditions.requiredMaterials' are specified AND the player is actively trying to unlock the card 
+                            (e.g., performing a ritual):
+                                - Does the player possess all 'requiredMaterials' in the specified 'quantity'?
+                                - If not, this condition (and thus the unlock attempt) fails. If yes, these materials will be consumed upon successful unlock.
+                            
+                            4. Conjunction:
+                               - If 'conjunction' is 'AND' (or default and multiple conditions exist): 
+                               All relevant conditions (Bond, Plot, Materials if applicable for active attempt) must be true.
+                               - If 'conjunction' is 'OR': At least one of the relevant defined conditions must be true.
+
+                            If all necessary conditions for a card are met, it becomes unlocked.
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.7.2">
+       <title>
+        Processing Unlocked Item Fate Card Rewards
+       </title>
+       <instructiontext>
+        <![CDATA[
+
+                            When an Item Fate Card is newly unlocked, its rewards fundamentally alter the item's properties.
+                            Therefore, you MUST perform a multi-step reporting process to correctly update the game state.
+
+                            ]]>
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+
+                            When a Fate Card is unlocked, follow these steps precisely:
+
+                            1.  Report the State Change (the updated item):
+                                Since the item's properties have been fundamentally changed by the unlock, you MUST include the complete, updated Item Object in the 'UpdateInventory' array. 
+                                This updated object must reflect all the rewards from the Fate Card. Specifically, you must:
+                                a)  Set 'isUnlocked: true' for that specific card within the item's 'fateCards' array.
+                                b)  Apply 'rewards.improvedBonuses': Add the new bonus strings to (or modify existing ones in) the item's main 'bonuses' array.
+                                c)  Apply 'rewards.newCombatEffects': Add new 'Combat Action Objects' to (or modify existing ones in) the item's 'combatEffect' array.
+                                d)  Apply 'rewards.statBoostsToItemItself' (e.g., update 'durability', or modify the base 'value' within its primary 'combatEffect.effects[n]').
+                                e)  If 'rewards.changesDescriptionTo' or 'rewards.changesImagePromptTo' are present, you MUST update the item's 'description' and 'image_prompt' fields with the new values.
+                                f)  Incorporate any 'otherNarrativeChanges' into the item's description or properties as logically appropriate.
+
+                            2.  Report the Event (the unlock itself):
+                                You MUST add an entry to the 'itemFateCardUnlocks' array in the JSON response to explicitly signal that this unlock event has occurred. The structure is:
+                                { 
+                                    "itemId": "guid_of_item", 
+                                    "cardId": "id_of_unlocked_card", 
+                                    "cardName": "name_of_unlocked_card" 
+                                }.
+
+                            3.  Narrate the Transformation:
+                                The player MUST be informed of the Fate Card unlocking and its immediate, tangible consequences/rewards for the item in the 'response' text.
+                                Describe how the item changes or feels different.
+
+                            4.  Log All Changes:
+                                You MUST log the Fate Card unlock, the specific conditions that were met, and a detailed breakdown of all rewards applied to the item in 'gm_thoughts_markdown'.
+
+                            5.  Consume Materials:
+                                If materials were required for unlocking (e.g., for an active ritual), 
+                                you MUST report their consumption by either updating their 'count' in 'UpdateInventory' (for partial stack removal) or listing them in 'removeInventoryItems' (for complete stack removal).
+
+                            Summary:
+                            For a single Fate Card unlock, you will always have an entry in 'itemFateCardUnlocks' (the event) AND an entry in 'UpdateInventory' (the resulting new state of the item).
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.7.3">
+       <title>
+        Managing Item Bond Level ('itemBondLevelChanges')
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            The 'ownerBondLevelCurrent' (range 0-100) for an item of 'Rare' quality or higher can increase as the player uses and interacts with it, signifying a growing attunement.
+
+                            - Initial Value: When a Rare+ item is first acquired, its 'ownerBondLevelCurrent' is typically 0.
+
+                            - Increasing Bond: The GM decides when and by how much this level increases, based on meaningful interaction:
+                                1.  Consistent Use/Equipage: +1-3 points after a significant period of active use.
+                                2.  Successful and Significant Use: +5-15 points for using the item to overcome a major challenge.
+                                3.  Plot Progression: +10-25 points for completing a quest step directly related to the item's history.
+                                4.  Active Attunement: Variable points based on a successful action check (e.g., Intelligence, Wisdom) to study the item.
+
+                            - Reporting Changes: If an item's 'ownerBondLevelCurrent' changes this turn, report it via the 'itemBondLevelChanges' array.
+                              Structure: { 
+                                  "itemId": "guid_of_item", 
+                                  "itemName": "name_of_item", 
+                                  "newBondLevel": integer_new_level, 
+                                  "changeReason": "brief_description_of_why_level_changed" 
+                              }.
+                           
+                            - All changes must be logged in 'gm_thoughts_markdown'.
+
+                            Note: This is the ONLY correct method for reporting an update to an item's bond level.
+
+                            ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="10.8" name="NPCItemResourceManagement">
+     <title>
+      Managing NPC Item Resources ('NPCInventoryResourcesChanges')
+     </title>
+     <description>
+      This rule defines how to report changes to the internal resources (charges, uses, ammo) of items possessed by NPCs.
+                    This is crucial for tracking the depletion of consumables or limited-use items for key NPCs.
+     </description>
+     <content type="ruleset">
+      <rule id="10.8.1">
+       <title>
+        Triggering Conditions
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            Include the 'NPCInventoryResourcesChanges' key in the JSON response if an NPC uses a charge from a wand, drinks a dose of a potion, 
+                            fires an arrow from a quiver they possess, or otherwise consumes a resource from an item in their inventory.
+                            
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.8.2">
+       <title>
+        Structure for NPC Item Resource Change Object
+       </title>
+       <instructiontext>
+        Each object in the 'NPCInventoryResourcesChanges' array reports a change for a single item stack belonging to a single NPC.
+       </instructiontext>
+       <content language="json" type="code_example">
+        <![CDATA[
+
+                            Mandatory format for each object in 'NPCInventoryResourcesChanges':
+                            {
+                                "NPCId": "guid_of_the_npc_from_Context",
+                                "NPCName": "full_name_of_the_npc_string",
+                                "itemId": "guid_of_the_item_from_NPC_inventory",
+                                "itemName": "name_of_the_item",
+                                "newResourceValue": "integer_new_value_of_the_resource"
+                            }
+
+                            ]]>
+       </content>
+      </rule>
+      <rule id="10.8.3">
+       <title>
+        Logging and Process
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                            1.  Identify the NPC, the item they used, and the resource consumed.
+                            2.  Calculate the 'newResourceValue'.
+                            3.  Create the object as per the structure above, retrieving IDs and names from the NPC's data, ideally from 'NPCsInScene' if the NPC is present in the current scene.
+                            4.  Add the object to the 'NPCInventoryResourcesChanges' array.
+                            5.  Log the event in 'gm_thoughts_markdown'.
+                                Example Log: 
+                                "NPC 'Elara' used a dose of her 'Healing Salve' (ID: item-salve-002). Resource changed from 3 to 2."
+                            
+                            ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="10.9">
+   <title>
+    Vehicle Object Structure
+   </title>
+   <description>
+    Definition of the Vehicle Object structure for tracking mounts, vehicles, and magical transportation.
+   </description>
+   <instructiontext>
+    Vehicle Objects represent all forms of transportation, from living mounts to mechanical vehicles and magical summonable transport. Each vehicle has its own combat capabilities, inventory space, and operational characteristics.
+   </instructiontext>
+   <content type="schema_definition">
+    <![CDATA[
+                        Mandatory format for Vehicle Objects:
+                        {
+                            "vehicleId": "string_GUID_or_null",
+                            "name": "string", // Translate to user language
+                            "description": "string", // Visual and functional description
+                            "image_prompt": "string", // Mandatory for new vehicles
+                            "type": "string", // 'Mount' (living creature), 'Vehicle' (mechanical/magical machine), or 'Summonable' (bound to soul/pocket dimension)
+                            "isSentient": "boolean", // True for horses, dragons, AI drones. False for cars, mundane boats
+                            "availability": "string", // 'Active' (currently ridden), 'Parked' (left in a specific location), or 'Pocket' (summonable anywhere)
+                            "currentLocationId": "string_GUID_or_null", // Where it is parked. Null if Active or Pocket
+                            "maxHealth": "percentage_string", // e.g., "300%" - represents durability/HP
+                            "currentHealth": "percentage_string", // e.g., "250%" - current durability/HP
+                            "speedBonus": "integer", // Added to the player's initiative/speed when Active
+                            "actions": ["array_of_combat_action_objects"], // The vehicle's weapons or attacks (e.g., Tank Cannon, Horse Kick) - as per Rule #5.5
+                            "resistances": ["array_of_resistance_objects"], // Vehicle's damage resistances
+                            "inventory": ["array_of_item_objects"] // Vehicles can have trunks/saddlebags
+                        }
+                        ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

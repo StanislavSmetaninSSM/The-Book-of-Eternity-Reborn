@@ -1,0 +1,6 @@
+{
+  "expectedCodes": [
+    "accepted_turn_missing_narrative_response"
+  ],
+  "notes": "Ordinary accepted GM turns must always provide output/narrative_response.json.response."
+}

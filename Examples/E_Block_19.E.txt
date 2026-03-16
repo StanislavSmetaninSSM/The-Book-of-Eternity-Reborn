@@ -1,0 +1,5 @@
+<instructionblock id="19.E">
+ <title>
+  Examples For CRITICAL DIRECTIVE: Player Snapshot Object Structure (for Cooperative Mode)
+ </title>
+</instructionblock>

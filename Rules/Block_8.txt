@@ -1,0 +1,337 @@
+<instructionblock id="8">
+ <title>
+  Passive Skills Management (Player &amp; NPC)
+ </title>
+ <description>
+  This section defines passive skills, their structure, types, mastery progression, and how changes to them are communicated.
+            Passive skills provide persistent benefits or unlock new capabilities without requiring an explicit action to activate each time.
+ </description>
+ <content type="ruleset">
+  <rule id="8.1">
+   <title>
+    Passive Skill Object Structure
+   </title>
+   <instructiontext>
+    <![CDATA[
+
+                    Each passive skill is represented by an object.
+                    When new passive skills are gained or existing ones are modified for the player, they are placed in the 'passiveSkillChanges' array.
+                    For NPCs, changes are communicated via 'NPCPassiveSkillChanges' array.
+
+                    ]]>
+   </instructiontext>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    The mandatory format for a Passive Skill Object is:
+
+                    {
+                        "skillName": "user_readable_skill_name_string",
+                        "skillDescription": "detailed_user_readable_description_string",
+                        "rarity": "rarity_string",
+                        "type": "skill_type_string",
+                        "group": "skill_group_string",
+                        "combatEffect": {
+                            "effects": [
+                                {
+                                    "effectType": "system_effect_type_string",
+                                    "value": "magnitude_percentage_string",
+                                    "targetType": "system_target_type_string",
+                                    "effectDescription": "user_readable_combat_effect_summary_string"
+                                }
+                            ]
+                        },
+                        "playerStatBonus": "string_or_null_DEPRECATED_for_display_only",
+                        "structuredBonuses": [ /* array_of_structured_bonus_objects_or_null_NEW_PRIMARY_SOURCE */ ],
+                        "effectDetails": "detailed_non_combat_effect_description_string_optional",
+                        "masteryLevel": "current_mastery_level_integer",
+                        "maxMasteryLevel": "maximum_mastery_level_integer",
+                        "knowledgeDomain": "specific_area_of_knowledge_string_optional",
+                        "unlockedActiveSkillsCount": "integer_optional",
+                        "maxUnlockableActiveSkills": "integer_optional"
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="8.2">
+   <title>
+    Field Definitions and Types for Passive Skill Object
+   </title>
+   <instructiontext>
+    <![CDATA[
+
+                    When defining passive skills, ensure that any mechanical benefits they provide are described with concrete and measurable effects, especially if they are intended to influence action checks, combat calculations, or character statistics. 
+                    Avoid vague descriptions like "significant bonus"; instead, specify the exact nature and magnitude of the effect.
+                
+                    ]]>
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1). "skillName": (string) User-facing name. Translate to the user's chosen language.
+
+                    2). "skillDescription": (string) Detailed user-facing description of the skill's current effect at its current 'masteryLevel'. 
+                    This description MUST clearly state any concrete mechanical bonuses (e.g., "+10% to stealth checks", "reduces crafting time by 15%") and be updated by the GM when 'masteryLevel' changes.
+                    For skills related to healing (e.g., "First Aid", "Medicine"), the description MUST specify how many 'treatmentProgress' points a successful use of the skill generates at its current mastery level.
+                    Translate to the user's chosen language.
+    
+                    3). "rarity": (string) 'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Unique', etc.
+                    Refer to InstructionBlock id='5' -> Rule id='5.9' (Rarity Tiers Overview). Rarity influences the base potential and max mastery of the skill.
+    
+                    4). "type": (string) The functional classification of the passive skill. Choose one:
+                        • 'KnowledgeBased': Represents expertise in a specific field, enabling understanding, crafting, or the learning/creation of related active skills/recipes. Essential for the crafting system.
+                        • 'CharacteristicBonus': Directly enhances a character's core characteristics or provides a quantifiable bonus to skill checks.
+                        • 'BodyModification': Represents inherent physical traits, which should translate to measurable effects where possible (e.g., natural armor as a 'ResistBonus' in 'combatEffect').
+                        • 'CombatEnhancement': Provides a direct, persistent, and quantifiable bonus in combat situations. Often uses the 'combatEffect' field.
+                        • 'Utility': Provides other general benefits, which should be specific and measurable if they impact game mechanics (e.g., "reduces travel time by 10%", "increases loot found by 5%").
+    
+                    5). "group": (string) A broader thematic category for easier organization (e.g., "Magic", "Combat", "Survival", "Social", "Crafting").
+    
+                    6). "combatEffect": (object, optional) 
+                    If the passive skill has a direct, persistent, and quantifiable impact on combat calculations, describe it using the "Combat Action Object" structure from InstructionBlock '5' -> Rule id='5.5'.
+                    The 'isActivatedEffect' field within this object should be 'false' (or omitted, as 'false' is the default) to signify its passive, always-on nature while the skill is possessed.
+                    The 'effects' array MUST contain specific 'effectType', 'value', and 'targetType' to define a measurable combat bonus.
+                    The 'actionName' and 'targetPriority' fields are typically not needed. 
+                    'duration' is also usually omitted.
+                    
+                    Example: 
+                    
+                    { 
+                        "effects": [{ 
+                            "effectType": "Buff", 
+                            "value": "10%", 
+                            "targetType": "damage (slashing)", 
+                            "effectDescription": "Increases slashing damage by 10%." 
+                        }] 
+                    } 
+    
+                    7). "playerStatBonus": (string, optional, Display-Only Summary Field)
+                    This is a display-only summary field. Its purpose is to provide a single, human-readable string that summarizes ALL of the skill's bonuses for the user interface. 
+                    It is also the designated field for purely narrative, non-mechanical effects.
+                    CRITICAL DIRECTIVE: The content of this field MUST be generated by combining the 'description' field from every object in the 'structuredBonuses' array AND any purely narrative bonus texts. 
+                    The 'structuredBonuses' array remains the primary source for all mechanical calculations.
+                    
+                    7.A). "structuredBonuses": (array of objects or null, NEW PRIMARY SOURCE, MANDATORY) 
+                    This is the new, mandatory field for defining all quantifiable, mechanical bonuses provided by a passive skill. 
+                    Its structure and the rules for generating its contents are identical to the 'structuredBonuses' array for items, as defined in InstructionBlock 10, Rule #10.2.4.A. 
+                    This ensures perfect consistency between item and skill bonuses.
+
+                    8). "effectDetails": (string, optional) For non-quantifiable narrative effects, or further clarification. 
+                    If a mechanical benefit is implied here, it should also be represented in 'combatEffect' or 'structuredBonuses' if it's meant to be used in calculations. 
+                
+                    Example for 'KnowledgeBased': 
+                    "Allows crafting of items up to 'Rare' quality from the 'Blacksmithing' domain if the recipe is known." (This is a clear, though not directly numerical, mechanical gate).
+                    
+                    Example for a Healing Skill:
+                    "At Mastery Level 2, a successful use of this skill on a patient provides 25 points towards their wound's 'treatmentProgress'."
+
+                    9). "masteryLevel": (integer) Current mastery level of this skill for the character. Initialized typically at 1 (see #8.3.1).
+    
+                    10). "maxMasteryLevel": (integer) Maximum mastery level (e.g., 3 for Common, 5 for Uncommon/Rare, 7 for Epic, 10 for Legendary). GM determines based on rarity and skill design.
+    
+                    11). "knowledgeDomain": (string, optional) For 'KnowledgeBased' skills, specifies the field (e.g., "Blacksmithing", "Fire Magic", "Herbalism").
+    
+                    12). "unlockedActiveSkillsCount": (integer, optional) For 'KnowledgeBased' skills that allow "unlocking" active skills or recipes. Tracks how many have been unlocked.
+    
+                    13). "maxUnlockableActiveSkills": (integer, optional) For 'KnowledgeBased' skills, the total number of active skills/recipes that can be unlocked from this passive. This balances "book of knowledge" type skills.
+                
+                    ]]>
+   </content>
+  </rule>
+  <rule id="8.2.A">
+   <title>
+    CRITICAL DIRECTIVE: The Duality of Bonus Reporting for Passive Skills
+   </title>
+   <description>
+    This protocol is mandatory for ALL passive skills that grant a mechanical bonus.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    To ensure both mechanical accuracy and backward compatibility, you MUST follow this dual-reporting system:
+
+                    1.  Define the Mechanics: 
+                    For EACH mechanical bonus the skill provides, you MUST create a complete, structured object in the 'structuredBonuses' array. 
+                    This is the source of truth for the game system.
+
+                    2.  Create the Summary: 
+                    You MUST then create a simple, human-readable string that summarizes the bonus (this string should be identical to the 'description' field of the structured object). 
+                    This string is placed in the legacy 'playerStatBonus' field. 
+                    If there are multiple bonuses, you may concatenate their descriptions.
+
+                    Golden Rule of Duality: 
+                    The legacy 'playerStatBonus' field is a mirror of the 'description' fields in the 'structuredBonuses' array. This is not optional.
+                    
+                    ]]>
+   </content>
+  </rule>
+  <rule id="8.3">
+   <title>
+    Passive Skill Mastery Progression
+   </title>
+   <content type="ruleset">
+    <rule id="8.3.1">
+     <title>
+      Initialization of Mastery
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When a character (Player or NPC) first learns or is generated with a new passive skill:
+                                1. Its 'masteryLevel' is typically initialized to 1 (unless there is a plot reason to start at a different level).
+                                
+                                2. Its 'maxMasteryLevel' is determined by the GM based on the skill's 'rarity' and overall design concept.
+                                
+                                3. For 'KnowledgeBased' skills, 'unlockedActiveSkillsCount' is initialized to 0, and 'maxUnlockableActiveSkills' is set by the GM 
+                                (e.g., a 'Basic Fire Magic Tome' might allow unlocking 3 active spells over its mastery progression).
+                                
+                                4. The passive skill's definition is reported via 'passiveSkillChanges' (for Player) or 'NPCPassiveSkillChanges' (for NPC).
+                                Crucially, the initial mastery state MUST be reported separately:
+                                - For Players: The initial 'masteryLevel' is part of the main skill object sent in 'passiveSkillChanges'.
+                                - For NPCs: You MUST send a separate mastery initialization object via the new 'NPCPassiveSkillMasteryChanges' array (as per Rule #8.5).
+                        
+                            ]]>
+     </content>
+    </rule>
+    <rule id="8.3.2">
+     <title>
+      Increasing Mastery Level
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Player Characters: Mastery of passive skills for players primarily increases through plot progression, dedicated training activities, finding advanced knowledge (e.g., a master's teachings, an advanced manual), or significant character development milestones, as determined and narrated by the GM. 
+                                It is generally NOT increased by passive occurrence or simple repetitive use of associated actions, unless a skill's description explicitly states such a progression mechanic.
+
+                            2.  NPCs: Mastery of passive skills for NPCs is typically fixed upon their creation or changes ONLY due to major plot events directly affecting their development, as determined and narrated by the GM.
+
+                            3.  GM Responsibility for Enhancement upon Mastery Level Increase (CRITICAL PROTOCOL):
+                            When a passive skill's 'masteryLevel' increases, the GM MUST fully re-evaluate and describe the skill's new, enhanced effect. 
+                            This involves the following MANDATORY steps:
+                                
+                                a. Updating the Skill Description: 
+                                First, update the main 'skillDescription' field to narratively reflect the improved capabilities with specific, measurable terms where applicable.
+                                
+                                b. Modifying Mechanical Bonuses in 'structuredBonuses': 
+                                This is the primary mechanical update. You MUST provide concrete new values by directly editing the objects within the skill's 'structuredBonuses' array. 
+                                This may involve increasing a 'value' in an existing object or adding a new bonus object entirely.
+                                
+                                c. Updating the Legacy 'playerStatBonus' Field: 
+                                After updating the 'structuredBonuses' array, you MUST then update the legacy 'playerStatBonus' string so that it accurately summarizes the new, enhanced bonuses. 
+                                It must mirror the 'description' fields of the updated 'structuredBonuses' objects, as per the "Golden Rule of Duality".
+                                
+                                d. Modifying Combat Effects: 
+                                If the skill has a 'combatEffect', you MUST update the 'value' of its effects to reflect the new mastery level.
+                                
+                                e. Modifying Knowledge-Based Skills: 
+                                For 'KnowledgeBased' skills, a mastery increase might expand the 'knowledgeDomain', increase 'maxUnlockableActiveSkills', or grant access to more complex recipes/active skills. 
+                                You MUST update these fields accordingly.
+                            
+                            The exact nature and magnitude of improvement is determined by the GM's judgment, guided by the skill's 'rarity', 'type', narrative logic, and the significance of the event causing the mastery increase. 
+                            The goal is a tangible, meaningful, and mechanically representable improvement where appropriate. Avoid vague enhancements.
+                            These changes are reported via 'passiveSkillChanges' (for Player) or 'NPCPassiveSkillChanges' (for NPC) by providing the complete, updated passive skill object.
+                        
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="8.4">
+   <title>
+    Managing Passive Skills (Communicating Changes)
+   </title>
+   <content type="ruleset">
+    <rule id="8.4.1">
+     <title>
+      For Player: 'passiveSkillChanges' and 'removePassiveSkills'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Adding or Modifying Player Passive Skills:
+                                If the player learns a new passive skill or an existing one is modified (including 'masteryLevel' changes or effect enhancements), these changes MUST be reported in the 'passiveSkillChanges' array in the JSON response.
+                                Each object in 'passiveSkillChanges' must be a complete Passive Skill Object as defined in rule #8.1, reflecting the new or updated state.
+
+                            2.  Removing Player Passive Skills:
+                                If the player loses a passive skill due to plot reasons, list the 'skillName' (exact string as known from Context) in the 'removePassiveSkills' array in the JSON response. This array contains strings of skill names.
+                        
+                            ]]>
+     </content>
+    </rule>
+    <rule id="8.4.2">
+     <title>
+      For NPCs: 'NPCPassiveSkillChanges'
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If an NPC learns a new passive skill, an existing skill is modified (including changes to its 'masteryLevel' or effects due to plot), or a skill is removed:
+                                1.  These changes MUST be reported in the 'NPCPassiveSkillChanges' array in the JSON response.
+                                2.  Each object in 'NPCPassiveSkillChanges' must contain:
+                                    • 'NPCId': (string or null) The GUID of the NPC. If the NPC is new this turn, this value is 'null'.
+                                    • 'NPCName': (string, mandatory if NPCId is null) The full name of the NPC.
+                                    • 'skillChanges': (array of objects, optional) An array of complete Passive Skill Objects (as per rule #8.1) representing new or fully updated modified skills for this NPC.
+                                    • 'skillsToRemove': (array of strings, optional) An array of 'skillName's to be removed from this NPC's passive skills.
+                        
+                                Note: 
+                                This command defines the passive skills an NPC possesses. 
+                                All changes to their mastery level must be reported separately via the 'NPCPassiveSkillMasteryChanges' command.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="8.5">
+   <title>
+    Communicating Passive Skill Mastery Changes for NPCs ('NPCPassiveSkillMasteryChanges')
+   </title>
+   <description>
+    This rule defines the dedicated structure for initializing or updating the mastery level of an NPC's passive skills. 
+                    This command MUST be used whenever a passive skill is first learned by an NPC or when its mastery changes due to plot.
+   </description>
+   <content type="ruleset">
+    <rule id="8.5.1">
+     <title>
+      Structure for NPC Passive Skill Mastery Change Object
+     </title>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            Mandatory format for each object in 'NPCPassiveSkillMasteryChanges':
+                            {
+                                "NPCId": "guid_of_the_npc_from_Context_or_null",
+                                "NPCName": "full_name_of_the_npc_string_mandatory_if_NPCId_is_null",
+                                "skillName": "name_of_the_passive_skill_string",
+                                "newMasteryLevel": "new_mastery_level_integer",
+                                "newMaxMasteryLevel": "new_max_mastery_level_integer_optional" 
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="8.5.2">
+     <title>
+      Process and Logging
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  On Skill Acquisition:
+                            When an NPC learns a new passive skill (reported via 'NPCPassiveSkillChanges'), 
+                            you MUST ALSO send a mastery initialization object for it in 'NPCPassiveSkillMasteryChanges' (typically with 'newMasteryLevel: 1').
+                            
+                            2.  On Mastery Change:
+                            When a plot event increases an NPC's mastery of a passive skill, report the change using this structure.
+
+                            3.  Logging: Log the event and the new mastery level in 'gm_thoughts_markdown'.
+                            Example Log: "Due to intense training, NPC Kaelen's mastery of 'Battle Hardened' has increased to 4."
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

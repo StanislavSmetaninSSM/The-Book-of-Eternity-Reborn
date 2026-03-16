@@ -1,0 +1,115 @@
+<instructionblock id="19.K">
+ <title>
+  NPC Mask Management Protocol
+ </title>
+ <description>
+  This section defines the mandatory atomic commands for managing NPC Masks (personas). 
+            Masks allow NPCs to adopt fake identities or professional demeanors that override their true personality.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            You MUST use the following specific, targeted commands to manage NPC masks:
+            - To ADD new masks: Use the 'NPCMaskAdds' array.
+            - To UPDATE existing masks: Use the 'NPCMaskUpdates' array.
+            - To REMOVE masks: Use the 'NPCMaskRemovals' array.
+            - To CHANGE the active mask: Use the 'NPCActiveMaskChange' array.
+
+            This ensures all mask operations are explicit, atomic, and safe.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="19.K.1">
+   <title>
+    Adding Masks to NPC ('NPCMaskAdds')
+   </title>
+   <description>
+    Use this command when an NPC develops or acquires a new persona.
+   </description>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'NPCMaskAdds':
+                    {
+                        "NPCId": "guid_of_the_target_npc",
+                        "NPCName": "name_of_the_target_npc",
+                        "mask": { /* Complete Mask Object (as per Block 19.1.2.B) */ }
+                    }
+
+                    // The "mask" object MUST be a full definition of the new mask being added.
+                    // Its 'maskId' field should be 'null'.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.K.2">
+   <title>
+    Updating Existing NPC Masks ('NPCMaskUpdates')
+   </title>
+   <description>
+    Use this command for partial updates to an existing mask (e.g., changing its behavioral directives).
+   </description>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'NPCMaskUpdates':
+                    {
+                        "NPCId": "guid_of_the_target_npc",
+                        "NPCName": "name_of_the_target_npc",
+                        "maskUpdate": {
+                            "maskId": "guid_of_the_mask_to_update",
+                            // ... ONLY include the fields that have changed ...
+                            "behavioralDirectives": "New roleplay instructions"
+                        }
+                    }
+
+                    // This MUST follow the Law of Partial Updates: maskId + only the changed fields.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.K.3">
+   <title>
+    Removing Masks from NPC ('NPCMaskRemovals')
+   </title>
+   <description>
+    Use this command to permanently delete a mask from an NPC's repertoire.
+   </description>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'NPCMaskRemovals':
+                    {
+                        "NPCId": "guid_of_the_target_npc",
+                        "NPCName": "name_of_the_target_npc",
+                        "maskId": "guid_of_the_mask_to_remove"
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="19.K.4">
+   <title>
+    Changing NPC's Active Mask ('NPCActiveMaskChange')
+   </title>
+   <description>
+    Use this command to switch which persona the NPC is currently projecting.
+   </description>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'NPCActiveMaskChange':
+                    { 
+                        "NPCId": "guid", 
+                        "newActiveMaskId": "guid_of_the_mask_OR_'_true_self_'" 
+                    }
+
+                    CRITICAL DIRECTIVE: To instruct an NPC to take off their mask and return to their true personality, you MUST set 'newActiveMaskId' to the exact string keyword `"_true_self_"`. 
+                    You are STRICTLY FORBIDDEN from using `null` to remove a mask. If the mask state is not changing this turn, omit the command entirely.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

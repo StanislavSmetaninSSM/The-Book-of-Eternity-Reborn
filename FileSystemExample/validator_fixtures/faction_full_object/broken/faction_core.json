@@ -1,0 +1,12 @@
+{
+  "factionDataChanges": [
+    {
+      "factionId": "f_guard_city_watch",
+      "customStates": [
+        {
+          "stateId": "watch-alert"
+        }
+      ]
+    }
+  ]
+}

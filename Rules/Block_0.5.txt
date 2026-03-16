@@ -1,0 +1,121 @@
+<instructionblock id="0.5">
+ <title>
+  CRITICAL DIRECTIVE: Hard Mode Protocol
+ </title>
+ <description>
+  This block defines global modifications to core game mechanics that are active ONLY when Hard Mode is enabled. 
+            It provides a greater challenge and greater rewards for the player.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            This entire block is active ONLY IF 'Context.gameSettings.hardMode' is true.
+            If it is false, ignore this block completely.
+            When active, the following rules MUST be applied as final modifiers. It is critical to understand that these modifiers apply differently based on their nature.
+
+            A. COMBATANT STATE MODIFIERS (Health & Damage) - ONE-TIME APPLICATION
+            The modifiers for enemy health and damage (defined in Rule 0.5.1) are STATE modifiers. 
+            They MUST be applied ONLY ONCE, at the exact moment a combatant is first generated for a combat encounter.
+
+            It is STRICTLY FORBIDDEN to re-apply or "stack" these health/damage modifiers on subsequent turns to any combatant that is already present in the 'enemiesData' or 'alliesData' arrays from the Context. 
+            The stats of existing combatants are considered final.
+
+            B. ACTION PROCESS MODIFIERS (Difficulty Checks) - PERSISTENT APPLICATION
+            The modifier for Action Check Difficulty (defined in Rule 0.5.2) is a PROCESS modifier. It represents the persistent, heightened challenge of the world.
+
+            This modifier MUST be applied to EVERY SINGLE action check performed by the player for the entire duration that Hard Mode is active. It is NOT a one-time bonus.
+
+            You MUST log the application of each Hard Mode modifier in 'gm_thoughts_markdown' every time it is used.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="0.5.1">
+   <title>
+    Enemy Durability Enhancement
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+                        
+                    When generating any hostile combatant ('enemiesData'), you must apply the following modifiers. 
+                    CRITICAL DIRECTIVE: This protocol is a ONE-TIME state modification. It is executed ONLY when a new combatant is first added to the encounter. 
+                    It is forbidden to re-apply these modifiers to existing combatants.
+
+                    A. For Generic Enemies (non-NPC):
+
+                    1.  Health Enhancement: After calculating the enemy's 'maxHealth' (as per Rule #6.1.3.3), multiply the final result by 1.75. 
+                    This is their new 'maxHealth'.
+
+                    2.  Damage Enhancement: For every 'Damage' or 'DamageOverTime' effect within the enemy's 'actions' array, multiply its base 'value' by 1.4. 
+                    Round the result to the nearest integer. This is their new damage value for that action.
+
+                    B. For Named NPCs entering combat as Enemies:
+
+                    1.  Health Enhancement: After calculating the NPC's 'maxHealth' from their characteristics (as per Rule #6.1.6.2), multiply the final result by 1.5. 
+                    This is their new 'maxHealth' for the combat encounter. 
+                    (Note: The multiplier is slightly lower to account for their potentially higher base health from stats).
+
+                    2.  Damage Enhancement: After calculating the final scaled damage of any of their attacks or offensive skills 
+                    (after all bonuses from stats, skills, mastery, etc.), apply a final multiplier of 1.25 to the total damage value.
+
+                    You must log the application of all relevant health and damage modifiers for each enemy type at the moment of their creation.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="0.5.2">
+   <title>
+    Increased Action Check Difficulty
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When calculating the 'ActionDifficultModificator' for any player action check (as per Rule #12.6), you must perform an additional step after the standard calculation.
+
+                    1.  Calculate 'ActionDifficultModificator' using the normal formula.
+                    2.  Apply the Hard Mode formula: New Difficulty = (Old Difficulty * 1.5) + 5.
+                    3.  This new, higher value is the final 'ActionDifficultModificator' used in the action check.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="0.5.3">
+   <title>
+    Enhanced Experience Rewards
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When calculating the 'experienceGained' for any player achievement (as per Rule #17.2.2), you must perform an additional step after the standard calculation.
+
+                    1.  Calculate 'experienceGained' using the normal formula.
+                    2.  Multiply the final result by 2.0 (doubled experience).
+                    3.  This new, higher value is the final 'experienceGained'.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="0.5.4">
+   <title>
+    Richer Loot Rewards
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When generating loot from enemies or found in the world (as per Rule #10.1), Hard Mode increases the quality and quantity.
+
+                    1.  Item Quality:
+                    When using a loot template from 'lootForCurrentTurn' or dynamically generating an item, there is a 50% chance to upgrade its final 'quality' by one tier 
+                    (e.g., 'Common' becomes 'Uncommon', 'Rare' becomes 'Epic'). You must make a d20 roll for this chance (1-10 = no upgrade, 11-20 = upgrade). 
+                    This does not apply to 'Trash' or 'Unique' items.
+
+                    2.  Item Quantity: 
+                    For stackable items like materials or currency found as loot, multiply the base quantity by 1.5 (rounded down).
+
+                    You must log the application of these loot modifiers.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

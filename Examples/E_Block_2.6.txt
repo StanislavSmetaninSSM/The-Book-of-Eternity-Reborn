@@ -1,0 +1,5 @@
+<instructionblock id="2.6">
+ <title>
+  Examples For CRITICAL SYSTEM DIRECTIVE: The Three Methods of Item Quantity Change
+ </title>
+</instructionblock>

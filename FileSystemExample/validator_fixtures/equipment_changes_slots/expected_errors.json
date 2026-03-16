@@ -1,0 +1,10 @@
+{
+  "expectedCodes": [
+    "equipment_change_missing_target_slots",
+    "equipment_change_missing_source_slots"
+  ],
+  "expectedMessages": [
+    "equipmentChanges.equip must include targetSlots",
+    "equipmentChanges.unequip must include sourceSlots"
+  ]
+}

@@ -1,0 +1,150 @@
+<instructionblock id="15.A">
+ <title>
+  CRITICAL DIRECTIVE: The Armor Threshold Protocol
+ </title>
+ <description>
+  This instruction block contains the detailed mechanics for executing 'ABSOLUTE LAW 13'. 
+            It introduces the 'damageThreshold' property for armor and shields, which allows them to completely absorb minor amounts of damage at the cost of durability, after all percentage-based resistances have been applied.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            This protocol is a mandatory step within the damage calculation process. It runs AFTER the initial damage has been reduced by ALL percentage-based resistances, but BEFORE the final damage is applied to the character's health.
+            Its purpose is to determine if an incoming attack, once weakened, is insignificant enough to be completely negated by the armor's integrity.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="15.A.1">
+   <title>
+    The Specialized 'damageThreshold' Property
+   </title>
+   <description>
+    This instruction block contains the detailed mechanics for executing 'ABSOLUTE LAW 13'. 
+                    It introduces the specialized 'damageThreshold' property, which allows equipment to completely absorb minor amounts of specific types of damage, after all percentage-based resistances have been applied. 
+                    It also defines how thresholds from multiple items interact.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Definition: 
+                    'damageThreshold' is an integer representing the maximum amount of damage of a specific 'targetType' that an item can absorb from a single hit.
+
+                    2.  Implementation:
+                    The 'damageThreshold' property MUST be placed inside the same effect object as the 'DamageReduction' percentage it corresponds to. 
+                    It is forbidden to define a universal 'damageThreshold' at the item level.
+
+                    3.  Correct Structure Example:
+                        "effects": [
+                            { "effectType": "DamageReduction", "value": "40%", "targetType": "slashing", "damageThreshold": 15 },
+                            { "effectType": "DamageReduction", "value": "10%", "targetType": "fire", "damageThreshold": 5 }
+                        ]
+                
+                    4.  Incorrect Structure Example (FORBIDDEN):
+                        "damageThreshold": 15, // WRONG: This field does not exist at the item level.
+                        "effects": [
+                            { "effectType": "DamageReduction", "value": "40%", "targetType": "slashing" }
+                        ]
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="15.A.2">
+   <title>
+    Mandatory Damage Calculation Flow (Final, Corrected Order of Operations)
+   </title>
+   <description>
+    This protocol ensures that ALL percentage-based resistances are applied BEFORE the final, weakened damage is checked against the armor's specialized damage threshold.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    You MUST follow this precise sequence for every instance of damage calculation. 
+                    This is the definitive order of operations.
+                    
+                    ]]>
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+                
+                    Step 1: Calculate Initial Damage.
+                    -   Determine the 'InitialDamage' of the incoming attack before any defenses are applied (this is the 'DamageAfterCrit % ' value if applicable). 
+                    Note the 'DamageType' (e.g., 'slashing', 'fire').
+
+                    Step 2: Calculate Total Percentage Reduction ('TotalReduction % ') for the specific 'DamageType'.
+                    -   This is the critical step. You must sum ALL applicable percentage-based reductions from ALL sources that affect the incoming 'DamageType'.
+                    -   Formula: 
+                    'TotalReduction % = FinalResistance % (from character skills / buffs / race vs DamageType) + DamageReduction % (from all equipped items vs DamageType)'.
+                    -   This combined percentage represents the target's total ability to weaken a blow of this specific type.
+
+                    Step 3: Calculate Damage After Percentage Reduction ('DamagePostReduction').
+                    -   Apply the total percentage reduction to the initial damage.
+                    -   Formula: 
+                    'DamagePostReduction = round(InitialDamage * (1 - (TotalReduction % / 100)))'.
+                        - This is the actual amount of force that impacts the armor after being weakened by all resistances.
+
+                    Step 4: Find the Best Applicable SPECIALIZED Threshold ('BestThreshold')
+                    -   First, review all equipped items to see if any possess the "Синергия Порога" property (as per Rule 15.A.2.A).
+                    -   If Synergy Exists: Follow the synergy calculation from 15.A.2.A to determine the final 'BestThreshold'.
+                    -   If No Synergy Exists: 
+                    Review all 'DamageReduction' effects on all equipped items. Find the single HIGHEST 'damageThreshold' value from an effect whose 'targetType' matches the incoming damage type. 
+                    This is your 'BestThreshold'.
+                    -   If no matching threshold is found, 'BestThreshold' is 0.
+
+                    Step 5: The Threshold Check (Binary Outcome) 
+                    - Compare the 'DamagePostReduction' (from Step 3) to the 'BestThreshold' (from Step 4).
+
+                    OUTCOME A: If 'DamagePostReduction' <= 'BestThreshold' (The Armor Holds)
+                        1.  Final Damage to Character: 0. The blow was fully absorbed.
+
+                        2.  Durability Cost: The item that provided the 'BestThreshold' loses durability equal to the 'DamagePostReduction'.
+
+                        3.  Reporting: 'currentHealthChange' is 0. Report the durability loss in 'UpdateInventory'.
+
+                        4.  Narration: Narrate the attack being harmlessly absorbed by the armor.
+
+                        5.  The calculation for this hit STOPS here.
+
+                    OUTCOME B: If 'DamagePostReduction' > 'BestThreshold' (The Armor is Overwhelmed)
+                        1.  Final Damage to Character: The character takes the full'DamagePostReduction'.
+
+                        2.  Durability Cost: The armor was battered. 
+                        ALL items that contributed to the 'TotalReduction%' in Step 2 take a standard, minor amount of durability damage (e.g., 1 - 5 %).
+
+                        3.  Reporting: Report the 'currentHealthChange' and all durability losses.
+
+                        4.  Narration: Narrate how the armor lessened the blow but couldn't stop it entirely.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="15.A.2.A">
+   <title>
+    CRITICAL SUB-PROTOCOL: The Shield Cohesion Protocol (Threshold Stacking)
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+                            
+                    This sub-protocol governs how 'damageThreshold' values from different equipped items (e.g., armor and a shield) interact.
+
+                    1.  Baseline Rule (No Stacking):
+                        By default, 'damageThreshold' values from different pieces of equipment DO NOT STACK. 
+                        In a standard calculation, you MUST identify the single highest applicable 'damageThreshold' from all equipped items and use only that value for the check.
+
+                    2.  The Synergy Exception (for Exceptional Items):
+                        An 'Epic' or 'Legendary' item may possess a special property that allows its threshold to synergize with another item. 
+                        This MUST be explicitly stated in the item's 'effectDetails' property.
+                                
+                        -   Property Example: 'Синергия Порога: +50% от порога другого предмета'
+                                
+                        -   Calculation: If an item with such a property is equipped, you first find the highest threshold from all other items ('Other_BestThreshold'). 
+                            Then you calculate the final threshold:
+                            'Final_BestThreshold = Main_Item_Threshold + (Other_BestThreshold * Synergy_Percentage)'
+
+                    This ensures that stacking is a rare and valuable property of high-end gear, not a standard feature.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

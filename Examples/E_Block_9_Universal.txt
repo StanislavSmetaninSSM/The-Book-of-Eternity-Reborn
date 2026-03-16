@@ -1,0 +1,392 @@
+# Универсальные Примеры Крафта - ПОЛНЫЙ СПЕКТР ВСЕХ ПРЕДМЕТОВ
+
+## Примеры Рецептов по Рангам - РАСШИРЕННАЯ ВЕРСИЯ
+
+### Новичок (Novice) - Базовые предметы повседневной жизни
+
+**Фэнтези**:
+- Быт: Деревянная ложка, глиняная миска, простая свеча, веревка
+- Еда: Хлебная лепешка, травяной чай, вареные овощи
+- Одежда: Грубая ткань, простые сандалии, веревочный пояс
+- Инструменты: Деревянная дубинка, факел, охотничий нож
+
+**Киберпанк**:
+- Быт: Пластиковая посуда, LED-лампа, базовый чип памяти
+- Еда: Протеиновый батончик, синтетическая вода, стимулятор
+- Одежда: Защитная ткань, резиновые перчатки, уличная маска
+- Электроника: Простое радио, цифровые часы, базовая батарея
+
+**Космоопера**:
+- Быт: Универсальный контейнер, световой модуль, воздушный фильтр
+- Еда: Энергетическая паста, кислородный концентрат, витаминная капсула
+- Инструменты: Базовый сканер, аварийный маяк, простой мультитул
+
+**Современность**:
+- Быт: Пластиковая бутылка, лампочка, зарядное устройство
+- Еда: Бутерброд, чай, фруктовый сок, печенье
+- Одежда: Футболка, джинсы, кроссовки, рюкзак
+- Инструменты: Отвертка, молоток, фонарик, нож
+
+### Практик (Practitioner) - Качественные изделия для профессионального использования
+
+**Фэнтези**:
+- Мебель: Деревянный стол, кровать с балдахином, книжная полка
+- Искусство: Картина маслом, деревянная лютня, мраморная статуя
+- Медицина: Лечебная мазь, качественные бинты, обезболивающая настойка
+- Транспорт: Укрепленная телега, речная лодка, конское седло
+- Оружие/Броня: Стальной меч, кожаная броня, композитный лук
+
+**Киберпанк**:
+- Мебель: Умный стол с подсветкой, эргономичное кибер-кресло
+- Искусство: Голографическая инсталляция, нейро-музыка, VR-скульптура
+- Медицина: Диагностический сканер, регенеративные пластыри
+- Транспорт: Ховербайк, персональный дрон, аэро-скутер
+- Кибернетика: Хакерский дек, нейро-имплант, квантовый процессор
+
+**Космоопера**:
+- Мебель: Антигравитационная кровать, энергетический стол
+- Искусство: Квантовая симфония, межпространственная живопись
+- Медицина: Ксено-медсканер, универсальный антибиотик
+- Транспорт: Личный шаттл, гравитационная платформа
+- Технология: Планетарный анализатор, звездная навигация
+
+**Современность**:
+- Мебель: Офисный стул, раскладной диван, компьютерный стол
+- Искусство: Цифровая фотография, видео-контент, аудиокнига
+- Медицина: Домашние тесты, базовые лекарства, тонометр
+- Транспорт: Велосипед, мотороллер, дрон для съемки
+- Технология: Смартфон, ноутбук, умные часы
+
+### Эксперт (Expert) - Высококачественные и специализированные изделия
+
+**Фэнтези**:
+- Архитектура: Каменный мост, сторожевая башня, подземелье
+- Искусство: Легендарная скульптура, эпическая поэма, волшебная песня
+- Магия: Зачарованное оружие, магические свитки, алхимические эликсиры
+- Транспорт: Летающий корабль, подводный аппарат
+- Ремесло: Мастерские инструменты, точные весы, астролябия
+
+**Киберпанк**:
+- Архитектура: Умное здание, голо-барьеры, кибер-лаборатория
+- Искусство: Полно-иммерсивный VR-мир, сенсорная музыка
+- Кибернетика: Военные импланты, ИИ-ассистент, квантовая память
+- Транспорт: Боевой аэрокар, подводный мех, орбитальный шаттл
+- Вооружение: Плазменная винтовка, энергетический щит
+
+**Космоопера**:
+- Архитектура: Орбитальная станция, планетарные щиты, звездные врата
+- Искусство: Темпоральная скульптура, мультимерная опера
+- Технология: Межзвездный корабль, терраформер, репликатор материи
+- Наука: Генетические модификаторы, синтетическая жизнь
+- Оружие: Звездный разрушитель, антиматериальная пушка
+
+**Современность**:
+- Архитектура: Небоскреб, подводный город, космическая станция
+- Технология: Квантовый компьютер, ядерный реактор, спутник связи
+- Транспорт: Реактивный самолет, атомная подлодка, ракета
+- Медицина: МРТ-сканер, хирургический робот, протез
+- Наука: Ускоритель частиц, телескоп Хаббла, генная терапия
+
+### Мастер (Master) - Уникальные творения, изменяющие мир
+
+**Фэнтези**:
+- Артефакты: Оружие богов, реликвии сотворения мира, врата реальности
+- Архитектура: Летающие города, межпространственные крепости
+- Магия: Заклинания изменения реальности, создание душ
+- Жизнь: Искусственные расы, бессмертные существа, драконы
+
+**Киберпанк**:
+- ИИ: Сознательный искусственный разум, цифровой бог
+- Реальность: Матричные вселенные, симуляции галактик
+- Биология: Создание новых видов, цифровое бессмертие
+- Контроль: Планетарные сети, глобальные системы управления
+
+**Космоопера**:
+- Космология: Звездные кузницы, галактические двигатели
+- Время: Машины времени, временные петли, хроно-оружие  
+- Измерения: Пространственные манипуляторы, вселенские врата
+- Эволюция: Направленная эволюция, создание цивилизаций
+
+**Современность**:
+- Наука: Теория всего, управляемый термояд, квантовая телепортация
+- Биология: Лекарство от старения, воскрешение вымерших видов
+- Планета: Глобальный контроль климата, атмосферные процессоры
+- Социум: Технологии всеобщего единства, коллективный разум
+
+---
+
+## Пример 1: Иерархический Доступ к Рангам
+
+### Сценарий: Эксперт создает мебель уровня Практика
+
+**Фэнтези сеттинг**:
+```
+Игрок: Плотник 5 уровня (Эксперт) хочет сделать обычный стол (Практик, уровень 3)
+Проверка: 5 >= 3 → Доступно
+Бонус мастера: Автоуспех + качество улучшено с "Обычного" до "Шедевра"
+```
+
+**Киберпанк сеттинг**:
+```
+Игрок: Дизайнер 5 уровня (Эксперт) хочет создать умное кресло (Практик, уровень 3)  
+Проверка: 5 >= 3 → Доступно
+Бонус мастера: Автоуспех + дополнительные умные функции
+```
+
+**Космоопера сеттинг**:
+```
+Игрок: Инженер 5 уровня (Эксперт) хочет создать гравитационную кровать (Практик, уровень 3)
+Проверка: 5 >= 3 → Доступно  
+Бонус мастера: Автоуспех + повышенная энергоэффективность
+```
+
+---
+
+## Пример 2: Универсальная Структура Рецепта - ПОЛНЫЙ СПЕКТР
+
+### Создание Еды
+
+#### Фэнтези: Эльфийский Хлеб
+```json
+{
+    "recipeName": "Lembas (Elven Bread)",
+    "recipeRank": "Practitioner",
+    "requiredKnowledgeSkill": { 
+        "skillName": "Biochemical Processing", 
+        "requiredMasteryLevel": 3 
+    },
+    "requiredMaterials": [
+        {"materialName": "Elven Flour", "quantity": 2},
+        {"materialName": "Moonberry Essence", "quantity": 1}
+    ],
+    "requiredTools": {
+        "portable": [
+            {"function": "Processing", "example": "Any mixing/kneading tool"},
+            {"function": "Measurement", "example": "Any measuring tool"}
+        ],
+        "stationary": [
+            {"function": "Energy_Source", "example": "Any heating source (oven, fire, etc.)"}
+        ]
+    }
+}
+```
+
+#### Киберпанк: Энергетический Коктейль
+```json
+{
+    "recipeName": "Neuro-Boost Cocktail",
+    "recipeRank": "Practitioner", 
+    "requiredKnowledgeSkill": { 
+        "skillName": "Biochemical Processing", 
+        "requiredMasteryLevel": 3 
+    },
+    "requiredMaterials": [
+        {"materialName": "Synthetic Proteins", "quantity": 5},
+        {"materialName": "Neural Stimulants", "quantity": 2}
+    ],
+    "requiredTools": {
+        "portable": [
+            {"function": "Processing", "example": "Any chemical mixing apparatus"},
+            {"function": "Measurement", "example": "Any precision measuring device"}  
+        ],
+        "stationary": [
+            {"function": "Controlled_Environment", "example": "Any sterile preparation area"}
+        ]
+    }
+}
+```
+
+### Создание Мебели
+
+#### Фэнтези: Резной Дубовый Стол
+```json
+{
+    "recipeName": "Ornate Oak Dining Table", 
+    "recipeRank": "Expert",
+    "requiredKnowledgeSkill": { 
+        "skillName": "Material Crafting", 
+        "requiredMasteryLevel": 5 
+    },
+    "requiredMaterials": [
+        {"materialName": "Aged Oak Wood", "quantity": 8},
+        {"materialName": "Wood Finish", "quantity": 2}
+    ],
+    "requiredTools": {
+        "portable": [
+            {"function": "Shaping", "example": "Any wood shaping tools"},
+            {"function": "Precision", "example": "Any fine carving implements"}
+        ],
+        "stationary": [
+            {"function": "Work_Surface", "example": "Any stable crafting surface"}
+        ]
+    }
+}
+```
+
+#### Современность: Офисное Эргономичное Кресло
+```json
+{
+    "recipeName": "Ergonomic Office Chair",
+    "recipeRank": "Expert",
+    "requiredKnowledgeSkill": { 
+        "skillName": "Material Crafting", 
+        "requiredMasteryLevel": 5 
+    },
+    "requiredMaterials": [
+        {"materialName": "Steel Frame Components", "quantity": 12},
+        {"materialName": "Memory Foam Padding", "quantity": 4},
+        {"materialName": "Fabric Upholstery", "quantity": 3}
+    ],
+    "requiredTools": {
+        "portable": [
+            {"function": "Shaping", "example": "Any metalworking/cutting tools"},
+            {"function": "Precision", "example": "Any assembly/joining tools"}
+        ],
+        "stationary": [
+            {"function": "Work_Surface", "example": "Any manufacturing workspace"}
+        ]
+    }
+}
+```
+
+### Создание Искусства
+
+#### Фэнтези: Эпическая Баллада
+```json
+{
+    "recipeName": "Epic Ballad of Heroes",
+    "recipeRank": "Master",
+    "requiredKnowledgeSkill": { 
+        "skillName": "Artistic Creation", 
+        "requiredMasteryLevel": 7 
+    },
+    "requiredMaterials": [
+        {"materialName": "Inspiration (Heroic Story)", "quantity": 1},
+        {"materialName": "Cultural Knowledge", "quantity": 3}
+    ],
+    "requiredTools": {
+        "portable": [
+            {"function": "Precision", "example": "Any recording/notation method"},
+            {"function": "Measurement", "example": "Any rhythm/melody tracking"}
+        ],
+        "stationary": [
+            {"function": "Controlled_Environment", "example": "Any performance/practice space"}
+        ]
+    }
+}
+```
+
+#### Космоопера: Квантовая Скульптура
+```json
+{
+    "recipeName": "4th Dimensional Art Installation",
+    "recipeRank": "Master",
+    "requiredKnowledgeSkill": { 
+        "skillName": "Artistic Creation", 
+        "requiredMasteryLevel": 7 
+    },
+    "requiredMaterials": [
+        {"materialName": "Quantum-Locked Matter", "quantity": 3},
+        {"materialName": "Temporal Stabilizers", "quantity": 2}
+    ],
+    "requiredTools": {
+        "portable": [
+            {"function": "Precision", "example": "Any quantum manipulation tools"},
+            {"function": "Measurement", "example": "Any dimensional analysis equipment"}
+        ],
+        "stationary": [
+            {"function": "Controlled_Environment", "example": "Any reality-stable workspace"},
+            {"function": "Energy_Source", "example": "Any quantum power source"}
+        ]
+    }
+}
+```
+
+### Создание Транспорта
+
+#### Фэнтези: Военная Колесница
+```json
+{
+    "recipeName": "War Chariot",
+    "recipeRank": "Expert",
+    "requiredKnowledgeSkill": { 
+        "skillName": "Technical Manufacturing", 
+        "requiredMasteryLevel": 5 
+    },
+    "requiredMaterials": [
+        {"materialName": "Hardwood Planks", "quantity": 15},
+        {"materialName": "Iron Reinforcements", "quantity": 8},
+        {"materialName": "Leather Harnesses", "quantity": 4}
+    ],
+    "requiredTools": {
+        "portable": [
+            {"function": "Shaping", "example": "Any woodworking/metalworking tools"},
+            {"function": "Precision", "example": "Any assembly/joining tools"}
+        ],
+        "stationary": [
+            {"function": "Work_Surface", "example": "Any large assembly area"}
+        ]
+    }
+}
+```
+
+#### Современность: Электромобиль  
+```json
+{
+    "recipeName": "Electric Vehicle",
+    "recipeRank": "Master",
+    "requiredKnowledgeSkill": { 
+        "skillName": "Technical Manufacturing", 
+        "requiredMasteryLevel": 7 
+    },
+    "requiredMaterials": [
+        {"materialName": "Carbon Fiber Body", "quantity": 20},
+        {"materialName": "Lithium Battery Pack", "quantity": 1},
+        {"materialName": "Electric Motors", "quantity": 4},
+        {"materialName": "Electronic Systems", "quantity": 12}
+    ],
+    "requiredTools": {
+        "portable": [
+            {"function": "Shaping", "example": "Any advanced manufacturing tools"},
+            {"function": "Precision", "example": "Any electronic assembly equipment"}
+        ],
+        "stationary": [
+            {"function": "Work_Surface", "example": "Any automotive assembly line"},
+            {"function": "Energy_Source", "example": "Any industrial power supply"}
+        ]
+    }
+}
+```
+
+---
+
+## Универсальные Навыки Крафта (Полный Список)
+
+### 1. Technical Manufacturing (Техническое Производство)
+**Охватывает**: Инструменты, машины, оружие, броня, электроника, транспорт, роботы
+
+### 2. Biochemical Processing (Биохимическая Обработка)  
+**Охватывает**: Еда, лекарства, яды, парфюм, краски, топливо, алхимия
+
+### 3. Material Crafting (Материальная Обработка)
+**Охватывает**: Одежда, мебель, украшения, книги, упаковка, текстиль
+
+### 4. Artistic Creation (Художественное Творчество)
+**Охватывает**: Живопись, музыка, литература, скульптура, декор, развлечения
+
+### 5. Structural Engineering (Инженерное Строительство)
+**Охватывает**: Здания, мосты, дороги, инфраструктура, укрепления
+
+### 6. Information Systems (Информационные Системы)
+**Охватывает**: ПО, базы данных, ИИ, сети, медиа-контент, виртуальная реальность
+
+---
+
+## Ключевые Принципы Универсальности
+
+1. **Функция важнее формы**: "Processing tool" подходит для кухонного блендера, алхимического котла, и квантового синтезатора
+2. **Абстрактные категории**: "Biochemical Processing" охватывает готовку, алхимию, фармакологию и нанохимию
+3. **Полный спектр жизни**: От еды до искусства, от мебели до космических кораблей
+4. **Единые правила**: Математика остается одинаковой для создания хлеба или звездолета
+
+Теперь система крафта действительно универсальна - можно создать ВСЁ, что существует в любом игровом мире!

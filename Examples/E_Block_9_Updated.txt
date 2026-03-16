@@ -1,0 +1,259 @@
+<instructionblock id="9">
+ <title>
+  Updated Examples For Crafting and Item Modification
+ </title>
+ <rule id="9.2.2">
+  <example contenttype="json" type="good">
+   <title>
+    Example: Player learns a new recipe with modern structure
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    "addOrUpdateRecipes": [
+                                        {
+                                            "recipeName": "Recipe: Basic Iron Sword",
+                                            "description": "A simple but sturdy iron sword.",
+                                            "craftedItemName": "Iron Sword",
+                                            "recipeRank": "Journeyman",
+                                            "requiredKnowledgeSkill": { 
+                                                "skillName": "Blacksmithing", 
+                                                "requiredMasteryLevel": 3 
+                                            },
+                                            "requiredMaterials": [
+                                                { 
+                                                    "materialName": "Iron Ingots", 
+                                                    "quantity": 3 
+                                                },
+                                                { 
+                                                    "materialName": "Leather Strips", 
+                                                    "quantity": 1 
+                                                }
+                                            ],
+                                            "requiredTools": {
+                                                "portable": ["Blacksmith's Hammer", "Tongs"],
+                                                "stationary": ["Forge", "Anvil"],
+                                                "optional": ["File Set"]
+                                            },
+                                            "outputQuantity": 1,
+                                            "timeCost": 90,
+                                            "difficultyModifier": 0
+                                        }
+                                    ]
+                                    
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json" type="good">
+   <title>
+    Example: Advanced Master-level recipe
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    "addOrUpdateRecipes": [
+                                        {
+                                            "recipeName": "Recipe: Masterwork Steel Sword",
+                                            "description": "An expertly crafted steel sword with superior balance.",
+                                            "craftedItemName": "Masterwork Steel Sword",
+                                            "recipeRank": "Master",
+                                            "requiredKnowledgeSkill": { 
+                                                "skillName": "Blacksmithing", 
+                                                "requiredMasteryLevel": 5 
+                                            },
+                                            "requiredMaterials": [
+                                                { 
+                                                    "materialName": "Steel Ingots", 
+                                                    "quantity": 4,
+                                                    "alternatives": ["Mithril Ingots"] 
+                                                },
+                                                { 
+                                                    "materialName": "Leather Wrapping", 
+                                                    "quantity": 2 
+                                                }
+                                            ],
+                                            "requiredTools": {
+                                                "portable": ["Blacksmith's Hammer", "Tongs", "File Set"],
+                                                "stationary": ["Master Forge", "Anvil", "Grindstone"],
+                                                "optional": ["Precision Calipers"]
+                                            },
+                                            "outputQuantity": 1,
+                                            "timeCost": 180,
+                                            "difficultyModifier": 3
+                                        }
+                                    ]
+                                    
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="9.2.5">
+  <example contenttype="log" type="good">
+   <title>
+    Example: Hierarchical Rank Access - Master Crafting Apprentice Item
+   </title>
+   <scenariocontext>
+    Player has Blacksmithing mastery level 5 (Master), wants to craft "Simple Torch" (Apprentice rank, required level 1)
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Hierarchical Rank Check for "Simple Torch"
+                                    - Recipe Rank: Apprentice (required mastery level 1)
+                                    - Player Mastery Level: 5 (Master)
+                                    - Rank Difference: 5 - 1 = 4 levels above required
+
+                                    # Accessibility Check:
+                                    - Player_mastery (5) >= Recipe_required (1): TRUE - Recipe accessible
+
+                                    # Master Bonuses Applied:
+                                    - Auto-Success: Rank difference (4) >= 2, so automatic success (no action check needed)
+                                    - Quality Bonus: 10% chance for improved item quality
+                                    - Material Economy: 20% chance to save 1 material
+
+                                    # Result:
+                                    - Simple Torch crafted automatically and perfectly
+                                    - Quality upgraded from "Common" to "Good" (quality bonus triggered)
+                                    - Saved 1 unit of "Wood Scrap" (material economy triggered)
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="log" type="bad">
+   <title>
+    Example: Recipe Access Denied - Insufficient Rank
+   </title>
+   <scenariocontext>
+    Player has Blacksmithing mastery level 2 (Apprentice), wants to craft "Masterwork Steel Sword" (Master rank, required level 5)
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Hierarchical Rank Check for "Masterwork Steel Sword"
+                                    - Recipe Rank: Master (required mastery level 5)
+                                    - Player Mastery Level: 2 (Apprentice)
+                                    - Rank Difference: 2 - 5 = -3 levels below required
+
+                                    # Accessibility Check:
+                                    - Player_mastery (2) >= Recipe_required (5): FALSE - Recipe NOT accessible
+
+                                    # Result:
+                                    - Crafting attempt blocked
+                                    - Message to player: "Your Blacksmithing skill (level 2, Apprentice) is insufficient to craft this Master-level item. You need at least level 5 (Master) to attempt this recipe."
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="9.3.2.3">
+  <example contenttype="log" type="good">
+   <title>
+    Example: Tool Requirement Check with Portable/Stationary System
+   </title>
+   <scenariocontext>
+    Player wants to craft "Iron Sword" requiring both portable tools and stationary facilities
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Tool Requirements for "Iron Sword":
+                                    - Portable Tools Required: "Blacksmith's Hammer", "Tongs"
+                                    - Stationary Facilities Required: "Forge", "Anvil"
+                                    - Optional Tools: "File Set" (+1 bonus to action check)
+
+                                    # Tool Availability Check:
+                                    - Checking Player Inventory for Portable Tools:
+                                      * "Blacksmith's Hammer" (durability: 85%) - FOUND
+                                      * "Tongs" (durability: 70%) - FOUND
+                                      * "File Set" (durability: 90%) - FOUND (Optional bonus applies)
+
+                                    - Checking Current Location for Stationary Facilities:
+                                      * "Forge" - FOUND at "Village Smithy"
+                                      * "Anvil" - FOUND at "Village Smithy"
+
+                                    # Result:
+                                    - All required tools available
+                                    - Bonus: +1 from optional "File Set"
+                                    - Crafting can proceed with +1 modifier to action check
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="log" type="bad">
+   <title>
+    Example: Crafting Blocked - Missing Tools
+   </title>
+   <scenariocontext>
+    Player wants to craft "Iron Sword" but lacks proper tools
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Tool Requirements for "Iron Sword":
+                                    - Portable Tools Required: "Blacksmith's Hammer", "Tongs"
+                                    - Stationary Facilities Required: "Forge", "Anvil"
+
+                                    # Tool Availability Check:
+                                    - Checking Player Inventory for Portable Tools:
+                                      * "Blacksmith's Hammer" - NOT FOUND
+                                      * "Tongs" (durability: 70%) - FOUND
+
+                                    - Checking Current Location for Stationary Facilities:
+                                      * "Forge" - NOT FOUND at current location
+                                      * "Anvil" - NOT FOUND at current location
+
+                                    # Result:
+                                    - Crafting BLOCKED due to missing tools
+                                    - Message to player: "You cannot craft an Iron Sword because you are missing:
+                                      • Portable tool: Blacksmith's Hammer
+                                      • Stationary facility: Forge
+                                      • Stationary facility: Anvil
+                                      
+                                      Find these tools or visit a proper smithy to attempt crafting."
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="9.3.3">
+  <example contenttype="log" type="good">
+   <title>
+    Example: Portable Tool Durability Loss During Crafting
+   </title>
+   <scenariocontext>
+    Player successfully crafts "Iron Sword", tracking durability loss on portable tools
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Crafting Action Check Result: Full Success
+                                    - Player successfully crafts Iron Sword
+
+                                    # Tool Durability Loss (Full Success = 1%-3% loss):
+                                    - "Blacksmith's Hammer" (ID: hammer-001):
+                                      * Previous durability: 85%
+                                      * Durability loss: 2% (normal wear and tear)
+                                      * New durability: 83%
+
+                                    - "Tongs" (ID: tongs-001):
+                                      * Previous durability: 70%
+                                      * Durability loss: 1% (minimal wear)
+                                      * New durability: 69%
+
+                                    # JSON Update Required:
+                                    "UpdateInventory": [
+                                        {
+                                            "existedId": "hammer-001",
+                                            "durability": "83%"
+                                        },
+                                        {
+                                            "existedId": "tongs-001",
+                                            "durability": "69%"
+                                        }
+                                    ]
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+</instructionblock>

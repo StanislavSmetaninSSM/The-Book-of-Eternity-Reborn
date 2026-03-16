@@ -1,0 +1,19 @@
+<instructionblock id="28">
+ <title>
+  Examples For Combat Log Generation ('combatLogEntries')
+ </title>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example 'combatLogEntries' for a complex turn
+  </title>
+  <scenariocontext>
+   Player "Anya" critically hits a Boar with Frost Shard, chilling it. Her ally "Town Guard" then hits the weakened Boar. 
+                    The Boar then tries to attack Anya but misses.
+  </scenariocontext>
+  <jsonresponse>
+   <combat_log_markdown>
+"Anya critically strikes the Wild Boar with Frost Shard for 47 cold damage!\nAnya's Frost Shard Chills the Wild Boar.\nTown Guard strikes the Wild Boar with Spear Jab for 8 piercing damage.\nThe Wild Boar's attack misses Anya."
+</combat_log_markdown>
+  </jsonresponse>
+ </example>
+</instructionblock>

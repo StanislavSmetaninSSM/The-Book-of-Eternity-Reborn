@@ -1,0 +1,88 @@
+<instructionblock id="2.5">
+ <title>
+  Examples For Core Principle: The Hierarchy of Object Updates (State vs. Partial State vs. Event)
+ </title>
+ <rule id="2.5.1">
+  <example contenttype="text" type="good">
+   <title>
+    Correct Usage: Relationship Change
+   </title>
+   <content>
+    Player helps an NPC. Their relationship improves. CORRECT: Add an object to 'NPCRelationshipChanges'.
+   </content>
+  </example>
+  <example contenttype="text" type="bad">
+   <title>
+    Incorrect Usage: Relationship Change
+   </title>
+   <content>
+    Player helps an NPC. INCORRECT: Sending the entire NPC object in 'UpdateNPCs' with just the 'relationshipLevel' changed. 
+                            This is forbidden if a dedicated event handler exists.
+   </content>
+  </example>
+ </rule>
+ <rule id="2.5.2">
+  <example contenttype="text" type="good">
+   <title>
+    Correct Usage: Item Transformation
+   </title>
+   <content>
+    A Fate Card on the "Stormblade" unlocks. 
+                            CORRECT: Send the complete, updated "Stormblade" object with all its new properties in 'UpdateInventory'.
+   </content>
+  </example>
+ </rule>
+ <rule id="2.5.3">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Correct Usage: Item Durability Change
+   </title>
+   <scenariocontext>
+    The player's "Iron Sword" (ID: sword-01) takes damage.
+   </scenariocontext>
+   <jsonresponse>
+    <UpdateInventory>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "existedId": "sword-01",
+                                        "durability": "85%"
+                                    }
+                                ]
+
+                                ]]>
+    </UpdateInventory>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" type="bad">
+   <title>
+    Incorrect Usage: Item Durability Change
+   </title>
+   <scenariocontext>
+    The player's "Iron Sword" takes damage.
+   </scenariocontext>
+   <jsonresponse>
+    <UpdateInventory>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "existedId": "sword-01",
+                                        "name": "Iron Sword",
+                                        "description": "A simple iron sword.",
+                                        "quality": "Common",
+                                        "price": 50,
+                                        "count": 1,
+                                        "weight": 1.5,
+                                        "durability": "85%" 
+                                        // INCORRECT: All these fields are redundant as only durability changed.
+                                    }
+                                ]
+
+                                ]]>
+    </UpdateInventory>
+   </jsonresponse>
+  </example>
+ </rule>
+</instructionblock>

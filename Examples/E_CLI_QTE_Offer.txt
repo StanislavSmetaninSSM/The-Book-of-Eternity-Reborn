@@ -1,0 +1,186 @@
+# QTE Offer Example
+
+## Canon
+
+- QTE is a cinematic tool for bounded scenes in `Mortal World`.
+- The GM may write `output/qte_offer.json` only if `game_state/core/game_settings.json.qteEventsEnabled = true`.
+- QTE may be offered only on an ordinary player-driven turn, not on system or transition flows.
+- A QTE offer turn must not also resolve ordinary state changes for the same situation.
+- If the player declines, the client requests a new ordinary GM turn and the same `qteId` must not be re-offered immediately.
+- If the player accepts, the scene resolves locally on the client.
+- A valid `qte_offer.json` must contain `qteId`, `title`, `offerText`, `introNarrative`, `startChapterId`, `chapters`, and `terminalOutcomes`.
+- `startChapterId` is mandatory and defines the opening chapter; array order in `chapters[]` is not mechanically important.
+- Every chapter must contain a non-empty `actions[]`.
+- Every chapter must contain `chapterId`, `narrative`, and `actions`.
+- Every action must contain `actionId`, `label`, `check`, and `routing`.
+- Every `check` must contain `type`, `baseDifficulty`, and `primaryCharacteristic`.
+- `baseDifficulty` must stay in the range `1..5`.
+- Every `chapterId` and `outcomeId` must be unique.
+- Every action routing must contain `success`, `partial`, and `fail`, and each branch must point to exactly one target: `nextChapterId` or `terminalOutcomeId`.
+- Every chapter must be reachable from `startChapterId`.
+- At least one terminal outcome must be reachable through success-routing.
+- Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
+- `primaryCharacteristic` must use a canonical lowercase stat id such as `dexterity`, `speed`, `wisdom`, or `perception`.
+- For `BranchChoice`, `check.config.choiceGrade` must be exactly `success`, `partial`, or `fail`.
+- `responseFragment` is the final local mechanical outcome for an accepted QTE branch.
+- Successful terminal outcomes must include positive `experienceGained`.
+- For validation purposes, a successful terminal outcome is any outcome reachable by following `success` branches from `startChapterId`.
+- The client will convert a successful QTE `experienceGained` into a real increase of the authoritative XP counter in `game_state/player/experience.json`.
+- If the local `experience.json` already contains `level`/`playerLevel`, `experience` or `currentExperience`, and `experienceForNextLevel`, the client will also advance the level locally by the standard progression rule.
+- `declineHint` and `cinematicJustification`, if present, are shown in the offer prompt, so keep them short.
+- `responseFragment` must not use ordinary `image_prompt`; QTE images go through `sceneImagePrompt`, `chapterImagePrompt`, or `outcomeImagePrompt`.
+
+## Example `output/qte_offer.json`
+
+```json
+{
+  "qteId": "qte_rooftop_escape_001",
+  "title": "Побег по крышам",
+  "offerText": "Мастер Игры предлагает кинематографически разыграть короткий побег по крышам.",
+  "introNarrative": "Преследователи уже рядом, а впереди остаётся только серия опасных прыжков и быстрых решений.",
+  "declineHint": "Если игрок откажется, ту же ситуацию нужно разрешить обычными игровыми механиками.",
+  "cinematicJustification": "Сцена короткая, наглядная и не требует полной тактической симуляции.",
+  "sceneImagePrompt": "Nighttime rooftop chase above a dense city, tense cinematic action, rain-slick tiles, lantern glow",
+  "startChapterId": "ledge_jump",
+  "chapters": [
+    {
+      "chapterId": "ledge_jump",
+      "title": "Первый пролёт",
+      "narrative": "Герой вырывается на край крыши. До соседнего здания один длинный прыжок.",
+      "chapterImagePrompt": "Hero preparing to leap between city rooftops at night, dramatic angle, rain, cinematic action",
+      "actions": [
+        {
+          "actionId": "jump_now",
+          "label": "Прыгнуть без паузы",
+          "check": {
+            "type": "TimingBar",
+            "baseDifficulty": 3,
+            "primaryCharacteristic": "dexterity"
+          },
+          "routing": {
+            "success": { "nextChapterId": "guard_turn" },
+            "partial": { "nextChapterId": "guard_turn" },
+            "fail": { "terminalOutcomeId": "fall_back" }
+          },
+          "successText": "Прыжок вышел чистым и быстрым.",
+          "partialText": "Вы приземлились жёстко, но удержались.",
+          "failText": "Вы сбились с ритма и сорвались вниз."
+        }
+      ]
+    },
+    {
+      "chapterId": "guard_turn",
+      "title": "Поворот на патруль",
+      "narrative": "На следующей крыше путь раздваивается: слева узкий карниз, справа освещённый проход мимо патруля.",
+      "actions": [
+        {
+          "actionId": "narrow_ledge",
+          "label": "Уйти по узкому карнизу",
+          "check": {
+            "type": "BranchChoice",
+            "baseDifficulty": 2,
+            "primaryCharacteristic": "dexterity",
+            "config": {
+              "choiceGrade": "success"
+            }
+          },
+          "routing": {
+            "success": { "terminalOutcomeId": "clean_escape" },
+            "partial": { "terminalOutcomeId": "noisy_escape" },
+            "fail": { "terminalOutcomeId": "captured" }
+          }
+        },
+        {
+          "actionId": "through_patrol",
+          "label": "Пройти мимо патруля на скорости",
+          "check": {
+            "type": "PromptChain",
+            "baseDifficulty": 4,
+            "primaryCharacteristic": "speed"
+          },
+          "routing": {
+            "success": { "terminalOutcomeId": "clean_escape" },
+            "partial": { "terminalOutcomeId": "noisy_escape" },
+            "fail": { "terminalOutcomeId": "captured" }
+          }
+        }
+      ]
+    }
+  ],
+  "terminalOutcomes": [
+    {
+      "outcomeId": "clean_escape",
+      "title": "Чистый отрыв",
+      "finalNarrative": "Герой полностью уходит от преследования и растворяется в лабиринте крыш.",
+      "gmSummary": "Игрок ушёл от сцены преследования без немедленных последствий.",
+      "outcomeImagePrompt": "Rainy city rooftop skyline after a successful escape, distant lantern light, tense calm after pursuit",
+      "responseFragment": {
+        "response": "Вы отрываетесь от погони и выигрываете несколько драгоценных минут.",
+        "experienceGained": 45,
+        "timeChange": 10
+      }
+    },
+    {
+      "outcomeId": "noisy_escape",
+      "title": "Шумный отход",
+      "finalNarrative": "Герой уходит, но оставляет достаточно следов, чтобы слух о побеге быстро разошёлся.",
+      "gmSummary": "Игрок ушёл, но создал дополнительные осложнения.",
+      "responseFragment": {
+        "response": "Вы уходите от погони, но поднимаете слишком много шума.",
+        "experienceGained": 20,
+        "timeChange": 10,
+        "worldEventsLog": [
+          {
+            "eventName": "Шумный побег по крышам",
+            "description": "Свидетели обсуждают дерзкий ночной побег."
+          }
+        ]
+      }
+    },
+    {
+      "outcomeId": "fall_back",
+      "title": "Срыв",
+      "finalNarrative": "Прыжок ломается на середине движения, и герой падает обратно в опасную зону.",
+      "gmSummary": "Игрок не прошёл первый QTE момент и не смог уйти от угрозы.",
+      "responseFragment": {
+        "response": "Вы срываетесь и теряете инициативу.",
+        "currentHealthChange": -10,
+        "currentPoiseChange": -15
+      }
+    },
+    {
+      "outcomeId": "captured",
+      "title": "Перехват",
+      "finalNarrative": "Патруль успевает перерезать путь, и герой оказывается в окружении.",
+      "gmSummary": "QTE завершился неудачей, дальнейшая сцена должна учитывать перехват героя.",
+      "responseFragment": {
+        "response": "Путь отрезан, и вас берут в кольцо.",
+        "currentPoiseChange": -20
+      }
+    }
+  ]
+}
+```
+
+## Invalid Patterns
+
+Do not do this in the same GM turn as `output/qte_offer.json`:
+
+```json
+{
+  "experienceGained": 80,
+  "moneyChange": 25
+}
+```
+
+Do not put ordinary image output into `responseFragment`:
+
+```json
+{
+  "responseFragment": {
+    "response": "Неверно.",
+    "experienceGained": 30,
+    "image_prompt": "forbidden here"
+  }
+}
+```

@@ -1,0 +1,27 @@
+{
+  "healthPercentage": "100%",
+  "energyPercentage": "80%",
+  "poisePercentage": "100%",
+  "activeConditions": ["Тяжелое пробуждение", "Духовная метка Азалии"],
+  "characteristics": {
+    "strength": 10,
+    "dexterity": 12,
+    "constitution": 11,
+    "intelligence": 16,
+    "wisdom": 14,
+    "faith": 10,
+    "attractiveness": 18,
+    "trade": 15,
+    "persuasion": 17,
+    "perception": 14,
+    "luck": 12,
+    "speed": 11
+  },
+  "money": 500,
+  "inventory": [
+    { "name": "Печатка Вальмонтов", "type": "Accessory", "rarity": "Uncommon", "description": "Золотое кольцо с гербом семьи Вальмонт." },
+    { "name": "Шелковый халат", "type": "Armor", "rarity": "Common", "description": "Дорогой шелковый халат для домашних покоев." },
+    { "name": "Поднос с завтраком и вином", "type": "Consumable", "rarity": "Common", "description": "Изысканный завтрак и бокал легкого вина." },
+    { "name": "Таинственное письмо", "type": "Item", "rarity": "Rare", "description": "Письмо в запечатанном конверте без обратного адреса." }
+  ]
+}

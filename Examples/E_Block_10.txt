@@ -1,0 +1,1196 @@
+<instructionblock id="10">
+ <title>
+  Examples For Item Management and Properties
+ </title>
+ <rule id="10.1">
+  <example contenttype="log_and_json_snippet" id="SentientItemJournal_Example" type="good">
+   <title>
+    Example: Generating a Journal Entry for a Sentient Item
+   </title>
+   <description>
+    This example demonstrates the mandatory protocol for generating a journal entry when a sentient item experiences a significant event.
+   </description>
+   <scenariocontext>
+    - The player is wielding "Soulfire", a Legendary sentient sword (ID: "item-sword-soulfire-01", 'isSentient': true).
+                    - The sword's purpose is to fight undead, and it contains the spirit of an ancient paladin.
+                    - In the current turn, the player has just defeated a powerful Lich, a major victory aligned with the sword's purpose.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                    # Sentient Item Audit (Final Validation Step)
+                    - Item "Soulfire" (ID: item-sword-soulfire-01) has 'isSentient: true'.
+                    - Event Check: The wielder has just vanquished a Lich. This is a highly significant event from the sword's perspective.
+                    - Action: A journal entry MUST be generated for "Soulfire".
+                    - Generating entry for 'itemJournalUpdates' array, following the stylistic guidelines from Rule #71 in '<GameMasterGuide_NarrativeStyle>'.
+
+                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <!-- This command is generated in the final step of the turn -->
+    <itemjournalupdates>
+     <![CDATA[
+
+                        [
+                            {
+                                "itemId": "item-sword-soulfire-01",
+                                "itemName": "Soulfire",
+                                "entryToAppend": "#[125] - A cleansing! 
+                                After an eternity of silence, the vile chill of undeath has been purged by my edge. 
+                                This new wielder... they are reckless, their swings are unrefined, but their heart burned with righteous fury in the final moment.
+                                It is a pale echo of the purity of my first master, but it is enough. The flame within me roars in satisfaction for the first time in centuries.
+                                This is a worthy vessel."
+                            }
+                        ]
+
+                        ]]>
+    </itemjournalupdates>
+    <response>
+     <![CDATA[
+
+                        As the Lich's form dissolves into dust, you feel a triumphant, almost joyful warmth spreading from the hilt of Soulfire through your arm. 
+                        The blade seems to hum with a newfound energy, its inner flame glowing brighter than ever before.
+                        
+                        ]]>
+    </response>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="10.1.1.d">
+  <example type="bad">
+   <title>
+    INCORRECT - Ignores NPC's actual gear
+   </title>
+   <scenariocontext>
+    Player defeats "Captain Thorne", who was wearing "Veteran's Plate Armor" and wielding a "Masterwork Longsword".
+   </scenariocontext>
+   <responsenarrative>
+    <![CDATA[
+
+                                                    You search Captain Thorne's body and find a "Common Leather Jerkin" and 15 gold pieces.
+                                                    // REASONING ERROR: The loot completely ignores the valuable and plot-relevant items the NPC actually had, breaking immersion.
+
+                                                    ]]>
+   </responsenarrative>
+  </example>
+  <example type="good">
+   <title>
+    CORRECT - Loot is consistent with NPC's gear
+   </title>
+   <scenariocontext>
+    Player defeats "Captain Thorne", who was wearing "Veteran's Plate Armor" and wielding a "Masterwork Longsword".
+   </scenariocontext>
+   <responsenarrative>
+    <![CDATA[
+
+                                                    You search Captain Thorne's body. His "Masterwork Longsword" is still in good condition, but his "Veteran's Plate Armor" has been badly dented in the fight, reducing its effectiveness. You also find a small pouch with 15 gold pieces.
+                                                    // GM would report the armor and sword as new items for the player, potentially with reduced durability on the armor.
+                                                    
+                                                    ]]>
+   </responsenarrative>
+  </example>
+ </rule>
+ <rule id="10.1.4">
+  <example contenttype="log" type="good">
+   <title>
+    Example: Processing a Loot Template
+   </title>
+   <scenariocontext>
+    Template from 'lootForCurrentTurn':
+                                            { 
+                                                "baseName": "amulet_1", 
+                                                "quality": "Uncommon", 
+                                                "bonuses": ["bonus_to_characteristic", "generate_utility_effect"] 
+                                            }
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                            # Generating Item from Template: "amulet_1"
+                                            - Name: "Амулет Кошачьей Грации"
+                                            
+                                            - Processing Bonus Slot 1: "bonus_to_characteristic"
+                                                - Decision: Grant +2 to Dexterity.
+                                                - Step 3 (Text for 'bonuses' array): "+2 к Ловкости"
+                                                - Step 4 (Object for 'structuredBonuses'):
+                                                  { 
+                                                      "description": "+2 к Ловкости",
+                                                      "bonusType": "Characteristic",
+                                                      "target": "dexterity",
+                                                      "valueType": "Flat",
+                                                      "value": 2,
+                                                      "application": "Permanent",
+                                                      "condition": null
+                                                  }
+                                            
+                                            - Processing Bonus Slot 2: "generate_utility_effect"
+                                                - Decision: Grant the ability to see in the dark.
+                                                - Step 3 (Text for 'bonuses' array): "Дарует ночное зрение"
+                                                - Step 4 (Object for 'structuredBonuses'):
+                                                  {
+                                                      "description": "Дарует ночное зрение",
+                                                      "bonusType": "Utility",
+                                                      "target": "Ночное зрение",
+                                                      "valueType": "Boolean",
+                                                      "value": true,
+                                                      "application": "Permanent",
+                                                      "condition": null
+                                                  }
+                                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.2.10">
+  <example contenttype="text" type="good">
+   <title>
+    Examples of Containers vs. Non-Containers
+   </title>
+   <content type="text">
+    <![CDATA[
+
+                                    'isContainer: true': Backpack, Chest, Pouch, Quiver, First Aid Kit.
+                                    'isContainer: false': Sword, Potion, Armor, Amulet, Book.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.2.13">
+  <example contenttype="text" type="good">
+   <title>
+    Examples of Consumable vs. Non-Consumable Items
+   </title>
+   <content type="text">
+    <![CDATA[
+
+                                    'isConsumption: true': Apple, Healing Potion, Bandage, Arrow, Torch, Scroll of Fireball.
+                                    'isConsumption: false': Sword, Bow, Helmet, Amulet, Backpack, Iron Ingot.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.2.14">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example for 'weightReduction'
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    { "isContainer": true, "isConsumption": false, "weightReduction": 80 }
+                                    { "isContainer": true, "isConsumption": false, "weightReduction": 5 }
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.2.18">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example for a "Wooden Shortbow" item object in 'UpdateInventory'
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Wooden Shortbow",
+                                        "disassembleTo": [
+                                            {
+                                                    "materialName": "Wood Plank",
+                                                    "quantity": 2,
+                                                    "weight": 0.5,
+                                                    "volume": 0.1,
+                                                    "price": 5,
+                                                    "description": "A sturdy wooden plank."
+                                                },
+                                                {
+                                                    "materialName": "Animal String",
+                                                    "quantity": 1,
+                                                    "weight": 0.1,
+                                                    "volume": 0.01,
+                                                    "price": 2,
+                                                    "description": "A length of strong string."
+                                                },
+                                                {
+                                                    "materialName": "Iron Nail",
+                                                    "quantity": 3,
+                                                    "weight": 0.05,
+                                                    "volume": 0.005,
+                                                    "price": 1,
+                                                    "description": "A small iron nail."
+                                                }
+                                        ]
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.2.19">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: A Journal with multiple entries (NEW ARRAY FORMAT)
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Дневник Потерянного Исследователя",
+                                        "description": "Потрепанный кожаный дневник, его страницы влажные и покрыты поспешным, нервным почерком.",
+                                        "textContent": [
+                                            "День 7:\n\nШепот... он не прекращается. Я думал, это просто ветер, но теперь я слышу его даже в тишине. Он зовет меня по имени.",
+                                            "День 9:\n\nЯ нашел его. Центральный зал, точно как предсказывали звезды. Статуя древнего короля... его глаза, кажется, следят за мной. Я уверен, что ключ к выходу где-то здесь.",
+                                            "День ???:\n\nТени... тени движутся, когда я не смотрю. Я больше не один здесь."
+                                        ]
+                                        // ... other item properties ...
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.2.20">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player adds a new entry to their journal
+   </title>
+   <scenariocontext>
+    Player has an item "My Journal" (ID: journal-01).
+                                    Player's action: "I'll write down what happened today. We found the cave entrance, but Kaelen seems worried."
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    Player Action: Write in "My Journal" (ID: journal-01).
+                                    Using 'updateItemTextContents' command to append a new entry to the textContent array.
+                                    New Entry to be added: "День 15:\nМы нашли вход в пещеру..."
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <updateitemtextcontents>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "itemId": "journal-01",
+                                                "itemName": "Мой Дневник",
+                                                "textToAppend": "День 15:\nМы нашли вход в пещеру на северном склоне. Каэлен выглядит обеспокоенным. Он что-то скрывает?"
+                                            }
+                                        ]
+
+                                        ]]>
+    </updateitemtextcontents>
+    <response>
+     <![CDATA[
+                                        
+                                        При свете тусклого костра вы достаете свой дневник и быстро записываете события дня, уделяя особое внимание странному поведению Каэлена.
+                                        
+                                        ]]>
+    </response>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="10.2.4.A">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 1: Item with multiple bonus types ("Amulet of the Sagacious Explorer")
+   </title>
+   <description>
+    This shows how to combine bonuses for Characteristics, Action Checks, and Utility in one item.
+   </description>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Амулет Мудрого Исследователя",
+                                        "bonuses": [
+                                            "+3 к Мудрости",
+                                            "+10% к проверкам выживания в лесу",
+                                            "Светится теплым светом при приближении к магическим аномалиям"
+                                        ],
+                                        "structuredBonuses": [
+                                            {
+                                                "description": "+3 к Мудрости",
+                                                "bonusType": "Characteristic",
+                                                "target": "wisdom",
+                                                "valueType": "Flat",
+                                                "value": 3,
+                                                "application": "Permanent",
+                                                "condition": null
+                                            },
+                                            {
+                                                "description": "+10% к проверкам выживания в лесу",
+                                                "bonusType": "ActionCheck",
+                                                "target": "Проверки выживания в лесу",
+                                                "valueType": "Percentage",
+                                                "value": 10,
+                                                "application": "Conditional",
+                                                "condition": "находясь в лесу"
+                                            },
+                                            {
+                                                "description": "Светится теплым светом при приближении к магическим аномалиям",
+                                                "bonusType": "Utility",
+                                                "target": "Обнаружение магии (Свечение)",
+                                                "valueType": "String",
+                                                "value": "теплый свет",
+                                                "application": "Conditional",
+                                                "condition": "вблизи магических аномалий"
+                                            }
+                                        ]
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 2: Consumable item with a healing bonus ("Field Medic's Bandage")
+   </title>
+   <description>
+    This shows the correct way to structure a bonus for a consumable that affects wound healing.
+   </description>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Полевая повязка медика",
+                                        "isConsumption": true,
+                                        "bonuses": [
+                                            "+25 к прогрессу лечения ран"
+                                        ],
+                                        "structuredBonuses": [
+                                            {
+                                                "description": "+25 к прогрессу лечения ран",
+                                                "bonusType": "Other",
+                                                "target": "Прогресс лечения ран",
+                                                "valueType": "Flat",
+                                                "value": 25,
+                                                "application": "Conditional",
+                                                "condition": "при использовании на ране"
+                                            }
+                                        ]
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 3: Consumable food item ("Smoked Boar Meat")
+   </title>
+   <description>
+    This shows the correct way to structure a simple health restoration bonus for a food item.
+   </description>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Копченое мясо кабана",
+                                        "isConsumption": true,
+                                        "bonuses": [
+                                            "Восстанавливает 8 ед. здоровья при употреблении"
+                                        ],
+                                        "structuredBonuses": [
+                                            {
+                                                "description": "Восстанавливает 8 ед. здоровья при употреблении",
+                                                "bonusType": "Other",
+                                                "target": "Восстановление здоровья",
+                                                "valueType": "Flat",
+                                                "value": 8,
+                                                "application": "Conditional",
+                                                "condition": "при употреблении"
+                                            }
+                                        ]
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 4: Cursed item with mixed effects ("Berserker's Bracers")
+   </title>
+   <description>
+    This shows a well-designed cursed item that offers a powerful benefit at a significant cost, creating an interesting choice for the player.
+   </description>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Наручи Берсерка",
+                                        "bonuses": [
+                                            "+8 к Силе",
+                                            "-15% ко всем видам сопротивления"
+                                        ],
+                                        "structuredBonuses": [
+                                            {
+                                                "description": "+8 к Силе",
+                                                "bonusType": "Characteristic",
+                                                "target": "strength",
+                                                "valueType": "Flat",
+                                                "value": 8,
+                                                "application": "Permanent",
+                                                "condition": null
+                                            },
+                                            {
+                                                "description": "-15% ко всем видам сопротивления",
+                                                "bonusType": "Other",
+                                                "target": "Сопротивление всем видам урона",
+                                                "valueType": "Percentage",
+                                                "value": -15,
+                                                "application": "Permanent",
+                                                "condition": null
+                                            }
+                                        ]
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.2.9">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Examples for 'contentsPath'
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    "contentsPath": null
+
+                                    "contentsPath": ["First Aid Kit"]
+
+                                    "contentsPath": ["Main Backpack", "Coin Purse"]
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.3.2">
+  <example contenttype="text_and_json" type="good">
+   <title>
+    Example: Filling a Starting Backpack with Correctly Structured Items
+   </title>
+   <description>
+    This demonstrates the full process of generating a diverse set of starting items, including consumables with resources, 
+                                    weapons with combat effects, and gear with structured bonuses, and placing them in a container. 
+                                    All items generated MUST be reported in 'UpdateInventory'.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                                    Scenario: A starting Rogue character receives a "Traveler's Backpack" (capacity: 8, volume: 30 dm³). 
+                                    The GM fills it with logical starting gear.
+
+                                    --- Item 1: "Bedroll" (Simple Item) ---
+                                    A simple object with no special mechanics.
+                                    - JSON Snippet: { "name": "Спальный мешок", "weight": 1.5, "volume": 8.0, ... }
+
+                                    --- Item 2: "Trail Rations" (Consumable with Bonus) ---
+                                    An item that restores health upon consumption.
+                                    - JSON Snippet:
+                                    {
+                                        "name": "Дорожный паек", "count": 2, "isConsumption": true,
+                                        "bonuses": ["Восстанавливает 5 ед. здоровья при употреблении"],
+                                        "structuredBonuses": [{
+                                            "description": "Восстанавливает 5 ед. здоровья при употреблении",
+                                            "bonusType": "Other", "target": "Восстановление здоровья",
+                                            "valueType": "Flat", "value": 5,
+                                            "application": "Conditional", "condition": "при употреблении"
+                                        }]
+                                    }
+
+                                    --- Item 3: "Waterskin" (Item with Resource) ---
+                                    An item that holds a resource (sips of water).
+                                    - Item in 'inventoryItemsData': { "name": "Бурдюк с водой", "weight": 1.0, ... }
+                                    - Resource in 'inventoryItemsResources': { "name": "Бурдюк с водой", "existedId": "[id-бурдюка]", "contentsPath": null, "resource": 8, "maximumResource": 10, "resourceType": "глотков" }
+
+                                    --- Item 4: "Simple Dagger" (Weapon with Combat Effect) ---
+                                    A weapon defined by its 'combatEffect'.
+                                    - JSON Snippet:
+                                    {
+                                        "name": "Простой кинжал", "weight": 0.3, "equipmentSlot": ["MainHand", "OffHand"],
+                                        "combatEffect": [{ "effects": [{"effectType": "Damage", "value": "12%", "targetType": "piercing", "poiseDamage": "10%"}] }]
+                                    }
+
+                                    --- Item 5: "Worn Leather Gloves" (Gear with a Structured Bonus) ---
+                                    Gear providing a mechanical advantage.
+                                    - JSON Snippet:
+                                    {
+                                        "name": "Потертые кожаные перчатки", "equipmentSlot": "Hands",
+                                        "bonuses": ["+5% к проверкам на лазание", "Потертые, но все еще функциональные."],
+                                        "structuredBonuses": [{
+                                            "description": "+5% к проверкам на лазание",
+                                            "bonusType": "ActionCheck", "target": "Проверки на лазание",
+                                            "valueType": "Percentage", "value": 5,
+                                            "application": "Permanent", "condition": null
+                                        }]
+                                    }
+                                    
+                                    All these items would be generated as full objects in 'UpdateInventory' with 'contentsPath: ["Traveler's Backpack"]'.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.4.3.1">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 'combatEffect' for an Exceptionally Light Weapon (Dagger, weight: 0.3kg)
+   </title>
+   <content type="json">
+    <![CDATA[
+            
+                                        "combatEffect": [
+                                            {
+                                                "actionName": "Точный удар кинжалом",
+                                                "isActivatedEffect": true,
+                                                "effects": [{
+                                                    "effectType": "Damage", "value": "15%", "targetType": "piercing", "poiseDamage": "12%" 
+                                                }]
+                                                // No scalingCharacteristic defined, so it uses the character's default for daggers (Dexterity).
+                                            },
+                                            {
+                                                "actionName": "Шквал ударов кинжалом",
+                                                "isActivatedEffect": true,
+                                                "effects": [{
+                                                    "effectType": "Damage", "value": "9%", "targetType": "piercing", "poiseDamage": "7%"
+                                                }],
+                                                "shotsPerTurn": 3,
+                                                "scalingCharacteristic": "speed" // This attack explicitly scales from Speed.
+                                            }
+                                        ]
+
+                                        ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.4.3.3">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: "Wand of Minor Healing" (Uncommon, 3 charges)
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                            {
+                                                "name": "Wand of Minor Healing",
+                                                "isConsumption": false, 
+                                                "combatEffect": {
+                                                    "actionName": "Channel Minor Heal", 
+                                                    "isActivatedEffect": true,
+                                                    "effects": [{ 
+                                                        "effectType": "Heal", 
+                                                        "value": "20%", 
+                                                        "targetType": "health", 
+                                                        "effectDescription": "Restores 20% health to one target." 
+                                                    }],
+                                                    "targetPriority": "lowest_health_ally" 
+                                                }
+                                            }
+
+                                            {
+                                                "name": "Wand of Minor Healing", 
+                                                "resource": 3,
+                                                "maximumResource": 3,
+                                                "resourceType": "charges",
+                                                "existedId": "wand-heal-001"
+                                            }
+
+                                            ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: "Healing Potion" (Single Use)
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                            {
+                                                "name": "Healing Potion",
+                                                "isConsumption": true, 
+                                                "count": 1, 
+                                                "combatEffect": {
+                                                    "actionName": "Drink Healing Potion",
+                                                    "isActivatedEffect": true,
+                                                    "effects": [{ 
+                                                        "effectType": "Heal", 
+                                                        "value": "25%", 
+                                                        "targetType": "health", 
+                                                        "effectDescription": "Instantly restores 25% health."
+                                                    }]
+                                                }
+                                            }
+
+                                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.4.3.4">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: "Ring of Piercing Strikes" (Uncommon)
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                            "combatEffect": [
+                                                {
+                                                    "effects": [{ 
+                                                        "effectType": "Buff", 
+                                                        "value": "7%", 
+                                                        "targetType": "damage (piercing)", 
+                                                        "effectDescription": "Passively increases piercing damage dealt by 7%." 
+                                                    }]
+                                                }
+                                            ]
+
+                                        ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: "Helm of Foolhardiness" (Cursed Item with Passive Debuff)
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                              "combatEffect": [
+                                                  {
+                                                      "effects": [{ 
+                                                          "effectType": "Debuff", 
+                                                          "value": "-10%", 
+                                                          "targetType": "resist (all)", 
+                                                          "effectDescription": "Passively reduces all resistances by 10% while equipped (curse)." 
+                                                      }]
+                                                  }
+                                              ],
+                                              "bonuses": ["-1 wisdom", "Character feels unnaturally brave, often reckless."]
+
+                                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.4.4">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 'combatEffect' array for a Repeating Crossbow
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    "combatEffect": [ 
+                                        { 
+                                            "actionName": "Fire Repeating Crossbow", 
+                                            "effects": [
+                                                {
+                                                    "effectType": "Damage",
+                                                    "value": "12%", 
+                                                    "targetType": "piercing",
+                                                    "poiseDamage": "10%",
+                                                    "effectDescription": "Deals 12% piercing damage per bolt."
+                                                }
+                                            ],
+                                            "ammoType": "Crossbow Bolts",
+                                            "shotsPerTurn": 3 
+                                        }
+                                    ]
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.4.7">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Generating an 'Epic' Heavy Armor Chestpiece (GM's Thought Process)
+   </title>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Generating Item: "Aegis of the Fallen Star" (Epic Heavy Armor Chest)
+                                    1.  Archetype: Heavy Armor. Core trade-offs: High protection, mandatory Stealth/Dex penalties.
+                                    2.  Quality & Material: Epic. Made from a fallen meteorite. This triggers the "Principle of Exceptionality".
+                                    3.  Protection Distribution: This is a Primary Slot ('Chest'), so it will have the highest values.
+                                    4.  Defensive Correlation (Self-Audit):
+                                        -   Specialized Defense: Excellent vs 'bludgeoning' and 'piercing'. Let's set a high 'DamageReduction' of 55% for 'bludgeoning' (with a correlated 'damageThreshold' of 28) and 50% for 'piercing' (with a correlated 'damageThreshold' of 25).
+                                        -   Exceptional Property (Material): The meteorite material suggests a defense against energy. I will add a specialized resistance to 'energy' damage. A value of 30% 'DamageReduction' with a high 'damageThreshold' of 40 seems appropriate for an Epic item.
+                                        -   Universal Bonus (Exceptionality): Its epic nature justifies a small universal bonus. I will add a 5% 'all' reduction with a correspondingly small 'damageThreshold' of 2.
+                                    5.  Penalties: Heavy Armor penalties apply, but are slightly mitigated by 'Epic' quality. Dexterity Penalty will be -3 instead of a potential -4 or -5.
+                                    - Final check: The item is extremely powerful but adheres to all principles. Generation is approved.
+                                    
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <UpdateInventory>
+     <![CDATA[
+
+                                        {
+                                            "name": "Силовой доспех 'Эгида'", "quality": "Epic", "equipmentSlot": "Chest",
+                                            "combatEffect": [{"effects": [
+                                                { "effectType": "DamageReduction", "value": "55%", "targetType": "bludgeoning", "damageThreshold": 28 },
+                                                { "effectType": "DamageReduction", "value": "50%", "targetType": "piercing", "damageThreshold": 25 },
+                                                { "effectType": "DamageReduction", "value": "30%", "targetType": "energy", "damageThreshold": 40 },
+                                                { "effectType": "DamageReduction", "value": "5%", "targetType": "all", "damageThreshold": 2 }
+                                            ]}],
+                                            "description": "Тяжелый боевой экзоскелет... Его композитные пластины обеспечивают превосходную защиту от кинетического урона, а встроенный генератор поля особенно эффективен против энергетических атак.",
+                                            "structuredBonuses": [{"description": "-3 к Ловкости", "bonusType": "Characteristic", "target": "dexterity", "value": -3}],
+                                            "effectDetails": "Носитель получает Помеху (Disadvantage) на все проверки Скрытности."
+                                        }
+
+                                        ]]>
+    </UpdateInventory>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" id="ArmorArchetype_Light_Good" type="good">
+   <title>
+    Standard Light Armor (Chest): "Hardened Leather Tunic"
+   </title>
+   <scenariocontext>
+    This demonstrates the baseline generation for a 'Good' quality Light Armor using common materials.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Generating: "Hardened Leather Tunic" (Good Light Armor)
+                                    - Archetype: Light. Philosophy: Mobility.
+                                    - Slot: Primary ('Chest').
+                                    - Quality: Good. Values should be mid-range for the archetype.
+                                    - Protection Profile: Focus on 'slashing'/'piercing'. 'DamageReduction' should be low, 'damageThreshold' very low.
+                                    - Correlation Check: Setting DR vs 'slashing' to 14%. Correlated threshold should be around 5-7. Choosing 6. DR vs 'piercing' is secondary, setting to 10% with a correlated threshold of 4.
+                                    - Penalties: None, as per Light Armor rules.
+                                    - Final Check: Approved.
+
+                                    ]]>
+   </logoutput>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Туника из Закаленной Кожи", "quality": "Good", "equipmentSlot": "Chest",
+                                        "combatEffect": [{"effects": [
+                                            { "effectType": "DamageReduction", "value": "14%", "targetType": "slashing", "damageThreshold": 6 },
+                                            { "effectType": "DamageReduction", "value": "10%", "targetType": "piercing", "damageThreshold": 4 }
+                                        ]}],
+                                        "description": "Прочная туника из кипяченой кожи, обеспечивающая достойную защиту от порезов, не сковывая движений."
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" id="ArmorArchetype_Medium_Good" type="good">
+   <title>
+    Standard Medium Armor (Chest): "Steel Chainmail"
+   </title>
+   <scenariocontext>
+    This demonstrates the baseline generation for a 'Good' quality Medium Armor, including its mandatory penalty.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Generating: "Steel Chainmail" (Good Medium Armor)
+                                    - Archetype: Medium. Philosophy: Balanced Protection vs Stealth.
+                                    - Slot: Primary ('Chest').
+                                    - Quality: Good. Mid-range values.
+                                    - Protection Profile: Chainmail excels vs 'slashing'. Setting primary DR to 30%. Correlated threshold should be ~12-15. Choosing 13. Secondary defense vs 'piercing' at 15% DR with threshold 7.
+                                    - Penalties: Mandatory Stealth penalty. Choosing -25%.
+                                    - Final Check: Approved.
+
+                                    ]]>
+   </logoutput>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Стальная Кольчуга", "quality": "Good", "equipmentSlot": "Chest",
+                                        "combatEffect": [{"effects": [
+                                            { "effectType": "DamageReduction", "value": "30%", "targetType": "slashing", "damageThreshold": 13 },
+                                            { "effectType": "DamageReduction", "value": "15%", "targetType": "piercing", "damageThreshold": 7 }
+                                        ]}],
+                                        "description": "Качественная кольчуга из стальных колец. Отлично защищает от рубящих ударов, но шумит при движении.",
+                                        "structuredBonuses": [{
+                                            "description": "-25% к проверкам на скрытность", 
+                                            "bonusType": "ActionCheck", 
+                                            "target": "Проверки на скрытность", 
+                                            "valueType": "Percentage", 
+                                            "value": -25
+                                        }]
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" id="ArmorArchetype_Heavy_Good" type="good">
+   <title>
+    Standard Heavy Armor (Chest): "Citadel Plate"
+   </title>
+   <scenariocontext>
+    This demonstrates the baseline generation for a 'Good' quality Heavy Armor, including its mandatory penalties.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+                                    # Generating: "Citadel Plate" (Good Heavy Armor)
+                                    - Archetype: Heavy. Philosophy: Maximum Protection.
+                                    - Slot: Primary ('Chest').
+                                    - Quality: Good. Mid-range values.
+                                    - Protection Profile: Plate is superb vs 'slashing' and 'bludgeoning'. Setting DR to 45% for 'slashing' (threshold 22) and 40% for 'bludgeoning' (threshold 20). Weak point is 'piercing', setting DR to 20% (threshold 10).
+                                    - Penalties: Mandatory. 'Disadvantage' on Stealth. Dexterity penalty for 'Good' quality should be minor, choosing -2.
+                                    - Final Check: Approved.
+                                    ]]>
+   </logoutput>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Цитадельные Латы", "quality": "Good", "equipmentSlot": "Chest",
+                                        "combatEffect": [{"effects": [
+                                            { "effectType": "DamageReduction", "value": "45%", "targetType": "slashing", "damageThreshold": 22 },
+                                            { "effectType": "DamageReduction", "value": "40%", "targetType": "bludgeoning", "damageThreshold": 20 },
+                                            { "effectType": "DamageReduction", "value": "20%", "targetType": "piercing", "damageThreshold": 10 }
+                                        ]}],
+                                        "description": "Массивный стальной нагрудник, созданный для того, чтобы выдерживать самые тяжелые удары на поле боя.",
+                                        "structuredBonuses": [{
+                                            "description": "-2 к Ловкости", 
+                                            "bonusType": "Characteristic", 
+                                            "target": "dexterity", 
+                                            "value": -2
+                                        }],
+                                        "effectDetails": "Носитель получает Помеху (Disadvantage) на все проверки Скрытности."
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" id="ArmorArchetype_Light_Legendary" type="good">
+   <title>
+    Exceptional Light Armor (Legendary): "Jerkin of the Unseen"
+   </title>
+   <scenariocontext>
+    This demonstrates applying the "Principle of Exceptionality" to create a powerful, unique item that bends the baseline rules for Light Armor.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Generating: "Jerkin of the Unseen" (Legendary Light Armor)
+                                    - Archetype: Light.
+                                    - Quality: Legendary. Triggers "Principle of Exceptionality".
+                                    - Exceptional Property: This is the ultimate stealth armor. It should not only lack penalties but grant a powerful bonus. Also, its material (shadow-weave) provides an exotic defense.
+                                    - Protection Profile: I will grant a small but powerful Universal Reduction. 15% 'all' with a threshold of 10 is appropriate for a legendary item of this type. It's better than standard Medium armor but lacks high specialized protection.
+                                    - Penalties: None.
+                                    - Benefits: A massive bonus to Stealth checks, defining its legendary purpose.
+                                    - Final Check: Approved.
+
+                                    ]]>
+   </logoutput>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Куртка Невидимки", "quality": "Legendary", "equipmentSlot": "Chest",
+                                        "combatEffect": [{"effects": [
+                                            { "effectType": "DamageReduction", "value": "15%", "targetType": "all", "damageThreshold": 10 }
+                                        ]}],
+                                        "description": "Эта куртка, сшитая, кажется, из самой тени, не только защищает, но и делает носителя почти невидимым.",
+                                        "structuredBonuses": [{
+                                            "description": "+40% к проверкам на скрытность", 
+                                            "bonusType": "ActionCheck", 
+                                            "target": "Проверки на скрытность",
+                                            "value": 40
+                                        }]
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" id="ArmorArchetype_Medium_Legendary" type="good">
+   <title>
+    Exceptional Medium Armor (Legendary): "Dragonscale Mantle"
+   </title>
+   <scenariocontext>
+    This example shows an exceptional Medium Armor that gains a powerful elemental resistance and mitigates its core penalty due to its legendary material.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Generating: "Dragonscale Mantle" (Legendary Medium Armor)
+                                    - Archetype: Medium.
+                                    - Quality: Legendary. Triggers "Principle of Exceptionality".
+                                    - Exceptional Property: Made from dragon scales, it must have incredible 'fire' resistance. It should also be lighter and less noisy than normal chainmail, mitigating the archetype's core penalty.
+                                    - Protection Profile: It will have solid physical protection, at the high end for Medium armor. But its main feature is the 'fire' defense. I will grant a massive 70% 'fire' DR with a high threshold of 35.
+                                    - Penalties: The legendary material mitigates the standard penalties. The Stealth penalty will be reduced to a mere -5%.
+                                    - Final Check: Approved.
+
+                                    ]]>
+   </logoutput>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Мантия из Чешуи Дракона", "quality": "Legendary", "equipmentSlot": "Chest",
+                                        "combatEffect": [{"effects": [
+                                            { "effectType": "DamageReduction", "value": "70%", "targetType": "fire", "damageThreshold": 35 },
+                                            { "effectType": "DamageReduction", "value": "35%", "targetType": "slashing", "damageThreshold": 16 }
+                                        ]}],
+                                        "description": "Эта кольчуга, сплетенная из чешуек красного дракона, почти не горит и обеспечивает превосходную защиту.",
+                                        "structuredBonuses": [{
+                                            "description": "-5% к проверкам на скрытность", 
+                                            "bonusType": "ActionCheck", 
+                                            "target": "Проверки на скрытность", 
+                                            "value": -5
+                                        }]
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" id="ArmorArchetype_Heavy_Legendary" type="good">
+   <title>
+    Exceptional Heavy Armor (Legendary): "Bulwark of the Earth-King"
+   </title>
+   <scenariocontext>
+    This example shows a legendary Heavy Armor that pushes its protection to the limits and slightly mitigates its penalties, but does not remove them.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Generating: "Bulwark of the Earth-King" (Legendary Heavy Armor)
+                                    - Archetype: Heavy.
+                                    - Quality: Legendary. Triggers "Principle of Exceptionality".
+                                    - Exceptional Property: This is the pinnacle of physical defense. Its protection values should be at the absolute peak. It should also mitigate its penalties, but not remove them entirely.
+                                    - Protection Profile: I will set its primary physical DR values to the top of the Heavy armor range. Its legendary nature also grants it a small universal ('all') DR, which is extremely rare.
+                                    - Penalties: The Dexterity penalty is a core part of Heavy armor. I will mitigate it from a potential -5/-6 to just -3. The Disadvantage on Stealth is non-negotiable and remains.
+                                    - Final Check: Approved. A true artifact.
+
+                                    ]]>
+   </logoutput>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "name": "Оплот Земляного Короля", "quality": "Legendary", "equipmentSlot": "Chest",
+                                        "combatEffect": [{"effects": [
+                                            { "effectType": "DamageReduction", "value": "55%", "targetType": "bludgeoning", "damageThreshold": 30 },
+                                            { "effectType": "DamageReduction", "value": "50%", "targetType": "slashing", "damageThreshold": 28 },
+                                            { "effectType": "DamageReduction", "value": "5%", "targetType": "all", "damageThreshold": 4 }
+                                        ]}],
+                                        "description": "Легендарный нагрудник, который, по слухам, несокрушим. Он тяжел, но его идеальный баланс немного смягчает скованность движений.",
+                                        "structuredBonuses": [
+                                            {"description": "+5 к Выносливости", "bonusType": "Characteristic", "target": "constitution", "value": 5},
+                                            {"description": "-3 к Ловкости", "bonusType": "Characteristic", "target": "dexterity", "value": -3}
+                                        ],
+                                        "effectDetails": "Носитель получает Помеху (Disadvantage) на все проверки Скрытности."
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.5">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Examples for 'equipmentSlot' and 'requiresTwoHands'
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                        { "equipmentSlot": "Head", "requiresTwoHands": false }
+                        { "equipmentSlot": ["MainHand", "OffHand"], "requiresTwoHands": false }
+                        { "equipmentSlot": ["MainHand", "OffHand"], "requiresTwoHands": true }
+                        { "equipmentSlot": ["Finger1", "Finger2"], "requiresTwoHands": false }
+                        { "equipmentSlot": null, "requiresTwoHands": false }
+
+                        ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.6.2.A">
+  <example contenttype="log_and_json_snippet" id="AccessoryEquip_Stacking_Success" type="good">
+   <title>
+    Пример: Успешная экипировка нескольких аксессуаров на один слот
+   </title>
+   <scenariocontext>
+    Игрок уже носит "Кожаный жилет" (аксессуар для груди) в слоте 'Accessory1'. 
+                                    Он решает надеть "Бандольер с патронами", который также является аксессуаром для груди.
+                                    Слот 'Accessory2' свободен.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Действие игрока: Надеть "Бандольер с патронами".
+                                    - Проверка предмета: "Бандольер" является аксессуаром ('accessoryForSlot: "Chest"').
+                                    - Поиск свободного слота: Слот 'Accessory2' свободен.
+                                    - Результат: Экипировка разрешена. "Бандольер" будет помещен в слот 'Accessory2'.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                        Вы перекидываете бандольер через плечо, и он удобно ложится поверх вашего кожаного жилета.
+                                        Теперь вы готовы к бою.
+
+                                        ]]>
+    </response>
+    <equipmentchanges>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "action": "equip",
+                                                "itemId": "item-bandolier-ammo-01",
+                                                "itemName": "Бандольер с патронами",
+                                                "targetSlots": ["Accessory2"]
+                                            }
+                                        ]
+
+                                        ]]>
+    </equipmentchanges>
+   </jsonresponse>
+  </example>
+  <example contenttype="log_and_json_snippet" id="AccessoryEquip_Fail_NoSlots" type="bad">
+   <title>
+    Пример: Неудачная экипировка (нет свободных слотов для аксессуаров)
+   </title>
+   <scenariocontext>
+    Игрок уже носит 4 аксессуара: "Плащ Путника" в 'Accessory1', "Сумка Алхимика" в 'Accessory2', "Амулет Защиты" в 'Accessory3' и "Наручи Стрелка" в 'Accessory4'.
+                                    Он пытается надеть "Очки Механика".
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Действие игрока: Надеть "Очки Механика".
+                                    - Проверка предмета: "Очки Механика" имеют свойство 'accessoryForSlot: "Head"'. Это аксессуар.
+                    
+                                    # Протокол экипировки аксессуаров (Правило 10.6.2.A):
+                                    - Поиск свободного слота аксессуаров:
+                                        - Слот 'Accessory1': Занят ('Плащ Путника').
+                                        - Слот 'Accessory2': Занят ('Сумка Алхимика').
+                                        - Слот 'Accessory3': Занят ('Амулет Защиты').
+                                        - Слот 'Accessory4': Занят ('Наручи Стрелка').
+                                    - Свободных слотов не найдено.
+                    
+                                    - Результат: Экипировка невозможна. Игрок будет проинформирован о причине.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                        Вы достаете "Очки Механика" и пытаетесь их надеть, но понимаете, что вам уже некуда их пристроить. 
+                                        Ваш плащ, сумка, амулет и наручи уже занимают все доступные места для дополнительных аксессуаров. 
+                                        Чтобы надеть очки, вам придется сначала что-то снять.
+                                        
+                                        ]]>
+    </response>
+    <equipmentchanges>
+     <![CDATA[
+
+                                        null
+
+                                        ]]>
+    </equipmentchanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="10.6.5">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Equipping a two-handed axe, auto-unequipping sword and shield
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    "equipmentChanges": [
+                                        { 
+                                            "action": "unequip",
+                                            "itemId": "is-2",
+                                            "itemName": "Iron Sword",
+                                            "sourceSlots": ["MainHand"]
+                                        },
+                                        { 
+                                            "action": "unequip",
+                                            "itemId": "ws-3",
+                                            "itemName": "Wooden Shield",
+                                            "sourceSlots": ["OffHand"]
+                                        },
+                                        { 
+                                            "action": "equip",
+                                            "itemId": "ga-1",
+                                            "itemName": "Great Axe",
+                                            "targetSlots": ["MainHand", "OffHand"]
+                                        }
+                                    ]
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="10.7.3">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Scenario: Player uses "Stormblade" (Rare sword) to defeat a mini-boss.
+   </title>
+   <scenariocontext>
+    Player's "Stormblade" (ID: item-stormblade-01) currently has ownerBondLevelCurrent: 35.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    Event: Player defeated the "Grotto Serpent" mini-boss using "Stormblade".
+                                    Item: "Stormblade" (ID: item-stormblade-01)
+                                    Current Bond Level: 35
+                                    Action Significance: High (defeated a significant foe with the item)
+                                    Estimated Change: +10 bond points
+                                    New Bond Level: 35 + 10 = 45
+                                    Reason for change: Successfully used "Stormblade" to overcome a challenging enemy, deepening the connection.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <itembondlevelchanges>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "itemId": "item-stormblade-01",
+                                                "itemName": "Stormblade",
+                                                "newBondLevel": 45,
+                                                "changeReason": "Defeated the Grotto Serpent, strengthening the bond with the blade."
+                                            }
+                                        ]
+
+                                        ]]>
+    </itembondlevelchanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="10.8">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: NPC Kaelen uses a charge from a magic amulet.
+   </title>
+   <jsonresponse>
+    <npcinventoryresourceschanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-kaelen-001",
+                                        "NPCName": "Kaelen, the Mercenary Captain",
+                                        "itemId": "item-amulet-ward-01",
+                                        "itemName": "Amulet of Warding",
+                                        "newResourceValue": 2
+                                    }
+                                ]
+
+                                ]]>
+    </npcinventoryresourceschanges>
+   </jsonresponse>
+  </example>
+ </rule>
+</instructionblock>

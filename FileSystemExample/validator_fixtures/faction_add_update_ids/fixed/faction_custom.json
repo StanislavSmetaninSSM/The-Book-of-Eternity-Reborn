@@ -1,0 +1,23 @@
+{
+  "factionCustomStateChanges": [
+    {
+      "factionId": "order_of_the_ember",
+      "factionName": "Order of the Ember",
+      "statesToAddOrUpdate": [
+        {
+          "stateId": null,
+          "stateName": "Supply Pressure",
+          "currentValue": 40,
+          "minValue": 0,
+          "maxValue": 100,
+          "description": "Tracks how strained the quartermasters are.",
+          "progressionRule": {
+            "changePerTurn": 0,
+            "description": "Only changes from play."
+          },
+          "thresholds": []
+        }
+      ]
+    }
+  ]
+}

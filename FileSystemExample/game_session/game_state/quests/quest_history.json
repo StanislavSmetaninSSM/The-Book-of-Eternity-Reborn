@@ -1,0 +1,29 @@
+{
+  "questHistory": [
+    {
+      "questId": "quest_merchants_caravan", 
+      "title": "Спасение каравана торговцев",
+      "completionDate": "2023-05-15T14:30:00Z",
+      "outcome": "success",
+      "experience": 250,
+      "reputation": "+15 Merchant Guild",
+      "incarnationNumber": 3
+    }
+  ],
+  "questRewards": [
+    {
+      "questId": "quest_merchants_caravan",
+      "itemsReceived": ["item_gold_ring", "item_merchant_seal"],
+      "skillsUnlocked": ["skill_trading_advanced"],
+      "relationshipChanges": ["npc_guild_master_+20"]
+    }
+  ],
+  "questChains": [
+    {
+      "chainId": "merchant_guild_chain",
+      "currentQuest": "quest_trade_route_protection", 
+      "progress": "60%",
+      "unlocked": true
+    }
+  ]
+}

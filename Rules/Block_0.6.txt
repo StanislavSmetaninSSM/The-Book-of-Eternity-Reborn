@@ -1,0 +1,84 @@
+<instructionblock id="0.6">
+ <title>
+  CRITICAL DIRECTIVE: Impossible Mode Protocol
+ </title>
+ <description>
+  This block defines global modifications that are active ONLY when Impossible Mode is enabled. 
+            It represents the ultimate challenge with unparalleled rewards, overriding the standard Hard Mode protocol.
+ </description>
+ <instructiontext>
+  <![CDATA[
+        
+            This entire block is active ONLY IF 'Context.gameSettings.impossibleMode' is true. As per ABSOLUTE LAW 16, if this block is active, you MUST IGNORE 'InstructionBlock id="0.5"' completely.
+            The principles of application (one-time for state modifiers, persistent for process modifiers) remain the same as in Hard Mode.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="0.6.1">
+   <title>
+    Enemy Supremacy Enhancement
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When generating or updating any hostile combatant ('enemiesData'), you must apply the following modifiers. 
+                    This is a ONE-TIME state modification.
+
+                    A. For Generic Enemies (non-NPC):
+                    1.  Health Enhancement: Multiply 'maxHealth' by 3.5.
+                    2.  Damage Enhancement: Multiply base 'value' of all 'Damage' effects by 2.8.
+
+                    B. For Named NPCs entering combat as Enemies:
+                    1.  Health Enhancement: Multiply 'maxHealth' by 3.0.
+                    2.  Damage Enhancement: Apply a final multiplier of 2.5 to the total damage value.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="0.6.2">
+   <title>
+    Overwhelming Action Check Difficulty
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When calculating the 'ActionDifficultModificator' for any player action check, apply this formula after the standard calculation:
+                    New Difficulty = (Old Difficulty * 3.0) + 10.
+                
+                    ]]>
+   </content>
+  </rule>
+  <rule id="0.6.3">
+   <title>
+    Legendary Experience Rewards
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When calculating 'experienceGained', multiply the final result by 4.0 (quadrupled experience).
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="0.6.4">
+   <title>
+    Mythical Loot Rewards
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    When generating loot:
+
+                    1.  Item Quality: 
+                        There is a 100% chance to upgrade its final 'quality' by one tier. 
+                        Additionally, there is a 25% chance to upgrade it by a second tier (make a separate d20 roll: 1-15 = no second upgrade, 16-20 = second upgrade).
+                    
+                    2.  Item Quantity: 
+                        For stackable items, multiply the base quantity by 3.0 (rounded down).
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

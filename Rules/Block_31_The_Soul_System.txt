@@ -1,0 +1,1119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+ <instructionblock id="31">
+  <title>
+   The Soul System (Система Души) - Complete Meta-Progression Protocol
+  </title>
+  <description>
+   This block defines the comprehensive JSON structure and calculation protocols for Soul progression mechanics, including Death Processing, Life Evaluation, Soul Relic Management, and Chaos Sea Hub operations.
+   These are meta-game mechanics that persist across multiple incarnations and form the core of the roguelike progression system.
+  </description>
+  <instructiontext>
+   <![CDATA[
+             
+             CRITICAL SYSTEM OVERVIEW:
+             The Soul System is the PRIMARY meta-progression mechanism spanning multiple incarnations.
+             Life Evaluation is entered only through the canonical CLI lifecycle:
+             accepted mortal-world turn writes "TriggerLifeEnd" -> client returns to Chaos Sea ->
+             client sends a later dedicated Life Evaluation turn.
+             Merely being in Chaos Sea does NOT mean Life Evaluation is running.
+
+             ⚠️ ABSOLUTE LAW 3 REMINDER — REALM SEGREGATION:
+             When currentRealm = "Chaos Sea" OR "Shining Abode", ALL mortal-world systems are DISABLED:
+             NO combat, NO experience/leveling, NO stat increases, NO skill learning,
+             NO regular NPCs (Guardians are NOT NPCs), NO mortal quests, NO money,
+             NO world events, NO factions, NO currentLocationData.
+             See ABSOLUTE LAW 3 in Block_0 for the complete list.
+             VIOLATION OF THIS LAW IS A CRITICAL FAILURE.
+
+             MANDATORY TRIGGER CONDITIONS:
+             - An accepted earlier turn wrote "TriggerLifeEnd" with reason "Death" or "Voluntary"
+             - The client has now sent the later dedicated Life Evaluation turn for that completed mortal life
+
+             SYSTEM ACTIVATION HIERARCHY:
+             1. Life Evaluation Processing (Rules 31.1.x) - Process completed incarnation
+             2. Chaos Sea Hub Operations (Rules 31.3.x) - Hub world management
+             3. Soul Relic Management (Rules 31.2.x) - Equipment and progression
+             4. NPC Soul Imprint System (Rules 31.4.x) - Cross-incarnation NPCs
+             
+             CRITICAL MATHEMATICAL REQUIREMENT:
+             ALL formulas in this block are MANDATORY and EXACT. 
+             You MUST show every calculation step in gm_thoughts_markdown.
+             Estimation or approximation is FORBIDDEN.
+             
+             LANGUAGE REQUIREMENTS:
+             - All narrative content MUST be in Russian
+             - All player-facing descriptions MUST be in Russian  
+             - JSON field names remain in English for technical compatibility
+             - GM instructions and calculations may use English
+             
+             ACTION CHECK INTEGRATION:
+             This block does NOT define action check mechanics.
+             ALL action checks use InstructionBlock 12 "Action Checks and Resolution".
+             Soul Relic bonuses integrate through Rule 12.1.B.
+             
+             ]]>
+  </instructiontext>
+  <content type="ruleset">
+   <rule id="31.1">
+    <title>
+     Life Evaluation Processing - Comprehensive Incarnation Assessment Protocol
+    </title>
+    <description>
+     This rule defines the complete process for evaluating a completed incarnation, calculating rewards, and updating meta-progression data.
+     Every step is mandatory and must be executed in exact sequence when triggered.
+    </description>
+    <instructiontext>
+     <![CDATA[
+                     
+                     CRITICAL PROCESSING MANDATE:
+                     Life Evaluation is the CORE of the entire meta-progression system.
+                     This process MUST be executed only on the later dedicated Life Evaluation turn that follows an accepted "TriggerLifeEnd".
+                     
+                     FAILURE CONSEQUENCES:
+                     - Skipping any step corrupts player progression permanently
+                     - Incorrect calculations invalidate meta-progression balance
+                     - Missing updates cause cross-incarnation data loss
+                     
+                     PROCESSING SEQUENCE:
+                     Rules 31.1.1 through 31.1.8 MUST be executed in exact order.
+                     Each rule includes mandatory verification steps.
+                     
+                     ]]>
+    </instructiontext>
+    <content type="ruleset">
+     <rule id="31.1.1">
+      <title>
+       STEP 1: System Trigger Detection and Pre-Processing Validation
+      </title>
+      <description>
+       Mandatory validation of trigger conditions and collection of incarnation data before processing begins.
+      </description>
+      <instructiontext>
+       <![CDATA[
+                        
+                        CRITICAL: This step validates system state and prevents invalid processing.
+                        ALL checks in this step are MANDATORY.
+                        
+                        ]]>
+      </instructiontext>
+      <content type="rule_text">
+       <![CDATA[
+                        
+                        MANDATORY TRIGGER VALIDATION SEQUENCE:
+                        
+                        #31.1.1.1. Primary Trigger Check:
+                        You MUST verify that BOTH of these conditions are true:
+                        a. The current request is the later dedicated Life Evaluation turn that follows an accepted "TriggerLifeEnd"
+                        b. Context contains valid completed-life transition data for that finished mortal life
+                        
+                        VALIDATION OUTCOME:
+                        - If either condition is false: IMMEDIATELY abort this rule block. Log: "Life Evaluation not triggered - canonical TriggerLifeEnd -> later Life Evaluation chain is absent."
+                        - If both are true: Log the completed-life reason ("Death" or "Voluntary") and proceed to #31.1.1.2
+                        
+                        Example Log: "Life Evaluation triggered by accepted TriggerLifeEnd(reason=Death) from the previous completed mortal life."
+                        
+                        #31.1.1.2. System State Validation:
+                        Verify these critical system states exist and are valid:
+                        a. 'playerCharacter' object exists with required fields
+                        b. 'worldState' object exists with name and genre
+                        c. 'metaState' object exists (create with defaults if missing)
+                        d. 'completedQuests' array exists (empty array if missing)
+                        e. Context contains valid session data
+                        
+                        CORRECTION PROTOCOL:
+                        If ANY required object is missing or malformed:
+                        - Log specific error: "Missing required object: [object_name]"
+                        - Attempt automatic correction with default values
+                        - If correction fails: abort the current Life Evaluation and request contract repair
+                        - If correction succeeds: log correction and continue
+                        
+                        #31.1.1.3. Incarnation Data Collection:
+                        You MUST extract and validate this data from the current Context:
+                        
+                        INCARNATION DATA OBJECT - FIELD DEFINITIONS:
+                        ```json
+                        {
+                          "incarnationData": {
+                            "characterLevel": "VALUE SOURCE: playerCharacter.level (integer 1-100). MEANING: Final experience level achieved in this incarnation.",
+                            "characterName": "VALUE SOURCE: playerCharacter.name (string). MEANING: Name player chose for this incarnation's character.", 
+                            "worldName": "VALUE SOURCE: worldState.name (string). MEANING: The world/setting where this incarnation took place.",
+                            "worldGenre": "VALUE SOURCE: worldState.genre (string). MEANING: Fantasy/SciFi/Modern/etc - affects quest adaptation later.",
+                            "totalMortalQuests": "VALUE SOURCE: Count from completedQuests array where questType != 'Soul'. MEANING: Regular world quests completed.",
+                            "totalSoulQuests": "VALUE SOURCE: Count from metaState.soulQuests where status = 'completed'. MEANING: Meta-progression quests completed.",
+                            "finalAlignment": "VALUE SOURCE: playerCharacter.alignment (Good/Neutral/Evil). MEANING: Moral standing at incarnation end.",
+                            "deathCause": "VALUE SOURCE: GM description of incarnation ending. MEANING: How the incarnation concluded - affects narrative.",
+                            "startTimestamp": "VALUE SOURCE: incarnation start time if tracked. MEANING: When this incarnation began (optional).",
+                            "endTimestamp": "VALUE SOURCE: current timestamp. MEANING: When Life Evaluation is being processed.",
+                            "notableAchievements": "VALUE SOURCE: GM assessment of major accomplishments. MEANING: Significant story milestones for GM coefficient.",
+                            "worldImpactLevel": "VALUE SOURCE: GM assessment (None/Minor/Moderate/Major/Legendary). MEANING: How much character affected the world.",
+                            "moralChoicesRecord": "VALUE SOURCE: GM summary of key moral decisions. MEANING: Track moral consistency for evaluation.",
+                            "finalRelationships": "VALUE SOURCE: NPCs with relationshipLevel >= 50. MEANING: Candidates for Soul Imprint creation."
+                          }
+                        }
+                        ```
+                        
+                        DATA VALIDATION REQUIREMENTS:
+                        - characterLevel: Must be integer >= 1, <= 100
+                        - characterName: Must be non-empty string, <= 50 characters
+                        - worldName: Must be non-empty string, <= 100 characters  
+                        - totalMortalQuests: Must be non-negative integer
+                        - totalSoulQuests: Must be non-negative integer
+                        - finalAlignment: Must be exactly "Good", "Neutral", or "Evil"
+                        - worldImpactLevel: Must be exactly one of listed options
+                        
+                        VALIDATION FAILURE PROTOCOL:
+                        If ANY data fails validation:
+                        - Log specific validation error with field name and invalid value
+                        - Apply default values where safe (timestamps, optional fields)
+                        - If critical data is invalid (name, level): abort with error state
+                        
+                        MANDATORY LOGGING:
+                        You MUST log the complete incarnation data collection:
+                        "Incarnation Data Collected: [character_name] Level [level] in [world_name] ([genre]). 
+                        Quests: [mortal_count] mortal, [soul_count] soul. Alignment: [final_alignment]. Impact: [impact_level]."
+                        
+                        ]]>
+      </content>
+     </rule>
+    </content>
+   </rule>
+   
+   <rule id="31.2">
+    <title>
+     Soul Relic System - Equipment Structure and Integration Protocol
+    </title>
+    <description>
+     Defines the complete JSON structure for Soul Relics and their integration with character generation and action checks via InstructionBlock 12.
+    </description>
+    <instructiontext>
+     <![CDATA[
+                     
+                     CRITICAL INTEGRATION NOTE:
+                     Soul Relics integrate with action checks through InstructionBlock 12, Rule 12.1.B.
+                     This rule defines ONLY the data structure and field meanings.
+                     Do NOT duplicate action check mechanics here.
+                     
+                     ]]>
+    </instructiontext>
+    <content type="rule_text">
+     <![CDATA[
+                     
+                     SOUL RELIC OBJECT SCHEMA WITH COMPLETE FIELD EXPLANATIONS:
+                     
+                     Every Soul Relic MUST follow this EXACT structure with detailed field definitions:
+                     
+                     ```json
+                     {
+                       "relicId": {
+                         "VALUE_SOURCE": "Generated format: 'sr_[category]_[name]_[timestamp]'",
+                         "MEANING": "Unique identifier for this specific Soul Relic",
+                         "PURPOSE": "Reference relics in equipment systems and cross-incarnation persistence",
+                         "VALIDATION": "Must be globally unique, alphanumeric with underscores",
+                         "EXAMPLE": "sr_combat_titanstrength_1672531200000"
+                       },
+                       "name": {
+                         "VALUE_SOURCE": "Guardian generation or predefined list",
+                         "MEANING": "Russian display name for the relic",
+                         "PURPOSE": "Player-facing identification and immersion",
+                         "VALIDATION": "Non-empty Russian text, max 100 characters",
+                         "EXAMPLE": "Сила Титанов"
+                       },
+                       "rarity": {
+                         "VALUE_SOURCE": "Client-computed from gachaBaseResult (anti-cheat). GM may only upgrade, never downgrade.",
+                         "MEANING": "Rarity classification affecting power level and appearance chance",
+                         "PURPOSE": "Balance equipment progression and create excitement for rare drops",
+                         "VALIDATION": "Must be exactly: Common|Uncommon|Rare|Epic|Legendary",
+                         "GACHA_RATES": "Common ~56%, Uncommon ~25%, Rare ~10%, Epic ~5%, Legendary ~1.6%",
+                         "GACHA_FORMULA": "Client computes an independent gacha base result (range 4-80) and exposes it via turn_request.gachaBaseResult. It is separate from the GM-facing preGeneratedDices1d20 pool. For guardian-mediated pulls, GM may apply documented guardian/mode modifiers on top but MUST NOT reduce the base rarity. For direct Chaos Sea pulls via /gacha, the result stays neutral and MUST NOT receive guardian bonuses or penalties."
+                       },
+                       "category": {
+                         "VALUE_SOURCE": "Guardian specialization or themed generation",
+                         "MEANING": "Functional category determining which stats and abilities are emphasized",
+                         "PURPOSE": "Organize relics by function and enable category-specific bonuses",
+                         "VALIDATION": "Must be exactly: Physical|Mental|Spiritual|Social|Magical|Combat|Utility",
+                         "CATEGORY_MEANINGS": {
+                           "Physical": "Strength, constitution, physical prowess",
+                           "Mental": "Intelligence, wisdom, knowledge-based abilities", 
+                           "Spiritual": "Faith, enlightenment, divine connections",
+                           "Social": "Attractiveness, persuasion, relationship bonuses",
+                           "Magical": "Magical abilities, mana, spell effectiveness",
+                           "Combat": "Fighting skills, weapon bonuses, tactical abilities",
+                           "Utility": "Convenience features, quality of life improvements"
+                         }
+                       },
+                       "effects": {
+                         "characteristicBonuses": {
+                           "PURPOSE": "Flat additions to base characteristics applied during character generation",
+                           "INTEGRATION": "Added before racial/class bonuses, become part of 'base' stats",
+                           "VALIDATION": "Each bonus must be integer -10 to +20",
+                           "BALANCE": "Total bonuses across all equipped relics should not exceed +50 per characteristic",
+                           "FIELD_MEANINGS": {
+                             "strength": "Physical power, melee damage, carrying capacity",
+                             "dexterity": "Agility, ranged accuracy, stealth, fine motor skills",
+                             "constitution": "Health, stamina, poison resistance, survival",
+                             "intelligence": "Reasoning, magic power, skill points, problem solving", 
+                             "wisdom": "Intuition, perception, divine magic, experience application",
+                             "faith": "Divine connection, holy power, spiritual resistance",
+                             "attractiveness": "Social appeal, first impressions, seduction, leadership",
+                             "trade": "Commerce, negotiation, resource management, economics",
+                             "persuasion": "Logical argument, deception, rhetoric, influence",
+                             "perception": "Awareness, detecting hidden things, reading people",
+                             "luck": "Random chance modification, critical hit threshold, fortune",
+                             "speed": "Movement rate, reaction time, initiative, escape chances"
+                           }
+                         },
+                         "actionCheckBonuses": {
+                           "PURPOSE": "Bonuses applied during action checks via InstructionBlock 12, Rule 12.1.B",
+                           "INTEGRATION": "Applied after equipment/skills but before percentage multipliers",
+                           "VALIDATION": "Each bonus must be integer 0 to +10",
+                           "FIELD_MEANINGS": {
+                             "globalBonus": "Applied to ALL action checks regardless of type",
+                             "combatBonus": "Applied only to combat-related action checks",
+                             "socialBonus": "Applied only to social interaction checks",
+                             "skillBonus": "Applied only to skill-based action checks",
+                             "magicBonus": "Applied only to magical ability checks"
+                           }
+                         }
+                       },
+                       "equipmentData": {
+                         "equipSlot": {
+                           "VALUE_SOURCE": "Relic design specification",
+                           "MEANING": "Which equipment slot this relic occupies when equipped",
+                           "PURPOSE": "Prevent equipment conflicts and manage slot limitations",
+                           "VALIDATION": "Must be exactly: Head|Chest|Arms|Legs|Feet|Hands|Neck|Ring|Weapon|Shield|Back|Special",
+                           "SLOT_LIMITATIONS": "Only one relic per slot, total slots limited by Enlightenment tier"
+                         },
+                         "enlightenmentRequirement": {
+                           "VALUE_SOURCE": "Relic power level and balance requirements",
+                           "MEANING": "Minimum enlightenment tier needed to equip this relic",
+                           "PURPOSE": "Gate powerful equipment behind progression milestones",
+                           "VALIDATION": "Must be integer 0-4, cannot exceed current maximum tier"
+                         }
+                       },
+                       "acquisitionData": {
+                         "sourceGuardian": {
+                           "VALUE_SOURCE": "Guardian who granted this relic via Gacha or quest",
+                           "MEANING": "Which Guardian is associated with this relic",
+                           "PURPOSE": "Narrative connection and reputation tracking",
+                           "VALIDATION": "Must reference valid Guardian ID from metaState.guardians"
+                         },
+                         "acquisitionStory": {
+                           "VALUE_SOURCE": "Generated narrative describing how relic was obtained",
+                           "MEANING": "Backstory for emotional attachment and immersion",
+                           "PURPOSE": "Create meaningful connection between player and equipment",
+                           "VALIDATION": "Russian text, 50-500 characters"
+                         }
+                       },
+                       "gameplayStatus": {
+                         "equipped": {
+                           "VALUE_SOURCE": "Player equipment choices",
+                           "MEANING": "Whether this relic is currently providing bonuses",
+                           "PURPOSE": "Track active equipment for bonus calculation",
+                           "VALIDATION": "Must be boolean true/false"
+                         },
+                         "currentSlot": {
+                           "VALUE_SOURCE": "equipSlot if equipped, null if unequipped",
+                           "MEANING": "Which slot this relic currently occupies",
+                           "PURPOSE": "Equipment management and conflict resolution",
+                           "VALIDATION": "Must match equipSlot if equipped"
+                         }
+                       }
+                     }
+                     ```
+                     
+                     SOUL RELIC INTEGRATION WITH ACTION CHECKS:
+                     Soul Relics integrate with action checks ONLY through InstructionBlock 12, Rule 12.1.B.
+                     That rule handles:
+                     - Bonus application during characteristic calculations
+                     - Category-specific bonus application
+                     - Special ability triggering
+                     - Advantage/disadvantage from relic abilities
+                     
+                     DO NOT duplicate these mechanics in this rule block.
+                     
+                     ]]>
+    </content>
+   </rule>
+   
+   <rule id="31.3">
+    <title>
+     Soul System JSON Command Integration
+    </title>
+    <description>
+     Integration with JSON response template for atomic Soul System operations.
+    </description>
+    <instructiontext>
+     <![CDATA[
+                     
+                     CRITICAL INTEGRATION WITH RESPONSE TEMPLATE:
+                     All Soul System changes MUST use the "metaStateUpdates" JSON command
+                     defined in InstructionBlock 2 (Master Schema).
+                     
+                     This ensures atomic operations and data integrity.
+                     
+                     ]]>
+    </instructiontext>
+    <content type="rule_text">
+     <![CDATA[
+                     
+                     SOUL SYSTEM OPERATIONS VIA JSON COMMANDS:
+                     
+                     USE metaStateUpdates JSON COMMAND FOR ALL SOUL SYSTEM CHANGES:
+                     
+                     Examples of proper usage:
+                     
+                     ADDING SOUL RELIC:
+                     ```json
+                     "metaStateUpdates": {
+                       "soulRelicOperations": {
+                         "addRelic": {
+                           "relicId": "sr_combat_titanstrength_1672531200000",
+                           "name": "Сила Титанов",
+                           "rarity": "Epic",
+                           "category": "Physical",
+                           "effects": {
+                             "characteristicBonuses": { "strength": 15, "constitution": 10 },
+                             "actionCheckBonuses": { "combatBonus": 5 }
+                           },
+                           "equipmentData": {
+                             "equipSlot": "Arms",
+                             "enlightenmentRequirement": 2
+                           },
+                           "acquisitionData": {
+                             "sourceGuardian": "guard_combat_aleksandr_001",
+                             "acquisitionStory": "Выкован из воспоминаний о героической защите невинных"
+                           },
+                           "gameplayStatus": {
+                             "equipped": false,
+                             "currentSlot": null
+                           }
+                         }
+                       }
+                     }
+                     ```
+                     
+                     EQUIPPING SOUL RELIC:
+                     ```json
+                     "metaStateUpdates": {
+                       "soulRelicOperations": {
+                         "equipRelic": {
+                           "relicId": "sr_combat_titanstrength_1672531200000",
+                           "slot": "Arms"
+                         }
+                       }
+                     }
+                     ```
+                     
+                     AWARDING INK FEATHERS:
+                     ```json
+                     "metaStateUpdates": {
+                       "inkFeatherChanges": {
+                         "add": 150,
+                         "reason": "Завершение жизни героического воина"
+                       }
+                     }
+                     ```
+                     
+                     ENLIGHTENMENT PROGRESSION:
+                     ```json
+                     "metaStateUpdates": {
+                       "enlightenmentProgression": {
+                         "newTier": 3,
+                         "experience": 1250
+                       }
+                     }
+                     ```
+                     
+                     DATA INTEGRITY RULES:
+                     - Only include sub-commands being used (omit unused ones)
+                     - Validate all required fields per Rule 31.2 before including
+                     - Use proper relicId format for all operations
+                     - Ensure enlightenment requirements are met before equipping
+                     
+                     ]]>
+    </content>
+   </rule>
+   
+   <rule id="31.4">
+    <title>
+     Life Transition JSON Commands
+    </title>
+    <description>
+     JSON command integration for death, rebirth, and enlightenment progression.
+    </description>
+    <content type="rule_text">
+     <![CDATA[
+                     
+                     LIFE TRANSITION COMMANDS:
+                     
+	                     TRIGGERING LIFE END:
+	                     Use "TriggerLifeEnd" command (separate from metaStateUpdates):
+	                     ```json
+	                     "TriggerLifeEnd": {
+	                       "reason": "Death",  // "Death" or "Voluntary"; Mortal World only
+	                       "summary": "Героически пал в бою, защищая невинных от орков"
+	                     }
+	                     ```
+	                     In the current CLI runtime, TriggerLifeEnd only starts the return/evaluation lifecycle.
+	                     The final Ink Feather reward, Soul Relic reward, and player_chronicle update belong to the later Life Evaluation turn and MUST NOT be mixed into the trigger turn.
+	                     
+	                     RECORDING LIFE COMPLETION DATA:
+                     Use metaStateUpdates for comprehensive life data:
+                     ```json
+                     "metaStateUpdates": {
+                       "lifeTransitions": {
+                         "recordLifeCompletion": {
+                           "characterFinalState": { complete_character_object },
+                           "majorAchievements": ["Спас деревню", "Овладел магией огня"],
+                           "relationshipsFormed": [relationship_objects],
+                           "moralChoices": [choice_records],
+                           "skillsLearned": ["Фехтование", "Дипломатия"],
+                           "enlightenmentGained": 45
+                         }
+                       }
+                     }
+                     ```
+                     
+	                     TRIGGERING ASCENSION:
+	                     ```json
+                     "AscensionTrigger": true,  // Only when enlightenment = 100% AND playerChoice = Ascension
+                     "playerChoice": "Ascension"
+	                     ```
+	                     In the current CLI runtime, AscensionTrigger performs a real transition from Chaos Sea into the Shining Abode.
+	                     Shining Abode still uses afterlife guardian/soul/meta systems; it is NOT a Mortal World.
+	                     It is NOT TriggerLifeEnd, NOT Life Evaluation, and MUST NOT be used as a substitute for either flow.
+	                     Do NOT mix AscensionTrigger with TriggerLifeEnd on the same turn.
+                     
+                     ]]>
+    </content>
+   </rule>
+  </content>
+ </instructionblock>
+</Root>
+     <rule id="31.1.2">
+      <title>
+       STEP 2: Ink Feather Calculation - Exact Mathematical Processing
+      </title>
+      <description>
+       Mandatory calculation of Ink Feathers earned using the exact formula with all modifiers and bonuses.
+      </description>
+      <instructiontext>
+       <![CDATA[
+                        
+                        CRITICAL MATHEMATICAL REQUIREMENT:
+                        This formula is the foundation of meta-progression balance.
+                        You MUST perform each calculation step exactly as specified.
+                        Show ALL work in gm_thoughts_markdown.
+                        
+                        ]]>
+      </instructiontext>
+      <content type="rule_text">
+       <![CDATA[
+                        
+                        MANDATORY INK FEATHER CALCULATION SEQUENCE:
+                        
+                        #31.1.2.1. Base Feathers Calculation:
+                        You MUST use this EXACT formula:
+                        Base_Feathers = (Character_Level × 10) + (Mortal_Quests_Completed × 15) + (Soul_Quests_Completed × 30)
+                        
+                        FORMULA COMPONENT EXPLANATIONS:
+                        - Character_Level: VALUE SOURCE: incarnationData.characterLevel. MEANING: Level progression rewards consistent effort.
+                        - Mortal_Quests_Completed: VALUE SOURCE: incarnationData.totalMortalQuests. MEANING: Reward for world engagement.
+                        - Soul_Quests_Completed: VALUE SOURCE: incarnationData.totalSoulQuests. MEANING: Higher rewards for meta-progression engagement.
+                        - Multipliers (10/15/30): MEANING: Weighted importance - Soul quests worth 2x mortal, levels provide base progression.
+                        
+                        CALCULATION LOGGING REQUIREMENT:
+                        You MUST show every step:
+                        "Base Feathers Calculation:
+                        - Character Level: [level] × 10 = [level_points]
+                        - Mortal Quests: [count] × 15 = [mortal_points]  
+                        - Soul Quests: [count] × 30 = [soul_points]
+                        - Base Total: [level_points] + [mortal_points] + [soul_points] = [base_total]"
+                        
+                        VALIDATION CHECKS:
+                        - Base_Feathers must be non-negative integer
+                        - If Base_Feathers < 10: Apply survival bonus (minimum 10 feathers for completing incarnation)
+                        - If Base_Feathers > 50000: Flag as potential error (extremely high level character)
+                        
+                        #31.1.2.2. GM Performance Coefficient Determination:
+                        You MUST evaluate incarnation performance and assign coefficient from this EXACT table:
+                        
+                        ```
+                        PERFORMANCE EVALUATION TABLE:
+                        ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+                        TIER NAME                 │ COEFFICIENT RANGE │ PRIMARY CRITERIA                     │ SECONDARY INDICATORS
+                        ──────────────────────────┼───────────────────┼─────────────────────────────────────┼─────────────────────────────────────────────────────────
+                        Abysmal Performance       │ 0.5 - 0.7         │ Major world destruction              │ • Genocide or mass murder
+                                                  │                   │ Complete moral failure               │ • Betrayed all allies 
+                                                  │                   │ Abandoned all quests                │ • Caused apocalyptic events
+                                                  │                   │ Evil ending achieved                │ • Became ultimate villain
+                        ──────────────────────────┼───────────────────┼─────────────────────────────────────┼─────────────────────────────────────────────────────────
+                        Poor Performance          │ 0.7 - 0.9         │ Significant failures                 │ • Failed major storylines
+                                                  │                   │ Mixed moral record                   │ • Completed <50% available quests
+                                                  │                   │ Limited positive impact              │ • Caused moderate harm to world
+                                                  │                   │ Few meaningful relationships         │ • Death due to poor decisions
+                        ──────────────────────────┼───────────────────┼─────────────────────────────────────┼─────────────────────────────────────────────────────────
+                        Average Performance       │ 0.9 - 1.2         │ Balanced good and bad actions        │ • Completed most major quests
+                                                  │                   │ Neutral moral standing               │ • Some meaningful relationships
+                                                  │                   │ Moderate world impact                │ • Standard hero journey completion
+                                                  │                   │ Typical adventure completion         │ • No major failures or triumphs
+                        ──────────────────────────┼───────────────────┼─────────────────────────────────────┼─────────────────────────────────────────────────────────
+                        Good Performance          │ 1.2 - 1.6         │ Consistent heroic actions            │ • Saved communities or regions
+                                                  │                   │ Strong moral compass                 │ • Completed all major storylines  
+                                                  │                   │ Positive world impact                │ • Deep NPC relationships formed
+                                                  │                   │ Leadership and inspiration           │ • Overcame significant challenges
+                        ──────────────────────────┼───────────────────┼─────────────────────────────────────┼─────────────────────────────────────────────────────────
+                        Excellent Performance     │ 1.6 - 2.2         │ Legendary heroic achievements        │ • Saved entire nations or worlds
+                                                  │                   │ Exemplary moral choices              │ • Completed impossible quests
+                                                  │                   │ World-saving impact                  │ • Inspired lasting change
+                                                  │                   │ Transcendent relationships           │ • Achieved multiple legendary feats
+                        ──────────────────────────┼───────────────────┼─────────────────────────────────────┼─────────────────────────────────────────────────────────
+                        Exceptional Performance   │ 2.2 - 3.0         │ World-changing transformation        │ • Fundamentally altered reality
+                                                  │                   │ Redefined moral standards            │ • Created new magical/scientific laws
+                                                  │                   │ Cosmic-level impact                  │ • Ascended to divine status
+                                                  │                   │ Achieved the impossible              │ • Changed the nature of existence
+                        ──────────────────────────┼───────────────────┼─────────────────────────────────────┼─────────────────────────────────────────────────────────
+                        Transcendent Performance  │ 3.0 - 4.0         │ Universal transformation             │ • Rewrote laws of physics/magic
+                                                  │                   │ Achieved godlike status              │ • Created new planes of existence
+                                                  │                   │ Redefined reality itself             │ • Became cosmic force for change
+                                                  │                   │ Eternal legend status                │ • Influenced multiple universes
+                        ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+                        ```
+                        
+                        COEFFICIENT ASSIGNMENT PROTOCOL:
+                        1. Review incarnationData.notableAchievements against Primary Criteria
+                        2. Check incarnationData.worldImpactLevel against Secondary Indicators  
+                        3. Evaluate incarnationData.moralChoicesRecord for moral consistency
+                        4. Identify appropriate performance tier
+                        5. Select specific coefficient within range based on fine details
+                        6. MANDATORY justification in logs
+                        
+                        COEFFICIENT FIELD EXPLANATION:
+                        GM_Coefficient: VALUE SOURCE: GM evaluation using above table. MEANING: Performance multiplier that rewards exceptional play and penalizes poor choices. RANGE: 0.5-4.0. BALANCE PURPOSE: Prevents grinding, rewards story engagement.
+                        
+                        JUSTIFICATION LOGGING REQUIREMENT:
+                        "GM Coefficient: [value] ([tier_name] range [min]-[max])
+                        Justification: [detailed_explanation_of_performance_evaluation]
+                        Key factors: [specific_achievements_and_failures]
+                        Data sources: Achievements=[list], Impact=[level], Moral=[summary]"
+                        
+                        #31.1.2.3. Enlightenment Tier Multiplier Calculation:
+                        You MUST apply current Enlightenment tier bonus using this EXACT formula:
+                        Enlightenment_Multiplier = 1.0 + (Current_Enlightenment_Tier × 0.1)
+                        
+                        TIER REFERENCE TABLE WITH FIELD EXPLANATIONS:
+                        ```
+                        TIER │ NAME           │ EXPERIENCE RANGE │ MULTIPLIER │ RUSSIAN NAME      │ MEANING
+                        ─────┼────────────────┼──────────────────┼────────────┼───────────────────┼────────────────────────────
+                        0    │ Confusion      │ 0 - 999          │ 1.0        │ Смятение          │ New Soul, no bonuses
+                        1    │ Awareness      │ 1000 - 2999     │ 1.1        │ Осознание         │ Basic understanding  
+                        2    │ Understanding  │ 3000 - 5999     │ 1.2        │ Понимание         │ Deeper comprehension
+                        3    │ Wisdom         │ 6000 - 9999     │ 1.3        │ Мудрость          │ Experienced Soul
+                        4    │ Transcendence  │ 10000+           │ 1.4        │ Трансценденция    │ Near-enlightened
+                        ```
+                        
+                        ENLIGHTENMENT FIELD EXPLANATIONS:
+                        - Current_Enlightenment_Tier: VALUE SOURCE: metaState.soulProgression.currentEnlightenment.tier. MEANING: Cumulative spiritual advancement across all incarnations.
+                        - Experience thresholds: PURPOSE: Provide long-term progression goals spanning multiple incarnations.
+                        - Multiplier progression: BALANCE: 10% per tier ensures significant but not overpowered advancement.
+                        
+                        CALCULATION LOGGING:
+                        "Enlightenment Multiplier: 1.0 + ([tier] × 0.1) = [multiplier] 
+                        Current Tier: [tier] ([tier_name] / [russian_name])
+                        Experience: [current_experience] (Range: [tier_range])"
+                        
+                        #31.1.2.4. Final Ink Feathers Calculation:
+                        You MUST apply this EXACT formula:
+                        Final_Ink_Feathers = Floor(Base_Feathers × GM_Coefficient × Enlightenment_Multiplier)
+                        
+                        FINAL CALCULATION FIELD EXPLANATIONS:
+                        - Floor function: MEANING: Round down to nearest integer to prevent fractional currency.
+                        - Final_Ink_Feathers: PURPOSE: Primary currency for Soul Relic acquisition and progression.
+                        - Calculation order: MEANING: Base rewards scaled by performance, then by spiritual advancement.
+                        
+                        COMPLETE CALCULATION EXAMPLE:
+                        "Final Ink Feathers Calculation:
+                        Base_Feathers: [base] (Level [level] × 10 + Mortal [mortal] × 15 + Soul [soul] × 30)
+                        GM_Coefficient: [coefficient] ([performance_tier]: [justification])
+                        Enlightenment_Multiplier: [multiplier] (Tier [tier]: [tier_name])
+                        Calculation: Floor([base] × [coefficient] × [multiplier]) = Floor([intermediate_result]) = [final_result]
+                        Final Award: [final_result] Ink Feathers"
+                        
+                        #31.1.2.5. Result Validation and Bounds Checking:
+                        MANDATORY validation checks with FIELD EXPLANATIONS:
+                        
+                        VALIDATION BOUNDS:
+                        - Minimum Value: 10 (survival bonus - Soul deserves reward for completing incarnation)
+                        - Maximum Value: 100000 (prevents currency inflation from exploits)
+                        - Data Type: Positive integer (fractional feathers don't exist)
+                        
+                        BOUNDS APPLICATION PROTOCOL:
+                        If Final_Ink_Feathers < 10: 
+                        - Apply survival minimum (set to 10)
+                        - Log: "Applied survival bonus: adjusted [calculated] → 10 Ink Feathers"
+                        If Final_Ink_Feathers > 100000:
+                        - Apply maximum cap (set to 100000) 
+                        - Log WARNING: "Extremely high reward capped: adjusted [calculated] → 100000"
+                        - Set flag for GM review of calculation
+                        
+                        VALIDATION LOGGING:
+                        "Ink Feathers Validation Results:
+                        Calculated: [final_result] 
+                        Bounds Check: [within_bounds|minimum_applied|maximum_applied]
+                        Final Award: [validated_amount] Ink Feathers"
+
+                        ROGUELIKE REWARD GUARANTEE:
+                        Every completed mortal life MUST produce BOTH of the following:
+                        - At least 10 Ink Feathers
+                        - At least one NEW Soul Relic with a new relicId
+                        Reward quality and rarity may vary based on achievements, but a zero-reward life evaluation is NEVER valid.
+                        
+                        ]]>
+      </content>
+     </rule>
+     <rule id="31.1.3">
+      <title>
+       STEP 3: Enlightenment Progression and Tier Advancement Processing
+      </title>
+      <description>
+       Processes enlightenment experience accumulation and checks for tier advancement with all associated benefits.
+      </description>
+      <content type="rule_text">
+       <![CDATA[
+                        
+                        ENLIGHTENMENT PROGRESSION PROTOCOL:
+                        
+                        #31.1.3.1. Experience Accumulation with Field Explanations:
+                        You MUST update total enlightenment experience:
+                        New_Total_Experience = Current_Total_Experience + Final_Ink_Feathers
+                        
+                        EXPERIENCE ACCUMULATION FIELD DEFINITIONS:
+                        ```json
+                        {
+                          "experienceCalculation": {
+                            "Current_Total_Experience": "VALUE SOURCE: metaState.soulProgression.currentEnlightenment.totalExperience. MEANING: Cumulative spiritual experience across ALL incarnations.",
+                            "Final_Ink_Feathers": "VALUE SOURCE: Calculated in Step 2. MEANING: Experience gained from this incarnation's completion.",
+                            "New_Total_Experience": "VALUE SOURCE: Calculated sum. MEANING: Updated cumulative experience for tier advancement check."
+                          }
+                        }
+                        ```
+                        
+                        ACCUMULATION LOGGING:
+                        "Enlightenment Experience Update:
+                        Previous Total: [current_experience] (from metaState.soulProgression.currentEnlightenment.totalExperience)
+                        Experience Gained: [ink_feathers_earned] (from this incarnation)
+                        New Total: [current_experience] + [ink_feathers_earned] = [new_total_experience]"
+                        
+                        #31.1.3.2. Tier Advancement Assessment with Detailed Field Explanations:
+                        Compare New_Total_Experience against tier thresholds to determine advancement:
+                        
+                        TIER ADVANCEMENT THRESHOLDS - COMPLETE FIELD DEFINITIONS:
+                        ```json
+                        {
+                          "tierThresholds": {
+                            "tier0": {
+                              "name": "Смятение",
+                              "englishName": "Confusion", 
+                              "experienceRange": "0-999",
+                              "minimumExperience": 0,
+                              "maximumExperience": 999,
+                              "PURPOSE": "Starting tier - Soul has no understanding of eternal journey",
+                              "NARRATIVE_MEANING": "Lost and confused, first steps of awareness"
+                            },
+                            "tier1": {
+                              "name": "Осознание", 
+                              "englishName": "Awareness",
+                              "experienceRange": "1000-2999",
+                              "minimumExperience": 1000,
+                              "maximumExperience": 2999,
+                              "PURPOSE": "Basic comprehension of meta-progression system",
+                              "NARRATIVE_MEANING": "Beginning to understand the cycle of reincarnation"
+                            },
+                            "tier2": {
+                              "name": "Понимание",
+                              "englishName": "Understanding", 
+                              "experienceRange": "3000-5999",
+                              "minimumExperience": 3000,
+                              "maximumExperience": 5999,
+                              "PURPOSE": "Deeper insight into spiritual mechanics",
+                              "NARRATIVE_MEANING": "Comprehending the nature of Soul progression"
+                            },
+                            "tier3": {
+                              "name": "Мудрость",
+                              "englishName": "Wisdom",
+                              "experienceRange": "6000-9999", 
+                              "minimumExperience": 6000,
+                              "maximumExperience": 9999,
+                              "PURPOSE": "Advanced spiritual development with significant benefits",
+                              "NARRATIVE_MEANING": "Achieving true wisdom about existence and purpose"
+                            },
+                            "tier4": {
+                              "name": "Трансценденция",
+                              "englishName": "Transcendence",
+                              "experienceRange": "10000+",
+                              "minimumExperience": 10000,
+                              "maximumExperience": 999999999,
+                              "PURPOSE": "Near-godlike understanding, approaching final liberation", 
+                              "NARRATIVE_MEANING": "Transcending mortal limitations, nearing escape from cycle"
+                            }
+                          }
+                        }
+                        ```
+                        
+                        ADVANCEMENT DETECTION ALGORITHM:
+                        ```
+                        Current_Tier = metaState.soulProgression.currentEnlightenment.tier
+                        
+                        New_Tier = function(New_Total_Experience) {
+                          if (New_Total_Experience >= 0 && New_Total_Experience <= 999) return 0;
+                          if (New_Total_Experience >= 1000 && New_Total_Experience <= 2999) return 1;
+                          if (New_Total_Experience >= 3000 && New_Total_Experience <= 5999) return 2;
+                          if (New_Total_Experience >= 6000 && New_Total_Experience <= 9999) return 3;
+                          if (New_Total_Experience >= 10000) return 4;
+                        }
+                        
+                        Tier_Advanced = (New_Tier > Current_Tier);
+                        ```
+                        
+                        ADVANCEMENT LOGGING:
+                        "Tier Advancement Check:
+                        Current Tier: [current_tier] ([current_tier_name])
+                        New Experience: [new_total_experience]
+                        Calculated New Tier: [new_tier] ([new_tier_name])
+                        Advancement Status: [tier_advanced ? 'ADVANCED' : 'NO_CHANGE']"
+                        
+                        #31.1.3.3. Tier Advancement Processing with Complete Benefit Definitions:
+                        If New_Total_Experience crosses into higher tier, apply ALL benefits:
+                        
+                        TIER BENEFIT SYSTEM - DETAILED FIELD EXPLANATIONS:
+                        ```json
+                        {
+                          "tierBenefits": {
+                            "relicSlots": {
+                              "PURPOSE": "Soul Relic equipment capacity increase",
+                              "PROGRESSION": "4→5→6→7→8 slots as tier advances",
+                              "BALANCE_REASON": "Prevents equipment power creep while rewarding long-term play"
+                            },
+                            "featherMultiplier": {
+                              "PURPOSE": "Retroactive bonus to current incarnation Ink Feathers",
+                              "PROGRESSION": "0%→10%→20%→30%→40% bonus per tier",
+                              "CALCULATION": "Applied to Final_Ink_Feathers if tier advanced this evaluation"
+                            },
+                            "systemUnlocks": {
+                              "PURPOSE": "New features unlocked at each tier",
+                              "tier1_unlocks": "Guardian basic dialogue, Soul Relic tooltips",
+                              "tier2_unlocks": "Guardian domain access, NPC Soul Imprint viewing",
+                              "tier3_unlocks": "Advanced Soul Quests, Guardian reputation details", 
+                              "tier4_unlocks": "Guardian liberation quests, transcendent relics access"
+                            }
+                          }
+                        }
+                        ```
+                        
+                        ADVANCEMENT PROCESSING STEPS:
+                        1. Update metaState.soulProgression.currentEnlightenment.tier = New_Tier
+                        2. Update metaState.soulProgression.currentEnlightenment.tierName = Russian_name
+                        3. Calculate experience within new tier: (New_Total_Experience - tier_minimum)
+                        4. Calculate progress to next tier: percentage toward next threshold
+                        5. Unlock new Soul Relic equipment slots
+                        6. Generate tier advancement narrative in Russian (mandatory)
+                        7. Apply retroactive feather bonus if applicable
+                        8. Update system unlock flags
+                        9. Log all changes with detailed explanations
+                        
+                        RETROACTIVE FEATHER BONUS CALCULATION:
+                        If tier advanced during THIS evaluation:
+                        ```
+                        Tier_Bonus_Percentage = New_Tier * 10  // 10% per tier
+                        Bonus_Feathers = Floor(Final_Ink_Feathers * (Tier_Bonus_Percentage / 100))
+                        Updated_Final_Ink_Feathers = Final_Ink_Feathers + Bonus_Feathers
+                        
+                        FIELD EXPLANATION:
+                        - Tier_Bonus_Percentage: MEANING: Additional percentage reward for achieving new enlightenment
+                        - Bonus_Feathers: PURPOSE: Immediate reward for tier advancement
+                        - Updated_Final_Ink_Feathers: MEANING: Final amount including advancement bonus
+                        ```
+                        
+                        TIER ADVANCEMENT NARRATIVE REQUIREMENTS:
+                        MANDATORY Russian narrative generation with these elements:
+                        - Length: 3-4 paragraphs minimum
+                        - Tone: Mystical, philosophical, transformative
+                        - Content: Spiritual significance of new understanding
+                        - Metaphors: Cosmic awakening, expanding consciousness, eternal journey
+                        - References: Previous incarnations, Guardian guidance, future possibilities
+                        
+                        ADVANCEMENT LOGGING COMPLETE EXAMPLE:
+                        "ENLIGHTENMENT TIER ADVANCEMENT CONFIRMED:
+                        Previous: Tier [old_tier] ([old_russian_name]) - [old_experience] total experience
+                        Advanced: Tier [new_tier] ([new_russian_name]) - [new_experience] total experience  
+                        Benefits Applied:
+                        - Soul Relic Slots: [old_slots] → [new_slots] (+[slot_increase])
+                        - Retroactive Feather Bonus: +[bonus_feathers] ([bonus_percentage]% of [base_feathers])
+                        - System Unlocks: [list_of_new_features]
+                        - Multiplier Enhancement: [old_multiplier] → [new_multiplier]
+                        Updated Final Ink Feathers: [original] → [updated] (+[bonus_amount])"
+                        
+                        ]]>
+      </content>
+     </rule>
+     <rule id="31.1.4">
+      <title>
+       STEP 4: MetaState Persistence and Data Structure Updates
+      </title>
+      <description>
+       Updates the persistent metaState with all calculated values and incarnation records. Critical for cross-incarnation continuity.
+      </description>
+      <instructiontext>
+       <![CDATA[
+                        
+                        CRITICAL DATA PERSISTENCE:
+                        This step writes permanent progression data to metaState.
+                        ANY error in this step corrupts the entire meta-progression system permanently.
+                        Every field update is MANDATORY with detailed validation.
+                        
+                        ]]>
+      </instructiontext>
+      <content type="rule_text">
+       <![CDATA[
+                        
+                        MANDATORY METASTATE UPDATE SEQUENCE:
+                        
+                        #31.1.4.1. Core Progression Fields Update with Complete Field Definitions:
+                        You MUST update these metaState.soulProgression fields with exact calculated values:
+                        
+                        CORE PROGRESSION OBJECT - DETAILED FIELD EXPLANATIONS:
+                        ```json
+                        {
+                          "metaState": {
+                            "soulProgression": {
+                              "totalIncarnations": {
+                                "VALUE_SOURCE": "previous_value + 1",
+                                "MEANING": "Total number of completed incarnations across all worlds and genres",
+                                "PURPOSE": "Track Soul's journey progression, unlock content based on experience",
+                                "VALIDATION": "Must be positive integer, should increment by exactly 1"
+                              },
+                              "inkFeathers": {
+                                "VALUE_SOURCE": "previous_value + Final_Ink_Feathers_With_Bonuses",
+                                "MEANING": "Primary currency for Soul Relic acquisition and Guardian services",
+                                "PURPOSE": "Enable meta-progression purchases and customization",
+                                "VALIDATION": "Must be non-negative integer, no upper limit"
+                              },
+                              "currentEnlightenment": {
+                                "tier": {
+                                  "VALUE_SOURCE": "Calculated in Step 3",
+                                  "MEANING": "Current spiritual development level (0-4)",
+                                  "PURPOSE": "Unlock features, equipment slots, Guardian content",
+                                  "VALIDATION": "Must be integer 0-4"
+                                },
+                                "tierName": {
+                                  "VALUE_SOURCE": "Russian name for current tier",
+                                  "MEANING": "Localized name for player display",
+                                  "PURPOSE": "Narrative immersion and cultural consistency",
+                                  "VALIDATION": "Must match tier number, must be in Russian"
+                                },
+                                "totalExperience": {
+                                  "VALUE_SOURCE": "Current_Total + Final_Ink_Feathers_With_Bonuses",
+                                  "MEANING": "Cumulative experience across all incarnations",
+                                  "PURPOSE": "Determine tier advancement and progression tracking",
+                                  "VALIDATION": "Must equal sum of all Ink Feathers ever earned"
+                                },
+                                "experienceInCurrentTier": {
+                                  "VALUE_SOURCE": "totalExperience - current_tier_minimum_threshold",
+                                  "MEANING": "Progress within current tier toward next advancement",
+                                  "PURPOSE": "Show player how close they are to next tier",
+                                  "VALIDATION": "Must be >= 0 and < tier_range_size"
+                                },
+                                "experienceForNextTier": {
+                                  "VALUE_SOURCE": "next_tier_threshold - totalExperience",
+                                  "MEANING": "Experience needed to advance to next tier",
+                                  "PURPOSE": "Goal-setting for player progression",
+                                  "VALIDATION": "Must be > 0 unless at maximum tier (4)"
+                                },
+                                "progressPercent": {
+                                  "VALUE_SOURCE": "(experienceInCurrentTier / tier_range_size) * 100",
+                                  "MEANING": "Percentage progress through current tier",
+                                  "PURPOSE": "Visual progress indicator for UI",
+                                  "VALIDATION": "Must be 0-100, rounded to 1 decimal place"
+                                },
+                                "experienceGainedThisIncarnation": {
+                                  "VALUE_SOURCE": "Final_Ink_Feathers_With_All_Bonuses",
+                                  "MEANING": "Experience earned from this specific incarnation",
+                                  "PURPOSE": "Track individual incarnation performance",
+                                  "VALIDATION": "Must match calculated Final_Ink_Feathers"
+                                },
+                                "lastTierAdvancement": {
+                                  "VALUE_SOURCE": "current_timestamp_if_advanced_otherwise_null",
+                                  "MEANING": "When Soul most recently advanced in enlightenment",
+                                  "PURPOSE": "Track progression milestones and achievement timing",
+                                  "VALIDATION": "Must be ISO timestamp or null"
+                                }
+                              }
+                            }
+                          }
+                        }
+                        ```
+                        
+                        FIELD CALCULATION FORMULAS:
+                        ```
+                        experienceInCurrentTier = New_Total_Experience - tier_minimum_threshold
+                        
+                        WHERE tier_minimum_threshold = {
+                          0: 0,    // Confusion starts at 0
+                          1: 1000, // Awareness starts at 1000
+                          2: 3000, // Understanding starts at 3000  
+                          3: 6000, // Wisdom starts at 6000
+                          4: 10000 // Transcendence starts at 10000
+                        }[current_tier]
+                        
+                        tier_range_size = {
+                          0: 1000,  // Confusion: 0-999 (1000 points)
+                          1: 2000,  // Awareness: 1000-2999 (2000 points)
+                          2: 3000,  // Understanding: 3000-5999 (3000 points)
+                          3: 4000,  // Wisdom: 6000-9999 (4000 points)
+                          4: 999999 // Transcendence: 10000+ (unlimited)
+                        }[current_tier]
+                        
+                        progressPercent = Math.round((experienceInCurrentTier / tier_range_size) * 100 * 10) / 10
+                        ```
+                        
+                        #31.1.4.2. Incarnation History Record Creation with Complete Schema:
+                        You MUST create a complete incarnation record and add to completedIncarnations array:
+                        
+                        INCARNATION RECORD OBJECT - EXHAUSTIVE FIELD DEFINITIONS:
+                        ```json
+                        {
+                          "incarnationRecord": {
+                            "incarnationId": {
+                              "VALUE_SOURCE": "Generated unique identifier: 'inc_[worldName]_[characterName]_[timestamp]'",
+                              "MEANING": "Unique identifier for this specific incarnation",
+                              "PURPOSE": "Reference incarnations in Soul Imprints and quest systems",
+                              "VALIDATION": "Must be unique across all incarnations, alphanumeric with underscores",
+                              "EXAMPLE": "inc_Skyrim_Dovahkiin_1672531200000"
+                            },
+                            "characterName": {
+                              "VALUE_SOURCE": "incarnationData.characterName",
+                              "MEANING": "Player-chosen name for character in this incarnation", 
+                              "PURPOSE": "Personal attachment and incarnation identification",
+                              "VALIDATION": "Must be non-empty string, max 50 characters"
+                            },
+                            "worldName": {
+                              "VALUE_SOURCE": "incarnationData.worldName",
+                              "MEANING": "Name of the world/setting where incarnation took place",
+                              "PURPOSE": "Context for Soul Imprint adaptation and narrative references",
+                              "VALIDATION": "Must be non-empty string, max 100 characters"
+                            },
+                            "worldGenre": {
+                              "VALUE_SOURCE": "incarnationData.worldGenre", 
+                              "MEANING": "Genre classification (Fantasy/SciFi/Modern/etc)",
+                              "PURPOSE": "Critical for Soul Imprint adaptation across genres",
+                              "VALIDATION": "Must be valid genre from predefined list"
+                            },
+                            "characterLevel": {
+                              "VALUE_SOURCE": "incarnationData.characterLevel",
+                              "MEANING": "Final experience level achieved in this incarnation",
+                              "PURPOSE": "Performance metric and narrative context",
+                              "VALIDATION": "Must be integer 1-100"
+                            },
+                            "questsCompleted": {
+                              "VALUE_SOURCE": "incarnationData.totalMortalQuests",
+                              "MEANING": "Number of world-specific quests completed",
+                              "PURPOSE": "Engagement metric and performance evaluation",
+                              "VALIDATION": "Must be non-negative integer"
+                            },
+                            "soulQuestsCompleted": {
+                              "VALUE_SOURCE": "incarnationData.totalSoulQuests", 
+                              "MEANING": "Number of meta-progression quests completed",
+                              "PURPOSE": "Track Guardian relationship and meta-engagement",
+                              "VALIDATION": "Must be non-negative integer"
+                            },
+                            "feathersEarned": {
+                              "VALUE_SOURCE": "Final_Ink_Feathers_With_All_Bonuses",
+                              "MEANING": "Total Ink Feathers earned from this incarnation",
+                              "PURPOSE": "Performance record and progression tracking",
+                              "VALIDATION": "Must match calculated amount exactly"
+                            },
+                            "gmCoefficient": {
+                              "VALUE_SOURCE": "Calculated in Step 2",
+                              "MEANING": "Performance multiplier assigned by GM evaluation",
+                              "PURPOSE": "Record GM assessment for pattern analysis",
+                              "VALIDATION": "Must be float 0.5-4.0"
+                            },
+                            "enlightenmentTierReached": {
+                              "VALUE_SOURCE": "Final tier after all calculations",
+                              "MEANING": "Highest enlightenment tier achieved in this incarnation",
+                              "PURPOSE": "Milestone tracking and achievement records",
+                              "VALIDATION": "Must be integer 0-4"
+                            },
+                            "notableAchievements": {
+                              "VALUE_SOURCE": "incarnationData.notableAchievements",
+                              "MEANING": "Array of significant story accomplishments",
+                              "PURPOSE": "Narrative history and performance justification",
+                              "VALIDATION": "Array of strings, each max 200 characters"
+                            },
+                            "deathCause": {
+                              "VALUE_SOURCE": "incarnationData.deathCause",
+                              "MEANING": "Description of how incarnation ended",
+                              "PURPOSE": "Narrative closure and learning opportunities",
+                              "VALIDATION": "String max 500 characters, can be 'Transcended' for non-death endings"
+                            },
+                            "completionDate": {
+                              "VALUE_SOURCE": "current_timestamp_ISO_format",
+                              "MEANING": "When Life Evaluation was processed", 
+                              "PURPOSE": "Historical record and progression timeline",
+                              "VALIDATION": "Must be valid ISO 8601 timestamp"
+                            },
+                            "incarnationStartDate": {
+                              "VALUE_SOURCE": "incarnationData.startTimestamp",
+                              "MEANING": "When this incarnation began (if tracked)",
+                              "PURPOSE": "Calculate incarnation duration and pacing",
+                              "VALIDATION": "ISO timestamp or null if not tracked"
+                            },
+                            "incarnationDuration": {
+                              "VALUE_SOURCE": "completionDate - incarnationStartDate or 'Unknown'",
+                              "MEANING": "Time spent in this incarnation",
+                              "PURPOSE": "Performance efficiency analysis",
+                              "VALIDATION": "Duration string or 'Unknown'"
+                            },
+                            "alignmentAtDeath": {
+                              "VALUE_SOURCE": "incarnationData.finalAlignment",
+                              "MEANING": "Moral alignment at incarnation conclusion",
+                              "PURPOSE": "Track moral development patterns across incarnations",
+                              "VALIDATION": "Must be exactly 'Good', 'Neutral', or 'Evil'"
+                            },
+                            "worldImpactLevel": {
+                              "VALUE_SOURCE": "incarnationData.worldImpactLevel",
+                              "MEANING": "Assessment of how much character affected the world",
+                              "PURPOSE": "Performance evaluation and GM coefficient justification",
+                              "VALIDATION": "Must be None|Minor|Moderate|Major|Legendary"
+                            },
+                            "moralChoicesRecord": {
+                              "VALUE_SOURCE": "incarnationData.moralChoicesRecord",
+                              "MEANING": "Summary of key moral decisions made",
+                              "PURPOSE": "Track ethical development and consistency",
+                              "VALIDATION": "String max 1000 characters"
+                            },
+                            "npcSoulImprints": {
+                              "VALUE_SOURCE": "Array of Soul Imprint IDs created from this incarnation",
+                              "MEANING": "NPCs from this incarnation eligible for future summoning",
+                              "PURPOSE": "Cross-incarnation continuity and emotional attachment",
+                              "VALIDATION": "Array of valid Soul Imprint IDs"
+                            }
+                          }
+                        }
+                        ```
+                        
+                        INCARNATION ID GENERATION ALGORITHM:
+                        ```
+                        worldName_safe = incarnationData.worldName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20)
+                        characterName_safe = incarnationData.characterName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20)
+                        timestamp = Date.now()
+                        
+                        incarnationId = `inc_${worldName_safe}_${characterName_safe}_${timestamp}`
+                        
+                        VALIDATION: Ensure uniqueness by checking against existing incarnation IDs
+                        ```
+                        
+                        ]]>
+      </content>
+     </rule>

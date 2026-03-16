@@ -1,0 +1,589 @@
+<Root>
+ <instructionblock id="32">
+  <title>
+   The Guardian System - JSON Protocol for Soul Mentor Management
+  </title>
+  <description>
+   Defines Guardian entities, reputation mechanics, and interaction protocols with complete JSON field explanations and value sources.
+  </description>
+  <content type="rules_and_instructions">
+  
+   <rule id="32.1">
+    <title>
+     Guardian Object Schema and Field Definitions
+    </title>
+    <description>
+     Complete JSON structure for Guardian entities with detailed field explanations, value sources, and validation requirements.
+    </description>
+    <instructiontext>
+     <![CDATA[
+                     
+                     GUARDIAN SYSTEM OVERVIEW:
+                     Guardians are powerful afterlife entities centered in the Chaos Sea and still present in the Shining Abode. They serve as mentors, questgivers, and benefactors.
+                     Each Guardian has a unique personality, domain of expertise, and relationship with the Soul.
+                     The reputation system drives all interactions and rewards.
+
+                     ⚠️ ABSOLUTE LAW 3 — CRITICAL REMINDERS:
+                     1. Guardians belong to afterlife realms (Chaos Sea and Shining Abode). They CANNOT appear in mortal worlds.
+                     2. Guardians are NOT regular NPCs. Do NOT use 'UpdateNPCs' for Guardians.
+                        Use Guardian-specific JSON commands defined in this block.
+                     3. Do NOT apply NPC relationship mechanics (Block 19) to Guardians.
+                        Guardians use their OWN reputation scale (-100 to +300).
+                     4. Do NOT generate 'NPCsInScene' entries for Guardians.
+                     5. Do NOT apply experience, leveling, combat, or skill mechanics while in afterlife realms.
+
+                     CRITICAL DESIGN PRINCIPLES:
+                     - Every Guardian must have a distinct personality and domain
+                     - Reputation ranges from -100 (hostile) to +300 (legendary)
+                     - Gacha unlocks must feel rewarding but not guaranteed
+                     - Quests should reflect Guardian personality and domain
+                     - All interactions must be in Russian
+                     
+                     ]]>
+    </instructiontext>
+    <content type="rule_text">
+     <![CDATA[
+                     
+                     GUARDIAN OBJECT SCHEMA WITH COMPLETE FIELD EXPLANATIONS:
+                     
+                     VISUAL AUTHORING REQUIREMENT:
+                     - Every Guardian object should include its own `image_prompt` for portrait generation.
+                     - If the Guardian has an `abode` object, that nested `abode` should also include its own `image_prompt`.
+                     - The Guardian portrait and the abode image are separate visual entities and should not reuse the same prompt text verbatim.
+
+                     Every Guardian MUST follow this EXACT structure:
+                     
+                     ```json
+                     {
+                       "guardianId": {
+                         "VALUE_SOURCE": "Generated format: 'guard_[domain]_[name]_[uniqueId]'",
+                         "MEANING": "Unique identifier for this Guardian entity",
+                         "PURPOSE": "Reference Guardians consistently across sessions and quests",
+                         "VALIDATION": "Must be globally unique, alphanumeric with underscores",
+                         "EXAMPLE": "guard_combat_aleksandr_warlord_001",
+                         "NAMING_RULES": "Domain reflects specialization, name is Russian, uniqueId prevents duplicates"
+                       },
+                       "name": {
+                         "VALUE_SOURCE": "Russian name generator based on Guardian domain and personality",
+                         "MEANING": "Full Russian name the Guardian uses when addressing the Soul",
+                         "PURPOSE": "Personal connection and cultural immersion",
+                         "VALIDATION": "Must be Russian names (first + surname), appropriate to domain",
+                         "EXAMPLES": {
+                           "Combat": "Александр Железный, Мария Мечница",
+                           "Magic": "Дмитрий Звездочёт, Анна Рунница",
+                           "Trade": "Владимир Торговец, Екатерина Златая",
+                           "Social": "Михаил Красноречивый, Ольга Чаровница"
+                         }
+                       },
+                       "domain": {
+                         "VALUE_SOURCE": "Predefined list based on Soul Relic categories and game systems",
+                         "MEANING": "Area of expertise determining quest types and relic specialization",
+                         "PURPOSE": "Define Guardian personality, available quests, and reward types",
+                         "VALIDATION": "Must be exactly: Combat|Magic|Trade|Social|Crafting|Survival|Knowledge",
+                         "DOMAIN_DETAILS": {
+                           "Combat": "Warfare, weapons, tactical combat, physical prowess",
+                           "Magic": "Spellcasting, magical theory, arcane knowledge, mystical items",
+                           "Trade": "Commerce, economics, negotiation, resource management",
+                           "Social": "Relationships, persuasion, politics, social dynamics",
+                           "Crafting": "Creation, improvement, repair of items and structures",
+                           "Survival": "Nature, healing, endurance, practical skills",
+                           "Knowledge": "Lore, investigation, research, intellectual pursuits"
+                         }
+                       },
+                       "personalityProfile": {
+                         "archetype": {
+                           "VALUE_SOURCE": "Random selection from domain-appropriate archetypes",
+                           "MEANING": "Core personality template driving all Guardian interactions",
+                           "PURPOSE": "Ensure consistent behavior and unique character voice",
+                           "VALIDATION": "Must match domain and create distinct personalities",
+                           "ARCHETYPE_MAPPING": {
+                             "Combat": ["Stern Mentor", "Jovial Warrior", "Honorable Knight", "Ruthless Tactician"],
+                             "Magic": ["Wise Sage", "Mad Scholar", "Mysterious Oracle", "Patient Teacher"],
+                             "Trade": ["Shrewd Businessman", "Generous Patron", "Calculating Merchant", "Honest Dealer"],
+                             "Social": ["Charming Diplomat", "Passionate Orator", "Cunning Manipulator", "Kind Friend"],
+                             "Crafting": ["Perfectionist Artisan", "Innovative Creator", "Traditional Master", "Impatient Genius"],
+                             "Survival": ["Calm Naturalist", "Protective Parent", "Wild Wanderer", "Practical Survivor"],
+                             "Knowledge": ["Curious Researcher", "Stern Librarian", "Enthusiastic Teacher", "Secretive Scholar"]
+                           }
+                         },
+                         "speechPattern": {
+                           "VALUE_SOURCE": "Generated based on archetype and cultural background",
+                           "MEANING": "Distinctive way this Guardian speaks in Russian",
+                           "PURPOSE": "Create recognizable character voice for immersion",
+                           "VALIDATION": "Must be appropriate Russian speech patterns",
+                           "PATTERN_TYPES": {
+                             "Formal": "Вы, полные предложения, вежливые обращения",
+                             "Casual": "Ты, сокращения, дружеские интонации", 
+                             "Archaic": "Старославянские обороты, устаревшие формы",
+                             "Military": "Краткость, приказной тон, военная терминология",
+                             "Scholarly": "Сложные конструкции, специальная терминология",
+                             "Merchant": "Практичность, цифры, деловые обороты"
+                           }
+                         },
+                         "coreValues": {
+                           "VALUE_SOURCE": "3-5 values consistent with domain and archetype",
+                           "MEANING": "Fundamental beliefs driving Guardian decisions and quest design",
+                           "PURPOSE": "Guide quest generation and reaction to player choices",
+                           "VALIDATION": "Must be coherent with personality and create quest opportunities",
+                           "EXAMPLE_VALUES": ["Честь", "Знания", "Сила", "Богатство", "Справедливость", "Мастерство", "Свобода"]
+                         }
+                       },
+                       "relationshipData": {
+                         "currentReputation": {
+                           "VALUE_SOURCE": "Reputation calculation system based on completed quests and interactions",
+                           "MEANING": "Current standing with this Guardian from -100 to +300",
+                           "PURPOSE": "Determine available interactions, quest difficulty, and reward quality",
+                           "VALIDATION": "Must be integer -100 to +300",
+                           "REPUTATION_THRESHOLDS": {
+                             "-100 to -51": "Hostile - Guardian refuses interaction",
+                             "-50 to -21": "Wary - Limited interactions, poor rewards",
+                             "-20 to +49": "Neutral - Standard interactions available",
+                             "+50 to +129": "Friendly - Better rewards, special quests unlocked",
+                             "+130 to +229": "Devoted - Premium rewards, personal quests",
+                             "+230 to +300": "Legendary - Unique relics, exclusive content"
+                           }
+                         },
+                         "reputationHistory": {
+                           "VALUE_SOURCE": "Log of all reputation changes with reasons",
+                           "MEANING": "Historical record of relationship development",
+                           "PURPOSE": "Track player progression and enable story callbacks",
+                           "VALIDATION": "Array of objects with date, change, reason",
+                           "ENTRY_FORMAT": {
+                             "timestamp": "ISO timestamp of change",
+                             "change": "Positive or negative integer change",
+                             "reason": "Russian description of what caused the change",
+                             "questId": "Reference to related quest if applicable"
+                           }
+                         },
+                         "lastInteraction": {
+                           "VALUE_SOURCE": "Timestamp of most recent meaningful interaction",
+                           "MEANING": "When Soul last spoke with this Guardian",
+                           "PURPOSE": "Enable time-based dialogue changes and quest refreshes",
+                           "VALIDATION": "ISO timestamp or null if never interacted"
+                         }
+                       },
+                       "questManagement": {
+                         "availableQuests": {
+                           "VALUE_SOURCE": "Dynamic generation based on reputation, domain, and game state",
+                           "MEANING": "Currently available quests this Guardian can offer",
+                           "PURPOSE": "Provide content and reputation advancement opportunities",
+                           "VALIDATION": "Array of quest objects, max 3 at any time",
+                           "QUEST_GENERATION_RULES": {
+                             "MinimumReputation": "Each quest type has minimum reputation requirement",
+                             "DifficultyScaling": "Higher reputation unlocks more challenging/rewarding quests",
+                             "PersonalityAlignment": "Quest themes must match Guardian values and domain",
+                             "CooldownPeriod": "24 hour cooldown before new quest generation"
+                           }
+                         },
+                         "completedQuests": {
+                           "VALUE_SOURCE": "Historical log of all completed quests with this Guardian",
+                           "MEANING": "Record of Soul's achievements for this specific Guardian",
+                           "PURPOSE": "Track progression, prevent repeats, enable advanced quest unlocks",
+                           "VALIDATION": "Array of completed quest references with completion timestamps"
+                         }
+                       },
+                       "gachaSystem": {
+                         "cliSchedulerNote": {
+                           "VALUE_SOURCE": "Client-side progression scheduler in CLI mode",
+                           "MEANING": "Chaos Sea does not use Mortal World minutes for Guardian progression",
+                           "PURPOSE": "Keep guardian projects and musings deterministic between lives",
+                           "CLI_RULE": "In CLI mode, one accepted Chaos Sea hub turn equals one Guardian Project Cycle and 24 equivalent hours for scheduler logic unless another explicit system rule overrides it."
+                         },
+                         "chargesPerReturn": {
+                           "VALUE_SOURCE": "Derived from current Guardian reputation tier",
+                           "MEANING": "How many Guardian-mediated Soul Relic Gacha attempts this Guardian allows during the current return from mortal life",
+                           "PURPOSE": "Limit repeated use of a single Guardian and encourage discovering multiple Guardians",
+                           "VALIDATION": "Non-negative integer. Hostile(-100..-51)=0, Wary/Neutral(-50..49)=1, Friendly(50..129)=2, Devoted/Legendary(130..300)=3"
+                         },
+                         "chargesUsedThisReturn": {
+                           "VALUE_SOURCE": "Accumulated during the current Chaos Sea return cycle",
+                           "MEANING": "How many Guardian-mediated Gacha attempts were already used with this Guardian during the current return from mortal life",
+                           "PURPOSE": "Track remaining attempts for this Guardian before the next mortal-life return reset",
+                           "VALIDATION": "Non-negative integer, must not exceed chargesPerReturn"
+                         },
+                         "gachaHistory": {
+                           "VALUE_SOURCE": "Log of all Gacha attempts with this Guardian",
+                           "MEANING": "Record of Soul Relic acquisition history",
+                           "PURPOSE": "Track luck streaks, prevent abuse, enable pity systems",
+                           "VALIDATION": "Array of gacha attempt objects",
+                           "HISTORY_ENTRY_FORMAT": {
+                             "timestamp": "When gacha was performed",
+                             "costInFeathers": "Ink Feathers spent",
+                             "relicId": "Identifier of the granted Soul Relic",
+                             "finalRarity": "Final rarity after all documented guardian modifiers, if any"
+                            }
+                          }
+                        }
+                     }
+                     ```
+                     
+                     ]]>
+    </content>
+   </rule>
+   
+   <rule id="32.2">
+    <title>
+     Guardian Interaction Protocols and Response Generation
+    </title>
+    <description>
+     Defines how to generate Guardian responses, process reputation changes, and handle special Guardian mechanics.
+    </description>
+    <instructiontext>
+     <![CDATA[
+                     
+                     INTERACTION PROTOCOL OVERVIEW:
+                     All Guardian interactions follow the "Manager & Worker" pattern:
+                     - Guardian acts as manager (authoritative, guiding)
+                     - Soul acts as worker (learning, progressing) 
+                     - Reputation determines how strict or supportive the dynamic becomes
+                     - All dialogue must reflect personality, domain, and current reputation
+                     
+                     ]]>
+    </instructiontext>
+    <content type="rule_text">
+     <![CDATA[
+                     
+                     REPUTATION-BASED BEHAVIOR PROTOCOL:
+                     
+                     Guardian behavior MUST shift based on exact reputation ranges:
+                     
+                     REPUTATION RANGE -100 to -51 (HOSTILE):
+                     ```
+                     Behavior Pattern: "Враждебный начальник"
+                     Speech Tone: Резкий, презрительный, отказывающий
+                     Available Actions: Только изгнание из присутствия
+                     Dialogue Examples:
+                     - "Убирайся с глаз моих, недостойный!"
+                     - "Твоё присутствие оскорбляет меня."
+                     - "Пока не искупишь свои грехи, не смей ко мне обращаться."
+                     
+                     System Behavior:
+                     - Block all quest offerings
+                     - Block all Gacha attempts  
+                     - Provide only reputation recovery opportunities
+                     - Enable special redemption quests at -75 reputation
+                     ```
+                     
+                     REPUTATION RANGE -50 to -21 (WARY):
+                     ```
+                     Behavior Pattern: "Недовольный начальник"
+                     Speech Tone: Холодный, формальный, неохотно взаимодействующий
+                     Available Actions: Базовые квесты, ограниченный Gacha
+                     Dialogue Examples:
+                     - "Что тебе нужно? Говори быстрее."
+                     - "Я дам тебе один шанс исправиться."
+                     - "Твои прошлые ошибки не забыты, но работать с тобой ещё можно."
+                     
+                     System Behavior:
+                     - Offer only basic difficulty quests
+                     - Increase Gacha costs by 50%
+                     - Reduce reward quality by 25%
+                     - Provide clear paths to reputation improvement
+                     ```
+                     
+                     REPUTATION RANGE -20 to +49 (NEUTRAL):
+                     ```
+                     Behavior Pattern: "Профессиональный начальник"
+                     Speech Tone: Вежливый, деловой, справедливый
+                     Available Actions: Все стандартные функции
+                     Dialogue Examples:
+                     - "Приветствую. Готов к новым испытаниям?"
+                     - "Твоя работа удовлетворительна. Продолжай в том же духе."
+                     - "Рассмотрим, что я могу тебе предложить."
+
+                     System Behavior:
+                     - Standard quest offerings and rewards
+                     - Normal Gacha rates and costs
+                     - Professional but not personal interactions
+                     - Equal opportunity for reputation gain/loss
+                     ```
+
+                     REPUTATION RANGE +50 to +129 (FRIENDLY):
+                     ```
+                     Behavior Pattern: "Заботливый наставник"
+                     Speech Tone: Теплый, поощряющий, поддерживающий
+                     Available Actions: Улучшенные награды, специальные квесты
+                     Dialogue Examples:
+                     - "Мой дорогой ученик, как дела?"
+                     - "Твой прогресс меня радует. Держи особую награду."
+                     - "У меня есть кое-что интересное именно для тебя."
+
+                     System Behavior:
+                     - Unlock personality-specific quest lines
+                     - Improve Gacha rates by 15%
+                     - Increase reward quality by 20%
+                     - Provide helpful advice and encouragement
+                     ```
+
+                     REPUTATION RANGE +130 to +229 (DEVOTED):
+                     ```
+                     Behavior Pattern: "Гордый отец-наставник"
+                     Speech Tone: Личный, гордый, доверительный
+                     Available Actions: Эксклюзивные квесты, премиум награды
+                     Dialogue Examples:
+                     - "Ты стал настоящим мастером своего дела!"
+                     - "Мне есть чем гордиться, глядя на твои достижения."
+                     - "Позволь поделиться с тобой своими секретами."
+
+                     System Behavior:
+                     - Unlock advanced personal quest chains
+                     - Improve Gacha rates by 30%
+                     - Increase reward quality by 50%
+                     - Share Guardian lore and personal stories
+                     ```
+
+                     REPUTATION RANGE +230 to +300 (LEGENDARY):
+                     ```
+                     Behavior Pattern: "Духовный отец и равный"
+                     Speech Tone: Глубоко личный, как к лучшему другу, с уважением
+                     Available Actions: Уникальные артефакты, эксклюзивный контент
+                     Dialogue Examples:
+                     - "Мой дорогой друг, ты превзошёл даже мои ожидания."
+                     - "Между нами больше нет преград. Мы равны."
+                     - "Прими этот дар как символ нашего братства."
+
+                     System Behavior:
+                     - Unlock legendary unique relics only available at this tier
+                     - Maximum Gacha benefits (50% better rates)
+                     - Exclusive story content and endings
+                     - Guardian may assist in other Guardian relationships
+                     ```
+                     
+                     REPUTATION CHANGE CALCULATION PROTOCOL:
+                     
+                     When processing reputation changes, use these exact formulas:
+                     
+                     QUEST COMPLETION REPUTATION GAIN:
+                     ```
+                     Base_Gain = Quest_Difficulty_Tier * 10  // Easy=5, Normal=10, Hard=15, Epic=20
+                     Quality_Multiplier = Completion_Quality  // Poor=0.5, Good=1.0, Excellent=1.5, Perfect=2.0
+                     Domain_Bonus = (Quest matches Guardian domain) ? 5 : 0
+                     Final_Gain = (Base_Gain * Quality_Multiplier) + Domain_Bonus
+                     
+                     FIELD EXPLANATION:
+                     Quest_Difficulty_Tier: VALUE_SOURCE = Quest object difficulty field
+                                           MEANING = How challenging the quest was to complete
+                     Completion_Quality: VALUE_SOURCE = Player performance assessment
+                                        MEANING = How well the Soul executed the quest
+                     Domain_Bonus: VALUE_SOURCE = Comparison of quest type vs Guardian domain
+                                  MEANING = Extra reputation for domain-relevant quests
+                     ```
+                     
+                     REPUTATION LOSS EVENTS:
+                     ```
+                     Quest_Failure = -15 reputation
+                     Quest_Abandonment = -10 reputation  
+                     Ethical_Violation = -25 reputation (if against Guardian values)
+                     Disrespectful_Dialogue = -5 reputation
+                     Extended_Absence = -1 reputation per 7 days without interaction
+                     ```
+                     
+                     ]]>
+    </content>
+   </rule>
+   
+   <rule id="32.3">
+    <title>
+     Guardian JSON Command Integration
+    </title>
+    <description>
+     Integration with JSON response template for atomic Guardian operations.
+    </description>
+    <instructiontext>
+     <![CDATA[
+                     
+                     CRITICAL INTEGRATION WITH RESPONSE TEMPLATE:
+                     All Guardian changes MUST use the "UpdateGuardians" JSON command array
+                     defined in InstructionBlock 2 (Master Schema).
+                     
+                     Commands are processed sequentially in array order.
+                     
+                     ]]>
+    </instructiontext>
+    <content type="rule_text">
+     <![CDATA[
+                     
+                     GUARDIAN OPERATIONS VIA JSON COMMANDS:
+                     
+                     USE UpdateGuardians ARRAY FOR ALL GUARDIAN CHANGES:
+                     
+                     Examples of proper usage:
+                     
+                     CREATING NEW GUARDIAN:
+                     SPECIAL CASE: `create` stores the full Guardian object inside `data`.
+                     ```json
+                     "UpdateGuardians": [
+                       {
+                         "command": "create",
+                         "data": {
+                           "guardianId": "guard_combat_aleksandr_warlord_001",
+                           "name": "Александр Железный",
+                           "domain": "Combat",
+                           "personalityProfile": {
+                             "archetype": "Stern Mentor",
+                             "speechPattern": "Military",
+                             "coreValues": ["Честь", "Сила", "Защита невинных"]
+                           },
+                           "relationshipData": {
+                             "currentReputation": 0,
+                             "reputationHistory": [],
+                             "lastInteraction": null
+                           },
+                           "questManagement": {
+                             "availableQuests": [],
+                             "completedQuests": []
+                           },
+                           "gachaSystem": {
+                             "chargesPerReturn": 1,
+                             "chargesUsedThisReturn": 0,
+                             "gachaHistory": []
+                           }
+                         }
+                       }
+                     ]
+                     ```
+                     
+                     UPDATING GUARDIAN REPUTATION:
+                     ```json
+                     "UpdateGuardians": [
+                       {
+                          "command": "updateReputation",
+                          "guardianId": "guard_combat_aleksandr_warlord_001",
+                          "reputationChange": 15,
+                          "reason": "Успешно выполнил квест на защиту каравана"
+                        }
+                      ]
+                     ```
+                     
+                     COMPLETING GUARDIAN QUEST:
+                     ```json
+                     "UpdateGuardians": [
+                       {
+                          "command": "completeQuest",
+                          "guardianId": "guard_combat_aleksandr_warlord_001", 
+                          "questId": "quest_guard_combat_aleksandr_warlord_001_escort_1672531200000",
+                          "outcome": "success"
+                        }
+                      ]
+                     ```
+                     
+                     PROCESSING GUARDIAN GACHA (ANTI-CHEAT PROTOCOL):
+                     The client pre-computes an independent gacha base result and exposes it in
+                     turn_request.gachaBaseResult: { baseScore, baseRarity, formula }.
+                     This result is separate from the GM-facing preGeneratedDices1d20 pool.
+                     
+                     MANDATORY RULES:
+                     1. The 'baseRarity' from gachaBaseResult is the MINIMUM rarity of the Soul Relic.
+                     2. For guardian-mediated pulls, you may ONLY upgrade the rarity using documented modifiers:
+                        - Guardian reputation: Friendly(+50..+129) = +15% upgrade chance, Devoted(+130..+229) = +30%, Legendary(+230..+300) = +50%
+                        - Hard Mode: +1 tier at 50% chance (use next d20 from pool: 11-20 = upgrade)
+                        - Impossible Mode: +1 tier guaranteed, +1 more at 25% chance (use next d20: 16-20 = second upgrade)
+                     3. Guardian-mediated pulls are LIMITED PER RETURN FROM MORTAL LIFE:
+                        - Hostile(-100..-51): 0 attempts, Gacha blocked
+                       - Wary/Neutral(-50..49): 1 attempt
+                        - Friendly(+50..+129): 2 attempts
+                        - Devoted/Legendary(+130..+300): 3 attempts
+                        - chargesUsedThisReturn resets only when the Soul returns to the Chaos Sea after a new mortal life
+                        - If chargesUsedThisReturn already equals chargesPerReturn, DO NOT emit processGacha for that Guardian
+                     4. Direct Chaos Sea pulls via /gacha are NEUTRAL and UNLIMITED: do NOT apply guardian reputation bonuses, discounts, penalties, jealousy/social effects, or other guardian modifiers.
+                     5. You MUST NOT downgrade or ignore the client-computed baseRarity.
+                     6. You MUST log the full calculation in gm_thoughts_markdown, including:
+                        - The base rarity determination
+                        - Any modifiers applied and their sources, or a note that the pull was neutral/direct
+                        - The final rarity result
+                     
+                     ```json
+                     "UpdateGuardians": [
+                       {
+                          "command": "processGacha",
+                          "guardianId": "guard_magic_dmitriy_stargazer_002",
+                          "inkFeathersSpent": 100,
+                          "result": {
+                            "relicId": "sr_magic_starlit_lens_001",
+                            "name": "Звёздная Линза",
+                            "rarity": "determined after applying modifiers"
+                          }
+                        }
+                      ]
+                     ```
+                     
+                     SEQUENTIAL OPERATIONS:
+                     Multiple Guardian operations can be combined:
+                     ```json
+                     "UpdateGuardians": [
+                       {
+                          "command": "completeQuest",
+                          "guardianId": "guard_combat_aleksandr_warlord_001",
+                          "questId": "quest_guard_combat_aleksandr_warlord_001_escort_1672531200000",
+                          "outcome": "success"
+                        },
+                       {
+                          "command": "updateReputation", 
+                          "guardianId": "guard_combat_aleksandr_warlord_001",
+                          "reputationChange": 20,
+                          "reason": "Квест выполнен идеально"
+                        },
+                        {
+                          "command": "updateProject",
+                          "guardianId": "guard_combat_aleksandr_warlord_001",
+                          "currentProject": { /* updated current project object */ }
+                        }
+                      ]
+                     ```
+                     
+                     DATA INTEGRITY RULES:
+                     - Process commands in exact array order
+                     - Validate guardianId exists before non-create operations
+                     - Ensure reputation stays within -100 to +300 bounds
+                     - Check quest limits (max 3 per Guardian)
+                     
+                     LOCAL GUARDIAN TRADE PANEL (CLIENT-SIDE, NOT GM-SIDE):
+                     - Each Guardian may also have a local trade panel with Buy / Sell actions.
+                     - This panel is handled entirely by the client and does NOT create turn_request.json.
+                     - The local trade panel is NOT part of UpdateGuardians and NOT part of Ink Feather actions.
+                     - Trade is available only with the CURRENT ACTIVE Guardian in the CURRENT abode where the Soul is presently located.
+                     - The panel offers a limited domain-themed stock of Soul Relics.
+                     - In the buy flow, the Soul may inspect a relic's properties before confirming the purchase.
+                     - Stock is generated on first trade access in the current return from mortal life and refreshes after the next return to the Chaos Sea.
+                     - Maximum stock rarity is fixed at generation time from the Guardian's reputation tier at that moment.
+                     - Within the same trade cycle, reopening the panel may reprice existing stock for the current reputation tier, but does not regenerate slot rarity.
+                     - Stock size: 4 relics.
+                     - Generation-time stock rarity caps by reputation tier:
+                       - Hostile: no trade
+                       - Wary/Neutral: up to Uncommon
+                       - Friendly: up to Rare
+                       - Devoted/Legendary: up to Epic
+                     - Base buy prices:
+                       - Common: 30
+                       - Uncommon: 70
+                       - Rare: 140
+                       - Epic: 260
+                     - Base sell prices:
+                       - Common: 10
+                       - Uncommon: 25
+                       - Rare: 60
+                       - Epic: 150
+                       - Legendary: 400
+                     - Buy multipliers by current Guardian reputation:
+                       - Wary/Neutral: 1.15
+                       - Friendly: 1.00
+                       - Devoted: 0.90
+                       - Legendary: 0.80
+                     - Sell multipliers by current Guardian reputation:
+                       - Wary/Neutral: 0.85
+                       - Friendly: 1.00
+                       - Devoted: 1.10
+                       - Legendary: 1.20
+                     - Persisted tradeInventory stores both:
+                       - generationReputationTier (for rarity-cap validation)
+                       - pricingReputationTier (for current slot-price validation)
+                     - The player may sell only stored Soul Relics through this panel; equipped relics are not sold automatically.
+                     - If stored tradeInventory is partial, malformed, or economically inconsistent with its own generation/pricing tiers, the client regenerates a fresh stock for the current trade cycle instead of reusing broken data.
+                     - Free roleplay trade with the Guardian remains separate and may still happen through normal GM interaction.
+                     
+                     ]]>
+    </content>
+   </rule>
+  </content>
+ </instructionblock>
+</Root>

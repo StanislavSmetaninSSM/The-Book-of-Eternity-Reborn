@@ -1,0 +1,11 @@
+{
+  "skillMasteryChanges": [
+    {
+      "skillName": "Shadow Step",
+      "newMasteryLevel": 0,
+      "newCurrentMasteryProgress": -1,
+      "newMasteryProgressNeeded": 0,
+      "masteryLeveledUp": false
+    }
+  ]
+}

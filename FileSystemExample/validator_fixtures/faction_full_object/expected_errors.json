@@ -1,0 +1,10 @@
+{
+  "expectedCodes": [
+    "faction_full_object_skeletal_custom_states",
+    "faction_full_object_incomplete_optional_extension_array"
+  ],
+  "expectedMessages": [
+    "Full faction-core object must not use skeletal customStates",
+    "Optional extension arrays inside factionDataChanges must already be canonical complete data"
+  ]
+}

@@ -1,0 +1,1113 @@
+<instructionblock id="CLI_OPS">
+ <title>
+  CLI Agent File System Operations
+ </title>
+ <description>
+  This block defines how the CLI Agent operates with the file-based game system. It provides protocols for reading game state, 
+  processing turns, and writing distributed game data to maintain full compatibility with existing rule blocks.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            The CLI Agent operates as a Game Master in a file-based environment. Instead of receiving a single JSON request and returning a single JSON response, 
+            the CLI Agent monitors file system changes, reads distributed game state, processes turns using existing rule blocks, 
+            and writes results back to distributed JSON files.
+
+            ALL EXISTING RULE BLOCKS (1-32) REMAIN FULLY APPLICABLE. The CLI Agent simply adapts the input/output mechanism 
+            while preserving all game logic, calculations, formulas, and narrative rules.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="CLI.1">
+   <title>
+    File System Architecture Overview
+   </title>
+   <description>
+    Defines the standard folder structure and file organization for CLI-based game sessions.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    The CLI Agent operates within a standardized folder structure:
+
+                    game_session/
+                    ├── input/                      # Entry point for new turns
+                    │   └── turn_request.json       # Main turn processing trigger
+                    ├── game_state/                 # Distributed game data (55+ JSON files)
+                    │   ├── core/                   # Narrative & player status (3 files)
+                    │   ├── player/                 # Player character data (10 files)
+                    │   ├── inventory/              # Item system (8 files)
+                    │   ├── world/                  # World state (7 files)
+                    │   ├── quests/                 # Quest management (3 files)
+                    │   ├── npcs/                   # NPC system (14 files)
+                    │   ├── combat/                 # Combat state (3 files)
+                    │   ├── factions/               # Faction system (6 files)
+                    │   ├── meta/                   # Soul System & Guardians (5 files)
+                    │   ├── misc/                   # Vehicles & storage (5 files)
+                    │   ├── control/                # Game flow control (3 files)
+                    │   └── history/                # Chat and interaction history (3 files)
+                    ├── lore/                       # Lore and active world dossiers
+                    │   ├── chaos_sea/              # Persistent meta-lore across incarnations
+                    │   ├── current_world/          # Current incarnation world lore
+                    ├── world_profiles/            # Reusable mortal-world profiles (one file = one profile)
+                    ├── mods/                       # Global system mods (one file = one mod)
+                    ├── saves/                      # Save/load system
+                    │   ├── autosaves/              # Automatic saves
+                    │   ├── manual_saves/           # Player manual saves
+                    │   └── checkpoint_saves/       # Life transition saves
+                    ├── output/                     # Client communication
+                    │   ├── narrative_response.json # Main narrative
+                    │   ├── interface_updates.json  # UI updates
+                    │   └── debug_logs.json         # GM thoughts for debugging
+                    ├── ready/                      # Processing completion signals
+                    │   ├── turn_complete.json     # Signals processing is done
+                    │   └── turn_error.json        # Signals processing error
+                    └── rules/                      # Symbolic links to rule blocks (readonly)
+                        ├── Block_1.txt → ../../../Rules/Block_1.txt
+                        ├── Block_2.txt → ../../../Rules/Block_2.txt
+                        └── ... (all rule blocks)
+
+                    CRITICAL: The CLI Agent MUST NOT modify files in the rules/ directory. These are readonly references.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="CLI.2">
+   <title>
+    Turn Processing Workflow
+   </title>
+   <description>
+    Defines the step-by-step process for CLI Agent turn execution.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    The CLI Agent processes turns using this workflow:
+
+                    **PHASE 1: TRIGGER DETECTION**
+                    1. Monitor input/turn_request.json for new file creation or modification
+                    2. Validate turn_request.json schema and content
+                    3. Set processing lock to prevent concurrent execution
+
+                    **PHASE 2: STATE LOADING**
+                    1. Read all relevant files from game_state/ directories
+                    2. Construct complete game context object (equivalent to API request context)
+                    3. Validate data integrity and cross-references
+                    4. If needed, write optional structured diagnostics (for example game_state/history/error_log.json), but the authoritative terminal error path is still ready/turn_error.json
+
+                    **PHASE 3: RULE APPLICATION**
+                    1. Apply existing TaskGuides (Step_0, Step_1, Step_2) using loaded context
+                    2. Use ALL existing rule blocks (1-32) exactly as written
+                    3. Generate complete response object as if processing API request
+                    4. Log all calculations in output/debug_logs.json
+
+                    **PHASE 4: STATE DISTRIBUTION**
+                    1. Parse response object according to CLI.3 (File Distribution Protocol)
+                    2. Update affected files in game_state/ directories using atomic operations
+                    3. Create backup files before any modifications (.backup extension)
+                    4. Validate written data against schemas
+
+                    **PHASE 5: CLIENT COMMUNICATION**
+                    1. Generate output/narrative_response.json for client display
+                    2. Generate output/interface_updates.json only if this turn actually changes dialogueOptions and/or image_prompt
+                    3. Update output/debug_logs.json with GM thoughts
+                    3.A. Treat output/*.json as fresh per-turn transient artifacts for the CURRENT sessionId/requestId/turnNumber only
+                        - rewrite current-turn payloads fully
+                        - do NOT append cross-turn history there
+                        - do NOT leave stale previous-turn payloads in place as if they were still valid
+                    4. Create ready/turn_complete.json signal file
+                    5. Clean up backup files on successful completion
+
+                    **ERROR HANDLING:**
+                    - If any phase fails, restore all .backup files
+                    - Optionally log detailed diagnostics in game_state/history/error_log.json
+                    - Create ready/turn_error.json with error details (authoritative client channel)
+                    - Never leave the system in a partial update state
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="CLI.3">
+   <title>
+    File Distribution Protocol
+   </title>
+   <description>
+    Maps API response fields to specific JSON files and defines atomic update operations.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    **CORE MAPPING: API Response → File System**
+
+                    The CLI Agent takes a complete response object (as generated by existing rules) and distributes fields to files:
+
+                    **NARRATIVE & PLAYER STATUS:**
+                    - Authoritative GM-authored outputs: output/narrative_response.json ← response, output/debug_logs.json ← gm_thoughts_markdown, output/interface_updates.json ← dialogueOptions/image_prompt when this turn actually needs interface payload
+                    - These output/*.json files are fresh per-turn transient artifacts, not persistent state. Rewrite them for the current request only and never reuse stale payload from a previous turn.
+                    - For an ordinary accepted GM turn, output/narrative_response.json.response is mandatory and must contain non-empty player-facing narrative text.
+                    - game_state/core/narrative.json and game_state/core/gm_debug.json are client-distributed mirror files when the client locally applies a full response object
+                    - game_state/core/player_status.json ← playerStatus, currentPoiseChange
+                    - playerStatus is flattened into the root of player_status.json; do NOT save it there as nested { \"playerStatus\": { ... } }
+                    - In Mortal World, player_status.json is a mandatory core file and cannot be omitted
+                    - game_state/core/system_mods.json ← client-authored manifest of active global system mods
+                    - Only system_mods.json.activeMods[] is canonical for GM processing; disabled files in game_session/mods must be ignored
+                    - game_state/control/incarnation_world_setup.json ← client-authored pending world setup before incarnation
+                    - lore/current_world/world_directives.json ← client/player-authored persistent active-world dossier
+
+                    **PLAYER CHARACTER DATA:**
+                    - game_state/player/skills_active.json ← activeSkillChanges, removeActiveSkills
+                    - game_state/player/skills_passive.json ← passiveSkillChanges, removePassiveSkills
+                    - game_state/player/skill_mastery.json ← skillMasteryChanges
+                    - game_state/player/effects.json ← playerActiveEffectsChanges
+                    - game_state/player/weight_calc.json ← calculatedWeightData
+                    - game_state/player/status_changes.json ← statsIncreased, statsDecreased, currentEnergyChange, currentHealthChange, moneyChange
+                    - game_state/player/experience.json ← experienceGained, playerEffortTrackerChange
+                    - game_state/player/wounds.json ← playerWoundChanges
+                    - game_state/player/custom_states.json ← customStateChanges
+                    - game_state/player/stealth.json ← playerStealthStateChange
+                    - game_state/player/transformation.json ← playerAppearanceChange, playerImagePromptChange, playerRaceChange, playerRaceDescriptionChange, playerClassChange, playerClassDescriptionChange, playerAutoCombatSkillChange, playerCharacterNameChange
+
+                    **INVENTORY SYSTEM:**
+                    - game_state/inventory/items.json ← UpdateInventory, equipmentChanges
+	                    - game_state/inventory/item_resources.json ← inventoryItemsResources
+	                    - Canonical stored shape for item_resources.json: entries[] with item identity + resource / maximumResource / resourceType
+	                    - game_state/inventory/item_text_updates.json ← updateItemTextContents
+	                    - Canonical stored shape for item_text_updates.json: entries[] with item identity + textContent[]
+	                    - game_state/inventory/item_movements.json ← moveInventoryItems
+                    - game_state/inventory/item_removals.json ← removeInventoryItems
+                    - game_state/inventory/item_bonds.json ← itemBondLevelChanges, itemFateCardUnlocks
+                    - Canonical stored shape for item_bonds.json: entries[] with item identity + ownerBondLevelCurrent + unlocked fateCards
+                    - game_state/inventory/recipes.json ← addOrUpdateRecipes, removeRecipes
+                    - game_state/inventory/storage_operations.json ← moveToLocationStorage, retrieveFromLocationStorage
+
+                    **WORLD STATE:**
+                    - game_state/world/current_location.json ← currentLocationData
+                    - game_state/world/world_map.json ← worldMapUpdates
+                    - game_state/world/world_events.json ← worldEventsLog
+                    - game_state/world/world_flags.json ← worldStateFlags, removeWorldStateFlags
+                    - game_state/world/world_time.json ← timeChange, setWorldTime
+                    - game_state/world/weather.json ← weatherChange
+                    - game_state/world/progression.json ← updateWorldProgressionTracker, updateFactionProgressionTracker
+                    - game_state/control/progression_report.json ← progressionProcessingReport
+                    - game_state/control/progression_schedule.json ← client-authoritative progression scheduler state
+                    - GM MUST NOT write progression_schedule.json; accepted turns that mutate it are rejected
+                    - currentLocationData is dual-shape: for a truly new location send the full Location Object; for a known location revisit send only locationId + coordinates + lastEventsDescription
+                    - eventDescriptions is a read-only location archive: read it from context if present, but do NOT emit it inside currentLocationData or worldMapUpdates; write only lastEventsDescription for current-turn history
+
+                    **QUEST SYSTEM:**
+                    - game_state/quests/regular_quests.json ← UpdateQuests
+                    - game_state/quests/soul_quests.json ← UpdateSoulQuests
+                    - game_state/quests/quest_history.json ← questLog (legacy shorthand); canonical stored shape is questHistory + questRewards + questChains
+                    - game_state/quests/plot_outline.json ← plotOutline
+                    - regular_quests.json and soul_quests.json are canonically stored as full quests[] arrays
+                    - On quest creation, include the full quest object with detailsLog
+                    - On quest updates, use questId + newDetailsLogEntry for atomic log append instead of resending the full detailsLog; the client canonicalizes saved quest files back into full detailsLog arrays
+
+                    **NPC SYSTEM (14 FILES):**
+                    - game_state/npcs/npc_core.json ← UpdateNPCs, NPCsRenameData, NPCsInScene
+                    - game_state/npcs/npc_skills.json ← NPCActiveSkillChanges, NPCPassiveSkillChanges, NPCSkillMasteryChanges, NPCPassiveSkillMasteryChanges
+                    - game_state/npcs/npc_effects.json ← NPCEffectChanges, NPCWoundChanges
+                    - game_state/npcs/npc_relationships.json ← NPCRelationshipChanges, interNPCRelationshipChanges, NPCRelationshipLockUpdates
+                    - game_state/npcs/npc_goals.json ← NPCGoalUpdates, NPCQuestUpdates
+                    - game_state/npcs/npc_inventory.json ← NPCInventoryAdds/Updates/Removals, NPCEquipmentChanges, NPCInventoryResourcesChanges
+                    - game_state/npcs/npc_masks.json ← NPCMaskAdds/Updates/Removals, NPCActiveMaskChange
+                    - game_state/npcs/npc_memory.json ← NPCUnlockedMemories
+                    - game_state/npcs/npc_journals.json ← NPCJournals
+                    - game_state/npcs/item_journals.json ← itemJournalUpdates
+                    - Incoming itemJournalUpdates[] objects MUST use itemId + itemName + entryToAppend
+                    - Never send prebuilt journalEntries fragments through itemJournalUpdates; append only through entryToAppend
+                    - Canonical stored shape for item_journals.json: entries[] with item identity + journalEntries[]
+                    - game_state/npcs/npc_personality.json ← NPCPersonalityTraitChanges
+                    - game_state/npcs/npc_activities.json ← NPCActivityUpdates, completeNPCActivities
+                    - game_state/npcs/npc_fate_cards.json ← NPCFateCardUnlocks
+                    - game_state/npcs/npc_custom_states.json ← NPCCustomStateChanges
+
+                    **COMBAT STATE:**
+                    - game_state/combat/enemies.json ← enemiesData
+                    - game_state/combat/allies.json ← alliesData
+                    - game_state/combat/combat_log.json ← combat_log_markdown
+
+                    **FACTION SYSTEM:**
+                    - game_state/factions/faction_core.json ← factionDataChanges
+                    - game_state/factions/faction_structure.json ← factionRankChanges, factionBonusChanges
+                    - game_state/factions/faction_resources.json ← factionResourceChanges
+                    - game_state/factions/faction_projects.json ← factionProjectUpdates, completeFactionProjects
+                    - game_state/factions/faction_custom.json ← factionCustomStateChanges
+                    - game_state/factions/faction_chronicles.json ← factionChronicleUpdates
+                    - factionDataChanges is the full faction-core channel: do NOT send fragment-only patches there
+                    - existing factionDataChanges objects MUST use the existing permanent factionId; initialId is only for a genuinely new same-turn faction
+                    - faction_structure.json is canonically stored as entries[] with ranks + structuredBonuses
+                    - faction_resources.json is canonically stored as entries[] with metaResources + strategicGoods; stored metaResources must keep resourceName/currentStockpile/incomePerCycle/upkeepPerCycle, and stored strategicGoods must keep resourceName/currentStockpile/incomePerCycle
+	                    - faction_projects.json is canonically stored as activeProjects[] + completedProjects[]
+                    - faction_custom.json is canonically stored as entries[] with customStates; each stored custom state remains a complete canonical Custom State Object, not an identity-only stub
+	                    - if a new same-turn faction is authored only with initialId/initialFactionId, the client normalizes that temporary tag into the stored factionId inside canonical faction files for that accepted turn; later turns must target permanent factionId
+
+                    **META-GAME SYSTEM:**
+                    - game_state/meta/soul_state.json ← metaStateUpdates
+                    - game_state/meta/guardians.json ← UpdateGuardians
+                    - game_state/meta/player_behavior.json ← playerBehaviorAssessment, historyManipulationCoefficient
+                    - game_state/meta/character_chronicle.json ← characterChronicleUpdates
+
+                    **MISCELLANEOUS:**
+                    - game_state/misc/vehicles.json ← UpdateVehicles, removeVehicles, activeVehicleChange
+                    - game_state/misc/storage_access.json ← grantStorageAccess, revokeStorageAccess, shareStorageAccess
+                    - game_state/misc/multipliers.json ← multipliers array
+                    - game_state/misc/player_interactions.json ← otherPlayersInteractions
+
+                    **OUTPUT INTERFACE:**
+                    - output/narrative_response.json ← response (main narrative)
+                    - output/interface_updates.json ← dialogueOptions, image_prompt (write only when this turn needs interface payload)
+                    - output/debug_logs.json ← gm_thoughts_markdown
+                    
+                    **READY SIGNAL:**
+                    - ready/turn_complete.json ← completion signal with metadata
+                    - game_state/misc/characteristics.json ← setCharacteristics
+
+                    **GAME FLOW CONTROL:**
+                    - game_state/control/life_transitions.json ← TriggerLifeEnd (Mortal World only; reason must be Death or Voluntary)
+                    - game_state/control/ascension.json ← AscensionTrigger (real Chaos Sea-only ascension transition; valid only at maximum Enlightenment with explicit playerChoice=Ascension, and never together with TriggerLifeEnd)
+
+                    **HISTORY AND CONTINUITY:**
+                    - game_state/history/chat_log.json ← client-maintained session metadata
+                    - stories/*.jsonl ← client-maintained narrative continuity history for GM/player reading
+
+                    **ATOMIC UPDATE PROTOCOL:**
+                    1. Create .backup files for all affected JSON files
+                    2. Update files in dependency order (see CLI.4)
+                    3. Validate each file after writing
+                    4. If any validation fails, restore all backups and abort
+                    5. Delete backup files only after all updates succeed
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="CLI.4">
+   <title>
+    Atomic Operations and Dependencies
+   </title>
+   <description>
+    Defines which files must be updated together and in what order to maintain data integrity.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    **ATOMIC OPERATION GROUPS:**
+                    These files MUST be updated together as atomic operations to prevent data corruption:
+
+                    **GROUP 1: Location Changes**
+                    - game_state/world/current_location.json
+                    - game_state/world/world_map.json
+                    Reason: Location updates must sync with world map state
+
+                    **GROUP 2: Combat State**
+                    - game_state/combat/enemies.json
+                    - game_state/combat/allies.json  
+                    - game_state/combat/combat_log.json
+                    - game_state/core/player_status.json (if combat affects player)
+                    Reason: Combat state must be consistent across all participants
+
+                    **GROUP 3: NPC State Changes**
+                    All game_state/npcs/ files that reference the same NPCId must update together
+                    Reason: NPC data integrity across multiple aspects
+
+                    **GROUP 4: Soul System Operations**
+                    - game_state/meta/soul_state.json
+                    - game_state/meta/guardians.json
+                    - game_state/quests/soul_quests.json (if affected)
+                    Reason: metaStateUpdates and Guardian operations are interconnected
+
+                    **GROUP 5: Inventory Operations**
+                    - game_state/inventory/items.json
+                    - game_state/inventory/item_movements.json
+                    - game_state/inventory/item_removals.json
+                    - game_state/player/weight_calc.json
+                    Reason: Item state changes affect weight and organization
+
+                    **UPDATE DEPENDENCY ORDER:**
+                    1. Core player status updates (health, poise, effects)
+                    2. World state changes (location, map, flags)
+                    3. Inventory and item operations
+                    4. NPC state updates
+                    5. Quest progression
+                    6. Faction changes
+                    7. Meta/Soul system operations
+                    8. Combat state (if applicable)
+                    9. Vehicle and storage access
+                    10. Game flow control (life transitions, ascension)
+
+                    **ROLLBACK PROTOCOL:**
+                    If any atomic group fails to complete:
+                    1. Immediately stop all further updates
+                    2. Restore ALL .backup files from the current turn
+                    3. Optionally log detailed diagnostics in game_state/history/error_log.json
+                    4. Create ready/turn_error.json as the authoritative terminal error signal
+                    5. Leave system in previous stable state
+
+                    **VALIDATION CHECKPOINTS:**
+                    After each atomic group update:
+                    1. Validate JSON schema compliance
+                    2. Check cross-reference integrity
+                    3. Verify mathematical constraints (reputation ranges, health percentages, etc.)
+                    4. Confirm required fields are present
+
+                    **REALM-AWARE DISTRIBUTION GUARD (MANDATORY):**
+                    Before writing any distributed files, determine the active realm from
+                    game_state/meta/soul_state.json.currentRealm.
+
+                    IF REALM = "Chaos Sea" OR "Shining Abode":
+                    - DO NOT write combat files
+                    - DO NOT write faction files
+                    - DO NOT write weather/time files
+                    - DO NOT write mortal quest updates
+                    - DO NOT write regular NPC updates for Guardians
+                    - DO NOT write regular inventory updates except systems explicitly allowed for Soul Relics
+
+                    IF REALM = "Mortal World":
+                    - DO NOT write guardian-only or gacha-only structures
+                    - DO NOT write Abode navigation data
+                    - DO NOT write Chaos-Sea-only spending operations
+                    - Mortal-World Ink Feather whitelist actions are allowed:
+                      Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink
+                    - Chaos-Sea Ink Feather whitelist actions remain forbidden here
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="CLI.5">
+   <title>
+    Client Communication Protocol
+   </title>
+   <description>
+    Defines how the CLI Agent communicates with the game client through output files.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    **PRIMARY CLIENT INTERFACE:**
+
+                    **output/narrative_response.json** - Main client display
+                    {
+                      "response": "string",
+                      "timestamp": "ISO_datetime"
+                    }
+
+                    **output/interface_updates.json** - UI updates
+                    {
+                      "dialogueOptions": [
+                        { "text": "string", "category": "string_or_null" }
+                      ],
+                      "image_prompt": "string_or_null",
+                      "timestamp": "ISO_datetime"
+                    }
+
+                    **output/debug_logs.json** - GM thoughts for debugging
+                    {
+                      "gm_thoughts_markdown": "markdown_string",
+                      "timestamp": "ISO_datetime"
+                    }
+
+                    These output/*.json files are transient for the current turn only.
+                    Rewrite them fresh for the current sessionId/requestId/turnNumber and do NOT treat them as persistent carry-over files.
+
+                    **ready/turn_complete.json** - Processing completion signal
+                    {
+                      "sessionId": "string_uuid",
+                      "requestId": "string_uuid",
+                      "turnNumber": int,
+                      "timestamp": "ISO_datetime",
+                      "status": "success",
+                      "filesModified": ["array_of_file_paths"]
+                    }
+
+                    **ready/turn_error.json** - Processing error signal
+                    {
+                      "sessionId": "string_uuid",
+                      "requestId": "string_uuid",
+                      "turnNumber": int,
+                      "timestamp": "ISO_datetime",
+                      "status": "error",
+                      "error": "string"
+                    }
+
+                    **CLIENT MONITORING PROTOCOL:**
+                    1. Client monitors ready/turn_complete.json and ready/turn_error.json
+                    2. Client MUST match sessionId + requestId + turnNumber against the pending turn_request.json before accepting the signal
+                    3. If turn_complete.json appears and correlation matches, client reads output/narrative_response.json, output/debug_logs.json, and output/interface_updates.json only when that optional file exists
+                    4. If turn_error.json appears and correlation matches, client reads ready/turn_error.json as the authoritative error payload; auxiliary logs are optional diagnostics only
+                    5. Client may place a new turn_request.json only after the previous turn is resolved
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="CLI.6">
+   <title>
+    Special Command Processing
+   </title>
+   <description>
+    Handles special commands that bypass normal turn processing (save, load, debug, etc.).
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    **LEGACY SPECIAL-COMMAND NOTE:**
+
+                    Historical drafts mentioned input/player_command.json for save/load/debug/end_life flows.
+                    That file is NOT part of the current GM daemon contract.
+
+                    Current GM-facing baseline:
+                    1. The daemon reads only input/turn_request.json for GM-authored work.
+                    2. Save/load/options are client/runtime operations, not GM-authored input files.
+                    3. Voluntary life end is initiated by client UX and materialized as the normal lifecycle turn flow, not as a separate player_command.json surface.
+
+                    If a dedicated player_command surface is ever reintroduced, it must be added simultaneously to:
+                    - CLI_API_Specification.md
+                    - TaskGuides/CLI_Step_Main.txt
+                    - client implementation
+                    - examples / launcher instructions
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="CLI.8">
+   <title>
+    Lore, System Mods, and World Directives Management
+   </title>
+   <description>
+    Defines how the CLI Agent manages persistent lore, global system mods, reusable world profiles, and player-authored world dossiers.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    **LORE SYSTEM ARCHITECTURE:**
+
+                    **lore/chaos_sea/ - Persistent Meta-Lore (Across All Incarnations)**
+                    - **cosmology.json** - Core universe structure, planes of existence, fundamental laws
+                    - **guardians_lore.json** - Guardian histories, domains, relationships, ancient conflicts
+                    - **soul_system_lore.json** - Origin of souls, reincarnation mechanics, enlightenment paths
+                    - **artifacts_lore.json** - Legendary Soul Relics, their creation myths, and powers
+                    - **player_chronicle.json** - Cross-incarnation player achievements, major story beats; life evaluation MUST append a new summary entry
+
+                    **lore/current_world/ - Active Incarnation World (Resets Each Life)**
+                    - **world_setting.json** - Current world type (fantasy, sci-fi, modern), genre, tone
+                    - **geography.json** - World map, nations, cities, important locations
+                    - **history.json** - World timeline, major events, current political situation
+                    - **cultures.json** - Races, nations, customs, languages, religions
+                    - **threats.json** - Major antagonists, world-ending threats, ongoing conflicts
+                    - **npcs_lore.json** - Optional supplemental NPC backstories, relationships, motivations; useful when needed, but not part of the hard bootstrap minimum
+
+                    **mods/ - Global System Mods**
+                    - Each file is one global system mod.
+                    - Mod files may be `.json`, `.txt`, or `.md`.
+                    - The client controls enable/disable state per file through Options.
+                    - GM MUST treat only `game_state/core/system_mods.json.activeMods[]` as canonical.
+                    - Disabled files in `game_session/mods/` MUST be ignored.
+
+                    **world_profiles/ - Reusable Mortal World Templates**
+                    - Each file is one reusable world profile.
+                    - Profiles may be `.json`, `.txt`, or `.md`.
+                    - Profiles do not affect the game automatically until the player selects one into pending world setup.
+
+                    **incarnation_world_setup.json / world_directives.json**
+                    - `game_state/control/incarnation_world_setup.json` is the client-authored pending setup for the NEXT mortal life.
+                    - `lore/current_world/world_directives.json` is the persistent player-authored world dossier for the CURRENT mortal life.
+                    - GM MUST read `incarnation_world_setup.json` when authoring TriggerIncarnation and the first Mortal World bootstrap.
+                    - GM MUST read `world_directives.json` on every Mortal World turn if it exists.
+
+                    **LORE INTEGRATION PROTOCOL:**
+
+                    **1. Lore Reference During Processing:**
+                    Before generating narrative content, CLI Agent MUST:
+                    - Load relevant lore files based on context
+                    - Load active global system mods from game_state/core/system_mods.json.activeMods[]
+                    - Ensure narrative consistency with established lore
+                    - Reference chaos_sea lore for meta-progression elements
+
+                    **2. Lore Update Triggers:**
+                    Update lore files when:
+                    - New world/incarnation begins (update current_world/)
+                    - Major story events occur (update history.json, player_chronicle.json)
+                    - Player discovers new lore information (update relevant files)
+                    - Guardian interactions reveal new information (update guardians_lore.json)
+
+                    **3. Lore Codex Index (lore/codex_entries.json):**
+                    The codex_entries.json file serves as a player-facing index of discovered knowledge.
+                    Use the `loreCodexUpdates` JSON response command to add/update entries.
+                    Each entry has: entryId, title, category, content, discoveryContext, incarnation.
+                    Categories: cosmology, geography, history, cultures, creatures, characters, artifacts, factions, magic, other.
+                    See CLI_API_Specification.md → "Lore Codex System" for full schema.
+
+                    **4. MANDATORY Lore Initialization Protocol:**
+                    
+                    **On Turn 1 (New Game in Chaos Sea):**
+                    GM MUST create these files with meaningful content:
+                    - lore/chaos_sea/cosmology.json — description of the Chaos Sea, its nature, laws
+                    - lore/chaos_sea/soul_system_lore.json — how souls work, reincarnation basics
+                    - lore/chaos_sea/guardians_lore.json — overview of Guardian system
+                    - lore/codex_entries.json — initial codex entries for starting knowledge
+                    - game_state/meta/achievements.json — empty achievement structure
+                    - Fresh new game MUST NOT reuse stale session lore or old stories/*.jsonl continuity from a previous run
+                    - Turn 1 is invalid if these files are left as empty stubs or if codex_entries.json still has zero entries
+
+                    **On New Incarnation (entering mortal world via TriggerIncarnation):**
+                    GM MUST create ALL of these files:
+                    - lore/current_world/world_setting.json — world type, genre, tone, general overview
+                    - lore/current_world/geography.json — continents, regions, major cities
+                    - lore/current_world/history.json — timeline, recent events, political situation
+                    - lore/current_world/cultures.json — races, religions, customs
+                    - lore/current_world/threats.json — major antagonists, ongoing conflicts
+                    - Previous-incarnation lore/current_world/* files are stale and MUST NOT be reused as the bootstrap for a new life
+                    
+                    Failure to populate these files is a CRITICAL ERROR — the client relies on them
+                    for the Lore Codex UI.
+
+                    **5. System Mod Priority:**
+                    Rule application priority:
+                    1. Active global system mods from game_state/core/system_mods.json.activeMods[] (highest priority)
+                    2. Active player-authored `lore/current_world/world_directives.json`
+                    3. Current world lore requirements
+                    4. Core system rules (Block_1.txt - Block_32.txt)
+                    5. Chaos sea meta-lore (lowest priority, but always applicable)
+
+                    **6. Lore Validation:**
+                    - Ensure active system mods and player-authored world directives do not break core mathematical formulas
+                    - Check for lore contradictions between files
+                    - Validate custom content against game balance
+                    - Log lore applications in debug_logs.json
+
+                    **7. Achievement System (game_state/meta/achievements.json):**
+                    Achievements track player accomplishments across all incarnations.
+                    Use the `achievementUnlocks` JSON response command to grant achievements.
+                    Categories: combat, exploration, story, social, crafting, meta, death, secret.
+                    Rarities: common, uncommon, rare, epic, legendary.
+                    GM checks achievement conditions EVERY TURN after resolving game mechanics.
+                    See CLI_API_Specification.md → "Achievement System" for full schema.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="CLI.9">
+   <title>
+    Save and Load System
+   </title>
+   <description>
+    Comprehensive save/load architecture with versioning, metadata, and automatic backup systems.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    **SAVE SYSTEM ARCHITECTURE:**
+
+                    **saves/autosaves/ - Automatic Save Management**
+                    - **turn_NNNN.save** - Every N turns (configurable, default: every 5 turns)
+                    - **combat_start.save** - Before entering combat
+                    - **major_choice.save** - Before irreversible decisions
+                    - **location_change.save** - When moving to new areas
+                    - **life_transition.save** - Before death/voluntary life end
+                    - Format: Compressed archive (.zip) of entire game_session/ except saves/
+
+                    **saves/manual_saves/ - Player-Initiated Saves**
+                    - **{player_name}_{date}_{custom_name}.save** - Player manual saves
+                    - **quick_save.save** - Overwritten quick save slot
+                    - Include metadata: turn number, location, major quests, timestamp
+
+                    **saves/checkpoint_saves/ - Major Progression Points**
+                    - **incarnation_{N}_start.save** - Beginning of each life
+                    - **enlightenment_tier_{N}.save** - Each enlightenment advancement
+                    - **guardian_bond_{guardian_id}.save** - First meeting with each Guardian
+                    - **soul_relic_acquired_{relic_id}.save** - Major Soul Relic acquisitions
+
+                    **SAVE FILE STRUCTURE:**
+                    Each .save file contains:
+                    ```
+                    save_archive.zip:
+                    ├── metadata.json           # Save info, version, timestamp
+                    ├── game_state/             # Complete game state snapshot
+                    ├── lore/                   # All lore data at time of save
+                    └── session_info.json      # Session configuration, rules version
+                    ```
+
+                    **SAVE METADATA SCHEMA:**
+                    ```json
+                    {
+                      "saveVersion": "1.0",
+                      "gameVersion": "string",
+                      "timestamp": "ISO_datetime",
+                      "turnNumber": int,
+                      "playerLevel": int,
+                      "currentLocation": "string",
+                      "currentWorld": "string",
+                      "incarnationNumber": int,
+                      "enlightenmentTier": int,
+                      "inkFeathers": int,
+                      "majorQuests": ["array_of_quest_names"],
+                      "customRulesActive": true/false,
+                      "playerNotes": "string",
+                      "screenshotPath": "path_to_screenshot_optional"
+                    }
+                    ```
+
+                    **SAVE OPERATIONS:**
+
+                    **1. Create Save:**
+                    - Validate current game state integrity
+                    - Create temporary copy of game_session/ folder
+                    - Compress into .save archive
+                    - Generate metadata.json
+                    - Move to appropriate saves/ subdirectory
+                    - Clean up temporary files
+
+                    **2. Load Save:**
+                    - Validate save file integrity and version compatibility
+                    - Create backup of current session before loading
+                    - Extract save archive to temporary location
+                    - Validate extracted data
+                    - Replace current game_session/ with save data
+                    - Update local client state/UI after successful load; this is not a GM daemon terminal-signal flow
+
+                    **3. Delete Save:**
+                    - Remove save file and associated metadata
+                    - Update save index if applicable
+                    - Log deletion in system logs
+
+                    **AUTOMATIC SAVE TRIGGERS:**
+
+                    **Turn-Based Autosaves:**
+                    - Every 5 turns (configurable in session settings)
+                    - Keep last 10 autosaves, delete older ones
+                    - Prioritize saves before high-risk actions
+
+                    **Event-Triggered Saves:**
+                    - Before combat: "Готовимся к бою..." → auto_combat_NNNN.save
+                    - Before major choices: When multiple significant options detected
+                    - Before life transitions: When TriggerLifeEnd is processed
+                    - Before Guardian interactions: Major reputation changes or gacha
+
+                    **SAVE FILE MANAGEMENT:**
+
+                    **Retention Policy:**
+                    - Manual saves: Unlimited (player managed)
+                    - Autosaves: Keep last 20, rotate older ones
+                    - Checkpoint saves: Keep all permanently
+                    - Emergency saves: Keep last 5 (created during errors/crashes)
+
+                    **Version Compatibility:**
+                    - Track rules version in save metadata
+                    - Auto-migration for compatible versions
+                    - Warning for incompatible saves
+                    - Backup creation before migration attempts
+
+                    **Save Validation:**
+                    - Check JSON schema compliance for all game_state files
+                    - Verify cross-references integrity
+                    - Validate mathematical constraints (health %, reputation ranges)
+                    - Ensure required fields are present
+
+                    **SPECIAL SAVE COMMANDS:**
+
+                    Export/import/cloud save operations are NOT part of the current core CLI contract.
+                    If they are introduced in the future, they must be added simultaneously to:
+                    - CLI_API_Specification.md
+                    - TaskGuides/CLI_Step_Main.txt
+                    - client implementation
+                    Until then, the current GM daemon baseline uses only input/turn_request.json.
+                    Historical player_command.json references are legacy documentation and not part of the live contract.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="CLI.10">
+   <title>
+    Integration with Existing Rule Blocks
+   </title>
+   <description>
+    Ensures seamless compatibility between CLI operations and all existing rule blocks (1-32).
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    **CRITICAL: ZERO CHANGES TO EXISTING RULES**
+
+                    All existing rule blocks (Block_1.txt through Block_32.txt) remain EXACTLY as written. 
+                    The CLI Agent adapts to the rules, not vice versa.
+
+                    **RULE COMPATIBILITY PROTOCOL:**
+
+                    **1. API → CLI Context Translation:**
+                    Before applying any existing rule:
+                    - Load all game_state/ files AND lore/ files
+                    - Reconstruct complete game context object as if receiving API request
+                    - Include active global system mods from game_state/core/system_mods.json.activeMods[] in processing context
+                    - Ensure all fields expected by existing rules are present
+                    - Validate data integrity before processing
+
+                    **2. TaskGuide Integration:**
+                    TaskGuides (Step_0.txt, Step_1.txt, Step_2.txt, etc.) work unchanged:
+                    - CLI Agent provides same context data as API system PLUS lore context
+                    - TaskGuides generate same response object structure
+                    - Only the output distribution changes (CLI.3) plus lore updates (CLI.8)
+
+                    **3. Rule Block Reference Handling:**
+                    When rules reference other blocks:
+                    - CLI Agent loads referenced rule blocks from rules/ directory
+                    - Applies cross-referenced rules in correct order
+                    - Maintains same calculation chains and dependencies
+                    - Applies active system-mod overrides where applicable
+
+                    **4. Language and Narrative Rules:**
+                    - Russian language requirements (config.language = "ru") fully preserved
+                    - All narrative generation rules apply unchanged
+                    - gm_thoughts_markdown goes to debug_logs.json but rules remain same
+                    - Narrative content incorporates current world lore automatically
+
+                    **5. Mathematical Formula Preservation:**
+                    - All calculations (Soul System, Guardian reputation, action checks) unchanged
+                    - Same RNG protocols and scaling formulas
+                    - Same validation and constraint checking
+                    - Active system mods may modify parameters but not core formulas unless the mod explicitly redefines them
+
+                    **6. JSON Command Structure:**
+                    - metaStateUpdates, UpdateGuardians, UpdateNPCs all work identically
+                    - Atomic command processing preserved
+                    - Same field validation and VALUE_SOURCE/MEANING documentation
+                    - Additional lore updates may be triggered by commands
+
+                    **7. Example Integration:**
+                    All examples (E_Block_*.txt) remain valid:
+                    - CLI Agent can reference examples when processing
+                    - Same JSON structures, just distributed to files instead of single response
+                    - Same narrative outputs and calculation logs
+                    - Lore context enhances narrative richness
+
+                    **ADAPTATION POINTS (Only These Change):**
+
+                    **Input Method:**
+                    - Was: Single JSON request object
+                    - Now: turn_request.json + loaded game_state/ + lore/ files
+
+                    **Output Method:**  
+                    - Was: Single JSON response object
+                    - Now: Distributed files per CLI.3 mapping + lore updates per CLI.8
+
+                    **Context Assembly:**
+                    - Was: Context provided in request
+                    - Now: Context assembled from game_state/ + lore/ + active system mods
+
+                    **State Persistence:**
+                    - Was: External system handles state
+                    - Now: CLI Agent maintains state via files + lore management + save system
+
+                    **VALIDATION PROTOCOL:**
+                    Before applying any rule block:
+                    1. Load active system mods and check for overrides
+                    2. Confirm all required context fields are available
+                    3. Validate against schemas defined in Block_2.txt
+                    4. Check cross-references between game state and lore sections
+                    5. Apply rule exactly as written (with active mod modifications if applicable)
+                    6. Distribute response according to CLI.3 and update lore per CLI.8
+
+  <rule id="CLI.11">
+   <title>
+    CLI-Awareness for All Rule Blocks
+   </title>
+   <description>
+    Critical directive ensuring all existing rule blocks understand CLI file-based operations.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    **MANDATORY CLI INTEGRATION FOR ALL RULES:**
+
+                    When any rule block (1-32) references "JSON response" or "response object", 
+                    the CLI Agent MUST understand this means:
+
+                    **1. Context Assembly Phase:**
+                    - Load ALL relevant files from game_state/ + lore/ directories
+                    - Reconstruct complete context as if receiving single API request
+                    - Use stories/*.jsonl as the primary narrative continuity source
+                    - Read game_state/history/chat_log.json only as session metadata when needed
+                    - Apply active system mods from game_state/core/system_mods.json.activeMods[] with correct priority
+
+                    **2. Rule Processing Phase:**
+                    - Apply existing rule blocks EXACTLY as written
+                    - Generate complete response object as specified in Block_2.txt
+                    - Log all calculations and rule applications in gm_thoughts_markdown
+
+                    **3. Response Distribution Phase:**
+                    - Parse generated response object according to CLI.3 mapping
+                    - Update affected files atomically per CLI.4 protocols
+                    - Maintain cross-reference integrity between distributed files
+                    - Do NOT hand-author chat_log.json as a narrative transcript; let the client/runtime maintain it
+
+                    **CRITICAL RULE INTERPRETATION PROTOCOL:**
+
+                    **When rules say "update JSON response":**
+                    CLI Agent interprets as "update appropriate game_state/ file(s)"
+
+                    **When rules say "reference other blocks":**  
+                    CLI Agent loads referenced blocks AND ensures file consistency
+
+                    **When rules say "apply atomic commands":**
+                    CLI Agent processes commands then distributes results to files
+
+                    **When rules say "validate data":**
+                    CLI Agent validates BOTH individual files AND cross-references
+
+                    **MANDATORY CHAT HISTORY INTEGRATION:**
+
+                    **Narrative continuity MUST come from client-maintained story files:**
+                    - `stories/chaos_sea.jsonl`
+                    - `stories/mortal_life_{N}.jsonl`
+
+                    The GM may read these files for continuity, but MUST NOT treat
+                    `game_state/history/chat_log.json` as a GM-authored transcript surface.
+
+                    **CROSS-REFERENCE VALIDATION PROTOCOL:**
+
+                    Before completing any turn:
+                    1. Validate all NPC references exist in npcs/ files
+                    2. Ensure item IDs match between inventory/ and NPC inventory files
+                    3. Confirm location IDs are consistent across world/ files
+                    4. Verify quest references align between quests/ and NPC files
+                    5. Check Guardian IDs match between meta/ and quests/ files
+
+                    **ERROR RECOVERY FOR DISTRIBUTED STATE:**
+
+                    If ANY file operation fails:
+                    1. Restore ALL files from .backup copies
+                    2. Maintain system in last known stable state
+                    3. Create ready/turn_error.json as the authoritative terminal error signal
+                    4. Optionally log diagnostics in game_state/history/error_log.json or output/debug_logs.json
+
+                    This rule ensures EVERY existing rule block automatically works 
+                    with CLI file system without requiring individual block modifications.
+
+                    **CRITICAL: READING EXAMPLES IN CLI MODE**
+
+                    All examples in Examples/ directory show JSON API responses. In CLI mode:
+
+                    1. **Process examples normally** - same logic, same JSON generation
+                    2. **Then distribute the generated response** according to CLI.3 mapping
+                    3. **Reference CLI_Translation_Guide.md** for detailed distribution patterns
+                    4. **See CLI_Example_Soul_System.md** for complete distribution example
+
+                    **Examples show WHAT to generate, CLI rules show WHERE to put it.**
+
+                    ]]>
+   </content>
+  </rule>
+  
+  <rule id="CLI.10">
+   <title>
+    Natural Progression and Living World Logic
+   </title>
+   <description>
+    System-enforced cycle scheduling for world, faction, and Chaos Sea progression in CLI mode.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+    
+                    **PHILOSOPHY: SYSTEM ENFORCES WHEN, GM DECIDES WHAT**
+                    
+                    The client is responsible for deciding WHEN progression must be checked.
+                    The GM is responsible for deciding WHAT actually happens during those due cycles.
+                    Forgetting to process a due cycle is a protocol violation.
+                    
+                    **1. Fixed Scheduler Protocol:**
+                    - `Mortal World`: world / NPC / threat / natural simulation uses fixed 240-minute cycles
+                    - `Mortal World`: faction strategic simulation uses fixed 1440-minute cycles
+                    - `Chaos Sea` / `Shining Abode`: use the client-provided hub / guardian-project cycle scheduler from `progressionControl`
+                    - The GM MUST read `input/turn_request.json.progressionControl` before any world assessment
+                    - `mustEvaluate* = true` means this turn has mandatory progression debt for that contour
+                    - `mustEvaluate* = false` means no mandatory processing debt exists for that contour this turn
+                    
+                    **2. NPC-Driven World Evolution:**
+                    - Every important NPC has personal goals and plans (Rules/Block_19.E.txt)
+                    - Due cycles must advance these plans logically
+                    - NPC decisions drive faction changes, not abstract economic cycles
+                    - Individual character arcs create world events
+                    
+                    **3. Context-Sensitive Outcomes Inside Fixed Cycles:**
+                    - Faction projects advance based on story logic INSIDE the due strategic cycles
+                    - World events emerge from ongoing conflicts and character actions INSIDE the due world cycles
+                    - Economic changes reflect recent political/military developments
+                    - Natural disasters and opportunities arise organically, but only when the scheduler says progression must be processed
+                    
+                    **4. MANDATORY Structured Thinking in gm_thoughts_markdown:**
+                    
+                    **CRITICAL REQUIREMENT:** Every CLI turn MUST include the currently enforced scope-based reasoning contract.
+                    
+                    Required sections:
+                    ```
+                    ## Охват NPC-анализа
+                    - Режим / Mode: [Scene-local | World-progression | Guardian-centric | Mixed]
+                    - Релевантные акторы / Relevant actors: [...]
+                    - Почему они релевантны / Why they are relevant: ...
+                    - Акторы вне охвата / Actors outside scope: [...]
+                    - Почему они вне охвата / Why they are outside scope: ...
+                    
+                    ## Размышления NPC
+                    ### [Each Declared Relevant Actor]
+                    - Ситуация / Current situation
+                    - Мысли / Internal thoughts
+                    - Действия / Intended actions
+                    ```
+                    
+                    If progressionControl says cycles are due, the reasoning text must also explicitly document:
+                    - which cycles were processed,
+                    - why they were processed,
+                    - what concrete progression consequences followed.
+                    
+                    `progressionProcessingReport` itself remains a structured state/report object, not a mandatory standalone markdown heading.
+                    
+                    **5. Integration with Existing Rules:**
+                    - All Block_19.txt (NPC) rules remain fully active
+                    - All Block_21.txt (Faction) mechanics still apply
+                    - All Block_20.txt (Location) systems continue working
+                    - Scheduler enforcement replaces the old "GM may remember" model, but not the underlying simulation logic
+                    
+                    **6. Practical Implementation:**
+                    - During WORLD_ASSESSMENT phase: read progressionControl + evaluate time/context
+                    - During PROCESSING phase: apply standard rules with due-cycle updates
+                    - During OUTPUT_DISTRIBUTION: write all changes to appropriate files plus progressionProcessingReport
+                    - Always document reasoning for transparency and consistency
+    
+    ]]>
+   </content>
+  </rule>
+  <rule id="CLI.INK_FEATHERS">
+   <title>
+    Ink Feather Actions — Client-Initiated Special Actions Protocol
+   </title>
+   <description>
+    Defines how the GM processes Ink Feather special actions initiated by the player through the /перья command.
+    The client deducts feathers and sends a tagged action. The GM processes the effect.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+    INK FEATHER ACTIONS PROTOCOL:
+    
+    When the player action contains an [INK_FEATHER_ACTION: TAG] prefix, the client has already deducted
+    the appropriate Ink Feather cost from soul_state.json. The GM MUST process the effect as described below.
+    For every GM-side Ink Feather action, the GM MUST also write `output/ink_feather_action_result.json`
+    with:
+    - `sessionId`, `requestId`, `turnNumber`
+    - `actionTag`
+    - `resolved = true`
+    - `costInFeathers`
+    - `resolutionType`
+    - `summary`
+    - `stateEvidence`
+    `stateEvidence` MUST include `affectedFiles` and action-specific proof of the real stateful result.
+    If feathers were spent but there is no `ink_feather_action_result.json` or no stateful result, the client rejects the turn.
+    
+    MORTAL LIFE ACTIONS:
+
+    Spending Ink Feathers in Mortal World is FORBIDDEN by default, except for the explicit whitelist below.
+
+    1. [INK_FEATHER_ACTION: SACRIFICE_TO_CHAOS]
+       Effect: Create an epic, random world event affecting the player's surroundings.
+       Examples: A meteor falls nearby, a portal opens, an ancient ruins rise from the ground,
+       a powerful NPC arrives, a rare creature appears, a plague breaks out, a treasure hoard is revealed.
+       Update: world_news, current_location, and other relevant game_state files.
+       Narrative: The event should feel mysterious and connected to the Chaos Sea.
+
+    2. [INK_FEATHER_ACTION: ABSORB_FEATHERS]
+       Effect: Grant substantial XP (experienceGained) proportional to the cost and the current progression context.
+       Validation requirement: `experienceGained` must be positive, and an authoritative XP counter in `game_state/player/experience.json` must actually increase.
+       Narrative: Describe the surge of ancient memories empowering the character.
+
+    3. [INK_FEATHER_ACTION: LEARN_SKILL]
+       Effect: Grant a random skill (active or passive) from "past life memories."
+       The skill should be thematically connected to the current world setting.
+       Rarity: Use the gachaBaseResult.baseRarity from turn_request to determine skill rarity.
+       Add the skill to the player's skill list with canonical mastery initialization (for active skills use skillMasteryChanges with newMasteryLevel >= 1; passive skills must also start with a valid positive mastery state).
+       Validation requirement: this action must create a NEW skill object in the appropriate player skill file; an already existing skill cannot satisfy the action.
+
+    4. [INK_FEATHER_ACTION: FATE_SHIELD]
+       Effect: Add a special buff to playerActiveEffects:
+       { "effectName": "Щит Судьбы", "description": "Следующий критический провал превращается в обычный провал",
+         "duration": -1, "type": "Buff", "effects": { "negateNextCritFail": true },
+         "source": "Ink Feathers" }
+       When a Natural 1 occurs while this effect is active, convert it to a regular failure and remove the effect.
+       Validation requirement: this action must create a NEW `Щит Судьбы` effect instance in `game_state/player/effects.json`; an already existing shield cannot satisfy the action.
+
+    5. [INK_FEATHER_ACTION: SEAL_IN_INK]
+       Effect: Create a deferred pending upgrade request for one item's quality by 1 tier (Common→Uncommon, etc.).
+       Ask the player which item to upgrade in the narrative response (provide options).
+       In THIS turn, create `game_state/control/pending_ink_actions.json` with a pending action:
+       - `actionTag = SEAL_IN_INK`
+       - `status = awaiting-item-choice`
+       - `upgradeTierDelta = 1`
+       On the NEXT turn when they choose, apply the upgrade to the item's quality and adjust bonuses/effects.
+       Maximum: Cannot upgrade beyond Legendary. Cannot upgrade Unique items.
+
+    6. [INK_FEATHER_ACTION: REVEAL_FATE]
+       Effect: Reveal the pre-generated dice for the current turn.
+       This is a client/GMs shared fate-reading action and does not grant access to Chaos Sea systems.
+
+    7. [INK_FEATHER_ACTION: REWRITE_FATE]
+       Effect: Reroll the pre-generated dice for the current turn.
+       This is a client/GMs shared fate-rewrite action and does not grant access to Chaos Sea systems.
+    
+    AFTERLIFE (CHAOS SEA) ACTIONS:
+
+    Spending Ink Feathers in Chaos Sea is FORBIDDEN by default, except for the explicit whitelist below.
+    Mortal-World Ink Feather actions MUST NOT be used in Chaos Sea.
+    
+    1. [INK_FEATHER_ACTION: DONATE_TO_GUARDIAN]
+       Effect: Increase reputation with current guardian by 15-25 points (proportional to cost).
+       Formula: reputation_change = min(25, max(15, cost / 3)).
+       Update guardian reputation in guardians.json.
+    
+    2. [INK_FEATHER_ACTION: CULTIVATE_ENLIGHTENMENT]
+       Effect: Add significant enlightenment progress to soul_state.json.
+       Formula: enlightenment_xp_gain = cost * 2.
+       Check for tier upgrades if thresholds are crossed.
+    
+    3. [INK_FEATHER_ACTION: GUARDIAN_FAVOR]
+       Effect: Guardian offers a service based on their specialization and reputation level.
+       The player may ask for something specific or may simply offer the feathers as a gift.
+       The only guaranteed mechanical minimum is that reputation with the current guardian increases.
+       Higher cost = better favor. Reputation affects willingness.
+       `ink_feather_action_result.json.stateEvidence` MUST contain:
+       - `guardianId`
+       - `reputationChange`
+       - `affectedFiles`
+       Additional quest / buff / hint / service outcomes are optional and depend on roleplay; they are not mandatory for validation.
+
+    4. [INK_FEATHER_ACTION: MEMORY_GATES]
+       Effect: Create exactly one pending Memory Legacy for the NEXT mortal incarnation.
+       This is a mechanical reward, not a lore-only reveal.
+       The GM MUST create metaStateUpdates.memoryLegacyGrant and the canonical state MUST end up with soul_state.pendingMemoryLegacy.
+       Allowed reward types:
+       - startingCharacteristicBonus: +2 to one starting characteristic in the next incarnation
+       - startingPassiveKnowledgeSkill: one new knowledge-based passive skill for the next incarnation
+       If a pending Memory Legacy already exists, the new one REPLACES it.
+       Past-life flavor and narrative explanation are encouraged, but they do NOT replace the required mechanical reward.
+
+    5. [INK_FEATHER_ACTION: SOUL_IMPRINT]
+       Effect: Present eligible NPC companions for soul imprint creation.
+       An imprinted NPC can appear in future incarnations, adapted to the new world.
+       Create a soulImprint entry in soul_state.json with the NPC's core traits preserved.
+       The resulting soulImprint must keep at least:
+       - identity (name or companion reference)
+       - description/summary
+       - preserved core traits or personality traits
+       This is one of the most expensive and impactful Ink Feather actions.
+    
+    CRITICAL RULES:
+    - The client has ALREADY deducted feathers. Do NOT deduct again.
+    - Always log the Ink Feather action processing in gm_thoughts_markdown.
+    - The narrative should emphasize the mystical nature of Ink Feathers — they are crystallized
+      memories of past lives, not just currency.
+    - Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive.
+    - Read `Examples/E_CLI_Ink_Feather_Actions.txt` for the exact valid/invalid structured examples of each GM-side Ink Feather action.
+    - Local guardian trade (buy/sell relics in the Guardian UI) is a separate client-side panel, is NOT an Ink Feather action, and does NOT create turn_request.json.
+    
+    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

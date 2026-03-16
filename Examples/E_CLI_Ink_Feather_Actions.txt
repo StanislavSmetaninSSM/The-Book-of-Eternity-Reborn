@@ -1,0 +1,334 @@
+==================================================
+INK FEATHER ACTIONS — STRUCTURED RECEIPT EXAMPLES
+==================================================
+
+For every GM-side `[INK_FEATHER_ACTION: TAG]`, the GM MUST write:
+- normal state changes
+- `output/ink_feather_action_result.json`
+
+Minimal required receipt shape:
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-42",
+  "turnNumber": 42,
+  "actionTag": "ABSORB_FEATHERS",
+  "resolved": true,
+  "costInFeathers": 20,
+  "resolutionType": "experience",
+  "summary": "The Soul absorbs crystallized memory and gains a surge of experience.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/player/experience.json"
+    ],
+    "experienceGained": 120
+  }
+}
+```
+
+Rules:
+- `actionTag` MUST match the tag in `turn_request.playerAction`
+- `sessionId`, `requestId`, `turnNumber` MUST match current `turn_request.json`
+- `resolved` MUST be `true`
+- `stateEvidence.affectedFiles` MUST list the files that really changed
+- `ABSORB_FEATHERS` is valid only if `experienceGained` is positive and an authoritative XP counter really increases
+- `LEARN_SKILL` is valid only if the named skill is NEW for this turn
+- `FATE_SHIELD` is valid only if `Щит Судьбы` is newly added this turn
+
+==================================================
+1. VALID — SACRIFICE_TO_CHAOS
+==================================================
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-100",
+  "turnNumber": 100,
+  "actionTag": "SACRIFICE_TO_CHAOS",
+  "resolved": true,
+  "costInFeathers": 25,
+  "resolutionType": "worldEvent",
+  "summary": "A rupture in reality reveals an ancient ruin near the player.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/world/current_location.json",
+      "game_state/world/world_events.json"
+    ],
+    "eventSummary": "Ancient ruin surfaced near the player"
+  }
+}
+```
+
+==================================================
+2. VALID — ABSORB_FEATHERS
+==================================================
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-101",
+  "turnNumber": 101,
+  "actionTag": "ABSORB_FEATHERS",
+  "resolved": true,
+  "costInFeathers": 20,
+  "resolutionType": "experience",
+  "summary": "The absorbed memories accelerate the hero's growth.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/player/experience.json"
+    ],
+    "experienceGained": 120
+  }
+}
+```
+
+==================================================
+3. VALID — LEARN_SKILL
+==================================================
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-102",
+  "turnNumber": 102,
+  "actionTag": "LEARN_SKILL",
+  "resolved": true,
+  "costInFeathers": 18,
+  "resolutionType": "skillGrant",
+  "summary": "The hero recalls a forgotten technique from a previous life.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/player/skills_passive.json"
+    ],
+    "skillName": "Scholar of Dust",
+    "skillKind": "passive"
+  }
+}
+```
+
+==================================================
+4. VALID — FATE_SHIELD
+==================================================
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-103",
+  "turnNumber": 103,
+  "actionTag": "FATE_SHIELD",
+  "resolved": true,
+  "costInFeathers": 30,
+  "resolutionType": "buffGrant",
+  "summary": "A fragile ward of fate now protects the next critical failure.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/player/effects.json"
+    ],
+    "effectName": "Щит Судьбы"
+  }
+}
+```
+
+==================================================
+5. VALID — SEAL_IN_INK (DEFERRED)
+==================================================
+
+Receipt:
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-104",
+  "turnNumber": 104,
+  "actionTag": "SEAL_IN_INK",
+  "resolved": true,
+  "costInFeathers": 50,
+  "resolutionType": "pendingUpgrade",
+  "summary": "The ritual prepares an upgrade choice for the next turn.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/control/pending_ink_actions.json"
+    ],
+    "pendingActionId": "ink_action_upgrade_001"
+  }
+}
+```
+
+Required pending state:
+
+```json
+{
+  "pendingActions": [
+    {
+      "actionId": "ink_action_upgrade_001",
+      "actionTag": "SEAL_IN_INK",
+      "status": "awaiting-item-choice",
+      "costInFeathers": 50,
+      "upgradeTierDelta": 1,
+      "createdAtUtc": "2026-03-11T12:00:00Z"
+    }
+  ]
+}
+```
+
+==================================================
+6. VALID — DONATE_TO_GUARDIAN
+==================================================
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-105",
+  "turnNumber": 105,
+  "actionTag": "DONATE_TO_GUARDIAN",
+  "resolved": true,
+  "costInFeathers": 15,
+  "resolutionType": "guardianReputation",
+  "summary": "The Guardian accepts the offering and grows warmer toward the Soul.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/meta/guardians.json"
+    ],
+    "guardianId": "guardian_azalia",
+    "reputationChange": 15
+  }
+}
+```
+
+Validation note:
+- `reputationChange` must be exactly `min(25, max(15, costInFeathers / 3))`
+
+==================================================
+7. VALID — CULTIVATE_ENLIGHTENMENT
+==================================================
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-106",
+  "turnNumber": 106,
+  "actionTag": "CULTIVATE_ENLIGHTENMENT",
+  "resolved": true,
+  "costInFeathers": 20,
+  "resolutionType": "enlightenmentProgress",
+  "summary": "The Soul refines itself and advances along the path of enlightenment.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/meta/soul_state.json"
+    ],
+    "experienceGain": 40
+  }
+}
+```
+
+Validation note:
+- `experienceGain` must equal `costInFeathers * 2`
+- the authoritative enlightenment counter must actually grow by at least that amount
+
+==================================================
+8. VALID — GUARDIAN_FAVOR
+==================================================
+
+The player may ask for something specific or may simply offer the feathers as a gift.
+The only guaranteed mechanical minimum is a reputation increase for the current Guardian.
+
+Valid minimal receipt:
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-107",
+  "turnNumber": 107,
+  "actionTag": "GUARDIAN_FAVOR",
+  "resolved": true,
+  "costInFeathers": 25,
+  "resolutionType": "guardianReputation",
+  "summary": "The Guardian accepts the offering and listens to the Soul's request.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/meta/guardians.json"
+    ],
+    "guardianId": "guardian_azalia",
+    "reputationChange": 20,
+    "requestedHelp": "The Soul asks for guidance about the next incarnation."
+  }
+}
+```
+
+Additional quest / buff / hint / service outcomes are allowed, but they are NOT required for validation.
+Pure narrative favor without a real reputation increase is INVALID.
+
+==================================================
+9. VALID — MEMORY_GATES
+==================================================
+
+`MEMORY_GATES` still requires the full `memoryLegacyGrant` contract described in `Examples/E_CLI_Step_Main.txt`.
+It also requires the common receipt:
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-109",
+  "turnNumber": 109,
+  "actionTag": "MEMORY_GATES",
+  "resolved": true,
+  "costInFeathers": 15,
+  "resolutionType": "memoryLegacy",
+  "summary": "A Memory Legacy for the next mortal life has been extracted.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/meta/soul_state.json"
+    ],
+    "legacyId": "memory_legacy_scholar_001",
+    "legacyType": "startingCharacteristicBonus"
+  }
+}
+```
+
+==================================================
+10. VALID — SOUL_IMPRINT
+==================================================
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-110",
+  "turnNumber": 110,
+  "actionTag": "SOUL_IMPRINT",
+  "resolved": true,
+  "costInFeathers": 100,
+  "resolutionType": "soulImprint",
+  "summary": "The Soul preserves a companion's echo for future incarnations.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/meta/soul_state.json"
+    ],
+    "companionName": "Mira",
+    "imprintId": "imprint_mira_001"
+  }
+}
+```
+
+The resulting `soulImprint` must preserve at least:
+- companion identity
+- description / summary
+- core traits or personality traits
+
+==================================================
+11. INVALID CASES
+==================================================
+
+Invalid:
+- feathers were spent but there is no `output/ink_feather_action_result.json`
+- receipt exists but `actionTag` does not match the current `[INK_FEATHER_ACTION: TAG]`
+- receipt exists but listed `affectedFiles` did not really change
+- `LEARN_SKILL` points to a skill that already existed before the turn
+- `FATE_SHIELD` points to an already existing `Щит Судьбы`
+- `ABSORB_FEATHERS` changes `experience.json`, but no authoritative XP counter actually grows
+- `DONATE_TO_GUARDIAN` uses a `reputationChange` value that does not match `min(25, max(15, costInFeathers / 3))`
+- `GUARDIAN_FAVOR` returns only lore or advice without a real reputation increase
+- `CULTIVATE_ENLIGHTENMENT` uses `experienceGain` that is not equal to `costInFeathers * 2`
+- `SOUL_IMPRINT` creates an imprint without summary/description or without preserved core traits / personality traits
+- `SEAL_IN_INK` does not create `game_state/control/pending_ink_actions.json`
+- `MEMORY_GATES` writes a receipt but does not create a valid `pendingMemoryLegacy`

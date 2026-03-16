@@ -1,0 +1,199 @@
+# Универсальная Спецификация Функций Инструментов Крафта
+
+## Концепция
+Данная спецификация определяет **ФУНКЦИОНАЛЬНЫЕ КАТЕГОРИИ** инструментов крафта, применимые к любому сеттингу от киберпанка до фэнтези. Вместо конкретных названий используются универсальные функции.
+
+---
+
+## ПЕРЕНОСНЫЕ ИНСТРУМЕНТЫ (Portable Tools)
+
+### Функция: SHAPING (Формообразование)
+**Назначение**: Физическое изменение формы материалов  
+**Универсальный шаблон**:
+```json
+{
+    "toolFunction": "Shaping",
+    "description": "Tools for physically manipulating and reshaping materials",
+    "weight_range": "0.5 - 5.0 kg",
+    "volume_range": "0.1 - 1.0 L", 
+    "price_range": "20 - 200 credits",
+    "durability": "100%",
+    "craftingBonus": "+1 to +3",
+    "requiredFor": ["material forming", "cutting", "bending", "drilling"],
+    "settingExamples": {
+        "fantasy": ["Blacksmith's Hammer", "Woodworking Saw", "Stone Chisel"],
+        "cyberpunk": ["Plasma Cutter", "Molecular Shaper", "Laser Drill"],
+        "space_opera": ["Matter Compiler", "Gravitational Manipulator", "Phase Shifter"],
+        "modern": ["Power Drill", "Angle Grinder", "Hydraulic Press"]
+    }
+}
+```
+
+### Функция: PRECISION (Точная Обработка)
+**Назначение**: Детальная доработка и финишная обработка  
+**Универсальный шаблон**:
+```json
+{
+    "toolFunction": "Precision",
+    "description": "Tools for fine detail work and finishing touches",
+    "weight_range": "0.1 - 2.0 kg",
+    "volume_range": "0.02 - 0.5 L",
+    "price_range": "15 - 150 credits", 
+    "durability": "100%",
+    "craftingBonus": "+1 to +2",
+    "requiredFor": ["fine detail work", "surface finishing", "calibration"],
+    "settingExamples": {
+        "fantasy": ["File Set", "Carving Needles", "Jeweler's Tools"],
+        "cyberpunk": ["Micro-manipulators", "Nano-assemblers", "Circuit Etchers"],
+        "space_opera": ["Quantum Tuners", "Molecular Aligners", "Precision Calibrators"],
+        "modern": ["Precision Screwdrivers", "Calipers", "Fine Sandpaper"]
+    }
+}
+```
+
+### Функция: MEASUREMENT (Измерение и Анализ)
+**Назначение**: Точные измерения, анализ свойств материалов  
+**Универсальный шаблон**:
+```json
+{
+    "toolFunction": "Measurement",
+    "description": "Tools for precise measurement and material analysis",
+    "weight_range": "0.1 - 3.0 kg",
+    "volume_range": "0.05 - 0.8 L",
+    "price_range": "25 - 300 credits",
+    "durability": "100%",
+    "craftingBonus": "+1 to +2 (optional)",
+    "requiredFor": ["quality control", "specification verification", "analysis"],
+    "isOptional": true,
+    "settingExamples": {
+        "fantasy": ["Measuring Rod", "Balance Scales", "Thickness Gauge"],
+        "cyberpunk": ["Digital Analyzers", "Spectral Scanners", "Quantum Meters"],
+        "space_opera": ["Universal Scanners", "Reality Analyzers", "Dimensional Calipers"],
+        "modern": ["Digital Multimeter", "Micrometer", "Material Tester"]
+    }
+}
+```
+
+### Функция: PROCESSING (Обработка и Смешивание)
+**Назначение**: Химические, биологические процессы, смешивание компонентов  
+**Универсальный шаблон**:
+```json
+{
+    "toolFunction": "Processing", 
+    "description": "Tools for chemical, biological, or advanced material processing",
+    "weight_range": "0.5 - 8.0 kg",
+    "volume_range": "0.2 - 4.0 L",
+    "price_range": "40 - 400 credits",
+    "durability": "100%",
+    "craftingBonus": "+2 to +4",
+    "requiredFor": ["mixing", "chemical reactions", "purification", "synthesis"],
+    "settingExamples": {
+        "fantasy": ["Mortar and Pestle", "Alchemy Kit", "Distillation Apparatus"],
+        "cyberpunk": ["Bio-reactors", "Chemical Synthesizers", "Nano-mixers"],
+        "space_opera": ["Molecular Processors", "Element Transmuters", "Quantum Synthesizers"],
+        "modern": ["Laboratory Mixer", "Centrifuge", "Chemical Reactor"]
+    }
+}
+```
+
+---
+
+## СТАЦИОНАРНЫЕ СООРУЖЕНИЯ (Stationary Facilities)
+
+### Функция: ENERGY_SOURCE (Источник Энергии)
+**Назначение**: Обеспечение энергией для сложных производственных процессов  
+**Универсальный шаблон**:
+```json
+{
+    "facilityFunction": "Energy_Source",
+    "description": "Provides power and energy for complex manufacturing processes",
+    "requiredForCrafting": true,
+    "craftingBonus": "+3 to +8",
+    "functionProvided": "High-energy processing capability",
+    "settingExamples": {
+        "fantasy": ["Forge", "Furnace", "Magical Hearth"],
+        "cyberpunk": ["Fusion Reactor", "Power Grid Connection", "Energy Cell Bank"],
+        "space_opera": ["Antimatter Core", "Stellar Tap", "Zero-Point Generator"],
+        "modern": ["Industrial Power Supply", "Electric Furnace", "Steam Generator"]
+    }
+}
+```
+
+### Функция: WORK_SURFACE (Рабочая Поверхность)
+**Назначение**: Стабильная платформа для сложной сборочной работы  
+**Универсальный шаблон**:
+```json
+{
+    "facilityFunction": "Work_Surface",
+    "description": "Provides stable, controlled workspace for complex assembly",
+    "requiredForCrafting": true,
+    "craftingBonus": "+2 to +5",
+    "functionProvided": "Stable work platform with mounting/clamping",
+    "settingExamples": {
+        "fantasy": ["Anvil", "Workbench", "Assembly Table"],
+        "cyberpunk": ["Holo-workstation", "Magnetic Assembly Platform", "Anti-grav Table"],
+        "space_opera": ["Gravitic Stabilizer", "Null-G Assembly Bay", "Dimensional Anchor"],
+        "modern": ["CNC Machine", "Assembly Line Station", "Precision Workbench"]
+    }
+}
+```
+
+### Функция: CONTROLLED_ENVIRONMENT (Контролируемая Среда)
+**Назначение**: Специальные условия (температура, давление, химическая среда)  
+**Универсальный шаблон**:
+```json
+{
+    "facilityFunction": "Controlled_Environment",
+    "description": "Provides specialized environmental conditions for sensitive processes",
+    "requiredForCrafting": false,
+    "craftingBonus": "+2 to +6",
+    "functionProvided": "Environmental control (temperature, pressure, atmosphere)",
+    "isOptional": true,
+    "settingExamples": {
+        "fantasy": ["Alchemy Laboratory", "Enchanting Chamber", "Sacred Grove"],
+        "cyberpunk": ["Clean Room", "Vacuum Chamber", "Radiation Shielded Bay"],
+        "space_opera": ["Null-space Isolator", "Time Dilation Chamber", "Dimensional Pocket"],
+        "modern": ["Climate Control Chamber", "Sterile Environment", "Pressure Vessel"]
+    }
+}
+```
+
+---
+
+## ПРАВИЛА ИСПОЛЬЗОВАНИЯ ФУНКЦИОНАЛЬНЫХ КАТЕГОРИЙ
+
+### Для ГМ (Адаптация под Сеттинг)
+1. **Выбор подходящих примеров**: Используйте примеры из соответствующего сеттинга
+2. **Определение характеристик**: Адаптируйте вес, объем, цену под экономику мира
+3. **Установка требований**: Решите, какие функции обязательны для каких рецептов
+
+### Для Рецептов (JSON Структура)
+```json
+"requiredTools": {
+    "portable": [
+        {"function": "Shaping", "bonus": 2},
+        {"function": "Precision", "bonus": 1}
+    ],
+    "stationary": [
+        {"function": "Energy_Source", "bonus": 5},
+        {"function": "Work_Surface", "bonus": 3}
+    ],
+    "optional": [
+        {"function": "Measurement", "bonus": 1}
+    ]
+}
+```
+
+### Для ИИ (Проверка Требований)
+1. **Найти функцию**: Ищите в инвентаре/локации предметы с нужной функцией
+2. **Проверить доступность**: Портативные - в инвентаре, стационарные - в локации
+3. **Применить бонусы**: Суммировать все применимые модификаторы
+
+## Преимущества Функционального Подхода
+
+✅ **Универсальность**: Работает в любом сеттинге  
+✅ **Логичность**: ИИ понимает назначение инструментов  
+✅ **Гибкость**: ГМ может создавать свои реализации  
+✅ **Масштабируемость**: Легко добавлять новые функции  
+
+Система теперь по-настоящему универсальна и функциональна!

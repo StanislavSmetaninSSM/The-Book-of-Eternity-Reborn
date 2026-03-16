@@ -1,0 +1,214 @@
+<instructionblock id="15.A">
+ <title>
+  Examples For CRITICAL DIRECTIVE: The Armor Threshold Protocol
+ </title>
+ <example contenttype="log_and_json_snippet" type="good">
+  <title>
+   Example 1 (Armor Holds): Knight vs. Dagger Thrust
+  </title>
+  <scenariocontext>
+   A knight is wearing "Rare Steel Plate" (ID: item-plate-01, Durability: 95%) which provides 'DamageReduction' of 20% vs 'piercing' with a 'damageThreshold: 10'.
+                    The knight has no other piercing resistance.
+                    A bandit's dagger ('piercing' damage) hits him for an 'InitialDamage' of 12.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Armor Threshold Protocol Check for PIERCING damage
+                    - Step 1 (Initial Damage): 12 (piercing).
+                    - Step 2 (Total Percentage Reduction for PIERCING): 0% (from skills) + 20% (from armor) = 20%.
+                    - Step 3 (Damage After Reduction): DamagePostReduction = round(12 * (1 - 0.20)) = round(9.6) = 10.
+                    - Step 4 (Find PIERCING Threshold): The armor's 'damageThreshold' for 'piercing' is 10. BestThreshold = 10.
+                    - Step 5 (Threshold Check): 10 <= 10. RESULT: TRUE. The Armor Holds.
+                    
+                    - Final Damage to Player: 0.
+                    - Durability Cost: The armor absorbs the full blow. Durability loss is equal to DamagePostReduction: -10.
+                    - Reporting: 'currentHealthChange' = 0. Preparing update for "Rare Steel Plate" (ID: item-plate-01) durability from 95% to 85%.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+                        
+                        Кинжал бандита скрежещет по вашему стальному нагруднику. 
+                        Вы чувствуете толчок, но лезвие не может пробить толстый металл и соскальзывает в сторону, оставив лишь новую царапину на полированной поверхности.
+                        Вы не получили никакого урона.
+                        
+                        ]]>
+   </response>
+   <currenthealthchange>
+    0
+   </currenthealthchange>
+   <UpdateInventory>
+    <![CDATA[
+
+                        [
+                            {
+                                "existedId": "item-plate-01",
+                                "durability": "85%"
+                            }
+                        ]
+
+                                                        ]]>
+                           </UpdateInventory>  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" type="good">
+  <title>
+   Example 2 (Armor Overwhelmed): Knight vs. Goblin's Arrow
+  </title>
+  <scenariocontext>
+   A knight wears "Rare Steel Plate" (ID: item-plate-01, Durability: 95%) which provides 'DamageReduction' of 40% vs 'slashing' with 'damageThreshold: 18' and 20% vs 'piercing' with 'damageThreshold: 10'.
+                    The knight has a passive skill granting 10% Piercing Resistance.
+                    An arrow ('piercing' damage) hits him for an 'InitialDamage' of 30.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Armor Threshold Protocol Check for PIERCING damage
+                    - Step 1 (Initial Damage): 30 (piercing).
+                    - Step 2 (Total Percentage Reduction for PIERCING): 10% (from skill) + 20% (from armor) = 30%.
+                    - Step 3 (Damage After Reduction): DamagePostReduction = round(30 * (1 - 0.30)) = 21.
+                    - Step 4 (Find PIERCING Threshold): The armor's 'damageThreshold' for 'piercing' is 10. BestThreshold = 10.
+                    - Step 5 (Threshold Check): 21 <= 10. RESULT: FALSE. The Armor is Overwhelmed.
+                    
+                    - Final Damage to Player: 21.
+                    - Durability Cost: Armor was overwhelmed. Applying minor durability loss: -2%.
+                    - Reporting: 'currentHealthChange' = -21. Preparing update for "Rare Steel Plate" (ID: item-plate-01) durability from 95% to 93%.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+                        
+                        Стрела гоблина ударяет в сочленение ваших лат. 
+                        Хотя броня и ослабила удар, острый наконечник все же пробивает защиту, нанося вам болезненную рану.
+                        
+                        ]]>
+   </response>
+   <currenthealthchange>
+    -21
+   </currenthealthchange>
+   <UpdateInventory>
+    <![CDATA[
+
+                        [
+                            {
+                                "existedId": "item-plate-01",
+                                "durability": "93%"
+                            }
+                        ]
+
+                                                        ]]>
+                           </UpdateInventory>  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" type="good">
+  <title>
+   Example 3 (Vulnerability): Cursed Knight vs. Holy Smite
+  </title>
+  <scenariocontext>
+   A knight wears "Cursed Plate" (ID: item-cursed-plate-01, Durability: 80%) ('DamageReduction: 30 % ' vs 'slashing'; no protection vs 'holy').
+                    The knight is Cursed (-50% Holy Resistance).
+                    A 'Holy Smite' hits him for an 'InitialDamage' of 20 holy damage.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Armor Threshold Protocol Check for HOLY damage
+                    - Step 1 (Initial Damage): 20 (holy).
+                    - Step 2 (Total Percentage Reduction for HOLY): -50% (from curse) + 0% (from armor) = -50%.
+                    - Step 3 (Damage After Reduction): DamagePostReduction = round(20 * (1 - (-0.50))) = round(20 * 1.50) = 30.
+                    - Step 4 (Find HOLY Threshold): The armor has no 'damageThreshold' for 'holy'. BestThreshold = 0.
+                    - Step 5 (Threshold Check): 30 <= 0. RESULT: FALSE. The Armor is Overwhelmed.
+                    
+                    - Final Damage to Player: 30.
+                    - Durability Cost: The holy energy damages the cursed metal. Minor durability loss: -5%.
+                    - Reporting: 'currentHealthChange' = -30. Preparing update for "Cursed Plate" (ID: item-cursed-plate-01) durability from 80% to 75%.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+                        
+                        Святой удар паладина врезается в вашу проклятую броню. 
+                        Вместо того чтобы защитить, металл, кажется, притягивает божественную энергию, усиливая ее. 
+                        Вы чувствуете, как жгучий свет пробивает вашу защиту и обжигает плоть под ней, оставляя на темном металле дымящиеся руны.
+                        
+                        ]]>
+   </response>
+   <currenthealthchange>
+    -30
+   </currenthealthchange>
+   <UpdateInventory>
+    <![CDATA[
+
+                        [
+                            {
+                                "existedId": "item-cursed-plate-01",
+                                "durability": "75%"
+                            }
+                        ]
+
+                                                        ]]>
+                           </UpdateInventory>  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="ShieldSynergyExample" type="good">
+  <title>
+   Example 4 (Shield Synergy): Legendary Knight vs. Orc Champion
+  </title>
+  <scenariocontext>
+   A knight is equipped with:
+                    - "Epic Plate Armor" ('damageThreshold' vs 'slashing': 25)
+                    - "Legendary Bulwark of Ages" (Shield). It has a 'damageThreshold' vs 'slashing' of 20 and an 'effectDetails' property: "Синергия Порога: +60% от порога другого предмета".
+                    An Orc Champion's axe ('slashing' damage) hits, and after all percentage reductions, the 'DamagePostReduction' is 35.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Armor Threshold Protocol Check for SLASHING damage
+                    - Step 1-3 (Damage After Reduction): DamagePostReduction = 35.
+                    
+                    - Step 4 (Find Best Threshold):
+                      - Checking for Synergy (Rule 15.A.2.A): YES. The "Legendary Bulwark of Ages" has a synergy property.
+                      - Main Item Threshold (Shield): 20.
+                      - Other Best Threshold (from Plate Armor): 25.
+                      - Synergy Calculation: Final_BestThreshold = 20 + (25 * 0.60) = 20 + 15 = 35.
+                      - BestThreshold = 35.
+
+                    - Step 5 (Threshold Check): 35 <= 35. RESULT: TRUE. The combined defense holds.
+                    
+                    - Final Damage to Player: 0.
+                    - Durability Cost: The shield, as the primary synergizing item, takes the full 35 durability damage.
+                    - Reporting: 'currentHealthChange' = 0. Preparing update for "Legendary Bulwark of Ages".
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+                        
+                        Топор чемпиона орков обрушивается на вас с невероятной силой. Вы выставляете вперед свой легендарный щит. 
+                        В момент удара вы чувствуете, как магия щита и прочность вашей брони сливаются воедино, создавая несокрушимый барьер. 
+                        Удар полностью поглощен, хотя щит заметно пострадал.
+                        
+                        ]]>
+   </response>
+   <currenthealthchange>
+    0
+   </currenthealthchange>
+   <UpdateInventory>
+    <![CDATA[
+
+                        [
+                            {
+                                "existedId": "item-legendary-shield-01",
+                                "durability": "65%" 
+                            }
+                        ]
+
+                                                        ]]>
+                           </UpdateInventory>  </jsonresponse>
+ </example>
+</instructionblock>

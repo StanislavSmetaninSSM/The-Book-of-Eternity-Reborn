@@ -1,0 +1,890 @@
+<instructionblock id="20">
+ <title>
+  Examples For Location Management and Cartography
+ </title>
+ <rule id="20.0">
+  <example contenttype="log" type="good">
+   <title>
+    Example 1: Using 'externalDifficultyProfile.combat' for an Outsider's Action
+   </title>
+   <scenariocontext>
+    Player (Level 25), an "Outsider" in this location, is in the "Lich King's Council Chamber".
+                        The location's profiles are: internalDifficultyProfile: { combat: 10, ... }, externalDifficultyProfile: { combat: 85, ... }.
+                        The player decides to attack a "Death Knight", an elite guard.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                        # Action Check Calculation: Attack on Death Knight
+
+                        ## Step 1: Select Relevant Difficulty (Protocol #20.0.B)
+                        -   **Duality of Threat Protocol:** The actor is the Player, who is an "Outsider" in this hostile location. Therefore, 'externalDifficultyProfile' MUST be used.
+                        -   **Action Type:** The action is Combat (Attack).
+                        -   **Selected Facet:** 'externalDifficultyProfile.combat'.
+                        -   RelevantDifficulty = 85.
+
+                        ## Step 2: Calculate BaseDifficulty (Rule #12.6.2)
+                        -   CharacterLevel = 25.
+                        -   DifficultyScale = max(0.2, min(1.5, (25 / 50))) = 0.5.
+                        -   BaseDifficulty = 85 * 0.5 = 42.5.
+
+                        ... (the rest of the ActionDifficultModificator and Action Check calculation follows) ...
+
+                        Conclusion: The check will be extremely difficult, as it is correctly based on the very high external combat difficulty of the location.
+
+                        ]]>
+   </content>
+  </example>
+  <example contenttype="log" type="good">
+   <title>
+    Example 2: Using 'externalDifficultyProfile.environment' for an Outsider's Action
+   </title>
+   <scenariocontext>
+    Same player (Level 25 "Outsider") in the same "Lich King's Council Chamber".
+                        Profiles: internal: { environment: 5, ... }, external: { environment: 30, ... }.
+                        The player notices the Lich King's throne is on a shaky platform and decides to cause a stalactite to fall on it.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                        # Action Check Calculation: Collapse Stalactite (Environmental Interaction)
+
+                        ## Step 1: Select Relevant Difficulty (Protocol #20.0.B)
+                        -   **Duality of Threat Protocol:** The actor is the Player ("Outsider"). 'externalDifficultyProfile' is used.
+                        -   **Action Type:** The action is Environmental Interaction (Physical/Intellectual).
+                        -   **Selected Facet:** 'externalDifficultyProfile.environment'.
+                        -   RelevantDifficulty = 30.
+
+                        ## Step 2: Calculate BaseDifficulty (Rule #12.6.2)
+                        -   CharacterLevel = 25.
+                        -   DifficultyScale = 0.5.
+                        -   BaseDifficulty = 30 * 0.5 = 15.
+
+                        ... (the rest of the calculation follows) ...
+
+                        Conclusion: The check is still challenging, but significantly easier than a direct attack, encouraging creative environmental solutions.
+
+                        ]]>
+   </content>
+  </example>
+  <example contenttype="log" type="good">
+   <title>
+    Example 3: Using 'internalDifficultyProfile.social' for an Insider's Action
+   </title>
+   <scenariocontext>
+    The player (Level 25), who is the leader of their guild ("Insider"), is in their own "Guild Hall".
+                        Profiles: internal: { social: 10, ... }, external: { social: 40, ... }.
+                        The player tries to persuade one of their own guild members to undertake a mission.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                        # Action Check Calculation: Persuade Guild Member (Social)
+
+                        ## Step 1: Select Relevant Difficulty (Protocol #20.0.B)
+                        -   **Duality of Threat Protocol:** The actor is the Player, who is an "Insider" in their own Guild Hall. Therefore, 'internalDifficultyProfile' MUST be used.
+                        -   **Action Type:** The action is Social (Persuasion).
+                        -   **Selected Facet:** 'internalDifficultyProfile.social'.
+                        -   RelevantDifficulty = 10.
+
+                        ## Step 2: Calculate BaseDifficulty (Rule #12.6.2)
+                        -   CharacterLevel = 25.
+                        -   DifficultyScale = 0.5.
+                        -   BaseDifficulty = 10 * 0.5 = 5.
+
+                        ... (the rest of the calculation follows) ...
+
+                        Conclusion: The social check is very easy, as the player is operating in a friendly, controlled environment among their own people.
+
+                        ]]>
+   </content>
+  </example>
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example 4: Dynamic Update of Difficulty Profiles After Player Action
+   </title>
+   <scenariocontext>
+    The player has just cleared out the "Whispering Caves Bandit Outpost".
+                        Before this, its profiles were identical (objective danger): internal/external: { combat: 35, environment: 20, social: 50, exploration: 25 }.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                        # Updating Location Profile: "Whispering Caves Bandit Outpost"
+
+                        -   Significant Event: Player has defeated the bandit leader and driven off the remaining inhabitants.
+                        -   Applying 'The World Reacts Protocol' (Rule #20.0.3).
+
+                        -   Analyzing Changes:
+                            -   Combat Difficulty: The primary threat (bandits) is gone. The 'combat' difficulty in BOTH profiles plummets from 35 to a new baseline of 5 (representing only wildlife).
+                            -   Environment Difficulty: The cave's natural hazards remain. The 'environment' difficulty for BOTH profiles is unchanged at 20.
+                            -   Social Difficulty: The hostile inhabitants are gone. The location is now empty. The 'social' difficulty for BOTH profiles drops from 50 to 0.
+                            -   Exploration Difficulty: Bandit secrets remain. The 'exploration' difficulty for BOTH profiles is unchanged at 25.
+                            
+                        -   Preparing updated 'currentLocationData'.
+
+                        ]]>
+   </logoutput>
+   <jsonresponse>
+    <currentlocationdata>
+     <![CDATA[
+
+                            {
+                                "locationId": "loc-whispering-caves-01",
+                                "lastEventsDescription": "#55. After the player defeated the bandits, the Whispering Caves have become an empty, quiet, but still naturally hazardous place.",
+                                "internalDifficultyProfile": {
+                                    "combat": 5,
+                                    "environment": 20,
+                                    "social": 0,
+                                    "exploration": 25
+                                },
+                                "externalDifficultyProfile": {
+                                    "combat": 5,
+                                    "environment": 20,
+                                    "social": 0,
+                                    "exploration": 25
+                                }
+                            }
+
+                            ]]>
+    </currentlocationdata>
+    <response>
+     <![CDATA[
+
+                            With the last bandit defeated, an eerie quiet falls over the caves... The immediate threat is gone. 
+                            Though the caves themselves remain treacherous, you feel you have cleansed this place of its human evil. 
+                            It is now just a cave, not a bandit outpost.
+                                
+                            ]]>
+    </response>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="20.13">
+  <example contenttype="json_fragment" id="NewLocationWithThreat_Example" type="good">
+   <title>
+    Example: Creating a New Location and Immediately Adding a Threat
+   </title>
+   <description>
+    This example demonstrates the mandatory protocol for creating a new off-screen location and simultaneously assigning a new threat to it, using the 'initialId' and 'initialTargetLocationId' linking mechanism.
+   </description>
+   <scenariocontext>
+    A world event "Ancient Ruins Unearthed" has occurred.
+                            The GM needs to create the new "Ruins of Xylos" location and populate it with a "Guardian Golem" threat.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+                            
+                            # World Progression: Creating New Location with Threat
+                            - Event: "Ancient Ruins Unearthed".
+                            - Action 1: Generate the new location "Ruins of Xylos".
+                                - Setting 'locationId' to null.
+                                - Assigning a temporary reference tag: 'initialId' = "temp-loc-xylos-ruins".
+                            - Action 2: Generate the new "Guardian Golem" threat.
+                                - To link this threat to the new location, we will not use 'targetLocationId'.
+                                - Instead, we will set 'initialTargetLocationId' to the same tag: "temp-loc-xylos-ruins".
+                            - Reporting both objects within the 'worldMapUpdates' command.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <worldmapupdates>
+     <![CDATA[
+
+                                {
+                                    "newLocations": [
+                                        {
+                                            "locationId": null,
+                                            "initialId": "temp-loc-xylos-ruins", // <-- Временная метка создана
+                                            "name": "Ruins of Xylos",
+                                            "coordinates": { "x": 30, "y": 50, "z": 0 },
+                                            "locationType": "outdoor",
+                                            "biome": "TemperateForest",
+                                            "externalDifficultyProfile": { "combat": 40, "environment": 35, "social": 0, "exploration": 60 },
+                                            // ... all other fields for a complete new location ...
+                                        }
+                                    ],
+                                    "threatsToAdd": [
+                                        {
+                                            "targetLocationId": null,
+                                            "initialTargetLocationId": "temp-loc-xylos-ruins", // <-- Та же метка используется для связи
+                                            "threat": {
+                                                "threatId": null,
+                                                "name": "Ancient Guardian Golem",
+                                                "threatArchetype": {
+                                                    "motivation": "Preservation",
+                                                    "method": "Overt"
+                                                },
+                                                "intensity": 50,
+                                                "longTermGoal": "Protect the central chamber of the ruins from all intruders.",
+                                                "currentActivity": null, // Starts as idle, will activate on a later cycle
+                                                "impactProfile": {
+                                                    "primaryTargetType": "Location",
+                                                    "primaryTargetName": "Ruins of Xylos",
+                                                    "primaryImpact": "Exploration", // Makes exploring harder
+                                                    "baseImpactValue": 0 // Doesn't actively 'damage' the location
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+
+                                ]]>
+    </worldmapupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="20.4.A">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: A magical plague spreads while the player is in town.
+   </title>
+   <scenariocontext>
+    Player is in "Oakhaven Town" (loc-oakhaven-01). 
+                            A world event is generated: "The magical blight in the Whispering Forest (loc-forest-01) has intensified."
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            World Event: Blight intensifies in Whispering Forest.
+                            Consequence: The forest's difficulty profile must be updated.
+                            Action: Player is not in the forest. Using 'worldMapUpdates' to apply the change to location 'loc-forest-01'.
+                            - New Environment Difficulty: 50.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <worldmapupdates>
+     <![CDATA[
+
+                                {
+                                    "locationUpdates": [
+                                        {
+                                            "locationId": "loc-forest-01",
+                                            // A magical plague is an objective danger, so it increases the difficulty for everyone.
+                                            "newInternalDifficultyProfile": {
+                                                "combat": 35,
+                                                "environment": 50,
+                                                "social": 5,
+                                                "exploration": 30
+                                            },
+                                            "newExternalDifficultyProfile": {
+                                                "combat": 35,
+                                                "environment": 50,
+                                                "social": 5,
+                                                "exploration": 30
+                                            },
+                                            "newLastEventsDescription": "#[75] - 4 Frostwane 1427 г., 15:30: The blight has fully consumed the forest. The air is poisonous, and the land itself is twisted by dark magic."
+                                        }
+                                    ]
+                                }
+
+                                ]]>
+    </worldmapupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="20.8">
+  <example contenttype="json_fragment" id="LinkUpdate_Example" type="good">
+   <title>
+    Example: A bridge is sabotaged and becomes dangerous.
+   </title>
+   <jsonresponse>
+    <worldmapupdates>
+     <![CDATA[
+
+                                {
+                                    "linkUpdates": [
+                                        {
+                                            "sourceLocationId": "loc-west-bank-01",
+                                            "targetCoordinates": { "x": 15, "y": 20, "z": 0 },
+                                            "updatedLink": {
+                                                "newShortDescription": "The once-sturdy bridge is now a treacherous wreck of frayed ropes and broken planks.",
+                                                "newLinkState": "Dangerous"
+                                            }
+                                        }
+                                    ]
+                                }
+
+                                ]]>
+    </worldmapupdates>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" id="LinkRemove_Example" type="good">
+   <title>
+    Example: A magical cataclysm completely erases a path.
+   </title>
+   <jsonresponse>
+    <worldmapupdates>
+     <![CDATA[
+
+                                {
+                                    "linksToRemove": [
+                                        {
+                                            "sourceLocationId": "loc-eldoria-gate-01",
+                                            "targetCoordinates": { "x": 5, "y": 6, "z": 0 }
+                                        }
+                                    ]
+                                }
+
+                                ]]>
+    </worldmapupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="20.A">
+  <example contenttype="text_and_json" type="good">
+   <title>
+    CORRECT: Gradual Progression
+   </title>
+   <scenariocontext>
+    Player is in "Forest Clearing" ('combat': 8). GM generates an adjacent location.
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // New Location: "Deeper Woods"
+                            // Combat difficulty must be between (8-15) and (8+15), i.e., -7 to 23.
+                            // GM chooses 15. This is a valid progression.
+                            "adjacencyMap": [
+                                {
+                                    "name": "Deeper Woods",
+                                    "shortDescription": "The trees here grow closer together, and strange animal sounds echo from the shadows.",
+                                    "linkState": "Safe",
+                                    "estimatedInternalDifficultyProfile": { "combat": 15, "environment": 18, "social": 2, "exploration": 10 },
+                                    "estimatedExternalDifficultyProfile": { "combat": 15, "environment": 18, "social": 2, "exploration": 10 }
+                                }
+                            ]
+                            
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="text_and_json" type="bad">
+   <title>
+    INCORRECT: Unfair Difficulty Spike
+   </title>
+   <scenariocontext>
+    Player is in "Forest Clearing" ('combat': 8). GM decides the "Dragon's Peak" is nearby.
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // New Location: "Dragon's Peak"
+                            // GM generates a profile with 'combat: 85'. This violates the Adjacency Rule.
+                            // The GM incorrectly marks the path as 'Safe' and gives no warning.
+                            "adjacencyMap": [
+                                {
+                                    "name": "Dragon's Peak",
+                                    "shortDescription": "A winding path leads up the nearby mountain.",
+                                    "linkState": "Safe", // CRITICAL ERROR
+                                    "estimatedInternalDifficultyProfile": { "combat": 85, ... },
+                                    "estimatedExternalDifficultyProfile": { "combat": 85, ... }
+                                }
+                            ]
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="text_and_json" type="good">
+   <title>
+    CORRECT: Breaking the Cap with a Warning
+   </title>
+   <scenariocontext>
+    Player is in "Forest Clearing" ('combat': 8). GM wants to introduce the "Dragon's Peak" as a high-level area.
+   </scenariocontext>
+   <content type="json_fragment">
+    <![CDATA[
+
+                            // New Location: "Dragon's Peak"
+                            // GM overrides the soft cap for narrative reasons but MUST warn the player.
+                            "adjacencyMap": [
+                                {
+                                    "name": "Dragon's Peak",
+                                    "shortDescription": "The air grows hot near this path, which is littered with charred bones. It is an ominously deadly ascent.", // Warning words
+                                    "linkState": "Dangerous", // Correct state
+                                    "estimatedInternalDifficultyProfile": { "combat": 85, ... },
+                                    "estimatedExternalDifficultyProfile": { "combat": 85, ... }
+                                }
+                            ]
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="20.C">
+  <example contenttype="log_and_json_snippet" id="StorageUpdate_Example" type="good">
+   <title>
+    Пример: Игрок укрепляет и переименовывает свой сундук
+   </title>
+   <scenariocontext>
+    Игрок находится в своей комнате (ID: 'loc-room-101') и использует навык "Плотник", чтобы укрепить свой "Личный сундук" (ID: 'storage-chest-xyz').
+                            Действие успешно, и ГМ решает, что это увеличивает его вместимость и меняет название.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Действие игрока: Укрепить сундук.
+                            - Проверка навыка: Успех.
+                            - Результат: Сундук укреплен. Его название меняется на "Укрепленный сундук", а вместимость ('capacity') увеличивается с 15 до 20.
+                            - Генерация команды: 'storageUpdates' для 'loc-room-101' и 'storage-chest-xyz'.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                Потратив около часа на работу, вы заканчиваете укреплять свой сундук. 
+                                Теперь он выглядит гораздо надежнее, и вы смогли немного переорганизовать пространство внутри, увеличив его вместимость.
+
+                                ]]>
+    </response>
+    <worldmapupdates>
+     <![CDATA[
+
+                                {
+                                    "storageUpdates": [
+                                        {
+                                            "targetLocationId": "loc-room-101",
+                                            "storageId": "storage-chest-xyz",
+                                            "update": {
+                                                "newName": "Укрепленный сундук",
+                                                "newDescription": "Крепкий дубовый сундук, дополнительно укрепленный железными полосами.",
+                                                "newCapacity": 20
+                                            }
+                                        }
+                                    ]
+                                }
+
+                                ]]>
+    </worldmapupdates>
+   </jsonresponse>
+  </example>
+  <example contenttype="log_and_json_snippet" id="StorageRemove_Example" type="good">
+   <title>
+    Пример: Игрок уничтожает хранилище
+   </title>
+   <scenariocontext>
+    Во время битвы в сокровищнице (ID: 'loc-treasury-01') шальной огненный шар попадает в "Старый деревянный ящик" (ID: 'storage-box-abc'), и он сгорает дотла.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Событие: Уничтожение хранилища.
+                            - Причина: Побочный урон от огненного шара.
+                            - Цель: "Старый деревянный ящик" (ID: 'storage-box-abc') в локации 'loc-treasury-01'.
+                            - Результат: Хранилище и его содержимое уничтожены.
+                            - Генерация команды: 'storagesToRemove'.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                Огненный шар пролетает мимо цели и врезается в старый деревянный ящик в углу. 
+                                Сухое дерево мгновенно вспыхивает, и через несколько секунд от ящика остается лишь кучка пепла.
+
+                                ]]>
+    </response>
+    <worldmapupdates>
+     <![CDATA[
+
+                                {
+                                    "storagesToRemove": [
+                                        {
+                                            "targetLocationId": "loc-treasury-01",
+                                            "storageId": "storage-box-abc"
+                                        }
+                                    ]
+                                }
+
+                                ]]>
+    </worldmapupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example 1: Player enters an 'indoor' location - "The Rusty Flagon Tavern"
+  </title>
+  <scenariocontext>
+   Player enters a tavern in a city. The weather outside is 'Light Rain'.
+  </scenariocontext>
+  <jsonresponse>
+   <currentlocationdata>
+    <![CDATA[
+
+                        {
+                            "locationId": null,
+                            "name": "The Rusty Flagon Tavern",
+                            "coordinates": {"x": 5, "y": 3, "z": 0},
+                            "locationType": "indoor",
+                            "indoorType": "Building", 
+                            "biome": null, 
+                            "internalDifficultyProfile": { "combat": 2, "environment": 1, "social": 5, "exploration": 2 },
+                            "externalDifficultyProfile": { "combat": 10, "environment": 5, "social": 15, "exploration": 8 },
+                            "description": "You push open the heavy oak door and step inside The Rusty Flagon. The air is warm and filled with the smell of pipe smoke and ale. You can hear the gentle drumming of rain on the roof above the din of conversation. A fire crackles merrily in the hearth.",
+                            "lastEventsDescription": "#22. You have entered the tavern to escape the rain.",
+                            "image_prompt": "Cozy, dimly lit medieval tavern interior, patrons drinking at wooden tables, large fireplace, rain visible on a window pane, fantasy art.",
+                            "adjacencyMap": [
+                                { 
+                                    "name": "Market Street", 
+                                    "shortDescription": "The main thoroughfare of the city, bustling with activity.",
+                                    "linkType": "Door", 
+                                    "linkState": "Safe", 
+                                    "targetCoordinates": {"x": 5, "y": 2, "z": 0}, 
+                                    "estimatedInternalDifficultyProfile": {
+                                        "combat": 2,
+                                        "environment": 2,
+                                        "social": 10,
+                                        "exploration": 5
+                                    },
+                                    "estimatedExternalDifficultyProfile": {
+                                        "combat": 10,
+                                        "environment": 5,
+                                        "social": 15,
+                                        "exploration": 8
+                                    }
+                                }
+                            ]
+                        }
+
+                        ]]>
+   </currentlocationdata>
+  </jsonresponse>
+ </example>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example 2: Player is in an 'outdoor' location - "The Sun-Scorched Wastes"
+  </title>
+  <scenariocontext>
+   Player is traveling through a vast desert.
+  </scenariocontext>
+  <jsonresponse>
+   <currentlocationdata>
+    <![CDATA[
+
+                        {
+                            "locationId": "loc-desert-01",
+                            "name": "The Sun-Scorched Wastes",
+                            "coordinates": {"x": 25, "y": -10, "z": 0},
+                            "locationType": "outdoor",
+                            "biome": "Desert",
+                            "indoorType": null,
+                            "internalDifficultyProfile": { "combat": 15, "environment": 25, "social": 2, "exploration": 10 },
+                            "externalDifficultyProfile": { "combat": 15, "environment": 25, "social": 2, "exploration": 10 },
+                            "description": "Endless dunes of orange sand stretch to the horizon under a blazing, cloudless sky. The air shimmers with heat, and the only sound is the whisper of the wind over the sand.",
+                            "lastEventsDescription": "#31. You continue your trek through the desert.",
+                            "image_prompt": "Vast desert landscape with massive sand dunes, blazing sun in a clear blue sky, heat haze, cinematic, fantasy art.",
+                            "adjacencyMap": null
+                        }
+
+                        ]]>
+   </currentlocationdata>
+  </jsonresponse>
+ </example>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example 3: Player enters an 'indoor' cave system.
+  </title>
+  <scenariocontext>
+   Player finds the entrance to a dark cave in the mountains. Weather outside is 'Light Snow'.
+  </scenariocontext>
+  <jsonresponse>
+   <currentlocationdata>
+    <![CDATA[
+
+                        {
+                            "locationId": null,
+                            "name": "Echoing Cavern - Entrance",
+                            "coordinates": {"x": -4, "y": 8, "z": -1},
+                            "locationType": "indoor",
+                            "indoorType": "CaveSystem",
+                            "biome": null,
+                            "internalDifficultyProfile": { "combat": 10, "environment": 12, "social": 1, "exploration": 15 },
+                            "externalDifficultyProfile": { "combat": 10, "environment": 12, "social": 1, "exploration": 15 },
+                            "description": "You squeeze through a narrow fissure in the rock and enter a cavern. The air is still and cold, smelling of damp earth and stone. The sound of the wind and snow outside is immediately muffled to a distant whisper. Water drips rhythmically from stalactites into a small pool in the center of the chamber.",
+                            "lastEventsDescription": "#35. You have discovered the entrance to the Echoing Caverns.",
+                            "image_prompt": "Dark, natural cave entrance, glowing moss on damp rock walls, stalactites and stalagmites, deep fantasy cavern.",
+                            "adjacencyMap": [
+                                {
+                                    "name": "Mountain Pass", 
+                                    "shortDescription": "The snowy path you left behind.",
+                                    "linkType": "Exit",
+                                    "linkState": "Safe", 
+                                    "targetCoordinates": {"x": -4, "y": 9, "z": 0}, 
+                                    "estimatedInternalDifficultyProfile": {
+                                        "combat": 10,
+                                        "environment": 15,
+                                        "social": 2,
+                                        "exploration": 5
+                                    },
+                                    "estimatedExternalDifficultyProfile": {
+                                        "combat": 10,
+                                        "environment": 15,
+                                        "social": 2,
+                                        "exploration": 5
+                                    }
+                                }
+                            ]
+                        }
+
+                        ]]>
+   </currentlocationdata>
+  </jsonresponse>
+ </example>
+ <example id="LocationUpdate_GoodVsBad">
+  <title>
+   Example: Updating a Known Location vs. Corrupting Data
+  </title>
+  <scenariocontext>
+   The player is in "The Rusty Flagon Tavern" (ID: "loc-tavern-01"), a known location. 
+                    In the current turn, a bar fight breaks out. The GM needs to update the location's 'lastEventsDescription'.
+  </scenariocontext>
+  <example id="LocationUpdate_Bad" type="bad">
+   <title>
+    INCORRECT - Corrupts state by sending nulls
+   </title>
+   <jsonresponse>
+    <currentlocationdata>
+     <![CDATA[
+
+                            {
+                                "locationId": "loc-tavern-01",
+                                "name": null,
+                                "coordinates": null,
+                                "internalDifficultyProfile": null,
+                                "externalDifficultyProfile": null,
+                                "description": null,
+                                "lastEventsDescription": "#45. A massive bar fight erupts after a gambler accuses another of cheating.",
+                                "image_prompt": null,
+                                "adjacencyMap": null
+                            }
+
+                            ]]>
+    </currentlocationdata>
+   </jsonresponse>
+  </example>
+  <example id="LocationUpdate_Good" type="good">
+   <title>
+    CORRECT - Follows the Law of Partial Updates
+   </title>
+   <jsonresponse>
+    <currentlocationdata>
+     <![CDATA[
+
+                            {
+                                "locationId": "loc-tavern-01",
+                                "lastEventsDescription": "#45. A massive bar fight erupts after a gambler accuses another of cheating."
+                            }
+
+                            ]]>
+    </currentlocationdata>
+   </jsonresponse>
+  </example>
+ </example>
+ <example id="LocationUpdate_Bad" type="bad">
+  <title>
+   INCORRECT - Corrupts state by sending nulls
+  </title>
+  <jsonresponse>
+   <currentlocationdata>
+    <![CDATA[
+
+                            {
+                                "locationId": "loc-tavern-01",
+                                "name": null,
+                                "coordinates": null,
+                                "internalDifficultyProfile": null,
+                                "externalDifficultyProfile": null,
+                                "description": null,
+                                "lastEventsDescription": "#45. A massive bar fight erupts after a gambler accuses another of cheating.",
+                                "image_prompt": null,
+                                "adjacencyMap": null
+                            }
+
+                            ]]>
+   </currentlocationdata>
+  </jsonresponse>
+ </example>
+ <example id="LocationUpdate_Good" type="good">
+  <title>
+   CORRECT - Follows the Law of Partial Updates
+  </title>
+  <jsonresponse>
+   <currentlocationdata>
+    <![CDATA[
+
+                            {
+                                "locationId": "loc-tavern-01",
+                                "lastEventsDescription": "#45. A massive bar fight erupts after a gambler accuses another of cheating."
+                            }
+
+                            ]]>
+   </currentlocationdata>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="Storage_Creation_And_Access_Flag" type="good">
+  <title>
+   Пример: Создание личного хранилища и установка флага доступа
+  </title>
+  <scenariocontext>
+   Игрок находится в своей личной комнате в таверне. В инвентаре у него есть предмет "Дубовый сундук" (ID: item-chest-oak-01).
+                    Сообщение игрока: "Я поставлю этот дубовый сундук в углу комнаты, чтобы хранить в нем свои вещи."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                    # Действие игрока: Создание личного хранилища.
+
+                    ## Шаг 1: Проверка выполнимости (Правило 9.5.1)
+                    - Триггер: Явное намерение разместить постоянное хранилище.
+                    - Предмет: "Дубовый сундук" (ID: item-chest-oak-01) найден в инвентаре, 'isContainer: true'.
+                    - Локация: "Личная комната в таверне" является подходящим местом.
+                    - Результат: Проверка пройдена.
+
+                    ## Шаг 2: Создание хранилища и обновление состояния (Правило 9.5.2)
+                    - Потребление предмета: Предмет "Дубовый сундук" будет удален из инвентаря игрока.
+                    - Создание объекта хранилища:
+                        - storageId: null
+                        - name: "Личный сундук"
+                        - owner: Установлен на текущего игрока.
+                    - Обновление локации: Новый объект хранилища будет добавлен в 'locationStorages' текущей локации.
+
+                    ## Шаг 3: Протокол установки флага доступа UI (Правило 20.11)
+                    - Проверка доступа для "Личного сундука":
+                        - 'ownerType' - 'Player', 'ownerId' совпадает с ID активного игрока.
+                        - Результат: Доступ РАЗРЕШЕН.
+                        - **Установка флага: 'hasFullAccess' будет установлен в 'true'.**
+
+                    ]]>
+  </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                        Вы ставите тяжелый дубовый сундук в углу комнаты. 
+                        Он надежно стоит на полу, готовый служить вам в качестве постоянного хранилища для ваших трофеев и припасов.
+                       
+                        ]]>
+    </response>
+    <removeinventoryitems>
+     <![CDATA[
+
+                        [
+                            {
+                                "removedItemId": "item-chest-oak-01",
+                                "itemName": "Дубовый сундук"
+                            }
+                        ]
+
+                        ]]>
+   </removeinventoryitems>
+   <currentlocationdata>
+    <![CDATA[
+
+                        {
+                            "locationId": "loc-tavern-room-101",
+                            "lastEventsDescription": "#45. Игрок разместил в комнате личный сундук для хранения вещей.",
+                            "locationStorages": [
+                                {
+                                    "storageId": null,
+                                    "name": "Личный сундук",
+                                    "description": "Крепкий дубовый сундук, установленный игроком.",
+                                    "image_prompt": "A sturdy oak chest in the corner of a rustic tavern room, fantasy.",
+                                    "capacity": 15,
+                                    "volume": 100.0,
+                                    "owner": {
+                                        "ownerType": "Player",
+                                        "ownerId": "player-id-123",
+                                        "ownerName": "Имя Игрока"
+                                    },
+                                    "contents": [],
+                                    "hasFullAccess": true
+                                }
+                            ]
+                        }
+
+                        ]]>
+   </currentlocationdata>
+  </jsonresponse>
+ </example>
+ <example id="E_20.MultiLevel">
+  <title>
+   Example: Multi-Level Building with Z Coordinates
+  </title>
+  <content language="json" type="code_example">
+   <![CDATA[
+   // Example showing proper use of Z coordinates for multi-level structures
+   
+   // Player is in a tavern ground floor
+   "currentLocationData": {
+       "locationId": "tavern-rusty-flagon-ground-001",
+       "name": "The Rusty Flagon - Ground Floor",
+       "coordinates": {"x": 5, "y": 3, "z": 0},
+       "locationType": "indoor",
+       "indoorType": "Building",
+       "adjacencyMap": [
+           {
+               "name": "The Rusty Flagon - Second Floor",
+               "shortDescription": "Upstairs private rooms and lodging for travelers",
+               "linkType": "Stairs Up",
+               "linkState": "Safe",
+               "targetCoordinates": {"x": 5, "y": 3, "z": 1},
+               "estimatedInternalDifficultyProfile": {"combat": 1, "environment": 1, "social": 5, "exploration": 2},
+               "estimatedExternalDifficultyProfile": {"combat": 3, "environment": 1, "social": 8, "exploration": 5}
+           },
+           {
+               "name": "The Rusty Flagon - Wine Cellar",
+               "shortDescription": "Dark cellar storing barrels of wine and ale",
+               "linkType": "Ladder Down",
+               "linkState": "Safe",
+               "targetCoordinates": {"x": 5, "y": 3, "z": -1},
+               "estimatedInternalDifficultyProfile": {"combat": 5, "environment": 8, "social": 1, "exploration": 12},
+               "estimatedExternalDifficultyProfile": {"combat": 8, "environment": 10, "social": 2, "exploration": 15}
+           },
+           {
+               "name": "Village Square",
+               "shortDescription": "The bustling heart of the village with market stalls",
+               "linkType": "Door",
+               "linkState": "Safe",
+               "targetCoordinates": {"x": 4, "y": 3, "z": 0},
+               "estimatedInternalDifficultyProfile": {"combat": 2, "environment": 2, "social": 8, "exploration": 5},
+               "estimatedExternalDifficultyProfile": {"combat": 5, "environment": 3, "social": 12, "exploration": 8}
+           }
+       ]
+   }
+   
+   // When player goes upstairs, the second floor location would be:
+   "currentLocationData": {
+       "locationId": "tavern-rusty-flagon-second-001",
+       "name": "The Rusty Flagon - Second Floor",
+       "coordinates": {"x": 5, "y": 3, "z": 1},
+       "locationType": "indoor",
+       "indoorType": "Building",
+       "adjacencyMap": [
+           {
+               "name": "The Rusty Flagon - Ground Floor",
+               "shortDescription": "Common room with fireplace and bar",
+               "linkType": "Stairs Down",
+               "linkState": "Safe",
+               "targetCoordinates": {"x": 5, "y": 3, "z": 0},
+               "estimatedInternalDifficultyProfile": {"combat": 2, "environment": 2, "social": 10, "exploration": 3},
+               "estimatedExternalDifficultyProfile": {"combat": 5, "environment": 2, "social": 15, "exploration": 8}
+           },
+           {
+               "name": "Rooftop Balcony",
+               "shortDescription": "Open balcony overlooking the village",
+               "linkType": "Ladder Up",
+               "linkState": "Safe",
+               "targetCoordinates": {"x": 5, "y": 3, "z": 2},
+               "estimatedInternalDifficultyProfile": {"combat": 3, "environment": 5, "social": 1, "exploration": 8},
+               "estimatedExternalDifficultyProfile": {"combat": 8, "environment": 8, "social": 2, "exploration": 12}
+           }
+       ]
+   }
+   ]]>
+  </content>
+ </example>
+</instructionblock>

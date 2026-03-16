@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "life_transition_invalid_reason"
+  ],
+  "expectedMessages": [
+    "TriggerLifeEnd.reason должен быть Death или Voluntary"
+  ]
+}

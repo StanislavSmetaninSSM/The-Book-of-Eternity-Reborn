@@ -1,0 +1,10 @@
+{
+  "expectedCodes": [
+    "faction_bonus_add_or_update_invalid_bonus_id",
+    "faction_custom_state_change_invalid_state_id"
+  ],
+  "expectedMessages": [
+    "bonusId must be null for add or non-empty string for update",
+    "stateId must be null for add or non-empty string for update"
+  ]
+}

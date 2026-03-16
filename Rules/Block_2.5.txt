@@ -1,0 +1,95 @@
+<instructionblock id="2.5">
+ <title>
+  Core Principle: The Hierarchy of Object Updates (State vs. Partial State vs. Event)
+ </title>
+ <description>
+  This is a critical, high-priority rule that governs HOW you report changes to game entities like NPCs, items, and skills. 
+            Understanding this hierarchy is mandatory for correct JSON generation. There are three methods for reporting changes to existing objects. 
+            You MUST follow this priority order.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            Golden Rule: For any modification to an EXISTING object, follow this decision tree precisely.
+            1.  Is there a specific "Event" array for this exact type of change? If YES, you MUST use it. This is the highest priority.
+            2.  If NO, is the change so fundamental that it transforms the object's identity? If YES, you MUST send its full, updated state.
+            3.  If NO to both above, you MUST send a partial state update, including only the changed fields.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="2.5.1">
+   <title>
+    Priority 1: Dedicated "Event" Arrays (The Preferred Method)
+   </title>
+   <description>
+    Use these for specific, common, incremental updates. If an array exists for your specific change, it is forbidden to use any other method.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+                    These arrays are designed for high-frequency, single-property changes.
+                
+                    YOU MUST USE:
+                    - 'NPCRelationshipChanges': ONLY for updating an NPC's relationship level.
+                    - 'itemBondLevelChanges': ONLY for updating an item's bond level with the owner.
+                    - 'skillMasteryChanges': ONLY for updating a player's skill mastery progress/level.
+                    - 'NPCSkillMasteryChanges': ONLY for updating an NPC's skill mastery.
+                    - 'inventoryItemsResources': ONLY for changing an item's internal resource count (charges, ammo).
+                    - 'moveInventoryItems': ONLY for changing an item's location (its 'contentsPath').
+                    - 'removeInventoryItems': ONLY for completely removing an item stack.
+                    - 'NPCFateCardUnlocks' / 'itemFateCardUnlocks': ONLY to signal that a card has been unlocked.
+                    ]]>
+   </content>
+  </rule>
+  <rule id="2.5.2">
+   <title>
+    Priority 2: Full State Update (For New Objects and Transformations)
+   </title>
+   <description>
+    Use arrays like 'UpdateInventory', 'UpdateNPCs', 'activeSkillChanges' to send the complete object state ONLY in two specific situations.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Object Creation: When a new entity is created for the first time (a new item is found, a new NPC is met, a new skill is learned).
+                
+                    2.  Fundamental Transformation: When an existing entity undergoes a significant change that redefines its core identity, making a partial update insufficient.
+                        - An item's Fate Card is unlocked, changing multiple properties at once (bonuses, combat effects, description).
+                        - A skill evolves into a completely new one (e.g., 'Tough Skin' becomes 'Reinforced Hide').
+                        - An NPC's name, race, or fundamental history is altered by a major plot event.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="2.5.3">
+   <title>
+    Priority 3: Partial State Update (The Universal Law for Updates)
+   </title>
+   <description>
+    This is the default and MANDATORY method for reporting changes to any EXISTING object (Item, NPC, Quest, Location, etc.) for which NO dedicated "Event" array exists.
+   </description>
+   <instructiontext>
+    THE LAW OF PARTIAL UPDATES: 
+                    When updating an existing object, you MUST send an object containing ONLY its unique identifier (e.g., 'existedId', 'NPCId', 'questId', 'locationId') 
+                    AND the specific fields that have actually changed this turn.
+                    
+                    It is STRICTLY FORBIDDEN to include fields whose values have not changed. 
+                    It is also STRICTLY FORBIDDEN to set unchanged fields to 'null'. Doing so will corrupt the game state.
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+
+                    This applies to:
+                    -   'UpdateInventory': For changing item properties like 'durability', 'description', 'bonuses', or 'count'.
+                    -   'UpdateNPCs': For fundamental NPC changes like their 'history', 'class', or core 'appearanceDescription'.
+                    -   'UpdateQuests': For changing a quest's 'description', 'questBackground', or adding to its 'detailsLog'.
+                    -   'currentLocationData': For updating the 'lastEventsDescription' of a known location.
+                    -   Any other data array where you are reporting a change to an existing object.
+
+                    Remember: ID + Only Changed Fields. Nothing else.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

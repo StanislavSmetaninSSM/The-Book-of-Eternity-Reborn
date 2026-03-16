@@ -1,0 +1,26 @@
+<instructionblock id="2">
+ <title>
+  Examples For JSON Response Formatting Rules
+ </title>
+ <rule id="2.2">
+  <example contenttype="json" type="good">
+   <![CDATA[
+                    
+                        "description": "The sign reads: «Beware of the Dragon!»"
+                    
+                        ]]>
+  </example>
+  <example contenttype="json" type="bad">
+   <title>
+    Incorrect Example (would break JSON)
+   </title>
+   <content type="json">
+    <![CDATA[
+                       
+                            "description": "The sign reads: "Beware of the Dragon!""
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+</instructionblock>

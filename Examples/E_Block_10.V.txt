@@ -1,0 +1,233 @@
+<instructionblock id="E_10.V">
+ <title>
+  Example Vehicle Objects and Commands
+ </title>
+ <description>
+  Examples demonstrating proper Vehicle Object structure and transportation commands for various vehicle types.
+ </description>
+ <content type="example_collection">
+  <example id="E_10.V.1">
+   <title>
+    Summonable Flying Sword (Cultivator trope)
+   </title>
+   <content language="json" type="code_example">
+    <![CDATA[
+    // Example UpdateVehicles command granting a cultivator's flying sword
+    "UpdateVehicles": [
+        {
+            "vehicleId": "sword-azure-wind-001",
+            "name": "Azure Wind Blade",
+            "description": "A gleaming spiritual sword wreathed in azure wind energy. Ancient runes pulse along its fuller, and it hums with contained power. When summoned, it expands to accommodate a rider, floating silently above the ground.",
+            "image_prompt": "A mystical floating sword with azure wind currents swirling around it, glowing with spiritual energy, large enough for a person to ride, hovering in mid-air with ancient cultivation runes",
+            "type": "Summonable",
+            "isSentient": true,
+            "availability": "Pocket",
+            "currentLocationId": null,
+            "maxHealth": "200%",
+            "currentHealth": "200%",
+            "speedBonus": 15,
+            "actions": [
+                {
+                    "actionName": "Wind Blade Strike",
+                    "actionCost": "Main",
+                    "targetType": "SingleEnemy",
+                    "effectType": "Damage",
+                    "value": "120",
+                    "damageType": "Slashing",
+                    "range": "Melee",
+                    "description": "The sword performs a precise wind-enhanced strike"
+                },
+                {
+                    "actionName": "Aerial Dodge",
+                    "actionCost": "Fast",
+                    "targetType": "Self",
+                    "effectType": "Buff",
+                    "value": "25",
+                    "duration": "1",
+                    "description": "Quick evasive maneuver in the air, granting +25% dodge chance for 1 turn"
+                }
+            ],
+            "resistances": [
+                {
+                    "damageType": "Wind",
+                    "reductionPercentage": "50%"
+                },
+                {
+                    "damageType": "Physical",
+                    "reductionPercentage": "20%"
+                }
+            ],
+            "inventory": []
+        }
+    ]
+    ]]>
+   </content>
+  </example>
+  <example id="E_Block_10.V.2">
+   <title>
+    Scavenger Buggy (Post-apocalyptic trope)
+   </title>
+   <content language="json" type="code_example">
+    <![CDATA[
+    // Example UpdateVehicles command for a post-apocalyptic wasteland vehicle
+    "UpdateVehicles": [
+        {
+            "vehicleId": "buggy-rust-runner-001",
+            "name": "Rust Runner",
+            "description": "A heavily modified dune buggy cobbled together from scavenged parts. Reinforced steel plates cover vital areas, and twin exhaust pipes belch black smoke. A mounted machine gun sits ready on a swivel mount.",
+            "image_prompt": "Post-apocalyptic armored dune buggy with rusted metal plating, exposed engine, twin exhaust pipes, mounted machine gun, oversized tires with spikes, mad max style vehicle in wasteland setting",
+            "type": "Vehicle",
+            "isSentient": false,
+            "availability": "Parked",
+            "currentLocationId": "location-wasteland-garage-001",
+            "maxHealth": "350%",
+            "currentHealth": "280%",
+            "speedBonus": 12,
+            "actions": [
+                {
+                    "actionName": "Twin Machine Gun Burst",
+                    "actionCost": "Main",
+                    "targetType": "SingleEnemy",
+                    "effectType": "Damage",
+                    "value": "150",
+                    "damageType": "Piercing",
+                    "range": "Ranged",
+                    "description": "Rapid burst from mounted twin machine guns"
+                },
+                {
+                    "actionName": "Ramming Speed",
+                    "actionCost": "Main",
+                    "targetType": "SingleEnemy",
+                    "effectType": "Damage",
+                    "value": "200",
+                    "damageType": "Bludgeoning",
+                    "range": "Melee",
+                    "description": "Full-speed ramming attack, may damage the vehicle",
+                    "selfDamage": "50"
+                }
+            ],
+            "resistances": [
+                {
+                    "damageType": "Piercing",
+                    "reductionPercentage": "30%"
+                },
+                {
+                    "damageType": "Slashing",
+                    "reductionPercentage": "40%"
+                },
+                {
+                    "damageType": "Fire",
+                    "reductionPercentage": "15%"
+                }
+            ],
+            "inventory": [
+                {
+                    "existedId": null,
+                    "name": "Spare Fuel Canister",
+                    "description": "Emergency fuel supply for extended wasteland journeys",
+                    "image_prompt": "Rusty metal fuel canister with warning labels",
+                    "quality": "Common",
+                    "type": "Consumable",
+                    "group": "Fuel",
+                    "price": 25,
+                    "count": 3,
+                    "weight": 2.5,
+                    "volume": 5.0,
+                    "textContent": null,
+                    "journalEntries": null,
+                    "bonuses": [],
+                    "structuredBonuses": [],
+                    "customProperties": [],
+                    "contentsPath": null,
+                    "isContainer": false,
+                    "capacity": null,
+                    "isConsumption": true,
+                    "containerWeight": null,
+                    "weightReduction": null,
+                    "durability": "100%",
+                    "combatEffect": [],
+                    "equipmentSlot": null,
+                    "accessoryForSlot": null,
+                    "requiresTwoHands": false,
+                    "disassembleTo": [],
+                    "fateCards": []
+                }
+            ]
+        }
+    ]
+    ]]>
+   </content>
+  </example>
+  <example id="E_Block_10.V.3">
+   <title>
+    Mounting a Horse - activeVehicleChange Command
+   </title>
+   <content language="json" type="code_example">
+    <![CDATA[
+    // Example of a player mounting their horse
+    "activeVehicleChange": "horse-destrier-thunderhoof-001",
+    
+    // Corresponding vehicle that becomes active (already exists in playerVehicles)
+    "UpdateVehicles": [
+        {
+            "vehicleId": "horse-destrier-thunderhoof-001",
+            "availability": "Active"
+        }
+    ]
+    ]]>
+   </content>
+  </example>
+  <example id="E_Block_10.V.4">
+   <title>
+    Dismounting - Setting Active Vehicle to Null
+   </title>
+   <content language="json" type="code_example">
+    <![CDATA[
+    // Example of a player dismounting their current vehicle
+    "activeVehicleChange": null,
+    
+    // Update the vehicle to be parked at current location
+    "UpdateVehicles": [
+        {
+            "vehicleId": "horse-destrier-thunderhoof-001",
+            "availability": "Parked",
+            "currentLocationId": "location-crossroads-inn-001"
+        }
+    ]
+    ]]>
+   </content>
+  </example>
+  <example id="E_Block_10.V.5">
+   <title>
+    Vehicle Taking Damage in Combat
+   </title>
+   <content language="json" type="code_example">
+    <![CDATA[
+    // Example of updating vehicle health after combat damage
+    "UpdateVehicles": [
+        {
+            "vehicleId": "buggy-rust-runner-001",
+            "currentHealth": "180%"
+        }
+    ]
+    ]]>
+   </content>
+  </example>
+  <example id="E_Block_10.V.6">
+   <title>
+    Removing Destroyed Vehicle
+   </title>
+   <content language="json" type="code_example">
+    <![CDATA[
+    // Example of removing a vehicle that was completely destroyed
+    "removeVehicles": [
+        "wagon-merchant-broken-001"
+    ],
+    
+    // Also set active vehicle to null if it was the destroyed one
+    "activeVehicleChange": null
+    ]]>
+   </content>
+  </example>
+ </content>
+</instructionblock>

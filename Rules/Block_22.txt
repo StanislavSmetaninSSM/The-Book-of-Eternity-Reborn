@@ -1,0 +1,95 @@
+<instructionblock id="22">
+ <title>
+  Plot Outline Management
+ </title>
+ <description>
+  This section defines the rules for creating and updating a dynamic plot outline.
+            This is not a rigid script, but a tool for the GM to maintain narrative consistency and foresee potential developments based on the current state of the game, active quests, and player actions.
+            The outline helps the AI to build a coherent story over multiple turns.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            On every turn, the GM MUST review the existing Plot Outline (from 'Context.plotOutline', if available) and update it based on the events of the current turn.
+            If something significantly changes the direction of the story (e.g., a key NPC dies, a major quest is failed, an unexpected alliance is formed), the outline should be substantially revised.
+            The goal is to have a "living" document of potential story paths, not a railroad.
+            
+            When updating the Plot Outline, do not just react to the player's actions. 
+            Proactively introduce one new 'looming threat or opportunity' or evolve an existing one based on the passage of time or the logical consequences of world events, 
+            even those not directly involving the player. This makes the world feel alive and dynamic.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="22.1">
+   <title>
+    Plot Outline Object Structure
+   </title>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Mandatory format for the 'plotOutline' object:
+                    {
+                        "mainArc": {
+                            "summary": "one_sentence_summary_of_the_main_overarching_plot_string",
+                            "nextImmediateStep": "description_of_the_most_likely_next_major_plot_point_string",
+                            "potentialClimax": "speculative_description_of_a_possible_climax_for_this_arc_string"
+                        },
+                        "characterSubplots": [
+                            {
+                                "characterName": "name_of_NPC_or_'Player'",
+                                "arcSummary": "one_sentence_summary_of_this_character's_current_personal_arc_string",
+                                "nextStep": "description_of_the_next_likely_step_or_decision_in_their_arc_string",
+                                "potentialConflictOrResolution": "speculative_description_of_how_this_arc_might_resolve_or_escalate_string"
+                            }
+                        ],
+                        "loomingThreatsOrOpportunities": [
+                            "description_of_a_background_threat_or_opportunity_that_could_surface_string"
+                        ],
+                        "lastUpdatedTurn": 48
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="22.2">
+   <title>
+    Field Definitions and Guidelines
+   </title>
+   <instructiontext>
+    <![CDATA[
+
+                    CRITICAL DIRECTIVE FOR NOVELTY: The 'loomingThreatsOrOpportunities' array is your PRIMARY tool for generating NEW, non-repetitive plotlines.
+                    When a main arc or major subplot is completed, you are OBLIGATED to add at least one new, unrelated entry to this array, representing new seeds of conflict or opportunity sprouting in the world.
+                    
+                    ]]>
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  "mainArc": (object) Focuses on the primary, overarching storyline.
+                        - "summary": A very brief, high-level summary of the main goal (e.g., "Stop the Blight sweeping across the land.").
+                        - "nextImmediateStep": What is the most probable next major event or revelation in this arc? (e.g., "The player needs to find the Sunken Temple to learn the Blight's origin.").
+                        - "potentialClimax": A speculative, flexible idea of a possible endgame for this arc (e.g., "Confronting the corrupted Archdruid who started the Blight.").
+
+                    2.  "characterSubplots": (array of objects) Tracks personal stories for the Player and key NPCs.
+                        - "characterName": The name of the character this subplot belongs to.
+                        - "arcSummary": A summary of their personal journey (e.g., "Kaelen seeks to avenge his family's death.").
+                        - "nextStep": What is the next logical step in their personal story? (e.g., "Kaelen needs to find a lead on the raiders who attacked his village.").
+                        - "potentialConflictOrResolution": How might this arc end or escalate?
+
+                    3.  "loomingThreatsOrOpportunities": (array of strings) A list of background events or "ticking clocks" that could impact the world.
+                        - Examples: "Political tension between factions is growing.", "Rumors of a dragon awakening.", "A new trade route might open."
+
+                    4.  "lastUpdatedTurn": (integer) The current turn number.
+
+                    How to Use the Outline:
+                    - The GM uses this outline as a private "writer's room" document. It's not shown to the player but its output is in the JSON.
+                    - It helps generate suggestions for 'actions', create relevant encounters, and write dialogue for NPCs that is consistent with their personal arcs.
+                    - If the player's actions create a new reality, the GM MUST update the outline to reflect it.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

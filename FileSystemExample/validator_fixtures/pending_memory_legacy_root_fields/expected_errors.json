@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "pending_memory_legacy_missing_required_fields"
+  ],
+  "expectedMessages": [
+    "pendingMemoryLegacy missing required root fields"
+  ]
+}

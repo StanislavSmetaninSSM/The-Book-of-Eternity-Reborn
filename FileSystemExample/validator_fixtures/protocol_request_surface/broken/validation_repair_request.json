@@ -1,0 +1,8 @@
+{
+  "sessionId": "gm-overwrite-should-not-happen",
+  "requestId": "gm-overwrite-should-not-happen",
+  "turnNumber": 12,
+  "source": "gm_response",
+  "detectedAtUtc": "2026-03-15T00:00:00Z",
+  "gmInstructions": "This file is runtime-authored and must not be rewritten by the GM."
+}

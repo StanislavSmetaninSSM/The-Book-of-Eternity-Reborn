@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "invalid_debug_logs_json_root"
+  ],
+  "expectedMessages": [
+    "output/debug_logs.json must be JSON object"
+  ]
+}

@@ -1,0 +1,225 @@
+<instructionblock id="9">
+ <title>
+  Examples For Crafting and Item Modification
+ </title>
+ <rule id="9.1.2">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player successfully disassembles a "Wooden Shortbow"
+   </title>
+   <content type="text_and_json">
+    <![CDATA[
+
+                                    Context: Player has "Wooden Shortbow" (ID: item-bow-001, count: 1) with 'disassembleTo' defined as: 
+                                    [ {"materialName": "Wood Plank", "quantity": 2, "weight": 0.5, "volume": 0.1, "price": 5, "description": "A sturdy wooden plank."}, 
+                                      {"materialName": "Animal String", "quantity": 1, "weight": 0.1, "volume": 0.01, "price": 2, "description": "A length of strong string."},
+                                      {"materialName": "Iron Nail", "quantity": 3, "weight": 0.05, "volume": 0.005, "price": 1, "description": "A small iron nail."} ]
+                                    Player attempts disassembly. GM decides no special skill/tool/check needed for this simple item.
+
+                                    Log in 'gm_thoughts_markdown':
+                                    "Player attempts to disassemble 'Wooden Shortbow' (item-bow-001).
+                                    - Item is disassemblable.
+                                    - No special skill/tool check required for this item. Yields materials as listed.
+                                    - Yielded: 'Wood Plank' (Quantity: 2, Weight: 0.5 each, Volume: 0.1 each, Price: 5 each, Desc: 'A sturdy wooden plank.')
+                                    - Yielded: 'Animal String' (Quantity: 1, Weight: 0.1, Volume: 0.01, Price: 2, Desc: 'A length of strong string.')
+                                    - Yielded: 'Iron Nail' (Quantity: 3, Weight: 0.05 each, Volume: 0.005 each, Price: 1 each, Desc: 'A small iron nail.')
+                                    - Original 'Wooden Shortbow' (item-bow-001) count becomes 0."
+
+                                    Part of JSON Response:
+                                    "UpdateInventory": [
+                                        { 
+                                            "existedId": "item-bow-001",
+                                            "name": "Wooden Shortbow", 
+                                            "count": 0 
+                                        },
+                                        { 
+                                            "name": "Wood Plank", 
+                                            "description": "A sturdy wooden plank, useful for crafting.", 
+                                            "rarity": "Common", 
+                                            "type": "Material", 
+                                            "group": "CraftingMaterial",
+                                            "count": 2,
+                                            "weight": 0.5, 
+                                            "volume": 0.1, 
+                                            "price": 5,    
+                                            "isConsumption": true, 
+                                            "equipmentSlot": null,
+                                            "disassembleTo": null 
+                                        },
+                                        { 
+                                            "name": "Animal String", 
+                                            "description": "A length of strong string, good for bows or binding.", 
+                                            "rarity": "Common",
+                                            "type": "Material",
+                                            "group": "CraftingMaterial",
+                                            "count": 1,
+                                            "weight": 0.1,
+                                            "volume": 0.01,
+                                            "price": 2,
+                                            "isConsumption": true,
+                                            "equipmentSlot": null
+                                        },
+                                        { 
+                                            "name": "Iron Nail", 
+                                            "description": "A small, sharp iron nail.", 
+                                            "rarity": "Common",
+                                            "type": "Material",
+                                            "group": "CraftingMaterial",
+                                            "count": 3,
+                                            "weight": 0.05,
+                                            "volume": 0.005,
+                                            "price": 1,
+                                            "isConsumption": true,
+                                            "equipmentSlot": null
+                                        }
+                                    ]
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="9.1.3">
+  <example contenttype="log" type="good">
+   <title>
+    Correct Economic Check
+   </title>
+   <scenariocontext>
+    Generating 'disassembleTo' for an "Iron Sword" with 'price: 100'.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Economic Viability Check for "Iron Sword" (Price: 100)
+                                    - Max Materials Value Threshold = 100 * 0.6 = 60.
+
+                                    - Proposed Materials:
+                                        - 2x "Iron Ingot" (Price: 20 each) -> Value: 40
+                                        - 1x "Leather Strip" (Price: 5 each) -> Value: 5
+                                    - Total_Materials_Value = 40 + 5 = 45.
+
+                                    - Check: 45 <= 60. Status: TRUE.
+                                    - Outcome: The material list is economically valid.
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="log" type="bad">
+   <title>
+    Incorrect Economic Check (Requires Adjustment)
+   </title>
+   <scenariocontext>
+    Generating 'disassembleTo' for a "Steel Shield" with 'price: 300'.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Economic Viability Check for "Steel Shield" (Price: 300)
+                                    - Max Materials Value Threshold = 300 * 0.6 = 180.
+
+                                    - Initial Proposed Materials:
+                                      - 4x "Steel Ingot" (Price: 50 each) -> Value: 200
+                                      - 2x "Leather Strip" (Price: 5 each) -> Value: 10
+                                    - Total_Materials_Value = 200 + 10 = 210.
+
+                                    - Check: 210 <= 180. Status: FALSE.
+                                    - Action: Adjustment required. Reducing quantity of 'Steel Ingot' from 4 to 3.
+                                    - Recalculation:
+                                      - 3x "Steel Ingot" (Price: 50 each) -> Value: 150
+                                      - 2x "Leather Strip" (Price: 5 each) -> Value: 10
+                                    - New Total_Materials_Value = 150 + 10 = 160.
+
+                                    - Final Check: 160 <= 180. Status: TRUE.
+                                    - Outcome: Adjusted material list is economically valid. Final yield is 3 Steel Ingots and 2 Leather Strips.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="9.2.2">
+  <example contenttype="json" type="good">
+   <title>
+    Example: Player learns a new recipe
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    "addOrUpdateRecipes": [
+                                        {
+                                            "recipeName": "Recipe: Basic Iron Sword",
+                                            "description": "A simple but sturdy iron sword.",
+                                            "craftedItemName": "Iron Sword",
+                                            "requiredKnowledgeSkill": { "skillName": "Blacksmithing", "requiredMasteryLevel": 1 },
+                                            "requiredMaterials": [
+                                                { "materialName": "Iron Ingots", "quantity": 3 },
+                                                { "materialName": "Leather Strips", "quantity": 1 }
+                                            ],
+                                            "requiredTools": ["Forge", "Anvil", "Hammer"],
+                                            "outputQuantity": 1
+                                        }
+                                    ]
+                                    
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="9.3.2.2">
+  <example contenttype="text" type="good">
+   <title>
+    Logical Material Deduction for "Basic Iron Shield"
+   </title>
+   <content>
+    <![CDATA[
+
+                                            1.  Primary: Shield is metal and wood. Requires "Iron Ingots" (for the boss and rim) and "Wood Planks" (for the body).
+                                            2.  Secondary: Needs a handle. Requires "Leather Strips".
+                                            3.  Resulting Materials: 3x Iron Ingots, 2x Wood Planks, 1x Leather Strips.
+
+                                            ]]>
+   </content>
+  </example>
+  <example contenttype="text" type="bad">
+   <title>
+    Illogical Material Deduction
+   </title>
+   <content>
+    <![CDATA[
+
+                                            Player wants to craft an "Iron Shield". GM decides it requires "1x Iron Ingot". This is illogical as one ingot is insufficient for a shield. It breaks consistency.
+                                        
+                                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="9.4.1">
+  <example contenttype="log" type="good">
+   <title>
+    Example: Player attempts to repair a "Steel Shield" (Durability: 40%)
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                                    # Player Action: Repair "Steel Shield" (Durability: 40%)
+                                    
+                                    1.  Requirement Check:
+                                        - Skill: Requires "Blacksmithing" (Mastery 2+). Player has Mastery 3. (PASS)
+                                        - Materials: Requires 1x "Steel Ingot", 2x "Coal". Player has them. (PASS)
+                                        - Tools: Requires "Forge" and "Anvil". Player is in a smithy. (PASS)
+
+                                    2.  Action Check (Intelligence with Blacksmithing bonus):
+                                        - (Assume the check resolves to 'Full Success').
+
+                                    3.  Outcome Determination ('Full Success'):
+                                        - Durability restored by +40%.
+                                        - New Durability = 40% + 40% = 80%.
+
+                                    4.  State Changes:
+                                        - "Steel Shield" (ID: shield-01) durability becomes "80%".
+                                        - "Steel Ingot" count decreases by 1.
+                                        - "Coal" count decreases by 2.
+
+                                    5.  Final Log Summary: Player successfully repaired the Steel Shield to 80% durability, consuming 1 Steel Ingot and 2 Coal.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+</instructionblock>

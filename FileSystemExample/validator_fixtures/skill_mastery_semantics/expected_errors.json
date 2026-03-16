@@ -1,0 +1,14 @@
+{
+  "expectedCodes": [
+    "skill_mastery_unknown_active_skill",
+    "skill_mastery_non_positive_level",
+    "skill_mastery_negative_progress",
+    "skill_mastery_non_positive_progress_needed"
+  ],
+  "expectedMessages": [
+    "skillMasteryChanges must reference an existing active skill",
+    "newMasteryLevel must be > 0",
+    "newCurrentMasteryProgress must be >= 0",
+    "newMasteryProgressNeeded must be > 0"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "qteId": "qte_ruins_escape_01",
+  "introNarrative": "Ты видишь, как свод начинает осыпаться.",
+  "chapters": [
+    {
+      "chapterId": "start",
+      "narrative": "Камни падают сверху.",
+      "actions": [
+        {
+          "actionId": "jump_left",
+          "label": "Прыгнуть влево",
+          "check": {
+            "type": "TimingBar",
+            "baseDifficulty": 2,
+            "primaryCharacteristic": "dexterity"
+          },
+          "routing": {
+            "success": {
+              "terminalOutcomeId": "success_outcome"
+            },
+            "partial": {
+              "terminalOutcomeId": "success_outcome"
+            },
+            "fail": {
+              "terminalOutcomeId": "fail_outcome"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "terminalOutcomes": [
+    {
+      "outcomeId": "success_outcome",
+      "title": "Выход найден",
+      "finalNarrative": "Ты успеваешь выбраться.",
+      "gmSummary": "Успешное уклонение.",
+      "responseFragment": {
+        "response": "Ты вырываешься наружу.",
+        "experienceGained": 25
+      }
+    },
+    {
+      "outcomeId": "fail_outcome",
+      "title": "Завал",
+      "finalNarrative": "Тебя придавливает обломками.",
+      "gmSummary": "Провал уклонения.",
+      "responseFragment": {
+        "response": "Ты не успеваешь выбраться."
+      }
+    }
+  ]
+}

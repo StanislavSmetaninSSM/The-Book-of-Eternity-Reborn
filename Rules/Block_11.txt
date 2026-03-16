@@ -1,0 +1,246 @@
+<instructionblock id="11">
+ <title>
+  Inventory Item Manipulation: Moving and Removing Items
+ </title>
+ <description>
+  This section details the rules and JSON reporting for actions that change an item's location within the player's inventory (moving) or permanently remove an item from the player's possession (removing).
+            These actions typically do not alter the item's intrinsic properties, only its 'contentsPath' or existence in inventory.
+
+            CRITICAL: 
+            The exact method of removal (via 'removeInventoryItems' or by updating 'count') is governed by the mandatory decision tree in InstructionBlock id="2.6". 
+            You must consult that directive before proceeding.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            Use these rules when the player explicitly moves items between containers/main inventory or when items are definitively removed from their possession.
+            
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="11.1">
+   <title>
+    Moving Items Within Inventory ('moveInventoryItems')
+   </title>
+   <description>
+    This applies when the player moves an existing item from one location (main inventory or a container) to another (main inventory or a different/same container).
+                    This does NOT apply to initially placing a newly acquired item (see #10.2.16).
+   </description>
+   <content type="ruleset">
+    <rule id="11.1.1">
+     <title>
+      Triggering Conditions
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Activate this rule if:
+                            1.  The player explicitly states they are moving an item from a container to their main inventory.
+                            2.  The player explicitly states they are moving an item from their main inventory into a container.
+                            3.  The player explicitly states they are moving an item from one container to another container.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="11.1.2">
+     <title>
+      Checks Before Moving into a Container
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If the item is being moved into a container, the following checks MUST be performed first for the destination container (referencing its current state in Context and considering the item(s) being moved):
+                            a)  Capacity Check: Verify the destination container has enough 'capacity' for the new item stack(s). Follow logic similar to #10.1.0.2.1.
+                            b)  Volume Check: Verify the destination container has enough 'volume' for the item(s) being moved. Follow logic similar to #10.1.0.2.2.
+
+                            If either check fails:
+                                - The move action into that container fails.
+                                - Inform the player in 'response' why the item cannot be placed there (e.g., "The backpack is too full," "That small pouch can't fit your greatsword.").
+                                - Do NOT include an entry for this failed move in 'moveInventoryItems'.
+                                - Log the failed check in 'gm_thoughts_markdown'.
+
+                            If both checks pass, proceed with the move action and include it in the JSON response.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="11.1.3">
+     <title>
+      JSON Reporting for Item Movement ('moveInventoryItems')
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            If an item move is successful (and passes checks in #11.1.2 if applicable), you MUST include the 'moveInventoryItems' key in the JSON response.
+                            Its value is an array of objects, each representing one item (or stack) being moved.
+                            Each object in this array MUST follow the mandatory format defined in #11.1.4.
+
+                            ]]>
+     </instructiontext>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            Mandatory format for each object in 'moveInventoryItems' array:
+                            {
+                                "movedItemId": "guid_of_the_item_being_moved_from_Context",
+                                "itemName": "name_of_the_item_being_moved", 
+                                "currentContentsPath": ["array_of_strings_or_null_current_path"], 
+                                "destinationContainerId": "guid_of_destination_container_from_Context_or_null",
+                                "destinationContainerName": "name_of_destination_container_or_null",
+                                "destinationContentsPath": ["array_of_strings_or_null_new_path_for_item"] 
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="11.1.4">
+     <title>
+      Field Definitions for 'moveInventoryItems' Object
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  "movedItemId": (string GUID) The 'existedId' of the item being moved (must exist in Context).
+                            2.  "itemName": (string) The name of the item being moved.
+                            3.  "currentContentsPath": (array of strings or null) The item's 'contentsPath' *before* the move (as per #10.2.9).
+                            4.  "destinationContainerId": (string GUID or null)
+                                - If moving into a container: The 'existedId' of the destination container from Context.
+                                - If moving out of a container to main inventory: 'null'.
+                            5.  "destinationContainerName": (string or null)
+                                - If moving into a container: The 'name' of the destination container.
+                                - If moving out of a container to main inventory: 'null'.
+                            6.  "destinationContentsPath": (array of strings or null) The item's new 'contentsPath' after the move.
+                                - If moved into "Backpack" (top-level): ["Backpack"]
+                                - If moved into "Small Pouch" which is inside "Backpack": ["Backpack", "Small Pouch"]
+                                - If moved to main inventory: 'null'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="11.1.5">
+     <title>
+      Important Notes on Moving Items
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            -   If a container itself is moved, only include the container item in 'moveInventoryItems'. 
+                            The game system will understand that its contents move with it. 
+                            Do not list individual contents of a moved container.
+                            -   The order of objects in 'moveInventoryItems' array can be important if multiple moves depend on each other (e.g., moving item A out of pouch, then moving pouch into backpack). 
+                            List them in logical sequence.
+                            -   No 'UpdateInventory' entry is typically needed for an item that is only moved, unless other properties like 'durability' also changed in the same turn.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="11.2">
+   <title>
+    Removing Items from Inventory
+   </title>
+   <description>
+    This section defines two distinct methods for removing items from the player's inventory, 
+                    based on whether the entire stack or only a part of it is being removed.
+   </description>
+   <content type="ruleset">
+    <rule id="11.2.1">
+     <title>
+      Method 1: Partial Removal from a Stack (Updating 'count')
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            Use this method when ONLY a part of an item stack is removed 
+                            (e.g., using some materials for crafting, dropping a few arrows, selling some ore).
+                
+                            ]]>
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Triggering Condition: 
+                            The player uses, drops, sells, or otherwise removes a specific quantity of an item from a stack, but not the entire stack.
+
+                            2.  Action:
+                                a.  Calculate the new count: 'newCount = currentCount - quantityRemoved'.
+                                b.  In the 'UpdateInventory' array, include an object for the item stack with its 'existedId' and the updated 'newCount'.
+
+                            3.  Forbidden Usage: Do NOT use 'removeInventoryItems' for partial removals.
+
+                            4.  Logging: Log the action, the quantity removed, and the new count in 'gm_thoughts_markdown'.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="11.2.2">
+     <title>
+      Method 2: Complete Removal of an Entire Stack ('removeInventoryItems')
+     </title>
+     <instructiontext>
+      <![CDATA[
+
+                            Use this command ONLY when the player's explicit INTENT is to permanently get rid of the ENTIRE item stack from their inventory.
+                            Consult the mandatory decision tree in InstructionBlock id="2.6" to confirm this is the correct method.
+                            
+                            ]]>
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="11.2.2.1">
+       <title>
+        Triggering Conditions
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Use the 'removeInventoryItems' array if the player's action is:
+                                    1.  Dropping an entire item stack (e.g., "I drop all my iron ore").
+                                    2.  Destroying an item completely (e.g., smashing a fragile quest item).
+                                    3.  Giving an entire item stack to an NPC.
+                
+                                    This command signifies the removal of the item's master entry from the inventory.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="11.2.2.2">
+       <title>
+        JSON Reporting for Complete Stack Removal ('removeInventoryItems')
+       </title>
+       <content language="json" type="code_example">
+        <![CDATA[
+
+                                    Mandatory format for each object in 'removeInventoryItems' array:
+                                    {
+                                        "removedItemId": "guid_of_the_item_stack_being_removed_from_Context",
+                                        "itemName": "name_of_the_item_being_removed",
+                                        "currentContentsPath": ["array_of_strings_or_null_current_path"]
+                                    }
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="11.2.2.3">
+       <title>
+        CRITICAL USAGE NOTE: This is NOT for Consumption
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    It is strictly FORBIDDEN to use 'removeInventoryItems' for items that are CONSUMED as part of a game mechanic (crafting, using a single-use potion, firing an arrow).
+
+                                    -   If a gameplay action consumes the last item of a stack, you MUST instead update its 'count' to 0 via 'UpdateInventory' (as per Rule #5.13.3).
+                                    -   If a gameplay action depletes an item's 'resource' to 0, you MUST instead update its 'resource' via 'inventoryItemsResources'.
+
+                                    'removeInventoryItems' is SOLELY for actions where the player's primary goal is to discard the entire stack itself.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

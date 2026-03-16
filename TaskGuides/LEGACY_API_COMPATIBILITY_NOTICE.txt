@@ -1,0 +1,72 @@
+<InstructionBlock id="TaskGuide_CLI_Compatibility_Notice">
+    <Title>LEGACY TASKGUIDE COMPATIBILITY NOTICE</Title>
+    <Description>
+        This notice applies to ALL existing TaskGuide files (Step_*.txt).
+        These guides were designed for API multi-step pipeline processing.
+        They are now DEPRECATED for CLI file-based operations.
+    </Description>
+
+    <DeprecationStatus>
+        <![CDATA[
+        **STATUS:** LEGACY/DEPRECATED for CLI Mode
+        **REASON:** API-specific multi-step pipeline incompatible with CLI single-step file processing
+        **REPLACEMENT:** TaskGuides/CLI_Step_Main.txt
+        
+        **FILES AFFECTED:**
+        - Step_0.txt (Analysis phase - now integrated into main processing)
+        - Step_SimpleFullResponse.txt (Single JSON response - now file distribution)
+        - Step_2.txt through Step_7.txt (Pipeline steps - now unified workflow)
+        - All other Step_*.txt files (Various specialized steps)
+        ]]>
+    </DeprecationStatus>
+
+    <LegacyAPISupport>
+        <![CDATA[
+        **FOR API MODE COMPATIBILITY:**
+        
+        If system is operating in API mode (not CLI mode):
+        - All existing Step_*.txt files remain fully functional
+        - Multi-step pipeline operates exactly as designed
+        - JSON response structure unchanged
+        
+        **MODE DETECTION:**
+        - CLI Mode: Input files in input/ directory present
+        - API Mode: Direct prompt-response interaction
+        ]]>
+    </LegacyAPISupport>
+
+    <CLIRedirection>
+        <![CDATA[
+        **FOR CLI MODE OPERATIONS:**
+        
+        **IGNORE ALL LEGACY STEP FILES** (Now deleted)
+        **USE ONLY:** TaskGuides/CLI_Step_Main.txt
+        
+        The CLI main step provides:
+        - Unified workflow (input → processing → output distribution)
+        - Full compatibility with ALL existing Rules/Block_*.txt
+        - Special scenario handling (Life Evaluation, Guardian Interaction)
+        - Proper file-based operations
+        - Error handling and atomic transactions
+        
+        **Key Difference:**
+        - Legacy: Multi-step JSON pipeline
+        - CLI: Single-step file distribution
+        ]]>
+    </CLIRedirection>
+
+    <ImportantNote>
+        <![CDATA[
+        **CRITICAL FOR CLI AGENTS:**
+        
+        DO NOT attempt to implement Step_0.txt scope restrictions in CLI mode.
+        DO NOT attempt to generate partial JSON responses.
+        DO NOT attempt to implement multi-step pipeline.
+        
+        **CLI Mode = Complete unified processing in single operation**
+        **API Mode = Multi-step pipeline with scope restrictions**
+        
+        These are fundamentally different architectures.
+        ]]>
+    </ImportantNote>
+</InstructionBlock>

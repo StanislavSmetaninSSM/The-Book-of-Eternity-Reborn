@@ -1,0 +1,706 @@
+<instructionblock id="17">
+ <title>
+  Player Character State Management
+ </title>
+ <description>
+  This section outlines rules for managing and calculating changes to the player character's core state values such as health, energy, experience, money, and weight-related effects. These changes are reported via specific keys in the JSON response.
+ </description>
+ <instructiontext>
+  <![CDATA[
+            Each turn, the GM must calculate and report changes to the player's health, energy, experience, and money. 
+            Additionally, the impact of inventory weight on energy expenditure must be determined.
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="17.1">
+   <title>
+    Weight and Overload Calculation ('calculatedWeightData')
+   </title>
+   <description>
+    Calculates additional energy expenditure due to inventory weight overload based on time spent, ensuring fairness across different action durations.
+   </description>
+   <content type="ruleset">
+    <rule id="17.1.1">
+     <title>
+      Purpose
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            This calculation determines if the player character is overloaded by the weight of their inventory and, if so, how much additional energy they expend based on the actual time spent during the turn, not just the number of actions.
+                            
+                            ]]>
+     </content>
+    </rule>
+    <rule id="17.1.2">
+     <title>
+      JSON Reporting ('calculatedWeightData')
+     </title>
+     <instructiontext>
+      Include the 'calculatedWeightData' key in the JSON response.
+     </instructiontext>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            Mandatory format for the 'calculatedWeightData' object:
+                            { 
+                                "additionalEnergyExpenditure": "numeric_value_or_null" 
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="17.1.3">
+     <title>
+      Calculation Steps
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            #17.1.3.1. Energy Expenditure Logic:
+                            When a player character carries too much weight, they become overloaded. When overloaded, they lose energy proportional to the TIME SPENT during that turn, not based on the number of actions taken.
+
+                            #17.1.3.2. Current Inventory Weight:
+                            Let 'CurrentTurnItemsWeight' = player's current total inventory weight from Context (e.g., Context.playerCharacter.totalWeight).
+
+                            #17.1.3.3. Maximum Weight Threshold ('MaxWeight'):
+                            Let 'MaxWeight' = player's maximum carrying capacity before overload from Context (e.g., Context.playerCharacter.maxWeight, calculated as per #5.7.3).
+
+                            #17.1.3.4. Check for Overload:
+                            If 'CurrentTurnItemsWeight' > 'MaxWeight', the player is overloaded. Then:
+                                a) Calculate Overload Amount: 
+                                   'WeightOverload' = CurrentTurnItemsWeight - MaxWeight.
+                                b) Calculate Time Spent This Turn:
+                                   'TimeSpent' = timeChange value being reported in JSON output this turn (in minutes).
+                                   If timeChange is null or 0, use a default minimum of 5 minutes (quick actions still take some time).
+                                c) Calculate Additional Energy Expenditure: 
+                                   'OverloadRatePerMinute' = WeightOverload * 0.4 (energy cost per kg overload per minute).
+                                   Set 'additionalEnergyExpenditure' = OverloadRatePerMinute * TimeSpent.
+                                d) Logging: Record the calculation steps in 'gm_thoughts_markdown'.
+                                   Example Log:
+                                   "Calculating Additional Energy Expenditure due to Overload:
+                                   \n\n- Current Weight at Start of Turn: 35 kg
+                                   \n\n- Max Weight Threshold: 30 kg
+                                   \n\n- Overload: 35 - 30 = 5 kg
+                                   \n\n- Time Spent This Turn: 15 minutes
+                                   \n\n- Overload Rate: 5 kg * 0.4 = 2.0 energy per minute
+                                   \n\n- Additional Energy Expenditure: 2.0 * 15 = 30"
+
+                            #17.1.3.5. No Overload:
+                            If 'CurrentTurnItemsWeight' <= 'MaxWeight', the player is not overloaded.
+                            Set 'additionalEnergyExpenditure' to 'null'. Do not log this calculation as it's not an active penalty.
+
+                            GM Note: The server will automatically use 'additionalEnergyExpenditure' to adjust the player's energy. The GM should not manually change 'currentEnergyChange' due to overload.
+                            
+                            FAIRNESS NOTE: This new time-based system ensures that overweight penalties are proportional to actual time spent.
+                            - A player taking 3 quick actions (15 minutes total) with 5kg overload will lose 30 energy
+                            - A player traveling across the city for 60 minutes with 5kg overload will lose 120 energy
+                            This prevents the unfair situation where identical turn counts resulted in identical penalties regardless of time investment.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="17.2">
+   <title>
+    Calculating Changes in Health, Energy, Experience, and Money
+   </title>
+   <description>
+    Defines how to determine and report changes to the player's core resources and progression.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    These changes are reported via 'currentHealthChange', 'currentEnergyChange', 'experienceGained', and 'moneyChange' keys in the JSON response.
+                    For the first turn of the game (current turn is 1), these values MUST all be 0.
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="17.2.1">
+     <title>
+      Energy Change ('currentEnergyChange') and Fatigue
+     </title>
+     <content type="ruleset">
+      <rule id="17.2.1.1">
+       <title>
+        Calculating Energy Change
+       </title>
+       <instructiontext>
+        <![CDATA[
+
+                                    CRITICAL DIRECTIVE: The Principle of Effort.
+                                    Energy is a measure of a character's physical and mental stamina. 
+                                    It is consumed ONLY by actions that require a tangible EFFORT. 
+                                    It is STRICTLY FORBIDDEN to deduct energy for passive or restorative activities like simple conversation, resting, eating, or drinking.
+                                    Your primary task is to first determine the NATURE of the player's activity, and only then assign a cost.
+
+                                    ]]>
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    a) Base Action Cost (per significant player action this turn):
+                                    Energy is a resource that reflects a character's stamina and focus. 
+                                    It is consumed by significant physical or mental effort. The amount of change depends on the action's intensity.
+
+                                     -  Passive / Restorative State (0 energy, or potential GAIN):
+                                        These states represent minimal to no effort and may lead to energy recovery. This is the default cost for a turn if no significant effort is made.
+                                        Examples: 
+                                            Simply sitting and having a casual chat;
+                                            Resting by a fire;
+                                            Eating and drinking;
+                                            Reading a book;
+                                            Standing watch without incident.
+                                        CRITICAL: If the primary activity of the turn is restorative (like eating a meal), it should result in an ENERGY GAIN, not a cost.
+
+                                    -   Passive / Trivial Actions (0 energy):
+                                        These actions represent minimal effort and DO NOT consume energy. This is the default cost for a turn if no significant action is taken.
+                                        Examples: 
+                                            Looking around a room;
+                                            Thinking;
+                                            Having a simple, short conversation;
+                                            Standing still;
+                                            Walking a few steps within the same small area.
+
+                                    -   Light Actions (-1 energy):
+                                        These actions require minimal, sustained effort or focus.
+                                        Examples: 
+                                            A long and intense conversation (negotiation, interrogation);
+                                            Carefully examining a complex object;
+                                            Walking at a leisurely pace for a while;
+                                            Performing a simple task like lighting a torch.
+
+                                    -   Moderate Actions (-2 to -4 energy):
+                                        These actions involve noticeable physical or mental exertion.
+                                        Examples: 
+                                            Searching a large area;
+                                            Basic crafting;
+                                            Using non-strenuous skills;
+                                            Jogging;
+                                            Climbing a simple ladder.
+
+                                    -   Strenuous Actions (-5 to -10 energy):
+                                        These are physically or mentally demanding actions that significantly tax the character.
+                                        Examples: 
+                                            Running/sprinting;
+                                            Climbing a difficult wall;
+                                            Intense combat maneuvers that are the main focus of the turn;
+                                            Casting a powerful and taxing spell.
+
+                                    -   Restoration Actions (+5 to +20 energy):
+                                        Actions focused on recovery.
+                                        Examples: 
+                                            Resting comfortably;
+                                            Meditating in a calm environment;
+                                            Consuming a hearty meal or refreshing drink;
+                                            Receiving a magical healing effect that restores stamina.
+
+                                    a.1) Specific Energy Cost from Skills or Items (Overrides Base Action Cost):
+                                    If the player's primary action for the turn is the use of an Active Skill (InstructionBlock id="7") 
+                                    or an Item with an activatable combat effect (InstructionBlock id="10" -> Rule "10.4.3.3"), and that skill/item has a defined 'energyCost':
+                                        -   This specific 'energyCost' MUST be used as the energy expenditure for that action.
+                                        -   It OVERRIDES the general "Base Action Cost" from rule 'a)' above. Do NOT apply both.
+                                        -   If the 'energyCost' is a percentage string (e.g., "12%"), convert it to an integer by calculating: 
+                                        'round(ParsedPercentageValue / 100 * Context.playerCharacter.maxEnergy)'.
+                                        -   If the skill/item has no defined 'energyCost' but is clearly "Strenuous", use the range from "Strenuous Actions" above.
+                                        -   Log the calculation of the energy cost, especially if a percentage conversion was performed.
+
+                                    b) Sum all energy changes from actions performed this turn. 
+                                    This includes the specific costs from skills/items (if applicable) and any general action costs for other, minor, or secondary actions performed in the same turn.
+
+                                    c) Consumption: If player consumes an item (food, potion) with an energy restoration 'bonus' (from item's 'bonuses' array), add that restoration amount.
+
+                                    d) Record the net change in 'currentEnergyChange' (integer, can be positive or negative).
+
+                                    e) GM Note: Do NOT include 'additionalEnergyExpenditure' from overload here; 
+                                    the system handles that separately by applying it to the final energy total for the turn.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="17.2.1.2">
+       <title>
+        The "Fatigued" State
+       </title>
+       <instructiontext>
+        <![CDATA[
+
+                                    When a player character's 'currentEnergy' drops to 0 or below, they become Fatigued. 
+                                    This is a persistent debuff that represents physical and mental exhaustion.
+                                    
+                                    ]]>
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    1.  Triggering Fatigue:
+                                        - If, after all energy calculations for the turn (including action costs and overload expenditure), the player's energy is 0 or less, the "Fatigued" status is applied.
+                                        - This status persists until the character's 'currentEnergy' becomes greater than 0.
+
+                                    2.  Mechanical Effect of "Fatigued":
+                                        - The "Fatigued" status is a Debuff that imposes Normal Disadvantage on ALL d20-based action checks (physical, mental, and social). 
+                                        Refer to InstructionBlock '5' -> Rule '5.16' for Disadvantage mechanics.
+                                        - This Debuff MUST be created and reported via the 'playerActiveEffectsChanges' array.
+
+                                    3.  Reporting the "Fatigued" Debuff:
+                                        - When the state is applied, add the following Effect Object to 'playerActiveEffectsChanges':
+                                        {
+                                            "effectType": "Debuff",
+                                            "value": "Disadvantage", 
+                                            "targetType": "all_action_checks",
+                                            "duration": 999, // Represents a persistent state
+                                            "sourceSkill": "Exhaustion",
+                                            "description": "Fatigued! You have Disadvantage on all action checks until you rest."
+                                        }
+
+                                    4.  Removing Fatigue:
+                                        - When the character's 'currentEnergy' is restored to a value greater than 0 (e.g., through rest, potions), the "Fatigued" debuff is automatically removed.
+                                        - To report this, add an object to 'playerActiveEffectsChanges' that signals the removal of the effect. This can be done by providing the effect's 'description' and a new 'duration' of 0.
+                                        {
+                                            "effectType": "Debuff",
+                                            "description": "Fatigued! You have Disadvantage on all action checks until you rest.",
+                                            "duration": 0 // Setting duration to 0 signals removal
+                                        }
+
+                                    5.  Narrative: 
+                                    The GM MUST narrate the onset of fatigue 
+                                    (e.g., "Your muscles burn and your vision blurs from exhaustion. Every action feels like a monumental effort.") and its relief. 
+                                    The state MUST also be reflected in the 'playerStatus.activeConditions' array.
+
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="17.2.2">
+     <title>
+      Experience Gain ('experienceGained')
+     </title>
+     <content type="ruleset">
+      <rule id="17.2.2.1">
+       <title>
+        Awarding Experience
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Player characters gain experience (XP) for successful actions, completing quests, overcoming challenges, and significant discoveries. 
+                                    The amount awarded MUST reflect the difficulty of the task relative to the player's current level.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="17.2.2.2">
+       <title>
+        CRITICAL DIRECTIVE: The Equivalent Contribution Experience Protocol
+       </title>
+       <description>
+        This is the mandatory protocol for calculating ALL experience point rewards. 
+                                    It employs a hybrid system to distinguish between relevant and trivial tasks, rewards diverse playstyles, and encourages clever gameplay.
+       </description>
+       <instructiontext>
+        <![CDATA[
+
+                                    You MUST follow this multi-step protocol to calculate 'experienceGained'.
+
+                                    Step 1: Determine Task Level and Relevance.
+                                    First, assign a 'TaskLevel' to the action. 
+                                    Then, perform the "Relevance Check" to determine whether to use the Scaled Reward path or the Trivial Reward path.
+
+                                    Step 2: Calculate XP based on the chosen path.
+
+                                    Final Formula (for Relevant Tasks):
+                                    experienceGained = floor( (TotalXPForLevel * BRP * LevelDepthCoefficient) * TrivialityMultiplier * DifficultyMultiplier * CombatMultiplier * CreativityMultiplier * FirstTimeMultiplier * ExploitMultiplier * MasteryMultiplier )
+                                    
+                                    ]]>
+       </instructiontext>
+       <content type="ruleset">
+        <rule id="17.2.2.2.A">
+         <title>
+          Step 1: Determine Task Level and Relevance
+         </title>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            1.  Determine Task Level: First, assign an objective 'TaskLevel' to the action.
+                                                -   For COMBAT: 'TaskLevel' = 'EL' of the defeated enemy.
+                                                -   For QUESTS: 'TaskLevel' = The level the quest is designed for.
+                                                -   For OTHER actions (crafting, discovery, social): 'TaskLevel' is the GM's assessment of its complexity.
+
+                                            2.  Perform Relevance Check:
+                                                -   Calculate 'LevelDifference = PlayerLevel - TaskLevel'.
+                                                -   IF 'LevelDifference <= 10': The task is RELEVANT. Proceed to Path A: Scaled Reward.
+                                                -   IF 'LevelDifference > 10': The task is TRIVIAL. Proceed to Path B: Trivial Reward.
+
+                                            ]]>
+         </content>
+        </rule>
+        <rule id="17.2.2.2.B">
+         <title>
+          Step 2, Path A: Scaled Reward Calculation (for Relevant Tasks)
+         </title>
+         <content type="ruleset">
+          <rule id="17.2.2.2.B.1">
+           <title>
+            Component: Base Reward Percentage (BRP)
+           </title>
+           <content type="rule_text">
+            <![CDATA[
+
+                                                    This is the percentage of the current level a standard task of this type should award.
+
+                                                    -   COMBAT (Defeating a standard, on-level enemy): 0.10 (10%)
+
+                                                    -   MAJOR QUEST objective completion: 0.30 to 0.50 (30-50%)
+
+                                                    -   MINOR QUEST or standard task: 0.05 to 0.15 (5-15%)
+
+                                                    -   DISCOVERY (new location, major secret): 0.10 to 0.20 (10-20%)
+
+                                                    -   SOCIAL (winning a debate, forging an alliance, etc.): 0.10 to 0.25 (10-25%)
+
+                                                    ]]>
+           </content>
+          </rule>
+          <rule id="17.2.2.2.B.2">
+           <title>
+            Component: Level Depth Coefficient
+           </title>
+           <content type="rule_text">
+            <![CDATA[
+
+                                                    This multiplier gently increases the effort needed for higher levels.
+
+                                                    -   Formula: 'LevelDepthCoefficient = 1 / log10(PlayerLevel + 9)'
+
+                                                    ]]>
+           </content>
+          </rule>
+          <rule id="17.2.2.2.B.3">
+           <title>
+            Component: Standard &amp; Situational Multipliers
+           </title>
+           <content type="rule_text">
+            <![CDATA[
+
+                                                    These multipliers reward specific types of gameplay. They stack.
+
+                                                    -   DifficultyMultiplier: (Unchanged)
+                                                        -   Deadly (>+10): 2.0
+                                                        -   Hard (+5 to +9): 1.5
+                                                        -   Standard (-4 to +4): 1.0
+                                                        -   Easy (-5 to -9): 0.5
+                                                        -   Trivial (<-10): 0.1
+
+                                                    -   CombatMultiplier:
+                                                        -   If Source is COMBAT: 2.5
+                                                        -   If Source is NON-COMBAT: 1.0
+
+                                                    -   CreativityMultiplier:
+                                                        -   For a particularly clever solution: 1.25
+                                                        -   Otherwise: 1.0
+
+                                                    -   FirstTimeMultiplier:
+                                                        -   For defeating an enemy type for the first time, or discovering a significant new location: 1.5
+                                                        -   Otherwise: 1.0
+
+                                                    -   ExploitMultiplier:
+                                                        -   (Combat Only) If the majority of damage dealt exploited an enemy's vulnerability (negative resistance): 1.25
+                                                        -   Otherwise: 1.0
+
+                                                    -   MasteryMultiplier:
+                                                        -   (Non-Combat Only) If the action check relied on a 'KnowledgeBased' passive skill: '1.0 + (MasteryLevel_of_Skill * 0.1)'
+                                                        -   Otherwise: 1.0
+
+                                                    ]]>
+           </content>
+          </rule>
+         </content>
+        </rule>
+        <rule id="17.2.2.2.C">
+         <title>
+          Step 2, Path B: Trivial Reward Calculation
+         </title>
+         <instructiontext>
+          <![CDATA[
+
+                                            This path provides a small, scaled reward that acknowledges the player's action without breaking the progression curve at any level.
+
+                                            ]]>
+         </instructiontext>
+         <content type="rule_text">
+          <![CDATA[
+
+                                            -   Formula: 'experienceGained = (PlayerLevel * 5) + (TaskLevel * 10)'
+
+                                            This formula guarantees a respectable minimum reward for any completed trivial task, with a small bonus based on the task's original complexity.
+                                            
+                                            ]]>
+         </content>
+        </rule>
+       </content>
+      </rule>
+      <rule id="17.2.2.3">
+       <title>
+        CRITICAL DIRECTIVE: The Protocol of Milestone Rewards for Complex Non-Combat Tasks
+       </title>
+       <description>
+        This protocol mandates that complex, multi-stage non-combat encounters 
+                                    (e.g., a court case, a diplomatic negotiation, a major investigation) be treated as a series of rewarded milestones, not a single action. 
+                                    This ensures that players focused on social or exploration gameplay receive experience at a comparable rate to combat-focused players.
+       </description>
+       <instructiontext>
+        <![CDATA[
+
+                                    When a player engages in a complex non-combat task that will span multiple actions or turns, you MUST:
+                                    
+                                    1.  Deconstruct the Task: 
+                                        In your internal logs ('gm_thoughts_markdown'), break the complex task down into 2-4 logical key milestones.
+                                    
+                                    2.  Reward Milestone Completion: 
+                                        Upon the successful completion of EACH milestone (e.g., winning a key argument, discovering a critical clue), you MUST award the player an XP grant.
+                                    
+                                    3.  Calculate Milestone Reward: 
+                                        This grant is calculated using the full experience formula (Path A), with the 'BaseRewardPercentage' set to a value appropriate for a "Minor Quest" or "Standard Task" (e.g., 0.05 to 0.15). 
+                                        The final milestone (e.g., winning the entire court case) should use a higher "Major Quest" percentage.
+
+                                    This approach rewards the process of problem-solving, not just the final outcome, making non-combat gameplay far more engaging and mechanically viable for progression.
+                                    
+                                    ]]>
+       </instructiontext>
+      </rule>
+     </content>
+    </rule>
+    <rule id="17.2.3">
+     <title>
+      Health Change ('currentHealthChange')
+     </title>
+     <content type="ruleset">
+      <rule id="17.2.3.1">
+       <title>
+        Sources of Health Loss
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Player health decreases from:
+                                    - Combat Damage: Wounds from attacks, spells (as calculated in InstructionBlock '15').
+                                    - Physical Trauma: Falls, impacts (1-3 minor, 4-7 moderate, 8-15 serious, 16-25 severe, 26+ critical).
+                                    - Environmental Damage: Extreme temperatures, acid, drowning.
+                                    - Creature Interactions: Bites, stings, special abilities.
+                                    - Accidents/Mishaps: Failed dangerous actions, traps.
+                                    - Zero Energy Penalty: If 'currentEnergy' from Context is 0, an additional 1-10 health is lost.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="17.2.3.2">
+       <title>
+        Sources of Health Restoration
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Player health is restored by:
+                                    - Natural Healing (Rest): +1 to +10 per full rest.
+                                    - Medical Treatment/Skills: +2 to +20 based on skill/method.
+                                    - Consumables: Potions, food with health restoration 'bonus' (add bonus value).
+                                    - Magical Healing: As defined by skills/items.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="17.2.3.3">
+       <title>
+        Calculation and Reporting
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    a) Sum all health damage and restoration from the current turn.
+                                    b) Record the net change in 'currentHealthChange' (integer, negative for damage, positive for healing).
+                                    c) Record detailed breakdown in 'gm_thoughts_markdown'.
+
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="17.2.4">
+     <title>
+      Money Change ('moneyChange')
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            a) Record changes to player's money (from Context.playerCharacter.money).
+                            b) Positive for money gained (selling items, rewards), negative for money spent (buying items, services).
+                            c) Set 'moneyChange' to the net integer value.
+                            d) Player cannot spend more money than they have. If a transaction exceeds available funds, it fails or is only partially completed.
+                            
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="17.3">
+   <title>
+    Calculating Time Change ('timeChange')
+   </title>
+   <description>
+    Defines how to determine the amount of time consumed by the player's actions during the turn.
+   </description>
+   <content type="ruleset">
+    <rule id="17.3.1">
+     <title>
+      Time Cost of Actions
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The GM must assign a logical time cost (in minutes) to the player's main action(s) for the turn. Use the following guidelines:
+
+                            -   Trivial Actions (0-1 minute): 
+                            Speaking a single sentence, drawing a weapon, taking an item from a belt pouch.
+                            
+                            -   Minor Actions (1-5 minutes): 
+                            Thoroughly searching a small area (a desk, a body), having a short conversation, carefully picking a simple lock.
+                            
+                            -   Moderate Actions (5-30 minutes): 
+                            Having a detailed negotiation, crafting a simple item (e.g., arrows), preparing a small meal, reading a chapter of a book, 
+                            carefully disarming a standard trap, applying First Aid to a wound.
+
+                            -   Significant Actions (30-120 minutes): 
+                            Crafting a complex item (e.g., a sword), traveling between nearby locations within a city, conducting a stakeout for an hour, fully resting.
+                            
+                            -   Special Actions: 
+                            Some skills or actions might have their time cost defined directly (e.g., a ritual that takes exactly 10 minutes).
+
+                            If a turn involves multiple significant actions, sum their costs.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="17.3.2">
+     <title>
+      Calculation and Reporting
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Determine the time cost for all actions performed by the player this turn.
+                            
+                            2.  Sum the costs to get the total 'timeChange' value.
+                            
+                            3.  Log the calculation in 'gm_thoughts_markdown'.
+                                Example Log: 
+
+                                "Time Cost Calculation: Action 'Craft Healing Potion' is a Moderate non-combat action. 
+                                Base Time Cost: 20 minutes. 
+                                Total Time Change for the turn: 20."
+                            
+                            4.  Set the 'timeChange' key in the JSON response to this integer value. 
+                            If no significant time passed, set it to 0 or null.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="17.3.3">
+     <title>
+      Integration with World State
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            The game system will use the value of 'timeChange' to update the world clock. The GM does not need to manually calculate the new date or time.
+                            The system will handle all transitions and recalculate the full 'worldState.date' object, including its 'timeOfDay' (HH:MM).
+                            The GM MUST, however, reflect these time changes narratively. 
+                            If an action took 2 hours, the description in the next turn should mention that the sun is now lower in the sky, in a way that is consistent with the new 'worldState.date.timeOfDay' value.
+        
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="17.4">
+   <title>
+    CRITICAL DIRECTIVE: The Direct Characteristic Modification Protocol ('setCharacteristics')
+   </title>
+   <description>
+    This protocol defines a high-priority, GM-only command for directly setting a player's STANDARD characteristics to specific values.
+                    This is a powerful tool for meta-game character setup or for applying significant, guaranteed rewards from god-like entities.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    This command is an ABSOLUTE OVERRIDE. 
+                    When you use 'setCharacteristics', you MUST understand and apply the following principles without deviation.
+    
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="17.4.1">
+     <title>
+      Triggering Conditions (Strictly Limited Use)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            You are authorized to use the 'setCharacteristics' command ONLY under one of the following two conditions:
+
+                            1.  Explicit Player Meta-Command: 
+                                The player issues a clear, out-of-character (OOC) instruction to set their character's stats to specific values 
+                                (e.g., for character setup, respecialization, or fixing an error).
+            
+                            2.  Major Narrative Boon: 
+                                A significant plot event occurs where a powerful entity (a god, an arch-demon, an ancient spirit, a reality-warping artifact) grants the player a direct and permanent boost to their core being. 
+                                This is NOT for standard quest rewards; it is for epic, story-defining moments.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="17.4.2">
+     <title>
+      Mandatory Protocol for Application
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            When a trigger condition is met:
+
+                            1.  Bypass All Limits: 
+                                The 'setCharacteristics' command COMPLETELY BYPASSES the standard "Training Cap" ('PlayerLevel * 2') defined in Rule #5.A.1. 
+                                It is a direct overwrite of the value.
+
+                            2.  Target Standard Characteristics: 
+                                This command modifies the player's 'standard' characteristics (e.g., 'standardStrength'). 
+                                It does NOT directly modify 'modified' characteristics; those will be recalculated by the system based on the new standard value.
+
+                            3.  JSON Structure: 
+                                The 'setCharacteristics' key in the JSON response must be an object where:
+                                -   Keys are the English (ONLY the English!), lowercase system names of the characteristics to be changed (e.g., "strength", "wisdom").
+                                -   Values are the new integer values.
+
+                            4.  MANDATORY LOGGING: 
+                                This is a powerful change and requires a full audit trail. 
+                                In 'gm_thoughts_markdown', you MUST log:
+                                -   The reason for the change (which of the two trigger conditions was met).
+                                -   The name of each characteristic being changed.
+                                -   Its value BEFORE the change (from Context).
+                                -   The NEW value it is being set to.
+                                -   An explicit statement that the Training Cap is being bypassed.
+
+                            5.  Narrative Integration: 
+                                The 'response' narrative MUST reflect this change. 
+                                If it's a divine boon, describe the transcendent feeling of newfound power. 
+                                If it's a meta-command, provide a clear, concise confirmation.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

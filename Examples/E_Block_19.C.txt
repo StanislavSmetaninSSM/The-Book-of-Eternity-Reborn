@@ -1,0 +1,74 @@
+<instructionblock id="19.C">
+ <title>
+  Examples For CRITICAL DIRECTIVE: NPC Encumbrance Protocol (True Player Analogue)
+ </title>
+ <rule id="19.C.2">
+  <example type="good">
+   <title>
+    Player tries to give a 15kg shield to a companion.
+   </title>
+   <scenariocontext>
+    Companion "Kaelen" has 'maxWeight: 50kg', 'totalWeight: 40kg'.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Player attempts to give "Tower Shield" (15kg) to Kaelen.
+                            Performing Critical Weight Check (Rule 19.C.1):
+                            - Kaelen's maxWeight: 50kg.
+                            - Kaelen's criticalWeight = 50 + 15 = 65kg.
+                            - Kaelen's current totalWeight: 40kg.
+                            - Prospective Weight = 40 + 15 = 55kg.
+                            - Check: 55kg <= 65kg. RESULT: TRUE. Kaelen can physically carry the shield.
+                        
+                            Applying item and checking for overload (Rule 19.C.2):
+                            - New totalWeight for Kaelen is 55kg.
+                            - Overload Check: 55kg > maxWeight (50kg). RESULT: TRUE. Kaelen is now overloaded.
+                            - Consequence: Applying "Encumbered" debuff via NPCEffectChanges.
+                            - Reporting updated Kaelen object in UpdateNPCs with totalWeight=55 and isOverloaded=true.
+
+                            ]]>
+   </logoutput>
+   <responsenarrative>
+    <![CDATA[
+
+                            Каэлен неохотно принимает огромный щит, его колени слегка подгибаются под новой тяжестью. 
+                            "Я... я возьму его," — выдыхает он, — "но это предел. Еще один камень, и я рухну. Я буду медленнее в бою."
+                            
+                            ]]>
+   </responsenarrative>
+  </example>
+  <example type="good">
+   <title>
+    Player tries to give another item to the now-overloaded companion.
+   </title>
+   <scenariocontext>
+    Companion "Kaelen" now has 'maxWeight: 50kg', 'totalWeight: 55kg'. Player tries to give him a "Health Potion" (0.5kg).
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            Player attempts to give "Health Potion" (0.5kg) to Kaelen.
+                            Performing Critical Weight Check (Rule 19.C.1):
+                            - Kaelen's criticalWeight: 65kg.
+                            - Kaelen's current totalWeight: 55kg.
+                            - Prospective Weight = 55 + 0.5 = 55.5kg.
+                            - Check: 55.5kg <= 65kg. RESULT: TRUE. He *can* physically carry it.
+
+                            Applying item and checking overload (Rule 19.C.2):
+                            - He is already overloaded.
+                            - Narrative Consequence: Kaelen refuses based on his overloaded state.
+
+                            ]]>
+   </logoutput>
+   <responsenarrative>
+    <![CDATA[
+
+                            Каэлен видит, что вы протягиваете ему зелье, и мотает головой, не освобождая рук, которыми он пытается сбалансировать свой непомерный груз. 
+                            "Нет. Ни за что. Я уже на пределе. Возьми его сам."
+                            
+                            ]]>
+   </responsenarrative>
+  </example>
+ </rule>
+</instructionblock>

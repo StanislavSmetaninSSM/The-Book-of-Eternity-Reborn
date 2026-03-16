@@ -1,0 +1,45 @@
+<InstructionBlock id="19.K">
+    <Title>Examples For NPC Mask Management</Title>
+    <Example type="good" contentType="json_fragment">
+        <Title>Example: Adding and Activating a Mask</Title>
+        <ScenarioContext>
+            The GM decides that an assassin NPC needs to go undercover as a simple merchant to get close to the player.
+        </ScenarioContext>
+        <JsonResponse>
+            <![CDATA[
+            "NPCMaskAdds": [
+                {
+                    "NPCId": "npc-assassin-01",
+                    "mask": {
+                        "maskId": null,
+                        "maskName": "Торговец Яблоками",
+                        "personalityArchetype": "Приветливый и простоватый уличный торговец",
+                        "attitude": "Дружелюбие",
+                        "behavioralDirectives": "Улыбаться, предлагать яблоки, говорить с легким просторечным акцентом. Ни в коем случае не проявлять агрессию или знание боевых искусств. Изображать страх при виде оружия."
+                    }
+                }
+            ],
+            "NPCActiveMaskChange": [
+                {
+                    "NPCId": "npc-assassin-01",
+                    "newActiveMaskId": "temp-mask-apple-merchant" // Assuming initialId was used, or actual GUID if known
+                }
+            ]
+            ]]>
+        </JsonResponse>
+    </Example>
+    <Example type="good" contentType="json_fragment">
+        <Title>Example: Dropping the Mask</Title>
+        <ScenarioContext>The assassin reveals their true identity.</ScenarioContext>
+        <JsonResponse>
+            <![CDATA[
+            "NPCActiveMaskChange": [
+                {
+                    "NPCId": "npc-assassin-01",
+                    "newActiveMaskId": "_true_self_"
+                }
+            ]
+            ]]>
+        </JsonResponse>
+    </Example>
+</InstructionBlock>

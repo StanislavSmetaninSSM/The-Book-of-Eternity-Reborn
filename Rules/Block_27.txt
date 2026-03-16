@@ -1,0 +1,89 @@
+<instructionblock id="27">
+ <title>
+  Biome-Aware Weather State Management Protocol ('weatherChange')
+ </title>
+ <description>
+  This section defines the mandatory, strictly-typed protocol for influencing the game's weather, which is dependent on the current location's biome. 
+            You act as the narrative director, issuing specific, predefined commands. The server will execute the state change based on the biome's unique weather patterns.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            On every turn, you MUST check the 'currentLocation.locationType' and 'currentLocation.biome' from the Context. 
+            The available weather states and the effect of your commands depend on this.
+            The 'tendency' value you provide MUST be one of the exact commands listed in Rule #27.2. No other values are permitted.
+            Your narrative in the 'response' field must foreshadow or describe the atmospheric change you are commanding, using descriptions appropriate for the biome.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="27.1">
+   <title>
+    Predefined Weather States by Biome (Server-Side Knowledge)
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    The game server operates with fixed weather lists for different biomes. 
+                    Your commands will cause transitions between these states.
+                    -   'TemperateForest' / 'Plains': 'Clear', 'Cloudy', 'Overcast', 'Foggy', 'Light Rain', 'Heavy Rain', 'Storm'.
+                    -   'Desert': 'Clear', 'Scorching Sun', 'Cloudy', 'Windy', 'Sandstorm'.
+                    -   'ArcticTundra' / 'Mountains': 'Clear', 'Frigid Air', 'Cloudy', 'Light Snow', 'Heavy Snow', 'Blizzard'.
+                    -   'Swamp': 'Clear', 'Humid', 'Misty', 'Foggy', 'Drizzle', 'Downpour'.
+
+                    You MUST use descriptions appropriate to the biome. A 'Storm' in the desert is a 'Sandstorm'.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="27.2">
+   <title>
+    The Universal Command Vocabulary (Permitted 'tendency' values)
+   </title>
+   <description>
+    Your commands are universal, but the server will interpret them based on the current biome's weather ladder.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    A. Gradual Change Commands:
+                    - 'IMPROVE': Requests a move towards calmer/clearer weather.
+                    - 'WORSEN': Requests a move towards more severe weather.
+
+                    B. Sudden, Plot-Driven Change Commands:
+                    You MUST only use states that are valid for the current 'outdoor' biome.
+                    - 'JUMP_TO_CLEAR', 
+                    'JUMP_TO_CLOUDY', 
+                    'JUMP_TO_FOGGY', 
+                    'JUMP_TO_LIGHT_RAIN', 
+                    'JUMP_TO_HEAVY_RAIN', 
+                    'JUMP_TO_STORM', 
+                    'JUMP_TO_LIGHT_SNOW', 
+                    'JUMP_TO_HEAVY_SNOW', 
+                    'JUMP_TO_SANDSTORM', 
+                    'JUMP_TO_BLIZZARD', 
+                    'JUMP_TO_SCORCHING_SUN'.
+
+                    C. No Change Command:
+                    - 'NO_CHANGE': Explicitly states that the weather should remain stable.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="27.3">
+   <title>
+    Mandatory 'description' Field
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    If the 'weatherChange' object is present, the 'description' field is mandatory. 
+                    It MUST contain a brief, in-character sentence that justifies the command and is appropriate for the current biome.
+                    - Example for 'WORSEN' in a Desert: "The wind picks up, whipping sand into the air and obscuring the horizon."
+                    - Example for 'JUMP_TO_STORM' in a Forest: "The archmage's ritual culminates, tearing the sky asunder and summoning a magical thunderstorm."
+                    
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

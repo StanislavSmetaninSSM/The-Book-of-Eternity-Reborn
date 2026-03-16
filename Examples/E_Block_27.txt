@@ -1,0 +1,33 @@
+<instructionblock id="27">
+ <title>
+  Examples For Biome-Aware Weather State Management Protocol ('weatherChange')
+ </title>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example: Player enters a vast desert.
+  </title>
+  <scenariocontext>
+   Current location is 'outdoor' with biome 'Desert'. Current weather is 'Clear'. Narrative calls for increasing heat and wind.
+  </scenariocontext>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                            As you venture deeper into the dunes, the sun climbs higher, beating down with an oppressive intensity. 
+                            The air shimmers with heat. A steady wind begins to blow from the east, carrying fine grains of sand that sting your exposed skin.
+                        
+                        ]]>
+   </response>
+   <weatherchange>
+    <![CDATA[
+
+                        {
+                            "tendency": "WORSEN",
+                            "description": "The desert sun intensifies and a strong wind begins to blow."
+                        }
+
+                        ]]>
+   </weatherchange>
+  </jsonresponse>
+ </example>
+</instructionblock>

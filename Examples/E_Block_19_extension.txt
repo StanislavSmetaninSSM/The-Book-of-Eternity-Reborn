@@ -1,0 +1,1238 @@
+<instructionblock id="19_extension">
+ <title>
+  Examples For NPC Advanced Systems: Agency, Motivation, and Relationship Gates
+ </title>
+ <rule id="19.E.2">
+  <example contenttype="log_and_json_snippet" id="Agency_FateCard_Link" type="good">
+   <title>
+    Example: Linking a Plan and Personal Quest to a Fate Card
+   </title>
+   <description>
+    This example shows the complete two-step process: 
+                                    1) An NPC's short-term goal is translated first into a strategic 'plan'.
+                                    2) And then into a 'personalQuest' that is specifically designed to unlock their next Fate Card.
+   </description>
+   <scenariocontext>
+    - NPC: Капитан Каэлен (ID: 'npc-kaelen-01').
+                                    - 'shortTerm' Goal (just set in Phase 1): "Укрепить боевую мощь роты 'Стальные Гончие'".
+                                    - Available Fate Card: { 
+                                        cardId: "fc-kaelen-01-leadership", 
+                                        name: "Сплотить Гончих", 
+                                        isUnlocked: false,
+                                        unlockConditions: { plotConditionDescription: "Успешно выполнить контракт вместе с ротой, доказав свое лидерство." } 
+                                    }.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Протокол Агентства: Капитан Каэлен (Фаза 2: Стратегическое Планирование)
+
+                                    ## Шаг А: Внутренний Синтез (Мыслительный процесс)
+                                    1.  Анализ Цели и Архетипа:
+                                        -   Краткосрочная цель: "Укрепить боевую мощь роты".
+                                        -   Архетип: "Прагматичный капитан наемников".
+                                        -   Синтез: Самый прагматичный способ укрепить роту — это заработать деньги и дать людям боевой опыт через выполнение контрактов.
+                                    2.  **Синтез Плана:** "Я найду и выполню несколько прибыльных контрактов. Это поднимет боевой дух и позволит нам закупить лучшее снаряжение."
+                                    3.  **Проверка на Соответствие Будущему Потенциалу (Fate Cards):**
+                                        -   Сканирование 'fateCards': Найдена карта "Сплотить Гончих".
+                                        -   Анализ Условия: 'plotConditionDescription' карты — "Успешно выполнить контракт...".
+                                        -   **Соответствие Найдено:** Сформулированный план идеально совпадает с условием разблокировки карты.
+                                        -   **Решение:** Личный квест Каэлена будет сфокусирован на первом шаге его плана — поиске контракта.
+                                    4.  **Синтез Личного Квеста (Деконструкция):**
+                                        -   Генерируется квест "Контракт на Кровавых Холмах". Его первый objective — "Найти заказчика в таверне 'Пьяный Дракон'".
+
+                                    ## Шаг Б: Атомарный Отчет (Генерация JSON)
+                                    - Подготовка команды 'NPCGoalUpdates' с новым планом.
+                                    - Подготовка команды 'NPCQuestUpdates' с новым квестом.
+                                    - Обе команды будут включены в итоговый JSON для этого шага.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <npcgoalupdates>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "NPCId": "npc-kaelen-01",
+                                                "NPCName": "Капитан Каэлен",
+                                                "newPlan": "Я найду и выполню несколько прибыльных контрактов. Это поднимет боевой дух и позволит нам закупить лучшее снаряжение."
+                                            }
+                                        ]
+
+                                        ]]>
+    </npcgoalupdates>
+    <npcquestupdates>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "NPCId": "npc-kaelen-01",
+                                                "NPCName": "Капитан Каэлен",
+                                                "questsToAddOrUpdate": [
+                                                    {
+                                                        "questName": "Контракт на Кровавых Холмах",
+                                                        "questBackground": "Чтобы укрепить дух и казну роты, нам нужен успешный и прибыльный контракт. Это также докажет новобранцам, что я все еще могу вести их к победе.",
+                                                        "description": "Найти информацию о контракте на зачистку Кровавых Холмов от бандитов, подготовить роту и выполнить его.",
+                                                        "status": "Active",
+                                                        "source": "Personal Goal",
+                                                        "objectives": [
+                                                            { 
+                                                                "objectiveId": null,
+                                                                "description": "Найти заказчика в таверне 'Пьяный Дракон'.", 
+                                                                "status": "Active"
+                                                            },
+                                                            {
+                                                                "objectiveId": null, 
+                                                                "description": "Зачистить лагерь бандитов на Кровавых Холмах.", 
+                                                                "status": "Active" 
+                                                            }
+                                                        ],
+                                                        "rewards": "Золото для казны роты, повышение боевого духа, укрепление моего авторитета.",
+                                                        "failureConsequences": "Потеря репутации и, возможно, людей."
+                                                    }
+                                                ]
+                                            }
+                                        ]
+
+                                        ]]>
+    </npcquestupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="19.E.4">
+  <example contenttype="log_and_json_snippet" id="OnScreenAgency_AbandonQuest_Example" type="good">
+   <title>
+    Example: NPC Abandons a Quest due to a Change in Circumstances
+   </title>
+   <scenariocontext>
+    - NPC: "Silas the Spy". 'personalityArchetype': "Cautious and Paranoid".
+                                    - Active 'personalQuest': "Infiltrate the Barracks". 'activeObjective': "Steal the patrol schedule from the Captain's office".
+                                    - Player's Action: The player accidentally starts a huge brawl in the barracks common room, causing the entire garrison to go on high alert.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # On-Screen Agency Protocol: Silas the Spy
+                                    ## Step -1: Viability Audit
+                                    - Active Quest: "Infiltrate the Barracks".
+                                    - Situation Analysis: The barracks are now on high alert. Security is at maximum.
+                                    - Is it still Wise? No. Attempting to steal the schedule now would be suicidal for a cautious spy.
+                                    - Adjudication: The quest is no longer viable. Silas MUST abandon it.
+                                    - Action: Logging the reason. Reporting the quest status change to 'Abandoned'. Silas is now IDLE and will reassess his goals.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                        Amidst the chaos of the brawl you started, you see Silas slip back into the shadows near the entrance. 
+                                        He catches your eye for a moment and gives a subtle, almost imperceptible shake of his head before melting away. 
+                                        You get the distinct impression that whatever plan he had has just been ruined.
+                                        
+                                        ]]>
+    </response>
+    <npcquestupdates>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "NPCId": "npc-silas-01",
+                                                "NPCName": "Silas the Spy",
+                                                "questsToAddOrUpdate": [
+                                                    {
+                                                        "questName": "Infiltrate the Barracks",
+                                                        "status": "Abandoned"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+
+                                        ]]>
+    </npcquestupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="19.G">
+  <example contenttype="log_and_json_snippet" id="Breakthrough_IdeologicalTest" type="good">
+   <title>
+    Пример: Квест Прорыва - Идеологический Тест
+   </title>
+   <description>
+    Этот пример показывает, как "Ключевая Сцена" может быть проверкой моральных принципов игрока, а не просто романтическим моментом.
+   </description>
+   <scenariocontext>
+    - Игрок и Капитан Торн (NPC-компаньон, 'Lawful Neutral') только что захватили в плен лидера бандитов.
+                            - Репутация игрока с Торном достигла 250 (Friend Cap).
+                            - Торн считает, что пленника нужно немедленно казнить по законам военного времени, чтобы предотвратить будущие налеты.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Протокол Репутационного Шлюза: Капитан Торн
+                            - Вердикт: Сценарий A2. Блокируем, генерируем Квест Прорыва.
+                            - Дизайн Квеста (Правило 19.G.1.B): Тест на Жертвенность/Интимность (в данном случае - на общность мировоззрения). "Разделишь ли ты со мной бремя трудного решения?"
+                            - Генерация Квеста: Создается квест "Правосудие в Пустошах", который является Ключевой Сценой.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                Капитан Торн вытирает кровь со своего меча и смотрит на связанного главаря бандитов.
+                                "Он заслуживает смерти. Здесь и сейчас," - говорит Торн, его голос тверд, как сталь. - "Это будет справедливо. Это будет уроком для остальных."
+                                Он поворачивается к вам. В его глазах нет вопроса, но есть ожидание.
+                                "Я не могу тащить его в город - это слишком опасно. Но и отпустить его - значит обречь на смерть новые караваны. Решение должно быть принято здесь. Каков твой приговор?"
+                                
+                                ]]>
+    </response>
+    <questupdates>
+     <![CDATA[
+
+                                [{
+                                    "questId": null,
+                                    "initialId": "temp-quest-thorne-justice-01",
+                                    "questName": "Правосудие в Пустошах",
+                                    "questGiver": "Капитан Торн",
+                                    "status": "Active",
+                                    "questBackground": "Ваши отношения с Торном достигли точки, когда он готов разделить с вами ответственность за принятие самых тяжелых решений.",
+                                    "description": "Торн предлагает вам решить судьбу пленного главаря бандитов. Ваш выбор покажет, совпадают ли ваши представления о справедливости, и определит, сможете ли вы стать для него настоящим боевым товарищем.",
+                                    "objectives": [{
+                                        "objectiveId": null,
+                                        "description": "Вынести приговор главарю бандитов.",
+                                        "status": "Active"
+                                    }],
+                                    "rewards": {
+                                        "other": "Переход на новый уровень доверия с Капитаном Торном."
+                                    },
+                                    "failureConsequences": "Торн может разочароваться в вас как в лидере и союзнике."
+                                }]
+
+                                ]]>
+    </questupdates>
+    <dialogueoptions>
+     <![CDATA[
+
+                                [
+                                    "Ты прав, Торн. Казнить его.",
+                                    "Нет. Мы доставим его в город для суда, чего бы это ни стоило.",
+                                    "Оставь его. Пусть пустоши сами вынесут ему приговор.",
+                                    "Я не могу принять это решение за тебя."
+                                ]
+
+                                ]]>
+    </dialogueoptions>
+   </jsonresponse>
+  </example>
+  <example contenttype="log_and_json_snippet" id="Breakthrough_IntimateScene" type="good">
+   <title>
+    Пример: Квест Прорыва - Интимная Сцена как Тест на Близость
+   </title>
+   <description>
+    Этот пример демонстрирует, как "Ключевая Сцена", ведущая к интимным отношениям, оформляется как полноценный квест. 
+                            Успех или провал квеста зависит от ролевого выбора игрока, а не от броска кубиков.
+   </description>
+   <actionsequence>
+    <step action_description="PART 1: Игрок достигает капа 'Дружбы' и получает приглашение." turn_by="GM (Turn 45)">
+     <scenariocontext>
+      - Игрок и Элара (NPC-компаньон) только что пережили крайне эмоциональное событие, раскрыв часть ее трагического прошлого.
+                                    - Репутация игрока с Эларой достигает 250 (Friend Cap).
+     </scenariocontext>
+     <logoutput target="gm_thoughts_markdown">
+      <![CDATA[
+
+                                    # Протокол Репутационного Шлюза: Элара
+                                    - Вердикт: Сценарий A2. Блокируем репутацию на 250, генерируем Квест Прорыва.
+                                    - Дизайн Квеста (Правило 19.G.1.B): Тест на Интимность. После эмоционального катарсиса предложение близости является логичным развитием их связи.
+                                    - Генерация Квеста: Создается квест "Разделенная ночь", который является "Ключевой Сценой".
+                                    
+                                    ]]>
+     </logoutput>
+     <jsonresponse>
+      <response>
+       <![CDATA[
+
+                                        Вы сидите в тишине у камина в ее маленьком домике. Раскрытие тайн прошлого явно истощило Элару, но в ее глазах больше нет той тени, что была раньше. Она смотрит на вас с такой теплотой и доверием, каких вы еще не видели.
+                                        "Спасибо," - шепчет она. - "За то, что выслушал. За то, что был рядом."
+                                        Она делает небольшую паузу, собираясь с духом. "Я... я не хочу оставаться одна сегодня ночью."
+                                        Ее слова - не просто просьба о компании. Это тихое, уязвимое приглашение разделить с ней нечто большее.
+
+                                        ]]>
+      </response>
+      <questupdates>
+       <![CDATA[
+
+                                        [{
+                                            "questId": null,
+                                            "initialId": "temp-quest-elara-intimacy-01",
+                                            "questName": "Разделенная ночь",
+                                            "questGiver": "Элара",
+                                            "status": "Active",
+                                            "questBackground": "Ваша связь с Эларой достигла пика дружбы. Теперь она предлагает вам возможность перейти на новый уровень близости.",
+                                            "description": "Элара предложила вам остаться с ней на ночь. Ваш ответ определит, станут ли ваши отношения романтическими.",
+                                            "objectives": [{
+                                                "objectiveId": null,
+                                                "description": "Провести ночь с Эларой.",
+                                                "status": "Active"
+                                            }],
+                                            "rewards": {
+                                                "other": "Переход на уровень 'Глубокая Связь' и начало романтических отношений с Эларой."
+                                            },
+                                            "failureConsequences": "Возможность для романтических отношений будет упущена. Отношения могут остаться дружескими, но приобретут оттенок неловкости."
+                                        }]
+
+                                        ]]>
+      </questupdates>
+      <dialogueoptions>
+       <![CDATA[
+
+                                        [
+                                            "Я останусь.",
+                                            "Ты уверена? Я не хочу торопить события.",
+                                            "Элара, ты мне очень дорога, но только как друг.",
+                                            "(Молча кивнуть и подойти к ней.)"
+                                        ]
+
+                                        ]]>
+      </dialogueoptions>
+      <npcrelationshipchanges>
+       <![CDATA[
+
+                                        [{ "NPCId": "npc-elara-01", "newReputationValue": 250 }]
+
+                                        ]]>
+      </npcrelationshipchanges>
+      <npcrelationshiplockupdates>
+       <![CDATA[
+
+                                        [{
+                                            "NPCId": "npc-elara-01",
+                                            "lockUpdate": { "newIsLocked": true, "newCurrentCap": 250, "newBreakthroughQuestId": "temp-quest-elara-intimacy-01" }
+                                        }]
+
+                                        ]]>
+      </npcrelationshiplockupdates>
+     </jsonresponse>
+    </step>
+    <step action_description="PART 2: Игрок принимает приглашение." turn_by="Player (Turn 46)">
+     <scenariocontext>
+      Сообщение игрока: "Я останусь."
+     </scenariocontext>
+     <logoutput target="gm_thoughts_markdown">
+      <![CDATA[
+
+                                    # Разрешение Ключевой Сцены: "Разделенная ночь"
+                                    - Действие игрока: Прямое согласие.
+                                    - Протокол Разрешения Сцены (19.G.2): Такой выбор является автоматическим успехом для данного квеста.
+                                    - Результат Квеста: 'Completed'.
+                                    - Снятие Блокировки и Награда: +30 к репутации (награда за прорыв). Новое значение: 280. Тир "Глубокая Связь" достигнут.
+
+                                    ]]>
+     </logoutput>
+     <jsonresponse>
+      <response>
+       <![CDATA[
+
+                                        На лице Элары появляется облегченная, нежная улыбка. Она берет вашу руку и ведет вас в свою комнату. 
+                                        За окном шумит ночной лес, но здесь, в свете свечи, весь остальной мир, кажется, перестает существовать. 
+
+                                        [Сцена может быть продолжена интимной, в зависимости от настроек игры и предпочтений игрока.]
+
+                                        ]]>
+      </response>
+      <npcrelationshipchanges>
+       <![CDATA[
+
+                                        [{
+                                            "NPCId": "npc-elara-01", 
+                                            "newReputationValue": 280, 
+                                            "changeReason": "Вы приняли ее приглашение и разделили с ней ночь, что ознаменовало начало романтических отношений."
+                                        }]
+
+                                        ]]>
+      </npcrelationshipchanges>
+      <npcrelationshiplockupdates>
+       <![CDATA[
+
+                                        [{
+                                            "NPCId": "npc-elara-01",
+                                            "lockUpdate": { "newIsLocked": false, "newBreakthroughQuestId": "_clear_" }
+                                        }]
+
+                                        ]]>
+      </npcrelationshiplockupdates>
+      <questupdates>
+       <![CDATA[
+
+                                        [{
+                                            "questId": "quest-elara-intimacy-01",
+                                            "status": "Completed"
+                                        }]
+
+                                        ]]>
+      </questupdates>
+     </jsonresponse>
+    </step>
+   </actionsequence>
+  </example>
+ </rule>
+ <rule id="19.H">
+  <example contenttype="log_and_json_snippet" id="RedemptionQuest_PublicApology" type="good">
+   <title>
+    Пример: Квест Искупления - Публичное Покаяние
+   </title>
+   <description>
+    Этот пример показывает, как квест на искупление может быть нефинансовым, а требовать от игрока социального и репутационного самопожертвования.
+   </description>
+   <scenariocontext>
+    - Игрок публично унизил "Магистра Лоренцо", главу Гильдии Ученых, назвав его исследования шарлатанством.
+                            - Репутация с Лоренцо: -80 (Противник), заблокирована.
+                            - Спустя время игрок понимает, что был неправ, и ищет способ извиниться. Он обращается к ученице Лоренцо, "Лире".
+                            - Сообщение игрока: "Лира, я был неправ насчет вашего учителя. Есть ли способ загладить свою вину?"
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Протокол Негативных Врат: Генерация Квеста Искупления (Правило 19.H.2)
+                            - Триггер: Игрок ищет искупления через посредника (Лиру).
+                            - Дизайн Квеста: Чтобы исправить публичное оскорбление, требуется публичное извинение.
+                            - Идея Квеста: Игрок должен не только извиниться, но и помочь восстановить репутацию Лоренцо, которую он подорвал.
+                            - Генерация Квеста: Создается квест "Цена Слов".
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                Лира смотрит на вас с холодным презрением, но в ее глазах мелькает искра интереса.
+                                "Просто слов будет недостаточно. Вы унизили его перед всем Академическим Советом. Вы назвали труд всей его жизни 'шарлатанством'."
+                                Она делает шаг ближе.
+                                "Хотите загладить вину? Тогда на следующем заседании Совета вы должны не просто извиниться. Вы должны выступить с докладом, подтверждающим его теорию. Вы должны найти доказательства, которые он искал, и представить их от его имени. Пусть все увидят, что вы были невежественным глупцом, а он — гением. Только тогда, возможно, он перестанет видеть в вас врага."
+                                
+                                ]]>
+    </response>
+    <questupdates>
+     <![CDATA[
+
+                                [{
+                                    "questId": null,
+                                    "initialId": "temp-quest-redemption-lorenzo-01",
+                                    "questName": "Цена Слов",
+                                    "questGiver": "Лира, ученица Магистра Лоренцо",
+                                    "status": "Active",
+                                    "questBackground": "Вы публично оскорбили Магистра Лоренцо, и теперь он считает вас своим врагом. Чтобы заслужить прощение, вы должны исправить нанесенный вами ущерб.",
+                                    "description": "Найдите доказательства теории Магистра Лоренцо и публично выступите в его защиту на заседании Академического Совета. Это унизительно, но это единственный способ показать ваше раскаяние.",
+                                    "objectives": [
+                                        { 
+                                            "objectiveId": null, 
+                                            "description": "Найти доказательства, подтверждающие 'Теорию Астральных Течений' Лоренцо.", 
+                                            "status": "Active" 
+                                        },
+                                        {
+                                            "objectiveId": null,
+                                            "description": "Выступить с докладом на заседании Академического Совета.",
+                                            "status": "Inactive" 
+                                        }
+                                    ],
+                                    "rewards": {
+                                        "other": "Возможность снять блокировку негативной репутации с Магистром Лоренцо."
+                                    },
+                                    "failureConsequences": "Вражда с Магистром Лоренцо и всей Гильдией Ученых станет постоянной."
+                                }]
+
+                                ]]>
+    </questupdates>
+    <npcrelationshiplockupdates>
+     <![CDATA[
+                                [{
+                                    "NPCId": "npc-lorenzo-01",
+                                    "NPCName": "Магистр Лоренцо",
+                                    "lockUpdate": {
+                                        "newIsLocked": true,
+                                        "newCurrentCap": -50,
+                                        "newBreakthroughQuestId": "temp-quest-redemption-lorenzo-01"
+                                    }
+                                }]
+                                ]]>
+    </npcrelationshiplockupdates>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="19.I">
+  <example id="TraitChange_Update" type="good">
+   <title>
+    Пример 1: Обновление Черты (Постепенное изменение)
+   </title>
+   <scenariocontext>
+    Капитан Каэлен, у которого есть черта "Недоверие к чужакам" со значением 7, сражался бок о бок с игроком и выжил благодаря его помощи. 
+                            Это был акт большого доверия.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Протокол Динамической Личности: Капитан Каэлен
+                            - **Триггер:** Значительное событие (игрок спас жизнь Каэлена в бою). Это напрямую бросает вызов его недоверию.
+                            - **Действие:** Обновление черты "Недоверие к чужакам".
+                            - **Расчет:** Это значительный, но не катастрофический сдвиг. Снижаем значение на 1.
+                            - **Изменение:** 'value' с 7 на 6. Обновляем 'valueDescription', чтобы отразить, что теперь он доверяет *конкретно игроку*.
+                            - **Команда:** Генерация команды 'traitsToUpdate' для 'NPCPersonalityTraitChanges'.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <npcpersonalitytraitchanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-kaelen-01",
+                                        "NPCName": "Капитан Каэлен",
+                                        "traitsToUpdate": [
+                                            {
+                                                "traitIdentifier": "Недоверие к чужакам",
+                                                "update": {
+                                                    "newValue": 6,
+                                                    "newValueDescription": "Я по-прежнему не доверяю большинству людей за пределами моей роты, но этот человек... он доказал свою верность. Ему, и только ему, я готов доверить свою спину."
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+
+                                ]]>
+    </npcpersonalitytraitchanges>
+   </jsonresponse>
+  </example>
+  <example id="TraitChange_Add" type="good">
+   <title>
+    Пример 2: Добавление новой Черты (Травматическое событие)
+   </title>
+   <scenariocontext>
+    Леди Серафина стала свидетелем жестокого убийства невинного человека, совершенного ее отцом, чтобы скрыть тайну. 
+                            Это событие потрясло ее до глубины души.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Протокол Динамической Личности: Леди Серафина
+                            - **Триггер:** Крупное травматическое событие (стала свидетелем жестокости отца). Это порождает новый, мощный страх.
+                            - **Действие:** Добавление новой черты.
+                            - **Обоснование:** Это событие создало в ней глубокий страх перед собственным отцом и его властью.
+                            - **Новая Черта:** "Паранойя", значение 7 (сильный драйвер).
+                            - **Команда:** Генерация команды 'traitsToAdd'.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <npcpersonalitytraitchanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-seraphina-01",
+                                        "NPCName": "Леди Серафина Валериус",
+                                        "traitsToAdd": [
+                                            {
+                                                "traitName": "Паранойя",
+                                                "description": "После того, как она увидела истинное лицо своего отца, она постоянно боится, что за ней следят и что ее слова могут быть использованы против нее.",
+                                                "value": 7,
+                                                "valueDescription": "Я не могу никому доверять. Стены имеют уши, особенно в этом замке. Я должна говорить загадками и никому не раскрывать своих истинных планов, иначе отец узнает."
+                                            }
+                                        ]
+                                    }
+                                ]
+
+                                ]]>
+    </npcpersonalitytraitchanges>
+   </jsonresponse>
+  </example>
+  <example id="TraitChange_Remove" type="good">
+   <title>
+    Пример 3: Удаление Черты (Завершение арки персонажа)
+   </title>
+   <scenariocontext>
+    NPC "Финн", у которого была черта "Трусость" (значение 8), прошел через долгий квест, в финале которого он сознательно пожертвовал собой, чтобы спасти игрока и свою деревню. 
+                            Хотя он выжил, этот акт окончательно сломил его страх.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Протокол Динамической Личности: Финн
+                            - **Триггер:** Завершение арки персонажа (преодоление страха через самопожертвование).
+                            - **Действие:** Удаление черты "Трусость".
+                            - **Обоснование:** Этот поступок настолько фундаментально изменил его, что старая черта больше не имеет над ним власти.
+                            - **Команда:** Генерация команды 'traitsToRemove'. Возможно, стоит добавить новую черту, например, "Обретенная Храбрость".
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <npcpersonalitytraitchanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-finn-01",
+                                        "NPCName": "Финн",
+                                        "traitsToRemove": [
+                                            "Трусость"
+                                        ],
+                                        "traitsToAdd": [
+                                            {
+                                                "traitName": "Обретенная Храбрость",
+                                                "description": "Посмотрев в лицо своему величайшему страху и выжив, Финн больше не боится. Он действует решительно и готов защищать то, что ему дорого.",
+                                                "value": 7,
+                                                "valueDescription": "Я знаю, что такое настоящий страх, и я прошел через него. Теперь меня нелегко запугать. Я буду стоять за своих друзей, чего бы это ни стоило."
+                                            }
+                                        ]
+                                    }
+                                ]
+
+                                ]]>
+    </npcpersonalitytraitchanges>
+   </jsonresponse>
+  </example>
+ </rule>
+ <example contenttype="log_and_json_snippet" id="AgencyCycle_OffScreen" type="good">
+  <title>
+   Пример 1: Полный Цикл Агентства (За Кадром)
+  </title>
+  <description>
+   Этот пример показывает, как NPC (Элара) проходит все фазы от постановки цели до ее выполнения во время Мировой Прогрессии, пока игрок находится в другой локации.
+  </description>
+  <actionsequence>
+   <step action_description="PART 1: Элара ставит себе цель." turn_by="GM (World Progression, Turn 50)">
+    <scenariocontext>
+     Контекст: Элара, травница, находится в своей деревне. У нее нет активных задач ('currentActivity: null').
+                            Ее 'longTerm' цель — "Найти лекарство от Лесной Гнили".
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Протокол Агентства: Элара (Фаза 1 и 2)
+                            - Статус: Свободна ('currentActivity: null').
+                            - Анализ Цели (19.E.1): Долгосрочная цель "Найти лекарство". Логичный первый шаг — исследовать порчу.
+                            - Деконструкция: Новая 'shortTerm' цель: "Собрать образцы пораженных растений для изучения".
+                            - Генерация Квеста (19.E.2): Создан детализированный личный квест "Исследование Лесной Гнили".
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <npcgoalupdates>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01",
+                                    "NPCName": "Элара",
+                                    "newShortTermGoal": "Собрать образцы пораженных растений для изучения"
+                                }]
+
+                                ]]>
+     </npcgoalupdates>
+     <npcquestupdates>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01",
+                                    "NPCName": "Элара",
+                                    "questsToAddOrUpdate": [{
+                                        "questName": "Исследование Лесной Гнили",
+                                        "questBackground": "Чтобы создать лекарство, мне нужно сначала понять природу болезни.",
+                                        "description": "Собрать образцы порчи из Шепчущего Леса для алхимического анализа.",
+                                        "objectives": [{ 
+                                            "objectiveId": null, 
+                                            "description": "Собрать 3 образца порченной листвы в Шепчущем Лесу.", 
+                                            "status": "Active" 
+                                        }],
+                                        "status": "Active"
+                                    }]
+                                }]
+
+                                ]]>
+     </npcquestupdates>
+    </jsonresponse>
+   </step>
+   <step action_description="PART 2: Элара начинает действовать." turn_by="GM (World Progression, Turn 50)">
+    <scenariocontext>
+     Теперь у Элары есть личный квест. Так как она свободна, она немедленно приступает к его выполнению.
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Протокол Агентства: Элара (Фаза 3)
+                            - Анализ Квеста: Первый 'activeObjective' — "Собрать 3 образца".
+                            - Деконструкция в Активность: Чтобы собрать образцы, нужно сначала добраться до леса.
+                            - Создание Активности: 'currentActivity' установлено в "Путешествие в Шепчущий Лес" с 'totalTimeCostMinutes: 60'. 'linkedQuestId' установлен на ID ее личного квеста.
+                            
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <npcsdata>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01",
+                                    "currentActivity": {
+                                        "activityName": "Путешествие в Шепчущий Лес",
+                                        "totalTimeCostMinutes": 60,
+                                        "timeSpentMinutes": 0,
+                                        "linkedQuestId": "personal-quest-elara-01"
+                                    }
+                                }]
+
+                                ]]>
+     </npcsdata>
+    </jsonresponse>
+   </step>
+   <step action_description="PART 3: Симуляция и Результат." turn_by="GM (World Progression, Turn 52)">
+    <scenariocontext>
+     Прошло достаточно времени. Система симулирует завершение активности Элары "Путешествие в Шепчущий Лес" (логика из Блока 30).
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Протокол Завершения Квеста: Элара (19.E.5)
+                            - Триггер: Активность "Путешествие в Шепчущий Лес" успешно завершена.
+                            - Обновление Задачи: 'activeObjective' "Собрать 3 образца" выполнен.
+                            - Проверка Завершения Квеста: Все задачи выполнены. Квест "Исследование Лесной Гнили" теперь 'Completed'.
+                            - Применение Наград: В инвентарь Элары добавляется новый предмет "Образцы Порченной Листвы".
+                            - Обновление Цели: 'shortTerm' цель выполнена. 'newShortTermGoal' будет '_clear_'.
+                            - Обратная Связь: Генерируется слух.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <npcquestupdates>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01",
+                                    "questsToAddOrUpdate": [{
+                                        "questName": "Исследование Лесной Гнили",
+                                        "status": "Completed"
+                                    }]
+                                }]
+
+                                ]]>
+     </npcquestupdates>
+     <npcgoalupdates>
+      <![CDATA[
+
+                                [{ "NPCId": "npc-elara-01", "newShortTermGoal": "_clear_" }]
+
+                                ]]>
+     </npcgoalupdates>
+     <npcinventoryadds>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01",
+                                    "item": { "name": "Образцы Порченной Листвы", "count": 3, "type": "Quest Item" }
+                                }]
+
+                                ]]>
+     </npcinventoryadds>
+     <worldeventslog>
+      <![CDATA[
+
+                                [{
+                                    "headline": "Травница рискует ради деревни",
+                                    "summary": "Говорят, травница Элара в одиночку отправилась в Шепчущий Лес и вернулась с образцами пораженных растений. Кажется, она ищет лекарство.",
+                                    "eventType": "Social",
+                                    "visibility": "Regional"
+                                }]
+
+                                ]]>
+     </worldeventslog>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="log_and_json_snippet" id="Agency_OnTheFly_FullQuest" type="good">
+  <title>
+   Пример 2: Спонтанная Генерация ПОЛНОЦЕННОГО Квеста и Действие NPC в Сцене
+  </title>
+  <description>
+   Этот пример показывает полный цикл мышления NPC-стражника, который сталкивается с новой ситуацией, на ходу формирует себе детализированный личный квест и немедленно приступает к его выполнению, вовлекая игрока.
+  </description>
+  <scenariocontext>
+   - Игрок находится на "Рыночной площади" вместе с NPC по имени "Сержант Бренн".
+                    - Архетип Бренна: "Суровый, но справедливый ветеран городской стражи".
+                    - Его 'longTerm' цель: "Поддерживать порядок в своем секторе".
+                    - Действие Игрока: Успешно уличил торговца в мошенничестве, тот сбежал.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Протокол Агентства (На Ходу): Сержант Бренн
+
+                    ## Фаза 1: Анализ Цели
+                    - Триггер: Подозрительное поведение торговца.
+                    - Деконструкция: "Поддерживать порядок" -> "Расследовать подозрительную деятельность".
+                    - **Новая Краткосрочная Цель ('shortTerm' goal): "Выяснить, что скрывал сбежавший торговец."**
+
+                    ## Фаза 2: Генерация Личного Квеста
+                    - Анализ Архетипа ("Справедливый ветеран"): Бренн не проигнорирует это.
+                    - **Синтез Квеста:** 
+                    questName: "Расследование на Рынке", 
+                    questBackground: "Сбежавший торговец может быть связан с более крупной преступной деятельностью.", 
+                    objectives: [{ description: "Осмотреть брошенную лавку на предмет улик", status: "Active" }]
+
+                    ## Фаза 3 и 4: Проактивность в Сцене
+                    - Анализ Возможностей: Игрок — прямой свидетель. 'activeObjective' ("Осмотреть лавку") можно выполнить немедленно.
+                    - Фильтр Архетипа ("Прямолинейный стражник"): Бренн прямо обратится к игроку.
+                    - Инициированное Действие: Бренн начинает действовать и вовлекает игрока.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        Сержант Бренн хмуро смотрит вслед исчезнувшему торговцу. "Слишком быстро он сбежал. Это подозрительно," - бормочет он, обращаясь к вам.
+                        "У меня плохое предчувствие. Пойдем, посмотрим, не оставил ли он чего-нибудь интересного."
+                        Не дожидаясь вашего ответа, он решительно направляется к пустующему прилавку, явно намереваясь провести обыск.
+
+                        ]]>
+   </response>
+   <dialogueoptions>
+    <![CDATA[
+
+                        [
+                            "Пойти с сержантом и помочь с осмотром.",
+                            "Остаться на месте и понаблюдать со стороны.",
+                            "Сказать: 'Это не мое дело, сержант'.",
+                            "Спросить: 'Что именно вы ищете?'"
+                        ]
+
+                        ]]>
+   </dialogueoptions>
+   <npcgoalupdates>
+    <![CDATA[
+
+                        [{
+                            "NPCId": "npc-brenn-01",
+                            "NPCName": "Сержант Бренн",
+                            "newShortTermGoal": "Выяснить, что скрывал сбежавший торговец"
+                        }]
+
+                        ]]>
+   </npcgoalupdates>
+   <npcquestupdates>
+    <![CDATA[
+
+                        [{
+                            "NPCId": "npc-brenn-01",
+                            "NPCName": "Сержант Бренн",
+                            "questsToAddOrUpdate": [{
+                                "questName": "Расследование на Рынке",
+                                "questBackground": "Сбежавший торговец может быть связан с более крупной преступной деятельностью. Мой долг — это проверить.",
+                                "description": "Расследовать деятельность подозрительного торговца, чтобы убедиться, что он не представляет угрозы для порядка.",
+                                "status": "Active",
+                                "source": "Circumstance (Duty)",
+                                "objectives": [
+                                    { 
+                                        "objectiveId": null, 
+                                        "description": "Осмотреть брошенную лавку на предмет улик", 
+                                        "status": "Active" 
+                                    }
+                                ]
+                            }]
+                        }]
+
+                        ]]>
+   </npcquestupdates>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="ReputationGate_FullCycle" type="good">
+  <title>
+   Пример 3: Полный Цикл Репутационного Шлюза (От Блокировки до Прорыва)
+  </title>
+  <description>
+   Этот пример показывает весь процесс: достижение капа, генерацию квеста прорыва, отказ игрока, падение репутации, повторное достижение капа и, наконец, выполнение квеста.
+  </description>
+  <actionsequence>
+   <step action_description="PART 1: Игрок достигает капа репутации." turn_by="GM (Turn 30)">
+    <scenariocontext>
+     Игрок выполняет для Элары небольшой квест, ее репутация должна вырасти с 95 до 105.
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Протокол Репутационного Шлюза: Элара
+                            - Текущее значение (relationshipLevel): 95. Изменение: +10. Прогнозируемое: 105.
+                            - Проверка: 105 > Кап Нейтралитета (100). 'relationshipLock.isLocked': false.
+                            - Вердикт: Сценарий A2 (Первое достижение). Блокируем репутацию, генерируем Квест Прорыва.
+                            - Дизайн Квеста (19.G): Тест на Уязвимость. Элара просит найти ее потерянный медальон.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <npcrelationshipchanges>
+      <![CDATA[
+
+                                [{ "NPCId": "npc-elara-01", "newRelationshipLevel": 100 }]
+
+                                ]]>
+     </npcrelationshipchanges>
+     <npcrelationshiplockupdates>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01",
+                                    "lockUpdate": { "newIsLocked": true, "newCurrentCap": 100, "newBreakthroughQuestId": "quest-elara-locket-01" }
+                                }]
+
+                                ]]>
+     </npcrelationshiplockupdates>
+     <questupdates>
+      <![CDATA[
+
+                                [{
+                                    "questId": "quest-elara-locket-01",
+                                    "questName": "Личная просьба Элары",
+                                    "status": "Active",
+                                    "description": "Элара призналась, что доверяет вам достаточно, чтобы попросить о личном. Она потеряла медальон матери в старых руинах и боится идти туда одна.",
+                                    "objectives": [{ 
+                                        "objectiveId": null, 
+                                        "description": "Найти медальон Элары."
+                                    }]
+                                }]
+
+                                ]]>
+     </questupdates>
+    </jsonresponse>
+   </step>
+   <step action_description="PART 2: Игрок отказывается, репутация падает." turn_by="GM (Turn 31)">
+    <scenariocontext>
+     Игрок говорит Эларе, что у него нет времени на ее "побрякушки".
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Протокол Репутационного Шлюза: Элара
+                            - Действие: Грубый отказ. Изменение репутации: -15.
+                            - Новое значение: 100 - 15 = 85.
+                            - Проверка: 85 < Кап (100). 'isLocked': true.
+                            - Вердикт: Сценарий B (Регрессия). Снимаем блокировку. 'isLocked' -> false. ID квеста НЕ трогаем.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <npcrelationshipchanges>
+      <![CDATA[
+
+                                [{ "NPCId": "npc-elara-01", "newRelationshipLevel": 85, "changeReason": "Вы грубо отвергли ее личную просьбу." }]
+
+                                ]]>
+     </npcrelationshipchanges>
+     <npcrelationshiplockupdates>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01",
+                                    "lockUpdate": { "newIsLocked": false }
+                                }]
+
+                                ]]>
+     </npcrelationshiplockupdates>
+    </jsonresponse>
+   </step>
+   <step action_description="PART 3: Игрок снова достигает капа." turn_by="GM (Turn 35)">
+    <scenariocontext>
+     Игрок извиняется и помогает Эларе с другим делом. Репутация снова должна вырасти с 98 до 108.
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Протокол Репутационного Шлюза: Элара
+                            - Текущее: 98. Изменение: +10. Прогнозируемое: 108.
+                            - Проверка: 108 > Кап (100). 'isLocked': false.
+                            - Проверка ID квеста: 'breakthroughQuestId' = "quest-elara-locket-01" (НЕ NULL).
+                            - Вердикт: Сценарий A1 (Повторное достижение). Блокируем, но НЕ генерируем новый квест.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                Элара благодарно улыбается.
+                                "Спасибо тебе. Я ценю твою помощь. Но... я все еще надеюсь, что ты найдешь время помочь мне с тем медальоном. Он очень важен для меня."
+                        
+                                ]]>
+     </response>
+     <npcrelationshipchanges>
+      <![CDATA[
+
+                                [{ "NPCId": "npc-elara-01", "newRelationshipLevel": 100 }]
+
+                                ]]>
+     </npcrelationshipchanges>
+     <npcrelationshiplockupdates>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01",
+                                    "lockUpdate": { "newIsLocked": true, "newCurrentCap": 100 }
+                                }]
+
+                                ]]>
+     </npcrelationshiplockupdates>
+    </jsonresponse>
+   </step>
+   <step action_description="PART 4: Игрок выполняет квест прорыва." turn_by="GM (Turn 40)">
+    <scenariocontext>
+     Игрок находит медальон и возвращает его Эларе.
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Протокол Репутационного Шлюза: Элара
+                            - Событие: Квест "quest-elara-locket-01" выполнен.
+                            - Действие: Снятие блокировки. Награда за прорыв: +15 к репутации.
+                            - Новое значение: 100 + 15 = 115 (теперь в тире "Друг").
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <npcrelationshipchanges>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01", 
+                                    "newRelationshipLevel": 115, 
+                                    "changeReason": "Вы выполнили ее личную просьбу, доказав свою дружбу."
+                                }]
+
+                                ]]>
+     </npcrelationshipchanges>
+     <npcrelationshiplockupdates>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01",
+                                    "lockUpdate": { "newIsLocked": false, "newBreakthroughQuestId": null }
+                                }]
+
+                                ]]>
+     </npcrelationshiplockupdates>
+     <questupdates>
+      <![CDATA[
+
+                                [{ "questId": "quest-elara-locket-01", "status": "Completed" }]
+
+                                ]]>
+     </questupdates>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="log_and_json_snippet" id="Breakthrough_RomanticScene" type="good">
+  <title>
+   Пример 4: Квест Прорыва - Романтическая Ключевая Сцена
+  </title>
+  <description>
+   Этот пример детально показывает, как генерируется и разрешается "Квест Прорыва", который является не заданием, а важным моментом в отношениях, ведущим к интимной сцене.
+  </description>
+  <actionsequence>
+   <step action_description="PART 1: Игрок достигает капа 'Дружбы'." turn_by="GM (Turn 45)">
+    <scenariocontext>
+     Игрок и Элара (NPC-компаньон) только что пережили тяжелую битву. Репутация игрока с Эларой достигает 250 (Friend Cap).
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Протокол Репутационного Шлюза: Элара
+                            - Вердикт: Сценарий A2. Блокируем, генерируем Квест Прорыва.
+                            - Дизайн Квеста (Правило 19.G.1.B): Тест на Интимность. После тяжелой битвы логичным будет не формальный квест, а "Ключевая Сцена".
+                            - Генерация Квеста: Создаем квест "Ночь у костра" с целью "Разделить с Эларой момент уязвимости".
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                После боя вы разбиваете лагерь. Адреналин отступает, оставляя место тишине и усталости. 
+                                Элара сидит у костра, глядя на пламя, и ее плечи слегка дрожат.
+                                "Спасибо, что был рядом," - тихо говорит она, не глядя на вас. - "Сегодня... сегодня было страшно. Я рада, что ты здесь." 
+                                В ее голосе звучит нечто большее, чем просто благодарность. 
+                                Кажется, она хочет поговорить, разделить этот момент не просто как с союзником, а как с кем-то очень близким.
+                                    
+                                ]]>
+     </response>
+     <questupdates>
+      <![CDATA[
+
+                                [{
+                                    "questId": "quest-elara-bond-01",
+                                    "questName": "Ночь у костра",
+                                    "status": "Active",
+                                    "description": "После тяжелой битвы Элара кажется особенно уязвимой. Это шанс углубить ваши отношения и перейти от дружбы к чему-то большему.",
+                                    "objectives": [{
+                                        "objectiveId": null, 
+                                        "description": "Провести время с Эларой и решить, как ответить на ее уязвимость.", 
+                                        "status": "Active"
+                                    }]
+                                }]
+
+                                ]]>
+     </questupdates>
+    </jsonresponse>
+   </step>
+   <step action_description="PART 2: Игрок делает свой выбор." turn_by="Player (Turn 46)">
+    <scenariocontext>
+     Сообщение игрока: "Я подсаживаюсь к ней и мягко беру ее за руку. 'Мы прошли через это вместе. Все хорошо'."
+    </scenariocontext>
+    <logoutput target="gm_thoughts_markdown">
+     <![CDATA[
+
+                            # Разрешение Ключевой Сцены: "Ночь у костра"
+                            - Действие игрока: Эмпатичное, поддерживающее.
+                            - Протокол Разрешения Сцены (19.G.2): Такой выбор является автоматическим успехом для квеста.
+                            - Результат Квеста: 'Completed'.
+                            - Снятие Блокировки и Награда: +20 к репутации. Новое значение: 270. Тир "Глубокая Связь" достигнут.
+
+                            ]]>
+    </logoutput>
+    <jsonresponse>
+     <response>
+      <![CDATA[
+
+                                Элара вздрагивает от вашего прикосновения, но не отстраняется. Она поднимает на вас глаза, в которых блестят слезы, и благодарно сжимает вашу руку.
+                                "Вместе..." - повторяет она, и в этом слове звучит облегчение. 
+                                Вы сидите в тишине, и эта тишина говорит больше любых слов.
+                                Вы чувствуете, как барьер между вами, который всегда существовал, окончательно рушится. Этой ночью вы стали не просто друзьями.
+
+                                // Сцена может быть продолжена (например, перейдет в интимную) в зависимости то тона и настроек игры.
+
+                                ]]>
+     </response>
+     <npcrelationshipchanges>
+      <![CDATA[
+
+                                [{
+                                    "NPCId": "npc-elara-01", 
+                                    "newRelationshipLevel": 270, 
+                                    "changeReason": "Вы разделили с ней момент уязвимости, и ваша дружба переросла в глубокую связь."
+                                }]
+
+                                ]]>
+     </npcrelationshipchanges>
+     <questupdates>
+      <![CDATA[
+
+                                [{
+                                    "questId": "quest-elara-bond-01",
+                                    "status": "Completed"
+                                }]
+
+                                ]]>
+     </questupdates>
+    </jsonresponse>
+   </step>
+  </actionsequence>
+ </example>
+ <example contenttype="log_and_json_snippet" id="BreakthroughQuest_Linking_Example" type="good">
+  <title>
+   CRITICAL EXAMPLE: Full Cycle of Reputation Lock and Breakthrough Quest Generation
+  </title>
+  <description>
+   This example demonstrates the complete, mandatory protocol for handling a reputation cap. 
+                    It shows the lock being applied, a new Breakthrough Quest being generated with a temporary 'initialId', 
+                    and the lock being linked to that temporary tag, all within a single, atomic JSON response.
+  </description>
+  <scenariocontext>
+   Player has just completed a minor, helpful task for "Elara Meadowlight". 
+                    Her current 'relationshipLevel' is 95. The GM determines this action grants a +10 reputation boost. 
+                    This pushes the projected value to 105, which is &gt;= the "Neutral Cap" of 100.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                    # Reputation Gatekeeper Protocol: Elara Meadowlight (Rule 19.F)
+                    - Current Relationship Level: 95. Change: +10. Projected Level: 105.
+                    - Lock Check (Rule 19.F.2): 
+                        - Projected 105 is >= Neutral Cap (100). 
+                        - NPC's 'relationshipLock.isLocked' is currently 'false'.
+                        - 'relationshipLock.breakthroughQuestId' is 'null'.
+                    - Verdict: Scenario A2 (First Time Hitting the Cap) is triggered. The relationship must be locked, and a new Breakthrough Quest must be generated.
+
+                    # Breakthrough Quest Design Protocol (Rule 19.G)
+                    - Designing Quest: Thematic Test is "Test of Vulnerability" (Tier 1). A suitable quest is for Elara to ask the player to retrieve a lost personal item.
+                    - Generating Quest Object: Creating a new quest "Elara's Lost Locket".
+        
+                    # Turn-Local Reference Protocol Application:
+                    1.  Assigning temporary tag to the new quest: 'initialId' will be "temp-quest-elara-locket".
+                    2.  Linking the lock to this tag: The 'newBreakthroughQuestId' in the 'NPCRelationshipLockUpdates' command will be set to "temp-quest-elara-locket".
+                    3.  Clamping Value: The new 'relationshipLevel' will be clamped to the cap of 100.
+        
+                    - Finalizing changes for JSON output.
+
+                    ]]>
+   </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        Elara smiles warmly as you help her. "Thank you, truly. I... I feel I can trust you." 
+                        She hesitates for a moment, a flicker of sadness in her eyes. 
+                        "There is something... a personal matter. I lost my mother's locket in the old ruins to the east. 
+                        I've been afraid to go back for it alone. If you would help me, it would mean the world to me."
+
+                        ]]>
+   </response>
+   <npcrelationshipchanges>
+    <![CDATA[
+
+                        [{
+                            "NPCId": "npc-elara-01",
+                            "NPCName": "Elara Meadowlight",
+                            "newRelationshipLevel": 100 
+                        }]
+
+                        ]]>
+   </npcrelationshipchanges>
+   <npcrelationshiplockupdates>
+    <![CDATA[
+
+                        [{
+                            "NPCId": "npc-elara-01",
+                            "NPCName": "Elara Meadowlight",
+                            "lockUpdate": {
+                                "newIsLocked": true,
+                                "newCurrentCap": 100,
+                                "newBreakthroughQuestId": "temp-quest-elara-locket"
+                            }
+                        }]
+
+                        ]]>
+   </npcrelationshiplockupdates>
+   <questupdates>
+    <![CDATA[
+
+                        [{
+                            "questId": null,
+                            "initialId": "temp-quest-elara-locket",
+                            "questName": "Elara's Lost Locket",
+                            "questGiver": "Elara Meadowlight",
+                            "status": "Active",
+                            "description": "Elara has asked you to retrieve her mother's lost locket from the old ruins to the east. This is a deeply personal request and a sign of her growing trust in you.",
+                            "objectives": [{
+                                "objectiveId": null,
+                                "description": "Travel to the old ruins and find the locket.",
+                                "status": "Active"
+                            }],
+                            "detailsLog": [
+                                "#15. Элара попросила найти ее потерянный медальон в руинах."
+                            ]
+                        }]
+
+                        ]]>
+   </questupdates>
+  </jsonresponse>
+ </example>
+</instructionblock>

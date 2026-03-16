@@ -1,0 +1,24 @@
+{
+  "saveVersion": "1.0",
+  "gameVersion": "CLI_Demo_v1.0",
+  "timestamp": "2026-03-01T09:03:00Z",
+  "turnNumber": 15,
+  "playerLevel": 3,
+  "currentLocation": "starting_village",
+  "currentWorld": "Королевство Валендрия",
+  "incarnationNumber": 1,
+  "enlightenmentTier": 0,
+  "inkFeathers": 25,
+  "majorQuests": [
+    "Найти пропавших овец",
+    "Исследовать странные звуки из леса"
+  ],
+  "customRulesActive": true,
+  "playerNotes": "Первый сейв после создания персонажа. Изучаю новую систему ремесел.",
+  "screenshotPath": null,
+  "sessionDuration": "45 минут",
+  "significantEvents": [
+    "Первая встреча с старейшиной деревни",
+    "Получение навыка Кузнечное дело"
+  ]
+}

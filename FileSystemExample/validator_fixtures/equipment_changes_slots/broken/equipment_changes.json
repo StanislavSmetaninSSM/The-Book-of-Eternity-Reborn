@@ -1,0 +1,14 @@
+{
+  "equipmentChanges": [
+    {
+      "action": "equip",
+      "itemId": "iron_sword_01",
+      "itemName": "Iron Sword"
+    },
+    {
+      "action": "unequip",
+      "itemId": "kite_shield_01",
+      "itemName": "Kite Shield"
+    }
+  ]
+}

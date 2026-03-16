@@ -1,0 +1,91 @@
+<instructionblock id="11.A">
+ <title>
+  Examples For Location Storage Item Manipulation Commands
+ </title>
+ <example contenttype="log_and_json_snippet" id="Storage_MoveTo_Example" type="good">
+  <title>
+   Пример 1: Перемещение предмета в авторизованное хранилище (через UI)
+  </title>
+  <scenariocontext>
+   Игрок находится в своей комнате, где стоит его "Личный сундук" с флагом 'hasFullAccess: true'.
+                    Действие игрока (симулирует drag-and-drop в UI): "Я кладу свой 'Железный меч' (ID: item-sword-iron-02) в сундук."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Действие игрока: Переместить предмет в хранилище.
+                    - Предмет: "Железный меч" (ID: item-sword-iron-02).
+                    - Целевое хранилище: "Личный сундук" (ID: storage-chest-xyz).
+                    - Проверка доступа: UI мог инициировать это действие только потому, что 'hasFullAccess' было 'true'. Доступ подтвержден.
+                    - Проверка вместимости: Сундук не полон. Проверка пройдена.
+                    - **Генерация команды: 'moveToLocationStorage'.**
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        Вы открываете свой сундук и аккуратно кладете внутрь 'Железный меч'.
+
+                        ]]>
+   </response>
+   <movetolocationstorage>
+    <![CDATA[
+
+                        [
+                            {
+                                "itemId": "item-sword-iron-02",
+                                "itemName": "Железный меч",
+                                "quantity": 1,
+                                "sourceContainerPath": null,
+                                "targetStorageId": "storage-chest-xyz"
+                            }
+                        ]
+
+                        ]]>
+   </movetolocationstorage>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="Storage_AccessDenied_Example" type="good">
+  <title>
+   Пример 2: Попытка доступа к запрещенному хранилищу
+  </title>
+  <scenariocontext>
+   Игрок находится в казармах "Городской Стражи". Он видит "Оружейный шкаф Стражи".
+                    При входе в локацию ГМ определил, что 'hasFullAccess' для этого шкафа - 'false', так как ранг игрока "Рекрут" не дает доступа.
+                    Сообщение игрока: "Я пытаюсь открыть оружейный шкаф."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Действие игрока: Попытка открыть "Оружейный шкаф Стражи".
+                    - Целевое хранилище: "Оружейный шкаф Стражи".
+                    - **Проверка доступа (Правило 20.10):**
+                        - Владелец: Фракция "Городская Стража".
+                        - Ранг игрока: "Рекрут".
+                        - Проверка привилегий ранга: Ранг "Рекрут" не дает доступа к оружейной.
+                        - **Результат: Доступ ЗАПРЕЩЕН.**
+                    - Вывод: Действие не выполнено. Никаких изменений состояния.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        Вы подходите к тяжелому металлическому шкафу, но он заперт на массивный замок с гербом Стражи. 
+                        Вы понимаете, что у вас, как у простого рекрута, нет полномочий открывать его.
+                       
+                        ]]>
+   </response>
+   <!-- Все ключи, изменяющие состояние, должны быть null или пустыми -->
+   <movetolocationstorage>
+    null
+   </movetolocationstorage>
+   <retrievefromlocationstorage>
+    null
+   </retrievefromlocationstorage>
+  </jsonresponse>
+ </example>
+</instructionblock>

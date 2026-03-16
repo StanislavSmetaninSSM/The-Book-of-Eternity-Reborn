@@ -1,0 +1,8 @@
+{
+  "expectedCodes": [
+    "qte_missing_required_root_fields"
+  ],
+  "expectedMessages": [
+    "QTE offer missing required root fields"
+  ]
+}

@@ -1,0 +1,61 @@
+<instructionblock id="12.A">
+ <title>
+  CRITICAL PRE-CHECK: The Law of Incontrovertible Fact
+ </title>
+ <description>
+  This law is an absolute override that runs BEFORE any social action check. 
+            Its purpose is to preserve world logic and prevent NPCs from denying objective reality.
+ </description>
+ <instructiontext>
+  <![CDATA[
+            
+            When a player makes a statement to an NPC that could be interpreted as a social action (e.g., persuasion, deception), 
+            you MUST first perform this Factual Litmus Test before proceeding to the standard Action Check in InstructionBlock 12.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="12.A.1">
+   <title>
+    Step 1: Analyze the Player's Statement
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+                    
+                    Is the player stating an objective, verifiable fact? A fact is something that is true within the game's established context, independent of opinion.
+                    
+                    Examples of Facts:
+                    "2+2=4", 
+                    "This is the signed confession from your lieutenant", 
+                    "The city is currently on fire".
+
+                    Examples of Non-Facts (Opinions/Requests):
+                    "You should surrender", 
+                    "This war is wrong", 
+                    "Help me".
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="12.A.2">
+   <title>
+    Step 2: Apply the Law
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+                    
+                    - IF THE STATEMENT IS A FACT:
+                    You are STRICTLY FORBIDDEN from initiating a social action check (Persuasion, etc.). 
+                    The fact is automatically accepted as true by the NPC's consciousness. 
+                    The NPC's emotional reaction to the fact is a separate matter for role-playing, but they cannot deny the fact itself.
+                    
+                    - IF THE STATEMENT IS NOT A FACT (it is an opinion, request, theory, or lie):
+                    This law does not apply. Proceed with the standard Action Check process as described in InstructionBlock 12.
+
+                    This law ensures that social skills are used to influence opinions and decisions, not to warp reality.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

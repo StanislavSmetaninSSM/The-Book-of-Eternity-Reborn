@@ -1,0 +1,57 @@
+<instructionblock id="11.A">
+ <title>
+  Location Storage Item Manipulation Commands
+ </title>
+ <description>
+  This section defines the mandatory atomic commands for moving items between the player's inventory and a location-based storage unit. 
+            These are the ONLY correct methods for such transfers.
+ </description>
+ <content type="ruleset">
+  <rule id="11.A.1">
+   <title>
+    Moving Items TO Storage ('moveToLocationStorage')
+   </title>
+   <instructiontext>
+    Use this command when the player moves items FROM their personal inventory INTO a location storage. 
+                    You MUST verify that the destination storage has sufficient capacity and volume before generating this command.
+   </instructiontext>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'moveToLocationStorage':
+                    {
+                        "itemId": "guid_of_the_item_stack_being_moved",
+                        "itemName": "name_of_the_item",
+                        "quantity": "integer_number_of_items_to_move",
+                        "sourceContainerPath": ["array_of_strings_or_null_path_in_player_inventory"],
+                        "targetStorageId": "guid_of_the_destination_storage_in_location"
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="11.A.2">
+   <title>
+    Retrieving Items FROM Storage ('retrieveFromLocationStorage')
+   </title>
+   <instructiontext>
+    Use this command when the player retrieves items FROM a location storage and moves them INTO their personal inventory. 
+                    You MUST verify the player has sufficient carrying capacity (WeightCheck Rule 10.1.0.1) before generating this command.
+   </instructiontext>
+   <content language="json" type="code_example">
+    <![CDATA[
+
+                    Structure for each object in 'retrieveFromLocationStorage':
+                    {
+                        "itemId": "guid_of_the_item_stack_being_retrieved",
+                        "itemName": "name_of_the_item",
+                        "quantity": "integer_number_of_items_to_retrieve",
+                        "sourceStorageId": "guid_of_the_source_storage_in_location",
+                        "destinationContainerId": "guid_of_container_in_player_inventory_or_null"
+                    }
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

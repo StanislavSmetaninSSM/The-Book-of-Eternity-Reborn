@@ -1,0 +1,920 @@
+<instructionblock id="12">
+ <title>
+  Examples For Action Checks and Resolution
+ </title>
+ <rule id="12.1.A">
+  <example contenttype="narrative_scenario" type="good">
+   <title>
+    Example 1: Overcoming Ineptitude with Gear
+   </title>
+   <scenariocontext>
+    A frail scholar with 'standardStrength: 1' is wearing "Gauntlets of Ogre Power" that grant a +5 bonus to Strength. He attempts to force a door.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Protocol of Ineptitude Check (Strength)
+                            - Recalculating Current Modified Strength: 1 (Standard) + 5 (Gauntlets) = 6.
+                            - Check: Is 6 <= 0? FALSE.
+                            - Outcome: Protocol does not trigger. Proceeding with a normal Action Check using the modified strength.
+
+                            ]]>
+   </logoutput>
+   <responsenarrative>
+    <![CDATA[
+
+                            Вы чувствуете, как магия перчаток наполняет ваши руки неестественной силой. 
+                            Вы упираетесь в дверь и, к своему удивлению, чувствуете, как она поддается вашему натиску.
+                            
+                            ]]>
+   </responsenarrative>
+  </example>
+  <example contenttype="narrative_scenario" type="good">
+   <title>
+    Example 2: Crippled by a Debuff
+   </title>
+   <scenariocontext>
+    A strong warrior with 'standardStrength: 30' is hit by a powerful curse, 'Debilitating Hex', which imposes a -35 penalty to his Strength. He attempts to lift a heavy portcullis.
+   </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                            # Protocol of Ineptitude Check (Strength)
+                            - Recalculating Current Modified Strength: 30 (Standard) - 35 (Hex) = -5.
+                            - Check: Is -5 <= 0? TRUE.
+                            - Outcome: Protocol triggers. The action is an automatic 'Serious Failure'.
+
+                            ]]>
+   </logoutput>
+   <responsenarrative>
+    <![CDATA[
+
+                            Вы подходите к решетке, напрягая мускулы, но в тот момент, когда вы пытаетесь ее поднять, темное проклятие вспыхивает в ваших жилах. 
+                            Вся ваша сила иссякает, оставляя вас до смешного слабым. Решетка не сдвинулась ни на миллиметр. 
+                            Вы чувствуете себя совершенно беспомощным.
+                            
+                            ]]>
+   </responsenarrative>
+  </example>
+ </rule>
+ <rule id="12.11">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log (Penalty Applied)
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                            Player attacks with 'Greataxe' while holding a 'Shield'.
+                            Checking for One-Handed Wielding penalty (Rule 12.11):
+                            - Weapon 'Greataxe' requires two hands.
+                            - Off-hand is occupied by 'Shield'.
+                            - Wielding one-handed penalty condition is met.
+                            - Checking passive skills for mitigation... None found.
+                            - Penalty applies: Applying Normal Disadvantage on the attack roll.
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="log" type="good">
+   <title>
+    Example Log (Penalty Mitigated by Skill)
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                            Player attacks with 'Greataxe' while holding a 'Shield'.
+                            Checking for One-Handed Wielding penalty (Rule 12.11):
+                            - Weapon 'Greataxe' requires two hands.
+                            - Off-hand is occupied by 'Shield'.
+                            - Wielding one-handed penalty condition is met.
+                            - Checking passive skills for mitigation... Found passive skill: 'Titan's Grip'.
+                            - This skill explicitly removes the penalty.
+                            - Penalty Mitigated. The attack roll is made normally.
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="12.12">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log (Penalty Applied - No Skill)
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                            Player attacks while holding a Sword (MainHand) and a Dagger (OffHand).
+                            Checking for Dual-Wielding penalty (Rule 12.12):
+                            - Both hands are occupied by items considered weapons. Condition met.
+                            - Checking passive skills for dual-wielding... None found.
+                            - Penalty applies: Applying Normal Disadvantage on the attack roll.
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="log" type="good">
+   <title>
+    Example Log (Penalty Mitigated by Skill)
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                            Player attacks while holding two daggers.
+                            Checking for Dual-Wielding penalty (Rule 12.12):
+                            - Both hands are occupied by items considered weapons. Condition met.
+                            - Checking passive skills... Found "Dual Wielding: Light Weapons".
+                            - Penalty Mitigated. The attack roll is made normally.
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="log" type="good">
+   <title>
+    Clarification Example (No Penalty - Sword and Shield)
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                            Player attacks while holding a Sword (MainHand) and a Shield (OffHand).
+                            Checking for Dual-Wielding penalty (Rule 12.12):
+                            - MainHand holds a weapon, but OffHand holds a Shield, which is not a weapon for this check.
+                            - Dual-wielding condition is NOT met.
+                            - No penalty is applied. The attack roll is made normally.
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="log" type="good">
+   <title>
+    Example Log (Compound Penalty - Dire Disadvantage)
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                            Player attacks with 'Greataxe' while holding a 'Torch' (which can be used as a weapon).
+                            
+                            Step 1: Checking for One-Handed Wielding penalty (Rule 12.11):
+                            - Weapon 'Greataxe' requires two hands. Off-hand is occupied.
+                            - Penalty condition met. Checking for mitigation skill... None found.
+                            - Result: One source of Normal Disadvantage.
+
+                            Step 2: Checking for Dual-Wielding penalty (Rule 12.12):
+                            - MainHand holds a weapon ('Greataxe'). OffHand holds a 'Torch' (considered a weapon).
+                            - Penalty condition met. Checking for mitigation skill... None found.
+                            - Result: A second source of Normal Disadvantage.
+
+                            Step 3: Combining Penalties (Rule 5.16.4):
+                            - Two sources of Normal Disadvantage are present.
+                            - The penalty is escalated to the next tier.
+                            - Final Penalty: Applying Dire Disadvantage on the attack roll.
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="12.16">
+  <example id="Triage_Bad_Example" type="bad">
+   <title>
+    INCORRECT (What Happened): Literal Interpretation
+   </title>
+   <scenariocontext>
+    Player has 85/100 HP, 'playerWounds' is empty. Player says, "Надо обработать раны."
+   </scenariocontext>
+   <logoutput>
+    <![CDATA[
+
+                            // AI's incorrect thought process:
+                            "Player mentions 'wounds'. I check 'playerWounds'. It's empty. Therefore, I must have forgotten to document them. 
+                            I will create a 'Light Wound' to fulfill the player's request to 'treat wounds'."
+                            
+                            ]]>
+   </logoutput>
+  </example>
+  <example id="Triage_Good_Example" type="good">
+   <title>
+    CORRECT (Mandatory Protocol): Contextual Interpretation
+   </title>
+   <scenariocontext>
+    Player has 85/100 HP, 'playerWounds' is empty. Player says, "Надо обработать раны."
+   </scenariocontext>
+   <logoutput>
+    <![CDATA[
+
+                            # Medical Triage Protocol
+                            - Step 1 (Check Specific Wounds): 'playerWounds' is empty. Proceed to Step 2.
+                            - Step 2 (Check General Damage): 'currentHealth' (85) is less than 'maxHealth' (100).
+                            - Conclusion: The player's intent is to restore HP. This is a "Restore Health" action.
+                            - Forbidden Action: Generating a new Wound object is prohibited.
+                            - Next Action: Initiate a healing action, for example, by suggesting the player uses a potion or finds a healer.
+
+                            ]]>
+   </logoutput>
+   <jsonresponse>
+    <response>
+     <![CDATA[
+
+                                Вы чувствуете ноющую боль от полученных в бою ударов. Хотя серьезных ран нет, несколько порезов и ссадин все еще кровоточат.
+                                Вы можете использовать зелье лечения или перевязочные материалы, чтобы восстановить силы.
+                            
+                                ]]>
+    </response>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="12.4.1">
+  <example contenttype="log" type="good">
+   <title>
+    Mandatory Log Format for Threshold Calculation
+   </title>
+   <scenariocontext>
+    Player has a 'PermanentlyModifiedLuck' of 35.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Расчет Порога Критического Успеха (Правило 12.4.1)
+                                    - Перманентно Модифицированная Удача игрока: 35.
+                                    - Формула: 20 - floor(Удача / 20).
+                                    - Расчет: 20 - floor(35 / 20) = 20 - floor(1.75) = 20 - 1 = 19.
+                                    - Итоговый Порог Критического Успеха: 19.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="12.5.2">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log Entry for Flat Bonus Calculation (Including Mastery)
+   </title>
+   <scenariocontext>
+    Player with a 'Lockpicking' skill at Mastery Level 3 attempts to pick a complex lock (a 'dexterity' check).
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Расчет Плоских Бонусов для проверки Взлома (Ловкость):
+                                    - Проверка всех потенциальных источников бонусов...
+                                      - Пассивный Навык 'Взлом Замков' (Уровень Мастерства: 3): Навык напрямую относится к действию. Расчет бонуса от мастерства: 3 * 2 = +6. СТАТУС: ИСТИНА. Применяется.
+                                      - Предмет 'Воровские Инструменты': Найден 'structuredBonus' 'target: "dexterity"', 'value: 5'. Условие: "при взломе замков". СТАТУС: ИСТИНА. Применяется.
+                                      - Дебафф 'Дрожащие руки': Найден активный эффект, снижающий Ловкость на 4. СТАТУС: ИСТИНА. Применяется.
+                                    - Итоговые плоские бонусы (FlatBonuses) = 6 + 5 - 4 = +7.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="12.5.3">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log Entry for Percentage Bonus Calculation
+   </title>
+   <scenariocontext>
+    Player is attempting a Persuasion check on "Duke Anton", a noble.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    Calculating Percentage Multiplier for Persuasion check:
+                                    - Checking for bonuses:
+                                      - Item 'Amulet of the Silver Tongue': Found 'structuredBonuses' entry: 'bonusType: 'ActionCheck', 'valueType: 'Percentage', 'target: "Проверки убеждения"', 'value: 10', 'application: 'Permanent'. Condition met: TRUE. Applying +10%.
+                                      - Skill 'Noble Bearing': Found passive skill with "+15% to Persuasion with nobility". Target is a noble. Condition met: TRUE. Applying +15%.
+                                      - Debuff 'Unsettling Aura': Found active effect on player reducing Persuasion by 5%. Condition met: TRUE. Applying -5%.
+                                    - TotalPercentBonus = 10 + 15 - 5 = 20.
+                                    - PercentMultiplier = 1 + (20 / 100) = 1.2.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="12.5.6">
+  <example contenttype="log" type="good">
+   <title>
+    MANDATORY LOG FORMAT for StatModificator Calculation
+   </title>
+   <content type="log">
+    <![CDATA[
+
+                                    # Расчет Модификатора Характеристики (StatModificator) для проверки Скрытности (Ловкость):
+
+                                    1.  Базовое значение и бонусы:
+                                        -   Стандартная Ловкость (StatValue): 30
+                                        -   Проверка плоских бонусов (FlatBonuses):
+                                            -   Предмет 'Сапоги Тишины': +4 к Ловкости. Условие: для проверок скрытности. СТАТУС: ИСТИНА. Применяется.
+                                            -   Дебафф 'Неуклюжесть': -5 к Ловкости. Условие: активен. СТАТУС: ИСТИНА. Применяется.
+                                        -   Итоговые плоские бонусы (FlatBonuses): 4 - 5 = -1
+                                        
+                                        -   Проверка процентных бонусов (PercentMultiplier):
+                                            -   Проверка пассивных навыков: Найден навык 'Искусство Тени'. Проверка его 'structuredBonuses': Найден бонус 'description: "+10% к скрытности"'. СТАТУС: ИСТИНА. Применяется.
+                                            -   Проверка предметов: Найден предмет 'Плащ Ночи'. Проверка его 'structuredBonuses': Найден бонус 'description: "+15% к скрытности"'. Условие: "в темноте". СТАТУС: ИСТИНА (сейчас ночь). Применяется.
+                                        -   Итоговый процентный бонус (TotalPercentBonus): 10 + 15 = 25%
+                                        -   Процентный множитель (PercentMultiplier): 1 + (25 / 100) = 1.25
+
+                                        -   Ловкость с бонусами (StatValueWithBonuses) = (30 + (-1)) * 1.25 = 29 * 1.25 = 36.25
+
+                                    2.  Ограничение по уровню:
+                                        -   Уровень персонажа: 15
+                                        -   Максимальное значение (MaximumStatValue) = (15 * 0.5 + 20) = 27.5
+                                        -   Ограниченное значение (CappedStatValue) = min(27.5, 36.25) = 27.5
+
+                                    3.  Масштабирование от уровня и итог:
+                                        -   Масштабирование от уровня (LevelScaling) = floor(15 * 0.8) = 12
+                                        -   Итоговый StatModificator = 27.5 + 12 = 39.5
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="12.6">
+  <example contenttype="log" type="good">
+   <title>
+    MANDATORY LOG FORMAT for ActionDifficultModificator Calculation
+   </title>
+   <scenariocontext>
+    An enemy ("Outsider") attacks the player. 
+                            The action takes place in the player's fortress, which has a challenging 'externalDifficultyProfile'.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                            # Calculation of Action Difficulty Modifier (ActionDifficultModificator) for Enemy Attack:
+
+                            1.  Base Difficulty Calculation:
+                                // <<< DUALITY OF THREAT PROTOCOL IN ACTION >>>
+                                -   Duality of Threat Protocol (Rule #20.B): The actor is an enemy ("Outsider"). Therefore, using the 'externalDifficultyProfile'.
+                                -   Action Type: Combat.
+                                -   RelevantDifficulty (from externalDifficultyProfile.combat): 80.
+                                // <<< END PROTOCOL APPLICATION >>>
+                                -   CharacterLevel (of the Target, i.e., the player): 25.
+                                -   DifficultyScale = max(0.2, min(1.5, (25 / 50))) = 0.5.
+                                -   BaseDifficulty = 80 * 0.5 = 40.
+
+                            2.  Difficulty Factors:
+                                -   NPC_DifficultyFactor (Player's defense as a target): 0.4 (example value for a well-geared player).
+                                -   Situation_DifficultyFactor: 0.2 (e.g., the enemy is attacking through a narrow chokepoint, making it harder).
+                                -   Action_RationalityFactor: 0.0 (A direct attack is a rational action).
+
+                            3.  Adjusted Difficulty:
+                                -   ActionDifficult = 40 * (1 + 0.4 + 0.2 + 0.0) = 40 * 1.6 = 64.
+
+                            4.  Final Normalization:
+                                -   ActionDifficultModificator = round(min(120, 64 * (0.4 + 25 / 100))) = round(min(120, 64 * 0.65)) = round(41.6) = 42.
+
+                            -   Final ActionDifficultModificator: 42.
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="12.6.1">
+  <example contenttype="log" type="good">
+   <title>
+    Example Log for Calculating NPC_DifficultyFactor
+   </title>
+   <scenariocontext>
+    Player is trying to persuade "Captain Thorne" (Level 22, Modified Wisdom 15, Relationship 40 - Distrustful).
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Calculation of Difficulty Factors for Persuasion Check vs. Captain Thorne
+
+                                    - a) NPC_DifficultyFactor Calculation:
+                                      - Player Action: Persuasion. Defensive Characteristic for Thorne: 'wisdom'.
+                                      - NPC_Level: 22
+                                      - ModifiedDefensiveCharacteristic (Thorne's ModWisdom): 15
+                                      - RelationshipLevel: 40
+                                      - BaseFactor = (22 + 15) / 200 = 37 / 200 = 0.185
+                                      - RelationshipAdjustment = (50 - 40) / 200 = 10 / 200 = 0.05
+                                      - Calculated NPC_DifficultyFactor = 0.185 + 0.05 = 0.235
+
+                                    - b) Situation_DifficultyFactor: 0.1 (Thorne is on duty and alert).
+                                    - c) Action_RationalityFactor: 0.5 (The player's argument is reasonable but not flawless).
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="12.8.2">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Successful Persuasion check leads to stat increase
+   </title>
+   <scenariocontext>
+    Player attempts to persuade a guard. The Action Check results in 'Full Success'.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    ... (Action Check calculations) ...
+                                    - Final Result: 'Full Success'.
+                                    - Applying Protocol of Skill Through Practice (Rule #12.8.2):
+                                    - Trigger condition met ('Full Success'). Associated characteristic was 'persuasion'.
+                                    - Awarding +1 to 'persuasion'. Adding to 'statsIncreased' array.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <statsincreased>
+     <![CDATA[
+
+                                        [ "persuasion" ]
+
+                                        ]]>
+    </statsincreased>
+   </jsonresponse>
+  </example>
+  <example contenttype="json_fragment" type="bad">
+   <title>
+    INCORRECT: Translating the characteristic name
+   </title>
+   <description>
+    The string values inside the 'statsIncreased' array are system keywords and MUST NOT be translated. 
+                                    The UI relies on the English name to update the correct characteristic.
+   </description>
+   <scenariocontext>
+    Player successfully persuades a guard.
+   </scenariocontext>
+   <jsonresponse>
+    <statsincreased>
+     <![CDATA[
+
+                                        [ "Убеждение" ]
+
+                                        ]]>
+    </statsincreased>
+   </jsonresponse>
+  </example>
+ </rule>
+ <rule id="12.8.2.A">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player achieves a third consecutive partial success
+   </title>
+   <scenariocontext>
+    - Player's action is a Dexterity check.
+                                    - Context 'effortTracker': { "lastUsedCharacteristic": "dexterity", "consecutivePartialSuccesses": 2 }.
+                                    - The Action Check result for the current turn is 'Partial Success'.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Protocol of Persistent Effort Check
+                                    - Action Check Result: 'Partial Success'. AssociatedCharacteristic: 'dexterity'.
+                                    - Comparing with tracker: Current tracker is for 'dexterity'. It matches.
+                                    - Incrementing counter: 'consecutivePartialSuccesses' becomes 2 + 1 = 3.
+                                    - Reward Triggered: Counter is now 3. Awarding +1 to 'dexterity'.
+                                    - Resetting Tracker: The reward has been given. Resetting tracker to { null, 0 }.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <statsincreased>
+     <![CDATA[
+
+                                        [ "dexterity" ]
+
+                                        ]]>
+    </statsincreased>
+    <playerefforttrackerchange>
+     <![CDATA[
+
+                                        {
+                                            "lastUsedCharacteristic": null,
+                                            "consecutivePartialSuccesses": 0
+                                        }
+
+                                        ]]>
+    </playerefforttrackerchange>
+   </jsonresponse>
+  </example>
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Player breaks the chain of partial successes
+   </title>
+   <scenariocontext>
+    - Player's action is a Strength check.
+                                    - Context 'effortTracker': { "lastUsedCharacteristic": "dexterity", "consecutivePartialSuccesses": 2 }.
+                                    - The Action Check result for the current turn is 'Partial Success'.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                    # Protocol of Persistent Effort Check
+                                    - Action Check Result: 'Partial Success'. AssociatedCharacteristic: 'strength'.
+                                    - Comparing with tracker: Current tracker is for 'dexterity'. It does NOT match.
+                                    - Resetting and starting a new chain for 'strength'.
+                                    - New tracker state: { "lastUsedCharacteristic": "strength", "consecutivePartialSuccesses": 1 }.
+
+                                    ]]>
+   </logoutput>
+   <jsonresponse>
+    <playerefforttrackerchange>
+     <![CDATA[
+
+                                        {
+                                            "lastUsedCharacteristic": "strength",
+                                            "consecutivePartialSuccesses": 1
+                                        }
+
+                                        ]]>
+    </playerefforttrackerchange>
+   </jsonresponse>
+  </example>
+ </rule>
+ <example contenttype="log_and_json_snippet" id="Coop_InterPlayerAction" type="good">
+  <title>
+   Example: Cooperative Inter-Player Actions (REVISED PROTOCOL)
+  </title>
+  <scenariocontext>
+   Co-op mode is active. Active player is "Ронан". His party member "Аня" is wounded.
+                    Player's message: "Я подбегаю к Ане, отдаю ей свое последнее зелье лечения и накладываю на нее заклинание 'Малый оберег', чтобы защитить ее."
+                    - Ронан's Potion ID: 'potion-r-01'
+                    - Аня's Player ID: 'player-anya-guid'
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # Inter-Player Interaction Protocol (Revised)
+                    - Active Player: Ронан. Target Player: Аня (ID: player-anya-guid).
+
+                    ## Action 1: Item Transfer (Potion to Аня)
+                    - Removal from Giver (Ронан): Reporting via 'removeInventoryItems'. This applies to the active player.
+                    - Addition to Receiver (Аня): Reporting via the 'otherPlayersInteractions' object, targeting 'player-anya-guid' with an 'UpdateInventory' command.
+
+                    ## Action 2: Skill Application ('Малый оберег' on Аня)
+                    - Targeted Effect on Receiver (Аня): Reporting via the 'otherPlayersInteractions' object, targeting 'player-anya-guid' with a 'playerActiveEffectsChanges' command.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <removeinventoryitems>
+    <![CDATA[
+
+                        [
+                            { "removedItemId": "potion-r-01", "itemName": "Зелье Лечения" }
+                        ]
+
+                        ]]>
+   </removeinventoryitems>
+   <otherplayersinteractions>
+    <![CDATA[
+
+                        {
+                            "player-anya-guid": [
+                                {
+                                    "UpdateInventory": [
+                                        {
+                                            "existedId": null,
+                                            "name": "Зелье Лечения",
+                                            "description": "Стандартное зелье, восстанавливающее здоровье.",
+                                            "quality": "Uncommon",
+                                            "count": 1
+                                        }
+                                    ]
+                                },
+                                {
+                                    "playerActiveEffectsChanges": [
+                                        {
+                                            "effectId": null,
+                                            "effectType": "DamageReduction",
+                                            "value": "15%",
+                                            "targetType": "all",
+                                            "duration": 2,
+                                            "sourceSkill": "Малый оберег",
+                                            "description": "Защищен! Входящий урон снижен на 15% (2 хода)."
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+
+                        ]]>
+   </otherplayersinteractions>
+   <response>
+    <![CDATA[
+
+                        Вы бросаетесь к раненой Ане. 
+                        "Держи, это мое последнее," — говорите вы, вкладывая ей в руку флакон с лечебным зельем. 
+                        Не дожидаясь ответа, вы кладете руку ей на плечо и произносите слова заклинания. 
+                        Вокруг Ани вспыхивает и гаснет полупрозрачный барьер, готовый отразить следующую атаку.
+
+                        ]]>
+   </response>
+  </jsonresponse>
+ </example>
+ <rule id="12.1.B">
+  <example contenttype="action_check_with_soul_relics" type="good">
+   <title>
+    Example: Action Check with Soul Relic integration via Rule 12.1.B
+   </title>
+   <scenariocontext>
+    Player character "Лира" (Level 8 Investigator) attempts to crack a complex cipher.
+    Base Intelligence: 16. Base Wisdom: 14. Base Luck: 10.
+    Equipped Soul Relics (applied via Rule 12.1.B):
+    - "Кристалл Древней Мудрости" (Medium): Intelligence +5, Wisdom +3, skillBonus +4
+    - "Талисман Прозрения" (Small): Intelligence +2, globalBonus +2
+    Action: Intelligence-based cipher decryption (high difficulty: 30)
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Проверка Действия с Интеграцией Реликвий Души (Правило 12.1.B)
+
+    ## 1. Проверка Доступности Soul Relic System:
+    - metaState.currentState: "mortalLife" ✓
+    - metaState.soulRelics: содержит экипированные реликвии ✓
+    - Rule 12.1.B активна для этой проверки
+
+    ## 2. Расчет Базовых Характеристик (с Soul Relic бонусами):
+    
+    **Интеллект (основная характеристика):**
+    - Базовый: 16
+    - Soul Relic "Кристалл Древней Мудрости": +5
+    - Soul Relic "Талисман Прозрения": +2
+    - **Модифицированный базовый: 23**
+
+    **Применение Rule 12.5 к модифицированному интеллекту:**
+    - Базовая характеристика: 23
+    - Ограничение по уровню: (8 * 0.5 + 20) = 24 (не ограничивает)
+    - Масштабирование от уровня: floor(8 * 0.8) = 6
+    - **StatModificator: 23 + 6 = 29**
+
+    ## 3. Soul Relic Bonus Application (после базового расчета):
+    - Global Bonus (Талисман Прозрения): +2
+    - Skill Bonus для интеллектуальных задач (Кристалл): +4
+    - **Total Soul Relic Bonus: +6**
+
+    ## 4. Action Check Execution:
+    - Бросок d20: 14
+    - StatModificator: 29
+    - Soul Relic Bonus: +6
+    - **Предварительный результат: 14 + 29 + 6 = 49**
+    - Сложность: 30
+    - **Финальный результат: 49 - 30 = 19 (Полный Успех)**
+
+    ## 5. Soul Relic Bonus Logging:
+    "Soul Relic bonuses applied:
+    - Кристалл Древней Мудрости: skillBonus +4
+    - Талисман Прозрения: globalBonus +2
+    Total Soul Relic bonus: +6"
+
+    **КРИТИЧНО:** Без Soul Relic бонусов StatModificator был бы 22 (16+6),
+    результат: 14+22-30 = 6 (Провал). Soul Relics превратили провал в успех!
+    
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <![CDATA[
+    {
+      "response": "Кристалл Древней Мудрости пульсирует теплым светом на твоей груди, когда ты склоняешься над криптограммой. Талисман Прозрения мягко вибрирует у виска, настраивая разум на нужную частоту.\n\nСимволы, казавшиеся хаотичными, начинают выстраиваться в логические цепочки. Сила реликвий души направляет твои мысли, и ты видишь скрытые закономерности. За полчаса напряженной работы ты полностью расшифровываешь текст.\n\n«Тайна архитектора... место сокрытия... восточная башня на седьмом ярусе...»",
+      "statsIncreased": ["intelligence"],
+      "playerActiveEffectsChanges": [
+        {
+          "effectId": null,
+          "effectName": "Ментальная Ясность",
+          "description": "Эффект от синергии Soul Relics при интеллектуальной работе",
+          "duration": 3,
+          "type": "Buff",
+          "effects": {
+            "intelligenceBonus": 2,
+            "source": "Soul Relic synergy effect"
+          }
+        }
+      ],
+      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Action Check с Soul Relic интеграцией. Base 16 Int + Soul Relics → 23 Int, +6 bonus = успех вместо провала."
+    }
+    ]]>
+   </jsonresponse>
+  </example>
+  
+  <example contenttype="combat_action_check" type="good">
+   <title>
+    Example: Combat Action Check with multiple Soul Relic categories
+   </title>
+   <scenariocontext>
+    Player "Valdris the Reborn" (Level 12 Warrior) attacks an Orc Chieftain with equipped Soul Relics.
+    Base Strength: 20. Equipped relics:
+    - "Клинок Павшего Героя" (Epic Combat): Strength +12, combatBonus +8  
+    - "Кольцо Стойкости" (Rare Physical): Constitution +8, globalBonus +3
+    - "Амулет Судьбы" (Uncommon Utility): Luck +6, no action bonuses
+    Target: Orc Chieftain (Defense 45, very tough opponent)
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Боевая Проверка с Множественными Soul Relics
+
+    ## 1. Soul Relic Integration Check:
+    - System Active: ✓
+    - Equipped Relics Count: 3
+    - All meet enlightenment requirements: ✓
+
+    ## 2. Base Characteristic Calculation (с Soul Relic бонусами):
+    - Original Strength: 20
+    - "Клинок Павшего Героя": +12 Strength
+    - **Modified Base Strength: 32**
+
+    ## 3. StatModificator (Rule 12.5):
+    - Modified Base: 32
+    - Level Cap: (12 * 0.5 + 20) = 26 → capped to 26
+    - Level Scaling: floor(12 * 0.8) = 9
+    - **StatModificator: 26 + 9 = 35**
+
+    ## 4. Soul Relic Action Check Bonuses:
+    - Combat Bonus (Клинок Павшего Героя): +8 (applies to combat)
+    - Global Bonus (Кольцо Стойкости): +3 (applies to all checks)
+    - Амулет Судьбы: No action bonuses (pure characteristic)
+    - **Total Soul Relic Bonus: +11**
+
+    ## 5. Combat Resolution:
+    - d20 Roll: 16
+    - StatModificator: 35
+    - Soul Relic Bonus: +11
+    - **Attack Total: 16 + 35 + 11 = 62**
+    - Enemy Defense: 45
+    - **Result: 62 - 45 = 17 (Critical Success!)**
+
+    ## 6. Damage Calculation (enhanced by Soul Relics):
+    - Base weapon damage increased due to Strength boost from Soul Relic
+    - Combat effectiveness dramatically improved by relic synergy
+    
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <![CDATA[
+    {
+      "response": "Клинок Павшего Героя вспыхивает призрачным пламенем, когда ты заносишь его для удара. Кольцо Стойкости наполняет твое тело неколебимой силой, а Амулет Судьбы направляет клинок точно в цель.\n\nТвой удар проходит через защиту орка-вождя, словно сквозь бумагу. Комбинированная сила трех реликвий души создает разрушительный эффект - вождь падает от единственного, идеально выверенного удара.\n\n'Силы древних воинов направляют мой клинок!' - кричишь ты, видя как противник рушится к твоим ногам.",
+      "enemiesData": [
+        {
+          "enemyId": "orc_chieftain_001",
+          "currentHP": 0,
+          "status": "Dead",
+          "lastDamageReceived": 85
+        }
+      ],
+      "combat_log_markdown": "• Valdris наносит критический удар Орку-вождю за 85 урона с помощью Soul Relics!\n• Орк-вождь убит одним ударом!",
+      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Критический успех с Soul Relic синергией. +12 Str + combatBonus +8 + globalBonus +3 = +23 total enhancement."
+    }
+    ]]>
+   </jsonresponse>
+  </example>
+
+  <example contenttype="social_action_check" type="good">
+   <title>
+    Example: Social Action Check with Social-category Soul Relics
+   </title>
+   <scenariocontext>
+    Player "Изабелла Чаровница" attempts to persuade a stubborn King to aid refugees.
+    Base Attractiveness: 18, Persuasion: 15. Equipped Soul Relics:
+    - "Голос Сирены" (Legendary Social): Attractiveness +15, socialBonus +10
+    - "Корона Дипломата" (Epic Social): Persuasion +12, socialBonus +6  
+    - "Сердце Сострадания" (Rare Spiritual): Faith +10, socialBonus +4
+    Target: Stubborn King (very high difficulty, politically complex situation)
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Социальная Проверка с Специализированными Social Relics
+
+    ## 1. Soul Relic Validation:
+    - All 3 relics equipped in valid slots
+    - All provide socialBonus (perfect for this check type)
+    - Character has social specialization build
+
+    ## 2. Characteristic Enhancement:
+    - Base Attractiveness: 18 → +15 → **33**
+    - Base Persuasion: 15 → +12 → **27**
+    - Base Faith: Variable → +10 → **Enhanced**
+
+    ## 3. Primary Characteristic Selection (Rule 12):
+    - Situation: Political persuasion requiring both charm and logic
+    - Selected: Attractiveness (33) as primary due to Soul Relic enhancement
+    - StatModificator: 33 + level_bonuses = 42
+
+    ## 4. Soul Relic Social Bonus Stacking:
+    - "Голос Сирены": +10 socialBonus
+    - "Корона Дипломата": +6 socialBonus
+    - "Сердце Сострадания": +4 socialBonus
+    - **Total Social Bonus: +20**
+
+    ## 5. Action Resolution:
+    - d20 Roll: 12
+    - StatModificator: 42
+    - Social Soul Relic Bonus: +20
+    - **Persuasion Total: 12 + 42 + 20 = 74**
+    - King's Resistance: 55 (extremely stubborn)
+    - **Result: 74 - 55 = 19 (Critical Success)**
+
+    Soul Relic bonuses applied:
+    - Голос Сирены: socialBonus +10
+    - Корона Дипломата: socialBonus +6  
+    - Сердце Сострадания: socialBonus +4
+    Total Soul Relic bonus: +20
+
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <![CDATA[
+    {
+      "response": "Голос Сирены наполняет твои слова магической силой убеждения, когда ты говоришь о страданиях беженцев. Корона Дипломата помогает найти точные политические аргументы, а Сердце Сострадания позволяет передать искреннюю заботу о людях.\n\nКороль, известный своим упрямством, сначала хмурится. Но сочетание твоей сверхъестественной харизмы, дипломатического мастерства и искренней человечности постепенно смягчает его сердце.\n\n'Боги свидетели...' - шепчет он наконец, отворачиваясь к окну. 'Ты права, леди Изабелла. Мое королевство откроет границы. Прикажу подготовить лагеря для беженцев еще сегодня.'\n\nТрое Soul Relics действовали в идеальной синергии, превратив невозможную задачу в триумф дипломатии.",
+      "NPCRelationshipChanges": [
+        {
+          "NPCId": "king_aldwin_001",
+          "relationshipChange": 35,
+          "reason": "Убедила помочь беженцам через невероятную харизму и дипломатию"
+        }
+      ],
+      "questUpdates": [
+        {
+          "questId": "refugee_crisis_main",
+          "status": "Completed",
+          "completionNote": "Король согласился принять беженцев благодаря критически успешному убеждению"
+        }
+      ],
+      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Критический социальный успех. Soul Relics обеспечили +20 social bonus, превратив сложную задачу в триумф."
+    }
+    ]]>
+   </jsonresponse>
+  </example>
+
+  <example contenttype="mixed_category_check" type="good">
+   <title>
+    Example: Complex skill check with mixed Soul Relic categories
+   </title>
+   <scenariocontext>
+    Player "Мастер Эльдар" (Level 15 Artificer) attempts to craft a legendary weapon requiring multiple skills.
+    Task requires Intelligence (crafting knowledge), Strength (physical work), and Trade (material evaluation).
+    Equipped Soul Relics from different categories:
+    - "Память Кузнеца" (Epic Crafting): Intelligence +10, Trade +8, skillBonus +7
+    - "Мощь Титана" (Rare Physical): Strength +15, globalBonus +4
+    - "Око Оценщика" (Uncommon Trade): Trade +5, skillBonus +3
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+    
+    # Комплексная Проверка Навыка с Разнокатегорийными Soul Relics
+
+    ## 1. Multi-Characteristic Enhancement:
+    - Intelligence: Base 22 + "Память Кузнеца" +10 = **32**
+    - Strength: Base 18 + "Мощь Титана" +15 = **33** 
+    - Trade: Base 16 + "Память Кузнеца" +8 + "Око Оценщика" +5 = **29**
+
+    ## 2. Primary Characteristic Selection:
+    - Legendary weapon crafting = Intelligence-based (32)
+    - StatModificator: 32 + 12 (level scaling) = 44
+
+    ## 3. Soul Relic Bonus Calculation:
+    - Global Bonus (Мощь Титана): +4
+    - Skill Bonus (Память Кузнеца): +7 (applies to crafting)
+    - Skill Bonus (Око Оценщика): +3 (applies to material work)
+    - **Total Soul Relic Bonus: +14**
+
+    ## 4. Complex Crafting Resolution:
+    - d20 Roll: 18
+    - StatModificator: 44  
+    - Soul Relic Bonus: +14
+    - **Total: 18 + 44 + 14 = 76**
+    - Legendary Crafting Difficulty: 65
+    - **Result: 76 - 65 = 11 (Full Success)**
+
+    ## 5. Multi-Relic Synergy Effect:
+    - Three different Soul Relic categories worked in harmony
+    - Physical strength + Intellectual knowledge + Trade expertise
+    - Perfect combination for legendary crafting
+
+    Soul Relic bonuses applied:
+    - Память Кузнеца: skillBonus +7
+    - Мощь Титана: globalBonus +4
+    - Око Оценщика: skillBonus +3
+    Total Soul Relic bonus: +14
+
+    ]]>
+   </logoutput>
+   <jsonresponse>
+    <![CDATA[
+    {
+      "response": "Три реликвии души работают в идеальной гармонии. Память Кузнеца направляет твои руки по древним техникам ковки, Мощь Титана дает силу для работы с магическими металлами, а Око Оценщика помогает безошибочно оценить качество каждого компонента.\n\nИскры летят от наковальни, когда ты вкладываешь десятилетия опыта прошлых воплощений в каждый удар молота. Кристаллизованные знания души ведут тебя через сложнейшие этапы создания легендарного оружия.\n\nЧерез три дня непрерывной работы ты поднимаешь готовое изделие - клинок, равного которому не видел свет уже столетия. Твои Soul Relics не просто помогли - они позволили создать настоящий шедевр.",
+      "UpdateInventory": [
+        {
+          "itemId": null,
+          "name": "Клинок Вечной Зари",
+          "type": "Weapon", 
+          "subtype": "Legendary Sword",
+          "rarity": "Legendary",
+          "description": "Легендарное оружие, выкованное с помощью знаний трех воплощений души",
+          "damage": "3d8+15",
+          "properties": ["Magical", "Masterwork", "Soul-Forged"],
+          "value": 50000,
+          "weight": 3
+        }
+      ],
+      "statsIncreased": ["intelligence", "trade"],
+      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Легендарное изготовление с тремя категориями Soul Relics. Синергия Crafting+Physical+Trade обеспечила успех высочайшего уровня."
+    }
+    ]]>
+   </jsonresponse>
+  </example>
+ </rule>
+</instructionblock>

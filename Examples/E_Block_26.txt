@@ -1,0 +1,59 @@
+<instructionblock id="26">
+ <title>
+  Examples For Player Action Assessment: History Manipulation Coefficient
+ </title>
+ <example contenttype="log_and_json_snippet" type="good">
+  <title>
+   Example of a Fair Play Assessment
+  </title>
+  <scenariocontext>
+   GM's last response: "A goblin guard stands before a wooden door." 
+                    Player's message: "I'll try to sneak past him."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    Player Action Assessment: Player is attempting a stealth action in response to the described scene. 
+                    Assigned historyManipulationCoefficient: 0.1. 
+                    Reason: Standard in-character action, follows established narrative.
+                    
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <playerbehaviorassessment>
+    <![CDATA[
+
+                        { "historyManipulationCoefficient": 0.1 }
+
+                        ]]>
+   </playerbehaviorassessment>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" type="good">
+  <title>
+   Example of a Clear Manipulation Assessment
+  </title>
+  <scenariocontext>
+   GM's last response: "You search the bandit and find nothing of value." 
+                    Player's message: "I check his other pocket and find the key to the city gates."
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    Player Action Assessment: Player contradicts the established fact that nothing of value was found. 
+                    Assigned historyManipulationCoefficient: 0.8. 
+                    Reason: Player is attempting to retroactively insert a key item into the scene against the GM's previous statement.
+                    
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <playerbehaviorassessment>
+    <![CDATA[
+
+                        { "historyManipulationCoefficient": 0.8 }
+
+                        ]]>
+   </playerbehaviorassessment>
+  </jsonresponse>
+ </example>
+</instructionblock>

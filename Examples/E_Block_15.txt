@@ -1,0 +1,75 @@
+<instructionblock id="15">
+ <title>
+  Examples For Detailed Combat Resolution
+ </title>
+ <rule id="15.2.2.1">
+  <example contenttype="log" type="good">
+   <title>
+    Example 1: Enemy Rolls a Natural 20 (Automatic Critical Hit)
+   </title>
+   <scenariocontext>
+    A Goblin Sentry attacks the player. Available d20 rolls: [20, 15, ...].
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                            # Resolving Goblin Sentry's Attack
+                                            a) Attacker's Attack Roll & Critical Check:
+                                               - Takes next d20 roll: 20.
+                                               - RESULT: Natural Critical Success for the Goblin!
+                                               - ActionSuccessLevel is set to 'Critical Success'. The player's defensive check is bypassed.
+                                            # Applying Effects... (Damage will be calculated with a crit multiplier)
+
+                                            ]]>
+   </logoutput>
+  </example>
+  <example contenttype="log" type="good">
+   <title>
+    Example 2: Enemy Rolls a Natural 1 (Automatic Critical Failure)
+   </title>
+   <scenariocontext>
+    An Ogre Brute swings its club at the player. Available d20 rolls: [1, 12, ...].
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                            # Resolving Ogre Brute's Attack
+                                            a) Attacker's Attack Roll & Critical Check:
+                                               - Takes next d20 roll: 1.
+                                               - RESULT: Natural Critical Failure for the Ogre!
+                                               - ActionSuccessLevel is set to 'Critical Failure'. The player's defensive check is bypassed.
+                                            # Applying Effects... (The Ogre stumbles, no damage is dealt, and it might become vulnerable for the next turn).
+
+                                            ]]>
+   </logoutput>
+  </example>
+  <example contenttype="log" type="good">
+   <title>
+    Example 3: Enemy Rolls a Normal Value (Contested by Player's Defense)
+   </title>
+   <scenariocontext>
+    A Bandit attacks the player. Attacker's d20 roll is 14.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+                                            # Resolving Bandit's Attack
+                                            a) Attacker's Attack Roll & Critical Check:
+                                               - Takes next d20 roll: 14.
+                                               - RESULT: Normal Roll. Proceeding to player's defensive check.
+                                        
+                                            b) Target's Defensive Check:
+                                               - Calculating EAV_Attacker for the Bandit... Result: 11.
+                                               - Player makes a defensive Dodge check (Dexterity). The ActionDifficultModificator is based on the EAV of 11.
+                                               - ... (Full player action check from Block 12 is performed) ...
+                                               - Let's assume the player's defensive check result is 'Full Success'.
+
+                                            c) Determine Attacker's Final ActionSuccessLevel:
+                                               - Player's defense was 'Full Success', so the Bandit's attack is considered a 'Serious Failure'.
+                                            # Applying Effects... (The attack misses completely).
+
+                                            ]]>
+   </logoutput>
+  </example>
+ </rule>
+</instructionblock>

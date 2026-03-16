@@ -1,0 +1,332 @@
+<instructionblock id="8">
+ <title>
+  Examples For Passive Skills Management (Player &amp; NPC)
+ </title>
+ <rule id="8.2">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 1: Passive Skill with a Characteristic Bonus ("Titan's Grip")
+   </title>
+   <description>
+    Demonstrates the correct dual reporting for a simple characteristic bonus.
+   </description>
+   <content type="json">
+    <![CDATA[
+
+                            {
+                                "skillName": "Titan's Grip",
+                                "skillDescription": "Your immense strength allows you to comfortably wield large, two-handed weapons in a single hand without the usual clumsiness.",
+                                "rarity": "Rare",
+                                "type": "CharacteristicBonus",
+                                "group": "Combat",
+                                "playerStatBonus": "+3 к Силе", // Legacy field for display
+                                "structuredBonuses": [ // NEW primary source for mechanics
+                                    {
+                                        "description": "+3 к Силе",
+                                        "bonusType": "Characteristic",
+                                        "target": "strength",
+                                        "valueType": "Flat",
+                                        "value": 3,
+                                        "application": "Permanent",
+                                        "condition": null
+                                    }
+                                ],
+                                "effectDetails": "Removes the Disadvantage penalty normally associated with wielding a two-handed weapon in one hand.",
+                                "masteryLevel": 1,
+                                "maxMasteryLevel": 1
+                            }
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 2: Passive Skill with a Conditional Action Check Bonus ("Expert Herbalism")
+   </title>
+   <description>
+    Demonstrates a conditional bonus that affects a specific type of action check.
+   </description>
+   <content type="json">
+    <![CDATA[
+
+                            {
+                                "skillName": "Expert Herbalism",
+                                "skillDescription": "You have a deep knowledge of plants and their properties.",
+                                "rarity": "Uncommon",
+                                "type": "KnowledgeBased",
+                                "group": "Crafting",
+                                "playerStatBonus": "+15% к проверкам на Сбор Трав",
+                                "structuredBonuses": [
+                                    {
+                                        "description": "+15% к проверкам на Сбор Трав",
+                                        "bonusType": "ActionCheck",
+                                        "target": "Проверки на Сбор Трав",
+                                        "valueType": "Percentage",
+                                        "value": 15,
+                                        "application": "Permanent",
+                                        "condition": null
+                                    }
+                                ],
+                                "knowledgeDomain": "Herbalism",
+                                "masteryLevel": 2,
+                                "maxMasteryLevel": 5
+                            }
+
+                            ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example 3: Passive Skill with a Purely Narrative Effect ("Dual Wielding")
+   </title>
+   <description>
+    Shows a skill where the main effect is narrative/rule-changing, so structuredBonuses is empty.
+   </description>
+   <content type="json">
+    <![CDATA[
+
+                            {
+                                "skillName": "Dual Wielding",
+                                "skillDescription": "You have trained to fight effectively with a weapon in each hand, turning a defensive liability into a flurry of attacks.",
+                                "rarity": "Uncommon",
+                                "type": "CombatEnhancement",
+                                "group": "Combat",
+                                "playerStatBonus": null,
+                                "structuredBonuses": null,
+                                "effectDetails": "Removes the Disadvantage penalty normally associated with attacking while wielding a weapon in the off-hand. Allows for effective dual-weapon combat.",
+                                "masteryLevel": 1,
+                                "maxMasteryLevel": 3
+                            }
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="8.3.2">
+  <example contenttype="text" type="good">
+   <title>
+    Example: 'BodyModification' Skill Progression (Concrete Bonus)
+   </title>
+   <content type="text">
+    <![CDATA[
+
+                                    Skill: 'Tough Skin' (Rarity: Uncommon, Type: BodyModification)
+                                    Mastery 1: 'skillDescription': "Your skin is naturally resilient, offering minor protection.", 
+                                    'combatEffect': { 
+                                        "effects": [{ 
+                                            "effectType": "ResistBonus", 
+                                            "value": "5%", 
+                                            "targetType": "all", 
+                                            "effectDescription": "Provides 5% resistance to all damage." 
+                                        }] 
+                                    }
+                            
+                                    Plot Event: Player undergoes a rigorous endurance trial.
+                                    GM Decision: 'Tough Skin' mastery increases to 2. The skill evolves.
+
+                                    New Mastery 2: 'skillName': 'Reinforced Hide'. 
+                                    'skillDescription': "Your skin has become exceptionally hardened, like tough leather, providing a solid 10% resistance to all incoming damage.", 
+                                    'combatEffect': { 
+                                        "effects": [{ 
+                                            "effectType": "ResistBonus", 
+                                            "value": "10%", 
+                                            "targetType": "all", 
+                                            "effectDescription": "Provides 10% resistance to all damage." 
+                                        }] 
+                                    }
+
+                                    (GM reports this updated skill via 'passiveSkillChanges')
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="text" type="good">
+   <title>
+    Example: 'CharacteristicBonus' Skill Progression ("Keen Eye")
+   </title>
+   <description>
+    This example demonstrates the full process of updating a passive skill's mastery level, including modifying its structured bonus and legacy display field.
+   </description>
+   <content type="text">
+    <![CDATA[
+
+                                    Skill: 'Keen Eye' (Rarity: Common, Type: CharacteristicBonus)
+                                    This is the skill's state at Mastery 1:
+                                    {
+                                        "skillName": "Keen Eye",
+                                        "skillDescription": "You have a knack for noticing small details, granting a +5% bonus to all perception checks.",
+                                        "rarity": "Common",
+                                        "type": "CharacteristicBonus",
+                                        "group": "Utility",
+                                        "playerStatBonus": "+5% к проверкам на восприятие",
+                                        "structuredBonuses": [
+                                            {
+                                                "description": "+5% к проверкам на восприятие",
+                                                "bonusType": "ActionCheck",
+                                                "target": "Проверки на восприятие",
+                                                "valueType": "Percentage",
+                                                "value": 5,
+                                                "application": "Permanent",
+                                                "condition": null
+                                            }
+                                        ],
+                                        "masteryLevel": 1,
+                                        "maxMasteryLevel": 5
+                                    }
+                            
+                                    Plot Event: Player spends time training their observational skills with a master scout.
+                                    GM Decision: 'Keen Eye' mastery increases to 2.
+                            
+                                    This is the NEW, UPDATED skill object at Mastery 2 that the GM reports via 'passiveSkillChanges':
+                                    {
+                                        "skillName": "Keen Eye",
+                                        "skillDescription": "Your observational skills have sharpened significantly, providing a +10% bonus to all perception checks.",
+                                        "rarity": "Common",
+                                        "type": "CharacteristicBonus",
+                                        "group": "Utility",
+                                        "playerStatBonus": "+10% к проверкам на восприятие", // Legacy field is UPDATED
+                                        "structuredBonuses": [ // Mechanical field is UPDATED
+                                            {
+                                                "description": "+10% к проверкам на восприятие",
+                                                "bonusType": "ActionCheck",
+                                                "target": "Проверки на восприятие",
+                                                "valueType": "Percentage",
+                                                "value": 10,
+                                                "application": "Permanent",
+                                                "condition": null
+                                            }
+                                        ],
+                                        "masteryLevel": 2, // Mastery level is UPDATED
+                                        "maxMasteryLevel": 5
+                                    }
+                            
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="text" type="good">
+   <title>
+    Example: 'KnowledgeBased' Skill Progression
+   </title>
+   <content type="text">
+    <![CDATA[
+
+                                    Skill: 'Basic Herbalism' (Rarity: Common, Type: KnowledgeBased, knowledgeDomain: "Common Forest Herbs")
+                                    Mastery 1: 'skillDescription': "Allows identification of common forest herbs and basic poultice recipes.", 
+                                    'maxUnlockableActiveSkills': 2.
+                                
+                                    Plot Event: Player finds an "Advanced Herbalism Primer".
+                                    GM Decision: 'Basic Herbalism' mastery increases to 2.
+                                
+                                    New Mastery 2: 'skillDescription': "Grants deeper understanding of herbs, allowing identification of uncommon forest herbs and access to more complex poultice/potion recipes.", 
+                                    'knowledgeDomain' might expand or 'effectDetails' updated. 
+                                    'maxUnlockableActiveSkills' might increase to 4.
+                                    (GM reports this updated skill via 'passiveSkillChanges')
+                                
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="8.4.2">
+  <example contenttype="json" type="good">
+   <title>
+    Example for 'NPCPassiveSkillChanges' (NPC skill mastery increases, effect becomes more specific)
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    "NPCPassiveSkillChanges": [
+                                        {
+                                            "NPCId": "npc-old-mage-007",
+                                            "NPCName": "Merlin",
+                                            "skillChanges": [
+                                                {
+                                                    "skillName": "Ancient Lore Mastery",
+                                                    "skillDescription": "The old mage's deep understanding of ancient history now grants him an edge in deciphering old texts and recalling forgotten details. This provides a +15% bonus to relevant Intelligence checks.",
+                                                    "rarity": "Epic",
+                                                    "type": "KnowledgeBased", 
+                                                    "group": "Scholarship",
+                                                    "playerStatBonus": "+15% к проверкам Интеллекта (История/Артефакты)",
+                                                    "structuredBonuses": [
+                                                        {
+                                                            "description": "+15% к проверкам Интеллекта (История/Артефакты)",
+                                                            "bonusType": "ActionCheck",
+                                                            "target": "Проверки Интеллекта (История/Артефакты)",
+                                                            "valueType": "Percentage",
+                                                            "value": 15,
+                                                            "application": "Permanent",
+                                                            "condition": null
+                                                        }
+                                                    ],
+                                                    "effectDetails": "Can now attempt to identify properties of Rare magical items without extensive research. Maximum number of related active insights/spells he can develop from this knowledge increased to 5.",
+                                                    "masteryLevel": 3, 
+                                                    "maxMasteryLevel": 5,
+                                                    "knowledgeDomain": "Ancient History and Arcane Artifacts",
+                                                    "maxUnlockableActiveSkills": 5, 
+                                                    "unlockedActiveSkillsCount": 2 
+                                                }
+                                            ],
+                                            "skillsToRemove": ["Fading Memory of Lore"] 
+                                        }
+                                    ]
+
+                                    ]]>
+   </content>
+  </example>
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example Passive Skill: "Titan's Grip"
+   </title>
+   <content type="json">
+    <![CDATA[
+
+                                    {
+                                        "skillName": "Titan's Grip",
+                                        "skillDescription": "Your immense strength allows you to comfortably wield large, two-handed weapons in a single hand without the usual clumsiness.",
+                                        "rarity": "Rare",
+                                        "type": "CharacteristicBonus",
+                                        "group": "Combat",
+                                        "playerStatBonus": "+2 к Силе",
+                                        "structuredBonuses": [
+                                            {
+                                                "description": "+2 к Силе",
+                                                "bonusType": "Characteristic",
+                                                "target": "strength",
+                                                "valueType": "Flat",
+                                                "value": 2,
+                                                "application": "Permanent",
+                                                "condition": null
+                                            }
+                                        ],
+                                        "effectDetails": "Removes the Disadvantage penalty normally associated with wielding a two-handed weapon in one hand.",
+                                        "masteryLevel": 1,
+                                        "maxMasteryLevel": 1
+                                    }
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="8.5">
+  <example contenttype="json_fragment" type="good">
+   <title>
+    Example: Kaelen's passive skill mastery increases.
+   </title>
+   <jsonresponse>
+    <npcpassiveskillmasterychanges>
+     <![CDATA[
+
+                                [
+                                    {
+                                        "NPCId": "npc-kaelen-001",
+                                        "NPCName": "Kaelen, the Mercenary Captain",
+                                        "skillName": "Battle Hardened",
+                                        "newMasteryLevel": 4
+                                    }
+                                ]
+
+                                ]]>
+    </npcpassiveskillmasterychanges>
+   </jsonresponse>
+  </example>
+ </rule>
+</instructionblock>

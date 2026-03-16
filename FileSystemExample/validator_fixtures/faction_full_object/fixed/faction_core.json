@@ -1,0 +1,47 @@
+{
+  "factionDataChanges": [
+    {
+      "factionId": "f_guard_city_watch",
+      "factionName": "Городская Стража",
+      "powerProfile": "Локальная силовая структура среднего масштаба.",
+      "resources": {
+        "metaResources": [
+          {
+            "resourceName": "Бюджет",
+            "currentStockpile": 140,
+            "incomePerCycle": 25,
+            "upkeepPerCycle": 18
+          }
+        ],
+        "strategicGoods": [
+          {
+            "resourceName": "Вооружение",
+            "currentStockpile": 36,
+            "incomePerCycle": 4
+          }
+        ]
+      },
+      "customStates": [
+        {
+          "stateId": "watch-alert",
+          "currentValue": 2,
+          "minValue": 0,
+          "maxValue": 5,
+          "description": "Текущий уровень боевой тревоги городской стражи.",
+          "progressionRule": {
+            "changePerTurn": 0,
+            "description": "Меняется только событиями мира."
+          },
+          "thresholds": [
+            {
+              "levelName": "Тревога",
+              "triggerCondition": "GreaterOrEqual",
+              "triggerValue": 2,
+              "associatedEffects": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

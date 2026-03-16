@@ -1,0 +1,102 @@
+<instructionblock id="21.5">
+ <title>
+  Examples For World State Flag Management
+ </title>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example: The player's actions cause a city-wide lockdown.
+  </title>
+  <jsonresponse>
+   <worldstateflags>
+    <![CDATA[
+
+                        [
+                            {
+                                "flagId": "city_in_lockdown",
+                                "displayName": "Город в изоляции",
+                                "value": true,
+                                "description": "Ворота города запечатаны, а на улицах действует строгий комендантский час из-за недавних беспорядков."
+                            }
+                        ]
+
+                    ]]>
+   </worldstateflags>
+  </jsonresponse>
+ </example>
+ <example contenttype="json_fragment" type="good">
+  <title>
+   Example: A global plague starts spreading (integer value for severity).
+  </title>
+  <jsonresponse>
+   <worldstateflags>
+    <![CDATA[
+
+                        [
+                            {
+                                "flagId": "plague_spreading",
+                                "displayName": "Начинается Чума",
+                                "value": 1, // Represents stage 1 of plague spread
+                                "description": "По всему королевству начинают появляться первые случаи таинственной болезни. Воздух становится тяжелым."
+                            }
+                        ]
+
+                    ]]>
+   </worldstateflags>
+  </jsonresponse>
+ </example>
+ <example contenttype="log_and_json_snippet" id="FlagRemoval_Example" type="good">
+  <title>
+   Example: The 'Blight Plague' is Cured, and the World Flag is Removed
+  </title>
+  <scenariocontext>
+   In the Context, 'worldStateFlags' contains an active flag: 
+                    '{ "flagId": "plague_spreading", "displayName": "Начинается Чума", "value": 3, ... }'.
+                    In the current turn, the player has successfully performed a ritual that has cleansed the land, definitively ending the plague.
+  </scenariocontext>
+  <logoutput target="gm_thoughts_markdown">
+   <![CDATA[
+
+                    # World State Flag Management
+                    -   Event: The Blight Plague has been successfully cured by the player's ritual.
+                    -   Consequence: The "plague_spreading" flag is now obsolete and must be removed to reflect the new state of the world.
+                    -   Action: Identifying flag 'plague_spreading' for removal.
+                    -   Reporting: Adding 'plague_spreading' to the 'removeWorldStateFlags' array.
+
+                    ]]>
+  </logoutput>
+  <jsonresponse>
+   <response>
+    <![CDATA[
+
+                        Когда ритуал завершается, волна чистой, золотой энергии исходит от алтаря, проносясь по земле. 
+                        Вы чувствуете, как удушающая тяжесть в воздухе рассеивается, сменяясь свежестью и запахом чистого дождя. 
+                        Искаженная порчей кора деревьев начинает светлеть, а больные животные успокаиваются. 
+                        Чума побеждена. Мир может начать исцеляться.
+
+                        ]]>
+   </response>
+   <removeworldstateflags>
+    <![CDATA[
+
+                        [
+                            "plague_spreading"
+                        ]
+
+                        ]]>
+   </removeworldstateflags>
+   <questupdates>
+    <![CDATA[
+
+                        [
+                            {
+                                "questId": "quest-cure-the-plague-01",
+                                "status": "Completed",
+                                "newDetailsLogEntry": "#[47] - 12 Март 2026 г., 18:40: Ритуал прошел успешно. Чума была полностью уничтожена."
+                            }
+                        ]
+
+                        ]]>
+   </questupdates>
+  </jsonresponse>
+ </example>
+</instructionblock>

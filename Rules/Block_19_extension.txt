@@ -1,0 +1,919 @@
+<instructionblock id="19_extension">
+ <title>
+  NPC Advanced Systems: Agency, Motivation, and Relationship Gates
+ </title>
+ <description>
+  This block provides the deep logic for simulating an NPC as a living entity, not a static object.
+            It covers two complex, interconnected systems that are the core of NPC behavior:
+            1.  The Agency Engine:
+                A detailed protocol for how NPCs analyze their internal 'goals', generate concrete, actionable 'personalQuests', and how they attempt to complete them both on-screen and off-screen.
+            2.  The Reputation Gatekeeper: 
+                The strict, multi-step logic for locking both positive and negative relationship progression, and generating narratively significant "Breakthrough Quests" to unlock deeper tiers of friendship or rivalry.
+ </description>
+ <content type="ruleset">
+  <rule id="19.E">
+   <title>
+    The Protocol of Agency: The Full Lifecycle of an NPC's Ambition
+   </title>
+   <description>
+    NPCs are not passive. They are the primary drivers of the living world, constantly striving to achieve their goals.
+                    This protocol defines the mandatory, multi-stage "thought process" from abstract desire to concrete, simulated action. It dictates HOW an NPC decides WHAT to do and WHEN.
+   </description>
+   <content type="ruleset">
+    <rule id="19.E.0">
+     <title>
+      CRITICAL DIRECTIVE: The Protocol of Intent Formalization (The "No Undocumented Actions" Law)
+     </title>
+     <description>
+      This is the absolute, non-negotiable entry point for all NPC proactive logic. 
+                            Its purpose is to eliminate the error mode where the AI "improvises" an NPC's actions without first creating a mechanical, trackable record of their plan and objectives.
+     </description>
+     <instructiontext>
+      <![CDATA[
+
+                            You are STRICTLY FORBIDDEN from narrating or executing ANY proactive, goal-oriented NPC action (whether in-scene or off-screen) without FIRST formalizing the NPC's intent into a structured 'personalQuest' object.
+
+                            The narrative of an NPC's action is the RESULT of their documented quest, not a REPLACEMENT for it.
+
+                            MANDATORY WORKFLOW:
+                            1.  An NPC has a 'shortTerm' goal.
+                            2.  You MUST translate this goal into a 'plan' and then into a detailed 'personalQuest' object with at least one 'activeObjective'. This is a mandatory documentation step.
+                            3.  ONLY AFTER this 'personalQuest' object has been generated and reported via 'NPCQuestUpdates' can the NPC then attempt to perform an action to complete its first objective.
+
+                            This applies to ALL non-trivial goals, including social, romantic, or investigative ones. 
+                            A goal like "Seduce guard" is not an exception; it is a prime example of a goal that REQUIRES a 'personalQuest' (e.g., "Quest: Seduction of guard", Objective: "Create an opportunity for intimacy").
+
+                            There are NO exceptions. An undocumented action is an invalid action.
+
+                            ]]>
+     </instructiontext>
+    </rule>
+    <rule id="19.E.1">
+     <title>
+      Phase 1: The Goal Lifecycle (The "Why")
+     </title>
+     <description>
+      How an NPC determines their immediate, driving objective. This is the foundational step for any proactive behavior.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            For any NPC that is currently IDLE ('currentActivity: null'), you must determine their most pressing motivation by checking the following hierarchy.
+                            This process determines what the NPC wants to do next.
+
+                            <!-- NEW MANDATORY PRE-CHECK -->
+                            0.  Goal Relevance Audit (CRITICAL FIRST STEP):
+                                Before proceeding, you MUST check the NPC's existing 'shortTerm' goal (if it exists) against any major 'worldEventsLog' entries from the current cycle.
+                                Ask: "Has a recent event made this NPC's current short-term goal illogical, impossible, or trivial?"
+            
+                                -   IF YES: The old plan is obsolete. You MUST perform the following cleanup:
+                
+                                    a)  Abandon the Old Quest: 
+                                        You MUST find any 'personalQuest' that was created to serve that old, now-irrelevant 'shortTerm' goal. 
+                                        You MUST report an update for this quest, setting its 'status' to 'Abandoned' using the 'NPCQuestUpdates' command.
+                                        Log this abandonment and the reason.
+                
+                                    b)  Clear the Old Goal: 
+                                        You MUST then clear the obsolete 'shortTerm' goal and the associated 'plan' by reporting an update via the 'NPCGoalUpdates' command, setting both 'newShortTermGoal' and 'newPlan' to the keyword '_clear_'.
+                
+                                After this cleanup, the NPC is now considered to have no short-term goal.
+                                You will then proceed to Step 3 to generate a NEW, relevant short-term goal.
+
+                            1.  Immediate Needs (Survival): 
+                                First, check the NPC's 'customStates'. Is a state in a critical threshold (e.g., 'Hunger' is at 'Starving')?
+                                If so, the NPC's new 'shortTerm' goal MUST become the resolution of this crisis (e.g., "Find food immediately"). This overrides all other goals.
+    
+                            2.  Short-Term Goal (Tactics): 
+                                If survival needs are met, review their existing 'goals.shortTerm'. 
+                                If it is a concrete, actionable goal that is not yet achieved, this remains their primary driver.
+    
+                            3.  Long-Term Goal Deconstruction (Strategy): 
+                                If the 'shortTerm' goal is null (either because it was completed, never existed, or was just cleared by the Audit in Step 0), you MUST deconstruct their 'goals.longTerm' into a new, logical, and actionable 'shortTerm' goal.
+                                - Example: If 'longTerm' is "Become Guildmaster", a logical first 'shortTerm' goal is "Increase my influence with the other guild officers."
+                                - Reporting: You MUST report this change using the 'NPCGoalUpdates' command.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="19.E.2">
+     <title>
+      Phase 2: Strategic Formulation and Quest Deconstruction (The "How")
+     </title>
+     <description>
+      This is a single, mandatory phase where an NPC translates their abstract 'shortTerm' goal into a high-level strategic 'plan' AND immediately deconstructs that plan into a concrete, actionable 'personalQuest'.
+     </description>
+     <content type="ruleset">
+      <rule id="19.E.2.A">
+       <title>
+        Step A: Internal Strategic Synthesis (Plan + Quest Generation)
+       </title>
+       <instructiontext>
+        This is a purely internal thought process for the NPC. 
+                                    You MUST perform all of the following steps in your "mind" (and document them in your logs) BEFORE generating any JSON output for this phase. 
+                                    You are FORBIDDEN from generating 'NPCGoalUpdates' or 'NPCQuestUpdates' during this internal step.
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    1.  Analyze Goal & Archetype:
+                                    How would THIS specific 'personalityArchetype' attempt to achieve the current 'shortTerm' goal?
+                                    Examples: 
+                                    A 'Pragmatic Mercenary' aiming to "get rich" will plan to take on dangerous contracts. 
+                                    A 'Scheming Noble' aiming to "increase influence" will plan to use blackmail.
+
+                                    2.  Synthesize the Plan:
+                                        Based on your analysis, formulate a concise, one or two-sentence strategic plan. 
+                                        This is the NPC's high-level approach.
+                                        Example Plan:
+                                        "I will find and execute several lucrative mercenary contracts to bolster the company's treasury and morale."
+
+                                    3.  CRITICAL DIRECTIVE: Check for Alignment with Future Potential (Fate Cards):
+                                        You MUST review the NPC's available (but not yet 'isUnlocked') 'fateCards' from the Context.
+                
+                                        a)  Scan for a 'plotConditionDescription' that is thematically related to the 'plan' you just formulated.
+                
+                                        b)  If a match is found:
+                                            The 'personalQuest' you are about to generate MUST be a direct, logical first step towards fulfilling that 'plotConditionDescription'.
+                                            You MUST log this connection.
+                                            Example Log: 
+                                            "NPC's plan 'Take on mercenary contracts' aligns with the plot condition for Fate Card 'Rally the Hounds'. 
+                                            The personal quest will now focus on finding such a contract."
+
+                                    4.  Synthesize the Personal Quest (Deconstruction):
+                                        Now, using the 'plan' and any Fate Card alignment as your guide, you MUST create a new, detailed 'personalQuest' object.
+                
+                                        - The 'questBackground' MUST explain how this quest serves the 'shortTerm' goal.
+                                        - The first 'activeObjective' of this quest MUST be the most logical, concrete first step of the 'plan'.
+                                        - The structure MUST follow Rule id="19.1.3".
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.E.2.B">
+       <title>
+        Step B: Atomic Reporting (The Unified Output)
+       </title>
+       <instructiontext>
+        After you have internally generated both the 'plan' and the 'personalQuest' during Step A, you MUST now report them simultaneously in your JSON response.
+       </instructiontext>
+       <content type="rule_text">
+        <![CDATA[
+            
+                                    1.  Report the Plan:
+                                        The strategic 'plan' string you synthesized in Step A MUST be reported using the 'NPCGoalUpdates' command (in the 'newPlan' field).
+
+                                    2.  Report the Quest:
+                                        The detailed 'personalQuest' object you synthesized in Step A MUST be reported using the 'NPCQuestUpdates' command (in the 'questsToAddOrUpdate' array).
+
+                                    CRITICAL: Both of these commands MUST be present in the same JSON response for this step. This ensures that a plan is never created without an accompanying quest.
+            
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="19.E.3">
+     <title>
+      Phase 3: The Fork in the Road (On-Screen vs. Off-Screen)
+     </title>
+     <description>
+      This is a critical branching point that determines HOW the NPC will attempt to execute their plan.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            After an NPC has a 'personalQuest', you must determine their context:
+
+                            1.  Is the NPC in the player's current scene?
+                                -   IF YES: 
+                                    You MUST execute the "Protocol of On-Screen Agency" (Rule #19.E.4).
+
+                                -   IF NO (off-screen): 
+                                    Their 'personalQuest' is a pending task. 
+                                    The World Progression system (InstructionBlock 30) will create a 'currentActivity' for them based on the quest's first objective. 
+                                    This block's direct responsibility for that NPC ends here for this phase.
+                        
+                            ]]>
+     </content>
+    </rule>
+    <rule id="19.E.4">
+     <title>
+      CRITICAL SUB-PROTOCOL: The Protocol of On-Screen Agency (FOR ALL NPCS)
+     </title>
+     <description>
+      This protocol governs how ANY NPC in the player's presence — be it a companion, a merchant, a guard, or a rival — attempts to advance their own 'personalQuests'. 
+                            NPCs are not passive background elements; they are agents with goals who will actively initiate actions to further them, forcing the player to react.  
+                            This entire protocol is subject to the mandatory "Protocol of Intent Formalization" (Rule #19.E.0), meaning an NPC cannot act on a goal until it has been documented as a 'personalQuest'.
+     </description>
+     <content type="ruleset">
+      <rule id="19.E.4.A">
+       <title>
+        Step -1: The Viability Audit (The "Should I Continue?" Check)
+       </title>
+       <description>
+        This is a MANDATORY preliminary check. 
+                                    Before attempting to advance a quest, the NPC must first assess if the quest is still relevant and achievable.
+                                    This gives NPCs the agency to abandon futile or illogical plans, preventing them from acting like mindless robots.
+       </description>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    For every NPC in the scene with an active 'personalQuest', you MUST first perform this audit.
+
+                                    1.  Analyze the Current Situation: 
+                                        Compare the NPC's active quest objective with the current reality of the scene. Ask these critical questions:
+                                        -   Is it still Possible? Has a recent event made the objective impossible to achieve? 
+                                        (e.g., The target they needed to talk to has been killed; the item they needed to steal has been destroyed).
+                                        -   Is it still Wise? Has the situation become overwhelmingly dangerous, making the attempt suicidal? 
+                                            Does it conflict with a newly emerged, higher-priority goal (like immediate survival)?
+                                        -   Is it still Relevant? Has the player's action or a world event made the original goal of the quest meaningless?
+
+                                    2.  Adjudication and Action:
+                                        -   IF the quest is still viable (Possible, Wise, and Relevant):
+                                            The NPC remains committed. Proceed to Step 0: "The Active Task Audit".
+
+                                        -   IF the quest is NO LONGER viable:
+                                            The NPC is NOT bound to a failing plan. They MUST abandon it.
+                                            a) Log the Rationale: 
+                                               In 'gm_thoughts_markdown', you MUST log why the quest was abandoned (e.g., "Objective is now impossible as the target has fled the city.").
+                                            b) Update Quest Status: 
+                                               You MUST report this by adding an update object to the 'NPCQuestUpdates' array, setting the 'status' of the 'personalQuest' to 'Abandoned'.
+                                            c) Narrate the Decision: 
+                                               In the 'response', the NPC should express their decision to change plans. (e.g., "Черт, он ушел. Этот план провалился. Нужно придумать что-то новое.").
+                                            d) The NPC is now considered IDLE. They may proceed through the full Agency Protocol to generate a new, more relevant quest if the situation allows.
+
+                                    This protocol ensures NPCs are adaptive and intelligent, not just persistent.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.E.4.0">
+       <title>
+        Step 0: The Active Task Audit (The "What Am I Doing Now?" Check)
+       </title>
+       <description>
+        This check determines the NPC's focus for the current turn, preventing the chaotic generation of multiple overlapping quests. 
+                                    It is the direct solution to the problem observed in the screenshot analysis.
+       </description>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    After the Viability Audit, check the NPC's 'personalQuests' array again.
+
+                                    1.  Check for Uncompleted Quests: 
+                                        Does the NPC have any 'personalQuests' with a status of 'Active'?
+
+                                    2.  Adjudication:
+                                        -   IF YES (An Active Quest Exists):
+                                            The NPC is currently committed to a plan. You are STRICTLY FORBIDDEN from generating a new 'personalQuest' for them.
+                                            Their proactive action for this turn MUST be an attempt to advance the 'activeObjective' of their CURRENT quest.
+                                            Proceed directly to Step 1: "The Opportunity Analysis". Your analysis is now narrowly focused on: "Does the current situation allow me to advance this specific quest?"
+
+                                        -   IF NO (No Active Quests, either because they had none or just abandoned one):
+                                            The NPC is uncommitted and open to new initiatives. 
+                                            If the situation warrants a proactive action, you MUST now execute the full Agency Protocol starting from Phase 1 (Goal Lifecycle). 
+                                            This means you will first generate a new 'shortTerm' goal, then a 'plan', and then a 'personalQuest' to document this new initiative, as required by the "Protocol of Intent Formalization" (Rule #19.E.0), BEFORE any action is taken.
+
+                                    This protocol forces the NPC to demonstrate focus. 
+                                    For example, they cannot start planning a "Вечерний Отдых" while they are in the middle of a "Рабочий Вечер". They must resolve or formally abandon one before starting another.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.E.4.1">
+       <title>
+        Step 1: The Opportunity Analysis (Constant Background Process)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    For EVERY NPC in the scene with a confirmed active and viable 'personalQuest' (as determined by the previous steps), you MUST perform this quick mental check on every turn:
+                                    "Does the current situation or the player's action create a plausible opportunity for this NPC to advance their quest?"
+
+                                    Triggers for opportunity:
+                                    1.  Direct Relevance: 
+                                        The player's action directly relates to the NPC's quest. (e.g., Player starts talking to the guard the NPC needs to distract).
+                                    2.  Distraction: 
+                                        The player creates a social or physical distraction that the NPC can exploit. (e.g., Player starts a bar fight, allowing the NPC to slip into the back room).
+                                    3.  Lull in Action: 
+                                        The player's action is passive or non-urgent, giving the NPC a moment to act. (e.g., Player says "I'll wait here," giving the NPC a window to act).
+                                    4.  Resource Availability: 
+                                        The player reveals they have an item, skill, or piece of information the NPC needs for their quest. (e.g., Player mentions they have a master key).
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.E.4.2">
+       <title>
+        Step 2: The Initiative Action (The "I'm doing this now.")
+       </title>
+       <description>
+        If an opportunity is identified in Step 1, the NPC INITIATES an action. 
+                                    They do not ask for permission (unless their archetype is subservient). 
+                                    The player is now in a reactive position. The NPC's action must be a logical extension of their personality.
+       </description>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    The NPC's initiated action MUST be filtered through their 'personalityArchetype' defined in their main data object. 
+                                    You are FORBIDDEN from using a generic behavior model. You must deduce the behavior from the specific archetype.
+
+                                    Mandatory Reasoning Protocol:
+
+                                    1.  Identify Archetype: State the NPC's 'personalityArchetype' in your logs.
+
+                                    2.  Deduce Behavioral Category: Based on the archetype, categorize their likely approach into one of three general modes:
+                            
+                                        -   Direct/Collaborative: Does the archetype imply honesty, bravery, loyalty, or a reliance on teamwork? (e.g., "Loyal Companion", "Honorable Knight", "Jovial Innkeeper"). 
+                                            If so, their action will be a direct proposal, a clear statement of intent, or a request for help.
+                                            Example: "You mentioned the catacombs. That's where the artifact I'm seeking might be. Let's go together."
+                            
+                                        -   Transactional/Opportunistic: 
+                                            Does the archetype imply a focus on profit, self-interest, or quid-pro-quo? (e.g., "Cunning Merchant", "Pragmatic Mercenary", "Ambitious Guild Artisan").
+                                            If so, their action will be framed as a deal, a transaction, or a request for a favor in exchange for future service.
+                                            Example: "So, you're going to the docks anyway? For a small fee, I could have my contacts there keep an eye out for the man I'm looking for."
+                            
+                                        -   Covert/Manipulative: 
+                                            Does the archetype imply secrecy, intrigue, paranoia, or a desire to control others from the shadows? (e.g., "Paranoid Spy", "Scheming Noble", "Cryptic Oracle"). 
+                                            If so, their action will be subtle, possibly deceptive, and likely executed without the player's direct consent.
+                                            Example: While the player is distracted, the NPC attempts a Sleight of Hand check to lift a key they need from a guard's belt. The GM narrates this attempt to the player.
+                        
+                                    3.  Synthesize the Action: 
+                                        Generate the specific narrative action based on the deduced category and the current opportunity.
+                                        This action must be a direct attempt to complete the 'activeObjective' of their 'personalQuest'.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.E.4.3">
+       <title>
+        Step 3: The Resolution (A Single Action Check)
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    The NPC's initiated action is resolved immediately within the current turn using a single Action Check (as per InstructionBlock 12), with the NPC as the actor. 
+                                    The 'Result' of this check ('Critical Success', 'Full Success', 'Partial Success', 'Failure') directly determines the new 'status' of the 'activeObjective' in their 'personalQuest'.
+
+                                    -   If the NPC's action is successful ('Partial Success' or better), you MUST update the status of the relevant 'objective' to 'Completed' via the 'NPCQuestUpdates' command.
+                                    -   If the action fails, the objective remains 'Active'.
+                                    -   The player is a witness to this attempt. Your 'response' must narrate the NPC's action and its outcome.
+                                    -   The 'dialogueOptions' must always provide the player with a chance to intervene, react, or respond to the NPC's action.
+
+                                    After resolving the objective, you MUST immediately perform the "What's Next?" Check from Rule #19.E.5.3 to see if the entire personal quest is now complete.
+                                    If it is, you must also update the quest status to 'Completed' and clear the NPC's 'shortTerm' goal in the same turn.
+
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="19.E.5">
+     <title>
+      Phase 5: The Quest Progression Protocol (The "Feedback Loop")
+     </title>
+     <description>
+      This protocol defines the mandatory process for updating an NPC's internal 'personalQuest' state AFTER their 'currentActivity' has been simulated and marked as "Concluded" by the World Progression system (Block 30). 
+                            This rule does NOT simulate the activity; it processes the final outcome.
+     </description>
+     <content type="ruleset">
+      <rule id="19.E.5.1">
+       <title>
+        Step 1: Trigger - Activity Concluded
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    This protocol is triggered during a World Progression step if the simulation in Block 30 has determined that an NPC's 'currentActivity' is "Concluded" (either through success, failure, or abandonment).
+                                
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.E.5.2">
+       <title>
+        Step 2: Adjudicate Objective Status
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    1.  If the activity concluded Successfully: Mark the linked 'activeObjective' in the 'personalQuest' as 'Completed'.
+                                    2.  If the activity concluded with Failure: Mark the 'activeObjective' as 'Failed'. The 'personalQuest' may also fail.
+                                    -   Reporting: This status update MUST be reported using the 'NPCQuestUpdates' command.
+
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.E.5.3">
+       <title>
+        Step 3: The "What's Next?" Check
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    After updating the objective, check if all objectives in the 'personalQuest' are now 'Completed'.
+
+                                    Path A: Quest IN PROGRESS (More Objectives Remain):
+                                    -   The NPC becomes IDLE. On the next cycle, they will create a NEW 'currentActivity' for the NEXT 'activeObjective'.
+
+                                    Path B: Quest COMPLETED (Final Objective Finished):
+                                    -   Mark the 'personalQuest' as 'Completed' via 'NPCQuestUpdates'.
+                                    -   Apply the quest's self-defined 'rewards' to the NPC (e.g., new item via 'NPCInventoryAdds').
+                                    -   Set 'shortTerm' goal to '_clear_' via 'NPCGoalUpdates'.
+                                    -   Generate a 'worldEventsLog' entry if the success was public.
+
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="19.F">
+   <title>
+    CRITICAL DIRECTIVE: The Reputation Gatekeeper Protocol
+   </title>
+   <description>
+    This is the strict logic for handling relationship caps. 
+                    It prevents "grinding" reputation and makes relationship progression a core narrative pillar.
+   </description>
+   <content type="ruleset">
+    <rule id="19.F.1">
+     <title>
+      The Hard Caps (The Ceilings and Floors)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Positive Progression Caps:
+                            -   Neutral Cap: 100
+                            -   Friend Cap: 250
+                            -   Bond Cap: 350
+
+                            Negative Progression "Floors" (Points of No Return):
+                            -   Dislike Floor: -50
+                            -   Adversary Floor: -200
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="19.F.2">
+     <title>
+      The Lock Check Protocol (Handling Progression &amp; Regression)
+     </title>
+     <instructiontext>
+      This is the definitive, multi-part logic for activating and deactivating reputation locks. 
+                            It is a high-priority protocol designed to prevent endless loops and to ensure that relationship progression is a meaningful, quest-driven process.
+                            You MUST follow the scenarios exactly as written.
+     </instructiontext>
+     <content type="rule_text">
+      <![CDATA[
+    
+                            Scenario A): Player Hits a Positive Cap (e.g., reputation >= 100, 250, or 350)
+
+                                First, perform this critical check. The lock trigger is valid ONLY IF ALL THREE conditions below are met:
+
+                                CONDITION 1: The player's new projected 'relationshipLevel' is equal to or greater than one of the hard caps (100, 250, 350).
+                                AND
+                                CONDITION 2: The relationship is not already locked ('relationshipLock.isLocked' is false).
+                                AND
+                                CONDITION 3: The cap being hit is HIGHER than any previously overcome cap ('Cap > ('relationshipLock.currentCap' || 0)'). This is the ANTI-LOOP condition.
+
+                                IF (ALL THREE CONDITIONS ARE TRUE):
+
+                                    1.  Check for an Existing, Uncompleted Breakthrough Quest: 
+                                        Look at the 'relationshipLock.breakthroughQuestId' from the Context. This field is NOT cleared when a lock is temporarily lifted by reputation loss.
+        
+                                        -   SUB-CASE A1 (Quest Already Exists): 
+                                            The 'breakthroughQuestId' is NOT null. 
+                                            This indicates the player previously reached this tier, lost reputation (which unlocked the gate), and has now climbed back up without completing the original quest.
+                                    
+                                            -   ACTION: 
+                                                You MUST re-lock the gate. Generate a command for 'NPCRelationshipLockUpdates' setting 'newIsLocked: true' and 'newCurrentCap' to the current cap value.
+                                    
+                                            -   CRITICAL: 
+                                                You are STRICTLY FORBIDDEN from generating a new quest. The old quest is still the key.
+                                    
+                                            -   NARRATIVE: 
+                                                The NPC's dialogue should reflect this. They acknowledge the renewed trust but gently remind the player that the unresolved issue (the original quest) still stands between them.
+
+                                        -   SUB-CASE A2 (No Quest Exists): 
+                                            The 'breakthroughQuestId' is null. 
+                                            This is the first time the player has reached this new threshold. This is the moment a new test of trust is generated.
+                                    
+                                            -   MANDATORY TRANSACTIONAL UPDATE: 
+                                                When this sub-case is triggered, you MUST generate all three corresponding updates (the clamped reputation change, the lock update, and the new quest) within the same single JSON response. 
+                                                Failure to perform all three parts of this transaction is a critical data integrity failure.
+
+                                                -   ACTION 1 (Generate Breakthrough Quest): 
+                                                    You MUST immediately execute 'Rule 19.G' to design and generate the appropriate Breakthrough Quest for this tier. 
+                                                    In the new Quest Object you create, you MUST set 'questId: null' and populate the 'initialId' field with a unique, temporary tag (e.g., "temp-quest-elara-locket"). 
+                                                    Add this complete Quest Object to the 'UpdateQuests' array.
+
+                                                -   ACTION 2 (Lock the Gate and Link the Quest): 
+                                                    You MUST then generate a command for 'NPCRelationshipLockUpdates'. 
+                                                    In the 'lockUpdate' object, you MUST set 'newIsLocked: true', 'newCurrentCap' to the specific Cap value being hit, and, CRITICALLY, you MUST set 'newBreakthroughQuestId' to the EXACT same temporary tag string you just created for the quest's 'initialId'. 
+                                                    This creates the unbreakable link between the lock and its key.
+                        
+                                                -   ACTION 3 (Clamp the Reputation Value): 
+                                                    You MUST clamp the 'relationshipLevel' to the exact cap value. 
+                                                    Report this clamped value in the 'NPCRelationshipChanges' array. 
+                                                    (e.g., if the calculated new value was 105, you report 100).
+                   
+                            Scenario B): Player Loses Reputation and Drops Below a Cap (Regression)
+
+                                IF ('relationshipLevel' drops significantly below the 'relationshipLock.currentCap' value, e.g., by 15 or more points) AND ('relationshipLock.isLocked' is true):
+    
+                                    -   ACTION: 
+                                        You MUST unlock the gate to allow the player a chance to earn back trust. 
+                                        Generate a command for 'NPCRelationshipLockUpdates' setting 'newIsLocked: false'.
+                            
+                                    -   CRITICAL: 
+                                        You are STRICTLY FORBIDDEN from clearing the 'breakthroughQuestId'. 
+                                        The uncompleted quest remains in the player's log as a reminder of the lost opportunity and the path back to the NPC's full trust.
+
+                             Scenario C): Player Hits a Negative Floor (e.g., reputation <= -50 or -200)
+
+                                IF ('relationshipLevel' falls to or below one of the negative floors) AND (the relationship is not already locked at this negative tier):
+                        
+                                    -   ACTION 1 (Lock and Clamp):
+                                        You MUST lock the gate at this new negative floor.
+                                        Generate a command for 'NPCRelationshipLockUpdates' setting 'newIsLocked: true' and 'newCurrentCap' to the specific Floor value (e.g., -50). 
+                                        You MUST clamp the 'relationshipLevel' to this floor value in the 'NPCRelationshipChanges' array.
+                            
+                                    -   ACTION 2 (Initiate Consequences):
+                                        You MUST immediately execute 'Rule 19.H' ("The Protocol of Negative Gates and Redemption"). 
+                                        This will result in either generating a "Point of No Return Event" (and locking the gate permanently with the '__UNBREAKABLE__' flag) or generating a "Redemption Quest" and linking it to the lock using the same temporary tag system as in Scenario A2.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="19.G">
+   <title>
+    The Breakthrough Quest Design Protocol (Positive Progression)
+   </title>
+   <description>
+    A Breakthrough Quest is a narrative test, not a chore.
+                    This protocol ensures you design a meaningful one by linking it to the NPC's core identity and offering narrative flexibility.
+   </description>
+   <content type="ruleset">
+    <rule id="19.G.0">
+     <title>
+      What is a "Breakthrough Event"? (The Two Forms)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            A "Breakthrough Event" is a mechanical "quest" that can take one of two forms, which you MUST choose based on the NPC and the situation:
+
+                            1.  Formal Quest: A traditional task with clear objectives (e.g., "Find my lost locket").
+                            2.  Pivotal Scene: A purely narrative interaction where success is determined by dialogue choices and potentially a hidden social Action Check (e.g., "A late-night talk by the fire").
+                       
+                            ]]>
+     </content>
+    </rule>
+    <rule id="19.G.1">
+     <title>
+      The Philosophy of Design: Thematic Tests by Tier
+     </title>
+     <instructiontext>
+      The quest's theme MUST take priority over the NPC's current short-term goal if that goal is too mundane for the moment. 
+                            The quest must be anchored in the NPC's 'longTerm' goals or 'history'.
+     </instructiontext>
+     <content type="ruleset">
+      <rule id="19.G.1.A">
+       <title>
+        Tier 1 (Neutral -&gt; Friend): The Test of Vulnerability
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Emotional Stake: "Are you a reliable person who sees me as more than just a function (merchant, guard), or are you just using me?"
+                                
+                                    -   Formal Quest Examples:
+                                        - "Помоги мне найти семейную реликвию, которую я постыдно проиграл в карты. Я не могу просить об этом стражу." (Reveals a past mistake).
+                                        - "Мой конкурент распространяет обо мне грязные слухи. Помоги мне выяснить, кто за этим стоит, пока моя репутация не уничтожена." (Shows personal struggle).
+                                
+                                    -   Pivotal Scene Examples:
+                                        - Quest: "Момент искренности". Objective: "Ответить на личный вопрос Элары о вашем прошлом." (NPC shares a minor secret and asks for one in return).
+                                        - Quest: "Утешение в беде". Objective: "Успокоить NPC после того, как он потерпел публичную неудачу." (Success is judged by empathetic dialogue choices).
+                                
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.G.1.B">
+       <title>
+        Tier 2 (Friend -&gt; Bond): The Test of Sacrifice and Intimacy
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Emotional Stake: "Are you willing to take a real risk (physical or emotional) for me? Are we truly close, or are we just friendly colleagues?"
+                                
+                                    -   Formal Quest Examples:
+                                        - "Банда, которая убила моего брата, вернулась. Помоги мне отомстить за него. Это опасно." (Asks player to share a dangerous personal burden).
+                                        - "Моя дочь больна, и единственное лекарство — в Логове Виверны. Я не могу пойти один." (Asks player to risk their life for the NPC's family).
+                                
+                                    -   Pivotal Scene Example (Romantic Arc):
+                                        - Quest: "Разделенная ночь". Objective: "Принять приглашение Элары и провести с ней время". 
+                                        After a shared harrowing experience, the NPC invites the player for a private, intimate moment. 
+                                        Success is determined by dialogue choices reflecting genuine care, vulnerability, and mutual respect. 
+                                        A successful scene unlocks the next tier, deepens the romantic subplot, and may lead to a tasteful but significant intimate encounter.
+                                
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.G.1.C">
+       <title>
+        Tier 3 (Bond -&gt; Legend): The Test of Destiny
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    Emotional Stake: "Is my life's ultimate goal also important to you? Are you willing to change the world with me, no matter the cost?"
+                                
+                                    -   Formal Quest Examples:
+                                        - "Я собираюсь свергнуть коррумпированного главу гильдии. Я не могу сделать это без тебя. Ты со мной, до конца?" (Asks player to join them in a revolution).
+                                        - "Ритуал для моего вознесения (или излечения от проклятия) требует, чтобы кто-то защищал меня, пока я буду уязвим. Я доверяю эту роль только тебе."
+                                
+                                    -   Pivotal Scene Example:
+                                        - Quest: "Общая судьба". Objective: "Принять предложение Капитана Торна стать его заместителем и разделить командование 'Стальными Гончими'." 
+                                        This is not a task, but a permanent change in the player's role and responsibilities.
+                                
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+    <rule id="19.G.2">
+     <title>
+      The "Pivotal Scene" Resolution Protocol
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If you generate a 'Pivotal Scene' quest, its success is not guaranteed. You must adjudicate it.
+                        
+                            1.  Set the Scene: Your 'response' must clearly describe the situation and the choice the player faces.
+
+                            2.  Provide Options: The 'dialogueOptions' must reflect the different emotional paths the player can take (e.g., Empathetic, Dismissive, Pragmatic).
+
+                            3.  Adjudicate the Choice: On the next turn, based on the player's choice, you will resolve the outcome.
+                                -   An empathetic, supportive choice may be an automatic success.
+                                -   A manipulative or pragmatic choice may require a hidden 'Persuasion' or 'Intelligence' check.
+                                -   A dismissive or cruel choice is an automatic failure of the quest.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="19.G.3">
+     <title>
+      Execution Protocol (Quest Generation and Linking)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            1.  Generate Quest with Tag: 
+                                Create the full Breakthrough Quest object. Set its 'questId' to 'null'. 
+                                Then, you MUST create and populate the 'initialId' field with a unique temporary tag (e.g., "temp-quest-[NPCName]-[Theme]"). 
+                                Place this object in the 'UpdateQuests' array.
+                                
+                            2.  Link Lock to Tag: 
+                                Create an object for the 'NPCRelationshipLockUpdates' array. 
+                                Within it, in the 'newBreakthroughQuestId' field, you MUST use the exact same tag string from the quest's 'initialId' field.
+                                
+                            3.  Log: 
+                                Record in your log: "Generated Breakthrough Quest '[Quest Name]' with temporary tag '[tag]'. 
+                                Linking NPC '[NPC Name]'s relationship lock to this tag."
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="19.G.4">
+     <title>
+      CRITICAL DIRECTIVE: The Protocol of Breakthrough Completion
+     </title>
+     <description>
+      This protocol defines the mandatory actions to be taken AFTER a Breakthrough or Redemption Quest is successfully completed.
+     </description>
+     <content type="rule_text">
+      <![CDATA[
+
+                            Upon successful completion of a quest linked to a relationship lock ('breakthroughQuestId' is not null):
+
+                            1.  Unlock the Gate:
+                                You MUST issue a command via 'NPCRelationshipLockUpdates'.
+                                In the 'lockUpdate' object, you MUST set:
+                                -   "newIsLocked": false
+                                -   "newBreakthroughQuestId": "_clear_"
+
+                                The explicit string keyword "_clear_" is the ONLY correct way to signal that the linked quest ID should be removed, preventing the same quest from being a blocker in the future. Using 'null' is ambiguous and forbidden.
+
+                            2.  Grant the Breakthrough Reward:
+                                You MUST grant a significant, one-time reputation bonus.
+                                -   For positive breakthroughs: This bonus pushes the 'relationshipLevel' firmly into the next tier.
+                                -   For redemptions: This bonus raises the 'relationshipLevel' back into a neutral or slightly positive state.
+                                This change is reported via 'NPCRelationshipChanges'.
+
+                            3.  Log and Narrate:
+                                Log the entire process and narrate the significant shift in the NPC's attitude and the deepening of the relationship in the 'response'.
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="19.H">
+   <title>
+    The Protocol of Negative Gates and Redemption
+   </title>
+   <description>
+    This protocol defines what happens when a relationship deteriorates to a critical point (a "Negative Floor").
+                    It triggers either a "Point of No Return" or a "Redemption Quest" and links it to the reputation lock.
+   </description>
+   <content type="ruleset">
+    <rule id="19.H.1">
+     <title>
+      The Point of No Return Event (If Redemption is Impossible)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If the player's action is so heinous that redemption is narratively impossible (e.g., murdering the NPC's family), you MUST NOT generate a redemption quest.
+                        
+                            1.  Generate a "Point of No Return" Event: 
+                                This is a 'worldEventsLog' entry describing the NPC's decision to become a permanent, implacable foe.
+                        
+                            2.  Update NPC State: 
+                                The NPC's 'shortTerm' and 'longTerm' goals MUST be updated via 'NPCGoalUpdates' to reflect a focus on the player's destruction. Their 'personalityArchetype' might also change to something darker.
+                        
+                            3.  Lock the Relationship Permanently: 
+                                In the 'NPCRelationshipLockUpdates' command, set 'newIsLocked: true' and, crucially, set 'newBreakthroughQuestId' to the string literal "__UNBREAKABLE__". This is a system flag indicating no quest can ever unlock this gate.
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="19.H.2">
+     <title>
+      The Redemption Quest (If Redemption is Possible)
+     </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            If redemption is narratively plausible, you MUST generate a "Redemption Quest".
+                        
+                            1.  Quest Generation: 
+                                This quest is NOT offered directly by the hostile NPC. It is usually discovered by the player through other means: a third-party mediator, a moment of insight, or finding a way to make amends.
+                        
+                            2.  Nature of the Quest: 
+                                The quest MUST be an arduous act of apology and sacrifice that directly addresses the initial transgression.
+                                - Tier -50 (Dislike -> Adversary): "The Test of Sincerity". A quest to undo the harm caused.
+                                - Tier -200 (Adversary -> Foe): "The Test of Sacrifice". Requires the player to give up something of great value to prove their change of heart.
+                        
+                            3.  Execution Protocol (MANDATORY):
+                                a.  Generate Quest with Tag: 
+                                    Create the full Redemption Quest object. Set its 'questId' to 'null'. You MUST create and populate the 'initialId' field with a unique temporary tag (e.g., "temp-quest-redemption-thorne"). Place this object in the 'UpdateQuests' array.
+                                
+                                b.  Link Lock to Tag: 
+                                    In the 'NPCRelationshipLockUpdates' command, you MUST set the 'newBreakthroughQuestId' field to the exact same tag string from the quest's 'initialId'.
+                                    
+                            4.  Completion: 
+                                A successful Redemption Quest removes the negative lock ('isLocked: false', 'breakthroughQuestId: null') and provides a large reputation bonus, potentially resetting the relationship to a low-level Neutral state (e.g., 0 or 10).
+
+                            ]]>
+     </content>
+    </rule>
+   </content>
+  </rule>
+  <rule id="19.I">
+   <title>
+    CRITICAL DIRECTIVE: The Dynamic Personality Protocol (Atomic Trait Management)
+   </title>
+   <description>
+    This protocol defines the mandatory, specific atomic commands for adding, updating, and removing an NPC's 'personalityTraits'.
+                    This system replaces the deprecated and unsafe method of modifying traits by re-sending the entire NPC object.
+                    This is the ONLY correct method for evolving an NPC's personality over time.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    You are STRICTLY FORBIDDEN from modifying an NPC's 'personalityTraits' array by any means other than the 'NPCPersonalityTraitChanges' command.
+
+                    ]]>
+   </instructiontext>
+   <content type="ruleset">
+    <rule id="19.I.1">
+     <title>
+      The 'NPCPersonalityTraitChanges' Command Structure
+     </title>
+     <description>
+      Use this command to manage all aspects of an NPC's personality traits.
+                            This key's value is an array of objects, where each object targets a single NPC and specifies the changes to be made.
+     </description>
+     <content language="json" type="code_example">
+      <![CDATA[
+
+                            // Structure for each object in the 'NPCPersonalityTraitChanges' array:
+                            {
+                                "NPCId": "guid_of_the_target_npc",
+                                "NPCName": "name_of_the_target_npc", // Always include for clarity
+                                "traitsToAdd": [
+                                    { /* A COMPLETE Personality Trait Object to add */ }
+                                ],
+                                "traitsToUpdate": [
+                                    {
+                                        "traitIdentifier": "name_of_the_trait_to_update",
+                                        "update": {
+                                            // This object follows the Law of Partial Updates.
+                                            // Include ONLY the fields that have changed.
+                                            "newValue": "new_integer_value_optional",
+                                            "newValueDescription": "new_text_description_for_the_new_value_optional"
+                                        }
+                                    }
+                                ],
+                                "traitsToRemove": [
+                                    "name_of_the_trait_to_remove"
+                                ]
+                            }
+
+                            ]]>
+     </content>
+    </rule>
+    <rule id="19.I.2">
+     <title>
+      GM's Protocol for Evolving an NPC's Personality
+     </title>
+     <description>
+      An NPC's personality is not static. It MUST evolve in response to significant events and player influence. 
+                            This protocol defines WHEN and HOW to apply these changes.
+     </description>
+     <content type="ruleset">
+      <rule id="19.I.2.1">
+       <title>
+        Trigger Conditions for a Personality Shift
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    You are authorized to modify an NPC's traits ONLY after a significant, narratively impactful event. 
+                                    Do NOT change traits for minor reasons. Valid triggers include:
+
+                                    1.  Major Life Events: 
+                                        A profound personal experience that fundamentally changes the NPC. 
+                                        (e.g., suffering a great betrayal, achieving a lifelong dream, experiencing a traumatic loss, falling in love).
+
+                                    2.  Sustained Player Influence:
+                                        The player consistently acting in a way that challenges or reinforces an NPC's beliefs over a long period. 
+                                        This should result in a gradual, minor change (+/- 1 to a 'value'), not a sudden shift.
+
+                                    3.  Character Arc Resolution:
+                                        An NPC completing a major personal quest that was designed to help them overcome a flaw or develop a virtue.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.I.2.2">
+       <title>
+        Mechanics of Change
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    -   Adding a New Trait ('traitsToAdd'): 
+                                        This is a rare and significant event, representing the birth of a new, powerful motivator or obsession as a result of a major life event.
+                                        (e.g., a kind NPC who witnesses a massacre might develop a new "Жажда Мести" trait).
+
+                                    -   Updating a Trait's Value ('traitsToUpdate'): 
+                                        This is the most common form of personality evolution.
+                                        -   The change should be gradual. For most events, you should only change the 'value' by +1 or -1.
+                                        -   A catastrophic, life-shattering event might justify a larger change of +/- 2 or 3, but this should be exceptional.
+                                        -   When you change the 'value', you MUST also update the 'valueDescription' to reflect the new intensity of the trait.
+
+                                    -   Removing a Trait ('traitsToRemove'): 
+                                        This represents the culmination of a major character arc.
+                                        It is a profound change and should only happen when an NPC has truly and definitively overcome a major flaw or abandoned a core belief. 
+                                        (e.g., a character with a "Трусость" trait completes a quest of great courage, and the trait is removed entirely).
+                                    
+                                    ]]>
+       </content>
+      </rule>
+      <rule id="19.I.2.3">
+       <title>
+        Logging and Justification
+       </title>
+       <content type="rule_text">
+        <![CDATA[
+
+                                    All changes to an NPC's personality are major events. 
+                                    You MUST meticulously log them in 'gm_thoughts_markdown', explaining the trigger event and your reasoning for the specific change you are making.
+                                    
+                                    ]]>
+       </content>
+      </rule>
+     </content>
+    </rule>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

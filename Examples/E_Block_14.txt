@@ -1,0 +1,138 @@
+<instructionblock id="14">
+ <title>
+  Examples For Player Character and Named NPC Combat Profile Calculation
+ </title>
+ <rule id="14.2">
+  <example contenttype="log" type="good">
+   <title>
+    Comprehensive Damage Calculation Example
+   </title>
+   <scenariocontext>
+    Player "Valerius" (Level 25 Warrior) uses the skill "Sundering Strike" (Base 20% slashing damage) with his "Masterwork Axe" (Base 25% slashing damage). He is under the effect of a "Blessing of Might" potion (+10% all damage).
+                            - Level: 25
+                            - Modified Strength: 70
+                            - Standard Luck: 30
+                            - Modified Luck: 35
+                            - Passive Skill "Axe Focus": +5% slashing damage.
+                            - Equipped "Gauntlets of Savagery": +3% slashing damage.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                            # Расчет Урона для "Сокрушающего Удара"
+
+                            ## 1. Масштабирование Навыка "Сокрушающий Удар" (Rule #7.3)
+                            - Базовый урон навыка: 20%
+                            - Параметры персонажа: Уровень 25, Мод. Сила 70, Мастерство навыка 3
+                            - Расчет бонусов:
+                                - Бонус от Характеристики: (floor(70/10)*5) = 35%
+                                - Бонус от Уровня: (floor(25/5)*8) = 40%
+                                - Бонус от Мастерства: (floor(3/1)*4) = 12%
+                            - Общий Множитель: 1 + 0.35 + 0.40 + 0.12 = 1.87
+                            - Масштабированный урон навыка: round(20 * 1.87) = 37%
+
+                            ## 2. Расчет Общего Базового Урона (до крит. удара) (Rule #14.2.0)
+                            
+                            ### 2.1. Расчет TotalAddedDamageBonus% (Rule #14.2.1)
+                            - Бонус от Уровня (Lvl 25): 5 + floor(25/10)*2 = +9%
+                            - Бонус от Характеристики (Мод. Сила 70): floor(70/2.5) = +28%
+                            - Проверка пассивных навыков: Найден навык "Axe Focus". Проверка его 'structuredBonuses': Найден бонус 'value: 5' для 'target: "урон (рубящий)"'. Применяется +5%.
+                            - Проверка снаряжения: Найден предмет "Gauntlets of Savagery". Проверка 'combatEffect': Найден бонус 'value: 3' для 'target: "damage (slashing)"'. Применяется +3%.
+                            - Проверка временных эффектов: Найден бафф "Blessing of Might". Применяется +10%.
+                            - Итоговый TotalAddedDamageBonus%: 9 + 28 + 5 + 3 + 10 = 55%
+
+                            ### 2.2. Суммирование всех источников урона
+                            - Базовый урон Оружия ("Masterwork Axe"): 25%
+                            - Масштабированный урон Навыка ("Sundering Strike"): 37%
+                            - TotalAddedDamageBonus%: 55%
+                            - Общий Базовый Урон (TotalPreCritDamage%): 25 + 37 + 55 = 117%
+
+                            ## 3. Расчет Критического Урона //на случай 'Critical Success' - делается только в этом случае (Rule #14.2.2)
+                            - Множитель Критического Урона (FinalCritMultiplier) (Модифицированная Удача 35):
+                                - Базовый множитель: 1.5
+                                - Бонус от Удачи: floor(35 / 2) = 17% -> 0.17
+                                - Итоговый Множитель: 1.5 + 0.17 = 1.67
+                            - Потенциальный Критический Урон: round(117% * 1.67) = 195%
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="14.2.2">
+  <example contenttype="log" type="good">
+   <title>
+    Example: Calculating Critical Hit Parameters for a High-Luck Character
+   </title>
+   <scenariocontext>
+    Player "Whisper" has Standard Luck: 85, a permanent +5 bonus from an item (making Permanently Modified Luck 90), and a temporary +2 bonus (making final Modified Luck 92).
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                                    # Расчет Параметров Критического Удара для "Whisper"
+
+                                    ## 1. Расчет Порога Критического Удара (CritChanceThreshold)
+                                    - Используется **Перманентно Модифицированная Удача**: 90 (Например: 85 Стандартной + 5 от постоянного бонуса экипировки)
+                                    - Формула: 20 - floor(**Перманентно Модифицированная Удача** / 20)
+                                    - Расчет: 20 - floor(90 / 20) = 20 - floor(4.5) = 20 - 4 = 16
+                                    - Результат: "Whisper" наносит критический удар при выпадении на d20 16 или выше.
+
+                                    ## 2. Расчет Множителя Критического Урона (FinalCritMultiplier)
+                                    - Используется Модифицированная Удача: 92
+                                    - Базовый множитель: 1.5
+                                    - Бонус от Удачи (%): floor(Модифицированная Удача / 2) = floor(92 / 2) = 46%
+                                    - Итоговый Множитель: 1.5 + (46 / 100) = 1.96
+                                    - Результат: Критические удары "Whisper" наносят 196% от обычного урона.
+
+                                    ]]>
+   </content>
+  </example>
+ </rule>
+ <rule id="14.3">
+  <example contenttype="log" type="good">
+   <title>
+    Comprehensive Resistance Calculation Example
+   </title>
+   <scenariocontext>
+    Player "Valerius" (Level 25 Warrior) is hit by a "Fireball" spell (damage type: 'fire').
+                            - Level: 25
+                            - Modified Constitution: 60
+                            - Equipped Items:
+                                - "Plate Armor of the Forge": Provides 15% 'slashing' resistance and 20% 'fire' resistance.
+                                - "Dragonscale Shield": Provides 30% 'fire' resistance.
+                                - "Amulet of Warding": Provides 5% resistance to 'all' damage types.
+                            - Active Passive Skill "Elemental Adaptation": Provides 10% 'fire' resistance.
+                            - Active Temporary Buff "Stoneskin": Provides 20% 'all' resistance for 3 turns.
+   </scenariocontext>
+   <content type="log">
+    <![CDATA[
+
+                            # Расчет Итогового Сопротивления ('FinalResistance%') к урону типа 'Огонь'
+
+                            ## 1. Врожденное Сопротивление (Innate Resistance)
+                            - Сопротивление от Уровня (Lvl 25, 'all'): 5 + floor(25/10)*2 = +9%
+                            - Сопротивление от Телосложения (Мод. Телосложение 60, 'all'): floor(60/10) = +6%
+                            - Итоговое врожденное сопротивление ('all'): 9% + 6% = 15%
+
+                            ## 2. Сопротивление от Основной Брони (Primary Armor)
+                            - Проверка снаряжения на сопротивление огню:
+                                - 'Plate Armor': 20% fire resist
+                                - 'Dragonscale Shield': 30% fire resist
+                            - Выбрана наилучшая защита от огня: 'Dragonscale Shield'.
+                            - Сопротивление от основной брони: 30%
+
+                            ## 3. Суммирование Дополнительных Бонусов
+                            - Доп. Снаряжение ('Amulet of Warding', resist 'all'): +5%
+                            - Пассивные Навыки ('Elemental Adaptation', resist 'fire'): +10%
+                            - Временные Эффекты ('Stoneskin', resist 'all'): +20%
+                            - Итоговые дополнительные бонусы: 5 + 10 + 20 = 35%
+
+                            ## 4. Финальный Расчет и Ограничение
+                            - Общее сопротивление (до ограничения) = Врожденное (15%) + Основная броня (30%) + Доп. бонусы (35%) = 80%
+                            - Итоговое Сопротивление Огню ('FinalResistance%'): min(90, 80) = 80%
+
+                            ]]>
+   </content>
+  </example>
+ </rule>
+</instructionblock>

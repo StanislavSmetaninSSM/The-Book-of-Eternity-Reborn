@@ -1,0 +1,124 @@
+<instructionblock id="23.A">
+ <title>
+  Core World and Character Data Override Protocols
+ </title>
+ <description>
+  This section defines the rules for high-priority commands that directly manipulate core game state data, such as world time and fundamental character descriptions. 
+            These commands are typically triggered by major plot events or explicit player/GM directives.
+ </description>
+ <content type="ruleset">
+  <rule id="23.A.1">
+   <title>
+    Managing Direct Time Manipulation ('setWorldTime')
+   </title>
+   <description>
+    This rule governs the use of the 'setWorldTime' command, which allows for direct, non-incremental changes to the game's clock.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    This is a high-priority command and should be used sparingly. It overrides the standard incremental 'timeChange' for the turn.
+                    You MUST use this command ONLY under the following conditions:
+
+                    1.  A major plot event causes a significant time skip (e.g., a magical slumber, a long journey montage, time travel).
+                    2.  The player explicitly uses a meta-command to fast-forward or rewind time (if this functionality is intended).
+
+                    ]]>
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Identify Trigger: Determine if a major plot event or an explicit command necessitates a direct time set.
+                
+                    2.  Determine New Time: The plot or command will specify the new time. 
+                        You must translate this into the full 'date' object format, providing all required fields:
+                        - 'year': The new year (integer).
+                        - 'monthName': The name of the new month (string, must match the calendar).
+                        - 'dayOfMonth': The new day of the month (integer).
+                        - 'timeOfDay': The new time in "HH:MM" format (string).
+
+                    3.  JSON Reporting: Populate the 'setWorldTime' object in the JSON response with this complete 'date' object.
+
+                    4.  Logging: In 'gm_thoughts_markdown', you MUST log the reason for the time jump and the full new date and time being set.
+
+                    5.  Narrative Consistency: The 'response' text MUST reflect the new time of day and any consequences of the time skip.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="23.A.2">
+   <title>
+    Managing Player Race Description ('playerRaceDescriptionChange')
+   </title>
+   <description>
+    This rule applies when the narrative or details of the player's race are fundamentally altered, even if the race name itself does not change.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    Use this field for deep narrative shifts that redefine what the character's race means. 
+                    This is not for minor appearance changes like scars (which use 'playerAppearanceChange').
+                    Trigger this ONLY for major plot revelations or transformations.
+
+                    ]]>
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Triggering Conditions:
+                        - A major plot event reveals a hidden aspect of the character's heritage 
+                        (e.g., they learn their "Human" lineage is actually descended from ancient dragon-bloods, altering their racial description).
+                        - A magical or physical transformation alters their racial traits without changing the race name itself 
+                        (e.g., becoming an "Ash-touched" version of their race after surviving a volcano).
+                
+                    2.  Content: 
+                        The 'playerRaceDescriptionChange' field MUST contain the NEW, complete, and detailed description of the race, incorporating the recent changes.
+                
+                    3.  Reporting: 
+                        If triggered, populate the 'playerRaceDescriptionChange' key with the new string. 
+                        If not triggered, this key MUST be 'null'.
+                
+                    4.  Logging and Narrative: 
+                        Log the reason for the change in 'gm_thoughts_markdown' and ensure the 'response' narrates this profound change to the player.
+                
+                    ]]>
+   </content>
+  </rule>
+  <rule id="23.A.3">
+   <title>
+    Managing Player Class Description ('playerClassDescriptionChange')
+   </title>
+   <description>
+    This rule applies when the player's understanding or the nature of their class evolves narratively, even if the class name does not change.
+   </description>
+   <instructiontext>
+    <![CDATA[
+
+                    Use this field for significant character development that re-contextualizes their class. 
+                    This is not for gaining a new skill, but for a shift in the class's core philosophy or power source.
+                
+                    ]]>
+   </instructiontext>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Triggering Conditions:
+                        - A character's philosophical alignment shifts, changing how they apply their skills 
+                        (e.g., a "Warrior" dedicates themselves to a vow of protection, becoming a "Guardian" in spirit).
+                        - A character discovers a new source of power for their abilities 
+                        (e.g., a "Mage" begins to draw power from a darker, forbidden source, altering the nature of their magic).
+                
+                    2.  Content: 
+                        The 'playerClassDescriptionChange' field MUST contain the NEW, complete, and detailed description of the class, reflecting this evolution.
+                
+                    3.  Reporting: 
+                        If triggered, populate the 'playerClassDescriptionChange' key. Otherwise, it MUST be 'null'.
+                
+                    4.  Logging and Narrative: 
+                        Log the reason for the change and narrate the character's internal transformation in the 'response'.
+
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

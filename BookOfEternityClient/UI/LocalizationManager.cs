@@ -1,0 +1,412 @@
+namespace BookOfEternityClient.UI;
+
+/// <summary>
+/// Russian/English localization manager for all UI strings.
+/// Default language: Russian.
+/// </summary>
+public class LocalizationManager
+{
+    private static readonly Dictionary<string, Dictionary<string, string>> Translations = new()
+    {
+        ["ru"] = new()
+        {
+            // Main Menu
+            ["app_title"] = "📖 Книга Вечности: Возрождение",
+            ["continue_game"] = "▶️ Продолжить",
+            ["new_game"] = "🌟 Новая игра",
+            ["load_game"] = "📂 Загрузить профиль",
+            ["options"] = "⚙️ Опции",
+            ["about"] = "ℹ️ Об игре",
+            ["exit"] = "🚪 Выход",
+            ["main_menu_tagline"] = "Бесконечное странствие души через жизни, смерти и перерождения.",
+            ["main_menu_intro_title"] = "Порог Вечности",
+            ["main_menu_intro_body"] = "В Море Хаоса душа ищет хранителя, проходит через смертные миры и однажды может подняться в Сияющую Обитель. Каждый новый цикл меняет не только героя, но и саму ткань его судьбы.",
+            ["main_menu_status_title"] = "Текущий сеанс",
+            ["main_menu_choice_title"] = "Выберите следующий шаг",
+            ["main_menu_continue_desc"] = "Вернуться в текущую игровую сессию",
+            ["main_menu_new_desc"] = "Начать новый путь души",
+            ["main_menu_load_desc"] = "Загрузить сохранённый профиль",
+            ["main_menu_options_desc"] = "Настроить клиент, звук и моды",
+            ["main_menu_about_desc"] = "Кратко о мире и клиенте",
+            ["main_menu_exit_desc"] = "Закрыть игру",
+            ["continue_game_unavailable"] = "Текущая игровая сессия не найдена.",
+            
+            // New Game Flow
+            ["enter_soul_name"] = "Введите имя вашей души:",
+            ["create_guardian"] = "Создать хранителя (описать текстом)",
+            ["choose_guardian"] = "Выбрать хранителя (из списка)",
+            ["guardian_prompt"] = "Опишите вашего хранителя:",
+            ["enter_mortal_life"] = "⚔️ Войти в смертную жизнь",
+            ["describe_character"] = "Опишите персонажа, обстоятельства начала игры и мир:",
+            ["or_load_lore"] = "Или загрузить мир из папки лора",
+            
+            // Game UI
+            ["game_info"] = "Информация об игре",
+            ["turn"] = "Ход",
+            ["location"] = "Локация",
+            ["time"] = "Время",
+            ["health"] = "Здоровье",
+            ["energy"] = "Энергия",
+            ["poise"] = "Равновесие",
+            ["condition"] = "Состояние",
+            ["status"] = "Статус персонажа",
+            ["narrative"] = "Повествование",
+            ["actions"] = "Действия",
+            ["enter_action"] = "Введите действие (Shift+Enter для новой строки):",
+            ["dialogue_options"] = "Варианты диалога:",
+            ["suggested_actions"] = "Предложенные действия:",
+            
+            // Explorer Mode
+            ["inventory"] = "📦 Инвентарь",
+            ["quests"] = "📋 Квесты",
+            ["map"] = "🗺️ Карта",
+            ["npcs"] = "👥 Персонажи",
+            ["skills"] = "⚡ Навыки",
+            ["stats"] = "📊 Характеристики",
+            ["factions"] = "🏰 Фракции",
+            ["world_news"] = "📰 Новости мира",
+            ["craft"] = "🔨 Ремесло",
+            ["codex"] = "📚 Кодекс",
+            ["locations"] = "📍 Локации",
+            ["transport"] = "🚗 Транспорт",
+            ["achievements"] = "🏆 Достижения",
+            ["help"] = "❓ Помощь",
+            ["where_am_i"] = "📍 Где я?",
+            ["gm_thoughts"] = "🧠 Мысли ГМ",
+            ["debug_info"] = "🔧 Отладка",
+            ["end_of_life"] = "💀 Конец жизни",
+            
+            // Status messages
+            ["thinking"] = "🧠 Мастер игры размышляет...",
+            ["error_occurred"] = "❌ Произошла ошибка",
+            ["loading"] = "⏳ Загрузка...",
+            ["saving"] = "💾 Сохранение...",
+            ["save_success"] = "✅ Игра сохранена",
+            ["save_failed"] = "❌ Ошибка сохранения",
+            ["load_success"] = "✅ Игра загружена",
+            ["load_failed"] = "❌ Ошибка загрузки",
+            ["no_saves"] = "Сохранений не найдено",
+            ["press_any_key"] = "Нажмите любую клавишу для продолжения...",
+            ["turn_cancelled"] = "↩️ Ход отменён",
+            ["generating_image"] = "🎨 Генерация изображения...",
+            ["image_opened"] = "🖼️ Изображение открыто",
+            ["image_failed"] = "❌ Не удалось сгенерировать изображение",
+            ["image_service_unavailable"] = "Сервис изображений недоступен.",
+            ["image_no_prompt"] = "У этого объекта нет промпта для изображения",
+            ["image_provider_disabled"] = "Генерация изображений отключена. Включите в /опции → Поставщик изображений",
+            ["scene_image_locked"] = "Изображение этой сцены уже сохранено в папке images/scenes. Повторный показ и пересоздание в клиенте не поддерживаются.",
+            ["image_regenerated_show_now"] = "Новая версия изображения сохранена. Показать её сейчас?",
+            ["image_cleanup_confirm"] = "Удалить все изображения сцен и оставить только актуальные изображения сущностей?",
+            ["image_cleanup_done"] = "[green]Готово:[/] удалено сцен: [white]{0}[/], старых версий сущностей: [white]{1}[/].",
+            
+            // Options
+            ["opt_history_manipulation"] = "Режим манипуляции истории",
+            ["opt_image_provider"] = "Поставщик изображений",
+            ["opt_language"] = "Язык игры",
+            ["opt_show_gm"] = "Показывать мысли ГМ",
+            ["opt_image_display"] = "Отображение изображений",
+            ["opt_image_no_autodisplay"] = "Генерировать без автопоказа",
+            ["opt_image_no_autodisplay_hint"] = "Автопоказ сцен и автопоказ сразу после генерации отключены. Кнопка \"Показать изображение\" по-прежнему открывает изображение вручную.",
+            ["opt_image_cleanup"] = "Почистить лишние изображения",
+            ["opt_system_mods"] = "Системные моды",
+            ["opt_music"] = "Музыка",
+            ["opt_music_volume"] = "Громкость музыки",
+            ["opt_sound"] = "Звуки",
+            ["opt_sound_volume"] = "Громкость звуков",
+            ["opt_font_size"] = "Размер шрифта",
+            ["opt_in_console"] = "В консоли",
+            ["opt_in_viewer"] = "В программе просмотра",
+            ["enabled"] = "Включено",
+            ["disabled"] = "Выключено",
+            ["opt_difficulty"] = "Сложность",
+            ["difficulty_normal"] = "Нормальная",
+            ["difficulty_hard"] = "Тяжёлая",
+            ["difficulty_impossible"] = "Невозможная",
+            ["back"] = "↩️ Назад",
+            
+            // Save/Load
+            ["save_game"] = "💾 Сохранить",
+            ["load_game_menu"] = "📂 Загрузить",
+            ["exit_to_menu"] = "🏠 Выйти в главное меню",
+            
+            // In-game menu
+            ["in_game_options"] = "⚙️ Игровое меню",
+            
+            // Item table headers
+            ["item_name"] = "Предмет",
+            ["item_quantity"] = "Кол-во",
+            ["item_weight"] = "Вес",
+            ["item_description"] = "Описание",
+            ["item_rarity"] = "Редкость",
+            ["item_type"] = "Тип",
+            
+            // Quest table headers
+            ["quest_name"] = "Квест",
+            ["quest_status"] = "Статус",
+            ["quest_description"] = "Описание",
+            
+            // Soul System
+            ["ink_feathers"] = "🪶 Чернильные перья",
+            ["soul_relics"] = "💎 Реликвии души",
+            ["enlightenment"] = "✨ Просветление",
+            ["incarnation"] = "🔄 Инкарнация",
+            ["guardian"] = "🛡️ Хранитель",
+            ["chaos_sea"] = "🌊 Море Хаоса",
+            
+            // Chaos Sea / Two-phase flow
+            ["realm_chaos_sea"] = "🌊 Море Хаоса",
+            ["realm_mortal"] = "⚔️ Смертный мир",
+            ["realm_shining_abode"] = "✨ Сияющая Обитель",
+            ["soul_awakens"] = "Душа пробуждается в Море Хаоса...",
+            ["guardian_abode"] = "Обитель Хранителя",
+            ["enter_mortal_prompt"] = "Опишите персонажа, обстоятельства рождения и мир, в который хотите воплотиться:",
+            ["enter_mortal_prompt_hint"] = "(Или оставьте пустым — Хранитель выберет мир для вас)",
+            ["incarnation_begins"] = "✨ Начинается воплощение...",
+            ["soul_inventory_info"] = "🎒 Экипировка реликвий души доступна только в Море Хаоса",
+            ["talk_to_guardian"] = "Поговорить с Хранителем",
+            ["trade_with_guardian"] = "Торговать с Хранителем",
+            ["guardian_quests"] = "Квесты Хранителя",
+            ["switch_guardian"] = "Сменить Хранителя",
+            ["manage_soul_relics"] = "Управление реликвиями души",
+            ["enter_mortal_life"] = "⚔️ Войти в смертную жизнь",
+            ["chaos_sea_welcome"] = "Вы находитесь в Море Хаоса — пространстве между жизнями.",
+            ["end_of_life_hint"] = "Используйте /конец_жизни для возврата в Море Хаоса",
+            ["soul_info"] = "👻 Душа",
+            ["guardians_info"] = "🛡️ Хранители",
+            ["system_mods_title"] = "🧩 Системные моды",
+            ["system_mods_folder_hint"] = "Папка модов",
+            ["system_mods_manifest_hint"] = "ГМ читает только activeMods[] из game_state/core/system_mods.json. Каждый файл в game_session/mods — один глобальный мод.",
+            ["system_mods_warning"] = "Игрок несёт полную ответственность за совместимость, баланс и работоспособность системных модов.",
+            ["system_mods_none"] = "В папке game_session/mods пока нет файлов модов. Добавьте .json, .txt или .md файл — один файл = один системный мод.",
+            ["system_mods_configure"] = "✅ Настроить активные моды",
+            ["system_mods_open_folder"] = "📂 Открыть папку модов",
+            ["system_mods_select"] = "Выберите активные системные моды",
+            ["system_mods_select_hint"] = "(Пробел — включить/выключить, Enter — сохранить)",
+            ["system_mods_saved"] = "Настройки системных модов сохранены.",
+            ["system_mods_status_header"] = "Статус",
+            ["system_mods_mod_header"] = "Мод",
+            ["system_mods_file_header"] = "Файл",
+            ["system_mods_description_header"] = "Описание",
+            ["system_mods_status_enabled"] = "Активен",
+            ["system_mods_status_disabled"] = "Выключен",
+            ["volume_prompt_music"] = "Выберите громкость музыки",
+            ["volume_prompt_sound"] = "Выберите громкость звуков",
+            ["font_size_prompt"] = "Выберите размер шрифта",
+            ["font_size_apply_note"] = "Текущий терминал может игнорировать изменение шрифта. Настройка сохранена и будет повторно применяться при запуске.",
+            ["current_value"] = "текущее",
+            ["volume_off"] = "0% (выкл.)",
+            
+            // About
+            ["about_text"] = """
+            📖 Книга Вечности: Возрождение
+            
+            Текстовая RPG с AI Game Master.
+            Ваша душа путешествует через смертные жизни, 
+            накапливая опыт и мудрость в вечном цикле перерождений.
+            
+            Каждая жизнь — уникальное приключение.
+            Каждая смерть — шаг к просветлению.
+            
+            🍪 Если вам понравилась игра, вы можете 
+            поддержать автора печеньками!
+            """,
+        },
+        ["en"] = new()
+        {
+            ["app_title"] = "📖 The Book of Eternity: Reborn",
+            ["continue_game"] = "▶️ Continue",
+            ["new_game"] = "🌟 New Game",
+            ["load_game"] = "📂 Load Profile",
+            ["options"] = "⚙️ Options",
+            ["about"] = "ℹ️ About",
+            ["exit"] = "🚪 Exit",
+            ["main_menu_tagline"] = "An endless journey of the soul through lives, deaths, and rebirths.",
+            ["main_menu_intro_title"] = "Threshold of Eternity",
+            ["main_menu_intro_body"] = "In the Chaos Sea, a soul seeks a guardian, passes through mortal worlds, and may one day rise into the Shining Abode. Each cycle changes not only the hero, but the very fabric of fate.",
+            ["main_menu_status_title"] = "Current Session",
+            ["main_menu_choice_title"] = "Choose your next step",
+            ["main_menu_continue_desc"] = "Return to the current game session",
+            ["main_menu_new_desc"] = "Begin a new soul cycle",
+            ["main_menu_load_desc"] = "Load a saved profile",
+            ["main_menu_options_desc"] = "Tune client, audio, and mods",
+            ["main_menu_about_desc"] = "Read about the world and client",
+            ["main_menu_exit_desc"] = "Close the game",
+            ["continue_game_unavailable"] = "No current game session was found.",
+            ["enter_soul_name"] = "Enter your soul's name:",
+            ["create_guardian"] = "Create Guardian (describe in text)",
+            ["choose_guardian"] = "Choose Guardian (from list)",
+            ["guardian_prompt"] = "Describe your guardian:",
+            ["enter_mortal_life"] = "⚔️ Enter Mortal Life",
+            ["describe_character"] = "Describe your character, starting circumstances and world:",
+            ["or_load_lore"] = "Or load world from lore folder",
+            ["game_info"] = "Game Info",
+            ["turn"] = "Turn",
+            ["location"] = "Location",
+            ["time"] = "Time",
+            ["health"] = "Health",
+            ["energy"] = "Energy",
+            ["poise"] = "Poise",
+            ["condition"] = "Condition",
+            ["status"] = "Character Status",
+            ["narrative"] = "Narrative",
+            ["actions"] = "Actions",
+            ["enter_action"] = "Enter action (Shift+Enter for new line):",
+            ["dialogue_options"] = "Dialogue Options:",
+            ["suggested_actions"] = "Suggested Actions:",
+            ["inventory"] = "📦 Inventory",
+            ["quests"] = "📋 Quests",
+            ["map"] = "🗺️ Map",
+            ["npcs"] = "👥 Characters",
+            ["skills"] = "⚡ Skills",
+            ["stats"] = "📊 Stats",
+            ["factions"] = "🏰 Factions",
+            ["world_news"] = "📰 World News",
+            ["craft"] = "🔨 Crafting",
+            ["codex"] = "📚 Codex",
+            ["locations"] = "📍 Locations",
+            ["transport"] = "🚗 Transport",
+            ["achievements"] = "🏆 Achievements",
+            ["help"] = "❓ Help",
+            ["where_am_i"] = "📍 Where am I?",
+            ["gm_thoughts"] = "🧠 GM Thoughts",
+            ["debug_info"] = "🔧 Debug",
+            ["end_of_life"] = "💀 End of Life",
+            ["thinking"] = "🧠 Game Master is thinking...",
+            ["error_occurred"] = "❌ An error occurred",
+            ["loading"] = "⏳ Loading...",
+            ["saving"] = "💾 Saving...",
+            ["save_success"] = "✅ Game saved",
+            ["save_failed"] = "❌ Save failed",
+            ["load_success"] = "✅ Game loaded",
+            ["load_failed"] = "❌ Load failed",
+            ["no_saves"] = "No saves found",
+            ["press_any_key"] = "Press any key to continue...",
+            ["turn_cancelled"] = "↩️ Turn cancelled",
+            ["generating_image"] = "🎨 Generating image...",
+            ["image_opened"] = "🖼️ Image opened",
+            ["image_failed"] = "❌ Failed to generate image",
+            ["image_service_unavailable"] = "Image service is unavailable.",
+            ["image_no_prompt"] = "This object has no image prompt.",
+            ["image_provider_disabled"] = "Image generation is disabled. Enable it in /options → Image Provider.",
+            ["scene_image_locked"] = "This scene image is already saved in images/scenes. Reopening and regenerating it in the client is not supported.",
+            ["image_regenerated_show_now"] = "A new image version was saved. Show it now?",
+            ["image_cleanup_confirm"] = "Delete all scene images and keep only the current images for each entity?",
+            ["image_cleanup_done"] = "[green]Done:[/] deleted scene images: [white]{0}[/], deleted old entity versions: [white]{1}[/].",
+            ["opt_history_manipulation"] = "History Manipulation Mode",
+            ["opt_image_provider"] = "Image Provider",
+            ["opt_language"] = "Game Language",
+            ["opt_show_gm"] = "Show GM Thoughts",
+            ["opt_image_display"] = "Image Display",
+            ["opt_image_no_autodisplay"] = "Generate without auto-open",
+            ["opt_image_no_autodisplay_hint"] = "Scene auto-display and automatic opening right after generation are disabled. The \"Show image\" action still opens the image manually.",
+            ["opt_image_cleanup"] = "Clean up extra images",
+            ["opt_system_mods"] = "System Mods",
+            ["opt_music"] = "Music",
+            ["opt_music_volume"] = "Music Volume",
+            ["opt_sound"] = "Sounds",
+            ["opt_sound_volume"] = "Sound Volume",
+            ["opt_font_size"] = "Font Size",
+            ["opt_in_console"] = "In Console",
+            ["opt_in_viewer"] = "In Viewer",
+            ["enabled"] = "Enabled",
+            ["disabled"] = "Disabled",
+            ["opt_difficulty"] = "Difficulty",
+            ["difficulty_normal"] = "Normal",
+            ["difficulty_hard"] = "Hard",
+            ["difficulty_impossible"] = "Impossible",
+            ["back"] = "↩️ Back",
+            ["save_game"] = "💾 Save",
+            ["load_game_menu"] = "📂 Load",
+            ["exit_to_menu"] = "🏠 Exit to Menu",
+            ["in_game_options"] = "⚙️ Game Menu",
+            ["item_name"] = "Item",
+            ["item_quantity"] = "Qty",
+            ["item_weight"] = "Weight",
+            ["item_description"] = "Description",
+            ["item_rarity"] = "Rarity",
+            ["item_type"] = "Type",
+            ["quest_name"] = "Quest",
+            ["quest_status"] = "Status",
+            ["quest_description"] = "Description",
+            ["ink_feathers"] = "🪶 Ink Feathers",
+            ["soul_relics"] = "💎 Soul Relics",
+            ["enlightenment"] = "✨ Enlightenment",
+            ["incarnation"] = "🔄 Incarnation",
+            ["guardian"] = "🛡️ Guardian",
+            ["chaos_sea"] = "🌊 Chaos Sea",
+            
+            // Chaos Sea / Two-phase flow
+            ["realm_chaos_sea"] = "🌊 Chaos Sea",
+            ["realm_mortal"] = "⚔️ Mortal World",
+            ["realm_shining_abode"] = "✨ Shining Abode",
+            ["soul_awakens"] = "The soul awakens in the Chaos Sea...",
+            ["guardian_abode"] = "Guardian's Abode",
+            ["enter_mortal_prompt"] = "Describe the character, birth circumstances and world to incarnate into:",
+            ["enter_mortal_prompt_hint"] = "(Or leave empty — the Guardian will choose a world for you)",
+            ["incarnation_begins"] = "✨ Incarnation begins...",
+            ["soul_inventory_info"] = "🎒 Soul relic equipment is only available in the Chaos Sea",
+            ["talk_to_guardian"] = "Talk to Guardian",
+            ["trade_with_guardian"] = "Trade with Guardian",
+            ["guardian_quests"] = "Guardian Quests",
+            ["switch_guardian"] = "Switch Guardian",
+            ["manage_soul_relics"] = "Manage Soul Relics",
+            ["enter_mortal_life"] = "⚔️ Enter Mortal Life",
+            ["chaos_sea_welcome"] = "You are in the Chaos Sea — the space between lives.",
+            ["end_of_life_hint"] = "Use /end_of_life to return to the Chaos Sea",
+            ["soul_info"] = "👻 Soul",
+            ["guardians_info"] = "🛡️ Guardians",
+            ["system_mods_title"] = "🧩 System Mods",
+            ["system_mods_folder_hint"] = "Mods folder",
+            ["system_mods_manifest_hint"] = "The GM must read only activeMods[] from game_state/core/system_mods.json. Each file in game_session/mods is one global system mod.",
+            ["system_mods_warning"] = "The player assumes full responsibility for compatibility, balance, and stability of system mods.",
+            ["system_mods_none"] = "There are no mod files in game_session/mods yet. Add a .json, .txt, or .md file — one file = one system mod.",
+            ["system_mods_configure"] = "✅ Configure active mods",
+            ["system_mods_open_folder"] = "📂 Open mods folder",
+            ["system_mods_select"] = "Select active system mods",
+            ["system_mods_select_hint"] = "(Space to toggle, Enter to save)",
+            ["system_mods_saved"] = "System mod settings saved.",
+            ["system_mods_status_header"] = "Status",
+            ["system_mods_mod_header"] = "Mod",
+            ["system_mods_file_header"] = "File",
+            ["system_mods_description_header"] = "Description",
+            ["system_mods_status_enabled"] = "Enabled",
+            ["system_mods_status_disabled"] = "Disabled",
+            ["volume_prompt_music"] = "Choose music volume",
+            ["volume_prompt_sound"] = "Choose sound volume",
+            ["font_size_prompt"] = "Choose font size",
+            ["font_size_apply_note"] = "The current terminal may ignore runtime font changes. The setting was saved and will be retried on next launch.",
+            ["current_value"] = "current",
+            ["volume_off"] = "0% (off)",
+            ["about_text"] = """
+            📖 The Book of Eternity: Reborn
+            
+            Text RPG with AI Game Master.
+            Your soul travels through mortal lives,
+            accumulating experience and wisdom in an eternal cycle of rebirth.
+            
+            Each life — a unique adventure.
+            Each death — a step toward enlightenment.
+            
+            🍪 If you enjoy the game, consider 
+            supporting the author with cookies!
+            """,
+        }
+    };
+
+    public string CurrentLanguage { get; set; } = "ru";
+
+    public string T(string key)
+    {
+        if (Translations.TryGetValue(CurrentLanguage, out var lang) &&
+            lang.TryGetValue(key, out var value))
+            return value;
+        
+        // Fallback to Russian
+        if (Translations["ru"].TryGetValue(key, out var fallback))
+            return fallback;
+
+        return key;
+    }
+
+    public string[] GetAvailableLanguages() => Translations.Keys.ToArray();
+}

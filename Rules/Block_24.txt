@@ -1,0 +1,166 @@
+<instructionblock id="24">
+ <title>
+  Multiplier Calculation ('multipliers')
+ </title>
+ <description>
+  This section provides the mandatory rules for calculating the five coefficients for the 'multipliers' array in the JSON response.
+            These multipliers have two critical functions:
+            1. They are sent to the game system to help it generate appropriate 'lootForCurrentTurn' templates for future turns.
+            2. They are used directly by the GM as a primary factor in dynamically generating a new item from scratch if the 'lootForCurrentTurn' list is empty, as per rule #10.1.1.c.
+ </description>
+ <instructiontext>
+  <![CDATA[
+
+            On one of the final steps of generating the JSON response, you MUST calculate the five coefficients and place them in the 'multipliers' array in the specified order.
+            Each coefficient has its own calculation rule. The final array should always contain exactly five numeric values.
+
+            ]]>
+ </instructiontext>
+ <content type="ruleset">
+  <rule id="24.1">
+   <title>
+    Coefficient 1: Item Search Coefficient
+   </title>
+   <description>
+    Reflects the player's current gear-based ability to find items.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Review Equipped Items: 
+                        Analyze all items in the player's 'equippedItems' object (from Context, considering changes this turn from 'equipmentChanges').
+                    
+                    2.  Count Search Bonuses: 
+                        For each equipped item, examine its 'structuredBonuses' array. 
+                        Count the total number of objects that are explicitly related to finding items, searching, or perception for looting. 
+                        Look for 'bonusType' of 'ActionCheck' or 'Other' with a relevant 'target' (e.g., "Поиск скрытых предметов", "Шанс найти добычу").
+                    
+                    3.  Assign Coefficient (GM Discretion): 
+                        Based on the number and quality of these bonuses, assign a value between 0.0 and 1.0.
+                        - 0 bonuses: 'item_search_coefficient' = 0.0
+                        - 1-2 minor bonuses: 'item_search_coefficient' = 0.1 - 0.4
+                        - Several powerful bonuses: 'item_search_coefficient' = 0.5 - 1.0
+
+                    4.  Log: Record the count of bonuses and the assigned coefficient in 'gm_thoughts_markdown'.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="24.2">
+   <title>
+    Coefficient 2: Location Coefficient
+   </title>
+   <description>
+    Reflects the overall challenge and objective value of the current location, calculated from its 'externalDifficultyProfile'.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Retrieve External Difficulty Profile: 
+                        Loot quality should reflect the objective danger of a location, not its safety for the owner. Therefore, you MUST use the external profile.
+                        Get the four values from 'currentLocationData.externalDifficultyProfile': 'combat', 'environment', 'social', and 'exploration'.
+
+                    2.  Calculate Weighted Average Difficulty (WAD):
+                        -   Assign weights to each facet to reflect its contribution to the "loot value" of a location. Combat and Exploration are most important.
+                        -   Formula: 
+                        'WAD = (combat * 0.4) + (exploration * 0.3) + (environment * 0.2) + (social * 0.1)'
+
+                    3.  Calculate the Coefficient:
+                        -   Formula: 
+                        'location_coefficient = (WAD / 100) + 1.0'
+
+                    4.  Log: Record the entire calculation process in 'gm_thoughts_markdown', showing the profile values, the WAD, and the final coefficient.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="24.3">
+   <title>
+    Coefficient 3: Danger Coefficient
+   </title>
+   <description>
+    Reflects the overall level of threat and hostility in the current scene.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Assess Danger Level (GM Discretion): 
+                    Evaluate the events of the current turn. 
+                    Is the player in active combat? 
+                    Are they being threatened? 
+                    Is the environment actively hostile?
+
+                    2.  Assign Coefficient: 
+                    Assign a value between 1.0 (safe) and 2.0 (extremely dangerous).
+                        - Peaceful exploration, safe town: 'danger_coefficient' = 1.0 - 1.2
+                        - Tense but non-violent situation, potentially dangerous area: 'danger_coefficient' = 1.3 - 1.6
+                        - Active combat, facing powerful enemies, life-threatening trap: 'danger_coefficient' = 1.7 - 2.0
+
+                    3.  Log: Record the assigned coefficient and your reasoning in 'gm_thoughts_markdown'.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="24.4">
+   <title>
+    Coefficient 4: Logic Coefficient
+   </title>
+   <description>
+    Reflects the narrative and logical probability of a specific outcome (often related to finding items or information).
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Assess Logical Probability (GM Discretion):
+                    Considering the player's action and the location, how logical is the desired outcome? 
+                    For example, how likely is it to find a pristine magical sword in a common farmer's barn?
+
+                    2.  Assign Coefficient:
+                    Assign a value between 1.0 (illogical/improbable) and 2.0 (highly logical/probable).
+                        - Finding an item in a completely nonsensical place: 'logic_coefficient' = 1.0 - 1.2
+                        - A plausible but not guaranteed find: 'logic_coefficient' = 1.3 - 1.7
+                        - A highly logical find (e.g., finding food in a kitchen, a book in a library): 'logic_coefficient' = 1.8 - 2.0
+
+                    3.  Log: Record the assigned coefficient and your reasoning in 'gm_thoughts_markdown'.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="24.5">
+   <title>
+    Coefficient 5: Characters Coefficient
+   </title>
+   <description>
+    Reflects the social complexity and challenge posed by NPCs in the current scene.
+   </description>
+   <content type="rule_text">
+    <![CDATA[
+
+                    1.  Assess Social Complexity (GM Discretion):
+                    Evaluate the NPCs present and the nature of the interaction.
+                    
+                    2.  Assign Coefficient: Assign a value between 1.0 (simple/no interaction) and 2.0 (highly complex social situation).
+                        - No NPCs or simple, transactional interaction: 'characters_coefficient' = 1.0 - 1.2
+                        - Interacting with a key NPC, dealing with conflicting interests: 'characters_coefficient' = 1.3 - 1.7
+                        - Navigating a complex court intrigue, a tense multi-party negotiation, or dealing with a master manipulator: 'characters_coefficient' = 1.8 - 2.0
+                    
+                    3.  Log: Record the assigned coefficient and your reasoning in 'gm_thoughts_markdown'.
+
+                    ]]>
+   </content>
+  </rule>
+  <rule id="24.6">
+   <title>
+    Final Assembly
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+                    After calculating all five coefficients, assemble them into an array in this exact order and assign it to the 'multipliers' key in the JSON response:
+                    '[item_search_coefficient, location_coefficient, danger_coefficient, logic_coefficient, characters_coefficient]'
+                    
+                    ]]>
+   </content>
+  </rule>
+ </content>
+</instructionblock>

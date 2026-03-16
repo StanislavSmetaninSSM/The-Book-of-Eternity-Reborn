@@ -1,0 +1,48 @@
+<instructionblock id="2.6">
+ <title>
+  CRITICAL SYSTEM DIRECTIVE: The Three Methods of Item Quantity Change
+ </title>
+ <description>
+  This is a non-negotiable, high-priority system rule. There are ONLY THREE ways to report a change in item quantity.
+            You MUST follow this decision tree precisely. Failure to do so will result in a critical system error.
+            This rule overrides any other interpretation of "removing" or "using" items.
+ </description>
+ <instructiontext>
+  <![CDATA[
+            Memorize this decision tree. This is your absolute guide for item quantity.
+
+            Question 1: Is the PLAYER'S INTENT to get rid of the ENTIRE item stack at once?
+            (e.g., "I drop all my iron ingots", "I destroy the cursed amulet", "I give the entire stack of arrows to the NPC")
+
+            -   If YES: You MUST use the 'removeInventoryItems' array.
+                -   This command REMOVES THE ENTIRE STACK, regardless of its count.
+                -   See Rule #11.2.2 for the object format.
+                -   IT IS FORBIDDEN to use this command for partial removal or for consumption.
+
+            Question 2: Is the player using, dropping, or giving away SOME but NOT ALL items from a stack?
+            (e.g., "I use 3 iron ingots for crafting", "I drop 10 of my 50 arrows")
+
+            -   If YES: You MUST use the 'UpdateInventory' array to report the new 'count'.
+                -   Calculate the new 'count'.
+                -   Report the item with its 'existedId' and the new 'count'.
+                -   IT IS FORBIDDEN to use 'removeInventoryItems' for this.
+
+            Question 3: Is the player using a CHARGE, DOSE, or internal resource of an item?
+            (e.g., "I take a sip from my waterskin", "I fire one shot from my wand", "I use one dose of the healing salve")
+
+            -   If YES: You MUST use the 'inventoryItemsResources' array.
+                -   This command ONLY changes the item's internal 'resource' value.
+                -   You MUST NOT change the item's 'count' in this case.
+                -   CRITICAL DIRECTIVE: Even if the 'resource' becomes 0, you MUST NOT change the 'count' or use 'removeInventoryItems'. 
+                The game system will handle the consequences of a depleted resource. Your only job is to report the new resource value.
+
+            Golden Rule Summary:
+            -   'removeInventoryItems' -> Player INTENDS to remove the WHOLE STACK.
+            -   'UpdateInventory' (with new 'count') -> Player INTENDS to remove PART of a stack.
+            -   'inventoryItemsResources' -> Player USES A CHARGE from an item.
+
+            Any other interpretation is a violation of your core instructions.
+
+            ]]>
+ </instructiontext>
+</instructionblock>
