@@ -496,15 +496,21 @@
   <logoutput target="gm_thoughts_markdown">
     <![CDATA[
 
-                            # Faction State Update: Kingdom of Eldoria
-                            - Trigger: Major plot event (assassination of a minister).
-                            - Justified State Protocol: Condition met. Creating a new "Political Stability" state to track the fallout.
-                            - New State Object Definition:
-                                - stateName: "Political Stability"
-                                - currentValue: 40 (out of 100), a significant drop from a stable baseline.
-                                - progressionRule: "Decreases with further destabilizing events, increases with strong leadership."
-                                - Threshold 1: value <= 30, levelName: "Noble Uprising", associatedEffects: [{ description: "Trigger a world event about minor nobles challenging the King's authority." }]
-                            - Reporting: This is an isolated custom-state creation, so the state will be sent through 'factionCustomStateChanges'.
+                            ## Охват NPC-анализа
+                            - Режим: World-progression
+                            - Релевантные акторы: Kingdom of Eldoria
+                            - Почему они релевантны: меняется долговременное состояние фракции после крупного политического события.
+                            - Акторы вне охвата: нет
+                            - Почему они вне охвата: этот ход не меняет состояние других акторов и не требует отдельного off-screen reasoning.
+
+                            ## Размышления NPC
+                            ### Kingdom of Eldoria
+                            - Ситуация: убийство министра расшатывает внутреннюю стабильность королевства.
+                            - Внутренние мысли: нужен долгоживущий state-tracker, чтобы прогрессия могла реагировать на дальнейшие события.
+                            - Решение о действиях: создать custom state "Political Stability" через factionCustomStateChanges.
+
+                            ## Размышления о прогрессии
+                            - Фракция получает новый state с currentValue=40 и порогом Noble Uprising при value <= 30.
 
                             ]]>
    </logoutput>
@@ -1472,11 +1478,18 @@
   <logoutput target="gm_thoughts_markdown">
     <![CDATA[
 
-                            # Faction State Update: Kingdom of Eldoria
-                            -   Event: The political crisis has been fully resolved by the player's actions.
-                            -   Action: The "Political Instability" custom state is no longer relevant and must be removed.
-                            -   Identifying state to remove from Context: Found state with ID 'state-instability-abc'.
-                            -   Preparing 'factionCustomStateChanges' command to remove this specific state.
+                            ## Охват NPC-анализа
+                            - Режим: World-progression
+                            - Релевантные акторы: Kingdom of Eldoria
+                            - Почему они релевантны: состояние фракции завершено и должно быть убрано из canonical state.
+                            - Акторы вне охвата: нет
+                            - Почему они вне охвата: этот ход не меняет состояние других акторов и не требует отдельного off-screen reasoning.
+
+                            ## Размышления NPC
+                            ### Kingdom of Eldoria
+                            - Ситуация: политический кризис полностью снят действиями игрока.
+                            - Внутренние мысли: custom state "Political Instability" больше не отражает действительность.
+                            - Решение о действиях: удалить state-instability-abc через factionCustomStateChanges.
 
                             ]]>
    </logoutput>
@@ -1511,30 +1524,19 @@
   <logoutput target="gm_thoughts_markdown">
     <![CDATA[
 
-                                    # Расчет "StatModificator" для "Имперского Легиона" (Военная атака)
+                                    ## Охват NPC-анализа
+                                    - Режим: World-progression
+                                    - Релевантные акторы: Имперский Легион
+                                    - Почему они релевантны: ход анализирует силу фракции для военной Conflict Check и опирается на её canonical powerProfile, structuredBonuses и customStates.
+                                    - Акторы вне охвата: другие фракции
+                                    - Почему они вне охвата: в этом расчёте не используется их state и они не влияют на итоговый StatModificator Легиона.
 
-                                    ## 1. Базовое Значение (Уровень 1: Перманентное)
-                                    -   Базовое значение из 'powerProfile.military': 75
+                                    ## Размышления NPC
+                                    ### Имперский Легион
+                                    - Ситуация: фракция готовится к наступательной кампании и требует полного расчёта military StatModificator.
+                                    - Внутренние мысли: базовая сила 75 усиливается долгосрочными бонусами и временным боевым духом.
+                                    - Решение о действиях: применить bonus от Великой Кузни, затем процентный множитель от custom state и зафиксировать итоговый военный показатель.
 
-                                    ## 2. Долгосрочные Бонусы (Уровень 2: "Снаряжение")
-                                    -   Проверка 'structuredBonuses':
-                                        -   Найден бонус от "Великой Кузни": "+10 к 'military' для наступательных кампаний". Условие выполнено.
-                                    -   Итого плоских бонусов: +10
-
-                                    ## 3. Временные Эффекты (Уровень 3: "Заклинания")
-                                    -   Проверка 'customStates':
-                                        -   Найден стейт "Боевой Дух Армии" со значением 80.
-                                        -   Это активирует порог "Высокий Боевой Дух", который дает эффект: "+15% к проверкам военных кампаний".
-                                    -   Итого процентный множитель: 1.15
-
-                                    ## 4. Финальный Расчет 'StatModificator' (по Правилу 30.1.D.2.1)
-                                    -   'StatValueWithBonuses': (75 [База] + 10 [Бонус]) * 1.15 [Эффект] = 85 * 1.15 = 97.75
-                                    -   'CappedValue': min(75 * 1.5, 97.75) = 97.75
-                                    -   'LevelScaling' (Уровень 30): floor(30 * 0.5) = 15
-                                    -   Итоговый 'StatModificator': 97.75 + 15 = 112.75
-
-                                    -   Вывод: Итоговая мощь Легиона в этой атаке (112.75) значительно выше его базовой военной мощи (75) благодаря как постоянным активам, так и временному высокому боевому духу.
-                                    
                                     ]]>
    </logoutput>
   </example>

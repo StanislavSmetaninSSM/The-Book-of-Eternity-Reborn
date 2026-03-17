@@ -201,7 +201,12 @@
                      
                      SOUL RELIC OBJECT SCHEMA WITH COMPLETE FIELD EXPLANATIONS:
                      
-                     Every Soul Relic MUST follow this EXACT structure with detailed field definitions:
+                     Every canonical persisted Soul Relic in stored soul/meta state MUST follow this EXACT structure with detailed field definitions:
+                     This full schema is the canonical form for persisted soul/meta relic state.
+                     Reward/result surfaces may use a minimal stub when they are only announcing a newly granted relic:
+                     - UpdateSoulQuests.rewards.soulRelics[] may use relicId + name + rarity
+                     - UpdateGuardians.processGacha.result may use relicId + name + rarity
+                     Do not confuse these reward/result stubs with the full stored Soul Relic Object.
                      
                      ```json
                      {

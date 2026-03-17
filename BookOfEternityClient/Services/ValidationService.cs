@@ -212,6 +212,40 @@ public class ValidationService
         "Social",
         "Covert"
     };
+    private static readonly HashSet<string> AllowedThreatMotivations = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Domination",
+        "Consumption",
+        "Preservation",
+        "Corruption",
+        "Accumulation",
+        "Execution",
+        "Custom"
+    };
+    private static readonly HashSet<string> AllowedThreatMethods = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Overt",
+        "Covert",
+        "Deceptive",
+        "Opportunistic",
+        "Systemic",
+        "Custom"
+    };
+    private static readonly HashSet<string> AllowedThreatPrimaryTargetTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Faction",
+        "Location",
+        "Resource"
+    };
+    private static readonly HashSet<string> AllowedThreatPrimaryImpacts = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Military",
+        "Economic",
+        "Social",
+        "Covert",
+        "Stability",
+        "Environment"
+    };
     private static readonly HashSet<string> AllowedPassiveSkillTypes = new(StringComparer.OrdinalIgnoreCase)
     {
         "KnowledgeBased",
@@ -377,6 +411,33 @@ public class ValidationService
         "JUMP_TO_SCORCHING_SUN",
         "NO_CHANGE"
     };
+    private static readonly Dictionary<string, HashSet<string>> WeatherJumpCommandsByBiome = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["TemperateForest"] = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "JUMP_TO_CLEAR", "JUMP_TO_CLOUDY", "JUMP_TO_FOGGY", "JUMP_TO_LIGHT_RAIN", "JUMP_TO_HEAVY_RAIN", "JUMP_TO_STORM"
+        },
+        ["Plains"] = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "JUMP_TO_CLEAR", "JUMP_TO_CLOUDY", "JUMP_TO_FOGGY", "JUMP_TO_LIGHT_RAIN", "JUMP_TO_HEAVY_RAIN", "JUMP_TO_STORM"
+        },
+        ["Desert"] = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "JUMP_TO_CLEAR", "JUMP_TO_CLOUDY", "JUMP_TO_SANDSTORM", "JUMP_TO_SCORCHING_SUN"
+        },
+        ["ArcticTundra"] = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "JUMP_TO_CLEAR", "JUMP_TO_CLOUDY", "JUMP_TO_LIGHT_SNOW", "JUMP_TO_HEAVY_SNOW", "JUMP_TO_BLIZZARD"
+        },
+        ["Mountains"] = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "JUMP_TO_CLEAR", "JUMP_TO_CLOUDY", "JUMP_TO_LIGHT_SNOW", "JUMP_TO_HEAVY_SNOW", "JUMP_TO_BLIZZARD"
+        },
+        ["Swamp"] = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "JUMP_TO_CLEAR", "JUMP_TO_CLOUDY", "JUMP_TO_FOGGY", "JUMP_TO_LIGHT_RAIN", "JUMP_TO_HEAVY_RAIN"
+        }
+    };
     private static readonly JsonSerializerOptions ManifestJsonOpts = new()
     {
         PropertyNameCaseInsensitive = true
@@ -431,7 +492,11 @@ public class ValidationService
     {
         public Dictionary<string, HashSet<string>> CoordinateKeysByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, HashSet<string>> LinkTargetCoordinateKeysBySourceLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, HashSet<string>> StorageIdsByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, HashSet<string>> ThreatIdsByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, HashSet<string>> ThreatIdsWithCurrentActivityByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> LocationTypesByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> BiomesByLocationId { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 
     private sealed class FactionSubEntityStateIndex
@@ -2877,12 +2942,12 @@ public class ValidationService
         {
             issues.Add(new ValidationIssue(
                 "output/debug_logs.json", IssueSeverity.Error,
-                "Для задекларированных акторов отсутствует секция reasoning / 'Размышления NPC'",
+                "Для задекларированных акторов отсутствует допустимая reasoning section",
                 code: "missing_actor_reasoning_section",
                 section: "npc_reasoning",
                 expected: "Reasoning section with actor blocks",
                 actual: "missing",
-                repairHint: "Добавь секцию 'Размышления NPC' и подпункты ### [Actor Name] для всех релевантных акторов."));
+                repairHint: "Добавь отдельную reasoning section ('Размышления NPC', 'Размышления акторов', 'Guardian Thoughts' или эквивалентный heading) и подпункты ### [Actor Name] для всех релевантных акторов."));
         }
 
         foreach (var actorName in scope.RelevantActors)
@@ -3052,19 +3117,19 @@ public class ValidationService
             }
 
             var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-            if (string.IsNullOrWhiteSpace(soulJson))
-            {
-                issues.Add(new ValidationIssue(
-                    "game_state/meta/soul_state.json",
-                    IssueSeverity.Error,
+        if (string.IsNullOrWhiteSpace(soulJson))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
                     "После MEMORY_GATES отсутствует soul_state.json с pendingMemoryLegacy",
-                    code: "memory_gates_missing_soul_state",
-                    section: "MEMORY_GATES",
-                    expected: "soul_state.json с valid pendingMemoryLegacy",
-                    actual: "missing file",
-                    repairHint: "После INK_FEATHER_ACTION: MEMORY_GATES создай metaStateUpdates.memoryLegacyGrant и сохрани pendingMemoryLegacy в soul_state."));
-                return issues;
-            }
+                code: "memory_gates_missing_soul_state",
+                section: "MEMORY_GATES",
+                expected: "soul_state.json с valid pendingMemoryLegacy",
+                actual: "missing file",
+                repairHint: "После INK_FEATHER_ACTION: MEMORY_GATES создай metaStateUpdates.memoryLegacyGrant и сохрани в soul_state canonical pendingMemoryLegacy с legacyId, legacyType, sourceLifeHint, grantSource=memoryLegacyGrant, applicationState и grantSnapshot."));
+            return issues;
+        }
 
             using var soulDoc = JsonDocument.Parse(soulJson);
             if (!soulDoc.RootElement.TryGetProperty("pendingMemoryLegacy", out var pendingLegacy) ||
@@ -3073,14 +3138,14 @@ public class ValidationService
                 issues.Add(new ValidationIssue(
                     "game_state/meta/soul_state.json.pendingMemoryLegacy",
                     IssueSeverity.Error,
-                    "После MEMORY_GATES должен быть создан pendingMemoryLegacy с механической наградой следующей жизни",
-                    code: "memory_gates_missing_legacy",
-                    section: "MEMORY_GATES",
-                    expected: "pendingMemoryLegacy object",
-                    actual: pendingLegacy.ValueKind.ToString(),
-                    repairHint: "После INK_FEATHER_ACTION: MEMORY_GATES обязательно создай metaStateUpdates.memoryLegacyGrant: либо +2 к характеристике, либо пассивный навык знаний."));
-                return issues;
-            }
+                "После MEMORY_GATES должен быть создан pendingMemoryLegacy с механической наградой следующей жизни",
+                code: "memory_gates_missing_legacy",
+                section: "MEMORY_GATES",
+                expected: "pendingMemoryLegacy object",
+                actual: pendingLegacy.ValueKind.ToString(),
+                repairHint: "После INK_FEATHER_ACTION: MEMORY_GATES обязательно создай metaStateUpdates.memoryLegacyGrant и сохрани в soul_state canonical pendingMemoryLegacy с legacyId, legacyType, sourceLifeHint, grantSource=memoryLegacyGrant, applicationState и grantSnapshot."));
+            return issues;
+        }
 
             if (!pendingLegacy.TryGetProperty("grantSource", out var grantSource) ||
                 grantSource.ValueKind != JsonValueKind.String ||
@@ -3205,8 +3270,7 @@ public class ValidationService
                     var fields = new[]
                     {
                         ("skillName", "memory_gates_skill_name_mismatch", "имя навыка"),
-                        ("group", "memory_gates_skill_group_mismatch", "группу навыка"),
-                        ("playerStatBonus", "memory_gates_skill_player_stat_bonus_mismatch", "сводку playerStatBonus")
+                        ("group", "memory_gates_skill_group_mismatch", "группу навыка")
                     };
 
                     foreach (var (fieldName, code, label) in fields)
@@ -3230,6 +3294,25 @@ public class ValidationService
                                 actual: pendingValue,
                                 repairHint: "Canonical pendingMemoryLegacy должен faithfully отражать structured grant для skill-based Наследия Памяти."));
                         }
+                    }
+
+                    var pendingPlayerStatBonus = pendingLegacy.TryGetProperty("playerStatBonus", out var pendingPlayerStatBonusEl) && pendingPlayerStatBonusEl.ValueKind == JsonValueKind.String
+                        ? pendingPlayerStatBonusEl.GetString() ?? string.Empty
+                        : string.Empty;
+                    var snapshotPlayerStatBonus = grantSnapshot.TryGetProperty("playerStatBonus", out var snapshotPlayerStatBonusEl) && snapshotPlayerStatBonusEl.ValueKind == JsonValueKind.String
+                        ? snapshotPlayerStatBonusEl.GetString() ?? string.Empty
+                        : string.Empty;
+                    if (!string.IsNullOrWhiteSpace(snapshotPlayerStatBonus) && string.IsNullOrWhiteSpace(pendingPlayerStatBonus))
+                    {
+                        issues.Add(new ValidationIssue(
+                            "game_state/meta/soul_state.json.pendingMemoryLegacy.playerStatBonus",
+                            IssueSeverity.Error,
+                            "playerStatBonus в pendingMemoryLegacy не должен исчезать после MEMORY_GATES для startingPassiveKnowledgeSkill",
+                            code: "memory_gates_skill_player_stat_bonus_missing",
+                            section: "MEMORY_GATES",
+                            expected: "non-empty playerStatBonus summary",
+                            actual: "missing or empty",
+                            repairHint: "Сохрани в pendingMemoryLegacy непустой playerStatBonus summary и не убирай это поле относительно grantSnapshot."));
                     }
 
                     var pendingBonusesJson = pendingLegacy.TryGetProperty("structuredBonuses", out var pendingBonusesEl) && pendingBonusesEl.ValueKind == JsonValueKind.Array
@@ -3281,7 +3364,7 @@ public class ValidationService
                 section: "MEMORY_GATES",
                 expected: "Valid current turn_request.json",
                 actual: "Invalid JSON",
-                repairHint: "Исправь текущий turn_request lifecycle; validation MEMORY_GATES должна читать playerAction из valid turn_request.json."));
+                repairHint: "Это client/protocol input failure: validation MEMORY_GATES не смогла прочитать playerAction из input/turn_request.json. GM не должен чинить state-файлы вместо broken turn_request lifecycle."));
         }
 
         return issues;
@@ -3895,6 +3978,7 @@ public class ValidationService
 
         var knownLocationIds = await ReadKnownLocationIdsAsync();
         await ValidateLocationCrossReferencesAsync(issues, knownLocationIds);
+        await ValidateWeatherContextHintsAsync(issues);
         await ValidateNpcLocationCrossReferencesAsync(issues, knownLocationIds);
 
         var knownNpcReferences = await ReadKnownNpcReferencesAsync();
@@ -3910,8 +3994,7 @@ public class ValidationService
         await ValidatePlayerInventoryCrossReferencesAsync(issues, knownInventoryItemReferences);
         await ValidateNpcInventoryCrossReferencesAsync(issues, knownNpcReferences, knownNpcInventoryItemReferencesByNpc, knownNpcInventoryContainerIdsByNpc);
 
-        var knownQuestIds = await ReadKnownQuestIdsAsync();
-        await ValidateNpcQuestCrossReferencesAsync(issues, knownNpcReferences, knownQuestIds);
+        await ValidateNpcQuestCrossReferencesAsync(issues, knownNpcReferences);
 
         var knownGuardianIds = await ReadKnownGuardianIdsAsync();
         await ValidateSoulQuestGuardianCrossReferencesAsync(issues, knownGuardianIds);
@@ -3921,6 +4004,7 @@ public class ValidationService
 
         var knownCodexEntryIds = await ReadKnownCodexEntryIdsAsync();
         await ValidateCodexRelatedEntryCrossReferencesAsync(issues, knownCodexEntryIds);
+        await ValidateCodexUpdateTargetCrossReferencesAsync(issues);
 
         var knownWorldStateFlagIds = await ReadKnownWorldStateFlagIdsAsync();
         await ValidateWorldStateFlagCrossReferencesAsync(issues, knownWorldStateFlagIds);
@@ -4102,9 +4186,7 @@ public class ValidationService
         foreach (var json in new[]
                  {
                      await ReadPreTurnTrackedFileAsync("game_state/world/current_location.json"),
-                     await _fs.ReadFileAsync("game_state/world/current_location.json"),
-                     await ReadPreTurnTrackedFileAsync("game_state/world/world_map.json"),
-                     await _fs.ReadFileAsync("game_state/world/world_map.json")
+                     await ReadPreTurnTrackedFileAsync("game_state/world/world_map.json")
                  })
         {
             if (string.IsNullOrWhiteSpace(json))
@@ -4113,7 +4195,7 @@ public class ValidationService
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                foreach (var location in EnumerateLocationLikeObjects(doc.RootElement))
+                foreach (var location in EnumerateLocationLikeObjects(doc.RootElement, includeLocationUpdates: false))
                 {
                     var locationId = GetFirstNonEmptyString(location, "locationId");
                     if (!string.IsNullOrWhiteSpace(locationId))
@@ -4145,7 +4227,7 @@ public class ValidationService
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                foreach (var location in EnumerateLocationLikeObjects(doc.RootElement))
+                foreach (var location in EnumerateLocationLikeObjects(doc.RootElement, includeLocationUpdates: false))
                     RegisterWorldLocationState(index, location);
             }
             catch
@@ -4161,30 +4243,27 @@ public class ValidationService
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var json in new[]
-                 {
-                     await ReadPreTurnTrackedFileAsync("game_state/factions/faction_core.json"),
-                     await _fs.ReadFileAsync("game_state/factions/faction_core.json")
-                 })
+        var preTurnJson = await ReadPreTurnTrackedFileAsync("game_state/factions/faction_core.json");
+        if (!string.IsNullOrWhiteSpace(preTurnJson))
         {
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
-
             try
             {
-                using var doc = JsonDocument.Parse(json);
-                foreach (var propName in new[] { "factionDataChanges", "factions" })
-                {
-                    if (!doc.RootElement.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
-                        continue;
+                using var doc = JsonDocument.Parse(preTurnJson);
+                CollectFactionIdsFromStateRoot(doc.RootElement, ids, preTurnKnownIds: null);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
 
-                    foreach (var item in arr.EnumerateArray())
-                    {
-                        var factionId = GetFirstNonEmptyString(item, "factionId");
-                        if (!string.IsNullOrWhiteSpace(factionId))
-                            ids.Add(factionId);
-                    }
-                }
+        var currentJson = await _fs.ReadFileAsync("game_state/factions/faction_core.json");
+        if (!string.IsNullOrWhiteSpace(currentJson))
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(currentJson);
+                CollectFactionIdsFromStateRoot(doc.RootElement, ids, ids);
             }
             catch
             {
@@ -4198,19 +4277,27 @@ public class ValidationService
     private async Task<HashSet<string>> ReadKnownCodexEntryIdsAsync()
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var json in new[]
-                 {
-                     await ReadPreTurnTrackedFileAsync("lore/codex_entries.json"),
-                     await _fs.ReadFileAsync("lore/codex_entries.json")
-                 })
+        var preTurnJson = await ReadPreTurnTrackedFileAsync("lore/codex_entries.json");
+        if (!string.IsNullOrWhiteSpace(preTurnJson))
         {
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
-
             try
             {
-                using var doc = JsonDocument.Parse(json);
-                CollectCodexEntryIdsFromRoot(doc.RootElement, ids);
+                using var doc = JsonDocument.Parse(preTurnJson);
+                CollectCodexEntryIdsFromRoot(doc.RootElement, ids, includeStoredEntries: true);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        var currentJson = await _fs.ReadFileAsync("lore/codex_entries.json");
+        if (!string.IsNullOrWhiteSpace(currentJson))
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(currentJson);
+                CollectCodexEntryIdsFromRoot(doc.RootElement, ids, includeStoredEntries: false);
             }
             catch
             {
@@ -4366,6 +4453,55 @@ public class ValidationService
         return (ids, names);
     }
 
+    private async Task<(Dictionary<string, HashSet<string>> ById, Dictionary<string, HashSet<string>> ByName)> ReadKnownNpcCurrentActivitiesAsync()
+    {
+        var byId = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+        var byName = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var npcJson in new[]
+                 {
+                     await ReadPreTurnTrackedFileAsync("game_state/npcs/npc_core.json")
+                 })
+        {
+            if (string.IsNullOrWhiteSpace(npcJson))
+                continue;
+
+            try
+            {
+                using var doc = JsonDocument.Parse(npcJson);
+                foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
+                {
+                    if (!doc.RootElement.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
+                        continue;
+
+                    foreach (var npc in arr.EnumerateArray())
+                    {
+                        if (!npc.TryGetProperty("currentActivity", out var currentActivity) ||
+                            currentActivity.ValueKind != JsonValueKind.Object)
+                            continue;
+
+                        var activityName = GetFirstNonEmptyString(currentActivity, "activityName");
+                        if (string.IsNullOrWhiteSpace(activityName))
+                            continue;
+
+                        var npcId = GetFirstNonEmptyString(npc, "NPCId", "npcId", "id");
+                        var npcName = GetFirstNonEmptyString(npc, "name", "npcName", "NPCName");
+                        if (!string.IsNullOrWhiteSpace(npcId))
+                            AddDictionarySetValue(byId, npcId, activityName);
+                        if (!string.IsNullOrWhiteSpace(npcName))
+                            AddDictionarySetValue(byName, npcName, activityName);
+                    }
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        return (byId, byName);
+    }
+
     private (HashSet<string> Ids, HashSet<string> Names) ReadKnownNpcReferencesSync()
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -4421,6 +4557,63 @@ public class ValidationService
         }
     }
 
+    private (string? LocationId, string? InitialId) ReadCurrentSceneLocationAnchorSync()
+    {
+        var json = TryReadCurrentFileSync("game_state/world/current_location.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return (null, null);
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (root.ValueKind == JsonValueKind.Object &&
+                root.TryGetProperty("currentLocationData", out var currentLocationData) &&
+                currentLocationData.ValueKind == JsonValueKind.Object)
+            {
+                root = currentLocationData;
+            }
+
+            var locationId = GetFirstNonEmptyString(root, "locationId");
+            var initialId = GetFirstNonEmptyString(root, "initialId");
+            return (
+                string.IsNullOrWhiteSpace(locationId) ? null : locationId,
+                string.IsNullOrWhiteSpace(initialId) ? null : initialId);
+        }
+        catch
+        {
+            return (null, null);
+        }
+    }
+
+    private bool IsCurrentSceneNewLocationWithoutInitialIdSync()
+    {
+        var json = TryReadCurrentFileSync("game_state/world/current_location.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (root.ValueKind == JsonValueKind.Object &&
+                root.TryGetProperty("currentLocationData", out var currentLocationData) &&
+                currentLocationData.ValueKind == JsonValueKind.Object)
+            {
+                root = currentLocationData;
+            }
+
+            return root.ValueKind == JsonValueKind.Object &&
+                   root.TryGetProperty("locationId", out var locationId) &&
+                   locationId.ValueKind == JsonValueKind.Null &&
+                   string.IsNullOrWhiteSpace(GetFirstNonEmptyString(root, "initialId"));
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private Dictionary<string, HashSet<string>> ReadPreTurnNpcUnlockedMemoryIdsByNpcSync()
     {
         var idsByNpc = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
@@ -4471,36 +4664,19 @@ public class ValidationService
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var json in new[]
-                 {
-                     ReadPreTurnTrackedFileSync("game_state/inventory/items.json"),
-                     TryReadCurrentFileSync("game_state/inventory/items.json")
-                 })
-        {
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
-
-            try
-            {
-                using var doc = JsonDocument.Parse(json);
-                if (!doc.RootElement.TryGetProperty("items", out var items) &&
-                    !doc.RootElement.TryGetProperty("UpdateInventory", out items))
-                {
-                    continue;
-                }
-
-                if (items.ValueKind != JsonValueKind.Array)
-                    continue;
-
-                foreach (var item in items.EnumerateArray())
-                    RegisterInventoryReference(item, ids, names);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
+        var preTurnInventoryItemIds = ReadPreTurnInventoryItemIdsSync();
+        RegisterKnownInventoryItemReferencesFromJson(
+            ReadPreTurnTrackedFileSync("game_state/inventory/items.json"),
+            ids,
+            names,
+            knownExistingItemIds: null,
+            currentStateNewItemsOnly: false);
+        RegisterKnownInventoryItemReferencesFromJson(
+            TryReadCurrentFileSync("game_state/inventory/items.json"),
+            ids,
+            names,
+            preTurnInventoryItemIds,
+            currentStateNewItemsOnly: true);
 
         return (ids, names);
     }
@@ -4535,7 +4711,12 @@ public class ValidationService
                     issues.Add(new ValidationIssue(
                         $"{locationContext}.locationId",
                         IssueSeverity.Error,
-                        $"current_location.locationId '{currentLocationId}' не найден среди известных world locations"));
+                        $"current_location.locationId '{currentLocationId}' не найден среди известных world locations",
+                        code: "current_location_unknown_location_id",
+                        section: "Location",
+                        expected: "existing locationId from canonical world state",
+                        actual: currentLocationId,
+                        repairHint: "Для known currentLocationData используй существующий locationId из canonical world state. Если локация действительно новая, передай locationId = null и полный location object."));
                 }
 
                 if (!string.IsNullOrWhiteSpace(currentLocationId) &&
@@ -4678,6 +4859,8 @@ public class ValidationService
         ValidateKnownLocationTargetArray("threatsToUpdate", "targetLocationId", "world_map_threat_update_unknown_target");
         ValidateKnownLocationTargetArray("threatsToRemove", "targetLocationId", "world_map_threat_remove_unknown_target");
         ValidateKnownLocationTargetArray("completeThreatActivities", "targetLocationId", "world_map_threat_complete_unknown_target");
+        ValidateExistingStorageTargetArray("storageUpdates", "world_map_storage_update_unknown_storage");
+        ValidateExistingStorageTargetArray("storagesToRemove", "world_map_storage_remove_unknown_storage");
 
         void ValidateExistingLinkTargetArray(string propName, string code)
         {
@@ -4716,6 +4899,44 @@ public class ValidationService
                     expected: "existing adjacency link identified by sourceLocationId + targetCoordinates",
                     actual: $"{sourceLocationId} -> {targetCoordinateKey}",
                     repairHint: $"Для {propName} адресуй только реально существующую ссылку из pre-turn adjacencyMap. Если путь создаётся впервые, используй newLinks; если меняется существующий путь, используй exact sourceLocationId + targetCoordinates этой связи."));
+            }
+        }
+
+        void ValidateExistingStorageTargetArray(string propName, string code)
+        {
+            if (!updatesRoot.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
+                return;
+
+            var index = 0;
+            foreach (var item in arr.EnumerateArray())
+            {
+                var itemContext = $"{fileContext}.worldMapUpdates.{propName}[{index++}]";
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var targetLocationId = GetFirstNonEmptyString(item, "targetLocationId");
+                if (string.IsNullOrWhiteSpace(targetLocationId) || !knownLocationIds.Contains(targetLocationId))
+                    continue;
+
+                var storageId = GetFirstNonEmptyString(item, "storageId");
+                if (string.IsNullOrWhiteSpace(storageId))
+                    continue;
+
+                if (preTurnLocationState.StorageIdsByLocationId.TryGetValue(targetLocationId, out var storageIds) &&
+                    storageIds.Contains(storageId))
+                {
+                    continue;
+                }
+
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.storageId",
+                    IssueSeverity.Error,
+                    $"{propName} ссылается на storageId '{storageId}', которого нет в canonical locationStorages целевой локации",
+                    code: code,
+                    section: "WorldMap",
+                    expected: "existing storageId from canonical locationStorages of the specified targetLocationId",
+                    actual: storageId,
+                    repairHint: $"Для {propName} используй storageId уже существующего хранилища внутри canonical locationStorages этой targetLocationId. Если хранилище ещё не существует, сначала создай/покажи его через location storage state, а не обновляй или удаляй несуществующий storageId."));
             }
         }
 
@@ -4764,36 +4985,6 @@ public class ValidationService
         ValidateExistingLinkTargetArray("linkUpdates", "world_map_link_update_unknown_existing_link");
         ValidateExistingLinkTargetArray("linksToRemove", "world_map_link_remove_unknown_existing_link");
 
-        if (updatesRoot.TryGetProperty("newLinks", out var newLinks) && newLinks.ValueKind == JsonValueKind.Array)
-        {
-            var index = 0;
-            foreach (var item in newLinks.EnumerateArray())
-            {
-                var itemContext = $"{fileContext}.worldMapUpdates.newLinks[{index++}]";
-                if (item.ValueKind != JsonValueKind.Object ||
-                    !item.TryGetProperty("link", out var link) ||
-                    link.ValueKind != JsonValueKind.Object ||
-                    !link.TryGetProperty("targetCoordinates", out var targetCoordinates) ||
-                    !TryGetNormalizedLocationCoordinatesKey(targetCoordinates, out var targetCoordinateKey))
-                {
-                    continue;
-                }
-
-                if (knownCoordinateKeys.Contains(targetCoordinateKey) || sameTurnNewLocationCoordinateKeys.Contains(targetCoordinateKey))
-                    continue;
-
-                issues.Add(new ValidationIssue(
-                    $"{itemContext}.link.targetCoordinates",
-                    IssueSeverity.Error,
-                    "worldMapUpdates.newLinks должен указывать на существующую canonical destination через targetCoordinates",
-                    code: "world_map_new_link_unknown_target_coordinates",
-                    section: "WorldMap",
-                    expected: "targetCoordinates of an existing canonical location or same-turn new location",
-                    actual: targetCoordinateKey,
-                    repairHint: "Для newLinks используй targetCoordinates уже существующей локации из canonical world state. Если локация создаётся в этом же accepted turn, сначала создай её через newLocations/currentLocationData и адресуй exact coordinates этой записи."));
-            }
-        }
-
         ValidateExistingThreatTargetArray(
             "threatsToUpdate",
             "world_map_threat_update_unknown_existing_threat",
@@ -4812,6 +5003,37 @@ public class ValidationService
             "completeThreatActivities",
             "world_map_threat_complete_unknown_existing_threat",
             item => (GetFirstNonEmptyString(item, "threatId"), "threatId"));
+
+        if (updatesRoot.TryGetProperty("completeThreatActivities", out var threatCompletions) &&
+            threatCompletions.ValueKind == JsonValueKind.Array)
+        {
+            var completionIndex = 0;
+            foreach (var item in threatCompletions.EnumerateArray())
+            {
+                var itemContext = $"{fileContext}.worldMapUpdates.completeThreatActivities[{completionIndex++}]";
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var targetLocationId = GetFirstNonEmptyString(item, "targetLocationId");
+                var threatId = GetFirstNonEmptyString(item, "threatId");
+                if (string.IsNullOrWhiteSpace(targetLocationId) || string.IsNullOrWhiteSpace(threatId))
+                    continue;
+
+                if (preTurnLocationState.ThreatIdsWithCurrentActivityByLocationId.TryGetValue(targetLocationId, out var activeThreatIds) &&
+                    activeThreatIds.Contains(threatId))
+                    continue;
+
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.threatId",
+                    IssueSeverity.Error,
+                    "completeThreatActivities ссылается на угрозу без active currentActivity в canonical world_map state",
+                    code: "world_map_threat_complete_without_active_current_activity",
+                    section: "WorldMap",
+                    expected: "existing threatId with non-null currentActivity in targetLocationId.activeThreats",
+                    actual: $"{targetLocationId}:{threatId}",
+                    repairHint: "Используй completeThreatActivities только для угрозы, у которой уже есть active currentActivity в canonical world_map state. Idle threat сначала обнови обычным non-terminal flow."));
+            }
+        }
 
         if (updatesRoot.TryGetProperty("threatsToAdd", out var threatAdds) && threatAdds.ValueKind == JsonValueKind.Array)
         {
@@ -4853,6 +5075,81 @@ public class ValidationService
         }
     }
 
+    private async Task ValidateWeatherContextHintsAsync(List<ValidationIssue> issues)
+    {
+        var currentLocationJson = await _fs.ReadFileAsync("game_state/world/current_location.json");
+        var weatherJson = await _fs.ReadFileAsync("game_state/world/weather.json");
+        if (string.IsNullOrWhiteSpace(currentLocationJson) || string.IsNullOrWhiteSpace(weatherJson))
+            return;
+
+        try
+        {
+            using var locationDoc = JsonDocument.Parse(currentLocationJson);
+            var locationRoot = locationDoc.RootElement;
+            if (locationRoot.TryGetProperty("currentLocationData", out var currentLocationData) &&
+                currentLocationData.ValueKind == JsonValueKind.Object)
+            {
+                locationRoot = currentLocationData;
+            }
+
+            var locationType = GetFirstNonEmptyString(locationRoot, "locationType");
+            var biome = GetFirstNonEmptyString(locationRoot, "biome");
+            var currentLocationId = GetFirstNonEmptyString(locationRoot, "locationId");
+            if ((!string.Equals(locationType, "outdoor", StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(biome)) &&
+                !string.IsNullOrWhiteSpace(currentLocationId))
+            {
+                var preTurnLocationState = await ReadPreTurnWorldLocationStateIndexAsync();
+                if (!string.Equals(locationType, "outdoor", StringComparison.OrdinalIgnoreCase) &&
+                    preTurnLocationState.LocationTypesByLocationId.TryGetValue(currentLocationId, out var resolvedLocationType))
+                {
+                    locationType = resolvedLocationType;
+                }
+
+                if (string.IsNullOrWhiteSpace(biome) &&
+                    preTurnLocationState.BiomesByLocationId.TryGetValue(currentLocationId, out var resolvedBiome))
+                {
+                    biome = resolvedBiome;
+                }
+            }
+
+            if (!string.Equals(locationType, "outdoor", StringComparison.OrdinalIgnoreCase) ||
+                string.IsNullOrWhiteSpace(biome) ||
+                !WeatherJumpCommandsByBiome.TryGetValue(biome, out var allowedCommands))
+            {
+                return;
+            }
+
+            using var weatherDoc = JsonDocument.Parse(weatherJson);
+            var weatherRoot = weatherDoc.RootElement;
+            if (weatherRoot.TryGetProperty("weatherChange", out var weatherChange) &&
+                weatherChange.ValueKind == JsonValueKind.Object)
+            {
+                weatherRoot = weatherChange;
+            }
+
+            var tendency = GetFirstNonEmptyString(weatherRoot, "tendency");
+            if (string.IsNullOrWhiteSpace(tendency) || !tendency.StartsWith("JUMP_TO_", StringComparison.Ordinal))
+                return;
+
+            if (!allowedCommands.Contains(tendency))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/world/weather.json.tendency",
+                    IssueSeverity.Warning,
+                    $"weatherChange.tendency '{tendency}' не выглядит совместимым с текущим outdoor biome '{biome}'",
+                    code: "weather_change_biome_command_mismatch_warning",
+                    section: "Weather",
+                    expected: string.Join(" | ", allowedCommands),
+                    actual: tendency,
+                    repairHint: $"Если текущая локация действительно outdoor biome '{biome}', используй совместимый JUMP_TO_* command из Rule 27. Для неоднозначных или явно магических случаев перепроверь, что narrative и выбранный tendency описывают одну и ту же погоду."));
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
     private async Task ValidateNpcLocationCrossReferencesAsync(List<ValidationIssue> issues, HashSet<string> knownLocationIds)
     {
         if (knownLocationIds.Count == 0)
@@ -4885,7 +5182,12 @@ public class ValidationService
                         issues.Add(new ValidationIssue(
                             $"game_state/npcs/npc_core.json.{sectionName}[{index}].currentLocationId",
                             IssueSeverity.Error,
-                            $"NPC currentLocationId '{locationId}' не найден среди известных локаций"));
+                            $"NPC currentLocationId '{locationId}' не найден среди известных локаций",
+                            code: "npc_unknown_current_location_id",
+                            section: "NPC",
+                            expected: "existing currentLocationId from canonical world state",
+                            actual: locationId,
+                            repairHint: "Для NPC используй существующий locationId из canonical world state. Если NPC находится в same-turn новой локации, используй initialLocationId-linking вместо несуществующего currentLocationId."));
                     }
 
                     index++;
@@ -4937,7 +5239,9 @@ public class ValidationService
                                     $"Faction relation targetFactionId '{targetFactionId}' не найден среди известных factionId",
                                     code: "faction_relation_unknown_target",
                                     section: "CrossReferences",
-                                    repairHint: "Используй существующий factionId из canonical faction_core.json или сначала создай целевую фракцию в этом же accepted turn."));
+                                    expected: "existing factionId from canonical faction_core.json",
+                                    actual: targetFactionId,
+                                    repairHint: "Используй существующий canonical factionId из faction_core.json. Если цель создаётся в этом же accepted turn, сначала материализуй её в faction_core с permanent factionId, а потом ссылайся на неё из relations."));
                             }
                         }
                     }
@@ -4954,10 +5258,12 @@ public class ValidationService
                                 issues.Add(new ValidationIssue(
                                     $"{territoryContext}.locationId",
                                     IssueSeverity.Error,
-                                    $"Faction controlledTerritories locationId '{locationId}' не найден среди известных локаций",
-                                    code: "faction_controlled_territory_unknown_location",
-                                    section: "CrossReferences",
-                                    repairHint: "Используй существующий locationId из canonical world state или сначала создай/обнови эту локацию в текущем accepted turn."));
+                                $"Faction controlledTerritories locationId '{locationId}' не найден среди известных локаций",
+                                code: "faction_controlled_territory_unknown_location",
+                                section: "CrossReferences",
+                                expected: "existing locationId from canonical world state",
+                                actual: locationId,
+                                repairHint: "Используй уже существующий canonical locationId из world state. Не ссылай controlledTerritories на временную или ещё не материализованную локацию."));
                             }
                         }
                     }
@@ -5027,6 +5333,108 @@ public class ValidationService
         }
     }
 
+    private async Task ValidateCodexUpdateTargetCrossReferencesAsync(List<ValidationIssue> issues)
+    {
+        var knownExistingEntryIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        static void CollectStoredEntriesOnly(JsonElement candidateRoot, HashSet<string> target)
+        {
+            if (!candidateRoot.TryGetProperty("entries", out var entries) || entries.ValueKind != JsonValueKind.Array)
+                return;
+
+            foreach (var entry in entries.EnumerateArray())
+            {
+                var entryId = GetFirstNonEmptyString(entry, "entryId");
+                if (!string.IsNullOrWhiteSpace(entryId))
+                    target.Add(entryId);
+            }
+        }
+
+        static void CollectSameTurnAddEntries(JsonElement candidateRoot, HashSet<string> target)
+        {
+            if (!candidateRoot.TryGetProperty("loreCodexUpdates", out var updates) || updates.ValueKind != JsonValueKind.Array)
+                return;
+
+            foreach (var item in updates.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var command = GetFirstNonEmptyString(item, "command");
+                if (!string.Equals(command, "add", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (item.TryGetProperty("entry", out var entry) && entry.ValueKind == JsonValueKind.Object)
+                {
+                    var entryId = GetFirstNonEmptyString(entry, "entryId");
+                    if (!string.IsNullOrWhiteSpace(entryId))
+                        target.Add(entryId);
+                }
+            }
+        }
+
+        var preTurnJson = await ReadPreTurnTrackedFileAsync("lore/codex_entries.json");
+        if (!string.IsNullOrWhiteSpace(preTurnJson))
+        {
+            try
+            {
+                using var preTurnDoc = JsonDocument.Parse(preTurnJson);
+                CollectStoredEntriesOnly(preTurnDoc.RootElement, knownExistingEntryIds);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        var currentJson = await _fs.ReadFileAsync("lore/codex_entries.json");
+        if (string.IsNullOrWhiteSpace(currentJson))
+            return;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(currentJson);
+            CollectStoredEntriesOnly(doc.RootElement, knownExistingEntryIds);
+            CollectSameTurnAddEntries(doc.RootElement, knownExistingEntryIds);
+
+            if (!doc.RootElement.TryGetProperty("loreCodexUpdates", out var updates) || updates.ValueKind != JsonValueKind.Array)
+                return;
+
+            var index = 0;
+            foreach (var item in updates.EnumerateArray())
+            {
+                var itemContext = $"lore/codex_entries.json.loreCodexUpdates[{index++}]";
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var command = GetFirstNonEmptyString(item, "command");
+                if (!string.Equals(command, "update", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var entryId = GetFirstNonEmptyString(item, "entryId");
+                if (string.IsNullOrWhiteSpace(entryId))
+                    continue;
+
+                if (!knownExistingEntryIds.Contains(entryId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.entryId",
+                        IssueSeverity.Error,
+                        $"loreCodexUpdates.update ссылается на entryId '{entryId}', которого нет в canonical codex state",
+                        code: "codex_update_unknown_target_entry",
+                        section: "Codex",
+                        expected: "existing entryId from lore/codex_entries.json or same-turn add entryId",
+                        actual: entryId,
+                        repairHint: "Для existing lore entry используй реальный entryId из codex_entries.json. Если запись создаётся впервые, используй command=add с полным entry object."));
+                }
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
     private static void ValidateRelatedCodexEntriesArray(JsonElement relatedEntries, string context, HashSet<string> knownCodexEntryIds, List<ValidationIssue> issues)
     {
         var relatedIndex = 0;
@@ -5048,6 +5456,8 @@ public class ValidationService
                     $"Codex relatedEntries ссылается на entryId '{relatedId}', которого нет в lore/codex_entries.json",
                     code: "codex_related_entry_unknown_target",
                     section: "CrossReferences",
+                    expected: "existing entryId from lore/codex_entries.json",
+                    actual: relatedId,
                     repairHint: "Используй существующий entryId из codex_entries.json или сначала создай связанную запись в этом же accepted turn."));
             }
         }
@@ -5059,10 +5469,12 @@ public class ValidationService
         (HashSet<string> Ids, HashSet<string> Names) knownGuardianReferences)
     {
         var preTurnNpcReferences = await ReadPreTurnNpcReferencesAsync();
+        var knownNpcCurrentActivities = await ReadKnownNpcCurrentActivitiesAsync();
         foreach (var (path, sections) in new[]
                  {
                      ("game_state/npcs/npc_inventory.json", new[] { "NPCInventoryAdds", "NPCInventoryUpdates", "NPCInventoryRemovals", "NPCEquipmentChanges", "NPCInventoryResourcesChanges" }),
-                     ("game_state/npcs/npc_goals.json", new[] { "NPCGoalUpdates", "NPCQuestUpdates" })
+                     ("game_state/npcs/npc_goals.json", new[] { "NPCGoalUpdates", "NPCQuestUpdates" }),
+                     ("game_state/npcs/npc_activities.json", new[] { "NPCActivityUpdates", "completeNPCActivities" })
                  })
         {
             var json = await _fs.ReadFileAsync(path);
@@ -5080,11 +5492,12 @@ public class ValidationService
                     var index = 0;
                     foreach (var item in arr.EnumerateArray())
                     {
+                        var itemContext = $"{path}.{section}[{index}]";
                         var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
                         if (!string.IsNullOrWhiteSpace(npcId) && knownGuardianReferences.Ids.Contains(npcId))
                         {
                             issues.Add(new ValidationIssue(
-                                $"{path}.{section}[{index}]",
+                                itemContext,
                                 IssueSeverity.Error,
                                 "Guardians не должны попадать в NPC surfaces",
                                 code: "guardian_leaked_into_npc_surface",
@@ -5098,22 +5511,96 @@ public class ValidationService
 
                         if (!NpcReferenceExists(item, knownNpcReferences))
                         {
+                            var sectionName = string.Equals(path, "game_state/npcs/npc_inventory.json", StringComparison.OrdinalIgnoreCase)
+                                ? "NPCInventory"
+                                : string.Equals(path, "game_state/npcs/npc_goals.json", StringComparison.OrdinalIgnoreCase)
+                                    ? "NPCGoals"
+                                    : "NPCActivities";
+                            var actorReference = GetFirstNonEmptyString(item, "NPCId", "npcId", "id", "NPCName", "npcName", "name");
                             issues.Add(new ValidationIssue(
-                                $"{path}.{section}[{index}]",
+                                itemContext,
                                 IssueSeverity.Error,
-                                "NPC command ссылается на NPC, которого нет в npc_core.json"));
+                                "NPC command ссылается на NPC, которого нет в canonical npc_core state",
+                                code: "npc_command_unknown_npc_reference",
+                                section: sectionName,
+                                expected: "existing NPC reference from pre-turn npc_core or a same-turn NPC already created through UpdateNPCs",
+                                actual: string.IsNullOrWhiteSpace(actorReference) ? "unknown NPC reference" : actorReference,
+                                repairHint: "Ссылайся только на NPC, который уже существует в canonical npc_core state. Если NPC создаётся в этом же ходу, сначала создай его через UpdateNPCs, а затем используй его корректный permanent reference."));
                         }
                         else if ((preTurnNpcReferences.Ids.Count > 0 || preTurnNpcReferences.Names.Count > 0) &&
-                                 string.Equals(path, "game_state/npcs/npc_inventory.json", StringComparison.OrdinalIgnoreCase) &&
+                                 (string.Equals(path, "game_state/npcs/npc_inventory.json", StringComparison.OrdinalIgnoreCase) ||
+                                  string.Equals(path, "game_state/npcs/npc_activities.json", StringComparison.OrdinalIgnoreCase)) &&
                                  !NpcReferenceExists(item, preTurnNpcReferences))
                         {
                             issues.Add(new ValidationIssue(
-                                $"{path}.{section}[{index}]",
+                                itemContext,
                                 IssueSeverity.Error,
-                                "Новый NPC не должен изменяться через atomic NPCInventory* surfaces в тот же ход создания",
-                                code: "npc_new_inventory_atomic_split_forbidden",
-                                section: "NPCInventory",
-                                repairHint: "Для newly created NPC задай полный initial inventory только внутри UpdateNPCs.inventory. NPCInventoryAdds/Updates/Removals/Equipment/Resources используй только для уже существующих NPC."));
+                                string.Equals(path, "game_state/npcs/npc_inventory.json", StringComparison.OrdinalIgnoreCase)
+                                    ? "Новый NPC не должен изменяться через atomic NPCInventory* surfaces в тот же ход создания"
+                                    : "Новый NPC не должен изменяться через atomic NPC activity surfaces в тот же ход создания",
+                                code: string.Equals(path, "game_state/npcs/npc_inventory.json", StringComparison.OrdinalIgnoreCase)
+                                    ? "npc_new_inventory_atomic_split_forbidden"
+                                    : "npc_new_activity_atomic_split_forbidden",
+                                section: string.Equals(path, "game_state/npcs/npc_inventory.json", StringComparison.OrdinalIgnoreCase)
+                                    ? "NPCInventory"
+                                    : "NPCActivities",
+                                repairHint: string.Equals(path, "game_state/npcs/npc_inventory.json", StringComparison.OrdinalIgnoreCase)
+                                    ? "Для newly created NPC задай полный initial inventory только внутри UpdateNPCs.inventory. NPCInventoryAdds/Updates/Removals/Equipment/Resources используй только для уже существующих NPC."
+                                    : "Для newly created NPC не используй NPCActivityUpdates/completeNPCActivities в тот же ход создания. Новый NPC должен начинать с currentActivity = null; дальнейшие activity changes применяй только к уже существующему NPC."));
+                        }
+
+                        if (string.Equals(path, "game_state/npcs/npc_activities.json", StringComparison.OrdinalIgnoreCase) &&
+                            string.Equals(section, "NPCActivityUpdates", StringComparison.OrdinalIgnoreCase) &&
+                            NpcReferenceExists(item, knownNpcReferences))
+                        {
+                            var knownActivityNames = ResolveKnownNpcActivityNames(item, knownNpcCurrentActivities);
+                            if (knownActivityNames == null || knownActivityNames.Count == 0)
+                            {
+                                issues.Add(new ValidationIssue(
+                                    $"{itemContext}.activityUpdate",
+                                    IssueSeverity.Error,
+                                    "NPCActivityUpdates ссылается на NPC, у которого нет активной currentActivity в canonical npc_core state",
+                                    code: "npc_activity_update_without_active_current_activity",
+                                    section: "NPCActivities",
+                                    expected: "existing NPC with non-null currentActivity before non-terminal activity update",
+                                    actual: "missing active currentActivity",
+                                    repairHint: "Используй NPCActivityUpdates только для already existing NPC с ненулевой currentActivity в canonical npc_core state. Newly created same-turn NPC должен стартовать с currentActivity = null, а terminal completion оформляй через completeNPCActivities."));
+                            }
+                        }
+
+                        if (string.Equals(path, "game_state/npcs/npc_activities.json", StringComparison.OrdinalIgnoreCase) &&
+                            string.Equals(section, "completeNPCActivities", StringComparison.OrdinalIgnoreCase) &&
+                            NpcReferenceExists(item, knownNpcReferences))
+                        {
+                            var activityName = GetFirstNonEmptyString(item, "activityName");
+                            if (!string.IsNullOrWhiteSpace(activityName))
+                            {
+                                var knownActivityNames = ResolveKnownNpcActivityNames(item, knownNpcCurrentActivities);
+                                if (knownActivityNames == null || knownActivityNames.Count == 0)
+                                {
+                                    issues.Add(new ValidationIssue(
+                                        $"{itemContext}.activityName",
+                                        IssueSeverity.Error,
+                                        "completeNPCActivities ссылается на NPC, у которого нет активной currentActivity в canonical npc_core state",
+                                        code: "npc_complete_activity_without_active_current_activity",
+                                        section: "NPCActivities",
+                                        expected: "existing NPC with non-null currentActivity before completion",
+                                        actual: activityName,
+                                        repairHint: "Используй completeNPCActivities только для NPC, у которого уже есть active currentActivity в canonical npc_core state. Если активность ещё не была создана, сначала задай/обнови её корректным non-terminal flow."));
+                                }
+                                else if (!knownActivityNames.Contains(activityName))
+                                {
+                                    issues.Add(new ValidationIssue(
+                                        $"{itemContext}.activityName",
+                                        IssueSeverity.Error,
+                                        "completeNPCActivities.activityName не совпадает с активной currentActivity целевого NPC",
+                                        code: "npc_complete_activity_name_mismatch",
+                                        section: "NPCActivities",
+                                        expected: string.Join(" | ", knownActivityNames),
+                                        actual: activityName,
+                                        repairHint: "Завершай через completeNPCActivities именно ту activityName, которая сейчас стоит в canonical npc_core.currentActivity у этого NPC. Если меняешь активность, сначала обнови её корректным non-terminal способом."));
+                                }
+                            }
                         }
 
                         index++;
@@ -5125,6 +5612,23 @@ public class ValidationService
                 // ignored
             }
         }
+    }
+
+    private static HashSet<string>? ResolveKnownNpcActivityNames(
+        JsonElement item,
+        (Dictionary<string, HashSet<string>> ById, Dictionary<string, HashSet<string>> ByName) knownNpcCurrentActivities)
+    {
+        var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
+        if (!string.IsNullOrWhiteSpace(npcId) &&
+            knownNpcCurrentActivities.ById.TryGetValue(npcId, out var byId))
+            return byId;
+
+        var npcName = GetFirstNonEmptyString(item, "NPCName", "npcName", "name");
+        if (!string.IsNullOrWhiteSpace(npcName) &&
+            knownNpcCurrentActivities.ByName.TryGetValue(npcName, out var byName))
+            return byName;
+
+        return null;
     }
 
     private async Task ValidateWorldStateFlagCrossReferencesAsync(List<ValidationIssue> issues, HashSet<string> knownFlagIds)
@@ -5187,6 +5691,7 @@ public class ValidationService
         {
             using var doc = JsonDocument.Parse(json);
             var resolvableVehicleIds = new HashSet<string>(knownVehicleIds, StringComparer.OrdinalIgnoreCase);
+            var sameTurnRemovedVehicleIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             if (doc.RootElement.TryGetProperty("UpdateVehicles", out var updates) && updates.ValueKind == JsonValueKind.Array)
             {
                 var updateIndex = 0;
@@ -5244,14 +5749,32 @@ public class ValidationService
                             repairHint: "Удаляй только реально существующий vehicleId из canonical vehicles state."));
                     }
 
+                    if (!string.IsNullOrWhiteSpace(vehicleId))
+                        sameTurnRemovedVehicleIds.Add(vehicleId);
+
                     index++;
                 }
             }
+
+            resolvableVehicleIds.ExceptWith(sameTurnRemovedVehicleIds);
 
             if (doc.RootElement.TryGetProperty("activeVehicleChange", out var activeVehicle) &&
                 activeVehicle.ValueKind == JsonValueKind.String)
             {
                 var vehicleId = activeVehicle.GetString() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(vehicleId) && sameTurnRemovedVehicleIds.Contains(vehicleId))
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/misc/vehicles.json.activeVehicleChange",
+                        IssueSeverity.Error,
+                        $"activeVehicleChange не может ссылаться на vehicleId '{vehicleId}', который удаляется в этом же accepted turn",
+                        code: "vehicle_active_change_removed_same_turn",
+                        section: "Vehicles",
+                        expected: "null or surviving vehicleId after same-turn removeVehicles processing",
+                        actual: vehicleId,
+                        repairHint: "Если транспорт удаляется в removeVehicles, не назначай его active в этом же ходе. Для destroyed/sold active vehicle сбрось activeVehicleChange в null или выбери другой surviving vehicleId."));
+                }
+                else
                 if (!string.IsNullOrWhiteSpace(vehicleId) && !resolvableVehicleIds.Contains(vehicleId))
                 {
                     issues.Add(new ValidationIssue(
@@ -5332,89 +5855,21 @@ public class ValidationService
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var json in new[]
-                 {
-                     await ReadPreTurnTrackedFileAsync("game_state/inventory/items.json"),
-                     await _fs.ReadFileAsync("game_state/inventory/items.json")
-                 })
-        {
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
-
-            try
-            {
-                using var doc = JsonDocument.Parse(json);
-                if (!doc.RootElement.TryGetProperty("items", out var items) &&
-                    !doc.RootElement.TryGetProperty("UpdateInventory", out items))
-                {
-                    continue;
-                }
-
-                if (items.ValueKind != JsonValueKind.Array)
-                    continue;
-
-                foreach (var item in items.EnumerateArray())
-                {
-                    foreach (var key in new[] { "existedId", "itemId", "id" })
-                    {
-                        var value = GetFirstNonEmptyString(item, key);
-                        if (!string.IsNullOrWhiteSpace(value))
-                            ids.Add(value);
-                    }
-
-                    var name = GetFirstNonEmptyString(item, "name", "itemName");
-                    if (!string.IsNullOrWhiteSpace(name))
-                        names.Add(name);
-                }
-            }
-            catch
-            {
-                // ignored
-            }
-        }
+        var preTurnInventoryItemIds = await ReadPreTurnInventoryItemIdsAsync();
+        RegisterKnownInventoryItemReferencesFromJson(
+            await ReadPreTurnTrackedFileAsync("game_state/inventory/items.json"),
+            ids,
+            names,
+            knownExistingItemIds: null,
+            currentStateNewItemsOnly: false);
+        RegisterKnownInventoryItemReferencesFromJson(
+            await _fs.ReadFileAsync("game_state/inventory/items.json"),
+            ids,
+            names,
+            preTurnInventoryItemIds,
+            currentStateNewItemsOnly: true);
 
         return (ids, names);
-    }
-
-    private async Task<HashSet<string>> ReadKnownQuestIdsAsync()
-    {
-        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var path in new[]
-                 {
-                     "game_state/quests/regular_quests.json",
-                     "game_state/quests/soul_quests.json",
-                     "game_state/quests/quest_history.json"
-                 })
-        {
-            var json = await _fs.ReadFileAsync(path);
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
-
-            try
-            {
-                using var doc = JsonDocument.Parse(json);
-                foreach (var propName in new[] { "quests", "UpdateQuests", "UpdateSoulQuests", "questHistory", "questLog" })
-                {
-                    if (!doc.RootElement.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
-                        continue;
-
-                    foreach (var item in arr.EnumerateArray())
-                    {
-                        var questId = GetFirstNonEmptyString(item, "questId");
-                        if (!string.IsNullOrWhiteSpace(questId))
-                            ids.Add(questId);
-                    }
-                }
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        return ids;
     }
 
     private async Task ValidateInventoryItemSidecarCrossReferencesAsync(
@@ -5483,7 +5938,18 @@ public class ValidationService
         List<ValidationIssue> issues,
         (HashSet<string> Ids, HashSet<string> Names) inventoryRefs)
     {
+        var preTurnInventoryItemIds = await ReadPreTurnInventoryItemIdsAsync();
+        var preTurnInventoryItemFateCards = await ReadPreTurnInventoryItemFateCardsAsync();
+        var preTurnInventoryItemBondLevels = await ReadPreTurnInventoryItemBondLevelsAsync();
         var inventoryItemFateCards = await ReadCurrentInventoryItemFateCardsAsync();
+        var inventoryItemBondLevels = await ReadCurrentInventoryItemBondLevelsAsync();
+        var inventoryFullObjectCoverage = await ReadCurrentInventoryFullObjectCoverageByItemIdAsync();
+        var reportedItemBondLevels = await ReadCurrentItemBondLevelChangesAsync();
+        var reportedFateCardUnlocks = await ReadCurrentItemFateCardUnlockEventsAsync();
+        var preTurnItemBondStateBondLevels = await ReadPreTurnItemBondStateBondLevelsAsync();
+        var currentItemBondStateBondLevels = await ReadCurrentItemBondStateBondLevelsAsync();
+        var preTurnItemBondStateFateCards = await ReadPreTurnItemBondStateFateCardsAsync();
+        var currentItemBondStateFateCards = await ReadCurrentItemBondStateFateCardsAsync();
         foreach (var (path, collections, section, message, code, repairHint) in new[]
                  {
                      ("game_state/inventory/item_text_updates.json", new[] { "entries", "updateItemTextContents" }, "Inventory", "updateItemTextContents ссылается на предмет, которого нет в inventory/items.json", "inventory_text_update_unknown_item_reference", "Сошлись на существующий itemId/itemName из inventory/items.json. Не создавай orphan text update без соответствующего предмета."),
@@ -5544,6 +6010,36 @@ public class ValidationService
                                     actual: "matching unlocked fateCard not found in current item state",
                                     repairHint: "Для fate card unlock передай не только event в itemFateCardUnlocks, но и обновлённый полный item object в UpdateInventory с уже unlocked card."));
                             }
+
+                            if (!string.IsNullOrWhiteSpace(itemId) &&
+                                !string.IsNullOrWhiteSpace(cardId) &&
+                                preTurnInventoryItemFateCards.TryGetValue(itemId, out var preTurnUnlockedCards) &&
+                                preTurnUnlockedCards.Contains(cardId))
+                            {
+                                issues.Add(new ValidationIssue(
+                                    $"{path}.{collection}[{index}]",
+                                    IssueSeverity.Error,
+                                    "itemFateCardUnlocks не должен повторно сигналить уже открытую Fate Card",
+                                    code: "item_fate_card_unlock_already_unlocked_pre_turn",
+                                    section: "Inventory",
+                                    expected: "new unlock relative to pre-turn item state",
+                                    actual: $"item {itemId} already had unlocked fateCard {cardId}",
+                                    repairHint: "Сообщай в itemFateCardUnlocks только новые Fate Card unlock события текущего хода. Если карта уже была открыта до хода, обновляй только item state без повторного unlock event."));
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(itemId) &&
+                                (!inventoryFullObjectCoverage.TryGetValue(itemId, out var hasFullObjectCoverage) || !hasFullObjectCoverage))
+                            {
+                                issues.Add(new ValidationIssue(
+                                    $"{path}.{collection}[{index}]",
+                                    IssueSeverity.Error,
+                                    "itemFateCardUnlocks не должен сопровождаться только partial UpdateInventory patch",
+                                    code: "item_fate_card_unlock_requires_full_item_object",
+                                    section: "Inventory",
+                                    expected: $"Full updated Item Object for item {itemId} in game_state/inventory/items.json",
+                                    actual: "matching full item object not found in current inventory payload",
+                                    repairHint: "При Fate Card unlock передай полное обновлённое состояние предмета в UpdateInventory/items.json. Partial delta existing item с одним fateCards fragment здесь недостаточен."));
+                            }
                         }
 
                         index++;
@@ -5555,12 +6051,313 @@ public class ValidationService
                 // ignored
             }
         }
+
+        foreach (var (itemId, currentBondLevel) in inventoryItemBondLevels)
+        {
+            if (!preTurnInventoryItemIds.Contains(itemId) ||
+                !preTurnInventoryItemBondLevels.TryGetValue(itemId, out var preTurnBondLevel) ||
+                preTurnBondLevel == currentBondLevel)
+            {
+                continue;
+            }
+
+            if (reportedItemBondLevels.TryGetValue(itemId, out var reportedBondLevel) &&
+                reportedBondLevel == currentBondLevel)
+            {
+                continue;
+            }
+
+            issues.Add(new ValidationIssue(
+                $"game_state/inventory/items.json.item:{itemId}.ownerBondLevelCurrent",
+                IssueSeverity.Error,
+                "Изменение ownerBondLevelCurrent у существующего предмета должно сопровождаться itemBondLevelChanges",
+                code: "inventory_bond_level_change_missing_sidecar_event",
+                section: "Inventory",
+                expected: $"itemBondLevelChanges entry for item {itemId} with newBondLevel {currentBondLevel}",
+                actual: $"existing item bond changed from {preTurnBondLevel} to {currentBondLevel} without matching itemBondLevelChanges",
+                repairHint: "Если у уже существующего Rare+ предмета изменился ownerBondLevelCurrent, оставь resulting item state в UpdateInventory и отдельно добавь itemBondLevelChanges с тем же newBondLevel."));
+        }
+
+        foreach (var (itemId, currentUnlockedCards) in inventoryItemFateCards)
+        {
+            if (!preTurnInventoryItemIds.Contains(itemId))
+                continue;
+
+            var preTurnUnlockedCards = preTurnInventoryItemFateCards.TryGetValue(itemId, out var existingUnlockedCards)
+                ? existingUnlockedCards
+                : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var reportedUnlocks = reportedFateCardUnlocks.TryGetValue(itemId, out var currentReportedUnlocks)
+                ? currentReportedUnlocks
+                : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var cardId in currentUnlockedCards)
+            {
+                if (preTurnUnlockedCards.Contains(cardId) || reportedUnlocks.Contains(cardId))
+                    continue;
+
+                issues.Add(new ValidationIssue(
+                    $"game_state/inventory/items.json.item:{itemId}.fateCards",
+                    IssueSeverity.Error,
+                    "Новый unlocked Fate Card у существующего предмета должен сопровождаться itemFateCardUnlocks",
+                    code: "inventory_fate_card_unlock_missing_sidecar_event",
+                    section: "Inventory",
+                    expected: $"itemFateCardUnlocks entry for item {itemId} and card {cardId}",
+                    actual: $"existing item state contains newly unlocked fateCard {cardId} without matching itemFateCardUnlocks",
+                    repairHint: "Если у уже существующего предмета в этом ходе unlock'нулась Fate Card, сохрани updated full item state в UpdateInventory и отдельно добавь event в itemFateCardUnlocks."));
+            }
+        }
+
+        foreach (var (itemId, currentBondLevel) in currentItemBondStateBondLevels)
+        {
+            if (!preTurnItemBondStateBondLevels.TryGetValue(itemId, out var preTurnBondLevel) ||
+                preTurnBondLevel == currentBondLevel)
+            {
+                continue;
+            }
+
+            if (reportedItemBondLevels.TryGetValue(itemId, out var reportedBondLevel) &&
+                reportedBondLevel == currentBondLevel)
+            {
+                continue;
+            }
+
+            var inventoryStateAlreadyCarriesThisChange =
+                preTurnInventoryItemBondLevels.TryGetValue(itemId, out var preTurnInventoryBondLevel) &&
+                inventoryItemBondLevels.TryGetValue(itemId, out var currentInventoryBondLevel) &&
+                preTurnInventoryBondLevel != currentInventoryBondLevel;
+            if (inventoryStateAlreadyCarriesThisChange)
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"game_state/inventory/item_bonds.json.entries.item:{itemId}.ownerBondLevelCurrent",
+                IssueSeverity.Error,
+                "Изменение ownerBondLevelCurrent в canonical item_bonds entry должно сопровождаться itemBondLevelChanges",
+                code: "item_bond_state_change_missing_sidecar_event",
+                section: "Inventory",
+                expected: $"itemBondLevelChanges entry for item {itemId} with newBondLevel {currentBondLevel}",
+                actual: $"item_bonds entry changed from {preTurnBondLevel} to {currentBondLevel} without matching itemBondLevelChanges",
+                repairHint: "Если меняешь ownerBondLevelCurrent у уже существующего item_bonds entry, передай matching event в itemBondLevelChanges. Не мутируй canonical item_bonds state молча."));
+        }
+
+        foreach (var (itemId, currentUnlockedCards) in currentItemBondStateFateCards)
+        {
+            if (!preTurnItemBondStateFateCards.TryGetValue(itemId, out var preTurnUnlockedCards))
+                continue;
+
+            var reportedUnlocks = reportedFateCardUnlocks.TryGetValue(itemId, out var currentReportedUnlocks)
+                ? currentReportedUnlocks
+                : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var cardId in currentUnlockedCards)
+            {
+                if (preTurnUnlockedCards.Contains(cardId) || reportedUnlocks.Contains(cardId))
+                    continue;
+
+                var inventoryStateAlreadyCarriesThisUnlock =
+                    inventoryItemFateCards.TryGetValue(itemId, out var currentInventoryUnlockedCards) &&
+                    currentInventoryUnlockedCards.Contains(cardId) &&
+                    (!preTurnInventoryItemFateCards.TryGetValue(itemId, out var preTurnInventoryUnlockedCards) ||
+                     !preTurnInventoryUnlockedCards.Contains(cardId));
+                if (inventoryStateAlreadyCarriesThisUnlock)
+                    continue;
+
+                issues.Add(new ValidationIssue(
+                    $"game_state/inventory/item_bonds.json.entries.item:{itemId}.fateCards",
+                    IssueSeverity.Error,
+                    "Новый unlocked Fate Card в canonical item_bonds entry должен сопровождаться itemFateCardUnlocks",
+                    code: "item_bond_state_fate_card_unlock_missing_event",
+                    section: "Inventory",
+                    expected: $"itemFateCardUnlocks entry for item {itemId} and card {cardId}",
+                    actual: $"item_bonds entry contains newly unlocked fateCard {cardId} without matching itemFateCardUnlocks",
+                    repairHint: "Если в canonical item_bonds entry появляется новая Fate Card, передай matching unlock event в itemFateCardUnlocks. Не мутируй Fate Card unlock state молча."));
+            }
+        }
+    }
+
+    private async Task<HashSet<string>> ReadPreTurnInventoryItemIdsAsync()
+    {
+        var json = await ReadPreTurnTrackedFileAsync("game_state/inventory/items.json");
+        return ReadInventoryItemIdsFromJson(json);
+    }
+
+    private HashSet<string> ReadPreTurnInventoryItemIdsSync()
+    {
+        var json = ReadPreTurnTrackedFileSync("game_state/inventory/items.json");
+        return ReadInventoryItemIdsFromJson(json);
     }
 
     private async Task<Dictionary<string, HashSet<string>>> ReadCurrentInventoryItemFateCardsAsync()
     {
-        var result = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
         var json = await _fs.ReadFileAsync("game_state/inventory/items.json");
+        var preTurnInventoryItemIds = await ReadPreTurnInventoryItemIdsAsync();
+        return ReadInventoryItemFateCardsFromJson(json, preTurnInventoryItemIds, currentStateNewItemsOnly: true);
+    }
+
+    private async Task<Dictionary<string, HashSet<string>>> ReadPreTurnInventoryItemFateCardsAsync()
+    {
+        var json = await ReadPreTurnTrackedFileAsync("game_state/inventory/items.json");
+        return ReadInventoryItemFateCardsFromJson(json, knownExistingItemIds: null, currentStateNewItemsOnly: false);
+    }
+
+    private async Task<Dictionary<string, int>> ReadCurrentInventoryItemBondLevelsAsync()
+    {
+        var json = await _fs.ReadFileAsync("game_state/inventory/items.json");
+        var preTurnInventoryItemIds = await ReadPreTurnInventoryItemIdsAsync();
+        return ReadInventoryItemBondLevelsFromJson(json, preTurnInventoryItemIds, currentStateNewItemsOnly: true);
+    }
+
+    private async Task<Dictionary<string, int>> ReadPreTurnInventoryItemBondLevelsAsync()
+    {
+        var json = await ReadPreTurnTrackedFileAsync("game_state/inventory/items.json");
+        return ReadInventoryItemBondLevelsFromJson(json, knownExistingItemIds: null, currentStateNewItemsOnly: false);
+    }
+
+    private async Task<Dictionary<string, int>> ReadCurrentItemBondLevelChangesAsync()
+    {
+        var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var json = await _fs.ReadFileAsync("game_state/inventory/item_bonds.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("itemBondLevelChanges", out var changes) || changes.ValueKind != JsonValueKind.Array)
+                return result;
+
+            foreach (var item in changes.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var itemId = GetFirstNonEmptyString(item, "itemId");
+                if (string.IsNullOrWhiteSpace(itemId) || !TryReadInt(item, "newBondLevel", out var bondLevel))
+                    continue;
+
+                result[itemId] = bondLevel;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return result;
+    }
+
+    private async Task<Dictionary<string, int>> ReadCurrentItemBondStateBondLevelsAsync()
+    {
+        var json = await _fs.ReadFileAsync("game_state/inventory/item_bonds.json");
+        return ReadItemBondStateBondLevelsFromJson(json);
+    }
+
+    private async Task<Dictionary<string, int>> ReadPreTurnItemBondStateBondLevelsAsync()
+    {
+        var json = await ReadPreTurnTrackedFileAsync("game_state/inventory/item_bonds.json");
+        return ReadItemBondStateBondLevelsFromJson(json);
+    }
+
+    private async Task<Dictionary<string, HashSet<string>>> ReadCurrentItemFateCardUnlockEventsAsync()
+    {
+        var result = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+        var json = await _fs.ReadFileAsync("game_state/inventory/item_bonds.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("itemFateCardUnlocks", out var unlocks) || unlocks.ValueKind != JsonValueKind.Array)
+                return result;
+
+            foreach (var item in unlocks.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var itemId = GetFirstNonEmptyString(item, "itemId");
+                var cardId = GetFirstNonEmptyString(item, "cardId");
+                if (string.IsNullOrWhiteSpace(itemId) || string.IsNullOrWhiteSpace(cardId))
+                    continue;
+
+                if (!result.TryGetValue(itemId, out var cardIds))
+                {
+                    cardIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    result[itemId] = cardIds;
+                }
+
+                cardIds.Add(cardId);
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return result;
+    }
+
+    private async Task<Dictionary<string, HashSet<string>>> ReadCurrentItemBondStateFateCardsAsync()
+    {
+        var json = await _fs.ReadFileAsync("game_state/inventory/item_bonds.json");
+        return ReadItemBondStateFateCardsFromJson(json);
+    }
+
+    private async Task<Dictionary<string, HashSet<string>>> ReadPreTurnItemBondStateFateCardsAsync()
+    {
+        var json = await ReadPreTurnTrackedFileAsync("game_state/inventory/item_bonds.json");
+        return ReadItemBondStateFateCardsFromJson(json);
+    }
+
+    private async Task<Dictionary<string, bool>> ReadCurrentInventoryFullObjectCoverageByItemIdAsync()
+    {
+        var result = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+        var json = await _fs.ReadFileAsync("game_state/inventory/items.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        var preTurnInventoryItemIds = await ReadPreTurnInventoryItemIdsAsync();
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("items", out var items) &&
+                !doc.RootElement.TryGetProperty("UpdateInventory", out items))
+            {
+                return result;
+            }
+
+            if (items.ValueKind != JsonValueKind.Array)
+                return result;
+
+            foreach (var item in items.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var itemId = GetInventoryReferenceCandidateId(item, currentStateNewItemsOnly: true);
+                if (string.IsNullOrWhiteSpace(itemId))
+                    continue;
+
+                if (!ShouldAcceptInventoryReferenceCandidate(item, preTurnInventoryItemIds, currentStateNewItemsOnly: true))
+                    continue;
+
+                var isFullObject = IsLikelyFullInventoryItemObject(item);
+                if (!result.TryGetValue(itemId, out var currentCoverage) || (!currentCoverage && isFullObject))
+                    result[itemId] = isFullObject;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return result;
+    }
+
+    private static HashSet<string> ReadInventoryItemIdsFromJson(string? json)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         if (string.IsNullOrWhiteSpace(json))
             return result;
 
@@ -5579,8 +6376,168 @@ public class ValidationService
             foreach (var item in items.EnumerateArray())
             {
                 var itemId = GetFirstNonEmptyString(item, "existedId", "itemId", "id");
+                if (!string.IsNullOrWhiteSpace(itemId))
+                    result.Add(itemId);
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, int> ReadInventoryItemBondLevelsFromJson(
+        string? json,
+        HashSet<string>? knownExistingItemIds,
+        bool currentStateNewItemsOnly)
+    {
+        var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("items", out var items) &&
+                !doc.RootElement.TryGetProperty("UpdateInventory", out items))
+            {
+                return result;
+            }
+
+            if (items.ValueKind != JsonValueKind.Array)
+                return result;
+
+            foreach (var item in items.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var itemId = GetInventoryReferenceCandidateId(item, currentStateNewItemsOnly);
+                if (string.IsNullOrWhiteSpace(itemId) || !TryReadInt(item, "ownerBondLevelCurrent", out var bondLevel))
+                    continue;
+
+                if (!ShouldAcceptInventoryReferenceCandidate(item, knownExistingItemIds, currentStateNewItemsOnly))
+                    continue;
+
+                result[itemId] = bondLevel;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, HashSet<string>> ReadInventoryItemFateCardsFromJson(
+        string? json,
+        HashSet<string>? knownExistingItemIds,
+        bool currentStateNewItemsOnly)
+    {
+        var result = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("items", out var items) &&
+                !doc.RootElement.TryGetProperty("UpdateInventory", out items))
+            {
+                return result;
+            }
+
+            if (items.ValueKind != JsonValueKind.Array)
+                return result;
+
+            foreach (var item in items.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var itemId = GetInventoryReferenceCandidateId(item, currentStateNewItemsOnly);
                 if (string.IsNullOrWhiteSpace(itemId) ||
                     !item.TryGetProperty("fateCards", out var fateCards) ||
+                    fateCards.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                if (!ShouldAcceptInventoryReferenceCandidate(item, knownExistingItemIds, currentStateNewItemsOnly))
+                    continue;
+
+                if (!result.TryGetValue(itemId, out var cardIds))
+                {
+                    cardIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    result[itemId] = cardIds;
+                }
+
+                foreach (var fateCard in fateCards.EnumerateArray())
+                {
+                    var cardId = GetFirstNonEmptyString(fateCard, "cardId");
+                    var isUnlocked = fateCard.TryGetProperty("isUnlocked", out var isUnlockedNode) && isUnlockedNode.ValueKind == JsonValueKind.True;
+                    if (!string.IsNullOrWhiteSpace(cardId) && isUnlocked)
+                        cardIds.Add(cardId);
+                }
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, int> ReadItemBondStateBondLevelsFromJson(string? json)
+    {
+        var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("entries", out var entries) || entries.ValueKind != JsonValueKind.Array)
+                return result;
+
+            foreach (var entry in entries.EnumerateArray())
+            {
+                var itemId = GetFirstNonEmptyString(entry, "itemId", "existedId", "id");
+                if (string.IsNullOrWhiteSpace(itemId) || !TryReadInt(entry, "ownerBondLevelCurrent", out var bondLevel))
+                    continue;
+
+                result[itemId] = bondLevel;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, HashSet<string>> ReadItemBondStateFateCardsFromJson(string? json)
+    {
+        var result = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(json))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("entries", out var entries) || entries.ValueKind != JsonValueKind.Array)
+                return result;
+
+            foreach (var entry in entries.EnumerateArray())
+            {
+                var itemId = GetFirstNonEmptyString(entry, "itemId", "existedId", "id");
+                if (string.IsNullOrWhiteSpace(itemId) ||
+                    !entry.TryGetProperty("fateCards", out var fateCards) ||
                     fateCards.ValueKind != JsonValueKind.Array)
                 {
                     continue;
@@ -5647,8 +6604,7 @@ public class ValidationService
 
         foreach (var json in new[]
                  {
-                     await ReadPreTurnTrackedFileAsync("game_state/npcs/npc_core.json"),
-                     await _fs.ReadFileAsync("game_state/npcs/npc_core.json")
+                     await ReadPreTurnTrackedFileAsync("game_state/npcs/npc_core.json")
                  })
         {
             if (string.IsNullOrWhiteSpace(json))
@@ -5692,8 +6648,7 @@ public class ValidationService
 
         foreach (var json in new[]
                  {
-                     await ReadPreTurnTrackedFileAsync("game_state/npcs/npc_core.json"),
-                     await _fs.ReadFileAsync("game_state/npcs/npc_core.json")
+                     await ReadPreTurnTrackedFileAsync("game_state/npcs/npc_core.json")
                  })
         {
             if (string.IsNullOrWhiteSpace(json))
@@ -5767,8 +6722,7 @@ public class ValidationService
 
         foreach (var json in new[]
                  {
-                     await ReadPreTurnTrackedFileAsync("game_state/npcs/npc_core.json"),
-                     await _fs.ReadFileAsync("game_state/npcs/npc_core.json")
+                     await ReadPreTurnTrackedFileAsync("game_state/npcs/npc_core.json")
                  })
         {
             if (string.IsNullOrWhiteSpace(json))
@@ -5944,8 +6898,7 @@ public class ValidationService
 
     private async Task ValidateNpcQuestCrossReferencesAsync(
         List<ValidationIssue> issues,
-        (HashSet<string> Ids, HashSet<string> Names) knownNpcReferences,
-        HashSet<string> knownQuestIds)
+        (HashSet<string> Ids, HashSet<string> Names) knownNpcReferences)
     {
         var json = await _fs.ReadFileAsync("game_state/npcs/npc_goals.json");
         if (string.IsNullOrWhiteSpace(json))
@@ -5979,19 +6932,28 @@ public class ValidationService
     private async Task<HashSet<string>> ReadKnownGuardianIdsAsync()
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var json in new[]
-                 {
-                     await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json"),
-                     await _fs.ReadFileAsync("game_state/meta/guardians.json")
-                 })
-        {
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
 
+        var preTurnJson = await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json");
+        if (!string.IsNullOrWhiteSpace(preTurnJson))
+        {
             try
             {
-                using var doc = JsonDocument.Parse(json);
-                CollectGuardianIdsFromStateRoot(doc.RootElement, ids);
+                using var doc = JsonDocument.Parse(preTurnJson);
+                CollectGuardianIdsFromStateRoot(doc.RootElement, ids, includeCommandSurfaces: false);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        var currentJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (!string.IsNullOrWhiteSpace(currentJson))
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(currentJson);
+                CollectCreatedGuardianIdsFromStateRoot(doc.RootElement, ids);
             }
             catch
             {
@@ -6006,19 +6968,28 @@ public class ValidationService
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var json in new[]
-                 {
-                     await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json"),
-                     await _fs.ReadFileAsync("game_state/meta/guardians.json")
-                 })
-        {
-            if (string.IsNullOrWhiteSpace(json))
-                continue;
 
+        var preTurnJson = await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json");
+        if (!string.IsNullOrWhiteSpace(preTurnJson))
+        {
             try
             {
-                using var doc = JsonDocument.Parse(json);
-                CollectGuardianReferencesFromStateRoot(doc.RootElement, ids, names);
+                using var doc = JsonDocument.Parse(preTurnJson);
+                CollectGuardianReferencesFromStateRoot(doc.RootElement, ids, names, includeCommandSurfaces: false);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        var currentJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (!string.IsNullOrWhiteSpace(currentJson))
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(currentJson);
+                CollectCreatedGuardianReferencesFromStateRoot(doc.RootElement, ids, names);
             }
             catch
             {
@@ -6080,7 +7051,7 @@ public class ValidationService
         }
     }
 
-    private static void CollectGuardianReferencesFromStateRoot(JsonElement root, HashSet<string> ids, HashSet<string> names)
+    private static void CollectGuardianReferencesFromStateRoot(JsonElement root, HashSet<string> ids, HashSet<string> names, bool includeCommandSurfaces = true)
     {
         if (root.TryGetProperty("guardians", out var guardians) && guardians.ValueKind == JsonValueKind.Array)
         {
@@ -6091,7 +7062,9 @@ public class ValidationService
         if (root.TryGetProperty("activeGuardian", out var activeGuardian) && activeGuardian.ValueKind == JsonValueKind.Object)
             RegisterGuardianReference(activeGuardian, ids, names);
 
-        if (root.TryGetProperty("UpdateGuardians", out var updates) && updates.ValueKind == JsonValueKind.Array)
+        if (includeCommandSurfaces &&
+            root.TryGetProperty("UpdateGuardians", out var updates) &&
+            updates.ValueKind == JsonValueKind.Array)
         {
             foreach (var command in updates.EnumerateArray())
             {
@@ -6122,9 +7095,57 @@ public class ValidationService
             names.Add(guardianName);
     }
 
-    private static void CollectCodexEntryIdsFromRoot(JsonElement root, HashSet<string> ids)
+    private static void CollectCreatedGuardianIdsFromStateRoot(JsonElement root, HashSet<string> ids)
     {
-        if (root.TryGetProperty("entries", out var entries) && entries.ValueKind == JsonValueKind.Array)
+        if (!root.TryGetProperty("UpdateGuardians", out var updates) || updates.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var command in updates.EnumerateArray())
+        {
+            if (command.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var commandName = GetFirstNonEmptyString(command, "command");
+            if (!string.Equals(commandName, "create", StringComparison.OrdinalIgnoreCase) ||
+                !command.TryGetProperty("data", out var data) ||
+                data.ValueKind != JsonValueKind.Object)
+            {
+                continue;
+            }
+
+            var guardianId = GetFirstNonEmptyString(data, "guardianId", "id");
+            if (!string.IsNullOrWhiteSpace(guardianId))
+                ids.Add(guardianId);
+        }
+    }
+
+    private static void CollectCreatedGuardianReferencesFromStateRoot(JsonElement root, HashSet<string> ids, HashSet<string> names)
+    {
+        if (!root.TryGetProperty("UpdateGuardians", out var updates) || updates.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var command in updates.EnumerateArray())
+        {
+            if (command.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var commandName = GetFirstNonEmptyString(command, "command");
+            if (!string.Equals(commandName, "create", StringComparison.OrdinalIgnoreCase) ||
+                !command.TryGetProperty("data", out var data) ||
+                data.ValueKind != JsonValueKind.Object)
+            {
+                continue;
+            }
+
+            RegisterGuardianReference(data, ids, names);
+        }
+    }
+
+    private static void CollectCodexEntryIdsFromRoot(JsonElement root, HashSet<string> ids, bool includeStoredEntries)
+    {
+        if (includeStoredEntries &&
+            root.TryGetProperty("entries", out var entries) &&
+            entries.ValueKind == JsonValueKind.Array)
         {
             foreach (var entry in entries.EnumerateArray())
             {
@@ -6141,9 +7162,11 @@ public class ValidationService
                 if (item.ValueKind != JsonValueKind.Object)
                     continue;
 
-                var commandEntryId = GetFirstNonEmptyString(item, "entryId");
-                if (!string.IsNullOrWhiteSpace(commandEntryId))
-                    ids.Add(commandEntryId);
+                var command = GetFirstNonEmptyString(item, "command");
+                var isSameTurnAdd = string.Equals(command, "add", StringComparison.OrdinalIgnoreCase);
+
+                if (!isSameTurnAdd)
+                    continue;
 
                 if (item.TryGetProperty("entry", out var entry) && entry.ValueKind == JsonValueKind.Object)
                 {
@@ -6190,7 +7213,12 @@ public class ValidationService
                     issues.Add(new ValidationIssue(
                         $"game_state/quests/soul_quests.json.{questCollectionName}[{index}].guardianId",
                         IssueSeverity.Error,
-                        $"Soul Quest ссылается на неизвестного guardianId '{guardianId}'"));
+                        $"Soul Quest ссылается на неизвестного guardianId '{guardianId}'",
+                        code: "soul_quest_unknown_guardian_id",
+                        section: "CrossReferences",
+                        expected: "existing guardianId from canonical guardians state",
+                        actual: guardianId,
+                        repairHint: "Для Soul Quest используй существующий guardianId из canonical guardians state. Если Хранитель создаётся впервые, сначала сохрани его через UpdateGuardians.create, а затем ссылайся на его permanent guardianId."));
                 }
                 index++;
             }
@@ -6201,7 +7229,7 @@ public class ValidationService
         }
     }
 
-    private static IEnumerable<JsonElement> EnumerateLocationLikeObjects(JsonElement root)
+    private static IEnumerable<JsonElement> EnumerateLocationLikeObjects(JsonElement root, bool includeLocationUpdates = true)
     {
         if (root.ValueKind == JsonValueKind.Object &&
             root.TryGetProperty("currentLocationData", out var currentLocationData) &&
@@ -6222,11 +7250,13 @@ public class ValidationService
         if (root.TryGetProperty("worldMapUpdates", out var worldMapUpdates) &&
             worldMapUpdates.ValueKind == JsonValueKind.Object)
         {
-            foreach (var item in EnumerateLocationLikeObjects(worldMapUpdates))
+            foreach (var item in EnumerateLocationLikeObjects(worldMapUpdates, includeLocationUpdates))
                 yield return item;
         }
 
-        foreach (var propName in new[] { "newLocations", "locations", "locationUpdates" })
+        foreach (var propName in includeLocationUpdates
+                     ? new[] { "newLocations", "locations", "locationUpdates" }
+                     : new[] { "newLocations", "locations" })
         {
             if (!root.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
                 continue;
@@ -6244,6 +7274,14 @@ public class ValidationService
         var locationId = GetFirstNonEmptyString(location, "locationId");
         if (string.IsNullOrWhiteSpace(locationId))
             return;
+
+        var locationType = GetFirstNonEmptyString(location, "locationType");
+        if (!string.IsNullOrWhiteSpace(locationType))
+            index.LocationTypesByLocationId[locationId] = locationType;
+
+        var biome = GetFirstNonEmptyString(location, "biome");
+        if (!string.IsNullOrWhiteSpace(biome))
+            index.BiomesByLocationId[locationId] = biome;
 
         if (location.TryGetProperty("coordinates", out var coordinates) &&
             TryGetNormalizedLocationCoordinatesKey(coordinates, out var coordinateKey))
@@ -6267,6 +7305,17 @@ public class ValidationService
             }
         }
 
+        if (location.TryGetProperty("locationStorages", out var storages) &&
+            storages.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var storage in storages.EnumerateArray())
+            {
+                var storageId = GetFirstNonEmptyString(storage, "storageId");
+                if (!string.IsNullOrWhiteSpace(storageId))
+                    AddDictionarySetValue(index.StorageIdsByLocationId, locationId, storageId);
+            }
+        }
+
         if (location.TryGetProperty("activeThreats", out var activeThreats) &&
             activeThreats.ValueKind == JsonValueKind.Array)
         {
@@ -6274,7 +7323,14 @@ public class ValidationService
             {
                 var threatId = GetFirstNonEmptyString(threat, "threatId");
                 if (!string.IsNullOrWhiteSpace(threatId))
+                {
                     AddDictionarySetValue(index.ThreatIdsByLocationId, locationId, threatId);
+                    if (threat.TryGetProperty("currentActivity", out var currentActivity) &&
+                        currentActivity.ValueKind == JsonValueKind.Object)
+                    {
+                        AddDictionarySetValue(index.ThreatIdsWithCurrentActivityByLocationId, locationId, threatId);
+                    }
+                }
             }
         }
     }
@@ -6325,6 +7381,48 @@ public class ValidationService
         }
 
         values.Add(value);
+    }
+
+    private static void CollectFactionIdsFromStateRoot(JsonElement root, HashSet<string> ids, HashSet<string>? preTurnKnownIds)
+    {
+        if (preTurnKnownIds == null &&
+            root.TryGetProperty("factions", out var factions) &&
+            factions.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in factions.EnumerateArray())
+            {
+                var factionId = GetFirstNonEmptyString(item, "factionId");
+                if (!string.IsNullOrWhiteSpace(factionId))
+                    ids.Add(factionId);
+            }
+        }
+
+        if (!root.TryGetProperty("factionDataChanges", out var factionDataChanges) ||
+            factionDataChanges.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        foreach (var item in factionDataChanges.EnumerateArray())
+        {
+            if (item.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var factionId = GetFirstNonEmptyString(item, "factionId");
+            if (string.IsNullOrWhiteSpace(factionId))
+                continue;
+
+            var initialId = GetFirstNonEmptyString(item, "initialId");
+            var isNewFaction = item.TryGetProperty("isNewFaction", out var isNewFactionNode) &&
+                               isNewFactionNode.ValueKind == JsonValueKind.True;
+
+            if (preTurnKnownIds == null ||
+                preTurnKnownIds.Contains(factionId) ||
+                ((!string.IsNullOrWhiteSpace(initialId) || isNewFaction) && !preTurnKnownIds.Contains(factionId)))
+            {
+                ids.Add(factionId);
+            }
+        }
     }
 
     private static HashSet<string> FlattenCoordinateKeys(Dictionary<string, HashSet<string>> coordinateKeysByLocationId)
@@ -6391,7 +7489,12 @@ public class ValidationService
                 issues.Add(new ValidationIssue(
                     $"{context}.adjacencyMap[{index}].targetLocationId",
                     IssueSeverity.Error,
-                    $"adjacencyMap targetLocationId '{targetLocationId}' не найден среди известных локаций"));
+                    $"adjacencyMap targetLocationId '{targetLocationId}' не найден среди известных локаций",
+                    code: "world_map_adjacency_unknown_target",
+                    section: "WorldMap",
+                    expected: "existing locationId from canonical world state",
+                    actual: targetLocationId,
+                    repairHint: "Используй уже существующий canonical locationId из world state. Не адресуй adjacencyMap через временный или ещё не материализованный location target."));
             }
             index++;
         }
@@ -6559,6 +7662,151 @@ public class ValidationService
         var name = GetFirstNonEmptyString(item, "itemName", "name");
         if (!string.IsNullOrWhiteSpace(name))
             names.Add(name);
+    }
+
+    private static bool TryGetInventoryItemsArrayForKnownReferenceRead(JsonElement root, out JsonElement items, out bool fullObjectOnly)
+    {
+        if (root.TryGetProperty("items", out items))
+        {
+            fullObjectOnly = true;
+            return true;
+        }
+
+        if (root.TryGetProperty("UpdateInventory", out items))
+        {
+            fullObjectOnly = true;
+            return true;
+        }
+
+        fullObjectOnly = false;
+        return false;
+    }
+
+    private static bool ShouldAcceptInventoryReferenceCandidate(
+        JsonElement item,
+        HashSet<string>? knownExistingItemIds,
+        bool currentStateNewItemsOnly)
+    {
+        if (!currentStateNewItemsOnly)
+        {
+            var existedId = GetFirstNonEmptyString(item, "existedId");
+            return string.IsNullOrWhiteSpace(existedId) ||
+                   knownExistingItemIds == null ||
+                   knownExistingItemIds.Count == 0 ||
+                   knownExistingItemIds.Contains(existedId);
+        }
+
+        if (!item.TryGetProperty("itemId", out var itemIdNode) ||
+            itemIdNode.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(itemIdNode.GetString()))
+        {
+            return false;
+        }
+
+        var stableItemId = itemIdNode.GetString() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(stableItemId))
+            return false;
+
+        var existedIdForCurrentState = GetFirstNonEmptyString(item, "existedId");
+        if (!string.IsNullOrWhiteSpace(existedIdForCurrentState))
+            return false;
+
+        return knownExistingItemIds == null || !knownExistingItemIds.Contains(stableItemId);
+    }
+
+    private static string? GetInventoryReferenceCandidateId(JsonElement item, bool currentStateNewItemsOnly)
+    {
+        if (!currentStateNewItemsOnly)
+            return GetFirstNonEmptyString(item, "existedId", "itemId", "id");
+
+        return item.TryGetProperty("itemId", out var itemIdNode) &&
+               itemIdNode.ValueKind == JsonValueKind.String &&
+               !string.IsNullOrWhiteSpace(itemIdNode.GetString())
+            ? itemIdNode.GetString()
+            : null;
+    }
+
+    private static void RegisterKnownInventoryItemReferencesFromJson(
+        string? json,
+        HashSet<string> ids,
+        HashSet<string> names,
+        HashSet<string>? knownExistingItemIds,
+        bool currentStateNewItemsOnly)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!TryGetInventoryItemsArrayForKnownReferenceRead(doc.RootElement, out var items, out var fullObjectOnly) ||
+                items.ValueKind != JsonValueKind.Array)
+            {
+                return;
+            }
+
+            foreach (var item in items.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                if (fullObjectOnly && !IsLikelyFullInventoryItemObject(item))
+                    continue;
+
+                if (!ShouldAcceptInventoryReferenceCandidate(item, knownExistingItemIds, currentStateNewItemsOnly))
+                    continue;
+
+                RegisterInventoryReference(item, ids, names);
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    private static InventoryEquipProfile? TryResolveInventoryItemEquipProfileFromJson(
+        string? json,
+        string itemId,
+        HashSet<string>? knownExistingItemIds,
+        bool currentStateNewItemsOnly)
+    {
+        if (string.IsNullOrWhiteSpace(json) || string.IsNullOrWhiteSpace(itemId))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!TryGetInventoryItemsArrayForKnownReferenceRead(doc.RootElement, out var items, out var fullObjectOnly) ||
+                items.ValueKind != JsonValueKind.Array)
+            {
+                return null;
+            }
+
+            foreach (var currentItem in items.EnumerateArray())
+            {
+                if (currentItem.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var currentItemId = GetInventoryReferenceCandidateId(currentItem, currentStateNewItemsOnly);
+                if (!string.Equals(currentItemId, itemId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (fullObjectOnly && !IsLikelyFullInventoryItemObject(currentItem))
+                    continue;
+
+                if (!ShouldAcceptInventoryReferenceCandidate(currentItem, knownExistingItemIds, currentStateNewItemsOnly))
+                    continue;
+
+                return ReadInventoryEquipProfile(currentItem);
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return null;
     }
 
     private async Task ValidateLifeEvaluationRewardCycleAsync(List<ValidationIssue> issues)
@@ -8420,6 +9668,7 @@ public class ValidationService
         if (value.ValueKind != JsonValueKind.Array)
             return;
 
+        var preTurnInventoryItemIds = ReadPreTurnInventoryItemIdsSync();
         var index = 0;
         foreach (var item in value.EnumerateArray())
         {
@@ -8446,6 +9695,20 @@ public class ValidationService
                     issues,
                     requireStringExistedId: false);
                 continue;
+            }
+
+            if (preTurnInventoryItemIds.Count > 0 &&
+                !preTurnInventoryItemIds.Contains(existedId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.existedId",
+                    IssueSeverity.Error,
+                    "UpdateInventory ссылается на existing item, которого нет в pre-turn canonical inventory state",
+                    code: "inventory_existing_update_unknown_item",
+                    section: "Inventory",
+                    expected: "existing itemId/existedId from pre-turn inventory/items.json or null for a genuinely new item",
+                    actual: existedId,
+                    repairHint: "Для existing item используй реальный existedId из pre-turn inventory/items.json. Для genuinely new item передай full Item Object с existedId = null."));
             }
 
             if (IsLikelyFullInventoryItemObject(item))
@@ -8620,7 +9883,7 @@ public class ValidationService
                 section: "Inventory",
                 expected: string.Join(" | ", AllowedItemQualities),
                 actual: quality,
-                repairHint: "Используй для quality только canonical item rarity values из Block 10."));
+                repairHint: "Используй для quality только canonical item quality values из Block 10."));
         }
     }
 
@@ -8929,27 +10192,71 @@ public class ValidationService
         if (string.IsNullOrWhiteSpace(itemId))
             return null;
 
+        var preTurnInventoryItemIds = ReadPreTurnInventoryItemIdsSync();
+        var preTurnQuality = TryResolveInventoryItemQualityFromJson(
+            ReadPreTurnTrackedFileSync("game_state/inventory/items.json"),
+            itemId,
+            knownExistingItemIds: null,
+            currentStateNewItemsOnly: false);
+        if (!string.IsNullOrWhiteSpace(preTurnQuality) || preTurnInventoryItemIds.Contains(itemId))
+            return preTurnQuality;
+
         try
         {
             var path = _fs.ResolvePath("game_state/inventory/items.json");
             if (!File.Exists(path))
                 return null;
 
-            using var doc = JsonDocument.Parse(File.ReadAllText(path));
-            if (!doc.RootElement.TryGetProperty("items", out var items) &&
-                !doc.RootElement.TryGetProperty("UpdateInventory", out items))
+            var resolvedQuality = TryResolveInventoryItemQualityFromJson(
+                File.ReadAllText(path),
+                itemId,
+                preTurnInventoryItemIds,
+                currentStateNewItemsOnly: true);
+            if (!string.IsNullOrWhiteSpace(resolvedQuality))
+                return resolvedQuality;
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return null;
+    }
+
+    private string? TryResolveInventoryItemQualityFromJson(
+        string? json,
+        string itemId,
+        HashSet<string>? knownExistingItemIds,
+        bool currentStateNewItemsOnly)
+    {
+        if (string.IsNullOrWhiteSpace(json) || string.IsNullOrWhiteSpace(itemId))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!TryGetInventoryItemsArrayForKnownReferenceRead(doc.RootElement, out var items, out var fullObjectOnly) ||
+                items.ValueKind != JsonValueKind.Array)
             {
                 return null;
             }
 
-            if (items.ValueKind != JsonValueKind.Array)
-                return null;
-
             foreach (var currentItem in items.EnumerateArray())
             {
-                var currentItemId = GetFirstNonEmptyString(currentItem, "existedId", "itemId", "id");
-                if (string.Equals(currentItemId, itemId, StringComparison.OrdinalIgnoreCase))
-                    return GetFirstNonEmptyString(currentItem, "quality");
+                if (currentItem.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                if (fullObjectOnly && !IsLikelyFullInventoryItemObject(currentItem))
+                    continue;
+
+                var currentItemId = GetInventoryReferenceCandidateId(currentItem, currentStateNewItemsOnly);
+                if (!string.Equals(currentItemId, itemId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (!ShouldAcceptInventoryReferenceCandidate(currentItem, knownExistingItemIds, currentStateNewItemsOnly))
+                    continue;
+
+                return GetFirstNonEmptyString(currentItem, "quality");
             }
         }
         catch
@@ -8967,34 +10274,40 @@ public class ValidationService
         public bool? RequiresTwoHands { get; init; }
     }
 
+    private sealed class VehicleStateSnapshot
+    {
+        public string? Availability { get; init; }
+        public bool HasCurrentLocationNode { get; init; }
+        public bool CurrentLocationExplicitNull { get; init; }
+        public string? CurrentLocationId { get; init; }
+    }
+
     private InventoryEquipProfile? TryResolveCurrentInventoryItemEquipProfileSync(string? itemId)
     {
         if (string.IsNullOrWhiteSpace(itemId))
             return null;
 
+        var preTurnInventoryItemIds = ReadPreTurnInventoryItemIdsSync();
+        var preTurnProfile = TryResolveInventoryItemEquipProfileFromJson(
+            ReadPreTurnTrackedFileSync("game_state/inventory/items.json"),
+            itemId,
+            knownExistingItemIds: null,
+            currentStateNewItemsOnly: false);
+        if (preTurnProfile != null || preTurnInventoryItemIds.Contains(itemId))
+            return preTurnProfile;
+
         try
         {
             var path = _fs.ResolvePath("game_state/inventory/items.json");
-            if (!File.Exists(path))
-                return null;
-
-            using var doc = JsonDocument.Parse(File.ReadAllText(path));
-            if (!doc.RootElement.TryGetProperty("items", out var items) &&
-                !doc.RootElement.TryGetProperty("UpdateInventory", out items))
+            if (File.Exists(path))
             {
-                return null;
-            }
-
-            if (items.ValueKind != JsonValueKind.Array)
-                return null;
-
-            foreach (var currentItem in items.EnumerateArray())
-            {
-                var currentItemId = GetFirstNonEmptyString(currentItem, "existedId", "itemId", "id");
-                if (!string.Equals(currentItemId, itemId, StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                return ReadInventoryEquipProfile(currentItem);
+                var resolved = TryResolveInventoryItemEquipProfileFromJson(
+                    File.ReadAllText(path),
+                    itemId,
+                    preTurnInventoryItemIds,
+                    currentStateNewItemsOnly: true);
+                if (resolved != null)
+                    return resolved;
             }
         }
         catch
@@ -9398,18 +10711,6 @@ public class ValidationService
             return;
 
         var simulatedEquippedItems = TryResolvePreTurnPlayerEquippedItemsSync() ?? TryResolveCurrentPlayerEquippedItemsSync();
-        if (simulatedEquippedItems == null)
-        {
-            issues.Add(new ValidationIssue(
-                $"{contextPrefix}.equippedItems",
-                IssueSeverity.Error,
-                "equipmentChanges требует canonical equippedItems state для проверки slot occupancy и auto-unequip semantics",
-                code: "equipment_change_missing_equipped_items_state",
-                section: "Inventory",
-                expected: "valid equippedItems object in inventory/items.json",
-                actual: "missing or malformed equippedItems state",
-                repairHint: "Не отправляй equipmentChanges без canonical equippedItems state в inventory/items.json. Сначала восстанови/сохрани equippedItems, затем описывай equip/unequip delta."));
-        }
         var index = 0;
         foreach (var item in arr.EnumerateArray())
         {
@@ -9583,9 +10884,9 @@ public class ValidationService
                 "equipmentChanges.equip ссылается на itemId, которого нет в canonical inventory state",
                 code: "equipment_change_unknown_item_reference",
                 section: "Inventory",
-                expected: "existing itemId from inventory/items.json",
+                expected: "existing pre-turn itemId or same-turn newly created full item already present in current canonical inventory state",
                 actual: itemId,
-                repairHint: "Экипируй только предметы, которые реально существуют в canonical inventory/items.json к моменту применения equipmentChanges."));
+                repairHint: "Экипируй только предметы, которые реально существуют в pre-turn inventory/items.json, либо same-turn новый полный Item Object уже должен присутствовать в текущем canonical inventory state."));
             return false;
         }
 
@@ -10855,7 +12156,7 @@ public class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "UpdateSoulQuests", "quests" }, issues,
             ValidateWorldQuestCombatFactionContract);
         await ValidateFlexibleStateFile("game_state/quests/quest_history.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "questHistory", "questRewards", "questChains" }, issues,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "questHistory", "questRewards", "questChains", "questLog" }, issues,
             ValidateWorldQuestCombatFactionContract);
         await ValidateStrictTopLevelObjectFileAsync("game_state/quests/quest_history.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "questHistory", "questRewards", "questChains" }, issues);
@@ -10972,11 +12273,6 @@ public class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "otherPlayersInteractions"
-            }, issues, ValidateMetaMiscContract);
-        await ValidateFlexibleStateFile("game_state/misc/ui_elements.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "dialogueOptions", "image_prompt"
             }, issues, ValidateMetaMiscContract);
         await ValidateFlexibleStateFile("game_state/control/life_transitions.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -12956,6 +14252,8 @@ public class ValidationService
 
     private void ValidateInventoryItemBondsStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        var inventoryRefs = ReadKnownInventoryItemReferencesSync();
+
         if (root.TryGetProperty("itemBondLevelChanges", out var bondChanges))
         {
             RequireArrayOfObjects(bondChanges, $"{contextPrefix}.itemBondLevelChanges", issues);
@@ -12969,6 +14267,9 @@ public class ValidationService
                     RequireString(item, itemContext, issues, "itemName");
                     ValidateItemBondLevelField(item, itemContext, issues, "newBondLevel", required: true, allowNull: false);
                     RequireString(item, itemContext, issues, "changeReason");
+
+                    if (!InventoryReferenceExists(item, inventoryRefs))
+                        continue;
 
                     var itemQuality = TryResolveCurrentInventoryItemQualitySync(GetFirstNonEmptyString(item, "itemId"));
                     if (!string.IsNullOrWhiteSpace(itemQuality) && !IsRareOrHigherItemQuality(itemQuality))
@@ -13270,8 +14571,8 @@ public class ValidationService
         ValidateNpcIdentityArray(root, contextPrefix, issues, "NPCEffectChanges", "effectsApplied");
         ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCWoundChanges");
         ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, "NPCPersonalityTraitChanges");
-        ValidateNpcIdentityArray(root, contextPrefix, issues, "NPCActivityUpdates", "activityUpdate");
-        ValidateNpcIdentityArray(root, contextPrefix, issues, "completeNPCActivities", "activityName");
+        ValidateNpcActivityUpdates(root, contextPrefix, issues);
+        ValidateCompleteNpcActivities(root, contextPrefix, issues);
         ValidateNpcMaskChanges(root, contextPrefix, issues, "NPCMaskAdds", "mask");
         ValidateNpcMaskChanges(root, contextPrefix, issues, "NPCMaskUpdates", "maskUpdate");
         ValidateNpcIdentityArray(root, contextPrefix, issues, "NPCMaskRemovals", "maskId");
@@ -13284,11 +14585,30 @@ public class ValidationService
     {
         var tradeSignaturesByNpc = new Dictionary<string, (string Context, string? TradeStateSignature, string? TradeInventorySignature)>(StringComparer.OrdinalIgnoreCase);
         var sameTurnLocationInitialIds = CollectSameTurnLocationInitialIds(root);
+        var currentSceneAnchor = ReadCurrentSceneLocationAnchorSync();
+        var currentSceneLocationId = currentSceneAnchor.LocationId;
+        var currentSceneInitialId = currentSceneAnchor.InitialId;
+        var currentSceneMissingInitialAnchor = IsCurrentSceneNewLocationWithoutInitialIdSync();
 
         foreach (var sectionName in new[] { "NPCsInScene", "UpdateNPCs" })
         {
             if (!TryGetArray(root, sectionName, $"{contextPrefix}.{sectionName}", issues, out var arr))
                 continue;
+
+            if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
+                currentSceneMissingInitialAnchor &&
+                arr.GetArrayLength() > 0)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/world/current_location.json.currentLocationData.initialId",
+                    IssueSeverity.Error,
+                    "Same-turn новая currentLocationData с NPCsInScene должна явно задавать initialId для cross-reference linking",
+                    code: "current_location_new_scene_missing_initial_id_for_npc_scene",
+                    section: "Location",
+                    expected: "non-empty initialId when currentLocationData.locationId = null and NPCsInScene is present",
+                    actual: "missing",
+                    repairHint: "Если текущая сцена является genuinely new location и в ней есть NPCsInScene, добавь в currentLocationData непустой initialId и используй exact это значение в NPC.initialLocationId. Иначе вернись к known location через permanent locationId."));
+            }
 
             var index = 0;
             foreach (var item in arr.EnumerateArray())
@@ -13307,6 +14627,65 @@ public class ValidationService
 
                 var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
                 var initialLocationId = GetFirstNonEmptyString(item, "initialLocationId");
+                var currentLocationId = GetFirstNonEmptyString(item, "currentLocationId");
+                if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
+                    !string.IsNullOrWhiteSpace(currentSceneLocationId) &&
+                    string.IsNullOrWhiteSpace(currentLocationId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.currentLocationId",
+                        IssueSeverity.Error,
+                        "NPC из NPCsInScene для известной текущей локации должен явно нести currentLocationId",
+                        code: "npc_scene_missing_current_location_id",
+                        section: "NPCsInScene",
+                        expected: $"currentLocationId = {currentSceneLocationId}",
+                        actual: "missing",
+                        repairHint: "Если NPC реально присутствует в текущей сцене известной локации, передай его currentLocationId равным currentLocationData.locationId. Если NPC не в сцене, убери его из NPCsInScene."));
+                }
+                else if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
+                         !string.IsNullOrWhiteSpace(currentSceneLocationId) &&
+                         !string.IsNullOrWhiteSpace(currentLocationId) &&
+                         !string.Equals(currentLocationId, currentSceneLocationId, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.currentLocationId",
+                        IssueSeverity.Error,
+                        "NPC из NPCsInScene должен иметь currentLocationId, совпадающий с currentLocationData.locationId",
+                        code: "npc_scene_location_mismatch",
+                        section: "NPCsInScene",
+                        expected: $"currentLocationId = {currentSceneLocationId}",
+                        actual: currentLocationId,
+                        repairHint: "Если NPC действительно находится в текущей сцене, синхронизируй его currentLocationId с currentLocationData.locationId. Если он не в сцене, убери его из NPCsInScene."));
+                }
+                if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
+                    !string.IsNullOrWhiteSpace(currentSceneInitialId) &&
+                    string.IsNullOrWhiteSpace(initialLocationId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.initialLocationId",
+                        IssueSeverity.Error,
+                        "NPC из NPCsInScene для same-turn новой текущей локации должен ссылаться на exact initialLocationId этой сцены",
+                        code: "npc_scene_missing_initial_location_id",
+                        section: "NPCsInScene",
+                        expected: $"initialLocationId = {currentSceneInitialId}",
+                        actual: "missing",
+                        repairHint: "Если текущая сцена сама является same-turn новой локацией, для NPC из NPCsInScene передай exact currentLocationData.initialId в initialLocationId и оставь currentLocationId = null."));
+                }
+                else if (string.Equals(sectionName, "NPCsInScene", StringComparison.OrdinalIgnoreCase) &&
+                         !string.IsNullOrWhiteSpace(currentSceneInitialId) &&
+                         !string.IsNullOrWhiteSpace(initialLocationId) &&
+                         !string.Equals(initialLocationId, currentSceneInitialId, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.initialLocationId",
+                        IssueSeverity.Error,
+                        "NPC из NPCsInScene должен ссылаться именно на initialId текущей same-turn локации, а не на другую новую локацию",
+                        code: "npc_scene_initial_location_mismatch",
+                        section: "NPCsInScene",
+                        expected: $"initialLocationId = {currentSceneInitialId}",
+                        actual: initialLocationId,
+                        repairHint: "Если NPC находится в текущей same-turn новой сцене, скопируй exact currentLocationData.initialId. Не ссылай NPCsInScene на initialId другой новой локации."));
+                }
                 if (string.Equals(sectionName, "UpdateNPCs", StringComparison.OrdinalIgnoreCase) &&
                     !string.IsNullOrWhiteSpace(npcId) &&
                     item.TryGetProperty("inventory", out _))
@@ -13320,20 +14699,34 @@ public class ValidationService
                         repairHint: "Для existing NPC меняй инвентарь только через NPCInventoryAdds/Updates/Removals. inventory внутри UpdateNPCs допустим только при создании нового NPC."));
                 }
 
-                if (string.IsNullOrWhiteSpace(npcId) &&
-                    !string.IsNullOrWhiteSpace(initialLocationId) &&
+                if (!string.IsNullOrWhiteSpace(initialLocationId) &&
                     sameTurnLocationInitialIds.Count > 0 &&
                     !sameTurnLocationInitialIds.Contains(initialLocationId))
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.initialLocationId",
                         IssueSeverity.Error,
-                        "New NPC initialLocationId не совпадает ни с одной new location, созданной в этом же accepted turn",
+                        "NPC initialLocationId не совпадает ни с одной new location, созданной в этом же accepted turn",
                         code: "npc_initial_location_same_turn_target_unknown",
                         section: "NPC",
                         expected: "initialLocationId from same-turn currentLocationData/newLocations.initialId",
                         actual: initialLocationId,
-                        repairHint: "Если NPC появляется в новой same-turn location, скопируй exact initialId этой локации в NPC.initialLocationId. Иначе используй currentLocationId существующей локации."));
+                        repairHint: "Если NPC должен оказаться в новой same-turn location, скопируй exact initialId этой локации в NPC.initialLocationId. Иначе используй currentLocationId существующей локации."));
+                }
+
+                if (!string.IsNullOrWhiteSpace(initialLocationId) &&
+                    item.TryGetProperty("currentLocationId", out var currentLocationNode) &&
+                    currentLocationNode.ValueKind != JsonValueKind.Null)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.currentLocationId",
+                        IssueSeverity.Error,
+                        "NPC, адресованный через initialLocationId, не должен одновременно задавать non-null currentLocationId",
+                        code: "npc_same_turn_initial_location_requires_null_current_location",
+                        section: "NPC",
+                        expected: "currentLocationId = null when initialLocationId targets same-turn new location",
+                        actual: currentLocationNode.ValueKind == JsonValueKind.String ? (currentLocationNode.GetString() ?? string.Empty) : currentLocationNode.ValueKind.ToString(),
+                        repairHint: "Для same-turn новой локации используй initialLocationId и оставляй currentLocationId = null. После создания canonical location система сама свяжет NPC с её постоянным locationId."));
                 }
 
                 if (string.IsNullOrWhiteSpace(npcId) &&
@@ -14070,7 +15463,10 @@ public class ValidationService
                 IssueSeverity.Error,
                 "NPCId должен быть непустой строкой или null",
                 code: "npc_scene_invalid_npc_id",
-                section: "NPC"));
+                section: "NPC",
+                expected: "non-empty NPCId string for existing NPC or null for same-turn new NPC",
+                actual: npcId.ValueKind == JsonValueKind.String ? npcId.GetString() ?? string.Empty : npcId.ValueKind.ToString(),
+                repairHint: "Для existing NPC передай permanent NPCId непустой строкой. Для genuinely new NPC в этом же accepted turn передай NPCId = null и используй initialId для same-turn linking."));
         }
     }
 
@@ -14088,7 +15484,12 @@ public class ValidationService
                 issues.Add(new ValidationIssue(
                     $"{npcContext}.tradeState.canTrade",
                     IssueSeverity.Error,
-                    "tradeState.canTrade должен быть boolean"));
+                    "tradeState.canTrade должен быть boolean",
+                    code: "npc_trade_can_trade_invalid",
+                    section: "tradeInventory",
+                    expected: "true or false",
+                    actual: canTrade.ValueKind.ToString(),
+                    repairHint: "Сохраняй tradeState.canTrade как boolean. Если NPC временно не может торговать, оставь canTrade = false и заполни tradeBlockedReason."));
             }
 
             ValidateOptionalString(tradeState, $"{npcContext}.tradeState", issues, "tradeBlockedReason");
@@ -14177,7 +15578,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{tradeContext}.items",
                 IssueSeverity.Error,
-                "tradeInventory.items должен быть массивом торговых слотов"));
+                "tradeInventory.items должен быть массивом торговых слотов",
+                code: "npc_trade_inventory_items_invalid",
+                section: "tradeInventory",
+                expected: "array of trade slot objects",
+                actual: !tradeInventory.TryGetProperty("items", out _) ? "missing" : items.ValueKind.ToString(),
+                repairHint: "Сохрани tradeInventory.items как массив торговых слотов NPC. Не заменяй его scalar/object заглушкой и не убирай поле при наличии tradeInventory."));
             return;
         }
 
@@ -14186,7 +15592,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{tradeContext}.items",
                 IssueSeverity.Error,
-                "tradeInventory.items должен содержать от 6 до 20 торговых слотов"));
+                "tradeInventory.items должен содержать от 6 до 20 торговых слотов",
+                code: "npc_trade_inventory_items_count_invalid",
+                section: "tradeInventory",
+                expected: "6-20 trade slots",
+                actual: items.GetArrayLength().ToString(),
+                repairHint: "Сохраняй в tradeInventory.items от 6 до 20 торговых слотов по canonical NPC trade contract."));
         }
 
         var merchantProfile = "";
@@ -14261,7 +15672,12 @@ public class ValidationService
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.soldOut",
                     IssueSeverity.Error,
-                    "tradeInventory item.soldOut должен быть boolean"));
+                    "tradeInventory item.soldOut должен быть boolean",
+                    code: "npc_trade_inventory_item_sold_out_invalid",
+                    section: "tradeInventory",
+                    expected: "true or false",
+                    actual: soldOut.ValueKind.ToString(),
+                    repairHint: "Сохраняй soldOut как boolean. Если слот временно недоступен, оставь soldOut = true, а не string/number surrogate."));
             }
 
             if (!string.IsNullOrWhiteSpace(normalizedMerchantProfile))
@@ -14278,7 +15694,8 @@ public class ValidationService
                         code: "npc_trade_inventory_profile_mismatch",
                         section: "tradeInventory",
                         expected: normalizedMerchantProfile,
-                        actual: itemMerchantProfile));
+                        actual: itemMerchantProfile,
+                        repairHint: "В tradeInventory.items используй тот же merchantProfile, что и у самого NPC merchant surface. Не смешивай предметы разных торговых профилей в одном canonical trade inventory."));
                 }
             }
 
@@ -14690,7 +16107,15 @@ public class ValidationService
                 }
             }
             else
-                issues.Add(new ValidationIssue($"{itemContext}.item", IssueSeverity.Error, "Отсутствует объект item"));
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.item",
+                    IssueSeverity.Error,
+                    "Отсутствует объект item",
+                    code: "npc_inventory_add_missing_item",
+                    section: "NPCInventory",
+                    expected: "full new Item Object in item",
+                    actual: "missing",
+                    repairHint: "Для NPCInventoryAdds передай nested item с полным новым Item Object. Existing NPC item изменяй через NPCInventoryUpdates.itemUpdate."));
         }
     }
 
@@ -14708,7 +16133,15 @@ public class ValidationService
             if (item.TryGetProperty("itemUpdate", out var itemUpdate) && itemUpdate.ValueKind == JsonValueKind.Object)
                 ValidatePartialInventoryItemUpdate(itemUpdate, $"{itemContext}.itemUpdate", issues, section: "NPCInventory", forbidContentsPathMutation: false);
             else
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error, "Отсутствует объект itemUpdate"));
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.itemUpdate",
+                    IssueSeverity.Error,
+                    "Отсутствует объект itemUpdate",
+                    code: "npc_inventory_update_missing_item_update",
+                    section: "NPCInventory",
+                    expected: "itemUpdate object with existedId and changed fields",
+                    actual: item.TryGetProperty("itemUpdate", out var missingUpdateNode) ? missingUpdateNode.ValueKind.ToString() : "missing",
+                    repairHint: "Для NPCInventoryUpdates передай nested itemUpdate с existedId и хотя бы одним реально изменённым полем existing NPC item."));
         }
     }
 
@@ -14742,14 +16175,30 @@ public class ValidationService
             var action = RequireString(item, itemContext, issues, "action");
             var hasItemLink = HasNonEmptyString(item, "itemId") || HasNonEmptyString(item, "itemName");
             if (!hasItemLink)
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error, "Требуется itemId или itemName"));
+                issues.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    "Требуется itemId или itemName",
+                    code: "npc_equipment_missing_item_link",
+                    section: "NPCInventory",
+                    expected: "itemId or itemName",
+                    actual: "missing both itemId and itemName",
+                    repairHint: "Для NPCEquipmentChanges укажи itemId или itemName, чтобы клиент мог однозначно разрешить предмет экипировки."));
 
             if (string.Equals(action, "equip", StringComparison.OrdinalIgnoreCase))
                 RequireArrayOfStringsProperty(item, itemContext, issues, "targetSlots");
             else if (string.Equals(action, "unequip", StringComparison.OrdinalIgnoreCase))
                 RequireArrayOfStringsProperty(item, itemContext, issues, "sourceSlots");
             else if (!string.IsNullOrWhiteSpace(action))
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error, "action должен быть 'equip' или 'unequip'"));
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.action",
+                    IssueSeverity.Error,
+                    "action должен быть 'equip' или 'unequip'",
+                    code: "npc_equipment_invalid_action",
+                    section: "NPCInventory",
+                    expected: "equip or unequip",
+                    actual: action,
+                    repairHint: "Для NPCEquipmentChanges используй только action = equip или action = unequip."));
         }
     }
 
@@ -14785,8 +16234,15 @@ public class ValidationService
 
             if (!HasAnyNonEmptyString(item, "newShortTermGoal", "newLongTermGoal", "newPlan"))
             {
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                    "Требуется хотя бы одно из полей: newShortTermGoal/newLongTermGoal/newPlan"));
+                issues.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    "NPCGoalUpdates должен содержать хотя бы одно реально изменяемое поле цели",
+                    code: "npc_goal_update_missing_changes",
+                    section: "NPC",
+                    expected: "at least one of newShortTermGoal, newLongTermGoal, newPlan",
+                    actual: "no goal change fields",
+                    repairHint: "Передай хотя бы одно непустое поле из newShortTermGoal, newLongTermGoal или newPlan. Не отправляй identity-only NPCGoalUpdates без изменения целей."));
             }
         }
     }
@@ -14807,8 +16263,15 @@ public class ValidationService
             var hasRemove = item.TryGetProperty("questsToRemove", out var remove);
             if (!hasAddOrUpdate && !hasRemove)
             {
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                    "Требуется хотя бы одно из полей: questsToAddOrUpdate или questsToRemove"));
+                issues.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    "NPCQuestUpdates должен содержать хотя бы одну команду изменения personal quests",
+                    code: "npc_quest_update_missing_commands",
+                    section: "NPC",
+                    expected: "questsToAddOrUpdate and/or questsToRemove",
+                    actual: "no quest command arrays",
+                    repairHint: "Передай хотя бы один из массивов questsToAddOrUpdate или questsToRemove. Не отправляй identity-only NPCQuestUpdates без фактических изменений."));
                 continue;
             }
 
@@ -14851,14 +16314,28 @@ public class ValidationService
                     !lockUpdate.TryGetProperty("newIsLocked", out _) &&
                     !lockUpdate.TryGetProperty("newCurrentCap", out _))
                 {
-                    issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                        "lockUpdate должен содержать хотя бы одно изменяемое поле"));
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.lockUpdate",
+                        IssueSeverity.Error,
+                        "NPCRelationshipLockUpdates.lockUpdate должен содержать хотя бы одно реально изменяемое поле",
+                        code: "npc_relationship_lock_update_missing_changes",
+                        section: "NPC",
+                        expected: "at least one of newBreakthroughQuestId, newIsLocked, newCurrentCap",
+                        actual: "empty lockUpdate payload",
+                        repairHint: "Передай в lockUpdate хотя бы одно поле из newBreakthroughQuestId, newIsLocked или newCurrentCap. Не отправляй пустой lockUpdate object."));
                 }
             }
             else
             {
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                    "Отсутствует обязательный объект lockUpdate"));
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.lockUpdate",
+                    IssueSeverity.Error,
+                    "NPCRelationshipLockUpdates должен содержать обязательный объект lockUpdate",
+                    code: "npc_relationship_lock_update_missing_payload",
+                    section: "NPC",
+                    expected: "lockUpdate object",
+                    actual: "missing or non-object",
+                    repairHint: "Добавь в NPCRelationshipLockUpdates объект lockUpdate с хотя бы одним изменяемым полем: newBreakthroughQuestId, newIsLocked или newCurrentCap."));
             }
         }
     }
@@ -14879,8 +16356,171 @@ public class ValidationService
             if (!item.TryGetProperty(requiredPayloadField, out _))
             {
                 issues.Add(new ValidationIssue(
-                    itemContext, IssueSeverity.Error,
-                    $"Отсутствует обязательное поле: {requiredPayloadField}"));
+                    $"{itemContext}.{requiredPayloadField}",
+                    IssueSeverity.Error,
+                    $"Отсутствует обязательное поле: {requiredPayloadField}",
+                    code: "npc_identity_command_missing_payload_field",
+                    section: "NPC",
+                    expected: requiredPayloadField,
+                    actual: "missing property",
+                    repairHint: $"Добавь в {propName} обязательное поле {requiredPayloadField} рядом с NPC identity, чтобы команда несла реально изменяемый payload."));
+            }
+        }
+    }
+
+    private void ValidateNpcActivityUpdates(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!TryGetArray(root, "NPCActivityUpdates", $"{contextPrefix}.NPCActivityUpdates", issues, out var arr))
+            return;
+
+        var index = 0;
+        foreach (var item in arr.EnumerateArray())
+        {
+            var itemContext = $"{contextPrefix}.NPCActivityUpdates[{index++}]";
+            if (!RequireObject(item, itemContext, issues))
+                continue;
+
+            RequireNpcIdentity(item, itemContext, issues);
+            if (!item.TryGetProperty("activityUpdate", out var activityUpdate) ||
+                !RequireObject(activityUpdate, $"{itemContext}.activityUpdate", issues))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.activityUpdate",
+                    IssueSeverity.Error,
+                    "NPCActivityUpdates должен содержать activityUpdate object",
+                    code: "npc_activity_update_missing_payload",
+                    section: "NPCActivities",
+                    expected: "activityUpdate object with changed currentActivity fields",
+                    actual: item.TryGetProperty("activityUpdate", out var actualPayload) ? actualPayload.ValueKind.ToString() : "missing",
+                    repairHint: "Передавай в NPCActivityUpdates object activityUpdate с реально изменившимися non-terminal полями currentActivity. Для завершения активности используй completeNPCActivities."));
+                continue;
+            }
+
+            ValidatePartialNpcActivityUpdateObject(activityUpdate, $"{itemContext}.activityUpdate", issues);
+        }
+    }
+
+    private void ValidatePartialNpcActivityUpdateObject(JsonElement value, string context, List<ValidationIssue> issues)
+    {
+        if (!RequireObject(value, context, issues))
+            return;
+
+        if (!value.EnumerateObject().Any())
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "NPCActivityUpdates.activityUpdate не должен быть пустым",
+                code: "npc_activity_update_empty_payload",
+                section: "NPCActivities",
+                expected: "at least one changed currentActivity field",
+                actual: "empty object",
+                repairHint: "Передавай в activityUpdate только реально изменившиеся поля currentActivity. Не отправляй пустой no-op update."));
+            return;
+        }
+
+        if (value.TryGetProperty("activityName", out _))
+            ValidateOptionalString(value, context, issues, "activityName");
+        if (value.TryGetProperty("description", out _))
+            ValidateOptionalString(value, context, issues, "description");
+        if (value.TryGetProperty("totalTimeCostMinutes", out _))
+            ValidateIntegerField(value, context, issues, "totalTimeCostMinutes");
+        if (value.TryGetProperty("timeSpentMinutes", out _))
+            ValidateIntegerField(value, context, issues, "timeSpentMinutes");
+        if (value.TryGetProperty("currentStepNumber", out _))
+            ValidateIntegerField(value, context, issues, "currentStepNumber");
+        if (value.TryGetProperty("totalStepsInActivity", out _))
+            ValidateIntegerField(value, context, issues, "totalStepsInActivity");
+        if (value.TryGetProperty("linkedQuestId", out _))
+            ValidateOptionalNullableStringField(value, context, issues, "linkedQuestId");
+        if (value.TryGetProperty("linkedPlotOutlineNode", out _))
+            ValidateOptionalNullableStringField(value, context, issues, "linkedPlotOutlineNode");
+
+        if (value.TryGetProperty("activeState", out _))
+        {
+            var activeState = RequireString(value, context, issues, "activeState");
+            if (string.Equals(activeState, "Completed", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(activeState, "Abandoned", StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.activeState",
+                    IssueSeverity.Error,
+                    "NPCActivityUpdates не должен завершать активность через activityUpdate.activeState",
+                    code: "npc_activity_update_terminal_state_forbidden",
+                    section: "NPCActivities",
+                    expected: "non-terminal activityUpdate fields or completeNPCActivities command",
+                    actual: activeState,
+                repairHint: "Если активность NPC завершена или abandoned, не ставь terminal activeState внутри NPCActivityUpdates. Используй completeNPCActivities с finalState = Completed или Abandoned."));
+            }
+        }
+    }
+
+    private void ValidatePartialThreatActivityUpdateObject(JsonElement value, string context, List<ValidationIssue> issues)
+    {
+        if (!RequireObject(value, context, issues))
+            return;
+
+        if (!value.EnumerateObject().Any())
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "threatsToUpdate.currentActivity не должен быть пустым",
+                code: "world_map_threat_update_empty_current_activity",
+                section: "WorldMap",
+                expected: "at least one changed currentActivity field",
+                actual: "empty object",
+                repairHint: "Передавай в threatsToUpdate.currentActivity только реально изменившиеся non-terminal поля. Не отправляй пустой no-op patch."));
+            return;
+        }
+
+        if (value.TryGetProperty("activityName", out _))
+            ValidateOptionalString(value, context, issues, "activityName");
+        if (value.TryGetProperty("description", out _))
+            ValidateOptionalString(value, context, issues, "description");
+        if (value.TryGetProperty("totalTimeCostMinutes", out _))
+            ValidateIntegerField(value, context, issues, "totalTimeCostMinutes");
+        if (value.TryGetProperty("timeSpentMinutes", out _))
+            ValidateIntegerField(value, context, issues, "timeSpentMinutes");
+        if (value.TryGetProperty("currentStepNumber", out _))
+            ValidateIntegerField(value, context, issues, "currentStepNumber");
+        if (value.TryGetProperty("totalStepsInActivity", out _))
+            ValidateIntegerField(value, context, issues, "totalStepsInActivity");
+        if (value.TryGetProperty("linkedQuestId", out _))
+            ValidateOptionalNullableStringField(value, context, issues, "linkedQuestId");
+        if (value.TryGetProperty("linkedPlotOutlineNode", out _))
+            ValidateOptionalNullableStringField(value, context, issues, "linkedPlotOutlineNode");
+    }
+
+    private void ValidateCompleteNpcActivities(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!TryGetArray(root, "completeNPCActivities", $"{contextPrefix}.completeNPCActivities", issues, out var arr))
+            return;
+
+        var index = 0;
+        foreach (var item in arr.EnumerateArray())
+        {
+            var itemContext = $"{contextPrefix}.completeNPCActivities[{index++}]";
+            if (!RequireObject(item, itemContext, issues))
+                continue;
+
+            RequireNpcIdentity(item, itemContext, issues);
+            RequireString(item, itemContext, issues, "activityName");
+            var finalState = RequireString(item, itemContext, issues, "finalState");
+            RequireString(item, itemContext, issues, "narrativeSummary");
+            if (!string.IsNullOrWhiteSpace(finalState) &&
+                !string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(finalState, "Abandoned", StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.finalState",
+                    IssueSeverity.Error,
+                    "completeNPCActivities.finalState должен быть Completed или Abandoned",
+                    code: "npc_complete_activity_invalid_final_state",
+                    section: "NPCActivities",
+                    expected: "Completed | Abandoned",
+                    actual: finalState,
+                    repairHint: "Для completeNPCActivities используй только finalState = Completed или Abandoned."));
             }
         }
     }
@@ -14946,16 +16586,37 @@ public class ValidationService
             if (!RequireObject(item, itemContext, issues)) continue;
 
             if (!HasAnyNonEmptyString(item, "sourceNpcId", "sourceNpcName", "sourceName"))
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                    "Требуется sourceNpcId или sourceNpcName"));
+                issues.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    "interNPCRelationshipChanges требует sourceNpcId или sourceNpcName",
+                    code: "inter_npc_relationship_missing_source",
+                    section: "NPCRelationships",
+                    expected: "sourceNpcId or sourceNpcName/sourceName",
+                    actual: "missing",
+                    repairHint: "Передай в interNPCRelationshipChanges permanent sourceNpcId или, если ID ещё недоступен, canonical sourceNpcName/sourceName."));
 
             if (!HasAnyNonEmptyString(item, "targetNpcId", "initialTargetNpcId", "targetNpcName"))
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                    "Требуется targetNpcId, initialTargetNpcId или targetNpcName"));
+                issues.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    "interNPCRelationshipChanges требует targetNpcId, initialTargetNpcId или targetNpcName",
+                    code: "inter_npc_relationship_missing_target",
+                    section: "NPCRelationships",
+                    expected: "targetNpcId or initialTargetNpcId or targetNpcName",
+                    actual: "missing",
+                    repairHint: "Передай permanent targetNpcId, same-turn initialTargetNpcId или canonical targetNpcName для целевого NPC."));
 
             if (!HasNonEmptyString(item, "newRelationshipStatus"))
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                    "Требуется newRelationshipStatus"));
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.newRelationshipStatus",
+                    IssueSeverity.Error,
+                    "interNPCRelationshipChanges требует newRelationshipStatus",
+                    code: "inter_npc_relationship_missing_status",
+                    section: "NPCRelationships",
+                    expected: string.Join(" | ", AllowedInterNpcRelationshipStatuses),
+                    actual: "missing",
+                    repairHint: "Передай canonical newRelationshipStatus для новой связи между NPC."));
             else
             {
                 var status = GetFirstNonEmptyString(item, "newRelationshipStatus");
@@ -14974,8 +16635,15 @@ public class ValidationService
             }
 
             if (!HasNonEmptyString(item, "newStatusReason"))
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                    "Требуется newStatusReason"));
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.newStatusReason",
+                    IssueSeverity.Error,
+                    "interNPCRelationshipChanges требует newStatusReason",
+                    code: "inter_npc_relationship_missing_reason",
+                    section: "NPCRelationships",
+                    expected: "non-empty newStatusReason",
+                    actual: "missing",
+                    repairHint: "Добавь newStatusReason с кратким объяснением, почему отношение между NPC изменилось."));
 
             if (item.TryGetProperty("relationshipType", out _))
             {
@@ -15092,7 +16760,9 @@ public class ValidationService
         ValidateArrayOfStringsField(root, contextPrefix, issues, "removeWorldStateFlags");
         ValidateTimeChangeField(root, contextPrefix, issues, "timeChange");
         ValidateWorldTimeObject(root, contextPrefix, issues, "setWorldTime");
+        ValidateDirectWorldTimeState(root, contextPrefix, issues);
         ValidateWeatherObject(root, contextPrefix, issues, "weatherChange");
+        ValidateDirectWeatherState(root, contextPrefix, issues);
         ValidateObjectOrArrayOfObjectsField(root, contextPrefix, issues, "updateWorldProgressionTracker");
         ValidateObjectOrArrayOfObjectsField(root, contextPrefix, issues, "updateFactionProgressionTracker");
         ValidateProgressionProcessingReport(root, contextPrefix, issues);
@@ -15507,7 +17177,7 @@ public class ValidationService
                 section: "MemoryLegacy",
                 expected: "Non-empty legacyId, legacyType, sourceLifeHint, grantSource, applicationState, grantedAtUtc, and grantSnapshot object",
                 actual: string.Join(", ", missingPendingLegacyFields),
-                repairHint: "Сначала собери корневой canonical pendingMemoryLegacy contract: sourceLifeHint, grantedAtUtc и grantSnapshot обязательны ещё до type-specific полей."));
+                repairHint: "Сначала собери полный корневой canonical pendingMemoryLegacy contract: legacyId, legacyType, sourceLifeHint, grantSource, applicationState, grantedAtUtc и grantSnapshot обязательны ещё до type-specific полей."));
             return;
         }
 
@@ -15606,7 +17276,7 @@ public class ValidationService
             }
 
             var characteristic = GetFirstNonEmptyString(pendingLegacy, "characteristic") ?? string.Empty;
-            ValidatePositiveNumberField(pendingLegacy, context, issues, "bonus");
+        ValidatePositiveIntegerField(pendingLegacy, context, issues, "bonus");
 
             if (!string.IsNullOrWhiteSpace(characteristic) &&
                 !Characteristics.All.Contains(characteristic, StringComparer.OrdinalIgnoreCase))
@@ -15666,8 +17336,8 @@ public class ValidationService
 
             ValidateOptionalString(pendingLegacy, context, issues, "rarity");
             ValidateOptionalString(pendingLegacy, context, issues, "type");
-            ValidatePositiveNumberField(pendingLegacy, context, issues, "masteryLevel");
-            ValidatePositiveNumberField(pendingLegacy, context, issues, "maxMasteryLevel");
+            ValidatePositiveIntegerField(pendingLegacy, context, issues, "masteryLevel");
+            ValidatePositiveIntegerField(pendingLegacy, context, issues, "maxMasteryLevel");
 
             if (pendingLegacy.TryGetProperty("group", out var groupEl) &&
                 groupEl.ValueKind == JsonValueKind.String &&
@@ -15793,7 +17463,7 @@ public class ValidationService
         }
         else if (string.Equals(legacyType, "startingPassiveKnowledgeSkill", StringComparison.OrdinalIgnoreCase))
         {
-            foreach (var fieldName in new[] { "skillName", "skillDescription", "group", "playerStatBonus" })
+            foreach (var fieldName in new[] { "skillName", "skillDescription", "group" })
             {
                 var pendingValue = GetFirstNonEmptyString(pendingLegacy, fieldName) ?? string.Empty;
                 var snapshotValue = GetFirstNonEmptyString(grantSnapshot, fieldName) ?? string.Empty;
@@ -15809,6 +17479,22 @@ public class ValidationService
                         expected: snapshotValue,
                         actual: string.IsNullOrWhiteSpace(pendingValue) ? "missing" : pendingValue));
                 }
+            }
+
+            var pendingPlayerStatBonus = GetFirstNonEmptyString(pendingLegacy, "playerStatBonus") ?? string.Empty;
+            var snapshotPlayerStatBonus = GetFirstNonEmptyString(grantSnapshot, "playerStatBonus") ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(snapshotPlayerStatBonus) &&
+                string.IsNullOrWhiteSpace(pendingPlayerStatBonus))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.playerStatBonus",
+                    IssueSeverity.Error,
+                    "playerStatBonus в pendingMemoryLegacy не должен исчезать относительно grantSnapshot",
+                    code: "pending_memory_legacy_grant_snapshot_player_stat_bonus_missing",
+                    section: "MemoryLegacy",
+                    expected: "non-empty playerStatBonus summary",
+                    actual: "missing or empty",
+                    repairHint: "Сохрани в pendingMemoryLegacy непустой playerStatBonus summary и не убирай это поле относительно grantSnapshot."));
             }
 
             if (pendingLegacy.TryGetProperty("structuredBonuses", out var pendingStructuredBonuses) &&
@@ -15952,7 +17638,7 @@ public class ValidationService
             }
 
             var characteristic = GetFirstNonEmptyString(grant, "characteristic") ?? string.Empty;
-            ValidatePositiveNumberField(grant, context, issues, "bonus");
+            ValidatePositiveIntegerField(grant, context, issues, "bonus");
 
             if (!string.IsNullOrWhiteSpace(characteristic) &&
                 !Characteristics.All.Contains(characteristic, StringComparer.OrdinalIgnoreCase))
@@ -16014,8 +17700,8 @@ public class ValidationService
 
             ValidateOptionalString(grant, context, issues, "rarity");
             ValidateOptionalString(grant, context, issues, "type");
-            ValidatePositiveNumberField(grant, context, issues, "masteryLevel");
-            ValidatePositiveNumberField(grant, context, issues, "maxMasteryLevel");
+            ValidatePositiveIntegerField(grant, context, issues, "masteryLevel");
+            ValidatePositiveIntegerField(grant, context, issues, "maxMasteryLevel");
 
             if (grant.TryGetProperty("group", out var groupEl) &&
                 groupEl.ValueKind == JsonValueKind.String &&
@@ -16189,9 +17875,9 @@ public class ValidationService
                                 "UpdateGuardians.completeQuest ссылается на questId, которого нет в canonical questManagement этого Хранителя",
                                 code: "guardian_complete_quest_unknown_quest_id",
                                 section: "UpdateGuardians.completeQuest",
-                                expected: "questId from guardian questManagement.availableQuests/activeQuests",
+                                expected: "questId from this Guardian's tracked questManagement state",
                                 actual: questId,
-                                repairHint: "Завершай только тот guardian quest, который реально существует у этого Хранителя в canonical questManagement. Сначала предложи/активируй квест, затем закрывай его через completeQuest."));
+                                repairHint: "Завершай только тот guardian quest, который реально существует у этого Хранителя в canonical questManagement. Сначала добавь квест в questManagement этого Хранителя, затем закрывай его через completeQuest."));
                         }
                         else
                         {
@@ -16478,7 +18164,6 @@ public class ValidationService
     private HashSet<string> CollectKnownGuardianIds(JsonElement root)
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        CollectGuardianIdsFromStateRoot(root, ids, includeCommandSurfaces: false);
         var preTurnGuardiansJson = ReadPreTurnTrackedFileSync("game_state/meta/guardians.json");
         if (!string.IsNullOrWhiteSpace(preTurnGuardiansJson))
         {
@@ -16492,6 +18177,9 @@ public class ValidationService
                 // ignored
             }
         }
+
+        var ignoredNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        CollectCreatedGuardianReferencesFromStateRoot(root, ids, ignoredNames);
 
         return ids;
     }
@@ -16649,7 +18337,7 @@ public class ValidationService
         }
 
         RequireString(currentProject, projectContext, issues, "description");
-        ValidateNonNegativeNumberField(currentProject, projectContext, issues, "progressPercent");
+        ValidateNonNegativeIntegerField(currentProject, projectContext, issues, "progressPercent", "UpdateGuardians.updateProject");
         if (currentProject.TryGetProperty("progressPercent", out var progressPercent) &&
             progressPercent.ValueKind == JsonValueKind.Number &&
             progressPercent.TryGetInt32(out var parsedProgressPercent) &&
@@ -16671,9 +18359,9 @@ public class ValidationService
         }
 
         if (currentProject.TryGetProperty("estimatedTurnsLeft", out _))
-            ValidateNonNegativeNumberField(currentProject, projectContext, issues, "estimatedTurnsLeft");
+            ValidateNonNegativeIntegerField(currentProject, projectContext, issues, "estimatedTurnsLeft", "UpdateGuardians.updateProject");
         if (currentProject.TryGetProperty("estimatedCompletionTurn", out _))
-            ValidateNonNegativeNumberField(currentProject, projectContext, issues, "estimatedCompletionTurn");
+            ValidateNonNegativeIntegerField(currentProject, projectContext, issues, "estimatedCompletionTurn", "UpdateGuardians.updateProject");
 
         if (!currentProject.TryGetProperty("playerCanAssist", out var playerCanAssist) ||
             playerCanAssist.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
@@ -16708,7 +18396,7 @@ public class ValidationService
                 section: "Guardians",
                 repairHint: "Для locked pre-planned lore fragment оставляй content = null; для unlocked fragment передавай непустой content."));
         }
-        ValidateNonNegativeNumberField(loreFragment, fragmentContext, issues, "requiredReputation");
+        ValidateNonNegativeIntegerField(loreFragment, fragmentContext, issues, "requiredReputation", "UpdateGuardians.unlockLore");
 
         if (!string.IsNullOrWhiteSpace(category) && !AllowedGuardianLoreFragmentCategories.Contains(category))
         {
@@ -16741,7 +18429,7 @@ public class ValidationService
     private void ValidateGuardianMoodObject(JsonElement mood, string moodContext, List<ValidationIssue> issues)
     {
         var current = RequireString(mood, moodContext, issues, "current");
-        ValidatePositiveNumberField(mood, moodContext, issues, "intensity");
+        ValidatePositiveIntegerField(mood, moodContext, issues, "intensity");
         RequireString(mood, moodContext, issues, "reason");
         if (!mood.TryGetProperty("since", out _))
         {
@@ -16757,7 +18445,7 @@ public class ValidationService
         }
         else
         {
-            ValidateNonNegativeNumberField(mood, moodContext, issues, "since");
+            ValidateNonNegativeIntegerField(mood, moodContext, issues, "since", "UpdateGuardians.setMood");
         }
 
         if (!string.IsNullOrWhiteSpace(current) && !AllowedGuardianMoodStates.Contains(current))
@@ -17320,9 +19008,9 @@ public class ValidationService
                 "Canonical guardian state должен содержать questManagement object",
                 code: "guardian_missing_quest_management",
                 section: "Guardians",
-                expected: "questManagement object with availableQuests and completedQuests",
+                expected: "questManagement object with availableQuests, activeQuests and completedQuests",
                 actual: guardian.TryGetProperty("questManagement", out var actualQuestManagement) ? actualQuestManagement.ValueKind.ToString() : "missing",
-                repairHint: "Сохраняй questManagement с массивами availableQuests и completedQuests даже для нового Хранителя."));
+                repairHint: "Сохраняй questManagement с массивами availableQuests, activeQuests и completedQuests даже для нового Хранителя."));
             return;
         }
 
@@ -17357,6 +19045,24 @@ public class ValidationService
             }
         }
 
+        if (!questManagement.TryGetProperty("activeQuests", out var activeQuests) ||
+            activeQuests.ValueKind == JsonValueKind.Null)
+        {
+            issues.Add(new ValidationIssue(
+                $"{questContext}.activeQuests",
+                IssueSeverity.Error,
+                "Guardian questManagement должен содержать activeQuests array",
+                code: "guardian_quest_management_missing_active_quests",
+                section: "Guardians",
+                expected: "activeQuests array",
+                actual: "missing",
+                repairHint: "Сохраняй activeQuests как массив, даже если у Хранителя сейчас нет активных квестов."));
+        }
+        else
+        {
+            RequireArrayOfObjects(activeQuests, $"{questContext}.activeQuests", issues);
+        }
+
         if (!questManagement.TryGetProperty("completedQuests", out var completedQuests) ||
             completedQuests.ValueKind == JsonValueKind.Null)
         {
@@ -17373,6 +19079,45 @@ public class ValidationService
         else
         {
             RequireArrayOfObjects(completedQuests, $"{questContext}.completedQuests", issues);
+            if (completedQuests.ValueKind == JsonValueKind.Array)
+            {
+                var completedIndex = 0;
+                foreach (var completedQuest in completedQuests.EnumerateArray())
+                {
+                    var completedContext = $"{questContext}.completedQuests[{completedIndex++}]";
+                    if (!RequireObject(completedQuest, completedContext, issues))
+                        continue;
+
+                    RequireString(completedQuest, completedContext, issues, "questId");
+                    var result = GetFirstNonEmptyString(completedQuest, "result");
+                    if (!string.IsNullOrWhiteSpace(result) && !AllowedGuardianQuestOutcomes.Contains(result))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{completedContext}.result",
+                            IssueSeverity.Error,
+                            "Guardian completedQuests.result должен быть success, failure или partial",
+                            code: "guardian_completed_quest_invalid_result",
+                            section: "Guardians",
+                            expected: "success | failure | partial",
+                            actual: result,
+                            repairHint: "Для completedQuests сохраняй result только как canonical guardian quest outcome: success, failure или partial."));
+                    }
+
+                    var completionDate = RequireString(completedQuest, completedContext, issues, "completionDate");
+                    if (!string.IsNullOrWhiteSpace(completionDate) && !DateTimeOffset.TryParse(completionDate, out _))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{completedContext}.completionDate",
+                            IssueSeverity.Error,
+                            "Guardian completedQuests.completionDate должен быть ISO 8601 timestamp",
+                            code: "guardian_completed_quest_invalid_completion_date",
+                            section: "Guardians",
+                            expected: "ISO 8601 timestamp",
+                            actual: completionDate,
+                            repairHint: "Для completedQuests сохраняй completionDate в ISO 8601 формате, чтобы chronological unlock logic и audit trail оставались стабильными."));
+                    }
+                }
+            }
         }
     }
 
@@ -18247,7 +19992,7 @@ public class ValidationService
 
         if (requireUnlockMetadata)
         {
-            RequireNonNegativeNumberField(item, itemContext, issues, "incarnation");
+            ValidateNonNegativeIntegerField(item, itemContext, issues, "incarnation", "Achievements");
             var unlockedAt = RequireString(item, itemContext, issues, "unlockedAt");
             if (!string.IsNullOrWhiteSpace(unlockedAt) && !DateTimeOffset.TryParse(unlockedAt, out _))
             {
@@ -18321,8 +20066,8 @@ public class ValidationService
         if (!RequireObject(progress, $"{itemContext}.progress", issues))
             return;
 
-        ValidateNonNegativeNumberField(progress, $"{itemContext}.progress", issues, "current");
-        ValidatePositiveNumberField(progress, $"{itemContext}.progress", issues, "target");
+        ValidateNonNegativeIntegerField(progress, $"{itemContext}.progress", issues, "current", "Achievements");
+        ValidatePositiveIntegerField(progress, $"{itemContext}.progress", issues, "target");
     }
 
     private void ValidateCodexEntryArray(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
@@ -18349,8 +20094,15 @@ public class ValidationService
                     if (item.TryGetProperty("entry", out var entry) && entry.ValueKind == JsonValueKind.Object)
                         ValidateCodexEntry(entry, $"{itemContext}.entry", issues);
                     else
-                        issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                            "loreCodexUpdates add command должен содержать entry"));
+                        issues.Add(new ValidationIssue(
+                            $"{itemContext}.entry",
+                            IssueSeverity.Error,
+                            "loreCodexUpdates add command должен содержать entry",
+                            code: "codex_add_missing_entry",
+                            section: "Codex",
+                            expected: "entry object for add command",
+                            actual: "missing",
+                            repairHint: "Для loreCodexUpdates add command передай полный entry object с entryId, title, category, content, discoveredAt, discoveryContext и incarnation."));
                 }
                 else if (string.Equals(command, "update", StringComparison.OrdinalIgnoreCase))
                 {
@@ -18401,7 +20153,7 @@ public class ValidationService
         RequireString(item, itemContext, issues, "content");
         var discoveredAt = RequireString(item, itemContext, issues, "discoveredAt");
         RequireString(item, itemContext, issues, "discoveryContext");
-        RequireNonNegativeNumberField(item, itemContext, issues, "incarnation");
+        ValidateNonNegativeIntegerField(item, itemContext, issues, "incarnation", "Codex");
         ValidateOptionalString(item, itemContext, issues, "subcategory");
         ValidateOptionalString(item, itemContext, issues, "sourceFile");
 
@@ -18539,8 +20291,15 @@ public class ValidationService
             activeVehicle.ValueKind != JsonValueKind.String &&
             activeVehicle.ValueKind != JsonValueKind.Null)
         {
-            issues.Add(new ValidationIssue($"{contextPrefix}.activeVehicleChange", IssueSeverity.Error,
-                "activeVehicleChange должен быть строкой или null"));
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.activeVehicleChange",
+                IssueSeverity.Error,
+                "activeVehicleChange должен быть строкой или null",
+                code: "active_vehicle_change_invalid_type",
+                section: "Vehicles",
+                expected: "string vehicleId or null",
+                actual: activeVehicle.ValueKind.ToString(),
+                repairHint: "Передавай в activeVehicleChange либо существующий string vehicleId, либо null для сброса активного транспорта."));
         }
     }
 
@@ -18640,6 +20399,9 @@ public class ValidationService
         if (value.ValueKind != JsonValueKind.Array)
             return;
 
+        var simulatedVehicleStates = !requireCanonicalStoredShape
+            ? TryResolvePreTurnVehicleStateMapSync() ?? new Dictionary<string, VehicleStateSnapshot>(StringComparer.OrdinalIgnoreCase)
+            : null;
         var index = 0;
         foreach (var item in value.EnumerateArray())
         {
@@ -18844,6 +20606,131 @@ public class ValidationService
                     actual: "null",
                     repairHint: "Для availability=Parked передай currentLocationId конкретной локации, где оставлен транспорт."));
             }
+
+            var vehicleId = vehicleIdValue.ValueKind == JsonValueKind.String
+                ? vehicleIdValue.GetString()
+                : null;
+            if (!requireCanonicalStoredShape &&
+                !mustLookLikeFullVehicleObject &&
+                !string.IsNullOrWhiteSpace(vehicleId) &&
+                simulatedVehicleStates != null &&
+                (item.TryGetProperty("availability", out _) || item.TryGetProperty("currentLocationId", out _)))
+            {
+                if (simulatedVehicleStates.TryGetValue(vehicleId!, out var previousState))
+                    ValidateMergedVehicleAvailabilityLocationInvariant(previousState, item, itemContext, issues);
+            }
+
+            if (!string.IsNullOrWhiteSpace(vehicleId) && simulatedVehicleStates != null)
+                simulatedVehicleStates[vehicleId!] = MergeVehicleStateSnapshot(
+                    simulatedVehicleStates.TryGetValue(vehicleId!, out var previousState) ? previousState : null,
+                    item);
+        }
+    }
+
+    private Dictionary<string, VehicleStateSnapshot>? TryResolvePreTurnVehicleStateMapSync()
+        => TryReadVehicleStateMapFromJson(ReadPreTurnTrackedFileSync("game_state/misc/vehicles.json"));
+
+    private static Dictionary<string, VehicleStateSnapshot>? TryReadVehicleStateMapFromJson(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("vehicles", out var vehicles) || vehicles.ValueKind != JsonValueKind.Array)
+                return null;
+
+            var map = new Dictionary<string, VehicleStateSnapshot>(StringComparer.OrdinalIgnoreCase);
+            foreach (var vehicle in vehicles.EnumerateArray())
+            {
+                if (vehicle.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var vehicleId = GetFirstNonEmptyString(vehicle, "vehicleId");
+                if (string.IsNullOrWhiteSpace(vehicleId))
+                    continue;
+
+                map[vehicleId] = ReadVehicleStateSnapshot(vehicle);
+            }
+
+            return map;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static VehicleStateSnapshot ReadVehicleStateSnapshot(JsonElement vehicle)
+    {
+        var hasCurrentLocationNode = vehicle.TryGetProperty("currentLocationId", out var currentLocationNode);
+        return new VehicleStateSnapshot
+        {
+            Availability = GetFirstNonEmptyString(vehicle, "availability"),
+            HasCurrentLocationNode = hasCurrentLocationNode,
+            CurrentLocationExplicitNull = hasCurrentLocationNode && currentLocationNode.ValueKind == JsonValueKind.Null,
+            CurrentLocationId = hasCurrentLocationNode && currentLocationNode.ValueKind == JsonValueKind.String
+                ? currentLocationNode.GetString()
+                : null
+        };
+    }
+
+    private static VehicleStateSnapshot MergeVehicleStateSnapshot(VehicleStateSnapshot? previousState, JsonElement patch)
+    {
+        var hasCurrentLocationNode = patch.TryGetProperty("currentLocationId", out var currentLocationNode);
+        return new VehicleStateSnapshot
+        {
+            Availability = GetFirstNonEmptyString(patch, "availability") ?? previousState?.Availability,
+            HasCurrentLocationNode = hasCurrentLocationNode || previousState?.HasCurrentLocationNode == true,
+            CurrentLocationExplicitNull = hasCurrentLocationNode
+                ? currentLocationNode.ValueKind == JsonValueKind.Null
+                : previousState?.CurrentLocationExplicitNull == true,
+            CurrentLocationId = hasCurrentLocationNode
+                ? currentLocationNode.ValueKind == JsonValueKind.String ? currentLocationNode.GetString() : null
+                : previousState?.CurrentLocationId
+        };
+    }
+
+    private static void ValidateMergedVehicleAvailabilityLocationInvariant(
+        VehicleStateSnapshot previousState,
+        JsonElement patch,
+        string itemContext,
+        List<ValidationIssue> issues)
+    {
+        var merged = MergeVehicleStateSnapshot(previousState, patch);
+        var availability = merged.Availability;
+        var currentLocationId = merged.CurrentLocationId;
+
+        if ((string.Equals(availability, "Active", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(availability, "Pocket", StringComparison.OrdinalIgnoreCase)) &&
+            !string.IsNullOrWhiteSpace(currentLocationId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.currentLocationId",
+                IssueSeverity.Error,
+                "Partial UpdateVehicles нарушает canonical invariant: Active/Pocket vehicle не может иметь currentLocationId",
+                code: "vehicle_partial_update_active_or_pocket_with_location",
+                section: "Vehicles",
+                expected: "merged vehicle state with currentLocationId = null for Active/Pocket availability",
+                actual: $"availability={availability}, currentLocationId={currentLocationId}",
+                repairHint: "Если транспорт становится Active или Pocket, одновременно обнули currentLocationId. Если транспорт остаётся Parked, не присваивай ему Active/Pocket availability в partial update."));
+        }
+
+        if (string.Equals(availability, "Parked", StringComparison.OrdinalIgnoreCase) &&
+            (!merged.HasCurrentLocationNode || merged.CurrentLocationExplicitNull || string.IsNullOrWhiteSpace(currentLocationId)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.currentLocationId",
+                IssueSeverity.Error,
+                "Partial UpdateVehicles нарушает canonical invariant: Parked vehicle обязан иметь non-null currentLocationId",
+                code: "vehicle_partial_update_parked_missing_location",
+                section: "Vehicles",
+                expected: "merged vehicle state with non-null currentLocationId for Parked availability",
+                actual: merged.HasCurrentLocationNode
+                    ? merged.CurrentLocationExplicitNull ? "null" : "missing/empty"
+                    : "missing",
+                repairHint: "Если транспорт остаётся или становится Parked, одновременно передай currentLocationId существующей локации. Если переносишь его в Active/Pocket, измени availability и обнули currentLocationId в этом же partial update."));
         }
     }
 
@@ -18914,7 +20801,11 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{itemContext}.detailsLog",
                 IssueSeverity.Error,
-                "Квест должен содержать detailsLog"));
+                "Квест должен содержать detailsLog",
+                code: "quest_missing_details_log",
+                section: "Quests",
+                expected: "detailsLog array",
+                repairHint: "Для полного Quest Object передавай detailsLog как массив записей истории квеста, даже если он пока пустой."));
             return;
         }
         if (detailsLog.ValueKind != JsonValueKind.Array)
@@ -18922,7 +20813,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{itemContext}.detailsLog",
                 IssueSeverity.Error,
-                "detailsLog должен быть массивом"));
+                "detailsLog должен быть массивом",
+                code: "quest_invalid_details_log",
+                section: "Quests",
+                expected: "array",
+                actual: detailsLog.ValueKind.ToString(),
+                repairHint: "Передавай detailsLog как массив записей по canonical quest contract."));
             return;
         }
         RequireArrayOfStrings(detailsLog, $"{itemContext}.detailsLog", issues);
@@ -19069,7 +20965,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{itemContext}.progress",
                 IssueSeverity.Error,
-                "Soul quest должен содержать progress object"));
+                "Soul quest должен содержать progress object",
+                code: "soul_quest_missing_progress_object",
+                section: "SoulQuests",
+                expected: "progress object",
+                actual: !item.TryGetProperty("progress", out var missingProgressNode) ? "missing" : missingProgressNode.ValueKind.ToString(),
+                repairHint: "Добавь в soul quest canonical объект progress с integer-полями completed и total."));
         }
         else
         {
@@ -19083,7 +20984,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{itemContext}.rewards",
                 IssueSeverity.Error,
-                "Soul quest должен содержать rewards object"));
+                "Soul quest должен содержать rewards object",
+                code: "soul_quest_missing_rewards_object",
+                section: "SoulQuests",
+                expected: "rewards object",
+                actual: !item.TryGetProperty("rewards", out var missingRewardsNode) ? "missing" : missingRewardsNode.ValueKind.ToString(),
+                repairHint: "Добавь в soul quest canonical объект rewards. Даже минимальные награды должны приходить как object, а не как missing/scalar payload."));
         }
         else
         {
@@ -19274,7 +21180,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{propName}",
                 IssueSeverity.Error,
-                $"{propName} обязателен для локации"));
+                $"{propName} обязателен для локации",
+                code: "location_missing_difficulty_profile",
+                section: "Location",
+                expected: $"{propName} object with combat/environment/social/exploration integer scales",
+                actual: "missing property",
+                repairHint: $"Добавь в location object поле {propName} с integer-полями combat, environment, social и exploration."));
             return;
         }
 
@@ -19292,7 +21203,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{propName}",
                 IssueSeverity.Error,
-                $"{propName} обязателен и должен быть массивом или null"));
+                $"{propName} обязателен и должен быть массивом или null",
+                code: "location_missing_faction_control_array",
+                section: "Location",
+                expected: $"{propName} array or null",
+                actual: "missing property",
+                repairHint: $"Добавь в location object поле {propName}. Используй null, если контролирующих фракций нет, или массив canonical factionControl entries."));
             return;
         }
 
@@ -19303,7 +21219,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{propName}",
                 IssueSeverity.Error,
-                $"{propName} должен быть массивом или null"));
+                $"{propName} должен быть массивом или null",
+                code: "location_invalid_faction_control_array_shape",
+                section: "Location",
+                expected: $"{propName} array or null",
+                actual: value.ValueKind.ToString(),
+                repairHint: $"Передавай {propName} как null или массив factionControl entries, а не как {value.ValueKind}."));
             return;
         }
 
@@ -19353,7 +21274,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{propName}",
                 IssueSeverity.Error,
-                $"{propName} обязателен и должен быть массивом или null"));
+                $"{propName} обязателен и должен быть массивом или null",
+                code: "location_missing_adjacency_array",
+                section: "Location",
+                expected: $"{propName} array or null",
+                actual: "missing property",
+                repairHint: $"Добавь в location object поле {propName}. Используй null, если явных adjacency links нет, или массив canonical link objects."));
             return;
         }
 
@@ -19364,7 +21290,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{propName}",
                 IssueSeverity.Error,
-                $"{propName} должен быть массивом или null"));
+                $"{propName} должен быть массивом или null",
+                code: "location_invalid_adjacency_array_shape",
+                section: "Location",
+                expected: $"{propName} array or null",
+                actual: value.ValueKind.ToString(),
+                repairHint: $"Передавай {propName} как null или массив canonical adjacency links, а не как {value.ValueKind}."));
             return;
         }
 
@@ -19386,7 +21317,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{propName}",
                 IssueSeverity.Error,
-                $"{propName} обязателен и должен быть массивом или null"));
+                $"{propName} обязателен и должен быть массивом или null",
+                code: "location_missing_storage_array",
+                section: "Location",
+                expected: $"{propName} array or null",
+                actual: "missing property",
+                repairHint: $"Добавь в location object поле {propName}. Используй null, если storage entries нет, или массив canonical storage objects."));
             return;
         }
 
@@ -19397,7 +21333,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{propName}",
                 IssueSeverity.Error,
-                $"{propName} должен быть массивом или null"));
+                $"{propName} должен быть массивом или null",
+                code: "location_invalid_storage_array_shape",
+                section: "Location",
+                expected: $"{propName} array or null",
+                actual: value.ValueKind.ToString(),
+                repairHint: $"Передавай {propName} как null или массив canonical location storages, а не как {value.ValueKind}."));
             return;
         }
 
@@ -19426,7 +21367,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{propName}",
                 IssueSeverity.Error,
-                $"{propName} обязателен и должен быть массивом или null"));
+                $"{propName} обязателен и должен быть массивом или null",
+                code: "location_missing_active_threat_array",
+                section: "Location",
+                expected: $"{propName} array or null",
+                actual: "missing property",
+                repairHint: $"Добавь в location object поле {propName}. Используй null, если активных угроз нет, или массив canonical Active Threat Objects."));
             return;
         }
 
@@ -19437,7 +21383,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{propName}",
                 IssueSeverity.Error,
-                $"{propName} должен быть массивом или null"));
+                $"{propName} должен быть массивом или null",
+                code: "location_invalid_active_threat_array_shape",
+                section: "Location",
+                expected: $"{propName} array or null",
+                actual: value.ValueKind.ToString(),
+                repairHint: $"Передавай {propName} как null или массив canonical Active Threat Objects, а не как {value.ValueKind}."));
             return;
         }
 
@@ -19448,15 +21399,7 @@ public class ValidationService
             if (!RequireObject(item, itemContext, issues))
                 continue;
 
-            if (!HasAnyNonEmptyString(item, "threatId", "name", "title"))
-            {
-                issues.Add(new ValidationIssue(
-                    itemContext,
-                    IssueSeverity.Error,
-                    "Active threat должен содержать threatId или name/title"));
-            }
-
-            ValidateOptionalString(item, itemContext, issues, "description");
+            ValidateActiveThreatObject(item, itemContext, issues, requireNullThreatId: false);
         }
     }
 
@@ -19655,7 +21598,12 @@ public class ValidationService
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.powerProfile.{scale}",
                         IssueSeverity.Error,
-                        "powerProfile scale обязателен в полном faction object"));
+                        "powerProfile scale обязателен в полном faction object",
+                        code: "faction_full_object_missing_power_profile_scale",
+                        section: "Factions",
+                        expected: $"powerProfile.{scale}",
+                        actual: "missing property",
+                        repairHint: $"Для полного faction object добавь integer/number поле powerProfile.{scale}."));
                 }
                 else
                 {
@@ -19672,7 +21620,12 @@ public class ValidationService
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.resources.metaResources",
                     IssueSeverity.Error,
-                    "resources.metaResources обязателен в полном faction-core object"));
+                    "resources.metaResources обязателен в полном faction-core object",
+                    code: "faction_full_object_missing_meta_resources",
+                    section: "Factions",
+                    expected: "resources.metaResources array",
+                    actual: "missing property",
+                    repairHint: "Для полного faction-core object добавь resources.metaResources как canonical array meta resource entries."));
             }
             else
             {
@@ -19684,7 +21637,12 @@ public class ValidationService
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.resources.strategicGoods",
                     IssueSeverity.Error,
-                    "resources.strategicGoods обязателен в полном faction-core object"));
+                    "resources.strategicGoods обязателен в полном faction-core object",
+                    code: "faction_full_object_missing_strategic_goods",
+                    section: "Factions",
+                    expected: "resources.strategicGoods array",
+                    actual: "missing property",
+                    repairHint: "Для полного faction-core object добавь resources.strategicGoods как canonical array strategic goods entries."));
             }
             else
             {
@@ -19763,8 +21721,15 @@ public class ValidationService
             }
             else if (relations.ValueKind != JsonValueKind.Null)
             {
-                issues.Add(new ValidationIssue($"{itemContext}.relations", IssueSeverity.Error,
-                    "relations должен быть массивом или null"));
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.relations",
+                    IssueSeverity.Error,
+                    "relations должен быть массивом или null",
+                    code: "faction_relations_invalid_array_shape",
+                    section: "Factions",
+                    expected: "relations array or null",
+                    actual: relations.ValueKind.ToString(),
+                    repairHint: "Передавай relations как null или массив canonical faction relation objects."));
             }
         }
 
@@ -19814,8 +21779,15 @@ public class ValidationService
             return;
         if (value.ValueKind != JsonValueKind.Array)
         {
-            issues.Add(new ValidationIssue($"{contextPrefix}.{propName}", IssueSeverity.Error,
-                $"{propName} должен быть массивом или null"));
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{propName}",
+                IssueSeverity.Error,
+                $"{propName} должен быть массивом или null",
+                code: "faction_project_array_invalid_shape",
+                section: "Factions",
+                expected: $"{propName} array or null",
+                actual: value.ValueKind.ToString(),
+                repairHint: $"Передавай {propName} как null или массив canonical faction project objects."));
             return;
         }
 
@@ -20008,14 +21980,7 @@ public class ValidationService
         {
             found = true;
             var locationContext = $"{contextPrefix}.currentLocationData";
-            if (contextPrefix.EndsWith("current_location.json", StringComparison.OrdinalIgnoreCase))
-            {
-                ValidateLocationObject(location, locationContext, issues);
-            }
-            else
-            {
-                ValidateCurrentLocationResponseObject(location, locationContext, issues);
-            }
+            ValidateCurrentLocationResponseObject(location, locationContext, issues);
         }
         else if (root.ValueKind == JsonValueKind.Object &&
                  (root.TryGetProperty("locationId", out _) || root.TryGetProperty("locationType", out _)))
@@ -20026,8 +21991,15 @@ public class ValidationService
 
         if (!found && contextPrefix.EndsWith("current_location.json", StringComparison.OrdinalIgnoreCase))
         {
-            issues.Add(new ValidationIssue(contextPrefix, IssueSeverity.Warning,
-                "Файл локации не содержит currentLocationData и не похож на нормализованный location object"));
+            issues.Add(new ValidationIssue(
+                contextPrefix,
+                IssueSeverity.Warning,
+                "Файл локации не содержит currentLocationData и не похож на нормализованный location object",
+                code: "current_location_missing_root_object",
+                section: "Location",
+                expected: "currentLocationData object or normalized location object",
+                actual: "missing recognizable location root",
+                repairHint: "Сохрани либо currentLocationData, либо нормализованный location object. Не оставляй current_location.json пустым или с нерелевантным root shape."));
         }
     }
 
@@ -20198,7 +22170,12 @@ public class ValidationService
         if (!HasAnyNonEmptyString(location, "locationId", "name"))
         {
             issues.Add(new ValidationIssue(context, IssueSeverity.Error,
-                "Локация должна содержать locationId или name"));
+                "Локация должна содержать locationId или name",
+                code: "location_missing_identity",
+                section: "Location",
+                expected: "locationId or name",
+                actual: "missing identity fields",
+                repairHint: "Для location object передай locationId и/или name, чтобы клиент мог однозначно разрешить или создать локацию."));
         }
 
         ValidateOptionalString(location, context, issues, "name");
@@ -20240,7 +22217,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{context}.locationType",
                 IssueSeverity.Error,
-                "locationType должен быть 'outdoor' или 'indoor'"));
+                "locationType должен быть 'outdoor' или 'indoor'",
+                code: "location_type_invalid",
+                section: "Location",
+                expected: "outdoor or indoor",
+                actual: locationType,
+                repairHint: "Используй для locationType только canonical значения outdoor или indoor."));
         }
 
         if (location.TryGetProperty("coordinates", out var coordinates))
@@ -20257,7 +22239,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{context}.coordinates",
                 IssueSeverity.Error,
-                "Локация должна содержать объект coordinates"));
+                "Локация должна содержать объект coordinates",
+                code: "location_coordinates_missing",
+                section: "Location",
+                expected: "coordinates object",
+                actual: "missing",
+                repairHint: "Добавь coordinates с canonical x/y и при необходимости z. Даже для known-location shorthand coordinates остаются обязательными."));
         }
 
         ValidateDifficultyProfileObject(location, context, issues, "internalDifficultyProfile");
@@ -20453,11 +22440,22 @@ public class ValidationService
             var isQuestLogAppend = IsQuestPartialLogAppend(item);
             var isQuestPartialStateUpdate = IsQuestPartialStateUpdate(item);
             var isSameTurnInitialLink = !string.IsNullOrWhiteSpace(initialId) && sameTurnNewQuestInitialIds.Contains(initialId);
+            var usesInitialIdQuestLink =
+                string.IsNullOrWhiteSpace(questId) &&
+                !string.IsNullOrWhiteSpace(initialId) &&
+                (isQuestLogAppend || isQuestPartialStateUpdate);
 
-            if (!item.TryGetProperty("questId", out _))
+            if (!item.TryGetProperty("questId", out _) && !usesInitialIdQuestLink)
             {
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                    "Квест должен содержать обязательное поле questId"));
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.questId",
+                    IssueSeverity.Error,
+                    "Quest object должен содержать обязательное поле questId",
+                    code: "quest_missing_quest_id_field",
+                    section: "Quest",
+                    expected: "questId field (GUID/string for existing quest, null for genuinely new quest)",
+                    actual: "missing",
+                    repairHint: "Передай questId явно: используй existing questId для известного квеста или questId = null для genuinely new quest/full object в этом accepted turn."));
             }
 
             if (knownRegularQuestIds != null)
@@ -20764,7 +22762,14 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{context}.targetCoordinates",
                 IssueSeverity.Error,
-                "Adjacency link должен содержать targetCoordinates object"));
+                "Adjacency link должен содержать targetCoordinates object",
+                code: "world_map_link_missing_target_coordinates",
+                section: "WorldMap",
+                expected: "targetCoordinates object with x/y and optional z",
+                actual: link.TryGetProperty("targetCoordinates", out var actualTargetCoordinates)
+                    ? actualTargetCoordinates.ValueKind.ToString()
+                    : "missing",
+                repairHint: "Для adjacency link всегда передавай targetCoordinates object с canonical integer x/y и optional z."));
         }
         else
         {
@@ -20782,7 +22787,12 @@ public class ValidationService
                 issues.Add(new ValidationIssue(
                     $"{context}.{propName}",
                     IssueSeverity.Error,
-                    $"{propName} обязателен для adjacency link preview"));
+                    $"{propName} обязателен для adjacency link preview",
+                    code: "world_map_link_preview_missing_difficulty_profile",
+                    section: "WorldMap",
+                    expected: $"{propName} object with combat/environment/social/exploration integer scales",
+                    actual: "missing or non-object",
+                    repairHint: $"Добавь в adjacency link preview объект {propName} с integer-полями combat, environment, social и exploration."));
                 continue;
             }
 
@@ -20839,8 +22849,15 @@ public class ValidationService
         {
             if (questHistory.ValueKind != JsonValueKind.Array)
             {
-                issues.Add(new ValidationIssue($"{contextPrefix}.questHistory", IssueSeverity.Error,
-                    "questHistory должен быть массивом"));
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.questHistory",
+                    IssueSeverity.Error,
+                    "questHistory должен быть массивом",
+                    code: "quest_history_invalid_array",
+                    section: "QuestHistory",
+                    expected: "array of quest history entries",
+                    actual: questHistory.ValueKind.ToString(),
+                    repairHint: "Сохраняй questHistory как массив записей завершённых или заархивированных квестов, а не как scalar/object заглушку."));
             }
             else
             {
@@ -20853,8 +22870,15 @@ public class ValidationService
 
                     if (!HasAnyNonEmptyString(item, "questId", "questName", "title", "name"))
                     {
-                        issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                            "История квеста должна содержать questId или title/name"));
+                        issues.Add(new ValidationIssue(
+                            itemContext,
+                            IssueSeverity.Error,
+                            "История квеста должна содержать questId или title/name",
+                            code: "quest_history_entry_missing_identity",
+                            section: "QuestHistory",
+                            expected: "questId or questName/title/name",
+                            actual: "missing identity fields",
+                            repairHint: "Для каждой записи questHistory передай questId и/или читаемое имя квеста, чтобы запись можно было однозначно связать с canonical quest history."));
                     }
 
                     RequireString(item, itemContext, issues, "outcome");
@@ -20870,8 +22894,15 @@ public class ValidationService
         {
             if (questRewards.ValueKind != JsonValueKind.Array)
             {
-                issues.Add(new ValidationIssue($"{contextPrefix}.questRewards", IssueSeverity.Error,
-                    "questRewards должен быть массивом"));
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.questRewards",
+                    IssueSeverity.Error,
+                    "questRewards должен быть массивом",
+                    code: "quest_rewards_invalid_array",
+                    section: "QuestHistory",
+                    expected: "array of quest reward records",
+                    actual: questRewards.ValueKind.ToString(),
+                    repairHint: "Сохраняй questRewards как массив reward records, а не как scalar/object заглушку."));
             }
             else
             {
@@ -20897,8 +22928,15 @@ public class ValidationService
         {
             if (questChains.ValueKind != JsonValueKind.Array)
             {
-                issues.Add(new ValidationIssue($"{contextPrefix}.questChains", IssueSeverity.Error,
-                    "questChains должен быть массивом"));
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.questChains",
+                    IssueSeverity.Error,
+                    "questChains должен быть массивом",
+                    code: "quest_chains_invalid_array",
+                    section: "QuestHistory",
+                    expected: "array of quest chain records",
+                    actual: questChains.ValueKind.ToString(),
+                    repairHint: "Сохраняй questChains как массив chain records, а не как scalar/object заглушку."));
             }
             else
             {
@@ -20918,7 +22956,12 @@ public class ValidationService
                         issues.Add(new ValidationIssue(
                             $"{itemContext}.unlocked",
                             IssueSeverity.Error,
-                            "questChains.unlocked должен быть boolean"));
+                            "questChains.unlocked должен быть boolean",
+                            code: "quest_chain_unlocked_invalid",
+                            section: "QuestHistory",
+                            expected: "true or false",
+                            actual: unlocked.ValueKind.ToString(),
+                            repairHint: "Сохраняй questChains.unlocked как boolean-флаг, а не как число/строку."));
                     }
                 }
             }
@@ -20930,9 +22973,6 @@ public class ValidationService
         if (!root.TryGetProperty("questLog", out var value))
             return;
 
-        if (contextPrefix.Equals("game_state/quests/quest_history.json", StringComparison.OrdinalIgnoreCase))
-            return;
-
         var context = $"{contextPrefix}.questLog";
         if (value.ValueKind == JsonValueKind.Array)
         {
@@ -20941,8 +22981,15 @@ public class ValidationService
             {
                 if (item.ValueKind is not (JsonValueKind.Object or JsonValueKind.String))
                 {
-                    issues.Add(new ValidationIssue($"{context}[{index}]", IssueSeverity.Error,
-                        "Элемент questLog должен быть объектом или строкой"));
+                    issues.Add(new ValidationIssue(
+                        $"{context}[{index}]",
+                        IssueSeverity.Error,
+                        "Элемент questLog должен быть объектом или строкой",
+                        code: "quest_log_entry_invalid_shape",
+                        section: "QuestHistory",
+                        expected: "questLog entry as object or string",
+                        actual: item.ValueKind.ToString(),
+                        repairHint: "В legacy questLog используй либо строковые заметки, либо object entries. Не смешивай с number/bool/null."));
                 }
                 index++;
             }
@@ -20951,8 +22998,15 @@ public class ValidationService
 
         if (value.ValueKind != JsonValueKind.Object)
         {
-            issues.Add(new ValidationIssue(context, IssueSeverity.Error,
-                "questLog должен быть объектом или массивом"));
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "questLog должен быть объектом или массивом",
+                code: "quest_log_invalid_shape",
+                section: "QuestHistory",
+                expected: "legacy questLog object or array",
+                actual: value.ValueKind.ToString(),
+                repairHint: "Если используешь legacy questLog shorthand, сохраняй его как object или array. Для canonical stored shape предпочитай questHistory, questRewards и questChains."));
         }
     }
 
@@ -21142,7 +23196,7 @@ public class ValidationService
             if (item.TryGetProperty("isGroup", out var isGroup) &&
                 isGroup.ValueKind is JsonValueKind.True)
             {
-                ValidatePositiveNumberField(item, itemContext, issues, "count");
+                ValidatePositiveIntegerField(item, itemContext, issues, "count");
                 RequireString(item, itemContext, issues, "unitName");
                 ValidateRequiredNullableStringArrayField(item, itemContext, issues, "healthStates");
                 if (!item.TryGetProperty("healthStates", out var healthStates) || healthStates.ValueKind == JsonValueKind.Null)
@@ -21258,7 +23312,7 @@ public class ValidationService
         var sameTurnFactionInitialIds = CollectSameTurnFactionInitialIds(root);
         var knownPermanentFactionIds = CollectKnownPermanentFactionIds(root);
         var knownCanonicalFactionNames = CollectKnownPermanentFactionNames(root);
-        var factionSubEntityStateIndex = CollectKnownFactionSubEntityStateIndex(root);
+        var factionSubEntityStateIndex = CollectKnownFactionSubEntityStateIndex();
         var index = 0;
         foreach (var item in arr.EnumerateArray())
         {
@@ -21267,8 +23321,14 @@ public class ValidationService
 
             if (!HasAnyNonEmptyString(item, "factionId", "initialFactionId", "factionName", "name"))
             {
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                    "Фракционный объект должен содержать factionId/initialFactionId/factionName/name"));
+                issues.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    "Фракционный объект должен содержать factionId/initialFactionId/factionName/name",
+                    code: "faction_missing_identity",
+                    section: "Factions",
+                    expected: "factionId or initialFactionId or factionName or name",
+                    repairHint: "Передавай у фракционного объекта permanent factionId, same-turn initialFactionId или canonical factionName/name для идентификации и cross-reference."));
             }
 
             if (string.Equals(propName, "factions", StringComparison.OrdinalIgnoreCase) ||
@@ -21317,8 +23377,15 @@ public class ValidationService
 
             if (!HasAnyNonEmptyString(item, "factionId", "factionName", "name"))
             {
-                issues.Add(new ValidationIssue(itemContext, IssueSeverity.Error,
-                    "Фракционный объект должен содержать factionId/factionName/name"));
+                issues.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    "Фракционный объект должен содержать factionId/factionName/name",
+                    code: "faction_full_array_missing_identity",
+                    section: "Factions",
+                    expected: "factionId or factionName or name",
+                    actual: "missing identity fields",
+                    repairHint: "Для canonical full faction object передай permanent factionId и/или canonical factionName/name, чтобы клиент мог однозначно разрешить целевую фракцию."));
             }
 
             RequireString(item, itemContext, issues, "name");
@@ -21418,11 +23485,26 @@ public class ValidationService
 
             RequireString(item, itemContext, issues, "targetLocationId");
             RequireString(item, itemContext, issues, "storageId");
-            if (item.TryGetProperty("update", out var update))
-                RequireObject(update, $"{itemContext}.update", issues);
-            else
-                issues.Add(new ValidationIssue($"{itemContext}.update", IssueSeverity.Error,
-                    "storageUpdates item должен содержать update"));
+            if (!item.TryGetProperty("update", out var update))
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.update",
+                    IssueSeverity.Error,
+                    "storageUpdates item должен содержать update",
+                    code: "world_map_storage_update_missing_payload",
+                    section: "WorldMap",
+                    expected: "update object with changed storage fields",
+                    actual: "missing",
+                    repairHint: "Для storageUpdates передавай targetLocationId, storageId и nested update object только с реально изменившимися полями storage."));
+            else if (!RequireObject(update, $"{itemContext}.update", issues))
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.update",
+                    IssueSeverity.Error,
+                    "storageUpdates item должен содержать update object",
+                    code: "world_map_storage_update_invalid_payload_shape",
+                    section: "WorldMap",
+                    expected: "update object with changed storage fields",
+                    actual: update.ValueKind.ToString(),
+                    repairHint: "Для storageUpdates передавай targetLocationId, storageId и nested update object только с реально изменившимися полями storage."));
         }
     }
 
@@ -21467,61 +23549,84 @@ public class ValidationService
                     ValidateIntegerField(targetCoordinates, $"{itemContext}.targetCoordinates", issues, "z");
             }
 
-            if (item.TryGetProperty("updatedLink", out var updatedLink))
+            if (!item.TryGetProperty("updatedLink", out var updatedLink))
             {
-                if (RequireObject(updatedLink, $"{itemContext}.updatedLink", issues))
-                {
-                    var updatedLinkContext = $"{itemContext}.updatedLink";
-                    var visibleProps = updatedLink.EnumerateObject()
-                        .Where(prop => !prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
-                        .ToList();
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.updatedLink",
+                    IssueSeverity.Error,
+                    "linkUpdates item должен содержать обязательный updatedLink object",
+                    code: "world_map_link_update_missing_payload",
+                    section: "WorldMap",
+                    expected: "updatedLink object with at least one changed field",
+                    actual: "missing",
+                    repairHint: "Для linkUpdates передай updatedLink object с хотя бы одним реально изменённым полем ссылки: newName, newShortDescription и/или newLinkState."));
+            }
+            else if (!RequireObject(updatedLink, $"{itemContext}.updatedLink", issues))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.updatedLink",
+                    IssueSeverity.Error,
+                    "linkUpdates item должен содержать updatedLink object",
+                    code: "world_map_link_update_invalid_payload_shape",
+                    section: "WorldMap",
+                    expected: "updatedLink object with at least one changed field",
+                    actual: updatedLink.ValueKind.ToString(),
+                    repairHint: "Для linkUpdates передай updatedLink object с хотя бы одним реально изменённым полем ссылки: newName, newShortDescription и/или newLinkState."));
+            }
+            else
+            {
+                var updatedLinkContext = $"{itemContext}.updatedLink";
+                var visibleProps = updatedLink.EnumerateObject()
+                    .Where(prop => !prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
 
-                    if (visibleProps.Count == 0)
+                if (visibleProps.Count == 0)
+                {
+                    issues.Add(new ValidationIssue(
+                        updatedLinkContext,
+                        IssueSeverity.Error,
+                        "updatedLink должен содержать хотя бы одно реально изменённое поле",
+                        code: "world_map_link_update_missing_changes",
+                        section: "WorldMap",
+                        repairHint: "Передай в updatedLink только реально изменившиеся поля ссылки: newName, newShortDescription и/или newLinkState."));
+                }
+                else
+                {
+                    foreach (var prop in visibleProps)
                     {
-                        issues.Add(new ValidationIssue(
-                            updatedLinkContext,
-                            IssueSeverity.Error,
-                            "updatedLink должен содержать хотя бы одно реально изменённое поле",
-                            code: "world_map_link_update_missing_changes",
-                            section: "WorldMap",
-                            repairHint: "Передай в updatedLink только реально изменившиеся поля ссылки: newName, newShortDescription и/или newLinkState."));
-                    }
-                    else
-                    {
-                        foreach (var prop in visibleProps)
+                        switch (prop.Name)
                         {
-                            switch (prop.Name)
-                            {
-                                case "newName":
-                                case "newShortDescription":
-                                case "newLinkState":
-                                    if (prop.Value.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(prop.Value.GetString()))
-                                    {
-                                        issues.Add(new ValidationIssue(
-                                            $"{updatedLinkContext}.{prop.Name}",
-                                            IssueSeverity.Error,
-                                            $"{prop.Name} должен быть непустой строкой"));
-                                    }
-                                    break;
-                                default:
+                            case "newName":
+                            case "newShortDescription":
+                            case "newLinkState":
+                                if (prop.Value.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(prop.Value.GetString()))
+                                {
                                     issues.Add(new ValidationIssue(
                                         $"{updatedLinkContext}.{prop.Name}",
                                         IssueSeverity.Error,
-                                        "updatedLink содержит неподдерживаемое поле partial update",
-                                        code: "world_map_link_update_unknown_field",
+                                        $"{prop.Name} должен быть непустой строкой",
+                                        code: "world_map_link_update_invalid_field_value",
                                         section: "WorldMap",
-                                        expected: "newName | newShortDescription | newLinkState",
-                                        actual: prop.Name,
-                                        repairHint: "Для linkUpdates используй только documented partial fields ссылки: newName, newShortDescription, newLinkState."));
-                                    break;
-                            }
+                                        expected: "non-empty string",
+                                        actual: prop.Value.ValueKind == JsonValueKind.String ? "empty string" : prop.Value.ValueKind.ToString(),
+                                        repairHint: "Для updatedLink используй только непустые строковые значения в newName, newShortDescription и newLinkState."));
+                                }
+                                break;
+                            default:
+                                issues.Add(new ValidationIssue(
+                                    $"{updatedLinkContext}.{prop.Name}",
+                                    IssueSeverity.Error,
+                                    "updatedLink содержит неподдерживаемое поле partial update",
+                                    code: "world_map_link_update_unknown_field",
+                                    section: "WorldMap",
+                                    expected: "newName | newShortDescription | newLinkState",
+                                    actual: prop.Name,
+                                    repairHint: "Для linkUpdates используй только documented partial fields ссылки: newName, newShortDescription, newLinkState."));
+                                break;
                         }
                     }
                 }
             }
-            else
-                issues.Add(new ValidationIssue($"{itemContext}.updatedLink", IssueSeverity.Error,
-                    "linkUpdates item должен содержать updatedLink"));
         }
     }
 
@@ -21564,30 +23669,238 @@ public class ValidationService
             if (!RequireObject(item, itemContext, issues))
                 continue;
 
-            if (!HasAnyNonEmptyString(item, "targetLocationId", "initialTargetLocationId"))
+            if (!item.TryGetProperty("targetLocationId", out var targetLocationIdNode))
             {
                 issues.Add(new ValidationIssue(
-                    itemContext,
+                    $"{itemContext}.targetLocationId",
                     IssueSeverity.Error,
-                    "threatsToAdd item должен содержать targetLocationId или initialTargetLocationId"));
+                    "threatsToAdd должен явно задавать targetLocationId",
+                    code: "world_map_threat_add_missing_target_location_id",
+                    section: "WorldMap",
+                    expected: "targetLocationId as string for existing location or null for same-turn new location",
+                    actual: "missing",
+                    repairHint: "Для threatsToAdd всегда передавай targetLocationId. Для existing location используй её permanent id, а для same-turn new location укажи targetLocationId = null и exact initialTargetLocationId."));
+            }
+            else
+            {
+                ValidateRequiredNullableStringField(item, itemContext, issues, "targetLocationId");
+            }
+
+            if (item.TryGetProperty("initialTargetLocationId", out _))
+                ValidateOptionalNullableStringField(item, itemContext, issues, "initialTargetLocationId");
+
+            var targetLocationId = targetLocationIdNode.ValueKind == JsonValueKind.String
+                ? targetLocationIdNode.GetString()
+                : null;
+            var initialTargetLocationId = GetFirstNonEmptyString(item, "initialTargetLocationId");
+            if (targetLocationIdNode.ValueKind == JsonValueKind.Null)
+            {
+                if (string.IsNullOrWhiteSpace(initialTargetLocationId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.initialTargetLocationId",
+                        IssueSeverity.Error,
+                        "threatsToAdd для same-turn новой локации требует initialTargetLocationId",
+                        code: "world_map_threat_add_missing_same_turn_initial_target",
+                        section: "WorldMap",
+                        expected: "exact initialTargetLocationId of the same-turn new location",
+                        actual: "missing or empty",
+                        repairHint: "Если угроза создаётся в same-turn новой локации, оставь targetLocationId = null и передай exact initialTargetLocationId этой локации."));
+                }
+            }
+            else if (!string.IsNullOrWhiteSpace(targetLocationId) && !string.IsNullOrWhiteSpace(initialTargetLocationId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.initialTargetLocationId",
+                    IssueSeverity.Error,
+                    "threatsToAdd не должен смешивать targetLocationId existing локации с initialTargetLocationId same-turn новой локации",
+                    code: "world_map_threat_add_mixed_targeting_modes",
+                    section: "WorldMap",
+                    expected: "either targetLocationId for existing location, or targetLocationId=null + initialTargetLocationId for same-turn new location",
+                    actual: $"targetLocationId={targetLocationId}, initialTargetLocationId={initialTargetLocationId}",
+                    repairHint: "Для existing location оставь только targetLocationId. Для same-turn new location укажи targetLocationId = null и используй только initialTargetLocationId."));
             }
 
             if (item.TryGetProperty("threat", out var threat) &&
                 RequireObject(threat, $"{itemContext}.threat", issues))
             {
-                if (!HasAnyNonEmptyString(threat, "threatId", "name", "title"))
-                {
-                    issues.Add(new ValidationIssue(
-                        $"{itemContext}.threat",
-                        IssueSeverity.Error,
-                        "threat object должен содержать threatId или name/title"));
-                }
+                ValidateActiveThreatObject(threat, $"{itemContext}.threat", issues, requireNullThreatId: true);
             }
             else
             {
                 issues.Add(new ValidationIssue($"{itemContext}.threat", IssueSeverity.Error,
                     "threatsToAdd item должен содержать threat object"));
             }
+        }
+    }
+
+    private void ValidateActiveThreatObject(JsonElement threat, string context, List<ValidationIssue> issues, bool requireNullThreatId)
+    {
+        if (!threat.TryGetProperty("threatId", out var threatIdNode))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.threatId",
+                IssueSeverity.Error,
+                "Active Threat Object должен содержать threatId",
+                code: requireNullThreatId ? "world_map_new_threat_missing_id" : "world_map_active_threat_missing_id",
+                section: "WorldMap",
+                expected: requireNullThreatId ? "threatId = null for a new threat" : "string threatId or null for a newly introduced canonical threat",
+                actual: "missing",
+                repairHint: requireNullThreatId
+                    ? "Для threatsToAdd передай complete Active Threat Object и установи threatId = null."
+                    : "В canonical activeThreats всегда сохраняй threatId. Для угрозы, созданной в этом же ходе, допустим null до системной нормализации."));
+        }
+        else if (requireNullThreatId)
+        {
+            if (threatIdNode.ValueKind != JsonValueKind.Null)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.threatId",
+                    IssueSeverity.Error,
+                    "Новая угроза в threatsToAdd должна иметь threatId = null",
+                    code: "world_map_new_threat_non_null_id_forbidden",
+                    section: "WorldMap",
+                    expected: "null",
+                    actual: threatIdNode.ValueKind == JsonValueKind.String ? threatIdNode.GetString() ?? string.Empty : threatIdNode.ValueKind.ToString(),
+                    repairHint: "Для brand-new threatsToAdd оставляй threatId = null. Система назначит permanent id после принятия хода."));
+            }
+        }
+        else if (threatIdNode.ValueKind != JsonValueKind.Null &&
+                 (threatIdNode.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(threatIdNode.GetString())))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.threatId",
+                IssueSeverity.Error,
+                "Active Threat Object threatId должен быть непустой строкой или null",
+                code: "world_map_active_threat_invalid_id",
+                section: "WorldMap",
+                expected: "non-empty string threatId or null",
+                actual: threatIdNode.ValueKind.ToString(),
+                repairHint: "Сохраняй threatId как непустую строку. Null допустим только для brand-new threat до системной нормализации."));
+        }
+
+        RequireString(threat, context, issues, "name");
+        ValidateOptionalString(threat, context, issues, "description");
+        ValidateNonNegativeIntegerField(threat, context, issues, "intensity", "WorldMap");
+        RequireString(threat, context, issues, "longTermGoal");
+
+        if (!threat.TryGetProperty("currentActivity", out var currentActivity))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.currentActivity",
+                IssueSeverity.Error,
+                "Active Threat Object должен содержать currentActivity object или null",
+                code: "world_map_active_threat_missing_current_activity",
+                section: "WorldMap",
+                expected: "currentActivity object or null",
+                actual: "missing",
+                repairHint: "Передай в Active Threat Object currentActivity как объект текущего шага или null для idle threat."));
+        }
+        else if (currentActivity.ValueKind != JsonValueKind.Null)
+        {
+            ValidateNpcCurrentActivityObject(currentActivity, $"{context}.currentActivity", issues);
+        }
+
+        if (!threat.TryGetProperty("threatArchetype", out var threatArchetype) ||
+            !RequireObject(threatArchetype, $"{context}.threatArchetype", issues))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.threatArchetype",
+                IssueSeverity.Error,
+                "Active Threat Object должен содержать threatArchetype",
+                code: "world_map_active_threat_missing_archetype",
+                section: "WorldMap",
+                expected: "threatArchetype object with motivation and method",
+                actual: "missing or invalid",
+                repairHint: "Передай в Active Threat Object threatArchetype с canonical motivation/method и custom* полями при необходимости."));
+        }
+        else
+        {
+            var motivation = RequireString(threatArchetype, $"{context}.threatArchetype", issues, "motivation");
+            var method = RequireString(threatArchetype, $"{context}.threatArchetype", issues, "method");
+            if (!string.IsNullOrWhiteSpace(motivation) && !AllowedThreatMotivations.Contains(motivation))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.threatArchetype.motivation",
+                    IssueSeverity.Error,
+                    "threatArchetype.motivation должен быть одним из canonical enum значений",
+                    code: "world_map_threat_invalid_motivation",
+                    section: "WorldMap",
+                    expected: string.Join(" | ", AllowedThreatMotivations),
+                    actual: motivation,
+                    repairHint: "Используй в threatArchetype.motivation только canonical значения из Block 20 или Custom с заполненным customMotivation."));
+            }
+
+            if (!string.IsNullOrWhiteSpace(method) && !AllowedThreatMethods.Contains(method))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.threatArchetype.method",
+                    IssueSeverity.Error,
+                    "threatArchetype.method должен быть одним из canonical enum значений",
+                    code: "world_map_threat_invalid_method",
+                    section: "WorldMap",
+                    expected: string.Join(" | ", AllowedThreatMethods),
+                    actual: method,
+                    repairHint: "Используй в threatArchetype.method только canonical значения из Block 20 или Custom с заполненным customMethod."));
+            }
+
+            if (string.Equals(motivation, "Custom", StringComparison.OrdinalIgnoreCase))
+                RequireString(threatArchetype, $"{context}.threatArchetype", issues, "customMotivation");
+            else if (threatArchetype.TryGetProperty("customMotivation", out _))
+                ValidateOptionalNullableStringField(threatArchetype, $"{context}.threatArchetype", issues, "customMotivation");
+
+            if (string.Equals(method, "Custom", StringComparison.OrdinalIgnoreCase))
+                RequireString(threatArchetype, $"{context}.threatArchetype", issues, "customMethod");
+            else if (threatArchetype.TryGetProperty("customMethod", out _))
+                ValidateOptionalNullableStringField(threatArchetype, $"{context}.threatArchetype", issues, "customMethod");
+        }
+
+        if (!threat.TryGetProperty("impactProfile", out var impactProfile) ||
+            !RequireObject(impactProfile, $"{context}.impactProfile", issues))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.impactProfile",
+                IssueSeverity.Error,
+                "Active Threat Object должен содержать impactProfile",
+                code: "world_map_active_threat_missing_impact_profile",
+                section: "WorldMap",
+                expected: "impactProfile object with target type/id/name and primary impact",
+                actual: "missing or invalid",
+                repairHint: "Передай в Active Threat Object impactProfile с primaryTargetType, primaryTargetId, primaryTargetName, primaryImpact и baseImpactValue."));
+        }
+        else
+        {
+            var primaryTargetType = RequireString(impactProfile, $"{context}.impactProfile", issues, "primaryTargetType");
+            if (!string.IsNullOrWhiteSpace(primaryTargetType) && !AllowedThreatPrimaryTargetTypes.Contains(primaryTargetType))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.impactProfile.primaryTargetType",
+                    IssueSeverity.Error,
+                    "impactProfile.primaryTargetType должен быть одним из canonical enum значений",
+                    code: "world_map_threat_invalid_primary_target_type",
+                    section: "WorldMap",
+                    expected: string.Join(" | ", AllowedThreatPrimaryTargetTypes),
+                    actual: primaryTargetType,
+                    repairHint: "Используй в impactProfile.primaryTargetType только Faction, Location или Resource."));
+            }
+
+            ValidateRequiredNullableStringField(impactProfile, $"{context}.impactProfile", issues, "primaryTargetId");
+            RequireString(impactProfile, $"{context}.impactProfile", issues, "primaryTargetName");
+            var primaryImpact = RequireString(impactProfile, $"{context}.impactProfile", issues, "primaryImpact");
+            if (!string.IsNullOrWhiteSpace(primaryImpact) && !AllowedThreatPrimaryImpacts.Contains(primaryImpact))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.impactProfile.primaryImpact",
+                    IssueSeverity.Error,
+                    "impactProfile.primaryImpact должен быть одним из canonical enum значений",
+                    code: "world_map_threat_invalid_primary_impact",
+                    section: "WorldMap",
+                    expected: string.Join(" | ", AllowedThreatPrimaryImpacts),
+                    actual: primaryImpact,
+                    repairHint: "Используй в impactProfile.primaryImpact только Military, Economic, Social, Covert, Stability или Environment."));
+            }
+
+            ValidateIntegerField(impactProfile, $"{context}.impactProfile", issues, "baseImpactValue");
         }
     }
 
@@ -21622,11 +23935,38 @@ public class ValidationService
                         actual: "null",
                         repairHint: "Если активность угрозы завершена или abandoned, используй completeThreatActivities с finalState. threatsToUpdate оставляй только для non-terminal partial changes."));
                 }
+                else if (threatUpdate.TryGetProperty("currentActivity", out currentActivity) &&
+                         currentActivity.ValueKind == JsonValueKind.Object)
+                {
+                    var activeState = GetFirstNonEmptyString(currentActivity, "activeState");
+                    if (string.Equals(activeState, "Completed", StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(activeState, "Abandoned", StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{itemContext}.threatUpdate.currentActivity.activeState",
+                            IssueSeverity.Error,
+                            "threatsToUpdate не должен завершать активность угрозы через currentActivity.activeState",
+                            code: "world_map_threat_update_terminal_activity_state_forbidden",
+                            section: "WorldMap",
+                            expected: "non-terminal currentActivity patch; terminal completion belongs to completeThreatActivities",
+                            actual: activeState,
+                            repairHint: "Если активность угрозы завершена или abandoned, не ставь terminal activeState внутри threatsToUpdate. Используй completeThreatActivities с finalState = Completed или Abandoned."));
+                    }
+
+                    ValidatePartialThreatActivityUpdateObject(currentActivity, $"{itemContext}.threatUpdate.currentActivity", issues);
+                }
             }
             else
             {
-                issues.Add(new ValidationIssue($"{itemContext}.threatUpdate", IssueSeverity.Error,
-                    "threatsToUpdate item должен содержать threatUpdate"));
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.threatUpdate",
+                    IssueSeverity.Error,
+                    "threatsToUpdate item должен содержать обязательный threatUpdate object",
+                    code: "world_map_threat_update_missing_payload",
+                    section: "WorldMap",
+                    expected: "threatUpdate object with threatId and changed fields",
+                    actual: "missing",
+                    repairHint: "Для threatsToUpdate передай threatUpdate object с threatId и хотя бы одним реально изменяемым полем угрозы."));
             }
         }
     }
@@ -21717,7 +24057,12 @@ public class ValidationService
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.controlledTerritories",
                     IssueSeverity.Error,
-                    "controlledTerritories должен быть массивом или null"));
+                    "controlledTerritories должен быть массивом или null",
+                    code: "faction_controlled_territories_invalid_array_shape",
+                    section: "Factions",
+                    expected: "controlledTerritories array or null",
+                    actual: territories.ValueKind.ToString(),
+                    repairHint: "Передавай controlledTerritories как null или массив canonical territory entries с locationId/locationName."));
             }
         }
 
@@ -21958,7 +24303,11 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 itemContext,
                 IssueSeverity.Error,
-                "Faction command должен содержать factionId для existing faction или initialFactionId для новой same-turn faction"));
+                "Faction command должен содержать factionId для existing faction или initialFactionId для новой same-turn faction",
+                code: "faction_command_missing_identity",
+                section: "Factions",
+                expected: "factionId for existing faction or initialFactionId for new same-turn faction",
+                repairHint: "Для existing faction передавай permanent factionId. Для новой same-turn faction используй initialFactionId, который совпадает с factionDataChanges.initialId."));
         }
 
         if (hasFactionId && hasInitialFactionId)
@@ -21997,9 +24346,9 @@ public class ValidationService
                 $"Faction command ссылается на неизвестный factionId '{factionId}'",
                 code: "faction_command_unknown_faction_id",
                 section: "Factions",
-                expected: "existing permanent factionId from faction_core.json or same-turn factionDataChanges object",
+                expected: "existing permanent factionId from faction_core.json",
                 actual: factionId,
-                repairHint: "Используй существующий factionId. Для новой фракции в этом же ходу используй full factionDataChanges object и initialFactionId только для same-turn linking."));
+                repairHint: "Для existing faction используй существующий permanent factionId из faction_core.json. Для новой фракции в этом же ходу создай её через factionDataChanges и ссылайся на неё только через initialFactionId для same-turn linking."));
         }
 
         ValidateOptionalString(item, itemContext, issues, "factionId");
@@ -22088,22 +24437,6 @@ public class ValidationService
             }
         }
 
-        var currentFactionCoreJson = ReadCurrentTrackedFileSync("game_state/factions/faction_core.json");
-        if (!string.IsNullOrWhiteSpace(currentFactionCoreJson))
-        {
-            try
-            {
-                using var doc = JsonDocument.Parse(currentFactionCoreJson);
-                CollectFromRoot(doc.RootElement, ids);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        CollectFromRoot(root, ids);
-
         return ids;
     }
 
@@ -22147,27 +24480,11 @@ public class ValidationService
             }
         }
 
-        var currentFactionCoreJson = ReadCurrentTrackedFileSync("game_state/factions/faction_core.json");
-        if (!string.IsNullOrWhiteSpace(currentFactionCoreJson))
-        {
-            try
-            {
-                using var doc = JsonDocument.Parse(currentFactionCoreJson);
-                CollectFromRoot(doc.RootElement, names);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        CollectFromRoot(root, names);
-
         _knownCanonicalFactionNamesCache = names;
         return names;
     }
 
-    private FactionSubEntityStateIndex CollectKnownFactionSubEntityStateIndex(JsonElement root)
+    private FactionSubEntityStateIndex CollectKnownFactionSubEntityStateIndex()
     {
         var index = new FactionSubEntityStateIndex();
 
@@ -22212,22 +24529,8 @@ public class ValidationService
                 }
             }
 
-            var currentJson = ReadCurrentTrackedFileSync(trackedPath);
-            if (!string.IsNullOrWhiteSpace(currentJson))
-            {
-                try
-                {
-                    using var doc = JsonDocument.Parse(currentJson);
-                    CollectFromRoot(doc.RootElement);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
         }
 
-        CollectFromRoot(root);
         return index;
     }
 
@@ -22298,7 +24601,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 itemContext,
                 IssueSeverity.Error,
-                "factionBonusChanges item должен содержать bonusesToAddOrUpdate и/или bonusesToRemove"));
+                "factionBonusChanges item должен содержать bonusesToAddOrUpdate и/или bonusesToRemove",
+                code: "faction_bonus_change_missing_operations",
+                section: "FactionBonuses",
+                expected: "bonusesToAddOrUpdate and/or bonusesToRemove",
+                actual: "no bonus operations",
+                repairHint: "Добавь в factionBonusChanges хотя бы одну ветку: bonusesToAddOrUpdate для создания/обновления бонусов и/или bonusesToRemove для удаления существующих bonusId."));
             return;
         }
 
@@ -22417,7 +24725,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{itemContext}.projectUpdate",
                 IssueSeverity.Error,
-                "factionProjectUpdates item должен содержать projectUpdate"));
+                "factionProjectUpdates item должен содержать projectUpdate",
+                code: "faction_project_update_missing_payload",
+                section: "FactionProjects",
+                expected: "projectUpdate object",
+                actual: "missing or non-object",
+                repairHint: "Добавь в factionProjectUpdates объект projectUpdate с projectId и хотя бы одним non-terminal tracker change."));
             return;
         }
 
@@ -22554,7 +24867,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 itemContext,
                 IssueSeverity.Error,
-                "factionCustomStateChanges item должен содержать statesToAddOrUpdate и/или statesToRemove"));
+                "factionCustomStateChanges item должен содержать statesToAddOrUpdate и/или statesToRemove",
+                code: "faction_custom_state_change_missing_operations",
+                section: "Factions",
+                expected: "statesToAddOrUpdate and/or statesToRemove",
+                actual: "no custom state operations",
+                repairHint: "Добавь в factionCustomStateChanges хотя бы одну ветку: statesToAddOrUpdate для создания/обновления custom state entries и/или statesToRemove для удаления существующих stateId."));
             return;
         }
 
@@ -22828,7 +25146,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 itemContext,
                 IssueSeverity.Error,
-                "factionRankChanges item должен содержать хотя бы одну rank/branch операцию"));
+                "factionRankChanges item должен содержать хотя бы одну rank/branch операцию",
+                code: "faction_rank_change_missing_operations",
+                section: "FactionRanks",
+                expected: "branchesToAdd | branchesToUpdate | branchesToRemove | ranksToAdd | ranksToUpdate | ranksToRemove",
+                actual: "no rank or branch operations",
+                repairHint: "Добавь в factionRankChanges хотя бы одну rank/branch операцию. Не отправляй пустой командный объект без изменений и без target payload."));
         }
     }
 
@@ -22942,7 +25265,12 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 $"{context}.progressionRule",
                 IssueSeverity.Error,
-                "Canonical faction custom state должен содержать progressionRule object"));
+                "Canonical faction custom state должен содержать progressionRule object",
+                code: "canonical_faction_custom_state_missing_progression_rule",
+                section: "Factions",
+                expected: "progressionRule object with changePerTurn and description",
+                actual: item.TryGetProperty("progressionRule", out var actualProgressionRule) ? actualProgressionRule.ValueKind.ToString() : "missing",
+                repairHint: "Для canonical faction custom state сохраняй progressionRule object с changePerTurn и description, а не partial stub без правила прогрессии."));
         }
         else
         {
@@ -23118,6 +25446,7 @@ public class ValidationService
         if (!TryGetArray(root, "factionChronicleUpdates", $"{contextPrefix}.factionChronicleUpdates", issues, out var arr))
             return;
 
+        var knownPermanentFactionIds = CollectKnownPermanentFactionIds(root);
         var index = 0;
         foreach (var item in arr.EnumerateArray())
         {
@@ -23133,9 +25462,21 @@ public class ValidationService
                     "factionChronicleUpdates требует factionId для канонической привязки записи к фракции",
                     code: "faction_chronicle_missing_faction_id",
                     section: "FactionChronicle",
-                    expected: "non-empty factionId",
-                    actual: "missing",
-                    repairHint: "Для factionChronicleUpdates передавай factionId + entryToAppend. Одного factionName/name недостаточно: запись должна оставаться связанной с canonical faction state."));
+                        expected: "non-empty factionId",
+                        actual: "missing",
+                        repairHint: "Для factionChronicleUpdates передавай factionId + entryToAppend. Одного factionName/name недостаточно: запись должна оставаться связанной с canonical faction state."));
+            }
+            else if (knownPermanentFactionIds.Count > 0 && !knownPermanentFactionIds.Contains(factionId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.factionId",
+                    IssueSeverity.Error,
+                    $"factionChronicleUpdates ссылается на factionId '{factionId}', которого нет в canonical faction state",
+                    code: "faction_chronicle_unknown_faction_id",
+                    section: "FactionChronicle",
+                    expected: "existing permanent factionId from faction_core.json",
+                    actual: factionId,
+                    repairHint: "Для factionChronicleUpdates используй существующий permanent factionId из canonical faction_core state. Новую фракцию сначала создай/сохрани через faction_core, затем привязывай к ней chronicle entry."));
             }
 
             ValidateOptionalString(item, itemContext, issues, "factionName");
@@ -23207,7 +25548,7 @@ public class ValidationService
                 section: "WorldTime",
                 expected: "object with absolute date fields or null",
                 actual: value.ValueKind.ToString(),
-                repairHint: "Используй для setWorldTime либо null, либо полный absolute date object с year, monthName, dayOfMonth и timeOfDay."));
+                repairHint: "Используй для setWorldTime либо null, либо полный absolute date object с year, monthName, dayOfMonth и timeOfDay. Если календарное имя месяца неоднозначно, не пытайся подгонять его под непроверяемую эвристику клиента."));
             return;
         }
 
@@ -23230,7 +25571,7 @@ public class ValidationService
                 section: "WorldTime",
                 expected: "year, monthName, dayOfMonth, timeOfDay",
                 actual: string.Join(", ", missingFields),
-                repairHint: "Для setWorldTime передай полный absolute date object с year, monthName, dayOfMonth и timeOfDay по Block 23.A."));
+                repairHint: "Для setWorldTime передай полный absolute date object с year, monthName, dayOfMonth и timeOfDay по Block 23.A. currentTimeInMinutes на command surface не обязателен; при его отсутствии scheduler должен работать в fail-open режиме."));
             return;
         }
 
@@ -23263,6 +25604,94 @@ public class ValidationService
                 expected: "HH:MM (24-hour format)",
                 actual: timeOfDay,
                 repairHint: "Для setWorldTime передай timeOfDay в формате HH:MM по Block 23.A, например 08:15 или 19:30."));
+        }
+    }
+
+    private void ValidateDirectWorldTimeState(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var hasDirectAbsoluteField =
+            root.TryGetProperty("year", out _) ||
+            root.TryGetProperty("monthName", out _) ||
+            root.TryGetProperty("dayOfMonth", out _) ||
+            root.TryGetProperty("timeOfDay", out _) ||
+            root.TryGetProperty("currentTimeInMinutes", out _);
+
+        if (!hasDirectAbsoluteField)
+            return;
+
+        var context = $"{contextPrefix}.normalizedAbsoluteState";
+        var missingFields = new List<string>();
+        if (!root.TryGetProperty("year", out _))
+            missingFields.Add("year");
+        if (!HasNonEmptyString(root, "monthName"))
+            missingFields.Add("monthName");
+        if (!root.TryGetProperty("dayOfMonth", out _))
+            missingFields.Add("dayOfMonth");
+        if (!HasNonEmptyString(root, "timeOfDay"))
+            missingFields.Add("timeOfDay");
+        if (!root.TryGetProperty("currentTimeInMinutes", out _))
+            missingFields.Add("currentTimeInMinutes");
+        if (missingFields.Count > 0)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "world_time normalized absolute state должен содержать полный набор canonical date fields",
+                code: "world_time_direct_state_missing_required_fields",
+                section: "WorldTime",
+                expected: "year, monthName, dayOfMonth, timeOfDay, currentTimeInMinutes",
+                actual: string.Join(", ", missingFields),
+                repairHint: "Если world_time.json хранится в normalized absolute state, передай полный root object с year, monthName, dayOfMonth, timeOfDay и currentTimeInMinutes. Не оставляй partial absolute state без полного набора полей."));
+            return;
+        }
+
+        ValidateIntegerField(root, contextPrefix, issues, "year");
+        ValidateIntegerField(root, contextPrefix, issues, "dayOfMonth");
+        ValidateIntegerField(root, contextPrefix, issues, "currentTimeInMinutes");
+        if (root.TryGetProperty("dayOfMonth", out var dayOfMonthNode) &&
+            dayOfMonthNode.ValueKind == JsonValueKind.Number &&
+            dayOfMonthNode.TryGetInt32(out var dayOfMonth) &&
+            dayOfMonth <= 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.dayOfMonth",
+                IssueSeverity.Error,
+                "world_time.dayOfMonth должен быть положительным номером дня",
+                code: "world_time_direct_state_invalid_day_of_month",
+                section: "WorldTime",
+                expected: "positive integer dayOfMonth",
+                actual: dayOfMonth.ToString(),
+                repairHint: "Для normalized absolute world_time передай dayOfMonth как положительное целое число, начиная с 1."));
+        }
+
+        if (root.TryGetProperty("currentTimeInMinutes", out var currentTimeNode) &&
+            currentTimeNode.ValueKind == JsonValueKind.Number &&
+            currentTimeNode.TryGetInt32(out var currentTimeInMinutes) &&
+            currentTimeInMinutes < 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.currentTimeInMinutes",
+                IssueSeverity.Error,
+                "world_time.currentTimeInMinutes не может быть отрицательным",
+                code: "world_time_direct_state_negative_minutes",
+                section: "WorldTime",
+                expected: "non-negative integer currentTimeInMinutes",
+                actual: currentTimeInMinutes.ToString(),
+                repairHint: "Для normalized absolute world_time передай currentTimeInMinutes как неотрицательное целое число."));
+        }
+
+        var timeOfDay = RequireString(root, contextPrefix, issues, "timeOfDay");
+        if (!string.IsNullOrWhiteSpace(timeOfDay) && !TimeOfDayRegex.IsMatch(timeOfDay))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.timeOfDay",
+                IssueSeverity.Error,
+                "world_time.timeOfDay должен быть в canonical HH:MM формате",
+                code: "world_time_direct_state_invalid_time_of_day_format",
+                section: "WorldTime",
+                expected: "HH:MM (24-hour format)",
+                actual: timeOfDay,
+                repairHint: "Для normalized absolute world_time передай timeOfDay в формате HH:MM, например 08:15 или 19:30."));
         }
     }
 
@@ -23316,7 +25745,51 @@ public class ValidationService
                 section: "Weather",
                 expected: string.Join(" | ", AllowedWeatherTendencies),
                 actual: tendency,
-                repairHint: "Используй в weatherChange.tendency только IMPROVE, WORSEN, NO_CHANGE или один из JUMP_TO_* commands из Block 27.2."));
+                repairHint: "Используй в weatherChange.tendency только IMPROVE, WORSEN, NO_CHANGE или один из JUMP_TO_* commands из Block 27.2. Если biome context неочевиден, не рассчитывай на эвристику клиента и оставляй корректный canonical tendency + description."));
+        }
+    }
+
+    private void ValidateDirectWeatherState(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var hasDirectCommandField =
+            root.TryGetProperty("tendency", out _) ||
+            root.TryGetProperty("description", out _);
+
+        if (!hasDirectCommandField)
+            return;
+
+        var context = $"{contextPrefix}.normalizedWeatherState";
+        var missingFields = new List<string>();
+        if (!HasNonEmptyString(root, "tendency"))
+            missingFields.Add("tendency");
+        if (!HasNonEmptyString(root, "description"))
+            missingFields.Add("description");
+        if (missingFields.Count > 0)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "weather.json direct root weather state должен содержать и tendency, и description",
+                code: "weather_direct_state_missing_required_fields",
+                section: "Weather",
+                expected: "tendency and description",
+                actual: string.Join(", ", missingFields),
+                repairHint: "Если weather.json хранится в direct root форме, оставь на корне и tendency, и description. Иначе используй canonical wrapper weatherChange."));
+            return;
+        }
+
+        var tendency = RequireString(root, contextPrefix, issues, "tendency");
+        if (!string.IsNullOrWhiteSpace(tendency) && !AllowedWeatherTendencies.Contains(tendency))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.tendency",
+                IssueSeverity.Error,
+                "weather.json direct root tendency должен быть одним из canonical weather commands",
+                code: "weather_direct_state_invalid_tendency",
+                section: "Weather",
+                expected: string.Join(" | ", AllowedWeatherTendencies),
+                actual: tendency,
+                repairHint: "Если weather.json хранится в direct root форме, используй в tendency только IMPROVE, WORSEN, NO_CHANGE или один из JUMP_TO_* commands из Block 27.2. Если biome context неочевиден, не рассчитывай на клиентский lookup и оставляй корректный canonical tendency + description."));
         }
     }
 

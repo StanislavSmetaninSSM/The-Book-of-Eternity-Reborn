@@ -19,7 +19,7 @@ Do **not** mix `TriggerLifeEnd` with the final Life Evaluation reward payload in
 ```json
 {
   "response": "Алдрик опускает меч и понимает, что его долг исполнен. Смертная жизнь завершается, и душа начинает путь обратно в Море Хаоса.",
-  "gm_thoughts_markdown": "# Завершение жизни\n- Игрок добровольно завершает текущую смертную жизнь\n- Этот ход только запускает переход\n- Награды будут выданы в отдельном Life Evaluation ходе",
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: TriggerLifeEnd меняет lifecycle/control surfaces без структурированных NPC или Guardian updates.\n- Actors outside scope: NPC сцены, Хранители\n- Why outside scope: Этот ход только запускает переход и не должен мутировать их состояние.\n\n## Reasoning\n- Игрок добровольно завершает текущую смертную жизнь.\n- Этот ход только запускает переход.\n- Награды будут выданы в отдельном Life Evaluation ходе.",
   "metaStateUpdates": {
     "lifeTransitions": {
       "recordLifeCompletion": {
@@ -89,7 +89,7 @@ After Phase 1 is accepted, the client sends a dedicated Life Evaluation request.
 ```json
 {
   "response": "В Море Хаоса тебя встречает Луминара. [ACHIEVEMENT_UNLOCK: Память о Долге] Она склоняет голову в знак уважения и вручает тебе награду за прожитую жизнь.",
-  "gm_thoughts_markdown": "# Life Evaluation\n## Reward Minimum\n- Completed mortal life must grant at least 10 Ink Feathers\n- Completed mortal life must grant at least one NEW Soul Relic\n\n## Reward Result\n- Ink Feathers granted: 186\n- New relic granted: sr_guardian_luminara_village_oath_20260301\n- Chronicle updated with completed-life summary",
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Guardian-centric\n- Relevant actors: Луминара\n- Why relevant: Life Evaluation is resolved through the active Guardian in the afterlife realm.\n- Actors outside scope: other Guardians, Mortal World NPCs\n- Why outside scope: Only Луминара participates in this evaluation turn.\n\n## Guardian Thoughts\n### Луминара\n- Completed mortal life must grant at least 10 Ink Feathers.\n- Completed mortal life must grant at least one NEW Soul Relic.\n- This evaluation grants 186 Ink Feathers, one new relic, and appends the completed-life summary to the chronicle.",
   "metaStateUpdates": {
     "inkFeatherChanges": {
       "add": 186,
@@ -111,7 +111,25 @@ After Phase 1 is accepted, the client sends a dedicated Life Evaluation request.
         "title": "Клятва Защитника",
         "category": "history",
         "content": "Жизнь, завершенная ради защиты других, оставила отпечаток в Море Хаоса.",
+        "discoveryContext": "Life Evaluation: Луминара раскрыла смысл реликвии после оценки завершённой жизни.",
+        "discoveredAt": "2026-03-01T12:30:00Z",
         "incarnation": 4
+      }
+    }
+  ],
+  "achievementUnlocks": [
+    {
+      "achievementId": "ach-memory-of-duty",
+      "name": "Память о Долге",
+      "description": "Завершить жизнь, пожертвовав собой ради защиты других.",
+      "category": "story",
+      "rarity": "rare",
+      "icon": "🛡️",
+      "incarnation": 4,
+      "unlockedAt": "2026-03-01T12:30:00Z",
+      "progress": {
+        "current": 1,
+        "target": 1
       }
     }
   ]
@@ -154,4 +172,4 @@ ready/turn_complete.json                <- correlated terminal success signal wi
   - at least `10` Ink Feathers
   - at least one new Soul Relic with a new `relicId`
 - Life Evaluation must append a new entry to `lore/chaos_sea/player_chronicle.json`.
-- Achievement unlocks in `response` should use `[ACHIEVEMENT_UNLOCK: Achievement Name]` so the client can highlight them.
+- Achievement unlocks in `response` should use `[ACHIEVEMENT_UNLOCK: Achievement Name]`, but that marker accompanies and does not replace `achievementUnlocks` plus the resulting `game_state/meta/achievements.json` update.

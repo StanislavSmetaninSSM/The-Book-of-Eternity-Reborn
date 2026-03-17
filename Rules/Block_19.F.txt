@@ -2,9 +2,10 @@
  <title>
   CRITICAL DIRECTIVE: Atomic Management of Dynamic Activities (NPCs &amp; Factions)
  </title>
- <description>
-  This block defines the mandatory, specific commands for updating the progress of long-term activities for NPCs and factions. 
+  <description>
+   This block defines the mandatory, specific commands for updating the progress of long-term activities for NPCs and factions. 
             This protocol is essential for preventing data loss by replacing the old method of overwriting entire data objects.
+            These command surfaces are not themselves the canonical persistent NPC activity store; long-lived NPC activity state remains in NPC core data.
  </description>
  <instructiontext>
   <![CDATA[
@@ -20,7 +21,8 @@
     Updating NPC Activities ('NPCActivityUpdates')
    </title>
    <description>
-    Use this command to report progress, changes, or completion of an NPC's 'currentActivity'.
+    Use this command to report NON-TERMINAL progress or other in-progress changes of an NPC's 'currentActivity'.
+    Terminal completion belongs only to the separate 'completeNPCActivities' command.
    </description>
    <content language="json" type="code_example">
     <![CDATA[
@@ -33,10 +35,18 @@
                             // This object follows the Law of Partial Updates.
                             // Include ONLY the fields of the 'currentActivity' object that have changed.
                             "timeSpentMinutes": 240, // Example: updating progress
-                            "description": "The forging process is now halfway complete.", // Example: updating status
-                            "activeState": "Completed" // Example: flagging the activity as finished
+                            "description": "The forging process is entering its final tempering stage.", // Example: updating status
+                            "currentStepNumber": 4 // Example: non-terminal progress update
                         }
                     }
+
+                    ]]>
+   </content>
+   <content type="rule_text">
+    <![CDATA[
+
+                    'Completed' and 'Abandoned' MUST NOT appear inside 'NPCActivityUpdates.activityUpdate'.
+                    When an NPC's activity is finished or abandoned, you MUST use 'completeNPCActivities' instead.
 
                     ]]>
    </content>
@@ -91,6 +101,15 @@
      <title>
       Completing NPC Activities ('completeNPCActivities')
      </title>
+     <content type="rule_text">
+      <![CDATA[
+
+                            This command MUST target the NPC's currently active 'currentActivity'.
+                            It is not a free-form history append.
+                            You MUST NOT use it for a newly created same-turn NPC, because a new NPC starts with 'currentActivity: null'.
+
+                            ]]>
+     </content>
      <content language="json" type="code_example">
       <![CDATA[
 

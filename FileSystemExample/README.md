@@ -56,8 +56,8 @@ game_session/
 │   └── checkpoint_saves/     # Life transition saves
 ├── output/                   # Client communication
 │   ├── narrative_response.json (DEMO)
-│   ├── interface_updates.json (OPTIONAL, not included in minimal demo)
-│   └── debug_logs.json (OPTIONAL, not included in minimal demo)
+│   ├── interface_updates.json (OPTIONAL, omitted when the turn has no dialogue/image payload)
+│   └── debug_logs.json (DEMO)
 └── ready/                    # Processing completion signals
     ├── turn_complete.json (DEMO)
     └── turn_error.json (OPTIONAL example surface, not included in minimal demo)
@@ -75,7 +75,7 @@ game_session/
 ### **2. Client Workflow:**
 1. **Create** `input/turn_request.json` with player action
 2. **Wait** for `ready/turn_complete.json` or `ready/turn_error.json`
-3. **On success:** read `output/narrative_response.json`, optional `output/interface_updates.json`, and `output/debug_logs.json`
+3. **On success:** read required `output/narrative_response.json` and `output/debug_logs.json`, then optional `output/interface_updates.json`
 4. **On success:** update UI from `dialogueOptions` / `image_prompt` if `output/interface_updates.json` exists
 5. **On error:** read `ready/turn_error.json` as the authoritative failure payload
 6. **Reload** changed sections from `game_state/` files after a successful turn
@@ -94,7 +94,7 @@ game_session/
 ### **Output Example:**  
 - `narrative_response.json` - Sample narrative response in Russian
 - `interface_updates.json` - Optional dialogue/image payload for the current turn; omitted in the minimal success demo when not needed
-- `debug_logs.json` - Optional GM reasoning/debug markdown; omitted in the minimal success demo pack
+- `debug_logs.json` - Required GM reasoning/debug markdown for an accepted turn; included in the minimal success demo pack
 - `turn_complete.json` / `turn_error.json` - Terminal success/failure signals; only `turn_complete.json` is checked into the minimal success demo
 
 ### **Game State Examples:**

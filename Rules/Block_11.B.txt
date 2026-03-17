@@ -81,6 +81,7 @@
 
                     5.  Update Storage State (Crucial): 
                         Simultaneously, you MUST report an update to the location data itself. 
+                        For a known current location, keep the normal shorthand anchor (`locationId`, `coordinates`, `lastEventsDescription`) and additionally include the updated `locationStorages` payload.
                         In 'currentLocationData.locationStorages', find the specific storage object and update its 'authorizedUsers' array by adding or removing the target player's info. 
                         If this is the first time access is being shared for this storage, you MUST also change its 'owner.ownerType' to 'Shared'.
 

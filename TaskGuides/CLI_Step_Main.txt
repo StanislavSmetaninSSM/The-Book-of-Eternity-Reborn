@@ -129,28 +129,29 @@
                - MUST answer: Which NPC / world / political consequences result from those cycles? (document changes)
                
             **VALIDATION REQUIREMENT:**
-            Your gm_thoughts_markdown MUST contain these structured sections:
+            At minimum, live validation requires a valid scope declaration block and a valid actor reasoning section.
+            Time/progression analysis remains operationally mandatory when relevant, but the extra headings below are a recommended rich template, not literal validator-only required headings:
             ```
-            ## ⏰ ОБЯЗАТЕЛЬНО: Оценка времени и мира
-            [Required time analysis and decisions]
+            ## ⏰ Рекомендуется: Оценка времени и мира
+            [Time analysis and decisions when this turn needs them]
             
             ## 🎭 ОБЯЗАТЕЛЬНО: Охват NPC-анализа
             [Declare mode, relevant actors, out-of-scope actors, and reasoning for that scope]
             
-            ## 🎭 ОБЯЗАТЕЛЬНО: Размышления NPC  
+            ## 🎭 ОБЯЗАТЕЛЬНО: Reasoning / Размышления NPC / Guardian Thoughts
             ### [Each Declared Relevant Actor]:
             [Required thoughts and decisions for each]
             
-            ## 🌍 ОБЯЗАТЕЛЬНО: Логика прогрессии
-            [Required progression decisions and reasoning]
+            ## 🌍 Рекомендуется: Логика прогрессии
+            [Progression decisions and reasoning when cycles are due]
             ```
             
-            **Failure to complete this assessment is a CRITICAL ERROR.**
+            **Failure to provide the required scope/reasoning contract is a CRITICAL ERROR.**
             **If progressionControl says cycles are due and you do not process them, the client will reject the turn as a protocol violation.**
             **If the scope declaration is missing, the mode is invalid, declared relevant actors do not have full actor-thought blocks, or structured actor updates are not covered by declared relevant actors, the client must reject the turn as a protocol violation.**
                - Economic Changes: Should markets, resources, or territories shift? (based on recent events)
                
-            **Document ALL reasoning in gm_thoughts_markdown with these structured sections:**
+            **One acceptable rich template for gm_thoughts_markdown is:**
             ```
             ## Оценка времени и мира
             [Анализ прошедшего времени и логических последствий]
@@ -167,7 +168,7 @@
              - если ты меняешь NPC/Guardian через structured update arrays, соответствующий актор ОБЯЗАН быть в `Релевантные акторы`
              - если structured update содержит только ID и имя нельзя надёжно восстановить из state, это не должно само по себе ломать ход как hard scope mismatch
              
-             ## Размышления NPC
+             ## Reasoning / Размышления NPC / Guardian Thoughts
             ### [NPC Name 1]:
             - Ситуация: [их восприятие текущих событий]
             - Мысли: [внутренняя мотивация и планы]
@@ -185,6 +186,10 @@
             ## Подготовка к обработке хода
             [Переход к стандартной игровой механике]
             ```
+
+            Минимальный validator contract при этом остаётся уже:
+            - `## Охват NPC-анализа` с полями режима/релевантных акторов/обоснований
+            - valid reasoning section с блоками `### [Actor Name]` для всех declared relevant actors
             
             **This assessment informs but does not replace standard game processing.**
             ]]>

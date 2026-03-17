@@ -186,8 +186,8 @@
          {
              "enemyId": "enemy-orc-berserker-01",
              "name": "Orc Berserker",
-             "currentHealth": 36,
-             "maxHealth": 100,
+             "currentHealth": "36%",
+             "maxHealth": "100%",
              "healthPercentage": "36%",
              "lastDamageTaken": 44,
              "statusEffects": [

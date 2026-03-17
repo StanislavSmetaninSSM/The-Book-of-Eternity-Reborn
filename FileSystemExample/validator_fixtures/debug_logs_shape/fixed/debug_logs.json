@@ -1,3 +1,4 @@
 {
-  "gm_thoughts_markdown": "# NPC Scope\n- Scene NPCs reviewed.\n\n# Reasoning\nA short causal chain for the accepted turn."
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: This accepted turn does not mutate any structured NPC or Guardian surface.\n- Actors outside scope: scene NPCs, Guardians\n- Why outside scope: They are read-only context for this turn.\n\n## Reasoning\nA short causal chain for the accepted turn.",
+  "timestamp": "2026-03-01T12:00:00Z"
 }

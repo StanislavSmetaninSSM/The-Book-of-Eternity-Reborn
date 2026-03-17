@@ -146,7 +146,6 @@
                     - Authoritative GM-authored outputs: output/narrative_response.json ← response, output/debug_logs.json ← gm_thoughts_markdown, output/interface_updates.json ← dialogueOptions/image_prompt when this turn actually needs interface payload
                     - These output/*.json files are fresh per-turn transient artifacts, not persistent state. Rewrite them for the current request only and never reuse stale payload from a previous turn.
                     - For an ordinary accepted GM turn, output/narrative_response.json.response is mandatory and must contain non-empty player-facing narrative text.
-                    - game_state/core/narrative.json and game_state/core/gm_debug.json are client-distributed mirror files when the client locally applies a full response object
                     - game_state/core/player_status.json ← playerStatus, currentPoiseChange
                     - playerStatus is flattened into the root of player_status.json; do NOT save it there as nested { \"playerStatus\": { ... } }
                     - In Mortal World, player_status.json is a mandatory core file and cannot be omitted
@@ -184,6 +183,7 @@
                     **WORLD STATE:**
                     - game_state/world/current_location.json ← currentLocationData
                     - game_state/world/world_map.json ← worldMapUpdates
+                    - worldMapUpdates atomic commands include newLocations, locationUpdates, storageUpdates, storagesToRemove, newLinks, linkUpdates, linksToRemove, threatsToAdd, threatsToUpdate, threatsToRemove, completeThreatActivities
                     - game_state/world/world_events.json ← worldEventsLog
                     - game_state/world/world_flags.json ← worldStateFlags, removeWorldStateFlags
                     - game_state/world/world_time.json ← timeChange, setWorldTime
@@ -192,7 +192,16 @@
                     - game_state/control/progression_report.json ← progressionProcessingReport
                     - game_state/control/progression_schedule.json ← client-authoritative progression scheduler state
                     - GM MUST NOT write progression_schedule.json; accepted turns that mutate it are rejected
-                    - currentLocationData is dual-shape: for a truly new location send the full Location Object; for a known location revisit send only locationId + coordinates + lastEventsDescription
+                    - world_time.json is intentionally mixed-shape in the current CLI runtime:
+                      - accepted-turn command surface may persist timeChange or setWorldTime
+                      - normalized absolute state may instead appear as year + monthName + dayOfMonth + timeOfDay + currentTimeInMinutes
+                      - client/runtime reads both forms for compatibility
+                    - weather.json is also dual-shape in the current CLI runtime:
+                      - direct weather fields at file root are valid
+                      - nested weatherChange object is also valid
+                      - client/runtime reads both forms for compatibility
+                    - currentLocationData is dual-shape: for a truly new location send the full Location Object; for a known location revisit the base shorthand is locationId + coordinates + lastEventsDescription
+                    - When the player's CURRENT location also needs a storage-access or difficulty-profile update this turn, currentLocationData may additionally carry locationStorages and/or internalDifficultyProfile/externalDifficultyProfile alongside that known-location shorthand
                     - eventDescriptions is a read-only location archive: read it from context if present, but do NOT emit it inside currentLocationData or worldMapUpdates; write only lastEventsDescription for current-turn history
 
                     **QUEST SYSTEM:**
@@ -220,6 +229,11 @@
                     - Canonical stored shape for item_journals.json: entries[] with item identity + journalEntries[]
                     - game_state/npcs/npc_personality.json ← NPCPersonalityTraitChanges
                     - game_state/npcs/npc_activities.json ← NPCActivityUpdates, completeNPCActivities
+                    - NPCActivityUpdates is only for non-terminal changes to an already existing currentActivity
+                    - completeNPCActivities must reference the NPC's currently active currentActivity from canonical npc_core state
+                    - do not use NPCActivityUpdates / completeNPCActivities for a newly created same-turn NPC; a new NPC starts with currentActivity = null
+                    - npc_activities.json is a command / turn-news surface, not the canonical long-lived NPC activity store
+                    - canonical persistent NPC activity state remains in npc_core.json via currentActivity + completedActivities
                     - game_state/npcs/npc_fate_cards.json ← NPCFateCardUnlocks
                     - game_state/npcs/npc_custom_states.json ← NPCCustomStateChanges
 
@@ -251,6 +265,10 @@
 
                     **MISCELLANEOUS:**
                     - game_state/misc/vehicles.json ← UpdateVehicles, removeVehicles, activeVehicleChange
+                    - UpdateVehicles accepts partial updates for existing vehicles, but availability/location invariant remains mandatory:
+                      - Active or Pocket vehicle => currentLocationId = null
+                      - Parked vehicle => non-null currentLocationId
+                      - if a partial patch changes availability, include the matching currentLocationId change in the same turn when needed
                     - game_state/misc/storage_access.json ← grantStorageAccess, revokeStorageAccess, shareStorageAccess
                     - game_state/misc/multipliers.json ← multipliers array
                     - game_state/misc/player_interactions.json ← otherPlayersInteractions
@@ -403,7 +421,7 @@
 
                     **output/debug_logs.json** - GM thoughts for debugging
                     {
-                      "gm_thoughts_markdown": "markdown_string",
+                      "gm_thoughts_markdown": "structured NPC-scope + reasoning markdown string",
                       "timestamp": "ISO_datetime"
                     }
 
@@ -412,8 +430,8 @@
 
                     **ready/turn_complete.json** - Processing completion signal
                     {
-                      "sessionId": "string_uuid",
-                      "requestId": "string_uuid",
+                      "sessionId": "string_correlation_token",
+                      "requestId": "string_correlation_token",
                       "turnNumber": int,
                       "timestamp": "ISO_datetime",
                       "status": "success",
@@ -422,8 +440,8 @@
 
                     **ready/turn_error.json** - Processing error signal
                     {
-                      "sessionId": "string_uuid",
-                      "requestId": "string_uuid",
+                      "sessionId": "string_correlation_token",
+                      "requestId": "string_correlation_token",
                       "turnNumber": int,
                       "timestamp": "ISO_datetime",
                       "status": "error",
@@ -433,7 +451,7 @@
                     **CLIENT MONITORING PROTOCOL:**
                     1. Client monitors ready/turn_complete.json and ready/turn_error.json
                     2. Client MUST match sessionId + requestId + turnNumber against the pending turn_request.json before accepting the signal
-                    3. If turn_complete.json appears and correlation matches, client reads output/narrative_response.json, output/debug_logs.json, and output/interface_updates.json only when that optional file exists
+                    3. If turn_complete.json appears and correlation matches, client reads required output/narrative_response.json and output/debug_logs.json, then reads output/interface_updates.json only when that optional file exists
                     4. If turn_error.json appears and correlation matches, client reads ready/turn_error.json as the authoritative error payload; auxiliary logs are optional diagnostics only
                     5. Client may place a new turn_request.json only after the previous turn is resolved
 
@@ -532,8 +550,9 @@
 
                     **3. Lore Codex Index (lore/codex_entries.json):**
                     The codex_entries.json file serves as a player-facing index of discovered knowledge.
-                    Use the `loreCodexUpdates` JSON response command to add/update entries.
-                    Each entry has: entryId, title, category, content, discoveryContext, incarnation.
+                    Use the `loreCodexUpdates` JSON response command surface to add/update entries.
+                    `add` carries a full `entry`; `update` carries `entryId` plus an update payload for an existing entry.
+                    Canonical entry fields include: entryId, title, category, content, discoveryContext, discoveredAt, incarnation.
                     Categories: cosmology, geography, history, cultures, creatures, characters, artifacts, factions, magic, other.
                     See CLI_API_Specification.md → "Lore Codex System" for full schema.
 
@@ -757,7 +776,7 @@
                     **4. Language and Narrative Rules:**
                     - Russian language requirements (config.language = "ru") fully preserved
                     - All narrative generation rules apply unchanged
-                    - gm_thoughts_markdown goes to debug_logs.json but rules remain same
+                    - gm_thoughts_markdown goes to debug_logs.json and in CLI mode must follow the live structured scope/reasoning contract
                     - Narrative content incorporates current world lore automatically
 
                     **5. Mathematical Formula Preservation:**
@@ -775,7 +794,7 @@
                     **7. Example Integration:**
                     All examples (E_Block_*.txt) remain valid:
                     - CLI Agent can reference examples when processing
-                    - Same JSON structures, just distributed to files instead of single response
+                    - The same gameplay semantics remain, but CLI uses the live distributed-file contract rather than a literal copy of the old single-response JSON shape
                     - Same narrative outputs and calculation logs
                     - Lore context enhances narrative richness
 
@@ -937,7 +956,7 @@
                     
                     **CRITICAL REQUIREMENT:** Every CLI turn MUST include the currently enforced scope-based reasoning contract.
                     
-                    Required sections:
+                    Minimum accepted structure:
                     ```
                     ## Охват NPC-анализа
                     - Режим / Mode: [Scene-local | World-progression | Guardian-centric | Mixed]
@@ -946,13 +965,16 @@
                     - Акторы вне охвата / Actors outside scope: [...]
                     - Почему они вне охвата / Why they are outside scope: ...
                     
-                    ## Размышления NPC
+                    ## Reasoning / Размышления NPC / Guardian Thoughts
                     ### [Each Declared Relevant Actor]
                     - Ситуация / Current situation
                     - Мысли / Internal thoughts
                     - Действия / Intended actions
                     ```
                     
+                    The reasoning-section heading names may vary as long as the same actor reasoning content remains explicit.
+                    The structured scope declaration must still use a scope heading containing `Охват NPC-анализа` or `NPC Scope`.
+
                     If progressionControl says cycles are due, the reasoning text must also explicitly document:
                     - which cycles were processed,
                     - why they were processed,

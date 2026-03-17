@@ -52,7 +52,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 - валидный JSON в записанных файлах
 - соблюдение realm restrictions
 - выполнение `progressionControl` и корректный progression report, если он required
-- наличие `gm_thoughts_markdown` с `NPC Scope` и reasoning blocks
+- наличие `gm_thoughts_markdown` с явной structured scope declaration (`Охват NPC-анализа` / `NPC Scope`) и допустимой reasoning section
 - покрытие `Relevant actors` для всех структурированных actor updates, когда actor identity известна
 - корректный repair handshake, если клиент отклонил ход после валидации
 - daemon и клиент принимают terminal signal только при совпадении `sessionId`, `requestId` и `turnNumber`; stale terminal files должны удаляться и не считаются завершением текущего хода
@@ -127,13 +127,20 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 **Хранители — НЕ НПС.** Для них используй `UpdateGuardians` (Block 32), а не `UpdateNPCs` (Block 19).
 
-Задокументируй в `gm_thoughts_markdown`:
+Задокументируй realm context внутри structured `gm_thoughts_markdown`:
 ```
-## Realm Check
-- Current Realm: [Chaos Sea / Shining Abode / Mortal World]
-- Active Systems: [перечисли]
-- Disabled Systems: [перечисли]
+## Охват NPC-анализа
+- Режим: [Scene-local | World-progression | Guardian-centric | Mixed]
+- Релевантные акторы: [...]
+- Почему они релевантны: ...
+- Акторы вне охвата: [...]
+- Почему они вне охвата: ...
+
+## Reasoning / Размышления NPC / Guardian Thoughts
+- Realm context: [кратко зафиксируй активный realm и какие системы этого хода активны/запрещены]
 ```
+
+Отдельный standalone heading `## Realm Check` допустим как legacy formatting habit, но в текущем CLI contract не является обязательным первым заголовком. Точные подполя `Current Realm` / `Active Systems` / `Disabled Systems` тоже допустимы, но не являются единственно разрешённой literal формой.
 
 Полный список запретов — см. ABSOLUTE LAW 3 в `Rules/Block_0.txt`.
 
@@ -153,7 +160,8 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 - Решение о прогрессии: [нужны ли обновления фракций/мира и почему]
 ```
 
-**2. Охват NPC-анализа и размышления НПС**:
+**2. Охват NPC-анализа и reasoning акторов**:
+Ниже приведён допустимый шаблон. Клиент проверяет наличие structured scope declaration и непустых reasoning blocks для задекларированных релевантных акторов, а не буквальное копирование каждого подпункта:
 ```
 ## Охват NPC-анализа
 - Режим: [Scene-local | World-progression | Guardian-centric | Mixed]
@@ -162,12 +170,14 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 - Акторы вне охвата: [...]
 - Почему они вне охвата: ...
 
-## Размышления NPC
+## Reasoning / Размышления NPC / Guardian Thoughts
 ### [Имя актора]:
 - Ситуация: [их восприятие событий]
 - Внутренние мысли: [мотивация, планы]
 - Решение: [что они делают проактивно]
 ```
+
+Для guardian-centric хода допустим отдельный heading вроде `## Guardian Thoughts`; важно не название и не literal набор подпунктов, а наличие reasoning blocks для всех задекларированных релевантных акторов.
 
 Если scope declaration отсутствует или reasoning blocks для задекларированных акторов пустые, клиент должен отклонить ход как contract violation.
 `Relevant actors` также ОБЯЗАНЫ покрывать все структурированные actor updates этого хода:
@@ -187,10 +197,10 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 #### В Море Хаоса:
 
-**1. Состояние Хранителей** — для каждого присутствующего Хранителя:
-- Обновить настроение (mood) если нужно
-- Продвинуть текущий проект (progressPercent)
-- Добавить 1-2 размышления (musings)
+**1. Состояние Хранителей** — только для тех Хранителей, чьё состояние реально меняется в этом ходу:
+- Обновить настроение (mood) если это требует сам ход
+- Продвинуть текущий проект (progressPercent) только если этот ход действительно двигает guardian project
+- Добавить musings только если ход реально оставляет новый guardian thought / reflection
 - Проверить, нужно ли разблокировать фрагменты знаний (loreFragments)
 
 **2. Оценка обстановки в Обители:**
@@ -291,8 +301,8 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 
 **При ошибке:**
 1. Восстанови ВСЕ файлы из `.backup`
-2. Запиши ошибку в `game_state/history/error_log.json`
-3. Сигнализируй: `ready/turn_error.json`
+2. При желании запиши diagnostics в `game_state/history/error_log.json`
+3. Обязательно сигнализируй: `ready/turn_error.json`
 
 Если клиент уже успел локально подготовить переходный ход (инкарнация, оценка жизни и т.п.), он откатит эти локальные изменения к последней стабильной версии после `turn_error.json`.
 
@@ -339,9 +349,9 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 
 Перед записью terminal signal проверь:
 
-- [ ] Realm Check выполнен и задокументирован
+- [ ] Realm context явно задокументирован внутри structured scope/reasoning blocks
 - [ ] Время проанализировано (Mortal World)
-- [ ] НПС/Хранители получили развитие
+- [ ] Если ход реально меняет actor surfaces, соответствующие НПС/Хранители получили осмысленное reasoning и только те structured updates, которые этот ход действительно требует
 - [ ] Все механические расчёты задокументированы в `gm_thoughts_markdown`
 - [ ] JSON валиден, все обязательные поля присутствуют
 - [ ] Перекрёстные ссылки (ID НПС, предметов, локаций) консистентны

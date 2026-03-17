@@ -42,13 +42,15 @@ public class ProgressionScheduleService
         }
 
         var realm = await ResolveCurrentRealmAsync(string.Empty);
-        var currentWorldTime = await ResolveWorldTimeFromFileAsync(0);
+        var worldTimeResolution = await ResolveWorldTimeFromFileAsync(0);
+        var currentWorldTime = worldTimeResolution.Minutes;
         var schedule = new ProgressionScheduleState
         {
             CurrentRealm = realm,
             CurrentWorldTimeInMinutes = currentWorldTime,
             LastWorldSimulationTimeInMinutes = currentWorldTime,
             LastFactionSimulationTimeInMinutes = currentWorldTime,
+            HasAuthoritativeWorldTimeBaseline = !worldTimeResolution.HasUnresolvedAbsoluteOverride,
             WorldCycleMinutes = 240,
             FactionCycleMinutes = 1440,
             ChaosSeaCycleEquivalentHours = 24,
@@ -70,6 +72,39 @@ public class ProgressionScheduleService
     {
         var schedule = await EnsureInitializedAsync();
         schedule = await SanitizeScheduleAsync(schedule, activeTurnRealm);
+
+        if (!HasResolvedRealm(schedule.CurrentRealm))
+        {
+            schedule.PendingWorldCycles = 0;
+            schedule.PendingFactionCycles = 0;
+            schedule.PendingChaosSeaCycles = 0;
+            schedule.PendingGuardianProjectCycles = 0;
+            schedule.LastUpdatedUtc = DateTime.UtcNow.ToString("o");
+            await WriteScheduleAsync(schedule);
+
+            return new ProgressionControl
+            {
+                CurrentRealm = schedule.CurrentRealm,
+                CurrentWorldTimeInMinutes = schedule.CurrentWorldTimeInMinutes,
+                LastWorldSimulationTimeInMinutes = schedule.LastWorldSimulationTimeInMinutes,
+                LastFactionSimulationTimeInMinutes = schedule.LastFactionSimulationTimeInMinutes,
+                WorldCycleMinutes = schedule.WorldCycleMinutes,
+                FactionCycleMinutes = schedule.FactionCycleMinutes,
+                WorldCyclesAlreadyPendingBeforeTurn = 0,
+                FactionCyclesAlreadyPendingBeforeTurn = 0,
+                MustEvaluateWorldProgression = false,
+                MustEvaluateFactionProgression = false,
+                CurrentChaosSeaTurnOrdinal = schedule.CurrentChaosSeaTurnOrdinal,
+                NextChaosSeaTurnOrdinal = schedule.CurrentChaosSeaTurnOrdinal,
+                LastChaosSeaSimulationOrdinal = schedule.LastChaosSeaSimulationOrdinal,
+                LastGuardianProjectCycleOrdinal = schedule.LastGuardianProjectCycleOrdinal,
+                ChaosSeaCycleEquivalentHours = schedule.ChaosSeaCycleEquivalentHours,
+                ChaosSeaCyclesExpectedThisTurn = 0,
+                GuardianProjectCyclesExpectedThisTurn = 0,
+                MustEvaluateChaosSeaProgression = false,
+                MustEvaluateGuardianProjectProgression = false
+            };
+        }
 
         if (IsChaosSea(schedule.CurrentRealm))
         {
@@ -104,14 +139,34 @@ public class ProgressionScheduleService
             };
         }
 
-        schedule.PendingWorldCycles = ComputeElapsedCycles(
-            schedule.CurrentWorldTimeInMinutes,
-            schedule.LastWorldSimulationTimeInMinutes,
-            schedule.WorldCycleMinutes);
-        schedule.PendingFactionCycles = ComputeElapsedCycles(
-            schedule.CurrentWorldTimeInMinutes,
-            schedule.LastFactionSimulationTimeInMinutes,
-            schedule.FactionCycleMinutes);
+        var worldTimeResolution = await ResolveWorldTimeFromFileAsync(schedule.CurrentWorldTimeInMinutes);
+        schedule.CurrentWorldTimeInMinutes = worldTimeResolution.Minutes;
+        if (worldTimeResolution.HasUnresolvedAbsoluteOverride)
+        {
+            schedule.PendingWorldCycles = 0;
+            schedule.PendingFactionCycles = 0;
+            _logger.LogDebug("Progression scheduler skipped Mortal World cycle expectations because authoritative world time could not be resolved safely for this turn.");
+        }
+        else if (!schedule.HasAuthoritativeWorldTimeBaseline)
+        {
+            schedule.LastWorldSimulationTimeInMinutes = schedule.CurrentWorldTimeInMinutes;
+            schedule.LastFactionSimulationTimeInMinutes = schedule.CurrentWorldTimeInMinutes;
+            schedule.PendingWorldCycles = 0;
+            schedule.PendingFactionCycles = 0;
+            schedule.HasAuthoritativeWorldTimeBaseline = true;
+            _logger.LogDebug("Progression scheduler seeded authoritative Mortal World baseline after previously unresolved world_time.json.");
+        }
+        else
+        {
+            schedule.PendingWorldCycles = ComputeElapsedCycles(
+                schedule.CurrentWorldTimeInMinutes,
+                schedule.LastWorldSimulationTimeInMinutes,
+                schedule.WorldCycleMinutes);
+            schedule.PendingFactionCycles = ComputeElapsedCycles(
+                schedule.CurrentWorldTimeInMinutes,
+                schedule.LastFactionSimulationTimeInMinutes,
+                schedule.FactionCycleMinutes);
+        }
         schedule.PendingChaosSeaCycles = 0;
         schedule.PendingGuardianProjectCycles = 0;
         schedule.LastUpdatedUtc = DateTime.UtcNow.ToString("o");
@@ -147,15 +202,27 @@ public class ProgressionScheduleService
         if (control == null)
             return issues;
 
-        var report = await ReadProcessingReportAsync();
+        if (!HasResolvedRealm(control.CurrentRealm))
+            return issues;
+
+        var reportSnapshot = await ReadProcessingReportSnapshotAsync();
+        var report = reportSnapshot.Report;
+        var suppressMissingReportIssue = report == null && reportSnapshot.FilePresent;
         if (IsChaosSea(control.CurrentRealm))
         {
-            ValidateChaosSeaOutcome(control, report, issues);
+            ValidateChaosSeaOutcome(control, report, issues, suppressMissingReportIssue);
         }
         else
         {
-            var resultingWorldTime = await ResolveWorldTimeFromFileAsync(control.CurrentWorldTimeInMinutes);
-            ValidateMortalOutcome(control, report, resultingWorldTime, issues);
+            var worldTimeResolution = await ResolveWorldTimeFromFileAsync(control.CurrentWorldTimeInMinutes);
+            if (worldTimeResolution.HasUnresolvedAbsoluteOverride)
+            {
+                _logger.LogDebug("Skipping Mortal World progression outcome validation because authoritative world time could not be resolved safely for this turn.");
+            }
+            else
+            {
+                ValidateMortalOutcome(control, report, worldTimeResolution.Minutes, issues, suppressMissingReportIssue);
+            }
         }
 
         return issues;
@@ -170,10 +237,17 @@ public class ProgressionScheduleService
         }
 
         var schedule = await EnsureInitializedAsync();
-        var realmAfterTurn = await ResolveCurrentRealmAsync(schedule.CurrentRealm);
+        var realmAfterTurn = await ResolveCurrentRealmAsync(string.Empty);
         var report = await ReadProcessingReportAsync();
 
-        if (IsChaosSea(control.CurrentRealm))
+        if (!HasResolvedRealm(control.CurrentRealm))
+        {
+            schedule.PendingWorldCycles = 0;
+            schedule.PendingFactionCycles = 0;
+            schedule.PendingChaosSeaCycles = 0;
+            schedule.PendingGuardianProjectCycles = 0;
+        }
+        else if (IsChaosSea(control.CurrentRealm))
         {
             schedule.CurrentChaosSeaTurnOrdinal = control.NextChaosSeaTurnOrdinal;
 
@@ -189,7 +263,17 @@ public class ProgressionScheduleService
         }
         else
         {
-            var resultingWorldTime = await ResolveWorldTimeFromFileAsync(control.CurrentWorldTimeInMinutes);
+            var worldTimeResolution = await ResolveWorldTimeFromFileAsync(control.CurrentWorldTimeInMinutes);
+            var resultingWorldTime = worldTimeResolution.Minutes;
+            if (worldTimeResolution.HasUnresolvedAbsoluteOverride)
+            {
+                resultingWorldTime = Math.Max(
+                    resultingWorldTime,
+                    Math.Max(
+                        report?.NewLastWorldSimulationTimeInMinutes ?? control.LastWorldSimulationTimeInMinutes,
+                        report?.NewLastFactionSimulationTimeInMinutes ?? control.LastFactionSimulationTimeInMinutes));
+            }
+
             schedule.CurrentWorldTimeInMinutes = resultingWorldTime;
 
             if ((report?.WorldCyclesProcessed ?? 0) > 0)
@@ -227,14 +311,14 @@ public class ProgressionScheduleService
     }
 
     private void ValidateMortalOutcome(ProgressionControl control, ProgressionProcessingReport? report,
-        int resultingWorldTime, List<ValidationIssue> issues)
+        int resultingWorldTime, List<ValidationIssue> issues, bool suppressMissingReportIssue)
     {
         var expectedWorldCycles = Math.Max(0, control.WorldCyclesAlreadyPendingBeforeTurn);
         var expectedFactionCycles = Math.Max(0, control.FactionCyclesAlreadyPendingBeforeTurn);
 
         if (report == null)
         {
-            if (expectedWorldCycles > 0 || expectedFactionCycles > 0)
+            if (!suppressMissingReportIssue && (expectedWorldCycles > 0 || expectedFactionCycles > 0))
             {
                 issues.Add(BuildMissingProgressionReportIssue(
                     "progression_report_missing_for_required_mortal_progression",
@@ -400,14 +484,14 @@ public class ProgressionScheduleService
     }
 
     private void ValidateChaosSeaOutcome(ProgressionControl control, ProgressionProcessingReport? report,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues, bool suppressMissingReportIssue)
     {
         var expectedChaosCycles = control.ChaosSeaCyclesExpectedThisTurn;
         var expectedGuardianCycles = control.GuardianProjectCyclesExpectedThisTurn;
 
         if (report == null)
         {
-            if (expectedChaosCycles > 0 || expectedGuardianCycles > 0)
+            if (!suppressMissingReportIssue && (expectedChaosCycles > 0 || expectedGuardianCycles > 0))
             {
                 issues.Add(BuildMissingProgressionReportIssue(
                     "progression_report_missing_for_required_chaos_progression",
@@ -424,7 +508,7 @@ public class ProgressionScheduleService
                 "worldCyclesProcessed / factionCyclesProcessed",
                 "0 for both mortal-only fields",
                 $"{report.WorldCyclesProcessed ?? 0} / {report.FactionCyclesProcessed ?? 0}",
-                "В Chaos Sea не указывай mortal progression fields. Оставь только chaosSea/guardian processed counts и их new last-* ordinals."));
+                "В afterlife realm не указывай mortal progression fields. Оставь только chaosSea/guardian processed counts и их new last-* ordinals."));
         }
 
         if ((report.ChaosSeaCyclesProcessed ?? 0) != expectedChaosCycles)
@@ -437,7 +521,7 @@ public class ProgressionScheduleService
                     section: "ProgressionReport",
                     expected: expectedChaosCycles.ToString(),
                     actual: "missing",
-                    repairHint: "Добавь chaosSeaCyclesProcessed в progressionProcessingReport и укажи фактически обработанное число Chaos Sea cycles для этого хода."));
+                    repairHint: "Добавь chaosSeaCyclesProcessed в progressionProcessingReport и укажи фактически обработанное число afterlife cycles для текущего afterlife realm в этом ходу."));
             }
             else
             {
@@ -446,7 +530,7 @@ public class ProgressionScheduleService
                     "chaosSeaCyclesProcessed",
                     expectedChaosCycles,
                     report.ChaosSeaCyclesProcessed ?? 0,
-                    "Исправь chaosSeaCyclesProcessed в progressionProcessingReport, чтобы он отражал точное число Chaos Sea cycles, которые клиент ожидал для этого хода."));
+                    "Исправь chaosSeaCyclesProcessed в progressionProcessingReport, чтобы он отражал точное число afterlife cycles, которые клиент ожидал для текущего afterlife realm в этом ходу."));
             }
         }
 
@@ -483,7 +567,7 @@ public class ProgressionScheduleService
                     section: "ProgressionReport",
                     expected: control.NextChaosSeaTurnOrdinal.ToString(),
                     actual: "missing",
-                    repairHint: "Если Chaos Sea cycles обработаны, укажи newLastChaosSeaSimulationOrdinal с новым authoritative ordinal marker."));
+                    repairHint: "Если afterlife cycles обработаны, укажи newLastChaosSeaSimulationOrdinal с новым authoritative ordinal marker для текущего afterlife realm."));
             }
             else
             {
@@ -492,7 +576,7 @@ public class ProgressionScheduleService
                     "newLastChaosSeaSimulationOrdinal",
                     control.NextChaosSeaTurnOrdinal,
                     report.NewLastChaosSeaSimulationOrdinal ?? 0,
-                    "Исправь newLastChaosSeaSimulationOrdinal, чтобы он указывал новый authoritative Chaos Sea ordinal marker после обработанных chaos cycles."));
+                    "Исправь newLastChaosSeaSimulationOrdinal, чтобы он указывал новый authoritative afterlife ordinal marker после обработанных afterlife cycles в текущем afterlife realm."));
             }
         }
 
@@ -528,10 +612,10 @@ public class ProgressionScheduleService
             ? schedule.ChaosSeaCycleEquivalentHours
             : 24;
 
-        schedule.CurrentRealm = activeTurnRealm ?? await ResolveCurrentRealmAsync(schedule.CurrentRealm);
-        if (!IsChaosSea(schedule.CurrentRealm))
+        schedule.CurrentRealm = activeTurnRealm ?? await ResolveCurrentRealmAsync(string.Empty);
+        if (HasResolvedRealm(schedule.CurrentRealm) && !IsChaosSea(schedule.CurrentRealm))
         {
-            schedule.CurrentWorldTimeInMinutes = await ResolveWorldTimeFromFileAsync(schedule.CurrentWorldTimeInMinutes);
+            schedule.CurrentWorldTimeInMinutes = (await ResolveWorldTimeFromFileAsync(schedule.CurrentWorldTimeInMinutes)).Minutes;
         }
 
         schedule.PendingWorldCycles = Math.Max(0, schedule.PendingWorldCycles);
@@ -564,35 +648,41 @@ public class ProgressionScheduleService
         await _fs.WriteFileAtomicAsync(SchedulePath, JsonSerializer.Serialize(schedule, JsonOpts));
     }
 
-    private async Task<ProgressionProcessingReport?> ReadProcessingReportAsync()
+    private async Task<(ProgressionProcessingReport? Report, bool FilePresent)> ReadProcessingReportSnapshotAsync()
     {
         var json = await _fs.ReadFileAsync(ReportPath);
         if (string.IsNullOrWhiteSpace(json))
-            return null;
+            return (null, false);
 
         try
         {
             using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
             if (root.ValueKind != JsonValueKind.Object)
-                return null;
+                return (null, true);
 
             if (root.TryGetProperty("progressionProcessingReport", out var nested) &&
                 nested.ValueKind == JsonValueKind.Object)
             {
-                return JsonSerializer.Deserialize<ProgressionProcessingReport>(nested.GetRawText(), JsonOpts);
+                return (JsonSerializer.Deserialize<ProgressionProcessingReport>(nested.GetRawText(), JsonOpts), true);
             }
 
-            return JsonSerializer.Deserialize<ProgressionProcessingReport>(root.GetRawText(), JsonOpts);
+            return (JsonSerializer.Deserialize<ProgressionProcessingReport>(root.GetRawText(), JsonOpts), true);
         }
         catch (Exception ex)
         {
             _logger.LogDebug(ex, "Не удалось разобрать progression_report.json");
-            return null;
+            return (null, true);
         }
     }
 
-    private async Task<string> ResolveCurrentRealmAsync(string fallback = "Chaos Sea")
+    private async Task<ProgressionProcessingReport?> ReadProcessingReportAsync()
+    {
+        var snapshot = await ReadProcessingReportSnapshotAsync();
+        return snapshot.Report;
+    }
+
+    private async Task<string> ResolveCurrentRealmAsync(string fallback = "")
     {
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(soulJson))
@@ -612,11 +702,11 @@ public class ProgressionScheduleService
         return fallback;
     }
 
-    private async Task<int> ResolveWorldTimeFromFileAsync(int fallback)
+    private async Task<WorldTimeResolutionResult> ResolveWorldTimeFromFileAsync(int fallback)
     {
         var json = await _fs.ReadFileAsync("game_state/world/world_time.json");
         if (string.IsNullOrWhiteSpace(json))
-            return fallback;
+            return new WorldTimeResolutionResult(fallback, true);
 
         try
         {
@@ -624,24 +714,31 @@ public class ProgressionScheduleService
             var root = doc.RootElement;
 
             if (TryReadIntLike(root, "currentTimeInMinutes", out var absolute))
-                return absolute;
+                return new WorldTimeResolutionResult(absolute, false);
 
             if (root.TryGetProperty("setWorldTime", out var setWorldTime) &&
-                setWorldTime.ValueKind == JsonValueKind.Object &&
-                TryReadIntLike(setWorldTime, "currentTimeInMinutes", out absolute))
+                setWorldTime.ValueKind == JsonValueKind.Object)
             {
-                return absolute;
+                if (TryReadIntLike(setWorldTime, "currentTimeInMinutes", out absolute))
+                    return new WorldTimeResolutionResult(absolute, false);
+
+                if (LooksLikeAbsoluteWorldTimeObject(setWorldTime))
+                    return new WorldTimeResolutionResult(fallback, true);
             }
 
             if (TryReadIntLike(root, "timeChange", out var delta))
-                return Math.Max(0, fallback + delta);
+                return new WorldTimeResolutionResult(Math.Max(0, fallback + delta), false);
+
+            if (LooksLikeAbsoluteWorldTimeObject(root))
+                return new WorldTimeResolutionResult(fallback, true);
         }
         catch (Exception ex)
         {
             _logger.LogDebug(ex, "Не удалось прочитать world_time.json для progression scheduler");
+            return new WorldTimeResolutionResult(fallback, true);
         }
 
-        return fallback;
+        return new WorldTimeResolutionResult(fallback, true);
     }
 
     private static bool TryReadIntLike(JsonElement root, string propertyName, out int value)
@@ -650,12 +747,7 @@ public class ProgressionScheduleService
         if (!root.TryGetProperty(propertyName, out var prop))
             return false;
 
-        return prop.ValueKind switch
-        {
-            JsonValueKind.Number => prop.TryGetInt32(out value),
-            JsonValueKind.String => int.TryParse(prop.GetString(), out value),
-            _ => false
-        };
+        return prop.ValueKind == JsonValueKind.Number && prop.TryGetInt32(out value);
     }
 
     private static int ComputeElapsedCycles(int current, int lastProcessed, int cycleMinutes)
@@ -665,6 +757,22 @@ public class ProgressionScheduleService
 
         return (current - lastProcessed) / cycleMinutes;
     }
+
+    private static bool LooksLikeAbsoluteWorldTimeObject(JsonElement root)
+    {
+        return root.ValueKind == JsonValueKind.Object &&
+               root.TryGetProperty("year", out _) &&
+               root.TryGetProperty("dayOfMonth", out _) &&
+               root.TryGetProperty("monthName", out var monthName) &&
+               monthName.ValueKind == JsonValueKind.String &&
+               !string.IsNullOrWhiteSpace(monthName.GetString()) &&
+               root.TryGetProperty("timeOfDay", out var timeOfDay) &&
+               timeOfDay.ValueKind == JsonValueKind.String &&
+               !string.IsNullOrWhiteSpace(timeOfDay.GetString());
+    }
+
+    private static bool HasResolvedRealm(string? realm) =>
+        !string.IsNullOrWhiteSpace(realm);
 
     private static bool IsChaosSea(string? realm) =>
         string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
@@ -679,6 +787,7 @@ public class ProgressionScheduleService
                left.CurrentWorldTimeInMinutes == right.CurrentWorldTimeInMinutes &&
                left.LastWorldSimulationTimeInMinutes == right.LastWorldSimulationTimeInMinutes &&
                left.LastFactionSimulationTimeInMinutes == right.LastFactionSimulationTimeInMinutes &&
+               left.HasAuthoritativeWorldTimeBaseline == right.HasAuthoritativeWorldTimeBaseline &&
                left.WorldCycleMinutes == right.WorldCycleMinutes &&
                left.FactionCycleMinutes == right.FactionCycleMinutes &&
                left.PendingWorldCycles == right.PendingWorldCycles &&
@@ -692,12 +801,15 @@ public class ProgressionScheduleService
     }
 }
 
+internal readonly record struct WorldTimeResolutionResult(int Minutes, bool HasUnresolvedAbsoluteOverride);
+
 public class ProgressionScheduleState
 {
-    public string CurrentRealm { get; set; } = "Chaos Sea";
+    public string CurrentRealm { get; set; } = string.Empty;
     public int CurrentWorldTimeInMinutes { get; set; }
     public int LastWorldSimulationTimeInMinutes { get; set; }
     public int LastFactionSimulationTimeInMinutes { get; set; }
+    public bool HasAuthoritativeWorldTimeBaseline { get; set; }
     public int WorldCycleMinutes { get; set; } = 240;
     public int FactionCycleMinutes { get; set; } = 1440;
     public int PendingWorldCycles { get; set; }

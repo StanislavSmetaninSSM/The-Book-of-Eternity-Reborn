@@ -26,6 +26,9 @@
 
                     ]]>
    </logoutput>
+   <commentary>
+    For an existing item, this same turn must also carry the resulting updated item state in `UpdateInventory`; `itemBondLevelChanges` is only the event signal.
+   </commentary>
    <jsonresponse>
     <!-- This command is generated in the final step of the turn -->
     <itemjournalupdates>
@@ -1166,6 +1169,21 @@
 
                                         ]]>
     </itembondlevelchanges>
+    <updateinventory>
+     <![CDATA[
+
+                                        [
+                                            {
+                                                "existedId": "item-stormblade-01",
+                                                "itemId": "item-stormblade-01",
+                                                "itemName": "Stormblade",
+                                                "ownerBondLevelCurrent": 45,
+                                                "quality": "Rare"
+                                            }
+                                        ]
+
+                                        ]]>
+    </updateinventory>
    </jsonresponse>
   </example>
  </rule>

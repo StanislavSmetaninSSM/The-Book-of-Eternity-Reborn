@@ -46,32 +46,35 @@
                 CRITICAL: This MUST be a single string. Newlines should be escaped if necessary.
                 
                 **ENHANCED STRUCTURE FOR CLI MODE:**
-                For CLI mode, gm_thoughts_markdown should follow this structured format to support natural progression logic:
+                For CLI mode, gm_thoughts_markdown must follow the structured NPC-scope + reasoning format used by the live validator.
+                The extra progression / player-processing headings in the rich template below are allowed guidance, not literal validator-mandatory headings:
                 
                 ```
-                ## Оценка времени и мира
-                - Прошло игрового времени: [X минут/часов]  
-                - Логические последствия: [что должно было произойти]
-                - Потребности в прогрессии: [фракции/мир/NPC требующие обновлений]
+                ## Охват NPC-анализа
+                - Режим: [Scene-local | World-progression | Guardian-centric | Mixed]
+                - Релевантные акторы: [NPC/Guardian/Faction actors or "нет"]
+                - Почему они релевантны: [почему именно эти акторы релевантны ходу]
+                - Акторы вне охвата: [actors outside scope or "нет"]
+                - Почему они вне охвата: [почему остальные акторы не требуют обработки в этом ходу]
+
+                ## Размышления NPC / Guardian Thoughts
+                ### [Actor Name 1]:
+                - Ситуация: [восприятие текущих событий]
+                - Внутренние мысли: [мотивация, планы, риски]
+                - Решение о действиях: [что actor решает сделать]
                 
-                ## Размышления NPC
-                ### [NPC Name 1]:
-                - Ситуация: [их восприятие текущих событий]
-                - Внутренние мысли: [мотивация, планы, беспокойства]  
-                - Решение о действиях: [что они решают сделать]
+                ### [Actor Name 2]:
+                [аналогично для других релевантных акторов]
                 
-                ### [NPC Name 2]:
-                [аналогично для других важных NPC]
-                
-                ## Логика прогрессии
-                - Фракции: [какие проекты должны продвинуться и почему]
-                - Мировые события: [естественные последствия времени/действий]
-                - Экономические/политические сдвиги: [на основе недавних событий]
+                ## Размышления о прогрессии
+                - Фракции / Мир / Guardians: [что реально должно продвинуться и почему]
                 
                 ## Обработка хода игрока
                 [стандартные расчеты, проверки, механика]
                 ```
                 
+                 For guardian-centric turns, an equivalent heading such as `## Guardian Thoughts` is also valid; the important part is that every declared relevant actor has a matching reasoning block.
+
                  This structure supports the natural Game Master decision-making process while maintaining full compatibility with existing debugging and review systems.",
 
                 **REALM-AWARE FIELD LEGALITY (MANDATORY FOR CLI MODE):**
@@ -506,7 +509,7 @@
                     {
                         "factionId": "guid_of_the_target_faction",
                         "factionName": "name_of_the_target_faction",
-                        "entryToAppend": "the_new_chronicle_entry_string"
+                        "entryToAppend": "#[Turn Number] - the_new_chronicle_entry_string"
                     }
                 ],
 
@@ -802,7 +805,7 @@
 
                 "removeVehicles": "(array of strings or null) Array of vehicleId strings. Used when a vehicle is permanently destroyed or sold.",
 
-                "activeVehicleChange": "(string GUID or null) Used to set a specific vehicle as 'Active' (currently being ridden/driven) or 'null' to dismount/park.",
+                "activeVehicleChange": "(string vehicleId or null) Used to set a specific vehicle as 'Active' (currently being ridden/driven) or 'null' to dismount/park.",
 
                 "metaStateUpdates": "(object or null) 
                 Comprehensive JSON command object for all Soul System operations. Contains atomic sub-commands:
@@ -836,7 +839,7 @@
                   'rewards': {
                     'inkFeathers': int,
                     'enlightenmentExperience': int,
-                    'soulRelics': [array_of_relic_objects],
+                    'soulRelics': [array_of_relic_objects], // Reward surface: minimal relicId + name + rarity stub is acceptable here; full Soul Relic Object is required when writing canonical soul/meta relic state
                     'reputationChanges': [{ 'guardianId': string, 'change': int }]
                   },
                   'crossIncarnation': boolean,  // True if quest persists through death
@@ -857,6 +860,8 @@
                   // For 'completeQuest': top-level questId + outcome
                   // SPECIAL CASE: in the current CLI guardian contract, 'processGacha' uses
                   // top-level fields 'inkFeathersSpent' and 'result' instead of nested 'data'
+                  // 'result' here is a minimal reward/result Soul Relic stub (relicId + name + rarity),
+                  // not the full canonical Soul Relic Object used in persistent soul/meta state
                   // addMusings uses top-level musings[], updateProject uses top-level currentProject,
                   // unlockLore uses top-level loreFragment, setMood uses top-level mood
                 }

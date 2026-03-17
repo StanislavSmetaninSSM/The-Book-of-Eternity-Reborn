@@ -80,8 +80,10 @@
 
      GENERATION RULES:
 
-     1. FREQUENCY: GM MUST generate 1-2 new musings per Guardian per turn
-        (only for Guardians the player has discovered).
+     1. FREQUENCY: GM SHOULD generate 1-2 new musings only when the current turn
+        creates meaningful new Guardian inner-life material
+        (for example: direct interaction, jealousy/curiosity, quest result, project movement, lore unlock).
+        Do NOT force musings every turn just to satisfy a quota.
         Old musings beyond 15 entries should be trimmed (oldest first).
 
      2. CONTENT DRIVERS:

@@ -66,7 +66,7 @@
 	        }
 	      },
 	      "response": "Алдрик медленно снимает свой шлем и кладет меч к ногам. Долг выполнен, честь сохранена. Смертная жизнь завершается, а душа начинает путь обратно в Море Хаоса, где её ждёт отдельная Оценка Жизни.",
-	      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Добровольное окончание жизни рыцаря. Этот ход только фиксирует завершение жизни и запускает отдельный Life Evaluation turn."
+	      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: TriggerLifeEnd в этом ходу меняет только lifecycle/control surfaces.\n- Actors outside scope: Guardians, scene NPCs\n- Why outside scope: Этот trigger turn не должен мутировать их structured state.\n\n## Reasoning\n- Добровольное завершение жизни фиксируется отдельно от Life Evaluation.\n- Этот ход не выдаёт награды и не меняет afterlife/meta surfaces."
 	    }
     ]]>
    </jsonresponse>
@@ -138,7 +138,7 @@
         }
       },
       "response": "Перед тобой материализуется светящаяся реликвия - пара призрачных перчаток, сотканных из кристаллизованных воспоминаний о мастерстве. Дмитрий Мастеровой кивает с гордостью: 'Твои руки помнят каждое изделие, каждый час, проведенный за верстаком. Эта реликвия сохранит твое умение на века.'",
-      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Создание реликвии Руки Творца. Источник: завершенная жизнь мастера-ремесленника."
+      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: Ход меняет только soul/meta reward state и narrative response.\n- Actors outside scope: Guardians, Mortal World NPCs\n- Why outside scope: Никакие structured actor mutation surfaces в этом accepted turn не используются.\n\n## Reasoning\n- Завершённая жизнь мастера-ремесленника даёт новую Soul Relic crafting-категории.\n- Реликвия добавляется в canonical soul/meta state как reward result, без отдельных NPC/Guardian mutations."
     }
     ]]>
    </jsonresponse>
@@ -184,7 +184,7 @@
         }
       },
       "response": "Призрачные перчатки мастера обвивают твои руки теплым светом. Ты чувствуешь, как пальцы обретают уверенность и точность, словно помнят тысячи часов работы с инструментами. Эта реликвия станет частью твоего следующего воплощения.",
-      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Экипировка Рук Творца. Бонусы будут применены при следующем воплощении через Rule 12.1.B"
+      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: Ход меняет только состояние Soul Relic и не использует actor-specific command surfaces.\n- Actors outside scope: Guardians, Mortal World NPCs\n- Why outside scope: В этом accepted turn нет structured actor updates.\n\n## Reasoning\n- Экипировка Soul Relic допустима при выполненных requirements.\n- Бонусы реликвии будут применены при следующем воплощении по Rule 12.1.B."
     }
     ]]>
    </jsonresponse>
@@ -260,7 +260,7 @@
         }
       },
       "response": "Анна Звездочет раскрывает ладонь, и в ней вспыхивает кристалл, в котором пульсирует мягкий звездный свет. «Твоя удача сегодня благосклонна к тайнам небес», — произносит она и передает тебе новую реликвию, оставляя возможность вернуться к гаче позже, если пожелаешь.",
-      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Guardian gacha success. Ход тратит Ink Feathers, добавляет Soul Relic категории Magical и не затрагивает lifecycle/Life Evaluation surfaces."
+      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Guardian-centric\n- Relevant actors: Анна Звездочет\n- Why relevant: Ход тратит Ink Feathers и обрабатывает guardian-mediated gacha через UpdateGuardians/processGacha.\n- Actors outside scope: остальные Guardians, Mortal World NPCs\n- Why outside scope: Только Анна участвует в этом gacha result.\n\n## Guardian Thoughts\n### Анна Звездочет\n- Friendly репутация может улучшить rarity, но не ниже client-computed baseRarity.\n- Ход выдаёт новую magical Soul Relic и не затрагивает lifecycle/Life Evaluation surfaces."
     }
     ]]>
    </jsonresponse>
@@ -331,7 +331,7 @@
         }
       },
 	      "response": "Последняя вспышка магической энергии освещает разрушенную академию, когда твоё смертное тело обращается в пепел. Душа поднимается ввысь, а судьба этой жизни фиксируется для отдельной Оценки Жизни в Море Хаоса.",
-	      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Завершение легендарной жизни архимага. Этот trigger turn только записывает итог жизни и запускает отдельный Life Evaluation turn с наградой. Guardian reputation and other afterlife/meta rewards принадлежат следующему dedicated Life Evaluation turn, а не TriggerLifeEnd turn."
+	      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: TriggerLifeEnd фиксирует итог жизни и lifecycle transition без actor-specific mutations.\n- Actors outside scope: Guardians, Mortal World NPCs\n- Why outside scope: Guardian reputation и afterlife rewards принадлежат следующему отдельному Life Evaluation turn.\n\n## Reasoning\n- Этот trigger turn только записывает итог жизни и запускает отдельный Life Evaluation.\n- Награды, reputation changes и other afterlife/meta results не должны появляться в TriggerLifeEnd turn."
 	    }
     ]]>
    </jsonresponse>
@@ -369,7 +369,7 @@
       "AscensionTrigger": true,
       "playerChoice": "Ascension",
       "response": "Просветление достигает предела. Игрок явно выбирает Вознесение вместо обычного продолжения цикла.",
-      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: AscensionTrigger выполняет реальный переход в Shining Abode. Preconditions выполнены: Enlightenment=100%, playerChoice=Ascension. TriggerLifeEnd в этом ходу отсутствует."
+      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: AscensionTrigger меняет только lifecycle/control state этого перехода.\n- Actors outside scope: Guardians, Mortal World NPCs\n- Why outside scope: В ходу нет structured actor updates и нет TriggerLifeEnd.\n\n## Reasoning\n- Preconditions выполнены: Enlightenment=100%, playerChoice=Ascension.\n- AscensionTrigger выполняет переход в Shining Abode и не смешивается с TriggerLifeEnd."
     }
    ]]>
   </jsonresponse>

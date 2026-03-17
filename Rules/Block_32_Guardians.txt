@@ -175,6 +175,12 @@
                              "CooldownPeriod": "24 hour cooldown before new quest generation"
                            }
                          },
+                         "activeQuests": {
+                           "VALUE_SOURCE": "Guardian quests currently accepted/in progress for this specific Guardian",
+                           "MEANING": "Quest objects that moved from available state into active progress",
+                           "PURPOSE": "Allow quest-specific progression and valid completeQuest targeting",
+                           "VALIDATION": "Array of active quest objects; completed quests are removed from both availableQuests and activeQuests"
+                         },
                          "completedQuests": {
                            "VALUE_SOURCE": "Historical log of all completed quests with this Guardian",
                            "MEANING": "Record of Soul's achievements for this specific Guardian",
@@ -431,6 +437,7 @@
                            },
                            "questManagement": {
                              "availableQuests": [],
+                             "activeQuests": [],
                              "completedQuests": []
                            },
                            "gachaSystem": {
@@ -506,6 +513,9 @@
                         }
                       ]
                      ```
+                     In the current CLI contract, processGacha.result is a minimal reward/result stub
+                     (relicId + name + rarity). The full Soul Relic Object still belongs to canonical
+                     soul/meta state, not to this atomic guardian command payload.
                      
                      SEQUENTIAL OPERATIONS:
                      Multiple Guardian operations can be combined:

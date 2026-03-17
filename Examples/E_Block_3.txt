@@ -2,13 +2,18 @@
  <title>
   Examples For Logging, Readability, and The Auditor's Rule
  </title>
+ <description>
+  These examples illustrate only the formatting of the single `gm_thoughts_markdown` string.
+  In the live CLI accepted-turn contract, the string may additionally need the structured NPC-scope / reasoning wrapper documented in CLI files.
+ </description>
  <rule id="3.3">
   <example contenttype="json_fragment" id="LogFormat_Correct" type="good">
    <title>
-    CORRECT AND MANDATORY FORMAT
+    VALID STRING SHAPE (Format-Only Example)
    </title>
    <description>
-    The array contains strings directly.
+    This shows only that `gm_thoughts_markdown` must be one markdown string.
+    It is not, by itself, a complete accepted-turn CLI example with the structured NPC-scope / reasoning wrapper.
    </description>
    <content type="json">
     <![CDATA[
@@ -57,11 +62,11 @@
  </example>
  <example contenttype="json_fragment" type="good">
   <title>
-   Example of CORRECT, Well-Formatted Logging (Mandatory)
+   Example of Well-Formatted Internal Calculation Block
   </title>
   <description>
-   This example demonstrates the required format: one single, large string entry for the entire action, using Markdown and JSON newlines ('\n') for excellent readability. 
-                    This is the standard you must follow.
+   This example demonstrates a readable calculation block inside one single markdown string.
+                    In live CLI accepted turns, this block would normally sit inside the outer structured NPC-scope / reasoning wrapper rather than replace it.
   </description>
   <jsonresponse>
    <gm_thoughts_markdown>

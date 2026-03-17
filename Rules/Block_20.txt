@@ -360,9 +360,10 @@
    <instructiontext>
     <![CDATA[
 
-                    You are STRICTLY FORBIDDEN from modifying a location's 'locationStorages' array directly by re-sending the entire array.
+                    You are STRICTLY FORBIDDEN from modifying an off-screen location's 'locationStorages' array directly by re-sending the entire array.
                     This deprecated method is unsafe and will cause data loss.
-                    ALL changes to existing storages MUST be performed using the 'storageUpdates' and 'storagesToRemove' commands within the 'worldMapUpdates' object.
+                    ALL changes to existing off-screen storages MUST be performed using the 'storageUpdates' and 'storagesToRemove' commands within the 'worldMapUpdates' object.
+                    CLI exception: when updating the player's CURRENT known location this turn, the currentLocationData shorthand may additionally carry locationStorages alongside locationId + coordinates + lastEventsDescription, as documented in CLI_API_Specification.md / Block_CLI_Operations.
 
                     ]]>
    </instructiontext>

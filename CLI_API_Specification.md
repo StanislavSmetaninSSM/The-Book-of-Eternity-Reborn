@@ -45,8 +45,8 @@
 ### Primary Input: `input/turn_request.json`
 ```json
 {
-  "sessionId": "string (UUID)",
-  "requestId": "string (UUID, unique per turn request)",
+  "sessionId": "string (correlation token)",
+  "requestId": "string (unique per turn request correlation token)",
   "turnNumber": "integer",
   "playerAction": "string (user's action in Russian)",
   "timestamp": "string (ISO 8601)",
@@ -104,7 +104,7 @@ CLI Agent automatically loads current game state from:
 ```json
 {
   "response": "string (main narrative in Russian)",
-  "gm_thoughts_markdown": "string (debug logs in Russian)",
+  "gm_thoughts_markdown": "structured NPC-scope + reasoning markdown string in Russian",
   
   // PLAYER CHARACTER
   "playerStatus": {
@@ -172,7 +172,7 @@ CLI Agent automatically loads current game state from:
   "plotOutline": "object with mainArc, characterSubplots, loomingThreatsOrOpportunities, lastUpdatedTurn",
   
   // NPC SYSTEM
-  "UpdateNPCs": "array of npc_command_objects",
+  "UpdateNPCs": "array of complete npc_objects",
   "NPCsRenameData": "array of npc_rename_objects",
   "NPCsInScene": "array of complete npc_objects",
   "NPCActiveSkillChanges": "array of npc_skill_change_objects",
@@ -227,7 +227,7 @@ CLI Agent automatically loads current game state from:
   "characterChronicleUpdates": "array of character_chronicle_objects",
   
   // LORE CODEX SYSTEM
-  "loreCodexUpdates": "array of lore_codex_entry_objects (see Lore Codex section below)",
+  "loreCodexUpdates": "array of lore_codex_command_objects (see Lore Codex section below)",
   
   // ACHIEVEMENT SYSTEM
   "achievementUnlocks": "array of achievement_unlock_objects (see Achievements section below)",
@@ -305,7 +305,6 @@ game_session/
 - These `output/*.json` files are fresh per-turn transient artifacts for the current `sessionId/requestId/turnNumber`.
 - Rewrite them for the current request only; never append cross-turn history there and never reuse stale payload from a previous turn.
 - If a surface is unused for this turn, leave the corresponding `output/*.json` file absent instead of preserving old content.
-- `game_state/core/narrative.json` and `game_state/core/gm_debug.json` are client-distributed mirror files when a full response object is locally applied.
 - `game_state/core/player_status.json` ← `playerStatus`, `currentPoiseChange`
 - `playerStatus` is flattened into the root of `game_state/core/player_status.json`; do not store it there as a nested `playerStatus` object.
 - In Mortal World, `game_state/core/player_status.json` is a mandatory core file; accepted state is invalid if it is missing.
@@ -344,12 +343,15 @@ game_session/
 - `game_state/inventory/item_removals.json` ← `removeInventoryItems`
 - `game_state/inventory/item_bonds.json` ← `itemBondLevelChanges`, `itemFateCardUnlocks`
 - Canonical stored shape for `item_bonds.json`: `entries[]` with item identity + `ownerBondLevelCurrent` and any unlocked `fateCards`
+- Fate Card unlock contract: `itemFateCardUnlocks` is only the unlock event signal; the same turn must also carry the resulting full updated Item Object in `UpdateInventory`. A partial existing-item patch is not sufficient for Fate Card unlock reporting.
+- Bond/Fate Card reverse contract for existing items: if an already existing item changes `ownerBondLevelCurrent` or gains a newly unlocked Fate Card this turn, the resulting item state in `UpdateInventory` must be accompanied by the matching `itemBondLevelChanges` / `itemFateCardUnlocks` event. Direct state-only mutation is not sufficient.
 - `game_state/inventory/recipes.json` ← `addOrUpdateRecipes`, `removeRecipes`
 - `game_state/inventory/storage_operations.json` ← `moveToLocationStorage`, `retrieveFromLocationStorage`
 
 #### **WORLD STATE**
 - `game_state/world/current_location.json` ← `currentLocationData`
 - `game_state/world/world_map.json` ← `worldMapUpdates`
+- `worldMapUpdates` atomic commands include `newLocations`, `locationUpdates`, `storageUpdates`, `storagesToRemove`, `newLinks`, `linkUpdates`, `linksToRemove`, `threatsToAdd`, `threatsToUpdate`, `threatsToRemove`, `completeThreatActivities`
 - `game_state/world/world_events.json` ← `worldEventsLog`
 - `game_state/world/world_flags.json` ← `worldStateFlags`, `removeWorldStateFlags`
 - `game_state/world/world_time.json` ← `timeChange`, `setWorldTime`
@@ -360,9 +362,18 @@ game_session/
 - If an accepted GM turn changes `progression_schedule.json`, the client rejects the turn as a protocol violation.
 
 World-location contract notes:
+- `world_time.json` is intentionally mixed-shape in the current CLI runtime:
+  - accepted-turn command surface may persist `timeChange` or `setWorldTime`
+  - normalized absolute state may instead appear as `year`, `monthName`, `dayOfMonth`, `timeOfDay`, `currentTimeInMinutes`
+  - the client/runtime reads both forms for compatibility
+- `weather.json` is also dual-shape in the current CLI runtime:
+  - it may be stored as direct weather fields (`tendency`, `description`, etc.)
+  - or as the accepted-turn wrapper object under `weatherChange`
+  - the client/runtime reads both forms for compatibility
 - `currentLocationData` is dual-shape:
   - For a truly new current location, send the full Location Object.
-  - For returning to a known location, send only `locationId`, `coordinates`, and `lastEventsDescription`.
+  - For returning to a known location, the base shorthand is `locationId`, `coordinates`, and `lastEventsDescription`.
+  - If the current turn must also update player-facing current-location substructures, the known-location shape may additionally carry `internalDifficultyProfile`, `externalDifficultyProfile`, and/or `locationStorages`.
 - `eventDescriptions` is a read-only historical archive. Read it from location context if present, but do not emit it in `currentLocationData` or `worldMapUpdates`.
 - For current-turn location history, write only `lastEventsDescription`.
 
@@ -395,6 +406,11 @@ Quest state contract notes:
 - Canonical stored shape for `item_journals.json`: `entries[]` with item identity + `journalEntries[]`
 - `game_state/npcs/npc_personality.json` ← `NPCPersonalityTraitChanges`
 - `game_state/npcs/npc_activities.json` ← `NPCActivityUpdates`, `completeNPCActivities`
+- `NPCActivityUpdates` is for non-terminal changes to an already existing NPC activity.
+- `completeNPCActivities` must target the NPC's currently active `currentActivity` from canonical `npc_core` state.
+- Do not use `NPCActivityUpdates` or `completeNPCActivities` for a newly created same-turn NPC; a new NPC must start with `currentActivity = null`.
+- `npc_activities.json` is a command / turn-news surface, not the canonical long-lived NPC activity store.
+- Canonical persistent NPC activity state still lives in `npc_core.json` as `currentActivity` and `completedActivities`.
 - `game_state/npcs/npc_fate_cards.json` ← `NPCFateCardUnlocks`
 - `game_state/npcs/npc_custom_states.json` ← `NPCCustomStateChanges`
 
@@ -423,6 +439,7 @@ Quest state contract notes:
 - If a turn already requires a complete faction-core object in `factionDataChanges`, that full object may instead carry the resulting full canonical `customStates` array for the faction.
 - Existing factions in atomic faction commands must be targeted by permanent `factionId`.
 - `initialFactionId` is reserved for a new same-turn faction that does not yet have a permanent `factionId`.
+- `factionChronicleUpdates` is not one of those same-turn creation channels; it still requires the permanent `factionId` of an already materialized faction.
 - If a new same-turn faction is authored only with `initialId`/`initialFactionId`, the client normalizes that temporary tag into the stored `factionId` inside canonical faction files for that accepted turn. Subsequent turns must target the faction by `factionId`.
 
 #### **META-GAME SYSTEM**
@@ -452,6 +469,10 @@ Quest state contract notes:
 #### **MISCELLANEOUS**
 - `game_state/misc/vehicles.json` ← `UpdateVehicles`, `removeVehicles`, `activeVehicleChange`
 - `UpdateVehicles` accepts partial updates for existing vehicles (`vehicleId` + changed fields). When granting a brand-new vehicle, use the full Vehicle Object from Block 10; that schema permits `vehicleId = null`, although examples often preassign a fresh id immediately.
+- For vehicle availability changes, preserve the canonical availability/location invariant:
+  - `Active` or `Pocket` vehicles must end with `currentLocationId = null`
+  - `Parked` vehicles must end with a non-null `currentLocationId`
+  - when a partial `UpdateVehicles` patch changes `availability`, include the matching `currentLocationId` change in the same turn when needed
 - `game_state/misc/storage_access.json` ← `grantStorageAccess`, `revokeStorageAccess`, `shareStorageAccess`
 - `game_state/misc/multipliers.json` ← `multipliers` array
 - `game_state/misc/player_interactions.json` ← `otherPlayersInteractions`
@@ -840,7 +861,20 @@ try {
 } catch (error) {
   // Rollback on error
   restoreBackups(affectedFiles);
-  logError(error);
+  maybeWriteJSON('game_state/history/error_log.json', {
+    timestamp: new Date().toISOString(),
+    error: error.message,
+    context: 'turn processing',
+    stackTrace: error.stack
+  });
+  writeJSON('ready/turn_error.json', {
+    sessionId: turnRequest.sessionId,
+    requestId: turnRequest.requestId,
+    turnNumber: turnRequest.turnNumber,
+    timestamp: new Date().toISOString(),
+    status: 'error',
+    error: error.message
+  });
 }
 ```
 
@@ -861,7 +895,7 @@ try {
 2. **Complete or Rollback**: Either all operations succeed or all are rolled back
 3. **Consistency Check**: Validate cross-file references after updates
 4. **Terminal Error Signal**: `ready/turn_error.json` is the authoritative client-facing error channel
-5. **Optional Diagnostics**: `game_state/history/error_log.json` and `output/error_response.json` are optional structured diagnostics
+5. **Optional Diagnostics**: `game_state/history/error_log.json` is an optional structured diagnostic surface; terminal failure is still signaled only through `ready/turn_error.json`
 
 ### Language Compliance
 1. **Russian Content**: All user-facing text must be in Russian
@@ -896,12 +930,6 @@ async function handleError(error: Error, context: string) {
     error: error.message,
     context: context,
     stackTrace: error.stack
-  });
-  
-  await maybeWriteJSON('output/error_response.json', {
-    status: 'error',
-    message: 'Произошла ошибка обработки хода',
-    details: context
   });
   
   // 3. Signal terminal error (authoritative)
@@ -1145,6 +1173,7 @@ Achievements track notable player accomplishments across all incarnations. They 
 7. **Always:** Check progress-based achievements and update `trackedProgress` counters
 
 **Achievement unlocks MUST be mentioned in the narrative response** with the marker `[ACHIEVEMENT_UNLOCK: Achievement Name]` so the client can highlight them.
+This narrative marker accompanies, but does not replace, the canonical `achievementUnlocks` command and resulting `game_state/meta/achievements.json` update.
 
 ---
 
@@ -1197,8 +1226,10 @@ Image authoring contract for Guardian data:
     "command": "processGacha",
     "guardianId": "string",
     "inkFeathersSpent": "integer",
-    "result": { /* relic object */ }
+    "result": { /* minimal Soul Relic result stub: relicId + name + rarity */ }
   },
+  // processGacha.result is a reward/result surface, not the full canonical relic inventory payload.
+  // Use the full Soul Relic Object when writing canonical soul/meta relic state.
   // Guardian-mediated processGacha is limited per Guardian per return from mortal life:
   // Hostile(-100..-51)=0, Wary/Neutral(-50..49)=1, Friendly(50..129)=2, Devoted/Legendary(130..300)=3.
   // Charges reset only when the Soul returns to the Chaos Sea after a new mortal life.
@@ -1310,10 +1341,11 @@ Image authoring contract for Guardian data:
 ```
 
 **Generated JSON Response** (internal):
+For brevity, the sample below shows only the NPC fields relevant to the turn. In a real CLI turn, each `UpdateNPCs` item must still be a complete NPC object, not a partial patch.
 ```json
 {
   "response": "Торговец поднимает глаза от своих записей и дружелюбно улыбается...",
-  "gm_thoughts_markdown": "## Взаимодействие с торговцем\nИгрок инициирует торговый диалог...",
+  "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: Торговец\n- Why relevant: Turn updates the merchant interaction state and dialogue.\n- Actors outside scope: other scene NPCs, Guardians\n- Why outside scope: No other structured actor surfaces are changed.\n\n## Reasoning\n### Торговец\n- Игрок инициирует торговый диалог, поэтому merchant interaction state и dialogueOptions обновляются в этом ходу.",
   "dialogueOptions": [
     {
       "optionId": "trade_weapons",
@@ -1328,13 +1360,14 @@ Image authoring contract for Guardian data:
   ],
   "UpdateNPCs": [
     {
-      "command": "updateInteraction",
-      "npcId": "npc-merchant-01",
-      "data": {
-        "lastInteraction": "2026-03-01T10:00:00Z",
-        "interactionType": "trade_inquiry",
-        "playerReputation": 15
-      }
+      "NPCId": "npc-merchant-01",
+      "name": "Merchant Arven",
+      "currentLocationId": "market-square-001",
+      "currentActivity": null,
+      "completedActivities": [],
+      "lastInteraction": "2026-03-01T10:00:00Z",
+      "interactionType": "trade_inquiry",
+      "playerReputation": 15
     }
   ]
 }

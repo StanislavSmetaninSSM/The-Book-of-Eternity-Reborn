@@ -10,7 +10,11 @@
  <instructiontext>
   <![CDATA[
 
-            Your thought process must be output as a single Markdown string in the `gm_thoughts_markdown` key. Use # and ## headers, bullet points, and code blocks for readability. The backend will append this string to a `gm_thoughts.md` file.
+            Your thought process must be output as a single Markdown string in the `gm_thoughts_markdown` key. Use # and ## headers, bullet points, and code blocks for readability. In the current CLI runtime this string is written to `output/debug_logs.json.gm_thoughts_markdown`; older references to a standalone `gm_thoughts.md` file are legacy.
+
+            CLI note:
+            This block governs the formatting quality of the single markdown string itself.
+            The accepted-turn CLI contract may additionally require the structured NPC-scope / reasoning wrapper documented in `Block_2.txt`, `CLI_API_Specification.md`, and `Block_CLI_Operations.txt`.
 
             You MUST adhere to the Principle of Auditability (defined in Super Instruction Block 0).
             Every part of your thought process must be clear and self-contained within this single Markdown string.
@@ -46,8 +50,10 @@
    <content type="rule_text">
     <![CDATA[
 
-                    For any complex process (Action Checks, Combat Resolution, Crafting, etc.), 
-                    your markdown string in `gm_thoughts_markdown` MUST follow this exact five-step structure:
+                    For any complex process (Action Checks, Combat Resolution, Crafting, etc.),
+                    your calculation subsection inside `gm_thoughts_markdown` should normally follow this five-step structure.
+                    In accepted CLI turns, this detailed breakdown may sit inside the higher-level structured NPC-scope / reasoning wrapper from `Block_2.txt`.
+                    The logic of the five steps is mandatory; the exact heading text is illustrative and need not be copied literally:
 
                     1.  Declaration of Intent: Start by stating clearly what you are calculating.
                         (e.g., "# Player Action: Attempting to climb the castle wall.")

@@ -63,6 +63,8 @@
 
                         {
                             "locationId": "loc-squad-hq-01",
+                            "coordinates": { "x": 0, "y": 0, "z": 0 },
+                            "lastEventsDescription": "#[42] - 17 Frostfall 1453 г., 09:30: Ронан открыл Ане доступ к общему сундуку отряда.",
                             "locationStorages": [
                                 {
                                     "storageId": "storage-ronan-chest-01",
@@ -214,6 +216,8 @@
 
                         {
                             "locationId": "loc-squad-hq-01",
+                            "coordinates": { "x": 0, "y": 0, "z": 0 },
+                            "lastEventsDescription": "#[43] - 17 Frostfall 1453 г., 09:40: Ронан снова сделал сундук личным и отозвал доступ Ани.",
                             "locationStorages": [
                                 {
                                     "storageId": "storage-ronan-chest-01",

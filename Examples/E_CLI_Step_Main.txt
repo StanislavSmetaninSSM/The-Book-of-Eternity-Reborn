@@ -21,7 +21,7 @@ Example gm_thoughts_markdown:
 - Акторы вне охвата: Капитан стражи, Совет ремесленников
 - Почему они вне охвата: Локальная сцена не затрагивает их решения и не запускает off-screen последствия
 
-## Размышления NPC
+## Reasoning / Размышления NPC
 ### Марта
 - Ситуация: Она видит, что игрок просит у неё помощь при свидетеле
 - Мысли: Она хочет помочь, но боится потерять репутацию у хозяина лавки
@@ -51,7 +51,7 @@ Example gm_thoughts_markdown:
 - Акторы вне охвата: Бармен Йорик, Рыночные торговцы
 - Почему они вне охвата: Этот цикл не меняет их состояние и не создаёт для них новых решений
 
-## Размышления NPC
+## Reasoning / Размышления NPC
 ### Лорд Хавьер
 - Ситуация: Он получил отчёт о нехватке провизии и угрозе с южной дороги
 - Мысли: Нельзя показывать слабость гарнизона, но и игнорировать снабжение опасно
@@ -87,7 +87,7 @@ Example gm_thoughts_markdown:
 - Акторы вне охвата: Прочие Хранители
 - Почему они вне охвата: В этом ходе они не взаимодействуют с душой и не влияют на результат сцены
 
-## Размышления NPC
+## Guardian Thoughts
 ### Аэлион
 - Ситуация: Душа прибыла в его Обитель после долгого отсутствия
 - Мысли: Он хочет понять, вернулась ли душа ради знаний или ради выгоды
@@ -217,7 +217,7 @@ Rules:
 - A new `Memory Gates` purchase replaces the old pending legacy
 - The client rejects a `Memory Gates` turn if no new valid pending legacy appears
 - If an old `pendingMemoryLegacy` already existed before the turn and remains unchanged after the new purchase, the client rejects the turn as an invalid `Memory Gates` outcome
-- Canonical `pendingMemoryLegacy` stores `grantSource`, `grantSnapshot`, and `applicationState`
+- Canonical `pendingMemoryLegacy` stores `legacyId`, `legacyType`, `sourceLifeHint`, `grantSource`, `applicationState`, `grantedAtUtc`, and `grantSnapshot`
 - `applicationAudit` appears later only when the client has already applied the legacy locally during an incarnation turn
 
 Applied-but-not-consumed incarnation state example:
@@ -670,6 +670,7 @@ Client result:
 - rejects the turn
 - writes `structured_npc_update_out_of_scope`
 - asks GM to either add `Марта` to `Relevant actors` + reasoning blocks or remove that structural NPC update
+- this example isolates the scope mismatch only; in a real turn `UpdateNPCs` must still satisfy the full NPC object contract and cannot be treated as a legal skeletal patch
 
 Concrete structured Guardian mismatch example:
 

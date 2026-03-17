@@ -171,7 +171,8 @@
     "UpdateVehicles": [
         {
             "vehicleId": "horse-destrier-thunderhoof-001",
-            "availability": "Active"
+            "availability": "Active",
+            "currentLocationId": null
         }
     ]
     ]]>

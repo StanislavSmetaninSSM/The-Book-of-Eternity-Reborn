@@ -2281,6 +2281,7 @@
                                   "newBondLevel": integer_new_level, 
                                   "changeReason": "brief_description_of_why_level_changed" 
                               }.
+                            - Do not report the new bond level only by mutating the item's stored state. For an existing item, the resulting `ownerBondLevelCurrent` in the updated Item Object and the `itemBondLevelChanges` event must appear in the same turn.
                            
                             - All changes must be logged in 'gm_thoughts_markdown'.
 
@@ -2371,14 +2372,14 @@
     <![CDATA[
                         Mandatory format for Vehicle Objects:
                         {
-                            "vehicleId": "string_GUID_or_null",
+                            "vehicleId": "string_id_or_null",
                             "name": "string", // Translate to user language
                             "description": "string", // Visual and functional description
                             "image_prompt": "string", // Mandatory for new vehicles
                             "type": "string", // 'Mount' (living creature), 'Vehicle' (mechanical/magical machine), or 'Summonable' (bound to soul/pocket dimension)
                             "isSentient": "boolean", // True for horses, dragons, AI drones. False for cars, mundane boats
                             "availability": "string", // 'Active' (currently ridden), 'Parked' (left in a specific location), or 'Pocket' (summonable anywhere)
-                            "currentLocationId": "string_GUID_or_null", // Where it is parked. Null if Active or Pocket
+                            "currentLocationId": "string_id_or_null", // Where it is parked. Null if Active or Pocket
                             "maxHealth": "percentage_string", // e.g., "300%" - represents durability/HP
                             "currentHealth": "percentage_string", // e.g., "250%" - current durability/HP
                             "speedBonus": "integer", // Added to the player's initiative/speed when Active

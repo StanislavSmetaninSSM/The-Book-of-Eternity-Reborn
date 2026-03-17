@@ -11,7 +11,7 @@
   </description>
   <scenariocontext>
    NPC "Борин Железнорук" is working on his project "Ковка Топора из Звездного Металла".
-                    In this progression cycle, his 'timeSpentMinutes' increases from 360 to 540, and the project is now complete.
+                    In this progression cycle, his 'timeSpentMinutes' increases from 360 to 540, and the project is nearing completion.
   </scenariocontext>
   <example id="AtomicUpdate_NPC_Bad" type="bad">
    <title>
@@ -64,8 +64,8 @@
                                     "NPCName": "Борин Железнорук",
                                     "activityUpdate": {
                                         "timeSpentMinutes": 540,
-                                        "description": "Топор был успешно выкован.",
-                                        "activeState": "Completed"
+                                        "description": "Финальная закалка почти завершена.",
+                                        "currentStepNumber": 4
                                     }
                                 }
                             ]
@@ -126,8 +126,8 @@
                                     "NPCName": "Борин Железнорук",
                                     "activityUpdate": {
                                         "timeSpentMinutes": 540,
-                                        "description": "Топор был успешно выкован.",
-                                        "activeState": "Completed"
+                                        "description": "Финальная закалка почти завершена.",
+                                        "currentStepNumber": 4
                                     }
                                 }
                             ]

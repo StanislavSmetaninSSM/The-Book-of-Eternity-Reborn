@@ -567,17 +567,11 @@
 
                         {
                             "locationId": "loc-desert-01",
-                            "name": "The Sun-Scorched Wastes",
                             "coordinates": {"x": 25, "y": -10, "z": 0},
-                            "locationType": "outdoor",
-                            "biome": "Desert",
-                            "indoorType": null,
                             "internalDifficultyProfile": { "combat": 15, "environment": 25, "social": 2, "exploration": 10 },
                             "externalDifficultyProfile": { "combat": 15, "environment": 25, "social": 2, "exploration": 10 },
-                            "description": "Endless dunes of orange sand stretch to the horizon under a blazing, cloudless sky. The air shimmers with heat, and the only sound is the whisper of the wind over the sand.",
                             "lastEventsDescription": "#31. You continue your trek through the desert.",
-                            "image_prompt": "Vast desert landscape with massive sand dunes, blazing sun in a clear blue sky, heat haze, cinematic, fantasy art.",
-                            "adjacencyMap": null
+                            "locationStorages": []
                         }
 
                         ]]>
@@ -676,6 +670,7 @@
 
                             {
                                 "locationId": "loc-tavern-01",
+                                "coordinates": { "x": 12, "y": 8, "z": 0 },
                                 "lastEventsDescription": "#45. A massive bar fight erupts after a gambler accuses another of cheating."
                             }
 
@@ -718,6 +713,7 @@
 
                             {
                                 "locationId": "loc-tavern-01",
+                                "coordinates": {"x": 12, "y": 8},
                                 "lastEventsDescription": "#45. A massive bar fight erupts after a gambler accuses another of cheating."
                             }
 
@@ -786,6 +782,7 @@
 
                         {
                             "locationId": "loc-tavern-room-101",
+                            "coordinates": { "x": 12, "y": 8, "z": 0 },
                             "lastEventsDescription": "#45. Игрок разместил в комнате личный сундук для хранения вещей.",
                             "locationStorages": [
                                 {
@@ -818,6 +815,10 @@
    <![CDATA[
    // Example showing proper use of Z coordinates for multi-level structures
    
+   // Structural full-object illustration during first-time generation of a current location.
+   // This is NOT the known-location revisit shape.
+   // For a known-location revisit in CLI mode, use only:
+   // locationId + coordinates + lastEventsDescription (plus explicitly allowed optional substructures).
    // Player is in a tavern ground floor
    "currentLocationData": {
        "locationId": "tavern-rusty-flagon-ground-001",
@@ -856,7 +857,8 @@
        ]
    }
    
-   // When player goes upstairs, the second floor location would be:
+    // When the second floor is generated as the player's newly discovered current location:
+   // this is still a first-time full-object generation example, not a known-location revisit payload.
    "currentLocationData": {
        "locationId": "tavern-rusty-flagon-second-001",
        "name": "The Rusty Flagon - Second Floor",

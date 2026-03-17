@@ -1,7 +1,7 @@
 {
-  "day": 1,
-  "timeOfDay": "Morning",
-  "season": "Spring",
   "year": 124,
-  "lastUpdate": "2026-03-01T09:00:00Z"
+  "monthName": "Month of Beginnings",
+  "dayOfMonth": 1,
+  "timeOfDay": "08:00",
+  "currentTimeInMinutes": 480
 }

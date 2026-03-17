@@ -327,15 +327,21 @@
                     <Content type="rule_text">
                         <![CDATA[
 
-                        On EVERY turn, your gm_thoughts_markdown MUST begin with:
+                        On EVERY turn, your gm_thoughts_markdown MUST explicitly document the active realm and its enabled/disabled systems.
+
+                        Optional legacy standalone template example (not a mandatory standalone heading in CLI mode):
 
                         ## 🌊/⚔️ Realm Check
                         - Current Realm: [Chaos Sea / Mortal World]
                         - Active Systems: [list key active systems for this realm]
                         - Disabled Systems: [confirm key disabled systems]
 
-                        This is your FIRST check before any other processing.
-                        If you skip this check, you risk applying wrong-realm mechanics.
+                        CLI-mode note:
+                        - In the current CLI contract, this realm check should be embedded inside the structured NPC-scope / reasoning format rather than enforced as a separate mandatory first heading.
+                        - The important part is that the turn clearly states the active realm and respects the enabled/disabled systems for that realm.
+                        - The validator does not require the exact literal sublabels `Current Realm`, `Active Systems`, and `Disabled Systems`; a clear equivalent phrasing inside the structured scope/reasoning format is acceptable.
+
+                        If you skip the realm check entirely, you risk applying wrong-realm mechanics.
 
                         ]]>
                     </Content>

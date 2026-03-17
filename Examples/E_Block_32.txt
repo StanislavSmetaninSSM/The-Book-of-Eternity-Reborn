@@ -14,18 +14,17 @@
    </scenariocontext>
    <logoutput target="gm_thoughts_markdown">
     <![CDATA[
-    
-    # Создание Нового Хранителя через UpdateGuardians Command
+    ## NPC Scope
+    - Mode: Guardian-centric
+    - Relevant actors: Селена Теневая
+    - Why relevant: Этот ход создаёт нового Хранителя через UpdateGuardians.create.
+    - Actors outside scope: остальные Хранители
+    - Why outside scope: Их состояние в этом ходу не меняется.
 
-    1. **Анализ Запроса:** Игрок хочет хранителя теней с трагической историей
-    2. **Генерация Уникального ID:** guard_magic_shadowmistress_001
-    3. **Архетип:** Mysterious Oracle (соответствует магическому домену)
-    4. **Ценности:** Знания, Секреты, Справедливость (в тени)
-    5. **Начальная Репутация:** 0 (нейтральный старт)
-    6. **Речевой Паттерн:** Formal + загадочность
-    
-    ## Создание через UpdateGuardians 'create' команду
-    
+    ## Guardian Thoughts
+    ### Селена Теневая
+    - Игрок явно просит mysterious shadow-oriented mentor, поэтому create command должен зафиксировать shadow-magic domain, ambiguous morality и tragic backstory hooks.
+    - Create turn не обязан добавлять отдельные musings/project updates сверх полного Guardian Object, если сам ход не меняет эти поверхности отдельно.
     ]]>
    </logoutput>
    <jsonresponse>
@@ -57,6 +56,7 @@
             },
             "questManagement": {
               "availableQuests": [],
+              "activeQuests": [],
               "completedQuests": []
             },
             "gachaSystem": {
@@ -134,7 +134,7 @@
         }
       ],
       "response": "Туманные очертания начинают собираться в Море Хаоса, формируя элегантную фигуру в темных одеждах. Селена Теневая материализуется перед тобой - ее серебристые глаза хранят тайны веков, а тени послушно плывут вокруг неё.\n\n'Приветствую, странник души,' - говорит она торжественным голосом. 'Твое желание обрело форму, и я явилась. Я - Селена, хранительница забытых тайн и проводница теневой магии. Если ты готов идти путями скрытых знаний, то мы найдем общий язык.'\n\nНовый Guardian создан и готов к взаимодействию.",
-      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Создан новый Guardian Селена Теневая через UpdateGuardians create command. ID: guard_magic_shadowmistress_001."
+      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Guardian-centric\n- Relevant actors: Селена Теневая\n- Why relevant: Этот ход создаёт и представляет нового Хранителя через UpdateGuardians.create.\n- Actors outside scope: остальные Хранители\n- Why outside scope: Их состояние в этом ходе не меняется.\n\n## Guardian Thoughts\n### Селена Теневая\n- Новый Guardian создан и представлен игроку; дополнительных afterlife-мутаций вне create не требуется."
     }
     ]]>
    </jsonresponse>
@@ -155,23 +155,20 @@
    </scenariocontext>
    <logoutput target="gm_thoughts_markdown">
     <![CDATA[
-    
-    # Взаимодействие с Неприязненной Репутацией (-50 to -21)
 
-    ## 1. Текущий Статус:
-    - Репутация: -15 (Wary range)
-    - Поведенческий Паттерн: "Недовольный начальник" 
-    - Тон: Холодный, формальный, неохотно взаимодействующий
+    ## NPC Scope
+    - Mode: Guardian-centric
+    - Relevant actors: Изарион Светлый
+    - Why relevant: Ход меняет репутацию и диалог активного Хранителя после малого поручения.
+    - Actors outside scope: остальные Хранители
+    - Why outside scope: Только Изарион участвует в этом взаимодействии; другие guardian surfaces не меняются.
 
-    ## 2. Применение Rule 32.2:
-    - Ограниченное предложение квестов (только базовые)
-    - Повышенные требования к выполнению
-    - Холодное признание заслуг
+    ## Guardian Thoughts
+    ### Изарион Светлый
+    - Репутация -15 остаётся в диапазоне Wary, поэтому тон должен быть холодным и формальным.
+    - Выполненное поручение оправдывает лишь небольшой рост доверия: +5 репутации.
+    - На этом уровне допустимы только сдержанное признание заслуг и ограниченное предложение дальнейших задач.
 
-    ## 3. Репутационное Изменение:
-    - Малое задание выполнено: +5 репутация
-    - Новая репутация: -15 + 5 = -10 (остается Wary)
-    
     ]]>
    </logoutput>
    <jsonresponse>
@@ -192,7 +189,7 @@
         { "text": "Благодарю за возможность служить", "category": "уважение" },
         { "text": "[Молча поклониться и отойти]", "category": "завершить" }
       ],
-      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Wary репутация (-10). Изарион дает холодное признание, но остается дистанцированным. +5 репутация за выполнение."
+      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Guardian-centric\n- Relevant actors: Изарион Светлый\n- Why relevant: Ход меняет репутацию и диалог активного Хранителя.\n- Actors outside scope: остальные Хранители\n- Why outside scope: Только Изарион участвует в этом взаимодействии.\n\n## Guardian Thoughts\n### Изарион Светлый\n- Wary репутация остаётся холодной и дистанцированной.\n- За выполненное поручение выдано +5 репутации."
     }
     ]]>
    </jsonresponse>
@@ -210,25 +207,20 @@
    </scenariocontext>
    <logoutput target="gm_thoughts_markdown">
     <![CDATA[
-    
-    # Legendary взаимодействие (+230 to +300 репутация)
 
-    ## 1. Текущий Статус:
-    - Репутация: +245 (Legendary tier)
-    - Поведенческий Паттерн: "Духовный отец и равный"
-    - Качество Выполнения: выдающийся успех
+    ## NPC Scope
+    - Mode: Guardian-centric
+    - Relevant actors: Мария Кузнечная
+    - Why relevant: Ход завершает guardian quest, меняет репутацию и выдаёт выдающиеся награды от Марии.
+    - Actors outside scope: остальные Хранители
+    - Why outside scope: Только Мария участвует в этой reward resolution; другие guardian surfaces не меняются.
 
-    ## 2. Применение Rule 32.2 Legendary Behavior:
-    - Глубоко личный тон, как к лучшему другу
-    - Максимальные награды и бонусы
-    - Уникальный контент, доступный только на этом уровне
+    ## Guardian Thoughts
+    ### Мария Кузнечная
+    - Репутация +245 находится в Legendary tier и оправдывает максимально тёплый, глубоко личный тон.
+    - Выдающийся результат квеста обосновывает premium reward resolution с 125 Ink Feathers и уникальной Legendary Soul Relic.
+    - Награды и narrative tone должны подчеркнуть, что ученик признан духовным наследником и равным в мастерстве.
 
-    ## 3. Расчет Наград:
-    - Базовая награда: 50 Ink Feathers
-    - Выдающийся результат: narratively justified premium reward
-    - Legendary бонус: +25 перьев = 125 перьев
-    - Unique Legendary Soul Relic (только для этого уровня связи)
-    
     ]]>
    </logoutput>
    <jsonresponse>
@@ -290,7 +282,7 @@
         }
       },
       "response": "Мария Кузнечная роняет молот и бросается к тебе в объятия, её глаза сияют от гордости и радости. Её кузница гудит от восторженного пламени, словно сама радуется твоему триумфу.\n\n'Мой дорогой, мой бесценный ученик!' - она держит твои руки в своих мозолистых ладонях. 'Ты превзошёл даже мои самые смелые мечты! То, что ты создал... это не просто мастерство, это искусство, достойное самих богов кузни!'\n\nОна ведет тебя к особому алтарю, где покоится кристаллическая реликвия невообразимой красоты.\n\n'Это моё личное благословение - частица моей собственной души, выкованная за тысячи лет. Я никогда не думала, что найду ученика, достойного такого дара. Ты больше не просто мой подопечный... ты мой духовный наследник, мой равный в мастерстве!'\n\nСлёзы радости текут по её лицу: 'Я так горжусь тобой, дитя моё...'",
-      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Legendary репутация (245). Мария дает уникальную Legendary реликвию + 125 перьев. Максимальная эмоциональная связь достигнута."
+      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Guardian-centric\n- Relevant actors: Мария Кузнечная\n- Why relevant: Ход завершает guardian quest, меняет репутацию и выдаёт награды от Марии.\n- Actors outside scope: остальные Хранители\n- Why outside scope: Только Мария участвует в этой reward resolution.\n\n## Guardian Thoughts\n### Мария Кузнечная\n- Legendary репутация оправдывает уникальную реликвию и крупную награду в Ink Feathers.\n- Эмоциональная связь и narrative tone должны оставаться максимально тёплыми."
     }
     ]]>
    </jsonresponse>
@@ -308,29 +300,20 @@
    </scenariocontext>
    <logoutput target="gm_thoughts_markdown">
     <![CDATA[
-    
-    # Guardian Gacha с Репутационными Бонусами
 
-    ## 1. Предварительные Проверки:
-    - Ink Feathers: 450 >= 180 ✓ 
-    - Репутация: +65 (Friendly tier = +15% к редким)
-    - Попытки у Хранителя в этом возвращении: 2 total, 0 used, 2 remaining ✓
+    ## NPC Scope
+    - Mode: Guardian-centric
+    - Relevant actors: Александр Железный
+    - Why relevant: Ход тратит Ink Feathers и обрабатывает guardian-mediated gacha у активного Хранителя.
+    - Actors outside scope: остальные Хранители
+    - Why outside scope: Только Александр влияет на этот gacha result; другие guardian surfaces в этом ходу не участвуют.
 
-    ## 2. Расчет Модифицированных Шансов:
-    - Базовые шансы: Common 60%, Uncommon 25%, Rare 10%, Epic 4%, Legendary 1%
-    - Friendly Bonus (+15% к редким):
-      * Common: 60% → 45%
-      * Uncommon: 25% → 30% 
-      * Rare: 10% → 15%
-      * Epic: 4% → 8%
-      * Legendary: 1% → 2%
+    ## Guardian Thoughts
+    ### Александр Железный
+    - Репутация +65 находится в Friendly tier и может улучшить итоговый результат относительно client-computed base rarity.
+    - Combat domain логично смещает reward в сторону боевых и физических категорий, не нарушая базовый gacha contract.
+    - У Хранителя есть доступные попытки в этом возвращении, поэтому списание charges и выдача Rare combat relic обоснованы.
 
-    ## 3. Домен Combat влияет на категории:
-    - 70% шанс Combat/Physical категорий
-    - 30% шанс других категорий
-
-    ## 4. Результат Броска: 0.83 → Rare Combat Relic
-    
     ]]>
    </logoutput>
    <jsonresponse>
@@ -390,7 +373,7 @@
         }
       },
       "response": "Александр Железный поднимает свой древний меч и опускает его острием в бурлящие воды Моря Хаоса. Твои Чернильные Перья растворяются в волнах, и они начинают светиться ярким серебристым сиянием.\n\n'Твоя преданность пути воина заслуживает достойной награды!' - гремит его голос. Хаос вокруг меча начинает кристаллизоваться, формируя массивную нагрудную реликвию из тёмного металла.\n\n'Железная Воля - дар для истинного воина!' - он поднимает сияющий артефакт. 'Эта реликвия рождена из воспоминаний тысяч героев, которые никогда не сдавались. Она даст тебе их несгибаемую стойкость и силу духа!'\n\nРепутация с Александром помогла получить редкую реликвию вместо обычной. Твоя преданность окупилась сторицей!",
-      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Friendly репутация дала улучшенный шанс на редкую реликвию. Combat домен обеспечил боевую реликвию. -180 перьев, +Железная Воля. У Александра израсходована 1 попытка гачи в текущем возвращении."
+      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Guardian-centric\n- Relevant actors: Александр Железный\n- Why relevant: Ход тратит Ink Feathers и обрабатывает guardian gacha у активного Хранителя.\n- Actors outside scope: остальные Хранители\n- Why outside scope: Только Александр влияет на этот gacha result.\n\n## Guardian Thoughts\n### Александр Железный\n- Friendly репутация улучшает шанс на редкую реликвию.\n- Combat домен обосновывает боевую реликвию.\n- В этом возвращении у Александра списывается одна попытка гачи."
     }
     ]]>
    </jsonresponse>
@@ -412,25 +395,20 @@
    </scenariocontext>
    <logoutput target="gm_thoughts_markdown">
     <![CDATA[
-    
-    # Генерация Кросс-Инкарнационного Soul Quest
 
-    ## 1. Quest Design Analysis:
-    - Guardian Domain: Social → diplomatic/relationship focus
-    - Reputation: +45 (Friendly) → access to personal quest lines
-    - Quest Type: Multi-incarnation diplomatic mission
-    - Difficulty: High (требует 3+ жизней для завершения)
+    ## NPC Scope
+    - Mode: Guardian-centric
+    - Relevant actors: Ольга Дипломат
+    - Why relevant: Ход обновляет guardian project и создаёт cross-incarnation Soul Quest от Ольги.
+    - Actors outside scope: остальные Хранители
+    - Why outside scope: Только Ольга участвует в этой quest resolution; другие guardian surfaces не меняются.
 
-    ## 2. Objectives Structure:
-    - Phase 1: Establish diplomatic network in one life
-    - Phase 2: Maintain relationships through reincarnation
-    - Phase 3: Achieve grand diplomatic victory using accumulated trust
+    ## Guardian Thoughts
+    ### Ольга Дипломат
+    - Social domain и Devoted репутация открывают доступ к personal quest line с дипломатическим фокусом.
+    - Квест должен быть multi-incarnation arc с отложенными objective phases и crossIncarnation tracking.
+    - Обновление currentProject и выдача Soul Quest должны быть согласованы по теме: сеть доверия, переживающая множество жизней.
 
-    ## 3. Cross-Incarnation Mechanics:
-    - Quest persists through death (crossIncarnation: true)
-    - NPC relationships carry over via Soul Imprints
-    - Progress tracked across multiple lives
-    
     ]]>
    </logoutput>
    <jsonresponse>
@@ -493,7 +471,7 @@
         { "text": "Это звучит слишком амбициозно... у вас есть квесты попроще?", "category": "сомнение" },
         { "text": "Какие награды ждут за столь великое достижение?", "category": "награда" }
       ],
-      "gm_thoughts_markdown": "ЗАГОЛОВОК ЛОГА: Создан cross-incarnation Soul Quest. Friendly репутация открыла доступ к personal quest line Ольги. 3 фазы, перекрестные воплощения."
+      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Guardian-centric\n- Relevant actors: Ольга Дипломат\n- Why relevant: Ход обновляет guardian project и создаёт cross-incarnation Soul Quest от Ольги.\n- Actors outside scope: остальные Хранители\n- Why outside scope: Только Ольга участвует в этой quest resolution.\n\n## Guardian Thoughts\n### Ольга Дипломат\n- Devoted репутация открывает доступ к personal quest line.\n- Quest строится как multi-incarnation diplomatic arc с тремя фазами."
     }
     ]]>
    </jsonresponse>
