@@ -478,6 +478,7 @@ public class GameEngine
         if (!_fs.FileExists("game_state/meta/soul_state.json"))
             return false;
 
+        await NormalizeRuntimeUiArtifactsAsync();
         await EnsureClientOwnedSystemFilesHealthyAsync();
         var sessionHealth = await _criticalStateHealth.AssessCurrentSessionHealthAsync();
         if (sessionHealth.HasRecoverableSessionError)
@@ -543,6 +544,7 @@ public class GameEngine
             return;
         }
 
+        await NormalizeRuntimeUiArtifactsAsync();
         var pendingManifest = await LoadPendingTurnSnapshotManifestAsync();
         var hasPendingTerminalSignal = _fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json");
         if (pendingManifest == null && !hasPendingTerminalSignal)
@@ -809,7 +811,8 @@ public class GameEngine
 
         // CRITICAL: Wait for the GM to describe the Guardian's abode before entering the loop
         // Without this, the player sees a blank screen after starting a new game
-        await WaitForGmResponse();
+        if (!await WaitForGmResponse())
+            return;
 
         // Enter game loop in Chaos Sea phase
         await EnterGameLoop();
@@ -1596,6 +1599,34 @@ public class GameEngine
         }
     }
 
+    private async Task NormalizeRuntimeUiArtifactsAsync()
+    {
+        await NormalizePendingRepairArtifactsAsync();
+        await NormalizePendingTerminalProtocolFailureArtifactsAsync();
+        await _qteSceneService.EnsureRuntimeStateHealthyAsync();
+
+        var manifest = await LoadPendingTurnSnapshotManifestAsync();
+        var hasReadySignals = _fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json");
+
+        if (manifest == null && hasReadySignals)
+        {
+            _logger.LogWarning("Найдены ready-сигналы без pending snapshot manifest. Очистка как stale runtime artifacts.");
+            ClearReadySignals();
+            ClearTransientOutputFiles();
+        }
+
+        if (manifest != null)
+            return;
+
+        if (_fs.FileExists("input/turn_request.json"))
+        {
+            _logger.LogWarning("Найден orphaned input/turn_request.json без pending snapshot manifest. Удаление как stale runtime artifact.");
+            _fs.DeleteFile("input/turn_request.json");
+        }
+
+        ClearTransientOutputFiles();
+    }
+
     private async Task<int?> ReadReadySignalTurnNumberAsync()
     {
         var metadata = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
@@ -1731,7 +1762,7 @@ public class GameEngine
             if (!preservePendingSnapshot && manifest != null)
                 await CleanupPendingTurnSnapshotAsync();
 
-            AnsiConsole.MarkupLine("[yellow]⚠ Отклонён некорректный сигнал завершения хода GM без читаемых метаданных.[/]");
+            AnsiConsole.MarkupLine("[yellow]⚠ Клиент отклонил повреждённый ответ GM и запросил корректную повторную обработку.[/]");
             return true;
         }
 
@@ -1749,7 +1780,7 @@ public class GameEngine
             if (!preservePendingSnapshot && manifest != null)
                 await CleanupPendingTurnSnapshotAsync();
 
-            AnsiConsole.MarkupLine("[yellow]⚠ Отклонён сигнал завершения хода GM без ожидаемого pending request context.[/]");
+            AnsiConsole.MarkupLine("[yellow]⚠ Клиент отклонил несогласованный ответ GM и восстановил безопасное ожидание.[/]");
             return true;
         }
 
@@ -1771,7 +1802,7 @@ public class GameEngine
         if (!preservePendingSnapshot)
             await CleanupPendingTurnSnapshotAsync();
 
-        AnsiConsole.MarkupLine("[yellow]⚠ Отклонён устаревший или некоррелированный сигнал завершения хода GM.[/]");
+        AnsiConsole.MarkupLine("[yellow]⚠ Клиент проигнорировал устаревший или несвязанный ответ GM.[/]");
         return true;
     }
 
@@ -1859,34 +1890,60 @@ public class GameEngine
         }
     }
 
-    private async Task<bool> ValidateCriticalAcceptedStateOrRollbackAsync(
+    private async Task<bool> ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
         string source,
         RollbackSnapshot? rollbackSnapshot,
-        bool canonicalState)
+        int expectedTurn,
+        ProgressionControl? progressionControl)
     {
-        await EnsureClientOwnedSystemFilesHealthyAsync();
-        var issues = canonicalState
-            ? await _criticalStateHealth.ValidateCriticalCanonicalStateAsync()
-            : await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
-        var errors = PrioritizeValidationErrors(issues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
-        if (errors.Count == 0)
-            return true;
+        var criticalRepairAttempt = 0;
 
-        _logger.LogError("Critical accepted-turn state corruption after {Source}: {Count} errors", source, errors.Count);
-        await WriteTerminalProtocolFailureRequestAsync($"critical state corruption after {source}", errors);
-
-        if (HasRollbackCapability(rollbackSnapshot))
+        while (true)
         {
-            await RestorePreTurnBackup(rollbackSnapshot!);
-            CleanupBackup(rollbackSnapshot!);
-        }
+            await EnsureClientOwnedSystemFilesHealthyAsync();
+            var rawIssues = await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
+            var rawErrors = PrioritizeValidationErrors(rawIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
+            if (rawErrors.Count > 0)
+            {
+                criticalRepairAttempt++;
+                _logger.LogError(
+                    "Critical accepted-turn raw state corruption after {Source}: {Count} errors",
+                    source,
+                    rawErrors.Count);
 
-        await _progressionSchedule.DeleteTransientReportAsync();
-        ShowContractValidationErrors(source, errors);
-        _fs.DeleteFile("ready/turn_complete.json");
-        _fs.DeleteFile("ready/turn_error.json");
-        await CleanupPendingTurnSnapshotAsync();
-        return false;
+                if (!await WaitForContractRepairAsync(source, rawErrors, criticalRepairAttempt, rollbackSnapshot))
+                    return false;
+
+                continue;
+            }
+
+            var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
+            await RefreshCanonicalStateAsync(snapshot);
+
+            await EnsureClientOwnedSystemFilesHealthyAsync();
+            var canonicalIssues = await _criticalStateHealth.ValidateCriticalCanonicalStateAsync();
+            var canonicalErrors = PrioritizeValidationErrors(canonicalIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
+            if (canonicalErrors.Count > 0)
+            {
+                criticalRepairAttempt++;
+                _logger.LogError(
+                    "Critical accepted-turn canonical state corruption after {Source}: {Count} errors",
+                    source,
+                    canonicalErrors.Count);
+
+                if (!await WaitForContractRepairAsync(source, canonicalErrors, criticalRepairAttempt, rollbackSnapshot))
+                    return false;
+
+                continue;
+            }
+
+            if (!await ValidateCurrentGameStateOrShowErrorsAsync(source, rollbackSnapshot, progressionControl, allowRepairLoop: true))
+                return false;
+
+            snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
+            await RefreshCanonicalStateAsync(snapshot);
+            return true;
+        }
     }
 
     private static bool RequiresFreshNarrativePayload(string source)
@@ -2020,7 +2077,7 @@ public class GameEngine
                     string.IsNullOrWhiteSpace(readyJson) ? "missing or empty file" : TruncateDiagnosticValue(readyJson),
                     "Перезапиши validation_repair_ready.json валидным JSON и скопируй в него точные sessionId/requestId/turnNumber из validation_repair_request.json.");
                 await DeleteValidationRepairReadyAsync();
-                AnsiConsole.MarkupLine("[yellow]⚠ Клиент отклонил некорректный validation_repair_ready.json и переписал repair request. GM должен подать новый корректный ready-сигнал.[/]");
+                AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
                 await Task.Delay(500);
                 continue;
             }
@@ -2047,7 +2104,7 @@ public class GameEngine
                     BuildActualRepairContext(ready, manifest),
                     "Пересоздай validation_repair_ready.json и скопируй sessionId/requestId/turnNumber ровно из validation_repair_request.json.");
                 await DeleteValidationRepairReadyAsync();
-                AnsiConsole.MarkupLine("[yellow]⚠ Клиент отклонил validation_repair_ready.json с неверным sessionId/requestId/turnNumber и обновил repair request.[/]");
+                AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
                 await Task.Delay(500);
                 continue;
             }
@@ -2360,13 +2417,13 @@ public class GameEngine
         await WriteTerminalProtocolFailureRequestAsync($"terminal protocol failure: {sourceLabel}", protocolErrors);
         _fs.DeleteFile("input/turn_request.json");
 
-        AnsiConsole.MarkupLine("[red]❌ Клиент отклонил некорректный terminal ready-сигнал GM. Ожидание хода завершено как протокольная ошибка.[/]");
+        AnsiConsole.MarkupLine("[yellow]⚠ Текущий ответ GM отклонён клиентом. Состояние возвращено к последней стабильной версии.[/]");
 
         if (HasRollbackCapability(rollbackSnapshot))
         {
             await RestorePreTurnBackup(rollbackSnapshot!);
             CleanupBackup(rollbackSnapshot!);
-            AnsiConsole.MarkupLine("[yellow]↩ Последняя стабильная версия состояния восстановлена после отклонения ready-сигнала.[/]");
+            AnsiConsole.MarkupLine("[yellow]↩ Последняя стабильная версия состояния восстановлена после отклонения ответа GM.[/]");
         }
 
         await CleanupPendingTurnSnapshotAsync();
@@ -2394,13 +2451,13 @@ public class GameEngine
         ClearReadySignals();
         ClearTransientOutputFiles();
 
-        AnsiConsole.MarkupLine("[red]❌ После завершения ожидания не осталось ни одного корректного terminal ready-сигнала. Ожидание хода завершено как протокольная ошибка.[/]");
+        AnsiConsole.MarkupLine("[yellow]⚠ Клиент не смог безопасно принять ответ GM и восстановил последнюю стабильную версию состояния.[/]");
 
         if (HasRollbackCapability(rollbackSnapshot))
         {
             await RestorePreTurnBackup(rollbackSnapshot!);
             CleanupBackup(rollbackSnapshot!);
-            AnsiConsole.MarkupLine("[yellow]↩ Последняя стабильная версия состояния восстановлена после потери terminal outcome.[/]");
+            AnsiConsole.MarkupLine("[yellow]↩ Последняя стабильная версия состояния восстановлена после потери корректного ответа GM.[/]");
         }
 
         await CleanupPendingTurnSnapshotAsync();
@@ -2472,13 +2529,13 @@ public class GameEngine
         ClearReadySignals();
         ClearTransientOutputFiles();
 
-        AnsiConsole.MarkupLine("[red]❌ Клиент обнаружил одновременно ready/turn_complete.json и ready/turn_error.json для одного хода. Ожидание завершено как протокольная ошибка.[/]");
+        AnsiConsole.MarkupLine("[yellow]⚠ Клиент обнаружил внутреннюю несогласованность в ответе GM и восстановил последнюю стабильную версию состояния.[/]");
 
         if (HasRollbackCapability(rollbackSnapshot))
         {
             await RestorePreTurnBackup(rollbackSnapshot!);
             CleanupBackup(rollbackSnapshot!);
-            AnsiConsole.MarkupLine("[yellow]↩ Последняя стабильная версия состояния восстановлена после конфликтующих terminal signals.[/]");
+            AnsiConsole.MarkupLine("[yellow]↩ Последняя стабильная версия состояния восстановлена после конфликтующих ответов GM.[/]");
         }
 
         await CleanupPendingTurnSnapshotAsync();
@@ -3264,7 +3321,7 @@ public class GameEngine
     /// Waits for the GM to respond (reused for incarnation/end-of-life transitions).
     /// Waits indefinitely — only Escape cancels. No hard timeout.
     /// </summary>
-    private async Task WaitForGmResponse()
+    private async Task<bool> WaitForGmResponse()
     {
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var rollbackSnapshot = GetRollbackSnapshot(manifest);
@@ -3339,40 +3396,31 @@ public class GameEngine
             {
                 AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён. Rollback backup для этого режима недоступен; если GM завершит уже отправленный ход позже, он всё равно придёт как отложенный ответ.[/]");
             }
-            return;
+            return false;
         }
 
         var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(manifest, rollbackSnapshot);
         if (terminalOutcome.Kind == "failure")
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
-            return;
+            return false;
         }
 
-            if (terminalOutcome.Kind == "success")
-            {
+        if (terminalOutcome.Kind == "success")
+        {
             var signal = terminalOutcome.Signal;
             var expectedTurn = signal?.TurnNumber ?? manifest?.TurnNumber ?? (_gameLoop.TurnNumber + 1);
-            if (!await ValidateCriticalAcceptedStateOrRollbackAsync("ответа GM", rollbackSnapshot, canonicalState: false))
-            {
-                _pendingMemoryLegacyAwaitingConsumption = false;
-                return;
-            }
-            var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
-            await RefreshCanonicalStateAsync(snapshot);
-            if (!await ValidateCriticalAcceptedStateOrRollbackAsync("ответа GM", rollbackSnapshot, canonicalState: true))
-            {
-                _pendingMemoryLegacyAwaitingConsumption = false;
-                return;
-            }
-
-            if (!await ValidateCurrentGameStateOrShowErrorsAsync("ответа GM", rollbackSnapshot, manifest?.ProgressionControl, allowRepairLoop: true))
+            if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                    "ответа GM",
+                    rollbackSnapshot,
+                    expectedTurn,
+                    manifest?.ProgressionControl))
             {
                 _pendingMemoryLegacyAwaitingConsumption = false;
                 _fs.DeleteFile("ready/turn_complete.json");
                 _fs.DeleteFile("ready/turn_error.json");
                 await CleanupPendingTurnSnapshotAsync();
-                return;
+                return false;
             }
 
             _audioService.PlayCue(AudioCue.TurnReady);
@@ -3399,7 +3447,7 @@ public class GameEngine
             {
                 _fs.DeleteFile("ready/turn_complete.json");
                 await CleanupPendingTurnSnapshotAsync();
-                return;
+                return true;
             }
 
             _lastResponse = qteHandling.Response;
@@ -3410,22 +3458,22 @@ public class GameEngine
 
             _fs.DeleteFile("ready/turn_complete.json");
             await CleanupPendingTurnSnapshotAsync();
+            return true;
         }
-        else
+
+        _pendingMemoryLegacyAwaitingConsumption = false;
+        await ShowTurnErrorMessageAsync("ready/turn_error.json");
+        _fs.DeleteFile("ready/turn_error.json");
+
+        if (HasRollbackCapability(rollbackSnapshot))
         {
-            _pendingMemoryLegacyAwaitingConsumption = false;
-            await ShowTurnErrorMessageAsync("ready/turn_error.json");
-            _fs.DeleteFile("ready/turn_error.json");
-
-            if (HasRollbackCapability(rollbackSnapshot))
-            {
-                await RestorePreTurnBackup(rollbackSnapshot!);
-                CleanupBackup(rollbackSnapshot!);
-                AnsiConsole.MarkupLine("[yellow]↩ Переходный ход завершился ошибкой GM. Состояние откатилось к последней стабильной версии.[/]");
-            }
-
-            await CleanupPendingTurnSnapshotAsync();
+            await RestorePreTurnBackup(rollbackSnapshot!);
+            CleanupBackup(rollbackSnapshot!);
+            AnsiConsole.MarkupLine("[yellow]↩ Переходный ход завершился ошибкой GM. Состояние откатилось к последней стабильной версии.[/]");
         }
+
+        await CleanupPendingTurnSnapshotAsync();
+        return false;
     }
 
     /// <summary>
@@ -3592,11 +3640,11 @@ public class GameEngine
                 continue;
             }
 
-            if (_fs.FileExists("ready/turn_complete.json"))
-            {
-                var signal = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
-                if (await DiscardMismatchedReadySignalAsync("late turn_complete", signal, manifest))
-                    continue;
+        if (_fs.FileExists("ready/turn_complete.json"))
+        {
+            var signal = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
+            if (await DiscardMismatchedReadySignalAsync("late turn_complete", signal, manifest))
+                continue;
 
                 var signalTurn = signal?.TurnNumber;
                 var expectedTurn = _gameLoop.TurnNumber + 1;
@@ -3609,12 +3657,11 @@ public class GameEngine
                     continue;
                 }
 
-                var snapshot = await LoadCanonicalBaselineSnapshotAsync(signalTurn ?? expectedTurn);
-                await RefreshCanonicalStateAsync(snapshot);
-                if (await ValidateCurrentGameStateOrShowErrorsAsync("late response GM",
+                if (await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                        "late response GM",
                         GetRollbackSnapshot(manifest),
-                        manifest?.ProgressionControl,
-                        allowRepairLoop: true))
+                        signalTurn ?? expectedTurn,
+                        manifest?.ProgressionControl))
                 {
                     var lateResponse = await BuildGameResponseFromFiles();
                     if (lateResponse == null || string.IsNullOrEmpty(lateResponse.Response))
@@ -3666,7 +3713,10 @@ public class GameEngine
             {
                 var currentWidth = Console.WindowWidth;
                 if (_lastConsoleWidth > 0 && currentWidth != _lastConsoleWidth)
+                {
+                    await NormalizeRuntimeUiArtifactsAsync();
                     await RefreshCanonicalStateAsync();
+                }
                 _lastConsoleWidth = currentWidth;
             }
             catch { }
@@ -3691,6 +3741,7 @@ public class GameEngine
             if (input.Equals("/refresh", StringComparison.OrdinalIgnoreCase) ||
                 input.Equals("/обновить", StringComparison.OrdinalIgnoreCase))
             {
+                await NormalizeRuntimeUiArtifactsAsync();
                 await RefreshCanonicalStateAsync();
                 var refreshedResponse = await BuildGameResponseFromFiles();
                 if (!await ValidateCurrentGameStateOrShowErrorsAsync("ручного обновления"))
@@ -3919,8 +3970,11 @@ public class GameEngine
         }
 
         // Read and validate the response before accepting the turn
-        await RefreshCanonicalStateAsync(canonicalSnapshot);
-        if (!await ValidateCurrentGameStateOrShowErrorsAsync("обработки хода", backedUpFiles, request.ProgressionControl, allowRepairLoop: true))
+        if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                "обработки хода",
+                backedUpFiles,
+                request.TurnNumber,
+                request.ProgressionControl))
         {
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
@@ -4281,23 +4335,18 @@ public class GameEngine
             // Use raw wait — no turn increment, no recursive CheckLifeTransitions
             if (await WaitForGmResponseRaw())
             {
-                if (!await ValidateCriticalAcceptedStateOrRollbackAsync("оценки жизни", GetRollbackSnapshot(await LoadPendingTurnSnapshotManifestAsync()), canonicalState: false))
-                    return;
-                var snapshot = await LoadCanonicalBaselineSnapshotAsync(_gameLoop.TurnNumber + 1);
-                await RefreshCanonicalStateAsync(snapshot);
-                if (!await ValidateCriticalAcceptedStateOrRollbackAsync("оценки жизни", GetRollbackSnapshot(await LoadPendingTurnSnapshotManifestAsync()), canonicalState: true))
-                    return;
-
                 var manifest = await LoadPendingTurnSnapshotManifestAsync();
-                if (!await ValidateCurrentGameStateOrShowErrorsAsync("оценки жизни",
+                if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                        "оценки жизни",
                         GetRollbackSnapshot(manifest),
-                        evalRequest.ProgressionControl,
-                        allowRepairLoop: true))
+                        _gameLoop.TurnNumber + 1,
+                        evalRequest.ProgressionControl))
                 {
                     _fs.DeleteFile("ready/turn_complete.json");
                     await CleanupPendingTurnSnapshotAsync();
                     return;
                 }
+
                 var evalResponse = await BuildGameResponseFromFiles();
                 _gameLoop.IncrementTurn();
                 _lastResponse = evalResponse;
@@ -4595,9 +4644,11 @@ public class GameEngine
             GameInterface.RenderRealmTransition(false);
 
             // Wait for GM response describing the new mortal world
-            await WaitForGmResponse();
-            await RefreshCanonicalStateAsync();
-            await _worldDirectiveService.MaterializePendingToActiveAsync(worldDesc, circumstances);
+            if (await WaitForGmResponse())
+            {
+                await RefreshCanonicalStateAsync();
+                await _worldDirectiveService.MaterializePendingToActiveAsync(worldDesc, circumstances);
+            }
         }
         catch (Exception ex)
         {
@@ -4994,6 +5045,7 @@ public class GameEngine
 
             // Ensure game settings (difficulty) are synced to game_state for GM
             await WriteGameSettingsForGm();
+            await NormalizeRuntimeUiArtifactsAsync();
 
             // Build response from saved output files for initial display
             _lastResponse = await BuildGameResponseFromFiles();

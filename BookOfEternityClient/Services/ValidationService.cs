@@ -8914,19 +8914,29 @@ public class ValidationService
             var runtimeJson = await _fs.ReadFileAsync(QteSceneService.QteRuntimePath);
             if (!string.IsNullOrWhiteSpace(runtimeJson))
             {
-                using var runtimeDoc = JsonDocument.Parse(runtimeJson);
-                var declinedId = GetFirstNonEmptyString(runtimeDoc.RootElement, "lastDeclinedQteId");
-                if (!string.IsNullOrWhiteSpace(qteId) &&
-                    !string.IsNullOrWhiteSpace(declinedId) &&
-                    string.Equals(qteId, declinedId, StringComparison.OrdinalIgnoreCase))
+                try
                 {
-                    issues.Add(new ValidationIssue(
-                        QteSceneService.QteOfferPath,
-                        IssueSeverity.Error,
-                        $"QTE offer {qteId} уже был отклонён и не может быть предложен повторно до обычного разрешения сцены",
-                        code: "qte_reoffered_after_decline",
-                        section: "QTE",
-                        actual: qteId));
+                    using var runtimeDoc = JsonDocument.Parse(runtimeJson);
+                    if (runtimeDoc.RootElement.ValueKind == JsonValueKind.Object)
+                    {
+                        var declinedId = GetFirstNonEmptyString(runtimeDoc.RootElement, "lastDeclinedQteId");
+                        if (!string.IsNullOrWhiteSpace(qteId) &&
+                            !string.IsNullOrWhiteSpace(declinedId) &&
+                            string.Equals(qteId, declinedId, StringComparison.OrdinalIgnoreCase))
+                        {
+                            issues.Add(new ValidationIssue(
+                                QteSceneService.QteOfferPath,
+                                IssueSeverity.Error,
+                                $"QTE offer {qteId} уже был отклонён и не может быть предложен повторно до обычного разрешения сцены",
+                                code: "qte_reoffered_after_decline",
+                                section: "QTE",
+                                actual: qteId));
+                        }
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    _logger.LogWarning(ex, "Игнорируется повреждённый qte_runtime.json во время QTE-offer validation");
                 }
             }
 

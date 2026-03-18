@@ -174,6 +174,100 @@ public sealed class QteSceneService
         return reminder;
     }
 
+    public async Task EnsureRuntimeStateHealthyAsync()
+    {
+        var json = await _fs.ReadFileAsync(QteRuntimePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        JsonNode? parsed;
+        try
+        {
+            parsed = JsonNode.Parse(json);
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogWarning(ex, "Найден невалидный qte_runtime.json. Удаление как повреждённого client-owned runtime state.");
+            _fs.DeleteFile(QteRuntimePath);
+            return;
+        }
+
+        if (parsed is not JsonObject root)
+        {
+            _logger.LogWarning("Найден qte_runtime.json с не-object корнем. Удаление как повреждённого runtime state.");
+            _fs.DeleteFile(QteRuntimePath);
+            return;
+        }
+
+        var changed = false;
+
+        if (root.TryGetPropertyValue("activeScene", out var activeSceneNode) && activeSceneNode is not null)
+        {
+            if (activeSceneNode is not JsonObject activeScene ||
+                activeScene["offer"] is not JsonObject ||
+                !TryReadNodeString(activeScene["currentChapterId"], out var currentChapterId) ||
+                string.IsNullOrWhiteSpace(currentChapterId) ||
+                activeScene["acceptedAtTurn"] is null ||
+                !TryReadNodeInt(activeScene["acceptedAtTurn"], out _))
+            {
+                root.Remove("activeScene");
+                root.Remove("pendingOffer");
+                changed = true;
+            }
+        }
+
+        if (root.TryGetPropertyValue("pendingOffer", out var pendingOfferNode) &&
+            pendingOfferNode is not null &&
+            pendingOfferNode is not JsonObject)
+        {
+            root.Remove("pendingOffer");
+            changed = true;
+        }
+
+        if (root["activeScene"] is null && root["pendingOffer"] is JsonObject)
+        {
+            root.Remove("pendingOffer");
+            changed = true;
+        }
+
+        if (root.TryGetPropertyValue("lastDeclinedQteId", out var declinedIdNode) &&
+            declinedIdNode is not null &&
+            !TryReadNodeString(declinedIdNode, out _))
+        {
+            root.Remove("lastDeclinedQteId");
+            changed = true;
+        }
+
+        if (root.TryGetPropertyValue("lastDeclinedAtTurn", out var declinedTurnNode) &&
+            declinedTurnNode is not null &&
+            !TryReadNodeInt(declinedTurnNode, out _))
+        {
+            root.Remove("lastDeclinedAtTurn");
+            changed = true;
+        }
+
+        if (root.TryGetPropertyValue("lastResolvedQteSummaryPendingReminder", out var reminderNode) &&
+            reminderNode is not null &&
+            !TryReadNodeString(reminderNode, out _))
+        {
+            root.Remove("lastResolvedQteSummaryPendingReminder");
+            changed = true;
+        }
+
+        if (!changed)
+            return;
+
+        if (!HasMeaningfulRuntimeState(root))
+        {
+            _logger.LogInformation("qte_runtime.json очищен как пустой/повреждённый runtime state без полезных данных.");
+            _fs.DeleteFile(QteRuntimePath);
+            return;
+        }
+
+        _logger.LogInformation("qte_runtime.json был нормализован после обнаружения повреждённого/stale runtime state.");
+        await _fs.WriteFileAtomicAsync(QteRuntimePath, root.ToJsonString(JsonOpts));
+    }
+
     public async Task<QteSceneCompletion?> ResumeActiveSceneIfAnyAsync(int currentTurnNumber)
     {
         var state = await LoadRuntimeStateAsync();
@@ -884,6 +978,49 @@ public sealed class QteSceneService
     private async Task SaveRuntimeStateAsync(QteRuntimeState state)
     {
         await _fs.WriteFileAtomicAsync(QteRuntimePath, JsonSerializer.Serialize(state, JsonOpts));
+    }
+
+    private static bool HasMeaningfulRuntimeState(JsonObject root)
+    {
+        return root["pendingOffer"] is JsonObject ||
+               root["activeScene"] is JsonObject ||
+               (TryReadNodeString(root["lastDeclinedQteId"], out var declinedId) && !string.IsNullOrWhiteSpace(declinedId)) ||
+               TryReadNodeInt(root["lastDeclinedAtTurn"], out _) ||
+               (TryReadNodeString(root["lastResolvedQteSummaryPendingReminder"], out var reminder) && !string.IsNullOrWhiteSpace(reminder));
+    }
+
+    private static bool TryReadNodeString(JsonNode? node, out string? value)
+    {
+        value = null;
+        if (node is null)
+            return false;
+
+        try
+        {
+            value = node.GetValue<string?>();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryReadNodeInt(JsonNode? node, out int value)
+    {
+        value = 0;
+        if (node is null)
+            return false;
+
+        try
+        {
+            value = node.GetValue<int>();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static List<(string Label, T Value)> BuildUniqueOptions<T>(IEnumerable<T> values, Func<T, string> labelFactory)
