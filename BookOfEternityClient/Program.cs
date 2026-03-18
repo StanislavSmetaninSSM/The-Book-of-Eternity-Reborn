@@ -96,6 +96,10 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<ILogger<ValidationService>>()));
         services.AddSingleton(sp =>
+            new CriticalStateHealthService(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<ILogger<CriticalStateHealthService>>()));
+        services.AddSingleton(sp =>
             new CharacteristicsService(
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<StateManager>(),

@@ -1,0 +1,25 @@
+{
+  "id": "debug_logs_shape",
+  "runner": "AcceptedTurn",
+  "description": "accepted-turn debug_logs must be a JSON object with gm_thoughts_markdown and timestamp.",
+  "broken": [
+    {
+      "source": "broken/debug_logs.json",
+      "target": "output/debug_logs.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/debug_logs.json",
+      "target": "output/debug_logs.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "invalid_debug_logs_json_root"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

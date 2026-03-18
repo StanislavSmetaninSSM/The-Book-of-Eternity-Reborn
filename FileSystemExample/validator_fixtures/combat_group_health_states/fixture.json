@@ -1,0 +1,25 @@
+{
+  "id": "combat_group_health_states",
+  "runner": "StateOnly",
+  "description": "group combatants must keep healthStates length and percentage-string invariants.",
+  "broken": [
+    {
+      "source": "broken/combatants.json",
+      "target": "game_state/combat/enemies.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/combatants.json",
+      "target": "game_state/combat/enemies.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "combat_group_health_states_count_mismatch"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

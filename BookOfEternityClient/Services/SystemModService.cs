@@ -1,5 +1,7 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Text.RegularExpressions;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -23,7 +25,8 @@ public sealed class SystemModService
         WriteIndented = true,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver()
     };
 
     private readonly FileSystemManager _fs;
@@ -87,44 +90,85 @@ public sealed class SystemModService
         var changed = !_settings.EnabledSystemMods.SequenceEqual(normalizedEnabled, StringComparer.OrdinalIgnoreCase);
         _settings.EnabledSystemMods = normalizedEnabled;
 
-        var manifest = new
+        var manifest = BuildManifestNode(mods, normalizedEnabled);
+        var currentJson = await _fs.ReadFileAsync(ManifestPath);
+        if (!SemanticallyMatchesExistingManifest(currentJson, manifest))
         {
-            modsDirectory = ModsDirectory,
-            activeCount = mods.Count(mod => mod.Enabled),
-            totalCount = mods.Count,
-            enabledSystemMods = normalizedEnabled,
-            activeMods = mods
-                .Where(mod => mod.Enabled)
-                .Select(mod => new
-                {
-                    mod.FileName,
-                    mod.RelativePath,
-                    mod.ModId,
-                    mod.Name,
-                    mod.Description,
-                    mod.Extension,
-                    mod.LastModifiedUtc,
-                    content = mod.Content
-                })
-                .ToArray(),
-            availableMods = mods
-                .Select(mod => new
-                {
-                    mod.FileName,
-                    mod.RelativePath,
-                    mod.ModId,
-                    mod.Name,
-                    mod.Description,
-                    mod.Extension,
-                    mod.LastModifiedUtc,
-                    mod.Enabled
-                })
-                .ToArray(),
-            _lastUpdated = DateTime.UtcNow.ToString("o")
-        };
+            manifest["_lastUpdated"] = DateTime.UtcNow.ToString("o");
+            await _fs.WriteFileAtomicAsync(ManifestPath, manifest.ToJsonString(JsonOpts));
+        }
 
-        await _fs.WriteFileAtomicAsync(ManifestPath, JsonSerializer.Serialize(manifest, JsonOpts));
         return changed;
+    }
+
+    private static JsonObject BuildManifestNode(
+        IReadOnlyCollection<SystemModDescriptor> mods,
+        IReadOnlyList<string> normalizedEnabled)
+    {
+        var activeMods = new JsonArray();
+        foreach (var mod in mods.Where(mod => mod.Enabled))
+        {
+            activeMods.Add(new JsonObject
+            {
+                ["fileName"] = mod.FileName,
+                ["relativePath"] = mod.RelativePath,
+                ["modId"] = mod.ModId,
+                ["name"] = mod.Name,
+                ["description"] = mod.Description,
+                ["extension"] = mod.Extension,
+                ["lastModifiedUtc"] = mod.LastModifiedUtc,
+                ["content"] = mod.Content
+            });
+        }
+
+        var availableMods = new JsonArray();
+        foreach (var mod in mods)
+        {
+            availableMods.Add(new JsonObject
+            {
+                ["fileName"] = mod.FileName,
+                ["relativePath"] = mod.RelativePath,
+                ["modId"] = mod.ModId,
+                ["name"] = mod.Name,
+                ["description"] = mod.Description,
+                ["extension"] = mod.Extension,
+                ["lastModifiedUtc"] = mod.LastModifiedUtc,
+                ["enabled"] = mod.Enabled
+            });
+        }
+
+        var enabledMods = new JsonArray();
+        foreach (var fileName in normalizedEnabled)
+            enabledMods.Add(fileName);
+
+        return new JsonObject
+        {
+            ["modsDirectory"] = ModsDirectory,
+            ["activeCount"] = mods.Count(mod => mod.Enabled),
+            ["totalCount"] = mods.Count,
+            ["enabledSystemMods"] = enabledMods,
+            ["activeMods"] = activeMods,
+            ["availableMods"] = availableMods
+        };
+    }
+
+    private static bool SemanticallyMatchesExistingManifest(string? currentJson, JsonObject expectedManifest)
+    {
+        if (string.IsNullOrWhiteSpace(currentJson))
+            return false;
+
+        try
+        {
+            if (JsonNode.Parse(currentJson) is not JsonObject currentManifest)
+                return false;
+
+            currentManifest.Remove("_lastUpdated");
+            return JsonNode.DeepEquals(currentManifest, expectedManifest);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<string> BuildSystemReminderFragmentAsync()

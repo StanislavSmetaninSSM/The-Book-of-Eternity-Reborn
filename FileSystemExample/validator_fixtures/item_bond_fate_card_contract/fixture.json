@@ -1,0 +1,38 @@
+{
+  "id": "item_bond_fate_card_contract",
+  "runner": "StateOnly",
+  "description": "item bond and fate-card sidecar state must follow canonical contract.",
+  "broken": [
+    {
+      "source": "broken/item_bonds.json",
+      "target": "game_state/inventory/item_bonds.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "broken/items.json",
+      "target": "game_state/inventory/items.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/item_bonds.json",
+      "target": "game_state/inventory/item_bonds.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "fixed/items.json",
+      "target": "game_state/inventory/items.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "item_bond_level_forbidden_for_non_rare_quality",
+    "item_fate_cards_forbidden_for_non_rare_quality",
+    "item_bond_level_out_of_bounds",
+    "item_fate_card_invalid_image_prompt"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

@@ -1,0 +1,25 @@
+{
+  "id": "pending_memory_legacy_root_fields",
+  "runner": "StateOnly",
+  "description": "pendingMemoryLegacy root contract must fail when required fields are missing and pass once merged into canonical soul_state.",
+  "broken": [
+    {
+      "source": "broken/pending_memory_legacy.json",
+      "target": "game_state/meta/soul_state.json",
+      "mode": "MergeObject"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/pending_memory_legacy.json",
+      "target": "game_state/meta/soul_state.json",
+      "mode": "MergeObject"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "pending_memory_legacy_missing_required_fields"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

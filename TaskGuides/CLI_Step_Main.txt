@@ -13,6 +13,7 @@
                - input/turn_request.json (player's action, turn metadata, pre-generated dice)
                - Examples/E_CLI_Step_Main.txt (MUST-read examples for NPC scope, reasoning blocks, repair loop, and terminal protocol failures)
                - Examples/E_CLI_Ink_Feather_Actions.txt (MUST-read whenever the turn uses any GM-side INK_FEATHER_ACTION)
+               - When writing JSON/state files from PowerShell, use explicit UTF-8 and data objects only (`[ordered]@{}` / `@()`), never script blocks (`{}`)
                
             2. **Read Current Game State:**
                - game_state/player/ files (character, inventory, status)

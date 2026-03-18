@@ -398,7 +398,7 @@ $action = {
             status = "error"
             timestamp = (Get-Date -Format "o")
             error = $_.Exception.Message
-        } | ConvertTo-Json | Set-Content "$using:GameSessionPath/ready/turn_error.json"
+        } | ConvertTo-Json | Set-Content "$using:GameSessionPath/ready/turn_error.json" -Encoding UTF8
     }
     finally { Pop-Location }
 }
@@ -437,6 +437,41 @@ finally { $watcher.Dispose() }
 - Обрабатывать текст на русском языке (UTF-8)
 - Выполнять математические вычисления (формулы боя, проверок)
 - Работать с большим контекстом (60+ файлов правил)
+
+### Дисциплина записи файлов
+
+При записи JSON/state файлов агент обязан:
+- явно использовать UTF-8
+- не полагаться на default encoding
+- не использовать `Out-File` без `-Encoding`
+- не использовать shell redirection `>` для JSON/state файлов
+
+Если агент пишет через PowerShell:
+- использовать data objects (`[ordered]@{}` и `@()`), а не script blocks (`{}`)
+- не передавать в `ConvertTo-Json` объекты PowerShell runtime/AST/diagnostics
+- любой текст с фигурными скобками хранить как строку, а не как исполняемый блок
+
+Безопасный пример:
+
+```powershell
+$guardian = [ordered]@{
+    guardianId = "guard_social_azalia_001"
+    name = "Азалия"
+    loreFragments = @(
+        [ordered]@{
+            fragmentId = "lore_az_02"
+            category = "cosmic_secret"
+            title = "Тайны Шёлка"
+            content = "Шёлк в её обители — это застывшие нити несбывшихся желаний."
+            requiredReputation = 50
+        }
+    )
+}
+
+$guardian | ConvertTo-Json -Depth 100 | Set-Content "game_state/meta/guardians.json" -Encoding UTF8
+```
+
+Сигнатуры вроде `Ast`, `StartPosition`, `Extent`, `PipelineElements`, `DebuggerHidden` внутри JSON считаются признаком ошибочной сериализации PowerShell object вместо данных.
 
 ---
 

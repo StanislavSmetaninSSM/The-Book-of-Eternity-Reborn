@@ -3,6 +3,12 @@ CLI STEP MAIN — EXTENDED EXAMPLE FOR VALIDATION, NPC SCOPE, AND REPAIR LOOP
 This file supplements TaskGuides/CLI_Step_Main.txt.
 Read BOTH files before EVERY turn and reread them before EVERY repair attempt and before handling any terminal protocol failure notice.
 
+JSON/PowerShell reminder:
+- write JSON/state files in UTF-8 explicitly
+- use `[ordered]@{}` and `@()` for data objects
+- never use `{ ... }` where you mean JSON data
+- if JSON suddenly contains `Ast`, `StartPosition`, `Extent`, or `PipelineElements`, you serialized a PowerShell runtime object instead of game data
+
 ==================================================
 1. SCENE-LOCAL TURN WITH NPC SCOPE
 ==================================================

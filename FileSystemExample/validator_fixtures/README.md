@@ -4,9 +4,10 @@ This folder contains **broken/fixed** examples for major validator contract clas
 
 Each fixture pack is organized as:
 
+- `fixture.json` — canonical runnable manifest for the test harness
 - `broken/` — intentionally invalid file or response fragment
 - `fixed/` — corrected version of the same scenario
-- `expected_errors.json` — the validator codes that should appear on the broken variant
+- `expected_errors.json` — legacy human-readable expectation file kept for reference during the transition to `fixture.json`
 
 These fixtures are not a full playable session. They are focused contract examples for:
 
@@ -30,3 +31,9 @@ These fixtures are not a full playable session. They are focused contract exampl
 18. known-location `currentLocationData` must carry `coordinates` together with `locationId` and `lastEventsDescription`
 
 The goal is to make validator behavior explainable and reproducible for both developers and GM-side debugging.
+
+For automated tests, the harness now:
+- copies `FileSystemExample/game_session` as a minimal valid base session
+- overlays `shared/`, then `broken/` or `fixed/` files according to `fixture.json`
+- runs the fixture through the declared runner (`state_only`, `accepted_turn`, or `critical_state`)
+- asserts expected error codes on `broken` and their disappearance on `fixed`

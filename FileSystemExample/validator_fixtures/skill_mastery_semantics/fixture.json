@@ -1,0 +1,38 @@
+{
+  "id": "skill_mastery_semantics",
+  "runner": "StateOnly",
+  "description": "skill mastery entries must semantically match canonical active skills.",
+  "broken": [
+    {
+      "source": "broken/skill_mastery.json",
+      "target": "game_state/player/skill_mastery.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "broken/skills_active.json",
+      "target": "game_state/player/skills_active.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/skill_mastery.json",
+      "target": "game_state/player/skill_mastery.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "fixed/skills_active.json",
+      "target": "game_state/player/skills_active.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "skill_mastery_unknown_active_skill",
+    "skill_mastery_non_positive_level",
+    "skill_mastery_negative_progress",
+    "skill_mastery_non_positive_progress_needed"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

@@ -1,0 +1,25 @@
+{
+  "id": "current_location_known_partial",
+  "runner": "StateOnly",
+  "description": "known currentLocationData must not resend a full location object.",
+  "broken": [
+    {
+      "source": "broken/current_location_data.json",
+      "target": "game_state/world/current_location.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/current_location_data.json",
+      "target": "game_state/world/current_location.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "current_location_known_location_resends_full_object"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

@@ -1,0 +1,26 @@
+{
+  "id": "equipment_changes_slots",
+  "runner": "StateOnly",
+  "description": "equipmentChanges must require targetSlots/sourceSlots for equip/unequip actions.",
+  "broken": [
+    {
+      "source": "broken/equipment_changes.json",
+      "target": "game_state/inventory/items.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/equipment_changes.json",
+      "target": "game_state/inventory/items.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "equipment_change_missing_target_slots",
+    "equipment_change_missing_source_slots"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

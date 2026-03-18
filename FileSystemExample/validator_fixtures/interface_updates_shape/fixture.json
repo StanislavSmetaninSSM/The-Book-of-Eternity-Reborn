@@ -1,0 +1,26 @@
+{
+  "id": "interface_updates_shape",
+  "runner": "AcceptedTurn",
+  "description": "accepted-turn interface_updates must be a JSON object with payload and timestamp.",
+  "broken": [
+    {
+      "source": "broken/interface_updates.json",
+      "target": "output/interface_updates.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/interface_updates.json",
+      "target": "output/interface_updates.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "interface_updates_missing_timestamp",
+    "interface_updates_unknown_field"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

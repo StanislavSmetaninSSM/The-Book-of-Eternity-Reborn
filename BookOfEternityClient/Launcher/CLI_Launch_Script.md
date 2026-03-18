@@ -76,6 +76,36 @@ Read `worldState.currentRealm` from game state.
    - `ready/turn_complete.json` for terminal success with exact `sessionId`, `requestId`, `turnNumber`, `timestamp`, `status="success"`, and `filesModified`
    - OR `ready/turn_error.json` for terminal error with exact `sessionId`, `requestId`, `turnNumber`, `timestamp`, `status="error"`, and non-empty `error`
 
+### FILE-WRITING DISCIPLINE (MANDATORY)
+
+- Write JSON/state files in UTF-8 explicitly. In PowerShell always use `Set-Content -Encoding UTF8` or another explicit UTF-8 write path.
+- Do NOT rely on default encoding, `Out-File` without explicit encoding, or shell redirection like `>` for JSON/state files.
+- In PowerShell, build data objects with hashtables/arrays, not script blocks:
+  - correct: `[ordered]@{ key = "value" }`, `@(...)`
+  - forbidden: `{ key = "value" }`
+- If a JSON field contains literal brace text, keep it inside a quoted string. Never pass a PowerShell `ScriptBlock`, AST, or diagnostic object to `ConvertTo-Json`.
+- Safe pattern:
+
+```powershell
+$data = [ordered]@{
+    guardianId = "guard_social_azalia_001"
+    name = "Азалия"
+    loreFragments = @(
+        [ordered]@{
+            fragmentId = "lore_az_02"
+            category = "cosmic_secret"
+            title = "Тайны Шёлка"
+            content = "Шёлк в её обители — это застывшие нити несбывшихся желаний."
+            requiredReputation = 50
+        }
+    )
+}
+
+$data | ConvertTo-Json -Depth 100 | Set-Content -Path "game_state/meta/guardians.json" -Encoding UTF8
+```
+
+- If JSON suddenly contains fields like `Ast`, `StartPosition`, `Extent`, `PipelineElements`, or `DebuggerHidden`, you serialized a PowerShell runtime object instead of game data.
+
 ## CRITICAL RULES
 
 - All player-facing text MUST be in the player's language

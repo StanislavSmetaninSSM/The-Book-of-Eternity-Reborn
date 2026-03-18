@@ -1,0 +1,26 @@
+{
+  "id": "narrative_response_shape",
+  "runner": "AcceptedTurn",
+  "description": "accepted-turn narrative_response must be a JSON object with response and timestamp.",
+  "broken": [
+    {
+      "source": "broken/narrative_response.json",
+      "target": "output/narrative_response.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/narrative_response.json",
+      "target": "output/narrative_response.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "narrative_response_missing_timestamp",
+    "narrative_response_unknown_field"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

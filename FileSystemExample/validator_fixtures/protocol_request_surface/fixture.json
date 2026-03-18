@@ -1,0 +1,28 @@
+{
+  "id": "protocol_request_surface",
+  "runner": "StateOnly",
+  "description": "GM-authored validation_repair_request.json must be rejected when a pending manifest marks it as client-owned protocol state.",
+  "shared": [
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/validation_repair_request.json",
+      "target": "game_state/control/validation_repair_request.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [],
+  "expectedBrokenCodes": [
+    "client_owned_protocol_surface_modified"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [
+    "client_owned_protocol_surface_modified"
+  ],
+  "allowExtraBrokenCodes": true
+}

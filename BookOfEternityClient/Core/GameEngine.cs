@@ -34,6 +34,7 @@ public class GameEngine
     private readonly AudioService _audioService;
     private readonly ConsoleAppearanceService _consoleAppearance;
     private readonly SystemModService _systemModService;
+    private readonly CriticalStateHealthService _criticalStateHealth;
     private readonly WorldDirectiveService _worldDirectiveService;
     private readonly PendingTurnStateService _pendingTurnState;
     private readonly QteSceneService _qteSceneService;
@@ -46,6 +47,7 @@ public class GameEngine
     private int _lastConsoleWidth;
     private int _lastKnownLevel = 1;
     private bool _pendingMemoryLegacyAwaitingConsumption;
+    private string? _mainMenuSessionWarning;
 
     private const string PendingTurnSnapshotManifestPath = "game_state/control/pending_turn_snapshot.json";
     private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
@@ -75,6 +77,7 @@ public class GameEngine
         ValidationService validator, CharacteristicsService charService,
         StoryService storyService, AudioService audioService, ConsoleAppearanceService consoleAppearance,
         SystemModService systemModService,
+        CriticalStateHealthService criticalStateHealth,
         WorldDirectiveService worldDirectiveService,
         PendingTurnStateService pendingTurnState,
         QteSceneService qteSceneService,
@@ -96,6 +99,7 @@ public class GameEngine
         _audioService = audioService;
         _consoleAppearance = consoleAppearance;
         _systemModService = systemModService;
+        _criticalStateHealth = criticalStateHealth;
         _worldDirectiveService = worldDirectiveService;
         _pendingTurnState = pendingTurnState;
         _qteSceneService = qteSceneService;
@@ -119,8 +123,7 @@ public class GameEngine
         _loc.CurrentLanguage = _stateManager.Settings.Language;
         _consoleAppearance.ApplyConfiguredFontSize();
         await _audioService.ApplySettingsAsync();
-        if (await _systemModService.WriteManifestForGmAsync())
-            await _stateManager.SaveSettingsAsync();
+        await EnsureClientOwnedSystemFilesHealthyAsync();
 
         while (_isRunning)
         {
@@ -385,12 +388,14 @@ public class GameEngine
 
         if (layout == MainMenuLayoutMode.VeryCompact)
         {
-            return new Markup(
-                $"[grey]{Markup.Escape(_loc.T("opt_language"))}:[/] [yellow]{Markup.Escape(_stateManager.Settings.Language.ToUpperInvariant())}[/]  " +
-                $"[grey]{Markup.Escape(_loc.T("opt_difficulty"))}:[/] [green]{Markup.Escape(GetDifficultyLabel())}[/]  " +
-                $"[grey]{Markup.Escape(_loc.T("opt_music"))}:[/] [yellow]{Markup.Escape(musicSummary)}[/]  " +
-                $"[grey]{Markup.Escape(_loc.T("opt_sound"))}:[/] [yellow]{Markup.Escape(soundSummary)}[/]  " +
-                $"[grey]{Markup.Escape(_loc.T("opt_font_size"))}:[/] [yellow]{_stateManager.Settings.ConsoleFontSize}[/]");
+            var compact = $"[grey]{Markup.Escape(_loc.T("opt_language"))}:[/] [yellow]{Markup.Escape(_stateManager.Settings.Language.ToUpperInvariant())}[/]  " +
+                          $"[grey]{Markup.Escape(_loc.T("opt_difficulty"))}:[/] [green]{Markup.Escape(GetDifficultyLabel())}[/]  " +
+                          $"[grey]{Markup.Escape(_loc.T("opt_music"))}:[/] [yellow]{Markup.Escape(musicSummary)}[/]  " +
+                          $"[grey]{Markup.Escape(_loc.T("opt_sound"))}:[/] [yellow]{Markup.Escape(soundSummary)}[/]  " +
+                          $"[grey]{Markup.Escape(_loc.T("opt_font_size"))}:[/] [yellow]{_stateManager.Settings.ConsoleFontSize}[/]";
+            if (!string.IsNullOrWhiteSpace(_mainMenuSessionWarning))
+                compact += $"\n[red]{Markup.Escape(_mainMenuSessionWarning)}[/]";
+            return new Markup(compact);
         }
 
         var statusTable = new Table()
@@ -421,6 +426,13 @@ public class GameEngine
             $"[grey]{Markup.Escape(_loc.T("opt_font_size"))}[/]",
             "[dim]:[/]",
             $"[bold yellow]{_stateManager.Settings.ConsoleFontSize}[/]");
+        if (!string.IsNullOrWhiteSpace(_mainMenuSessionWarning))
+        {
+            statusTable.AddRow(
+                "[grey]session[/]",
+                "[dim]:[/]",
+                $"[bold red]{Markup.Escape(_mainMenuSessionWarning)}[/]");
+        }
 
         return new Panel(statusTable)
         {
@@ -434,6 +446,7 @@ public class GameEngine
 
     private async Task<List<MainMenuOption>> BuildMainMenuOptionsAsync()
     {
+        _mainMenuSessionWarning = null;
         var options = new List<MainMenuOption>();
         var nextIndex = 1;
 
@@ -463,6 +476,14 @@ public class GameEngine
     {
         if (!_fs.FileExists("game_state/meta/soul_state.json"))
             return false;
+
+        await EnsureClientOwnedSystemFilesHealthyAsync();
+        var sessionHealth = await _criticalStateHealth.AssessCurrentSessionHealthAsync();
+        if (sessionHealth.HasRecoverableSessionError)
+        {
+            _mainMenuSessionWarning = sessionHealth.UserMessage;
+            return false;
+        }
 
         await _stateManager.RefreshGameStateAsync();
         return !string.IsNullOrWhiteSpace(_stateManager.CurrentState.SoulName) ||
@@ -1780,6 +1801,14 @@ public class GameEngine
         }
     }
 
+    private async Task EnsureClientOwnedSystemFilesHealthyAsync()
+    {
+        if (await _systemModService.WriteManifestForGmAsync())
+            await _stateManager.SaveSettingsAsync();
+
+        await _progressionSchedule.EnsureInitializedAsync();
+    }
+
     private async Task<bool> ValidateCurrentGameStateOrShowErrorsAsync(string source,
         RollbackSnapshot? rollbackSnapshot = null,
         ProgressionControl? progressionControl = null,
@@ -1789,6 +1818,7 @@ public class GameEngine
 
         while (true)
         {
+            await EnsureClientOwnedSystemFilesHealthyAsync();
             var issues = await _validator.ValidateGameStateAsync();
             if (RequiresFreshNarrativePayload(source))
                 issues.AddRange(await _validator.ValidateAcceptedTurnNarrativePayloadAsync());
@@ -1828,6 +1858,36 @@ public class GameEngine
             if (!await WaitForContractRepairAsync(source, errors, repairAttempt, rollbackSnapshot))
                 return false;
         }
+    }
+
+    private async Task<bool> ValidateCriticalAcceptedStateOrRollbackAsync(
+        string source,
+        RollbackSnapshot? rollbackSnapshot,
+        bool canonicalState)
+    {
+        await EnsureClientOwnedSystemFilesHealthyAsync();
+        var issues = canonicalState
+            ? await _criticalStateHealth.ValidateCriticalCanonicalStateAsync()
+            : await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
+        var errors = PrioritizeValidationErrors(issues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
+        if (errors.Count == 0)
+            return true;
+
+        _logger.LogError("Critical accepted-turn state corruption after {Source}: {Count} errors", source, errors.Count);
+        await WriteTerminalProtocolFailureRequestAsync($"critical state corruption after {source}", errors);
+
+        if (HasRollbackCapability(rollbackSnapshot))
+        {
+            await RestorePreTurnBackup(rollbackSnapshot!);
+            CleanupBackup(rollbackSnapshot!);
+        }
+
+        await _progressionSchedule.DeleteTransientReportAsync();
+        ShowContractValidationErrors(source, errors);
+        _fs.DeleteFile("ready/turn_complete.json");
+        _fs.DeleteFile("ready/turn_error.json");
+        await CleanupPendingTurnSnapshotAsync();
+        return false;
     }
 
     private static bool RequiresFreshNarrativePayload(string source)
@@ -3294,8 +3354,18 @@ public class GameEngine
             {
             var signal = terminalOutcome.Signal;
             var expectedTurn = signal?.TurnNumber ?? manifest?.TurnNumber ?? (_gameLoop.TurnNumber + 1);
+            if (!await ValidateCriticalAcceptedStateOrRollbackAsync("ответа GM", rollbackSnapshot, canonicalState: false))
+            {
+                _pendingMemoryLegacyAwaitingConsumption = false;
+                return;
+            }
             var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
             await RefreshCanonicalStateAsync(snapshot);
+            if (!await ValidateCriticalAcceptedStateOrRollbackAsync("ответа GM", rollbackSnapshot, canonicalState: true))
+            {
+                _pendingMemoryLegacyAwaitingConsumption = false;
+                return;
+            }
 
             if (!await ValidateCurrentGameStateOrShowErrorsAsync("ответа GM", rollbackSnapshot, manifest?.ProgressionControl, allowRepairLoop: true))
             {
@@ -4212,8 +4282,12 @@ public class GameEngine
             // Use raw wait — no turn increment, no recursive CheckLifeTransitions
             if (await WaitForGmResponseRaw())
             {
+                if (!await ValidateCriticalAcceptedStateOrRollbackAsync("оценки жизни", GetRollbackSnapshot(await LoadPendingTurnSnapshotManifestAsync()), canonicalState: false))
+                    return;
                 var snapshot = await LoadCanonicalBaselineSnapshotAsync(_gameLoop.TurnNumber + 1);
                 await RefreshCanonicalStateAsync(snapshot);
+                if (!await ValidateCriticalAcceptedStateOrRollbackAsync("оценки жизни", GetRollbackSnapshot(await LoadPendingTurnSnapshotManifestAsync()), canonicalState: true))
+                    return;
 
                 var manifest = await LoadPendingTurnSnapshotManifestAsync();
                 if (!await ValidateCurrentGameStateOrShowErrorsAsync("оценки жизни",

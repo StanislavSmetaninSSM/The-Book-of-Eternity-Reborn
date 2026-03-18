@@ -7993,30 +7993,6 @@ public class ValidationService
             }
         }
 
-        if (await DidFileChangeAgainstManifestAsync(manifest, ProgressionScheduleService.SchedulePath))
-        {
-            issues.Add(new ValidationIssue(
-                ProgressionScheduleService.SchedulePath,
-                IssueSeverity.Error,
-                "progression_schedule.json является client-authoritative control state и не должен изменяться GM-ходом.",
-                code: "client_owned_progression_schedule_modified",
-                section: "ProgressionSchedule",
-                expected: "unchanged client-owned scheduler state",
-                repairHint: "Не записывай game_state/control/progression_schedule.json в GM response; используй progressionProcessingReport и обычные state files."));
-        }
-
-        if (await DidFileChangeAgainstManifestAsync(manifest, SystemModService.ManifestPath))
-        {
-            issues.Add(new ValidationIssue(
-                SystemModService.ManifestPath,
-                IssueSeverity.Error,
-                "system_mods.json является client-authored manifest state и не должен изменяться GM-ходом.",
-                code: "client_owned_system_mods_manifest_modified",
-                section: "SystemMods",
-                expected: "unchanged client-authored system_mods.json",
-                repairHint: "Не записывай game_state/core/system_mods.json в GM response; клиент сам формирует manifest активных модов."));
-        }
-
         foreach (var (baselinePath, expectedHash) in manifest.ClientOwnedValidationHashes)
         {
             if (!IsClientOwnedProtocolValidationPath(baselinePath) &&
