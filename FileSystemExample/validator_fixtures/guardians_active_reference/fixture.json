@@ -1,0 +1,25 @@
+{
+  "id": "guardians_active_reference",
+  "runner": "StateOnly",
+  "description": "activeGuardian must resolve to an entry that actually exists in guardians[].",
+  "broken": [
+    {
+      "source": "broken/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "active_guardian_missing_in_guardians_array"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

@@ -1,0 +1,19 @@
+{
+  "locations": [
+    {
+      "locationId": "loc_market_square",
+      "coordinates": {
+        "x": 10,
+        "y": 20
+      },
+      "adjacencyMap": [
+        {
+          "targetCoordinates": {
+            "x": 11,
+            "y": 21
+          }
+        }
+      ]
+    }
+  ]
+}

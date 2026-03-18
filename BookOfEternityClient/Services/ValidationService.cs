@@ -2178,12 +2178,6 @@ public class ValidationService
                normalizedPath.StartsWith("stories/", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool IsClientOwnedProtocolValidationPath(string normalizedPath)
-    {
-        return normalizedPath.Equals("game_state/control/validation_repair_request.json", StringComparison.OrdinalIgnoreCase) ||
-               normalizedPath.Equals("game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase);
-    }
-
     private static bool ElementHasMeaningfulContent(JsonElement element)
     {
         switch (element.ValueKind)
@@ -7995,28 +7989,17 @@ public class ValidationService
 
         foreach (var (baselinePath, expectedHash) in manifest.ClientOwnedValidationHashes)
         {
-            if (!IsClientOwnedProtocolValidationPath(baselinePath) &&
-                !IsClientOwnedHistoryValidationPath(baselinePath))
+            // validation_repair_request.json and terminal_protocol_failure_request.json are
+            // runtime-authored protocol surfaces. They can legitimately change while the client
+            // advances the repair/protocol loop, so blaming the GM for their hash drift creates a
+            // self-sustaining deadlock. Only history surfaces remain in the GM-blame hash pass.
+            if (!IsClientOwnedHistoryValidationPath(baselinePath))
                 continue;
 
             var currentContent = await _fs.ReadFileAsync(baselinePath);
             var actualHash = currentContent == null ? string.Empty : ComputeSha256(currentContent);
             if (string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
                 continue;
-
-            if (IsClientOwnedProtocolValidationPath(baselinePath))
-            {
-                issues.Add(new ValidationIssue(
-                    baselinePath,
-                    IssueSeverity.Error,
-                    $"{Path.GetFileName(baselinePath)} является runtime-authored protocol surface и не должен изменяться GM-ходом.",
-                    code: "client_owned_protocol_surface_modified",
-                    section: "ProtocolFiles",
-                    expected: "unchanged runtime-authored protocol file",
-                    actual: actualHash,
-                    repairHint: "Не записывай validation_repair_request.json или terminal_protocol_failure_request.json в GM response; эти protocol surfaces формирует клиент."));
-                continue;
-            }
 
             issues.Add(new ValidationIssue(
                 baselinePath,
@@ -14517,6 +14500,7 @@ public class ValidationService
                normalizedPath.Equals("game_state/control/progression_schedule.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/incarnation_world_setup.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_cli_window_binding.json", StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals("game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith("stories/", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/core/system_mods.json", StringComparison.OrdinalIgnoreCase) ||
@@ -26492,6 +26476,7 @@ public class ValidationIssue
                normalizedPath.Equals("game_state/control/progression_schedule.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/incarnation_world_setup.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_cli_window_binding.json", StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals("game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith("stories/", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/core/system_mods.json", StringComparison.OrdinalIgnoreCase) ||

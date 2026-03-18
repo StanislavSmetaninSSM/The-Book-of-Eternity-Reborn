@@ -1,0 +1,25 @@
+{
+  "id": "codex_canonical_shape",
+  "runner": "StateOnly",
+  "description": "Canonical codex file must retain required top-level sections and preserve a valid current-world bootstrap entry.",
+  "broken": [
+    {
+      "source": "broken/codex_entries.json",
+      "target": "lore/codex_entries.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/codex_entries.json",
+      "target": "lore/codex_entries.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "codex_missing_required_top_level_key"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

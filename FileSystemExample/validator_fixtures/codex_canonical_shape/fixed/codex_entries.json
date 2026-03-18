@@ -1,0 +1,31 @@
+{
+  "entries": [
+    {
+      "entryId": "lore_current_world_bootstrap_01",
+      "title": "Origins of the Valley",
+      "category": "history",
+      "content": "The valley marks the first safe road between the hills.",
+      "discoveredAt": "2026-03-01T08:58:00Z",
+      "discoveryContext": "Starting world bootstrap",
+      "incarnation": 0,
+      "sourceFile": "current_world/bootstrap_lore.md",
+      "tags": [
+        "bootstrap",
+        "valley"
+      ]
+    }
+  ],
+  "totalEntries": 1,
+  "categories": {
+    "cosmology": 0,
+    "geography": 0,
+    "history": 1,
+    "cultures": 0,
+    "creatures": 0,
+    "characters": 0,
+    "artifacts": 0,
+    "factions": 0,
+    "magic": 0,
+    "other": 0
+  }
+}

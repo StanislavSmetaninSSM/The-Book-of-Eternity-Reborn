@@ -1,0 +1,25 @@
+{
+  "id": "item_text_updates_shape",
+  "runner": "StateOnly",
+  "description": "updateItemTextContents must follow append-only item text update contract.",
+  "broken": [
+    {
+      "source": "broken/item_text_updates.json",
+      "target": "game_state/inventory/item_text_updates.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/item_text_updates.json",
+      "target": "game_state/inventory/item_text_updates.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "item_text_update_missing_required_fields"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

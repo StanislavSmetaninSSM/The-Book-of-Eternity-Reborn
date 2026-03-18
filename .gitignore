@@ -12,3 +12,5 @@
 /BookOfEternityClient/obj
 /BookOfEternityClient.Tests/bin
 /BookOfEternityClient.Tests/obj
+/BookOfEternityGMBridge/bin/Debug/net8.0-windows
+/BookOfEternityGMBridge/obj

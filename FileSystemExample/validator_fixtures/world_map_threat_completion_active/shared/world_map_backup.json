@@ -1,0 +1,23 @@
+{
+  "locations": [
+    {
+      "locationId": "loc_market_square",
+      "coordinates": {
+        "x": 10,
+        "y": 20
+      },
+      "activeThreats": [
+        {
+          "threatId": "threat_idle_smugglers",
+          "currentActivity": null
+        },
+        {
+          "threatId": "threat_active_smugglers",
+          "currentActivity": {
+            "activityName": "Smuggling run"
+          }
+        }
+      ]
+    }
+  ]
+}

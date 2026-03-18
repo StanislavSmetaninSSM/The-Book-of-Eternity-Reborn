@@ -1,0 +1,25 @@
+{
+  "id": "terminal_narrative",
+  "runner": "AcceptedTurn",
+  "description": "ordinary accepted turns must always carry non-empty narrative response payload.",
+  "broken": [
+    {
+      "source": "broken/narrative_response.json",
+      "target": "output/narrative_response.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/narrative_response.json",
+      "target": "output/narrative_response.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "accepted_turn_empty_narrative_response"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

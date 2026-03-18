@@ -1,0 +1,26 @@
+{
+  "id": "critical_guardians_powershell_shape",
+  "runner": "CriticalState",
+  "criticalStateMode": "Raw",
+  "description": "Critical state guard must reject guardians.json when PowerShell runtime or AST objects are serialized into guardian data.",
+  "broken": [
+    {
+      "source": "broken/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "guardians_contains_powershell_runtime_object"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": false
+}

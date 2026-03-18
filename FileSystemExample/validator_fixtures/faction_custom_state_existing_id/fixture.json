@@ -1,0 +1,37 @@
+{
+  "id": "faction_custom_state_existing_id",
+  "runner": "StateOnly",
+  "description": "factionCustomStateChanges removals must target an existing stateId from the target faction's canonical customStates.",
+  "shared": [
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/faction_core_backup.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/faction_custom.json",
+      "target": "game_state/factions/faction_custom.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/faction_custom.json",
+      "target": "game_state/factions/faction_custom.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "faction_custom_state_remove_unknown_state_id"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

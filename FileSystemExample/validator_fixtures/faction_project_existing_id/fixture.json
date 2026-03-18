@@ -1,0 +1,37 @@
+{
+  "id": "faction_project_existing_id",
+  "runner": "StateOnly",
+  "description": "completeFactionProjects must target an existing projectId from the target faction's canonical project tracker.",
+  "shared": [
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/faction_core_backup.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/faction_projects.json",
+      "target": "game_state/factions/faction_projects.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/faction_projects.json",
+      "target": "game_state/factions/faction_projects.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "faction_project_completion_unknown_project_id"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

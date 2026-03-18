@@ -59,6 +59,11 @@ public class StateManager
                     Settings.MaxAutosaves = loaded.MaxAutosaves;
                     Settings.MaxManualSaves = loaded.MaxManualSaves;
                     Settings.GmTimeoutSeconds = loaded.GmTimeoutSeconds;
+                    Settings.GmBridgeEnabled = loaded.GmBridgeEnabled;
+                    Settings.GmBridgeBackend = loaded.GmBridgeBackend;
+                    Settings.GmCliLaunchCommand = loaded.GmCliLaunchCommand;
+                    Settings.GmBridgeAutoStart = loaded.GmBridgeAutoStart;
+                    Settings.GmBridgePipeNameOverride = loaded.GmBridgePipeNameOverride;
                     Settings.GameVersion = loaded.GameVersion;
                     Settings.Difficulty = loaded.Difficulty;
                     Settings.AutoDiscardBrokenItems = loaded.AutoDiscardBrokenItems;
@@ -83,6 +88,14 @@ public class StateManager
                 // Keep existing defaults on parse failure
             }
         }
+    }
+
+    public async Task EnsureSettingsFileExistsAsync()
+    {
+        if (_fs.FileExists("config.json"))
+            return;
+
+        await SaveSettingsAsync();
     }
 
     public async Task SaveSettingsAsync()

@@ -1,0 +1,10 @@
+{
+  "completeFactionProjects": [
+    {
+      "factionId": "faction_silver_circle",
+      "projectId": "proj_unknown",
+      "projectName": "Unknown Project",
+      "finalState": "Completed"
+    }
+  ]
+}

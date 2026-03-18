@@ -1,0 +1,16 @@
+{
+  "worldMapUpdates": {
+    "linkUpdates": [
+      {
+        "sourceLocationId": "loc_market_square",
+        "targetCoordinates": {
+          "x": 99,
+          "y": 99
+        },
+        "updatedLink": {
+          "newName": "Closed alley"
+        }
+      }
+    ]
+  }
+}

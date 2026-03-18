@@ -1,7 +1,7 @@
 {
   "id": "protocol_request_surface",
   "runner": "StateOnly",
-  "description": "GM-authored validation_repair_request.json must be rejected when a pending manifest marks it as client-owned protocol state.",
+  "description": "Runtime-authored protocol request files must not GM-blame the repair loop even if the client rewrites them after the pending snapshot was created.",
   "shared": [
     {
       "source": "shared/pending_turn_snapshot.json",
@@ -17,10 +17,10 @@
     }
   ],
   "fixed": [],
-  "expectedBrokenCodes": [
+  "expectedBrokenCodes": [],
+  "forbiddenBrokenCodes": [
     "client_owned_protocol_surface_modified"
   ],
-  "forbiddenBrokenCodes": [],
   "forbiddenFixedCodes": [
     "client_owned_protocol_surface_modified"
   ],

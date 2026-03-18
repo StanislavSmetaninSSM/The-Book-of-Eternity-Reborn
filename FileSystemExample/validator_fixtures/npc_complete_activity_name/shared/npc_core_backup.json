@@ -1,0 +1,18 @@
+{
+  "UpdateNPCs": [
+    {
+      "NPCId": "npc_borin_01",
+      "NPCName": "Борин Железнорук",
+      "name": "Борин Железнорук",
+      "currentActivity": {
+        "activityName": "Ковка Топора из Звездного Металла",
+        "description": "Финальная закалка почти завершена.",
+        "totalTimeCostMinutes": 600,
+        "timeSpentMinutes": 540,
+        "currentStepNumber": 4,
+        "totalStepsInActivity": 5,
+        "activeState": "InProgress"
+      }
+    }
+  ]
+}

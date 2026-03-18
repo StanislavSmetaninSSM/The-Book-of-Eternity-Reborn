@@ -1,0 +1,16 @@
+{
+  "sessionId": "fixture-session",
+  "requestId": "fixture-request",
+  "turnNumber": 1,
+  "requestTimestamp": "2026-03-01T08:58:00Z",
+  "playerAction": "Validator fixture: world map link updates must target an existing canonical adjacency link.",
+  "files": {},
+  "snapshotFileHashes": {},
+  "clientOwnedValidationHashes": {},
+  "rollbackBackups": {
+    "game_state/world/world_map.json": "game_state/control/pending_turn_snapshot/game_state/world/world_map.json"
+  },
+  "rollbackBaselineFiles": [],
+  "sourceLabel": "validator fixture",
+  "manifestPayloadHash": ""
+}

@@ -1,0 +1,36 @@
+{
+  "mode": "manual",
+  "profileId": "victorian-occult-capital",
+  "profileName": "Викторианская оккультная столица",
+  "worldDirectives": {
+    "worldTitle": "Серебряный Город",
+    "genre": "Gothic Mystery / Urban Fantasy",
+    "era": "Late 19th century",
+    "tone": "Melancholic, elegant, tense",
+    "settingSummary": "GM incorrectly rewrote the pending setup instead of treating it as client-authored input.",
+    "hardRules": [
+      "Публичная магия привлекает внимание властей и оккультных орденов."
+    ],
+    "requiredElements": [
+      "Тайные общества",
+      "Городская пресса",
+      "Классовое напряжение"
+    ],
+    "forbiddenElements": [
+      "Открытое high fantasy"
+    ],
+    "specialMechanics": [
+      "Репутация в салонах и клубах меняет доступ к знаниям."
+    ],
+    "continuityNotes": [
+      "Игрок хочет акцент на расследовании и атмосфере тайны."
+    ],
+    "playerAmendments": [
+      "Мир должен оставаться приземлённым, без массовой боевой магии на улицах."
+    ],
+    "sourceProfileId": "victorian-occult-capital",
+    "sourceProfileName": "Викторианская оккультная столица",
+    "lastUpdated": "2026-03-18T00:00:00Z"
+  },
+  "lastUpdated": "2026-03-18T00:00:00Z"
+}

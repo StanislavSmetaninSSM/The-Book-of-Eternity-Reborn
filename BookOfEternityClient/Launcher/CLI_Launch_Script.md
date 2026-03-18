@@ -47,7 +47,7 @@ Read `worldState.currentRealm` from game state.
 - **"Chaos Sea"** / **"Shining Abode"** / null → Afterlife mode (Guardians, Abodes, Soul Relics, Gacha/meta systems — NO combat, NO NPCs, NO leveling)
 - **"Mortal World"** / other → Mortal mode (Combat, NPCs, Quests, Skills — NO Guardians, NO Abodes, NO Gacha)
 - Guardians are NOT NPCs. Use UpdateGuardians (Block 32), not UpdateNPCs.
-- Document realm check inside structured `gm_thoughts_markdown` scope/reasoning blocks.
+- Document realm check inside structured gm_thoughts_markdown scope/reasoning blocks.
 
 ### PHASE 1: WORLD ASSESSMENT
 - Mortal World: analyze elapsed time, NPC thoughts, world/faction progression
@@ -65,10 +65,10 @@ Read `worldState.currentRealm` from game state.
 
 ### PHASE 4: WRITE FILES
 1. Update game_state/ files as needed
-2. Write `output/narrative_response.json`: `{ "response": "narrative text", "timestamp": "ISO_8601" }`
-3. If this turn changes `dialogueOptions` and/or `image_prompt`, write `output/interface_updates.json`: `{ "dialogueOptions": [...], "image_prompt": "...", "timestamp": "ISO_8601" }`; otherwise omit the file
-4. Write `output/debug_logs.json`: `{ "gm_thoughts_markdown": "...", "timestamp": "ISO_8601" }`
-   - `gm_thoughts_markdown` must include structured `## NPC Scope` (or `## Охват NPC-анализа`)
+2. Write output/narrative_response.json: `{ "response": "narrative text", "timestamp": "ISO_8601" }`
+3. If this turn changes `dialogueOptions` and/or `image_prompt`, write output/interface_updates.json: `{ "dialogueOptions": [...], "image_prompt": "...", "timestamp": "ISO_8601" }`; otherwise omit the file
+4. Write output/debug_logs.json: `{ "gm_thoughts_markdown": "...", "timestamp": "ISO_8601" }`
+   - gm_thoughts_markdown must include structured `## NPC Scope` / `## Охват NPC-анализа`
    - The scope block must explicitly declare `Mode`, `Relevant actors`, `Why relevant`, `Actors outside scope`, and `Why outside scope`
    - If any relevant actors are declared, add a separate reasoning section with `### [Actor Name]` blocks for every declared actor
 5. If `turn_request.playerAction` contains `[INK_FEATHER_ACTION: TAG]`, also write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence

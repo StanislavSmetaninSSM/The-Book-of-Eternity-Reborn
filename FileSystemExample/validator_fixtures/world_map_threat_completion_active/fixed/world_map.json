@@ -1,0 +1,13 @@
+{
+  "worldMapUpdates": {
+    "completeThreatActivities": [
+      {
+        "targetLocationId": "loc_market_square",
+        "threatId": "threat_active_smugglers",
+        "threatName": "Active Smugglers",
+        "finalState": "Completed",
+        "narrativeSummary": "The active smugglers are intercepted at the end of their run."
+      }
+    ]
+  }
+}

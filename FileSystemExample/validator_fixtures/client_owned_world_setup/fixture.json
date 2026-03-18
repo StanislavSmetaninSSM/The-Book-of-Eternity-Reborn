@@ -1,0 +1,41 @@
+{
+  "id": "client_owned_world_setup",
+  "runner": "StateOnly",
+  "description": "Client-authored world setup files must never be mutated by a GM turn once the pending snapshot manifest tracks them as protected surfaces.",
+  "shared": [
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/incarnation_world_setup_backup.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/control/incarnation_world_setup.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/world_directives_backup.json",
+      "target": "game_state/control/pending_turn_snapshot/lore/current_world/world_directives.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/incarnation_world_setup.json",
+      "target": "game_state/control/incarnation_world_setup.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "broken/world_directives.json",
+      "target": "lore/current_world/world_directives.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [],
+  "expectedBrokenCodes": [
+    "client_owned_world_setup_state_modified"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

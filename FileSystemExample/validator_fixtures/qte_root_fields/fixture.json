@@ -1,0 +1,25 @@
+{
+  "id": "qte_root_fields",
+  "runner": "AcceptedTurn",
+  "description": "qte_offer root contract must contain all required root fields.",
+  "broken": [
+    {
+      "source": "broken/qte_offer.json",
+      "target": "output/qte_offer.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/qte_offer.json",
+      "target": "output/qte_offer.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "qte_missing_required_root_fields"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

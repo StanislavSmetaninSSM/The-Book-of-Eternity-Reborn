@@ -21,6 +21,26 @@ public class GameSettings
     public int MaxAutosaves { get; set; } = 10;
     public int MaxManualSaves { get; set; } = 50;
     public int GmTimeoutSeconds { get; set; } = 300;
+    /// <summary>
+    /// Enables the local GM bridge transport instead of clipboard/window automation when available.
+    /// </summary>
+    public bool GmBridgeEnabled { get; set; } = true;
+    /// <summary>
+    /// Preferred GM daemon backend: ConPTYBridge, Clipboard, or WindowAutoPaste.
+    /// </summary>
+    public string GmBridgeBackend { get; set; } = "ConPTYBridge";
+    /// <summary>
+    /// Arbitrary shell command line started inside the GM bridge shell session, for example "gemini --yolo".
+    /// </summary>
+    public string GmCliLaunchCommand { get; set; } = "gemini";
+    /// <summary>
+    /// Auto-start the local GM bridge helper when the daemon cannot find a live bridge.
+    /// </summary>
+    public bool GmBridgeAutoStart { get; set; } = false;
+    /// <summary>
+    /// Optional explicit named-pipe name override for bridge diagnostics / advanced setups.
+    /// </summary>
+    public string GmBridgePipeNameOverride { get; set; } = "";
     public string GameVersion { get; set; } = "1.0.0";
     /// <summary>
     /// Game difficulty: "normal", "hard", or "impossible".

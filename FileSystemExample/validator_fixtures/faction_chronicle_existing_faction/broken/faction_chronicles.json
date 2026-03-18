@@ -1,0 +1,9 @@
+{
+  "factionChronicleUpdates": [
+    {
+      "factionId": "faction_unknown",
+      "factionName": "Unknown Circle",
+      "entryToAppend": "#[1] - The faction spreads a false rumor across the district."
+    }
+  ]
+}

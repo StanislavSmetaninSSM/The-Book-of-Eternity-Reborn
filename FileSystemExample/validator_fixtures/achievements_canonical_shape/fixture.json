@@ -1,0 +1,25 @@
+{
+  "id": "achievements_canonical_shape",
+  "runner": "StateOnly",
+  "description": "Canonical achievements file must retain required top-level sections and clear once the canonical shape is restored.",
+  "broken": [
+    {
+      "source": "broken/achievements.json",
+      "target": "game_state/meta/achievements.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/achievements.json",
+      "target": "game_state/meta/achievements.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "achievements_missing_required_top_level_key"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

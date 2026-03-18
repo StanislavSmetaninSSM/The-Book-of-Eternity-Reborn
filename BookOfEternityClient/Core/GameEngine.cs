@@ -120,6 +120,7 @@ public class GameEngine
 
         // Load settings
         await _stateManager.LoadSettingsAsync();
+        await _stateManager.EnsureSettingsFileExistsAsync();
         _loc.CurrentLanguage = _stateManager.Settings.Language;
         _consoleAppearance.ApplyConfiguredFontSize();
         await _audioService.ApplySettingsAsync();
@@ -1375,8 +1376,6 @@ public class GameEngine
     {
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            [ValidationRepairRequestPath] = await ReadFileHashOrEmptyAsync(ValidationRepairRequestPath),
-            [TerminalProtocolFailureRequestPath] = await ReadFileHashOrEmptyAsync(TerminalProtocolFailureRequestPath),
             ["game_state/history/chat_log.json"] = await ReadFileHashOrEmptyAsync("game_state/history/chat_log.json")
         };
 

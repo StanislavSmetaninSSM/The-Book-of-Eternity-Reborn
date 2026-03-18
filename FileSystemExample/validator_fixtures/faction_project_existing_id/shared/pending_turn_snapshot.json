@@ -1,0 +1,16 @@
+{
+  "sessionId": "fixture-session",
+  "requestId": "fixture-request",
+  "turnNumber": 1,
+  "requestTimestamp": "2026-03-01T08:58:00Z",
+  "playerAction": "Validator fixture: faction project completion must reference an existing canonical project id.",
+  "files": {},
+  "snapshotFileHashes": {},
+  "clientOwnedValidationHashes": {},
+  "rollbackBackups": {
+    "game_state/factions/faction_core.json": "game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json"
+  },
+  "rollbackBaselineFiles": [],
+  "sourceLabel": "validator fixture",
+  "manifestPayloadHash": ""
+}

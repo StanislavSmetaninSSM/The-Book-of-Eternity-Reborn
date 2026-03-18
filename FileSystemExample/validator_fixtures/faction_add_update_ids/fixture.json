@@ -1,0 +1,36 @@
+{
+  "id": "faction_add_update_ids",
+  "runner": "StateOnly",
+  "description": "faction add/update id semantics must distinguish null-for-add from string-for-update.",
+  "broken": [
+    {
+      "source": "broken/faction_custom.json",
+      "target": "game_state/factions/faction_custom.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "broken/faction_structure.json",
+      "target": "game_state/factions/faction_structure.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/faction_custom.json",
+      "target": "game_state/factions/faction_custom.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "fixed/faction_structure.json",
+      "target": "game_state/factions/faction_structure.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "faction_bonus_add_or_update_invalid_bonus_id",
+    "faction_custom_state_change_invalid_state_id"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

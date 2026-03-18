@@ -1,0 +1,25 @@
+{
+  "id": "weather_direct_shape",
+  "runner": "StateOnly",
+  "description": "weatherChange must retain both tendency and description once weather.json is written through the canonical wrapper object.",
+  "broken": [
+    {
+      "source": "broken/weather.json",
+      "target": "game_state/world/weather.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/weather.json",
+      "target": "game_state/world/weather.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "weather_change_missing_required_fields"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

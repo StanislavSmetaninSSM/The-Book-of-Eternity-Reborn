@@ -1,0 +1,25 @@
+{
+  "id": "lifecycle_trigger_life_end",
+  "runner": "StateOnly",
+  "description": "TriggerLifeEnd must use only canonical reason enum values.",
+  "broken": [
+    {
+      "source": "broken/life_transitions.json",
+      "target": "game_state/control/life_transitions.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/life_transitions.json",
+      "target": "game_state/control/life_transitions.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "life_transition_invalid_reason"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

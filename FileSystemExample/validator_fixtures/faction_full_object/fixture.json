@@ -1,0 +1,20 @@
+{
+  "id": "faction_full_object",
+  "runner": "StateOnly",
+  "description": "full faction-core objects must not use skeletal optional extension arrays.",
+  "broken": [
+    {
+      "source": "broken/faction_core.json",
+      "target": "game_state/factions/faction_core.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [],
+  "expectedBrokenCodes": [
+    "faction_full_object_skeletal_custom_states",
+    "faction_full_object_incomplete_optional_extension_array"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

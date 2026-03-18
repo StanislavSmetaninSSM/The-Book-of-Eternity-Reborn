@@ -1,0 +1,11 @@
+{
+  "completeNPCActivities": [
+    {
+      "NPCId": "npc_borin_01",
+      "NPCName": "Борин Железнорук",
+      "activityName": "Совершенно другая активность",
+      "finalState": "Completed",
+      "narrativeSummary": "The smith supposedly wraps up an unrelated task."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "item_journals",
+  "runner": "StateOnly",
+  "description": "itemJournalUpdates must use append-only contract instead of legacy journalEntries fragments.",
+  "broken": [
+    {
+      "source": "broken/item_journals.json",
+      "target": "game_state/npcs/item_journals.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/item_journals.json",
+      "target": "game_state/npcs/item_journals.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "item_journal_update_uses_legacy_entries_shape",
+    "item_journal_update_missing_entry_to_append"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

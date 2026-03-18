@@ -1,0 +1,25 @@
+{
+  "id": "npc_activities_payload",
+  "runner": "StateOnly",
+  "description": "NPCActivityUpdates must carry a nested activityUpdate payload rather than a bare identity-only command.",
+  "broken": [
+    {
+      "source": "broken/npc_activities.json",
+      "target": "game_state/npcs/npc_activities.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/npc_activities.json",
+      "target": "game_state/npcs/npc_activities.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "npc_activity_update_missing_payload"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

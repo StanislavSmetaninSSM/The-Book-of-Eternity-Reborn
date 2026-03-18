@@ -1,0 +1,11 @@
+{
+  "worldMapUpdates": {
+    "storageUpdates": [
+      {
+        "targetLocationId": "loc_market_square",
+        "storageId": "storage_unknown",
+        "update": {}
+      }
+    ]
+  }
+}

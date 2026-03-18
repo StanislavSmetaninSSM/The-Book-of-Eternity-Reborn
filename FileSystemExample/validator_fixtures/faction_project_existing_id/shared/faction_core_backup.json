@@ -1,0 +1,23 @@
+{
+  "factions": [
+    {
+      "factionId": "faction_silver_circle",
+      "name": "Silver Circle",
+      "structuredBonuses": [
+        {
+          "bonusId": "bonus_whisper_network"
+        }
+      ],
+      "activeProjects": [
+        {
+          "projectId": "proj_silver_whispers"
+        }
+      ],
+      "customStates": [
+        {
+          "stateId": "state_public_tension"
+        }
+      ]
+    }
+  ]
+}

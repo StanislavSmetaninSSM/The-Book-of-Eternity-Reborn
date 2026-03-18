@@ -1,0 +1,17 @@
+{
+  "locations": [
+    {
+      "locationId": "loc_market_square",
+      "locationType": "outdoor",
+      "coordinates": {
+        "x": 10,
+        "y": 20
+      },
+      "locationStorages": [
+        {
+          "storageId": "storage_square_crate"
+        }
+      ]
+    }
+  ]
+}

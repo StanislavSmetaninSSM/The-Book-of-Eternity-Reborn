@@ -1,0 +1,25 @@
+{
+  "id": "world_time_direct_shape",
+  "runner": "StateOnly",
+  "description": "Direct-root normalized world_time state must retain the full absolute date payload, including currentTimeInMinutes.",
+  "broken": [
+    {
+      "source": "broken/world_time.json",
+      "target": "game_state/world/world_time.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/world_time.json",
+      "target": "game_state/world/world_time.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "world_time_direct_state_missing_required_fields"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

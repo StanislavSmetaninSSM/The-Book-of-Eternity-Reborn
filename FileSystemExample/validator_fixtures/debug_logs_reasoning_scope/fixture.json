@@ -1,0 +1,25 @@
+{
+  "id": "debug_logs_reasoning_scope",
+  "runner": "AcceptedTurn",
+  "description": "Accepted-turn reasoning must include a structured NPC scope section, not only a free-form reasoning block.",
+  "broken": [
+    {
+      "source": "broken/debug_logs.json",
+      "target": "output/debug_logs.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/debug_logs.json",
+      "target": "output/debug_logs.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "missing_npc_scope"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

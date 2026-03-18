@@ -1,0 +1,25 @@
+{
+  "id": "current_location_missing_coordinates",
+  "runner": "StateOnly",
+  "description": "known currentLocationData must include coordinates together with locationId-based shorthand.",
+  "broken": [
+    {
+      "source": "broken/current_location_data.json",
+      "target": "game_state/world/current_location.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/current_location_data.json",
+      "target": "game_state/world/current_location.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "current_location_missing_coordinates"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

@@ -1,0 +1,37 @@
+{
+  "id": "faction_bonus_existing_id",
+  "runner": "StateOnly",
+  "description": "factionBonusChanges removals must target an existing bonusId from the target faction's canonical structuredBonuses.",
+  "shared": [
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/faction_core_backup.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/factions/faction_core.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/faction_structure.json",
+      "target": "game_state/factions/faction_structure.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/faction_structure.json",
+      "target": "game_state/factions/faction_structure.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "faction_bonus_remove_unknown_bonus_id"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

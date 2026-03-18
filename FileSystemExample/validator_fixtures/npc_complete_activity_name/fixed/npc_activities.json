@@ -1,0 +1,11 @@
+{
+  "completeNPCActivities": [
+    {
+      "NPCId": "npc_borin_01",
+      "NPCName": "Борин Железнорук",
+      "activityName": "Ковка Топора из Звездного Металла",
+      "finalState": "Completed",
+      "narrativeSummary": "The smith finishes the forging project and sets the blade aside."
+    }
+  ]
+}

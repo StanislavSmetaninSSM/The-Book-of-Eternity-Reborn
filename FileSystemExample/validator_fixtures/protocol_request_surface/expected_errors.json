@@ -1,8 +1,10 @@
 {
-  "expectedCodes": [
+  "expectedCodes": [],
+  "forbiddenCodes": [
     "client_owned_protocol_surface_modified"
   ],
-  "expectedMessages": [
-    "runtime-authored protocol surface must not be modified by GM"
+  "notes": [
+    "validation_repair_request.json and terminal_protocol_failure_request.json are runtime-authored protocol files.",
+    "Their drift must not be attributed to the GM during repair-loop revalidation."
   ]
 }

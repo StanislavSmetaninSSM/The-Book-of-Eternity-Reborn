@@ -1,0 +1,8 @@
+{
+  "NPCActivityUpdates": [
+    {
+      "NPCId": "npc_test_01",
+      "NPCName": "Test NPC"
+    }
+  ]
+}

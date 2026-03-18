@@ -1,0 +1,15 @@
+{
+  "guardians": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "name": "Azalia"
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_social_unknown_999",
+    "name": "Someone Else"
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": null
+  }
+}

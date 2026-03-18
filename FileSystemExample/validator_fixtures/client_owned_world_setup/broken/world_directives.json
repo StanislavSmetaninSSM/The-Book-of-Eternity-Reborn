@@ -1,0 +1,31 @@
+{
+  "worldTitle": "Серебряный Город",
+  "genre": "Gothic Mystery / Urban Fantasy",
+  "era": "Late 19th century",
+  "tone": "Melancholic, elegant, tense",
+  "settingSummary": "GM incorrectly overwrote the persistent world dossier instead of reading it as a player-authored constraint.",
+  "hardRules": [
+    "Публичная магия вызывает немедленную реакцию властей и тайных обществ."
+  ],
+  "requiredElements": [
+    "Городская хроника",
+    "Оккультные клубы",
+    "Социальное напряжение"
+  ],
+  "forbiddenElements": [
+    "Современный интернет",
+    "Открытые драконы и эльфийские королевства"
+  ],
+  "specialMechanics": [
+    "Репутация в закрытых кругах влияет на расследования и доступ к сведениям."
+  ],
+  "continuityNotes": [
+    "Мир должен постоянно напоминать о цене тайного знания."
+  ],
+  "playerAmendments": [
+    "Игрок предпочитает интригу и атмосферу вместо открытой войны."
+  ],
+  "sourceProfileId": "victorian-occult-capital",
+  "sourceProfileName": "Викторианская оккультная столица",
+  "lastUpdated": "2026-03-18T00:00:00Z"
+}

@@ -1,0 +1,13 @@
+{
+  "worldMapUpdates": {
+    "completeThreatActivities": [
+      {
+        "targetLocationId": "loc_market_square",
+        "threatId": "threat_idle_smugglers",
+        "threatName": "Idle Smugglers",
+        "finalState": "Completed",
+        "narrativeSummary": "The idle smugglers are somehow completed without an active operation."
+      }
+    ]
+  }
+}

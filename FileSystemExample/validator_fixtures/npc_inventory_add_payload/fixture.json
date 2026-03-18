@@ -1,0 +1,25 @@
+{
+  "id": "npc_inventory_add_payload",
+  "runner": "StateOnly",
+  "description": "NPCInventoryAdds must carry a nested full item object rather than a bare identity-only command.",
+  "broken": [
+    {
+      "source": "broken/npc_inventory.json",
+      "target": "game_state/npcs/npc_inventory.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/npc_inventory.json",
+      "target": "game_state/npcs/npc_inventory.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "npc_inventory_add_missing_item"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

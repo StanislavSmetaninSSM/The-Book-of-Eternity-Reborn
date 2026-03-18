@@ -1,0 +1,25 @@
+{
+  "id": "quest_history_shape",
+  "runner": "StateOnly",
+  "description": "quest_history canonical storage must keep questHistory as an array, not a scalar or object placeholder.",
+  "broken": [
+    {
+      "source": "broken/quest_history.json",
+      "target": "game_state/quests/quest_history.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/quest_history.json",
+      "target": "game_state/quests/quest_history.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "quest_history_invalid_array"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

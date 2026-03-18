@@ -1,0 +1,10 @@
+{
+  "factionBonusChanges": [
+    {
+      "factionId": "faction_silver_circle",
+      "bonusesToRemove": [
+        "bonus_unknown"
+      ]
+    }
+  ]
+}

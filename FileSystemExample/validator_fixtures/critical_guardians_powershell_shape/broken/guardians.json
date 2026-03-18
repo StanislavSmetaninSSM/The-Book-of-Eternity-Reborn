@@ -1,0 +1,22 @@
+{
+  "guardians": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "name": "Azalia",
+      "loreFragments": [
+        {
+          "fragmentId": "lore_az_02",
+          "title": "Silk Secrets",
+          "category": "cosmic_secret",
+          "StartPosition": {
+            "Content": "{ fragmentId = \"lore_az_02\" }"
+          }
+        }
+      ]
+    }
+  ],
+  "activeGuardian": null,
+  "chaosSeaNavigation": {
+    "currentAbodeId": null
+  }
+}

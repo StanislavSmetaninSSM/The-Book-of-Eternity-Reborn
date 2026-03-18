@@ -78,6 +78,8 @@ $TurnRequestFile = Join-Path $InputDir "turn_request.json"
 $RepairRequestFile = Join-Path $ControlDir "validation_repair_request.json"
 $TerminalProtocolFailureRequestFile = Join-Path $ControlDir "terminal_protocol_failure_request.json"
 $CliBindingFile = Join-Path $ControlDir "gm_cli_window_binding.json"
+$BridgeStatusFile = Join-Path $ControlDir "gm_bridge_status.json"
+$BridgeControlScript = Join-Path $PSScriptRoot "Launcher\bookofeternity.ps1"
 
 foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
     if (!(Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
@@ -85,6 +87,136 @@ foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
 
 $script:LastRepairRequestWrite = [datetime]::MinValue
 $script:LastTerminalProtocolFailureWrite = [datetime]::MinValue
+$script:BridgeAutoStartAttempted = $false
+
+function Get-GameConfig {
+    $configPath = Join-Path $GameSessionPath "config.json"
+    $defaults = [ordered]@{
+        GmBridgeEnabled = $true
+        GmBridgeBackend = "ConPTYBridge"
+        GmCliLaunchCommand = "gemini"
+        GmBridgeAutoStart = $false
+        GmBridgePipeNameOverride = ""
+    }
+
+    if (!(Test-Path $configPath)) {
+        return [pscustomobject]$defaults
+    }
+
+    try {
+        $loaded = Get-Content -Path $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        foreach ($key in @($defaults.Keys)) {
+            if ($null -eq $loaded.$key) {
+                $loaded | Add-Member -NotePropertyName $key -NotePropertyValue $defaults[$key]
+            }
+        }
+
+        return $loaded
+    }
+    catch {
+        return [pscustomobject]$defaults
+    }
+}
+
+function Get-GmBridgeStatus {
+    if (!(Test-Path $BridgeStatusFile)) {
+        return $null
+    }
+
+    try {
+        $status = Get-Content -Path $BridgeStatusFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ($null -eq $status.helperPid) {
+            return $status
+        }
+
+        try {
+            $null = Get-Process -Id ([int]$status.helperPid) -ErrorAction Stop
+            return $status
+        }
+        catch {
+            Write-Log "  -> Removing stale GM bridge status file (dead helper pid)." -Level "WARN" -Color Yellow
+            Remove-Item $BridgeStatusFile -Force -ErrorAction SilentlyContinue
+            return $null
+        }
+    }
+    catch {
+        return $null
+    }
+}
+
+function Ensure-GmBridgeStarted {
+    $config = Get-GameConfig
+    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne "ConPTYBridge") {
+        return
+    }
+
+    if (-not $config.GmBridgeAutoStart -or $script:BridgeAutoStartAttempted) {
+        return
+    }
+
+    $script:BridgeAutoStartAttempted = $true
+
+    if (!(Test-Path $BridgeControlScript)) {
+        Write-Log "  -> GM bridge control script not found. Auto-start skipped." -Level "WARN" -Color Yellow
+        return
+    }
+
+    try {
+        & $BridgeControlScript start-bridge -SessionPath $GameSessionPath | Out-Null
+        Write-Log "  -> Requested GM bridge auto-start" -Color DarkGray
+    }
+    catch {
+        Write-Log "  -> GM bridge auto-start failed: $_" -Level "WARN" -Color Yellow
+    }
+}
+
+function Send-ToGmBridge {
+    param(
+        [string]$Message,
+        [switch]$AllowNotReady
+    )
+
+    $config = Get-GameConfig
+    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne "ConPTYBridge") {
+        return $null
+    }
+
+    Ensure-GmBridgeStarted
+
+    $status = Get-GmBridgeStatus
+    if ($null -eq $status) {
+        Write-Log "  -> GM bridge status file not found. Falling back." -Level "WARN" -Color Yellow
+        return "bridge-unavailable"
+    }
+
+    if (-not $status.ready -and -not $AllowNotReady) {
+        Write-Log "  -> GM bridge is running but not marked ready. Falling back." -Level "WARN" -Color Yellow
+        return "bridge-not-ready"
+    }
+
+    if (!(Test-Path $BridgeControlScript)) {
+        Write-Log "  -> GM bridge control script missing. Falling back." -Level "WARN" -Color Yellow
+        return "bridge-control-missing"
+    }
+
+    try {
+        if ($AllowNotReady) {
+            & $BridgeControlScript addText $Message -SessionPath $GameSessionPath | Out-Null
+            Start-Sleep -Milliseconds 100
+            & $BridgeControlScript sendEnter -SessionPath $GameSessionPath | Out-Null
+            Write-Log "  -> Sent bootstrap/reminder to GM bridge via addText+sendEnter" -Color Green
+        }
+        else {
+            & $BridgeControlScript dispatchPrompt $Message -SessionPath $GameSessionPath | Out-Null
+            Write-Log "  -> Sent to GM bridge via named pipe" -Color Green
+        }
+        return "sent"
+    }
+    catch {
+        Write-Log "  -> GM bridge dispatch failed: $_" -Level "WARN" -Color Yellow
+        return "bridge-failed"
+    }
+}
 
 function Write-Log {
     param([string]$Message, [string]$Level = "INFO", [ConsoleColor]$Color = [ConsoleColor]::White)
@@ -103,7 +235,15 @@ Write-Host "  |  Book of Eternity: Game Master Daemon         |" -ForegroundColo
 Write-Host "  +===============================================+" -ForegroundColor Cyan
 Write-Host ""
 Write-Log "Game Session : $GameSessionPath" -Color Gray
-if (Test-Path $CliBindingFile) {
+if ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -eq "ConPTYBridge") {
+    Write-Log "GM Backend   : ConPTYBridge" -Color Gray
+    if (Test-Path $BridgeStatusFile) {
+        Write-Log "Bridge Status: '$BridgeStatusFile'" -Color Gray
+    } else {
+        Write-Log "Bridge Status: bridge not started yet (fallbacks remain available)" -Color Yellow
+    }
+}
+elseif (Test-Path $CliBindingFile) {
     Write-Log "CLI Binding  : '$CliBindingFile'" -Color Gray
 } elseif ($CliWindowTitle) {
     Write-Log "CLI Window   : '$CliWindowTitle' (title fallback)" -Color Gray
@@ -277,9 +417,16 @@ function Resolve-CliTarget {
 }
 
 function Send-ToCliWindow {
-    param([string]$Message)
+    param(
+        [string]$Message
+    )
 
-    # Always copy to clipboard
+    $config = Get-GameConfig
+    if ($config.GmBridgeEnabled -and $config.GmBridgeBackend -eq "ConPTYBridge") {
+        return (Send-ToGmBridge -Message $Message)
+    }
+
+    # Clipboard is the universal fallback for every bridge/window failure path.
     Set-Clipboard -Value $Message
     Write-Log "  -> Clipboard: command copied" -Color DarkGray
 
@@ -332,12 +479,12 @@ function Send-ToCliWindow {
 }
 
 function Ensure-CliBootstrapSent {
-    if ($script:BootstrapSent) { return }
+    if ($script:BootstrapSent) { return $true }
 
     if (-not $script:LaunchScriptPath) {
         Write-Log "  -> CLI_Launch_Script.md not found; bootstrap message skipped." -Level "WARN" -Color Yellow
         $script:BootstrapSent = $true
-        return
+        return $true
     }
 
     $launchScript = Get-Content -Path $script:LaunchScriptPath -Raw -Encoding UTF8
@@ -358,6 +505,35 @@ $launchScript
     if ($dispatch -eq "sent" -or $dispatch -eq "clipboard") {
         $script:BootstrapSent = $true
         Write-Log "  -> Bootstrap launch script dispatched" -Color Green
+        return $true
+    }
+
+    return $false
+}
+
+function Dispatch-WithRetry {
+    param(
+        [string]$Message,
+        [string]$PendingPath = ""
+    )
+
+    while ($true) {
+        if ($PendingPath -and !(Test-Path $PendingPath)) {
+            return "cancelled"
+        }
+
+        $dispatch = Send-ToCliWindow -Message $Message
+        if ($dispatch -eq "sent" -or $dispatch -eq "clipboard") {
+            return $dispatch
+        }
+
+        if ($dispatch -like "bridge-*") {
+            Write-Log "  -> Waiting for GM bridge to become available/ready..." -Level "WARN" -Color Yellow
+            Start-Sleep -Seconds 1
+            continue
+        }
+
+        return $dispatch
     }
 }
 
@@ -393,13 +569,27 @@ function Process-Turn {
         $requestId = if ($turnRequest.requestId) { $turnRequest.requestId } else { "<missing-requestId>" }
         $message = "Process turn #$turnNumber (requestId=$requestId). Read $GameSessionPath\input\turn_request.json and follow CLI_Agent_Daemon_Specification.md phases 0-4. You MUST read TaskGuides/CLI_Step_Main.txt and Examples/E_CLI_Step_Main.txt before writing files. If this turn uses any GM-side [INK_FEATHER_ACTION: TAG], you MUST also read Examples/E_CLI_Ink_Feather_Actions.txt and write output/ink_feather_action_result.json with exact metadata, actionTag, resolved=true, costInFeathers, resolutionType, summary, and stateEvidence. The client validates correlated metadata, valid JSON, realm restrictions, progressionControl/progression report, gm_thoughts_markdown scope/reasoning, and structured actor coverage. Relevant actors in NPC scope MUST cover any structured actor updates such as UpdateNPCs, NPCGoalUpdates, NPCActivityUpdates, or UpdateGuardians. Use preGeneratedDices1d20 from the FIRST die for normal checks; gachaBaseResult is separate and does not consume visible dice. If playerAction contains [CHAOS_SEA_DIRECT_GACHA], treat it as a neutral direct pull from the Chaos Sea, not a Guardian-mediated pull. Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3. Charges reset only when the Soul returns to the Chaos Sea after a new mortal life. If a Guardian has no remaining charges this return, do NOT emit UpdateGuardians.processGacha for that Guardian. Direct /gacha remains neutral and does NOT consume Guardian charges. progressionControl in the request is authoritative. If progression is processed, write game_state/control/progression_report.json with exact processed cycle counts and new last-* markers. TERMINAL CHECKLIST: write EXACTLY ONE terminal signal for this request; use either ready/turn_complete.json OR ready/turn_error.json, never both; copy exact sessionId/requestId/turnNumber from the CURRENT turn_request.json; write the terminal signal as the LAST step. If you write both terminal files or wrong metadata, the client will reject the terminal phase as protocol failure and write game_state/control/terminal_protocol_failure_request.json. validation_repair_request.json is only for accepted terminal completion with invalid resulting state."
 
-        Ensure-CliBootstrapSent
+        $bootstrapSent = Ensure-CliBootstrapSent
         $completionPath = Join-Path $ReadyDir "turn_complete.json"
         $errorPath = Join-Path $ReadyDir "turn_error.json"
         $terminalSignal = Get-CorrelatedTerminalSignal -TurnRequest $turnRequest -CompletionPath $completionPath -ErrorPath $errorPath
 
         if ($null -eq $terminalSignal) {
-            Send-ToCliWindow -Message $message
+            if (-not $bootstrapSent) {
+                while (-not (Ensure-CliBootstrapSent)) {
+                    if (!(Test-Path $RequestPath)) {
+                        Write-Log "  Turn cancelled while waiting for bridge/bootstrap dispatch" -Level "WARN" -Color Yellow
+                        return
+                    }
+                    Start-Sleep -Seconds 1
+                }
+            }
+
+            $dispatch = Dispatch-WithRetry -Message $message -PendingPath $RequestPath
+            if ($dispatch -eq "cancelled") {
+                Write-Log "  Turn cancelled while waiting for bridge turn dispatch" -Level "WARN" -Color Yellow
+                return
+            }
         }
         elseif ($terminalSignal.Kind -eq "conflict") {
             Write-Log "  Detected conflicting correlated terminal signals for the same turn. Waiting stops as protocol failure; client should emit terminal_protocol_failure_request.json." -Level "ERROR" -Color Red

@@ -1,0 +1,10 @@
+{
+  "factionCustomStateChanges": [
+    {
+      "factionId": "faction_silver_circle",
+      "statesToRemove": [
+        "state_public_tension"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "id": "npc_complete_activity_name",
+  "runner": "StateOnly",
+  "description": "completeNPCActivities must reference the NPC's actually active currentActivity from pre-turn npc_core state.",
+  "shared": [
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/npc_core_backup.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/npcs/npc_core.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/npc_activities.json",
+      "target": "game_state/npcs/npc_activities.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/npc_activities.json",
+      "target": "game_state/npcs/npc_activities.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "npc_complete_activity_name_mismatch"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}
