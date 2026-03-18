@@ -18624,7 +18624,66 @@ public class ValidationService
             {
                 CompareGuardianGachaState(activeGuardian, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
                 CompareGuardianTradeState(activeGuardian, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
+                ValidateActiveGuardianNavigationState(root, contextPrefix, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
             }
+        }
+    }
+
+    private void ValidateActiveGuardianNavigationState(
+        JsonElement root,
+        string contextPrefix,
+        string activeGuardianContext,
+        JsonElement guardianFromArray,
+        string guardianArrayContext,
+        List<ValidationIssue> issues)
+    {
+        var expectedAbodeId = "";
+        if (guardianFromArray.TryGetProperty("abode", out var abode) && abode.ValueKind == JsonValueKind.Object)
+            expectedAbodeId = GetFirstNonEmptyString(abode, "abodeId", "id");
+
+        if (string.IsNullOrWhiteSpace(expectedAbodeId))
+            return;
+
+        if (!root.TryGetProperty("chaosSeaNavigation", out var navigation) || navigation.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.chaosSeaNavigation",
+                IssueSeverity.Error,
+                "Активный Хранитель требует materialized chaosSeaNavigation.currentAbodeId",
+                code: "active_guardian_missing_current_abode_id",
+                section: "Guardians",
+                expected: $"chaosSeaNavigation.currentAbodeId = {expectedAbodeId}",
+                actual: "chaosSeaNavigation missing",
+                repairHint: $"Когда душа находится у активного Хранителя, materialize chaosSeaNavigation.currentAbodeId и синхронизируй его с abodeId из {guardianArrayContext}.abode."));
+            return;
+        }
+
+        var actualAbodeId = GetFirstNonEmptyString(navigation, "currentAbodeId");
+        if (string.IsNullOrWhiteSpace(actualAbodeId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.chaosSeaNavigation.currentAbodeId",
+                IssueSeverity.Error,
+                "Активный Хранитель требует непустой currentAbodeId",
+                code: "active_guardian_missing_current_abode_id",
+                section: "Guardians",
+                expected: expectedAbodeId,
+                actual: "missing or empty",
+                repairHint: $"При создании/активации Хранителя сразу записывай chaosSeaNavigation.currentAbodeId = {expectedAbodeId}, иначе локальная торговля и abode-bound UX будут недоступны."));
+            return;
+        }
+
+        if (!string.Equals(actualAbodeId, expectedAbodeId, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.chaosSeaNavigation.currentAbodeId",
+                IssueSeverity.Error,
+                "currentAbodeId должен совпадать с abodeId активного Хранителя",
+                code: "active_guardian_current_abode_mismatch",
+                section: "Guardians",
+                expected: expectedAbodeId,
+                actual: actualAbodeId,
+                repairHint: $"Синхронизируй chaosSeaNavigation.currentAbodeId с abodeId активного Хранителя из {guardianArrayContext}.abode, иначе guardian trade и abode-specific UI будут расходиться с canonical state."));
         }
     }
 

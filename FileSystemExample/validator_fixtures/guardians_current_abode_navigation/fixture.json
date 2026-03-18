@@ -1,0 +1,25 @@
+{
+  "id": "guardians_current_abode_navigation",
+  "runner": "StateOnly",
+  "description": "activeGuardian with a materialized abode must also materialize chaosSeaNavigation.currentAbodeId to the same abodeId.",
+  "broken": [
+    {
+      "source": "broken/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "active_guardian_missing_current_abode_id"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

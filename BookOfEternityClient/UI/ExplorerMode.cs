@@ -16,6 +16,7 @@ namespace BookOfEternityClient.UI;
 /// </summary>
 public class ExplorerMode
 {
+    private readonly IExplorerConsole _console;
     private readonly StateManager _stateManager;
     private readonly FileSystemManager _fs;
     private readonly LocalizationManager _loc;
@@ -50,8 +51,10 @@ public class ExplorerMode
         Services.GuardianTradeService? guardianTradeService = null,
         Services.NpcTradeService? npcTradeService = null,
         Services.SystemModService? systemModService = null,
-        Services.WorldDirectiveService? worldDirectiveService = null)
+        Services.WorldDirectiveService? worldDirectiveService = null,
+        IExplorerConsole? console = null)
     {
+        _console = console ?? new SpectreExplorerConsole();
         _stateManager = stateManager;
         _validator = validator;
         _charService = charService;
@@ -181,6 +184,22 @@ public class ExplorerMode
         foreach (var k in _mortalOnlyCommands.Keys) _allCommandNames.Add(k);
     }
 
+    private void Write(IRenderable content) => _console.Write(content);
+
+    private void WriteLine() => _console.WriteLine();
+
+    private void MarkupLine(string markup) => _console.MarkupLine(markup);
+
+    private void Clear() => _console.Clear();
+
+    private string Ask(string prompt, string defaultValue = "") => _console.Ask(prompt, defaultValue);
+
+    private bool Confirm(string prompt, bool defaultValue = false) => _console.Confirm(prompt, defaultValue);
+
+    private T Prompt<T>(IPrompt<T> prompt) => _console.Prompt(prompt);
+
+    private ConsoleKeyInfo ReadKey() => _console.ReadKey();
+
     /// <summary>
     /// Try to process as a local command. Returns:
     /// - null: not a recognized command
@@ -211,8 +230,8 @@ public class ExplorerMode
             }
             else
             {
-                AnsiConsole.MarkupLine("[yellow]⚠️ Эта команда доступна только в Море Хаоса (загробная жизнь).[/]");
-                AnsiConsole.MarkupLine("[dim]В смертной жизни вы не можете взаимодействовать с хранителями.[/]");
+                MarkupLine("[yellow]⚠️ Эта команда доступна только в Море Хаоса (загробная жизнь).[/]");
+                MarkupLine("[dim]В смертной жизни вы не можете взаимодействовать с хранителями.[/]");
                 WaitForKey();
             }
             return "";
@@ -228,9 +247,9 @@ public class ExplorerMode
             }
             else
             {
-                AnsiConsole.MarkupLine("[yellow]⚠️ Эта команда доступна только в смертной жизни.[/]");
-                AnsiConsole.MarkupLine("[dim]В Море Хаоса у вас нет смертного инвентаря, карты и т.д.[/]");
-                AnsiConsole.MarkupLine("[dim]Используйте /воплотиться чтобы войти в смертную жизнь.[/]");
+                MarkupLine("[yellow]⚠️ Эта команда доступна только в смертной жизни.[/]");
+                MarkupLine("[dim]В Море Хаоса у вас нет смертного инвентаря, карты и т.д.[/]");
+                MarkupLine("[dim]Используйте /воплотиться чтобы войти в смертную жизнь.[/]");
                 WaitForKey();
             }
             return "";
@@ -327,7 +346,7 @@ public class ExplorerMode
                 {
                     foreach (var broken in brokenItems)
                         await DropItemLocal(broken.Identity, broken.Name);
-                    AnsiConsole.MarkupLine($"[dim]Авто-выброс: {brokenItems.Count} сломанных предметов удалено[/]");
+                    MarkupLine($"[dim]Авто-выброс: {brokenItems.Count} сломанных предметов удалено[/]");
                     continue; // re-read inventory after auto-discard
                 }
             }
@@ -449,7 +468,7 @@ public class ExplorerMode
                     : $"  [dim](⚖ {tw}/{max} кг)[/]";
             }
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var selected = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold yellow]🎒 {_loc.T("inventory")}[/]{weightInfo}" +
                     "  [dim](выберите для просмотра / управления)[/]")
                 .PageSize(20)
@@ -1057,7 +1076,7 @@ public class ExplorerMode
         else
             lines.Add("  Статус: [dim]📦 В рюкзаке[/]");
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 📦 Предмет ", Justify.Center),
             Border = BoxBorder.Double,
@@ -1107,7 +1126,7 @@ public class ExplorerMode
             actions.Add("[red]🗑 Выбросить[/]");
         actions.Add(readOnly ? "← Назад" : "← Назад к списку");
 
-        var action = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var action = Prompt(new SelectionPrompt<string>()
             .Title("[bold]Действие:[/]")
             .HighlightStyle(new Style(Color.Yellow))
             .AddChoices(actions));
@@ -1141,7 +1160,7 @@ public class ExplorerMode
                 // Let user pick a slot
                 var slotChoices = SlotLabels.Select(kv => $"{kv.Value} ({kv.Key})").ToList();
                 slotChoices.Add("← Отмена");
-                var pick = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                var pick = Prompt(new SelectionPrompt<string>()
                     .Title("[bold]В какой слот экипировать?[/]")
                     .HighlightStyle(new Style(Color.Yellow))
                     .AddChoices(slotChoices));
@@ -1157,7 +1176,7 @@ public class ExplorerMode
         }
         if (action.Contains("Разделить стопку"))
         {
-            var splitAmount = AnsiConsole.Prompt(
+            var splitAmount = Prompt(
                 new TextPrompt<int>($"[bold]Сколько отделить? (1—{itemCount - 1}):[/]")
                     .ValidationErrorMessage("[red]Введите число[/]")
                     .Validate(n => n >= 1 && n < itemCount
@@ -1185,7 +1204,7 @@ public class ExplorerMode
         }
         if (action.Contains("Выбросить"))
         {
-            var confirm = AnsiConsole.Prompt(new ConfirmationPrompt(
+            var confirm = Prompt(new ConfirmationPrompt(
                 $"[bold red]Вы уверены, что хотите выбросить «{Markup.Escape(name)}»" +
                 (itemCount > 1 ? $" ({itemCount} шт.)" : "") + "?[/]")
             { DefaultValue = false });
@@ -1555,13 +1574,13 @@ public class ExplorerMode
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
 
             var slotLabel = SlotLabels.GetValueOrDefault(slotKey, slotKey);
-            AnsiConsole.MarkupLine($"[green]✅ «{Markup.Escape(itemName)}» экипировано в {slotLabel}![/]");
-            AnsiConsole.MarkupLine("[dim]Нажмите любую клавишу...[/]");
-            Console.ReadKey(true);
+            MarkupLine($"[green]✅ «{Markup.Escape(itemName)}» экипировано в {slotLabel}![/]");
+            MarkupLine("[dim]Нажмите любую клавишу...[/]");
+            ReadKey();
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
         }
     }
@@ -1584,13 +1603,13 @@ public class ExplorerMode
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
 
             var slotLabel = SlotLabels.GetValueOrDefault(slotKey, slotKey);
-            AnsiConsole.MarkupLine($"[green]✅ Предмет снят с {slotLabel} и убран в рюкзак.[/]");
-            AnsiConsole.MarkupLine("[dim]Нажмите любую клавишу...[/]");
-            Console.ReadKey(true);
+            MarkupLine($"[green]✅ Предмет снят с {slotLabel} и убран в рюкзак.[/]");
+            MarkupLine("[dim]Нажмите любую клавишу...[/]");
+            ReadKey();
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
         }
     }
@@ -1628,18 +1647,18 @@ public class ExplorerMode
 
                 var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
                 await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
-                AnsiConsole.MarkupLine($"[green]✅ «{Markup.Escape(itemName)}» выброшен.[/]");
-                AnsiConsole.MarkupLine("[dim]Нажмите любую клавишу...[/]");
-                Console.ReadKey(true);
+                MarkupLine($"[green]✅ «{Markup.Escape(itemName)}» выброшен.[/]");
+                MarkupLine("[dim]Нажмите любую клавишу...[/]");
+                ReadKey();
                 return;
             }
 
-            AnsiConsole.MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
+            MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
             WaitForKey();
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
         }
     }
@@ -1664,7 +1683,7 @@ public class ExplorerMode
                 var countKey = original.ContainsKey("quantity") ? "quantity" : "count";
 
                 var currentCount = original[countKey]?.GetValue<int>() ?? 1;
-                if (splitAmount >= currentCount) { AnsiConsole.MarkupLine("[yellow]Нельзя отделить всё количество.[/]"); WaitForKey(); return; }
+                if (splitAmount >= currentCount) { MarkupLine("[yellow]Нельзя отделить всё количество.[/]"); WaitForKey(); return; }
 
                 // Reduce original
                 original[countKey] = currentCount - splitAmount;
@@ -1678,18 +1697,18 @@ public class ExplorerMode
 
                 var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
                 await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
-                AnsiConsole.MarkupLine($"[green]✅ Стопка разделена: {currentCount - splitAmount} + {splitAmount}[/]");
-                AnsiConsole.MarkupLine("[dim]Нажмите любую клавишу...[/]");
-                Console.ReadKey(true);
+                MarkupLine($"[green]✅ Стопка разделена: {currentCount - splitAmount} + {splitAmount}[/]");
+                MarkupLine("[dim]Нажмите любую клавишу...[/]");
+                ReadKey();
                 return;
             }
 
-            AnsiConsole.MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
+            MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
             WaitForKey();
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
         }
     }
@@ -1710,7 +1729,7 @@ public class ExplorerMode
             var selectedIndex = FindInventoryItemIndex(itemsArr, itemIdentity, itemName);
             if (selectedIndex < 0)
             {
-                AnsiConsole.MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
+                MarkupLine("[yellow]Предмет не найден в инвентаре.[/]");
                 WaitForKey();
                 return;
             }
@@ -1727,7 +1746,7 @@ public class ExplorerMode
 
             if (matchingIndices.Count < 2)
             {
-                AnsiConsole.MarkupLine("[yellow]Нет другой стопки с таким же именем для объединения.[/]");
+                MarkupLine("[yellow]Нет другой стопки с таким же именем для объединения.[/]");
                 WaitForKey();
                 return;
             }
@@ -1750,13 +1769,13 @@ public class ExplorerMode
 
             var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
             await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
-            AnsiConsole.MarkupLine($"[green]✅ Стопки объединены: {totalCount} шт.[/]");
-            AnsiConsole.MarkupLine("[dim]Нажмите любую клавишу...[/]");
-            Console.ReadKey(true);
+            MarkupLine($"[green]✅ Стопки объединены: {totalCount} шт.[/]");
+            MarkupLine("[dim]Нажмите любую клавишу...[/]");
+            ReadKey();
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
         }
     }
@@ -1808,7 +1827,7 @@ public class ExplorerMode
             }).ToList();
             choices.Add("← Назад");
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var selected = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold purple]👥 {_loc.T("npcs")}[/]  [dim](выберите для подробностей)[/]")
                 .PageSize(15)
                 .HighlightStyle(new Style(Color.Purple))
@@ -2602,9 +2621,9 @@ public class ExplorerMode
         }
 
         if (lines.Count > 0)
-            content.AddRow(new Markup(string.Join("\n", lines)));
+            content.AddRow(GameInterface.SafeMarkup(string.Join("\n", lines)));
 
-        AnsiConsole.Write(new Panel(content)
+        Write(new Panel(content)
         {
             Header = new PanelHeader($" 👤 {Markup.Escape(name)} ", Justify.Center),
             Border = BoxBorder.Double,
@@ -2650,7 +2669,7 @@ public class ExplorerMode
 
             actions.Add("← Назад");
 
-            var action = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var action = Prompt(new SelectionPrompt<string>()
                 .Title("[bold]Действие:[/]")
                 .HighlightStyle(new Style(Color.Purple))
                 .AddChoices(actions));
@@ -2733,7 +2752,7 @@ public class ExplorerMode
 
             choices.Add("← Назад");
 
-            var selected = AnsiConsole.Prompt(
+            var selected = Prompt(
                 new SelectionPrompt<string>()
                     .Title("[bold orange3]🎒 Предметы NPC[/]")
                     .HighlightStyle(new Style(Color.Orange3))
@@ -2766,7 +2785,7 @@ public class ExplorerMode
     {
         if (_npcTradeService == null)
         {
-            AnsiConsole.MarkupLine("[red]❌ Сервис торговли НПС недоступен.[/]");
+            MarkupLine("[red]❌ Сервис торговли НПС недоступен.[/]");
             WaitForKey();
             return;
         }
@@ -2776,14 +2795,14 @@ public class ExplorerMode
             var view = await _npcTradeService.EnsureTradeInventoryAsync(npcId);
             if (view == null)
             {
-                AnsiConsole.MarkupLine("[red]❌ Не удалось загрузить витрину торговца.[/]");
+                MarkupLine("[red]❌ Не удалось загрузить витрину торговца.[/]");
                 WaitForKey();
                 return;
             }
 
             if (view.TradeBlocked)
             {
-                AnsiConsole.MarkupLine($"[red]⛔ {Markup.Escape(view.BlockReason ?? "Торговля недоступна.")}[/]");
+                MarkupLine($"[red]⛔ {Markup.Escape(view.BlockReason ?? "Торговля недоступна.")}[/]");
                 WaitForKey();
                 return;
             }
@@ -2798,7 +2817,7 @@ public class ExplorerMode
                 $"[dim]Товаров в витрине: {availableOffers}/{totalOffers} доступно • {Markup.Escape(DescribeNpcTradeRefresh(view))}[/]"
             };
 
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", headerLines)))
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", headerLines)))
             {
                 Border = BoxBorder.Rounded,
                 BorderStyle = new Style(Color.Purple),
@@ -2806,7 +2825,7 @@ public class ExplorerMode
                 Expand = true
             });
 
-            var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var choice = Prompt(new SelectionPrompt<string>()
                 .Title("[bold]Выберите раздел:[/]")
                 .HighlightStyle(new Style(Color.Purple))
                 .AddChoices("🛍 Купить товары", "💰 Продать товары", "← Назад"));
@@ -2818,7 +2837,7 @@ public class ExplorerMode
             {
                 await ShowNpcBuyMenu(npcId);
                 await _stateManager.RefreshGameStateAsync();
-                AnsiConsole.Clear();
+                Clear();
                 continue;
             }
 
@@ -2826,7 +2845,7 @@ public class ExplorerMode
             {
                 await ShowNpcSellMenu(npcId);
                 await _stateManager.RefreshGameStateAsync();
-                AnsiConsole.Clear();
+                Clear();
             }
         }
     }
@@ -2841,14 +2860,14 @@ public class ExplorerMode
             var refreshedView = await _npcTradeService.EnsureTradeInventoryAsync(npcId);
             if (refreshedView == null)
             {
-                AnsiConsole.MarkupLine("[red]❌ Не удалось загрузить витрину торговца.[/]");
+                MarkupLine("[red]❌ Не удалось загрузить витрину торговца.[/]");
                 WaitForKey();
                 return;
             }
 
             if (refreshedView.TradeBlocked)
             {
-                AnsiConsole.MarkupLine($"[red]⛔ {Markup.Escape(refreshedView.BlockReason ?? "Торговля недоступна.")}[/]");
+                MarkupLine($"[red]⛔ {Markup.Escape(refreshedView.BlockReason ?? "Торговля недоступна.")}[/]");
                 WaitForKey();
                 return;
             }
@@ -2873,7 +2892,7 @@ public class ExplorerMode
             var choices = offerChoices.Select(item => item.Label).ToList();
             choices.Add("← Назад");
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var selected = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold yellow]Покупка товаров[/] [dim](доступно: {displayOffers.Count(offer => !offer.SoldOut)}/{displayOffers.Count} • деньги: {refreshedView.CurrentMoney} • {Markup.Escape(DescribeNpcTradeRefresh(refreshedView))})[/]")
                 .HighlightStyle(new Style(Color.Gold1))
                 .PageSize(20)
@@ -2893,7 +2912,7 @@ public class ExplorerMode
                 continue;
 
             var result = await _npcTradeService.BuyAsync(npcId, offer.SlotId);
-            AnsiConsole.MarkupLine(result.Success
+            MarkupLine(result.Success
                 ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
                 : $"[red]❌ {Markup.Escape(result.Message)}[/]");
             WaitForKey();
@@ -2916,8 +2935,8 @@ public class ExplorerMode
         else if (currentMoney < offer.Price)
             lines.Insert(4, "  [yellow]Статус покупки: пока не хватает денег для покупки.[/]");
 
-        AnsiConsole.Clear();
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 🛒 Товар торговца ", Justify.Center),
             Border = BoxBorder.Double,
@@ -2931,7 +2950,7 @@ public class ExplorerMode
             actions.Add("🛍 Купить");
         actions.Add("← Назад к витрине");
 
-        var action = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var action = Prompt(new SelectionPrompt<string>()
             .Title("[bold]Действие:[/]")
             .HighlightStyle(new Style(Color.Gold1))
             .AddChoices(actions));
@@ -2951,14 +2970,14 @@ public class ExplorerMode
             var tradeView = await _npcTradeService.EnsureTradeInventoryAsync(npcId);
             if (tradeView == null)
             {
-                AnsiConsole.MarkupLine("[red]❌ Не удалось загрузить витрину торговца.[/]");
+                MarkupLine("[red]❌ Не удалось загрузить витрину торговца.[/]");
                 WaitForKey();
                 return;
             }
 
             if (tradeView.TradeBlocked)
             {
-                AnsiConsole.MarkupLine($"[red]⛔ {Markup.Escape(tradeView.BlockReason ?? "Торговля недоступна.")}[/]");
+                MarkupLine($"[red]⛔ {Markup.Escape(tradeView.BlockReason ?? "Торговля недоступна.")}[/]");
                 WaitForKey();
                 return;
             }
@@ -2966,7 +2985,7 @@ public class ExplorerMode
             var offers = await _npcTradeService.GetSellableItemsAsync(npcId);
             if (offers.Count == 0)
             {
-                AnsiConsole.MarkupLine("[dim]В инвентаре нет товаров смертной жизни, доступных для продажи.[/]");
+                MarkupLine("[dim]В инвентаре нет товаров смертной жизни, доступных для продажи.[/]");
                 WaitForKey();
                 return;
             }
@@ -2986,7 +3005,7 @@ public class ExplorerMode
             var choices = offerChoices.Select(item => item.Label).ToList();
             choices.Add("← Назад");
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var selected = Prompt(new SelectionPrompt<string>()
                 .Title("[bold yellow]Продажа товаров[/] [dim](обычные товары смертной жизни; без реликвий души и квестовых предметов)[/]")
                 .HighlightStyle(new Style(Color.Gold1))
                 .PageSize(20)
@@ -3004,7 +3023,7 @@ public class ExplorerMode
                 continue;
 
             var result = await _npcTradeService.SellAsync(npcId, offer.ItemId);
-            AnsiConsole.MarkupLine(result.Success
+            MarkupLine(result.Success
                 ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
                 : $"[red]❌ {Markup.Escape(result.Message)}[/]");
             WaitForKey();
@@ -3021,8 +3040,8 @@ public class ExplorerMode
         lines.Insert(1, $"  💰 Цена продажи: [yellow]{offer.Price}[/]");
         lines.Insert(2, "  [dim]Панель принимает только обычные товары смертной жизни. Квестовые предметы и реликвии души исключены.[/]");
 
-        AnsiConsole.Clear();
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 💰 Продажа товара ", Justify.Center),
             Border = BoxBorder.Double,
@@ -3031,7 +3050,7 @@ public class ExplorerMode
             Expand = true
         });
 
-        var action = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var action = Prompt(new SelectionPrompt<string>()
             .Title("[bold]Действие:[/]")
             .HighlightStyle(new Style(Color.Gold1))
             .AddChoices("💰 Продать", "← Назад к списку"));
@@ -4869,7 +4888,7 @@ public class ExplorerMode
                 choices.Add($"[dim]{Markup.Escape(label)}[/]");
             choices.Add("[dim]← Назад[/]");
 
-            var selected = AnsiConsole.Prompt(
+            var selected = Prompt(
                 new SelectionPrompt<string>()
                     .Title($"[bold green]📜 {_loc.T("quests")}[/]")
                     .PageSize(15)
@@ -5123,7 +5142,7 @@ public class ExplorerMode
         }
 
         var borderColor = isSoul ? Color.Purple : Color.Green;
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader($" 📜 {Markup.Escape(name)} ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -5232,7 +5251,7 @@ public class ExplorerMode
             var choices = menuItems.Select(m => m.Label).ToList();
             choices.Add("[grey]← Назад[/]");
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var selected = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold green]🗺 {_loc.T("map")}[/]  [dim](выберите локацию для подробностей)[/]")
                 .PageSize(20)
                 .HighlightStyle(new Style(Color.Green))
@@ -5524,7 +5543,7 @@ public class ExplorerMode
             lines.Add($"  [dim italic]🖼️ {Markup.Escape(imgPrompt)}[/]");
         }
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader($" {(isCurrent ? "📍" : "🗺")} {Markup.Escape(name)} ", Justify.Center),
             Border = BoxBorder.Double,
@@ -6106,8 +6125,8 @@ public class ExplorerMode
 
         var zLabel = playerZ > 0 ? $"↑{playerZ}" : playerZ < 0 ? $"↓{Math.Abs(playerZ)}" : "наземный";
 
-        AnsiConsole.WriteLine();
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", mapText)))
+        WriteLine();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", mapText)))
         {
             Header = new PanelHeader($" 🗺 Карта (уровень: {zLabel}) ", Justify.Center),
             Border = BoxBorder.Double,
@@ -6425,7 +6444,7 @@ public class ExplorerMode
             Expand = true
         };
 
-        AnsiConsole.Write(panel);
+        Write(panel);
 
         // ── Additional panel: recent changes ──
         var extraText = new List<string>();
@@ -6506,8 +6525,8 @@ public class ExplorerMode
 
         if (extraText.Count > 0)
         {
-            AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", extraText)))
+            WriteLine();
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", extraText)))
             {
                 Header = new PanelHeader(" 📊 Дополнительно ", Justify.Center),
                 Border = BoxBorder.Rounded,
@@ -6641,7 +6660,7 @@ public class ExplorerMode
                 choices.Add(label);
             choices.Add("← Назад");
 
-            var selected = AnsiConsole.Prompt(
+            var selected = Prompt(
                 new SelectionPrompt<string>()
                     .Title($"[bold yellow]🎓 {_loc.T("skills")}[/]")
                     .PageSize(15)
@@ -6839,7 +6858,7 @@ public class ExplorerMode
         // Mastery
         AppendMasteryInfo(lines, name, s, masteryLookup);
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader($" ⚡ {Markup.Escape(name)} ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -6970,7 +6989,7 @@ public class ExplorerMode
         // Mastery
         AppendMasteryInfo(lines, name, s, masteryLookup);
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader($" 🔮 {Markup.Escape(name)} ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -7134,18 +7153,18 @@ public class ExplorerMode
         }
 
         // Render everything
-        var headerPanel = new Panel(new Markup(string.Join("\n", lines.Take(2))))
+        var headerPanel = new Panel(GameInterface.SafeMarkup(string.Join("\n", lines.Take(2))))
         {
             Border = BoxBorder.None,
             Padding = new Padding(0, 0)
         };
-        AnsiConsole.Write(headerPanel);
-        AnsiConsole.Write(table);
+        Write(headerPanel);
+        Write(table);
 
         if (sourceLines.Count > 0)
         {
-            AnsiConsole.WriteLine();
-            var detailPanel = new Panel(new Markup(string.Join("\n", sourceLines)))
+            WriteLine();
+            var detailPanel = new Panel(GameInterface.SafeMarkup(string.Join("\n", sourceLines)))
             {
                 Header = new PanelHeader(" 📊 Источники бонусов ", Justify.Center),
                 Border = BoxBorder.Rounded,
@@ -7153,7 +7172,7 @@ public class ExplorerMode
                 Padding = new Padding(1, 0),
                 Expand = true
             };
-            AnsiConsole.Write(detailPanel);
+            Write(detailPanel);
         }
 
         // ── Derived combat parameters (from Rules Block 5, 13, 14) ──
@@ -7236,8 +7255,8 @@ public class ExplorerMode
             dLines.Add($"  Врождённое сопротивление: [blue]{innateRes}%[/]  [dim](Уровень/10×2 + Выносливость/10)[/]");
             dLines.Add($"  [dim]+ бонусы брони, навыков и эффектов (до макс. 90%)[/]");
 
-            AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", dLines)))
+            WriteLine();
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", dLines)))
             {
                 Header = new PanelHeader(" 📐 Производные боевые параметры ", Justify.Center),
                 Border = BoxBorder.Rounded,
@@ -7254,7 +7273,7 @@ public class ExplorerMode
     {
         if (_charService == null)
         {
-            AnsiConsole.MarkupLine("[red]Сервис характеристик недоступен.[/]");
+            MarkupLine("[red]Сервис характеристик недоступен.[/]");
             WaitForKey();
             return;
         }
@@ -7262,7 +7281,7 @@ public class ExplorerMode
         var unspent = await _charService.GetUnspentStatPoints();
         if (unspent <= 0)
         {
-            AnsiConsole.MarkupLine("[yellow]Нет нераспределённых очков характеристик.[/]");
+            MarkupLine("[yellow]Нет нераспределённых очков характеристик.[/]");
             WaitForKey();
             return;
         }
@@ -7271,7 +7290,7 @@ public class ExplorerMode
         var statsJson = await _stateManager.LoadGameStateFileAsync("game_state/misc/characteristics.json");
         if (statsJson == null)
         {
-            AnsiConsole.MarkupLine("[red]Характеристики не найдены.[/]");
+            MarkupLine("[red]Характеристики не найдены.[/]");
             WaitForKey();
             return;
         }
@@ -7295,9 +7314,9 @@ public class ExplorerMode
 
         while (remaining > 0)
         {
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[gold1]Распределение очков ({remaining} осталось)[/]").RuleStyle("gold1"));
-            AnsiConsole.WriteLine();
+            Clear();
+            Write(new Rule($"[gold1]Распределение очков ({remaining} осталось)[/]").RuleStyle("gold1"));
+            WriteLine();
 
             var table = new Table().Expand().Border(TableBorder.Rounded);
             table.AddColumn("Характеристика");
@@ -7320,10 +7339,10 @@ public class ExplorerMode
                 table.AddRow(nameStr, $"{baseVal}", allocStr, totalStr);
             }
 
-            AnsiConsole.Write(table);
-            AnsiConsole.MarkupLine("[dim]↑↓ выбор  →/+ добавить  ←/- убрать  Enter подтвердить[/]");
+            Write(table);
+            MarkupLine("[dim]↑↓ выбор  →/+ добавить  ←/- убрать  Enter подтвердить[/]");
 
-            var key = Console.ReadKey(true);
+            var key = ReadKey();
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
@@ -7349,7 +7368,7 @@ public class ExplorerMode
                     }
                     break;
                 case ConsoleKey.Enter:
-                    if (remaining == 0 || AnsiConsole.Confirm($"[yellow]Осталось {remaining} очков. Оставить на потом?[/]"))
+                    if (remaining == 0 || Confirm($"[yellow]Осталось {remaining} очков. Оставить на потом?[/]"))
                         goto done;
                     break;
             }
@@ -7366,7 +7385,7 @@ public class ExplorerMode
 
         if (allocDict.Count > 0)
             await _charService.DistributePointsAsync(allocDict);
-        AnsiConsole.MarkupLine("[green]✓ Характеристики обновлены![/]");
+        MarkupLine("[green]✓ Характеристики обновлены![/]");
         WaitForKey();
     }
 
@@ -7395,7 +7414,7 @@ public class ExplorerMode
 
         if (companions.Count == 0)
         {
-            AnsiConsole.MarkupLine("[yellow]У вас нет активных компаньонов.[/]");
+            MarkupLine("[yellow]У вас нет активных компаньонов.[/]");
             WaitForKey();
             return;
         }
@@ -7412,7 +7431,7 @@ public class ExplorerMode
         }).ToList();
         choices.Add("← Назад");
 
-        var selected = AnsiConsole.Prompt(
+        var selected = Prompt(
             new SelectionPrompt<string>()
                 .Title("[bold cyan]Выберите компаньона для директивы:[/]")
                 .PageSize(10)
@@ -7428,18 +7447,18 @@ public class ExplorerMode
         // Show current directive
         if (!string.IsNullOrEmpty(comp.currentDirective))
         {
-            AnsiConsole.MarkupLine($"[yellow]Текущая директива для {Markup.Escape(comp.displayName)}:[/]");
-            AnsiConsole.MarkupLine($"  [italic]{Markup.Escape(comp.currentDirective)}[/]");
-            AnsiConsole.WriteLine();
+            MarkupLine($"[yellow]Текущая директива для {Markup.Escape(comp.displayName)}:[/]");
+            MarkupLine($"  [italic]{Markup.Escape(comp.currentDirective)}[/]");
+            WriteLine();
         }
 
         // Input new directive
-        var newDirective = AnsiConsole.Ask<string>("[cyan]Новая директива (или пусто для очистки):[/]", "");
+        var newDirective = Ask("[cyan]Новая директива (или пусто для очистки):[/]", "");
 
         // Write to npc_core.json
         const string path = "game_state/npcs/npc_core.json";
         var rawJson = await _fs.ReadFileAsync(path);
-        if (rawJson == null) { AnsiConsole.MarkupLine("[red]Ошибка чтения файла НПС.[/]"); WaitForKey(); return; }
+        if (rawJson == null) { MarkupLine("[red]Ошибка чтения файла НПС.[/]"); WaitForKey(); return; }
 
         try
         {
@@ -7466,7 +7485,7 @@ public class ExplorerMode
 
             if (node is JsonArray rootArr)
             {
-                AnsiConsole.MarkupLine("[red]Невалидный npc_core.json: корень не должен быть массивом.[/]");
+                MarkupLine("[red]Невалидный npc_core.json: корень не должен быть массивом.[/]");
                 WaitForKey();
                 return;
             }
@@ -7481,18 +7500,18 @@ public class ExplorerMode
                 var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
                 await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
                 if (string.IsNullOrWhiteSpace(newDirective))
-                    AnsiConsole.MarkupLine($"[green]✓ Директива для {Markup.Escape(comp.displayName)} очищена.[/]");
+                    MarkupLine($"[green]✓ Директива для {Markup.Escape(comp.displayName)} очищена.[/]");
                 else
-                    AnsiConsole.MarkupLine($"[green]✓ Директива для {Markup.Escape(comp.displayName)} задана:[/] [italic]{Markup.Escape(newDirective)}[/]");
+                    MarkupLine($"[green]✓ Директива для {Markup.Escape(comp.displayName)} задана:[/] [italic]{Markup.Escape(newDirective)}[/]");
             }
             else
             {
-                AnsiConsole.MarkupLine("[yellow]НПС не найден в файле. Директива будет передана ГМ с вашим действием.[/]");
+                MarkupLine("[yellow]НПС не найден в файле. Директива будет передана ГМ с вашим действием.[/]");
             }
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
         }
         WaitForKey();
     }
@@ -7520,7 +7539,7 @@ public class ExplorerMode
 
         if (factions.Count == 0)
         {
-            AnsiConsole.MarkupLine("[yellow]У вас нет своих фракций или членства.[/]");
+            MarkupLine("[yellow]У вас нет своих фракций или членства.[/]");
             WaitForKey();
             return;
         }
@@ -7536,7 +7555,7 @@ public class ExplorerMode
         }).ToList();
         choices.Add("← Назад");
 
-        var selected = AnsiConsole.Prompt(
+        var selected = Prompt(
             new SelectionPrompt<string>()
                 .Title("[bold orange1]Выберите фракцию для стратегической директивы:[/]")
                 .PageSize(10)
@@ -7551,23 +7570,23 @@ public class ExplorerMode
 
         if (!faction.isOwner)
         {
-            AnsiConsole.MarkupLine("[yellow]⚠ Вы не являетесь лидером этой фракции. Директива может быть проигнорирована.[/]");
+            MarkupLine("[yellow]⚠ Вы не являетесь лидером этой фракции. Директива может быть проигнорирована.[/]");
         }
 
         // Show current
         if (!string.IsNullOrEmpty(faction.currentDirective))
         {
-            AnsiConsole.MarkupLine($"[yellow]Текущая стратегия {Markup.Escape(faction.name)}:[/]");
-            AnsiConsole.MarkupLine($"  [italic]{Markup.Escape(faction.currentDirective)}[/]");
-            AnsiConsole.WriteLine();
+            MarkupLine($"[yellow]Текущая стратегия {Markup.Escape(faction.name)}:[/]");
+            MarkupLine($"  [italic]{Markup.Escape(faction.currentDirective)}[/]");
+            WriteLine();
         }
 
-        var newDirective = AnsiConsole.Ask<string>("[cyan]Новая стратегическая директива (или пусто для очистки):[/]", "");
+        var newDirective = Ask("[cyan]Новая стратегическая директива (или пусто для очистки):[/]", "");
 
         // Write to faction_core.json
         const string path = "game_state/factions/faction_core.json";
         var rawJson = await _fs.ReadFileAsync(path);
-        if (rawJson == null) { AnsiConsole.MarkupLine("[red]Ошибка чтения файла фракций.[/]"); WaitForKey(); return; }
+        if (rawJson == null) { MarkupLine("[red]Ошибка чтения файла фракций.[/]"); WaitForKey(); return; }
 
         try
         {
@@ -7617,18 +7636,18 @@ public class ExplorerMode
                 var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
                 await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
                 if (string.IsNullOrWhiteSpace(newDirective))
-                    AnsiConsole.MarkupLine($"[green]✓ Стратегия {Markup.Escape(faction.name)} очищена.[/]");
+                    MarkupLine($"[green]✓ Стратегия {Markup.Escape(faction.name)} очищена.[/]");
                 else
-                    AnsiConsole.MarkupLine($"[green]✓ Стратегия {Markup.Escape(faction.name)} задана:[/] [italic]{Markup.Escape(newDirective)}[/]");
+                    MarkupLine($"[green]✓ Стратегия {Markup.Escape(faction.name)} задана:[/] [italic]{Markup.Escape(newDirective)}[/]");
             }
             else
             {
-                AnsiConsole.MarkupLine("[yellow]Фракция не найдена в файле.[/]");
+                MarkupLine("[yellow]Фракция не найдена в файле.[/]");
             }
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
         }
         WaitForKey();
     }
@@ -7683,7 +7702,7 @@ public class ExplorerMode
             }
             choices.Add("← Назад");
 
-            var selected = AnsiConsole.Prompt(
+            var selected = Prompt(
                 new SelectionPrompt<string>()
                     .Title("[bold orange1]⚔ Фракции[/]")
                     .PageSize(15)
@@ -7891,9 +7910,9 @@ public class ExplorerMode
         RenderFactionChronicles(lines, f, chrDoc, name, factionId);
 
         if (lines.Count > 0)
-            content.AddRow(new Markup(string.Join("\n", lines)));
+            content.AddRow(GameInterface.SafeMarkup(string.Join("\n", lines)));
 
-        AnsiConsole.Write(new Panel(content)
+        Write(new Panel(content)
         {
             Header = new PanelHeader($" 🏛️ {Markup.Escape(name)} ", Justify.Center),
             Border = BoxBorder.Double,
@@ -8492,7 +8511,7 @@ public class ExplorerMode
         while (text.Count > 0 && string.IsNullOrEmpty(text[^1])) text.RemoveAt(text.Count - 1);
         if (text.Count == 0) text.Add("[dim]Нет мировых событий[/]");
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", text)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader($" 🌍 {_loc.T("world_news")} ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -8529,8 +8548,8 @@ public class ExplorerMode
 
         if (threatLines.Count > 0)
         {
-            AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", threatLines)))
+            WriteLine();
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", threatLines)))
             {
                 Header = new PanelHeader(" 🔥 Угрозы локаций ", Justify.Center),
                 Border = BoxBorder.Rounded,
@@ -8549,8 +8568,8 @@ public class ExplorerMode
 
             if (npcActLines.Count > 0)
             {
-                AnsiConsole.WriteLine();
-                AnsiConsole.Write(new Panel(new Markup(string.Join("\n", npcActLines)))
+                WriteLine();
+                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", npcActLines)))
                 {
                     Header = new PanelHeader(" 🏃 Активности НПС ", Justify.Center),
                     Border = BoxBorder.Rounded,
@@ -8570,8 +8589,8 @@ public class ExplorerMode
 
             if (projLines.Count > 0)
             {
-                AnsiConsole.WriteLine();
-                AnsiConsole.Write(new Panel(new Markup(string.Join("\n", projLines)))
+                WriteLine();
+                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", projLines)))
                 {
                     Header = new PanelHeader(" 🔨 Проекты фракций ", Justify.Center),
                     Border = BoxBorder.Rounded,
@@ -8605,8 +8624,8 @@ public class ExplorerMode
             });
             if (flagText.Count > 0)
             {
-                AnsiConsole.WriteLine();
-                AnsiConsole.Write(new Panel(new Markup(string.Join("\n", flagText)))
+                WriteLine();
+                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", flagText)))
                 {
                     Header = new PanelHeader(" 🏁 Флаги мира ", Justify.Center),
                     Border = BoxBorder.Rounded,
@@ -8642,8 +8661,8 @@ public class ExplorerMode
                 EnumerateJsonItems(progDoc.RootElement, item => RenderWorldProgressNewsDetailed(progText, item, "📈"));
             if (progText.Count > 0)
             {
-                AnsiConsole.WriteLine();
-                AnsiConsole.Write(new Panel(new Markup(string.Join("\n", progText)))
+                WriteLine();
+                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", progText)))
                 {
                     Header = new PanelHeader(" 📈 Прогресс мира ", Justify.Center),
                     Border = BoxBorder.Rounded,
@@ -8753,7 +8772,7 @@ public class ExplorerMode
 
         if (recipeCount == 0) { ShowEmptyPanel(_loc.T("craft"), "Рецептов нет"); return; }
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader($" 📜 Рецепты ({recipeCount}) ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -8761,7 +8780,7 @@ public class ExplorerMode
             Padding = new Padding(1, 1),
             Expand = true
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -8818,12 +8837,12 @@ public class ExplorerMode
 
         while (true)
         {
-            AnsiConsole.Clear();
+            Clear();
             choices.RemoveAll(c => c.key == "__back__" || c.key == "__search__");
             choices.Add(("🔍 Поиск по кодексу", "__search__"));
             var selectItems = choices.Select(c => c.label).Append("← Назад").ToList();
 
-            var choice = AnsiConsole.Prompt(
+            var choice = Prompt(
                 new SelectionPrompt<string>()
                     .Title($"[bold purple]📚 {_loc.T("codex")}[/] [dim]({choices.Count - 1} разделов)[/]")
                     .HighlightStyle(new Style(Color.Purple))
@@ -8853,7 +8872,7 @@ public class ExplorerMode
         JsonDocument? codexDoc,
         List<(string label, string icon, string file, string[] descProps)> categories)
     {
-        var query = AnsiConsole.Ask<string>("[purple]🔍 Поиск:[/]").Trim();
+        var query = Ask("[purple]🔍 Поиск:[/]").Trim();
         if (string.IsNullOrEmpty(query)) return;
 
         var queryLower = query.ToLowerInvariant();
@@ -8894,7 +8913,7 @@ public class ExplorerMode
             results.Add($"[dim]По запросу «{Markup.Escape(query)}» ничего не найдено[/]");
         }
 
-        var panel = new Panel(new Markup(string.Join("\n", results)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", results)))
         {
             Header = new PanelHeader($" 🔍 Результаты: «{Markup.Escape(query)}» ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -8902,7 +8921,7 @@ public class ExplorerMode
             Padding = new Padding(1, 1),
             Expand = true
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -8939,7 +8958,7 @@ public class ExplorerMode
 
     private void ShowLoreFileDetail(string title, JsonDocument doc)
     {
-        AnsiConsole.Clear();
+        Clear();
         var text = new List<string>();
         var root = doc.RootElement;
 
@@ -8955,14 +8974,14 @@ public class ExplorerMode
 
         if (text.Count == 0) text.Add("[dim italic]Файл пуст[/]");
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader($" {title} ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Purple),
             Padding = new Padding(2, 1)
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -9225,7 +9244,7 @@ public class ExplorerMode
 
         while (true)
         {
-            AnsiConsole.Clear();
+            Clear();
             var items = new List<(string label, int idx)>();
             foreach (var g in grouped)
             {
@@ -9240,7 +9259,7 @@ public class ExplorerMode
             }
 
             var selectList = items.Select(i => i.label).Append("← Назад").ToList();
-            var choice = AnsiConsole.Prompt(
+            var choice = Prompt(
                 new SelectionPrompt<string>()
                     .Title($"[bold purple]📚 Записи кодекса[/] [dim]({entriesList.Count} записей)[/]")
                     .HighlightStyle(new Style(Color.Purple))
@@ -9252,7 +9271,7 @@ public class ExplorerMode
             var sel = items.FirstOrDefault(i => i.label == choice);
             if (sel.idx >= 0 && sel.idx < entriesList.Count)
             {
-                AnsiConsole.Clear();
+                Clear();
                 var entry = entriesList[sel.idx];
                 var title = GetStr(entry, "title", "Без названия");
                 var content = GetStr(entry, "content", "");
@@ -9339,14 +9358,14 @@ public class ExplorerMode
                     text.AddRange(metaLines);
                 }
 
-                var panel = new Panel(new Markup(string.Join("\n", text)))
+                var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
                 {
                     Header = new PanelHeader($" {icon} {Markup.Escape(catName)} ", Justify.Center),
                     Border = BoxBorder.Double,
                     BorderStyle = new Style(Color.Purple),
                     Padding = new Padding(2, 1)
                 };
-                AnsiConsole.Write(panel);
+                Write(panel);
                 WaitForKey();
             }
         }
@@ -9413,7 +9432,7 @@ public class ExplorerMode
 
         if (text.Count == 0) text.Add("[dim]Нет известных локаций[/]");
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader($" {_loc.T("locations")} ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -9421,7 +9440,7 @@ public class ExplorerMode
             Padding = new Padding(2, 1)
         };
 
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -9461,7 +9480,7 @@ public class ExplorerMode
             }).ToList();
             choices.Add("[dim]← Назад[/]");
 
-            var selected = AnsiConsole.Prompt(
+            var selected = Prompt(
                 new SelectionPrompt<string>()
                     .Title("[bold]🚗 Транспорт[/]")
                     .PageSize(10)
@@ -9651,7 +9670,7 @@ public class ExplorerMode
                     lines.Add($"  [dim]{Markup.Escape(prop.Name)}: {Markup.Escape(pVal)}[/]");
             }
 
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
             {
                 Header = new PanelHeader(" 🚗 Транспорт ", Justify.Center),
                 Border = BoxBorder.Double,
@@ -9666,7 +9685,7 @@ public class ExplorerMode
 
             if (hasInventory)
             {
-                var action = AnsiConsole.Prompt(
+                var action = Prompt(
                     new SelectionPrompt<string>()
                         .Title("[bold]Действие с транспортом:[/]")
                         .HighlightStyle(new Style(Color.Yellow))
@@ -9806,19 +9825,19 @@ public class ExplorerMode
 
         while (true)
         {
-            AnsiConsole.Clear();
+            Clear();
             var items = new List<string>();
 
             if (statsSummary.Count > 0)
             {
-                AnsiConsole.Write(new Panel(new Markup(string.Join("\n", statsSummary)))
+                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", statsSummary)))
                 {
                     Header = new PanelHeader(" 📊 Сводка достижений ", Justify.Center),
                     Border = BoxBorder.Rounded,
                     BorderStyle = new Style(Color.Gold1),
                     Padding = new Padding(1, 0)
                 });
-                AnsiConsole.WriteLine();
+                WriteLine();
             }
 
             // Group by category
@@ -9849,7 +9868,7 @@ public class ExplorerMode
 
             items.Add("← Назад");
 
-            var choice = AnsiConsole.Prompt(
+            var choice = Prompt(
                 new SelectionPrompt<string>()
 	                    .Title($"[bold yellow]🏆 {_loc.T("achievements")}[/] [dim]({unlocked.Count} открыто, {visibleTracked.Count} в процессе)[/]")
                     .HighlightStyle(new Style(Color.Yellow))
@@ -9890,14 +9909,14 @@ public class ExplorerMode
                     text.Add($"[yellow]Награда:[/] {Markup.Escape(FormatAchievementRewardText(uMatch.rewardType, uMatch.rewardValue))}");
                 }
 
-                var panel = new Panel(new Markup(string.Join("\n", text)))
+                var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
                 {
                     Header = new PanelHeader(" 🏆 Достижение ", Justify.Center),
                     Border = BoxBorder.Double,
                     BorderStyle = new Style(Color.Yellow),
                     Padding = new Padding(2, 1)
                 };
-                AnsiConsole.Write(panel);
+                Write(panel);
                 WaitForKey();
                 continue;
             }
@@ -9923,14 +9942,14 @@ public class ExplorerMode
                     text.Add($"[yellow]Награда:[/] {Markup.Escape(FormatAchievementRewardText(tMatch.rewardType, tMatch.rewardValue))}");
                 }
 
-                var panel = new Panel(new Markup(string.Join("\n", text)))
+                var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
                 {
                     Header = new PanelHeader(" 📊 Прогресс ", Justify.Center),
                     Border = BoxBorder.Rounded,
                     BorderStyle = new Style(Color.Yellow),
                     Padding = new Padding(2, 1)
                 };
-                AnsiConsole.Write(panel);
+                Write(panel);
                 WaitForKey();
             }
         }
@@ -9950,7 +9969,7 @@ public class ExplorerMode
             Padding = new Padding(2, 1)
         };
 
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -10000,7 +10019,7 @@ public class ExplorerMode
             }
         }
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader($" {_loc.T("debug_info")} ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -10008,7 +10027,7 @@ public class ExplorerMode
             Padding = new Padding(2, 1)
         };
 
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -10126,7 +10145,7 @@ public class ExplorerMode
                 text.Add($"🌤️ Погода: [cyan]{Markup.Escape(wDesc)}[/]");
         }
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader($" {_loc.T("where_am_i")} ", Justify.Center),
             Border = BoxBorder.Double,
@@ -10135,7 +10154,7 @@ public class ExplorerMode
             Expand = true
         };
 
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -10159,7 +10178,7 @@ public class ExplorerMode
 
         while (true)
         {
-            AnsiConsole.Clear();
+            Clear();
             var pending = await _worldDirectiveService.ReadPendingSetupAsync();
             var profiles = await _worldDirectiveService.GetAvailableProfilesAsync();
             var profilesDir = _worldDirectiveService.GetProfilesDirectoryPath();
@@ -10192,7 +10211,7 @@ public class ExplorerMode
                 AppendWorldDirectiveLines(lines, pending.WorldDirectives, concise: true);
             }
 
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
             {
                 Header = new PanelHeader(" 🌍 World Setup ", Justify.Center),
                 Border = BoxBorder.Double,
@@ -10200,7 +10219,7 @@ public class ExplorerMode
                 Padding = new Padding(2, 1),
                 Expand = true
             });
-            AnsiConsole.WriteLine();
+            WriteLine();
 
             var actions = new List<string>
             {
@@ -10213,7 +10232,7 @@ public class ExplorerMode
                 "← Назад"
             };
 
-            var choice = AnsiConsole.Prompt(
+            var choice = Prompt(
                 new SelectionPrompt<string>()
                     .Title("[cyan]Действие:[/]")
                     .HighlightStyle(new Style(Color.Cyan1))
@@ -10241,7 +10260,7 @@ public class ExplorerMode
                     detailLines.Add("");
                     AppendWorldDirectiveLines(detailLines, pending.WorldDirectives, concise: false);
 
-                    AnsiConsole.Write(new Panel(new Markup(string.Join("\n", detailLines)))
+                    Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", detailLines)))
                     {
                         Header = new PanelHeader(" 👁 Pending World Setup ", Justify.Center),
                         Border = BoxBorder.Double,
@@ -10264,12 +10283,12 @@ public class ExplorerMode
             {
                 if (profiles.Count == 0)
                 {
-                    AnsiConsole.MarkupLine("[yellow]В папке world_profiles пока нет профилей.[/]");
+                    MarkupLine("[yellow]В папке world_profiles пока нет профилей.[/]");
                     WaitForKey();
                     continue;
                 }
 
-                var selectedLabel = AnsiConsole.Prompt(
+                var selectedLabel = Prompt(
                     new SelectionPrompt<string>()
                         .Title("[cyan]Выберите профиль:[/]")
                         .HighlightStyle(new Style(Color.Cyan1))
@@ -10277,7 +10296,7 @@ public class ExplorerMode
                 var profile = profiles.First(p => $"{p.Name} ({p.FileName})" == selectedLabel);
                 var setup = _worldDirectiveService.CreatePendingSetupFromProfile(profile);
                 await _worldDirectiveService.WritePendingSetupAsync(setup);
-                AnsiConsole.MarkupLine($"[green]Профиль мира «{Markup.Escape(profile.Name)}» применён к pending setup.[/]");
+                MarkupLine($"[green]Профиль мира «{Markup.Escape(profile.Name)}» применён к pending setup.[/]");
                 WaitForKey();
                 continue;
             }
@@ -10290,10 +10309,10 @@ public class ExplorerMode
 
             if (choice == "🧹 Очистить pending setup")
             {
-                if (AnsiConsole.Confirm("[yellow]Очистить сохранённую подготовку следующего мира?[/]", false))
+                if (Confirm("[yellow]Очистить сохранённую подготовку следующего мира?[/]", false))
                 {
                     _worldDirectiveService.ClearPendingSetup();
-                    AnsiConsole.MarkupLine("[green]Pending world setup очищен.[/]");
+                    MarkupLine("[green]Pending world setup очищен.[/]");
                     WaitForKey();
                 }
                 continue;
@@ -10311,7 +10330,7 @@ public class ExplorerMode
                 }
                 catch
                 {
-                    AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(profilesDir)}[/]");
+                    MarkupLine($"[yellow]{Markup.Escape(profilesDir)}[/]");
                     WaitForKey();
                 }
             }
@@ -10334,7 +10353,7 @@ public class ExplorerMode
 
         while (true)
         {
-            AnsiConsole.Clear();
+            Clear();
             var directives = await _worldDirectiveService.ReadActiveWorldDirectivesAsync();
             var lines = new List<string>
             {
@@ -10356,7 +10375,7 @@ public class ExplorerMode
                 AppendWorldDirectiveLines(lines, directives, concise: false);
             }
 
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
             {
                 Header = new PanelHeader(" 📜 World Directives ", Justify.Center),
                 Border = BoxBorder.Double,
@@ -10364,9 +10383,9 @@ public class ExplorerMode
                 Padding = new Padding(2, 1),
                 Expand = true
             });
-            AnsiConsole.WriteLine();
+            WriteLine();
 
-            var choice = AnsiConsole.Prompt(
+            var choice = Prompt(
                 new SelectionPrompt<string>()
                     .Title("[green]Действие:[/]")
                     .HighlightStyle(new Style(Color.Green3))
@@ -10379,17 +10398,17 @@ public class ExplorerMode
             {
                 var edited = await PromptWorldDirectivesAsync(directives ?? new WorldDirectiveService.WorldDirectives(), allowProfileMetadataEdit: false);
                 await _worldDirectiveService.WriteActiveWorldDirectivesAsync(edited);
-                AnsiConsole.MarkupLine("[green]World directives сохранены.[/]");
+                MarkupLine("[green]World directives сохранены.[/]");
                 WaitForKey();
                 continue;
             }
 
             if (choice == "🧹 Очистить world directives")
             {
-                if (AnsiConsole.Confirm("[yellow]Удалить активное досье текущего мира?[/]", false))
+                if (Confirm("[yellow]Удалить активное досье текущего мира?[/]", false))
                 {
                     _fs.DeleteFile(WorldDirectiveService.ActiveDirectivesPath);
-                    AnsiConsole.MarkupLine("[green]World directives очищены.[/]");
+                    MarkupLine("[green]World directives очищены.[/]");
                     WaitForKey();
                 }
             }
@@ -10406,8 +10425,8 @@ public class ExplorerMode
 
         while (true)
         {
-            AnsiConsole.Clear();
-            var choice = AnsiConsole.Prompt(
+            Clear();
+            var choice = Prompt(
                 new SelectionPrompt<string>()
                     .Title("[cyan]Профили миров:[/]")
                     .HighlightStyle(new Style(Color.Cyan1))
@@ -10432,7 +10451,7 @@ public class ExplorerMode
             lines.Add("");
             AppendWorldDirectiveLines(lines, profile.Directives, concise: false);
 
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
             {
                 Header = new PanelHeader(" 📚 World Profile ", Justify.Center),
                 Border = BoxBorder.Double,
@@ -10465,7 +10484,7 @@ public class ExplorerMode
             WorldDirectives = edited
         };
         await _worldDirectiveService.WritePendingSetupAsync(setup);
-        AnsiConsole.MarkupLine("[green]Pending world setup сохранён.[/]");
+        MarkupLine("[green]Pending world setup сохранён.[/]");
         WaitForKey();
     }
 
@@ -10538,28 +10557,28 @@ public class ExplorerMode
             lines.Add($"  • {Markup.Escape(item)}");
     }
 
-    private static string PromptOptionalText(string title, string current)
+    private string PromptOptionalText(string title, string current)
     {
-        return AnsiConsole.Prompt(
+        return Prompt(
             new TextPrompt<string>($"[cyan]{Markup.Escape(title)}:[/]")
                 .AllowEmpty()
                 .DefaultValue(current ?? string.Empty));
     }
 
-    private static string PromptOptionalMultiline(string title, string current)
+    private string PromptOptionalMultiline(string title, string current)
     {
-        AnsiConsole.MarkupLine($"[cyan]{Markup.Escape(title)}:[/]");
-        AnsiConsole.MarkupLine("[dim]Введите текст одной строкой. Пустое значение допустимо.[/]");
-        return AnsiConsole.Prompt(
+        MarkupLine($"[cyan]{Markup.Escape(title)}:[/]");
+        MarkupLine("[dim]Введите текст одной строкой. Пустое значение допустимо.[/]");
+        return Prompt(
             new TextPrompt<string>("[cyan]>[/]")
                 .AllowEmpty()
                 .DefaultValue(current ?? string.Empty));
     }
 
-    private static List<string> PromptCsvList(string title, IReadOnlyCollection<string> current)
+    private List<string> PromptCsvList(string title, IReadOnlyCollection<string> current)
     {
         var currentValue = string.Join(", ", current);
-        var raw = AnsiConsole.Prompt(
+        var raw = Prompt(
             new TextPrompt<string>($"[cyan]{Markup.Escape(title)} (через запятую):[/]")
                 .AllowEmpty()
                 .DefaultValue(currentValue));
@@ -10617,8 +10636,8 @@ public class ExplorerMode
                 }
             }
 
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+            Clear();
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
             {
                 Header = new PanelHeader(" 🧩 System Mods ", Justify.Center),
                 Border = BoxBorder.Double,
@@ -10626,7 +10645,7 @@ public class ExplorerMode
                 Padding = new Padding(2, 1),
                 Expand = true
             });
-            AnsiConsole.WriteLine();
+            WriteLine();
 
             var actions = new List<string>();
             if (mods.Count > 0)
@@ -10634,7 +10653,7 @@ public class ExplorerMode
             actions.Add("📂 Открыть папку модов");
             actions.Add("← Назад");
 
-            var choice = AnsiConsole.Prompt(
+            var choice = Prompt(
                 new SelectionPrompt<string>()
                     .Title("[gold1]Действие:[/]")
                     .HighlightStyle(new Style(Color.Gold1))
@@ -10656,7 +10675,7 @@ public class ExplorerMode
                 }
                 catch
                 {
-                    AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(_systemModService.GetModsDirectoryPath())}[/]");
+                    MarkupLine($"[yellow]{Markup.Escape(_systemModService.GetModsDirectoryPath())}[/]");
                     WaitForKey();
                 }
                 continue;
@@ -10701,8 +10720,8 @@ public class ExplorerMode
             lines.Add(Markup.Escape(mod.Content));
         }
 
-        AnsiConsole.Clear();
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 📄 System Mod Detail ", Justify.Center),
             Border = BoxBorder.Double,
@@ -11131,7 +11150,7 @@ public class ExplorerMode
             }
         }
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader($" {_loc.T("soul_info")} ", Justify.Center),
             Border = BoxBorder.Double,
@@ -11139,7 +11158,7 @@ public class ExplorerMode
             Padding = new Padding(2, 1)
         };
 
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -11264,7 +11283,7 @@ public class ExplorerMode
                     (!string.IsNullOrEmpty(hint) ? $"\n  [dim italic]{Markup.Escape(hint)}[/]" : "");
             }
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var selected = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold cyan]🛡️ {_loc.T("guardians_info")} — Обители Моря Хаоса[/]" +
                     (string.IsNullOrEmpty(pendingNotice) ? "" : $"\n{pendingNotice}"))
                 .PageSize(20)
@@ -11310,7 +11329,7 @@ public class ExplorerMode
             "  [gold1]19-20:[/] Найден редкий Хранитель!",
         };
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 🌊 Поиск в Море Хаоса ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -11370,7 +11389,7 @@ public class ExplorerMode
             choices.Add("🔍 Искать новую обитель");
             choices.Add("← Назад");
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var selected = Prompt(new SelectionPrompt<string>()
                 .Title("[bold cyan]🏛️ Обители Моря Хаоса[/]  [dim](выберите для перемещения)[/]")
                 .PageSize(15)
                 .HighlightStyle(new Style(Color.Cyan1))
@@ -11390,7 +11409,7 @@ public class ExplorerMode
 
             if (selAbodeId == currentAbodeId)
             {
-                AnsiConsole.MarkupLine($"[dim]Вы уже находитесь в обители «{Markup.Escape(selAbodeName)}».[/]");
+                MarkupLine($"[dim]Вы уже находитесь в обители «{Markup.Escape(selAbodeName)}».[/]");
                 WaitForKey();
                 continue;
             }
@@ -11400,7 +11419,7 @@ public class ExplorerMode
                 $"{(string.IsNullOrWhiteSpace(selAbodeId) ? "" : $" (abodeId={selAbodeId})")}, связанную с Хранителем '{selGName}'. " +
                 "Обработай само путешествие как полноценный ход: опиши прибытие, реакцию Хранителя и обнови chaosSeaNavigation.currentAbodeId в guardians.json.";
 
-            AnsiConsole.MarkupLine($"[cyan]🌊 Переход в обитель «{Markup.Escape(selAbodeName)}» отправляется Мастеру Игры...[/]");
+            MarkupLine($"[cyan]🌊 Переход в обитель «{Markup.Escape(selAbodeName)}» отправляется Мастеру Игры...[/]");
             return;
         }
     }
@@ -11435,7 +11454,7 @@ public class ExplorerMode
             if (lines.Count == 0)
                 return;
 
-            content.AddRow(new Markup(string.Join("\n", lines)));
+            content.AddRow(GameInterface.SafeMarkup(string.Join("\n", lines)));
             lines.Clear();
         }
 
@@ -11738,7 +11757,7 @@ public class ExplorerMode
             {
                 var repLeft = Math.Max(0, nextTierRep - rep);
                 lines.Add("");
-                lines.Add($"  [dim]→ До ранга [white]{nextTierName}[/]: {repLeft} репутации");
+                lines.Add($"  [dim]→ До ранга [white]{nextTierName}[/]: {repLeft} репутации[/]");
             }
         }
 
@@ -11927,7 +11946,7 @@ public class ExplorerMode
 
         FlushLines();
 
-        AnsiConsole.Write(new Panel(content)
+        Write(new Panel(content)
         {
             Header = new PanelHeader($" 🛡️ {Markup.Escape(name)} ", Justify.Center),
             Border = BoxBorder.Double,
@@ -11999,7 +12018,7 @@ public class ExplorerMode
 
             actions.Add("← Назад");
 
-            var action = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var action = Prompt(new SelectionPrompt<string>()
                 .Title("[bold]Действие:[/]")
                 .HighlightStyle(new Style(Color.Cyan1))
                 .AddChoices(actions));
@@ -12067,7 +12086,7 @@ public class ExplorerMode
     {
         if (_guardianTradeService == null)
         {
-            AnsiConsole.MarkupLine("[red]❌ Сервис торговли недоступен.[/]");
+            MarkupLine("[red]❌ Сервис торговли недоступен.[/]");
             WaitForKey();
             return;
         }
@@ -12077,14 +12096,14 @@ public class ExplorerMode
             var view = await _guardianTradeService.EnsureTradeInventoryAsync(guardianId, _stateManager.CurrentState.Incarnation);
             if (view == null)
             {
-                AnsiConsole.MarkupLine("[red]❌ Не удалось загрузить витрину Хранителя.[/]");
+                MarkupLine("[red]❌ Не удалось загрузить витрину Хранителя.[/]");
                 WaitForKey();
                 return;
             }
 
             if (view.TradeBlocked)
             {
-                AnsiConsole.MarkupLine($"[red]⛔ {Markup.Escape(view.BlockReason ?? "Торговля недоступна.")}[/]");
+                MarkupLine($"[red]⛔ {Markup.Escape(view.BlockReason ?? "Торговля недоступна.")}[/]");
                 WaitForKey();
                 return;
             }
@@ -12098,7 +12117,7 @@ public class ExplorerMode
                 "[dim]Витрина обновляется после нового возвращения из смертной жизни.[/]"
             };
 
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", headerLines)))
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", headerLines)))
             {
                 Border = BoxBorder.Rounded,
                 BorderStyle = new Style(Color.Cyan1),
@@ -12106,7 +12125,7 @@ public class ExplorerMode
                 Expand = true
             });
 
-            var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var choice = Prompt(new SelectionPrompt<string>()
                 .Title("[bold]Выберите раздел:[/]")
                 .HighlightStyle(new Style(Color.Cyan1))
                 .AddChoices("🛍 Купить реликвии", "💰 Продать реликвии", "← Назад"));
@@ -12118,7 +12137,7 @@ public class ExplorerMode
             {
                 await ShowGuardianBuyMenu(guardianId);
                 await _stateManager.RefreshGameStateAsync();
-                AnsiConsole.Clear();
+                Clear();
                 continue;
             }
 
@@ -12126,7 +12145,7 @@ public class ExplorerMode
             {
                 await ShowGuardianSellMenu(guardianId);
                 await _stateManager.RefreshGameStateAsync();
-                AnsiConsole.Clear();
+                Clear();
             }
         }
     }
@@ -12141,14 +12160,14 @@ public class ExplorerMode
             var refreshedView = await _guardianTradeService.EnsureTradeInventoryAsync(guardianId, _stateManager.CurrentState.Incarnation);
             if (refreshedView == null)
             {
-                AnsiConsole.MarkupLine("[red]❌ Не удалось загрузить витрину Хранителя.[/]");
+                MarkupLine("[red]❌ Не удалось загрузить витрину Хранителя.[/]");
                 WaitForKey();
                 return;
             }
 
             if (refreshedView.TradeBlocked)
             {
-                AnsiConsole.MarkupLine($"[red]⛔ {Markup.Escape(refreshedView.BlockReason ?? "Торговля недоступна.")}[/]");
+                MarkupLine($"[red]⛔ {Markup.Escape(refreshedView.BlockReason ?? "Торговля недоступна.")}[/]");
                 WaitForKey();
                 return;
             }
@@ -12165,7 +12184,7 @@ public class ExplorerMode
             }).ToList();
             choices.Add("← Назад");
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var selected = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold yellow]Покупка реликвий[/] [dim](перья: {feathers})[/]")
                 .HighlightStyle(new Style(Color.Gold1))
                 .PageSize(10)
@@ -12185,7 +12204,7 @@ public class ExplorerMode
                 continue;
 
             var result = await _guardianTradeService.BuyAsync(guardianId, offer.SlotId, _stateManager.CurrentState.Incarnation);
-            AnsiConsole.MarkupLine(result.Success
+            MarkupLine(result.Success
                 ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
                 : $"[red]❌ {Markup.Escape(result.Message)}[/]");
             WaitForKey();
@@ -12218,8 +12237,8 @@ public class ExplorerMode
             lines.Insert(4, "  [yellow]Статус покупки: пока не хватает Чернильных Перьев для покупки.[/]");
         }
 
-        AnsiConsole.Clear();
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 🛒 Торговая реликвия ", Justify.Center),
             Border = BoxBorder.Double,
@@ -12233,7 +12252,7 @@ public class ExplorerMode
             actions.Add("🛍 Купить");
         actions.Add("← Назад к витрине");
 
-        var action = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var action = Prompt(new SelectionPrompt<string>()
             .Title("[bold]Действие:[/]")
             .HighlightStyle(new Style(Color.Gold1))
             .AddChoices(actions));
@@ -12253,14 +12272,14 @@ public class ExplorerMode
             var tradeView = await _guardianTradeService.EnsureTradeInventoryAsync(guardianId, _stateManager.CurrentState.Incarnation);
             if (tradeView == null)
             {
-                AnsiConsole.MarkupLine("[red]❌ Не удалось загрузить витрину Хранителя.[/]");
+                MarkupLine("[red]❌ Не удалось загрузить витрину Хранителя.[/]");
                 WaitForKey();
                 return;
             }
 
             if (tradeView.TradeBlocked)
             {
-                AnsiConsole.MarkupLine($"[red]⛔ {Markup.Escape(tradeView.BlockReason ?? "Торговля недоступна.")}[/]");
+                MarkupLine($"[red]⛔ {Markup.Escape(tradeView.BlockReason ?? "Торговля недоступна.")}[/]");
                 WaitForKey();
                 return;
             }
@@ -12268,7 +12287,7 @@ public class ExplorerMode
             var offers = await _guardianTradeService.GetSellableRelicsAsync(guardianId);
             if (offers.Count == 0)
             {
-                AnsiConsole.MarkupLine("[dim]В хранилище нет реликвий, доступных для продажи.[/]");
+                MarkupLine("[dim]В хранилище нет реликвий, доступных для продажи.[/]");
                 WaitForKey();
                 return;
             }
@@ -12281,7 +12300,7 @@ public class ExplorerMode
                 .ToList();
             choices.Add("← Назад");
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var selected = Prompt(new SelectionPrompt<string>()
                 .Title("[bold yellow]Продажа реликвий[/] [dim](только из хранилища)[/]")
                 .HighlightStyle(new Style(Color.Gold1))
                 .PageSize(15)
@@ -12295,12 +12314,12 @@ public class ExplorerMode
                 return;
 
             var offer = offers[selectedIndex];
-            var confirm = AnsiConsole.Confirm($"Продать «{offer.Name}» за {offer.PriceInFeathers} 🪶?", false);
+            var confirm = Confirm($"Продать «{offer.Name}» за {offer.PriceInFeathers} 🪶?", false);
             if (!confirm)
                 continue;
 
             var result = await _guardianTradeService.SellAsync(guardianId, offer.RelicId);
-            AnsiConsole.MarkupLine(result.Success
+            MarkupLine(result.Success
                 ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
                 : $"[red]❌ {Markup.Escape(result.Message)}[/]");
             WaitForKey();
@@ -12392,7 +12411,7 @@ public class ExplorerMode
             }).ToList());
             choices.Add("[grey]← Назад[/]");
 
-            var selected = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var selected = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold yellow]✨ {_loc.T("soul_relics")}[/]" +
                     (isChaosSea ? "  [dim](выберите для просмотра / управления)[/]"
                                 : "  [yellow dim](только просмотр — управление в Море Хаоса)[/]"))
@@ -12422,7 +12441,7 @@ public class ExplorerMode
         var lines = BuildSoulRelicDetailLines(name, relic, status);
         var slot = ResolveRelicSlot(relic);
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 💎 Реликвия души ", Justify.Center),
             Border = BoxBorder.Double,
@@ -12441,7 +12460,7 @@ public class ExplorerMode
                 actions.Add("📦 Снять (в хранилище)");
             actions.Add("← Назад к списку");
 
-            var action = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var action = Prompt(new SelectionPrompt<string>()
                 .Title("[bold]Действие:[/]")
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoices(actions));
@@ -12459,7 +12478,7 @@ public class ExplorerMode
         }
         else
         {
-            AnsiConsole.MarkupLine("[yellow dim]  ⚠ Управление реликвиями доступно только в Море Хаоса.[/]");
+            MarkupLine("[yellow dim]  ⚠ Управление реликвиями доступно только в Море Хаоса.[/]");
             WaitForKey();
         }
 
@@ -12670,13 +12689,13 @@ public class ExplorerMode
             var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
             await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
 
-            AnsiConsole.MarkupLine($"[green]✅ Реликвия «{Markup.Escape(relicName)}» экипирована![/]");
-            AnsiConsole.MarkupLine("[dim]Нажмите любую клавишу...[/]");
-            Console.ReadKey(true);
+            MarkupLine($"[green]✅ Реликвия «{Markup.Escape(relicName)}» экипирована![/]");
+            MarkupLine("[dim]Нажмите любую клавишу...[/]");
+            ReadKey();
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
         }
     }
@@ -12721,13 +12740,13 @@ public class ExplorerMode
             var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
             await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
 
-            AnsiConsole.MarkupLine($"[green]✅ Реликвия «{Markup.Escape(relicName)}» снята и убрана в хранилище.[/]");
-            AnsiConsole.MarkupLine("[dim]Нажмите любую клавишу...[/]");
-            Console.ReadKey(true);
+            MarkupLine($"[green]✅ Реликвия «{Markup.Escape(relicName)}» снята и убрана в хранилище.[/]");
+            MarkupLine("[dim]Нажмите любую клавишу...[/]");
+            ReadKey();
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
         }
     }
@@ -12748,19 +12767,19 @@ public class ExplorerMode
             var locJson = await _fs.ReadFileAsync("game_state/world/current_location.json");
             if (invJson == null || locJson == null)
             {
-                AnsiConsole.MarkupLine("[red]Ошибка чтения файлов инвентаря или локации.[/]");
+                MarkupLine("[red]Ошибка чтения файлов инвентаря или локации.[/]");
                 WaitForKey();
                 return anyModified;
             }
 
             JsonNode? invNode, locNode;
             try { invNode = JsonNode.Parse(invJson); locNode = JsonNode.Parse(locJson); }
-            catch { AnsiConsole.MarkupLine("[red]Ошибка парсинга JSON.[/]"); WaitForKey(); return anyModified; }
+            catch { MarkupLine("[red]Ошибка парсинга JSON.[/]"); WaitForKey(); return anyModified; }
             if (invNode == null || locNode == null) return anyModified;
 
             // Find the storage in current_location
             var storagesArr = locNode["locationStorages"]?.AsArray();
-            if (storagesArr == null) { AnsiConsole.MarkupLine("[red]Хранилища не найдены в локации.[/]"); WaitForKey(); return anyModified; }
+            if (storagesArr == null) { MarkupLine("[red]Хранилища не найдены в локации.[/]"); WaitForKey(); return anyModified; }
 
             JsonNode? storageNode = null;
             int storageIdx = -1;
@@ -12776,7 +12795,7 @@ public class ExplorerMode
                     break;
                 }
             }
-            if (storageNode == null) { AnsiConsole.MarkupLine("[red]Хранилище не найдено.[/]"); WaitForKey(); return anyModified; }
+            if (storageNode == null) { MarkupLine("[red]Хранилище не найдено.[/]"); WaitForKey(); return anyModified; }
 
             // Gather storage contents
             var contentsArr = storageNode["contents"]?.AsArray() ?? new JsonArray();
@@ -12821,7 +12840,7 @@ public class ExplorerMode
                 actionChoices.Add($"📤 Забрать предмет из хранилища ({storageItems.Count} внутри)");
             actionChoices.Add("[dim]← Назад к инвентарю[/]");
 
-            var action = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var action = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold cyan]📦 {Markup.Escape(storageName)}[/]" +
                     (!string.IsNullOrEmpty(capInfo) ? $"  [dim]({capInfo.Trim()})[/]" : "") +
                     $"\n  [dim]Предметов внутри: {contentsArr.Count}[/]")
@@ -12842,7 +12861,7 @@ public class ExplorerMode
                 var depositChoices = playerItems.ToList();
                 depositChoices.Add("[dim]← Отмена[/]");
 
-                var picked = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                var picked = Prompt(new SelectionPrompt<string>()
                     .Title("[bold]Выберите предмет для перемещения в хранилище:[/]")
                     .PageSize(20)
                     .HighlightStyle(new Style(Color.Yellow))
@@ -12869,12 +12888,12 @@ public class ExplorerMode
                     await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", locNode.ToJsonString(opts));
 
                     var movedName = itemToMove["name"]?.GetValue<string>() ?? "предмет";
-                    AnsiConsole.MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» перемещён в хранилище «{Markup.Escape(storageName)}»[/]");
+                    MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» перемещён в хранилище «{Markup.Escape(storageName)}»[/]");
                     anyModified = true;
                 }
                 catch (Exception ex)
                 {
-                    AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+                    MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
                     WaitForKey();
                 }
             }
@@ -12883,7 +12902,7 @@ public class ExplorerMode
                 var retrieveChoices = storageItems.ToList();
                 retrieveChoices.Add("[dim]← Отмена[/]");
 
-                var picked = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                var picked = Prompt(new SelectionPrompt<string>()
                     .Title("[bold]Выберите предмет для извлечения из хранилища:[/]")
                     .PageSize(20)
                     .HighlightStyle(new Style(Color.Yellow))
@@ -12909,12 +12928,12 @@ public class ExplorerMode
                     await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", locNode.ToJsonString(opts));
 
                     var movedName = itemToMove["name"]?.GetValue<string>() ?? "предмет";
-                    AnsiConsole.MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» извлечён из хранилища в инвентарь[/]");
+                    MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» извлечён из хранилища в инвентарь[/]");
                     anyModified = true;
                 }
                 catch (Exception ex)
                 {
-                    AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+                    MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
                     WaitForKey();
                 }
             }
@@ -12936,7 +12955,7 @@ public class ExplorerMode
             var vehJson = await _fs.ReadFileAsync("game_state/misc/vehicles.json");
             if (invJson == null || vehJson == null)
             {
-                AnsiConsole.MarkupLine("[red]Ошибка чтения файлов инвентаря или транспорта.[/]");
+                MarkupLine("[red]Ошибка чтения файлов инвентаря или транспорта.[/]");
                 WaitForKey();
                 return anyModified;
             }
@@ -12950,7 +12969,7 @@ public class ExplorerMode
             }
             catch
             {
-                AnsiConsole.MarkupLine("[red]Ошибка парсинга JSON.[/]");
+                MarkupLine("[red]Ошибка парсинга JSON.[/]");
                 WaitForKey();
                 return anyModified;
             }
@@ -12961,7 +12980,7 @@ public class ExplorerMode
             var vehicleNode = FindVehicleNode(vehNode, vehicleName, vehicleId);
             if (vehicleNode == null)
             {
-                AnsiConsole.MarkupLine("[red]Транспорт не найден.[/]");
+                MarkupLine("[red]Транспорт не найден.[/]");
                 WaitForKey();
                 return anyModified;
             }
@@ -13000,7 +13019,7 @@ public class ExplorerMode
                 actionChoices.Add($"📤 Забрать предмет из транспорта ({vehicleItems.Count} внутри)");
             actionChoices.Add("[dim]← Назад к транспорту[/]");
 
-            var action = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var action = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold cyan]🚗 {Markup.Escape(vehicleName)}[/]\n  [dim]Предметов внутри: {vehicleInventory.Count}[/]")
                 .PageSize(10)
                 .HighlightStyle(new Style(Color.Cyan1))
@@ -13020,7 +13039,7 @@ public class ExplorerMode
                 var depositChoices = playerItems.ToList();
                 depositChoices.Add("[dim]← Отмена[/]");
 
-                var picked = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                var picked = Prompt(new SelectionPrompt<string>()
                     .Title("[bold]Выберите предмет для перемещения в транспорт:[/]")
                     .PageSize(20)
                     .HighlightStyle(new Style(Color.Yellow))
@@ -13046,12 +13065,12 @@ public class ExplorerMode
                     await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", vehNode.ToJsonString(opts));
 
                     var movedName = itemToMove["name"]?.GetValue<string>() ?? "предмет";
-                    AnsiConsole.MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» перемещён в транспорт «{Markup.Escape(vehicleName)}»[/]");
+                    MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» перемещён в транспорт «{Markup.Escape(vehicleName)}»[/]");
                     anyModified = true;
                 }
                 catch (Exception ex)
                 {
-                    AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+                    MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
                     WaitForKey();
                 }
             }
@@ -13060,7 +13079,7 @@ public class ExplorerMode
                 var retrieveChoices = vehicleItems.ToList();
                 retrieveChoices.Add("[dim]← Отмена[/]");
 
-                var picked = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                var picked = Prompt(new SelectionPrompt<string>()
                     .Title("[bold]Выберите предмет для извлечения из транспорта:[/]")
                     .PageSize(20)
                     .HighlightStyle(new Style(Color.Yellow))
@@ -13085,12 +13104,12 @@ public class ExplorerMode
                     await _fs.WriteFileAtomicAsync("game_state/misc/vehicles.json", vehNode.ToJsonString(opts));
 
                     var movedName = itemToMove["name"]?.GetValue<string>() ?? "предмет";
-                    AnsiConsole.MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» извлечён из транспорта в инвентарь[/]");
+                    MarkupLine($"[green]✅ «{Markup.Escape(movedName)}» извлечён из транспорта в инвентарь[/]");
                     anyModified = true;
                 }
                 catch (Exception ex)
                 {
-                    AnsiConsole.MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
+                    MarkupLine($"[red]❌ Ошибка: {Markup.Escape(ex.Message)}[/]");
                     WaitForKey();
                 }
             }
@@ -13237,7 +13256,7 @@ public class ExplorerMode
             var choices = quests.Select(q => $"[purple]{Markup.Escape(q.label)}[/]").ToList();
             choices.Add("[dim]← Назад[/]");
 
-            var selected = AnsiConsole.Prompt(
+            var selected = Prompt(
                 new SelectionPrompt<string>()
                     .Title($"[bold purple]🌟 {_loc.T("guardian_quests")}[/]")
                     .PageSize(12)
@@ -13391,7 +13410,7 @@ public class ExplorerMode
 
             var phaseLabel = isChaosSea ? "[blue]Море Хаоса[/]" : "[green]Смертная жизнь[/]";
             var pendingLegacySummary = isChaosSea ? await ReadPendingMemoryLegacySummaryAsync() : null;
-            AnsiConsole.Write(new Panel(new Markup(
+            Write(new Panel(new Markup(
                 $"🪶 Чернильные Перья: [bold yellow]{feathers}[/]\n" +
                 $"📍 Фаза: {phaseLabel}" +
                 (!string.IsNullOrWhiteSpace(pendingLegacySummary) ? $"\n[magenta]{Markup.Escape(pendingLegacySummary)}[/]" : "")))
@@ -13465,7 +13484,7 @@ public class ExplorerMode
 
             choices.Add("← Назад");
 
-            var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var choice = Prompt(new SelectionPrompt<string>()
                 .Title("[bold yellow]Выберите действие:[/]")
                 .HighlightStyle(new Style(Color.Gold1))
                 .AddChoices(choices));
@@ -13474,7 +13493,7 @@ public class ExplorerMode
 
             if (choice.Contains("🔒"))
             {
-                AnsiConsole.MarkupLine("[yellow]⚠️ Недостаточно Чернильных Перьев или условие не выполнено.[/]");
+                MarkupLine("[yellow]⚠️ Недостаточно Чернильных Перьев или условие не выполнено.[/]");
                 WaitForKey();
                 continue;
             }
@@ -13568,14 +13587,14 @@ public class ExplorerMode
         var cost = Math.Max(5, (int)(feathers * 0.10));
         var costDisplay = $"{cost} 🪶 (останется {feathers - cost})";
 
-        var confirm = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var confirm = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]🔮 Открыть Судьбу — потратить {Markup.Escape(costDisplay)}?[/]")
             .AddChoices("✅ Да, потратить", "❌ Отмена"));
         if (confirm.Contains("Отмена")) return;
 
         if (_pendingTurnState == null)
         {
-            AnsiConsole.MarkupLine("[red]❌ Сервис судьбы недоступен.[/]");
+            MarkupLine("[red]❌ Сервис судьбы недоступен.[/]");
             WaitForKey();
             return;
         }
@@ -13583,7 +13602,7 @@ public class ExplorerMode
         var pendingState = await _pendingTurnState.GetOrCreateAsync();
         if (!await DeductInkFeathers(cost))
         {
-            AnsiConsole.MarkupLine("[red]❌ Не удалось списать перья.[/]");
+            MarkupLine("[red]❌ Не удалось списать перья.[/]");
             WaitForKey();
             return;
         }
@@ -13605,14 +13624,14 @@ public class ExplorerMode
             $"[dim]Списано: {cost} 🪶[/]"
         };
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader(" 🔮 Судьба открыта ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Purple),
             Padding = new Padding(2, 1)
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
 
         _diceRevealed = true;
@@ -13623,14 +13642,14 @@ public class ExplorerMode
         var cost = Math.Max(15, (int)(feathers * 0.25));
         var costDisplay = $"{cost} 🪶 (останется {feathers - cost})";
 
-        var confirm = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var confirm = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]✍️ Переписать Судьбу — потратить {Markup.Escape(costDisplay)}?[/]")
             .AddChoices("✅ Да, потратить", "❌ Отмена"));
         if (confirm.Contains("Отмена")) return;
 
         if (_pendingTurnState == null)
         {
-            AnsiConsole.MarkupLine("[red]❌ Сервис судьбы недоступен.[/]");
+            MarkupLine("[red]❌ Сервис судьбы недоступен.[/]");
             WaitForKey();
             return;
         }
@@ -13638,7 +13657,7 @@ public class ExplorerMode
         var currentState = await _pendingTurnState.GetOrCreateAsync();
         if (!currentState.IsFateLocked)
         {
-            AnsiConsole.MarkupLine("[yellow]⚠️ Сначала нужно открыть судьбу, чтобы зафиксировать текущие кости.[/]");
+            MarkupLine("[yellow]⚠️ Сначала нужно открыть судьбу, чтобы зафиксировать текущие кости.[/]");
             WaitForKey();
             return;
         }
@@ -13646,7 +13665,7 @@ public class ExplorerMode
         // Deduct feathers FIRST (before any dice modification)
         if (!await DeductInkFeathers(cost))
         {
-            AnsiConsole.MarkupLine("[red]❌ Не удалось списать перья (недостаточно или ошибка).[/]");
+            MarkupLine("[red]❌ Не удалось списать перья (недостаточно или ошибка).[/]");
             WaitForKey();
             return;
         }
@@ -13674,14 +13693,14 @@ public class ExplorerMode
             $"[dim]Списано: {cost} 🪶[/]"
         };
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader(" ✍️ Судьба переписана ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Green),
             Padding = new Padding(2, 1)
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
 
         _diceRevealed = true;
@@ -13691,19 +13710,19 @@ public class ExplorerMode
     {
         var costDisplay = $"{cost} 🪶 (останется {feathers - cost})";
 
-        var confirm = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var confirm = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]{Markup.Escape(actionName)} — потратить {Markup.Escape(costDisplay)}?[/]")
             .AddChoices("✅ Да, потратить", "❌ Отмена"));
         if (confirm.Contains("Отмена")) return;
 
         if (!await DeductInkFeathers(cost))
         {
-            AnsiConsole.MarkupLine("[red]❌ Не удалось списать перья.[/]");
+            MarkupLine("[red]❌ Не удалось списать перья.[/]");
             WaitForKey();
             return;
         }
 
-        AnsiConsole.MarkupLine($"[green]✅ Списано {cost} 🪶. Действие отправлено Мастеру Игры.[/]");
+        MarkupLine($"[green]✅ Списано {cost} 🪶. Действие отправлено Мастеру Игры.[/]");
         WaitForKey();
 
         _pendingGmAction = buildGmAction(cost) +
@@ -13712,7 +13731,7 @@ public class ExplorerMode
 
     private async Task HandleGuardianFavor(int feathers)
     {
-        var inputCost = AnsiConsole.Prompt(new TextPrompt<int>(
+        var inputCost = Prompt(new TextPrompt<int>(
             $"[bold yellow]🤝 Сколько Перьев предложить Хранителю? (у вас {feathers} 🪶, мин. 10):[/]")
             .Validate(val =>
             {
@@ -13723,19 +13742,19 @@ public class ExplorerMode
 
         var costDisplay = $"{inputCost} 🪶 (останется {feathers - inputCost})";
 
-        var confirm = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var confirm = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]Предложить Хранителю {Markup.Escape(costDisplay)}?[/]")
             .AddChoices("✅ Да, предложить", "❌ Отмена"));
         if (confirm.Contains("Отмена")) return;
 
         if (!await DeductInkFeathers(inputCost))
         {
-            AnsiConsole.MarkupLine("[red]❌ Не удалось списать перья.[/]");
+            MarkupLine("[red]❌ Не удалось списать перья.[/]");
             WaitForKey();
             return;
         }
 
-        AnsiConsole.MarkupLine($"[green]✅ Списано {inputCost} 🪶. Запрос услуги отправлен Хранителю.[/]");
+        MarkupLine($"[green]✅ Списано {inputCost} 🪶. Запрос услуги отправлен Хранителю.[/]");
         WaitForKey();
 
         _pendingGmAction = $"[INK_FEATHER_ACTION: GUARDIAN_FAVOR] Игрок предлагает Хранителю {inputCost} Чернильных Перьев в обмен на услугу. " +
@@ -13762,7 +13781,7 @@ public class ExplorerMode
             "но эта команда использует прямое вытягивание из Моря Хаоса.[/]"
         };
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader(" 🎰 Гача ", Justify.Center),
             Border = BoxBorder.Double,
@@ -13770,10 +13789,10 @@ public class ExplorerMode
             Padding = new Padding(2, 1)
         };
 
-        AnsiConsole.Write(panel);
-        AnsiConsole.WriteLine();
+        Write(panel);
+        WriteLine();
 
-        var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var choice = Prompt(new SelectionPrompt<string>()
             .Title("[bold yellow]Выберите действие:[/]")
             .HighlightStyle(new Style(Color.Gold1))
             .AddChoices(
@@ -13785,12 +13804,12 @@ public class ExplorerMode
 
         if (feathers <= 0)
         {
-            AnsiConsole.MarkupLine("[yellow]⚠️ У вас нет Чернильных Перьев для прямого вытягивания.[/]");
+            MarkupLine("[yellow]⚠️ У вас нет Чернильных Перьев для прямого вытягивания.[/]");
             WaitForKey();
             return;
         }
 
-        var inputCost = AnsiConsole.Prompt(new TextPrompt<int>(
+        var inputCost = Prompt(new TextPrompt<int>(
             $"[bold yellow]Сколько Перьев потратить на прямое вытягивание? (у вас {feathers} 🪶):[/]")
             .Validate(val =>
             {
@@ -13800,7 +13819,7 @@ public class ExplorerMode
             }));
 
         var costDisplay = $"{inputCost} 🪶 (останется {feathers - inputCost})";
-        var confirm = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var confirm = Prompt(new SelectionPrompt<string>()
             .Title("[bold yellow]Прямое вытягивание из Моря Хаоса[/]\n" +
                    $"[dim]Текущий Хранитель не участвует. Модификаторы будут нейтральными.[/]\n" +
                    $"[bold]Потратить {Markup.Escape(costDisplay)} на вытягивание реликвии?[/]")
@@ -13810,12 +13829,12 @@ public class ExplorerMode
 
         if (!await DeductInkFeathers(inputCost))
         {
-            AnsiConsole.MarkupLine("[red]❌ Не удалось списать перья.[/]");
+            MarkupLine("[red]❌ Не удалось списать перья.[/]");
             WaitForKey();
             return;
         }
 
-        AnsiConsole.MarkupLine($"[green]✅ Списано {inputCost} 🪶. Вы вытягиваете реликвию напрямую из Моря Хаоса.[/]");
+        MarkupLine($"[green]✅ Списано {inputCost} 🪶. Вы вытягиваете реликвию напрямую из Моря Хаоса.[/]");
         WaitForKey();
 
         _pendingGmAction =
@@ -13983,7 +14002,7 @@ public class ExplorerMode
                 RenderCustomStateItem(stateLines, item, "  ");
             });
             if (hasStates)
-                content.AddRow(new Markup(string.Join("\n", stateLines)));
+                content.AddRow(GameInterface.SafeMarkup(string.Join("\n", stateLines)));
             else
                 content.AddRow(new Markup("[dim]Нет особых состояний[/]"));
         }
@@ -14053,7 +14072,7 @@ public class ExplorerMode
             BorderStyle = new Style(Color.Yellow),
             Padding = new Padding(2, 1)
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -14418,14 +14437,14 @@ public class ExplorerMode
             text.Add("[dim]Нет данных о бое. Вы не в сражении.[/]");
         }
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader(" ⚔️ Боевая обстановка ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Red),
             Padding = new Padding(2, 1)
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -14497,14 +14516,14 @@ public class ExplorerMode
             text.Add("[dim]Данные о погоде недоступны[/]");
         }
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader(" 🌤️ Время и погода ", Justify.Center),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(Color.Cyan1),
             Padding = new Padding(2, 1)
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -14512,7 +14531,7 @@ public class ExplorerMode
     {
         if (_storyService == null)
         {
-            AnsiConsole.MarkupLine("[dim]Сервис рассказов недоступен.[/]");
+            MarkupLine("[dim]Сервис рассказов недоступен.[/]");
             WaitForKey();
             return;
         }
@@ -14520,7 +14539,7 @@ public class ExplorerMode
         var stories = _storyService.GetAvailableStories();
         if (stories.Count == 0)
         {
-            AnsiConsole.Write(new Panel(new Markup("[dim]Рассказ пока пуст. Сыграйте несколько ходов, и ваша история начнёт записываться.[/]"))
+            Write(new Panel(new Markup("[dim]Рассказ пока пуст. Сыграйте несколько ходов, и ваша история начнёт записываться.[/]"))
             {
                 Header = new PanelHeader(" 📜 Рассказ ", Justify.Center),
                 Border = BoxBorder.Rounded,
@@ -14537,11 +14556,11 @@ public class ExplorerMode
 
         while (true)
         {
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule("[gold1]📜 Рассказ — Ваша История[/]").RuleStyle("gold1"));
-            AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[dim]Каждый ваш ход записывается в вечную книгу. Здесь вы можете перечитать свою историю из Мира Смертных и Моря Хаоса.[/]");
-            AnsiConsole.WriteLine();
+            Clear();
+            Write(new Rule("[gold1]📜 Рассказ — Ваша История[/]").RuleStyle("gold1"));
+            WriteLine();
+            MarkupLine("[dim]Каждый ваш ход записывается в вечную книгу. Здесь вы можете перечитать свою историю из Мира Смертных и Моря Хаоса.[/]");
+            WriteLine();
 
             var choices = stories.Select(s =>
             {
@@ -14552,7 +14571,7 @@ public class ExplorerMode
             choices.Add("💾 Экспортировать всё в .txt");
             choices.Add("[dim]← Назад[/]");
 
-            var selected = AnsiConsole.Prompt(
+            var selected = Prompt(
                 new SelectionPrompt<string>()
                     .Title("[yellow]Выберите главу:[/]")
                     .PageSize(15)
@@ -14580,7 +14599,7 @@ public class ExplorerMode
         var allEntries = await _storyService.ReadStoryAsync(storyInfo.RelativePath);
         if (allEntries.Count == 0)
         {
-            AnsiConsole.MarkupLine("[dim]Эта глава пока пуста.[/]");
+            MarkupLine("[dim]Эта глава пока пуста.[/]");
             WaitForKey();
             return;
         }
@@ -14590,9 +14609,9 @@ public class ExplorerMode
 
         while (true)
         {
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[gold1]📖 {Markup.Escape(storyInfo.DisplayName)}[/]").RuleStyle("gold1"));
-            AnsiConsole.MarkupLine($"[dim]Страница {currentPage + 1} из {totalPages} | {allEntries.Count} записей[/]\n");
+            Clear();
+            Write(new Rule($"[gold1]📖 {Markup.Escape(storyInfo.DisplayName)}[/]").RuleStyle("gold1"));
+            MarkupLine($"[dim]Страница {currentPage + 1} из {totalPages} | {allEntries.Count} записей[/]\n");
 
             var startIdx = currentPage * pageSize;
             var endIdx = Math.Min(startIdx + pageSize, allEntries.Count);
@@ -14605,10 +14624,10 @@ public class ExplorerMode
                 if (isMarker)
                 {
                     // Transition marker
-                    AnsiConsole.Write(new Rule($"[yellow]✦ {Markup.Escape(e.Player.Trim('[', ']'))} ✦[/]").RuleStyle("yellow"));
+                    Write(new Rule($"[yellow]✦ {Markup.Escape(e.Player.Trim('[', ']'))} ✦[/]").RuleStyle("yellow"));
                     if (!string.IsNullOrEmpty(e.Narrative))
-                        AnsiConsole.MarkupLine($"  [italic yellow]{Markup.Escape(e.Narrative)}[/]");
-                    AnsiConsole.WriteLine();
+                        MarkupLine($"  [italic yellow]{Markup.Escape(e.Narrative)}[/]");
+                    WriteLine();
                     continue;
                 }
 
@@ -14616,11 +14635,11 @@ public class ExplorerMode
                 var tsDisplay = DateTime.TryParse(e.Timestamp, out var dt) ? dt.ToLocalTime().ToString("dd.MM HH:mm") : "";
                 var locStr = !string.IsNullOrEmpty(e.Location) ? $" [dim]📍 {Markup.Escape(e.Location)}[/]" : "";
 
-                AnsiConsole.MarkupLine($"[dim]─── Ход {e.Turn} {tsDisplay}{locStr} ───[/]");
-                AnsiConsole.MarkupLine($"  [cyan]▸ {Markup.Escape(e.Player)}[/]");
+                MarkupLine($"[dim]─── Ход {e.Turn} {tsDisplay}{locStr} ───[/]");
+                MarkupLine($"  [cyan]▸ {Markup.Escape(e.Player)}[/]");
                 if (!string.IsNullOrEmpty(e.Narrative))
-                    AnsiConsole.MarkupLine($"  [white]{Markup.Escape(e.Narrative)}[/]");
-                AnsiConsole.WriteLine();
+                    MarkupLine($"  [white]{Markup.Escape(e.Narrative)}[/]");
+                WriteLine();
             }
 
             // Navigation
@@ -14632,7 +14651,7 @@ public class ExplorerMode
             navChoices.Add("💾 Экспортировать главу в .txt");
             navChoices.Add("← Назад к списку");
 
-            var nav = AnsiConsole.Prompt(
+            var nav = Prompt(
                 new SelectionPrompt<string>()
                     .Title($"[dim]Страница {currentPage + 1}/{totalPages}[/]")
                     .PageSize(8)
@@ -14699,13 +14718,13 @@ public class ExplorerMode
 
             await File.WriteAllTextAsync(fullPath, sb.ToString(), System.Text.Encoding.UTF8);
 
-            AnsiConsole.MarkupLine($"\n[green]Экспортировано:[/] [link]{Markup.Escape(fullPath)}[/]");
-            AnsiConsole.MarkupLine($"[dim]{entries.Count} записей сохранено.[/]");
+            MarkupLine($"\n[green]Экспортировано:[/] [link]{Markup.Escape(fullPath)}[/]");
+            MarkupLine($"[dim]{entries.Count} записей сохранено.[/]");
             WaitForKey();
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Ошибка экспорта: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]Ошибка экспорта: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
         }
     }
@@ -14750,13 +14769,13 @@ public class ExplorerMode
 
             await File.WriteAllTextAsync(fullPath, sb.ToString(), System.Text.Encoding.UTF8);
 
-            AnsiConsole.MarkupLine($"\n[green]Экспортировано:[/] [link]{Markup.Escape(fullPath)}[/]");
-            AnsiConsole.MarkupLine($"[dim]{stories.Count} глав, {totalEntries} записей сохранено.[/]");
+            MarkupLine($"\n[green]Экспортировано:[/] [link]{Markup.Escape(fullPath)}[/]");
+            MarkupLine($"[dim]{stories.Count} глав, {totalEntries} записей сохранено.[/]");
             WaitForKey();
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Ошибка экспорта: {Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[red]Ошибка экспорта: {Markup.Escape(ex.Message)}[/]");
             WaitForKey();
         }
     }
@@ -14947,7 +14966,7 @@ public class ExplorerMode
 
         if (text.Count == 0) text.Add("[dim]Хроника пуста — ваша история ещё не написана.[/]");
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader(" 📖 Хроника персонажа ", Justify.Center),
             Border = BoxBorder.Double,
@@ -14955,7 +14974,7 @@ public class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -15005,7 +15024,7 @@ public class ExplorerMode
         var known = new[] { "historyManipulationCoefficient" };
         RenderExtraFields(lines, assessment, known, "  ");
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 🧠 Поведение игрока ", Justify.Center),
             Border = BoxBorder.Double,
@@ -15056,7 +15075,7 @@ public class ExplorerMode
         if (!rendered)
             lines.Add("\n[dim]Нет данных о доступах к хранилищам[/]");
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 📦 Storage Access ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -15170,7 +15189,7 @@ public class ExplorerMode
         if (!rendered)
             lines.Add("\n[dim]Нет данных о взаимодействиях других игроков[/]");
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 🤝 Player Interactions ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -15284,8 +15303,8 @@ public class ExplorerMode
 
         if (metaText.Count > 1)
         {
-            AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", metaText)))
+            WriteLine();
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", metaText)))
             {
                 Header = new PanelHeader(" 🔮 Мета-информация (манипулирование историей) ", Justify.Center),
                 Border = BoxBorder.Heavy,
@@ -15436,14 +15455,14 @@ public class ExplorerMode
         if (text.Count == 0)
             text.Add("[dim]Нет читаемых предметов (книг, писем, свитков и т.д.)[/]");
 
-        var panel = new Panel(new Markup(string.Join("\n", text)))
+        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
             Header = new PanelHeader(" 📜 Книги и записи ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Yellow),
             Padding = new Padding(2, 1)
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 
@@ -15457,9 +15476,9 @@ public class ExplorerMode
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]❌ Ошибка при выполнении команды {Markup.Escape(commandName)}:[/]");
-            AnsiConsole.MarkupLine($"[red]{Markup.Escape(ex.Message)}[/]");
-            AnsiConsole.MarkupLine($"[dim]{Markup.Escape(ex.GetType().Name)}[/]");
+            MarkupLine($"[red]❌ Ошибка при выполнении команды {Markup.Escape(commandName)}:[/]");
+            MarkupLine($"[red]{Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[dim]{Markup.Escape(ex.GetType().Name)}[/]");
             WaitForKey();
         }
     }
@@ -15472,7 +15491,7 @@ public class ExplorerMode
         return def;
     }
 
-    private static void ShowEmptyPanel(string title, string message)
+    private void ShowEmptyPanel(string title, string message)
     {
         var panel = new Panel(new Markup($"[dim]{message}[/]"))
         {
@@ -15481,10 +15500,10 @@ public class ExplorerMode
             BorderStyle = new Style(Color.Grey),
             Padding = new Padding(2, 1)
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
     }
 
-    private static void WrapInPanel(Table table, string title, Color color)
+    private void WrapInPanel(Table table, string title, Color color)
     {
         WrapInPanel((IRenderable)table, title, color);
     }
@@ -15493,7 +15512,7 @@ public class ExplorerMode
     {
         if (_imageService == null)
         {
-            AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(_loc.T("image_service_unavailable"))}[/]");
+            MarkupLine($"[yellow]{Markup.Escape(_loc.T("image_service_unavailable"))}[/]");
             WaitForKey();
             return Task.CompletedTask;
         }
@@ -15514,7 +15533,7 @@ public class ExplorerMode
             "← Назад"
         };
 
-        var choice = AnsiConsole.Prompt(
+        var choice = Prompt(
             new SelectionPrompt<string>()
                 .Title("[bold purple]🖼 Галерея изображений[/]")
                 .HighlightStyle(new Style(Color.Purple))
@@ -15542,7 +15561,7 @@ public class ExplorerMode
         return Task.CompletedTask;
     }
 
-    private static void WrapInPanel(IRenderable content, string title, Color color)
+    private void WrapInPanel(IRenderable content, string title, Color color)
     {
         var panel = new Panel(content)
         {
@@ -15551,14 +15570,14 @@ public class ExplorerMode
             BorderStyle = new Style(color),
             Expand = true
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
     }
 
-    private static void WaitForKey()
+    private void WaitForKey()
     {
-        AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[grey]Нажмите любую клавишу...[/]");
-        Console.ReadKey(true);
+        WriteLine();
+        MarkupLine("[grey]Нажмите любую клавишу...[/]");
+        ReadKey();
     }
 
     /// <summary>
@@ -15575,7 +15594,7 @@ public class ExplorerMode
         if (!generated || !_imageService.GenerateWithoutDisplay)
             return;
 
-        var showNow = AnsiConsole.Prompt(new ConfirmationPrompt(
+        var showNow = Prompt(new ConfirmationPrompt(
             $"[bold]{Markup.Escape(_loc.T("image_regenerated_show_now"))}[/]")
         { DefaultValue = false });
         if (showNow)
@@ -15600,8 +15619,8 @@ public class ExplorerMode
                 choices.Add("♻ Пересоздать изображение");
             choices.Add("← Назад");
 
-            AnsiConsole.WriteLine();
-            var action = AnsiConsole.Prompt(
+            WriteLine();
+            var action = Prompt(
                 new SelectionPrompt<string>()
                     .Title("[bold]Действие:[/]")
                     .HighlightStyle(new Style(Color.Purple))
@@ -15928,12 +15947,12 @@ public class ExplorerMode
     {
         if (_validator == null)
         {
-            AnsiConsole.MarkupLine("[yellow]Сервис валидации недоступен[/]");
+            MarkupLine("[yellow]Сервис валидации недоступен[/]");
             WaitForKey();
             return;
         }
 
-        AnsiConsole.MarkupLine("[dim]Проверка целостности игровых файлов...[/]");
+        MarkupLine("[dim]Проверка целостности игровых файлов...[/]");
         var issues = await _validator.ValidateGameStateAsync();
 
         if (issues.Count == 0)
@@ -15945,7 +15964,7 @@ public class ExplorerMode
                 BorderStyle = new Style(Color.Green),
                 Padding = new Padding(2, 1)
             };
-            AnsiConsole.Write(okPanel);
+            Write(okPanel);
         }
         else
         {
@@ -15964,7 +15983,7 @@ public class ExplorerMode
 
             if (summary.Count > 0)
             {
-                var summaryPanel = new Panel(new Markup(string.Join("\n", summary.Select(item => $"[yellow]• {Markup.Escape(item)}[/]"))))
+                var summaryPanel = new Panel(GameInterface.SafeMarkup(string.Join("\n", summary.Select(item => $"[yellow]• {Markup.Escape(item)}[/]"))))
                 {
                     Header = new PanelHeader(" 🧭 Сводка ", Justify.Center),
                     Border = BoxBorder.Rounded,
@@ -15972,8 +15991,8 @@ public class ExplorerMode
                     Padding = new Padding(1, 0),
                     Expand = true
                 };
-                AnsiConsole.Write(summaryPanel);
-                AnsiConsole.WriteLine();
+                Write(summaryPanel);
+                WriteLine();
             }
 
             var table = new Table()
@@ -16014,7 +16033,7 @@ public class ExplorerMode
                 BorderStyle = new Style(issues.Any(i => i.Severity == Services.IssueSeverity.Error) ? Color.Red : Color.Yellow),
                 Padding = new Padding(1, 0)
             };
-            AnsiConsole.Write(panel);
+            Write(panel);
         }
 
         WaitForKey();
@@ -16048,7 +16067,7 @@ public class ExplorerMode
                 BorderStyle = new Style(Color.Blue),
                 Padding = new Padding(2, 1)
             };
-            AnsiConsole.Write(emptyPanel);
+            Write(emptyPanel);
             WaitForKey();
             return;
         }
@@ -16189,7 +16208,9 @@ public class ExplorerMode
             BorderStyle = new Style(Color.Blue),
             Padding = new Padding(2, 1)
         };
-        AnsiConsole.Write(panel);
+        Write(panel);
         WaitForKey();
     }
 }
+
+

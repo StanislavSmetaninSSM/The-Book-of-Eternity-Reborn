@@ -1,0 +1,23 @@
+{
+  "guardians": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "name": "Azalia",
+      "abode": {
+        "abodeId": "abode_social_azalia_001",
+        "name": "Velvet Hall"
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_social_azalia_001",
+    "name": "Azalia",
+    "abode": {
+      "abodeId": "abode_social_azalia_001",
+      "name": "Velvet Hall"
+    }
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": null
+  }
+}

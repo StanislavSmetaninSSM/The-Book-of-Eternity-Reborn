@@ -467,8 +467,31 @@ public class GameInterface
         return int.TryParse(cleaned, out var val) ? Math.Clamp(val, 0, 100) : 100;
     }
 
+    public static Markup SafeMarkup(string text, string? fallbackContext = null)
+    {
+        try
+        {
+            return new Markup(text ?? string.Empty);
+        }
+        catch (Exception ex) when (IsMarkupParseFailure(ex))
+        {
+            var plainText = Markup.Remove(text ?? string.Empty);
+            var fallbackTitle = string.IsNullOrWhiteSpace(fallbackContext)
+                ? "[yellow dim]⚠ Обнаружена повреждённая UI-разметка. Показан безопасный текст.[/]"
+                : $"[yellow dim]⚠ Обнаружена повреждённая UI-разметка ({EscapeMarkup(fallbackContext)}). Показан безопасный текст.[/]";
+
+            return new Markup($"{fallbackTitle}\n[white]{EscapeMarkup(plainText)}[/]");
+        }
+    }
+
     public static string EscapeMarkup(string text)
     {
         return Markup.Escape(text ?? "");
+    }
+
+    private static bool IsMarkupParseFailure(Exception ex)
+    {
+        return ex is InvalidOperationException &&
+               ex.Message.Contains("markup", StringComparison.OrdinalIgnoreCase);
     }
 }

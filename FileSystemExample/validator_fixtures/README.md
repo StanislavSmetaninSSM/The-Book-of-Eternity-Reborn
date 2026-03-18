@@ -39,6 +39,7 @@ These fixtures are not a full playable session. They are focused contract exampl
 26. `NPCActivityUpdates` must carry a nested `activityUpdate` payload
 27. critical `guardians.json` must not contain PowerShell runtime / AST serialization artifacts
 28. `activeGuardian` must resolve to an entry that actually exists in `guardians[]`
+29. `activeGuardian` with a materialized abode must also materialize matching `chaosSeaNavigation.currentAbodeId`
 29. `completeNPCActivities` must match the canonical pre-turn `currentActivity`
 30. `factionChronicleUpdates` must bind to an existing permanent faction id
 31. `worldMapUpdates.storageUpdates` must target an existing canonical storage id

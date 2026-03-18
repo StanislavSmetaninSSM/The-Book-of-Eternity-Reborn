@@ -1923,7 +1923,7 @@ public class GameEngine
         if (errors.Count > 10)
             lines.Add($"[yellow]... и ещё {errors.Count - 10} ошибок[/]");
 
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
+        AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" Contract Error ", Justify.Center),
             Border = BoxBorder.Double,
@@ -6401,3 +6401,4 @@ You MUST NOT downgrade or ignore the client-computed baseRarity. Log the full ca
         Console.ReadKey(true);
     }
 }
+
