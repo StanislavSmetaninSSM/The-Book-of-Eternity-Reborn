@@ -10,3 +10,5 @@
 /BookOfEternityClient/bin/Debug/net8.0
 /BookOfEternityClient/game_session
 /BookOfEternityClient/obj
+/BookOfEternityClient.Tests/bin
+/BookOfEternityClient.Tests/obj
