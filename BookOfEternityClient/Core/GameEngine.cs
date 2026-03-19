@@ -36,8 +36,10 @@ public class GameEngine
     private readonly SystemModService _systemModService;
     private readonly CriticalStateHealthService _criticalStateHealth;
     private readonly WorldDirectiveService _worldDirectiveService;
+    private readonly AfterlifeReturnGuardService _afterlifeReturnGuardService;
     private readonly PendingTurnStateService _pendingTurnState;
     private readonly QteSceneService _qteSceneService;
+    private readonly IClipboardService _clipboardService;
     private readonly ILogger<GameEngine> _logger;
 
     private bool _isRunning;
@@ -54,6 +56,7 @@ public class GameEngine
     private const string ValidationRepairRequestPath = "game_state/control/validation_repair_request.json";
     private const string ValidationRepairReadyPath = "game_state/control/validation_repair_ready.json";
     private const string TerminalProtocolFailureRequestPath = "game_state/control/terminal_protocol_failure_request.json";
+    private const string OrdinaryPlayerTurnSourceLabel = "обработки хода";
 
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
@@ -79,8 +82,10 @@ public class GameEngine
         SystemModService systemModService,
         CriticalStateHealthService criticalStateHealth,
         WorldDirectiveService worldDirectiveService,
+        AfterlifeReturnGuardService afterlifeReturnGuardService,
         PendingTurnStateService pendingTurnState,
         QteSceneService qteSceneService,
+        IClipboardService clipboardService,
         ILogger<GameEngine> logger)
     {
         _fs = fs;
@@ -101,8 +106,10 @@ public class GameEngine
         _systemModService = systemModService;
         _criticalStateHealth = criticalStateHealth;
         _worldDirectiveService = worldDirectiveService;
+        _afterlifeReturnGuardService = afterlifeReturnGuardService;
         _pendingTurnState = pendingTurnState;
         _qteSceneService = qteSceneService;
+        _clipboardService = clipboardService;
         _logger = logger;
     }
 
@@ -547,8 +554,6 @@ public class GameEngine
         await NormalizeRuntimeUiArtifactsAsync();
         var pendingManifest = await LoadPendingTurnSnapshotManifestAsync();
         var hasPendingTerminalSignal = _fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json");
-        if (pendingManifest == null && !hasPendingTerminalSignal)
-            ClearTransientOutputFiles();
 
         await RefreshCanonicalStateAsync();
         var state = _stateManager.CurrentState;
@@ -751,6 +756,26 @@ public class GameEngine
         _ => _loc.T("difficulty_normal")
     };
 
+    private string PromptTextInput(
+        string promptMarkup,
+        string? defaultValue = null,
+        bool allowEmpty = true,
+        string? emptyError = null,
+        bool preserveNewlines = false)
+    {
+        return TextComposer.Read(
+            StandardTextComposerConsole.Instance,
+            _clipboardService,
+            new TextComposerOptions
+            {
+                PromptMarkup = promptMarkup,
+                DefaultValue = defaultValue,
+                AllowEmpty = allowEmpty,
+                EmptyError = emptyError,
+                PreserveNewlines = preserveNewlines
+            });
+    }
+
     // ═══════════════════════════════════════════════
     // NEW GAME FLOW
     // ═══════════════════════════════════════════════
@@ -762,11 +787,7 @@ public class GameEngine
         AnsiConsole.WriteLine();
 
         // Step 1: Soul name
-        var soulName = AnsiConsole.Prompt(
-            new TextPrompt<string>($"[cyan]{_loc.T("enter_soul_name")}[/]")
-                .Validate(name => !string.IsNullOrWhiteSpace(name)
-                    ? ValidationResult.Success()
-                    : ValidationResult.Error("Имя не может быть пустым")));
+        var soulName = PromptTextInput($"[cyan]{_loc.T("enter_soul_name")}[/]", allowEmpty: false, emptyError: "Имя не может быть пустым");
 
         AnsiConsole.WriteLine();
 
@@ -783,11 +804,10 @@ public class GameEngine
         string guardianDescription;
         if (guardianChoice == _loc.T("create_guardian"))
         {
-            guardianDescription = AnsiConsole.Prompt(
-                new TextPrompt<string>($"[cyan]{_loc.T("guardian_prompt")}[/]")
-                    .Validate(d => !string.IsNullOrWhiteSpace(d)
-                        ? ValidationResult.Success()
-                        : ValidationResult.Error("Описание не может быть пустым")));
+            guardianDescription = PromptTextInput($"[cyan]{_loc.T("guardian_prompt")}[/]",
+                allowEmpty: false,
+                emptyError: "Описание не может быть пустым",
+                preserveNewlines: true);
         }
         else
         {
@@ -839,6 +859,7 @@ public class GameEngine
                 var soulState = new
                 {
                     soulName,
+                    previousSoulNames = Array.Empty<string>(),
                     currentRealm = "Chaos Sea",
                     currentIncarnation = 0, // Not yet incarnated
                     enlightenment = new { currentTier = "Новичок", experience = 0, level = 0 },
@@ -987,9 +1008,7 @@ public class GameEngine
         // Character description
         AnsiConsole.MarkupLine("[cyan]Опишите персонажа в смертной жизни:[/]");
         AnsiConsole.MarkupLine("[dim](Раса, класс, внешность, предыстория... или оставьте пустым)[/]");
-        var charDesc = AnsiConsole.Prompt(
-            new TextPrompt<string>("[cyan]Персонаж:[/]")
-                .AllowEmpty());
+        var charDesc = PromptTextInput("[cyan]Персонаж:[/]", allowEmpty: true, preserveNewlines: true);
 
         AnsiConsole.WriteLine();
 
@@ -999,18 +1018,14 @@ public class GameEngine
         // World description
         AnsiConsole.MarkupLine("[cyan]Опишите мир, в который хотите воплотиться:[/]");
         AnsiConsole.MarkupLine("[dim](Жанр, сеттинг, особенности... или оставьте пустым — Хранитель выберет)[/]");
-        var worldDesc = AnsiConsole.Prompt(
-            new TextPrompt<string>("[cyan]Мир:[/]")
-                .AllowEmpty());
+        var worldDesc = PromptTextInput("[cyan]Мир:[/]", allowEmpty: true, preserveNewlines: true);
 
         AnsiConsole.WriteLine();
 
         // Starting circumstances
         AnsiConsole.MarkupLine("[cyan]Обстоятельства начала (необязательно):[/]");
         AnsiConsole.MarkupLine("[dim](Где вы появляетесь? Что происходит вокруг?)[/]");
-        var circumstances = AnsiConsole.Prompt(
-            new TextPrompt<string>("[cyan]Обстоятельства:[/]")
-                .AllowEmpty());
+        var circumstances = PromptTextInput("[cyan]Обстоятельства:[/]", allowEmpty: true, preserveNewlines: true);
 
         // Build incarnation action
         var parts = new List<string> { "Душа входит через Врата Души и воплощается в смертную жизнь." };
@@ -1048,8 +1063,7 @@ public class GameEngine
         // Ask for brief life summary (Guardian knowledge persistence)
         AnsiConsole.Write(new Rule("[gold1]📜 Итоги смертной жизни[/]").RuleStyle("gold1"));
         AnsiConsole.MarkupLine("[dim]Опишите кратко, чем запомнилась эта жизнь (или оставьте пустым):[/]");
-        var lifeSummary = AnsiConsole.Prompt(
-            new TextPrompt<string>("[cyan]Итог:[/]").AllowEmpty());
+        var lifeSummary = PromptTextInput("[cyan]Итог:[/]", allowEmpty: true, preserveNewlines: true);
 
         var autoSummary = BuildLifeSummary(lifeSummary);
         var action =
@@ -1080,6 +1094,7 @@ public class GameEngine
         var guardiansLoreJson = await _fs.ReadFileAsync("lore/chaos_sea/guardians_lore.json");
 
         var soulName = _stateManager.CurrentState.SoulName;
+        object previousSoulNames = Array.Empty<string>();
         object soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() };
         object livesHistory = Array.Empty<object>();
         object? crossIncarnationData = null;
@@ -1091,6 +1106,8 @@ public class GameEngine
             var root = doc.RootElement;
             if (root.TryGetProperty("soulName", out var sn) && sn.ValueKind == JsonValueKind.String)
                 soulName = sn.GetString() ?? soulName;
+            if (root.TryGetProperty("previousSoulNames", out var prevSoulNames))
+                previousSoulNames = JsonSerializer.Deserialize<object>(prevSoulNames.GetRawText()) ?? previousSoulNames;
             if (root.TryGetProperty("soulRelics", out var relics))
                 soulRelics = JsonSerializer.Deserialize<object>(relics.GetRawText()) ?? soulRelics;
             if (root.TryGetProperty("livesHistory", out var history))
@@ -1107,6 +1124,7 @@ public class GameEngine
         var resetSoulState = new Dictionary<string, object?>
         {
             ["soulName"] = soulName,
+            ["previousSoulNames"] = previousSoulNames,
             ["currentRealm"] = "Chaos Sea",
             ["currentIncarnation"] = 0,
             ["enlightenment"] = new { currentTier = "Новичок", experience = 0, level = 0 },
@@ -1231,6 +1249,11 @@ public class GameEngine
         };
 
         return response;
+    }
+
+    private GameResponse MergeWithLastResponse(GameResponse? refreshed)
+    {
+        return GameResponseRefreshMerger.Merge(_lastResponse, refreshed);
     }
 
     private async Task RefreshCanonicalStateAsync(IReadOnlyDictionary<string, string>? backups = null)
@@ -1603,6 +1626,7 @@ public class GameEngine
     {
         await NormalizePendingRepairArtifactsAsync();
         await NormalizePendingTerminalProtocolFailureArtifactsAsync();
+        await _afterlifeReturnGuardService.EnsureHealthyAsync(_stateManager.CurrentState.CurrentRealm);
         await _qteSceneService.EnsureRuntimeStateHealthyAsync();
 
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
@@ -1612,7 +1636,6 @@ public class GameEngine
         {
             _logger.LogWarning("Найдены ready-сигналы без pending snapshot manifest. Очистка как stale runtime artifacts.");
             ClearReadySignals();
-            ClearTransientOutputFiles();
         }
 
         if (manifest != null)
@@ -1623,8 +1646,6 @@ public class GameEngine
             _logger.LogWarning("Найден orphaned input/turn_request.json без pending snapshot manifest. Удаление как stale runtime artifact.");
             _fs.DeleteFile("input/turn_request.json");
         }
-
-        ClearTransientOutputFiles();
     }
 
     private async Task<int?> ReadReadySignalTurnNumberAsync()
@@ -1850,12 +1871,15 @@ public class GameEngine
         {
             await EnsureClientOwnedSystemFilesHealthyAsync();
             var issues = await _validator.ValidateGameStateAsync();
-            if (RequiresFreshNarrativePayload(source))
-                issues.AddRange(await _validator.ValidateAcceptedTurnNarrativePayloadAsync());
-            issues.AddRange(await _validator.ValidateAcceptedTurnInterfacePayloadAsync());
-            issues.AddRange(await _validator.ValidateAcceptedTurnReasoningAsync());
-            issues.AddRange(await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());
-            issues.AddRange(await _validator.ValidateAcceptedTurnQteOfferAsync());
+            if (RequiresAcceptedTurnPayloadValidation(source))
+            {
+                if (RequiresFreshNarrativePayload(source))
+                    issues.AddRange(await _validator.ValidateAcceptedTurnNarrativePayloadAsync());
+                issues.AddRange(await _validator.ValidateAcceptedTurnInterfacePayloadAsync());
+                issues.AddRange(await _validator.ValidateAcceptedTurnReasoningAsync());
+                issues.AddRange(await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());
+                issues.AddRange(await _validator.ValidateAcceptedTurnQteOfferAsync());
+            }
             issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());
             if (progressionControl != null)
                 issues.AddRange(await _progressionSchedule.ValidateAcceptedTurnOutcomeAsync(progressionControl));
@@ -1947,6 +1971,11 @@ public class GameEngine
     }
 
     private static bool RequiresFreshNarrativePayload(string source)
+    {
+        return source is "ответа GM" or "late response GM" or "обработки хода" or "оценки жизни";
+    }
+
+    private static bool RequiresAcceptedTurnPayloadValidation(string source)
     {
         return source is "ответа GM" or "late response GM" or "обработки хода" or "оценки жизни";
     }
@@ -2775,6 +2804,9 @@ public class GameEngine
             var dict = new Dictionary<string, object?>();
 
             dict["soulName"] = root.TryGetProperty("soulName", out var sn) ? sn.GetString() : "";
+            dict["previousSoulNames"] = root.TryGetProperty("previousSoulNames", out var previousSoulNames)
+                ? JsonSerializer.Deserialize<object>(previousSoulNames.GetRawText())
+                : Array.Empty<string>();
             dict["currentRealm"] = newRealm;
             var existingInc = root.TryGetProperty("currentIncarnation", out var inc) && inc.TryGetInt32(out var incVal) ? incVal : 0;
             dict["currentIncarnation"] = incrementIncarnation ? existingInc + 1 : existingInc;
@@ -3456,6 +3488,8 @@ public class GameEngine
             if (IsIncarnationSourceLabel(manifest?.SourceLabel))
                 await _worldDirectiveService.MaterializePendingToActiveAsync();
 
+            await ConsumeAfterlifeReturnProtectionIfNeededAsync(manifest);
+
             _fs.DeleteFile("ready/turn_complete.json");
             await CleanupPendingTurnSnapshotAsync();
             return true;
@@ -3685,7 +3719,7 @@ public class GameEngine
                     if (IsIncarnationSourceLabel(manifest?.SourceLabel))
                         await _worldDirectiveService.MaterializePendingToActiveAsync();
 
-                    ClearTransientOutputFiles();
+                    await ConsumeAfterlifeReturnProtectionIfNeededAsync(manifest);
                 }
                 _fs.DeleteFile("ready/turn_complete.json");
                 await CleanupPendingTurnSnapshotAsync();
@@ -3743,7 +3777,7 @@ public class GameEngine
             {
                 await NormalizeRuntimeUiArtifactsAsync();
                 await RefreshCanonicalStateAsync();
-                var refreshedResponse = await BuildGameResponseFromFiles();
+                var refreshedResponse = MergeWithLastResponse(await BuildGameResponseFromFiles());
                 if (!await ValidateCurrentGameStateOrShowErrorsAsync("ручного обновления"))
                     continue;
                 _lastResponse = refreshedResponse;
@@ -3844,7 +3878,7 @@ public class GameEngine
         };
         await AttachPendingDiceAndGachaAsync(request);
         request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
-        var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, "обработки хода");
+        var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
 
         // Attach computed characteristics for GM reference
         try
@@ -4032,7 +4066,6 @@ public class GameEngine
 
         // Cleanup ready signal
         _fs.DeleteFile("ready/turn_complete.json");
-        ClearTransientOutputFiles();
     }
 
     private async Task<(bool EarlyExit, GameResponse Response)> HandleAcceptedQteOfferAsync(
@@ -4362,6 +4395,11 @@ public class GameEngine
 
                 // === PHASE 5: Show reward screen ===
                 await ShowLifeEvaluationRewards(preDeathInkFeathers, preDeathEnlightenment, preDeathSoulStateJson);
+                var guardianContext = await _afterlifeReturnGuardService.ReadActiveGuardianContextAsync();
+                await _afterlifeReturnGuardService.ActivatePostLifeReturnAsync(
+                    guardianContext.GuardianId,
+                    guardianContext.GuardianName,
+                    _gameLoop.TurnNumber);
 
                 _fs.DeleteFile("ready/turn_complete.json");
                 await CleanupPendingTurnSnapshotAsync();
@@ -4527,21 +4565,55 @@ public class GameEngine
 
         try
         {
-            using var doc = JsonDocument.Parse(triggerJson);
-            var root = doc.RootElement;
-
-            if (!TryReadIncarnationPayload(root, out var worldDesc, out var charDesc, out var circumstances))
+            if (!IncarnationTriggerContract.TryParse(triggerJson, out var payload))
             {
                 _fs.DeleteFile("game_state/control/incarnation_trigger.json");
                 return;
             }
 
+            var rawReturnGuard = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
+            if (payload.IsGuardianForced && !string.IsNullOrWhiteSpace(rawReturnGuard))
+            {
+                if (!AfterlifeReturnGuardService.TryParse(rawReturnGuard, out var activeReturnGuard))
+                {
+                    _logger.LogWarning(
+                        "guardian_forced incarnation trigger ignored because afterlife_return_guard is invalid. Failing closed to preserve the protected return turn.");
+                    _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+                    return;
+                }
+
+                if (activeReturnGuard.RemainingProtectedTurns > 0)
+                {
+                    _logger.LogWarning(
+                        "guardian_forced incarnation trigger ignored because afterlife_return_guard is still active (remainingProtectedTurns={Turns}).",
+                        activeReturnGuard.RemainingProtectedTurns);
+                    _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+                    return;
+                }
+            }
+            var worldDesc = payload.WorldDescription;
+            var charDesc = payload.CharacterDescription;
+            var circumstances = payload.Circumstances;
+
             // Show the GM-initiated incarnation banner
             AnsiConsole.Clear();
             AnsiConsole.Write(new FigletText("Soul Gates").Color(Color.Gold1).Centered());
-            AnsiConsole.Write(new Rule("[gold1]✦ Врата Души открываются ✦[/]").RuleStyle("gold1"));
+            AnsiConsole.Write(payload.IsGuardianForced
+                ? new Rule("[darkred]✦ Хранитель насильно распахивает Врата Души ✦[/]").RuleStyle("darkred")
+                : new Rule("[gold1]✦ Врата Души открываются ✦[/]").RuleStyle("gold1"));
             AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[yellow]Хранитель направляет вас через Врата Души в мир смертных...[/]");
+            if (payload.IsGuardianForced)
+            {
+                AnsiConsole.MarkupLine("[red]Враждебный Хранитель навязывает душе новое смертное воплощение.[/]");
+                if (!string.IsNullOrWhiteSpace(payload.Reason))
+                    AnsiConsole.MarkupLine($"[yellow]Причина санкции:[/] {GameInterface.EscapeMarkup(payload.Reason)}");
+                if (!string.IsNullOrWhiteSpace(payload.ProvocationSummary))
+                    AnsiConsole.MarkupLine($"[dim]Повод: {GameInterface.EscapeMarkup(payload.ProvocationSummary)}[/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[yellow]Хранитель направляет вас через Врата Души в мир смертных...[/]");
+            }
 
             if (!string.IsNullOrWhiteSpace(worldDesc))
                 AnsiConsole.MarkupLine($"[dim]Мир: {GameInterface.EscapeMarkup(worldDesc)}[/]");
@@ -4555,7 +4627,23 @@ public class GameEngine
             Console.ReadKey(true);
 
             // Build incarnation action from GM-provided data
-            var parts = new List<string> { "Хранитель направляет душу через Врата Души в мир смертных." };
+            var parts = new List<string>
+            {
+                payload.IsGuardianForced
+                    ? "Враждебный Хранитель насильно отправляет душу через Врата Души в тяжёлую смертную жизнь."
+                    : "Хранитель направляет душу через Врата Души в мир смертных."
+            };
+            if (payload.IsGuardianForced)
+            {
+                if (!string.IsNullOrWhiteSpace(payload.GuardianId))
+                    parts.Add($"Источник санкции: guardianId={payload.GuardianId}.");
+                if (!string.IsNullOrWhiteSpace(payload.Reason))
+                    parts.Add($"Причина: {payload.Reason}.");
+                if (!string.IsNullOrWhiteSpace(payload.ProvocationSummary))
+                    parts.Add($"Провокация игрока: {payload.ProvocationSummary}.");
+                if (!string.IsNullOrWhiteSpace(payload.SeverityBand))
+                    parts.Add($"Тяжесть старта: {payload.SeverityBand}.");
+            }
             if (!string.IsNullOrWhiteSpace(charDesc))
                 parts.Add($"Персонаж: {charDesc}.");
             if (!string.IsNullOrWhiteSpace(worldDesc))
@@ -4567,6 +4655,7 @@ public class GameEngine
 
             // Each incarnation must create a fresh mortal-world lore set.
             _fs.ClearCurrentWorldLore();
+            await _afterlifeReturnGuardService.ClearAsync();
 
             // Update soul state: switch realm to Mortal World and increment incarnation
             localStateMutated = true;
@@ -4747,35 +4836,9 @@ public class GameEngine
         return !string.IsNullOrWhiteSpace(summary);
     }
 
-    private static bool TryReadIncarnationPayload(JsonElement root, out string worldDescription, out string characterDescription, out string circumstances)
-    {
-        worldDescription = "";
-        characterDescription = "";
-        circumstances = "";
-
-        var payload = root;
-        if (root.TryGetProperty("TriggerIncarnation", out var nested) && nested.ValueKind == JsonValueKind.Object)
-            payload = nested;
-
-        if (!payload.TryGetProperty("worldDescription", out var w) || w.ValueKind != JsonValueKind.String)
-            return false;
-        if (!payload.TryGetProperty("characterDescription", out var c) || c.ValueKind != JsonValueKind.String)
-            return false;
-        if (!payload.TryGetProperty("circumstances", out var s) || s.ValueKind != JsonValueKind.String)
-            return false;
-
-        worldDescription = w.GetString() ?? "";
-        characterDescription = c.GetString() ?? "";
-        circumstances = s.GetString() ?? "";
-
-        return !string.IsNullOrWhiteSpace(worldDescription) &&
-               !string.IsNullOrWhiteSpace(characterDescription) &&
-               !string.IsNullOrWhiteSpace(circumstances);
-    }
-
     /// <summary>
-    /// Logs an error to game_session/error_log.txt for diagnostics.
-    /// </summary>
+     /// Logs an error to game_session/error_log.txt for diagnostics.
+     /// </summary>
     private void LogError(Exception ex)
     {
         try
@@ -4903,23 +4966,26 @@ public class GameEngine
 
         // Show option hint if dialogue options are available
         if (_lastResponse?.DialogueOptions != null && _lastResponse.DialogueOptions.Length > 0)
-            AnsiConsole.MarkupLine("[dim]  Введите [cyan]номер[/] опции (1, 2, 3...) или свой текст │ \\m = многострочный[/]");
+            AnsiConsole.MarkupLine("[dim]  Введите [cyan]номер[/] опции или свой текст. Большую вставку можно вставить прямо сюда; [cyan]\\m[/] открывает текстовый редактор, [cyan]\\p[/] остаётся fallback-вставкой[/]");
         else
-            AnsiConsole.MarkupLine("[dim]  Enter = отправить │ \\m = многострочный режим[/]");
+            AnsiConsole.MarkupLine("[dim]  Enter = отправить │ большую вставку можно вставить прямо сюда │ \\m = текстовый редактор │ \\p = fallback-вставка[/]");
 
         // Single-line mode by default: Enter sends immediately
         var promptChar = isChaosSea ? "🌊" : "⚔️";
-        AnsiConsole.Markup($"[bold {accentColor}] {promptChar} > [/]");
-        var firstLine = Console.ReadLine();
+        var firstLine = TextComposer.Read(
+            StandardTextComposerConsole.Instance,
+            _clipboardService,
+            new TextComposerOptions
+            {
+                PromptMarkup = $"[bold {accentColor}] {promptChar} > [/]",
+                PreserveNewlines = true
+            });
 
-        if (firstLine == null) // Ctrl+C
-        {
-            _inGame = false;
-            return "";
-        }
+        if (IsClipboardPasteShortcut(firstLine))
+            return ResolveClipboardPlayerInput();
 
         // Check for slash commands — always single-line, send immediately
-        if (firstLine.TrimStart().StartsWith('/'))
+        if (!firstLine.Contains('\n') && firstLine.TrimStart().StartsWith('/'))
             return firstLine.Trim();
 
         // Check for multiline trigger (Ctrl+M marker)
@@ -4931,7 +4997,7 @@ public class GameEngine
         }
 
         // Check for dialogue option number shortcuts
-        if (int.TryParse(firstLine.Trim(), out var optNum))
+        if (!firstLine.Contains('\n') && int.TryParse(firstLine.Trim(), out var optNum))
         {
             // Try to resolve to actual dialogue option text
             if (_lastResponse?.DialogueOptions != null && optNum >= 1 && optNum <= _lastResponse.DialogueOptions.Length)
@@ -4954,28 +5020,38 @@ public class GameEngine
     /// </summary>
     private Task<string> GetMultilineInput()
     {
-        AnsiConsole.MarkupLine("[dim](Многострочный режим. Пустая строка = отправить.)[/]");
-        var lines = new List<string>();
-
-        while (true)
-        {
-            AnsiConsole.Markup("[cyan]│ [/]");
-            var line = Console.ReadLine();
-
-            if (line == null)
+        var value = TextComposer.Read(
+            StandardTextComposerConsole.Instance,
+            _clipboardService,
+            new TextComposerOptions
             {
-                _inGame = false;
-                return Task.FromResult("");
-            }
+                PromptMarkup = "[cyan]│[/]",
+                PreserveNewlines = true,
+                Mode = TextComposerMode.MultilineEditor,
+                HelpMarkup = "[dim](Многострочный режим. Вставка из буфера работает напрямую. Две пустые строки подряд = отправить. \\p = fallback из буфера.)[/]"
+            });
 
-            if (string.IsNullOrEmpty(line) && lines.Count > 0)
-                break;
+        return Task.FromResult(value);
+    }
 
-            if (!string.IsNullOrEmpty(line))
-                lines.Add(line);
+    private static bool IsClipboardPasteShortcut(string input)
+    {
+        var trimmed = input.Trim();
+        return trimmed.Equals("\\p", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Equals("/paste", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Equals("/вставить", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private string ResolveClipboardPlayerInput()
+    {
+        var result = _clipboardService.TryReadText();
+        if (!result.Success || string.IsNullOrWhiteSpace(result.Text))
+        {
+            AnsiConsole.MarkupLine($"[yellow]{GameInterface.EscapeMarkup(result.Error ?? "Не удалось прочитать буфер обмена.")}[/]");
+            return string.Empty;
         }
 
-        return Task.FromResult(string.Join("\n", lines));
+        return result.Text!;
     }
 
     // ═══════════════════════════════════════════════
@@ -5175,6 +5251,10 @@ public class GameEngine
                     Console.ReadKey(true);
                 }
             }
+            else if (chosen.Key == "gm_cli_launch_command")
+            {
+                _stateManager.Settings.GmCliLaunchCommand = PromptGmCliLaunchCommand(_stateManager.Settings.GmCliLaunchCommand);
+            }
             else if (chosen.Key == "system_mods")
             {
                 await ShowSystemModsMenu();
@@ -5212,8 +5292,7 @@ public class GameEngine
                     var keyPrompt = hasPollKey
                         ? "[cyan]API ключ Pollinations (Enter = оставить текущий):[/]"
                         : "[cyan]Введите API ключ Pollinations (получить на enter.pollinations.ai):[/]";
-                    var newKey = AnsiConsole.Prompt(
-                        new TextPrompt<string>(keyPrompt).AllowEmpty());
+                    var newKey = PromptTextInput(keyPrompt, allowEmpty: true, preserveNewlines: false);
                     if (!string.IsNullOrWhiteSpace(newKey))
                         _stateManager.Settings.PollinationsApiKey = newKey.Trim();
 
@@ -5242,9 +5321,10 @@ public class GameEngine
 
                     if (modelChoice.Key == "custom")
                     {
-                        var customModel = AnsiConsole.Prompt(
-                            new TextPrompt<string>("[cyan]Название модели:[/]")
-                                .DefaultValue(currentModel));
+                        var customModel = PromptTextInput("[cyan]Название модели:[/]",
+                            defaultValue: currentModel,
+                            allowEmpty: false,
+                            preserveNewlines: false);
                         _stateManager.Settings.PollinationsImageModel = customModel.Trim();
                     }
                     else
@@ -5348,6 +5428,7 @@ public class GameEngine
             new("show_gm", $"{_loc.T("opt_show_gm")}: [{(gmStatus == _loc.T("enabled") ? "green" : "red")}]{gmStatus}[/]"),
             new("auto_discard", $"🗑️ Авто-выброс сломанных: [{(autoDiscardStatus == _loc.T("enabled") ? "green" : "red")}]{autoDiscardStatus}[/]"),
             new("qte", $"🎬 QTE события: [{(qteStatus == _loc.T("enabled") ? "green" : "red")}]{qteStatus}[/]"),
+            new("gm_cli_launch_command", $"🌉 {_loc.T("opt_gm_cli_launch_command")}: [yellow]{Markup.Escape(TruncateDiagnosticValue(_stateManager.Settings.GmCliLaunchCommand, 56))}[/]"),
             new("music", $"🎵 {_loc.T("opt_music")}: [{(musicStatus == _loc.T("enabled") ? "green" : "red")}]{musicStatus}[/]"),
             new("music_volume", $"🎚 {_loc.T("opt_music_volume")}: [yellow]{_stateManager.Settings.MusicVolume}%[/]"),
             new("sound", $"🔊 {_loc.T("opt_sound")}: [{(soundStatus == _loc.T("enabled") ? "green" : "red")}]{soundStatus}[/]"),
@@ -5462,6 +5543,24 @@ public class GameEngine
             return currentValue;
 
         return sizes[int.Parse(selected.Key)];
+    }
+
+    private string PromptGmCliLaunchCommand(string currentValue)
+    {
+        var current = string.IsNullOrWhiteSpace(currentValue) ? "gemini" : currentValue.Trim();
+
+        AnsiConsole.Clear();
+        AnsiConsole.Write(new Rule($"[cyan]{Markup.Escape(_loc.T("opt_gm_cli_launch_command"))}[/]").RuleStyle("cyan"));
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine($"[dim]{Markup.Escape(_loc.T("gm_cli_launch_command_hint"))}[/]");
+        AnsiConsole.MarkupLine($"[dim]{Markup.Escape(_loc.T("gm_cli_launch_command_examples"))}[/]");
+        AnsiConsole.WriteLine();
+
+        var entered = PromptTextInput($"[cyan]{Markup.Escape(_loc.T("gm_cli_launch_command_prompt"))}[/]",
+            defaultValue: current,
+            allowEmpty: false,
+            preserveNewlines: false).Trim();
+        return string.IsNullOrWhiteSpace(entered) ? current : entered;
     }
 
     private async Task RefreshAudioPlaybackContextAsync()
@@ -5935,13 +6034,14 @@ public class GameEngine
 
         if (choice.Key == "save")
         {
-            var saveName = AnsiConsole.Prompt(
-                new TextPrompt<string>("[cyan]Название сохранения:[/]")
-                    .DefaultValue($"save_turn{_gameLoop.TurnNumber}"));
+            var saveName = PromptTextInput("[cyan]Название сохранения:[/]",
+                defaultValue: $"save_turn{_gameLoop.TurnNumber}",
+                allowEmpty: false,
+                preserveNewlines: false);
 
-            var desc = AnsiConsole.Prompt(
-                new TextPrompt<string>("[cyan]Описание (необязательно):[/]")
-                    .AllowEmpty());
+            var desc = PromptTextInput("[cyan]Описание (необязательно):[/]",
+                allowEmpty: true,
+                preserveNewlines: true);
 
             var ok = await _saveLoad.SaveGameAsync(saveName, desc, turnNumber: _gameLoop.TurnNumber);
             AnsiConsole.MarkupLine(ok ? $"[green]{_loc.T("save_success")}[/]" : $"[red]{_loc.T("save_failed")}[/]");
@@ -6248,9 +6348,11 @@ Your gm_thoughts_markdown MUST contain:
 Scene-local MAY use `Relevant actors: нет` only when the turn truly has no actor that must reason or react with agency.
 Then, for every declared relevant actor, you MUST provide a reasoning block:
 ### [Actor Name]
+- Текущая локация / Current location
 - Ситуация / Current situation
 - Мысли / Internal thoughts
 - Действия / Intended actions
+For EVERY relevant NPC block, the current-location line is mandatory: explicitly state where the NPC is now and whether they stay there or relocate this turn.
 Missing scope declaration or missing/empty actor reasoning blocks will cause client rejection.
 If you narrate a meaningful NPC reaction or introduce a new named NPC, you MUST also register/update the relevant NPC state. Narrative-only NPCs without state consequences are protocol violations.
 If you emit structured actor updates such as UpdateNPCs, NPCGoalUpdates, NPCActivityUpdates, or UpdateGuardians, those actors MUST appear in Relevant actors and MUST have full reasoning blocks. Scene-local with `Relevant actors: нет` is valid only when no structured actor updates are emitted.
@@ -6259,6 +6361,23 @@ GUARDIAN AGENCY — HARD REQUIREMENT:
 In Chaos Sea, use the same declared-scope model for relevant Guardians.
 For Guardian-centric turns, the active Guardian MUST appear in the declared relevant actors and MUST have a full reasoning block before narration if activeGuardian is explicitly set in state.
 Do NOT skip Guardian reasoning just because the player is the current conversational focus.
+
+GUARDIAN-FORCED INCARNATION — HARD REQUIREMENT:
+If game_state/control/afterlife_return_guard.json exists with remainingProtectedTurns > 0, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any Guardian-forced incarnation.
+Do NOT immediately kick the soul back into a new life on that protected return turn.
+Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn as a response to explicit player provocation against the current active Guardian.
+If you write game_state/control/incarnation_trigger.json in this forced mode, include:
+  - source = guardian_forced
+  - guardianId
+  - severityBand = harsh | severe
+  - reason
+  - provocationSummary
+  - worldDescription, characterDescription, circumstances
+The resulting start must be harsh but survivable. Do NOT create an unwinnable deathtrap.
+
+SOUL IDENTITY CONTINUITY:
+If game_state/meta/soul_state.json contains previousSoulNames, they are former names of the SAME soul.
+Do NOT treat a renamed soul as a different person and do NOT reset Guardian continuity because of a soul rename.
 
 SOUL RELIC GACHA — ANTI-CHEAT PROTOCOL:
 The 'preGeneratedDices1d20' field is the authoritative dice pool for your normal checks. Start from the FIRST die in that list.
@@ -6299,6 +6418,9 @@ You MUST NOT downgrade or ignore the client-computed baseRarity. Log the full ca
             await _worldDirectiveService.ReadActiveWorldDirectivesAsync());
         if (!string.IsNullOrWhiteSpace(worldReminder))
             parts.Add(worldReminder);
+        var afterlifeGuardReminder = await _afterlifeReturnGuardService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(afterlifeGuardReminder))
+            parts.Add(afterlifeGuardReminder);
         var qteReminder = await _qteSceneService.ConsumePendingReminderAsync();
         if (!string.IsNullOrWhiteSpace(qteReminder))
             parts.Add($"QTE SUMMARY FROM PREVIOUS LOCAL SCENE: {qteReminder}");
@@ -6316,8 +6438,19 @@ You MUST NOT downgrade or ignore the client-computed baseRarity. Log the full ca
         return sourceLabel.Contains("воплощ", StringComparison.OrdinalIgnoreCase);
     }
 
+    private async Task ConsumeAfterlifeReturnProtectionIfNeededAsync(PendingTurnSnapshotManifest? manifest)
+    {
+        if (!string.Equals(manifest?.SourceLabel, OrdinaryPlayerTurnSourceLabel, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        if (!_stateManager.CurrentState.IsInAfterlifeRealm)
+            return;
+
+        await _afterlifeReturnGuardService.ConsumeAfterAcceptedAfterlifeTurnAsync(_gameLoop.TurnNumber);
+    }
+
     /// <summary>
-    /// Interactive stat distribution UI. Shows all 12 characteristics and lets the player
+     /// Interactive stat distribution UI. Shows all 12 characteristics and lets the player
     /// allocate available points. Used at incarnation (8 pts) and level-up (5 pts).
     /// </summary>
     private async Task ShowStatDistribution(string title)

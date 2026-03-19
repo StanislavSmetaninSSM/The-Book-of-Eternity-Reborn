@@ -1,0 +1,14 @@
+{
+  "sessionId": "fixture-session",
+  "requestId": "fixture-request",
+  "turnNumber": 11,
+  "requestTimestamp": "2026-03-20T08:58:00Z",
+  "playerAction": "Я возвращаюсь к Азалии, насмешливо оспариваю её власть и веду себя вызывающе.",
+  "files": {},
+  "snapshotFileHashes": {},
+  "clientOwnedValidationHashes": {},
+  "rollbackBackups": {},
+  "rollbackBaselineFiles": [],
+  "sourceLabel": "обработки хода",
+  "manifestPayloadHash": ""
+}

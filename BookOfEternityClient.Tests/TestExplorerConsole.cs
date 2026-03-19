@@ -15,12 +15,15 @@ internal sealed class TestExplorerConsole : IExplorerConsole
     private readonly Queue<string> _anySelectionResponses = new();
     private readonly Queue<string> _anyAskResponses = new();
     private readonly Queue<bool> _anyConfirmResponses = new();
+    private readonly Queue<string?> _readLineResponses = new();
+    private readonly Queue<ConsoleKeyInfo> _readKeys = new();
 
     public List<IRenderable> Rendered { get; } = new();
     public List<string> MarkupLines { get; } = new();
     public List<string> AskPrompts { get; } = new();
     public List<string> ConfirmPrompts { get; } = new();
     public List<string> SelectionTitles { get; } = new();
+    public List<(string Title, IReadOnlyList<string> Choices)> SelectionChoicesHistory { get; } = new();
     public int ClearCalls { get; private set; }
 
     public void Clear() => ClearCalls++;
@@ -28,6 +31,8 @@ internal sealed class TestExplorerConsole : IExplorerConsole
     public void Write(IRenderable content) => Rendered.Add(content);
 
     public void WriteLine() => MarkupLines.Add(string.Empty);
+
+    public void Markup(string markup) => MarkupLines.Add(markup);
 
     public void MarkupLine(string markup) => MarkupLines.Add(markup);
 
@@ -72,7 +77,23 @@ internal sealed class TestExplorerConsole : IExplorerConsole
         throw new NotSupportedException($"Unsupported prompt type in test console: {prompt.GetType().FullName}");
     }
 
-    public ConsoleKeyInfo ReadKey() => new('\r', ConsoleKey.Enter, false, false, false);
+    public string? ReadLine()
+    {
+        if (_readLineResponses.Count > 0)
+            return _readLineResponses.Dequeue();
+
+        return string.Empty;
+    }
+
+    public bool KeyAvailable => _readKeys.Count > 0;
+
+    public ConsoleKeyInfo ReadKey()
+    {
+        if (_readKeys.Count > 0)
+            return _readKeys.Dequeue();
+
+        return new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false);
+    }
 
     public void QueueSelection(string titleFragment, params string[] responses)
     {
@@ -107,19 +128,32 @@ internal sealed class TestExplorerConsole : IExplorerConsole
             _anyConfirmResponses.Enqueue(response);
     }
 
+    public void QueueReadLineResponses(params string?[] responses)
+    {
+        foreach (var response in responses)
+            _readLineResponses.Enqueue(response);
+    }
+
+    public void QueueReadKeys(params ConsoleKeyInfo[] responses)
+    {
+        foreach (var response in responses)
+            _readKeys.Enqueue(response);
+    }
+
     private string ResolveSelection(SelectionPrompt<string> selection)
     {
         var title = ReadPromptTitle(selection);
         SelectionTitles.Add(title);
         var choices = ReadChoices(selection);
+        SelectionChoicesHistory.Add((title, choices.ToArray()));
         if (choices.Count == 0)
             throw new InvalidOperationException($"Selection prompt '{title}' has no choices.");
 
-        if (_anySelectionResponses.Count > 0)
-            return _anySelectionResponses.Dequeue();
-
         if (TryDequeue(_selectionOverrides, title, out var scriptedChoice))
             return scriptedChoice;
+
+        if (_anySelectionResponses.Count > 0)
+            return _anySelectionResponses.Dequeue();
 
         if (title.Contains("Действие", StringComparison.OrdinalIgnoreCase))
             return choices.FirstOrDefault(IsBackChoice) ?? choices[0];

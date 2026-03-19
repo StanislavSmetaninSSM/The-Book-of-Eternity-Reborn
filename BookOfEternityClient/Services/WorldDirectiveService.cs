@@ -45,6 +45,9 @@ public sealed class WorldDirectiveService
         [JsonPropertyName("settingSummary")]
         public string SettingSummary { get; set; } = "";
 
+        [JsonPropertyName("detailedWorldDescription")]
+        public string DetailedWorldDescription { get; set; } = "";
+
         [JsonPropertyName("hardRules")]
         public List<string> HardRules { get; set; } = new();
 
@@ -212,6 +215,12 @@ public sealed class WorldDirectiveService
             pending.WorldDirectives.SettingSummary = worldDescription.Trim();
         }
 
+        if (string.IsNullOrWhiteSpace(pending.WorldDirectives.DetailedWorldDescription) &&
+            !string.IsNullOrWhiteSpace(worldDescription))
+        {
+            pending.WorldDirectives.DetailedWorldDescription = worldDescription.Trim();
+        }
+
         if (!string.IsNullOrWhiteSpace(circumstances))
         {
             var note = $"Стартовые обстоятельства: {circumstances.Trim()}";
@@ -243,6 +252,7 @@ public sealed class WorldDirectiveService
         var directivesFromPrompt = new WorldDirectives
         {
             SettingSummary = fallbackWorldDescription?.Trim() ?? "",
+            DetailedWorldDescription = fallbackWorldDescription?.Trim() ?? "",
             ContinuityNotes = string.IsNullOrWhiteSpace(fallbackCircumstances)
                 ? new List<string>()
                 : new List<string> { $"Стартовые обстоятельства: {fallbackCircumstances.Trim()}" },
@@ -336,7 +346,8 @@ public sealed class WorldDirectiveService
         var directivesFallback = new WorldDirectives
         {
             WorldTitle = nameFallback,
-            SettingSummary = content.Trim()
+            SettingSummary = descriptionFallback,
+            DetailedWorldDescription = content.Trim()
         };
 
         return new WorldProfileDescriptor
@@ -364,6 +375,8 @@ public sealed class WorldDirectiveService
             lines.Add($"{indent}- Tone: {directives.Tone}");
         if (!string.IsNullOrWhiteSpace(directives.SettingSummary))
             lines.Add($"{indent}- Summary: {Truncate(directives.SettingSummary, 220)}");
+        if (!string.IsNullOrWhiteSpace(directives.DetailedWorldDescription))
+            lines.Add($"{indent}- Detailed dossier: present ({directives.DetailedWorldDescription.Length} chars). Read full text from the file.");
         if (directives.HardRules.Count > 0)
             lines.Add($"{indent}- Hard rules: {string.Join("; ", directives.HardRules.Take(4))}{SuffixForRemainder(directives.HardRules.Count, 4)}");
         if (directives.RequiredElements.Count > 0)
@@ -398,7 +411,8 @@ public sealed class WorldDirectiveService
                 Genre = GetString(root, "genre", ""),
                 Era = GetString(root, "era", ""),
                 Tone = GetString(root, "tone", ""),
-                SettingSummary = GetString(root, "settingSummary", GetString(root, "description", ""))
+                SettingSummary = GetString(root, "settingSummary", GetString(root, "description", "")),
+                DetailedWorldDescription = GetString(root, "detailedWorldDescription", GetString(root, "worldDescription", ""))
             };
         }
     }
@@ -410,6 +424,7 @@ public sealed class WorldDirectiveService
         Era = source.Era,
         Tone = source.Tone,
         SettingSummary = source.SettingSummary,
+        DetailedWorldDescription = source.DetailedWorldDescription,
         HardRules = source.HardRules.ToList(),
         RequiredElements = source.RequiredElements.ToList(),
         ForbiddenElements = source.ForbiddenElements.ToList(),

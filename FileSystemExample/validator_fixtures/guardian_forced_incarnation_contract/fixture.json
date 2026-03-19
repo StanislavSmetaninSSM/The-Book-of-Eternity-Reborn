@@ -1,0 +1,64 @@
+{
+  "id": "guardian_forced_incarnation_contract",
+  "runner": "StateOnly",
+  "description": "Guardian-forced incarnation requires explicit provocation metadata and sufficiently hostile reputation.",
+  "shared": [
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/pre_turn_soul_state.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/current_soul_state.json",
+      "target": "game_state/meta/soul_state.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "broken/incarnation_trigger.json",
+      "target": "game_state/control/incarnation_trigger.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "fixed/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "fixed/incarnation_trigger.json",
+      "target": "game_state/control/incarnation_trigger.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "forced_incarnation_missing_player_action_provocation_evidence",
+    "forced_incarnation_missing_provocation_summary",
+    "forced_incarnation_reputation_too_high"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [
+    "forced_incarnation_missing_player_action_provocation_evidence",
+    "forced_incarnation_missing_provocation_summary",
+    "forced_incarnation_reputation_too_high",
+    "forced_incarnation_severity_mismatch"
+  ],
+  "allowExtraBrokenCodes": true
+}

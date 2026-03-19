@@ -5,7 +5,8 @@
       "name": "Azalia",
       "abode": {
         "abodeId": "abode_social_azalia_001",
-        "name": "Velvet Hall"
+        "name": "Velvet Hall",
+        "isDiscovered": true
       }
     }
   ],
@@ -14,10 +15,14 @@
     "name": "Azalia",
     "abode": {
       "abodeId": "abode_social_azalia_001",
-      "name": "Velvet Hall"
+      "name": "Velvet Hall",
+      "isDiscovered": true
     }
   },
   "chaosSeaNavigation": {
-    "currentAbodeId": "abode_social_azalia_001"
+    "currentAbodeId": "abode_social_azalia_001",
+    "discoveredAbodes": [
+      "abode_social_azalia_001"
+    ]
   }
 }

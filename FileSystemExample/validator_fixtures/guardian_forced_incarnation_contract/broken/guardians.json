@@ -1,0 +1,38 @@
+{
+  "guardians": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "name": "Азалия",
+      "domain": "Passion",
+      "abode": {
+        "abodeId": "abode_unquenchable_flame_001",
+        "isDiscovered": true
+      },
+      "relationshipData": {
+        "currentReputation": -10,
+        "reputationHistory": [],
+        "lastInteraction": "2026-03-20T09:10:00Z"
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_social_azalia_001",
+    "name": "Азалия",
+    "domain": "Passion",
+    "abode": {
+      "abodeId": "abode_unquenchable_flame_001",
+      "isDiscovered": true
+    },
+    "relationshipData": {
+      "currentReputation": -10,
+      "reputationHistory": [],
+      "lastInteraction": "2026-03-20T09:10:00Z"
+    }
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": "abode_unquenchable_flame_001",
+    "discoveredAbodes": [
+      "abode_unquenchable_flame_001"
+    ]
+  }
+}

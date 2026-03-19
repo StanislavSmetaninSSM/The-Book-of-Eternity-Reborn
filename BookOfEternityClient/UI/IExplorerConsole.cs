@@ -1,16 +1,14 @@
 using Spectre.Console;
 using Spectre.Console.Rendering;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.UI;
 
-public interface IExplorerConsole
+public interface IExplorerConsole : ITextComposerConsole
 {
     void Clear();
     void Write(IRenderable content);
-    void WriteLine();
-    void MarkupLine(string markup);
     string Ask(string prompt, string defaultValue = "");
     bool Confirm(string prompt, bool defaultValue = false);
     T Prompt<T>(IPrompt<T> prompt);
-    ConsoleKeyInfo ReadKey();
 }

@@ -1,0 +1,32 @@
+{
+  "id": "debug_logs_npc_location_audit",
+  "runner": "AcceptedTurn",
+  "description": "Accepted-turn reasoning for relevant NPCs must include an explicit current-location audit line.",
+  "shared": [
+    {
+      "source": "shared/npc_core.json",
+      "target": "game_state/npcs/npc_core.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/debug_logs.json",
+      "target": "output/debug_logs.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/debug_logs.json",
+      "target": "output/debug_logs.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "missing_actor_current_location"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

@@ -550,15 +550,8 @@ public sealed class GuardianTradeService
         _ => TradeReputationTier.Legendary
     };
 
-    private static string GetReputationTierLabel(int reputation) => reputation switch
-    {
-        <= -51 => "Враждебный",
-        <= -21 => "Недружелюбный",
-        <= 49 => "Нейтральный",
-        <= 129 => "Дружелюбный",
-        <= 229 => "Преданный",
-        _ => "Легендарный"
-    };
+    private static string GetReputationTierLabel(int reputation)
+        => ReputationScales.Resolve(ReputationScaleKind.Guardian, reputation).Label;
 
     private static bool GuardianTradeAllowedHere(JsonObject root, JsonObject guardian)
     {

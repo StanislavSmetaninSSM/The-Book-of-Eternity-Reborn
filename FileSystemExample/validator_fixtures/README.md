@@ -32,22 +32,23 @@ These fixtures are not a full playable session. They are focused contract exampl
 19. canonical `achievements.json` top-level shape
 20. canonical `codex_entries.json` top-level shape and bootstrap-safe current-world entry
 21. accepted-turn `gm_thoughts_markdown` must contain structured NPC scope
-22. `quest_history.json` canonical `questHistory` array shape
-23. `weather.json` weather contract requires both `tendency` and `description`
-24. direct-root `world_time.json` requires the full absolute state payload
-25. `NPCInventoryAdds` must carry a nested full item object
-26. `NPCActivityUpdates` must carry a nested `activityUpdate` payload
-27. critical `guardians.json` must not contain PowerShell runtime / AST serialization artifacts
-28. `activeGuardian` must resolve to an entry that actually exists in `guardians[]`
-29. `activeGuardian` with a materialized abode must also materialize matching `chaosSeaNavigation.currentAbodeId`
-29. `completeNPCActivities` must match the canonical pre-turn `currentActivity`
-30. `factionChronicleUpdates` must bind to an existing permanent faction id
-31. `worldMapUpdates.storageUpdates` must target an existing canonical storage id
-32. `factionBonusChanges` removals must target an existing canonical bonus id
-33. `completeFactionProjects` must target an existing canonical project id
-34. `factionCustomStateChanges` removals must target an existing canonical custom state id
-35. `worldMapUpdates.linkUpdates` must target an existing canonical adjacency link
-36. `completeThreatActivities` must target a threat with canonical active `currentActivity`
+22. accepted-turn relevant NPC reasoning blocks must contain an explicit current-location audit line
+23. `quest_history.json` canonical `questHistory` array shape
+24. `weather.json` weather contract requires both `tendency` and `description`
+25. direct-root `world_time.json` requires the full absolute state payload
+26. `NPCInventoryAdds` must carry a nested full item object
+27. `NPCActivityUpdates` must carry a nested `activityUpdate` payload
+28. critical `guardians.json` must not contain PowerShell runtime / AST serialization artifacts
+29. `activeGuardian` must resolve to an entry that actually exists in `guardians[]`
+30. `activeGuardian` with a materialized abode must also materialize matching `chaosSeaNavigation.currentAbodeId`
+31. `completeNPCActivities` must match the canonical pre-turn `currentActivity`
+32. `factionChronicleUpdates` must bind to an existing permanent faction id
+33. `worldMapUpdates.storageUpdates` must target an existing canonical storage id
+34. `factionBonusChanges` removals must target an existing canonical bonus id
+35. `completeFactionProjects` must target an existing canonical project id
+36. `factionCustomStateChanges` removals must target an existing canonical custom state id
+37. `worldMapUpdates.linkUpdates` must target an existing canonical adjacency link
+38. `completeThreatActivities` must target a threat with canonical active `currentActivity`
 
 The goal is to make validator behavior explainable and reproducible for both developers and GM-side debugging.
 

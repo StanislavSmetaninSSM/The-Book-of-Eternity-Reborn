@@ -1,0 +1,48 @@
+{
+  "id": "guardian_forced_incarnation_safe_turn",
+  "runner": "StateOnly",
+  "description": "Guardian-forced incarnation must be rejected on the protected first afterlife turn after returning from a mortal life.",
+  "shared": [
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/pre_turn_soul_state.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/current_soul_state.json",
+      "target": "game_state/meta/soul_state.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/incarnation_trigger.json",
+      "target": "game_state/control/incarnation_trigger.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/afterlife_return_guard.json",
+      "target": "game_state/control/afterlife_return_guard.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [],
+  "expectedBrokenCodes": [
+    "forced_incarnation_blocked_by_safe_return_turn"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [
+    "forced_incarnation_blocked_by_safe_return_turn"
+  ],
+  "allowExtraBrokenCodes": true
+}

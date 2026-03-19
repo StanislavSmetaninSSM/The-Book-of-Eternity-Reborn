@@ -51,6 +51,11 @@
                - Chaos-Sea Ink Feather whitelist: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint
                - `Sell Relic` is a separate guardian trade interaction and is NOT an Ink Feather action
                - Local guardian trade (`Buy / Sell` Soul Relics) is client-side, but canonically belongs to the current active Guardian's abode
+               - If a turn materializes the current active Guardian, you MUST also materialize the abode navigation state in `guardians.json`: `chaosSeaNavigation.currentAbodeId`, `chaosSeaNavigation.discoveredAbodes` containing that abodeId, and `abode.isDiscovered = true`
+               - If `game_state/control/afterlife_return_guard.json` exists with `remainingProtectedTurns > 0`, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any forced re-incarnation
+               - Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn and only as a reaction to explicit player provocation against the current active Guardian
+               - For guardian-forced `TriggerIncarnation`, write `source='guardian_forced'`, `guardianId`, `severityBand='harsh'|'severe'`, `reason`, `provocationSummary`, plus the normal `worldDescription`, `characterDescription`, `circumstances`
+               - A guardian-forced incarnation start must be harsh but survivable; do NOT create an unwinnable deathtrap
                - If the player asks the current active Guardian about a relic bought from this local stock, the Guardian should know that relic as part of their own trade assortment
                - Local NPC trade may also exist as a client-side panel for mortal-world goods only
                - Local NPC trade uses `game_state/core/player_status.json.money`, never Ink Feathers, and never trades Soul Relics
@@ -141,6 +146,7 @@
             
             ## 🎭 ОБЯЗАТЕЛЬНО: Reasoning / Размышления NPC / Guardian Thoughts
             ### [Each Declared Relevant Actor]:
+            - Current location / Текущая локация
             [Required thoughts and decisions for each]
             
             ## 🌍 Рекомендуется: Логика прогрессии
@@ -171,11 +177,12 @@
              
              ## Reasoning / Размышления NPC / Guardian Thoughts
             ### [NPC Name 1]:
+            - Текущая локация / Current location: [где NPC находится сейчас и остаётся ли там]
             - Ситуация: [их восприятие текущих событий]
             - Мысли: [внутренняя мотивация и планы]
             - Действия: [что они решают сделать]
             
-            ### [NPC Name 2]:
+             ### [NPC Name 2]:
             [аналогично для каждого важного NPC]
             
             ## Логика прогрессии
@@ -191,6 +198,7 @@
             Минимальный validator contract при этом остаётся уже:
             - `## Охват NPC-анализа` с полями режима/релевантных акторов/обоснований
             - valid reasoning section с блоками `### [Actor Name]` для всех declared relevant actors
+            - для каждого relevant NPC в его блоке обязателен явный подпункт `Текущая локация / Current location`
             
             **This assessment informs but does not replace standard game processing.**
             ]]>

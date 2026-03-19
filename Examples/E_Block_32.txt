@@ -42,7 +42,8 @@
               "abodeId": "abode_shadow_archive_001",
               "name": "Теневой Архив",
               "description": "Безмолвная библиотека теней и отражений, где знания шепчут из глубины зеркал.",
-              "image_prompt": "Ethereal shadow library floating in cosmic sea, mirror corridors, silver lantern light, mystical archive halls, fantasy environment"
+              "image_prompt": "Ethereal shadow library floating in cosmic sea, mirror corridors, silver lantern light, mystical archive halls, fantasy environment",
+              "isDiscovered": true
             },
             "personalityProfile": {
               "archetype": "Mysterious Oracle",
@@ -133,6 +134,12 @@
           }
         }
       ],
+      "chaosSeaNavigation": {
+        "currentAbodeId": "abode_shadow_archive_001",
+        "discoveredAbodes": [
+          "abode_shadow_archive_001"
+        ]
+      },
       "response": "Туманные очертания начинают собираться в Море Хаоса, формируя элегантную фигуру в темных одеждах. Селена Теневая материализуется перед тобой - ее серебристые глаза хранят тайны веков, а тени послушно плывут вокруг неё.\n\n'Приветствую, странник души,' - говорит она торжественным голосом. 'Твое желание обрело форму, и я явилась. Я - Селена, хранительница забытых тайн и проводница теневой магии. Если ты готов идти путями скрытых знаний, то мы найдем общий язык.'\n\nНовый Guardian создан и готов к взаимодействию.",
       "gm_thoughts_markdown": "## NPC Scope\n- Mode: Guardian-centric\n- Relevant actors: Селена Теневая\n- Why relevant: Этот ход создаёт и представляет нового Хранителя через UpdateGuardians.create.\n- Actors outside scope: остальные Хранители\n- Why outside scope: Их состояние в этом ходе не меняется.\n\n## Guardian Thoughts\n### Селена Теневая\n- Новый Guardian создан и представлен игроку; дополнительных afterlife-мутаций вне create не требуется."
     }

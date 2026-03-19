@@ -1,0 +1,14 @@
+{
+  "sessionId": "fixture-session",
+  "requestId": "fixture-request",
+  "turnNumber": 12,
+  "requestTimestamp": "2026-03-20T09:18:00Z",
+  "playerAction": "Я прихожу к Азалии и прошу минуту тишины, сохраняя холодную дистанцию.",
+  "files": {},
+  "snapshotFileHashes": {},
+  "clientOwnedValidationHashes": {},
+  "rollbackBackups": {},
+  "rollbackBaselineFiles": [],
+  "sourceLabel": "обработки хода",
+  "manifestPayloadHash": ""
+}

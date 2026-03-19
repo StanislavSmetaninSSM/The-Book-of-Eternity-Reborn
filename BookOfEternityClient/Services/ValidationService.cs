@@ -27,6 +27,12 @@ public class ValidationService
     private static readonly Regex TempFactionInitialIdRegex = new(@"^temp-faction-.+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex SnakeCaseIdRegex = new(@"^[a-z0-9]+(?:_[a-z0-9]+)*$", RegexOptions.Compiled);
     private static readonly Regex CyrillicRegex = new(@"\p{IsCyrillic}", RegexOptions.Compiled);
+    private static readonly Regex GuardianProvocationTagRegex = new(@"\[GUARDIAN_PROVOCATION(?:\s*:\s*([^\]]+))?\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly string[] GuardianProvocationKeywords =
+    {
+        "оскорб", "насмех", "издева", "унижа", "угрожа", "дерз", "презира", "плюю", "провоц", "вызыва",
+        "измыва", "mock", "taunt", "insult", "humiliat", "threaten", "defy", "provoke", "ridicule", "spit"
+    };
     private static readonly HashSet<string> ClientSideInkFeatherActions = new(StringComparer.OrdinalIgnoreCase)
     {
         "REVEAL_FATE",
@@ -486,6 +492,15 @@ public class ValidationService
         public int ChargesUsedThisReturn { get; set; }
         public HashSet<string> AvailableQuestIds { get; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> ActiveQuestIds { get; } = new(StringComparer.OrdinalIgnoreCase);
+    }
+
+    private sealed class ForcedGuardianIncarnationContext
+    {
+        public string GuardianId { get; set; } = "";
+        public string ExpectedAbodeId { get; set; } = "";
+        public string CurrentAbodeId { get; set; } = "";
+        public int CurrentReputation { get; set; }
+        public bool IsInCurrentAbode { get; set; }
     }
 
     private sealed class WorldLocationStateIndex
@@ -2944,9 +2959,6 @@ public class ValidationService
                 repairHint: "Добавь отдельную reasoning section ('Размышления NPC', 'Размышления акторов', 'Guardian Thoughts' или эквивалентный heading) и подпункты ### [Actor Name] для всех релевантных акторов."));
         }
 
-        foreach (var actorName in scope.RelevantActors)
-            ValidateActorReasoningBlock(normalizedThoughts, actorName, actorType, issues);
-
         var structuredActorUpdates = await CollectStructuredActorUpdatesAsync();
         ValidateStructuredActorUpdatesAgainstScope(scope, structuredActorUpdates, issues);
 
@@ -2954,6 +2966,11 @@ public class ValidationService
         var activeGuardianNames = string.IsNullOrWhiteSpace(preTurnGuardianScopeRealm)
             ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             : await CollectImportantGuardianNamesAsync(preTurnGuardianScopeRealm);
+        var knownNpcReferences = await ReadKnownNpcReferencesAsync();
+        var knownNpcActorAliases = new HashSet<string>(knownNpcReferences.Names, StringComparer.OrdinalIgnoreCase);
+        foreach (var npcId in knownNpcReferences.Ids)
+            knownNpcActorAliases.Add(npcId);
+
         if (scopeMode == ReasoningScopeMode.GuardianCentric &&
             activeGuardianNames.Count > 0 &&
             !scope.RelevantActors.Any(actor => activeGuardianNames.Contains(actor)))
@@ -2966,6 +2983,13 @@ public class ValidationService
                 expected: "Active Guardian in relevant actors",
                 actual: "active guardian absent from scope",
                 repairHint: "В guardian-centric режиме включи активного Хранителя в список релевантных акторов."));
+        }
+
+        foreach (var actorName in scope.RelevantActors)
+        {
+            var requiresNpcLocationAudit = knownNpcActorAliases.Contains(actorName) &&
+                                           !activeGuardianNames.Contains(actorName);
+            ValidateActorReasoningBlock(normalizedThoughts, actorName, actorType, requiresNpcLocationAudit, issues);
         }
 
         return issues;
@@ -4016,6 +4040,7 @@ public class ValidationService
         {
             using var doc = JsonDocument.Parse(soulJson);
             var root = doc.RootElement;
+            var currentSoulName = GetFirstNonEmptyString(root, "soulName") ?? string.Empty;
 
             // Incarnation number should be >= 0
             if (root.TryGetProperty("currentIncarnation", out var inc))
@@ -4049,6 +4074,82 @@ public class ValidationService
                 issues.Add(new ValidationIssue(
                     "game_state/meta/soul_state.json", IssueSeverity.Warning,
                     "livesHistory должен быть массивом"));
+            }
+
+            if (root.TryGetProperty("previousSoulNames", out var previousSoulNames))
+            {
+                if (previousSoulNames.ValueKind != JsonValueKind.Array)
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/meta/soul_state.json.previousSoulNames",
+                        IssueSeverity.Error,
+                        "previousSoulNames должен быть массивом строк",
+                        code: "soul_previous_names_invalid_shape",
+                        section: "SoulState",
+                        expected: "array of strings",
+                        actual: previousSoulNames.ValueKind.ToString(),
+                        repairHint: "Сохраняй previousSoulNames как canonical string[] без вложенных объектов."));
+                }
+                else
+                {
+                    var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var index = 0;
+                    foreach (var entry in previousSoulNames.EnumerateArray())
+                    {
+                        var entryPath = $"game_state/meta/soul_state.json.previousSoulNames[{index++}]";
+                        if (entry.ValueKind != JsonValueKind.String)
+                        {
+                            issues.Add(new ValidationIssue(
+                                entryPath,
+                                IssueSeverity.Error,
+                                "Каждый элемент previousSoulNames должен быть строкой",
+                                code: "soul_previous_names_invalid_entry",
+                                section: "SoulState",
+                                expected: "string",
+                                actual: entry.ValueKind.ToString(),
+                                repairHint: "Храни в previousSoulNames только непустые строковые имена души."));
+                            continue;
+                        }
+
+                        var name = entry.GetString()?.Trim();
+                        if (string.IsNullOrWhiteSpace(name))
+                        {
+                            issues.Add(new ValidationIssue(
+                                entryPath,
+                                IssueSeverity.Warning,
+                                "previousSoulNames не должен содержать пустые имена",
+                                code: "soul_previous_names_empty_entry",
+                                section: "SoulState",
+                                repairHint: "Удали пустые строки из previousSoulNames."));
+                            continue;
+                        }
+
+                        if (!seen.Add(name))
+                        {
+                            issues.Add(new ValidationIssue(
+                                entryPath,
+                                IssueSeverity.Warning,
+                                "previousSoulNames не должен содержать дубликаты",
+                                code: "soul_previous_names_duplicate_entry",
+                                section: "SoulState",
+                                actual: name,
+                                repairHint: "Оставляй каждое прежнее имя души только один раз."));
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(currentSoulName) &&
+                            string.Equals(name, currentSoulName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            issues.Add(new ValidationIssue(
+                                entryPath,
+                                IssueSeverity.Warning,
+                                "previousSoulNames не должен содержать текущее имя души",
+                                code: "soul_previous_names_contains_current_name",
+                                section: "SoulState",
+                                actual: name,
+                                repairHint: "Список previousSoulNames должен хранить только прежние, а не текущее имя души."));
+                        }
+                    }
+                }
             }
         }
         catch { }
@@ -8034,7 +8135,8 @@ public class ValidationService
         foreach (var clientOwnedPath in new[]
                  {
                      WorldDirectiveService.PendingSetupPath,
-                     WorldDirectiveService.ActiveDirectivesPath
+                     WorldDirectiveService.ActiveDirectivesPath,
+                     AfterlifeReturnGuardService.GuardPath
                  })
         {
             if (!await DidFileChangeAgainstManifestAsync(manifest, clientOwnedPath))
@@ -8043,9 +8145,13 @@ public class ValidationService
             issues.Add(new ValidationIssue(
                 clientOwnedPath,
                 IssueSeverity.Error,
-                $"{Path.GetFileName(clientOwnedPath)} является client-authored world setup state и не должен изменяться GM-ходом.",
-                code: "client_owned_world_setup_state_modified",
-                section: "WorldSetup",
+                $"{Path.GetFileName(clientOwnedPath)} является client-authored control state и не должен изменяться GM-ходом.",
+                code: clientOwnedPath.Equals(AfterlifeReturnGuardService.GuardPath, StringComparison.OrdinalIgnoreCase)
+                    ? "client_owned_afterlife_return_guard_modified"
+                    : "client_owned_world_setup_state_modified",
+                section: clientOwnedPath.Equals(AfterlifeReturnGuardService.GuardPath, StringComparison.OrdinalIgnoreCase)
+                    ? "Lifecycle"
+                    : "WorldSetup",
                 repairHint: $"Не записывай {clientOwnedPath} в GM response; этот файл поддерживается клиентом/игроком и должен читаться GM как входной контракт."));
         }
     }
@@ -12179,7 +12285,7 @@ public class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "metaStateUpdates",
-                "soulName", "currentRealm", "currentIncarnation", "enlightenment", "soulProgression",
+                "soulName", "previousSoulNames", "currentRealm", "currentIncarnation", "enlightenment", "soulProgression",
                 "inkFeathers", "soulRelics", "livesHistory", "crossIncarnationData", "currentTier",
                 "soulImprint", "pendingMemoryLegacy"
             }, issues, ValidateMetaMiscContract);
@@ -12256,12 +12362,12 @@ public class ValidationService
         await ValidateFlexibleStateFile("game_state/control/incarnation_trigger.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "worldDescription", "characterDescription", "circumstances", "_lastUpdated"
+                "worldDescription", "characterDescription", "circumstances", "source", "guardianId", "severityBand", "reason", "provocationSummary", "_lastUpdated"
             }, issues, ValidateIncarnationTriggerControlFile);
         await ValidateStrictTopLevelObjectFileAsync("game_state/control/incarnation_trigger.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "worldDescription", "characterDescription", "circumstances", "_lastUpdated"
+                "worldDescription", "characterDescription", "circumstances", "source", "guardianId", "severityBand", "reason", "provocationSummary", "_lastUpdated"
             }, issues);
         await ValidateFlexibleStateFile("game_state/control/ascension.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -12307,6 +12413,74 @@ public class ValidationService
         RequireString(root, contextPrefix, issues, "worldDescription");
         RequireString(root, contextPrefix, issues, "characterDescription");
         RequireString(root, contextPrefix, issues, "circumstances");
+
+        var source = root.TryGetProperty("source", out var sourceProp) && sourceProp.ValueKind == JsonValueKind.String
+            ? sourceProp.GetString() ?? ""
+            : "";
+        if (!string.Equals(source, IncarnationTriggerContract.GuardianForcedSource, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        if (!root.TryGetProperty("guardianId", out var guardianIdProp) ||
+            guardianIdProp.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(guardianIdProp.GetString()))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.guardianId",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation обязан содержать guardianId",
+                code: "forced_incarnation_missing_guardian_id",
+                section: "Lifecycle",
+                expected: "guardianId string",
+                actual: !root.TryGetProperty("guardianId", out _) ? "missing" : guardianIdProp.ValueKind.ToString(),
+                repairHint: "Для guardian-forced incarnation укажи guardianId текущего активного Хранителя."));
+        }
+
+        var severityBand = root.TryGetProperty("severityBand", out var severityBandProp) &&
+                           severityBandProp.ValueKind == JsonValueKind.String
+            ? severityBandProp.GetString() ?? ""
+            : "";
+        if (!IncarnationTriggerContract.IsValidSeverityBand(severityBand))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.severityBand",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation должен содержать severityBand = harsh или severe",
+                code: "forced_incarnation_invalid_severity_band",
+                section: "Lifecycle",
+                expected: "harsh | severe",
+                actual: string.IsNullOrWhiteSpace(severityBand) ? "missing" : severityBand,
+                repairHint: "Используй severityBand=harsh для умеренно враждебного старта или severityBand=severe для крайней враждебности."));
+        }
+
+        if (!root.TryGetProperty("reason", out var reasonProp) ||
+            reasonProp.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(reasonProp.GetString()))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.reason",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation обязан содержать reason",
+                code: "forced_incarnation_missing_reason",
+                section: "Lifecycle",
+                expected: "non-empty sanction reason",
+                actual: !root.TryGetProperty("reason", out _) ? "missing" : reasonProp.ValueKind.ToString(),
+                repairHint: "Кратко объясни, за что Хранитель навязывает это воплощение."));
+        }
+
+        if (!root.TryGetProperty("provocationSummary", out var provocationProp) ||
+            provocationProp.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(provocationProp.GetString()))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.provocationSummary",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation обязан содержать provocationSummary",
+                code: "forced_incarnation_missing_provocation_summary",
+                section: "Lifecycle",
+                expected: "non-empty provocationSummary",
+                actual: !root.TryGetProperty("provocationSummary", out _) ? "missing" : provocationProp.ValueKind.ToString(),
+                repairHint: "Явно опиши, какая провокация или оскорбление игрока вызвали санкцию Хранителя."));
+        }
     }
 
     private void ValidateAscensionControlFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -12393,6 +12567,7 @@ public class ValidationService
         ValidateOptionalString(root, contextPrefix, issues, "era");
         ValidateOptionalString(root, contextPrefix, issues, "tone");
         ValidateOptionalString(root, contextPrefix, issues, "settingSummary");
+        ValidateOptionalString(root, contextPrefix, issues, "detailedWorldDescription");
         ValidateOptionalString(root, contextPrefix, issues, "sourceProfileId");
         ValidateOptionalString(root, contextPrefix, issues, "sourceProfileName");
         ValidateOptionalString(root, contextPrefix, issues, "lastUpdated");
@@ -12544,7 +12719,7 @@ public class ValidationService
         if (string.IsNullOrWhiteSpace(json))
             return;
 
-        if (!TryReadIncarnationControlFile(json))
+        if (!IncarnationTriggerContract.TryParse(json, out var payload))
             return;
 
         var preTurnRealm = await TryResolvePreTurnRealmAsync();
@@ -12562,6 +12737,229 @@ public class ValidationService
                 expected: "Chaos Sea",
                 actual: preTurnRealm,
                 repairHint: "Проверяй realm на начало accepted turn. Если pre-turn realm уже не Chaos Sea, убери incarnation_trigger.json; если trigger был легален, не переводи soul_state.currentRealm в Mortal World вручную в том же ходе."));
+        }
+
+        if (payload.IsGuardianForced)
+            await ValidateForcedGuardianIncarnationContextAsync(payload, issues);
+    }
+
+    private async Task ValidateForcedGuardianIncarnationContextAsync(IncarnationTriggerPayload payload, List<ValidationIssue> issues)
+    {
+        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
+        if (!string.Equals(manifest?.SourceLabel, "обработки хода", StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/control/incarnation_trigger.json",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation допустим только на обычном player-driven afterlife turn.",
+                code: "forced_incarnation_invalid_source_turn",
+                section: "Lifecycle",
+                expected: "ordinary player-driven Chaos Sea turn",
+                actual: manifest?.SourceLabel ?? "missing sourceLabel",
+                repairHint: "Не навязывай принудительное воплощение на lifecycle/system turns. Сначала верни душу в обитель, дай ей хотя бы один обычный afterlife turn, и только затем реагируй на провокацию."));
+        }
+
+        var playerAction = manifest?.PlayerAction ?? string.Empty;
+        if (!HasGuardianProvocationEvidence(playerAction, payload))
+        {
+            issues.Add(new ValidationIssue(
+                "input/turn_request.json.playerAction",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation требует явной провокации в реальном playerAction, а не только provocationSummary в trigger payload.",
+                code: "forced_incarnation_missing_player_action_provocation_evidence",
+                section: "Lifecycle",
+                expected: "playerAction with explicit provocation against the current Guardian",
+                actual: string.IsNullOrWhiteSpace(playerAction) ? "missing or empty playerAction" : playerAction,
+                repairHint: "Если игрок реально не провоцировал Хранителя, убери guardian_forced incarnation. Для детерминированного разрешения используй явную провокацию в playerAction или тег [GUARDIAN_PROVOCATION: guardianId]."));
+        }
+
+        var guardJson = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
+        if (!string.IsNullOrWhiteSpace(guardJson))
+        {
+            if (!AfterlifeReturnGuardService.TryParse(guardJson, out var returnGuard))
+            {
+                issues.Add(new ValidationIssue(
+                    AfterlifeReturnGuardService.GuardPath,
+                    IssueSeverity.Error,
+                    "Повреждённый afterlife_return_guard.json не может отключить защиту первого afterlife-turn; guardian-forced incarnation блокируется fail-closed.",
+                    code: "forced_incarnation_blocked_by_invalid_safe_return_guard",
+                    section: "Lifecycle",
+                    expected: "valid afterlife_return_guard.json or no forced incarnation",
+                    actual: "invalid guard file",
+                    repairHint: "На этом ходе убери guardian_forced incarnation. Клиентский afterlife_return_guard.json должен быть валидным или очищенным самой runtime-нормализацией."));
+            }
+            else if (returnGuard.RemainingProtectedTurns > 0)
+            {
+                issues.Add(new ValidationIssue(
+                    AfterlifeReturnGuardService.GuardPath,
+                    IssueSeverity.Error,
+                    "Душа только что вернулась из смертной жизни и должна получить хотя бы один обычный afterlife turn до Guardian-forced incarnation.",
+                    code: "forced_incarnation_blocked_by_safe_return_turn",
+                    section: "Lifecycle",
+                    expected: "no guardian_forced incarnation while remainingProtectedTurns > 0",
+                    actual: $"remainingProtectedTurns={returnGuard.RemainingProtectedTurns}",
+                    repairHint: "Не пинай душу обратно немедленно после возвращения. На защищённом return turn убери guardian_forced incarnation и дай игроку обычный ход в обители."));
+            }
+        }
+
+        var guardianContext = await TryReadActiveGuardianIncarnationContextAsync();
+        if (guardianContext == null)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json.activeGuardian",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation требует materialized activeGuardian и его текущую обитель.",
+                code: "forced_incarnation_missing_active_guardian_context",
+                section: "Lifecycle",
+                expected: "activeGuardian + current abode context",
+                actual: "missing or invalid guardians active context",
+                repairHint: "Сначала materialize activeGuardian, его abode и chaosSeaNavigation.currentAbodeId. Только после этого возможна санкция конкретного Хранителя."));
+            return;
+        }
+
+        if (!string.Equals(payload.GuardianId, guardianContext.GuardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/control/incarnation_trigger.json.guardianId",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation должен ссылаться на текущего activeGuardian.",
+                code: "forced_incarnation_guardian_not_active",
+                section: "Lifecycle",
+                expected: guardianContext.GuardianId,
+                actual: string.IsNullOrWhiteSpace(payload.GuardianId) ? "missing" : payload.GuardianId,
+                repairHint: "Используй guardianId текущего activeGuardian и не назначай forced incarnation от постороннего Хранителя."));
+        }
+
+        if (!guardianContext.IsInCurrentAbode)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json.chaosSeaNavigation.currentAbodeId",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation допустим только когда душа находится в текущей обители активного Хранителя.",
+                code: "forced_incarnation_requires_current_guardian_abode",
+                section: "Lifecycle",
+                expected: guardianContext.ExpectedAbodeId,
+                actual: guardianContext.CurrentAbodeId,
+                repairHint: "Сначала materialize корректную currentAbodeId/current activeGuardian связь. Только текущий activeGuardian в своей обители может навязать воплощение."));
+        }
+
+        if (guardianContext.CurrentReputation > -21)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation требует достаточно отрицательной репутации.",
+                code: "forced_incarnation_reputation_too_high",
+                section: "Lifecycle",
+                expected: "<= -21",
+                actual: guardianContext.CurrentReputation.ToString(),
+                repairHint: "Для guardian-forced incarnation репутация должна быть хотя бы -21 или ниже. При слабой неприязни ограничься угрозами, отказом или жёстким roleplay без lifecycle trigger."));
+        }
+
+        var expectedSeverityBand = guardianContext.CurrentReputation <= -51
+            ? IncarnationTriggerContract.SevereSeverityBand
+            : IncarnationTriggerContract.HarshSeverityBand;
+        if (guardianContext.CurrentReputation <= -21 &&
+            !string.Equals(payload.SeverityBand, expectedSeverityBand, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/control/incarnation_trigger.json.severityBand",
+                IssueSeverity.Error,
+                "severityBand Guardian-forced incarnation должен соответствовать текущему диапазону враждебности Хранителя.",
+                code: "forced_incarnation_severity_mismatch",
+                section: "Lifecycle",
+                expected: expectedSeverityBand,
+                actual: string.IsNullOrWhiteSpace(payload.SeverityBand) ? "missing" : payload.SeverityBand,
+                repairHint: "Используй harsh при репутации -21..-50 и severe при репутации -51..-100."));
+        }
+    }
+
+    private static bool HasGuardianProvocationEvidence(string playerAction, IncarnationTriggerPayload payload)
+    {
+        if (string.IsNullOrWhiteSpace(playerAction))
+            return false;
+
+        var match = GuardianProvocationTagRegex.Match(playerAction);
+        if (match.Success)
+        {
+            var taggedGuardian = match.Groups.Count > 1 ? match.Groups[1].Value.Trim() : string.Empty;
+            if (string.IsNullOrWhiteSpace(taggedGuardian))
+                return true;
+
+            if (!string.IsNullOrWhiteSpace(payload.GuardianId) &&
+                taggedGuardian.Equals(payload.GuardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        foreach (var keyword in GuardianProvocationKeywords)
+        {
+            if (playerAction.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    private async Task<ForcedGuardianIncarnationContext?> TryReadActiveGuardianIncarnationContextAsync()
+    {
+        var json = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (root.ValueKind != JsonValueKind.Object ||
+                !root.TryGetProperty("activeGuardian", out var activeGuardian) ||
+                activeGuardian.ValueKind != JsonValueKind.Object)
+            {
+                return null;
+            }
+
+            var guardianId = GetFirstNonEmptyString(activeGuardian, "guardianId", "id") ?? "";
+            if (string.IsNullOrWhiteSpace(guardianId))
+                return null;
+
+            var expectedAbodeId = "";
+            if (activeGuardian.TryGetProperty("abode", out var abode) && abode.ValueKind == JsonValueKind.Object)
+                expectedAbodeId = GetFirstNonEmptyString(abode, "abodeId") ?? "";
+
+            var currentAbodeId = "";
+            if (root.TryGetProperty("chaosSeaNavigation", out var navigation) && navigation.ValueKind == JsonValueKind.Object)
+                currentAbodeId = GetFirstNonEmptyString(navigation, "currentAbodeId") ?? "";
+
+            var currentReputation = 0;
+            if (activeGuardian.TryGetProperty("relationshipData", out var relationshipData) &&
+                relationshipData.ValueKind == JsonValueKind.Object &&
+                relationshipData.TryGetProperty("currentReputation", out var reputationNode) &&
+                reputationNode.ValueKind == JsonValueKind.Number &&
+                reputationNode.TryGetInt32(out var relationshipReputation))
+            {
+                currentReputation = relationshipReputation;
+            }
+            else if (activeGuardian.TryGetProperty("reputation", out var reputationProp) &&
+                     reputationProp.ValueKind == JsonValueKind.Number &&
+                     reputationProp.TryGetInt32(out var directReputation))
+            {
+                currentReputation = directReputation;
+            }
+
+            return new ForcedGuardianIncarnationContext
+            {
+                GuardianId = guardianId,
+                ExpectedAbodeId = expectedAbodeId,
+                CurrentAbodeId = currentAbodeId,
+                CurrentReputation = currentReputation,
+                IsInCurrentAbode = !string.IsNullOrWhiteSpace(expectedAbodeId) &&
+                                   string.Equals(expectedAbodeId, currentAbodeId, StringComparison.OrdinalIgnoreCase)
+            };
+        }
+        catch
+        {
+            return null;
         }
     }
 
@@ -13548,22 +13946,7 @@ public class ValidationService
     }
 
     private static bool TryReadIncarnationControlFile(string json)
-    {
-        try
-        {
-            using var doc = JsonDocument.Parse(json);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object)
-                return false;
-
-            return HasNonEmptyString(doc.RootElement, "worldDescription") &&
-                   HasNonEmptyString(doc.RootElement, "characterDescription") &&
-                   HasNonEmptyString(doc.RootElement, "circumstances");
-        }
-        catch
-        {
-            return false;
-        }
-    }
+        => IncarnationTriggerContract.TryParse(json, out _);
 
     private static bool TryReadAscensionControlFile(string json)
     {
@@ -13984,7 +14367,7 @@ public class ValidationService
     {
         return scope.RelevantActors.Any(actor => string.Equals(actor, alias, StringComparison.OrdinalIgnoreCase));
     }
-    private void ValidateActorReasoningBlock(string thoughts, string actorName, string actorType, List<ValidationIssue> issues)
+    private void ValidateActorReasoningBlock(string thoughts, string actorName, string actorType, bool requiresNpcLocationAudit, List<ValidationIssue> issues)
     {
         if (!TryExtractReasoningBlock(thoughts, actorName, out var block))
         {
@@ -14039,6 +14422,19 @@ public class ValidationService
                 actual: "missing",
                 repairHint: $"Добавь подпункт действий для актора '{actorName}'."));
         }
+
+        if (requiresNpcLocationAudit && !HasActorLocationAudit(block))
+        {
+            issues.Add(new ValidationIssue(
+                "output/debug_logs.json", IssueSeverity.Error,
+                $"Для NPC '{actorName}' отсутствует обязательный подпункт текущей локации/current location",
+                code: "missing_actor_current_location",
+                actor: actorName,
+                section: "npc_reasoning",
+                expected: "Current location / Текущая локация / currentLocationId line inside the actor block",
+                actual: "missing",
+                repairHint: $"Добавь в блок '### {actorName}' явный подпункт текущей локации: где NPC находится сейчас и остаётся ли он там или перемещается."));
+        }
     }
 
     private static bool TryExtractReasoningBlock(string text, string actorName, out string block)
@@ -14076,6 +14472,28 @@ public class ValidationService
         {
             if (text.Contains(fragment, StringComparison.OrdinalIgnoreCase))
                 return true;
+        }
+
+        return false;
+    }
+
+    private static bool HasActorLocationAudit(string block)
+    {
+        foreach (var line in block.Replace("\r\n", "\n").Split('\n'))
+        {
+            var trimmed = line.TrimStart().ToLowerInvariant();
+            if (!trimmed.StartsWith("-") && !trimmed.StartsWith("*"))
+                continue;
+
+            if (trimmed.Contains("текущая локац") ||
+                trimmed.Contains("локация:") ||
+                trimmed.Contains("местонахожд") ||
+                trimmed.Contains("current location") ||
+                trimmed.Contains("currentlocationid") ||
+                trimmed.Contains("location audit"))
+            {
+                return true;
+            }
         }
 
         return false;
@@ -14509,6 +14927,7 @@ public class ValidationService
                normalizedPath.Equals("game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/progression_schedule.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/incarnation_world_setup.json", StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals("game_state/control/afterlife_return_guard.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_cli_window_binding.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
@@ -18654,7 +19073,8 @@ public class ValidationService
         if (string.IsNullOrWhiteSpace(expectedAbodeId))
             return;
 
-        if (!root.TryGetProperty("chaosSeaNavigation", out var navigation) || navigation.ValueKind != JsonValueKind.Object)
+        var hasNavigationObject = root.TryGetProperty("chaosSeaNavigation", out var navigation) && navigation.ValueKind == JsonValueKind.Object;
+        if (!hasNavigationObject)
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.chaosSeaNavigation",
@@ -18665,11 +19085,10 @@ public class ValidationService
                 expected: $"chaosSeaNavigation.currentAbodeId = {expectedAbodeId}",
                 actual: "chaosSeaNavigation missing",
                 repairHint: $"Когда душа находится у активного Хранителя, materialize chaosSeaNavigation.currentAbodeId и синхронизируй его с abodeId из {guardianArrayContext}.abode."));
-            return;
         }
 
-        var actualAbodeId = GetFirstNonEmptyString(navigation, "currentAbodeId");
-        if (string.IsNullOrWhiteSpace(actualAbodeId))
+        var actualAbodeId = hasNavigationObject ? GetFirstNonEmptyString(navigation, "currentAbodeId") : null;
+        if (hasNavigationObject && string.IsNullOrWhiteSpace(actualAbodeId))
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.chaosSeaNavigation.currentAbodeId",
@@ -18680,10 +19099,11 @@ public class ValidationService
                 expected: expectedAbodeId,
                 actual: "missing or empty",
                 repairHint: $"При создании/активации Хранителя сразу записывай chaosSeaNavigation.currentAbodeId = {expectedAbodeId}, иначе локальная торговля и abode-bound UX будут недоступны."));
-            return;
         }
 
-        if (!string.Equals(actualAbodeId, expectedAbodeId, StringComparison.OrdinalIgnoreCase))
+        if (hasNavigationObject &&
+            !string.IsNullOrWhiteSpace(actualAbodeId) &&
+            !string.Equals(actualAbodeId, expectedAbodeId, StringComparison.OrdinalIgnoreCase))
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.chaosSeaNavigation.currentAbodeId",
@@ -18694,6 +19114,56 @@ public class ValidationService
                 expected: expectedAbodeId,
                 actual: actualAbodeId,
                 repairHint: $"Синхронизируй chaosSeaNavigation.currentAbodeId с abodeId активного Хранителя из {guardianArrayContext}.abode, иначе guardian trade и abode-specific UI будут расходиться с canonical state."));
+        }
+
+        JsonElement discoveredAbodes = default;
+        var hasDiscoveredAbodesArray = hasNavigationObject &&
+                                       navigation.TryGetProperty("discoveredAbodes", out discoveredAbodes) &&
+                                       discoveredAbodes.ValueKind == JsonValueKind.Array;
+
+        if (!hasDiscoveredAbodesArray)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.chaosSeaNavigation.discoveredAbodes",
+                IssueSeverity.Error,
+                "Активный Хранитель требует materialized discoveredAbodes с текущей обителью",
+                code: "active_guardian_missing_from_discovered_abodes",
+                section: "Guardians",
+                expected: $"discoveredAbodes contains {expectedAbodeId}",
+                actual: !hasNavigationObject ? "chaosSeaNavigation missing" : !navigation.TryGetProperty("discoveredAbodes", out _) ? "missing" : discoveredAbodes.ValueKind.ToString(),
+                repairHint: $"Когда активный Хранитель уже materialized, добавляй его abodeId {expectedAbodeId} в chaosSeaNavigation.discoveredAbodes. Иначе navigation/travel UX будет неполным."));
+        }
+        else
+        {
+            var containsExpectedAbode = discoveredAbodes.EnumerateArray()
+                .Any(node => node.ValueKind == JsonValueKind.String &&
+                             string.Equals(node.GetString(), expectedAbodeId, StringComparison.OrdinalIgnoreCase));
+
+            if (!containsExpectedAbode)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.chaosSeaNavigation.discoveredAbodes",
+                    IssueSeverity.Error,
+                    "discoveredAbodes должен содержать abodeId активного Хранителя",
+                    code: "active_guardian_missing_from_discovered_abodes",
+                    section: "Guardians",
+                    expected: expectedAbodeId,
+                    actual: BuildCanonicalJsonSignature(discoveredAbodes),
+                    repairHint: $"При создании/активации Хранителя сразу включай его abodeId {expectedAbodeId} в chaosSeaNavigation.discoveredAbodes, иначе игрок не считается знающим текущую обитель полностью."));
+            }
+        }
+
+        if (!abode.TryGetProperty("isDiscovered", out var isDiscoveredNode) || isDiscoveredNode.ValueKind != JsonValueKind.True)
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianArrayContext}.abode.isDiscovered",
+                IssueSeverity.Error,
+                "Активный Хранитель требует discovered abode state",
+                code: "active_guardian_abode_not_marked_discovered",
+                section: "Guardians",
+                expected: "true",
+                actual: !abode.TryGetProperty("isDiscovered", out _) ? "missing" : isDiscoveredNode.ToString(),
+                repairHint: $"Если Хранитель уже materialized как текущий активный, его abode.isDiscovered должен быть true. Не оставляй текущую обитель скрытой для игрока."));
         }
     }
 
@@ -26544,6 +27014,7 @@ public class ValidationIssue
                normalizedPath.Equals("game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/progression_schedule.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/incarnation_world_setup.json", StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals("game_state/control/afterlife_return_guard.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_cli_window_binding.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||

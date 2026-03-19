@@ -16,12 +16,14 @@ public sealed class ExplorerModeCommandTests : IDisposable
     private readonly StateManager _stateManager;
     private readonly LocalizationManager _loc;
     private readonly TestExplorerConsole _console;
+    private readonly TestClipboardService _clipboard;
     private readonly StoryService _storyService;
     private readonly WorldDirectiveService _worldDirectiveService;
     private readonly SystemModService _systemModService;
     private readonly NpcTradeService _npcTradeService;
     private readonly GuardianTradeService _guardianTradeService;
     private readonly PendingTurnStateService _pendingTurnStateService;
+    private readonly SoulIdentityService _soulIdentityService;
     private readonly ExplorerMode _explorer;
 
     public ExplorerModeCommandTests()
@@ -35,12 +37,14 @@ public sealed class ExplorerModeCommandTests : IDisposable
         _stateManager = new StateManager(_fs, _settings, NullLogger<StateManager>.Instance);
         _loc = new LocalizationManager { CurrentLanguage = "ru" };
         _console = new TestExplorerConsole();
+        _clipboard = new TestClipboardService();
         _storyService = new StoryService(_fs, NullLogger<StoryService>.Instance);
         _worldDirectiveService = new WorldDirectiveService(_fs, NullLogger<WorldDirectiveService>.Instance);
         _systemModService = new SystemModService(_fs, _settings, NullLogger<SystemModService>.Instance);
         _npcTradeService = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
         _guardianTradeService = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
         _pendingTurnStateService = new PendingTurnStateService(_fs, NullLogger<PendingTurnStateService>.Instance);
+        _soulIdentityService = new SoulIdentityService(_fs, NullLogger<SoulIdentityService>.Instance);
         _explorer = new ExplorerMode(_stateManager, _fs, _loc,
             npcTradeService: _npcTradeService,
             guardianTradeService: _guardianTradeService,
@@ -48,6 +52,8 @@ public sealed class ExplorerModeCommandTests : IDisposable
             pendingTurnState: _pendingTurnStateService,
             systemModService: _systemModService,
             worldDirectiveService: _worldDirectiveService,
+            soulIdentityService: _soulIdentityService,
+            clipboardService: _clipboard,
             console: _console);
     }
 
@@ -68,6 +74,40 @@ public sealed class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors(command);
         Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0, $"Command {command} did not render anything.");
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SoulInfo_RenameSoul_PersistsPreviousSoulNames()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            pendingGuardianCreation = new
+            {
+                description = "Тестовый хранитель",
+                soulName = "Тестовая Душа"
+            }
+        });
+
+        _console.QueueAnySelection("✏️ Сменить имя души", "← Назад");
+        _console.QueueAskResponse("Новое имя души", "Пепельная Искра");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/душа"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("soul_rename");
+
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.NotNull(soulRaw);
+        Assert.Contains("\"soulName\": \"Пепельная Искра\"", soulRaw, StringComparison.Ordinal);
+        Assert.Contains("\"previousSoulNames\": [", soulRaw, StringComparison.Ordinal);
+        Assert.Contains("\"Тестовая Душа\"", soulRaw, StringComparison.Ordinal);
+
+        var guardiansRaw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        Assert.NotNull(guardiansRaw);
+        Assert.Contains("\"soulName\": \"Пепельная Искра\"", guardiansRaw, StringComparison.Ordinal);
+        Assert.Equal("Пепельная Искра", _stateManager.CurrentState.SoulName);
     }
 
     [Fact]
@@ -142,7 +182,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
             }
         });
 
-        _console.QueueAnySelection("🧹 Очистить pending setup", "← Назад");
+        _console.QueueAnySelection("🧹 Очистить подготовку мира", "← Назад");
         _console.QueueAnyConfirmResponse(true);
         await _stateManager.RefreshGameStateAsync();
 
@@ -156,6 +196,33 @@ public sealed class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_WorldSetup_EditFlow_PersistsLargeDetailedDescriptionBlock()
+    {
+        await SeedAfterlifeStateAsync();
+        _console.QueueAnySelection("✏️ Создать / редактировать подготовку мира", "✏️ Изменить текст", "← Назад");
+        _console.QueueAskResponse("Название мира", "Этернум");
+        _console.QueueAskResponse("Жанр", "Dark fantasy");
+        _console.QueueAskResponse("Эпоха", "Поздняя бронза");
+        _console.QueueAskResponse("Тон", "Мрачный, медитативный");
+        _console.QueueAskResponse("Краткая сводка", "Мир башен, глубин и древних договоров.");
+        _console.QueueReadLineResponses("\\p");
+        _clipboard.Text = "Первый абзац подробного описания мира.\n\nВторой абзац с дополнительными свободными правилами и ограничениями.";
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/world_setup"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("world_setup_edit");
+        var raw = await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath);
+        Assert.NotNull(raw);
+        Assert.Contains("\"worldTitle\": \"Этернум\"", raw, StringComparison.Ordinal);
+        Assert.Contains("\"settingSummary\": \"Мир башен, глубин и древних договоров.\"", raw, StringComparison.Ordinal);
+        Assert.Contains("Первый абзац подробного описания мира.", raw, StringComparison.Ordinal);
+        Assert.Contains("Второй абзац с дополнительными свободными правилами и ограничениями.", raw, StringComparison.Ordinal);
+        Assert.Contains("detailedWorldDescription", raw, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_WorldRules_ClearFlow_UsesAdapterAndRemovesActiveDirectives()
     {
         await SeedMortalStateAsync();
@@ -165,7 +232,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
             settingSummary = "Активное досье для smoke test."
         });
 
-        _console.QueueAnySelection("🧹 Очистить world directives", "← Назад");
+        _console.QueueAnySelection("🧹 Очистить досье мира", "← Назад");
         _console.QueueAnyConfirmResponse(true);
         await _stateManager.RefreshGameStateAsync();
 
@@ -646,7 +713,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
             {
                 factionId = "faction_test_001",
                 name = "Дом Пепла",
-                reputation = 55,
+                reputation = 180,
                 level = "II",
                 isPlayerMember = true,
                 description = "Торговый дом с жёсткой дисциплиной."
@@ -659,6 +726,36 @@ public sealed class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("factions");
         Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
+        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
+            choice => choice.Contains("180 (Сочувствующий)", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Guardians_UsesSharedGuardianReputationLabelsInChoices()
+    {
+        await SeedSessionForCommandAsync("/хранители");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardians_reputation_choices");
+        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
+            choice => choice.Contains("Нейтральный", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Npcs_UsesSharedRelationshipLabelsInChoices()
+    {
+        await SeedNpcTradeStateAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("npcs_reputation_choices");
+        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
+            choice => choice.Contains("♥ 80 (Нейтралитет)", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -913,6 +1010,36 @@ public sealed class ExplorerModeCommandTests : IDisposable
         Assert.Contains("\"soldOut\": true", npcRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"items\"", inventoryRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.DoesNotContain("\"money\": 500", statusRaw ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_NpcTradeAction_IsShownWhenAvailabilityAllowsTrade()
+    {
+        await SeedNpcTradeStateAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("npc_trade_action_present");
+        Assert.Contains(_console.SelectionChoicesHistory,
+            entry => entry.Title.Contains("Действие", StringComparison.OrdinalIgnoreCase) &&
+                     entry.Choices.Contains("🛒 Торговать", StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_NpcTradeAction_IsHiddenWhenTradeIsBlocked()
+    {
+        await SeedNpcTradeStateAsync(canTrade: false);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("npc_trade_action_hidden");
+        Assert.DoesNotContain(_console.SelectionChoicesHistory,
+            entry => entry.Title.Contains("Действие", StringComparison.OrdinalIgnoreCase) &&
+                     entry.Choices.Contains("🛒 Торговать", StringComparer.Ordinal));
     }
 
     [Fact]
@@ -1226,10 +1353,11 @@ public sealed class ExplorerModeCommandTests : IDisposable
         inkFeathers = new { current = 3 }
     });
 
-    private async Task SeedNpcTradeStateAsync(bool includeSellableInventoryItem = false)
+    private async Task SeedNpcTradeStateAsync(bool includeSellableInventoryItem = false, bool canTrade = true, bool locationMatches = true)
     {
         await SeedMortalStateAsync();
-        await WriteRawJsonAsync("game_state/npcs/npc_core.json", """
+        var blockedReasonField = canTrade ? "" : ",\n              \"tradeBlockedReason\": \"Торговля сейчас недоступна.\"";
+        await WriteRawJsonAsync("game_state/npcs/npc_core.json", $$"""
         {
           "UpdateNPCs": [
             {
@@ -1241,8 +1369,8 @@ public sealed class ExplorerModeCommandTests : IDisposable
               "relationshipLevel": 80,
               "characteristics": { "modifiedTrade": 14 },
               "tradeState": {
-                "canTrade": true,
-                "merchantProfile": "GeneralGoods"
+                "canTrade": {{canTrade.ToString().ToLowerInvariant()}},
+                "merchantProfile": "GeneralGoods"{{blockedReasonField}}
               }
             }
           ]
@@ -1250,8 +1378,8 @@ public sealed class ExplorerModeCommandTests : IDisposable
         """);
         await WriteJsonAsync("game_state/world/current_location.json", new
         {
-            locationId = "loc_market_square",
-            name = "Рыночная площадь"
+            locationId = locationMatches ? "loc_market_square" : "loc_other_square",
+            name = locationMatches ? "Рыночная площадь" : "Другая площадь"
         });
         await WriteJsonAsync("game_state/core/player_status.json", new
         {
@@ -1374,7 +1502,8 @@ public sealed class ExplorerModeCommandTests : IDisposable
 
     private string BuildConsoleDiagnostics(string scenario)
     {
-        return $"{scenario} | titles: {string.Join(" || ", _console.SelectionTitles)} | ask: {string.Join(" || ", _console.AskPrompts)} | confirm: {string.Join(" || ", _console.ConfirmPrompts)} | markup: {string.Join(" || ", _console.MarkupLines)}";
+        var choices = string.Join(" || ", _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices));
+        return $"{scenario} | titles: {string.Join(" || ", _console.SelectionTitles)} | choices: {choices} | ask: {string.Join(" || ", _console.AskPrompts)} | confirm: {string.Join(" || ", _console.ConfirmPrompts)} | markup: {string.Join(" || ", _console.MarkupLines)}";
     }
 
     private void AssertNoHiddenExplorerErrors(string scenario)

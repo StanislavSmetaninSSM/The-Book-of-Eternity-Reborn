@@ -106,6 +106,15 @@ public sealed class NpcTradeService
 
     public sealed record NpcTradeOperationResult(bool Success, bool StateChanged, string Message);
 
+    internal readonly record struct NpcTradeAvailability(
+        string? MerchantProfile,
+        string MerchantProfileDisplay,
+        bool TradeAvailable,
+        string? BlockReason)
+    {
+        public bool IsMerchant => !string.IsNullOrWhiteSpace(MerchantProfile);
+    }
+
     private const string DefaultMerchantProfileKey = "GeneralGoods";
 
     private static readonly IReadOnlyDictionary<string, string> MerchantProfileAliases =
@@ -592,6 +601,47 @@ public sealed class NpcTradeService
         return null;
     }
 
+    internal static NpcTradeAvailability EvaluateTradeAvailability(JsonElement npc, string currentLocationId, string currentLocationName)
+    {
+        var merchantProfile = ResolveMerchantProfileCode(
+            npc.TryGetProperty("tradeState", out var tradeState) && tradeState.ValueKind == JsonValueKind.Object
+                ? GetFirstNonEmptyString(tradeState, "merchantProfile")
+                : null,
+            GetFirstNonEmptyString(npc, "role"),
+            GetFirstNonEmptyString(npc, "occupation"),
+            GetFirstNonEmptyString(npc, "class"),
+            GetFirstNonEmptyString(npc, "name"));
+
+        return BuildTradeAvailability(
+            merchantProfile,
+            GetFirstNonEmptyString(npc, "currentLocationId") ?? "",
+            GetFirstNonEmptyString(npc, "currentLocation") ?? "",
+            currentLocationId,
+            currentLocationName,
+            npc.TryGetProperty("tradeState", out var tradeStateNode) && tradeStateNode.ValueKind == JsonValueKind.Object
+                ? tradeStateNode
+                : (JsonElement?)null);
+    }
+
+    internal static NpcTradeAvailability EvaluateTradeAvailability(JsonObject npc, string currentLocationId, string currentLocationName)
+    {
+        var tradeState = npc["tradeState"] as JsonObject;
+        var merchantProfile = ResolveMerchantProfileCode(
+            GetNodeString(tradeState?["merchantProfile"]),
+            GetNodeString(npc["role"]),
+            GetNodeString(npc["occupation"]),
+            GetNodeString(npc["class"]),
+            GetNodeString(npc["name"]));
+
+        return BuildTradeAvailability(
+            merchantProfile,
+            GetNodeString(npc["currentLocationId"]) ?? "",
+            GetNodeString(npc["currentLocation"]) ?? "",
+            currentLocationId,
+            currentLocationName,
+            tradeState);
+    }
+
     internal static int ComputeBuyPriceForValidation(int basePrice, int playerTrade, int npcTrade, string pricingTierCode) =>
         ComputeBuyPrice(basePrice, playerTrade, npcTrade, ParsePricingTierCode(pricingTierCode));
 
@@ -1024,43 +1074,10 @@ public sealed class NpcTradeService
 
     private bool NpcTradeAllowedHere(JsonObject npc, out string? blockedReason)
     {
-        blockedReason = null;
         var (currentLocationId, currentLocationName) = ReadCurrentLocationIdentitySync();
-        var npcLocationId = GetNodeString(npc["currentLocationId"]) ?? "";
-        var npcLocationName = GetNodeString(npc["currentLocation"]) ?? "";
-        var sameLocation =
-            (!string.IsNullOrWhiteSpace(currentLocationId) && string.Equals(currentLocationId, npcLocationId, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(currentLocationName) && string.Equals(currentLocationName, npcLocationName, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(currentLocationId) && string.Equals(currentLocationId, npcLocationName, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(currentLocationName) && string.Equals(currentLocationName, npcLocationId, StringComparison.OrdinalIgnoreCase));
-        if (!sameLocation)
-        {
-            blockedReason = "Этот торговец не находится в текущей локации.";
-            return false;
-        }
-
-        var profile = ResolveMerchantProfile(npc);
-        if (profile == null)
-        {
-            blockedReason = "Этот НПС не является торговцем.";
-            return false;
-        }
-
-        var tradeState = npc["tradeState"] as JsonObject;
-        if (tradeState?["canTrade"] is not JsonValue canTradeValue ||
-            !canTradeValue.TryGetValue<bool>(out var canTrade))
-        {
-            blockedReason = "Торговля доступна только если tradeState.canTrade явно включён.";
-            return false;
-        }
-
-        if (!canTrade)
-        {
-            blockedReason = GetNodeString(tradeState["tradeBlockedReason"]) ?? "Торговля сейчас недоступна.";
-            return false;
-        }
-
-        return true;
+        var availability = EvaluateTradeAvailability(npc, currentLocationId, currentLocationName);
+        blockedReason = availability.BlockReason;
+        return availability.TradeAvailable;
     }
 
     private (string locationId, string locationName) ReadCurrentLocationIdentitySync()
@@ -1098,6 +1115,125 @@ public sealed class NpcTradeService
         return !string.IsNullOrWhiteSpace(profileCode) && MerchantProfiles.TryGetValue(profileCode, out var profile)
             ? profile
             : null;
+    }
+
+    private static NpcTradeAvailability BuildTradeAvailability(
+        string? merchantProfile,
+        string npcLocationId,
+        string npcLocationName,
+        string currentLocationId,
+        string currentLocationName,
+        JsonElement? tradeState)
+    {
+        if (string.IsNullOrWhiteSpace(merchantProfile))
+            return new NpcTradeAvailability(null, GetMerchantProfileDisplayName(null), false, "Этот НПС не является торговцем.");
+
+        if (!IsSameTradeLocation(npcLocationId, npcLocationName, currentLocationId, currentLocationName))
+        {
+            return new NpcTradeAvailability(
+                merchantProfile,
+                GetMerchantProfileDisplayName(merchantProfile),
+                false,
+                "Доступна только в текущей локации торговца.");
+        }
+
+        if (tradeState == null || tradeState.Value.ValueKind != JsonValueKind.Object)
+        {
+            return new NpcTradeAvailability(
+                merchantProfile,
+                GetMerchantProfileDisplayName(merchantProfile),
+                false,
+                "Локальная торговля включается только через tradeState.canTrade = true.");
+        }
+
+        if (!tradeState.Value.TryGetProperty("canTrade", out var canTradeNode) ||
+            (canTradeNode.ValueKind != JsonValueKind.True && canTradeNode.ValueKind != JsonValueKind.False))
+        {
+            return new NpcTradeAvailability(
+                merchantProfile,
+                GetMerchantProfileDisplayName(merchantProfile),
+                false,
+                "Локальная торговля включается только через tradeState.canTrade = true.");
+        }
+
+        if (canTradeNode.ValueKind == JsonValueKind.False)
+        {
+            return new NpcTradeAvailability(
+                merchantProfile,
+                GetMerchantProfileDisplayName(merchantProfile),
+                false,
+                GetFirstNonEmptyString(tradeState.Value, "tradeBlockedReason") ?? "Торговля сейчас недоступна.");
+        }
+
+        return new NpcTradeAvailability(
+            merchantProfile,
+            GetMerchantProfileDisplayName(merchantProfile),
+            true,
+            null);
+    }
+
+    private static NpcTradeAvailability BuildTradeAvailability(
+        string? merchantProfile,
+        string npcLocationId,
+        string npcLocationName,
+        string currentLocationId,
+        string currentLocationName,
+        JsonObject? tradeState)
+    {
+        if (string.IsNullOrWhiteSpace(merchantProfile))
+            return new NpcTradeAvailability(null, GetMerchantProfileDisplayName(null), false, "Этот НПС не является торговцем.");
+
+        if (!IsSameTradeLocation(npcLocationId, npcLocationName, currentLocationId, currentLocationName))
+        {
+            return new NpcTradeAvailability(
+                merchantProfile,
+                GetMerchantProfileDisplayName(merchantProfile),
+                false,
+                "Доступна только в текущей локации торговца.");
+        }
+
+        if (tradeState == null)
+        {
+            return new NpcTradeAvailability(
+                merchantProfile,
+                GetMerchantProfileDisplayName(merchantProfile),
+                false,
+                "Локальная торговля включается только через tradeState.canTrade = true.");
+        }
+
+        if (tradeState["canTrade"] is not JsonValue canTradeValue ||
+            !canTradeValue.TryGetValue<bool>(out var canTrade))
+        {
+            return new NpcTradeAvailability(
+                merchantProfile,
+                GetMerchantProfileDisplayName(merchantProfile),
+                false,
+                "Локальная торговля включается только через tradeState.canTrade = true.");
+        }
+
+        if (!canTrade)
+        {
+            return new NpcTradeAvailability(
+                merchantProfile,
+                GetMerchantProfileDisplayName(merchantProfile),
+                false,
+                GetNodeString(tradeState["tradeBlockedReason"]) ?? "Торговля сейчас недоступна.");
+        }
+
+        return new NpcTradeAvailability(
+            merchantProfile,
+            GetMerchantProfileDisplayName(merchantProfile),
+            true,
+            null);
+    }
+
+    private static bool IsSameTradeLocation(string npcLocationId, string npcLocationName, string currentLocationId, string currentLocationName)
+    {
+        return
+            (!string.IsNullOrWhiteSpace(currentLocationId) && string.Equals(currentLocationId, npcLocationId, StringComparison.OrdinalIgnoreCase)) ||
+            (!string.IsNullOrWhiteSpace(currentLocationName) && string.Equals(currentLocationName, npcLocationName, StringComparison.OrdinalIgnoreCase)) ||
+            (!string.IsNullOrWhiteSpace(currentLocationId) && string.Equals(currentLocationId, npcLocationName, StringComparison.OrdinalIgnoreCase)) ||
+            (!string.IsNullOrWhiteSpace(currentLocationName) && string.Equals(currentLocationName, npcLocationId, StringComparison.OrdinalIgnoreCase));
     }
 
     private static string BuildItemDescription(MerchantProfile profile, TradeItemTemplate template, string itemName, int slotIndex, Random random)

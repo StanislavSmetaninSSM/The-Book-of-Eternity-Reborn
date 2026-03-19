@@ -29,6 +29,8 @@ public class ExplorerMode
     private readonly Services.NpcTradeService? _npcTradeService;
     private readonly Services.SystemModService? _systemModService;
     private readonly Services.WorldDirectiveService? _worldDirectiveService;
+    private readonly Services.SoulIdentityService? _soulIdentityService;
+    private readonly Services.IClipboardService? _clipboardService;
 
     // Set by interactive commands (equip/unequip) to signal an action to send to the GM
     private string? _pendingGmAction;
@@ -52,9 +54,11 @@ public class ExplorerMode
         Services.NpcTradeService? npcTradeService = null,
         Services.SystemModService? systemModService = null,
         Services.WorldDirectiveService? worldDirectiveService = null,
+        Services.SoulIdentityService? soulIdentityService = null,
+        Services.IClipboardService? clipboardService = null,
         IExplorerConsole? console = null)
     {
-        _console = console ?? new SpectreExplorerConsole();
+        _console = console ?? new SpectreExplorerConsole(clipboardService);
         _stateManager = stateManager;
         _validator = validator;
         _charService = charService;
@@ -65,6 +69,8 @@ public class ExplorerMode
         _npcTradeService = npcTradeService;
         _systemModService = systemModService;
         _worldDirectiveService = worldDirectiveService;
+        _soulIdentityService = soulIdentityService;
+        _clipboardService = clipboardService;
         _fs = fs;
         _loc = loc;
 
@@ -197,6 +203,8 @@ public class ExplorerMode
     private bool Confirm(string prompt, bool defaultValue = false) => _console.Confirm(prompt, defaultValue);
 
     private T Prompt<T>(IPrompt<T> prompt) => _console.Prompt(prompt);
+
+    private string? ReadLine() => _console.ReadLine();
 
     private ConsoleKeyInfo ReadKey() => _console.ReadKey();
 
@@ -1823,7 +1831,10 @@ public class ExplorerMode
                 var domain = GetStr(n, "domain", "");
                 var locStr = !string.IsNullOrEmpty(loc) ? $"@ {loc}"
                            : !string.IsNullOrEmpty(domain) ? $"🔮 {domain}" : "";
-                return ConsoleLayout.PlainChoiceLabel($"👤 {name}", $"♥ {rel}", locStr);
+                var relLabel = int.TryParse(rel, out var relNum)
+                    ? $"♥ {ReputationDisplay.BuildPlainValueLabel(relNum, ReputationScaleKind.NpcRelationship)}"
+                    : $"♥ {rel}";
+                return ConsoleLayout.PlainChoiceLabel($"👤 {name}", relLabel, locStr);
             }).ToList();
             choices.Add("← Назад");
 
@@ -1884,8 +1895,8 @@ public class ExplorerMode
         {
             if (int.TryParse(relVal, out var relNum))
             {
-                var (relLabel, relColor) = GetNpcRelationshipTier(relNum);
-                summaryTable.AddRow(new Markup($"[{relColor}]Отношение[/]"), new Markup($"[{relColor}]{relNum} — {relLabel}[/]"));
+                var tier = ReputationDisplay.GetTier(ReputationScaleKind.NpcRelationship, relNum);
+                summaryTable.AddRow(new Markup($"[{tier.Color}]Отношение[/]"), new Markup(ReputationDisplay.BuildValueLabelMarkup(relNum, ReputationScaleKind.NpcRelationship)));
             }
             else
             {
@@ -1989,17 +2000,15 @@ public class ExplorerMode
             content.AddRow(summaryTable);
 
         var (currentLocationId, currentLocationName) = await ReadCurrentLocationIdentityAsync();
-        var merchantProfile = GetNpcMerchantProfile(npc);
-        var npcTradeAvailableHere = NpcTradeAvailableHere(npc, currentLocationId, currentLocationName);
-        var npcTradeBlockedReason = GetNpcTradeBlockedReason(npc, currentLocationId, currentLocationName);
-        if (!string.IsNullOrWhiteSpace(merchantProfile))
+        var npcTradeAvailability = Services.NpcTradeService.EvaluateTradeAvailability(npc, currentLocationId, currentLocationName);
+        if (npcTradeAvailability.IsMerchant)
         {
             lines.Add("");
             lines.Add("  [bold]🛒 Локальная торговля:[/]");
-            if (!string.IsNullOrWhiteSpace(npcTradeBlockedReason))
-                lines.Add($"    [dim]{Markup.Escape(npcTradeBlockedReason)}[/]");
-            else if (npcTradeAvailableHere)
-                lines.Add($"    [white]Доступна. Профиль торговца: {Markup.Escape(GetNpcMerchantProfileDisplay(npc))}. Витрина обновляется каждые 30 игровых дней.[/]");
+            if (!string.IsNullOrWhiteSpace(npcTradeAvailability.BlockReason))
+                lines.Add($"    [dim]{Markup.Escape(npcTradeAvailability.BlockReason)}[/]");
+            else if (npcTradeAvailability.TradeAvailable)
+                lines.Add($"    [white]Доступна. Профиль торговца: {Markup.Escape(npcTradeAvailability.MerchantProfileDisplay)}. Витрина обновляется каждые 30 игровых дней.[/]");
         }
 
         // ── Appearance description (detailed, separate from short appearance) ──
@@ -2460,10 +2469,7 @@ public class ExplorerMode
             if (curRep != int.MinValue)
             {
                 guardianReputation = curRep;
-                var (tierLbl, tierClr) = GetNpcRelationshipTier(curRep);
-                var normalized = Math.Clamp((curRep + 400) * 20 / 800, 0, 20);
-                var barClr = curRep >= 251 ? "cyan" : curRep >= 101 ? "green" : curRep >= 0 ? "grey" : curRep >= -50 ? "orange1" : "red";
-                lines.Add($"  ♥ Репутация: {ConsoleLayout.CreateBar(normalized, 20, barClr)} [{tierClr}]{curRep} — {tierLbl}[/]");
+                lines.Add($"  ♥ Репутация: {ReputationDisplay.BuildBarMarkup(curRep, ReputationScaleKind.Guardian, 20)} {ReputationDisplay.BuildValueLabelMarkup(curRep, ReputationScaleKind.Guardian)}");
             }
             if (rd.TryGetProperty("reputationHistory", out var rh) && rh.ValueKind == JsonValueKind.Array && rh.GetArrayLength() > 0)
             {
@@ -2631,7 +2637,7 @@ public class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        await ShowNpcDetailActions(npc, originalName, string.IsNullOrWhiteSpace(npcTradeBlockedReason) && !string.IsNullOrWhiteSpace(merchantProfile), invDoc);
+        await ShowNpcDetailActions(npc, originalName, npcTradeAvailability.TradeAvailable, invDoc);
     }
 
     private async Task ShowNpcDetailActions(JsonElement npc, string npcName, bool tradeAvailable, JsonDocument? invDoc)
@@ -3161,66 +3167,8 @@ public class ExplorerMode
         return (GetStr(root, "locationId", ""), GetStr(root, "name", ""));
     }
 
-    private static bool NpcTradeAvailableHere(JsonElement npc, string currentLocationId, string currentLocationName)
-    {
-        var npcLocationId = GetStr(npc, "currentLocationId", "");
-        var npcLocationName = GetStr(npc, "currentLocation", "");
-        return
-            (!string.IsNullOrWhiteSpace(currentLocationId) && string.Equals(currentLocationId, npcLocationId, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(currentLocationName) && string.Equals(currentLocationName, npcLocationName, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(currentLocationId) && string.Equals(currentLocationId, npcLocationName, StringComparison.OrdinalIgnoreCase)) ||
-            (!string.IsNullOrWhiteSpace(currentLocationName) && string.Equals(currentLocationName, npcLocationId, StringComparison.OrdinalIgnoreCase));
-    }
-
-    private static string? GetNpcMerchantProfile(JsonElement npc)
-    {
-        var explicitProfile = "";
-        if (npc.TryGetProperty("tradeState", out var tradeState) && tradeState.ValueKind == JsonValueKind.Object)
-            explicitProfile = GetStr(tradeState, "merchantProfile", "");
-
-        return Services.NpcTradeService.ResolveMerchantProfileCode(
-            explicitProfile,
-            GetStr(npc, "role", ""),
-            GetStr(npc, "occupation", ""),
-            GetStr(npc, "class", ""),
-            GetStr(npc, "name", ""));
-    }
-
-    private static string GetNpcMerchantProfileDisplay(JsonElement npc)
-    {
-        var profile = GetNpcMerchantProfile(npc);
-        return GetNpcMerchantProfileDisplay(profile);
-    }
-
     private static string GetNpcMerchantProfileDisplay(string? merchantProfile) =>
         Services.NpcTradeService.GetMerchantProfileDisplayName(merchantProfile);
-
-    private static string? GetNpcTradeBlockedReason(JsonElement npc, string currentLocationId, string currentLocationName)
-    {
-        var merchantProfile = GetNpcMerchantProfile(npc);
-        if (string.IsNullOrWhiteSpace(merchantProfile))
-            return null;
-
-        if (!NpcTradeAvailableHere(npc, currentLocationId, currentLocationName))
-            return "Доступна только в текущей локации торговца.";
-
-        if (npc.TryGetProperty("tradeState", out var tradeState) && tradeState.ValueKind == JsonValueKind.Object)
-        {
-            if (!tradeState.TryGetProperty("canTrade", out var canTradeNode) ||
-                (canTradeNode.ValueKind != JsonValueKind.True && canTradeNode.ValueKind != JsonValueKind.False))
-                return "Локальная торговля включается только через tradeState.canTrade = true.";
-
-            var canTrade = canTradeNode.ValueKind == JsonValueKind.True;
-            if (!canTrade)
-                return GetStr(tradeState, "tradeBlockedReason", "Торговля сейчас недоступна.");
-        }
-        else
-        {
-            return "Локальная торговля включается только через tradeState.canTrade = true.";
-        }
-
-        return null;
-    }
 
     private List<string> BuildInventoryItemDetailLines(string name, JsonElement item)
     {
@@ -3318,17 +3266,6 @@ public class ExplorerMode
     // NPC Detail Section Renderers
     // ═════════════════════════════════════════════════════════
 
-    /// <summary>Relationship tiers on the 800-point scale (-400..+400) per Rule 19.</summary>
-    private static readonly (int min, int max, string label, string color, string icon)[] RelationshipTiers = {
-        (-400, -201, "Непримиримый Враг", "bold red", "💀"),
-        (-200, -51,  "Противник", "red", "⚔"),
-        (-50,  -1,   "Неприязнь", "orange1", "😠"),
-        (0,    100,  "Нейтралитет", "grey", "😐"),
-        (101,  250,  "Доверие и Расположение", "green", "😊"),
-        (251,  350,  "Глубокая Связь", "bold cyan", "💙"),
-        (351,  400,  "Легендарная Преданность", "bold gold1", "⭐"),
-    };
-
     /// <summary>Hard caps where Breakthrough Quests are required (Rule 19.G).</summary>
     private static readonly (int cap, string nextTier, bool isPositive)[] RelationshipCaps = {
         (100,  "Доверие и Расположение", true),
@@ -3337,16 +3274,6 @@ public class ExplorerMode
         (-50,  "Противник", false),
         (-200, "Непримиримый Враг", false),
     };
-
-    private static (string label, string color) GetNpcRelationshipTier(int rep)
-    {
-        foreach (var t in RelationshipTiers)
-        {
-            if (rep >= t.min && rep <= t.max)
-                return (t.label, t.color);
-        }
-        return rep > 400 ? ("Легендарная Преданность", "bold gold1") : ("Непримиримый Враг", "bold red");
-    }
 
     private void RenderNpcRelationships(List<string> lines, JsonDocument? doc, string npcId, string npcName, bool debugMode)
     {
@@ -3367,13 +3294,9 @@ public class ExplorerMode
             // ── Numeric relationship level with full progression display ──
             if (int.TryParse(lvlStr, out var lvlNum))
             {
-                var (tierLabel, tierColor) = GetNpcRelationshipTier(lvlNum);
-                var tierIcon = RelationshipTiers.FirstOrDefault(t => lvlNum >= t.min && lvlNum <= t.max).icon ?? "♥";
-
-                // Reputation bar (-400..+400 mapped to 0..20)
-                var normalized = Math.Clamp((lvlNum + 400) * 20 / 800, 0, 20);
-                var barColor = lvlNum >= 251 ? "cyan" : lvlNum >= 101 ? "green" : lvlNum >= 0 ? "grey" : lvlNum >= -50 ? "orange1" : "red";
-                lines.Add($"    {tierIcon} [{tierColor}]{tierLabel}[/]: {ConsoleLayout.CreateBar(normalized, 20, barColor)} [{tierColor}]{lvlNum}[/]/400");
+                var tier = ReputationDisplay.GetTier(ReputationScaleKind.NpcRelationship, lvlNum);
+                var tierIcon = tier.Icon ?? "♥";
+                lines.Add($"    {tierIcon} {ReputationDisplay.BuildTierMarkup(lvlNum, ReputationScaleKind.NpcRelationship)}: {ReputationDisplay.BuildBarMarkup(lvlNum, ReputationScaleKind.NpcRelationship, 20)} [{tier.Color}]{lvlNum}[/]/400");
 
                 // Show relationship type if inter-NPC
                 if (!string.IsNullOrEmpty(relType) && !relType.Equals("player", StringComparison.OrdinalIgnoreCase))
@@ -3994,7 +3917,7 @@ public class ExplorerMode
                 {
                     if (int.TryParse(reqRelLevel, out var reqRep))
                     {
-                        var (tierLabel, _) = GetNpcRelationshipTier(reqRep);
+                        var tierLabel = ReputationDisplay.GetTier(ReputationScaleKind.NpcRelationship, reqRep).Label;
                         conditions.Add($"отношение ≥ {reqRep} ({tierLabel})");
                     }
                     else
@@ -7690,12 +7613,10 @@ public class ExplorerMode
                 var rep = GetInt(el, "reputation", 0);
                 var isMember = el.TryGetProperty("isPlayerMember", out var pm) && pm.ValueKind == JsonValueKind.True;
                 var lvl = GetStr(el, "level", "");
-                var (repLabel, repColor) = GetReputationLabel(rep);
-
                 var label = $"🏛️ {name}";
                 if (!string.IsNullOrEmpty(lvl))
                     label = ConsoleLayout.PlainChoiceLabel(label, $"Уровень {lvl}");
-                label = ConsoleLayout.PlainChoiceLabel(label, $"{repLabel} ({rep})");
+                label = ConsoleLayout.PlainChoiceLabel(label, ReputationDisplay.BuildPlainValueLabel(rep, ReputationScaleKind.Faction));
                 if (isMember)
                     label = ConsoleLayout.PlainChoiceLabel(label, "Вы связаны с этой фракцией");
                 choices.Add(label);
@@ -7791,8 +7712,8 @@ public class ExplorerMode
         }
 
         // Reputation with label
-        var (repLabel, repColor) = GetReputationLabel(rep);
-        summaryTable.AddRow(new Markup($"[{repColor}]Репутация[/]"), new Markup($"[{repColor}]{rep} — {repLabel}[/]"));
+        var factionTier = ReputationDisplay.GetTier(ReputationScaleKind.Faction, rep);
+        summaryTable.AddRow(new Markup($"[{factionTier.Color}]Репутация[/]"), new Markup(ReputationDisplay.BuildValueLabelMarkup(rep, ReputationScaleKind.Faction)));
         if (!string.IsNullOrEmpty(repDesc))
             summaryTable.AddRow(new Markup("[dim]Пояснение[/]"), new Markup($"[dim]{Markup.Escape(repDesc)}[/]"));
 
@@ -8461,18 +8382,6 @@ public class ExplorerMode
     // ═══════════════════════════════════════════════════════════
     //  Faction Helper Methods
     // ═══════════════════════════════════════════════════════════
-
-    /// <summary>Reputation label from the -400..+400 scale (Rule 21.1.A).</summary>
-    private static (string label, string color) GetReputationLabel(int rep) => rep switch
-    {
-        <= -201 => ("Заклятый враг", "bold red"),
-        <= -51 => ("Враг", "red"),
-        <= -1 => ("Недоверие", "orange1"),
-        <= 100 => ("Нейтралитет", "grey"),
-        <= 250 => ("Сочувствующий", "yellow"),
-        <= 350 => ("Почётный член", "green"),
-        _ => ("Живая легенда", "bold gold1")
-    };
 
     /// <summary>Power tier label from calibration matrix (Rule 21.3.0).</summary>
     private static string GetPowerTierLabel(int val) => val switch
@@ -10196,7 +10105,7 @@ public class ExplorerMode
             if (pending == null)
             {
                 lines.Add("");
-                lines.Add("[yellow]Pending world setup пока не задан.[/]");
+                lines.Add("[yellow]Подготовка следующего мира пока не задана.[/]");
             }
             else
             {
@@ -10204,7 +10113,7 @@ public class ExplorerMode
                 var pendingTitle = string.IsNullOrWhiteSpace(pending.WorldDirectives.WorldTitle)
                     ? "Без названия"
                     : pending.WorldDirectives.WorldTitle;
-                lines.Add($"[green]Текущий pending setup:[/] [bold]{Markup.Escape(pendingTitle)}[/]");
+                lines.Add($"[green]Текущая подготовка мира:[/] [bold]{Markup.Escape(pendingTitle)}[/]");
                 lines.Add($"[dim]Режим: {Markup.Escape(pending.Mode)}[/]");
                 if (!string.IsNullOrWhiteSpace(pending.ProfileName))
                     lines.Add($"[dim]Профиль: {Markup.Escape(pending.ProfileName)} ({Markup.Escape(pending.ProfileId ?? "")})[/]");
@@ -10213,7 +10122,7 @@ public class ExplorerMode
 
             Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
             {
-                Header = new PanelHeader(" 🌍 World Setup ", Justify.Center),
+                Header = new PanelHeader(" 🌍 Настройка мира ", Justify.Center),
                 Border = BoxBorder.Double,
                 BorderStyle = new Style(Color.Cyan1),
                 Padding = new Padding(2, 1),
@@ -10223,11 +10132,11 @@ public class ExplorerMode
 
             var actions = new List<string>
             {
-                "👁 Полный просмотр pending setup",
+                "👁 Полный просмотр подготовки мира",
                 "📚 Просмотреть профили миров",
                 "✅ Применить профиль мира",
-                "✏️ Создать / редактировать pending setup",
-                "🧹 Очистить pending setup",
+                "✏️ Создать / редактировать подготовку мира",
+                "🧹 Очистить подготовку мира",
                 "📂 Открыть папку профилей",
                 "← Назад"
             };
@@ -10241,11 +10150,11 @@ public class ExplorerMode
             if (choice == "← Назад")
                 return;
 
-            if (choice == "👁 Полный просмотр pending setup")
+            if (choice == "👁 Полный просмотр подготовки мира")
             {
                 if (pending == null)
                 {
-                    ShowEmptyPanel("Pending World Setup", "Pending setup пока не задан.");
+                    ShowEmptyPanel("Подготовка мира", "Подготовка следующего мира пока не задана.");
                 }
                 else
                 {
@@ -10262,7 +10171,7 @@ public class ExplorerMode
 
                     Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", detailLines)))
                     {
-                        Header = new PanelHeader(" 👁 Pending World Setup ", Justify.Center),
+                        Header = new PanelHeader(" 👁 Подготовка мира ", Justify.Center),
                         Border = BoxBorder.Double,
                         BorderStyle = new Style(Color.Cyan1),
                         Padding = new Padding(2, 1),
@@ -10296,23 +10205,23 @@ public class ExplorerMode
                 var profile = profiles.First(p => $"{p.Name} ({p.FileName})" == selectedLabel);
                 var setup = _worldDirectiveService.CreatePendingSetupFromProfile(profile);
                 await _worldDirectiveService.WritePendingSetupAsync(setup);
-                MarkupLine($"[green]Профиль мира «{Markup.Escape(profile.Name)}» применён к pending setup.[/]");
+                MarkupLine($"[green]Профиль мира «{Markup.Escape(profile.Name)}» применён к подготовке следующего мира.[/]");
                 WaitForKey();
                 continue;
             }
 
-            if (choice == "✏️ Создать / редактировать pending setup")
+            if (choice == "✏️ Создать / редактировать подготовку мира")
             {
                 await EditPendingWorldSetupAsync(pending);
                 continue;
             }
 
-            if (choice == "🧹 Очистить pending setup")
+            if (choice == "🧹 Очистить подготовку мира")
             {
                 if (Confirm("[yellow]Очистить сохранённую подготовку следующего мира?[/]", false))
                 {
                     _worldDirectiveService.ClearPendingSetup();
-                    MarkupLine("[green]Pending world setup очищен.[/]");
+                    MarkupLine("[green]Подготовка следующего мира очищена.[/]");
                     WaitForKey();
                 }
                 continue;
@@ -10341,13 +10250,13 @@ public class ExplorerMode
     {
         if (_worldDirectiveService == null)
         {
-            ShowEmptyPanel("Правила мира", "Сервис world directives недоступен");
+            ShowEmptyPanel("Правила мира", "Сервис досье мира недоступен");
             return;
         }
 
         if (_stateManager.CurrentState.IsInAfterlifeRealm)
         {
-            ShowEmptyPanel("Правила мира", "Во время загробного цикла используйте /world_setup для подготовки следующего мира. Активные world directives появляются в смертной жизни.");
+            ShowEmptyPanel("Правила мира", "Во время загробного цикла используйте /world_setup для подготовки следующего мира. Активное досье мира появляется в смертной жизни.");
             return;
         }
 
@@ -10359,7 +10268,7 @@ public class ExplorerMode
             {
                 "[bold green]📜 Досье текущего мира[/]",
                 "",
-                "[white]Это persistent player-authored world dossier текущей смертной жизни.[/]",
+                "[white]Это постоянное досье текущего мира, заданное игроком для этой смертной жизни.[/]",
                 "[white]GM должен читать [bold]lore/current_world/world_directives.json[/] на каждом ходе.[/]"
             };
 
@@ -10377,7 +10286,7 @@ public class ExplorerMode
 
             Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
             {
-                Header = new PanelHeader(" 📜 World Directives ", Justify.Center),
+                Header = new PanelHeader(" 📜 Досье мира ", Justify.Center),
                 Border = BoxBorder.Double,
                 BorderStyle = new Style(Color.Green3),
                 Padding = new Padding(2, 1),
@@ -10389,26 +10298,26 @@ public class ExplorerMode
                 new SelectionPrompt<string>()
                     .Title("[green]Действие:[/]")
                     .HighlightStyle(new Style(Color.Green3))
-                    .AddChoices("✏️ Создать / редактировать world directives", "🧹 Очистить world directives", "← Назад"));
+                    .AddChoices("✏️ Создать / редактировать досье мира", "🧹 Очистить досье мира", "← Назад"));
 
             if (choice == "← Назад")
                 return;
 
-            if (choice == "✏️ Создать / редактировать world directives")
+            if (choice == "✏️ Создать / редактировать досье мира")
             {
                 var edited = await PromptWorldDirectivesAsync(directives ?? new WorldDirectiveService.WorldDirectives(), allowProfileMetadataEdit: false);
                 await _worldDirectiveService.WriteActiveWorldDirectivesAsync(edited);
-                MarkupLine("[green]World directives сохранены.[/]");
+                MarkupLine("[green]Досье мира сохранено.[/]");
                 WaitForKey();
                 continue;
             }
 
-            if (choice == "🧹 Очистить world directives")
+            if (choice == "🧹 Очистить досье мира")
             {
                 if (Confirm("[yellow]Удалить активное досье текущего мира?[/]", false))
                 {
                     _fs.DeleteFile(WorldDirectiveService.ActiveDirectivesPath);
-                    MarkupLine("[green]World directives очищены.[/]");
+                    MarkupLine("[green]Досье мира очищено.[/]");
                     WaitForKey();
                 }
             }
@@ -10453,7 +10362,7 @@ public class ExplorerMode
 
             Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
             {
-                Header = new PanelHeader(" 📚 World Profile ", Justify.Center),
+                Header = new PanelHeader(" 📚 Профиль мира ", Justify.Center),
                 Border = BoxBorder.Double,
                 BorderStyle = new Style(Color.Cyan1),
                 Padding = new Padding(2, 1),
@@ -10484,7 +10393,7 @@ public class ExplorerMode
             WorldDirectives = edited
         };
         await _worldDirectiveService.WritePendingSetupAsync(setup);
-        MarkupLine("[green]Pending world setup сохранён.[/]");
+        MarkupLine("[green]Подготовка следующего мира сохранена.[/]");
         WaitForKey();
     }
 
@@ -10497,7 +10406,8 @@ public class ExplorerMode
         directives.Genre = PromptOptionalText("Жанр", directives.Genre);
         directives.Era = PromptOptionalText("Эпоха", directives.Era);
         directives.Tone = PromptOptionalText("Тон", directives.Tone);
-        directives.SettingSummary = PromptOptionalMultiline("Краткое описание мира", directives.SettingSummary);
+        directives.SettingSummary = PromptOptionalText("Краткая сводка / сеттинг", directives.SettingSummary);
+        directives.DetailedWorldDescription = PromptLargeTextBlock("Подробное описание мира", directives.DetailedWorldDescription);
         directives.HardRules = PromptCsvList("Жёсткие правила мира", directives.HardRules);
         directives.RequiredElements = PromptCsvList("Обязательные элементы", directives.RequiredElements);
         directives.ForbiddenElements = PromptCsvList("Запрещённые элементы", directives.ForbiddenElements);
@@ -10527,7 +10437,17 @@ public class ExplorerMode
         if (!string.IsNullOrWhiteSpace(directives.Tone))
             lines.Add($"[bold]Тон:[/] {Markup.Escape(directives.Tone)}");
         if (!string.IsNullOrWhiteSpace(directives.SettingSummary))
-            lines.Add($"[bold]Описание:[/] {Markup.Escape(directives.SettingSummary)}");
+            lines.Add($"[bold]Краткая сводка:[/] {Markup.Escape(directives.SettingSummary)}");
+        if (!string.IsNullOrWhiteSpace(directives.DetailedWorldDescription))
+        {
+            if (concise)
+                lines.Add($"[bold]Подробное описание:[/] {Markup.Escape(TruncateForUi(directives.DetailedWorldDescription, 260))}");
+            else
+            {
+                lines.Add("[bold]Подробное описание мира:[/]");
+                lines.Add(Markup.Escape(directives.DetailedWorldDescription));
+            }
+        }
         if (!string.IsNullOrWhiteSpace(directives.SourceProfileName))
             lines.Add($"[dim]Источник: {Markup.Escape(directives.SourceProfileName)} ({Markup.Escape(directives.SourceProfileId ?? "")})[/]");
 
@@ -10559,35 +10479,91 @@ public class ExplorerMode
 
     private string PromptOptionalText(string title, string current)
     {
-        return Prompt(
-            new TextPrompt<string>($"[cyan]{Markup.Escape(title)}:[/]")
-                .AllowEmpty()
-                .DefaultValue(current ?? string.Empty));
+        return Ask($"[cyan]{Markup.Escape(title)}:[/]", current ?? string.Empty).Trim();
     }
 
-    private string PromptOptionalMultiline(string title, string current)
+    private string PromptLargeTextBlock(string title, string current)
     {
-        MarkupLine($"[cyan]{Markup.Escape(title)}:[/]");
-        MarkupLine("[dim]Введите текст одной строкой. Пустое значение допустимо.[/]");
-        return Prompt(
-            new TextPrompt<string>("[cyan]>[/]")
-                .AllowEmpty()
-                .DefaultValue(current ?? string.Empty));
+        while (true)
+        {
+            Clear();
+            var currentLength = string.IsNullOrWhiteSpace(current) ? 0 : current.Length;
+            var lines = new List<string>
+            {
+                $"[bold cyan]{Markup.Escape(title)}[/]",
+                "",
+                "[white]Это большое поле для подробного досье мира. В него можно вставлять абзацы и страницы текста целиком.[/]"
+            };
+
+            if (currentLength > 0)
+            {
+                lines.Add("");
+                lines.Add($"[dim]Сейчас сохранено: {currentLength} символов[/]");
+                lines.Add($"[dim]{Markup.Escape(TruncateForUi(current, 280))}[/]");
+            }
+
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+            {
+                Header = new PanelHeader(" 📝 Большое поле описания ", Justify.Center),
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Cyan1),
+                Padding = new Padding(2, 1),
+                Expand = true
+            });
+            WriteLine();
+
+            var actions = new List<string>
+            {
+                "✏️ Изменить текст",
+                "↩️ Оставить текущее значение",
+                "🧹 Очистить поле"
+            };
+
+            var choice = Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[cyan]Способ заполнения поля:[/]")
+                    .HighlightStyle(new Style(Color.Cyan1))
+                    .AddChoices(actions));
+
+            if (choice == "↩️ Оставить текущее значение")
+                return current ?? string.Empty;
+
+            if (choice == "🧹 Очистить поле")
+                return string.Empty;
+
+            return TextComposer.Read(
+                _console,
+                _clipboardService,
+                new TextComposerOptions
+                {
+                    PromptMarkup = "[cyan]Текст:[/]",
+                    DefaultValue = current ?? string.Empty,
+                    PreserveNewlines = true,
+                    Mode = TextComposerMode.MultilineEditor,
+                    AllowClearCommand = true,
+                    HelpMarkup = "[dim]Вставка из буфера работает напрямую. Вводите текст построчно; две пустые строки подряд сохраняют его. Пустой Enter сразу оставляет текущее значение. /clear очищает поле.[/]"
+                });
+        }
     }
 
     private List<string> PromptCsvList(string title, IReadOnlyCollection<string> current)
     {
         var currentValue = string.Join(", ", current);
-        var raw = Prompt(
-            new TextPrompt<string>($"[cyan]{Markup.Escape(title)} (через запятую):[/]")
-                .AllowEmpty()
-                .DefaultValue(currentValue));
+        var raw = Ask($"[cyan]{Markup.Escape(title)} (через запятую):[/]", currentValue);
 
         return raw
             .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Where(item => !string.IsNullOrWhiteSpace(item))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
+    }
+
+    private static string TruncateForUi(string value, int maxLength)
+    {
+        var normalized = value.Replace("\r\n", "\n").Trim();
+        if (normalized.Length <= maxLength)
+            return normalized;
+        return normalized[..maxLength] + "...";
     }
 
     // ═════════════════════════════════════════════════════════
@@ -10845,27 +10821,32 @@ public class ExplorerMode
 
     private async Task ShowSoulInfo()
     {
-        var doc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
-        if (doc == null)
+        while (true)
         {
-            ShowEmptyPanel(_loc.T("soul_info"), "Данные души недоступны");
-            return;
-        }
+            var doc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
+            if (doc == null)
+            {
+                ShowEmptyPanel(_loc.T("soul_info"), "Данные души недоступны");
+                return;
+            }
 
-        var root = doc.RootElement;
-        var metaUpdates = root.TryGetProperty("metaStateUpdates", out var msu) && msu.ValueKind == JsonValueKind.Object
-            ? msu
-            : (JsonElement?)null;
-        var text = new List<string>();
+            var root = doc.RootElement;
+            var metaUpdates = root.TryGetProperty("metaStateUpdates", out var msu) && msu.ValueKind == JsonValueKind.Object
+                ? msu
+                : (JsonElement?)null;
+            var text = new List<string>();
 
-        var soulName = GetStr(root, "soulName", "Безымянная");
-        var realm = GetStr(root, "currentRealm", "Chaos Sea");
-        var incNum = GetInt(root, "currentIncarnation", 0);
+            var soulName = GetStr(root, "soulName", "Безымянная");
+            var previousSoulNames = ReadSoulPreviousNames(root, soulName);
+            var realm = GetStr(root, "currentRealm", "Chaos Sea");
+            var incNum = GetInt(root, "currentIncarnation", 0);
 
-        text.Add($"[bold white]👻 {Markup.Escape(soulName)}[/]");
-        text.Add($"🌍 Текущий мир: [cyan]{Markup.Escape(realm)}[/]");
-        text.Add($"🔄 Инкарнация: [yellow]{incNum}[/]");
-        text.Add("");
+            text.Add($"[bold white]👻 {Markup.Escape(soulName)}[/]");
+            if (previousSoulNames.Count > 0)
+                text.Add($"🏷️ Прежние имена: [dim]{Markup.Escape(string.Join(", ", previousSoulNames))}[/]");
+            text.Add($"🌍 Текущий мир: [cyan]{Markup.Escape(realm)}[/]");
+            text.Add($"🔄 Инкарнация: [yellow]{incNum}[/]");
+            text.Add("");
 
         // Enlightenment — handle both "soulProgression" and "enlightenment" formats
         if (root.TryGetProperty("soulProgression", out var sp) && sp.ValueKind == JsonValueKind.Object)
@@ -11150,16 +11131,85 @@ public class ExplorerMode
             }
         }
 
-        var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
-        {
-            Header = new PanelHeader($" {_loc.T("soul_info")} ", Justify.Center),
-            Border = BoxBorder.Double,
-            BorderStyle = new Style(Color.Blue),
-            Padding = new Padding(2, 1)
-        };
+            var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
+            {
+                Header = new PanelHeader($" {_loc.T("soul_info")} ", Justify.Center),
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Blue),
+                Padding = new Padding(2, 1)
+            };
 
-        Write(panel);
+            Write(panel);
+
+            var action = Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[bold blue]Действие души[/]")
+                    .HighlightStyle(new Style(Color.Blue))
+                    .AddChoices("✏️ Сменить имя души", "← Назад"));
+
+            if (action.Contains("Назад", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            await RenameSoulLocallyAsync(soulName);
+        }
+    }
+
+    private async Task RenameSoulLocallyAsync(string currentSoulName)
+    {
+        if (_soulIdentityService == null)
+        {
+            MarkupLine("[red]Сервис смены имени души недоступен.[/]");
+            WaitForKey();
+            return;
+        }
+
+        var requestedSoulName = Ask("[cyan]Новое имя души:[/]", currentSoulName);
+        var result = await _soulIdentityService.RenameSoulAsync(requestedSoulName);
+        if (!result.Success)
+        {
+            MarkupLine($"[red]{Markup.Escape(result.ErrorMessage ?? "Не удалось сменить имя души.")}[/]");
+            WaitForKey();
+            return;
+        }
+
+        await _stateManager.RefreshGameStateAsync();
+
+        if (!result.Changed)
+        {
+            MarkupLine("[yellow]Имя души осталось прежним.[/]");
+            WaitForKey();
+            return;
+        }
+
+        MarkupLine($"[green]Имя души изменено: {Markup.Escape(currentSoulName)} → {Markup.Escape(result.CurrentSoulName)}[/]");
         WaitForKey();
+    }
+
+    private static List<string> ReadSoulPreviousNames(JsonElement root, string currentSoulName)
+    {
+        if (!root.TryGetProperty("previousSoulNames", out var previousSoulNames) ||
+            previousSoulNames.ValueKind != JsonValueKind.Array)
+            return new List<string>();
+
+        var names = new List<string>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in previousSoulNames.EnumerateArray())
+        {
+            if (entry.ValueKind != JsonValueKind.String)
+                continue;
+
+            var value = entry.GetString()?.Trim();
+            if (string.IsNullOrWhiteSpace(value))
+                continue;
+            if (string.Equals(value, currentSoulName, StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (!seen.Add(value))
+                continue;
+
+            names.Add(value);
+        }
+
+        return names;
     }
 
     private async Task ShowGuardians()
@@ -11199,15 +11249,7 @@ public class ExplorerMode
                     rep = GetInt(rd, "currentReputation", 0);
                 else
                     rep = GetInt(g, "reputation", 0);
-                var repTierTag = rep switch
-                {
-                    <= -51 => "Враждебный",
-                    <= -21 => "Недружелюбный",
-                    <= 49 => "Нейтральный",
-                    <= 129 => "Дружелюбный",
-                    <= 229 => "Преданный",
-                    _ => "Легендарный"
-                };
+                var repTierTag = ReputationDisplay.GetTier(ReputationScaleKind.Guardian, rep).Label;
 
                 // Abode info
                 var abodeName = "";
@@ -11518,37 +11560,18 @@ public class ExplorerMode
         if (g.TryGetProperty("relationshipData", out var rd) && rd.ValueKind == JsonValueKind.Object)
         {
             rep = GetInt(rd, "currentReputation", 0);
-            var repTierLabel = rep switch
-            {
-                <= -51 => "[bold red]Враждебный[/]",
-                <= -21 => "[red]Недружелюбный[/]",
-                <= 49 => "[grey]Нейтральный[/]",
-                <= 129 => "[green]Дружелюбный[/]",
-                <= 229 => "[cyan]Преданный[/]",
-                _ => "[gold1]Легендарный[/]"
-            };
             FlushLines();
             content.AddRow(new Markup(""));
-            // Reputation bar (-100..+300 mapped to 0..20)
-            var repNorm = Math.Clamp((rep + 100) * 20 / 400, 0, 20);
-            var repBarColor = rep >= 230 ? "gold1" : rep >= 130 ? "cyan" : rep >= 50 ? "green" : rep >= -20 ? "grey" : rep >= -50 ? "orange1" : "red";
             var repTable = ConsoleLayout.CreateBarMetricTable(labelWidth: 16, barWidth: 24, valueWidth: 8);
             repTable.AddRow(
                 new Markup("[bold]♥ Репутация[/]"),
-                new Markup(ConsoleLayout.CreateBar(repNorm, 20, repBarColor)),
-                new Markup($"[{(rep >= 0 ? "green" : "red")}]{rep}[/]/300"),
-                new Markup(repTierLabel));
+                new Markup(ReputationDisplay.BuildBarMarkup(rep, ReputationScaleKind.Guardian, 20)),
+                new Markup($"[{ReputationDisplay.GetTier(ReputationScaleKind.Guardian, rep).Color}]{rep}[/]/300"),
+                new Markup(ReputationDisplay.BuildTierMarkup(rep, ReputationScaleKind.Guardian)));
             content.AddRow(repTable);
 
-            var repLegend = ConsoleLayout.CreateInfoTable(labelWidth: 14);
-            repLegend.AddRow(new Markup("[dim]-100..-51[/]"), new Markup("[red]Враждебный[/]"));
-            repLegend.AddRow(new Markup("[dim]-50..-21[/]"), new Markup("[orange1]Недружелюбный[/]"));
-            repLegend.AddRow(new Markup("[dim]-20..49[/]"), new Markup("[grey]Нейтральный[/]"));
-            repLegend.AddRow(new Markup("[dim]50..129[/]"), new Markup("[green]Дружелюбный[/]"));
-            repLegend.AddRow(new Markup("[dim]130..229[/]"), new Markup("[cyan]Преданный[/]"));
-            repLegend.AddRow(new Markup("[dim]230..300[/]"), new Markup("[gold1]Легендарный[/]"));
-            content.AddRow(new Markup("  [dim]Диапазоны репутации:[/]"));
-            content.AddRow(repLegend);
+            lines.Add("  [dim]Диапазоны репутации:[/]");
+            lines.AddRange(ReputationDisplay.BuildLegendLines(ReputationScaleKind.Guardian, "    "));
 
             var lastInteraction = GetStr(rd, "lastInteraction", "");
             if (!string.IsNullOrEmpty(lastInteraction) && lastInteraction.Length >= 10)
@@ -11572,7 +11595,7 @@ public class ExplorerMode
         else
         {
             rep = GetInt(g, "reputation", 0);
-            lines.Add($"  ♥ Репутация: [{(rep >= 0 ? "green" : "red")}]{rep}[/]");
+            lines.Add($"  ♥ Репутация: {ReputationDisplay.BuildValueLabelMarkup(rep, ReputationScaleKind.Guardian)}");
         }
 
         // Active quests
@@ -11745,15 +11768,7 @@ public class ExplorerMode
         // ── Reputation tier gate info ──
         if (rep >= 0)
         {
-            var (nextTierName, nextTierRep) = rep switch
-            {
-                < 50 => ("Дружелюбный", 50),
-                < 130 => ("Преданный", 130),
-                < 230 => ("Легендарный", 230),
-                _ => ("", 0)
-            };
-
-            if (!string.IsNullOrEmpty(nextTierName))
+            if (ReputationDisplay.TryGetNextThreshold(ReputationScaleKind.Guardian, rep, out var nextTierName, out var nextTierRep))
             {
                 var repLeft = Math.Max(0, nextTierRep - rep);
                 lines.Add("");
@@ -12109,10 +12124,11 @@ public class ExplorerMode
             }
 
             var feathers = await ReadInkFeathersBalance();
+            var guardianTradeRep = ReputationDisplay.BuildValueLabelMarkup(view.CurrentReputation, ReputationScaleKind.Guardian);
             var headerLines = new List<string>
             {
                 $"[bold cyan]🛒 Торговля с Хранителем {Markup.Escape(view.GuardianName)}[/]",
-                $"[dim]Домен: {Markup.Escape(view.DomainDisplay)} • Репутация: {view.CurrentReputation} ({Markup.Escape(view.ReputationTierLabel)})[/]",
+                $"[dim]Домен: {Markup.Escape(view.DomainDisplay)} • Репутация: {guardianTradeRep}[/]",
                 $"[dim]Чернильные Перья: {feathers}[/]",
                 "[dim]Витрина обновляется после нового возвращения из смертной жизни.[/]"
             };

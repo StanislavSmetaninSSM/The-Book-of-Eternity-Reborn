@@ -17,7 +17,9 @@
     }
   ],
   "expectedBrokenCodes": [
-    "active_guardian_missing_current_abode_id"
+    "active_guardian_missing_current_abode_id",
+    "active_guardian_missing_from_discovered_abodes",
+    "active_guardian_abode_not_marked_discovered"
   ],
   "forbiddenBrokenCodes": [],
   "forbiddenFixedCodes": [],

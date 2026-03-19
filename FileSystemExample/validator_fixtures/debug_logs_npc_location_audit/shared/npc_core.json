@@ -1,0 +1,22 @@
+{
+  "UpdateNPCs": [
+    {
+      "npcId": "npc_marta_001",
+      "name": "Марта",
+      "currentLocationId": "starting_village",
+      "currentLocation": "Стартовая деревня",
+      "appearance": "Худощавая торговка с внимательным взглядом.",
+      "background": "Держит маленькую лавку на главной улице.",
+      "race": "Human",
+      "class": "Merchant",
+      "role": "Trader",
+      "currentHealth": 100,
+      "maxHealth": 100,
+      "level": 4,
+      "goals": {
+        "longTerm": "Сохранить лавку и удержать постоянных покупателей.",
+        "shortTerm": "Разобраться, можно ли доверять игроку."
+      }
+    }
+  ]
+}
