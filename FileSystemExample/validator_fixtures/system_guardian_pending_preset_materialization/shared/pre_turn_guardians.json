@@ -1,0 +1,17 @@
+{
+  "guardians": [],
+  "activeGuardian": null,
+  "chaosSeaNavigation": {
+    "currentAbodeId": null
+  },
+  "pendingGuardianCreation": {
+    "mode": "system_preset",
+    "description": "Дипломатичная хранительница страсти, власти и преданности.",
+    "soulName": "Тестовая Душа",
+    "presetId": "azalia",
+    "presetDisplayName": "Азалия",
+    "presetVersion": "1.0",
+    "sourceLibrary": "built_in",
+    "renderedPromptPackage": "PresetId: azalia"
+  }
+}

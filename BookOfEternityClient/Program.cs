@@ -127,9 +127,17 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<ILogger<WorldDirectiveService>>()));
         services.AddSingleton(sp =>
+            new SystemGuardianLibraryService(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<ILogger<SystemGuardianLibraryService>>()));
+        services.AddSingleton(sp =>
             new AfterlifeReturnGuardService(
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<ILogger<AfterlifeReturnGuardService>>()));
+        services.AddSingleton(sp =>
+            new RivalSoulArcService(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<ILogger<RivalSoulArcService>>()));
         services.AddSingleton(sp =>
             new SoulIdentityService(
                 sp.GetRequiredService<FileSystemManager>(),
@@ -180,6 +188,7 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<GuardianTradeService>(),
                 sp.GetRequiredService<NpcTradeService>(),
                 sp.GetRequiredService<SystemModService>(),
+                sp.GetRequiredService<SystemGuardianLibraryService>(),
                 sp.GetRequiredService<WorldDirectiveService>(),
                 sp.GetRequiredService<SoulIdentityService>(),
                 sp.GetRequiredService<IClipboardService>()));

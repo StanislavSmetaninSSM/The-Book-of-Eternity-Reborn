@@ -281,9 +281,10 @@ public sealed class GuardianTradeService
             var tradeInventory = guardian["tradeInventory"] as JsonObject;
             if (!TradeInventoryMatchesCycle(tradeInventory, cycleId, GetNodeString(guardian["domain"]) ?? "Knowledge"))
             {
+                var guardianDisplayName = GuardianManifestation.GetDisplayName(guardian);
                 guardian["tradeInventory"] = GenerateTradeInventory(
                     guardianId,
-                    GetNodeString(guardian["name"]) ?? guardianId,
+                    string.IsNullOrWhiteSpace(guardianDisplayName) ? guardianId : guardianDisplayName,
                     GetNodeString(guardian["domain"]) ?? "Knowledge",
                     tier,
                     cycleId);
@@ -304,7 +305,9 @@ public sealed class GuardianTradeService
     private GuardianTradeView BuildTradeView(JsonObject root, JsonObject guardian, string cycleId, bool blocked)
     {
         var guardianId = GetNodeString(guardian["guardianId"]) ?? "";
-        var guardianName = GetNodeString(guardian["name"]) ?? guardianId;
+        var guardianName = GuardianManifestation.GetDisplayName(guardian);
+        if (string.IsNullOrWhiteSpace(guardianName))
+            guardianName = guardianId;
         var domain = GetNodeString(guardian["domain"]) ?? "Knowledge";
         var rep = ReadGuardianReputation(guardian);
         var offers = new List<GuardianTradeOffer>();

@@ -1,0 +1,42 @@
+{
+  "guardians": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "name": "Азалия",
+      "domain": "Social",
+      "abode": {
+        "abodeId": "abode_social_azalia_001",
+        "name": "Обитель Неутолимого Пламени",
+        "isDiscovered": true
+      },
+      "sourcePreset": {
+        "presetId": "ilarion",
+        "displayName": "Иларион Архивный Свет",
+        "version": "1.0",
+        "library": "built_in"
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_social_azalia_001",
+    "name": "Азалия",
+    "domain": "Social",
+    "abode": {
+      "abodeId": "abode_social_azalia_001",
+      "name": "Обитель Неутолимого Пламени",
+      "isDiscovered": true
+    },
+    "sourcePreset": {
+      "presetId": "ilarion",
+      "displayName": "Иларион Архивный Свет",
+      "version": "1.0",
+      "library": "built_in"
+    }
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": "abode_social_azalia_001",
+    "discoveredAbodes": [
+      "abode_social_azalia_001"
+    ]
+  }
+}

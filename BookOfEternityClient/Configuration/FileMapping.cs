@@ -56,6 +56,7 @@ public static class FileMapping
         ["currentLocationData"] = "game_state/world/current_location.json",
         ["worldMapUpdates"] = "game_state/world/world_map.json",
         ["worldEventsLog"] = "game_state/world/world_events.json",
+        ["UpdateRivalSoulArcs"] = "game_state/world/rival_soul_arcs.json",
         ["worldStateFlags"] = "game_state/world/world_flags.json",
         ["removeWorldStateFlags"] = "game_state/world/world_flags.json",
         ["timeChange"] = "game_state/world/world_time.json",

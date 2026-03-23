@@ -1,0 +1,115 @@
+{
+  "arcs": [
+    {
+      "arcId": "arc_hunt_001",
+      "scope": "major",
+      "arcType": "hostile_hunt",
+      "status": "intersecting",
+      "sponsorGuardianRef": {
+        "mode": "guardianId",
+        "guardianId": "guard_social_azalia_001",
+        "displayName": "Азалия"
+      },
+      "rivalSoul": {
+        "rivalSoulId": "soul_rival_hunter_001",
+        "displayNameOrMoniker": "Алый Палач",
+        "roleSummary": "Одержимый охотник на избранную душу",
+        "isKnownToPlayer": true
+      },
+      "objective": "Во что бы то ни стало найти и убить игрока",
+      "playerIntersection": {
+        "targetsPlayerDirectly": true,
+        "stakes": "Прямая смертельная угроза игроку",
+        "canBecomeSoulQuest": true,
+        "recommendedCounterQuestTone": "urgent"
+      },
+      "milestones": [
+        {
+          "stage": 0,
+          "title": "Слухи об убийце",
+          "summary": "В округе говорят о безжалостном охотнике.",
+          "visibleToPlayer": true
+        },
+        {
+          "stage": 1,
+          "title": "Осквернённый караван",
+          "summary": "Следы охотника становятся явными.",
+          "visibleToPlayer": true
+        },
+        {
+          "stage": 2,
+          "title": "Выход на след",
+          "summary": "Охотник уже рядом.",
+          "visibleToPlayer": true
+        }
+      ],
+      "currentStage": 2,
+      "publicSignals": [
+        {
+          "signalId": "hunt_signal_001",
+          "stage": 0,
+          "description": "Слухи о странных убийствах на тракте.",
+          "source": "rumor",
+          "visibleToPlayer": true
+        },
+        {
+          "signalId": "hunt_signal_002",
+          "stage": 1,
+          "description": "Игрок находит следы бойни и знак охотника.",
+          "source": "aftermath",
+          "visibleToPlayer": true
+        }
+      ],
+      "resolution": {
+        "outcome": "ongoing",
+        "notes": "Охота уже перешла в открытую фазу."
+      }
+    },
+    {
+      "arcId": "arc_emperor_001",
+      "scope": "minor",
+      "arcType": "rival_ascension",
+      "status": "rising",
+      "sponsorGuardianRef": {
+        "mode": "guardianId",
+        "guardianId": "guard_social_azalia_001",
+        "displayName": "Азалия"
+      },
+      "rivalSoul": {
+        "rivalSoulId": "soul_rival_emperor_001",
+        "displayNameOrMoniker": "Юный Император",
+        "roleSummary": "Гений, которому предрекают трон Континента Восхода",
+        "isKnownToPlayer": false
+      },
+      "objective": "Стать Императором Континента Восхода",
+      "playerIntersection": {
+        "targetsPlayerDirectly": false,
+        "stakes": "Будущий порядок всего континента",
+        "canBecomeSoulQuest": true,
+        "recommendedCounterQuestTone": "political"
+      },
+      "milestones": [
+        {
+          "stage": 0,
+          "title": "Первые слухи",
+          "summary": "О нём начинают говорить как о восходящем чуде.",
+          "visibleToPlayer": true
+        }
+      ],
+      "currentStage": 0,
+      "publicSignals": [
+        {
+          "signalId": "emperor_signal_001",
+          "stage": 0,
+          "description": "По трактирам шепчутся о новом юном гении.",
+          "source": "rumor",
+          "visibleToPlayer": true
+        }
+      ],
+      "resolution": {
+        "outcome": "ongoing",
+        "notes": "Путь к трону только начался."
+      }
+    }
+  ]
+}

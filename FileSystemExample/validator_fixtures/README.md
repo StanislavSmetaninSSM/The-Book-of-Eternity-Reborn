@@ -49,6 +49,8 @@ These fixtures are not a full playable session. They are focused contract exampl
 36. `factionCustomStateChanges` removals must target an existing canonical custom state id
 37. `worldMapUpdates.linkUpdates` must target an existing canonical adjacency link
 38. `completeThreatActivities` must target a threat with canonical active `currentActivity`
+39. canonical guardian identity must include `canonicalName`, `nameVariants`, `manifestation`, and `manifestationHistory`
+40. rival soul arcs must obey the `1 major + 1 minor` cap and hostile direct-target arcs need at least two visible clues before collision
 
 The goal is to make validator behavior explainable and reproducible for both developers and GM-side debugging.
 

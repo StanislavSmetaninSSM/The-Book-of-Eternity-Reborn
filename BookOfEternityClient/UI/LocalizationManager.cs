@@ -34,7 +34,7 @@ public class LocalizationManager
             // New Game Flow
             ["enter_soul_name"] = "Введите имя вашей души:",
             ["create_guardian"] = "Создать хранителя (описать текстом)",
-            ["choose_guardian"] = "Выбрать хранителя (из списка)",
+            ["choose_guardian"] = "Выбрать извечного хранителя",
             ["guardian_prompt"] = "Опишите вашего хранителя:",
             ["enter_mortal_life"] = "⚔️ Войти в смертную жизнь",
             ["describe_character"] = "Опишите персонажа, обстоятельства начала игры и мир:",
@@ -238,7 +238,7 @@ public class LocalizationManager
             ["continue_game_unavailable"] = "No current game session was found.",
             ["enter_soul_name"] = "Enter your soul's name:",
             ["create_guardian"] = "Create Guardian (describe in text)",
-            ["choose_guardian"] = "Choose Guardian (from list)",
+            ["choose_guardian"] = "Choose System Guardian",
             ["guardian_prompt"] = "Describe your guardian:",
             ["enter_mortal_life"] = "⚔️ Enter Mortal Life",
             ["describe_character"] = "Describe your character, starting circumstances and world:",

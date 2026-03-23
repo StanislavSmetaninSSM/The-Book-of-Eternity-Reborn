@@ -52,10 +52,22 @@
                - `Sell Relic` is a separate guardian trade interaction and is NOT an Ink Feather action
                - Local guardian trade (`Buy / Sell` Soul Relics) is client-side, but canonically belongs to the current active Guardian's abode
                - If a turn materializes the current active Guardian, you MUST also materialize the abode navigation state in `guardians.json`: `chaosSeaNavigation.currentAbodeId`, `chaosSeaNavigation.discoveredAbodes` containing that abodeId, and `abode.isDiscovered = true`
+               - If `guardians.json.pendingGuardianCreation.mode = system_preset`, the client has selected a named Eternal Guardian preset; materialize THAT exact guardian, not a nearby substitute
+               - If a guardian is materialized from an Eternal Guardian preset, write `sourcePreset` into the guardian object with `presetId`, `displayName`, `version`, `library`
+               - Canonical guardian identity now uses `canonicalName`, `nameVariants`, `manifestation`, and `manifestationHistory`; do NOT rely on legacy raw `name` as the primary field
+               - `manifestation` must contain the CURRENT visible form: `currentDisplayName`, `formFlexibility`, `currentPresentationStyle`, `currentPronouns`, `appearanceDescription`, optional `presentationReason`
+               - `manifestationHistory` stores only past forms; when the Guardian changes form, move the previous visible form there and update the current `manifestation`
+               - If `game_state/control/system_guardian_attraction.json` exists, the soul is deliberately seeking that exact Eternal Guardian; this attraction is deterministic for the turn and must resolve to the requested preset
                - If `game_state/control/afterlife_return_guard.json` exists with `remainingProtectedTurns > 0`, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any forced re-incarnation
                - Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn and only as a reaction to explicit player provocation against the current active Guardian
                - For guardian-forced `TriggerIncarnation`, write `source='guardian_forced'`, `guardianId`, `severityBand='harsh'|'severe'`, `reason`, `provocationSummary`, plus the normal `worldDescription`, `characterDescription`, `circumstances`
                - A guardian-forced incarnation start must be harsh but survivable; do NOT create an unwinnable deathtrap
+               - In Mortal World, you may use `UpdateRivalSoulArcs` to track milestone-based parallel destiny lines of OTHER souls in the current life
+               - Rival soul arcs are background pressure, not a second protagonist simulation; keep at most `1` active `major` and `1` active `minor`
+               - If a hostile rival arc directly targets the player, it MUST leave at least two player-visible clues before direct collision or terminal harm
+               - If a rival arc becomes personal for the player, surface that through an ordinary player-facing soul quest in `UpdateSoulQuests` linked by `relatedRivalArcId`
+               - If a world news item is one of those clues, mark that `worldEventsLog` entry with `relatedRivalArcId` too, so the player can recognize it as part of a parallel destiny line
+               - When practical, include `turn` or `timestamp` on visible `publicSignals` / linked world news and describe `consequences` / `impact` / `followUp`, so the player's rival-thread journal can show chronology and world changes more clearly
                - If the player asks the current active Guardian about a relic bought from this local stock, the Guardian should know that relic as part of their own trade assortment
                - Local NPC trade may also exist as a client-side panel for mortal-world goods only
                - Local NPC trade uses `game_state/core/player_status.json.money`, never Ink Feathers, and never trades Soul Relics

@@ -63,18 +63,64 @@
                          "EXAMPLE": "guard_combat_aleksandr_warlord_001",
                          "NAMING_RULES": "Domain reflects specialization, name is Russian, uniqueId prevents duplicates"
                        },
-                       "name": {
-                         "VALUE_SOURCE": "Russian name generator based on Guardian domain and personality",
-                         "MEANING": "Full Russian name the Guardian uses when addressing the Soul",
-                         "PURPOSE": "Personal connection and cultural immersion",
-                         "VALIDATION": "Must be Russian names (first + surname), appropriate to domain",
-                         "EXAMPLES": {
-                           "Combat": "Александр Железный, Мария Мечница",
-                           "Magic": "Дмитрий Звездочёт, Анна Рунница",
-                           "Trade": "Владимир Торговец, Екатерина Златая",
-                           "Social": "Михаил Красноречивый, Ольга Чаровница"
-                         }
-                       },
+                      "canonicalName": {
+                        "VALUE_SOURCE": "Russian canonical identity name bound to the Guardian as a persistent entity",
+                        "MEANING": "The true/core name of the Guardian that remains stable across presentation changes",
+                        "PURPOSE": "Preserve identity continuity when the Guardian changes visible form, gendered presentation, or display-name variant",
+                        "VALIDATION": "Must be a non-empty Russian name or title appropriate to the Guardian concept"
+                      },
+                      "nameVariants": {
+                        "default": {
+                          "VALUE_SOURCE": "Primary default display-name form",
+                          "MEANING": "Default name-variant the Guardian most naturally uses"
+                        },
+                        "feminine": {
+                          "VALUE_SOURCE": "Optional feminine display-name variant",
+                          "MEANING": "Used only if this Guardian canonically has and chooses a feminine naming form"
+                        },
+                        "masculine": {
+                          "VALUE_SOURCE": "Optional masculine display-name variant",
+                          "MEANING": "Used only if this Guardian canonically has and chooses a masculine naming form"
+                        },
+                        "neutral": {
+                          "VALUE_SOURCE": "Optional neutral display-name variant",
+                          "MEANING": "Used only if this Guardian canonically has and chooses a neutral naming form"
+                        }
+                      },
+                      "manifestation": {
+                        "formFlexibility": {
+                          "VALUE_SOURCE": "fixed | selective | adaptive",
+                          "MEANING": "How freely this Guardian changes visible form",
+                          "VALIDATION": "Must be one of fixed, selective, adaptive"
+                        },
+                        "currentDisplayName": {
+                          "VALUE_SOURCE": "Current chosen display-name for the Soul-facing interaction",
+                          "MEANING": "The name the Guardian currently presents to the Soul",
+                          "PURPOSE": "Visible identity in UI and scene narration"
+                        },
+                        "currentPresentationStyle": {
+                          "VALUE_SOURCE": "Current presentation label chosen by the Guardian",
+                          "MEANING": "The Guardian's current gendered/ungendered presentation mode"
+                        },
+                        "currentPronouns": {
+                          "VALUE_SOURCE": "Current pronouns or grammatical preference string",
+                          "MEANING": "How this manifestation should be referred to in current narration"
+                        },
+                        "appearanceDescription": {
+                          "VALUE_SOURCE": "Narrative description of the current visible form",
+                          "MEANING": "What the Soul currently sees in `/guardians` and relevant afterlife scenes"
+                        },
+                        "presentationReason": {
+                          "VALUE_SOURCE": "Optional narrative explanation",
+                          "MEANING": "Why the Guardian chose this form now, if relevant"
+                        }
+                      },
+                      "manifestationHistory": {
+                        "VALUE_SOURCE": "Short canonical array of prior visible forms",
+                        "MEANING": "Past display-forms already left behind by the Guardian",
+                        "PURPOSE": "Prevent identity confusion for the Soul, the UI, and later narration",
+                        "VALIDATION": "Array of past manifestation entries only; never duplicate the current manifestation"
+                      },
                        "domain": {
                          "VALUE_SOURCE": "Predefined list based on Soul Relic categories and game systems",
                          "MEANING": "Area of expertise determining quest types and relic specialization",
@@ -423,7 +469,21 @@
                          "command": "create",
                          "data": {
                            "guardianId": "guard_combat_aleksandr_warlord_001",
-                           "name": "Александр Железный",
+                           "canonicalName": "Александр Железный",
+                           "nameVariants": {
+                             "default": "Александр Железный",
+                             "feminine": null,
+                             "masculine": "Александр Железный",
+                             "neutral": null
+                           },
+                           "manifestation": {
+                             "formFlexibility": "fixed",
+                             "currentDisplayName": "Александр Железный",
+                             "currentPresentationStyle": "masculine",
+                             "currentPronouns": "он/его",
+                             "appearanceDescription": "Воинственный наставник в железе и боевых знаках."
+                           },
+                           "manifestationHistory": [],
                            "domain": "Combat",
                            "personalityProfile": {
                              "archetype": "Stern Mentor",

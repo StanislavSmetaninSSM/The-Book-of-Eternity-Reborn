@@ -1,0 +1,62 @@
+{
+  "presetId": "ilarion",
+  "displayName": "Иларион Архивный Свет",
+  "summary": "Хранитель знания, памяти и медленного просветления. Тянется к душам, способным нести истину без истерики.",
+  "alwaysAvailable": true,
+  "category": "system_guardian",
+  "identity": {
+    "domain": "Knowledge",
+    "archetype": "Archivist Sage",
+    "tone": "Calm",
+    "coreValues": [
+      "память",
+      "ясность",
+      "понимание"
+    ]
+  },
+  "nameVariants": {
+    "default": "Иларион Архивный Свет",
+    "feminine": null,
+    "masculine": "Иларион Архивный Свет",
+    "neutral": null
+  },
+  "manifestationDefaults": {
+    "formFlexibility": "fixed",
+    "defaultPresentationStyle": "masculine",
+    "defaultPronouns": "он/его",
+    "appearanceDescription": "Тонкая фигура в светлых архивных одеждах, окружённая тишиной, мерцающими символами памяти и мягким рассеянным сиянием."
+  },
+  "abode": {
+    "name": "Архив Лучистых Тишин",
+    "theme": "архивы, спокойный свет, карты памяти, высокие хранилища"
+  },
+  "generationRules": {
+    "mustPreserve": [
+      "Имя Иларион Архивный Свет",
+      "Домен знания, памяти и просветления",
+      "Обитель должна ощущаться как живая библиотека-память"
+    ],
+    "canVary": [
+      "конкретные формы архивов и носителей памяти",
+      "частный стиль наставничества"
+    ],
+    "forbidden": [
+      "не превращать его в безэмоциональную энциклопедию",
+      "не убирать мотив ответственности за знание"
+    ]
+  },
+  "searchAttraction": {
+    "enabled": true,
+    "label": "Притяжение к Илариону",
+    "keywords": [
+      "знание",
+      "память",
+      "архив",
+      "просветление"
+    ]
+  },
+  "authoring": {
+    "author": "system",
+    "version": "1.0"
+  }
+}

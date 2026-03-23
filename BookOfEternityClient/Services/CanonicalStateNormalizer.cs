@@ -56,6 +56,7 @@ public class CanonicalStateNormalizer
 	        "game_state/quests/regular_quests.json",
 	        "game_state/quests/soul_quests.json",
 	        "game_state/quests/quest_history.json",
+	        "game_state/world/rival_soul_arcs.json",
 	        "game_state/factions/faction_core.json",
 	        "game_state/inventory/item_resources.json",
 	        "game_state/inventory/item_bonds.json",
@@ -93,6 +94,7 @@ public class CanonicalStateNormalizer
 	        await NormalizeQuestStateAsync("game_state/quests/regular_quests.json", "UpdateQuests", backups);
 	        await NormalizeQuestStateAsync("game_state/quests/soul_quests.json", "UpdateSoulQuests", backups);
 	        await NormalizeQuestHistoryAsync(backups);
+	        await NormalizeRivalSoulArcsAsync(backups);
 	        await NormalizeFactionCoreAsync(backups);
 	        await NormalizeInventoryItemResourcesAsync(backups);
 	        await NormalizeInventoryItemBondsAsync(backups);
@@ -320,6 +322,25 @@ public class CanonicalStateNormalizer
 
         result["factions"] = ToArray(factions);
         result.Remove("factionDataChanges");
+        await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+    private async Task NormalizeRivalSoulArcsAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        const string path = RivalSoulArcService.StatePath;
+        var currentNode = await ReadNodeAsync(path);
+        if (currentNode == null) return;
+
+        var previous = await ReadBackupObjectAsync(path, backups);
+        var result = CloneObject(previous ?? new JsonObject());
+        var arcs = EnsureArray(result, "arcs");
+
+        foreach (var arc in CollectRivalSoulArcEntries(previous))
+            UpsertByIdentity(arcs, arc, "arcId");
+        foreach (var arc in CollectRivalSoulArcEntries(currentNode))
+            UpsertByIdentity(arcs, arc, "arcId");
+
+        result.Remove("UpdateRivalSoulArcs");
         await WriteIfChangedAsync(path, currentNode, result);
     }
 
@@ -1381,6 +1402,31 @@ public class CanonicalStateNormalizer
 
         if (obj.ContainsKey("questId") || obj.ContainsKey("questName") || obj.ContainsKey("title") || obj.ContainsKey("name"))
             yield return NormalizeQuestStateEntry(obj);
+    }
+
+    private static IEnumerable<JsonObject> CollectRivalSoulArcEntries(JsonNode? root)
+    {
+        if (root is JsonArray rootArray)
+        {
+            foreach (var item in rootArray.OfType<JsonObject>())
+                yield return CloneObject(item);
+            yield break;
+        }
+
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var propName in new[] { "arcs", "UpdateRivalSoulArcs" })
+        {
+            if (obj[propName] is not JsonArray arr)
+                continue;
+
+            foreach (var item in arr.OfType<JsonObject>())
+                yield return CloneObject(item);
+        }
+
+        if (obj.ContainsKey("arcId"))
+            yield return CloneObject(obj);
     }
 
     private static JsonObject NormalizeQuestStateEntry(JsonObject source)

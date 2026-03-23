@@ -185,6 +185,7 @@
                     - game_state/world/world_map.json ← worldMapUpdates
                     - worldMapUpdates atomic commands include newLocations, locationUpdates, storageUpdates, storagesToRemove, newLinks, linkUpdates, linksToRemove, threatsToAdd, threatsToUpdate, threatsToRemove, completeThreatActivities
                     - game_state/world/world_events.json ← worldEventsLog
+                    - game_state/world/rival_soul_arcs.json ← UpdateRivalSoulArcs
                     - game_state/world/world_flags.json ← worldStateFlags, removeWorldStateFlags
                     - game_state/world/world_time.json ← timeChange, setWorldTime
                     - game_state/world/weather.json ← weatherChange
@@ -203,6 +204,7 @@
                     - currentLocationData is dual-shape: for a truly new location send the full Location Object; for a known location revisit the base shorthand is locationId + coordinates + lastEventsDescription
                     - When the player's CURRENT location also needs a storage-access or difficulty-profile update this turn, currentLocationData may additionally carry locationStorages and/or internalDifficultyProfile/externalDifficultyProfile alongside that known-location shorthand
                     - eventDescriptions is a read-only location archive: read it from context if present, but do NOT emit it inside currentLocationData or worldMapUpdates; write only lastEventsDescription for current-turn history
+                    - rival_soul_arcs.json stores life-scoped milestone arcs for OTHER souls, not player quests; keep at most 1 active major arc and 1 active minor arc
 
                     **QUEST SYSTEM:**
                     - game_state/quests/regular_quests.json ← UpdateQuests

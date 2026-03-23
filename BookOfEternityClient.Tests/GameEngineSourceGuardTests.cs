@@ -134,6 +134,65 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void RuntimePrompt_MustDescribeEternalGuardianPresetContract()
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.Contains("ETERNAL GUARDIAN PRESETS:", source, StringComparison.Ordinal);
+        Assert.Contains("guardian.sourcePreset", source, StringComparison.Ordinal);
+        Assert.Contains("canonicalName", source, StringComparison.Ordinal);
+        Assert.Contains("manifestationHistory", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RuntimePrompt_MustDescribeRivalSoulArcContract()
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.Contains("RIVAL SOUL ARCS — MORTAL WORLD ONLY:", source, StringComparison.Ordinal);
+        Assert.Contains("Use UpdateRivalSoulArcs", source, StringComparison.Ordinal);
+        Assert.Contains("Keep at most:", source, StringComparison.Ordinal);
+        Assert.Contains("1 active major arc", source, StringComparison.Ordinal);
+        Assert.Contains("relatedRivalArcId", source, StringComparison.Ordinal);
+        Assert.Contains("If you surface a rival arc clue through worldEventsLog, mark that world event with relatedRivalArcId too", source, StringComparison.Ordinal);
+        Assert.Contains("add turn/timestamp/date information to publicSignals or linked world events", source, StringComparison.Ordinal);
+        Assert.Contains("consequences/impact/follow-up", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AcceptedTurnRepairLoop_MustUsePreTurnSnapshotOnlyForInitialCanonicalMaterialization()
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.Contains("RefreshAcceptedTurnCanonicalStateForValidationAsync", source, StringComparison.Ordinal);
+        Assert.Equal(1, source.Split("RefreshCanonicalStateAsync(snapshot)", StringSplitOptions.None).Length - 1);
+        Assert.Contains("await RefreshCanonicalStateAsync();", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RepairLoop_MustHealthCheckClientOwnedGuardianAndQteControlFilesBeforeRevalidation()
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.Contains("_afterlifeReturnGuardService.EnsureHealthyAsync", source, StringComparison.Ordinal);
+        Assert.Contains("_systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync", source, StringComparison.Ordinal);
+        Assert.Contains("_qteSceneService.EnsureRuntimeStateHealthyAsync", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TurnReminder_MustPassCurrentTurnNumberToRivalSoulArcReminderService()
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.Contains("BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void GuardianForcedIncarnation_RuntimeGate_MustFailClosedOnInvalidReturnGuard()
     {
         var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
@@ -154,6 +213,15 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void LifeTransitions_AndNewIncarnation_MustResetLifeScopedRivalSoulArcs()
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.Contains("_rivalSoulArcService.ResetForNewLifeAsync();", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void FreeformGameEngineTextInputs_MustNotUseTextPromptStringDirectly()
     {
         var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
@@ -161,6 +229,17 @@ public sealed class GameEngineSourceGuardTests
 
         Assert.DoesNotContain("TextPrompt<string>", source, StringComparison.Ordinal);
         Assert.Contains("PromptTextInput(", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NewGameFlow_MustNotUseLegacyHardcodedGuardianTypeList()
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.DoesNotContain("Хранитель Магии — мудрый маг", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("Хранитель Битвы — закалённый воин", source, StringComparison.Ordinal);
+        Assert.Contains("PromptSystemGuardianPresetSelectionAsync", source, StringComparison.Ordinal);
     }
 
     [Fact]

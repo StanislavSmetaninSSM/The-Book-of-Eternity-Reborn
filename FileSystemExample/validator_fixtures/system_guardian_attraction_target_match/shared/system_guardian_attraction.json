@@ -1,0 +1,10 @@
+{
+  "mode": "system_guardian_attraction",
+  "targetPresetId": "azalia",
+  "targetPresetDisplayName": "Азалия",
+  "targetPresetVersion": "1.0",
+  "sourceLibrary": "built_in",
+  "targetSummary": "Дипломатичная хранительница страсти, власти и преданности.",
+  "renderedPromptPackage": "PresetId: azalia",
+  "_lastUpdated": "2026-03-20T11:15:00Z"
+}

@@ -1,0 +1,32 @@
+{
+  "id": "rival_soul_arc_contract",
+  "runner": "StateOnly",
+  "description": "Rival soul arcs must respect the one-major/one-minor cap and hostile direct-target arcs need at least two visible clues before collision.",
+  "shared": [
+    {
+      "source": "shared/guardians.json",
+      "target": "game_state/meta/guardians.json"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/rival_soul_arcs.json",
+      "target": "game_state/world/rival_soul_arcs.json"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/rival_soul_arcs.json",
+      "target": "game_state/world/rival_soul_arcs.json"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "rival_arc_major_cap_exceeded",
+    "rival_arc_hostile_direct_target_needs_two_visible_signals"
+  ],
+  "allowExtraBrokenCodes": true,
+  "forbiddenFixedCodes": [
+    "rival_arc_major_cap_exceeded",
+    "rival_arc_hostile_direct_target_needs_two_visible_signals"
+  ]
+}

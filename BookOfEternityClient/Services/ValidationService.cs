@@ -152,6 +152,42 @@ public class ValidationService
         "failed",
         "abandoned"
     };
+    private static readonly HashSet<string> AllowedRivalSoulArcScopes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "major",
+        "minor"
+    };
+    private static readonly HashSet<string> AllowedRivalSoulArcTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "hostile_hunt",
+        "rival_ascension",
+        "political_claim",
+        "artifact_race",
+        "ideological_mission",
+        "custom"
+    };
+    private static readonly HashSet<string> AllowedRivalSoulArcStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "latent",
+        "rising",
+        "intersecting",
+        "resolved",
+        "failed"
+    };
+    private static readonly HashSet<string> AllowedRivalSoulArcSponsorModes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "guardianId",
+        "eternalPreset"
+    };
+    private static readonly HashSet<string> AllowedRivalSoulArcResolutionOutcomes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "ongoing",
+        "player_supported",
+        "player_opposed",
+        "self_resolved",
+        "collapsed",
+        "unknown"
+    };
     private static readonly HashSet<string> AllowedNpcPersonalQuestStatuses = new(StringComparer.OrdinalIgnoreCase)
     {
         "Active",
@@ -4016,6 +4052,8 @@ public class ValidationService
 
         var knownGuardianIds = await ReadKnownGuardianIdsAsync();
         await ValidateSoulQuestGuardianCrossReferencesAsync(issues, knownGuardianIds);
+        var knownSystemGuardianPresetIds = await ReadKnownSystemGuardianPresetIdsAsync();
+        await ValidateRivalSoulArcCrossReferencesAsync(issues, knownGuardianIds, knownSystemGuardianPresetIds);
 
         var knownFactionIds = await ReadKnownFactionIdsAsync();
         await ValidateFactionReferenceCrossReferencesAsync(issues, knownFactionIds, knownLocationIds);
@@ -4177,11 +4215,14 @@ public class ValidationService
                 {
                     var guardianContext = $"game_state/meta/guardians.json.guardians[{index}]";
                     var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
-                    var guardianName = GetFirstNonEmptyString(guardian, "name");
+                    var guardianName = GuardianManifestation.GetDisplayName(guardian);
+                    var guardianCanonicalName = GuardianManifestation.GetCanonicalName(guardian);
                     if (!string.IsNullOrWhiteSpace(guardianId))
                         guardiansById[guardianId] = guardianContext;
                     if (!string.IsNullOrWhiteSpace(guardianName))
                         guardiansByName[guardianName] = guardianContext;
+                    if (!string.IsNullOrWhiteSpace(guardianCanonicalName))
+                        guardiansByName[guardianCanonicalName] = guardianContext;
 
                     var guardianDomain = GetFirstNonEmptyString(guardian, "domain");
                     if (!string.IsNullOrWhiteSpace(guardianId) &&
@@ -4206,12 +4247,15 @@ public class ValidationService
                 activeGuardian.ValueKind == JsonValueKind.Object)
             {
                 var activeGuardianId = GetFirstNonEmptyString(activeGuardian, "guardianId", "id");
-                var activeGuardianName = GetFirstNonEmptyString(activeGuardian, "name");
+                var activeGuardianName = GuardianManifestation.GetDisplayName(activeGuardian);
+                var activeGuardianCanonicalName = GuardianManifestation.GetCanonicalName(activeGuardian);
                 var found = false;
 
                 if (!string.IsNullOrWhiteSpace(activeGuardianId) && guardiansById.ContainsKey(activeGuardianId))
                     found = true;
                 if (!found && !string.IsNullOrWhiteSpace(activeGuardianName) && guardiansByName.ContainsKey(activeGuardianName))
+                    found = true;
+                if (!found && !string.IsNullOrWhiteSpace(activeGuardianCanonicalName) && guardiansByName.ContainsKey(activeGuardianCanonicalName))
                     found = true;
 
                 if (!found && (guardiansById.Count > 0 || guardiansByName.Count > 0))
@@ -4232,11 +4276,81 @@ public class ValidationService
                         repairHint: "Синхронно обновляй activeGuardian тем же guardianId/name, который реально присутствует в массиве guardians[]. Не оставляй activeGuardian ссылкой на устаревший или несозданный guardian entry."));
                 }
             }
+
+            var pendingPresetId = TryReadPendingSystemGuardianPresetId(preTurnGuardiansJson);
+            if (!string.IsNullOrWhiteSpace(pendingPresetId))
+            {
+                if (!root.TryGetProperty("activeGuardian", out var selectedActiveGuardian) ||
+                    selectedActiveGuardian.ValueKind != JsonValueKind.Object)
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/meta/guardians.json.activeGuardian",
+                        IssueSeverity.Error,
+                        "Системный guardian preset был выбран клиентом, но активный Хранитель не materialized.",
+                        code: "system_guardian_pending_preset_missing_active_guardian",
+                        section: "SystemGuardianPresets",
+                        expected: $"activeGuardian.sourcePreset.presetId = {pendingPresetId}",
+                        actual: "missing"));
+                }
+                else
+                {
+                    var activePresetId = TryReadGuardianSourcePresetId(selectedActiveGuardian);
+                    if (!string.Equals(activePresetId, pendingPresetId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            "game_state/meta/guardians.json.activeGuardian.sourcePreset.presetId",
+                            IssueSeverity.Error,
+                            "GM проигнорировал client-selected system guardian preset при materialization Хранителя.",
+                            code: "system_guardian_pending_preset_not_materialized",
+                            section: "SystemGuardianPresets",
+                            expected: pendingPresetId,
+                            actual: string.IsNullOrWhiteSpace(activePresetId) ? "missing/empty" : activePresetId,
+                            repairHint: "При system-preset guardian creation materialize именно выбранного Хранителя и запиши matching sourcePreset metadata."));
+                    }
+                }
+            }
         }
         catch
         {
             // ignored
         }
+    }
+
+    private static string? TryReadPendingSystemGuardianPresetId(string? guardiansJson)
+    {
+        if (string.IsNullOrWhiteSpace(guardiansJson))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(guardiansJson);
+            if (!doc.RootElement.TryGetProperty("pendingGuardianCreation", out var pending) ||
+                pending.ValueKind != JsonValueKind.Object)
+            {
+                return null;
+            }
+
+            var mode = GetFirstNonEmptyString(pending, "mode");
+            if (!string.Equals(mode, "system_preset", StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            return GetFirstNonEmptyString(pending, "presetId");
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static string? TryReadGuardianSourcePresetId(JsonElement guardian)
+    {
+        if (!guardian.TryGetProperty("sourcePreset", out var sourcePreset) ||
+            sourcePreset.ValueKind != JsonValueKind.Object)
+        {
+            return null;
+        }
+
+        return GetFirstNonEmptyString(sourcePreset, "presetId");
     }
 
     private static HashSet<string> ReadGuardianIdsFromJson(string? guardiansJson)
@@ -7183,11 +7297,14 @@ public class ValidationService
     private static void RegisterGuardianReference(JsonElement guardian, HashSet<string> ids, HashSet<string> names)
     {
         var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
-        var guardianName = GetFirstNonEmptyString(guardian, "name");
+        var guardianName = GuardianManifestation.GetDisplayName(guardian);
+        var canonicalName = GuardianManifestation.GetCanonicalName(guardian);
         if (!string.IsNullOrWhiteSpace(guardianId))
             ids.Add(guardianId);
         if (!string.IsNullOrWhiteSpace(guardianName))
             names.Add(guardianName);
+        if (!string.IsNullOrWhiteSpace(canonicalName))
+            names.Add(canonicalName);
     }
 
     private static void CollectCreatedGuardianIdsFromStateRoot(JsonElement root, HashSet<string> ids)
@@ -7316,6 +7433,214 @@ public class ValidationService
                         repairHint: "Для Soul Quest используй существующий guardianId из canonical guardians state. Если Хранитель создаётся впервые, сначала сохрани его через UpdateGuardians.create, а затем ссылайся на его permanent guardianId."));
                 }
                 index++;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    private async Task<HashSet<string>> ReadKnownSystemGuardianPresetIdsAsync()
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var rootDirectory = Path.Combine(_fs.BasePath, SystemGuardianLibraryService.RootDirectoryName);
+        if (!Directory.Exists(rootDirectory))
+            return result;
+
+        foreach (var manifestPath in Directory.EnumerateFiles(rootDirectory, "manifest.json", SearchOption.AllDirectories))
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(await File.ReadAllTextAsync(manifestPath));
+                if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var presetId = GetFirstNonEmptyString(doc.RootElement, "presetId");
+                if (!string.IsNullOrWhiteSpace(presetId))
+                    result.Add(presetId);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        return result;
+    }
+
+    private async Task ValidateRivalSoulArcCrossReferencesAsync(
+        List<ValidationIssue> issues,
+        HashSet<string> knownGuardianIds,
+        HashSet<string> knownSystemGuardianPresetIds)
+    {
+        var json = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            string collectionName;
+            JsonElement arcs;
+            if (doc.RootElement.TryGetProperty("arcs", out arcs))
+            {
+                collectionName = "arcs";
+            }
+            else if (doc.RootElement.TryGetProperty("UpdateRivalSoulArcs", out arcs))
+            {
+                collectionName = "UpdateRivalSoulArcs";
+            }
+            else
+            {
+                return;
+            }
+
+            if (arcs.ValueKind != JsonValueKind.Array)
+                return;
+
+            var knownArcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var index = 0;
+            foreach (var arc in arcs.EnumerateArray())
+            {
+                var arcContext = $"{RivalSoulArcService.StatePath}.{collectionName}[{index}]";
+                var arcId = GetFirstNonEmptyString(arc, "arcId");
+                if (!string.IsNullOrWhiteSpace(arcId))
+                    knownArcIds.Add(arcId);
+
+                if (arc.ValueKind != JsonValueKind.Object ||
+                    !arc.TryGetProperty("sponsorGuardianRef", out var sponsorRef) ||
+                    sponsorRef.ValueKind != JsonValueKind.Object)
+                {
+                    index++;
+                    continue;
+                }
+
+                var mode = GetFirstNonEmptyString(sponsorRef, "mode");
+                if (string.Equals(mode, "guardianId", StringComparison.OrdinalIgnoreCase))
+                {
+                    var guardianId = GetFirstNonEmptyString(sponsorRef, "guardianId");
+                    if (!string.IsNullOrWhiteSpace(guardianId) && !knownGuardianIds.Contains(guardianId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{arcContext}.sponsorGuardianRef.guardianId",
+                            IssueSeverity.Error,
+                            $"Rival soul arc ссылается на неизвестный guardianId '{guardianId}'",
+                            code: "rival_arc_unknown_guardian_id",
+                            section: "RivalSoulArcs",
+                            expected: "existing guardianId from canonical guardians state",
+                            actual: guardianId,
+                            repairHint: "Для sponsorGuardianRef.mode=guardianId используй guardianId уже существующего Хранителя из canonical guardians state."));
+                    }
+                }
+                else if (string.Equals(mode, "eternalPreset", StringComparison.OrdinalIgnoreCase))
+                {
+                    var presetId = GetFirstNonEmptyString(sponsorRef, "presetId");
+                    if (!string.IsNullOrWhiteSpace(presetId) && !knownSystemGuardianPresetIds.Contains(presetId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{arcContext}.sponsorGuardianRef.presetId",
+                            IssueSeverity.Error,
+                            $"Rival soul arc ссылается на неизвестный Eternal Guardian preset '{presetId}'",
+                            code: "rival_arc_unknown_eternal_guardian_preset",
+                            section: "RivalSoulArcs",
+                            expected: "existing presetId from system_guardians library",
+                            actual: presetId,
+                            repairHint: "Для sponsorGuardianRef.mode=eternalPreset используй реальный presetId из библиотеки извечных хранителей."));
+                    }
+                }
+
+                index++;
+            }
+
+            if (knownArcIds.Count == 0)
+                return;
+
+            var soulQuestJson = await _fs.ReadFileAsync("game_state/quests/soul_quests.json");
+            if (!string.IsNullOrWhiteSpace(soulQuestJson))
+            {
+                using var soulQuestDoc = JsonDocument.Parse(soulQuestJson);
+                JsonElement quests;
+                string? questCollectionName = null;
+                if (soulQuestDoc.RootElement.TryGetProperty("quests", out quests))
+                {
+                    questCollectionName = "quests";
+                }
+                else if (soulQuestDoc.RootElement.TryGetProperty("UpdateSoulQuests", out quests))
+                {
+                    questCollectionName = "UpdateSoulQuests";
+                }
+                else
+                {
+                    quests = default;
+                }
+
+                if (questCollectionName != null && quests.ValueKind == JsonValueKind.Array)
+                {
+                    var questIndex = 0;
+                    foreach (var quest in quests.EnumerateArray())
+                    {
+                        var relatedArcId = GetFirstNonEmptyString(quest, "relatedRivalArcId");
+                        if (!string.IsNullOrWhiteSpace(relatedArcId) && !knownArcIds.Contains(relatedArcId))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"game_state/quests/soul_quests.json.{questCollectionName}[{questIndex}].relatedRivalArcId",
+                                IssueSeverity.Error,
+                                $"Soul quest ссылается на неизвестный rival arc '{relatedArcId}'",
+                                code: "soul_quest_unknown_rival_arc_id",
+                                section: "RivalSoulArcs",
+                                expected: "existing arcId from canonical rival_soul_arcs state",
+                                actual: relatedArcId,
+                                repairHint: "Для relatedRivalArcId используй существующий arcId из game_state/world/rival_soul_arcs.json."));
+                        }
+
+                        questIndex++;
+                    }
+                }
+            }
+
+            var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+            if (string.IsNullOrWhiteSpace(worldEventsJson))
+                return;
+
+            using var worldEventsDoc = JsonDocument.Parse(worldEventsJson);
+            JsonElement worldEvents;
+            string? worldEventCollectionName = null;
+            if (worldEventsDoc.RootElement.TryGetProperty("worldEventsLog", out worldEvents))
+            {
+                worldEventCollectionName = "worldEventsLog";
+            }
+            else if (worldEventsDoc.RootElement.ValueKind == JsonValueKind.Array)
+            {
+                worldEvents = worldEventsDoc.RootElement;
+                worldEventCollectionName = "worldEventsLog";
+            }
+            else
+            {
+                worldEvents = default;
+            }
+
+            if (worldEventCollectionName == null || worldEvents.ValueKind != JsonValueKind.Array)
+                return;
+
+            var eventIndex = 0;
+            foreach (var worldEvent in worldEvents.EnumerateArray())
+            {
+                var relatedArcId = GetFirstNonEmptyString(worldEvent, "relatedRivalArcId");
+                if (!string.IsNullOrWhiteSpace(relatedArcId) && !knownArcIds.Contains(relatedArcId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"game_state/world/world_events.json.{worldEventCollectionName}[{eventIndex}].relatedRivalArcId",
+                        IssueSeverity.Error,
+                        $"World event ссылается на неизвестный rival arc '{relatedArcId}'",
+                        code: "world_event_unknown_rival_arc_id",
+                        section: "RivalSoulArcs",
+                        expected: "existing arcId from canonical rival_soul_arcs state",
+                        actual: relatedArcId,
+                        repairHint: "Если world event является сигналом чужой нити судьбы, используй существующий relatedRivalArcId из game_state/world/rival_soul_arcs.json."));
+                }
+
+                eventIndex++;
             }
         }
         catch
@@ -12191,6 +12516,9 @@ public class ValidationService
         await ValidateFlexibleStateFile("game_state/world/world_events.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "worldEventsLog" }, issues,
             ValidateWorldQuestCombatFactionContract);
+        await ValidateFlexibleStateFile(RivalSoulArcService.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "UpdateRivalSoulArcs", "arcs" }, issues,
+            ValidateWorldQuestCombatFactionContract);
         await ValidateFlexibleStateFile("game_state/world/world_flags.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "worldStateFlags", "removeWorldStateFlags" }, issues,
             ValidateWorldQuestCombatFactionContract);
@@ -12619,6 +12947,102 @@ public class ValidationService
         await ValidateLifeTransitionContextAsync(issues);
         await ValidateIncarnationContextAsync(issues);
         await ValidateAscensionContextAsync(issues);
+        await ValidateSystemGuardianAttractionContextAsync(issues);
+    }
+
+    private void ValidateSystemGuardianAttractionStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var mode = RequireString(root, contextPrefix, issues, "mode");
+        if (!string.IsNullOrWhiteSpace(mode) &&
+            !string.Equals(mode, "system_guardian_attraction", StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.mode",
+                IssueSeverity.Error,
+                "system_guardian_attraction.json должен содержать mode = system_guardian_attraction",
+                code: "system_guardian_attraction_invalid_mode",
+                section: "SystemGuardianPresets",
+                expected: "system_guardian_attraction",
+                actual: mode));
+        }
+
+        RequireString(root, contextPrefix, issues, "targetPresetId");
+        RequireString(root, contextPrefix, issues, "targetPresetDisplayName");
+        RequireString(root, contextPrefix, issues, "targetPresetVersion");
+        RequireString(root, contextPrefix, issues, "sourceLibrary");
+        RequireString(root, contextPrefix, issues, "renderedPromptPackage");
+        ValidateOptionalString(root, contextPrefix, issues, "targetSummary");
+        ValidateOptionalString(root, contextPrefix, issues, "_lastUpdated");
+    }
+
+    private async Task ValidateSystemGuardianAttractionContextAsync(List<ValidationIssue> issues)
+    {
+        var json = await _fs.ReadFileAsync(SystemGuardianLibraryService.AttractionRequestPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(new ValidationIssue(
+                    SystemGuardianLibraryService.AttractionRequestPath,
+                    IssueSeverity.Error,
+                    "system_guardian_attraction.json должен быть JSON object",
+                    code: "system_guardian_attraction_invalid_root",
+                    section: "SystemGuardianPresets"));
+                return;
+            }
+
+            ValidateSystemGuardianAttractionStateFile(doc.RootElement, SystemGuardianLibraryService.AttractionRequestPath, issues);
+
+            var targetPresetId = GetFirstNonEmptyString(doc.RootElement, "targetPresetId");
+            if (string.IsNullOrWhiteSpace(targetPresetId))
+                return;
+
+            var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+            if (string.IsNullOrWhiteSpace(guardiansJson))
+                return;
+
+            using var guardiansDoc = JsonDocument.Parse(guardiansJson);
+            if (!guardiansDoc.RootElement.TryGetProperty("activeGuardian", out var activeGuardian) ||
+                activeGuardian.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.activeGuardian",
+                    IssueSeverity.Error,
+                    "После deterministic attraction к системному Хранителю должен существовать activeGuardian.",
+                    code: "system_guardian_attraction_missing_active_guardian",
+                    section: "SystemGuardianPresets",
+                    expected: $"activeGuardian.sourcePreset.presetId = {targetPresetId}",
+                    actual: "missing"));
+                return;
+            }
+
+            var activePresetId = TryReadGuardianSourcePresetId(activeGuardian);
+            if (!string.Equals(activePresetId, targetPresetId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.activeGuardian.sourcePreset.presetId",
+                    IssueSeverity.Error,
+                    "Deterministic attraction к системному Хранителю завершился другим preset или без sourcePreset metadata.",
+                    code: "system_guardian_attraction_target_mismatch",
+                    section: "SystemGuardianPresets",
+                    expected: targetPresetId,
+                    actual: string.IsNullOrWhiteSpace(activePresetId) ? "missing/empty" : activePresetId,
+                    repairHint: "После system guardian attraction current activeGuardian должен ссылаться на requested presetId."));   
+            }
+        }
+        catch
+        {
+            issues.Add(new ValidationIssue(
+                SystemGuardianLibraryService.AttractionRequestPath,
+                IssueSeverity.Error,
+                "system_guardian_attraction.json не читается как валидный JSON",
+                code: "system_guardian_attraction_invalid_json",
+                section: "SystemGuardianPresets"));
+        }
     }
 
     private async Task ValidateLifeTransitionContextAsync(List<ValidationIssue> issues)
@@ -14023,9 +14447,12 @@ public class ValidationService
             if (doc.RootElement.TryGetProperty("activeGuardian", out var activeGuardian) &&
                 activeGuardian.ValueKind == JsonValueKind.Object)
             {
-                var activeName = GetFirstNonEmptyString(activeGuardian, "name");
+                var activeName = GuardianManifestation.GetDisplayName(activeGuardian);
                 if (!string.IsNullOrWhiteSpace(activeName))
                     result.Add(activeName);
+                var canonicalName = GuardianManifestation.GetCanonicalName(activeGuardian);
+                if (!string.IsNullOrWhiteSpace(canonicalName))
+                    result.Add(canonicalName);
             }
         }
         catch
@@ -14139,16 +14566,29 @@ public class ValidationService
         return aliases;
     }
 
-    private static Dictionary<string, string> BuildGuardianAliasLookup(JsonElement root)
+    private static Dictionary<string, List<string>> BuildGuardianAliasLookup(JsonElement root)
     {
-        var aliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var aliases = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
         void RegisterGuardian(JsonElement guardian)
         {
             var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
-            var name = GetFirstNonEmptyString(guardian, "name");
-            if (!string.IsNullOrWhiteSpace(guardianId) && !string.IsNullOrWhiteSpace(name))
-                aliases[guardianId] = name;
+            if (string.IsNullOrWhiteSpace(guardianId))
+                return;
+
+            var names = new List<string>();
+            var displayName = GuardianManifestation.GetDisplayName(guardian);
+            var canonicalName = GuardianManifestation.GetCanonicalName(guardian);
+            if (!string.IsNullOrWhiteSpace(displayName))
+                names.Add(displayName);
+            if (!string.IsNullOrWhiteSpace(canonicalName) &&
+                names.All(existing => !string.Equals(existing, canonicalName, StringComparison.OrdinalIgnoreCase)))
+            {
+                names.Add(canonicalName);
+            }
+
+            if (names.Count > 0)
+                aliases[guardianId] = names;
         }
 
         if (root.TryGetProperty("activeGuardian", out var activeGuardian) && activeGuardian.ValueKind == JsonValueKind.Object)
@@ -14206,7 +14646,7 @@ public class ValidationService
         return update.Aliases.Count > 0;
     }
 
-    private static bool TryCreateGuardianStructuredActorUpdate(JsonElement item, Dictionary<string, string> aliasLookup,
+    private static bool TryCreateGuardianStructuredActorUpdate(JsonElement item, Dictionary<string, List<string>> aliasLookup,
         out StructuredActorUpdate update)
     {
         update = new StructuredActorUpdate();
@@ -14214,12 +14654,13 @@ public class ValidationService
             return false;
 
         var guardianId = GetFirstNonEmptyString(item, "guardianId", "id");
-        var name = GetFirstNonEmptyString(item, "name");
+        var name = GuardianManifestation.GetDisplayName(item);
+        var canonicalName = GuardianManifestation.GetCanonicalName(item);
         if (string.IsNullOrWhiteSpace(name) &&
             !string.IsNullOrWhiteSpace(guardianId) &&
-            aliasLookup.TryGetValue(guardianId, out var mappedName))
+            aliasLookup.TryGetValue(guardianId, out var mappedNames))
         {
-            name = mappedName;
+            name = mappedNames.FirstOrDefault(alias => !string.IsNullOrWhiteSpace(alias));
         }
 
         if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(guardianId))
@@ -14236,11 +14677,16 @@ public class ValidationService
 
         if (!string.IsNullOrWhiteSpace(name))
             update.Aliases.Add(name);
+        if (!string.IsNullOrWhiteSpace(canonicalName))
+            update.Aliases.Add(canonicalName);
         if (!string.IsNullOrWhiteSpace(guardianId))
         {
             update.Aliases.Add(guardianId);
-            if (aliasLookup.TryGetValue(guardianId, out var resolvedName))
-                update.Aliases.Add(resolvedName);
+            if (aliasLookup.TryGetValue(guardianId, out var resolvedNames))
+            {
+                foreach (var resolvedName in resolvedNames)
+                    update.Aliases.Add(resolvedName);
+            }
         }
 
         return update.Aliases.Count > 0;
@@ -14927,6 +15373,7 @@ public class ValidationService
                normalizedPath.Equals("game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/progression_schedule.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/incarnation_world_setup.json", StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(SystemGuardianLibraryService.AttractionRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/afterlife_return_guard.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_cli_window_binding.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
@@ -17145,6 +17592,8 @@ public class ValidationService
         ValidateCurrentLocationData(root, contextPrefix, issues);
         ValidateWorldMapUpdates(root, contextPrefix, issues);
         ValidateArrayOfObjectsField(root, contextPrefix, issues, "worldEventsLog");
+        ValidateRivalSoulArcArray(root, contextPrefix, issues, "UpdateRivalSoulArcs");
+        ValidateRivalSoulArcArray(root, contextPrefix, issues, "arcs");
         ValidateWorldStateFlagsArray(root, contextPrefix, issues, "worldStateFlags");
         ValidateArrayOfStringsField(root, contextPrefix, issues, "removeWorldStateFlags");
         ValidateTimeChangeField(root, contextPrefix, issues, "timeChange");
@@ -19286,7 +19735,7 @@ public class ValidationService
     private void ValidateGuardianCanonicalObject(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
     {
         RequireString(guardian, guardianContext, issues, "guardianId");
-        RequireString(guardian, guardianContext, issues, "name");
+        RequireString(guardian, guardianContext, issues, "canonicalName");
         var domain = RequireString(guardian, guardianContext, issues, "domain");
         if (!string.IsNullOrWhiteSpace(domain) && !AllowedGuardianDomains.Contains(domain))
         {
@@ -19301,12 +19750,165 @@ public class ValidationService
                 repairHint: "Используй для Хранителя только canonical domain: Combat, Magic, Trade, Social, Crafting, Survival или Knowledge."));
         }
 
+        ValidateGuardianSourcePreset(guardian, guardianContext, issues);
+        ValidateGuardianNameVariants(guardian, guardianContext, issues);
+        ValidateGuardianManifestation(guardian, guardianContext, issues);
+        ValidateGuardianManifestationHistory(guardian, guardianContext, issues);
         ValidateGuardianPersonalityProfile(guardian, guardianContext, issues);
         ValidateGuardianRelationshipData(guardian, guardianContext, issues);
         ValidateGuardianQuestManagement(guardian, guardianContext, issues);
         ValidateGuardianGachaState(guardian, guardianContext, issues);
         ValidateGuardianTradeState(guardian, guardianContext, issues);
         ValidateGuardianStoredInnerLifeState(guardian, guardianContext, issues);
+    }
+
+    private void ValidateGuardianSourcePreset(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
+    {
+        if (!guardian.TryGetProperty("sourcePreset", out var sourcePreset) || sourcePreset.ValueKind == JsonValueKind.Null)
+            return;
+
+        if (!RequireObject(sourcePreset, $"{guardianContext}.sourcePreset", issues))
+            return;
+
+        RequireString(sourcePreset, $"{guardianContext}.sourcePreset", issues, "presetId");
+        RequireString(sourcePreset, $"{guardianContext}.sourcePreset", issues, "displayName");
+        RequireString(sourcePreset, $"{guardianContext}.sourcePreset", issues, "version");
+        RequireString(sourcePreset, $"{guardianContext}.sourcePreset", issues, "library");
+    }
+
+    private void ValidateGuardianNameVariants(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
+    {
+        if (!guardian.TryGetProperty("nameVariants", out var nameVariants) ||
+            nameVariants.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.nameVariants",
+                IssueSeverity.Error,
+                "Canonical guardian state должен содержать nameVariants object",
+                code: "guardian_missing_name_variants",
+                section: "Guardians",
+                expected: "nameVariants object with default plus optional feminine/masculine/neutral variants",
+                actual: guardian.TryGetProperty("nameVariants", out var actualValue) ? actualValue.ValueKind.ToString() : "missing",
+                repairHint: "Сохраняй nameVariants как объект c default и optional feminine/masculine/neutral display variants."));
+            return;
+        }
+
+        var variantsContext = $"{guardianContext}.nameVariants";
+        RequireString(nameVariants, variantsContext, issues, "default");
+        ValidateOptionalString(nameVariants, variantsContext, issues, "feminine");
+        ValidateOptionalString(nameVariants, variantsContext, issues, "masculine");
+        ValidateOptionalString(nameVariants, variantsContext, issues, "neutral");
+    }
+
+    private void ValidateGuardianManifestation(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
+    {
+        if (!guardian.TryGetProperty("manifestation", out var manifestation) ||
+            manifestation.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.manifestation",
+                IssueSeverity.Error,
+                "Canonical guardian state должен содержать manifestation object",
+                code: "guardian_missing_manifestation",
+                section: "Guardians",
+                expected: "manifestation object with currentDisplayName, formFlexibility, currentPresentationStyle, currentPronouns and appearanceDescription",
+                actual: guardian.TryGetProperty("manifestation", out var actualValue) ? actualValue.ValueKind.ToString() : "missing",
+                repairHint: "Сохраняй manifestation как canonical текущую форму проявления Хранителя."));
+            return;
+        }
+
+        var manifestationContext = $"{guardianContext}.manifestation";
+        RequireString(manifestation, manifestationContext, issues, "currentDisplayName");
+        var formFlexibility = RequireString(manifestation, manifestationContext, issues, "formFlexibility");
+        RequireString(manifestation, manifestationContext, issues, "currentPresentationStyle");
+        RequireString(manifestation, manifestationContext, issues, "currentPronouns");
+        RequireString(manifestation, manifestationContext, issues, "appearanceDescription");
+        ValidateOptionalString(manifestation, manifestationContext, issues, "presentationReason");
+
+        if (!string.IsNullOrWhiteSpace(formFlexibility) && !GuardianManifestation.IsValidFormFlexibility(formFlexibility))
+        {
+            issues.Add(new ValidationIssue(
+                $"{manifestationContext}.formFlexibility",
+                IssueSeverity.Error,
+                "guardian.manifestation.formFlexibility должен быть canonical flexibility value",
+                code: "guardian_manifestation_invalid_form_flexibility",
+                section: "Guardians",
+                expected: "fixed | selective | adaptive",
+                actual: formFlexibility,
+                repairHint: "Используй для formFlexibility только fixed, selective или adaptive."));
+        }
+    }
+
+    private void ValidateGuardianManifestationHistory(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
+    {
+        if (!guardian.TryGetProperty("manifestationHistory", out var manifestationHistory) ||
+            manifestationHistory.ValueKind == JsonValueKind.Null)
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.manifestationHistory",
+                IssueSeverity.Error,
+                "Canonical guardian state должен содержать manifestationHistory array",
+                code: "guardian_missing_manifestation_history",
+                section: "Guardians",
+                expected: "manifestationHistory array",
+                actual: "missing",
+                repairHint: "Сохраняй manifestationHistory как массив прежних display-форм, даже если он пока пустой."));
+            return;
+        }
+
+        RequireArrayOfObjects(manifestationHistory, $"{guardianContext}.manifestationHistory", issues);
+        if (manifestationHistory.ValueKind != JsonValueKind.Array)
+            return;
+
+        var currentDisplayName = GuardianManifestation.GetDisplayName(guardian);
+        var currentPresentationStyle = GuardianManifestation.GetPresentationStyle(guardian);
+        var currentPronouns = GuardianManifestation.GetPronouns(guardian);
+        var currentKey = $"{currentDisplayName}|{currentPresentationStyle}|{currentPronouns}";
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        var index = 0;
+        foreach (var entry in manifestationHistory.EnumerateArray())
+        {
+            var entryContext = $"{guardianContext}.manifestationHistory[{index++}]";
+            if (!RequireObject(entry, entryContext, issues))
+                continue;
+
+            var displayName = RequireString(entry, entryContext, issues, "displayName");
+            var presentationStyle = RequireString(entry, entryContext, issues, "presentationStyle");
+            var pronouns = RequireString(entry, entryContext, issues, "pronouns");
+            RequireString(entry, entryContext, issues, "appearanceDescription");
+            ValidateOptionalString(entry, entryContext, issues, "reason");
+            ValidateOptionalString(entry, entryContext, issues, "changedAtUtc");
+
+            var historyKey = $"{displayName}|{presentationStyle}|{pronouns}";
+            if (!string.IsNullOrWhiteSpace(displayName) &&
+                !string.IsNullOrWhiteSpace(presentationStyle) &&
+                !string.IsNullOrWhiteSpace(pronouns) &&
+                !seen.Add(historyKey))
+            {
+                issues.Add(new ValidationIssue(
+                    entryContext,
+                    IssueSeverity.Error,
+                    "manifestationHistory не должен содержать дубликаты форм",
+                    code: "guardian_manifestation_history_duplicate_entry",
+                    section: "Guardians",
+                    actual: historyKey,
+                    repairHint: "Каждую прежнюю форму проявления Хранителя сохраняй только один раз."));
+            }
+
+            if (!string.IsNullOrWhiteSpace(currentDisplayName) &&
+                string.Equals(historyKey, currentKey, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    entryContext,
+                    IssueSeverity.Error,
+                    "manifestationHistory не должен содержать текущую форму проявления",
+                    code: "guardian_manifestation_history_contains_current_form",
+                    section: "Guardians",
+                    actual: historyKey,
+                    repairHint: "В manifestationHistory храни только прошлые формы, а текущую оставляй только в manifestation."));
+            }
+        }
     }
 
     private static int GetExpectedGuardianGachaCharges(int currentReputation)
@@ -21436,6 +22038,9 @@ public class ValidationService
         RequireString(item, itemContext, issues, "guardianId");
         RequireString(item, itemContext, issues, "title");
         RequireString(item, itemContext, issues, "description");
+        ValidateOptionalString(item, itemContext, issues, "relatedRivalArcId");
+        if (item.TryGetProperty("counterToRivalArc", out _))
+            RequireBooleanField(item, itemContext, issues, "counterToRivalArc");
         ValidateQuestObjectivesArray(
             item,
             itemContext,
@@ -21560,6 +22165,398 @@ public class ValidationService
                 expected: "ISO 8601 timestamp or null",
                 actual: string.IsNullOrWhiteSpace(completionTimestampValue) ? "empty string" : completionTimestampValue,
                 repairHint: "Для незавершённого soul quest оставляй completionTimestamp = null. Для завершённого передай completionTimestamp как ISO 8601 строку."));
+        }
+    }
+
+    private void ValidateRivalSoulArcArray(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    {
+        if (!TryGetArray(root, propName, $"{contextPrefix}.{propName}", issues, out var arr))
+            return;
+
+        var activeMajorCount = 0;
+        var activeMinorCount = 0;
+        var index = 0;
+        foreach (var item in arr.EnumerateArray())
+        {
+            var itemContext = $"{contextPrefix}.{propName}[{index++}]";
+            if (!RequireObject(item, itemContext, issues))
+                continue;
+
+            ValidateRivalSoulArcObject(item, itemContext, issues);
+
+            var scope = GetFirstNonEmptyString(item, "scope");
+            var status = GetFirstNonEmptyString(item, "status");
+            var isActive = !string.Equals(status, "resolved", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(status, "failed", StringComparison.OrdinalIgnoreCase);
+
+            if (isActive && string.Equals(scope, "major", StringComparison.OrdinalIgnoreCase))
+                activeMajorCount++;
+            if (isActive && string.Equals(scope, "minor", StringComparison.OrdinalIgnoreCase))
+                activeMinorCount++;
+        }
+
+        if (activeMajorCount > 1)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{propName}",
+                IssueSeverity.Error,
+                "В одной смертной жизни нельзя держать более одной активной major rival soul arc",
+                code: "rival_arc_major_cap_exceeded",
+                section: "RivalSoulArcs",
+                expected: "<= 1 active major arc",
+                actual: activeMajorCount.ToString(),
+                repairHint: "Оставь только одну active/non-terminal major arc. Остальные переведи в failed/resolved или убери."));
+        }
+
+        if (activeMinorCount > 1)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{propName}",
+                IssueSeverity.Error,
+                "В одной смертной жизни нельзя держать более одной активной minor rival soul arc",
+                code: "rival_arc_minor_cap_exceeded",
+                section: "RivalSoulArcs",
+                expected: "<= 1 active minor arc",
+                actual: activeMinorCount.ToString(),
+                repairHint: "Оставь только одну active/non-terminal minor arc. Остальные переведи в failed/resolved или убери."));
+        }
+    }
+
+    private void ValidateRivalSoulArcObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    {
+        RequireString(item, itemContext, issues, "arcId");
+        var scope = RequireString(item, itemContext, issues, "scope");
+        var arcType = RequireString(item, itemContext, issues, "arcType");
+        var status = RequireString(item, itemContext, issues, "status");
+        RequireString(item, itemContext, issues, "objective");
+
+        if (!string.IsNullOrWhiteSpace(scope) && !AllowedRivalSoulArcScopes.Contains(scope))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.scope",
+                IssueSeverity.Error,
+                "rival soul arc scope должен быть одним из canonical enum значений",
+                code: "rival_arc_invalid_scope",
+                section: "RivalSoulArcs",
+                expected: string.Join(" | ", AllowedRivalSoulArcScopes),
+                actual: scope,
+                repairHint: "Используй для scope только major или minor."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(arcType) && !AllowedRivalSoulArcTypes.Contains(arcType))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.arcType",
+                IssueSeverity.Error,
+                "rival soul arc type должен быть одним из canonical enum значений",
+                code: "rival_arc_invalid_type",
+                section: "RivalSoulArcs",
+                expected: string.Join(" | ", AllowedRivalSoulArcTypes),
+                actual: arcType,
+                repairHint: "Используй только поддерживаемые arcType значения либо custom."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(status) && !AllowedRivalSoulArcStatuses.Contains(status))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.status",
+                IssueSeverity.Error,
+                "rival soul arc status должен быть одним из canonical enum значений",
+                code: "rival_arc_invalid_status",
+                section: "RivalSoulArcs",
+                expected: string.Join(" | ", AllowedRivalSoulArcStatuses),
+                actual: status,
+                repairHint: "Используй для status только latent, rising, intersecting, resolved или failed."));
+        }
+
+        ValidateRivalSoulArcSponsorRef(item, itemContext, issues);
+        ValidateRivalSoulArcRivalSoul(item, itemContext, issues);
+        ValidateRivalSoulArcPlayerIntersection(item, itemContext, issues);
+
+        if (!item.TryGetProperty("milestones", out var milestones) ||
+            !TryGetArray(item, "milestones", $"{itemContext}.milestones", issues, out milestones))
+        {
+            return;
+        }
+
+        ValidateNonNegativeIntegerField(item, itemContext, issues, "currentStage", "RivalSoulArcs");
+        ValidateRivalSoulArcMilestones(milestones, $"{itemContext}.milestones", issues);
+        ValidateRivalSoulArcSignals(item, itemContext, issues);
+        ValidateRivalSoulArcResolution(item, itemContext, issues);
+
+        if (item.TryGetProperty("currentStage", out var currentStageNode) &&
+            currentStageNode.ValueKind == JsonValueKind.Number &&
+            currentStageNode.TryGetInt32(out var currentStage) &&
+            milestones.ValueKind == JsonValueKind.Array)
+        {
+            var maxStage = -1;
+            foreach (var milestone in milestones.EnumerateArray())
+            {
+                if (milestone.ValueKind == JsonValueKind.Object &&
+                    milestone.TryGetProperty("stage", out var stageNode) &&
+                    stageNode.ValueKind == JsonValueKind.Number &&
+                    stageNode.TryGetInt32(out var stage))
+                {
+                    maxStage = Math.Max(maxStage, stage);
+                }
+            }
+
+            if (maxStage >= 0 && currentStage > maxStage)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.currentStage",
+                    IssueSeverity.Error,
+                    "currentStage rival soul arc не может выходить за пределы описанных milestones",
+                    code: "rival_arc_stage_out_of_range",
+                    section: "RivalSoulArcs",
+                    expected: $"<= {maxStage}",
+                    actual: currentStage.ToString(),
+                    repairHint: "Увеличь milestones или уменьшай currentStage так, чтобы он попадал в описанный milestone range."));
+            }
+        }
+
+        if (item.TryGetProperty("playerIntersection", out var playerIntersection) &&
+            playerIntersection.ValueKind == JsonValueKind.Object)
+        {
+            var targetsPlayerDirectly =
+                playerIntersection.TryGetProperty("targetsPlayerDirectly", out var targetsNode) &&
+                targetsNode.ValueKind == JsonValueKind.True;
+            if (targetsPlayerDirectly &&
+                string.Equals(arcType, "hostile_hunt", StringComparison.OrdinalIgnoreCase) &&
+                (string.Equals(status, "intersecting", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(status, "resolved", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(status, "failed", StringComparison.OrdinalIgnoreCase)))
+            {
+                var visibleSignals = 0;
+                if (item.TryGetProperty("publicSignals", out var publicSignals) &&
+                    publicSignals.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var signal in publicSignals.EnumerateArray())
+                    {
+                        if (signal.ValueKind != JsonValueKind.Object)
+                            continue;
+
+                        var visibleToPlayer = signal.TryGetProperty("visibleToPlayer", out var visibleNode)
+                            ? visibleNode.ValueKind != JsonValueKind.False
+                            : true;
+                        if (visibleToPlayer)
+                            visibleSignals++;
+                    }
+                }
+
+                if (visibleSignals < 2)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.publicSignals",
+                        IssueSeverity.Error,
+                        "Hostile rival soul arc, напрямую нацеленный на игрока, обязан оставить минимум два видимых следа до прямого столкновения",
+                        code: "rival_arc_hostile_direct_target_needs_two_visible_signals",
+                        section: "RivalSoulArcs",
+                        expected: ">= 2 visible publicSignals before intersecting/resolved hostile collision",
+                        actual: visibleSignals.ToString(),
+                        repairHint: "Добавь минимум два player-visible сигнала: слухи, последствия, сообщения NPC, хронику, сон, public aftermath и т.п. до прямого столкновения."));
+                }
+            }
+        }
+    }
+
+    private void ValidateRivalSoulArcSponsorRef(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    {
+        if (!item.TryGetProperty("sponsorGuardianRef", out var sponsorRef) ||
+            !RequireObject(sponsorRef, $"{itemContext}.sponsorGuardianRef", issues))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.sponsorGuardianRef",
+                IssueSeverity.Error,
+                "rival soul arc должен содержать sponsorGuardianRef object",
+                code: "rival_arc_missing_sponsor_ref",
+                section: "RivalSoulArcs",
+                expected: "sponsorGuardianRef object",
+                actual: !item.TryGetProperty("sponsorGuardianRef", out var actualNode) ? "missing" : actualNode.ValueKind.ToString(),
+                repairHint: "Добавь sponsorGuardianRef с mode + displayName и guardianId/presetId в зависимости от режима."));
+            return;
+        }
+
+        var sponsorContext = $"{itemContext}.sponsorGuardianRef";
+        var mode = RequireString(sponsorRef, sponsorContext, issues, "mode");
+        RequireString(sponsorRef, sponsorContext, issues, "displayName");
+
+        if (!string.IsNullOrWhiteSpace(mode) && !AllowedRivalSoulArcSponsorModes.Contains(mode))
+        {
+            issues.Add(new ValidationIssue(
+                $"{sponsorContext}.mode",
+                IssueSeverity.Error,
+                "sponsorGuardianRef.mode должен быть одним из canonical enum значений",
+                code: "rival_arc_invalid_sponsor_mode",
+                section: "RivalSoulArcs",
+                expected: string.Join(" | ", AllowedRivalSoulArcSponsorModes),
+                actual: mode,
+                repairHint: "Используй sponsorGuardianRef.mode = guardianId или eternalPreset."));
+        }
+
+        if (string.Equals(mode, "guardianId", StringComparison.OrdinalIgnoreCase))
+        {
+            RequireString(sponsorRef, sponsorContext, issues, "guardianId");
+            ValidateOptionalString(sponsorRef, sponsorContext, issues, "presetId");
+        }
+        else if (string.Equals(mode, "eternalPreset", StringComparison.OrdinalIgnoreCase))
+        {
+            RequireString(sponsorRef, sponsorContext, issues, "presetId");
+            ValidateOptionalString(sponsorRef, sponsorContext, issues, "guardianId");
+        }
+    }
+
+    private void ValidateRivalSoulArcRivalSoul(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    {
+        if (!item.TryGetProperty("rivalSoul", out var rivalSoul) ||
+            !RequireObject(rivalSoul, $"{itemContext}.rivalSoul", issues))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.rivalSoul",
+                IssueSeverity.Error,
+                "rival soul arc должен содержать rivalSoul object",
+                code: "rival_arc_missing_rival_soul",
+                section: "RivalSoulArcs",
+                expected: "rivalSoul object",
+                actual: !item.TryGetProperty("rivalSoul", out var actualNode) ? "missing" : actualNode.ValueKind.ToString(),
+                repairHint: "Добавь rivalSoul с rivalSoulId, displayNameOrMoniker, roleSummary и isKnownToPlayer."));
+            return;
+        }
+
+        var rivalContext = $"{itemContext}.rivalSoul";
+        RequireString(rivalSoul, rivalContext, issues, "rivalSoulId");
+        RequireString(rivalSoul, rivalContext, issues, "displayNameOrMoniker");
+        RequireString(rivalSoul, rivalContext, issues, "roleSummary");
+        RequireBooleanField(rivalSoul, rivalContext, issues, "isKnownToPlayer");
+    }
+
+    private void ValidateRivalSoulArcPlayerIntersection(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    {
+        if (!item.TryGetProperty("playerIntersection", out var playerIntersection) ||
+            !RequireObject(playerIntersection, $"{itemContext}.playerIntersection", issues))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.playerIntersection",
+                IssueSeverity.Error,
+                "rival soul arc должен содержать playerIntersection object",
+                code: "rival_arc_missing_player_intersection",
+                section: "RivalSoulArcs",
+                expected: "playerIntersection object",
+                actual: !item.TryGetProperty("playerIntersection", out var actualNode) ? "missing" : actualNode.ValueKind.ToString(),
+                repairHint: "Добавь playerIntersection с targetsPlayerDirectly, stakes, canBecomeSoulQuest и recommendedCounterQuestTone."));
+            return;
+        }
+
+        var intersectionContext = $"{itemContext}.playerIntersection";
+        RequireBooleanField(playerIntersection, intersectionContext, issues, "targetsPlayerDirectly");
+        RequireString(playerIntersection, intersectionContext, issues, "stakes");
+        RequireBooleanField(playerIntersection, intersectionContext, issues, "canBecomeSoulQuest");
+        RequireString(playerIntersection, intersectionContext, issues, "recommendedCounterQuestTone");
+    }
+
+    private void ValidateRivalSoulArcMilestones(JsonElement milestones, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var seenStages = new HashSet<int>();
+        var index = 0;
+        foreach (var milestone in milestones.EnumerateArray())
+        {
+            var milestoneContext = $"{contextPrefix}[{index++}]";
+            if (!RequireObject(milestone, milestoneContext, issues))
+                continue;
+
+            if (milestone.TryGetProperty("stage", out var stageNode) &&
+                stageNode.ValueKind == JsonValueKind.Number &&
+                stageNode.TryGetInt32(out var stage))
+            {
+                if (!seenStages.Add(stage))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{milestoneContext}.stage",
+                        IssueSeverity.Error,
+                        "milestones не должны содержать дублирующиеся stage",
+                        code: "rival_arc_duplicate_milestone_stage",
+                        section: "RivalSoulArcs",
+                        actual: stage.ToString(),
+                        repairHint: "Каждый milestone должен иметь уникальный stage внутри одного rival soul arc."));
+                }
+            }
+            else
+            {
+                ValidateNonNegativeIntegerField(milestone, milestoneContext, issues, "stage", "RivalSoulArcs");
+            }
+
+            RequireString(milestone, milestoneContext, issues, "title");
+            RequireString(milestone, milestoneContext, issues, "summary");
+            RequireBooleanField(milestone, milestoneContext, issues, "visibleToPlayer");
+        }
+    }
+
+    private void ValidateRivalSoulArcSignals(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    {
+        if (!TryGetArray(item, "publicSignals", $"{itemContext}.publicSignals", issues, out var signals))
+            return;
+
+        var signalIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var signal in signals.EnumerateArray())
+        {
+            var signalContext = $"{itemContext}.publicSignals[{index++}]";
+            if (!RequireObject(signal, signalContext, issues))
+                continue;
+
+            var signalId = RequireString(signal, signalContext, issues, "signalId");
+            if (!string.IsNullOrWhiteSpace(signalId) && !signalIds.Add(signalId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{signalContext}.signalId",
+                    IssueSeverity.Error,
+                    "publicSignals не должны содержать дублирующиеся signalId",
+                    code: "rival_arc_duplicate_signal_id",
+                    section: "RivalSoulArcs",
+                    actual: signalId,
+                    repairHint: "Для каждого public signal используй уникальный signalId внутри arc."));
+            }
+
+            ValidateNonNegativeIntegerField(signal, signalContext, issues, "stage", "RivalSoulArcs");
+            RequireString(signal, signalContext, issues, "description");
+            RequireString(signal, signalContext, issues, "source");
+            if (signal.TryGetProperty("visibleToPlayer", out _))
+                RequireBooleanField(signal, signalContext, issues, "visibleToPlayer");
+        }
+    }
+
+    private void ValidateRivalSoulArcResolution(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    {
+        if (!item.TryGetProperty("resolution", out var resolution) ||
+            !RequireObject(resolution, $"{itemContext}.resolution", issues))
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.resolution",
+                IssueSeverity.Error,
+                "rival soul arc должен содержать resolution object",
+                code: "rival_arc_missing_resolution",
+                section: "RivalSoulArcs",
+                expected: "resolution object",
+                actual: !item.TryGetProperty("resolution", out var actualNode) ? "missing" : actualNode.ValueKind.ToString(),
+                repairHint: "Добавь resolution с outcome и notes. Для незавершённой линии используй outcome=ongoing."));
+            return;
+        }
+
+        var resolutionContext = $"{itemContext}.resolution";
+        var outcome = RequireString(resolution, resolutionContext, issues, "outcome");
+        RequireString(resolution, resolutionContext, issues, "notes");
+
+        if (!string.IsNullOrWhiteSpace(outcome) && !AllowedRivalSoulArcResolutionOutcomes.Contains(outcome))
+        {
+            issues.Add(new ValidationIssue(
+                $"{resolutionContext}.outcome",
+                IssueSeverity.Error,
+                "resolution.outcome должен быть одним из canonical enum значений",
+                code: "rival_arc_invalid_resolution_outcome",
+                section: "RivalSoulArcs",
+                expected: string.Join(" | ", AllowedRivalSoulArcResolutionOutcomes),
+                actual: outcome,
+                repairHint: "Используй resolution.outcome = ongoing, player_supported, player_opposed, self_resolved, collapsed или unknown."));
         }
     }
 
@@ -27014,6 +28011,7 @@ public class ValidationIssue
                normalizedPath.Equals("game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/progression_schedule.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/incarnation_world_setup.json", StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(SystemGuardianLibraryService.AttractionRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/afterlife_return_guard.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_cli_window_binding.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||

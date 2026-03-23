@@ -1,0 +1,62 @@
+{
+  "presetId": "brann",
+  "displayName": "Бранн Медноков",
+  "summary": "Хранитель ремесла, труда и совершенства вещей. Видит в каждой душе материал, который можно закалить.",
+  "alwaysAvailable": true,
+  "category": "system_guardian",
+  "identity": {
+    "domain": "Crafting",
+    "archetype": "Master Artisan",
+    "tone": "Warm but Demanding",
+    "coreValues": [
+      "мастерство",
+      "терпение",
+      "форма"
+    ]
+  },
+  "nameVariants": {
+    "default": "Бранн Медноков",
+    "feminine": null,
+    "masculine": "Бранн Медноков",
+    "neutral": null
+  },
+  "manifestationDefaults": {
+    "formFlexibility": "fixed",
+    "defaultPresentationStyle": "masculine",
+    "defaultPronouns": "он/его",
+    "appearanceDescription": "Широкоплечий мастер с руками ремесленника, запахом металла и спокойной уверенностью человека, привыкшего судить по качеству работы."
+  },
+  "abode": {
+    "name": "Кузни Тихого Накала",
+    "theme": "горны, верстаки, искры, порядок мастерской"
+  },
+  "generationRules": {
+    "mustPreserve": [
+      "Имя Бранн Медноков",
+      "Домен ремесла и созидательного труда",
+      "Обитель должна ощущаться как священная мастерская"
+    ],
+    "canVary": [
+      "конкретная специализация мастерской",
+      "локальные детали инструментов и материалов"
+    ],
+    "forbidden": [
+      "не делать его ленивым философом без практики",
+      "не заменять ремесло абстрактной магией"
+    ]
+  },
+  "searchAttraction": {
+    "enabled": true,
+    "label": "Притяжение к Бранну",
+    "keywords": [
+      "ремесло",
+      "ковка",
+      "мастерская",
+      "созидание"
+    ]
+  },
+  "authoring": {
+    "author": "system",
+    "version": "1.0"
+  }
+}

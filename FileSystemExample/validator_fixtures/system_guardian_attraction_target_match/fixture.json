@@ -1,0 +1,35 @@
+{
+  "id": "system_guardian_attraction_target_match",
+  "runner": "StateOnly",
+  "description": "Deterministic system guardian attraction must resolve to the requested preset on activeGuardian.",
+  "shared": [
+    {
+      "source": "shared/system_guardian_attraction.json",
+      "target": "game_state/control/system_guardian_attraction.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "system_guardian_attraction_target_mismatch"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [
+    "system_guardian_attraction_target_mismatch",
+    "system_guardian_attraction_missing_active_guardian"
+  ],
+  "allowExtraBrokenCodes": true
+}

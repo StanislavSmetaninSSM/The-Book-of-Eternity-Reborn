@@ -132,10 +132,7 @@ public sealed class AfterlifeReturnGuardService
                              guardianIdNode.ValueKind == JsonValueKind.String
                 ? guardianIdNode.GetString() ?? ""
                 : "";
-            var guardianName = activeGuardian.TryGetProperty("name", out var guardianNameNode) &&
-                               guardianNameNode.ValueKind == JsonValueKind.String
-                ? guardianNameNode.GetString() ?? ""
-                : "";
+            var guardianName = GuardianManifestation.GetDisplayName(activeGuardian);
 
             return (guardianId, guardianName);
         }

@@ -1,0 +1,27 @@
+{
+  "id": "guardian_manifestation_contract",
+  "runner": "StateOnly",
+  "description": "Canonical guardian state must carry canonicalName, nameVariants, manifestation, and manifestationHistory.",
+  "broken": [
+    {
+      "source": "broken/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "guardian_missing_name_variants",
+    "guardian_missing_manifestation",
+    "guardian_missing_manifestation_history"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [],
+  "allowExtraBrokenCodes": true
+}

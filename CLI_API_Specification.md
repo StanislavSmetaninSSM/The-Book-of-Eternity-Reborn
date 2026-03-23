@@ -157,6 +157,7 @@ CLI Agent automatically loads current game state from:
   "currentLocationData": "object (full Location Object for a new location, or known-location shorthand with locationId + coordinates + lastEventsDescription)",
   "worldMapUpdates": "object with map changes",
   "worldEventsLog": "array of world_event_objects", 
+  "UpdateRivalSoulArcs": "array of rival_soul_arc_objects for other souls' milestone-based destiny lines in the current mortal life",
   "worldStateFlags": "array of flag_objects",
   "removeWorldStateFlags": "array of flag_ids",
   "timeChange": "integer (minutes passed this turn)",
@@ -353,6 +354,7 @@ game_session/
 - `game_state/world/world_map.json` ← `worldMapUpdates`
 - `worldMapUpdates` atomic commands include `newLocations`, `locationUpdates`, `storageUpdates`, `storagesToRemove`, `newLinks`, `linkUpdates`, `linksToRemove`, `threatsToAdd`, `threatsToUpdate`, `threatsToRemove`, `completeThreatActivities`
 - `game_state/world/world_events.json` ← `worldEventsLog`
+- `game_state/world/rival_soul_arcs.json` ← `UpdateRivalSoulArcs`
 - `game_state/world/world_flags.json` ← `worldStateFlags`, `removeWorldStateFlags`
 - `game_state/world/world_time.json` ← `timeChange`, `setWorldTime`
 - `game_state/world/weather.json` ← `weatherChange`
@@ -376,6 +378,9 @@ World-location contract notes:
   - If the current turn must also update player-facing current-location substructures, the known-location shape may additionally carry `internalDifficultyProfile`, `externalDifficultyProfile`, and/or `locationStorages`.
 - `eventDescriptions` is a read-only historical archive. Read it from location context if present, but do not emit it in `currentLocationData` or `worldMapUpdates`.
 - For current-turn location history, write only `lastEventsDescription`.
+- `rival_soul_arcs.json` is a life-scoped background-pressure surface for OTHER souls, not a player quest journal.
+- Keep at most 1 active `major` arc and 1 active `minor` arc.
+- If a hostile arc directly targets the player, it must leave at least two visible clues before direct collision or terminal harm.
 
 #### **QUEST SYSTEM**
 - `game_state/quests/regular_quests.json` ← `UpdateQuests`

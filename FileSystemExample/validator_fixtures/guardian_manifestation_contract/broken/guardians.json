@@ -1,0 +1,57 @@
+{
+  "guardians": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "canonicalName": "Азалия",
+      "domain": "Social",
+      "personalityProfile": {
+        "archetype": "Charming Diplomat",
+        "speechPattern": "Casual",
+        "coreValues": ["страсть", "власть", "преданность"]
+      },
+      "relationshipData": {
+        "currentReputation": 25,
+        "reputationHistory": [],
+        "lastInteraction": null
+      },
+      "questManagement": {
+        "availableQuests": [],
+        "activeQuests": [],
+        "completedQuests": []
+      },
+      "gachaSystem": {
+        "chargesPerReturn": 1,
+        "chargesUsedThisReturn": 0,
+        "gachaHistory": []
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_social_azalia_001",
+    "canonicalName": "Азалия",
+    "domain": "Social",
+    "personalityProfile": {
+      "archetype": "Charming Diplomat",
+      "speechPattern": "Casual",
+      "coreValues": ["страсть", "власть", "преданность"]
+    },
+    "relationshipData": {
+      "currentReputation": 25,
+      "reputationHistory": [],
+      "lastInteraction": null
+    },
+    "questManagement": {
+      "availableQuests": [],
+      "activeQuests": [],
+      "completedQuests": []
+    },
+    "gachaSystem": {
+      "chargesPerReturn": 1,
+      "chargesUsedThisReturn": 0,
+      "gachaHistory": []
+    }
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": null
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "presetId": "azalia",
+  "displayName": "Азалия",
+  "summary": "Дипломатичная хранительница страсти, власти и преданности. Искушает, проверяет и награждает за смелую честность чувств.",
+  "alwaysAvailable": true,
+  "category": "system_guardian",
+  "identity": {
+    "domain": "Social",
+    "archetype": "Charming Diplomat",
+    "tone": "Casual",
+    "coreValues": [
+      "страсть",
+      "власть",
+      "преданность"
+    ]
+  },
+  "nameVariants": {
+    "default": "Азалия",
+    "feminine": "Азалия",
+    "masculine": null,
+    "neutral": null
+  },
+  "manifestationDefaults": {
+    "formFlexibility": "selective",
+    "defaultPresentationStyle": "feminine",
+    "defaultPronouns": "она/её",
+    "appearanceDescription": "Высокая фигура, окутанная жаром и мягким золотисто-алым светом; в её облике сочетаются близость, опасность и дипломатическая уверенность."
+  },
+  "abode": {
+    "name": "Обитель Неутолимого Пламени",
+    "theme": "жар, искушение, пульсирующий свет, опасная близость"
+  },
+  "generationRules": {
+    "mustPreserve": [
+      "Имя Азалия",
+      "Домены: страсть, власть, преданность",
+      "Обитель связана с пламенем, искушением и эмоциональным жаром"
+    ],
+    "canVary": [
+      "частные детали внешности",
+      "конкретный текущий проект",
+      "индивидуальные нюансы речи"
+    ],
+    "forbidden": [
+      "не превращать в карикатурного соблазнителя",
+      "не убирать её политическую и психологическую проницательность"
+    ]
+  },
+  "searchAttraction": {
+    "enabled": true,
+    "label": "Притяжение к Азалии",
+    "keywords": [
+      "страсть",
+      "пламя",
+      "искушение",
+      "преданность"
+    ]
+  },
+  "authoring": {
+    "author": "system",
+    "version": "1.0"
+  }
+}

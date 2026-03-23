@@ -847,6 +847,42 @@
                 }
                 Maximum 8 soul quests can be active per life. Soul quests with crossIncarnation=true persist through death.",
 
+                "UpdateRivalSoulArcs": "(array of rival_soul_arc_objects or null)
+                Life-scoped milestone arcs for OTHER souls in the current Mortal World life. These are background destiny lines, not a second protagonist simulation.
+                Each object contains:
+                {
+                  'arcId': string,
+                  'scope': 'major' | 'minor',
+                  'arcType': 'hostile_hunt' | 'rival_ascension' | 'political_claim' | 'artifact_race' | 'ideological_mission' | 'custom',
+                  'status': 'latent' | 'rising' | 'intersecting' | 'resolved' | 'failed',
+                  'sponsorGuardianRef': {
+                    'mode': 'guardianId' | 'eternalPreset',
+                    'guardianId': string|null,
+                    'presetId': string|null,
+                    'displayName': string
+                  },
+                  'rivalSoul': {
+                    'rivalSoulId': string,
+                    'displayNameOrMoniker': string,
+                    'roleSummary': string,
+                    'isKnownToPlayer': boolean
+                  },
+                  'objective': string,
+                  'playerIntersection': {
+                    'targetsPlayerDirectly': boolean,
+                    'stakes': string,
+                    'canBecomeSoulQuest': boolean,
+                    'recommendedCounterQuestTone': string
+                  },
+                  'milestones': [ milestone_objects ],
+                  'currentStage': int,
+                  'publicSignals': [ signal_objects ],
+                  'resolution': { 'outcome': string, 'notes': string }
+                }
+                Maximum active arcs per mortal life: 1 major + 1 minor.
+                If a hostile arc directly targets the player, it must leave at least two visible clues before direct collision or terminal harm.
+                If the arc becomes personal for the player, surface that through UpdateSoulQuests using an ordinary player-facing soul quest linked by relatedRivalArcId.",
+
                 "UpdateGuardians": "(array of guardian_command_objects or null) 
                 Atomic commands for Guardian management. Each object contains:
                 {

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -34,9 +35,11 @@ public class GameEngine
     private readonly AudioService _audioService;
     private readonly ConsoleAppearanceService _consoleAppearance;
     private readonly SystemModService _systemModService;
+    private readonly SystemGuardianLibraryService _systemGuardianLibraryService;
     private readonly CriticalStateHealthService _criticalStateHealth;
     private readonly WorldDirectiveService _worldDirectiveService;
     private readonly AfterlifeReturnGuardService _afterlifeReturnGuardService;
+    private readonly RivalSoulArcService _rivalSoulArcService;
     private readonly PendingTurnStateService _pendingTurnState;
     private readonly QteSceneService _qteSceneService;
     private readonly IClipboardService _clipboardService;
@@ -80,9 +83,11 @@ public class GameEngine
         ValidationService validator, CharacteristicsService charService,
         StoryService storyService, AudioService audioService, ConsoleAppearanceService consoleAppearance,
         SystemModService systemModService,
+        SystemGuardianLibraryService systemGuardianLibraryService,
         CriticalStateHealthService criticalStateHealth,
         WorldDirectiveService worldDirectiveService,
         AfterlifeReturnGuardService afterlifeReturnGuardService,
+        RivalSoulArcService rivalSoulArcService,
         PendingTurnStateService pendingTurnState,
         QteSceneService qteSceneService,
         IClipboardService clipboardService,
@@ -104,9 +109,11 @@ public class GameEngine
         _audioService = audioService;
         _consoleAppearance = consoleAppearance;
         _systemModService = systemModService;
+        _systemGuardianLibraryService = systemGuardianLibraryService;
         _criticalStateHealth = criticalStateHealth;
         _worldDirectiveService = worldDirectiveService;
         _afterlifeReturnGuardService = afterlifeReturnGuardService;
+        _rivalSoulArcService = rivalSoulArcService;
         _pendingTurnState = pendingTurnState;
         _qteSceneService = qteSceneService;
         _clipboardService = clipboardService;
@@ -801,33 +808,27 @@ public class GameEngine
                     _loc.T("choose_guardian")
                 ));
 
-        string guardianDescription;
+        JsonObject pendingGuardianCreation;
         if (guardianChoice == _loc.T("create_guardian"))
         {
-            guardianDescription = PromptTextInput($"[cyan]{_loc.T("guardian_prompt")}[/]",
+            var guardianDescription = PromptTextInput($"[cyan]{_loc.T("guardian_prompt")}[/]",
                 allowEmpty: false,
                 emptyError: "Описание не может быть пустым",
                 preserveNewlines: true);
+            pendingGuardianCreation = _systemGuardianLibraryService.BuildFreeformPendingGuardianCreationNode(guardianDescription, soulName);
         }
         else
         {
-            guardianDescription = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("[cyan]Выберите тип Хранителя:[/]")
-                    .HighlightStyle(new Style(Color.Cyan1))
-                    .AddChoices(
-                        "🔮 Хранитель Магии — мудрый маг, знаток тайных искусств",
-                        "⚔️ Хранитель Битвы — закалённый воин, мастер клинка",
-                        "🔨 Хранитель Ремесла — искусный мастер, создатель чудес",
-                        "🎭 Хранитель Социума — дипломат и знаток душ",
-                        "✨ Хранитель Света — духовный наставник, целитель",
-                        "🌑 Хранитель Тьмы — загадочный проводник через тени"
-                    ));
+            var selectedPreset = await PromptSystemGuardianPresetSelectionAsync();
+            if (selectedPreset == null)
+                return;
+
+            pendingGuardianCreation = _systemGuardianLibraryService.BuildPendingGuardianCreationNode(selectedPreset, soulName);
         }
 
         // Step 3: Enter the Chaos Sea — NO character/world description at this point
         // The mortal world is NOT described at the start. Player enters it later through incarnation.
-        await InitializeChaosSea(soulName, guardianDescription);
+        await InitializeChaosSea(soulName, pendingGuardianCreation);
 
         // CRITICAL: Wait for the GM to describe the Guardian's abode before entering the loop
         // Without this, the player sees a blank screen after starting a new game
@@ -842,7 +843,7 @@ public class GameEngine
     /// Initialize a new game in the Chaos Sea (afterlife hub).
     /// No mortal character or world is created yet — that happens when the player incarnates.
     /// </summary>
-    private async Task InitializeChaosSea(string soulName, string guardianDesc)
+    private async Task InitializeChaosSea(string soulName, JsonObject pendingGuardianCreation)
     {
         // Generate session ID once — used for both chat_log.json and GameLoop
         var sessionId = Guid.NewGuid().ToString();
@@ -875,11 +876,12 @@ public class GameEngine
                 var guardian = new
                 {
                     guardians = Array.Empty<object>(),
-                    pendingGuardianCreation = new
+                    activeGuardian = (object?)null,
+                    chaosSeaNavigation = new
                     {
-                        description = guardianDesc,
-                        soulName
-                    }
+                        currentAbodeId = (object?)null
+                    },
+                    pendingGuardianCreation
                 };
                 _fs.WriteFileAtomicAsync("game_state/meta/guardians.json",
                     JsonSerializer.Serialize(guardian, JsonOpts)).Wait();
@@ -960,9 +962,14 @@ public class GameEngine
         // Write game settings (difficulty flags) for GM
         await WriteGameSettingsForGm();
 
+        var guardianRequestLabel =
+            pendingGuardianCreation["presetDisplayName"]?.GetValue<string>() ??
+            pendingGuardianCreation["description"]?.GetValue<string>() ??
+            "неизвестный Хранитель";
+
         // Send initial turn to GM — soul awakens in the Chaos Sea, not in a mortal world
         var firstAction = $"Душа по имени «{soulName}» пробуждается в Море Хаоса. " +
-                          $"Хранитель: {guardianDesc}. " +
+                          $"Хранитель: {guardianRequestLabel}. " +
                           "Опиши обитель Хранителя и первую встречу с ним. " +
                           "Это начало нового пути — душа ещё не воплотилась в смертную жизнь.";
 
@@ -1048,6 +1055,120 @@ public class GameEngine
             "После принятого TriggerIncarnation клиент сам выполнит локальный переход и запустит отдельный следующий ход для первого Mortal World bootstrap.";
 
         await ProcessPlayerTurn(action);
+    }
+
+    private async Task<SystemGuardianLibraryService.SystemGuardianPresetDescriptor?> PromptSystemGuardianPresetSelectionAsync()
+    {
+        var presets = await _systemGuardianLibraryService.GetAvailablePresetsAsync(includeDossier: true);
+        var userDir = _systemGuardianLibraryService.GetUserDirectoryPath();
+
+        if (presets.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[yellow]⚠ В библиотеке извечных хранителей пока нет ни одного пресета.[/]");
+            AnsiConsole.MarkupLine($"[dim]Добавьте свои папки в: {Markup.Escape(userDir)}[/]");
+            AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
+            Console.ReadKey(true);
+            return null;
+        }
+
+        while (true)
+        {
+            var choices = presets
+                .Select(preset =>
+                    $"{preset.DisplayName} [dim]({Markup.Escape(preset.Domain)} • {Markup.Escape(preset.LibraryKind)} • v{Markup.Escape(preset.Version)})[/]")
+                .ToList();
+            choices.Add("📂 Открыть папку пользовательских извечных хранителей");
+            choices.Add(_loc.T("back"));
+
+            var selected = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[cyan]Выберите извечного Хранителя:[/]\n[dim]Это библиотека именованных хранителей, всегда доступных душе. Для игрока это ролевой термин; в файлах и валидаторе они технически называются system guardian presets.[/]")
+                    .HighlightStyle(new Style(Color.Cyan1))
+                    .PageSize(12)
+                    .AddChoices(choices));
+
+            if (selected == _loc.T("back"))
+                return null;
+
+            if (selected.StartsWith("📂", StringComparison.Ordinal))
+            {
+                OpenFolderOrPrintPath(userDir);
+                continue;
+            }
+
+            var presetIndex = choices.IndexOf(selected);
+            if (presetIndex < 0 || presetIndex >= presets.Count)
+                continue;
+
+            var preset = presets[presetIndex];
+            if (ConfirmSystemGuardianPresetSelection(preset))
+                return preset;
+        }
+    }
+
+    private bool ConfirmSystemGuardianPresetSelection(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset)
+    {
+        var dossier = preset.DossierMarkdown?.Trim() ?? "";
+        var dossierLines = dossier
+            .Replace("\r\n", "\n")
+            .Split('\n')
+            .Take(18)
+            .ToList();
+
+        if (!string.IsNullOrWhiteSpace(dossier) && dossierLines.Count < dossier.Split('\n').Length)
+            dossierLines.Add("[dim]…[/]");
+
+        var lines = new List<string>
+        {
+            $"[bold cyan]{Markup.Escape(preset.DisplayName)}[/]",
+            "",
+            $"[white]Домен:[/] {Markup.Escape(preset.Domain)}",
+            $"[white]Архетип:[/] {Markup.Escape(preset.Archetype)}",
+            $"[white]Тон:[/] {Markup.Escape(preset.Tone)}",
+            $"[white]Обитель:[/] {Markup.Escape(preset.AbodeName)}",
+            $"[white]Сводка:[/] {Markup.Escape(preset.Summary)}"
+        };
+
+        if (preset.CoreValues.Count > 0)
+            lines.Add($"[white]Ценности:[/] {Markup.Escape(string.Join(", ", preset.CoreValues))}");
+
+        if (dossierLines.Count > 0)
+        {
+            lines.Add("");
+            lines.Add("[bold]Досье:[/]");
+            lines.AddRange(dossierLines.Select(line => Markup.Escape(line)));
+        }
+
+        AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🛡️ Системный хранитель ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Cyan1),
+            Padding = new Padding(1, 1),
+            Expand = true
+        });
+
+        return AnsiConsole.Confirm("[yellow]Выбрать этого хранителя для новой игры?[/]", true);
+    }
+
+    private static void OpenFolderOrPrintPath(string directoryPath)
+    {
+        Directory.CreateDirectory(directoryPath);
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = directoryPath,
+                UseShellExecute = true
+            });
+        }
+        catch
+        {
+            AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(directoryPath)}[/]");
+            AnsiConsole.MarkupLine("[dim]Не удалось открыть папку автоматически. Путь выведен выше.[/]");
+            Console.ReadKey(true);
+        }
     }
 
     /// <summary>
@@ -1627,6 +1748,7 @@ public class GameEngine
         await NormalizePendingRepairArtifactsAsync();
         await NormalizePendingTerminalProtocolFailureArtifactsAsync();
         await _afterlifeReturnGuardService.EnsureHealthyAsync(_stateManager.CurrentState.CurrentRealm);
+        await _systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync(_stateManager.CurrentState.CurrentRealm);
         await _qteSceneService.EnsureRuntimeStateHealthyAsync();
 
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
@@ -1857,6 +1979,9 @@ public class GameEngine
         if (await _systemModService.WriteManifestForGmAsync())
             await _stateManager.SaveSettingsAsync();
 
+        await _afterlifeReturnGuardService.EnsureHealthyAsync(_stateManager.CurrentState.CurrentRealm);
+        await _systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync(_stateManager.CurrentState.CurrentRealm);
+        await _qteSceneService.EnsureRuntimeStateHealthyAsync();
         await _progressionSchedule.EnsureInitializedAsync();
     }
 
@@ -1921,6 +2046,7 @@ public class GameEngine
         ProgressionControl? progressionControl)
     {
         var criticalRepairAttempt = 0;
+        var canonicalStateMaterializedFromPreTurnSnapshot = false;
 
         while (true)
         {
@@ -1941,8 +2067,10 @@ public class GameEngine
                 continue;
             }
 
-            var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
-            await RefreshCanonicalStateAsync(snapshot);
+            await RefreshAcceptedTurnCanonicalStateForValidationAsync(
+                expectedTurn,
+                usePreTurnSnapshotBaseline: !canonicalStateMaterializedFromPreTurnSnapshot);
+            canonicalStateMaterializedFromPreTurnSnapshot = true;
 
             await EnsureClientOwnedSystemFilesHealthyAsync();
             var canonicalIssues = await _criticalStateHealth.ValidateCriticalCanonicalStateAsync();
@@ -1964,10 +2092,23 @@ public class GameEngine
             if (!await ValidateCurrentGameStateOrShowErrorsAsync(source, rollbackSnapshot, progressionControl, allowRepairLoop: true))
                 return false;
 
-            snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
-            await RefreshCanonicalStateAsync(snapshot);
+            await RefreshCanonicalStateAsync();
             return true;
         }
+    }
+
+    private async Task RefreshAcceptedTurnCanonicalStateForValidationAsync(
+        int expectedTurn,
+        bool usePreTurnSnapshotBaseline)
+    {
+        if (usePreTurnSnapshotBaseline)
+        {
+            var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
+            await RefreshCanonicalStateAsync(snapshot);
+            return;
+        }
+
+        await RefreshCanonicalStateAsync();
     }
 
     private static bool RequiresFreshNarrativePayload(string source)
@@ -2159,6 +2300,7 @@ public class GameEngine
             GmInstructions =
                 "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. " +
                 "Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. После исправлений создай game_state/control/validation_repair_ready.json с sessionId/requestId/turnNumber. " +
+                "Если ошибка касается canonical accumulated state (guardians/quests/factions/rival_soul_arcs и т.п.), правь итоговое canonical состояние явно: нужное удаление или замена должны остаться и после повторной нормализации. " +
                 "Если клиент переписал этот repair request повторно, используй ТОЛЬКО самые свежие metadata из текущего файла.",
             SummaryGroups = BuildValidationSummaryLines(prioritizedErrors, 6),
             Errors = prioritizedErrors.Select(e => new ValidationRepairIssue
@@ -2858,6 +3000,7 @@ public class GameEngine
                 !string.IsNullOrWhiteSpace(lifeSummaryToAppend))
             {
                 _fs.ClearCurrentWorldLore();
+                await _rivalSoulArcService.ResetForNewLifeAsync();
                 await ResetGuardianGachaChargesForNewReturn();
             }
         }
@@ -3862,6 +4005,8 @@ public class GameEngine
 
     private async Task ProcessPlayerTurn(string action, string? extraSystemReminder = null)
     {
+        var clearsSystemGuardianAttraction = action.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:", StringComparison.OrdinalIgnoreCase);
+
         // Create backup of game state files before sending turn (for escape-rollback)
         var backupId = DateTime.UtcNow.Ticks.ToString();
         var backedUpFiles = await CreatePreTurnBackup(backupId);
@@ -3984,6 +4129,8 @@ public class GameEngine
             await RestorePreTurnBackup(backedUpFiles);
             AnsiConsole.MarkupLine("[dim]Изменения локально отменены, состояние восстановлено. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
             CleanupBackup(backedUpFiles);
+            if (clearsSystemGuardianAttraction)
+                _systemGuardianLibraryService.ClearAttractionRequest();
             return;
         }
 
@@ -4023,6 +4170,8 @@ public class GameEngine
         // Turn accepted — backup no longer needed
         CleanupBackup(backedUpFiles);
         await CleanupPendingTurnSnapshotAsync();
+        if (clearsSystemGuardianAttraction)
+            _systemGuardianLibraryService.ClearAttractionRequest();
 
         _gameLoop.IncrementTurn();
         await _pendingTurnState.RotateAfterAcceptedTurnAsync();
@@ -4660,6 +4809,7 @@ public class GameEngine
             // Update soul state: switch realm to Mortal World and increment incarnation
             localStateMutated = true;
             await UpdateSoulStateRealm("Mortal World", incrementIncarnation: true);
+            await _rivalSoulArcService.ResetForNewLifeAsync();
 
             // Initialize fresh mortal status
             var status = new
@@ -6362,6 +6512,48 @@ In Chaos Sea, use the same declared-scope model for relevant Guardians.
 For Guardian-centric turns, the active Guardian MUST appear in the declared relevant actors and MUST have a full reasoning block before narration if activeGuardian is explicitly set in state.
 Do NOT skip Guardian reasoning just because the player is the current conversational focus.
 
+ETERNAL GUARDIAN PRESETS:
+For player-facing roleplay, these are called Eternal Guardians. In technical files/contracts, they are still named system guardian presets.
+If the client-selected guardian request references an Eternal Guardian preset, you MUST materialize that exact named guardian rather than inventing a nearby substitute.
+When you create or rematerialize a guardian from an Eternal Guardian preset, write guardian.sourcePreset with:
+  - presetId
+  - displayName
+  - version
+  - library
+Do NOT drop sourcePreset metadata for client-selected Eternal Guardians.
+Canonical guardian identity now uses:
+  - canonicalName
+  - nameVariants { default, optional feminine/masculine/neutral }
+  - manifestation { currentDisplayName, formFlexibility, currentPresentationStyle, currentPronouns, appearanceDescription, optional presentationReason }
+  - manifestationHistory (past forms only; may be empty)
+Do NOT rely on legacy guardian.name as the primary identity field.
+If the Guardian changes visible form, update manifestation and move the previous form into manifestationHistory.
+
+RIVAL SOUL ARCS — MORTAL WORLD ONLY:
+Use UpdateRivalSoulArcs to track parallel destiny lines for OTHER souls in the current mortal life.
+These arcs are milestone-based world pressures, not a full second-protagonist simulation.
+Keep at most:
+  - 1 active major arc
+  - 1 active minor arc
+Each rival arc must include:
+  - arcId
+  - scope = major | minor
+  - arcType
+  - status = latent | rising | intersecting | resolved | failed
+  - sponsorGuardianRef
+  - rivalSoul
+  - objective
+  - playerIntersection
+  - milestones
+  - currentStage
+  - publicSignals
+  - resolution
+If a hostile rival arc directly targets the player, you MUST surface at least two visible clues before direct collision or terminal harm.
+If the arc becomes personal for the player, create or update a normal player-facing soul quest through UpdateSoulQuests and link it with relatedRivalArcId.
+If you surface a rival arc clue through worldEventsLog, mark that world event with relatedRivalArcId too, so the player can recognize it as part of a parallel destiny line instead of random background noise.
+When practical, add turn/timestamp/date information to publicSignals or linked world events, and describe consequences/impact/follow-up in those world events, so the player's rival-thread journal can show a clearer chronology and visible world changes.
+Do NOT use rival arcs in Chaos Sea or Shining Abode.
+
 GUARDIAN-FORCED INCARNATION — HARD REQUIREMENT:
 If game_state/control/afterlife_return_guard.json exists with remainingProtectedTurns > 0, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any Guardian-forced incarnation.
 Do NOT immediately kick the soul back into a new life on that protected return turn.
@@ -6421,6 +6613,12 @@ You MUST NOT downgrade or ignore the client-computed baseRarity. Log the full ca
         var afterlifeGuardReminder = await _afterlifeReturnGuardService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
         if (!string.IsNullOrWhiteSpace(afterlifeGuardReminder))
             parts.Add(afterlifeGuardReminder);
+        var rivalArcReminder = await _rivalSoulArcService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);
+        if (!string.IsNullOrWhiteSpace(rivalArcReminder))
+            parts.Add(rivalArcReminder);
+        var systemGuardianReminder = await _systemGuardianLibraryService.BuildReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(systemGuardianReminder))
+            parts.Add(systemGuardianReminder);
         var qteReminder = await _qteSceneService.ConsumePendingReminderAsync();
         if (!string.IsNullOrWhiteSpace(qteReminder))
             parts.Add($"QTE SUMMARY FROM PREVIOUS LOCAL SCENE: {qteReminder}");

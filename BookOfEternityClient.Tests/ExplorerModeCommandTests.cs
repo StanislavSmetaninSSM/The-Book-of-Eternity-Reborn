@@ -20,6 +20,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
     private readonly StoryService _storyService;
     private readonly WorldDirectiveService _worldDirectiveService;
     private readonly SystemModService _systemModService;
+    private readonly SystemGuardianLibraryService _systemGuardianLibraryService;
     private readonly NpcTradeService _npcTradeService;
     private readonly GuardianTradeService _guardianTradeService;
     private readonly PendingTurnStateService _pendingTurnStateService;
@@ -41,6 +42,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
         _storyService = new StoryService(_fs, NullLogger<StoryService>.Instance);
         _worldDirectiveService = new WorldDirectiveService(_fs, NullLogger<WorldDirectiveService>.Instance);
         _systemModService = new SystemModService(_fs, _settings, NullLogger<SystemModService>.Instance);
+        _systemGuardianLibraryService = new SystemGuardianLibraryService(_fs, NullLogger<SystemGuardianLibraryService>.Instance);
         _npcTradeService = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
         _guardianTradeService = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
         _pendingTurnStateService = new PendingTurnStateService(_fs, NullLogger<PendingTurnStateService>.Instance);
@@ -51,6 +53,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
             storyService: _storyService,
             pendingTurnState: _pendingTurnStateService,
             systemModService: _systemModService,
+            systemGuardianLibraryService: _systemGuardianLibraryService,
             worldDirectiveService: _worldDirectiveService,
             soulIdentityService: _soulIdentityService,
             clipboardService: _clipboard,
@@ -64,6 +67,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
     [InlineData("/инв")]
     [InlineData("/карта")]
     [InlineData("/квесты")]
+    [InlineData("/чужие_нити")]
     public async Task TryProcessCommand_RendersWithoutException_ForKeyExplorerCommands(string command)
     {
         await SeedSessionForCommandAsync(command);
@@ -223,6 +227,161 @@ public sealed class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SystemGuardians_RendersLibraryWithoutException()
+    {
+        await SeedAfterlifeStateAsync();
+        await SeedSystemGuardianPresetAsync("azalia", "Азалия", "Social", "Обитель Неутолимого Пламени");
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("← Назад");
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/извечные_хранители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("system_guardians");
+        Assert.True(_console.SelectionTitles.Any(title => title.Contains("Извечные хранители", StringComparison.OrdinalIgnoreCase)),
+            BuildConsoleDiagnostics("system_guardians"));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Guardians_SystemAttraction_WritesRequestAndReturnsGmAction()
+    {
+        await SeedAfterlifeStateAsync();
+        await SeedSystemGuardianPresetAsync("azalia", "Азалия", "Social", "Обитель Неутолимого Пламени");
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_existing_001",
+                    canonicalName = "Старый Хранитель",
+                    domain = "Knowledge",
+                    nameVariants = new
+                    {
+                        @default = "Старый Хранитель",
+                        feminine = (string?)null,
+                        masculine = "Старый Хранитель",
+                        neutral = (string?)null
+                    },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Старый Хранитель",
+                        formFlexibility = "fixed",
+                        currentPresentationStyle = "masculine",
+                        currentPronouns = "он/его",
+                        appearanceDescription = "Тестовая устойчивая форма хранителя знаний."
+                    },
+                    manifestationHistory = Array.Empty<object>(),
+                    personalityProfile = new
+                    {
+                        archetype = "Archivist",
+                        speechPattern = "Measured",
+                        coreValues = new[] { "память", "ясность", "порядок" }
+                    },
+                    relationshipData = new
+                    {
+                        currentReputation = 10,
+                        reputationHistory = Array.Empty<object>(),
+                        lastInteraction = (string?)null
+                    },
+                    questManagement = new
+                    {
+                        availableQuests = Array.Empty<object>(),
+                        completedQuests = Array.Empty<object>(),
+                        activeQuests = Array.Empty<object>()
+                    },
+                    gachaSystem = new
+                    {
+                        chargesPerReturn = 1,
+                        chargesUsedThisReturn = 0,
+                        gachaHistory = Array.Empty<object>()
+                    },
+                    tradeInventory = new
+                    {
+                        cycleId = "cycle_1",
+                        items = Array.Empty<object>()
+                    },
+                    currentProject = new
+                    {
+                        projectId = "proj_1",
+                        name = "Наблюдение",
+                        description = "Тестовый проект",
+                        progressPercent = 0,
+                        estimatedTurnsLeft = 3,
+                        playerCanAssist = false
+                    },
+                    mood = new
+                    {
+                        current = "curious",
+                        intensity = 30,
+                        reason = "Наблюдает",
+                        since = 1
+                    },
+                    loreFragments = Enumerable.Range(1, 7).Select(i => new
+                    {
+                        fragmentId = $"fragment_{i}",
+                        title = $"Фрагмент {i}",
+                        category = "domain_truth",
+                        requiredReputation = 0,
+                        content = (string?)null,
+                        unlocked = false
+                    }).ToArray(),
+                    musings = Array.Empty<object>(),
+                    abode = new
+                    {
+                        abodeId = "abode_existing_001",
+                        name = "Старая Обитель",
+                        isDiscovered = true
+                    }
+                }
+            },
+            activeGuardian = new
+            {
+                guardianId = "guardian_existing_001",
+                canonicalName = "Старый Хранитель",
+                nameVariants = new
+                {
+                    @default = "Старый Хранитель",
+                    feminine = (string?)null,
+                    masculine = "Старый Хранитель",
+                    neutral = (string?)null
+                },
+                manifestation = new
+                {
+                    currentDisplayName = "Старый Хранитель",
+                    formFlexibility = "fixed",
+                    currentPresentationStyle = "masculine",
+                    currentPronouns = "он/его",
+                    appearanceDescription = "Тестовая устойчивая форма хранителя знаний."
+                },
+                manifestationHistory = Array.Empty<object>()
+            },
+            chaosSeaNavigation = new
+            {
+                currentAbodeId = "abode_existing_001",
+                discoveredAbodes = new[] { "abode_existing_001" }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        _console.QueueAnySelection(
+            "🔍 Искать новую обитель (силой мысли)",
+            "🧲 Притяжение к извечному хранителю",
+            "Азалия (Social)",
+            "✅ Выбрать");
+
+        var result = await _explorer.TryProcessCommand("/хранители");
+
+        Assert.NotNull(result);
+        Assert.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia]", result, StringComparison.Ordinal);
+
+        var requestJson = await _fs.ReadFileAsync(SystemGuardianLibraryService.AttractionRequestPath);
+        Assert.NotNull(requestJson);
+        Assert.Contains("\"targetPresetId\": \"azalia\"", requestJson, StringComparison.Ordinal);
+        Assert.Contains("\"targetPresetDisplayName\": \"Азалия\"", requestJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_WorldRules_ClearFlow_UsesAdapterAndRemovesActiveDirectives()
     {
         await SeedMortalStateAsync();
@@ -355,6 +514,197 @@ public sealed class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("world_news");
         Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SoulQuests_ShowsRivalArcMarkerForLinkedSoulQuest()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/quests/soul_quests.json", new
+        {
+            quests = new[]
+            {
+                new
+                {
+                    questId = "soul_quest_rival_001",
+                    guardianId = "guard_social_azalia_001",
+                    questName = "Остановить Алого Палача",
+                    title = "Остановить Алого Палача",
+                    description = "След чужой души стал слишком опасен.",
+                    status = "active",
+                    relatedRivalArcId = "arc_hunt_001",
+                    counterToRivalArc = true,
+                    progress = new { completed = 0, total = 3 },
+                    rewards = new { experience = 100 },
+                    objectives = new[]
+                    {
+                        new { description = "Найти след охотника", status = "Active" }
+                    }
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/квесты_души"));
+
+        Assert.Null(ex);
+        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
+            choice => choice.Contains("🧵 🌟", StringComparison.Ordinal) &&
+                      choice.Contains("Остановить Алого Палача", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_RivalThreads_ShowsVisibleArcChoicesOnly()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/world/rival_soul_arcs.json", new
+        {
+            arcs = new object[]
+            {
+                new
+                {
+                    arcId = "arc_visible_001",
+                    scope = "major",
+                    arcType = "hostile_hunt",
+                    status = "rising",
+                    sponsorGuardianRef = new { mode = "guardianId", guardianId = "guard_social_azalia_001", displayName = "Азалия" },
+                    rivalSoul = new { rivalSoulId = "soul_visible_001", displayNameOrMoniker = "Алый Палач", roleSummary = "Охотник", isKnownToPlayer = true },
+                    objective = "Найти игрока",
+                    playerIntersection = new { targetsPlayerDirectly = true, stakes = "Смертельная угроза", canBecomeSoulQuest = true, recommendedCounterQuestTone = "urgent" },
+                        milestones = new[]
+                        {
+                            new { stage = 0, title = "Слухи", summary = "О нем говорят.", visibleToPlayer = true, turn = 3 }
+                        },
+                        currentStage = 0,
+                        publicSignals = new[]
+                        {
+                            new { signalId = "signal_visible_001", stage = 0, description = "Следы охоты.", source = "rumor", visibleToPlayer = true, turn = 4, timestamp = "2026-03-21T18:15:00Z" }
+                        },
+                        resolution = new { outcome = "ongoing", notes = "Охота продолжается." }
+                    },
+                new
+                {
+                    arcId = "arc_hidden_001",
+                    scope = "minor",
+                    arcType = "political_claim",
+                    status = "latent",
+                    sponsorGuardianRef = new { mode = "guardianId", guardianId = "guard_social_azalia_001", displayName = "Азалия" },
+                    rivalSoul = new { rivalSoulId = "soul_hidden_001", displayNameOrMoniker = "Тайный Претендент", roleSummary = "Претендент", isKnownToPlayer = false },
+                    objective = "Захватить город",
+                    playerIntersection = new { targetsPlayerDirectly = false, stakes = "Городская власть", canBecomeSoulQuest = false, recommendedCounterQuestTone = "political" },
+                    milestones = new[]
+                    {
+                        new { stage = 0, title = "Тайный шепот", summary = "Игрок пока ничего не знает.", visibleToPlayer = false }
+                    },
+                    currentStage = 0,
+                    publicSignals = Array.Empty<object>(),
+                    resolution = new { outcome = "ongoing", notes = "Пока скрыт." }
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/quests/soul_quests.json", new
+        {
+            quests = new[]
+            {
+                new
+                {
+                    questId = "soul_quest_rival_001",
+                    guardianId = "guard_social_azalia_001",
+                    questName = "Остановить Алого Палача",
+                    title = "Остановить Алого Палача",
+                    description = "След чужой души стал слишком опасен.",
+                    status = "active",
+                    relatedRivalArcId = "arc_visible_001",
+                    counterToRivalArc = true,
+                    progress = new { completed = 0, total = 3 },
+                    rewards = new { experience = 100 },
+                    objectives = new[]
+                    {
+                        new { description = "Найти след охотника", status = "Active" }
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/world/world_events.json", new
+        {
+            worldEventsLog = new[]
+            {
+                new
+                {
+                    eventId = "event_rival_001",
+                    title = "Кровавый знак на воротах",
+                    description = "Горожане шепчутся о метке охотника.",
+                    visibility = "Public",
+                    relatedRivalArcId = "arc_visible_001",
+                    timestamp = "2026-03-21T18:30:00Z",
+                    consequences = new[] { "Жители начали бояться ночных улиц." },
+                    followUp = "Стража усилила ночные патрули."
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/чужие_нити"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("rival_threads");
+        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
+            choice => choice.Contains("🆕", StringComparison.Ordinal) &&
+                      choice.Contains("Алый Палач", StringComparison.Ordinal) &&
+                      choice.Contains("Следы охоты", StringComparison.Ordinal));
+        Assert.DoesNotContain(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
+            choice => choice.Contains("Тайный Претендент", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_RivalThreads_SortsMoreDangerousThreadFirst()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/world/rival_soul_arcs.json", new
+        {
+            arcs = new object[]
+            {
+                new
+                {
+                    arcId = "arc_low_001",
+                    scope = "major",
+                    arcType = "political_claim",
+                    status = "latent",
+                    sponsorGuardianRef = new { mode = "guardianId", guardianId = "guard_social_azalia_001", displayName = "Азалия" },
+                    rivalSoul = new { rivalSoulId = "soul_low_001", displayNameOrMoniker = "Тихий Претендент", roleSummary = "Политический игрок", isKnownToPlayer = true },
+                    objective = "Медленно взять город под контроль",
+                    playerIntersection = new { targetsPlayerDirectly = false, stakes = "Влияние на город", canBecomeSoulQuest = false, recommendedCounterQuestTone = "political" },
+                    milestones = new[] { new { stage = 0, title = "Шёпот двора", summary = "О нем тихо говорят.", visibleToPlayer = true } },
+                    currentStage = 0,
+                    publicSignals = Array.Empty<object>(),
+                    resolution = new { outcome = "ongoing", notes = "Пока скрыт." }
+                },
+                new
+                {
+                    arcId = "arc_high_001",
+                    scope = "minor",
+                    arcType = "hostile_hunt",
+                    status = "intersecting",
+                    sponsorGuardianRef = new { mode = "guardianId", guardianId = "guard_social_azalia_001", displayName = "Азалия" },
+                    rivalSoul = new { rivalSoulId = "soul_high_001", displayNameOrMoniker = "Черный Пёс", roleSummary = "Охотник", isKnownToPlayer = true },
+                    objective = "Найти и убить игрока",
+                    playerIntersection = new { targetsPlayerDirectly = true, stakes = "Жизнь игрока", canBecomeSoulQuest = true, recommendedCounterQuestTone = "urgent" },
+                    milestones = new[] { new { stage = 1, title = "Выход на след", summary = "Охотник рядом.", visibleToPlayer = true } },
+                    currentStage = 1,
+                    publicSignals = new[] { new { signalId = "signal_high_001", stage = 1, description = "Кто-то уже идет по следу игрока.", source = "rumor", visibleToPlayer = true } },
+                    resolution = new { outcome = "ongoing", notes = "Уже пересекается." }
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/чужие_нити"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("rival_threads_sort");
+        var firstChoice = _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices).FirstOrDefault(choice => !choice.Contains("Назад", StringComparison.OrdinalIgnoreCase));
+        Assert.NotNull(firstChoice);
+        Assert.Contains("Черный Пёс", firstChoice, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1249,8 +1599,24 @@ public sealed class ExplorerModeCommandTests : IDisposable
                 new
                 {
                     guardianId = "guard_test_azalia",
-                    name = "Азалия",
+                    canonicalName = "Азалия",
                     domain = "Social",
+                    nameVariants = new
+                    {
+                        @default = "Азалия",
+                        feminine = "Азалия",
+                        masculine = (string?)null,
+                        neutral = (string?)null
+                    },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия",
+                        formFlexibility = "selective",
+                        currentPresentationStyle = "feminine",
+                        currentPronouns = "она/её",
+                        appearanceDescription = "Тестовая текущая форма Азалии."
+                    },
+                    manifestationHistory = Array.Empty<object>(),
                     description = "Тестовая хранительница для smoke test explorer mode.",
                     relationshipData = new
                     {
@@ -1274,7 +1640,23 @@ public sealed class ExplorerModeCommandTests : IDisposable
             activeGuardian = new
             {
                 guardianId = "guard_test_azalia",
-                name = "Азалия"
+                canonicalName = "Азалия",
+                nameVariants = new
+                {
+                    @default = "Азалия",
+                    feminine = "Азалия",
+                    masculine = (string?)null,
+                    neutral = (string?)null
+                },
+                manifestation = new
+                {
+                    currentDisplayName = "Азалия",
+                    formFlexibility = "selective",
+                    currentPresentationStyle = "feminine",
+                    currentPronouns = "она/её",
+                    appearanceDescription = "Тестовая текущая форма Азалии."
+                },
+                manifestationHistory = Array.Empty<object>()
             },
             chaosSeaNavigation = new
             {
@@ -1331,6 +1713,37 @@ public sealed class ExplorerModeCommandTests : IDisposable
                                 status = "Active"
                             }
                         }
+                    }
+                }
+            });
+        }
+
+        if (command == "/чужие_нити")
+        {
+            await WriteJsonAsync("game_state/world/rival_soul_arcs.json", new
+            {
+                arcs = new object[]
+                {
+                    new
+                    {
+                        arcId = "arc_test_001",
+                        scope = "major",
+                        arcType = "rival_ascension",
+                        status = "rising",
+                        sponsorGuardianRef = new { mode = "guardianId", guardianId = "guard_test_azalia", displayName = "Азалия" },
+                        rivalSoul = new { rivalSoulId = "soul_rival_001", displayNameOrMoniker = "Юный Император", roleSummary = "Восходящий гений", isKnownToPlayer = true },
+                        objective = "Подняться к власти",
+                        playerIntersection = new { targetsPlayerDirectly = false, stakes = "Баланс власти", canBecomeSoulQuest = true, recommendedCounterQuestTone = "political" },
+                        milestones = new[]
+                        {
+                            new { stage = 0, title = "Первые слухи", summary = "О нем уже говорят.", visibleToPlayer = true }
+                        },
+                        currentStage = 0,
+                        publicSignals = new[]
+                        {
+                            new { signalId = "signal_test_001", stage = 0, description = "По рынкам ходят слухи о новом чуде.", source = "rumor", visibleToPlayer = true }
+                        },
+                        resolution = new { outcome = "ongoing", notes = "Нить только разворачивается." }
                     }
                 }
             });
@@ -1444,8 +1857,24 @@ public sealed class ExplorerModeCommandTests : IDisposable
                 new
                 {
                     guardianId = "guardian_trade_001",
-                    name = "Азалия",
+                    canonicalName = "Азалия",
                     domain = "Social",
+                    nameVariants = new
+                    {
+                        @default = "Азалия",
+                        feminine = "Азалия",
+                        masculine = (string?)null,
+                        neutral = (string?)null
+                    },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия",
+                        formFlexibility = "selective",
+                        currentPresentationStyle = "feminine",
+                        currentPronouns = "она/её",
+                        appearanceDescription = "Тестовая текущая форма Азалии."
+                    },
+                    manifestationHistory = Array.Empty<object>(),
                     relationshipData = new
                     {
                         currentReputation = 120
@@ -1466,13 +1895,83 @@ public sealed class ExplorerModeCommandTests : IDisposable
             activeGuardian = new
             {
                 guardianId = "guardian_trade_001",
-                name = "Азалия"
+                canonicalName = "Азалия",
+                nameVariants = new
+                {
+                    @default = "Азалия",
+                    feminine = "Азалия",
+                    masculine = (string?)null,
+                    neutral = (string?)null
+                },
+                manifestation = new
+                {
+                    currentDisplayName = "Азалия",
+                    formFlexibility = "selective",
+                    currentPresentationStyle = "feminine",
+                    currentPronouns = "она/её",
+                    appearanceDescription = "Тестовая текущая форма Азалии."
+                },
+                manifestationHistory = Array.Empty<object>()
             },
             chaosSeaNavigation = new
             {
                 currentAbodeId = "abode_social_001"
             }
         });
+    }
+
+    private async Task SeedSystemGuardianPresetAsync(string presetId, string displayName, string domain, string abodeName)
+    {
+        var presetDir = Path.Combine(_systemGuardianLibraryService.GetBuiltInDirectoryPath(), presetId);
+        Directory.CreateDirectory(presetDir);
+
+        await File.WriteAllTextAsync(Path.Combine(presetDir, "manifest.json"), $$"""
+        {
+          "presetId": "{{presetId}}",
+          "displayName": "{{displayName}}",
+          "summary": "Тестовый системный хранитель для regression tests.",
+          "alwaysAvailable": true,
+          "category": "system_guardian",
+          "identity": {
+            "domain": "{{domain}}",
+            "archetype": "Test Archetype",
+            "tone": "Measured",
+            "coreValues": ["ценность 1", "ценность 2", "ценность 3"]
+          },
+          "nameVariants": {
+            "default": "{{displayName}}",
+            "feminine": "{{displayName}}",
+            "masculine": null,
+            "neutral": null
+          },
+          "manifestationDefaults": {
+            "formFlexibility": "selective",
+            "defaultPresentationStyle": "feminine",
+            "defaultPronouns": "она/её",
+            "appearanceDescription": "Тестовая текущая форма проявления."
+          },
+          "abode": {
+            "name": "{{abodeName}}",
+            "theme": "тестовая обитель"
+          },
+          "generationRules": {
+            "mustPreserve": ["Имя {{displayName}}"],
+            "canVary": ["мелкие детали"],
+            "forbidden": ["ломать тест"]
+          },
+          "searchAttraction": {
+            "enabled": true,
+            "label": "Притяжение к {{displayName}}",
+            "keywords": ["тест"]
+          },
+          "authoring": {
+            "author": "tests",
+            "version": "1.0"
+          }
+        }
+        """);
+
+        await File.WriteAllTextAsync(Path.Combine(presetDir, "dossier.md"), $"# {displayName}\n\nТестовое досье для системного хранителя.");
     }
 
     private async Task WriteJsonAsync(string relativePath, object payload)

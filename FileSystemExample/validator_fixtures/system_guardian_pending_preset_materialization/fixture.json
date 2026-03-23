@@ -1,0 +1,40 @@
+{
+  "id": "system_guardian_pending_preset_materialization",
+  "runner": "StateOnly",
+  "description": "If pendingGuardianCreation uses a system preset, the materialized active guardian must carry matching sourcePreset metadata.",
+  "shared": [
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/pre_turn_guardians.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "system_guardian_pending_preset_not_materialized"
+  ],
+  "forbiddenBrokenCodes": [],
+  "forbiddenFixedCodes": [
+    "system_guardian_pending_preset_not_materialized",
+    "system_guardian_pending_preset_missing_active_guardian"
+  ],
+  "allowExtraBrokenCodes": true
+}

@@ -180,6 +180,9 @@ public class GameResponse
     [JsonPropertyName("worldEventsLog")]
     public JsonElement[]? WorldEventsLog { get; set; }
 
+    [JsonPropertyName("UpdateRivalSoulArcs")]
+    public JsonElement[]? UpdateRivalSoulArcs { get; set; }
+
     [JsonPropertyName("worldStateFlags")]
     public JsonElement[]? WorldStateFlags { get; set; }
 

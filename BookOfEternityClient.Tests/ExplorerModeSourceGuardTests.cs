@@ -60,6 +60,17 @@ public sealed class ExplorerModeSourceGuardTests
     }
 
     [Fact]
+    public void ExplorerMode_GuardianUi_MustUseSharedManifestationResolver()
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "UI", "ExplorerMode.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.Contains("GuardianManifestation.GetDisplayName", source, StringComparison.Ordinal);
+        Assert.Contains("GuardianManifestation.GetCanonicalName", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("GetStr(g, \"name\"", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void WorldSetupAndWorldRules_UiLabels_MustNotLeakEnglishMenuText()
     {
         var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "UI", "ExplorerMode.cs");
@@ -75,5 +86,17 @@ public sealed class ExplorerModeSourceGuardTests
         Assert.DoesNotContain("Текущий pending setup", source, StringComparison.Ordinal);
         Assert.DoesNotContain("Очистить world directives", source, StringComparison.Ordinal);
         Assert.DoesNotContain("Создать / редактировать world directives", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ExplorerMode_RivalSoulArcSignals_MustHavePlayerFacingMarker()
+    {
+        var path = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "UI", "ExplorerMode.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.Contains("🧵 Чужая нить судьбы", source, StringComparison.Ordinal);
+        Assert.Contains("relatedRivalArcId", source, StringComparison.Ordinal);
+        Assert.Contains("Что уже изменилось в мире", source, StringComparison.Ordinal);
+        Assert.Contains("Последнее проявление", source, StringComparison.Ordinal);
     }
 }
