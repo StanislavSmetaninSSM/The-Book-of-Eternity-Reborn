@@ -87,6 +87,12 @@ public sealed class WorldDirectiveService
         [JsonPropertyName("profileName")]
         public string? ProfileName { get; set; }
 
+        [JsonPropertyName("characterDescription")]
+        public string CharacterDescription { get; set; } = "";
+
+        [JsonPropertyName("startingCircumstances")]
+        public string StartingCircumstances { get; set; } = "";
+
         [JsonPropertyName("worldDirectives")]
         public WorldDirectives WorldDirectives { get; set; } = new();
 
@@ -198,16 +204,26 @@ public sealed class WorldDirectiveService
         };
     }
 
-    public async Task UpsertPendingSetupFromIncarnationPromptAsync(string? worldDescription, string? circumstances)
+    public async Task UpsertPendingSetupFromIncarnationPromptAsync(string? characterDescription, string? worldDescription, string? circumstances)
     {
-        if (string.IsNullOrWhiteSpace(worldDescription) && string.IsNullOrWhiteSpace(circumstances))
+        if (string.IsNullOrWhiteSpace(characterDescription) &&
+            string.IsNullOrWhiteSpace(worldDescription) &&
+            string.IsNullOrWhiteSpace(circumstances))
+        {
             return;
+        }
 
         var pending = await ReadPendingSetupAsync() ?? new PendingWorldSetup
         {
             Mode = "manual",
             WorldDirectives = new WorldDirectives()
         };
+
+        if (!string.IsNullOrWhiteSpace(characterDescription))
+            pending.CharacterDescription = characterDescription.Trim();
+
+        if (!string.IsNullOrWhiteSpace(circumstances))
+            pending.StartingCircumstances = circumstances.Trim();
 
         if (string.IsNullOrWhiteSpace(pending.WorldDirectives.SettingSummary) &&
             !string.IsNullOrWhiteSpace(worldDescription))
@@ -280,6 +296,10 @@ public sealed class WorldDirectiveService
             parts.Add($"  - Mode: {pendingSetup.Mode}");
             if (!string.IsNullOrWhiteSpace(pendingSetup.ProfileName))
                 parts.Add($"  - Source profile: {pendingSetup.ProfileName} ({pendingSetup.ProfileId})");
+            if (!string.IsNullOrWhiteSpace(pendingSetup.CharacterDescription))
+                parts.Add($"  - Character intent: {Truncate(pendingSetup.CharacterDescription, 220)}");
+            if (!string.IsNullOrWhiteSpace(pendingSetup.StartingCircumstances))
+                parts.Add($"  - Starting circumstances intent: {Truncate(pendingSetup.StartingCircumstances, 220)}");
             AppendDirectiveSummary(parts, pendingSetup.WorldDirectives, indent: "  ");
         }
 

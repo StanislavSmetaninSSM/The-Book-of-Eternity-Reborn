@@ -44,14 +44,14 @@
 Изменение силы обители происходит только при значимом исходе, а не от каждого разговора.
 
 - `Easy quest complete` = `+2`
-- `Normal quest complete` = `+4`
-- `Hard quest complete` = `+7`
-- `Epic quest complete` = `+11`
+- `Normal quest complete` = `+3`
+- `Hard quest complete` = `+5`
+- `Epic quest complete` = `+7`
 
 Модификаторы:
 
-- если quest payload содержит `supportsCurrentProject = true`: `+50%` к приросту, округление вверх
-- если quest payload содержит `defendsAgainstRivalPressure = true`: ещё `+2`
+- если quest payload содержит `supportsCurrentProject = true`: примерно `+33%` к приросту, минимум `+1`, округление вверх
+- если quest payload содержит `defendsAgainstRivalPressure = true`: ещё `+1`
 
 ### 2. Помощь текущему проекту Хранителя
 
@@ -59,7 +59,7 @@
 
 - `minor assist` = `+1`
 - `meaningful assist` = `+2`
-- `major breakthrough assist` = `+4`
+- `major breakthrough assist` = `+3`
 
 Это должно оформляться не свободным текстом, а через project/progression outcome, который можно валидировать.
 
@@ -82,9 +82,31 @@
 
 - каждые `50 Ink Feathers`, осознанно пожертвованные в Обитель = `+1`
 - cap: не больше `+3` за одно возвращение между смертными жизнями
-- доменно-подходящая реликвия / знание / тайна / трофей = `+2..+4`
+- `Soul Relic`:
+  - `common/uncommon = +1`
+  - `rare = +2`
+  - `epic = +3`
+  - `legendary/mythic/divine = +4`
+- `Архив Души` (`archive_lore_fragment` / `archive_secret_record`):
+  - `common/uncommon = +1`
+  - `rare = +2`
+  - `epic/legendary/unique = +3`
 
 Это нужно формализовать отдельным whitelist-командным путём позже, а не оставлять на свободную импровизацию GM.
+
+Дополнительный content-path:
+
+- `Архивная консультация` у дружественного Хранителя:
+  - `lore_fragment` -> materialize-ится в `+1 гарантированный дополнительный квест Хранителя` в следующей жизни
+  - `secret_record` -> materialize-ится в `+1 visible rival clue budget` на следующую жизнь
+  - действие инициируется клиентом через pending request; запись сразу резервируется в Архиве, но расходуется только при `accepted`
+  - `rejected/cancelled` освобождает запись обратно в Архив
+  - для materialization используется synthetic completed `lore_research`-effect с `projectOrigin = archive_consultation`
+- `Archive project fuel`:
+  - `lore_fragment` можно вложить в активный проект Хранителя как `+workDone`
+  - `secret_record` можно вложить в активный проект Хранителя как `-pressure`
+  - действие инициируется клиентом через pending request; запись резервируется до ответа GM
+  - `accepted` materialize-ится GM как canonical project update/journal entry, `rejected/cancelled` возвращает запись в Архив
 
 ### 5. Резонанс смертной жизни
 
@@ -107,9 +129,9 @@
 ### 1. Провалы квестов Хранителя
 
 - `Easy quest failed/abandoned` = `-1`
-- `Normal quest failed/abandoned` = `-3`
-- `Hard quest failed/abandoned` = `-5`
-- `Epic quest failed/abandoned` = `-8`
+- `Normal quest failed/abandoned` = `-2`
+- `Hard quest failed/abandoned` = `-4`
+- `Epic quest failed/abandoned` = `-6`
 
 Если игрок не просто провалил, а публично подорвал авторитет/замысел Хранителя:
 
@@ -186,7 +208,7 @@
 - `0..19` = `2` available quests
 - `20..59` = `3`
 - `60..79` = `4`
-- `80..100` = `5`
+- `80..100` = `4`
 
 Дополнительно сила открывает потолок типов квестов:
 
@@ -194,6 +216,15 @@
 - `Стабильная` — серьёзные и более влиятельные
 - `Могущественная` — личные, редкие, меж-хранительские
 - `Сияющая` — судьбоносные, политические, доменно-уникальные
+
+Минимальный v1 difficulty-ceiling contract для `availableQuests`:
+
+- `0..39` — не выше `normal`
+- `40..79` — не выше `hard`
+- `80..100` — не выше `epic`
+
+Это ограничение применяется к новым `availableQuests`.
+Уже взятые `activeQuests` и исторические `completedQuests` не должны ретроактивно инвалидироваться только из-за последующего падения силы Обители.
 
 ## 3. Guardian Gacha / посредничество Хранителя
 
@@ -321,7 +352,7 @@
   - `20..39 = 1`
   - `40..59 = 2`
   - `60..79 = 3`
-  - `80..100 = 5`
+  - `80..100 = 4`
 
 Conversion:
 
@@ -1755,9 +1786,9 @@ Conversion rule:
 Атакующий:
 
 - получает обычный power gain по tier:
-  - `minor +5`
-  - `major +10`
-  - `grand +16`
+  - `minor +4`
+  - `major +8`
+  - `grand +12`
 
 Цель:
 
@@ -1766,7 +1797,7 @@ Conversion rule:
 ### Эффект при провале
 
 - `Abandoned = -1 / -2 / -3 to attacker`
-- `Collapsed = backlash, -3 / -6 / -9 to attacker`
+- `Collapsed = backlash, -3 / -5 / -7 to attacker`
 - `Sabotaged = counterstroke, target inflicts mirrored loss 1 / 2 / 3 to attacker`
 
 ## 12.7 `counter_rival_operation`

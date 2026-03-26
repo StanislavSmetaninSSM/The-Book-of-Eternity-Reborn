@@ -1,0 +1,24 @@
+{
+  "id": "guardian_available_quest_difficulty_ceiling_contract",
+  "runner": "StateOnly",
+  "description": "Guardian available quest pool cannot exceed the difficulty ceiling allowed by current abode power.",
+  "broken": [
+    {
+      "source": "broken/guardians.json",
+      "target": "game_state/meta/guardians.json"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/guardians.json",
+      "target": "game_state/meta/guardians.json"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "guardian_available_quest_difficulty_ceiling_exceeded"
+  ],
+  "allowExtraBrokenCodes": true,
+  "forbiddenFixedCodes": [
+    "guardian_available_quest_difficulty_ceiling_exceeded"
+  ]
+}

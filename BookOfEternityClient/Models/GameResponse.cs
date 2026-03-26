@@ -360,8 +360,26 @@ public class GameResponse
     [JsonPropertyName("metaStateUpdates")]
     public JsonElement? MetaStateUpdates { get; set; }
 
+    [JsonPropertyName("afterlifeArchiveUpdates")]
+    public JsonElement[]? AfterlifeArchiveUpdates { get; set; }
+
+    [JsonPropertyName("archiveActionResolutions")]
+    public JsonElement[]? ArchiveActionResolutions { get; set; }
+
     [JsonPropertyName("UpdateGuardians")]
     public JsonElement[]? UpdateGuardians { get; set; }
+
+    [JsonPropertyName("startGuardianProjects")]
+    public JsonElement[]? StartGuardianProjects { get; set; }
+
+    [JsonPropertyName("guardianProjectUpdates")]
+    public JsonElement[]? GuardianProjectUpdates { get; set; }
+
+    [JsonPropertyName("completeGuardianProjects")]
+    public JsonElement[]? CompleteGuardianProjects { get; set; }
+
+    [JsonPropertyName("guardianPowerEvents")]
+    public JsonElement[]? GuardianPowerEvents { get; set; }
 
     [JsonPropertyName("historyManipulationCoefficient")]
     public double? HistoryManipulationCoefficient { get; set; }

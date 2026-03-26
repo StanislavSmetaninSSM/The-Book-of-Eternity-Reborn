@@ -1,0 +1,471 @@
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed class GuardianCorrectionServiceTests : IDisposable
+{
+    private readonly string _rootPath;
+    private readonly FileSystemManager _fs;
+    private readonly ScenarioCoreService _scenarioCoreService;
+    private readonly GuardianCorrectionService _guardianCorrectionService;
+
+    public GuardianCorrectionServiceTests()
+    {
+        _rootPath = Path.Combine(Path.GetTempPath(), "boe-guardian-corrections-tests-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(_rootPath);
+
+        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        _fs.EnsureDirectoryStructure();
+        _scenarioCoreService = new ScenarioCoreService(_fs, NullLogger<ScenarioCoreService>.Instance);
+        _guardianCorrectionService = new GuardianCorrectionService(_fs, _scenarioCoreService, NullLogger<GuardianCorrectionService>.Instance);
+    }
+
+    [Fact]
+    public async Task ApplyForNewLifeAsync_FriendlyGuardianCreatesCorrectionsAndSpendsAbodePower()
+    {
+        await WriteRawAsync(ScenarioCoreService.ManifestPath, """
+        {
+          "scenarioCoreAssertions": [
+            { "assertionId": "core_role", "category": "role_status", "value": "Игрок начинает королём", "explicit": true, "source": "structured_field" }
+          ],
+          "candidateAssertions": [],
+          "openCorrectionSlots": [
+            { "slotId": "slot_protection", "slotType": "protection_or_omen", "maxSeverity": "medium", "allowsFriendly": true, "allowsHostile": true, "sourceAssertionId": "core_role" },
+            { "slotId": "slot_ally", "slotType": "ally_thread", "maxSeverity": "medium", "allowsFriendly": true, "allowsHostile": true, "sourceAssertionId": "core_role" }
+          ]
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guard_test_azalia",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 80, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "gachaSystem": { "chargesPerReturn": 3, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guard_test_azalia",
+            "canonicalName": "Азалия",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 80, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+            "gachaSystem": { "chargesPerReturn": 3, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          }
+        }
+        """);
+
+        await _guardianCorrectionService.ApplyForNewLifeAsync(2);
+        var state = await _guardianCorrectionService.ReadAsync();
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+
+        Assert.NotNull(state);
+        Assert.Equal("friendly", state!.Intent);
+        Assert.NotEmpty(state.Corrections);
+        Assert.True(state.PowerAfter < state.PowerBefore);
+        Assert.NotNull(guardiansJson);
+        Assert.Contains($"\"currentPower\": {state.PowerAfter}", guardiansJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ApplyForNewLifeAsync_HostileGuardianCreatesAtLeastOneHostileCorrection()
+    {
+        await WriteRawAsync(ScenarioCoreService.ManifestPath, """
+        {
+          "scenarioCoreAssertions": [
+            { "assertionId": "core_role", "category": "role_status", "value": "Игрок начинает королём", "explicit": true, "source": "structured_field" }
+          ],
+          "candidateAssertions": [],
+          "openCorrectionSlots": [
+            { "slotId": "slot_rival", "slotType": "rival_thread", "maxSeverity": "strong", "allowsFriendly": true, "allowsHostile": true, "sourceAssertionId": "core_role" }
+          ]
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guard_test_varak",
+              "canonicalName": "Варак",
+              "nameVariants": { "default": "Варак", "feminine": null, "masculine": "Варак", "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Варак",
+                "formFlexibility": "fixed",
+                "currentPresentationStyle": "masculine",
+                "currentPronouns": "он/его",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": -80, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guard_test_varak",
+            "canonicalName": "Варак",
+            "nameVariants": { "default": "Варак", "feminine": null, "masculine": "Варак", "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Варак",
+              "formFlexibility": "fixed",
+              "currentPresentationStyle": "masculine",
+              "currentPronouns": "он/его",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": -80, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          }
+        }
+        """);
+
+        await _guardianCorrectionService.ApplyForNewLifeAsync(3);
+        var state = await _guardianCorrectionService.ReadAsync();
+
+        Assert.NotNull(state);
+        Assert.Equal("hostile", state!.Intent);
+        Assert.Contains(state.Corrections, correction => correction.Intent == "hostile");
+        Assert.Contains(state.Corrections, correction => correction.SlotType == "rival_thread");
+    }
+
+    [Fact]
+    public async Task ApplyForNewLifeAsync_RivalOffensiveClaimant_CanContestCorrectionSlots()
+    {
+        await WriteRawAsync(ScenarioCoreService.ManifestPath, """
+        {
+          "scenarioCoreAssertions": [
+            { "assertionId": "core_role", "category": "role_status", "value": "Игрок начинает королём", "explicit": true, "source": "structured_field" }
+          ],
+          "candidateAssertions": [],
+          "openCorrectionSlots": [
+            { "slotId": "slot_rival", "slotType": "rival_thread", "maxSeverity": "strong", "allowsFriendly": true, "allowsHostile": true, "sourceAssertionId": "core_role" },
+            { "slotId": "slot_debt", "slotType": "debt_or_oath", "maxSeverity": "medium", "allowsFriendly": false, "allowsHostile": true, "sourceAssertionId": "core_role" }
+          ]
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guard_test_active",
+              "canonicalName": "Варак",
+              "nameVariants": { "default": "Варак", "feminine": null, "masculine": "Варак", "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Варак",
+                "formFlexibility": "fixed",
+                "currentPresentationStyle": "masculine",
+                "currentPronouns": "он/его",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": -80, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            },
+            {
+              "guardianId": "guard_test_rival",
+              "canonicalName": "Нерис",
+              "nameVariants": { "default": "Нерис", "feminine": "Нерис", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Нерис",
+                "formFlexibility": "adaptive",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 10, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 70, "tier": "Могущественная", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guard_test_active",
+            "canonicalName": "Варак",
+            "nameVariants": { "default": "Варак", "feminine": null, "masculine": "Варак", "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Варак",
+              "formFlexibility": "fixed",
+              "currentPresentationStyle": "masculine",
+              "currentPronouns": "он/его",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": -80, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          }
+        }
+        """);
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "completedProjects": [
+            {
+              "guardianId": "guard_test_rival",
+              "project": {
+                "projectId": "proj_intrigue_001",
+                "projectType": "offensive_intrigue",
+                "projectTier": "major",
+                "projectMode": "offensive",
+                "projectName": "Чужая интрига",
+                "targetGuardianId": "guard_test_active",
+                "finalState": "Completed",
+                "completionTurn": 10
+              }
+            }
+          ]
+        }
+        """);
+
+        await _guardianCorrectionService.ApplyForNewLifeAsync(5);
+        var state = await _guardianCorrectionService.ReadAsync();
+
+        Assert.NotNull(state);
+        Assert.True(state!.Claimants.Count >= 2);
+        Assert.Contains(state.Claimants, claimant => claimant.GuardianId == "guard_test_rival");
+        Assert.Contains(state.ContestedSlots, contest => contest.SlotId == "slot_rival" && contest.Candidates.Count >= 2);
+        Assert.Contains(state.ResolutionOrder, step => step.Contains("slot_rival", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ApplyForNewLifeAsync_SoulPreparationBonuses_AggregateIntoClaimantBudget()
+    {
+        await WriteRawAsync(ScenarioCoreService.ManifestPath, """
+        {
+          "scenarioCoreAssertions": [
+            { "assertionId": "core_role", "category": "role_status", "value": "Игрок начинает королём", "explicit": true, "source": "structured_field" }
+          ],
+          "candidateAssertions": [],
+          "openCorrectionSlots": [
+            { "slotId": "slot_protection", "slotType": "protection_or_omen", "maxSeverity": "medium", "allowsFriendly": true, "allowsHostile": true, "sourceAssertionId": "core_role" }
+          ]
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guard_test_azalia",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 80, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "gachaSystem": { "chargesPerReturn": 3, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guard_test_azalia",
+            "canonicalName": "Азалия",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 80, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+            "gachaSystem": { "chargesPerReturn": 3, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          }
+        }
+        """);
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "completedProjects": [
+            {
+              "guardianId": "guard_test_azalia",
+              "project": {
+                "projectId": "prep_major",
+                "projectType": "soul_preparation",
+                "projectTier": "major",
+                "projectMode": "supportive",
+                "projectName": "Подготовка пути",
+                "finalState": "Completed",
+                "completionTurn": 10,
+                "projectOutcomeAudit": {
+                  "preparationBudgetPoints": 2,
+                  "preparationClaimPriorityBonus": 1
+                }
+              }
+            },
+            {
+              "guardianId": "guard_test_azalia",
+              "project": {
+                "projectId": "prep_minor",
+                "projectType": "soul_preparation",
+                "projectTier": "minor",
+                "projectMode": "supportive",
+                "projectName": "Тихая настройка",
+                "finalState": "Completed",
+                "completionTurn": 11,
+                "projectOutcomeAudit": {
+                  "preparationBudgetPoints": 1,
+                  "preparationClaimPriorityBonus": 1
+                }
+              }
+            }
+          ]
+        }
+        """);
+
+        await _guardianCorrectionService.ApplyForNewLifeAsync(6);
+        var state = await _guardianCorrectionService.ReadAsync();
+
+        Assert.NotNull(state);
+        var activeClaimant = Assert.Single(state!.Claimants, claimant => claimant.GuardianId == "guard_test_azalia");
+        Assert.Equal(3, activeClaimant.PreparationBudgetPoints);
+        Assert.Equal(7, activeClaimant.BaseBudgetPoints + activeClaimant.PreparationBudgetPoints);
+    }
+
+    [Fact]
+    public async Task ApplyForNewLifeAsync_SoulPreparationBonuses_AreConsumedAfterFirstTargetLife()
+    {
+        await WriteRawAsync(ScenarioCoreService.ManifestPath, """
+        {
+          "scenarioCoreAssertions": [
+            { "assertionId": "core_role", "category": "role_status", "value": "Игрок начинает королём", "explicit": true, "source": "structured_field" }
+          ],
+          "candidateAssertions": [],
+          "openCorrectionSlots": [
+            { "slotId": "slot_protection", "slotType": "protection_or_omen", "maxSeverity": "medium", "allowsFriendly": true, "allowsHostile": true, "sourceAssertionId": "core_role" }
+          ]
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guard_test_azalia",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 80, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "gachaSystem": { "chargesPerReturn": 3, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guard_test_azalia",
+            "canonicalName": "Азалия",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 80, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+            "gachaSystem": { "chargesPerReturn": 3, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          }
+        }
+        """);
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "completedProjects": [
+            {
+              "guardianId": "guard_test_azalia",
+              "project": {
+                "projectId": "prep_major",
+                "projectType": "soul_preparation",
+                "projectTier": "major",
+                "projectMode": "supportive",
+                "projectName": "Подготовка пути",
+                "finalState": "Completed",
+                "completionTurn": 10,
+                "projectOutcomeAudit": {
+                  "preparationBudgetPoints": 2,
+                  "preparationClaimPriorityBonus": 1
+                },
+                "effectState": {
+                  "targetIncarnation": 6,
+                  "preparationBudgetPointsGranted": 2,
+                  "preparationBudgetPointsSpent": 0,
+                  "preparationClaimPriorityBonusGranted": 1,
+                  "consumedAtLifeStart": false
+                }
+              }
+            }
+          ]
+        }
+        """);
+
+        await _guardianCorrectionService.ApplyForNewLifeAsync(6);
+        var trackerAfterFirst = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        Assert.NotNull(trackerAfterFirst);
+        Assert.Contains("\"consumedAtLifeStart\": true", trackerAfterFirst, StringComparison.Ordinal);
+
+        await _guardianCorrectionService.ApplyForNewLifeAsync(7);
+        var secondState = await _guardianCorrectionService.ReadAsync();
+        var secondClaimant = Assert.Single(secondState!.Claimants, claimant => claimant.GuardianId == "guard_test_azalia");
+        Assert.Equal(0, secondClaimant.PreparationBudgetPoints);
+    }
+
+    private async Task WriteRawAsync(string path, string content)
+    {
+        await _fs.WriteFileAtomicAsync(path, content);
+    }
+
+    public void Dispose()
+    {
+        try
+        {
+            if (Directory.Exists(_rootPath))
+                Directory.Delete(_rootPath, recursive: true);
+        }
+        catch
+        {
+            // Ignore temp cleanup failures.
+        }
+    }
+}

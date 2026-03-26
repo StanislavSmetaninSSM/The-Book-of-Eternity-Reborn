@@ -886,7 +886,7 @@
                 "UpdateGuardians": "(array of guardian_command_objects or null) 
                 Atomic commands for Guardian management. Each object contains:
                 {
-                  'command': 'create' | 'updateReputation' | 'completeQuest' | 'processGacha' | 'addMusings' | 'updateProject' | 'unlockLore' | 'setMood',
+                  'command': 'create' | 'updateReputation' | 'completeQuest' | 'processGacha' | 'addMusings' | 'unlockLore' | 'setMood',
                   'guardianId': string, // required for all except 'create'
                   'data': {
                     // For 'create': complete guardian object per Block32 Rule32.1
@@ -898,10 +898,14 @@
                   // top-level fields 'inkFeathersSpent' and 'result' instead of nested 'data'
                   // 'result' here is a minimal reward/result Soul Relic stub (relicId + name + rarity),
                   // not the full canonical Soul Relic Object used in persistent soul/meta state
-                  // addMusings uses top-level musings[], updateProject uses top-level currentProject,
+                  // addMusings uses top-level musings[],
                   // unlockLore uses top-level loreFragment, setMood uses top-level mood
                 }
                 Commands are processed sequentially in array order. CHAOS SEA ONLY.",
+
+                "startGuardianProjects / guardianProjectUpdates / completeGuardianProjects": "(array or null)
+                Dedicated top-level guardian project tracker surfaces. Use them instead of legacy UpdateGuardians.updateProject.
+                game_state/meta/guardian_projects.json is authoritative for guardian project lifecycle.",
 
                 "TriggerLifeEnd": "(object or null) Mortal World only. Set to { 'reason': 'Death' | 'Voluntary', 'summary': 'string' } when the mortal dies OR uses the command to end their run. Triggers the later dedicated Life Evaluation step.",
 

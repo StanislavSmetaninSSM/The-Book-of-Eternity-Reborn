@@ -1,0 +1,1201 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using Spectre.Console;
+using Spectre.Console.Rendering;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+
+namespace BookOfEternityClient.UI;
+
+/// <summary>
+/// Explorer mode: handles local /commands that read game state files
+/// and display formatted data without sending to the GM.
+/// Supports bilingual commands (Russian/English).
+/// </summary>
+public partial class ExplorerMode
+{
+    private readonly IExplorerConsole _console;
+    private readonly StateManager _stateManager;
+    private readonly FileSystemManager _fs;
+    private readonly LocalizationManager _loc;
+    private readonly Services.ValidationService? _validator;
+    private readonly Services.CharacteristicsService? _charService;
+    private readonly Services.StoryService? _storyService;
+    private readonly Services.ImageService? _imageService;
+    private readonly Services.PendingTurnStateService? _pendingTurnState;
+    private readonly Services.GuardianTradeService? _guardianTradeService;
+    private readonly Services.NpcTradeService? _npcTradeService;
+    private readonly Services.SystemModService? _systemModService;
+    private readonly Services.SystemGuardianLibraryService? _systemGuardianLibraryService;
+    private readonly Services.WorldDirectiveService? _worldDirectiveService;
+    private readonly Services.ScenarioCoreService? _scenarioCoreService;
+    private readonly Services.AfterlifeArchiveCandidateService? _afterlifeArchiveCandidateService;
+    private readonly Services.AfterlifeArchiveConsultationService? _afterlifeArchiveConsultationService;
+    private readonly Services.AfterlifeArchiveProjectFuelService? _afterlifeArchiveProjectFuelService;
+    private readonly Services.GuardianCorrectionService? _guardianCorrectionService;
+    private readonly Services.SoulIdentityService? _soulIdentityService;
+    private readonly Services.IClipboardService? _clipboardService;
+
+    // Set by interactive commands (equip/unequip) to signal an action to send to the GM
+    private string? _pendingGmAction;
+    // Set by Reveal Fate so Rewrite Fate becomes available
+    private bool _diceRevealed;
+
+    private sealed record RivalManifestationEntry(int Stage, string Kind, string Title, string Summary, string TimeLabel);
+
+    private sealed record RelatedRivalQuestSummary(string Title, string Status, bool IsCounterQuest);
+
+    private sealed record RelatedRivalWorldEventSummary(
+        string Headline,
+        string Summary,
+        string Visibility,
+        string Category,
+        string Location,
+        string TimeLabel,
+        IReadOnlyList<string> ChangeEffects);
+
+    private sealed record AfterlifeArchiveEntrySummary(
+        string ArchiveId,
+        string Title,
+        string EntryType,
+        string Rarity,
+        string Summary,
+        int SourceLife,
+        string SourceKind,
+        string SourceGuardianId,
+        IReadOnlyList<string> Tags,
+        bool IsReserved,
+        string ReservationKind,
+        string ReservedForGuardianId,
+        string ReservedForGuardianName,
+        string ReservedForProjectId,
+        string ReservedForProjectName);
+
+    private sealed record AfterlifeArchiveCandidateSummary(
+        string CandidateId,
+        string SourceKind,
+        string SourceEntryId,
+        int SourceLife,
+        string ProposedEntryType,
+        string Title,
+        string Summary,
+        string Rarity,
+        string Status,
+        string DiscoveredAt,
+        IReadOnlyList<string> Tags);
+
+    private sealed record FriendlyGuardianConsultationChoice(
+        string GuardianId,
+        string GuardianName,
+        int Reputation,
+        string Domain,
+        bool FuelAvailable,
+        string TargetProjectId,
+        string TargetProjectName);
+
+    private sealed record VisibleRivalSoulThread(
+        string ArcId,
+        string DisplayName,
+        string RoleSummary,
+        string Objective,
+        string Scope,
+        string ScopeLabel,
+        string Status,
+        string StatusLabel,
+        string ArcType,
+        string TypeLabel,
+        string SponsorGuardianName,
+        string Stakes,
+        bool TargetsPlayerDirectly,
+        bool HasFreshSignal,
+        string ListLabel,
+        string LastManifestationSummary,
+        IReadOnlyList<RivalManifestationEntry> Manifestations);
+
+    // Commands available in ALL realms
+    private readonly Dictionary<string, Func<Task>> _universalCommands;
+    // Commands ONLY available in Chaos Sea (afterlife)
+    private readonly Dictionary<string, Func<Task>> _chaosSeaOnlyCommands;
+    // Commands ONLY available in Mortal Life
+    private readonly Dictionary<string, Func<Task>> _mortalOnlyCommands;
+    // Commands available in both but behave differently
+    private readonly HashSet<string> _allCommandNames;
+
+    private void Write(IRenderable content) => _console.Write(content);
+
+    private void WriteLine() => _console.WriteLine();
+
+    private void MarkupLine(string markup) => _console.MarkupLine(markup);
+
+    private void Clear() => _console.Clear();
+
+    private string Ask(string prompt, string defaultValue = "") => _console.Ask(prompt, defaultValue);
+
+    private bool Confirm(string prompt, bool defaultValue = false) => _console.Confirm(prompt, defaultValue);
+
+    private T Prompt<T>(IPrompt<T> prompt) => _console.Prompt(prompt);
+
+    private string? ReadLine() => _console.ReadLine();
+
+    private ConsoleKeyInfo ReadKey() => _console.ReadKey();
+
+    // ═══ Helper methods ═══
+
+    private async Task SafeExecute(Func<Task> handler, string commandName)
+    {
+        try
+        {
+            await handler();
+        }
+        catch (Exception ex)
+        {
+            MarkupLine($"[red]❌ Ошибка при выполнении команды {Markup.Escape(commandName)}:[/]");
+            MarkupLine($"[red]{Markup.Escape(ex.Message)}[/]");
+            MarkupLine($"[dim]{Markup.Escape(ex.GetType().Name)}[/]");
+            WaitForKey();
+        }
+    }
+
+    private static int GetInt(JsonElement el, string prop, int def)
+    {
+        if (!el.TryGetProperty(prop, out var val)) return def;
+        if (val.ValueKind == JsonValueKind.Number && val.TryGetInt32(out var i)) return i;
+        if (val.ValueKind == JsonValueKind.String && int.TryParse(val.GetString(), out var parsed)) return parsed;
+        return def;
+    }
+
+    private void ShowEmptyPanel(string title, string message)
+    {
+        var panel = new Panel(new Markup($"[dim]{message}[/]"))
+        {
+            Header = new PanelHeader($" {title} ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Grey),
+            Padding = new Padding(2, 1)
+        };
+        Write(panel);
+    }
+
+    private async Task StartSystemGuardianAttractionAsync()
+    {
+        if (_systemGuardianLibraryService == null)
+        {
+            ShowEmptyPanel("Извечные хранители", "Библиотека извечных хранителей недоступна");
+            return;
+        }
+
+        var preset = await PromptSystemGuardianPresetAsync("Выберите извечного Хранителя для притяжения");
+        if (preset == null)
+            return;
+
+        await _systemGuardianLibraryService.WriteAttractionRequestAsync(preset);
+        _pendingGmAction = _systemGuardianLibraryService.BuildAttractionActionText(preset);
+        MarkupLine($"[magenta1]🧲 Притяжение к «{Markup.Escape(preset.DisplayName)}» подготовлено. Запрос отправится Мастеру Игры как следующий ход.[/]");
+    }
+
+    private async Task<SystemGuardianLibraryService.SystemGuardianPresetDescriptor?> PromptSystemGuardianPresetAsync(string title)
+    {
+        if (_systemGuardianLibraryService == null)
+            return null;
+
+        var presets = await _systemGuardianLibraryService.GetAvailablePresetsAsync(includeDossier: true);
+        var userDir = _systemGuardianLibraryService.GetUserDirectoryPath();
+        if (presets.Count == 0)
+        {
+            ShowEmptyPanel("Извечные хранители", $"В библиотеке пока нет пресетов.\n\nПапка: {userDir}");
+            return null;
+        }
+
+        while (true)
+        {
+            var choices = presets
+                .Select(preset => $"{preset.DisplayName} ({preset.Domain})")
+                .Append("📂 Открыть папку пользовательских извечных хранителей")
+                .Append("← Назад")
+                .ToList();
+
+            var choice = Prompt(new SelectionPrompt<string>()
+                .Title($"[bold cyan]{Markup.Escape(title)}[/]")
+                .HighlightStyle(new Style(Color.Cyan1))
+                .PageSize(12)
+                .AddChoices(choices));
+
+            if (choice.StartsWith("←", StringComparison.Ordinal))
+                return null;
+
+            if (choice.StartsWith("📂", StringComparison.Ordinal))
+            {
+                OpenFolderOrPrintPath(userDir);
+                continue;
+            }
+
+            var preset = presets.FirstOrDefault(p => choice == $"{p.DisplayName} ({p.Domain})");
+            if (preset == null)
+                continue;
+
+            if (ShowSystemGuardianPresetDetail(preset))
+                return preset;
+        }
+    }
+
+    private bool ShowSystemGuardianPresetDetail(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset)
+    {
+        var lines = new List<string>
+        {
+            $"[bold cyan]{Markup.Escape(preset.DisplayName)}[/]",
+            "",
+            $"[white]Домен:[/] {Markup.Escape(preset.Domain)}",
+            $"[white]Архетип:[/] {Markup.Escape(preset.Archetype)}",
+            $"[white]Тон:[/] {Markup.Escape(preset.Tone)}",
+            $"[white]Обитель:[/] {Markup.Escape(preset.AbodeName)}",
+            $"[white]Сводка:[/] {Markup.Escape(preset.Summary)}"
+        };
+
+        if (preset.CoreValues.Count > 0)
+            lines.Add($"[white]Ценности:[/] {Markup.Escape(string.Join(", ", preset.CoreValues))}");
+
+        if (!string.IsNullOrWhiteSpace(preset.DossierMarkdown))
+        {
+            lines.Add("");
+            lines.Add("[bold]Досье:[/]");
+            lines.AddRange(preset.DossierMarkdown!
+                .Trim()
+                .Replace("\r\n", "\n")
+                .Split('\n')
+                .Take(18)
+                .Select(line => Markup.Escape(line)));
+        }
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🛡️ Извечный хранитель ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Magenta1),
+            Padding = new Padding(1, 1),
+            Expand = true
+        });
+
+        var action = Prompt(new SelectionPrompt<string>()
+            .Title("[cyan]Действия:[/]")
+            .HighlightStyle(new Style(Color.Cyan1))
+            .AddChoices("✅ Выбрать", "← Назад"));
+
+        return action.StartsWith("✅", StringComparison.Ordinal);
+    }
+
+    private void OpenFolderOrPrintPath(string directoryPath)
+    {
+        Directory.CreateDirectory(directoryPath);
+
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = directoryPath,
+                UseShellExecute = true
+            });
+        }
+        catch
+        {
+            MarkupLine($"[yellow]{Markup.Escape(directoryPath)}[/]");
+            MarkupLine("[dim]Не удалось открыть папку автоматически. Путь выведен выше.[/]");
+            WaitForKey();
+        }
+    }
+
+    private async Task ShowScenarioCoreReviewAsync()
+    {
+        if (_scenarioCoreService == null)
+        {
+            ShowEmptyPanel("Сценарное ядро", "Сервис сценарного ядра недоступен.");
+            return;
+        }
+
+        var manifest = await _scenarioCoreService.ReadAsync();
+        if (manifest == null)
+        {
+            ShowEmptyPanel("Сценарное ядро", "Сценарное ядро ещё не извлечено. Сначала задайте подготовку следующего мира.");
+            return;
+        }
+
+        var confirmedCandidateIds = manifest.ScenarioCoreAssertions
+            .Where(assertion => !string.IsNullOrWhiteSpace(assertion.CandidateId))
+            .Select(assertion => assertion.CandidateId!)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var lines = new List<string>
+        {
+            "[bold magenta]🧩 Сценарное ядро следующей жизни[/]",
+            "",
+            "[white]Подтверждённые факты ниже считаются жёстким ядром старта и не должны ломаться Коррективами Хранителя.[/]"
+        };
+
+        lines.Add("");
+        lines.Add("[bold]Подтверждённое ядро:[/]");
+        if (manifest.ScenarioCoreAssertions.Count == 0)
+        {
+            lines.Add("[dim]Пока пусто.[/]");
+        }
+        else
+        {
+            foreach (var assertion in manifest.ScenarioCoreAssertions)
+                lines.Add($"  • [magenta]{Markup.Escape(assertion.Category)}[/]: {Markup.Escape(assertion.Value)}");
+        }
+
+        lines.Add("");
+        lines.Add("[bold]Извлечённые, но не подтверждённые факты:[/]");
+        if (manifest.CandidateAssertions.Count == 0)
+        {
+            lines.Add("[dim]Ничего не ожидает подтверждения.[/]");
+        }
+        else
+        {
+            foreach (var candidate in manifest.CandidateAssertions)
+            {
+                var marker = confirmedCandidateIds.Contains(candidate.CandidateId) ? "[green]✓[/]" : "[yellow]?[/]";
+                lines.Add($"  {marker} [cyan]{Markup.Escape(candidate.Category)}[/]: {Markup.Escape(candidate.Text)}");
+            }
+        }
+
+        lines.Add("");
+        lines.Add("[bold]Открытые correction slots:[/]");
+        if (manifest.OpenCorrectionSlots.Count == 0)
+        {
+            lines.Add("[dim]Не сгенерированы.[/]");
+        }
+        else
+        {
+            foreach (var slot in manifest.OpenCorrectionSlots.Take(12))
+                lines.Add($"  • {Markup.Escape(slot.SlotType)} [dim](max: {Markup.Escape(slot.MaxSeverity)})[/]");
+            if (manifest.OpenCorrectionSlots.Count > 12)
+                lines.Add($"  [dim]… и ещё {manifest.OpenCorrectionSlots.Count - 12}[/]");
+        }
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🧩 Сценарное ядро ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Magenta1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+        WaitForKey();
+    }
+
+    private async Task ConfirmScenarioCoreCandidatesAsync()
+    {
+        if (_scenarioCoreService == null)
+        {
+            ShowEmptyPanel("Подтверждение фактов", "Сервис сценарного ядра недоступен.");
+            return;
+        }
+
+        while (true)
+        {
+            var manifest = await _scenarioCoreService.ReadAsync();
+            if (manifest == null)
+            {
+                ShowEmptyPanel("Подтверждение фактов", "Сначала задайте подготовку следующего мира.");
+                return;
+            }
+
+            if (manifest.CandidateAssertions.Count == 0)
+            {
+                ShowEmptyPanel("Подтверждение фактов", "Все извлечённые факты уже подтверждены или пока не извлечены.");
+                return;
+            }
+
+            var confirmedCandidateIds = manifest.ScenarioCoreAssertions
+                .Where(assertion => !string.IsNullOrWhiteSpace(assertion.CandidateId))
+                .Select(assertion => assertion.CandidateId!)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var choices = manifest.CandidateAssertions
+                .Select(candidate =>
+                {
+                    var marker = confirmedCandidateIds.Contains(candidate.CandidateId) ? "✅" : "⬜";
+                    return $"{marker} [{candidate.Category}] {candidate.Text}";
+                })
+                .Append("← Назад")
+                .ToList();
+
+            var selected = Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[magenta]Извлечённые факты: выберите пункт, чтобы подтвердить или снять подтверждение[/]")
+                    .HighlightStyle(new Style(Color.Magenta1))
+                    .PageSize(12)
+                    .AddChoices(choices));
+
+            if (selected == "← Назад")
+                return;
+
+            var index = choices.IndexOf(selected);
+            if (index < 0 || index >= manifest.CandidateAssertions.Count)
+                continue;
+
+            var candidate = manifest.CandidateAssertions[index];
+            var nextState = !confirmedCandidateIds.Contains(candidate.CandidateId);
+            await _scenarioCoreService.SetCandidateConfirmedAsync(candidate.CandidateId, nextState);
+            MarkupLine(nextState
+                ? $"[green]Факт подтверждён:[/] {Markup.Escape(candidate.Text)}"
+                : $"[yellow]Подтверждение снято:[/] {Markup.Escape(candidate.Text)}");
+            WaitForKey();
+        }
+    }
+
+    private async Task ShowSystemGuardianLibrary()
+    {
+        if (_systemGuardianLibraryService == null)
+        {
+            ShowEmptyPanel("Извечные хранители", "Библиотека извечных хранителей недоступна");
+            return;
+        }
+
+        var presets = await _systemGuardianLibraryService.GetAvailablePresetsAsync(includeDossier: true);
+        if (presets.Count == 0)
+        {
+            ShowEmptyPanel("Извечные хранители", $"В библиотеке пока нет пресетов.\n\nПапка: {_systemGuardianLibraryService.GetUserDirectoryPath()}");
+            return;
+        }
+
+        while (true)
+        {
+            var choices = presets.Select(p => $"🛡 {p.DisplayName} ({p.Domain})").ToList();
+            choices.Add("📂 Открыть папку пользовательских извечных хранителей");
+            choices.Add("← Назад");
+
+            var choice = Prompt(new SelectionPrompt<string>()
+                .Title($"[bold cyan]🛡️ Извечные хранители[/]\n[dim]Постоянные именованные хранители, доступные всегда. Внутри файлов эта библиотека технически называется system guardians.[/]\n[dim]Built-in: {presets.Count(p => p.LibraryKind == "built_in")} • User: {presets.Count(p => p.LibraryKind == "user")}[/]")
+                .HighlightStyle(new Style(Color.Cyan1))
+                .PageSize(14)
+                .AddChoices(choices));
+
+            if (choice.StartsWith("←", StringComparison.Ordinal))
+                return;
+
+            if (choice.StartsWith("📂", StringComparison.Ordinal))
+            {
+                OpenFolderOrPrintPath(_systemGuardianLibraryService.GetUserDirectoryPath());
+                continue;
+            }
+
+            var preset = presets.FirstOrDefault(p => choice == $"🛡 {p.DisplayName} ({p.Domain})");
+            if (preset != null)
+                ShowSystemGuardianPresetDetail(preset);
+        }
+    }
+
+    private void WrapInPanel(Table table, string title, Color color)
+    {
+        WrapInPanel((IRenderable)table, title, color);
+    }
+
+    private Task ShowGallery()
+    {
+        if (_imageService == null)
+        {
+            MarkupLine($"[yellow]{Markup.Escape(_loc.T("image_service_unavailable"))}[/]");
+            WaitForKey();
+            return Task.CompletedTask;
+        }
+
+        var choices = new List<string>
+        {
+            "🎬 Сцены (ежеходные)",
+            "👤 Персонажи (NPC)",
+            "📦 Предметы",
+            "📍 Локации",
+            "🏛️ Фракции",
+            "🛡️ Хранители",
+            "🏛 Обители",
+            "🎭 Игрок",
+            "📜 Квесты",
+            "🚗 Транспорт",
+            "📂 Открыть всю папку изображений",
+            "← Назад"
+        };
+
+        var choice = Prompt(
+            new SelectionPrompt<string>()
+                .Title("[bold purple]🖼 Галерея изображений[/]")
+                .HighlightStyle(new Style(Color.Purple))
+                .AddChoices(choices));
+
+        if (choice.Contains("Назад")) return Task.CompletedTask;
+        if (choice.Contains("всю папку")) { _imageService.OpenImagesFolder(); return Task.CompletedTask; }
+
+        var entityType = choice switch
+        {
+            _ when choice.Contains("Сцены") => "scene",
+            _ when choice.Contains("Персонажи") => "npc",
+            _ when choice.Contains("Предметы") => "item",
+            _ when choice.Contains("Локации") => "location",
+            _ when choice.Contains("Фракции") => "faction",
+            _ when choice.Contains("Хранители") => "guardian",
+            _ when choice.Contains("Обители") => "abode",
+            _ when choice.Contains("Игрок") => "player",
+            _ when choice.Contains("Квесты") => "quest",
+            _ when choice.Contains("Транспорт") => "vehicle",
+            _ => "scene"
+        };
+
+        _imageService.OpenImagesFolder(entityType);
+        return Task.CompletedTask;
+    }
+
+    private void WrapInPanel(IRenderable content, string title, Color color)
+    {
+        var panel = new Panel(content)
+        {
+            Header = new PanelHeader($" {title} ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(color),
+            Expand = true
+        };
+        Write(panel);
+    }
+
+    private void WaitForKey()
+    {
+        WriteLine();
+        MarkupLine("[grey]Нажмите любую клавишу...[/]");
+        ReadKey();
+    }
+
+    /// <summary>
+    /// After showing entity details, offer image actions if image_prompt exists.
+    /// </summary>
+    private async Task RegenerateEntityImageAsync(string imagePrompt, string entityType, string entityKey)
+    {
+        if (_imageService == null)
+            return;
+
+        var autoShowAfterGenerate = !_imageService.GenerateWithoutDisplay;
+        var generated = await _imageService.GenerateEntityImageAsync(imagePrompt, entityType, entityKey,
+            displayAfterGenerate: autoShowAfterGenerate);
+        if (!generated || !_imageService.GenerateWithoutDisplay)
+            return;
+
+        var showNow = Prompt(new ConfirmationPrompt(
+            $"[bold]{Markup.Escape(_loc.T("image_regenerated_show_now"))}[/]")
+        { DefaultValue = false });
+        if (showNow)
+            _imageService.ShowEntityImage(entityType, entityKey, forceDisplay: true);
+    }
+
+    private async Task WaitForKeyWithImage(string entityType, string entityName, string imagePrompt, string? entityKey = null)
+    {
+        if (_imageService == null || string.IsNullOrWhiteSpace(imagePrompt))
+        {
+            WaitForKey();
+            return;
+        }
+
+        var effectiveKey = string.IsNullOrWhiteSpace(entityKey) ? entityName : entityKey;
+
+        while (true)
+        {
+            var hasImage = _imageService.EntityImageExists(entityType, effectiveKey);
+            var choices = new List<string> { "🖼 Показать изображение" };
+            if (hasImage)
+                choices.Add("♻ Пересоздать изображение");
+            choices.Add("← Назад");
+
+            WriteLine();
+            var action = Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[bold]Действие:[/]")
+                    .HighlightStyle(new Style(Color.Purple))
+                    .AddChoices(choices));
+
+            if (action.Contains("Назад"))
+                return;
+
+            if (action.Contains("Пересоздать"))
+            {
+                await RegenerateEntityImageAsync(imagePrompt, entityType, effectiveKey);
+                WaitForKey();
+                continue;
+            }
+
+            await _imageService.ShowOrGenerateEntityImageAsync(imagePrompt, entityType, effectiveKey, forceDisplay: true);
+            WaitForKey();
+        }
+    }
+
+    private static string GetStr(JsonElement el, string prop, string def)
+    {
+        if (el.TryGetProperty(prop, out var val))
+        {
+            return val.ValueKind switch
+            {
+                JsonValueKind.String => val.GetString() ?? def,
+                JsonValueKind.Number => val.ToString(),
+                _ => val.GetRawText()
+            };
+        }
+        return def;
+    }
+
+    private static string GetRarityColor(string rarity) => rarity.ToLower() switch
+    {
+        "common" or "обычный" => "white",
+        "good" or "хороший" => "cyan",
+        "uncommon" or "необычный" => "green",
+        "rare" or "редкий" => "blue",
+        "epic" or "эпический" => "purple",
+        "legendary" or "легендарный" => "yellow",
+        "unique" or "уникальный" => "orange1",
+        _ => "grey"
+    };
+
+    private static int GetRarityRank(string rarity) => rarity.ToLowerInvariant() switch
+    {
+        "common" or "обычный" => 1,
+        "good" or "хороший" => 2,
+        "uncommon" or "необычный" => 3,
+        "rare" or "редкий" => 4,
+        "epic" or "эпический" => 5,
+        "legendary" or "легендарный" => 6,
+        "unique" or "уникальный" => 7,
+        _ => 1
+    };
+
+    private static string Truncate(string text, int maxLen) =>
+        text.Length <= maxLen ? text : text[..(maxLen - 3)] + "...";
+
+    private static string FormatCharacteristicArray(JsonElement root, string propName)
+    {
+        if (!root.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
+            return "";
+
+        var values = new List<string>();
+        foreach (var item in arr.EnumerateArray())
+        {
+            if (item.ValueKind != JsonValueKind.String) continue;
+            var key = item.GetString() ?? "";
+            if (string.IsNullOrWhiteSpace(key)) continue;
+            values.Add(Characteristics.RussianNames.GetValueOrDefault(key, key));
+        }
+
+        return values.Count == 0
+            ? ""
+            : Markup.Escape(string.Join(", ", values));
+    }
+
+    private static void EnumerateFactionCoreEntries(JsonElement root, Action<JsonElement> action)
+    {
+        if (root.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in root.EnumerateArray())
+                action(item);
+            return;
+        }
+
+        if (root.ValueKind != JsonValueKind.Object)
+            return;
+
+        if (root.TryGetProperty("factionDataChanges", out var factionChanges) && factionChanges.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in factionChanges.EnumerateArray())
+                action(item);
+            return;
+        }
+
+        if (root.TryGetProperty("factions", out var factions) && factions.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in factions.EnumerateArray())
+                action(item);
+            return;
+        }
+
+        if (root.TryGetProperty("factionId", out _) || root.TryGetProperty("name", out _))
+            action(root);
+    }
+
+    private static JsonElement GetCurrentLocationRoot(JsonElement root)
+    {
+        if (root.ValueKind == JsonValueKind.Object &&
+            root.TryGetProperty("currentLocationData", out var locationData) &&
+            locationData.ValueKind == JsonValueKind.Object)
+            return locationData;
+
+        return root;
+    }
+
+    private static JsonElement GetWeatherRoot(JsonElement root)
+    {
+        if (root.ValueKind == JsonValueKind.Object &&
+            root.TryGetProperty("weatherChange", out var weatherChange) &&
+            weatherChange.ValueKind == JsonValueKind.Object)
+            return weatherChange;
+
+        return root;
+    }
+
+    private static void AppendWorldTimeLines(List<string> lines, JsonElement root, string indent)
+    {
+        if (TryFormatAbsoluteWorldTime(root, out var absolute))
+        {
+            lines.Add($"{indent}[bold white]🕐 Время:[/]");
+            lines.Add($"{indent}  {Markup.Escape(absolute)}");
+            return;
+        }
+
+        if (root.TryGetProperty("setWorldTime", out var setWorldTime) &&
+            TryFormatAbsoluteWorldTime(setWorldTime, out absolute))
+        {
+            lines.Add($"{indent}[bold white]🕐 Время:[/]");
+            lines.Add($"{indent}  {Markup.Escape(absolute)}");
+            return;
+        }
+
+        if (TryGetIntLike(root, "timeChange", out var deltaMinutes) && deltaMinutes != 0)
+        {
+            lines.Add($"{indent}[bold white]🕐 Время:[/]");
+            lines.Add($"{indent}  Прошло [white]{deltaMinutes}[/] мин. за ход");
+        }
+    }
+
+    private static bool TryFormatAbsoluteWorldTime(JsonElement source, out string formatted)
+    {
+        formatted = "";
+        if (source.ValueKind != JsonValueKind.Object)
+            return false;
+
+        var year = GetStr(source, "year", "");
+        var month = GetStr(source, "monthName", "");
+        var day = GetStr(source, "dayOfMonth", "");
+        var tod = GetStr(source, "timeOfDay", "");
+
+        if (string.IsNullOrWhiteSpace(year) &&
+            string.IsNullOrWhiteSpace(month) &&
+            string.IsNullOrWhiteSpace(day) &&
+            string.IsNullOrWhiteSpace(tod))
+            return false;
+
+        var datePart = string.Join(" ", new[] { day, month, year }.Where(s => !string.IsNullOrWhiteSpace(s))).Trim();
+        formatted = !string.IsNullOrWhiteSpace(datePart) && !string.IsNullOrWhiteSpace(tod)
+            ? $"{datePart}, {tod}"
+            : (!string.IsNullOrWhiteSpace(datePart) ? datePart : tod);
+        return !string.IsNullOrWhiteSpace(formatted);
+    }
+
+    private static bool TryGetIntLike(JsonElement root, string propName, out int value)
+    {
+        value = 0;
+        if (!root.TryGetProperty(propName, out var field))
+            return false;
+
+        if (field.ValueKind == JsonValueKind.Number)
+            return field.TryGetInt32(out value);
+
+        return field.ValueKind == JsonValueKind.String &&
+               int.TryParse(field.GetString(), out value);
+    }
+
+    private static void AppendStatusEffectPreview(List<string> lines, JsonElement root)
+    {
+        lines.Add("[bold yellow]⚡ Активные эффекты:[/]");
+        var hasEffects = false;
+        EnumerateJsonItems(root, item =>
+        {
+            if (item.ValueKind != JsonValueKind.Object) return;
+            hasEffects = true;
+            var effectType = GetStr(item, "effectType", "?");
+            var value = GetStr(item, "value", "");
+            var duration = GetStr(item, "duration", "");
+            var source = GetStr(item, "sourceSkill", GetStr(item, "source", ""));
+            var target = GetStr(item, "targetTypeDisplayName", GetStr(item, "targetType", ""));
+            var description = GetStr(item, "effectDescription", GetStr(item, "description", ""));
+            var color = effectType.ToLowerInvariant() switch
+            {
+                "buff" or "heal" or "healovertime" => "green",
+                "debuff" or "damage" or "damageovertime" or "control" => "red",
+                "damagereduction" => "cyan",
+                _ => "yellow"
+            };
+
+            var line = $"  [{color}]• {Markup.Escape(effectType)}[/]";
+            if (!string.IsNullOrEmpty(value))
+                line += $" [white]{Markup.Escape(value)}[/]";
+            if (!string.IsNullOrEmpty(target))
+                line += $" → {Markup.Escape(target)}";
+            if (!string.IsNullOrEmpty(duration) && duration != "0")
+                line += $" [dim]({Markup.Escape(duration)} ход.)[/]";
+            lines.Add(line);
+
+            if (!string.IsNullOrEmpty(source))
+                lines.Add($"    [dim]Источник: {Markup.Escape(source)}[/]");
+            if (!string.IsNullOrEmpty(description))
+                lines.Add($"    [dim]{Markup.Escape(description)}[/]");
+        });
+
+        if (!hasEffects)
+            lines.Add("  [dim]Нет активных эффектов[/]");
+    }
+
+    private static void AppendStatusWoundPreview(List<string> lines, JsonElement root)
+    {
+        lines.Add("[bold red]🩸 Раны:[/]");
+        var hasWounds = false;
+        EnumerateJsonItems(root, item =>
+        {
+            if (item.ValueKind != JsonValueKind.Object) return;
+            hasWounds = true;
+            var woundName = GetStr(item, "woundName", "Рана");
+            var severity = GetStr(item, "severity", "?");
+            var description = GetStr(item, "descriptionOfEffects", GetStr(item, "description", ""));
+            var severityColor = severity.ToLowerInvariant() switch
+            {
+                "light" => "yellow",
+                "moderate" => "orange1",
+                "serious" => "red",
+                "critical" => "red bold",
+                _ => "white"
+            };
+
+            lines.Add($"  [{severityColor}]• {Markup.Escape(woundName)} ({Markup.Escape(severity)})[/]");
+            if (!string.IsNullOrEmpty(description))
+                lines.Add($"    [dim]{Markup.Escape(description)}[/]");
+
+            if (item.TryGetProperty("healingState", out var healingState) && healingState.ValueKind == JsonValueKind.Object)
+            {
+                var state = GetStr(healingState, "currentState", "");
+                var progress = GetStr(healingState, "treatmentProgress", "0");
+                var needed = GetStr(healingState, "progressNeeded", "?");
+                if (!string.IsNullOrEmpty(state))
+                    lines.Add($"    [cyan]Лечение:[/] {Markup.Escape(state)} ({Markup.Escape(progress)}/{Markup.Escape(needed)})");
+            }
+        });
+
+        if (!hasWounds)
+            lines.Add("  [dim green]Ран нет[/]");
+    }
+
+    private static void AppendStatusCustomStatePreview(List<string> lines, JsonElement root)
+    {
+        lines.Add("[bold magenta]📊 Особые состояния:[/]");
+        var beforeCount = lines.Count;
+
+        if (root.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in root.EnumerateArray())
+                RenderCustomStateItem(lines, item, "  ");
+        }
+        else if (root.ValueKind == JsonValueKind.Object)
+        {
+            var renderedFromArray = false;
+            foreach (var prop in root.EnumerateObject())
+            {
+                if (prop.Value.ValueKind != JsonValueKind.Array) continue;
+                renderedFromArray = true;
+                foreach (var item in prop.Value.EnumerateArray())
+                    RenderCustomStateItem(lines, item, "  ");
+            }
+
+            if (!renderedFromArray)
+                RenderCustomStateItem(lines, root, "  ");
+        }
+
+        if (lines.Count == beforeCount)
+            lines.Add("  [dim]Нет особых состояний[/]");
+    }
+
+    private static void EnumerateArray(JsonElement root, string propName, Action<JsonElement> action)
+    {
+        if (root.TryGetProperty(propName, out var arr) && arr.ValueKind == JsonValueKind.Array)
+            foreach (var item in arr.EnumerateArray())
+                action(item);
+    }
+
+    private static void EnumerateJsonItems(JsonElement root, Action<JsonElement> action)
+    {
+        if (root.ValueKind == JsonValueKind.Array)
+            foreach (var item in root.EnumerateArray())
+                action(item);
+        else if (root.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var prop in root.EnumerateObject())
+                if (prop.Value.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var item in prop.Value.EnumerateArray())
+                        action(item);
+                }
+        }
+    }
+
+    private async Task ShowValidation()
+    {
+        if (_validator == null)
+        {
+            MarkupLine("[yellow]Сервис валидации недоступен[/]");
+            WaitForKey();
+            return;
+        }
+
+        MarkupLine("[dim]Проверка целостности игровых файлов...[/]");
+        var issues = await _validator.ValidateGameStateAsync();
+
+        if (issues.Count == 0)
+        {
+            var okPanel = new Panel(new Markup("[green bold]✅ Все проверки пройдены! Файлы в порядке.[/]"))
+            {
+                Header = new PanelHeader(" 🔍 Валидация ", Justify.Center),
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Green),
+                Padding = new Padding(2, 1)
+            };
+            Write(okPanel);
+        }
+        else
+        {
+            var summary = issues
+                .GroupBy(issue => new
+                {
+                    issue.Category,
+                    Section = string.IsNullOrWhiteSpace(issue.Section) ? "General" : issue.Section
+                })
+                .OrderByDescending(group => group.Count())
+                .ThenBy(group => group.Key.Category.ToString(), StringComparer.OrdinalIgnoreCase)
+                .ThenBy(group => group.Key.Section, StringComparer.OrdinalIgnoreCase)
+                .Take(6)
+                .Select(group => $"{FormatValidationCategory(group.Key.Category)} / {group.Key.Section}: {group.Count()}")
+                .ToList();
+
+            if (summary.Count > 0)
+            {
+                var summaryPanel = new Panel(GameInterface.SafeMarkup(string.Join("\n", summary.Select(item => $"[yellow]• {Markup.Escape(item)}[/]"))))
+                {
+                    Header = new PanelHeader(" 🧭 Сводка ", Justify.Center),
+                    Border = BoxBorder.Rounded,
+                    BorderStyle = new Style(Color.Yellow),
+                    Padding = new Padding(1, 0),
+                    Expand = true
+                };
+                Write(summaryPanel);
+                WriteLine();
+            }
+
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .BorderColor(Color.Yellow)
+                .AddColumn(new TableColumn("[bold]Уровень[/]").Centered())
+                .AddColumn(new TableColumn("[bold]Категория[/]"))
+                .AddColumn(new TableColumn("[bold]Проблема[/]"))
+                .AddColumn(new TableColumn("[bold]Подсказка[/]"));
+
+            foreach (var issue in issues)
+            {
+                var severityColor = issue.Severity switch
+                {
+                    Services.IssueSeverity.Error => "red",
+                    Services.IssueSeverity.Warning => "yellow",
+                    _ => "dim"
+                };
+                var icon = issue.Severity switch
+                {
+                    Services.IssueSeverity.Error => "❌",
+                    Services.IssueSeverity.Warning => "⚠️",
+                    _ => "ℹ️"
+                };
+                table.AddRow(
+                    $"[{severityColor}]{icon} {issue.Severity}[/]",
+                    $"[bold]{Markup.Escape(FormatValidationCategory(issue.Category))}[/]\n[dim]{Markup.Escape(issue.Section ?? "General")}[/]",
+                    $"[white]{Markup.Escape(issue.Message)}[/]\n[dim]{Markup.Escape(issue.FilePath)}[/]",
+                    string.IsNullOrWhiteSpace(issue.RepairHint)
+                        ? "[dim]—[/]"
+                        : $"[grey]{Markup.Escape(issue.RepairHint)}[/]");
+            }
+
+            var panel = new Panel(table)
+            {
+                Header = new PanelHeader($" 🔍 Валидация ({issues.Count} проблем) ", Justify.Center),
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(issues.Any(i => i.Severity == Services.IssueSeverity.Error) ? Color.Red : Color.Yellow),
+                Padding = new Padding(1, 0)
+            };
+            Write(panel);
+        }
+
+        WaitForKey();
+    }
+
+    private static string FormatValidationCategory(Services.IssueCategory category) => category switch
+    {
+        Services.IssueCategory.ProtocolViolation => "Протокол",
+        Services.IssueCategory.ClientOwnedSurface => "Системный файл клиента",
+        _ => "Согласованность состояния"
+    };
+
+    private async Task ShowLivesHistory()
+    {
+        var doc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
+        if (doc == null)
+        {
+            ShowEmptyPanel("История жизней", "Нет данных о прошлых жизнях");
+            return;
+        }
+
+        var root = doc.RootElement;
+        if (!root.TryGetProperty("livesHistory", out var lives) ||
+            lives.ValueKind != JsonValueKind.Array || lives.GetArrayLength() == 0)
+        {
+            var emptyPanel = new Panel(new Markup("[dim italic]Эта душа ещё не прожила ни одной смертной жизни.\n" +
+                "Воплотитесь через Врата Души, чтобы начать первую жизнь.[/]"))
+            {
+                Header = new PanelHeader(" 📜 История жизней ", Justify.Center),
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Blue),
+                Padding = new Padding(2, 1)
+            };
+            Write(emptyPanel);
+            WaitForKey();
+            return;
+        }
+
+        var tree = new Tree("[bold blue]📜 История прожитых жизней[/]");
+
+        var lifeIndex = 0;
+        foreach (var life in lives.EnumerateArray())
+        {
+            static string GetLifeScalar(JsonElement lifeEntry, params string[] propertyNames)
+            {
+                foreach (var propertyName in propertyNames)
+                {
+                    if (!lifeEntry.TryGetProperty(propertyName, out var value))
+                        continue;
+
+                    return value.ValueKind switch
+                    {
+                        JsonValueKind.String => value.GetString() ?? "",
+                        JsonValueKind.Number => value.ToString(),
+                        JsonValueKind.True => "да",
+                        JsonValueKind.False => "нет",
+                        _ => ""
+                    };
+                }
+
+                return "";
+            }
+
+            static List<string> ReadLifeStringArray(JsonElement lifeEntry, params string[] propertyNames)
+            {
+                foreach (var propertyName in propertyNames)
+                {
+                    if (!lifeEntry.TryGetProperty(propertyName, out var value) || value.ValueKind != JsonValueKind.Array)
+                        continue;
+
+                    return value.EnumerateArray()
+                        .Select(item => item.ValueKind switch
+                        {
+                            JsonValueKind.String => item.GetString() ?? "",
+                            JsonValueKind.Number => item.ToString(),
+                            _ => ""
+                        })
+                        .Where(item => !string.IsNullOrWhiteSpace(item))
+                        .ToList();
+                }
+
+                return new List<string>();
+            }
+
+            lifeIndex++;
+            var incarnation = life.TryGetProperty("incarnation", out var inc) ? inc.ToString() : lifeIndex.ToString();
+            var summary = GetStr(life, "summary", "Нет описания");
+            var endedAt = GetStr(life, "endedAt", GetStr(life, "completionDate", ""));
+            var turnsLived = GetStr(life, "turnsLived", "?");
+
+            var charName = GetStr(life, "characterName", "");
+            var worldName = GetStr(life, "world", GetStr(life, "worldName", ""));
+            var finalLevel = GetStr(life, "finalLevel", "");
+            var questsCompleted = GetStr(life, "questsCompleted", "");
+            var deathReason = GetStr(life, "deathReason", "");
+            var worldGenre = GetLifeScalar(life, "worldGenre");
+            var totalSoulQuests = GetLifeScalar(life, "totalSoulQuests", "soulQuestsCompleted");
+            var feathersEarned = GetLifeScalar(life, "feathersEarned");
+            var gmCoefficient = GetLifeScalar(life, "gmCoefficient");
+            var enlightenmentTierReached = GetLifeScalar(life, "enlightenmentTierReached");
+            var alignmentAtDeath = GetLifeScalar(life, "alignmentAtDeath", "finalAlignment");
+            var worldImpactLevel = GetLifeScalar(life, "worldImpactLevel");
+            var moralChoicesRecord = GetLifeScalar(life, "moralChoicesRecord");
+            var incarnationStartDate = GetLifeScalar(life, "incarnationStartDate", "startedAt");
+            var incarnationDuration = GetLifeScalar(life, "incarnationDuration", "duration");
+            var notableAchievements = ReadLifeStringArray(life, "notableAchievements");
+            var npcSoulImprints = ReadLifeStringArray(life, "npcSoulImprints");
+
+            var titleParts = new List<string> { $"[bold cyan]Жизнь #{Markup.Escape(incarnation)}[/]" };
+            if (!string.IsNullOrEmpty(charName)) titleParts.Add($"[white]{Markup.Escape(charName)}[/]");
+            if (!string.IsNullOrEmpty(worldName)) titleParts.Add($"[dim]🌍 {Markup.Escape(worldName)}[/]");
+            titleParts.Add($"[dim]({Markup.Escape(turnsLived)} ходов)[/]");
+
+            var lifeNode = tree.AddNode(string.Join("  ", titleParts));
+            lifeNode.AddNode($"[white]{Markup.Escape(summary)}[/]");
+
+            var detailParts = new List<string>();
+            if (!string.IsNullOrEmpty(finalLevel)) detailParts.Add($"Ур. {Markup.Escape(finalLevel)}");
+            if (!string.IsNullOrEmpty(questsCompleted) && questsCompleted != "0") detailParts.Add($"Квестов: {Markup.Escape(questsCompleted)}");
+            if (!string.IsNullOrEmpty(deathReason)) detailParts.Add($"Причина: {Markup.Escape(deathReason)}");
+            if (detailParts.Count > 0)
+                lifeNode.AddNode($"[dim]{string.Join(" │ ", detailParts)}[/]");
+
+            var metaParts = new List<string>();
+            if (!string.IsNullOrEmpty(worldGenre)) metaParts.Add($"Жанр: {Markup.Escape(worldGenre)}");
+            if (!string.IsNullOrEmpty(totalSoulQuests) && totalSoulQuests != "0") metaParts.Add($"Квестов души: {Markup.Escape(totalSoulQuests)}");
+            if (!string.IsNullOrEmpty(feathersEarned)) metaParts.Add($"Перьев: {Markup.Escape(feathersEarned)}");
+            if (!string.IsNullOrEmpty(gmCoefficient)) metaParts.Add($"GM-коэфф.: {Markup.Escape(gmCoefficient)}");
+            if (!string.IsNullOrEmpty(enlightenmentTierReached)) metaParts.Add($"Тир просветления: {Markup.Escape(enlightenmentTierReached)}");
+            if (!string.IsNullOrEmpty(alignmentAtDeath)) metaParts.Add($"Мировоззрение: {Markup.Escape(alignmentAtDeath)}");
+            if (!string.IsNullOrEmpty(worldImpactLevel)) metaParts.Add($"Влияние на мир: {Markup.Escape(worldImpactLevel)}");
+            if (metaParts.Count > 0)
+                lifeNode.AddNode($"[dim]{string.Join(" │ ", metaParts)}[/]");
+
+            if (life.TryGetProperty("achievements", out var achArr) && achArr.ValueKind == JsonValueKind.Array && achArr.GetArrayLength() > 0)
+            {
+                var achNames = new List<string>();
+                foreach (var ach in achArr.EnumerateArray())
+                    achNames.Add(ach.ValueKind == JsonValueKind.String ? (ach.GetString() ?? "") : GetStr(ach, "name", ach.GetRawText()));
+                lifeNode.AddNode($"[yellow]🏆 {Markup.Escape(string.Join(", ", achNames))}[/]");
+            }
+
+            if (notableAchievements.Count > 0)
+                lifeNode.AddNode($"[green]⭐ Значимые достижения: {Markup.Escape(string.Join(", ", notableAchievements))}[/]");
+
+            if (!string.IsNullOrWhiteSpace(moralChoicesRecord))
+                lifeNode.AddNode($"[italic]⚖ {Markup.Escape(moralChoicesRecord)}[/]");
+
+            if (npcSoulImprints.Count > 0)
+                lifeNode.AddNode($"[mediumpurple2]👤 Слепки души: {Markup.Escape(string.Join(", ", npcSoulImprints))}[/]");
+
+            var timelineParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(incarnationStartDate))
+                timelineParts.Add($"Начало: {Markup.Escape(incarnationStartDate)}");
+            if (!string.IsNullOrWhiteSpace(incarnationDuration))
+                timelineParts.Add($"Длительность: {Markup.Escape(incarnationDuration)}");
+            if (!string.IsNullOrEmpty(endedAt))
+            {
+                if (DateTime.TryParse(endedAt, out var dt))
+                    timelineParts.Add($"Завершена: {dt:dd.MM.yyyy HH:mm}");
+                else
+                    timelineParts.Add($"Завершена: {Markup.Escape(endedAt)}");
+            }
+
+            if (timelineParts.Count > 0)
+                lifeNode.AddNode($"[dim]{string.Join(" │ ", timelineParts)}[/]");
+        }
+
+        var panel = new Panel(tree)
+        {
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Blue),
+            Padding = new Padding(2, 1)
+        };
+        Write(panel);
+        WaitForKey();
+    }
+}
+
+
+

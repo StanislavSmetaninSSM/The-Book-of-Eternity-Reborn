@@ -1,0 +1,217 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
+using Microsoft.Extensions.Logging;
+
+namespace BookOfEternityClient.Services;
+
+public partial class CanonicalStateNormalizer
+{
+    private async Task NormalizeFactionCoreAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        const string path = "game_state/factions/faction_core.json";
+        var currentNode = await ReadNodeAsync(path);
+        if (currentNode == null) return;
+
+        var previous = await ReadBackupObjectAsync(path, backups);
+        var result = CloneObject(previous ?? new JsonObject());
+        var factions = new List<JsonObject>();
+
+        foreach (var faction in CollectFactionCoreEntries(previous))
+            UpsertByIdentity(factions, NormalizeFactionCoreEntry(faction), "factionId");
+        foreach (var faction in CollectFactionCoreEntries(currentNode))
+            UpsertByIdentity(factions, NormalizeFactionCoreEntry(faction), "factionId");
+
+        result["factions"] = ToArray(factions);
+        result.Remove("factionDataChanges");
+        await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+
+    private async Task NormalizeFactionStructureAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        const string path = "game_state/factions/faction_structure.json";
+        var currentNode = await ReadNodeAsync(path);
+        var factionCoreCurrent = await ReadNodeAsync("game_state/factions/faction_core.json");
+        var factionCorePrevious = await ReadBackupObjectAsync("game_state/factions/faction_core.json", backups);
+
+        var previous = await ReadBackupObjectAsync(path, backups);
+        var result = CloneObject(previous ?? new JsonObject());
+        var entries = new JsonArray();
+
+        foreach (var entry in CollectFactionEntryObjects(previous, "entries"))
+            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+        foreach (var entry in CollectFactionStructureEntriesFromCore(factionCorePrevious))
+            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+        foreach (var entry in CollectFactionStructureEntriesFromCore(factionCoreCurrent))
+            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+
+        if (currentNode is JsonObject currentObj)
+        {
+            foreach (var entry in CollectFactionEntryObjects(currentObj, "entries"))
+                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+
+            if (currentObj["factionRankChanges"] is JsonArray factionRankChanges)
+                ApplyFactionRankChangeCommands(entries, factionRankChanges);
+            if (currentObj["factionBonusChanges"] is JsonArray factionBonusChanges)
+                ApplyFactionBonusChangeCommands(entries, factionBonusChanges);
+        }
+        else
+        {
+            foreach (var entry in CollectFactionEntryObjects(currentNode, "entries"))
+                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+        }
+
+        if (currentNode == null && previous == null && entries.Count == 0)
+            return;
+
+        result["entries"] = entries;
+        result.Remove("factionRankChanges");
+        result.Remove("factionBonusChanges");
+        await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+    private async Task NormalizeFactionResourcesAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        const string path = "game_state/factions/faction_resources.json";
+        var currentNode = await ReadNodeAsync(path);
+        var factionCoreCurrent = await ReadNodeAsync("game_state/factions/faction_core.json");
+        var factionCorePrevious = await ReadBackupObjectAsync("game_state/factions/faction_core.json", backups);
+
+        var previous = await ReadBackupObjectAsync(path, backups);
+        var result = CloneObject(previous ?? new JsonObject());
+        var entries = new JsonArray();
+
+        foreach (var entry in CollectFactionEntryObjects(previous, "entries"))
+            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+        foreach (var entry in CollectFactionResourceEntriesFromCore(factionCorePrevious))
+            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+        foreach (var entry in CollectFactionResourceEntriesFromCore(factionCoreCurrent))
+            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+
+        if (currentNode is JsonObject currentObj)
+        {
+            foreach (var entry in CollectFactionEntryObjects(currentObj, "entries"))
+                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+
+            if (currentObj["factionResourceChanges"] is JsonArray factionResourceChanges)
+                ApplyFactionResourceChangeCommands(entries, factionResourceChanges);
+        }
+        else
+        {
+            foreach (var entry in CollectFactionEntryObjects(currentNode, "entries"))
+                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+        }
+
+        if (currentNode == null && previous == null && entries.Count == 0)
+            return;
+
+        result["entries"] = entries;
+        result.Remove("factionResourceChanges");
+        await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+    private async Task NormalizeFactionProjectsAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        const string path = "game_state/factions/faction_projects.json";
+        var currentNode = await ReadNodeAsync(path);
+        var factionCoreCurrent = await ReadNodeAsync("game_state/factions/faction_core.json");
+        var factionCorePrevious = await ReadBackupObjectAsync("game_state/factions/faction_core.json", backups);
+
+        var previous = await ReadBackupObjectAsync(path, backups);
+        var result = CloneObject(previous ?? new JsonObject());
+        var activeProjects = new List<JsonObject>();
+        var completedProjects = new List<JsonObject>();
+
+        CollectFactionProjectObjects(previous, "activeProjects", activeProjects);
+        CollectFactionProjectObjects(previous, "completedProjects", completedProjects);
+        CollectFactionProjectsFromCore(factionCorePrevious, activeProjects, completedProjects);
+        CollectFactionProjectsFromCore(factionCoreCurrent, activeProjects, completedProjects);
+
+        if (currentNode is JsonObject currentObj)
+        {
+            CollectFactionProjectObjects(currentObj, "activeProjects", activeProjects);
+            CollectFactionProjectObjects(currentObj, "completedProjects", completedProjects);
+
+            if (currentObj["factionProjectUpdates"] is JsonArray factionProjectUpdates)
+                ApplyFactionProjectUpdateCommands(activeProjects, factionProjectUpdates);
+            if (currentObj["completeFactionProjects"] is JsonArray completeFactionProjects)
+                ApplyFactionProjectCompletionCommands(activeProjects, completedProjects, completeFactionProjects);
+        }
+        else
+        {
+            CollectFactionProjectObjects(currentNode, "activeProjects", activeProjects);
+            CollectFactionProjectObjects(currentNode, "completedProjects", completedProjects);
+        }
+
+        if (currentNode == null && previous == null && activeProjects.Count == 0 && completedProjects.Count == 0)
+            return;
+
+        result["activeProjects"] = ToArray(activeProjects);
+        result["completedProjects"] = ToArray(completedProjects);
+        result.Remove("factionProjectUpdates");
+        result.Remove("completeFactionProjects");
+        await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+    private async Task NormalizeFactionCustomAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        const string path = "game_state/factions/faction_custom.json";
+        var currentNode = await ReadNodeAsync(path);
+        var factionCoreCurrent = await ReadNodeAsync("game_state/factions/faction_core.json");
+        var factionCorePrevious = await ReadBackupObjectAsync("game_state/factions/faction_core.json", backups);
+
+        var previous = await ReadBackupObjectAsync(path, backups);
+        var result = CloneObject(previous ?? new JsonObject());
+        var entries = new JsonArray();
+
+        foreach (var entry in CollectFactionEntryObjects(previous, "entries"))
+            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+        foreach (var entry in CollectFactionCustomEntriesFromCore(factionCorePrevious))
+            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+        foreach (var entry in CollectFactionCustomEntriesFromCore(factionCoreCurrent))
+            UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+
+        if (currentNode is JsonObject currentObj)
+        {
+            foreach (var entry in CollectFactionEntryObjects(currentObj, "entries"))
+                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+
+            if (currentObj["factionCustomStateChanges"] is JsonArray factionCustomStateChanges)
+                ApplyFactionCustomStateCommands(entries, factionCustomStateChanges);
+        }
+        else
+        {
+            foreach (var entry in CollectFactionEntryObjects(currentNode, "entries"))
+                UpsertByIdentity(entries, entry, "factionId", "factionName", "name");
+        }
+
+        if (currentNode == null && previous == null && entries.Count == 0)
+            return;
+
+        result["entries"] = entries;
+        result.Remove("factionCustomStateChanges");
+        await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+    private async Task NormalizeFactionChroniclesAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        const string path = "game_state/factions/faction_chronicles.json";
+        var currentNode = await ReadNodeAsync(path);
+        if (currentNode == null) return;
+
+        var previous = await ReadBackupObjectAsync(path, backups);
+        var result = CloneObject(previous ?? new JsonObject());
+        var entries = EnsureArray(result, "entries");
+
+        foreach (var entry in CollectFactionChronicleEntries(previous))
+            AddUniqueNode(entries, entry);
+        foreach (var entry in CollectFactionChronicleEntries(currentNode))
+            AddUniqueNode(entries, entry);
+
+        result.Remove("factionChronicleUpdates");
+        await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+}
+

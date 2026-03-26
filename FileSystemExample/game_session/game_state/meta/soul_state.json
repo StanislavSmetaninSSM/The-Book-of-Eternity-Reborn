@@ -4,6 +4,9 @@
   "currentTier": "Новичок",
   "currentIncarnation": 2,
   "soulRelics": [],
+  "afterlifeArchive": {
+    "stored": []
+  },
   "equippedRelics": {
     "spirit_relic": null,
     "mind_relic": null,

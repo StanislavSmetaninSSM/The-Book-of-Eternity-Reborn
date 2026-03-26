@@ -1,14 +1,17 @@
 using System.Text.Json;
+using System.Reflection;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
+using Spectre.Console;
+using Spectre.Console.Rendering;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class ExplorerModeCommandTests : IDisposable
+public sealed partial class ExplorerModeCommandTests : IDisposable
 {
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
@@ -19,6 +22,11 @@ public sealed class ExplorerModeCommandTests : IDisposable
     private readonly TestClipboardService _clipboard;
     private readonly StoryService _storyService;
     private readonly WorldDirectiveService _worldDirectiveService;
+    private readonly ScenarioCoreService _scenarioCoreService;
+    private readonly AfterlifeArchiveCandidateService _afterlifeArchiveCandidateService;
+    private readonly AfterlifeArchiveConsultationService _afterlifeArchiveConsultationService;
+    private readonly AfterlifeArchiveProjectFuelService _afterlifeArchiveProjectFuelService;
+    private readonly GuardianCorrectionService _guardianCorrectionService;
     private readonly SystemModService _systemModService;
     private readonly SystemGuardianLibraryService _systemGuardianLibraryService;
     private readonly NpcTradeService _npcTradeService;
@@ -41,6 +49,11 @@ public sealed class ExplorerModeCommandTests : IDisposable
         _clipboard = new TestClipboardService();
         _storyService = new StoryService(_fs, NullLogger<StoryService>.Instance);
         _worldDirectiveService = new WorldDirectiveService(_fs, NullLogger<WorldDirectiveService>.Instance);
+        _scenarioCoreService = new ScenarioCoreService(_fs, NullLogger<ScenarioCoreService>.Instance);
+        _afterlifeArchiveCandidateService = new AfterlifeArchiveCandidateService(_fs, NullLogger<AfterlifeArchiveCandidateService>.Instance);
+        _afterlifeArchiveConsultationService = new AfterlifeArchiveConsultationService(_fs, NullLogger<AfterlifeArchiveConsultationService>.Instance);
+        _afterlifeArchiveProjectFuelService = new AfterlifeArchiveProjectFuelService(_fs, NullLogger<AfterlifeArchiveProjectFuelService>.Instance);
+        _guardianCorrectionService = new GuardianCorrectionService(_fs, _scenarioCoreService, NullLogger<GuardianCorrectionService>.Instance);
         _systemModService = new SystemModService(_fs, _settings, NullLogger<SystemModService>.Instance);
         _systemGuardianLibraryService = new SystemGuardianLibraryService(_fs, NullLogger<SystemGuardianLibraryService>.Instance);
         _npcTradeService = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
@@ -55,1518 +68,19 @@ public sealed class ExplorerModeCommandTests : IDisposable
             systemModService: _systemModService,
             systemGuardianLibraryService: _systemGuardianLibraryService,
             worldDirectiveService: _worldDirectiveService,
+            scenarioCoreService: _scenarioCoreService,
+            afterlifeArchiveCandidateService: _afterlifeArchiveCandidateService,
+            afterlifeArchiveConsultationService: _afterlifeArchiveConsultationService,
+            afterlifeArchiveProjectFuelService: _afterlifeArchiveProjectFuelService,
+            guardianCorrectionService: _guardianCorrectionService,
             soulIdentityService: _soulIdentityService,
             clipboardService: _clipboard,
             console: _console);
     }
 
-    [Theory]
-    [InlineData("/душа")]
-    [InlineData("/хранители")]
-    [InlineData("/реликвии")]
-    [InlineData("/инв")]
-    [InlineData("/карта")]
-    [InlineData("/квесты")]
-    [InlineData("/чужие_нити")]
-    public async Task TryProcessCommand_RendersWithoutException_ForKeyExplorerCommands(string command)
-    {
-        await SeedSessionForCommandAsync(command);
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand(command));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors(command);
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0, $"Command {command} did not render anything.");
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_SoulInfo_RenameSoul_PersistsPreviousSoulNames()
-    {
-        await SeedAfterlifeStateAsync();
-        await WriteJsonAsync("game_state/meta/guardians.json", new
-        {
-            pendingGuardianCreation = new
-            {
-                description = "Тестовый хранитель",
-                soulName = "Тестовая Душа"
-            }
-        });
-
-        _console.QueueAnySelection("✏️ Сменить имя души", "← Назад");
-        _console.QueueAskResponse("Новое имя души", "Пепельная Искра");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/душа"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("soul_rename");
-
-        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        Assert.NotNull(soulRaw);
-        Assert.Contains("\"soulName\": \"Пепельная Искра\"", soulRaw, StringComparison.Ordinal);
-        Assert.Contains("\"previousSoulNames\": [", soulRaw, StringComparison.Ordinal);
-        Assert.Contains("\"Тестовая Душа\"", soulRaw, StringComparison.Ordinal);
-
-        var guardiansRaw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        Assert.NotNull(guardiansRaw);
-        Assert.Contains("\"soulName\": \"Пепельная Искра\"", guardiansRaw, StringComparison.Ordinal);
-        Assert.Equal("Пепельная Искра", _stateManager.CurrentState.SoulName);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_CompanionDirective_UpdatesNpcCoreWithoutException()
-    {
-        await SeedMortalStateAsync();
-        await WriteRawJsonAsync("game_state/npcs/npc_core.json", """
-        {
-          "UpdateNPCs": [
-            {
-              "npcId": "npc_companion_001",
-              "name": "Лира",
-              "progressionType": "Companion",
-              "playerCompanionDirective": ""
-            }
-          ]
-        }
-        """);
-
-        _console.QueueAnyAskResponse("Прикрывай меня и держись рядом.");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/директива_компаньону"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("companion_directive");
-        Assert.True(_console.AskPrompts.Count > 0, BuildConsoleDiagnostics("companion_directive"));
-        var raw = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
-        Assert.NotNull(raw);
-        Assert.Contains("Прикрывай меня и держись рядом.", raw, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_FactionDirective_UpdatesFactionCoreWithoutException()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/factions/faction_core.json", new[]
-        {
-            new
-            {
-                factionId = "faction_test_001",
-                name = "Дом Пепла",
-                isPlayerFaction = true,
-                playerStrategyDirective = ""
-            }
-        });
-
-        _console.QueueAnyAskResponse("Сохранять контроль над рынком и не рисковать людьми.");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/директива_фракции"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("faction_directive");
-        Assert.True(_console.AskPrompts.Count > 0, BuildConsoleDiagnostics("faction_directive"));
-        var raw = await _fs.ReadFileAsync("game_state/factions/faction_core.json");
-        Assert.NotNull(raw);
-        Assert.Contains("Сохранять контроль над рынком и не рисковать людьми.", raw, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_WorldSetup_ClearFlow_UsesAdapterAndRemovesPendingSetup()
-    {
-        await SeedAfterlifeStateAsync();
-        await WriteJsonAsync(WorldDirectiveService.PendingSetupPath, new
-        {
-            mode = "manual",
-            worldDirectives = new
-            {
-                worldTitle = "Тестовый Мир",
-                settingSummary = "Подготовка для smoke test."
-            }
-        });
-
-        _console.QueueAnySelection("🧹 Очистить подготовку мира", "← Назад");
-        _console.QueueAnyConfirmResponse(true);
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/world_setup"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("world_setup");
-        Assert.True(_console.ConfirmPrompts.Any(prompt => prompt.Contains("подготовку следующего мира", StringComparison.OrdinalIgnoreCase)),
-            BuildConsoleDiagnostics("world_setup"));
-        Assert.True(_console.ClearCalls > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_WorldSetup_EditFlow_PersistsLargeDetailedDescriptionBlock()
-    {
-        await SeedAfterlifeStateAsync();
-        _console.QueueAnySelection("✏️ Создать / редактировать подготовку мира", "✏️ Изменить текст", "← Назад");
-        _console.QueueAskResponse("Название мира", "Этернум");
-        _console.QueueAskResponse("Жанр", "Dark fantasy");
-        _console.QueueAskResponse("Эпоха", "Поздняя бронза");
-        _console.QueueAskResponse("Тон", "Мрачный, медитативный");
-        _console.QueueAskResponse("Краткая сводка", "Мир башен, глубин и древних договоров.");
-        _console.QueueReadLineResponses("\\p");
-        _clipboard.Text = "Первый абзац подробного описания мира.\n\nВторой абзац с дополнительными свободными правилами и ограничениями.";
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/world_setup"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("world_setup_edit");
-        var raw = await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath);
-        Assert.NotNull(raw);
-        Assert.Contains("\"worldTitle\": \"Этернум\"", raw, StringComparison.Ordinal);
-        Assert.Contains("\"settingSummary\": \"Мир башен, глубин и древних договоров.\"", raw, StringComparison.Ordinal);
-        Assert.Contains("Первый абзац подробного описания мира.", raw, StringComparison.Ordinal);
-        Assert.Contains("Второй абзац с дополнительными свободными правилами и ограничениями.", raw, StringComparison.Ordinal);
-        Assert.Contains("detailedWorldDescription", raw, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_SystemGuardians_RendersLibraryWithoutException()
-    {
-        await SeedAfterlifeStateAsync();
-        await SeedSystemGuardianPresetAsync("azalia", "Азалия", "Social", "Обитель Неутолимого Пламени");
-        await _stateManager.RefreshGameStateAsync();
-        _console.QueueAnySelection("← Назад");
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/извечные_хранители"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("system_guardians");
-        Assert.True(_console.SelectionTitles.Any(title => title.Contains("Извечные хранители", StringComparison.OrdinalIgnoreCase)),
-            BuildConsoleDiagnostics("system_guardians"));
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Guardians_SystemAttraction_WritesRequestAndReturnsGmAction()
-    {
-        await SeedAfterlifeStateAsync();
-        await SeedSystemGuardianPresetAsync("azalia", "Азалия", "Social", "Обитель Неутолимого Пламени");
-        await WriteJsonAsync("game_state/meta/guardians.json", new
-        {
-            guardians = new[]
-            {
-                new
-                {
-                    guardianId = "guardian_existing_001",
-                    canonicalName = "Старый Хранитель",
-                    domain = "Knowledge",
-                    nameVariants = new
-                    {
-                        @default = "Старый Хранитель",
-                        feminine = (string?)null,
-                        masculine = "Старый Хранитель",
-                        neutral = (string?)null
-                    },
-                    manifestation = new
-                    {
-                        currentDisplayName = "Старый Хранитель",
-                        formFlexibility = "fixed",
-                        currentPresentationStyle = "masculine",
-                        currentPronouns = "он/его",
-                        appearanceDescription = "Тестовая устойчивая форма хранителя знаний."
-                    },
-                    manifestationHistory = Array.Empty<object>(),
-                    personalityProfile = new
-                    {
-                        archetype = "Archivist",
-                        speechPattern = "Measured",
-                        coreValues = new[] { "память", "ясность", "порядок" }
-                    },
-                    relationshipData = new
-                    {
-                        currentReputation = 10,
-                        reputationHistory = Array.Empty<object>(),
-                        lastInteraction = (string?)null
-                    },
-                    questManagement = new
-                    {
-                        availableQuests = Array.Empty<object>(),
-                        completedQuests = Array.Empty<object>(),
-                        activeQuests = Array.Empty<object>()
-                    },
-                    gachaSystem = new
-                    {
-                        chargesPerReturn = 1,
-                        chargesUsedThisReturn = 0,
-                        gachaHistory = Array.Empty<object>()
-                    },
-                    tradeInventory = new
-                    {
-                        cycleId = "cycle_1",
-                        items = Array.Empty<object>()
-                    },
-                    currentProject = new
-                    {
-                        projectId = "proj_1",
-                        name = "Наблюдение",
-                        description = "Тестовый проект",
-                        progressPercent = 0,
-                        estimatedTurnsLeft = 3,
-                        playerCanAssist = false
-                    },
-                    mood = new
-                    {
-                        current = "curious",
-                        intensity = 30,
-                        reason = "Наблюдает",
-                        since = 1
-                    },
-                    loreFragments = Enumerable.Range(1, 7).Select(i => new
-                    {
-                        fragmentId = $"fragment_{i}",
-                        title = $"Фрагмент {i}",
-                        category = "domain_truth",
-                        requiredReputation = 0,
-                        content = (string?)null,
-                        unlocked = false
-                    }).ToArray(),
-                    musings = Array.Empty<object>(),
-                    abode = new
-                    {
-                        abodeId = "abode_existing_001",
-                        name = "Старая Обитель",
-                        isDiscovered = true
-                    }
-                }
-            },
-            activeGuardian = new
-            {
-                guardianId = "guardian_existing_001",
-                canonicalName = "Старый Хранитель",
-                nameVariants = new
-                {
-                    @default = "Старый Хранитель",
-                    feminine = (string?)null,
-                    masculine = "Старый Хранитель",
-                    neutral = (string?)null
-                },
-                manifestation = new
-                {
-                    currentDisplayName = "Старый Хранитель",
-                    formFlexibility = "fixed",
-                    currentPresentationStyle = "masculine",
-                    currentPronouns = "он/его",
-                    appearanceDescription = "Тестовая устойчивая форма хранителя знаний."
-                },
-                manifestationHistory = Array.Empty<object>()
-            },
-            chaosSeaNavigation = new
-            {
-                currentAbodeId = "abode_existing_001",
-                discoveredAbodes = new[] { "abode_existing_001" }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        _console.QueueAnySelection(
-            "🔍 Искать новую обитель (силой мысли)",
-            "🧲 Притяжение к извечному хранителю",
-            "Азалия (Social)",
-            "✅ Выбрать");
-
-        var result = await _explorer.TryProcessCommand("/хранители");
-
-        Assert.NotNull(result);
-        Assert.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia]", result, StringComparison.Ordinal);
-
-        var requestJson = await _fs.ReadFileAsync(SystemGuardianLibraryService.AttractionRequestPath);
-        Assert.NotNull(requestJson);
-        Assert.Contains("\"targetPresetId\": \"azalia\"", requestJson, StringComparison.Ordinal);
-        Assert.Contains("\"targetPresetDisplayName\": \"Азалия\"", requestJson, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_WorldRules_ClearFlow_UsesAdapterAndRemovesActiveDirectives()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync(WorldDirectiveService.ActiveDirectivesPath, new
-        {
-            worldTitle = "Текущий Мир",
-            settingSummary = "Активное досье для smoke test."
-        });
-
-        _console.QueueAnySelection("🧹 Очистить досье мира", "← Назад");
-        _console.QueueAnyConfirmResponse(true);
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/world_rules"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("world_rules");
-        Assert.True(_console.ConfirmPrompts.Any(prompt => prompt.Contains("активное досье текущего мира", StringComparison.OrdinalIgnoreCase)),
-            BuildConsoleDiagnostics("world_rules"));
-        Assert.True(_console.ClearCalls > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Story_RendersReaderWithoutException()
-    {
-        await SeedMortalStateAsync();
-        await WriteStoryAsync(StoryService.GetStoryPath("Mortal Realm", 1), new
-        {
-            turn = 1,
-            timestamp = "2026-03-19T10:00:00Z",
-            realm = "Mortal Realm",
-            player = "Осмотреть площадь",
-            narrative = "Герой вступает на площадь и замечает движение у фонтана.",
-            location = "Тестовая площадь"
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/история"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("story");
-        Assert.True(_console.ClearCalls > 0);
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_CodexSearch_RendersSearchResultsWithoutException()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("lore/codex_entries.json", new
-        {
-            entries = new[]
-            {
-                new
-                {
-                    entryId = "codex_test_001",
-                    title = "Азалия",
-                    category = "Guardians",
-                    content = "Азалия хранит память о социальных узорах и союзах."
-                }
-            }
-        });
-
-        _console.QueueAnySelection("🔍 Поиск по кодексу", "← Назад");
-        _console.QueueAnyAskResponse("Азалия");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/кодекс"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("codex_search");
-        Assert.True(_console.AskPrompts.Any(prompt => prompt.Contains("🔍 Поиск", StringComparison.Ordinal)),
-            BuildConsoleDiagnostics("codex_search"));
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_WorldNews_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/world_events.json", new
-        {
-            events = new[]
-            {
-                new
-                {
-                    title = "Беспорядки на площади",
-                    description = "Толпа спорит у центрального фонтана.",
-                    severity = "Medium"
-                }
-            }
-        });
-        await WriteJsonAsync("game_state/world/current_location.json", new
-        {
-            name = "Тестовая площадь",
-            activeThreats = new[]
-            {
-                new
-                {
-                    threatName = "Карманники",
-                    dangerLevel = "Low",
-                    description = "Несколько карманников работают в толпе."
-                }
-            }
-        });
-        await WriteJsonAsync("game_state/npcs/npc_activities.json", new[]
-        {
-            new
-            {
-                npcId = "npc_test_001",
-                npcName = "Лира",
-                currentActivity = "Наблюдает за толпой",
-                location = "Тестовая площадь"
-            }
-        });
-        await WriteJsonAsync("game_state/factions/faction_projects.json", new[]
-        {
-            new
-            {
-                factionId = "faction_test_001",
-                factionName = "Дом Пепла",
-                projectName = "Укрепление влияния",
-                status = "Active"
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/новости_мира"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("world_news");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_SoulQuests_ShowsRivalArcMarkerForLinkedSoulQuest()
-    {
-        await SeedAfterlifeStateAsync();
-        await WriteJsonAsync("game_state/quests/soul_quests.json", new
-        {
-            quests = new[]
-            {
-                new
-                {
-                    questId = "soul_quest_rival_001",
-                    guardianId = "guard_social_azalia_001",
-                    questName = "Остановить Алого Палача",
-                    title = "Остановить Алого Палача",
-                    description = "След чужой души стал слишком опасен.",
-                    status = "active",
-                    relatedRivalArcId = "arc_hunt_001",
-                    counterToRivalArc = true,
-                    progress = new { completed = 0, total = 3 },
-                    rewards = new { experience = 100 },
-                    objectives = new[]
-                    {
-                        new { description = "Найти след охотника", status = "Active" }
-                    }
-                }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/квесты_души"));
-
-        Assert.Null(ex);
-        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
-            choice => choice.Contains("🧵 🌟", StringComparison.Ordinal) &&
-                      choice.Contains("Остановить Алого Палача", StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_RivalThreads_ShowsVisibleArcChoicesOnly()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/rival_soul_arcs.json", new
-        {
-            arcs = new object[]
-            {
-                new
-                {
-                    arcId = "arc_visible_001",
-                    scope = "major",
-                    arcType = "hostile_hunt",
-                    status = "rising",
-                    sponsorGuardianRef = new { mode = "guardianId", guardianId = "guard_social_azalia_001", displayName = "Азалия" },
-                    rivalSoul = new { rivalSoulId = "soul_visible_001", displayNameOrMoniker = "Алый Палач", roleSummary = "Охотник", isKnownToPlayer = true },
-                    objective = "Найти игрока",
-                    playerIntersection = new { targetsPlayerDirectly = true, stakes = "Смертельная угроза", canBecomeSoulQuest = true, recommendedCounterQuestTone = "urgent" },
-                        milestones = new[]
-                        {
-                            new { stage = 0, title = "Слухи", summary = "О нем говорят.", visibleToPlayer = true, turn = 3 }
-                        },
-                        currentStage = 0,
-                        publicSignals = new[]
-                        {
-                            new { signalId = "signal_visible_001", stage = 0, description = "Следы охоты.", source = "rumor", visibleToPlayer = true, turn = 4, timestamp = "2026-03-21T18:15:00Z" }
-                        },
-                        resolution = new { outcome = "ongoing", notes = "Охота продолжается." }
-                    },
-                new
-                {
-                    arcId = "arc_hidden_001",
-                    scope = "minor",
-                    arcType = "political_claim",
-                    status = "latent",
-                    sponsorGuardianRef = new { mode = "guardianId", guardianId = "guard_social_azalia_001", displayName = "Азалия" },
-                    rivalSoul = new { rivalSoulId = "soul_hidden_001", displayNameOrMoniker = "Тайный Претендент", roleSummary = "Претендент", isKnownToPlayer = false },
-                    objective = "Захватить город",
-                    playerIntersection = new { targetsPlayerDirectly = false, stakes = "Городская власть", canBecomeSoulQuest = false, recommendedCounterQuestTone = "political" },
-                    milestones = new[]
-                    {
-                        new { stage = 0, title = "Тайный шепот", summary = "Игрок пока ничего не знает.", visibleToPlayer = false }
-                    },
-                    currentStage = 0,
-                    publicSignals = Array.Empty<object>(),
-                    resolution = new { outcome = "ongoing", notes = "Пока скрыт." }
-                }
-            }
-        });
-        await WriteJsonAsync("game_state/quests/soul_quests.json", new
-        {
-            quests = new[]
-            {
-                new
-                {
-                    questId = "soul_quest_rival_001",
-                    guardianId = "guard_social_azalia_001",
-                    questName = "Остановить Алого Палача",
-                    title = "Остановить Алого Палача",
-                    description = "След чужой души стал слишком опасен.",
-                    status = "active",
-                    relatedRivalArcId = "arc_visible_001",
-                    counterToRivalArc = true,
-                    progress = new { completed = 0, total = 3 },
-                    rewards = new { experience = 100 },
-                    objectives = new[]
-                    {
-                        new { description = "Найти след охотника", status = "Active" }
-                    }
-                }
-            }
-        });
-        await WriteJsonAsync("game_state/world/world_events.json", new
-        {
-            worldEventsLog = new[]
-            {
-                new
-                {
-                    eventId = "event_rival_001",
-                    title = "Кровавый знак на воротах",
-                    description = "Горожане шепчутся о метке охотника.",
-                    visibility = "Public",
-                    relatedRivalArcId = "arc_visible_001",
-                    timestamp = "2026-03-21T18:30:00Z",
-                    consequences = new[] { "Жители начали бояться ночных улиц." },
-                    followUp = "Стража усилила ночные патрули."
-                }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/чужие_нити"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("rival_threads");
-        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
-            choice => choice.Contains("🆕", StringComparison.Ordinal) &&
-                      choice.Contains("Алый Палач", StringComparison.Ordinal) &&
-                      choice.Contains("Следы охоты", StringComparison.Ordinal));
-        Assert.DoesNotContain(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
-            choice => choice.Contains("Тайный Претендент", StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_RivalThreads_SortsMoreDangerousThreadFirst()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/rival_soul_arcs.json", new
-        {
-            arcs = new object[]
-            {
-                new
-                {
-                    arcId = "arc_low_001",
-                    scope = "major",
-                    arcType = "political_claim",
-                    status = "latent",
-                    sponsorGuardianRef = new { mode = "guardianId", guardianId = "guard_social_azalia_001", displayName = "Азалия" },
-                    rivalSoul = new { rivalSoulId = "soul_low_001", displayNameOrMoniker = "Тихий Претендент", roleSummary = "Политический игрок", isKnownToPlayer = true },
-                    objective = "Медленно взять город под контроль",
-                    playerIntersection = new { targetsPlayerDirectly = false, stakes = "Влияние на город", canBecomeSoulQuest = false, recommendedCounterQuestTone = "political" },
-                    milestones = new[] { new { stage = 0, title = "Шёпот двора", summary = "О нем тихо говорят.", visibleToPlayer = true } },
-                    currentStage = 0,
-                    publicSignals = Array.Empty<object>(),
-                    resolution = new { outcome = "ongoing", notes = "Пока скрыт." }
-                },
-                new
-                {
-                    arcId = "arc_high_001",
-                    scope = "minor",
-                    arcType = "hostile_hunt",
-                    status = "intersecting",
-                    sponsorGuardianRef = new { mode = "guardianId", guardianId = "guard_social_azalia_001", displayName = "Азалия" },
-                    rivalSoul = new { rivalSoulId = "soul_high_001", displayNameOrMoniker = "Черный Пёс", roleSummary = "Охотник", isKnownToPlayer = true },
-                    objective = "Найти и убить игрока",
-                    playerIntersection = new { targetsPlayerDirectly = true, stakes = "Жизнь игрока", canBecomeSoulQuest = true, recommendedCounterQuestTone = "urgent" },
-                    milestones = new[] { new { stage = 1, title = "Выход на след", summary = "Охотник рядом.", visibleToPlayer = true } },
-                    currentStage = 1,
-                    publicSignals = new[] { new { signalId = "signal_high_001", stage = 1, description = "Кто-то уже идет по следу игрока.", source = "rumor", visibleToPlayer = true } },
-                    resolution = new { outcome = "ongoing", notes = "Уже пересекается." }
-                }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/чужие_нити"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("rival_threads_sort");
-        var firstChoice = _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices).FirstOrDefault(choice => !choice.Contains("Назад", StringComparison.OrdinalIgnoreCase));
-        Assert.NotNull(firstChoice);
-        Assert.Contains("Черный Пёс", firstChoice, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Weather_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/world_time.json", new
-        {
-            day = 12,
-            monthName = "Листопад",
-            year = 137,
-            timeOfDay = "Вечер"
-        });
-        await WriteJsonAsync("game_state/world/weather.json", new
-        {
-            state = "Rain",
-            description = "Мелкий, но упрямый дождь.",
-            season = "Осень",
-            temperature = "8C",
-            wind = "Порывистый",
-            visibility = "Средняя"
-        });
-        await WriteJsonAsync("game_state/world/current_location.json", new
-        {
-            name = "Тестовая площадь",
-            biome = "Город"
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/погода"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("weather");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Locations_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/world_map.json", new
-        {
-            worldMapUpdates = new
-            {
-                newLocations = new[]
-                {
-                    new
-                    {
-                        locationId = "loc_test_square",
-                        name = "Тестовая площадь",
-                        locationType = "City",
-                        shortDescription = "Шумная площадь с фонтаном.",
-                        factionControl = new[]
-                        {
-                            new
-                            {
-                                factionName = "Дом Пепла"
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/локации"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("locations");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_ItemTexts_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/inventory/item_text_updates.json", new[]
-        {
-            new
-            {
-                itemName = "Письмо от Лиры",
-                textToAppend = "Встретимся у фонтана до рассвета."
-            }
-        });
-        await WriteJsonAsync("game_state/inventory/items.json", new
-        {
-            items = new[]
-            {
-                new
-                {
-                    itemId = "item_book_001",
-                    name = "Дневник путника",
-                    textContent = new[]
-                    {
-                        "Первая запись о долгой дороге.",
-                        "Вторая запись о странных снах."
-                    }
-                }
-            }
-        });
-        await WriteJsonAsync("game_state/npcs/item_journals.json", new[]
-        {
-            new
-            {
-                itemName = "Шкатулка",
-                journalEntries = new object[]
-                {
-                    new
-                    {
-                        timestamp = "2026-03-19T12:00:00Z",
-                        @event = "Открытие",
-                        description = "Внутри оказался сложенный лист бумаги."
-                    }
-                }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/книги"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("item_texts");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        _settings.EnabledSystemMods = new List<string> { "test_mod.md" };
-        await _fs.WriteFileAtomicAsync("mods/test_mod.md", """
-        # Test Mod
-
-        A small system mod used by explorer smoke tests.
-        """);
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/моды"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("system_mods");
-        Assert.True(_console.ClearCalls > 0);
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Craft_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/inventory/recipes.json", new
-        {
-            recipes = new[]
-            {
-                new
-                {
-                    recipeName = "Лечебная припарка",
-                    description = "Простое ремесленное средство.",
-                    craftedItemName = "Припарка",
-                    recipeRank = "Novice",
-                    outputQuantity = 1,
-                    timeCost = 15,
-                    requiredMaterials = new[]
-                    {
-                        new { materialName = "Травы", quantity = 2 }
-                    }
-                }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/ремесло"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("craft");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Achievements_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/meta/achievements.json", new
-        {
-            unlockedAchievements = new[]
-            {
-                new
-                {
-                    achievementId = "ach_test_001",
-                    name = "Первый шаг",
-                    description = "Вы сделали первый шаг в этом мире.",
-                    category = "story",
-                    rarity = "common",
-                    icon = "🏆",
-                    unlockedAt = "2026-03-19T10:00:00Z"
-                }
-            },
-            trackedProgress = new[]
-            {
-                new
-                {
-                    achievementId = "ach_track_001",
-                    name = "Долгий путь",
-                    description = "Сделайте десять шагов.",
-                    category = "exploration",
-                    rarity = "uncommon",
-                    icon = "📊",
-                    progress = new { current = 3, target = 10 }
-                }
-            },
-            stats = new
-            {
-                totalUnlocked = 1,
-                byCategory = new { story = 1 },
-                byRarity = new { common = 1 }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/достижения"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("achievements");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_CurrentLocation_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/world/current_location.json", new
-        {
-            name = "Тестовая площадь",
-            locationType = "City",
-            biome = "Город",
-            description = "Площадь с фонтаном и торговыми рядами.",
-            features = new[] { "Фонтан", "Рынок" },
-            activeThreats = new[]
-            {
-                new
-                {
-                    threatName = "Карманники",
-                    description = "Держатся в толпе."
-                }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/где_я"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("current_location");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Status_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/core/player_status.json", new
-        {
-            characterName = "Элиан",
-            characterRace = "Человек",
-            characterClass = "Следопыт",
-            healthPercentage = "85%",
-            energyPercentage = "70%",
-            poisePercentage = "60%",
-            currentCondition = "Собран",
-            money = 120
-        });
-        await WriteJsonAsync("game_state/player/experience.json", new
-        {
-            level = 3,
-            totalExperience = 120,
-            experienceForNextLevel = 200
-        });
-        await WriteJsonAsync("game_state/player/computed_characteristics.json", new
-        {
-            characteristics = new { strength = 6, dexterity = 7, constitution = 6, intelligence = 5, wisdom = 5, faith = 4, attractiveness = 5, trade = 4, persuasion = 4, perception = 7, luck = 5, speed = 6 },
-            modifiedCharacteristics = new { strength = 6, dexterity = 7, constitution = 6, intelligence = 5, wisdom = 5, faith = 4, attractiveness = 5, trade = 4, persuasion = 4, perception = 7, luck = 5, speed = 6 },
-            permanentlyModifiedCharacteristics = new { strength = 6, dexterity = 7, constitution = 6, intelligence = 5, wisdom = 5, faith = 4, attractiveness = 5, trade = 4, persuasion = 4, perception = 7, luck = 5, speed = 6 },
-            unspentStatPoints = 1
-        });
-        await WriteJsonAsync("game_state/player/effects.json", new[]
-        {
-            new { effectType = "buff", value = "+5%", duration = 1, effectDescription = "Боевой тонус" }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/статус"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("status");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Skills_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/player/skills_active.json", new
-        {
-            activeSkillChanges = new[]
-            {
-                new
-                {
-                    skillName = "Рывок",
-                    rarity = "Rare",
-                    category = "Combat",
-                    level = 2,
-                    description = "Быстрый рывок вперёд."
-                }
-            }
-        });
-        await WriteJsonAsync("game_state/player/skills_passive.json", new
-        {
-            passiveSkillChanges = new[]
-            {
-                new
-                {
-                    skillName = "Острый глаз",
-                    rarity = "Uncommon",
-                    type = "KnowledgeBased",
-                    description = "Вы замечаете детали быстрее других."
-                }
-            }
-        });
-        await WriteJsonAsync("game_state/player/skill_mastery.json", new
-        {
-            skillMasteryChanges = new[]
-            {
-                new
-                {
-                    skillName = "Рывок",
-                    currentMasteryLevel = 2,
-                    experienceTowardsNextLevel = 10,
-                    experienceNeededForNextLevel = 20
-                }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/навыки"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("skills");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Factions_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/factions/faction_core.json", new[]
-        {
-            new
-            {
-                factionId = "faction_test_001",
-                name = "Дом Пепла",
-                reputation = 180,
-                level = "II",
-                isPlayerMember = true,
-                description = "Торговый дом с жёсткой дисциплиной."
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/фракции"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("factions");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
-            choice => choice.Contains("180 (Сочувствующий)", StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Guardians_UsesSharedGuardianReputationLabelsInChoices()
-    {
-        await SeedSessionForCommandAsync("/хранители");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("guardians_reputation_choices");
-        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
-            choice => choice.Contains("Нейтральный", StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Npcs_UsesSharedRelationshipLabelsInChoices()
-    {
-        await SeedNpcTradeStateAsync();
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("npcs_reputation_choices");
-        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
-            choice => choice.Contains("♥ 80 (Нейтралитет)", StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_StorageAccess_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/misc/storage_access.json", new
-        {
-            grantStorageAccess = new[]
-            {
-                new { storageId = "vault_1", playerId = "player_ally" }
-            },
-            revokeStorageAccess = new[]
-            {
-                new { storageId = "vault_2", playerId = "player_rival" }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/доступ_к_хранилищам"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("storage_access");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_PlayerInteractions_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/misc/player_interactions.json", new
-        {
-            otherPlayersInteractions = new
-            {
-                player_two = new
-                {
-                    sharedQuestHooks = new[]
-                    {
-                        new { questName = "Рынок в огне", status = "active" }
-                    }
-                }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/взаимодействия"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("player_interactions");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Effects_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/player/effects.json", new[]
-        {
-            new
-            {
-                effectType = "buff",
-                value = "+10%",
-                duration = 2,
-                effectDescription = "Боевой подъем"
-            }
-        });
-        await WriteJsonAsync("game_state/player/wounds.json", new[]
-        {
-            new
-            {
-                woundName = "Порез",
-                severity = "light",
-                descriptionOfEffects = "Мешает точным движениям."
-            }
-        });
-        await WriteJsonAsync("game_state/player/custom_states.json", new[]
-        {
-            new
-            {
-                stateName = "Голод",
-                currentLevel = 2,
-                description = "Нужно перекусить."
-            }
-        });
-        await WriteJsonAsync("game_state/player/stealth.json", new
-        {
-            isActive = true,
-            detectionLevel = 20,
-            description = "Вы двигаетесь почти бесшумно."
-        });
-        await WriteJsonAsync("game_state/player/experience.json", new
-        {
-            experienceGained = 25,
-            totalExperience = 125
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/эффекты"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("effects");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Combat_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/core/player_status.json", new
-        {
-            healthPercentage = 80,
-            energyPercentage = 60,
-            currentCondition = "Собран"
-        });
-        await WriteJsonAsync("game_state/combat/enemies.json", new[]
-        {
-            new
-            {
-                name = "Головорез",
-                type = "strong",
-                currentHealth = 40,
-                maxHealth = 50,
-                description = "Опасный противник."
-            }
-        });
-        await WriteJsonAsync("game_state/combat/allies.json", new[]
-        {
-            new
-            {
-                name = "Лира",
-                currentHealth = 25,
-                maxHealth = 30
-            }
-        });
-        await WriteJsonAsync("game_state/combat/combat_log.json", new
-        {
-            combat_log_markdown = "Игрок наносит удар.\nПротивник отступает."
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/бой"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("combat");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_InventoryStorageMove_MovesItemIntoStorage()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/inventory/items.json", new
-        {
-            money = 10,
-            items = new[]
-            {
-                new
-                {
-                    itemId = "item_apple_001",
-                    name = "Яблоко"
-                }
-            }
-        });
-        await WriteJsonAsync("game_state/world/current_location.json", new
-        {
-            name = "Тестовая площадь",
-            locationStorages = new[]
-            {
-                new
-                {
-                    storageId = "storage_chest_001",
-                    name = "Сундук",
-                    hasFullAccess = true,
-                    contents = Array.Empty<object>()
-                }
-            }
-        });
-
-        _console.QueueSelection("🎒", "📦 Сундук (0 пр.) → управление");
-        _console.QueueSelection("Сундук", "📥 Положить предмет в хранилище (1 в инвентаре)", "← Назад к инвентарю");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("inventory_storage_move");
-        var inventoryRaw = await _fs.ReadFileAsync("game_state/inventory/items.json");
-        var locationRaw = await _fs.ReadFileAsync("game_state/world/current_location.json");
-        Assert.DoesNotContain("Яблоко", inventoryRaw ?? string.Empty, StringComparison.Ordinal);
-        Assert.Contains("Яблоко", locationRaw ?? string.Empty, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_TransportInventoryMove_MovesItemIntoVehicle()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/inventory/items.json", new
-        {
-            items = new[]
-            {
-                new
-                {
-                    itemId = "item_rope_001",
-                    name = "Веревка"
-                }
-            },
-            equipment = new { }
-        });
-        await WriteJsonAsync("game_state/misc/vehicles.json", new
-        {
-            vehicles = new[]
-            {
-                new
-                {
-                    vehicleId = "vehicle_cart_001",
-                    name = "Телега",
-                    type = "vehicle",
-                    isActive = true,
-                    inventory = Array.Empty<object>()
-                }
-            }
-        });
-
-        _console.QueueSelection("Действие с транспортом", "🎒 Управлять инвентарём транспорта");
-        _console.QueueSelection("Телега", "📥 Положить предмет в транспорт (1 в инвентаре)", "← Назад к транспорту");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/транспорт"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("transport_inventory_move");
-        var inventoryRaw = await _fs.ReadFileAsync("game_state/inventory/items.json");
-        var vehiclesRaw = await _fs.ReadFileAsync("game_state/misc/vehicles.json");
-        Assert.DoesNotContain("Веревка", inventoryRaw ?? string.Empty, StringComparison.Ordinal);
-        Assert.Contains("Веревка", vehiclesRaw ?? string.Empty, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_NpcTradeBuy_SucceedsAndMarksOfferSoldOut()
-    {
-        await SeedNpcTradeStateAsync();
-        _console.QueueSelection("Действие", "🛒 Торговать", "🛍 Купить");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("npc_trade_buy");
-        var npcRaw = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
-        var inventoryRaw = await _fs.ReadFileAsync("game_state/inventory/items.json");
-        var statusRaw = await _fs.ReadFileAsync("game_state/core/player_status.json");
-        Assert.Contains("\"soldOut\": true", npcRaw ?? string.Empty, StringComparison.Ordinal);
-        Assert.Contains("\"items\"", inventoryRaw ?? string.Empty, StringComparison.Ordinal);
-        Assert.DoesNotContain("\"money\": 500", statusRaw ?? string.Empty, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_NpcTradeAction_IsShownWhenAvailabilityAllowsTrade()
-    {
-        await SeedNpcTradeStateAsync();
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("npc_trade_action_present");
-        Assert.Contains(_console.SelectionChoicesHistory,
-            entry => entry.Title.Contains("Действие", StringComparison.OrdinalIgnoreCase) &&
-                     entry.Choices.Contains("🛒 Торговать", StringComparer.Ordinal));
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_NpcTradeAction_IsHiddenWhenTradeIsBlocked()
-    {
-        await SeedNpcTradeStateAsync(canTrade: false);
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("npc_trade_action_hidden");
-        Assert.DoesNotContain(_console.SelectionChoicesHistory,
-            entry => entry.Title.Contains("Действие", StringComparison.OrdinalIgnoreCase) &&
-                     entry.Choices.Contains("🛒 Торговать", StringComparer.Ordinal));
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_NpcTradeSell_SucceedsAndRemovesSoldItem()
-    {
-        await SeedNpcTradeStateAsync(includeSellableInventoryItem: true);
-        _console.QueueSelection("Выберите раздел", "💰 Продать товары");
-        _console.QueueSelection("Действие", "🛒 Торговать", "💰 Продать");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("npc_trade_sell");
-        var inventoryRaw = await _fs.ReadFileAsync("game_state/inventory/items.json");
-        var statusRaw = await _fs.ReadFileAsync("game_state/core/player_status.json");
-        Assert.DoesNotContain("Походный фонарь", inventoryRaw ?? string.Empty, StringComparison.Ordinal);
-        Assert.DoesNotContain("\"money\": 500", statusRaw ?? string.Empty, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_GuardianTradeBuy_SucceedsAndAddsRelic()
-    {
-        await SeedGuardianTradeStateAsync();
-        _console.QueueSelection("Действие", "🛒 Торговать", "🛍 Купить");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("guardian_trade_buy");
-        var guardiansRaw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        Assert.Contains("\"soldOut\": true", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
-        Assert.Contains("\"stored\"", soulRaw ?? string.Empty, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_GuardianTradeSell_SucceedsAndRemovesRelic()
-    {
-        await SeedGuardianTradeStateAsync(includeStoredRelicForSale: true);
-        _console.QueueSelection("Выберите раздел", "💰 Продать реликвии");
-        _console.QueueSelection("Действие", "🛒 Торговать");
-        _console.QueueAnyConfirmResponse(true);
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("guardian_trade_sell");
-        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        Assert.DoesNotContain("Реликвия для продажи", soulRaw ?? string.Empty, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Chronicle_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/meta/character_chronicle.json", new[]
-        {
-            new
-            {
-                title = "Первое пробуждение",
-                content = "Вы очнулись под шум дождя.",
-                timestamp = "2026-03-19T10:00:00Z"
-            }
-        });
-        await WriteJsonAsync("game_state/quests/plot_outline.json", new
-        {
-            mainArc = new
-            {
-                summary = "Выяснить, кто управляет рынком.",
-                nextImmediateStep = "Найти связного в трактире."
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хроника"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("chronicle");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_BehaviorAssessment_RendersWithoutHiddenErrors()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/meta/player_behavior.json", new
-        {
-            historyManipulationCoefficient = 0.25,
-            playerBehaviorAssessment = new
-            {
-                historyManipulationCoefficient = 0.25,
-                notes = "Незначительные признаки мета-влияния."
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/поведение"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("behavior_assessment");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_Validation_WithUnavailableService_RendersGracefully()
-    {
-        await SeedMortalStateAsync();
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/валидация"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("validation_unavailable");
-        Assert.Contains(_console.MarkupLines, line => line.Contains("Сервис валидации недоступен", StringComparison.OrdinalIgnoreCase));
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_LivesHistory_RendersWithoutHiddenErrors()
-    {
-        await WriteJsonAsync("game_state/meta/soul_state.json", new
-        {
-            soulName = "Тестовая Душа",
-            currentRealm = "Chaos Sea",
-            currentIncarnation = 2,
-            inkFeathers = new { current = 25 },
-            livesHistory = new[]
-            {
-                new
-                {
-                    incarnation = 1,
-                    summary = "Короткая, но яркая жизнь.",
-                    endedAt = "2026-03-18T10:00:00Z",
-                    turnsLived = 12,
-                    characterName = "Элиан",
-                    world = "Тестовый мир"
-                }
-            }
-        });
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/жизни"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("lives_history");
-        Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
-    }
-
-    [Fact]
-    public async Task TryProcessCommand_InkFeathers_RevealFate_CreatesPendingDiceStateAndDeductsFeathers()
-    {
-        await SeedMortalStateAsync();
-        await WriteJsonAsync("game_state/meta/soul_state.json", new
-        {
-            soulName = "Тестовая Душа",
-            currentRealm = "Mortal Realm",
-            currentIncarnation = 1,
-            inkFeathers = new { current = 50 }
-        });
-        _console.QueueAnySelection("🔮 Открыть Судьбу (−5 🪶)", "✅ Да, потратить", "← Назад");
-        await _stateManager.RefreshGameStateAsync();
-
-        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/перья"));
-
-        Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("ink_feathers_reveal_fate");
-        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        Assert.NotNull(soulRaw);
-        Assert.DoesNotContain("\"current\": 50", soulRaw, StringComparison.Ordinal);
-        Assert.True(File.Exists(_fs.ResolvePath(PendingTurnStateService.PendingDiceStatePath)));
-    }
-
     private async Task SeedSessionForCommandAsync(string command)
     {
-        var isAfterlife = command is "/душа" or "/хранители" or "/реликвии";
+        var isAfterlife = command is "/душа" or "/хранители" or "/сила_обители" or "/проекты_хранителей" or "/реликвии" or "/архив_души" or "/архив_кандидаты";
         var realm = isAfterlife ? "Chaos Sea" : "Mortal Realm";
 
         await WriteJsonAsync("game_state/meta/soul_state.json", new
@@ -1589,6 +103,23 @@ public sealed class ExplorerModeCommandTests : IDisposable
                     }
                 },
                 equipped = Array.Empty<object>()
+            },
+            afterlifeArchive = new
+            {
+                stored = new[]
+                {
+                    new
+                    {
+                        archiveId = "archive_test_001",
+                        entryType = "lore_fragment",
+                        title = "Фрагмент Лунной Летописи",
+                        summary = "Сохранённая после смерти запись о древнем договоре.",
+                        rarity = "Rare",
+                        sourceLife = 1,
+                        acquiredAtUtc = "2026-03-23T00:00:00Z",
+                        tags = new[] { "lore", "moon" }
+                    }
+                }
             }
         });
 
@@ -1618,6 +149,13 @@ public sealed class ExplorerModeCommandTests : IDisposable
                     },
                     manifestationHistory = Array.Empty<object>(),
                     description = "Тестовая хранительница для smoke test explorer mode.",
+                    abodePower = new
+                    {
+                        currentPower = 35,
+                        tier = "Хрупкая",
+                        lastUpdatedAt = "2026-03-23T00:00:00Z",
+                        history = Array.Empty<object>()
+                    },
                     relationshipData = new
                     {
                         currentReputation = 25,
@@ -1663,6 +201,238 @@ public sealed class ExplorerModeCommandTests : IDisposable
                 currentAbodeId = (string?)null
             }
         });
+
+        if (isAfterlife)
+        {
+            await WriteJsonAsync(AfterlifeArchiveCandidateService.ManifestPath, new
+            {
+                sourceLife = 1,
+                lastExtractedAt = "2026-03-26T00:00:00Z",
+                candidates = new[]
+                {
+                    new
+                    {
+                        candidateId = "archive_candidate_codex_test_001",
+                        sourceEntryId = "codex_test_001",
+                        sourceLife = 1,
+                        proposedEntryType = "lore_fragment",
+                        title = "Летопись Серого Двора",
+                        summary = "Кандидат в Архив для smoke test.",
+                        rarity = "Uncommon",
+                        status = "pending",
+                        discoveredAt = "2026-03-24T00:00:00Z",
+                        tags = new[] { "lore" }
+                    }
+                }
+            });
+        }
+
+        if (command == "/проекты_хранителей")
+        {
+            await WriteJsonAsync(GuardianProjectState.TrackerPath, new
+            {
+                activeProjects = new[]
+                {
+                    new
+                    {
+                        guardianId = "guard_test_azalia",
+                        project = new
+                        {
+                            projectId = "guardian_project_smoke_001",
+                            projectType = "abode_expansion",
+                            projectTier = "major",
+                            projectMode = "internal",
+                            projectName = "Тестовое расширение Обители",
+                            activeState = "Surveying",
+                            totalWork = 18,
+                            workDone = 3,
+                            totalStages = 3,
+                            currentStage = 0,
+                            pressure = 4,
+                            stability = 78,
+                            startedTurn = 1,
+                            estimatedCompletionTurn = 6,
+                            playerCanAssist = true,
+                            assistDescription = "Поддержать контур силы."
+                        }
+                    }
+                },
+                completedProjects = Array.Empty<object>(),
+                temporaryProjectModifiers = Array.Empty<object>()
+            });
+            await WriteJsonAsync(GuardianProjectState.JournalPath, new
+            {
+                entries = new[]
+                {
+                    new
+                    {
+                        entryId = "gpj_smoke_001",
+                        turn = 2,
+                        guardianId = "guard_test_azalia",
+                        projectId = "guardian_project_smoke_001",
+                        eventType = "started",
+                        visibility = "player_known",
+                        title = "Проект Хранителя начат",
+                        summary = "Азалия начала тестовое расширение Обители.",
+                        details = new[] { "Работа: 0 -> 3", "Pressure: 0 -> 4", "Stability: 80 -> 78" }
+                    }
+                }
+            });
+        }
+
+        if (command == "/сила_обители")
+        {
+            await WriteJsonAsync(GuardianPowerEventState.JournalPath, new
+            {
+                entries = new[]
+                {
+                    new
+                    {
+                        entryId = "ape_smoke_001",
+                        eventId = "ape_event_001",
+                        turn = 2,
+                        guardianId = "guard_test_azalia",
+                        guardianName = "Азалия",
+                        delta = 8,
+                        reasonType = "project_completion",
+                        sourceSurface = "completeGuardianProjects",
+                        sourceId = "guardian_project_smoke_001",
+                        title = "Проект усилил Обитель",
+                        summary = "Тестовый проект поднял силу Обители Азалии.",
+                        visibility = "player_known",
+                        relatedGuardianId = (string?)null,
+                        appliedAt = "2026-03-23T00:00:00Z",
+                        audit = new
+                        {
+                            projectId = "guardian_project_smoke_001",
+                            projectType = "abode_expansion"
+                        }
+                    }
+                }
+            });
+        }
+
+        if (command == "/коррективы_хранителя")
+        {
+            await WriteJsonAsync(GuardianCorrectionService.StatePath, new
+            {
+                lifeIncarnation = 1,
+                appliedAt = "2026-03-23T00:00:00Z",
+                guardianId = "guard_test_azalia",
+                guardianName = "Азалия",
+                intent = "hostile",
+                reputationAtApplication = -65,
+                powerBefore = 78,
+                powerAfter = 58,
+                baseBudgetPoints = 3,
+                remainingBudgetPoints = 0,
+                totalAbodePowerSpent = 20,
+                summary = "Азалия уже встроила в старт враждебную нить судьбы.",
+                scenarioCoreSnapshot = new
+                {
+                    scenarioCoreAssertions = new[]
+                    {
+                        new { assertionId = "core_role", category = "role_status", value = "Игрок начинает королём", @explicit = true, source = "structured_field" }
+                    },
+                    openCorrectionSlots = new[]
+                    {
+                        new { slotId = "slot_rival", slotType = "rival_thread", maxSeverity = "strong", allowsFriendly = true, allowsHostile = true, sourceAssertionId = "core_role" }
+                    }
+                },
+                claimants = new[]
+                {
+                    new
+                    {
+                        guardianId = "guard_test_azalia",
+                        guardianName = "Азалия",
+                        intent = "hostile",
+                        isActivePatron = true,
+                        currentPower = 78,
+                        powerAfter = 58,
+                        baseBudgetPoints = 3,
+                        preparationBudgetPoints = 0,
+                        remainingBudgetPoints = 0,
+                        claimStrengthBase = 5,
+                        eligible = true,
+                        sourceSummary = "Active patron claim."
+                    },
+                    new
+                    {
+                        guardianId = "guard_test_rival",
+                        guardianName = "Нерис",
+                        intent = "hostile",
+                        isActivePatron = false,
+                        currentPower = 64,
+                        powerAfter = 64,
+                        baseBudgetPoints = 3,
+                        preparationBudgetPoints = 0,
+                        remainingBudgetPoints = 3,
+                        claimStrengthBase = 4,
+                        eligible = true,
+                        sourceSummary = "Rival hostile claim."
+                    }
+                },
+                contestedSlots = new[]
+                {
+                    new
+                    {
+                        slotId = "slot_rival",
+                        slotType = "rival_thread",
+                        winnerGuardianId = "guard_test_azalia",
+                        winnerGuardianName = "Азалия",
+                        winnerCorrectionId = "corr_rival",
+                        candidates = new[]
+                        {
+                            new
+                            {
+                                candidateCorrectionId = "corr_rival",
+                                sourceGuardianId = "guard_test_azalia",
+                                sourceGuardianName = "Азалия",
+                                intent = "hostile",
+                                severity = "strong",
+                                budgetCostPoints = 3,
+                                abodePowerCost = 20,
+                                claimStrength = 8,
+                                title = "Враждебная нить судьбы"
+                            },
+                            new
+                            {
+                                candidateCorrectionId = "corr_rival_other",
+                                sourceGuardianId = "guard_test_rival",
+                                sourceGuardianName = "Нерис",
+                                intent = "hostile",
+                                severity = "medium",
+                                budgetCostPoints = 2,
+                                abodePowerCost = 12,
+                                claimStrength = 6,
+                                title = "Чужая интрига"
+                            }
+                        }
+                    }
+                },
+                resolutionOrder = new[] { "slot_rival: Азалия [strong]" },
+                corrections = new[]
+                {
+                    new
+                    {
+                        correctionId = "corr_rival",
+                        sourceGuardianId = "guard_test_azalia",
+                        sourceGuardianName = "Азалия",
+                        intent = "hostile",
+                        slotId = "slot_rival",
+                        slotType = "rival_thread",
+                        severity = "strong",
+                        budgetCostPoints = 3,
+                        abodePowerCost = 20,
+                        claimStrength = 8,
+                        title = "Враждебная нить судьбы (сильная корректива)",
+                        summary = "Азалия вносит сильную коррективу: в мире уже зреет параллельная враждебная линия, способная войти в конфликт с игроком.",
+                        reason = "Азалия враждебно тратит силу Обители, навязывая совместимый конфликт вокруг исходного сценария.",
+                        affectsStartAs = "rival_thread"
+                    }
+                }
+            });
+        }
 
         if (command == "/инв")
         {
@@ -1750,6 +520,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
         }
     }
 
+
     private Task SeedMortalStateAsync() => WriteJsonAsync("game_state/meta/soul_state.json", new
     {
         soulName = "Тестовая Душа",
@@ -1758,6 +529,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
         inkFeathers = new { current = 3 }
     });
 
+
     private Task SeedAfterlifeStateAsync() => WriteJsonAsync("game_state/meta/soul_state.json", new
     {
         soulName = "Тестовая Душа",
@@ -1765,6 +537,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
         currentIncarnation = 1,
         inkFeathers = new { current = 3 }
     });
+
 
     private async Task SeedNpcTradeStateAsync(bool includeSellableInventoryItem = false, bool canTrade = true, bool locationMatches = true)
     {
@@ -1825,7 +598,8 @@ public sealed class ExplorerModeCommandTests : IDisposable
             });
     }
 
-    private async Task SeedGuardianTradeStateAsync(bool includeStoredRelicForSale = false)
+
+    private async Task SeedGuardianTradeStateAsync(bool includeStoredRelicForSale = false, bool includeTradeInventory = true)
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
         {
@@ -1858,7 +632,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
                 {
                     guardianId = "guardian_trade_001",
                     canonicalName = "Азалия",
-                    domain = "Social",
+                    domain = "Двор Зеркал",
                     nameVariants = new
                     {
                         @default = "Азалия",
@@ -1879,6 +653,13 @@ public sealed class ExplorerModeCommandTests : IDisposable
                     {
                         currentReputation = 120
                     },
+                    abodePower = new
+                    {
+                        currentPower = 10,
+                        tier = "Хрупкая",
+                        lastUpdatedAt = "2026-03-26T00:00:00Z",
+                        history = Array.Empty<object>()
+                    },
                     abode = new
                     {
                         abodeId = "abode_social_001",
@@ -1889,13 +670,94 @@ public sealed class ExplorerModeCommandTests : IDisposable
                         chargesPerReturn = 1,
                         chargesUsedThisReturn = 0,
                         gachaHistory = Array.Empty<object>()
-                    }
+                    },
+                    tradeInventory = includeTradeInventory
+                        ? new
+                        {
+                            tradeCycleId = "return_1",
+                            generatedAtUtc = "2026-03-26T00:00:00Z",
+                            generationReputationTier = "Friendly",
+                            pricingReputationTier = "Friendly",
+                            projectBonusSignature = "0|0|0",
+                            upgradedTradeSlots = 0,
+                            elevatedTradeSlots = 0,
+                            effectiveRarityCeilingBonusSteps = 0,
+                            items = new object[]
+                            {
+                                new
+                                {
+                                    slotId = "trade_social_1",
+                                    priceInFeathers = 30,
+                                    domainTag = "Двор Зеркал",
+                                    soldOut = false,
+                                    rarityBonusStepsApplied = 0,
+                                    relicData = new
+                                    {
+                                        relicId = "trade_relic_1",
+                                        name = "Печать Зеркального Двора",
+                                        rarity = "Common",
+                                        quality = "Common",
+                                        description = "Тестовая реликвия витрины."
+                                    }
+                                },
+                                new
+                                {
+                                    slotId = "trade_social_2",
+                                    priceInFeathers = 70,
+                                    domainTag = "Двор Зеркал",
+                                    soldOut = false,
+                                    rarityBonusStepsApplied = 0,
+                                    relicData = new
+                                    {
+                                        relicId = "trade_relic_2",
+                                        name = "Колье Серебряной Вежливости",
+                                        rarity = "Uncommon",
+                                        quality = "Uncommon",
+                                        description = "Тестовая реликвия витрины."
+                                    }
+                                },
+                                new
+                                {
+                                    slotId = "trade_social_3",
+                                    priceInFeathers = 140,
+                                    domainTag = "Двор Зеркал",
+                                    soldOut = false,
+                                    rarityBonusStepsApplied = 0,
+                                    relicData = new
+                                    {
+                                        relicId = "trade_relic_3",
+                                        name = "Знак Тихой Интриги",
+                                        rarity = "Rare",
+                                        quality = "Rare",
+                                        description = "Тестовая реликвия витрины."
+                                    }
+                                },
+                                new
+                                {
+                                    slotId = "trade_social_4",
+                                    priceInFeathers = 140,
+                                    domainTag = "Двор Зеркал",
+                                    soldOut = false,
+                                    rarityBonusStepsApplied = 0,
+                                    relicData = new
+                                    {
+                                        relicId = "trade_relic_4",
+                                        name = "Плащ Дворцового Отзвука",
+                                        rarity = "Rare",
+                                        quality = "Rare",
+                                        description = "Тестовая реликвия витрины."
+                                    }
+                                }
+                            }
+                        }
+                        : null
                 }
             },
             activeGuardian = new
             {
                 guardianId = "guardian_trade_001",
                 canonicalName = "Азалия",
+                domain = "Двор Зеркал",
                 nameVariants = new
                 {
                     @default = "Азалия",
@@ -1911,7 +773,104 @@ public sealed class ExplorerModeCommandTests : IDisposable
                     currentPronouns = "она/её",
                     appearanceDescription = "Тестовая текущая форма Азалии."
                 },
-                manifestationHistory = Array.Empty<object>()
+                manifestationHistory = Array.Empty<object>(),
+                relationshipData = new { currentReputation = 120 },
+                abodePower = new
+                {
+                    currentPower = 10,
+                    tier = "Хрупкая",
+                    lastUpdatedAt = "2026-03-26T00:00:00Z",
+                    history = Array.Empty<object>()
+                },
+                abode = new
+                {
+                    abodeId = "abode_social_001",
+                    name = "Шелковая Обитель"
+                },
+                gachaSystem = new
+                {
+                    chargesPerReturn = 1,
+                    chargesUsedThisReturn = 0,
+                    gachaHistory = Array.Empty<object>()
+                },
+                tradeInventory = new
+                {
+                    tradeCycleId = "return_1",
+                    generatedAtUtc = "2026-03-26T00:00:00Z",
+                    generationReputationTier = "Friendly",
+                    pricingReputationTier = "Friendly",
+                    projectBonusSignature = "0|0|0",
+                    upgradedTradeSlots = 0,
+                    elevatedTradeSlots = 0,
+                    effectiveRarityCeilingBonusSteps = 0,
+                    items = new object[]
+                    {
+                        new
+                        {
+                            slotId = "trade_social_1",
+                            priceInFeathers = 30,
+                            domainTag = "Двор Зеркал",
+                            soldOut = false,
+                            rarityBonusStepsApplied = 0,
+                            relicData = new
+                            {
+                                relicId = "trade_relic_1",
+                                name = "Печать Зеркального Двора",
+                                rarity = "Common",
+                                quality = "Common",
+                                description = "Тестовая реликвия витрины."
+                            }
+                        },
+                        new
+                        {
+                            slotId = "trade_social_2",
+                            priceInFeathers = 70,
+                            domainTag = "Двор Зеркал",
+                            soldOut = false,
+                            rarityBonusStepsApplied = 0,
+                            relicData = new
+                            {
+                                relicId = "trade_relic_2",
+                                name = "Колье Серебряной Вежливости",
+                                rarity = "Uncommon",
+                                quality = "Uncommon",
+                                description = "Тестовая реликвия витрины."
+                            }
+                        },
+                        new
+                        {
+                            slotId = "trade_social_3",
+                            priceInFeathers = 140,
+                            domainTag = "Двор Зеркал",
+                            soldOut = false,
+                            rarityBonusStepsApplied = 0,
+                            relicData = new
+                            {
+                                relicId = "trade_relic_3",
+                                name = "Знак Тихой Интриги",
+                                rarity = "Rare",
+                                quality = "Rare",
+                                description = "Тестовая реликвия витрины."
+                            }
+                        },
+                        new
+                        {
+                            slotId = "trade_social_4",
+                            priceInFeathers = 140,
+                            domainTag = "Двор Зеркал",
+                            soldOut = false,
+                            rarityBonusStepsApplied = 0,
+                            relicData = new
+                            {
+                                relicId = "trade_relic_4",
+                                name = "Плащ Дворцового Отзвука",
+                                rarity = "Rare",
+                                quality = "Rare",
+                                description = "Тестовая реликвия витрины."
+                            }
+                        }
+                    }
+                }
             },
             chaosSeaNavigation = new
             {
@@ -1919,6 +878,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
             }
         });
     }
+
 
     private async Task SeedSystemGuardianPresetAsync(string presetId, string displayName, string domain, string abodeName)
     {
@@ -1974,6 +934,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
         await File.WriteAllTextAsync(Path.Combine(presetDir, "dossier.md"), $"# {displayName}\n\nТестовое досье для системного хранителя.");
     }
 
+
     private async Task WriteJsonAsync(string relativePath, object payload)
     {
         await _fs.WriteFileAtomicAsync(relativePath, JsonSerializer.Serialize(payload, new JsonSerializerOptions
@@ -1983,6 +944,7 @@ public sealed class ExplorerModeCommandTests : IDisposable
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         }));
     }
+
 
     private async Task WriteStoryAsync(string relativePath, object payload)
     {
@@ -1994,10 +956,12 @@ public sealed class ExplorerModeCommandTests : IDisposable
         await _fs.WriteFileAtomicAsync(relativePath, json + Environment.NewLine);
     }
 
+
     private Task WriteRawJsonAsync(string relativePath, string json)
     {
         return _fs.WriteFileAtomicAsync(relativePath, json.Replace("\n", Environment.NewLine));
     }
+
 
     private string BuildConsoleDiagnostics(string scenario)
     {
@@ -2005,12 +969,71 @@ public sealed class ExplorerModeCommandTests : IDisposable
         return $"{scenario} | titles: {string.Join(" || ", _console.SelectionTitles)} | choices: {choices} | ask: {string.Join(" || ", _console.AskPrompts)} | confirm: {string.Join(" || ", _console.ConfirmPrompts)} | markup: {string.Join(" || ", _console.MarkupLines)}";
     }
 
+
+    private string ExtractRenderedText()
+    {
+        return string.Join("\n", _console.Rendered.Select(ExtractRenderableText));
+    }
+
+
+    private static string ExtractRenderableText(IRenderable renderable)
+    {
+        return renderable switch
+        {
+            Panel panel => ExtractPanelText(panel),
+            Markup markup => ExtractMarkupText(markup),
+            _ => renderable.ToString() ?? string.Empty
+        };
+    }
+
+
+    private static string ExtractPanelText(Panel panel)
+    {
+        var childField = typeof(Panel).GetField("_child", BindingFlags.Instance | BindingFlags.NonPublic);
+        if (childField?.GetValue(panel) is IRenderable child)
+            return ExtractRenderableText(child);
+
+        return string.Empty;
+    }
+
+
+    private static string ExtractMarkupText(Markup markup)
+    {
+        var paragraphField = typeof(Markup).GetField("_paragraph", BindingFlags.Instance | BindingFlags.NonPublic);
+        var paragraph = paragraphField?.GetValue(markup);
+        if (paragraph == null)
+            return string.Empty;
+
+        var linesField = paragraph.GetType().GetField("_lines", BindingFlags.Instance | BindingFlags.NonPublic);
+        if (linesField?.GetValue(paragraph) is not IEnumerable<object> lines)
+            return string.Empty;
+
+        var lineTexts = new List<string>();
+        foreach (var line in lines)
+        {
+            var itemsField = line.GetType().GetField("_items", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (itemsField?.GetValue(line) is not Array items)
+                continue;
+
+            var text = string.Concat(items.Cast<object?>().Where(segment => segment != null).Select(segment =>
+            {
+                var textProperty = segment!.GetType().GetProperty("Text", BindingFlags.Instance | BindingFlags.Public);
+                return textProperty?.GetValue(segment)?.ToString() ?? string.Empty;
+            }));
+            lineTexts.Add(text);
+        }
+
+        return string.Join("\n", lineTexts);
+    }
+
+
     private void AssertNoHiddenExplorerErrors(string scenario)
     {
         Assert.False(
             _console.MarkupLines.Any(line => line.Contains("Ошибка при выполнении команды", StringComparison.OrdinalIgnoreCase)),
             BuildConsoleDiagnostics(scenario));
     }
+
 
     public void Dispose()
     {
@@ -2024,4 +1047,5 @@ public sealed class ExplorerModeCommandTests : IDisposable
             // ignored
         }
     }
+
 }

@@ -1,0 +1,34 @@
+{
+  "id": "guardian_archive_consultation_guaranteed_quest_contract",
+  "runner": "StateOnly",
+  "description": "Archive consultation with a lore fragment must materialize a guaranteed guardian quest in the target life.",
+  "shared": [
+    {
+      "source": "shared/guardian_projects.json",
+      "target": "game_state/meta/guardian_projects.json"
+    },
+    {
+      "source": "shared/soul_state.json",
+      "target": "game_state/meta/soul_state.json"
+    }
+  ],
+  "broken": [
+    {
+      "source": "broken/guardians.json",
+      "target": "game_state/meta/guardians.json"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/guardians.json",
+      "target": "game_state/meta/guardians.json"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "guardian_archive_consultation_guaranteed_quest_missing"
+  ],
+  "allowExtraBrokenCodes": true,
+  "forbiddenFixedCodes": [
+    "guardian_archive_consultation_guaranteed_quest_missing"
+  ]
+}

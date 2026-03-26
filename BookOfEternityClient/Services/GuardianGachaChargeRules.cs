@@ -1,17 +1,24 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
 internal static class GuardianGachaChargeRules
 {
-    public static int GetChargesPerReturnForReputation(int reputation) => reputation switch
+    public static int GetBaseChargesPerReturnForReputation(int reputation) => reputation switch
     {
         <= -51 => 0,
         <= 49 => 1,
         <= 129 => 2,
         _ => 3
     };
+
+    public static int GetChargesPerReturnForReputation(int reputation, int abodePower)
+        => GetBaseChargesPerReturnForReputation(reputation) + AbodePowerRules.GetBonusGachaCharges(abodePower);
+
+    public static int GetChargesPerReturnForReputation(int reputation, GuardianProjectState.ResolvedGuardianDerivedState derivedState)
+        => GetBaseChargesPerReturnForReputation(reputation) + derivedState.BonusGachaCharges;
 
     public static int ClampUsedCharges(int usedCharges, int chargesPerReturn)
         => Math.Clamp(usedCharges, 0, Math.Max(0, chargesPerReturn));
@@ -58,7 +65,8 @@ internal static class GuardianGachaChargeRules
     public static (int ChargesPerReturn, int ChargesUsedThisReturn) NormalizeGuardianGachaState(JsonObject guardian)
     {
         var reputation = ResolveGuardianReputation(guardian);
-        var chargesPerReturn = GetChargesPerReturnForReputation(reputation);
+        AbodePowerRules.EnsureCanonicalState(guardian);
+        var chargesPerReturn = GetChargesPerReturnForReputation(reputation, AbodePowerRules.GetCurrentPower(guardian));
 
         var gachaSystem = guardian["gachaSystem"] as JsonObject ?? new JsonObject();
         if (gachaSystem["gachaHistory"] is not JsonArray)
@@ -72,10 +80,10 @@ internal static class GuardianGachaChargeRules
         }
 
         gachaSystem["chargesPerReturn"] = chargesPerReturn;
-        gachaSystem["chargesUsedThisReturn"] = usedCharges;
+        gachaSystem["chargesUsedThisReturn"] = ClampUsedCharges(usedCharges, chargesPerReturn);
         guardian["gachaSystem"] = gachaSystem;
 
-        return (chargesPerReturn, usedCharges);
+        return (chargesPerReturn, ClampUsedCharges(usedCharges, chargesPerReturn));
     }
 
     private static bool TryGetInt(JsonNode node, out int value)

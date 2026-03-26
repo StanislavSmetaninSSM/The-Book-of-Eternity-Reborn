@@ -1,0 +1,35 @@
+{
+  "activeProjects": [],
+  "completedProjects": [
+    {
+      "guardianId": "guardian_alpha",
+      "project": {
+        "projectId": "forge_major",
+        "projectName": "Великая ковка",
+        "projectType": "relic_forging",
+        "projectTier": "major",
+        "projectMode": "supportive",
+        "finalState": "Completed",
+        "completionTurn": 12,
+        "projectOutcomeAudit": {
+          "upgradedTradeSlots": 1,
+          "elevatedTradeSlots": 0,
+          "guardianRarityCeilingBonusSteps": 1
+        },
+        "effectState": {
+          "tradeRefreshUsesGranted": 1,
+          "tradeRefreshUsesSpent": 1,
+          "gachaUsesGranted": 1,
+          "gachaUsesSpent": 0,
+          "upgradedTradeSlotsGranted": 1,
+          "elevatedTradeSlotsGranted": 0,
+          "rarityCeilingBonusStepsGranted": 1
+        },
+        "systemEffectSummary": [
+          "+ улучшенные торговые слоты: 1"
+        ]
+      }
+    }
+  ],
+  "temporaryProjectModifiers": []
+}

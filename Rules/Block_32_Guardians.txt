@@ -216,7 +216,7 @@
                            "VALIDATION": "Array of quest objects, max 3 at any time",
                            "QUEST_GENERATION_RULES": {
                              "MinimumReputation": "Each quest type has minimum reputation requirement",
-                             "DifficultyScaling": "Higher reputation unlocks more challenging/rewarding quests",
+                             "DifficultyScaling": "Higher reputation unlocks more challenging/rewarding quests, but availableQuests are also capped by Abode Power: 0..39 -> up to Normal, 40..79 -> up to Hard, 80..100 -> up to Epic",
                              "PersonalityAlignment": "Quest themes must match Guardian values and domain",
                              "CooldownPeriod": "24 hour cooldown before new quest generation"
                            }
@@ -445,8 +445,10 @@
      <![CDATA[
                      
                      CRITICAL INTEGRATION WITH RESPONSE TEMPLATE:
-                     All Guardian changes MUST use the "UpdateGuardians" JSON command array
+                     Guardian core changes use the "UpdateGuardians" JSON command array
                      defined in InstructionBlock 2 (Master Schema).
+                     Guardian project lifecycle uses dedicated top-level surfaces:
+                     `startGuardianProjects`, `guardianProjectUpdates`, `completeGuardianProjects`.
                      
                      Commands are processed sequentially in array order.
                      
@@ -457,7 +459,7 @@
                      
                      GUARDIAN OPERATIONS VIA JSON COMMANDS:
                      
-                     USE UpdateGuardians ARRAY FOR ALL GUARDIAN CHANGES:
+                     USE UpdateGuardians ARRAY FOR GUARDIAN CORE CHANGES:
                      
                      Examples of proper usage:
                      
@@ -546,12 +548,12 @@
                         - Hard Mode: +1 tier at 50% chance (use next d20 from pool: 11-20 = upgrade)
                         - Impossible Mode: +1 tier guaranteed, +1 more at 25% chance (use next d20: 16-20 = second upgrade)
                      3. Guardian-mediated pulls are LIMITED PER RETURN FROM MORTAL LIFE:
-                        - Hostile(-100..-51): 0 attempts, Gacha blocked
-                       - Wary/Neutral(-50..49): 1 attempt
-                        - Friendly(+50..+129): 2 attempts
-                        - Devoted/Legendary(+130..+300): 3 attempts
+                        - Reputation tier defines the BASE attempts:
+                          Hostile(-100..-51)=0, Wary/Neutral(-50..49)=1, Friendly(+50..+129)=2, Devoted/Legendary(+130..+300)=3
+                        - Abode Power may add bonus charges on top of the reputation-based base
                         - chargesUsedThisReturn resets only when the Soul returns to the Chaos Sea after a new mortal life
                         - If chargesUsedThisReturn already equals chargesPerReturn, DO NOT emit processGacha for that Guardian
+                        - If final rarity rises above the client-computed base rarity, include top-level `gachaBonusAudit` with `baseRarity`, `abodePowerBonusSteps`, `relicForgingBonusSteps`, `finalRarity`, and `sourceProjectId` when a completed `relic_forging` project was actually spent
                      4. Direct Chaos Sea pulls via /gacha are NEUTRAL and UNLIMITED: do NOT apply guardian reputation bonuses, discounts, penalties, jealousy/social effects, or other guardian modifiers.
                      5. You MUST NOT downgrade or ignore the client-computed baseRarity.
                      6. You MUST log the full calculation in gm_thoughts_markdown, including:
@@ -578,7 +580,7 @@
                      soul/meta state, not to this atomic guardian command payload.
                      
                      SEQUENTIAL OPERATIONS:
-                     Multiple Guardian operations can be combined:
+                     Multiple Guardian core operations can be combined:
                      ```json
                      "UpdateGuardians": [
                        {
@@ -592,14 +594,41 @@
                           "guardianId": "guard_combat_aleksandr_warlord_001",
                           "reputationChange": 20,
                           "reason": "Квест выполнен идеально"
-                        },
-                        {
-                          "command": "updateProject",
-                          "guardianId": "guard_combat_aleksandr_warlord_001",
-                          "currentProject": { /* updated current project object */ }
                         }
                       ]
                      ```
+                     Guardian project progress is emitted separately:
+                     ```json
+                     "guardianProjectUpdates": [
+                       {
+                         "guardianId": "guard_combat_aleksandr_warlord_001",
+                         "projectId": "guardian_project_aleksandr_001",
+                         "activeState": "Binding",
+                         "workDone": 8,
+                         "currentStage": 1,
+                         "pressure": 18,
+                         "stability": 67,
+                         "assistAudit": {
+                           "auditKind": "assist",
+                           "DomainRelevance": 2,
+                           "RiskOrCost": 1,
+                           "ScarcityOrUniqueness": 1,
+                           "DirectProjectImpact": 1,
+                           "assistScore": 5,
+                           "classification": "meaningful assist"
+                         },
+                         "pressureAudit": { /* ... */ },
+                         "stabilityAudit": { /* ... */ },
+                         "workAudit": { /* ... */ }
+                       }
+                     ]
+                     ```
+                     If a project update represents hostile interference instead of help, use `sabotageAudit` with `HostileReach`, `ProjectExposure`, `DamageIntent`, `DamageAchieved`, `PlayerComplicity`, `sabotageSeverityScore`, and canonical `classification`.
+                     For political project terminals:
+                     - completed `offensive_intrigue` must include `targetGuardianId`; the client computes canonical targetLoss / pressureDelta / stabilityDamage
+                     - completed `counter_rival_operation` must include `targetGuardianId`; the client applies deterministic relief against the rival active pressure project when it exists
+                     - completed `abode_fortification` materializes persistent fortification bonuses client-side
+                     - sabotaged `abode_fortification` may materialize `temporaryProjectModifiers`
                      
                      DATA INTEGRITY RULES:
                      - Process commands in exact array order
@@ -612,12 +641,12 @@
                      - This panel is handled entirely by the client and does NOT create turn_request.json.
                      - The local trade panel is NOT part of UpdateGuardians and NOT part of Ink Feather actions.
                      - Trade is available only with the CURRENT ACTIVE Guardian in the CURRENT abode where the Soul is presently located.
-                     - The panel offers a limited domain-themed stock of Soul Relics.
+                     - The panel offers an explicit authored stock of Soul Relics from guardian.tradeInventory; the client does NOT derive stock from guardian domain.
                      - In the buy flow, the Soul may inspect a relic's properties before confirming the purchase.
-                     - Stock is generated on first trade access in the current return from mortal life and refreshes after the next return to the Chaos Sea.
-                     - Maximum stock rarity is fixed at generation time from the Guardian's reputation tier at that moment.
-                     - Within the same trade cycle, reopening the panel may reprice existing stock for the current reputation tier, but does not regenerate slot rarity.
-                     - Stock size: 4 relics.
+                     - Stock must be explicitly prepared for the current return cycle; if guardian.tradeInventory is absent or malformed, the client creates pending_guardian_trade_request.json and asks the GM to materialize a fresh explicit inventory instead of auto-generating replacement stock.
+                     - Maximum stock rarity is fixed by authored generationReputationTier stored in guardian.tradeInventory.
+                     - Within the same trade cycle, reopening the panel may reprice existing stock for the current reputation tier, but does not regenerate slot rarity or contents.
+                     - Stock size depends on guardian abode power: 4..8 relics.
                      - Generation-time stock rarity caps by reputation tier:
                        - Hostile: no trade
                        - Wary/Neutral: up to Uncommon
@@ -648,7 +677,7 @@
                        - generationReputationTier (for rarity-cap validation)
                        - pricingReputationTier (for current slot-price validation)
                      - The player may sell only stored Soul Relics through this panel; equipped relics are not sold automatically.
-                     - If stored tradeInventory is partial, malformed, or economically inconsistent with its own generation/pricing tiers, the client regenerates a fresh stock for the current trade cycle instead of reusing broken data.
+                     - If stored tradeInventory is partial, malformed, or economically inconsistent with its own generation/pricing tiers, the panel stays in "витрина подготавливается" state until explicit stock is authored correctly.
                      - Free roleplay trade with the Guardian remains separate and may still happen through normal GM interaction.
                      
                      ]]>

@@ -127,6 +127,22 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<ILogger<WorldDirectiveService>>()));
         services.AddSingleton(sp =>
+            new ScenarioCoreService(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<ILogger<ScenarioCoreService>>()));
+        services.AddSingleton(sp =>
+            new AfterlifeArchiveCandidateService(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<ILogger<AfterlifeArchiveCandidateService>>()));
+        services.AddSingleton(sp =>
+            new AfterlifeArchiveConsultationService(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<ILogger<AfterlifeArchiveConsultationService>>()));
+        services.AddSingleton(sp =>
+            new AfterlifeArchiveProjectFuelService(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<ILogger<AfterlifeArchiveProjectFuelService>>()));
+        services.AddSingleton(sp =>
             new SystemGuardianLibraryService(
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<ILogger<SystemGuardianLibraryService>>()));
@@ -138,6 +154,11 @@ var host = Host.CreateDefaultBuilder(args)
             new RivalSoulArcService(
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<ILogger<RivalSoulArcService>>()));
+        services.AddSingleton(sp =>
+            new GuardianCorrectionService(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<ScenarioCoreService>(),
+                sp.GetRequiredService<ILogger<GuardianCorrectionService>>()));
         services.AddSingleton(sp =>
             new SoulIdentityService(
                 sp.GetRequiredService<FileSystemManager>(),
@@ -190,6 +211,11 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<SystemModService>(),
                 sp.GetRequiredService<SystemGuardianLibraryService>(),
                 sp.GetRequiredService<WorldDirectiveService>(),
+                sp.GetRequiredService<ScenarioCoreService>(),
+                sp.GetRequiredService<AfterlifeArchiveCandidateService>(),
+                sp.GetRequiredService<AfterlifeArchiveConsultationService>(),
+                sp.GetRequiredService<AfterlifeArchiveProjectFuelService>(),
+                sp.GetRequiredService<GuardianCorrectionService>(),
                 sp.GetRequiredService<SoulIdentityService>(),
                 sp.GetRequiredService<IClipboardService>()));
 

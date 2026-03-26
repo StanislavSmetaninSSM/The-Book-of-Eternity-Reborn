@@ -121,7 +121,13 @@ public static class FileMapping
 
         // META-GAME SYSTEM
         ["metaStateUpdates"] = "game_state/meta/soul_state.json",
+        ["afterlifeArchiveUpdates"] = "game_state/meta/soul_state.json",
+        ["archiveActionResolutions"] = "game_state/meta/soul_state.json",
         ["UpdateGuardians"] = "game_state/meta/guardians.json",
+        ["startGuardianProjects"] = "game_state/meta/guardian_projects.json",
+        ["guardianProjectUpdates"] = "game_state/meta/guardian_projects.json",
+        ["completeGuardianProjects"] = "game_state/meta/guardian_projects.json",
+        ["guardianPowerEvents"] = "game_state/meta/guardians.json",
         ["playerBehaviorAssessment"] = "game_state/meta/player_behavior.json",
         ["historyManipulationCoefficient"] = "game_state/meta/player_behavior.json",
         ["characterChronicleUpdates"] = "game_state/meta/character_chronicle.json",

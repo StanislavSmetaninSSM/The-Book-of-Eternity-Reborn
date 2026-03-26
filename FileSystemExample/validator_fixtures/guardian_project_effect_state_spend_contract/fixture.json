@@ -1,0 +1,24 @@
+{
+  "id": "guardian_project_effect_state_spend_contract",
+  "runner": "StateOnly",
+  "description": "Completed recipe-driven guardian projects cannot spend more effect-state resource than they were granted.",
+  "broken": [
+    {
+      "source": "broken/guardian_projects.json",
+      "target": "game_state/meta/guardian_projects.json"
+    }
+  ],
+  "fixed": [
+    {
+      "source": "fixed/guardian_projects.json",
+      "target": "game_state/meta/guardian_projects.json"
+    }
+  ],
+  "expectedBrokenCodes": [
+    "guardian_project_effect_state_spent_exceeds_granted"
+  ],
+  "allowExtraBrokenCodes": true,
+  "forbiddenFixedCodes": [
+    "guardian_project_effect_state_spent_exceeds_granted"
+  ]
+}

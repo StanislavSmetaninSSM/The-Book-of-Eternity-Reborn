@@ -1,0 +1,1233 @@
+using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
+using Microsoft.Extensions.Logging;
+using Spectre.Console;
+
+namespace BookOfEternityClient.Core;
+
+public partial class GameEngine
+{
+    private async Task ShowMainMenu()
+    {
+        await _audioService.PlayMainMenuMusicAsync();
+        var options = await BuildMainMenuOptionsAsync();
+        var selectedIndex = 0;
+        var lastWidth = -1;
+        var lastHeight = -1;
+        var layout = MainMenuLayoutMode.Medium;
+        var menuTop = 0;
+        bool previousCursorVisible = false;
+        var cursorVisibilityCaptured = false;
+
+        if (OperatingSystem.IsWindows())
+        {
+            try
+            {
+                previousCursorVisible = Console.CursorVisible;
+                cursorVisibilityCaptured = true;
+                Console.CursorVisible = false;
+            }
+            catch
+            {
+                cursorVisibilityCaptured = false;
+            }
+        }
+
+        while (_isRunning)
+        {
+            var currentWidth = GetSafeConsoleWidth();
+            var currentHeight = GetSafeConsoleHeight();
+            if (currentWidth != lastWidth || currentHeight != lastHeight)
+            {
+                layout = GetMainMenuLayoutMode(currentWidth, currentHeight);
+                menuTop = RenderMainMenuStaticFrame(options, selectedIndex, layout);
+                RedrawMainMenuMenuArea(options, selectedIndex, layout, menuTop);
+                lastWidth = currentWidth;
+                lastHeight = currentHeight;
+            }
+
+            var key = Console.ReadKey(true);
+            var selectionChanged = false;
+            MainMenuOption? chosen = null;
+
+            switch (key.Key)
+            {
+                case ConsoleKey.UpArrow:
+                case ConsoleKey.W:
+                    selectedIndex = (selectedIndex - 1 + options.Count) % options.Count;
+                    selectionChanged = true;
+                    break;
+                case ConsoleKey.DownArrow:
+                case ConsoleKey.S:
+                    selectedIndex = (selectedIndex + 1) % options.Count;
+                    selectionChanged = true;
+                    break;
+                case ConsoleKey.Enter:
+                    _audioService.PlayCue(AudioCue.MenuSelect);
+                    chosen = options[selectedIndex];
+                    break;
+                default:
+                    if (TryMapMenuNumberSelection(key, options.Count, out var numericIndex))
+                    {
+                        selectedIndex = numericIndex;
+                        selectionChanged = true;
+                    }
+                    break;
+            }
+
+            if (selectionChanged)
+            {
+                RedrawMainMenuMenuArea(options, selectedIndex, layout, menuTop);
+                continue;
+            }
+
+            if (chosen == null)
+                continue;
+
+            try
+            {
+                if (cursorVisibilityCaptured)
+                    Console.CursorVisible = previousCursorVisible;
+            }
+            catch
+            {
+                // Ignore cursor restore issues on exotic hosts.
+            }
+
+            if (chosen.Key == "continue_game")
+            {
+                await ContinueCurrentSessionFlow();
+                return;
+            }
+
+            if (chosen.Key == "new_game")
+            {
+                await NewGameFlow();
+                return;
+            }
+
+            if (chosen.Key == "load_game")
+            {
+                await LoadGameFlow();
+                return;
+            }
+
+            if (chosen.Key == "options")
+            {
+                await OptionsMenu();
+                await _audioService.PlayMainMenuMusicAsync();
+                options = await BuildMainMenuOptionsAsync();
+                if (selectedIndex >= options.Count)
+                    selectedIndex = Math.Max(0, options.Count - 1);
+                try
+                {
+                    if (cursorVisibilityCaptured)
+                        Console.CursorVisible = false;
+                }
+                catch
+                {
+                    // Ignore cursor visibility failures.
+                }
+
+                lastWidth = -1;
+                lastHeight = -1;
+                continue;
+            }
+
+            if (chosen.Key == "about")
+            {
+                ShowAbout();
+                options = await BuildMainMenuOptionsAsync();
+                if (selectedIndex >= options.Count)
+                    selectedIndex = Math.Max(0, options.Count - 1);
+                try
+                {
+                    if (cursorVisibilityCaptured)
+                        Console.CursorVisible = false;
+                }
+                catch
+                {
+                    // Ignore cursor visibility failures.
+                }
+
+                lastWidth = -1;
+                lastHeight = -1;
+                continue;
+            }
+
+            if (chosen.Key == "exit")
+            {
+                await _audioService.StopAllAsync();
+                _isRunning = false;
+                return;
+            }
+        }
+
+        try
+        {
+            if (cursorVisibilityCaptured)
+                Console.CursorVisible = previousCursorVisible;
+        }
+        catch
+        {
+            // Ignore cursor restore failures on shutdown.
+        }
+    }
+
+    private int RenderMainMenuStaticFrame(IReadOnlyList<MainMenuOption> options, int selectedIndex, MainMenuLayoutMode layout)
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.WriteLine();
+        AnsiConsole.Write(BuildMainMenuHero(layout));
+        try
+        {
+            return Math.Max(0, Console.CursorTop);
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
+    private Spectre.Console.Rendering.IRenderable BuildMainMenuHero(MainMenuLayoutMode layout)
+    {
+        var sideMargin = layout == MainMenuLayoutMode.VeryCompact ? 1 : 2;
+        var hero = new Grid();
+        hero.AddColumn(new GridColumn());
+        hero.AddRow(BuildMainMenuTitle(layout));
+        hero.AddRow(ConsoleLayout.WithHorizontalMargin(
+            new Rule("[bold cyan]✦ Возрождение ✦[/]").RuleStyle("cyan").Centered(),
+            sideMargin));
+        hero.AddRow(ConsoleLayout.WithHorizontalMargin(
+            new Markup($"[italic grey]{Markup.Escape(_loc.T("main_menu_tagline"))}[/]"),
+            sideMargin));
+
+        if (layout == MainMenuLayoutMode.VeryCompact)
+        {
+            hero.AddRow(new Text(" "));
+            hero.AddRow(ConsoleLayout.WithHorizontalMargin(BuildMainMenuStatusRenderable(layout), sideMargin));
+            hero.AddRow(new Text(" "));
+            return hero;
+        }
+
+        if (layout is MainMenuLayoutMode.Medium or MainMenuLayoutMode.Wide)
+        {
+            var introPanel = new Panel(new Markup(Markup.Escape(_loc.T("main_menu_intro_body"))))
+            {
+                Header = new PanelHeader($" ✨ {Markup.Escape(_loc.T("main_menu_intro_title"))} ", Justify.Center),
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Cyan1),
+                Padding = new Padding(2, 1),
+                Expand = true
+            };
+
+            hero.AddRow(new Text(" "));
+            hero.AddRow(ConsoleLayout.WithHorizontalMargin(introPanel, sideMargin));
+        }
+
+        hero.AddRow(new Text(" "));
+        hero.AddRow(ConsoleLayout.WithHorizontalMargin(BuildMainMenuStatusRenderable(layout), sideMargin));
+        hero.AddRow(new Text(" "));
+        return hero;
+    }
+
+    private Spectre.Console.Rendering.IRenderable BuildMainMenuStatusRenderable(MainMenuLayoutMode layout)
+    {
+        var musicSummary = _stateManager.Settings.MusicEnabled
+            ? $"{_stateManager.Settings.MusicVolume}%"
+            : _loc.T("disabled");
+        var soundSummary = _stateManager.Settings.SoundEnabled
+            ? $"{_stateManager.Settings.SoundVolume}%"
+            : _loc.T("disabled");
+
+        if (layout == MainMenuLayoutMode.VeryCompact)
+        {
+            var compact = $"[grey]{Markup.Escape(_loc.T("opt_language"))}:[/] [yellow]{Markup.Escape(_stateManager.Settings.Language.ToUpperInvariant())}[/]  " +
+                          $"[grey]{Markup.Escape(_loc.T("opt_difficulty"))}:[/] [green]{Markup.Escape(GetDifficultyLabel())}[/]  " +
+                          $"[grey]{Markup.Escape(_loc.T("opt_music"))}:[/] [yellow]{Markup.Escape(musicSummary)}[/]  " +
+                          $"[grey]{Markup.Escape(_loc.T("opt_sound"))}:[/] [yellow]{Markup.Escape(soundSummary)}[/]  " +
+                          $"[grey]{Markup.Escape(_loc.T("opt_font_size"))}:[/] [yellow]{_stateManager.Settings.ConsoleFontSize}[/]";
+            if (!string.IsNullOrWhiteSpace(_mainMenuSessionWarning))
+                compact += $"\n[red]{Markup.Escape(_mainMenuSessionWarning)}[/]";
+            return new Markup(compact);
+        }
+
+        var statusTable = new Table()
+            .Border(TableBorder.None)
+            .HideHeaders()
+            .Expand()
+            .AddColumn(new TableColumn("").NoWrap().Width(14))
+            .AddColumn(new TableColumn("").NoWrap().Width(1))
+            .AddColumn(new TableColumn(""));
+
+        statusTable.AddRow(
+            $"[grey]{Markup.Escape(_loc.T("opt_language"))}[/]",
+            "[dim]:[/]",
+            $"[bold yellow]{Markup.Escape(_stateManager.Settings.Language.ToUpperInvariant())}[/]");
+        statusTable.AddRow(
+            $"[grey]{Markup.Escape(_loc.T("opt_difficulty"))}[/]",
+            "[dim]:[/]",
+            $"[bold green]{Markup.Escape(GetDifficultyLabel())}[/]");
+        statusTable.AddRow(
+            $"[grey]{Markup.Escape(_loc.T("opt_music"))}[/]",
+            "[dim]:[/]",
+            $"[bold yellow]{Markup.Escape(musicSummary)}[/]");
+        statusTable.AddRow(
+            $"[grey]{Markup.Escape(_loc.T("opt_sound"))}[/]",
+            "[dim]:[/]",
+            $"[bold yellow]{Markup.Escape(soundSummary)}[/]");
+        statusTable.AddRow(
+            $"[grey]{Markup.Escape(_loc.T("opt_font_size"))}[/]",
+            "[dim]:[/]",
+            $"[bold yellow]{_stateManager.Settings.ConsoleFontSize}[/]");
+        if (!string.IsNullOrWhiteSpace(_mainMenuSessionWarning))
+        {
+            statusTable.AddRow(
+                "[grey]session[/]",
+                "[dim]:[/]",
+                $"[bold red]{Markup.Escape(_mainMenuSessionWarning)}[/]");
+        }
+
+        return new Panel(statusTable)
+        {
+            Header = new PanelHeader($" ⚙ {Markup.Escape(_loc.T("main_menu_status_title"))} ", Justify.Center),
+            Border = layout == MainMenuLayoutMode.Compact ? BoxBorder.Ascii : BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Grey),
+            Padding = layout == MainMenuLayoutMode.Compact ? new Padding(1, 0) : new Padding(2, 1),
+            Expand = true
+        };
+    }
+
+    private async Task<List<MainMenuOption>> BuildMainMenuOptionsAsync()
+    {
+        _mainMenuSessionWarning = null;
+        var options = new List<MainMenuOption>();
+        var nextIndex = 1;
+
+        if (await HasCurrentSessionAsync())
+        {
+            options.Add(new MainMenuOption(
+                "continue_game",
+                _loc.T("continue_game"),
+                await BuildContinueDescriptionAsync(),
+                "cyan1",
+                nextIndex++));
+        }
+
+        options.AddRange(new[]
+        {
+            new MainMenuOption("new_game", _loc.T("new_game"), _loc.T("main_menu_new_desc"), "green", nextIndex++),
+            new MainMenuOption("load_game", _loc.T("load_game"), _loc.T("main_menu_load_desc"), "cyan1", nextIndex++),
+            new MainMenuOption("options", _loc.T("options"), _loc.T("main_menu_options_desc"), "yellow", nextIndex++),
+            new MainMenuOption("about", _loc.T("about"), _loc.T("main_menu_about_desc"), "blue", nextIndex++),
+            new MainMenuOption("exit", _loc.T("exit"), _loc.T("main_menu_exit_desc"), "red", nextIndex)
+        });
+
+        return options;
+    }
+
+    private async Task<bool> HasCurrentSessionAsync()
+    {
+        if (!_fs.FileExists("game_state/meta/soul_state.json"))
+            return false;
+
+        await NormalizeRuntimeUiArtifactsAsync();
+        await EnsureClientOwnedSystemFilesHealthyAsync();
+        var sessionHealth = await _criticalStateHealth.AssessCurrentSessionHealthAsync();
+        if (sessionHealth.HasRecoverableSessionError)
+        {
+            _mainMenuSessionWarning = sessionHealth.UserMessage;
+            return false;
+        }
+
+        await _stateManager.RefreshGameStateAsync();
+        return !string.IsNullOrWhiteSpace(_stateManager.CurrentState.SoulName) ||
+               !string.IsNullOrWhiteSpace(_stateManager.CurrentState.SessionId);
+    }
+
+    private async Task<string> BuildContinueDescriptionAsync()
+    {
+        await RefreshCanonicalStateAsync();
+        var state = _stateManager.CurrentState;
+        var turnNumber = await DetectCurrentSessionTurnNumberAsync();
+
+        var primaryName = !string.IsNullOrWhiteSpace(state.CharacterName)
+            ? state.CharacterName
+            : !string.IsNullOrWhiteSpace(state.SoulName)
+                ? state.SoulName
+                : _loc.T("main_menu_continue_desc");
+
+        var realm = state.IsInShiningAbode
+            ? _loc.T("realm_shining_abode")
+            : state.IsInChaosSea
+                ? _loc.T("realm_chaos_sea")
+                : string.IsNullOrWhiteSpace(state.CurrentRealm)
+                    ? _loc.T("realm_mortal")
+                    : state.CurrentRealm;
+
+        if (state.Incarnation > 0 && !state.IsInAfterlifeRealm)
+            return $"{primaryName} • {realm} • {_loc.T("turn")} {turnNumber} • #{state.Incarnation}";
+
+        return $"{primaryName} • {realm} • {_loc.T("turn")} {turnNumber}";
+    }
+
+    private async Task<int> DetectCurrentSessionTurnNumberAsync()
+    {
+        var maxTurn = 0;
+        foreach (var story in _storyService.GetAvailableStories())
+        {
+            var entries = await _storyService.ReadStoryAsync(story.RelativePath);
+            foreach (var entry in entries)
+            {
+                if (entry.Turn > maxTurn)
+                    maxTurn = entry.Turn;
+            }
+        }
+
+        return Math.Max(0, maxTurn);
+    }
+
+    private async Task ContinueCurrentSessionFlow()
+    {
+        if (!await HasCurrentSessionAsync())
+        {
+            AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(_loc.T("continue_game_unavailable"))}[/]");
+            AnsiConsole.MarkupLine($"[grey]{Markup.Escape(_loc.T("press_any_key"))}[/]");
+            Console.ReadKey(true);
+            return;
+        }
+
+        await NormalizeRuntimeUiArtifactsAsync();
+        var pendingManifest = await LoadPendingTurnSnapshotManifestAsync();
+        var hasPendingTerminalSignal = _fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json");
+
+        await RefreshCanonicalStateAsync();
+        var state = _stateManager.CurrentState;
+        var sessionId = !string.IsNullOrWhiteSpace(state.SessionId)
+            ? state.SessionId
+            : Guid.NewGuid().ToString();
+        var turnNumber = await DetectCurrentSessionTurnNumberAsync();
+        _gameLoop.SetSession(sessionId, turnNumber);
+
+        if (string.IsNullOrWhiteSpace(_lastResponse?.Response) &&
+            (pendingManifest != null || _fs.FileExists("ready/turn_complete.json")))
+        {
+            var response = await BuildGameResponseFromFiles();
+            if (response != null)
+                _lastResponse = response;
+        }
+
+        await EnterGameLoop();
+    }
+
+    private Spectre.Console.Rendering.IRenderable BuildMainMenuMenu(IReadOnlyList<MainMenuOption> options, int selectedIndex, MainMenuLayoutMode layout)
+    {
+        var sideMargin = layout == MainMenuLayoutMode.VeryCompact ? 1 : 2;
+        var menuGrid = new Grid();
+        menuGrid.AddColumn(new GridColumn());
+        menuGrid.AddRow(ConsoleLayout.WithHorizontalMargin(
+            new Markup($"[bold cyan]{Markup.Escape(_loc.T("main_menu_choice_title"))}[/]"),
+            sideMargin));
+        menuGrid.AddRow(new Text(" "));
+        var showDescriptions = layout is MainMenuLayoutMode.Medium or MainMenuLayoutMode.Wide;
+        var showGaps = layout is MainMenuLayoutMode.Medium or MainMenuLayoutMode.Wide;
+
+        foreach (var option in options.Select((option, index) => (option, index)))
+        {
+            var isSelected = option.index == selectedIndex;
+            var titleMarkup = isSelected
+                ? $"[black on cyan1 bold]  ➤ {option.option.Index}. {Markup.Escape(option.option.Title)}  [/]"
+                : $"[{option.option.AccentColor}]◆[/] [bold white]{option.option.Index}. {Markup.Escape(option.option.Title)}[/]";
+            var descriptionMarkup = !showDescriptions
+                ? null
+                : isSelected
+                    ? $"[black on cyan1]     {Markup.Escape(option.option.Description)}[/]"
+                    : $"[dim]     {Markup.Escape(option.option.Description)}[/]";
+
+            menuGrid.AddRow(new Markup(titleMarkup));
+            if (!string.IsNullOrWhiteSpace(descriptionMarkup))
+                menuGrid.AddRow(new Markup(descriptionMarkup));
+            if (showGaps)
+                menuGrid.AddRow(new Text(" "));
+        }
+
+        menuGrid.AddRow(new Markup(
+            layout == MainMenuLayoutMode.VeryCompact
+                ? $"[dim]  ↑/↓ • W/S • 1-{options.Count} • Enter[/]"
+                : $"[dim]  ↑/↓ или W/S — выбор • 1-{options.Count} — быстрый выбор • Enter — подтвердить[/]"));
+        return ConsoleLayout.WithHorizontalMargin(menuGrid, sideMargin);
+    }
+
+    private void RedrawMainMenuMenuArea(IReadOnlyList<MainMenuOption> options, int selectedIndex, MainMenuLayoutMode layout, int menuTop)
+    {
+        ClearConsoleRegion(menuTop);
+        try
+        {
+            Console.SetCursorPosition(0, menuTop);
+        }
+        catch
+        {
+            // If the host rejects cursor positioning, fall back to full redraw.
+            RenderMainMenuStaticFrame(options, selectedIndex, layout);
+            return;
+        }
+
+        AnsiConsole.Write(BuildMainMenuMenu(options, selectedIndex, layout));
+    }
+
+    private Spectre.Console.Rendering.IRenderable BuildMainMenuTitle(MainMenuLayoutMode layout)
+    {
+        if (layout == MainMenuLayoutMode.Compact)
+        {
+            var compactTitle = new Panel(new Markup("[bold cyan]Book of Eternity[/]"))
+            {
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Cyan1),
+                Padding = new Padding(2, 1),
+                Expand = false
+            };
+            return ConsoleLayout.WithHorizontalMargin(compactTitle, 2);
+        }
+
+        if (layout == MainMenuLayoutMode.VeryCompact)
+        {
+            return ConsoleLayout.WithHorizontalMargin(
+                new Markup("[bold cyan]Book of Eternity[/]"),
+                1);
+        }
+
+        if (layout == MainMenuLayoutMode.Medium)
+        {
+            var top = new FigletText("Book of")
+                .Color(Color.Cyan1)
+                .Centered();
+            var bottom = new FigletText("Eternity")
+                .Color(Color.Cyan1)
+                .Centered();
+            var titleGrid = new Grid();
+            titleGrid.AddColumn(new GridColumn());
+            titleGrid.AddRow(ConsoleLayout.WithHorizontalMargin(top, 2));
+            titleGrid.AddRow(ConsoleLayout.WithHorizontalMargin(bottom, 2));
+            return titleGrid;
+        }
+
+        var titleFiglet = new FigletText("Book of Eternity")
+            .Color(Color.Cyan1)
+            .Centered();
+        return ConsoleLayout.WithHorizontalMargin(titleFiglet, 2);
+    }
+
+    private static MainMenuLayoutMode GetMainMenuLayoutMode(int width, int height)
+    {
+        if (height < 30 || width < 90)
+            return MainMenuLayoutMode.VeryCompact;
+        if (width < 100)
+            return MainMenuLayoutMode.Compact;
+        if (width < 145 || height < 38)
+            return MainMenuLayoutMode.Medium;
+        return MainMenuLayoutMode.Wide;
+    }
+
+    private static int GetSafeConsoleWidth()
+    {
+        try
+        {
+            return Math.Max(80, Console.WindowWidth);
+        }
+        catch
+        {
+            return 120;
+        }
+    }
+
+    private static int GetSafeConsoleHeight()
+    {
+        try
+        {
+            return Math.Max(24, Console.WindowHeight);
+        }
+        catch
+        {
+            return 40;
+        }
+    }
+
+    private static void ClearConsoleRegion(int top)
+    {
+        try
+        {
+            var width = Math.Max(1, Console.WindowWidth);
+            var height = Math.Max(0, Console.WindowHeight - top);
+            for (var row = 0; row < height; row++)
+            {
+                Console.SetCursorPosition(0, top + row);
+                Console.Write(new string(' ', width));
+            }
+        }
+        catch
+        {
+            // Ignore console clearing failures; caller will still attempt redraw.
+        }
+    }
+
+    private static bool TryMapMenuNumberSelection(ConsoleKeyInfo key, int optionsCount, out int index)
+    {
+        index = -1;
+
+        int? numeric = key.Key switch
+        {
+            ConsoleKey.D1 or ConsoleKey.NumPad1 => 1,
+            ConsoleKey.D2 or ConsoleKey.NumPad2 => 2,
+            ConsoleKey.D3 or ConsoleKey.NumPad3 => 3,
+            ConsoleKey.D4 or ConsoleKey.NumPad4 => 4,
+            ConsoleKey.D5 or ConsoleKey.NumPad5 => 5,
+            ConsoleKey.D6 or ConsoleKey.NumPad6 => 6,
+            ConsoleKey.D7 or ConsoleKey.NumPad7 => 7,
+            ConsoleKey.D8 or ConsoleKey.NumPad8 => 8,
+            ConsoleKey.D9 or ConsoleKey.NumPad9 => 9,
+            _ => null
+        };
+
+        if (!numeric.HasValue || numeric.Value > optionsCount)
+            return false;
+
+        index = numeric.Value - 1;
+        return true;
+    }
+
+    private string GetDifficultyLabel() => _stateManager.Settings.Difficulty switch
+    {
+        "hard" => _loc.T("difficulty_hard"),
+        "impossible" => _loc.T("difficulty_impossible"),
+        _ => _loc.T("difficulty_normal")
+    };
+
+    private string PromptTextInput(
+        string promptMarkup,
+        string? defaultValue = null,
+        bool allowEmpty = true,
+        string? emptyError = null,
+        bool preserveNewlines = false)
+    {
+        return TextComposer.Read(
+            StandardTextComposerConsole.Instance,
+            _clipboardService,
+            new TextComposerOptions
+            {
+                PromptMarkup = promptMarkup,
+                DefaultValue = defaultValue,
+                AllowEmpty = allowEmpty,
+                EmptyError = emptyError,
+                PreserveNewlines = preserveNewlines
+            });
+    }
+
+    // ═══════════════════════════════════════════════
+    // NEW GAME FLOW
+    // ═══════════════════════════════════════════════
+
+    private async Task NewGameFlow()
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.Write(new Rule("[cyan]🌟 Новая Игра[/]").RuleStyle("cyan"));
+        AnsiConsole.WriteLine();
+
+        // Step 1: Soul name
+        var soulName = PromptTextInput($"[cyan]{_loc.T("enter_soul_name")}[/]", allowEmpty: false, emptyError: "Имя не может быть пустым");
+
+        AnsiConsole.WriteLine();
+
+        // Step 2: Guardian
+        var guardianChoice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("[cyan]Выберите способ создания Хранителя:[/]")
+                .HighlightStyle(new Style(Color.Cyan1))
+                .AddChoices(
+                    _loc.T("create_guardian"),
+                    _loc.T("choose_guardian")
+                ));
+
+        JsonObject pendingGuardianCreation;
+        if (guardianChoice == _loc.T("create_guardian"))
+        {
+            var guardianDescription = PromptTextInput($"[cyan]{_loc.T("guardian_prompt")}[/]",
+                allowEmpty: false,
+                emptyError: "Описание не может быть пустым",
+                preserveNewlines: true);
+            pendingGuardianCreation = _systemGuardianLibraryService.BuildFreeformPendingGuardianCreationNode(guardianDescription, soulName);
+        }
+        else
+        {
+            var selectedPreset = await PromptSystemGuardianPresetSelectionAsync();
+            if (selectedPreset == null)
+                return;
+
+            pendingGuardianCreation = _systemGuardianLibraryService.BuildPendingGuardianCreationNode(selectedPreset, soulName);
+        }
+
+        // Step 3: Enter the Chaos Sea — NO character/world description at this point
+        // The mortal world is NOT described at the start. Player enters it later through incarnation.
+        await InitializeChaosSea(soulName, pendingGuardianCreation);
+
+        // CRITICAL: Wait for the GM to describe the Guardian's abode before entering the loop
+        // Without this, the player sees a blank screen after starting a new game
+        if (!await WaitForGmResponse())
+            return;
+
+        // Enter game loop in Chaos Sea phase
+        await EnterGameLoop();
+    }
+
+    /// <summary>
+    /// Initialize a new game in the Chaos Sea (afterlife hub).
+    /// No mortal character or world is created yet — that happens when the player incarnates.
+    /// </summary>
+    private async Task InitializeChaosSea(string soulName, JsonObject pendingGuardianCreation)
+    {
+        // Generate session ID once — used for both chat_log.json and GameLoop
+        var sessionId = Guid.NewGuid().ToString();
+
+        AnsiConsole.Status()
+            .Spinner(Spinner.Known.Dots12)
+            .SpinnerStyle(Style.Parse("cyan"))
+            .Start(_loc.T("soul_awakens"), ctx =>
+            {
+                // Clear old state
+                _fs.ClearGameState();
+                _afterlifeArchiveCandidateService.Clear();
+
+                // Initialize soul state — realm is Chaos Sea
+                var soulState = new
+                {
+                    soulName,
+                    previousSoulNames = Array.Empty<string>(),
+                    currentRealm = "Chaos Sea",
+                    currentIncarnation = 0, // Not yet incarnated
+                    enlightenment = new { currentTier = "Новичок", experience = 0, level = 0 },
+                    inkFeathers = new { current = 0, total = 0 },
+                    soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() },
+                    afterlifeArchive = new { stored = Array.Empty<object>() },
+                    livesHistory = Array.Empty<object>(),
+                    pendingMemoryLegacy = (object?)null
+                };
+                _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json",
+                    JsonSerializer.Serialize(soulState, JsonOpts)).Wait();
+
+                // Initialize guardian
+                var guardian = new
+                {
+                    guardians = Array.Empty<object>(),
+                    activeGuardian = (object?)null,
+                    chaosSeaNavigation = new
+                    {
+                        currentAbodeId = (object?)null
+                    },
+                    pendingGuardianCreation
+                };
+                _fs.WriteFileAtomicAsync("game_state/meta/guardians.json",
+                    JsonSerializer.Serialize(guardian, JsonOpts)).Wait();
+
+                // Initialize session
+                var chatLog = new
+                {
+                    sessionId,
+                    language = "Russian",
+                    turns = Array.Empty<object>()
+                };
+                _fs.WriteFileAtomicAsync("game_state/history/chat_log.json",
+                    JsonSerializer.Serialize(chatLog, JsonOpts)).Wait();
+
+                var achievementsState = new
+                {
+                    unlockedAchievements = Array.Empty<object>(),
+                    trackedProgress = Array.Empty<object>(),
+                    stats = new
+                    {
+                        totalUnlocked = 0,
+                        byCategory = new
+                        {
+                            combat = 0,
+                            exploration = 0,
+                            story = 0,
+                            social = 0,
+                            crafting = 0,
+                            meta = 0,
+                            death = 0,
+                            secret = 0
+                        },
+                        byRarity = new
+                        {
+                            common = 0,
+                            uncommon = 0,
+                            rare = 0,
+                            epic = 0,
+                            legendary = 0
+                        }
+                    }
+                };
+                _fs.WriteFileAtomicAsync("game_state/meta/achievements.json",
+                    JsonSerializer.Serialize(achievementsState, JsonOpts)).Wait();
+
+                var codexState = new
+                {
+                    entries = Array.Empty<object>(),
+                    totalEntries = 0,
+                    categories = new
+                    {
+                        cosmology = 0,
+                        geography = 0,
+                        history = 0,
+                        cultures = 0,
+                        creatures = 0,
+                        characters = 0,
+                        artifacts = 0,
+                        factions = 0,
+                        magic = 0,
+                        other = 0
+                    }
+                };
+                _fs.WriteFileAtomicAsync("lore/codex_entries.json",
+                    JsonSerializer.Serialize(codexState, JsonOpts)).Wait();
+
+                var playerChronicle = new
+                {
+                    entries = Array.Empty<object>()
+                };
+                _fs.WriteFileAtomicAsync("lore/chaos_sea/player_chronicle.json",
+                    JsonSerializer.Serialize(playerChronicle, JsonOpts)).Wait();
+            });
+
+        _gameLoop.SetSession(sessionId, 0);
+        await RefreshCanonicalStateAsync();
+
+        // Write game settings (difficulty flags) for GM
+        await WriteGameSettingsForGm();
+
+        var guardianRequestLabel =
+            pendingGuardianCreation["presetDisplayName"]?.GetValue<string>() ??
+            pendingGuardianCreation["description"]?.GetValue<string>() ??
+            "неизвестный Хранитель";
+
+        // Send initial turn to GM — soul awakens in the Chaos Sea, not in a mortal world
+        var firstAction = $"Душа по имени «{soulName}» пробуждается в Море Хаоса. " +
+                          $"Хранитель: {guardianRequestLabel}. " +
+                          "Опиши обитель Хранителя и первую встречу с ним. " +
+                          "Это начало нового пути — душа ещё не воплотилась в смертную жизнь.";
+
+        var request = new TurnRequest
+        {
+            SessionId = _gameLoop.SessionId,
+            TurnNumber = 1,
+            PlayerAction = firstAction,
+            Timestamp = DateTime.UtcNow.ToString("o"),
+            GameMode = "normal",
+            SystemReminder = await BuildTurnSystemReminderAsync()
+        };
+        AttachFreshDiceAndGacha(request);
+        request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
+        await CreateCanonicalBaselineSnapshotAsync(request, sourceLabel: "первого описания Моря Хаоса");
+
+        ClearTransientOutputFiles();
+        await _fs.WriteFileAtomicAsync("input/turn_request.json",
+            JsonSerializer.Serialize(request, JsonOpts));
+
+        AnsiConsole.MarkupLine($"[green]🌊 {_loc.T("soul_awakens")}[/]");
+    }
+
+    /// <summary>
+    /// Handles the transition from Chaos Sea → Mortal Life through the Soul Gates.
+    /// Player configures their mortal incarnation here.
+    /// </summary>
+    private async Task HandleIncarnation()
+    {
+        AnsiConsole.Clear();
+
+        // Soul Gates banner
+        var gateFiglet = new FigletText("Soul Gates")
+            .Color(Color.Gold1)
+            .Centered();
+        AnsiConsole.Write(gateFiglet);
+        AnsiConsole.Write(new Rule("[gold1]✦ Врата Души ✦[/]").RuleStyle("gold1"));
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[yellow]Вы стоите перед Вратами Души — порталом в мир смертных.[/]");
+        AnsiConsole.MarkupLine("[dim]Настройте своё будущее воплощение перед входом.[/]");
+        AnsiConsole.WriteLine();
+
+        // Character description
+        AnsiConsole.MarkupLine("[cyan]Опишите персонажа в смертной жизни:[/]");
+        AnsiConsole.MarkupLine("[dim](Раса, класс, внешность, предыстория... или оставьте пустым)[/]");
+        var charDesc = PromptTextInput("[cyan]Персонаж:[/]", allowEmpty: true, preserveNewlines: true);
+
+        AnsiConsole.WriteLine();
+
+        // Each incarnation must create a fresh mortal-world lore set.
+        _fs.ClearCurrentWorldLore();
+
+        // World description
+        AnsiConsole.MarkupLine("[cyan]Опишите мир, в который хотите воплотиться:[/]");
+        AnsiConsole.MarkupLine("[dim](Жанр, сеттинг, особенности... или оставьте пустым — Хранитель выберет)[/]");
+        var worldDesc = PromptTextInput("[cyan]Мир:[/]", allowEmpty: true, preserveNewlines: true);
+
+        AnsiConsole.WriteLine();
+
+        // Starting circumstances
+        AnsiConsole.MarkupLine("[cyan]Обстоятельства начала (необязательно):[/]");
+        AnsiConsole.MarkupLine("[dim](Где вы появляетесь? Что происходит вокруг?)[/]");
+        var circumstances = PromptTextInput("[cyan]Обстоятельства:[/]", allowEmpty: true, preserveNewlines: true);
+
+        // Build incarnation action
+        var parts = new List<string> { "Душа входит через Врата Души и воплощается в смертную жизнь." };
+
+        if (!string.IsNullOrWhiteSpace(charDesc))
+            parts.Add($"Персонаж: {charDesc}.");
+        if (!string.IsNullOrWhiteSpace(worldDesc))
+            parts.Add($"Мир: {worldDesc}.");
+        if (!string.IsNullOrWhiteSpace(circumstances))
+            parts.Add($"Обстоятельства начала: {circumstances}.");
+        if (string.IsNullOrWhiteSpace(charDesc) && string.IsNullOrWhiteSpace(worldDesc))
+            parts.Add("Хранитель выбирает мир и обстоятельства рождения для души.");
+
+        await _worldDirectiveService.UpsertPendingSetupFromIncarnationPromptAsync(charDesc, worldDesc, circumstances);
+        await _scenarioCoreService.RefreshFromPendingSetupAsync();
+
+        var action =
+            string.Join(" ", parts) +
+            " В этом accepted turn не переключай душу локально в Mortal World и не создавай первый mortal bootstrap. " +
+            "Сначала выполни только canonical TriggerIncarnation в game_state/control/incarnation_trigger.json, используя pending incarnation_world_setup как входной контракт. " +
+            "После принятого TriggerIncarnation клиент сам выполнит локальный переход и запустит отдельный следующий ход для первого Mortal World bootstrap.";
+
+        await ProcessPlayerTurn(action);
+    }
+
+    private async Task<SystemGuardianLibraryService.SystemGuardianPresetDescriptor?> PromptSystemGuardianPresetSelectionAsync()
+    {
+        var presets = await _systemGuardianLibraryService.GetAvailablePresetsAsync(includeDossier: true);
+        var userDir = _systemGuardianLibraryService.GetUserDirectoryPath();
+
+        if (presets.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[yellow]⚠ В библиотеке извечных хранителей пока нет ни одного пресета.[/]");
+            AnsiConsole.MarkupLine($"[dim]Добавьте свои папки в: {Markup.Escape(userDir)}[/]");
+            AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
+            Console.ReadKey(true);
+            return null;
+        }
+
+        while (true)
+        {
+            var choices = presets
+                .Select(preset =>
+                    $"{preset.DisplayName} [dim]({Markup.Escape(preset.Domain)} • {Markup.Escape(preset.LibraryKind)} • v{Markup.Escape(preset.Version)})[/]")
+                .ToList();
+            choices.Add("📂 Открыть папку пользовательских извечных хранителей");
+            choices.Add(_loc.T("back"));
+
+            var selected = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[cyan]Выберите извечного Хранителя:[/]\n[dim]Это библиотека именованных хранителей, всегда доступных душе. Для игрока это ролевой термин; в файлах и валидаторе они технически называются system guardian presets.[/]")
+                    .HighlightStyle(new Style(Color.Cyan1))
+                    .PageSize(12)
+                    .AddChoices(choices));
+
+            if (selected == _loc.T("back"))
+                return null;
+
+            if (selected.StartsWith("📂", StringComparison.Ordinal))
+            {
+                OpenFolderOrPrintPath(userDir);
+                continue;
+            }
+
+            var presetIndex = choices.IndexOf(selected);
+            if (presetIndex < 0 || presetIndex >= presets.Count)
+                continue;
+
+            var preset = presets[presetIndex];
+            if (ConfirmSystemGuardianPresetSelection(preset))
+                return preset;
+        }
+    }
+
+    private bool ConfirmSystemGuardianPresetSelection(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset)
+    {
+        var dossier = preset.DossierMarkdown?.Trim() ?? "";
+        var dossierLines = dossier
+            .Replace("\r\n", "\n")
+            .Split('\n')
+            .Take(18)
+            .ToList();
+
+        if (!string.IsNullOrWhiteSpace(dossier) && dossierLines.Count < dossier.Split('\n').Length)
+            dossierLines.Add("[dim]…[/]");
+
+        var lines = new List<string>
+        {
+            $"[bold cyan]{Markup.Escape(preset.DisplayName)}[/]",
+            "",
+            $"[white]Домен:[/] {Markup.Escape(preset.Domain)}",
+            $"[white]Архетип:[/] {Markup.Escape(preset.Archetype)}",
+            $"[white]Тон:[/] {Markup.Escape(preset.Tone)}",
+            $"[white]Обитель:[/] {Markup.Escape(preset.AbodeName)}",
+            $"[white]Сводка:[/] {Markup.Escape(preset.Summary)}"
+        };
+
+        if (preset.CoreValues.Count > 0)
+            lines.Add($"[white]Ценности:[/] {Markup.Escape(string.Join(", ", preset.CoreValues))}");
+
+        if (dossierLines.Count > 0)
+        {
+            lines.Add("");
+            lines.Add("[bold]Досье:[/]");
+            lines.AddRange(dossierLines.Select(line => Markup.Escape(line)));
+        }
+
+        AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🛡️ Системный хранитель ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Cyan1),
+            Padding = new Padding(1, 1),
+            Expand = true
+        });
+
+        return AnsiConsole.Confirm("[yellow]Выбрать этого хранителя для новой игры?[/]", true);
+    }
+
+    private static void OpenFolderOrPrintPath(string directoryPath)
+    {
+        Directory.CreateDirectory(directoryPath);
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = directoryPath,
+                UseShellExecute = true
+            });
+        }
+        catch
+        {
+            AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(directoryPath)}[/]");
+            AnsiConsole.MarkupLine("[dim]Не удалось открыть папку автоматически. Путь выведен выше.[/]");
+            Console.ReadKey(true);
+        }
+    }
+
+    /// <summary>
+    /// Handles the voluntary end of mortal life — returns the soul to the Chaos Sea.
+    /// Collects a brief life summary for Guardian knowledge persistence.
+    /// </summary>
+    private async Task HandleEndOfLife()
+    {
+        var confirm = AnsiConsole.Confirm("[yellow]Вы уверены, что хотите завершить смертную жизнь?[/]", false);
+        if (!confirm)
+            return;
+
+        // Ask for brief life summary (Guardian knowledge persistence)
+        AnsiConsole.Write(new Rule("[gold1]📜 Итоги смертной жизни[/]").RuleStyle("gold1"));
+        AnsiConsole.MarkupLine("[dim]Опишите кратко, чем запомнилась эта жизнь (или оставьте пустым):[/]");
+        var lifeSummary = PromptTextInput("[cyan]Итог:[/]", allowEmpty: true, preserveNewlines: true);
+
+        var autoSummary = BuildLifeSummary(lifeSummary);
+        var action =
+            "Я осознанно завершаю эту смертную жизнь. " +
+            "В этом accepted turn НЕ проводи Оценку Жизни и НЕ переводи душу локально в итог afterlife narration. " +
+            "Сначала выполни только canonical lifecycle trigger: запиши game_state/control/life_transitions.json с reason='Voluntary' и кратким summary завершённой жизни. " +
+            "После принятого TriggerLifeEnd клиент сам запустит отдельный следующий ход для Оценки Жизни. " +
+            $"Краткий итог жизни: {autoSummary}";
+        await ProcessPlayerTurn(action);
+    }
+
+    private async Task HandleNewGamePlus()
+    {
+        if (!_stateManager.CurrentState.IsInShiningAbode)
+            return;
+
+        var confirm = AnsiConsole.Confirm("[yellow]Начать Новый Цикл? Просветление и Чернильные Перья будут сброшены. Реликвии Души и Хранители сохранятся.[/]", false);
+        if (!confirm)
+            return;
+
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var achievementsJson = await _fs.ReadFileAsync("game_state/meta/achievements.json");
+        var codexJson = await _fs.ReadFileAsync("lore/codex_entries.json");
+        var chronicleJson = await _fs.ReadFileAsync("lore/chaos_sea/player_chronicle.json");
+        var cosmologyJson = await _fs.ReadFileAsync("lore/chaos_sea/cosmology.json");
+        var soulLoreJson = await _fs.ReadFileAsync("lore/chaos_sea/soul_system_lore.json");
+        var guardiansLoreJson = await _fs.ReadFileAsync("lore/chaos_sea/guardians_lore.json");
+
+        var soulName = _stateManager.CurrentState.SoulName;
+        object previousSoulNames = Array.Empty<string>();
+        object soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() };
+        object afterlifeArchive = new { stored = Array.Empty<object>() };
+        object livesHistory = Array.Empty<object>();
+        object? crossIncarnationData = null;
+        object? soulImprint = null;
+
+        if (!string.IsNullOrWhiteSpace(soulJson))
+        {
+            using var doc = JsonDocument.Parse(soulJson);
+            var root = doc.RootElement;
+            if (root.TryGetProperty("soulName", out var sn) && sn.ValueKind == JsonValueKind.String)
+                soulName = sn.GetString() ?? soulName;
+            if (root.TryGetProperty("previousSoulNames", out var prevSoulNames))
+                previousSoulNames = JsonSerializer.Deserialize<object>(prevSoulNames.GetRawText()) ?? previousSoulNames;
+            if (root.TryGetProperty("soulRelics", out var relics))
+                soulRelics = JsonSerializer.Deserialize<object>(relics.GetRawText()) ?? soulRelics;
+            if (root.TryGetProperty("afterlifeArchive", out var archive))
+                afterlifeArchive = JsonSerializer.Deserialize<object>(archive.GetRawText()) ?? afterlifeArchive;
+            if (root.TryGetProperty("livesHistory", out var history))
+                livesHistory = JsonSerializer.Deserialize<object>(history.GetRawText()) ?? livesHistory;
+            if (root.TryGetProperty("crossIncarnationData", out var crossData))
+                crossIncarnationData = JsonSerializer.Deserialize<object>(crossData.GetRawText());
+            if (root.TryGetProperty("soulImprint", out var imprint))
+                soulImprint = JsonSerializer.Deserialize<object>(imprint.GetRawText());
+        }
+
+        _fs.ClearGameState();
+
+        var newSessionId = Guid.NewGuid().ToString();
+        var resetSoulState = new Dictionary<string, object?>
+        {
+            ["soulName"] = soulName,
+            ["previousSoulNames"] = previousSoulNames,
+            ["currentRealm"] = "Chaos Sea",
+            ["currentIncarnation"] = 0,
+            ["enlightenment"] = new { currentTier = "Новичок", experience = 0, level = 0 },
+            ["inkFeathers"] = new { current = 0, total = 0 },
+            ["soulRelics"] = soulRelics,
+            ["afterlifeArchive"] = afterlifeArchive,
+            ["livesHistory"] = livesHistory,
+            ["pendingMemoryLegacy"] = null
+        };
+        if (crossIncarnationData != null)
+            resetSoulState["crossIncarnationData"] = crossIncarnationData;
+        if (soulImprint != null)
+            resetSoulState["soulImprint"] = soulImprint;
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", JsonSerializer.Serialize(resetSoulState, JsonOpts));
+        _afterlifeArchiveCandidateService.Clear();
+        if (!string.IsNullOrWhiteSpace(guardiansJson))
+            await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansJson);
+        if (!string.IsNullOrWhiteSpace(achievementsJson))
+            await _fs.WriteFileAtomicAsync("game_state/meta/achievements.json", achievementsJson);
+        if (!string.IsNullOrWhiteSpace(codexJson))
+            await _fs.WriteFileAtomicAsync("lore/codex_entries.json", codexJson);
+        if (!string.IsNullOrWhiteSpace(chronicleJson))
+            await _fs.WriteFileAtomicAsync("lore/chaos_sea/player_chronicle.json", chronicleJson);
+        if (!string.IsNullOrWhiteSpace(cosmologyJson))
+            await _fs.WriteFileAtomicAsync("lore/chaos_sea/cosmology.json", cosmologyJson);
+        if (!string.IsNullOrWhiteSpace(soulLoreJson))
+            await _fs.WriteFileAtomicAsync("lore/chaos_sea/soul_system_lore.json", soulLoreJson);
+        if (!string.IsNullOrWhiteSpace(guardiansLoreJson))
+            await _fs.WriteFileAtomicAsync("lore/chaos_sea/guardians_lore.json", guardiansLoreJson);
+
+        var chatLog = new
+        {
+            sessionId = newSessionId,
+            startedAt = DateTime.UtcNow.ToString("o"),
+            turns = Array.Empty<object>()
+        };
+        await _fs.WriteFileAtomicAsync("game_state/history/chat_log.json", JsonSerializer.Serialize(chatLog, JsonOpts));
+
+        _gameLoop.SetSession(newSessionId, 0);
+        await _storyService.AppendMarkerAsync("Chaos Sea", 0, "NEW_GAME_PLUS", "Начат Новый Цикл после Вознесения. Просветление сброшено, Реликвии Души и Хранители сохранены.");
+        await RefreshCanonicalStateAsync();
+        GameInterface.RenderRealmTransition(true);
+        AnsiConsole.MarkupLine("[yellow]✨ Новый Цикл начался. Вы снова в Море Хаоса.[/]");
+    }
+
+    /// <summary>
+    /// Builds a GameResponse by reading from the individual output files that the GM daemon writes.
+    /// Reads: output/narrative_response.json, output/interface_updates.json, output/debug_logs.json
+    /// </summary>
+
+    private async Task LoadGameFlow()
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.Write(new Rule("[cyan]📂 Загрузка игры[/]").RuleStyle("cyan"));
+        AnsiConsole.WriteLine();
+
+        var allSaves = new List<SaveInfo>();
+
+        // Collect from all save dirs
+        foreach (var dir in new[] { "saves/manual_saves", "saves/autosaves", "saves/checkpoint_saves" })
+        {
+            allSaves.AddRange(await _saveLoad.GetAvailableSavesAsync(dir));
+        }
+
+        if (allSaves.Count == 0)
+        {
+            AnsiConsole.MarkupLine($"[yellow]{_loc.T("no_saves")}[/]");
+            AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
+            Console.ReadKey(true);
+            return;
+        }
+
+        var choices = allSaves.Select(s =>
+        {
+            var meta = s.Metadata;
+            var name = meta?.SaveName ?? Path.GetFileNameWithoutExtension(s.FileName);
+            var turn = meta?.TurnNumber ?? 0;
+            var loc = meta?.CurrentLocation ?? "?";
+            var date = meta?.Timestamp.ToString("dd.MM.yyyy HH:mm") ?? "?";
+            var size = s.FileSize / 1024;
+            return $"{name} | Ход {turn} | {loc} | {date} | {size}KB";
+        }).Append(_loc.T("back")).ToArray();
+
+        var selected = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("[cyan]Выберите сохранение:[/]")
+                .HighlightStyle(new Style(Color.Cyan1))
+                .PageSize(15)
+                .AddChoices(choices));
+
+        if (selected == _loc.T("back")) return;
+
+        var idx = Array.IndexOf(choices, selected);
+        if (idx < 0 || idx >= allSaves.Count) return;
+
+        var saveInfo = allSaves[idx];
+
+        var success = await _saveLoad.LoadGameAsync(saveInfo.FileName);
+        if (success)
+        {
+            AnsiConsole.MarkupLine($"[green]{_loc.T("load_success")}[/]");
+
+            if (saveInfo.Metadata != null)
+            {
+                _gameLoop.SetSession(
+                    _stateManager.CurrentState.SessionId,
+                    saveInfo.Metadata.TurnNumber);
+            }
+
+            await Task.Delay(1000);
+
+            // Ensure game settings (difficulty) are synced to game_state for GM
+            await WriteGameSettingsForGm();
+            await NormalizeRuntimeUiArtifactsAsync();
+
+            // Build response from saved output files for initial display
+            _lastResponse = await BuildGameResponseFromFiles();
+            if (!await ValidateCurrentGameStateOrShowErrorsAsync("загрузки сохранения"))
+                return;
+
+            await EnterGameLoop();
+        }
+        else
+        {
+            AnsiConsole.MarkupLine($"[red]{_loc.T("load_failed")}[/]");
+            Console.ReadKey(true);
+        }
+    }
+
+}
+

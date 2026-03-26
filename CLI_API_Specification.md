@@ -223,6 +223,11 @@ CLI Agent automatically loads current game state from:
   // META-GAME SYSTEM  
   "metaStateUpdates": "object with soul progression changes",
   "UpdateGuardians": "array of guardian_command_objects (see Guardian Commands below)",
+  "startGuardianProjects": "array of guardian_project_start_objects",
+  "guardianProjectUpdates": "array of guardian_project_update_objects",
+  "completeGuardianProjects": "array of guardian_project_completion_objects",
+  "guardianPowerEvents": "array of guardian_abode_power_event_objects",
+  "afterlifeArchiveUpdates": "array of afterlife_archive_update_objects",
   "playerBehaviorAssessment": "object with behavior analysis",
   "historyManipulationCoefficient": "number (0.0-2.0)",
   "characterChronicleUpdates": "array of character_chronicle_objects",
@@ -448,8 +453,11 @@ Quest state contract notes:
 - If a new same-turn faction is authored only with `initialId`/`initialFactionId`, the client normalizes that temporary tag into the stored `factionId` inside canonical faction files for that accepted turn. Subsequent turns must target the faction by `factionId`.
 
 #### **META-GAME SYSTEM**
-- `game_state/meta/soul_state.json` ← `metaStateUpdates`
-- `game_state/meta/guardians.json` ← `UpdateGuardians`
+- `game_state/meta/soul_state.json` ← `metaStateUpdates`, `afterlifeArchiveUpdates`
+- `game_state/meta/guardians.json` ← `UpdateGuardians`, `guardianPowerEvents`
+- `game_state/meta/guardian_projects.json` ← `startGuardianProjects`, `guardianProjectUpdates`, `completeGuardianProjects`
+- `game_state/meta/guardian_project_journal.json` ← client-generated readable guardian project chronology
+- `game_state/meta/abode_power_journal.json` ← client-generated readable guardian power chronology
 - `game_state/meta/player_behavior.json` ← `playerBehaviorAssessment`, `historyManipulationCoefficient`
 - `game_state/meta/character_chronicle.json` ← `characterChronicleUpdates`
 - `game_state/meta/achievements.json` ← `achievementUnlocks`
@@ -609,12 +617,13 @@ The Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive.
 - It does NOT create `turn_request.json`, does NOT require `ink_feather_action_result.json`, and is separate from roleplay trade through the GM.
 - Local guardian trade is available only with the current active Guardian in the current abode.
 - In the buy flow, the client must let the player inspect a relic's properties before confirming purchase.
-- If persisted guardian trade stock is partial, malformed, or economically inconsistent with its own generation/pricing tiers, the client regenerates stock for the current trade cycle rather than reusing invalid data.
-- Local guardian trade stock uses a fixed 4-slot economy:
-  - stock size: 4 relics
-  - refresh: first trade access in the current return from mortal life; regenerate after the next return to the Chaos Sea
-  - rarity caps are determined at generation time from the Guardian's reputation tier at that moment
-  - later reopen within the same cycle may reprice stock for the current reputation tier, but does not reroll slot rarity
+- Guardian trade stock is explicit authored state in `guardian.tradeInventory`; the client does NOT derive stock from `guardian.domain`.
+- If persisted guardian trade stock is missing, stale, malformed, or economically inconsistent, the client creates `pending_guardian_trade_request.json` and asks the GM to materialize a fresh explicit inventory for the current cycle instead of silently generating it.
+- Once matching `guardian.tradeInventory` appears, the client derives a ready-notification in `afterlife_notifications.json`; the GM does not write this notification separately.
+- Local guardian trade stock uses the authored guardian inventory contract:
+  - stock size must still respect derived Abode Power slot count
+  - stock contents/rarity are authored upstream and stored in `guardian.tradeInventory.items`
+  - later reopen within the same cycle may reprice stock for the current reputation tier, but does not reroll or regenerate contents
   - generation-time rarity caps:
     - Hostile: no trade
     - Wary / Neutral: up to Uncommon
@@ -644,6 +653,9 @@ The Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive.
   - persisted `tradeInventory` stores:
     - `generationReputationTier`
     - `pricingReputationTier`
+  - guardian trade stock is explicit authored state in `guardian.tradeInventory`; the client does NOT derive stock from `guardian.domain`
+  - if `guardian.tradeInventory` is absent or malformed for the current cycle, the client writes `pending_guardian_trade_request.json` and waits for a GM-materialized inventory
+  - when the pending request resolves into a matching explicit inventory, the client surfaces that response through `/afterlife_inbox` and related afterlife banners
   - the local sell panel offers only stored Soul Relics; equipped relics are not auto-sold
 
 ### Local NPC Trade Panel
@@ -1236,7 +1248,8 @@ Image authoring contract for Guardian data:
   // processGacha.result is a reward/result surface, not the full canonical relic inventory payload.
   // Use the full Soul Relic Object when writing canonical soul/meta relic state.
   // Guardian-mediated processGacha is limited per Guardian per return from mortal life:
-  // Hostile(-100..-51)=0, Wary/Neutral(-50..49)=1, Friendly(50..129)=2, Devoted/Legendary(130..300)=3.
+  // reputation tier defines the BASE charges: Hostile(-100..-51)=0, Wary/Neutral(-50..49)=1, Friendly(50..129)=2, Devoted/Legendary(130..300)=3.
+  // abode power may add bonus charges on top of the reputation-based base.
   // Charges reset only when the Soul returns to the Chaos Sea after a new mortal life.
   // If a Guardian has no remaining charges this return, do NOT emit processGacha for that Guardian.
   // A successful processGacha consumes one Guardian charge for the current return.
@@ -1255,20 +1268,6 @@ Image authoring contract for Guardian data:
         "text": "string (Russian)"
       }
     ]
-  },
-  // Update Guardian's current project
-  {
-    "command": "updateProject",
-    "guardianId": "string",
-    "currentProject": {
-      "projectId": "string",
-      "name": "string",
-      "description": "string",
-      "progressPercent": "integer (0-100)",
-      "estimatedTurnsLeft": "integer",
-      "playerCanAssist": "boolean",
-      "assistDescription": "string (optional)"
-    }
   },
   // Unlock a lore fragment at reputation threshold
   {
@@ -1296,8 +1295,111 @@ Image authoring contract for Guardian data:
 ]
 ```
 
+### Guardian Project Commands
+
+Guardian project lifecycle no longer uses `UpdateGuardians.updateProject`.
+Use dedicated top-level surfaces instead:
+
+```json
+"startGuardianProjects": [
+  {
+    "guardianId": "string",
+    "project": { /* full active guardian project object */ }
+  }
+],
+"guardianProjectUpdates": [
+  {
+    "guardianId": "string",
+    "projectId": "string",
+    "activeState": "string",
+    "workDone": "integer",
+    "currentStage": "integer",
+    "pressure": "integer",
+    "stability": "integer",
+    "pressureAudit": { /* object */ },
+    "stabilityAudit": { /* object */ },
+    "workAudit": { /* object */ }
+  }
+],
+"completeGuardianProjects": [
+  {
+    "guardianId": "string",
+    "projectId": "string",
+    "finalState": "Completed | Abandoned | Sabotaged | Collapsed",
+    "outcome": "string",
+    "abodePowerDelta": "integer",
+    "targetGuardianId": "string|null",
+    "offensiveImpactAudit": { /* object or null */ }
+  }
+]
+```
+
+Guardian quest origin contract for lore-derived quests:
+- `questOrigin = lore_research_hook` -> ordinary lore-research hook quest, consumes one `questHookToken`
+- `questOrigin = lore_research_special_line` -> special quest line unlocked by `lore_research`
+- `questOrigin = archive_consultation_hook` -> guaranteed extra guardian quest created from `archive consultation` with a `lore_fragment`
+- Every object in `guardian.questManagement.availableQuests`, `activeQuests`, and `completedQuests` must carry a non-empty `questId`; do not use `title`, `questOrigin`, or `sourceProjectId` as surrogate identity.
+- All three origins must carry `sourceProjectId` of the completed `lore_research` project that granted the effect.
+- If a quest with `archive_consultation_hook` is completed, keep `questOrigin` and `sourceProjectId` in `completedQuests` so the guaranteed-origin audit trail survives completion.
+
+### Guardian Abode Power Events
+
+Canonical Abode Power changes must flow through `guardianPowerEvents` or be client-materialized from guardian project completion into the same journal/history model. Do not treat raw `guardian.abodePower.currentPower` mutation as the primary GM-facing contract.
+
+```json
+"guardianPowerEvents": [
+  {
+    "eventId": "string",
+    "guardianId": "string",
+    "delta": "integer",
+    "reasonType": "guardian_quest | project_assist | project_completion | project_failure | offering | resonance | correction_spend | rival_strike | rival_defense",
+    "sourceSurface": "string",
+    "sourceId": "string",
+    "title": "string",
+    "summary": "string",
+    "visibility": "player_known | hidden",
+    "relatedGuardianId": "string|null",
+    "audit": { /* machine-readable audit object required */ }
+  }
+]
+```
+
+### Guardian Corrections / Scenario Core / Afterlife Control Files
+- `game_state/control/next_life_scenario_core.json` ← client-owned Scenario Core manifest for the next life
+- `game_state/world/guardian_corrections.json` ← applied guardian corrections for the current life
+- `game_state/control/pending_abode_offering.json` ← client-authored pending offering request
+- `game_state/control/archive_candidate_manifest.json` ← client-authored Life Evaluation manifest for codex-derived archive candidates
+- `game_state/control/pending_guardian_trade_request.json` ← client-authored request to materialize an explicit guardian trade inventory for the current return-cycle
+- `game_state/control/pending_archive_consultation_request.json` ← client-authored request over a reserved archive entry for consultation
+- `game_state/control/pending_archive_project_fuel_request.json` ← client-authored request over a reserved archive entry for project fuel
+- `game_state/control/afterlife_notifications.json` ← client-owned inbox of guardian-system events: GM responses for guardian trade readiness, archive action outcomes, and new guardian quests materialized from canonical quest origins
+- `archiveActionResolutions` ← GM-authored resolution surface written into `game_state/meta/soul_state.json`; each resolution closes a pending archive request with `status = accepted | rejected | cancelled`
+  - for accepted `consultation`, also pass machine-readable whitelist outcome fields: `guaranteedArchiveQuestCount`, `questHookCount`, `specialQuestLineUnlocks`, `visibleRivalClueBonus`, `archiveWarningTierBonus`
+  - for accepted `project_fuel`, also pass `resultMode = project_work | pressure_relief` and `resultAmount > 0`
+- `afterlifeArchiveUpdates` ← exceptional/system archive rewards written into `game_state/meta/soul_state.json`
+- `afterlifeArchive.stored[]` entries may carry:
+  - optional `sourceGuardianId`
+- `archive consultation` and `archive project fuel` are client-side afterlife actions built on top of `afterlifeArchive.stored[]`, but they now use pending client-authored requests plus GM-materialized canonical results; the client does not derive compatibility from guardian domain.
+- Pending archive actions reserve the archive entry immediately. The entry is consumed only on `accepted`; on `rejected` or `cancelled` it returns to normal archive availability.
+- `afterlife_notifications.json` is fully client-derived from existing canonical request/result surfaces and canonical guardian quest availability; the GM does not author inbox text manually.
+
+### Rival Arc Bonus Clue Attribution
+- If a player-visible extra rival clue is revealed through completed `lore_research`, use:
+  - `bonusClueSourceProjectId`
+  - `bonusClueRevealId`
+  - optional `bonusClueCost`
+- This applies to both `publicSignals` and linked `worldEventsLog` entries.
+- Every `publicSignals[]` object must include boolean `visibleToPlayer`.
+- Linked `worldEventsLog` entries count as player-visible rival clues only when `visibility` is `Public`, `Regional`, or `player_known`.
+- If a `Secret` or `Faction-Internal` event becomes known to the player through actual play, use `visibility = player_known` on the linked player-facing world event entry.
+- Hidden linked `Secret` / `Faction-Internal` world events do not consume visible rival clue budget until they become `Public`, `Regional`, or `player_known`.
+- If the same extra clue is mirrored across both surfaces, reuse the same `bonusClueRevealId` so the client consumes clue budget only once.
+
 ### Guardian Data Storage
-- `game_state/meta/guardians.json` ← All Guardian data including inner life (musings, projects, lore fragments, mood)
+- `game_state/meta/guardians.json` ← Guardian core state (identity, reputation, abodePower, mood, lore, musings)
+- `game_state/meta/guardian_projects.json` ← authoritative guardian project tracker
+- `game_state/meta/guardian_project_journal.json` ← player-facing readable guardian project chronology
+- `game_state/meta/abode_power_journal.json` ← player-facing readable journal of Abode Power changes
 - **NOT** stored in `game_state/npcs/` — Guardians are NOT NPCs
 
 ### Guardian Inner-Life Metadata Contract

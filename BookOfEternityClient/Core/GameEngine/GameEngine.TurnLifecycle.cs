@@ -1,0 +1,2224 @@
+using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
+using Microsoft.Extensions.Logging;
+using Spectre.Console;
+
+namespace BookOfEternityClient.Core;
+
+public partial class GameEngine
+{
+    private async Task<bool> WaitForGmResponse()
+    {
+        var manifest = await LoadPendingTurnSnapshotManifestAsync();
+        var rollbackSnapshot = GetRollbackSnapshot(manifest);
+        using var cts = new CancellationTokenSource();
+        var startTime = DateTime.UtcNow;
+
+        var waitTask = Task.Run(async () =>
+        {
+            while (!cts.Token.IsCancellationRequested)
+            {
+                if (_fs.FileExists("ready/turn_complete.json"))
+                    return true;
+                if (_fs.FileExists("ready/turn_error.json"))
+                    return false;
+                await Task.Delay(500, cts.Token);
+            }
+            return false;
+        }, cts.Token);
+
+        var result = await AnsiConsole.Status()
+            .Spinner(Spinner.Known.Dots12)
+            .SpinnerStyle(Style.Parse("cyan"))
+            .StartAsync(_loc.T("thinking"), async ctx =>
+            {
+                var keyTask = Task.Run(() =>
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        if (Console.KeyAvailable)
+                        {
+                            var key = Console.ReadKey(true);
+                            if (key.Key == ConsoleKey.Escape)
+                            {
+                                cts.Cancel();
+                                return;
+                            }
+                        }
+                        Thread.Sleep(100);
+                    }
+                });
+
+                while (!waitTask.IsCompleted && !cts.IsCancellationRequested)
+                {
+                    var elapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
+                    if (elapsed < 15)
+                        ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
+                    else if (elapsed < 120)
+                        ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
+                    else
+                        ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
+                    await Task.Delay(1000);
+                }
+
+                try { return await waitTask; }
+                catch (OperationCanceledException) { return false; }
+            });
+
+        if (cts.IsCancellationRequested)
+        {
+            _pendingMemoryLegacyAwaitingConsumption = false;
+            AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
+            _fs.DeleteFile("input/turn_request.json");
+            _fs.DeleteFile("ready/turn_complete.json");
+            _fs.DeleteFile("ready/turn_error.json");
+            if (HasRollbackCapability(rollbackSnapshot))
+            {
+                await RestorePreTurnBackup(rollbackSnapshot!);
+                CleanupBackup(rollbackSnapshot!);
+                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён, состояние восстановлено из rollback backup. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён. Rollback backup для этого режима недоступен; если GM завершит уже отправленный ход позже, он всё равно придёт как отложенный ответ.[/]");
+            }
+            return false;
+        }
+
+        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(manifest, rollbackSnapshot);
+        if (terminalOutcome.Kind == "failure")
+        {
+            _pendingMemoryLegacyAwaitingConsumption = false;
+            return false;
+        }
+
+        if (terminalOutcome.Kind == "success")
+        {
+            var signal = terminalOutcome.Signal;
+            var expectedTurn = signal?.TurnNumber ?? manifest?.TurnNumber ?? (_gameLoop.TurnNumber + 1);
+            if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                    "ответа GM",
+                    rollbackSnapshot,
+                    expectedTurn,
+                    manifest?.ProgressionControl))
+            {
+                _pendingMemoryLegacyAwaitingConsumption = false;
+                _fs.DeleteFile("ready/turn_complete.json");
+                _fs.DeleteFile("ready/turn_error.json");
+                await CleanupPendingTurnSnapshotAsync();
+                return false;
+            }
+
+            _audioService.PlayCue(AudioCue.TurnReady);
+            var response = await BuildGameResponseFromFiles();
+            _gameLoop.IncrementTurn();
+
+            // Debug: log narrative length to help diagnose rendering issues
+            if (string.IsNullOrEmpty(response?.Response))
+                AnsiConsole.MarkupLine("[yellow dim]⚠ Нарратив пуст в ответе GM[/]");
+
+            _lastResponse = response;
+            _pendingImagePrompt = null;
+
+            await CheckLifeTransitions();
+            await CheckAscensionTrigger();
+
+            if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
+                await FinalizePendingMemoryLegacyConsumptionAsync();
+
+            _pendingMemoryLegacyAwaitingConsumption = false;
+
+            var qteHandling = await HandleAcceptedQteOfferAsync(response, manifest);
+            if (qteHandling.EarlyExit)
+            {
+                _fs.DeleteFile("ready/turn_complete.json");
+                await CleanupPendingTurnSnapshotAsync();
+                return true;
+            }
+
+            _lastResponse = qteHandling.Response;
+            _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
+
+            if (IsIncarnationSourceLabel(manifest?.SourceLabel))
+                await _worldDirectiveService.MaterializePendingToActiveAsync();
+
+            await ConsumeAfterlifeReturnProtectionIfNeededAsync(manifest);
+
+            _fs.DeleteFile("ready/turn_complete.json");
+            await CleanupPendingTurnSnapshotAsync();
+            return true;
+        }
+
+        _pendingMemoryLegacyAwaitingConsumption = false;
+        await ShowTurnErrorMessageAsync("ready/turn_error.json");
+        _fs.DeleteFile("ready/turn_error.json");
+
+        if (HasRollbackCapability(rollbackSnapshot))
+        {
+            await RestorePreTurnBackup(rollbackSnapshot!);
+            CleanupBackup(rollbackSnapshot!);
+            AnsiConsole.MarkupLine("[yellow]↩ Переходный ход завершился ошибкой GM. Состояние откатилось к последней стабильной версии.[/]");
+        }
+
+        await CleanupPendingTurnSnapshotAsync();
+        return false;
+    }
+
+    /// <summary>
+    /// Waits for GM response without side effects (no turn increment, no CheckLifeTransitions).
+    /// Used by transition methods that manage their own state.
+    /// Returns true if response received, false if cancelled/error.
+    /// </summary>
+    private async Task<bool> WaitForGmResponseRaw()
+    {
+        var manifest = await LoadPendingTurnSnapshotManifestAsync();
+        var rollbackSnapshot = GetRollbackSnapshot(manifest);
+        using var cts = new CancellationTokenSource();
+        var startTime = DateTime.UtcNow;
+
+        var waitTask = Task.Run(async () =>
+        {
+            while (!cts.Token.IsCancellationRequested)
+            {
+                if (_fs.FileExists("ready/turn_complete.json"))
+                    return true;
+                if (_fs.FileExists("ready/turn_error.json"))
+                    return false;
+                await Task.Delay(500, cts.Token);
+            }
+            return false;
+        }, cts.Token);
+
+        var result = await AnsiConsole.Status()
+            .Spinner(Spinner.Known.Dots12)
+            .SpinnerStyle(Style.Parse("cyan"))
+            .StartAsync(_loc.T("thinking"), async ctx =>
+            {
+                var keyTask = Task.Run(() =>
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        if (Console.KeyAvailable)
+                        {
+                            var key = Console.ReadKey(true);
+                            if (key.Key == ConsoleKey.Escape)
+                            {
+                                cts.Cancel();
+                                return;
+                            }
+                        }
+                        Thread.Sleep(100);
+                    }
+                });
+
+                while (!waitTask.IsCompleted && !cts.IsCancellationRequested)
+                {
+                    var elapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
+                    if (elapsed < 15)
+                        ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
+                    else if (elapsed < 120)
+                        ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
+                    else
+                        ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
+                    await Task.Delay(1000);
+                }
+
+                try { return await waitTask; }
+                catch (OperationCanceledException) { return false; }
+            });
+
+        if (cts.IsCancellationRequested)
+        {
+            AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
+            _fs.DeleteFile("input/turn_request.json");
+            _fs.DeleteFile("ready/turn_complete.json");
+            _fs.DeleteFile("ready/turn_error.json");
+            if (HasRollbackCapability(rollbackSnapshot))
+            {
+                await RestorePreTurnBackup(rollbackSnapshot!);
+                CleanupBackup(rollbackSnapshot!);
+                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён, состояние восстановлено из rollback backup. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[dim]Переходный ход локально отменён. Rollback backup для этого режима недоступен; если GM завершит уже отправленный ход позже, он всё равно придёт как отложенный ответ.[/]");
+            }
+            return false;
+        }
+
+        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(manifest, rollbackSnapshot);
+        if (terminalOutcome.Kind == "failure")
+            return false;
+
+        if (terminalOutcome.Kind == "error")
+        {
+            await ShowTurnErrorMessageAsync("ready/turn_error.json");
+            _fs.DeleteFile("ready/turn_error.json");
+
+            if (HasRollbackCapability(rollbackSnapshot))
+            {
+                await RestorePreTurnBackup(rollbackSnapshot!);
+                CleanupBackup(rollbackSnapshot!);
+                AnsiConsole.MarkupLine("[yellow]↩ Переходный ход завершился ошибкой GM. Состояние откатилось к последней стабильной версии.[/]");
+            }
+
+            await CleanupPendingTurnSnapshotAsync();
+            return false;
+        }
+
+        _audioService.PlayCue(AudioCue.TurnReady);
+
+        return true;
+    }
+
+    // ═══════════════════════════════════════════════
+    // GAME LOOP
+    // ═══════════════════════════════════════════════
+
+    private async Task EnterGameLoop()
+    {
+        _inGame = true;
+        await _audioService.PlayInGameMusicAsync();
+        await NormalizePendingRepairArtifactsAsync();
+        await NormalizePendingTerminalProtocolFailureArtifactsAsync();
+
+        // Check if there's already a correlated completion signal waiting
+        if (_fs.FileExists("ready/turn_complete.json"))
+        {
+            await RefreshCanonicalStateAsync();
+        }
+
+        while (_inGame)
+        {
+            try
+            {
+            // Pick up late responses (agent finished after cancel/timeout, or response from previous turn)
+            var manifest = await LoadPendingTurnSnapshotManifestAsync();
+            var rollbackSnapshot = GetRollbackSnapshot(manifest);
+            if (await ResolveConcurrentActiveTerminalSignalsAsync(manifest, rollbackSnapshot))
+                continue;
+
+            if (_fs.FileExists("ready/turn_error.json"))
+            {
+                var signal = await ReadReadySignalMetadataAsync("ready/turn_error.json");
+                if (await DiscardMismatchedReadySignalAsync("late turn_error", signal, manifest))
+                    continue;
+
+                var signalTurn = signal?.TurnNumber;
+                var expectedTurn = _gameLoop.TurnNumber + 1;
+                if (signalTurn.HasValue && signalTurn.Value != expectedTurn)
+                {
+                    _logger.LogWarning("Игнорируется late error для хода {Turn}, ожидался ход {ExpectedTurn}", signalTurn.Value, expectedTurn);
+                    _fs.DeleteFile("ready/turn_error.json");
+                    ClearTransientOutputFiles();
+                    await CleanupPendingTurnSnapshotAsync();
+                    continue;
+                }
+
+                await ShowTurnErrorMessageAsync("ready/turn_error.json");
+                if (HasRollbackCapability(rollbackSnapshot))
+                {
+                    await RestorePreTurnBackup(rollbackSnapshot!);
+                    CleanupBackup(rollbackSnapshot!);
+                    AnsiConsole.MarkupLine("[yellow]↩ Поздний сигнал ошибки GM восстановил последнюю стабильную версию состояния.[/]");
+                }
+
+                _fs.DeleteFile("ready/turn_error.json");
+                await CleanupPendingTurnSnapshotAsync();
+                continue;
+            }
+
+        if (_fs.FileExists("ready/turn_complete.json"))
+        {
+            var signal = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
+            if (await DiscardMismatchedReadySignalAsync("late turn_complete", signal, manifest))
+                continue;
+
+                var signalTurn = signal?.TurnNumber;
+                var expectedTurn = _gameLoop.TurnNumber + 1;
+                if (signalTurn.HasValue && signalTurn.Value != expectedTurn)
+                {
+                    _logger.LogWarning("Игнорируется late response для хода {Turn}, ожидался ход {ExpectedTurn}", signalTurn.Value, expectedTurn);
+                    _fs.DeleteFile("ready/turn_complete.json");
+                    ClearTransientOutputFiles();
+                    await CleanupPendingTurnSnapshotAsync();
+                    continue;
+                }
+
+                if (await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                        "late response GM",
+                        GetRollbackSnapshot(manifest),
+                        signalTurn ?? expectedTurn,
+                        manifest?.ProgressionControl))
+                {
+                    var lateResponse = await BuildGameResponseFromFiles();
+                    if (lateResponse == null || string.IsNullOrEmpty(lateResponse.Response))
+                        AnsiConsole.MarkupLine("[yellow dim]⚠ Нарратив пуст в late response GM[/]");
+                    else
+                    _lastResponse = lateResponse;
+                    _pendingImagePrompt = null;
+                    _gameLoop.IncrementTurn();
+                    await CheckLifeTransitions();
+                    await CheckAscensionTrigger();
+                    if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
+                        await FinalizePendingMemoryLegacyConsumptionAsync();
+
+                    var qteHandling = await HandleAcceptedQteOfferAsync(lateResponse, manifest);
+                    if (!qteHandling.EarlyExit)
+                    {
+                        _lastResponse = qteHandling.Response;
+                        _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
+                    }
+
+                    if (IsIncarnationSourceLabel(manifest?.SourceLabel))
+                        await _worldDirectiveService.MaterializePendingToActiveAsync();
+
+                    await ConsumeAfterlifeReturnProtectionIfNeededAsync(manifest);
+                }
+                _fs.DeleteFile("ready/turn_complete.json");
+                await CleanupPendingTurnSnapshotAsync();
+            }
+
+            // Check for GM-initiated incarnation (GM sends player to Mortal World)
+            await CheckAscensionTrigger();
+            await CheckGmIncarnationTrigger();
+
+            var resumedQte = await _qteSceneService.ResumeActiveSceneIfAnyAsync(_gameLoop.TurnNumber);
+            if (resumedQte != null)
+            {
+                _lastResponse = resumedQte.Response;
+                _pendingImagePrompt = resumedQte.Response?.ImagePrompt;
+                await ProcessStatsIncreasedAsync();
+                await _charService.ComputeAndWriteAsync();
+                await CheckLevelUpAsync();
+                await CheckLifeTransitions();
+                await CheckAscensionTrigger();
+                continue;
+            }
+
+            // Detect console resize — if width changed, just re-render (loop continues)
+            try
+            {
+                var currentWidth = Console.WindowWidth;
+                if (_lastConsoleWidth > 0 && currentWidth != _lastConsoleWidth)
+                {
+                    await NormalizeRuntimeUiArtifactsAsync();
+                    await RefreshCanonicalStateAsync();
+                }
+                _lastConsoleWidth = currentWidth;
+            }
+            catch { }
+
+            // Render current state (preserve last response for dialogue options etc.)
+            _ui.RenderGameScreen(_stateManager.CurrentState, _lastResponse, _gameLoop.TurnNumber);
+
+            // Show scene image if pending (after game screen so it stays visible during input)
+            if (!string.IsNullOrEmpty(_pendingImagePrompt))
+            {
+                await _imageService.ProcessSceneImagePrompt(_pendingImagePrompt);
+                _pendingImagePrompt = null;
+            }
+
+            // Get player input (with Shift+Enter for multiline)
+            var input = await GetPlayerInput();
+
+            if (string.IsNullOrWhiteSpace(input))
+                continue;
+
+            // Check for in-game menu commands
+            if (input.Equals("/refresh", StringComparison.OrdinalIgnoreCase) ||
+                input.Equals("/обновить", StringComparison.OrdinalIgnoreCase))
+            {
+                await NormalizeRuntimeUiArtifactsAsync();
+                await RefreshCanonicalStateAsync();
+                var refreshedResponse = MergeWithLastResponse(await BuildGameResponseFromFiles());
+                if (!await ValidateCurrentGameStateOrShowErrorsAsync("ручного обновления"))
+                    continue;
+                _lastResponse = refreshedResponse;
+                _pendingImagePrompt = null; // Don't re-trigger image on refresh
+                AnsiConsole.MarkupLine("[green]✔ Состояние игры обновлено из файлов[/]");
+                await Task.Delay(600);
+                continue; // Re-renders on next loop iteration
+            }
+
+            if (input.Equals("/options", StringComparison.OrdinalIgnoreCase) ||
+                input.Equals("/опции", StringComparison.OrdinalIgnoreCase))
+            {
+                var shouldContinue = await InGameOptionsMenu();
+                if (!shouldContinue)
+                {
+                    _inGame = false;
+                    continue;
+                }
+                continue;
+            }
+
+            // Check for incarnation command (Chaos Sea → Mortal Life)
+            if ((input.Equals("/incarnate", StringComparison.OrdinalIgnoreCase) ||
+                 input.Equals("/воплотиться", StringComparison.OrdinalIgnoreCase)) &&
+                _stateManager.CurrentState.IsInChaosSea)
+            {
+                await HandleIncarnation();
+                await WaitForGmResponse();
+                continue;
+            }
+
+            if ((input.Equals("/new_game_plus", StringComparison.OrdinalIgnoreCase) ||
+                 input.Equals("/новая_игра+", StringComparison.OrdinalIgnoreCase)) &&
+                _stateManager.CurrentState.IsInShiningAbode)
+            {
+                await HandleNewGamePlus();
+                continue;
+            }
+
+            // Check for end of life command (Mortal Life → Chaos Sea)
+            if ((input.Equals("/end_of_life", StringComparison.OrdinalIgnoreCase) ||
+                 input.Equals("/конец_жизни", StringComparison.OrdinalIgnoreCase)) &&
+                !_stateManager.CurrentState.IsInAfterlifeRealm)
+            {
+                await HandleEndOfLife();
+                continue;
+            }
+
+            // Check for local explorer commands
+            if (_explorer.IsCommand(input))
+            {
+                var result = await _explorer.TryProcessCommand(input);
+                if (result != null)
+                {
+                    // If the command produced a GM action (e.g., equip/unequip), send it
+                    if (result.Length > 0)
+                        await ProcessPlayerTurn(result);
+                    continue;
+                }
+
+                // Recognized slash prefix but unknown command
+                var cmd = input.Trim().Split(' ')[0];
+                AnsiConsole.MarkupLine($"[yellow]⚠️ Неизвестная команда: {GameInterface.EscapeMarkup(cmd)}[/]");
+                AnsiConsole.MarkupLine("[dim]Введите /help для списка доступных команд.[/]");
+                continue;
+            }
+
+            // Send to GM
+            await ProcessPlayerTurn(input);
+
+            }
+            catch (Exception ex)
+            {
+                LogError(ex);
+                AnsiConsole.MarkupLine($"\n[red]❌ Ошибка в игровом цикле: {GameInterface.EscapeMarkup(ex.Message)}[/]");
+                AnsiConsole.MarkupLine("[dim]Ошибка сохранена в game_session/error_log.txt. Данные не потеряны.[/]");
+                AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
+                Console.ReadKey(true);
+            }
+        }
+    }
+
+    private async Task ProcessPlayerTurn(string action, string? extraSystemReminder = null)
+    {
+        var clearsSystemGuardianAttraction = action.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:", StringComparison.OrdinalIgnoreCase);
+        var clearsPendingAbodeOffering = action.Contains($"[INK_FEATHER_ACTION: {GuardianAbodeOfferingState.ActionTag}]", StringComparison.OrdinalIgnoreCase);
+
+        // Create backup of game state files before sending turn (for escape-rollback)
+        var backupId = DateTime.UtcNow.Ticks.ToString();
+        var backedUpFiles = await CreatePreTurnBackup(backupId);
+
+        // Write turn request
+        var request = new TurnRequest
+        {
+            SessionId = _gameLoop.SessionId,
+            TurnNumber = _gameLoop.TurnNumber + 1,
+            PlayerAction = action,
+            Timestamp = DateTime.UtcNow.ToString("o"),
+            GameMode = _stateManager.Settings.AllowHistoryManipulation ? "debug" : "normal",
+            SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)
+        };
+        await AttachPendingDiceAndGachaAsync(request);
+        request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
+        var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
+
+        // Attach computed characteristics for GM reference
+        try
+        {
+            var computed = await _charService.ComputeAsync();
+            var charContext = new Dictionary<string, object>();
+            foreach (var (name, stat) in computed.Stats)
+            {
+                charContext[name] = new
+                {
+                    standard = stat.BaseValue,
+                    permanentlyModified = stat.PermanentlyModified,
+                    modified = stat.Modified
+                };
+            }
+            request.ComputedCharacteristics = new
+            {
+                playerLevel = computed.PlayerLevel,
+                unspentStatPoints = computed.UnspentStatPoints,
+                stats = charContext
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Не удалось вычислить характеристики для контекста");
+        }
+
+        ClearTransientOutputFiles();
+        await _fs.WriteFileAtomicAsync("input/turn_request.json",
+            JsonSerializer.Serialize(request, JsonOpts));
+
+        // Show waiting status — no hard timeout, only Escape cancels
+        using var cts = new CancellationTokenSource();
+        var startTime = DateTime.UtcNow;
+
+        var waitTask = Task.Run(async () =>
+        {
+            while (!cts.Token.IsCancellationRequested)
+            {
+                if (_fs.FileExists("ready/turn_complete.json"))
+                    return true;
+                if (_fs.FileExists("ready/turn_error.json"))
+                    return false;
+                await Task.Delay(500, cts.Token);
+            }
+            return false;
+        }, cts.Token);
+
+        // Show spinner while waiting, allow Escape to cancel
+        var result = await AnsiConsole.Status()
+            .Spinner(Spinner.Known.Dots12)
+            .SpinnerStyle(Style.Parse("cyan"))
+            .StartAsync(_loc.T("thinking"), async ctx =>
+            {
+                var keyTask = Task.Run(() =>
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        if (Console.KeyAvailable)
+                        {
+                            var key = Console.ReadKey(true);
+                            if (key.Key == ConsoleKey.Escape)
+                            {
+                                cts.Cancel();
+                                return;
+                            }
+                        }
+                        Thread.Sleep(100);
+                    }
+                });
+
+                while (!waitTask.IsCompleted && !cts.IsCancellationRequested)
+                {
+                    var elapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
+                    if (elapsed < 15)
+                        ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
+                    else if (elapsed < 120)
+                        ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
+                    else
+                        ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
+                    await Task.Delay(1000);
+                }
+
+                try
+                {
+                    return await waitTask;
+                }
+                catch (OperationCanceledException)
+                {
+                    return false;
+                }
+            });
+
+        if (cts.IsCancellationRequested)
+        {
+            AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
+            // Delete the turn request, clean ready signals, and rollback game state
+            _fs.DeleteFile("input/turn_request.json");
+            _fs.DeleteFile("ready/turn_complete.json");
+            _fs.DeleteFile("ready/turn_error.json");
+            _fs.DeleteFile("output/ink_feather_action_result.json");
+            _qteSceneService.ClearOfferFile();
+            await RestorePreTurnBackup(backedUpFiles);
+            AnsiConsole.MarkupLine("[dim]Изменения локально отменены, состояние восстановлено. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
+            CleanupBackup(backedUpFiles);
+            if (clearsSystemGuardianAttraction)
+                _systemGuardianLibraryService.ClearAttractionRequest();
+            if (clearsPendingAbodeOffering)
+                GuardianAbodeOfferingState.Clear(_fs);
+            return;
+        }
+
+        var activeManifest = await LoadPendingTurnSnapshotManifestAsync();
+        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(activeManifest, backedUpFiles);
+        if (terminalOutcome.Kind == "failure")
+            return;
+
+        if (terminalOutcome.Kind == "error")
+        {
+            await ShowTurnErrorMessageAsync("ready/turn_error.json");
+            _fs.DeleteFile("ready/turn_error.json");
+            _fs.DeleteFile("output/ink_feather_action_result.json");
+            _qteSceneService.ClearOfferFile();
+            await CleanupPendingTurnSnapshotAsync();
+            CleanupBackup(backedUpFiles);
+            if (clearsPendingAbodeOffering)
+                GuardianAbodeOfferingState.Clear(_fs);
+            return;
+        }
+
+        // Read and validate the response before accepting the turn
+        if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                "обработки хода",
+                backedUpFiles,
+                request.TurnNumber,
+                request.ProgressionControl))
+        {
+            _fs.DeleteFile("ready/turn_complete.json");
+            _fs.DeleteFile("ready/turn_error.json");
+            _fs.DeleteFile("output/ink_feather_action_result.json");
+            _qteSceneService.ClearOfferFile();
+            _fs.DeleteFile("input/turn_request.json");
+            await CleanupPendingTurnSnapshotAsync();
+            if (clearsPendingAbodeOffering)
+                GuardianAbodeOfferingState.Clear(_fs);
+            return;
+        }
+        var response = await BuildGameResponseFromFiles();
+
+        // Turn accepted — backup no longer needed
+        CleanupBackup(backedUpFiles);
+        await CleanupPendingTurnSnapshotAsync();
+        if (clearsSystemGuardianAttraction)
+            _systemGuardianLibraryService.ClearAttractionRequest();
+        if (clearsPendingAbodeOffering)
+            GuardianAbodeOfferingState.Clear(_fs);
+
+        _gameLoop.IncrementTurn();
+        await _pendingTurnState.RotateAfterAcceptedTurnAsync();
+        _lastResponse = response;
+        _pendingImagePrompt = null;
+
+        // Persist turn to story file
+        var state = _stateManager.CurrentState;
+        await _storyService.AppendTurnAsync(
+            _gameLoop.TurnNumber,
+            state.CurrentRealm ?? "Chaos Sea",
+            state.Incarnation,
+            action,
+            response?.Response,
+            state.CurrentLocation);
+
+        // Process statsIncreased and recompute modified characteristics
+        await ProcessStatsIncreasedAsync();
+        await _charService.ComputeAndWriteAsync();
+
+        // Check for level-up: if level increased, grant 5 stat points
+        await CheckLevelUpAsync();
+
+        // Check for GM-triggered life transitions
+        await CheckLifeTransitions();
+        await CheckAscensionTrigger();
+
+        var qteHandling = await HandleAcceptedQteOfferAsync(response, activeManifest);
+        if (qteHandling.EarlyExit)
+            return;
+
+        _lastResponse = qteHandling.Response;
+        _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
+
+        // Autosave
+        if (_stateManager.Settings.AutosaveIntervalTurns > 0 &&
+            _gameLoop.TurnNumber % _stateManager.Settings.AutosaveIntervalTurns == 0)
+        {
+            await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
+        }
+
+        // Cleanup ready signal
+        _fs.DeleteFile("ready/turn_complete.json");
+    }
+
+    private async Task<(bool EarlyExit, GameResponse Response)> HandleAcceptedQteOfferAsync(
+        GameResponse? response,
+        PendingTurnSnapshotManifest? manifest)
+    {
+        response ??= new GameResponse();
+        var offer = await _qteSceneService.TryReadOfferAsync();
+        if (offer == null)
+        {
+            await _qteSceneService.ClearDeclineMarkerAsync();
+            return (false, response);
+        }
+
+        if (!QteSceneService.IsEligibleOfferSourceLabel(manifest?.SourceLabel))
+        {
+            _logger.LogError(
+                "QTE offer {QteId} получен вне обычного игрокского хода (SourceLabel={SourceLabel}) и будет проигнорирован.",
+                offer.QteId,
+                manifest?.SourceLabel ?? "<missing>");
+            _qteSceneService.ClearOfferFile();
+            return (false, response);
+        }
+
+        var decision = await _qteSceneService.PromptOfferDecisionAsync(offer);
+        if (decision == QteSceneService.QteOfferDecision.Decline)
+        {
+            await _qteSceneService.RecordDeclineAsync(offer, _gameLoop.TurnNumber);
+            _fs.DeleteFile("ready/turn_complete.json");
+            _fs.DeleteFile("ready/turn_error.json");
+
+            var originalAction = manifest?.PlayerAction;
+            if (!string.IsNullOrWhiteSpace(originalAction) &&
+                QteSceneService.IsEligibleOfferSourceLabel(manifest?.SourceLabel))
+            {
+                var declineReminder =
+                    $"[QTE_DECLINED:{offer.QteId}] Игрок отклонил QTE-сценарий. Разреши ту же ситуацию обычными игровыми механиками. Повторно предлагать этот qteId запрещено.";
+                await ProcessPlayerTurn(originalAction, declineReminder);
+            }
+
+            return (true, response);
+        }
+
+        var completion = await _qteSceneService.StartAcceptedSceneAsync(offer, _gameLoop.TurnNumber);
+        await ProcessStatsIncreasedAsync();
+        await _charService.ComputeAndWriteAsync();
+        await CheckLevelUpAsync();
+        await CheckLifeTransitions();
+        await CheckAscensionTrigger();
+        return (false, completion.Response);
+    }
+
+    /// <summary>
+    /// Reads statsIncreased from status_changes.json, applies +1 with Training Cap,
+    /// awards XP compensation if blocked, then clears the statsIncreased field.
+    /// </summary>
+    private async Task ProcessStatsIncreasedAsync()
+    {
+        try
+        {
+            var json = await _fs.ReadFileAsync("game_state/player/status_changes.json");
+            if (json == null) return;
+
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("statsIncreased", out var si)) return;
+
+            // Parse stats array
+            var statsToIncrease = new List<string>();
+            if (si.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in si.EnumerateArray())
+                {
+                    if (item.ValueKind == JsonValueKind.String)
+                        statsToIncrease.Add(item.GetString() ?? "");
+                }
+            }
+
+            if (statsToIncrease.Count == 0) return;
+
+            var (applied, blocked) = await _charService.ApplyStatsIncreasedAsync(statsToIncrease.ToArray());
+
+            // Award XP compensation for blocked stats
+            if (blocked.Count > 0)
+            {
+                var expForNext = 100; // default
+                var expJson = await _fs.ReadFileAsync("game_state/player/experience.json");
+                if (expJson != null)
+                {
+                    try
+                    {
+                        using var expDoc = JsonDocument.Parse(expJson);
+                        if (expDoc.RootElement.TryGetProperty("experienceForNextLevel", out var efn) &&
+                            efn.ValueKind == JsonValueKind.Number)
+                            expForNext = efn.GetInt32();
+                    }
+                    catch { /* use default */ }
+                }
+                var xpComp = Math.Max(25, (int)Math.Round(expForNext * 0.05));
+
+                // Write compensation XP (will be picked up by state refresh)
+                var compObj = new { experienceCompensation = xpComp * blocked.Count, reason = "Training Cap compensation" };
+                _logger.LogInformation("Training Cap: {Count} стат заблокировано, XP компенсация: {XP}",
+                    blocked.Count, xpComp * blocked.Count);
+            }
+
+            // Show notifications
+            foreach (var stat in applied)
+            {
+                var ruName = Characteristics.RussianNames.GetValueOrDefault(stat, stat);
+                AnsiConsole.MarkupLine($"  [green]📈 {Markup.Escape(ruName)} +1 (тренировка)[/]");
+            }
+            foreach (var stat in blocked)
+            {
+                var ruName = Characteristics.RussianNames.GetValueOrDefault(stat, stat);
+                AnsiConsole.MarkupLine($"  [yellow]⚠ {Markup.Escape(ruName)}: Training Cap достигнут[/]");
+            }
+
+            // Clear statsIncreased after processing
+            var dict = new Dictionary<string, object?>();
+            foreach (var prop in doc.RootElement.EnumerateObject())
+            {
+                if (prop.Name == "statsIncreased") continue;
+                dict[prop.Name] = JsonSerializer.Deserialize<object>(prop.Value.GetRawText());
+            }
+
+            await _fs.WriteFileAtomicAsync("game_state/player/status_changes.json",
+                JsonSerializer.Serialize(dict, JsonOpts));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Ошибка обработки statsIncreased");
+        }
+    }
+
+    /// <summary>
+    /// Detects level-up by reading current level from player_status or experience.json
+    /// and comparing with last known level. Grants 5 stat points on level-up.
+    /// </summary>
+    private async Task CheckLevelUpAsync()
+    {
+        try
+        {
+            var currentLevel = 1;
+
+            // Check experience.json for level info (GM writes this)
+            var expJson = await _fs.ReadFileAsync("game_state/player/experience.json");
+            if (expJson != null)
+            {
+                using var doc = JsonDocument.Parse(expJson);
+                if (doc.RootElement.TryGetProperty("level", out var lvl) &&
+                    lvl.ValueKind == JsonValueKind.Number)
+                    currentLevel = lvl.GetInt32();
+                else if (doc.RootElement.TryGetProperty("playerLevel", out var pl) &&
+                    pl.ValueKind == JsonValueKind.Number)
+                    currentLevel = pl.GetInt32();
+            }
+
+            // Also check player_status for level
+            if (currentLevel <= 1)
+            {
+                var statusJson = await _fs.ReadFileAsync("game_state/core/player_status.json");
+                if (statusJson != null)
+                {
+                    using var doc = JsonDocument.Parse(statusJson);
+                    if (doc.RootElement.TryGetProperty("level", out var lvl) &&
+                        lvl.ValueKind == JsonValueKind.Number)
+                        currentLevel = lvl.GetInt32();
+                }
+            }
+
+            if (currentLevel > _lastKnownLevel)
+            {
+                var levelsGained = currentLevel - _lastKnownLevel;
+                var totalPoints = levelsGained * 5;
+
+                AnsiConsole.WriteLine();
+                AnsiConsole.Write(new Rule("[gold1]⭐ ПОВЫШЕНИЕ УРОВНЯ![/]").RuleStyle("gold1"));
+                AnsiConsole.MarkupLine($"  [bold yellow]Уровень {_lastKnownLevel} → {currentLevel}[/]");
+                AnsiConsole.MarkupLine($"  [green]+{totalPoints} очков характеристик![/]");
+                AnsiConsole.WriteLine();
+
+                await _charService.AddStatPoints(totalPoints);
+                _lastKnownLevel = currentLevel;
+
+                // Offer stat distribution
+                await ShowStatDistribution($"Повышение уровня! +{totalPoints} очков характеристик");
+            }
+            else
+            {
+                _lastKnownLevel = currentLevel;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Ошибка проверки уровня");
+        }
+    }
+
+    /// <summary>
+    /// Checks for GM-triggered life transitions (death in mortal world → Chaos Sea).
+    /// Sends life evaluation request to GM, waits for response with rewards, shows reward screen.
+    /// </summary>
+    private async Task CheckLifeTransitions()
+    {
+        var transJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
+        if (transJson == null) return;
+
+        var currentRealm = _stateManager.CurrentState.CurrentRealm ?? string.Empty;
+        if (string.Equals(currentRealm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(currentRealm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(currentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(currentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        RollbackSnapshot? rollbackBackups = null;
+        var localStateMutated = false;
+        var manifestCreated = false;
+        var requestDispatched = false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(transJson);
+            var root = doc.RootElement;
+
+            // If TriggerLifeEnd is present, transition back to Chaos Sea
+            if (!TryReadLifeTransitionPayload(root, out var reason, out var summary))
+                return;
+
+            rollbackBackups = await CreatePreTurnBackup(DateTime.UtcNow.Ticks.ToString());
+
+            // === PHASE 1: Death screen ===
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(new FigletText("Death").Color(Color.DarkRed).Centered());
+            AnsiConsole.Write(new Rule("[yellow]💀 Конец смертной жизни[/]").RuleStyle("yellow"));
+
+            if (!string.IsNullOrEmpty(reason))
+                AnsiConsole.MarkupLine($"[yellow]Причина: {GameInterface.EscapeMarkup(reason)}[/]");
+            if (!string.IsNullOrEmpty(summary))
+                AnsiConsole.MarkupLine($"[dim]{GameInterface.EscapeMarkup(summary)}[/]");
+
+            AnsiConsole.MarkupLine($"\n[grey]{_loc.T("press_any_key")}[/]");
+            Console.ReadKey(true);
+
+            // === PHASE 2: Capture pre-death state for reward comparison ===
+            var preDeathInkFeathers = _stateManager.CurrentState.InkFeathers;
+            var preDeathEnlightenment = _stateManager.CurrentState.EnlightenmentTier;
+            var preDeathSoulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+            // Build life summary for Guardian knowledge persistence
+            var lifeSummary = BuildLifeSummary(summary);
+
+            // Mark end of mortal life in story
+            localStateMutated = true;
+            var deathState = _stateManager.CurrentState;
+            var lifecycleMarker = string.Equals(reason, "Voluntary", StringComparison.OrdinalIgnoreCase)
+                ? "VOLUNTARY_END"
+                : "DEATH";
+            await _storyService.AppendMarkerAsync(
+                "Mortal World", deathState.Incarnation,
+                lifecycleMarker, $"Конец смертной жизни. Причина: {reason}. {summary}");
+
+            // === PHASE 3: Update realm and send life evaluation to GM ===
+            await UpdateSoulStateRealm("Chaos Sea", lifeSummary);
+            _fs.ClearCurrentWorldLore();
+
+            // Clean up transition signal BEFORE sending turn (avoid re-trigger)
+            _fs.DeleteFile("game_state/control/life_transitions.json");
+
+            // Send life evaluation request to GM
+            var evalRequest = new TurnRequest
+            {
+                SessionId = _gameLoop.SessionId,
+                TurnNumber = _gameLoop.TurnNumber + 1,
+                PlayerAction = "Душа покидает смертную оболочку. Начинается Оценка Жизни (Block 31.1). " +
+                               "Рассчитай награду за прожитую жизнь: Чернильные Перья (формула из Block 31.1.2), " +
+                               "обнови просветление (Block 31.1.3), запиши завершённую инкарнацию в metaStateUpdates. " +
+                               "Создай Реликвии Души из значимых моментов жизни (Block 31.2). " +
+                               "После оценки опиши возвращение в Море Хаоса к Хранителю. " +
+                               $"Краткий итог жизни: {lifeSummary}",
+                Timestamp = DateTime.UtcNow.ToString("o"),
+                GameMode = "normal",
+                SystemReminder = await BuildTurnSystemReminderAsync()
+            };
+            AttachFreshDiceAndGacha(evalRequest);
+            evalRequest.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync("Chaos Sea");
+            await CreateCanonicalBaselineSnapshotAsync(evalRequest, rollbackBackups, LifeEvaluationRewardAnalyzer.AutomaticLifeEvaluationSourceLabel);
+            manifestCreated = true;
+
+            ClearTransientOutputFiles();
+            await _fs.WriteFileAtomicAsync("input/turn_request.json",
+                JsonSerializer.Serialize(evalRequest, JsonOpts));
+            requestDispatched = true;
+
+            // Visual transition to Chaos Sea
+            GameInterface.RenderRealmTransition(true);
+
+            // === PHASE 4: Wait for GM response with life evaluation ===
+            // Use raw wait — no turn increment, no recursive CheckLifeTransitions
+            if (await WaitForGmResponseRaw())
+            {
+                var manifest = await LoadPendingTurnSnapshotManifestAsync();
+                if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                        "оценки жизни",
+                        GetRollbackSnapshot(manifest),
+                        _gameLoop.TurnNumber + 1,
+                        evalRequest.ProgressionControl))
+                {
+                    _fs.DeleteFile("ready/turn_complete.json");
+                    await CleanupPendingTurnSnapshotAsync();
+                    return;
+                }
+
+                var evalResponse = await BuildGameResponseFromFiles();
+                _gameLoop.IncrementTurn();
+                _lastResponse = evalResponse;
+                _pendingImagePrompt = evalResponse?.ImagePrompt;
+
+                // Log the evaluation turn to story
+                await _storyService.AppendTurnAsync(
+                    _gameLoop.TurnNumber,
+                    "Chaos Sea", 0,
+                    "[LIFE_EVALUATION] Оценка прожитой жизни",
+                    evalResponse?.Response,
+                    "Море Хаоса");
+
+                // === PHASE 5: Show reward screen ===
+                await ShowLifeEvaluationRewards(preDeathInkFeathers, preDeathEnlightenment, preDeathSoulStateJson);
+                var guardianContext = await _afterlifeReturnGuardService.ReadActiveGuardianContextAsync();
+                await _afterlifeReturnGuardService.ActivatePostLifeReturnAsync(
+                    guardianContext.GuardianId,
+                    guardianContext.GuardianName,
+                    _gameLoop.TurnNumber);
+
+                _fs.DeleteFile("ready/turn_complete.json");
+                await CleanupPendingTurnSnapshotAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            if (!requestDispatched)
+                await CleanupUndispatchedTransitionPrepAsync(rollbackBackups, localStateMutated, manifestCreated);
+            _logger.LogWarning(ex, "Ошибка обработки перехода жизни");
+        }
+    }
+
+    /// <summary>
+    /// Displays life evaluation rewards — comparing before/after soul state.
+    /// </summary>
+    private async Task ShowLifeEvaluationRewards(int preDeathInkFeathers, string preDeathEnlightenment, string? preDeathSoulStateJson)
+    {
+        // Re-read soul state for latest values (GM should have updated it)
+        await RefreshCanonicalStateAsync();
+        await _afterlifeArchiveCandidateService.RefreshFromCurrentStateAsync();
+        var state = _stateManager.CurrentState;
+
+        var newInkFeathers = state.InkFeathers;
+        var newEnlightenment = state.EnlightenmentTier;
+        var feathersEarned = newInkFeathers - preDeathInkFeathers;
+
+        var relicCount = 0;
+        var newRelics = new List<string>();
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (LifeEvaluationRewardAnalyzer.TryComputeDelta(preDeathSoulStateJson, soulJson, out var rewardDelta, out _) &&
+            rewardDelta != null)
+        {
+            feathersEarned = rewardDelta.InkFeathersEarned;
+            newRelics = rewardDelta.NewRelics
+                .Select(relic => string.IsNullOrWhiteSpace(relic.Rarity)
+                    ? relic.Name
+                    : $"{relic.Name} ({relic.Rarity})")
+                .ToList();
+            relicCount = rewardDelta.NewRelics.Count;
+        }
+        else if (soulJson != null)
+        {
+            try
+            {
+                using var soulDoc = JsonDocument.Parse(soulJson);
+                if (soulDoc.RootElement.TryGetProperty("soulRelics", out var relics))
+                {
+                    if (relics.TryGetProperty("stored", out var stored) && stored.ValueKind == JsonValueKind.Array)
+                        relicCount += stored.GetArrayLength();
+                    if (relics.TryGetProperty("equipped", out var equipped) && equipped.ValueKind == JsonValueKind.Array)
+                        relicCount += equipped.GetArrayLength();
+
+                    // Try to find recently acquired relics
+                    foreach (var arr in new[] { "stored", "equipped" })
+                    {
+                        if (relics.TryGetProperty(arr, out var ra) && ra.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var relic in ra.EnumerateArray())
+                            {
+                                if (relic.TryGetProperty("acquisitionData", out var acq) &&
+                                    acq.TryGetProperty("acquisitionStory", out _))
+                                {
+                                    var name = relic.TryGetProperty("name", out var n) ? n.GetString() ?? "?" : "?";
+                                    var rarity = relic.TryGetProperty("rarity", out var rar) ? rar.GetString() ?? "" : "";
+                                    newRelics.Add($"{name} ({rarity})");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
+        // Build reward panel
+        AnsiConsole.Clear();
+        AnsiConsole.Write(new FigletText("Life Evaluation").Color(Color.Gold1).Centered());
+        AnsiConsole.Write(new Rule("[gold1]✦ Оценка Прожитой Жизни ✦[/]").RuleStyle("gold1"));
+        AnsiConsole.WriteLine();
+
+        // Show narrative response first (GM's evaluation text)
+        if (_lastResponse != null && !string.IsNullOrEmpty(_lastResponse.Response))
+        {
+            AnsiConsole.Write(new Panel(new Markup(GameInterface.EscapeMarkup(_lastResponse.Response)))
+            {
+                Header = new PanelHeader(" 📜 Слова Высших Сил ", Justify.Center),
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Gold1),
+                Padding = new Padding(2, 1),
+                Expand = true
+            });
+            AnsiConsole.WriteLine();
+        }
+
+        // Rewards table
+        var rewardsTable = new Table()
+            .Border(TableBorder.Rounded)
+            .BorderColor(Color.Gold1)
+            .Expand()
+            .AddColumn(new TableColumn("[bold gold1]Награда[/]").NoWrap())
+            .AddColumn(new TableColumn("[bold gold1]Значение[/]"));
+
+        // Ink Feathers
+        var featherColor = feathersEarned > 0 ? "green" : "yellow";
+        var featherSign = feathersEarned > 0 ? "+" : "";
+        rewardsTable.AddRow(
+            "🪶 Чернильные Перья",
+            $"[{featherColor}]{featherSign}{feathersEarned}[/]  [dim]({preDeathInkFeathers} → {newInkFeathers})[/]");
+
+        // Enlightenment
+        var enlChanged = !string.Equals(preDeathEnlightenment, newEnlightenment, StringComparison.OrdinalIgnoreCase);
+        rewardsTable.AddRow(
+            "✨ Просветление",
+            enlChanged
+                ? $"[green]{GameInterface.EscapeMarkup(preDeathEnlightenment)} → {GameInterface.EscapeMarkup(newEnlightenment)}[/]"
+                : $"[dim]{GameInterface.EscapeMarkup(newEnlightenment)}[/]");
+
+        // Soul Relics
+        rewardsTable.AddRow(
+            "💎 Реликвии Души",
+            relicCount > 0 ? $"[cyan]+{relicCount} новых[/]" : "[dim]Новых реликвий нет[/]");
+
+        // Lives lived
+        rewardsTable.AddRow(
+            "🔄 Инкарнация",
+            $"[white]#{state.Incarnation}[/]  [dim]({_gameLoop.TurnNumber} ходов прожито)[/]");
+
+        AnsiConsole.Write(rewardsTable);
+
+        // Show new relics if any
+        if (newRelics.Count > 0)
+        {
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(new Rule("[cyan]💎 Реликвии[/]").RuleStyle("cyan"));
+            foreach (var relic in newRelics)
+                AnsiConsole.MarkupLine($"  [cyan]✦[/] {GameInterface.EscapeMarkup(relic)}");
+        }
+
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[dim]Вы вернулись в Море Хаоса. Ваш путь продолжается...[/]");
+        AnsiConsole.MarkupLine($"\n[grey]{_loc.T("press_any_key")}[/]");
+        Console.ReadKey(true);
+    }
+
+    /// <summary>
+    /// Checks for GM-initiated incarnation trigger.
+    /// GM can write game_state/control/incarnation_trigger.json to send the player to Mortal World.
+    /// </summary>
+    private async Task CheckGmIncarnationTrigger()
+    {
+        var triggerJson = await _fs.ReadFileAsync("game_state/control/incarnation_trigger.json");
+        if (triggerJson == null) return;
+        if (!_stateManager.CurrentState.IsInChaosSea) 
+        {
+            _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+            return;
+        }
+
+        RollbackSnapshot? rollbackBackups = null;
+        var localStateMutated = false;
+        var manifestCreated = false;
+        var requestDispatched = false;
+
+        try
+        {
+            if (!IncarnationTriggerContract.TryParse(triggerJson, out var payload))
+            {
+                _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+                return;
+            }
+
+            var rawReturnGuard = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
+            if (payload.IsGuardianForced && !string.IsNullOrWhiteSpace(rawReturnGuard))
+            {
+                if (!AfterlifeReturnGuardService.TryParse(rawReturnGuard, out var activeReturnGuard))
+                {
+                    _logger.LogWarning(
+                        "guardian_forced incarnation trigger ignored because afterlife_return_guard is invalid. Failing closed to preserve the protected return turn.");
+                    _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+                    return;
+                }
+
+                if (activeReturnGuard.RemainingProtectedTurns > 0)
+                {
+                    _logger.LogWarning(
+                        "guardian_forced incarnation trigger ignored because afterlife_return_guard is still active (remainingProtectedTurns={Turns}).",
+                        activeReturnGuard.RemainingProtectedTurns);
+                    _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+                    return;
+                }
+            }
+            var worldDesc = payload.WorldDescription;
+            var charDesc = payload.CharacterDescription;
+            var circumstances = payload.Circumstances;
+
+            // Show the GM-initiated incarnation banner
+            AnsiConsole.Clear();
+            AnsiConsole.Write(new FigletText("Soul Gates").Color(Color.Gold1).Centered());
+            AnsiConsole.Write(payload.IsGuardianForced
+                ? new Rule("[darkred]✦ Хранитель насильно распахивает Врата Души ✦[/]").RuleStyle("darkred")
+                : new Rule("[gold1]✦ Врата Души открываются ✦[/]").RuleStyle("gold1"));
+            AnsiConsole.WriteLine();
+            if (payload.IsGuardianForced)
+            {
+                AnsiConsole.MarkupLine("[red]Враждебный Хранитель навязывает душе новое смертное воплощение.[/]");
+                if (!string.IsNullOrWhiteSpace(payload.Reason))
+                    AnsiConsole.MarkupLine($"[yellow]Причина санкции:[/] {GameInterface.EscapeMarkup(payload.Reason)}");
+                if (!string.IsNullOrWhiteSpace(payload.ProvocationSummary))
+                    AnsiConsole.MarkupLine($"[dim]Повод: {GameInterface.EscapeMarkup(payload.ProvocationSummary)}[/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[yellow]Хранитель направляет вас через Врата Души в мир смертных...[/]");
+            }
+
+            if (!string.IsNullOrWhiteSpace(worldDesc))
+                AnsiConsole.MarkupLine($"[dim]Мир: {GameInterface.EscapeMarkup(worldDesc)}[/]");
+            if (!string.IsNullOrWhiteSpace(charDesc))
+                AnsiConsole.MarkupLine($"[dim]Персонаж: {GameInterface.EscapeMarkup(charDesc)}[/]");
+            if (!string.IsNullOrWhiteSpace(circumstances))
+                AnsiConsole.MarkupLine($"[dim]Обстоятельства: {GameInterface.EscapeMarkup(circumstances)}[/]");
+
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
+            Console.ReadKey(true);
+
+            // Build incarnation action from GM-provided data
+            var parts = new List<string>
+            {
+                payload.IsGuardianForced
+                    ? "Враждебный Хранитель насильно отправляет душу через Врата Души в тяжёлую смертную жизнь."
+                    : "Хранитель направляет душу через Врата Души в мир смертных."
+            };
+            if (payload.IsGuardianForced)
+            {
+                if (!string.IsNullOrWhiteSpace(payload.GuardianId))
+                    parts.Add($"Источник санкции: guardianId={payload.GuardianId}.");
+                if (!string.IsNullOrWhiteSpace(payload.Reason))
+                    parts.Add($"Причина: {payload.Reason}.");
+                if (!string.IsNullOrWhiteSpace(payload.ProvocationSummary))
+                    parts.Add($"Провокация игрока: {payload.ProvocationSummary}.");
+                if (!string.IsNullOrWhiteSpace(payload.SeverityBand))
+                    parts.Add($"Тяжесть старта: {payload.SeverityBand}.");
+            }
+            if (!string.IsNullOrWhiteSpace(charDesc))
+                parts.Add($"Персонаж: {charDesc}.");
+            if (!string.IsNullOrWhiteSpace(worldDesc))
+                parts.Add($"Мир: {worldDesc}.");
+            if (!string.IsNullOrWhiteSpace(circumstances))
+                parts.Add($"Обстоятельства: {circumstances}.");
+
+            rollbackBackups = await CreatePreTurnBackup(DateTime.UtcNow.Ticks.ToString());
+
+            // Each incarnation must create a fresh mortal-world lore set.
+            _fs.ClearCurrentWorldLore();
+            await _afterlifeReturnGuardService.ClearAsync();
+
+            // Update soul state: switch realm to Mortal World and increment incarnation
+            localStateMutated = true;
+            await UpdateSoulStateRealm("Mortal World", incrementIncarnation: true);
+            await _rivalSoulArcService.ResetForNewLifeAsync();
+            await _guardianCorrectionService.ApplyForNewLifeAsync(_stateManager.CurrentState.Incarnation + 1);
+
+            // Initialize fresh mortal status
+            var status = new
+            {
+                healthPercentage = "100%",
+                energyPercentage = "100%",
+                poisePercentage = "100%",
+                currentCondition = "Здоров",
+                activeConditions = Array.Empty<string>(),
+                money = 0
+            };
+            await _fs.WriteFileAtomicAsync("game_state/core/player_status.json",
+                JsonSerializer.Serialize(status, JsonOpts));
+
+            // Initialize empty mortal inventory
+            var inventory = new
+            {
+                items = Array.Empty<object>(),
+                equipment = new
+                {
+                    head = (object?)null, body = (object?)null, hands = (object?)null,
+                    feet = (object?)null, mainHand = (object?)null, offHand = (object?)null,
+                    neck = (object?)null, ring1 = (object?)null, ring2 = (object?)null
+                },
+                totalWeight = 0,
+                maxWeight = 45
+            };
+            await _fs.WriteFileAtomicAsync("game_state/inventory/items.json",
+                JsonSerializer.Serialize(inventory, JsonOpts));
+
+            // Mark new incarnation in story
+            await _storyService.AppendMarkerAsync(
+                "Chaos Sea", 0,
+                "INCARNATION", $"Душа воплощается в новую смертную жизнь. Инкарнация #{_stateManager.CurrentState.Incarnation + 1}.");
+
+            // Initialize characteristics for new incarnation
+            await _charService.InitializeForNewIncarnation();
+            var memoryLegacySummary = await ApplyPendingMemoryLegacyForIncarnationAsync();
+            if (!string.IsNullOrWhiteSpace(memoryLegacySummary))
+            {
+                AnsiConsole.MarkupLine($"[magenta]🧠 Наследие Памяти:[/] {Markup.Escape(memoryLegacySummary)}");
+                AnsiConsole.WriteLine();
+                parts.Add($"Активировано Наследие Памяти: {memoryLegacySummary}.");
+            }
+            await ShowStatDistribution("Новая инкарнация — распределите начальные очки характеристик");
+            await CapturePendingMemoryLegacyApplicationAuditAsync();
+
+            // Send incarnation turn to GM
+            var request = new TurnRequest
+            {
+                SessionId = _gameLoop.SessionId,
+                TurnNumber = _gameLoop.TurnNumber + 1,
+                PlayerAction = string.Join(" ", parts),
+                Timestamp = DateTime.UtcNow.ToString("o"),
+                GameMode = "normal",
+                SystemReminder = await BuildTurnSystemReminderAsync()
+            };
+            AttachFreshDiceAndGacha(request);
+            request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync("Mortal World");
+            await CreateCanonicalBaselineSnapshotAsync(request, rollbackBackups, "GM-инициированного воплощения");
+            manifestCreated = true;
+            ClearTransientOutputFiles();
+            await _fs.WriteFileAtomicAsync("input/turn_request.json",
+                JsonSerializer.Serialize(request, JsonOpts));
+            requestDispatched = true;
+
+            // Clean up trigger file
+            _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+
+            // Visual transition
+            GameInterface.RenderRealmTransition(false);
+
+            // Wait for GM response describing the new mortal world
+            if (await WaitForGmResponse())
+            {
+                await RefreshCanonicalStateAsync();
+                await _worldDirectiveService.MaterializePendingToActiveAsync(worldDesc, circumstances);
+            }
+        }
+        catch (Exception ex)
+        {
+            _pendingMemoryLegacyAwaitingConsumption = false;
+            if (!requestDispatched)
+                await CleanupUndispatchedTransitionPrepAsync(rollbackBackups, localStateMutated, manifestCreated);
+            LogError(ex);
+            _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+        }
+    }
+
+    private async Task CheckAscensionTrigger()
+    {
+        var ascensionJson = await _fs.ReadFileAsync("game_state/control/ascension.json");
+        if (string.IsNullOrWhiteSpace(ascensionJson))
+            return;
+
+        if (!_stateManager.CurrentState.IsInAfterlifeRealm || _stateManager.CurrentState.IsInShiningAbode)
+        {
+            _fs.DeleteFile("game_state/control/ascension.json");
+            return;
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(ascensionJson);
+            var root = doc.RootElement;
+            var triggered =
+                root.TryGetProperty("AscensionTrigger", out var legacyTrigger) &&
+                legacyTrigger.ValueKind == JsonValueKind.True;
+            var playerChoice = root.TryGetProperty("playerChoice", out var playerChoiceProp) &&
+                               playerChoiceProp.ValueKind == JsonValueKind.String
+                ? playerChoiceProp.GetString() ?? ""
+                : "";
+
+            if (!triggered || !string.Equals(playerChoice, "Ascension", StringComparison.OrdinalIgnoreCase))
+            {
+                _fs.DeleteFile("game_state/control/ascension.json");
+                return;
+            }
+
+            if (_fs.FileExists("game_state/control/life_transitions.json") ||
+                !await HasMaximumEnlightenmentAsync())
+            {
+                _fs.DeleteFile("game_state/control/ascension.json");
+                return;
+            }
+
+            await UpdateSoulStateRealm("Shining Abode");
+            await _storyService.AppendMarkerAsync("Shining Abode", _stateManager.CurrentState.Incarnation, "ASCENSION", "Душа достигла Сияющей Обители.");
+
+            var shiningLorePath = "lore/shining_abode/realm_lore.json";
+            if (!_fs.FileExists(shiningLorePath))
+            {
+                var defaultLore = new
+                {
+                    title = "Сияющая Обитель",
+                    description = "Обитель вознесённых над Морем Хаоса. Место покоя, свободного ролеплея и встреч с Хранителями после завершения великого цикла."
+                };
+                await _fs.WriteFileAtomicAsync(shiningLorePath, JsonSerializer.Serialize(defaultLore, JsonOpts));
+            }
+
+            _fs.DeleteFile("game_state/control/ascension.json");
+            GameInterface.RenderAscensionTransition();
+            await RefreshCanonicalStateAsync();
+        }
+        catch (Exception ex)
+        {
+            LogError(ex);
+            _fs.DeleteFile("game_state/control/ascension.json");
+        }
+    }
+
+    private static bool TryReadLifeTransitionPayload(JsonElement root, out string reason, out string summary)
+    {
+        reason = "";
+        summary = "";
+
+        var payload = root;
+        if (root.TryGetProperty("TriggerLifeEnd", out var nested) && nested.ValueKind == JsonValueKind.Object)
+            payload = nested;
+
+        if (!payload.TryGetProperty("reason", out var reasonEl) || reasonEl.ValueKind != JsonValueKind.String)
+            return false;
+        if (!payload.TryGetProperty("summary", out var summaryEl) || summaryEl.ValueKind != JsonValueKind.String)
+            return false;
+
+        reason = reasonEl.GetString() ?? "";
+        summary = summaryEl.GetString() ?? "";
+        if (!string.Equals(reason, "Death", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(reason, "Voluntary", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return !string.IsNullOrWhiteSpace(summary);
+    }
+
+    /// <summary>
+     /// Logs an error to game_session/error_log.txt for diagnostics.
+     /// </summary>
+    private void LogError(Exception ex)
+    {
+        try
+        {
+            var logPath = Path.Combine(_fs.GameSessionPath, "error_log.txt");
+            var entry = $"[{DateTime.UtcNow:O}] {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}\n\n";
+            File.AppendAllText(logPath, entry, System.Text.Encoding.UTF8);
+        }
+        catch { }
+    }
+
+    private async Task<bool> HasMaximumEnlightenmentAsync()
+    {
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(soulJson);
+            var root = doc.RootElement;
+
+            if (root.TryGetProperty("soulProgression", out var progression) &&
+                progression.ValueKind == JsonValueKind.Object)
+            {
+                if (progression.TryGetProperty("progressPercent", out var progressPercent) &&
+                    progressPercent.ValueKind == JsonValueKind.Number &&
+                    progressPercent.TryGetDouble(out var parsedPercent) &&
+                    parsedPercent >= 100)
+                {
+                    return true;
+                }
+
+                if (progression.TryGetProperty("tier", out var tier) &&
+                    tier.ValueKind == JsonValueKind.Number &&
+                    tier.TryGetInt32(out var parsedTier) &&
+                    parsedTier >= 4)
+                {
+                    return true;
+                }
+
+                if (progression.TryGetProperty("tierName", out var tierNameProp) &&
+                    tierNameProp.ValueKind == JsonValueKind.String &&
+                    IsTranscendenceTierName(tierNameProp.GetString()))
+                {
+                    return true;
+                }
+            }
+
+            if (root.TryGetProperty("enlightenment", out var enlightenment))
+            {
+                if (enlightenment.ValueKind == JsonValueKind.Object)
+                {
+                    if (enlightenment.TryGetProperty("currentTier", out var currentTierProp) &&
+                        currentTierProp.ValueKind == JsonValueKind.String &&
+                        IsTranscendenceTierName(currentTierProp.GetString()))
+                    {
+                        return true;
+                    }
+
+                    if (enlightenment.TryGetProperty("level", out var levelProp) &&
+                        levelProp.ValueKind == JsonValueKind.Number &&
+                        levelProp.TryGetInt32(out var parsedLevel) &&
+                        parsedLevel >= 4)
+                    {
+                        return true;
+                    }
+
+                    if (enlightenment.TryGetProperty("progressPercent", out var progressPercent) &&
+                        progressPercent.ValueKind == JsonValueKind.Number &&
+                        progressPercent.TryGetDouble(out var parsedPercent) &&
+                        parsedPercent >= 100)
+                    {
+                        return true;
+                    }
+                }
+                else if (enlightenment.ValueKind == JsonValueKind.Number &&
+                         enlightenment.TryGetDouble(out var numericEnlightenment) &&
+                         numericEnlightenment >= 100)
+                {
+                    return true;
+                }
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        return false;
+    }
+
+    private static bool IsTranscendenceTierName(string? tierName)
+    {
+        return string.Equals(tierName, "Transcendence", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(tierName, "Трансценденция", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task<string> GetPlayerInput()
+    {
+        AnsiConsole.WriteLine();
+
+        // Show realm-aware prompt
+        var isChaosSea = _stateManager.CurrentState.IsInChaosSea;
+        var isShiningAbode = _stateManager.CurrentState.IsInShiningAbode;
+        var isAfterlife = _stateManager.CurrentState.IsInAfterlifeRealm;
+        var accentColor = isShiningAbode ? "yellow" : (isAfterlife ? "blue" : "green3");
+        var realmLabel = isShiningAbode ? _loc.T("realm_shining_abode") : (isAfterlife ? _loc.T("realm_chaos_sea") : _loc.T("realm_mortal"));
+        AnsiConsole.Write(new Rule($"[bold {accentColor}]✦ Ваш ход ✦[/]").RuleStyle(accentColor));
+
+        if (isShiningAbode)
+        {
+            AnsiConsole.MarkupLine("[dim]  Свободный ролеплей с Хранителями в Сияющей Обители[/]");
+            AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /душа │ /новая_игра+ │ /help[/]");
+        }
+        else if (isChaosSea)
+        {
+            AnsiConsole.MarkupLine("[dim]  Говорите с Хранителем: торговать, квесты, реликвии души, вытягивание реликвий, сменить хранителя[/]");
+            AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /гача /душа │ /воплотиться │ /help[/]");
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[dim]  /инв /квесты /карта /статус │ /конец_жизни │ /help[/]");
+        }
+
+        // Show option hint if dialogue options are available
+        if (_lastResponse?.DialogueOptions != null && _lastResponse.DialogueOptions.Length > 0)
+            AnsiConsole.MarkupLine("[dim]  Введите [cyan]номер[/] опции или свой текст. Большую вставку можно вставить прямо сюда; [cyan]\\m[/] открывает текстовый редактор, [cyan]\\p[/] остаётся fallback-вставкой[/]");
+        else
+            AnsiConsole.MarkupLine("[dim]  Enter = отправить │ большую вставку можно вставить прямо сюда │ \\m = текстовый редактор │ \\p = fallback-вставка[/]");
+
+        // Single-line mode by default: Enter sends immediately
+        var promptChar = isChaosSea ? "🌊" : "⚔️";
+        var firstLine = TextComposer.Read(
+            StandardTextComposerConsole.Instance,
+            _clipboardService,
+            new TextComposerOptions
+            {
+                PromptMarkup = $"[bold {accentColor}] {promptChar} > [/]",
+                PreserveNewlines = true
+            });
+
+        if (IsClipboardPasteShortcut(firstLine))
+            return ResolveClipboardPlayerInput();
+
+        // Check for slash commands — always single-line, send immediately
+        if (!firstLine.Contains('\n') && firstLine.TrimStart().StartsWith('/'))
+            return firstLine.Trim();
+
+        // Check for multiline trigger (Ctrl+M marker)
+        if (firstLine.Equals("\\m", StringComparison.OrdinalIgnoreCase) ||
+            firstLine.Equals("/multiline", StringComparison.OrdinalIgnoreCase) ||
+            firstLine.Equals("/мульти", StringComparison.OrdinalIgnoreCase))
+        {
+            return await GetMultilineInput();
+        }
+
+        // Check for dialogue option number shortcuts
+        if (!firstLine.Contains('\n') && int.TryParse(firstLine.Trim(), out var optNum))
+        {
+            // Try to resolve to actual dialogue option text
+            if (_lastResponse?.DialogueOptions != null && optNum >= 1 && optNum <= _lastResponse.DialogueOptions.Length)
+            {
+                var optionText = _lastResponse.DialogueOptions[optNum - 1].Text;
+                if (!string.IsNullOrEmpty(optionText))
+                    return optionText;
+            }
+            // If no matching option, send as-is
+            return firstLine.Trim();
+        }
+
+        // Regular single-line input — send directly on Enter
+        return firstLine.Trim();
+    }
+
+    /// <summary>
+    /// Multiline input mode: type multiple lines, empty line sends.
+    /// Activated by typing \m or /multiline.
+    /// </summary>
+    private Task<string> GetMultilineInput()
+    {
+        var value = TextComposer.Read(
+            StandardTextComposerConsole.Instance,
+            _clipboardService,
+            new TextComposerOptions
+            {
+                PromptMarkup = "[cyan]│[/]",
+                PreserveNewlines = true,
+                Mode = TextComposerMode.MultilineEditor,
+                HelpMarkup = "[dim](Многострочный режим. Вставка из буфера работает напрямую. Две пустые строки подряд = отправить. \\p = fallback из буфера.)[/]"
+            });
+
+        return Task.FromResult(value);
+    }
+
+    private static bool IsClipboardPasteShortcut(string input)
+    {
+        var trimmed = input.Trim();
+        return trimmed.Equals("\\p", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Equals("/paste", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Equals("/вставить", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private string ResolveClipboardPlayerInput()
+    {
+        var result = _clipboardService.TryReadText();
+        if (!result.Success || string.IsNullOrWhiteSpace(result.Text))
+        {
+            AnsiConsole.MarkupLine($"[yellow]{GameInterface.EscapeMarkup(result.Error ?? "Не удалось прочитать буфер обмена.")}[/]");
+            return string.Empty;
+        }
+
+        return result.Text!;
+    }
+    private static int[] GenerateSecureDice() => GameLoop.GenerateSecureRandomDice();
+
+    /// <summary>
+    /// Generates a fresh GM-facing dice pool and a separate client-computed gacha base.
+    /// </summary>
+    private static void AttachFreshDiceAndGacha(TurnRequest request)
+    {
+        var visibleDice = GenerateSecureDice();
+        var hiddenGachaDice = GameLoop.GenerateSecureRandomDice(4);
+        request.PreGeneratedDices1d20 = visibleDice;
+        request.GachaBaseResult = GameLoop.ComputeGachaBase(hiddenGachaDice);
+    }
+
+    private async Task AttachPendingDiceAndGachaAsync(TurnRequest request)
+    {
+        var pending = await _pendingTurnState.GetOrCreateAsync();
+        request.PreGeneratedDices1d20 = pending.PreGeneratedDices1d20;
+        request.GachaBaseResult = pending.GachaBaseResult;
+    }
+
+    /// <summary>
+    /// Builds a system reminder for the GM, reinforcing game-specific rules.
+    /// </summary>
+    private string BuildSystemReminder()
+    {
+        return @"CRITICAL SYSTEM REMINDER — This is NOT a D&D system!
+
+CHARACTERISTICS: Range 1-100 (not 3-18). Base stats start at 1 per characteristic. Players distribute points (8 at incarnation + 5 per level). Do NOT use D&D-style modifiers like (stat-10)/2.
+
+ACTION CHECK FORMULA (Block 12):
+  StatModificator = CappedStatValue + LevelScaling
+  where CappedStatValue = min(CharacterLevel*0.5+20, StatValueWithBonuses)
+  and LevelScaling = floor(CharacterLevel * 0.8)
+  Difference = (PlayerDiceResult + StatModificator) - (GMDice + ActionDifficultModificator)
+
+The 'computedCharacteristics' field in this request contains the client-computed standard, permanently modified, and fully modified values for each characteristic. USE THESE VALUES for action checks — do not recalculate from scratch.
+
+statsIncreased: The client automatically applies +1 to base stats with Training Cap enforcement (stat < PlayerLevel*2). You do NOT need to use setCharacteristics for training increases.
+
+setCharacteristics: Use ONLY for extraordinary events (divine intervention, meta-commands). It bypasses the Training Cap.
+
+REALM SEGREGATION — ABSOLUTE LAW:
+Read Context.worldState.currentRealm (projected from game_state/meta/soul_state.json.currentRealm) BEFORE applying any mechanic.
+
+IF REALM = Chaos Sea OR Shining Abode:
+  FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
+  ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, Abode/Guardian interactions, Life Evaluation, Incarnation setup.
+  CHAOS-SEA INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint.
+  Sell Relic is a separate guardian trade interaction, not an Ink Feather action.
+  Shining Abode is the ascended endgame free-roleplay zone above the Chaos Sea. It still uses afterlife/guardian systems, not Mortal World systems.
+  If the player chooses New Game+ from Shining Abode, the new cycle returns to Chaos Sea with Enlightenment and Ink Feathers reset while Soul Relics and Guardians are preserved.
+  LIFE EVALUATION REWARD GUARANTEE:
+    - Every completed mortal life MUST grant at least 10 Ink Feathers.
+    - Every completed mortal life MUST grant at least one NEW Soul Relic with a new relicId.
+    - Reward quality may vary by achievements, but zero-reward life evaluation is a protocol violation.
+    - If the completed life clearly strengthened a Guardian's domain, you MAY emit guardianPowerEvents with reasonType=resonance and full resonanceAudit on the dedicated Life Evaluation turn only.
+
+IF REALM = Mortal World:
+  FORBIDDEN: UpdateGuardians, Guardian-specific reputation/project/musings/lore commands, Abode navigation, Soul Relic Gacha, Chaos-Sea-only spending of Ink Feathers.
+  ALLOWED: combat, NPCs, quests, inventory, factions, weather, time, world progression.
+  MORTAL-WORLD INK FEATHER EXCEPTIONS: Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink.
+  LOCAL NPC TRADE: Some NPCs may have a client-side Buy/Sell panel for mortal-world goods only. This panel does NOT create turn_request.json, does NOT use Ink Feathers, and does NOT trade Soul Relics.
+  If the player later asks a merchant NPC about an item just bought from that merchant's local stock, treat the item as known to that merchant and do not act surprised by its existence.
+  QTE OFFERS: game_state/core/game_settings.json.qteEventsEnabled controls whether QTE is allowed.
+    - If qteEventsEnabled = false, DO NOT write output/qte_offer.json.
+    - QTE is a rare cinematic tool, not a replacement for normal action checks.
+    - QTE is allowed only in Mortal World and only on an ordinary player-driven turn (not incarnation, life evaluation, repair, transition, or other system flow).
+    - QTE offer turn MUST NOT also resolve ordinary state changes for the same situation; leave game_state/lore/stories untouched and write only output/qte_offer.json plus narrative/interface/debug outputs.
+    - QTE offer is delivered through output/qte_offer.json and then resolved locally by the client after player Accept/Decline.
+    - qte_offer.json MUST define startChapterId; chapter array order does not define the scene start.
+    - QTE primaryCharacteristic MUST use canonical lowercase stat ids (strength, dexterity, constitution, intelligence, wisdom, faith, attractiveness, trade, persuasion, perception, luck, speed).
+    - For BranchChoice, check.config.choiceGrade MUST be exactly success, partial, or fail.
+    - Every terminal outcome MUST carry a complete responseFragment for local application.
+    - declineHint and cinematicJustification, if provided, are shown to the player in the offer prompt; keep them concise.
+    - responseFragment MUST NOT use ordinary image_prompt; use sceneImagePrompt / chapterImagePrompt / outcomeImagePrompt instead.
+    - Successful QTE terminal outcomes MUST grant positive experienceGained at minimum; the client will locally add it to the authoritative XP counter in experience.json.
+    - If experience.json already contains level/progress metadata (level or playerLevel, experience or currentExperience, experienceForNextLevel), the client will also process the local level-up transition.
+
+The Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive.
+
+LORE / META BOOTSTRAP — HARD REQUIREMENT:
+  - On the first Chaos Sea turn of a new game, create:
+    lore/chaos_sea/cosmology.json
+    lore/chaos_sea/soul_system_lore.json
+    lore/chaos_sea/guardians_lore.json
+    lore/codex_entries.json
+    game_state/meta/achievements.json
+  - On every new Mortal World incarnation, create:
+    lore/current_world/world_setting.json
+    lore/current_world/geography.json
+    lore/current_world/history.json
+    lore/current_world/cultures.json
+    lore/current_world/threats.json
+  - Optional supplemental Mortal-World lore: lore/current_world/npcs_lore.json when this life needs persistent NPC backstory/world-lore support.
+  - Missing bootstrap lore/codex/achievement files will cause client validation failure.
+
+QUEST UPDATE PROTOCOL — HARD REQUIREMENT:
+  - On quest creation, send the full quest object with detailsLog.
+  - On quest-log updates, send questId + newDetailsLogEntry instead of resending the whole detailsLog array.
+  - quest_history.json is canonically stored as questHistory + questRewards + questChains; legacy questLog is only shorthand input.
+
+PROGRESSION CONTROL — CLIENT-AUTHORITATIVE SCHEDULER:
+This request contains a 'progressionControl' object. Treat it as authoritative system control, not optional advice.
+  - In Mortal World, it defines the baseline world time and mandatory 240-minute world cycles / 1440-minute faction cycles.
+  - In Chaos Sea or Shining Abode, it defines the mandatory hub / guardian-project-cycle processing for this turn.
+  - If a mustEvaluate* flag is true, that contour MUST be processed this turn.
+  - If a mustEvaluate* flag is false, there is no mandatory progression debt for that contour this turn.
+You MUST evaluate and process all required cycles for the active realm.
+If progression is processed, you MUST write progressionProcessingReport to game_state/control/progression_report.json and report the exact processed cycle counts and new last-* markers.
+If no cycles are due, you may write zero counts or omit the report.
+
+If a forbidden key appears in your draft response for the active realm, REMOVE it before finalizing.
+
+NPC AGENCY — HARD REQUIREMENT:
+You MUST declare NPC reasoning scope BEFORE narration instead of silently skipping or guessing it.
+Your gm_thoughts_markdown MUST contain:
+## Охват NPC-анализа
+- Режим / Mode: [Scene-local | World-progression | Guardian-centric | Mixed]
+- Релевантные акторы / Relevant actors: [...]
+- Почему они релевантны / Why they are relevant: ...
+- Акторы вне охвата / Actors outside scope: [...]
+- Почему они вне охвата / Why they are outside scope: ...
+Scene-local MAY use `Relevant actors: нет` only when the turn truly has no actor that must reason or react with agency.
+Then, for every declared relevant actor, you MUST provide a reasoning block:
+### [Actor Name]
+- Текущая локация / Current location
+- Ситуация / Current situation
+- Мысли / Internal thoughts
+- Действия / Intended actions
+For EVERY relevant NPC block, the current-location line is mandatory: explicitly state where the NPC is now and whether they stay there or relocate this turn.
+Missing scope declaration or missing/empty actor reasoning blocks will cause client rejection.
+If you narrate a meaningful NPC reaction or introduce a new named NPC, you MUST also register/update the relevant NPC state. Narrative-only NPCs without state consequences are protocol violations.
+If you emit structured actor updates such as UpdateNPCs, NPCGoalUpdates, NPCActivityUpdates, or UpdateGuardians, those actors MUST appear in Relevant actors and MUST have full reasoning blocks. Scene-local with `Relevant actors: нет` is valid only when no structured actor updates are emitted.
+
+GUARDIAN AGENCY — HARD REQUIREMENT:
+In Chaos Sea, use the same declared-scope model for relevant Guardians.
+For Guardian-centric turns, the active Guardian MUST appear in the declared relevant actors and MUST have a full reasoning block before narration if activeGuardian is explicitly set in state.
+Do NOT skip Guardian reasoning just because the player is the current conversational focus.
+
+ETERNAL GUARDIAN PRESETS:
+For player-facing roleplay, these are called Eternal Guardians. In technical files/contracts, they are still named system guardian presets.
+If the client-selected guardian request references an Eternal Guardian preset, you MUST materialize that exact named guardian rather than inventing a nearby substitute.
+When you create or rematerialize a guardian from an Eternal Guardian preset, write guardian.sourcePreset with:
+  - presetId
+  - displayName
+  - version
+  - library
+Do NOT drop sourcePreset metadata for client-selected Eternal Guardians.
+Canonical guardian identity now uses:
+  - canonicalName
+  - nameVariants { default, optional feminine/masculine/neutral }
+  - manifestation { currentDisplayName, formFlexibility, currentPresentationStyle, currentPronouns, appearanceDescription, optional presentationReason }
+  - manifestationHistory (past forms only; may be empty)
+Do NOT rely on legacy guardian.name as the primary identity field.
+If the Guardian changes visible form, update manifestation and move the previous form into manifestationHistory.
+
+GUARDIAN PROJECT TRACKER — AFTERLIFE ONLY:
+Guardian project lifecycle no longer uses UpdateGuardians.updateProject.
+Use these dedicated top-level surfaces instead:
+  - startGuardianProjects
+  - guardianProjectUpdates
+  - completeGuardianProjects
+  - guardianPowerEvents
+  - afterlifeArchiveUpdates
+Authoritative tracker lives in game_state/meta/guardian_projects.json.
+Player-facing readable chronology lives in game_state/meta/guardian_project_journal.json.
+Player-facing power history lives in game_state/meta/abode_power_journal.json.
+Afterlife-owned lore/secret offerings live in game_state/meta/soul_state.json.afterlifeArchive.stored.
+If the player initiates archive consultation or archive project fuel, read the matching pending request in game_state/control/ and materialize a canonical result; the client does NOT derive archive compatibility from guardian domain.
+Keep at most one active guardian project per guardian in v1.
+Any Abode Power change must go through guardianPowerEvents or be materialized by the client from project completion into guardianPowerEvents-compatible history.
+Guardian project progress belongs to the tracker surfaces, not to raw guardian.currentProject.
+Do NOT mutate guardian.abodePower.currentPower directly in narrative surfaces without a matching power event and audit trail.
+If guardianProjectUpdates carries meaningful project help or sabotage, include structured assistAudit / sabotageAudit:
+  - assistAudit uses DomainRelevance, RiskOrCost, ScarcityOrUniqueness, DirectProjectImpact, assistScore, classification
+  - sabotageAudit uses HostileReach, ProjectExposure, DamageIntent, DamageAchieved, PlayerComplicity, sabotageSeverityScore, classification
+The client may materialize project_assist / rival_defense / rival_strike power events from those audits.
+For political project terminals:
+  - completed offensive_intrigue must point at targetGuardianId; the client will deterministically compute targetLoss, pressureDelta, and stabilityDamage from current powers and political shields
+  - completed counter_rival_operation must point at targetGuardianId; the client will deterministically apply pressure/stability relief to the rival active pressure project if it exists
+  - completed abode_fortification materializes persistent safePressure / defenseRating bonuses
+  - sabotaged abode_fortification may leave a temporaryProjectModifier for the next internal project start
+
+NEXT-LIFE SCENARIO CORE / GUARDIAN CORRECTIONS:
+The client may maintain a machine-readable next-life scenario manifest at game_state/control/next_life_scenario_core.json.
+Treat scenarioCoreAssertions in that file as hard confirmed start facts.
+candidateAssertions in that file are NOT binding unless the client already promoted them into scenarioCoreAssertions.
+The client may also maintain game_state/control/archive_candidate_manifest.json during Life Evaluation.
+Treat archive_candidate_manifest.json as client-authored intake state for codex-derived discoveries that the player may preserve into the afterlife archive.
+The client may maintain:
+  - game_state/control/pending_archive_consultation_request.json
+  - game_state/control/pending_archive_project_fuel_request.json
+Treat them as client-authored requests over a reserved archive entry. The entry is locked client-side but not yet consumed.
+Do NOT overwrite the pending files in GM output.
+Resolve them by:
+  - materializing the canonical result in guardian project tracker/journal state when accepted
+  - and returning archiveActionResolutions in soul_state with requestId, archiveId, requestedMode and status=accepted|rejected|cancelled.
+For accepted archive consultation, also include machine-readable whitelist outcome fields in archiveActionResolutions: guaranteedArchiveQuestCount, questHookCount, specialQuestLineUnlocks, visibleRivalClueBonus, archiveWarningTierBonus.
+For accepted archive project fuel, also include machine-readable resultMode = project_work | pressure_relief and resultAmount > 0 in archiveActionResolutions.
+Accepted archive actions consume the reserved entry; rejected/cancelled actions release it back into the archive.
+If game_state/world/guardian_corrections.json exists for the current mortal life, treat it as a client-authored explanation of which compatible Guardian corrections were applied and why.
+Guardian corrections are additions around the player's confirmed scenario core. They are not permission to negate, rewrite, or silently downgrade explicit player-authored start facts.
+Do NOT edit next_life_scenario_core.json, archive_candidate_manifest.json, or guardian_corrections.json in GM output; read them as input contracts only.
+
+ABODE OFFERINGS — AFTERLIFE ONLY:
+If game_state/control/pending_abode_offering.json exists, treat it as a client-authored request for a whitelisted offering to a specific Guardian's Abode.
+Do NOT edit pending_abode_offering.json in GM output; read it as input contract only.
+Resolve the offering through guardianPowerEvents with reasonType=offering and a full offering audit.
+Whitelisted offering types may include:
+  - ink_feathers
+  - soul_relic
+  - archive_lore_fragment
+  - archive_secret_record
+Use afterlifeArchiveUpdates only for exceptional/system archive rewards.
+Ordinary codex-derived archive intake is client-driven through archive_candidate_manifest.json and soul_state.afterlifeArchive.stored; do not improvise it from mortal inventory/items.json.
+Do NOT mutate guardian.abodePower.currentPower directly for an offering without the matching power event.
+
+LOCAL GUARDIAN TRADE REQUESTS:
+If game_state/control/pending_guardian_trade_request.json exists, treat it as a client-authored request to materialize guardian.tradeInventory for the current return cycle.
+Do NOT derive trade stock from guardian.domain in the client or assume the client will do it for you.
+Answer the request by writing an explicit guardian.tradeInventory into guardians.json / activeGuardian mirror with matching tradeCycleId and a valid items array.
+
+RIVAL SOUL ARCS — MORTAL WORLD ONLY:
+Use UpdateRivalSoulArcs to track parallel destiny lines for OTHER souls in the current mortal life.
+These arcs are milestone-based world pressures, not a full second-protagonist simulation.
+Keep at most:
+  - 1 active major arc
+  - 1 active minor arc
+Each rival arc must include:
+  - arcId
+  - scope = major | minor
+  - arcType
+  - status = latent | rising | intersecting | resolved | failed
+  - sponsorGuardianRef
+  - rivalSoul
+  - objective
+  - playerIntersection
+  - milestones
+  - currentStage
+  - publicSignals
+  - resolution
+If a hostile rival arc directly targets the player, you MUST surface at least two visible clues before direct collision or terminal harm.
+If the arc becomes personal for the player, create or update a normal player-facing soul quest through UpdateSoulQuests and link it with relatedRivalArcId.
+If you surface a rival arc clue through worldEventsLog, mark that world event with relatedRivalArcId too, so the player can recognize it as part of a parallel destiny line instead of random background noise.
+Every publicSignals[] item must include visibleToPlayer=true|false explicitly; do not omit the field.
+For rival-thread clue logic, linked worldEventsLog entries count as player-visible only when visibility is Public, Regional, or player_known.
+If a Secret or Faction-Internal world event becomes known to the player through actual play, convert the linked player-facing world event entry to visibility=player_known so it can count as a visible clue without pretending it was always public.
+Hidden Secret/Faction-Internal linked world events do NOT spend visible lore_research clue budget until they actually become Public, Regional, or player_known.
+When practical, add turn/timestamp/date information to publicSignals or linked world events, and describe consequences/impact/follow-up in those world events, so the player's rival-thread journal can show a clearer chronology and visible world changes.
+If a new player-visible rival clue is revealed specifically through completed lore_research support, include bonusClueSourceProjectId, bonusClueRevealId, and optional bonusClueCost on that reveal surface so the client can spend life-bound clue budget deterministically.
+If the SAME extra clue is mirrored through both publicSignals and linked worldEventsLog, reuse the same bonusClueRevealId on both surfaces so the client spends clue budget only once.
+Do NOT use rival arcs in Chaos Sea or Shining Abode.
+
+GUARDIAN-FORCED INCARNATION — HARD REQUIREMENT:
+If game_state/control/afterlife_return_guard.json exists with remainingProtectedTurns > 0, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any Guardian-forced incarnation.
+Do NOT immediately kick the soul back into a new life on that protected return turn.
+Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn as a response to explicit player provocation against the current active Guardian.
+If you write game_state/control/incarnation_trigger.json in this forced mode, include:
+  - source = guardian_forced
+  - guardianId
+  - severityBand = harsh | severe
+  - reason
+  - provocationSummary
+  - worldDescription, characterDescription, circumstances
+The resulting start must be harsh but survivable. Do NOT create an unwinnable deathtrap.
+
+SOUL IDENTITY CONTINUITY:
+If game_state/meta/soul_state.json contains previousSoulNames, they are former names of the SAME soul.
+Do NOT treat a renamed soul as a different person and do NOT reset Guardian continuity because of a soul rename.
+
+SOUL RELIC GACHA — ANTI-CHEAT PROTOCOL:
+The 'preGeneratedDices1d20' field is the authoritative dice pool for your normal checks. Start from the FIRST die in that list.
+The 'gachaBaseResult' field is a SEPARATE client-computed gacha outcome. Do NOT assume any dice were consumed from preGeneratedDices1d20 to produce it.
+Its thresholds remain: 4-48=Common, 49-67=Uncommon, 68-75=Rare, 76-79=Epic, 80=Legendary.
+If playerAction contains [CHAOS_SEA_DIRECT_GACHA], this is a DIRECT pull from the Chaos Sea, not a Guardian-mediated pull.
+  - Do NOT apply Guardian reputation bonuses, penalties, discounts, jealousy/social effects, or other Guardian modifiers.
+  - Treat gachaBaseResult.baseRarity as the neutral final rarity baseline with NO extra modifiers.
+  - Add the relic directly to soul state via metaStateUpdates.soulRelicOperations.addRelic.
+If the pull is Guardian-mediated, the 'baseRarity' from gachaBaseResult is the MINIMUM rarity. You may ONLY upgrade it using documented modifiers:
+  - Guardian reputation bonus (Block 32): Friendly(50-129) +15%, Devoted(130-229) +30%, Legendary(230-300) +50% better rates
+  - Hard Mode (Block 0.5): +1 tier upgrade at 50% chance
+  - Impossible Mode (Block 0.6): +1 tier guaranteed, +1 more at 25% chance
+Guardian-mediated pulls are LIMITED per Guardian per return from mortal life:
+  - Hostile(-100..-51): blocked
+  - Wary/Neutral(-50..49): 1 attempt
+  - Friendly(50..129): 2 attempts
+  - Devoted/Legendary(130..300): 3 attempts
+  - If chargesUsedThisReturn already equals chargesPerReturn for that Guardian, DO NOT emit processGacha for them.
+If a Guardian-mediated pull finishes above baseRarity, include gachaBonusAudit with:
+  - baseRarity
+  - abodePowerBonusSteps
+  - relicForgingBonusSteps
+  - finalRarity
+  - sourceProjectId if relic forging bonus was actually spent
+Completed recipe-driven guardian projects may be TEMPORARY:
+  - relic_forging lasts only until the next local trade refresh and one guardian-mediated gacha use
+  - lore_research life-bound hook/clue bonuses last only for the target incarnation
+  - soul_preparation applies only to the next life and is consumed at correction resolution
+Direct /gacha remains neutral and does NOT consume Guardian charges.
+You MUST NOT downgrade or ignore the client-computed baseRarity. Log the full calculation in gm_thoughts_markdown.
+
+" + _storyService.BuildStoryContext();
+    }
+
+    private async Task<string> BuildTurnSystemReminderAsync(string? extraReminder = null)
+    {
+        if (await _systemModService.WriteManifestForGmAsync())
+            await _stateManager.SaveSettingsAsync();
+
+        if (_fs.FileExists(WorldDirectiveService.PendingSetupPath))
+            await _scenarioCoreService.RefreshFromPendingSetupAsync();
+
+        var parts = new List<string> { BuildSystemReminder() };
+        var modReminder = await _systemModService.BuildSystemReminderFragmentAsync();
+        if (!string.IsNullOrWhiteSpace(modReminder))
+            parts.Add(modReminder);
+        var worldReminder = _worldDirectiveService.BuildReminderFragment(
+            _stateManager.CurrentState.CurrentRealm,
+            await _worldDirectiveService.ReadPendingSetupAsync(),
+            await _worldDirectiveService.ReadActiveWorldDirectivesAsync());
+        if (!string.IsNullOrWhiteSpace(worldReminder))
+            parts.Add(worldReminder);
+        var scenarioCoreReminder = await _scenarioCoreService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(scenarioCoreReminder))
+            parts.Add(scenarioCoreReminder);
+        var afterlifeGuardReminder = await _afterlifeReturnGuardService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(afterlifeGuardReminder))
+            parts.Add(afterlifeGuardReminder);
+        var rivalArcReminder = await _rivalSoulArcService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);
+        if (!string.IsNullOrWhiteSpace(rivalArcReminder))
+            parts.Add(rivalArcReminder);
+        var guardianCorrectionReminder = await _guardianCorrectionService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(guardianCorrectionReminder))
+            parts.Add(guardianCorrectionReminder);
+        var systemGuardianReminder = await _systemGuardianLibraryService.BuildReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(systemGuardianReminder))
+            parts.Add(systemGuardianReminder);
+        var qteReminder = await _qteSceneService.ConsumePendingReminderAsync();
+        if (!string.IsNullOrWhiteSpace(qteReminder))
+            parts.Add($"QTE SUMMARY FROM PREVIOUS LOCAL SCENE: {qteReminder}");
+        if (!string.IsNullOrWhiteSpace(extraReminder))
+            parts.Add(extraReminder);
+
+        return string.Join("\n\n", parts.Where(part => !string.IsNullOrWhiteSpace(part)));
+    }
+
+    private static bool IsIncarnationSourceLabel(string? sourceLabel)
+    {
+        if (string.IsNullOrWhiteSpace(sourceLabel))
+            return false;
+
+        return sourceLabel.Contains("воплощ", StringComparison.OrdinalIgnoreCase);
+    }
+
+
+    private async Task ShowStatDistribution(string title)
+    {
+        var available = await _charService.GetUnspentStatPoints();
+        if (available <= 0) return;
+
+        var baseStats = new Dictionary<string, int>();
+        var json = await _fs.ReadFileAsync("game_state/misc/characteristics.json");
+        if (json != null)
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(json);
+                foreach (var name in Characteristics.All)
+                {
+                    if (doc.RootElement.TryGetProperty(name, out var val) &&
+                        val.ValueKind == JsonValueKind.Number)
+                        baseStats[name] = val.GetInt32();
+                    else
+                        baseStats[name] = 1;
+                }
+            }
+            catch { foreach (var n in Characteristics.All) baseStats[n] = 1; }
+        }
+        else
+        {
+            foreach (var n in Characteristics.All) baseStats[n] = 1;
+        }
+
+        var allocations = new Dictionary<string, int>();
+        foreach (var n in Characteristics.All) allocations[n] = 0;
+        var remaining = available;
+        var statList = Characteristics.All;
+        var selectedIdx = 0;
+
+        while (remaining > 0)
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.Write(new Rule($"[gold1]⭐ {title}[/]").RuleStyle("gold1"));
+            AnsiConsole.MarkupLine($"\n  [bold yellow]Доступно очков: {remaining}[/]  [dim](↑↓ выбрать, → добавить, ← убрать, Enter подтвердить)[/]\n");
+
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .BorderColor(Color.Gold1)
+                .Expand()
+                .AddColumn(new TableColumn("").NoWrap().Width(3))
+                .AddColumn(new TableColumn("[bold]Характеристика[/]").NoWrap())
+                .AddColumn(new TableColumn("[bold]Текущая[/]").Centered().NoWrap())
+                .AddColumn(new TableColumn("[bold]+ Очки[/]").Centered().NoWrap())
+                .AddColumn(new TableColumn("[bold]= Итог[/]").Centered().NoWrap())
+                .AddColumn(new TableColumn("[bold]Шкала[/]").NoWrap());
+
+            for (int i = 0; i < statList.Length; i++)
+            {
+                var name = statList[i];
+                var ruName = Characteristics.RussianNames[name];
+                var baseVal = baseStats[name];
+                var alloc = allocations[name];
+                var total = baseVal + alloc;
+                var cursor = i == selectedIdx ? "[bold cyan]►[/]" : " ";
+
+                int filled = Math.Clamp(total / 5, 0, 20);
+                int empty = 20 - filled;
+                var barColor = total switch { >= 80 => "gold1", >= 50 => "green", >= 25 => "yellow", _ => "grey" };
+                var bar = $"[{barColor}]{new string('█', filled)}[/][dim]{new string('░', empty)}[/]";
+
+                var allocStr = alloc > 0 ? $"[green]+{alloc}[/]" : "[dim]—[/]";
+                var totalColor = alloc > 0 ? "green" : "white";
+                var nameColor = i == selectedIdx ? "cyan bold" : "white";
+
+                table.AddRow(cursor, $"[{nameColor}]{ruName}[/]",
+                    $"{baseVal}", allocStr, $"[{totalColor}]{total}[/]", bar);
+            }
+
+            AnsiConsole.Write(table);
+            AnsiConsole.MarkupLine(remaining > 0
+                ? $"\n  [dim]Осталось распределить: [yellow]{remaining}[/] очков[/]"
+                : "\n  [green]✅ Все очки распределены![/]");
+
+            var key = Console.ReadKey(true);
+            switch (key.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    selectedIdx = (selectedIdx - 1 + statList.Length) % statList.Length;
+                    break;
+                case ConsoleKey.DownArrow:
+                    selectedIdx = (selectedIdx + 1) % statList.Length;
+                    break;
+                case ConsoleKey.RightArrow:
+                case ConsoleKey.OemPlus:
+                case ConsoleKey.Add:
+                    if (remaining > 0 && baseStats[statList[selectedIdx]] + allocations[statList[selectedIdx]] < 100)
+                    {
+                        allocations[statList[selectedIdx]]++;
+                        remaining--;
+                    }
+                    break;
+                case ConsoleKey.LeftArrow:
+                case ConsoleKey.OemMinus:
+                case ConsoleKey.Subtract:
+                    if (allocations[statList[selectedIdx]] > 0)
+                    {
+                        allocations[statList[selectedIdx]]--;
+                        remaining++;
+                    }
+                    break;
+                case ConsoleKey.Enter:
+                    if (remaining == 0)
+                        goto done;
+                    // If some points remain, ask for confirmation
+                    if (AnsiConsole.Confirm($"[yellow]У вас ещё {remaining} нераспределённых очков. Подтвердить?[/]", false))
+                        goto done;
+                    break;
+            }
+        }
+
+        done:
+        // Apply allocations
+        var toApply = allocations.Where(kv => kv.Value > 0).ToDictionary(kv => kv.Key, kv => kv.Value);
+        if (toApply.Count > 0)
+        {
+            await _charService.DistributePointsAsync(toApply);
+            AnsiConsole.MarkupLine("[green]✅ Очки характеристик распределены![/]");
+        }
+        else
+        {
+            // Save remaining points for later
+            await _charService.AddStatPoints(0); // no-op if nothing to add, just ensures file exists
+        }
+
+        AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
+        Console.ReadKey(true);
+    }
+}
+

@@ -1,0 +1,109 @@
+{
+  "guardians": [
+    {
+      "guardianId": "guardian_archive_001",
+      "canonicalName": "Азалия",
+      "nameVariants": {
+        "default": "Азалия",
+        "feminine": "Азалия",
+        "masculine": null,
+        "neutral": null
+      },
+      "manifestation": {
+        "currentDisplayName": "Азалия",
+        "formFlexibility": "selective",
+        "currentPresentationStyle": "feminine",
+        "currentPronouns": "она/её",
+        "appearanceDescription": "Тестовая форма Азалии."
+      },
+      "manifestationHistory": [],
+      "domain": "Knowledge",
+      "relationshipData": {
+        "currentReputation": 55,
+        "reputationHistory": [],
+        "lastInteraction": null
+      },
+      "abodePower": {
+        "currentPower": 35,
+        "tier": "Хрупкая",
+        "lastUpdatedAt": "2026-03-26T00:00:00Z",
+        "history": []
+      },
+      "questManagement": {
+        "availableQuests": [
+          {
+            "questId": "guardian_archive_quest_001",
+            "questName": "След летописи Серого Двора",
+            "difficulty": "normal",
+            "description": "Архивная консультация Азалии вывела тебя на новый долг памяти.",
+            "questOrigin": "archive_consultation_hook",
+            "sourceProjectId": "archive_consult_project",
+            "sourceArchiveId": "archive_lore_001",
+            "sourceArchiveTitle": "Летопись Серого Двора"
+          }
+        ],
+        "activeQuests": [],
+        "completedQuests": []
+      },
+      "gachaSystem": {
+        "chargesPerReturn": 2,
+        "chargesUsedThisReturn": 0,
+        "gachaHistory": []
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guardian_archive_001",
+    "canonicalName": "Азалия",
+    "nameVariants": {
+      "default": "Азалия",
+      "feminine": "Азалия",
+      "masculine": null,
+      "neutral": null
+    },
+    "manifestation": {
+      "currentDisplayName": "Азалия",
+      "formFlexibility": "selective",
+      "currentPresentationStyle": "feminine",
+      "currentPronouns": "она/её",
+      "appearanceDescription": "Тестовая форма Азалии."
+    },
+    "manifestationHistory": [],
+    "domain": "Knowledge",
+    "relationshipData": {
+      "currentReputation": 55,
+      "reputationHistory": [],
+      "lastInteraction": null
+    },
+    "abodePower": {
+      "currentPower": 35,
+      "tier": "Хрупкая",
+      "lastUpdatedAt": "2026-03-26T00:00:00Z",
+      "history": []
+    },
+    "questManagement": {
+      "availableQuests": [
+        {
+          "questId": "guardian_archive_quest_001",
+          "questName": "След летописи Серого Двора",
+          "difficulty": "normal",
+          "description": "Архивная консультация Азалии вывела тебя на новый долг памяти.",
+          "questOrigin": "archive_consultation_hook",
+          "sourceProjectId": "archive_consult_project",
+          "sourceArchiveId": "archive_lore_001",
+          "sourceArchiveTitle": "Летопись Серого Двора"
+        }
+      ],
+      "activeQuests": [],
+      "completedQuests": []
+    },
+    "gachaSystem": {
+      "chargesPerReturn": 2,
+      "chargesUsedThisReturn": 0,
+      "gachaHistory": []
+    }
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": null
+  }
+}

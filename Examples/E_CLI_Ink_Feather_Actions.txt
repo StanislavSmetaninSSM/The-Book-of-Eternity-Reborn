@@ -316,7 +316,72 @@ The resulting `soulImprint` must preserve at least:
 - core traits or personality traits
 
 ==================================================
-11. INVALID CASES
+11. VALID — ABODE_OFFERING
+==================================================
+
+`ABODE_OFFERING` is an afterlife-only feather offering to a specific Guardian's Abode.
+The client writes `game_state/control/pending_abode_offering.json`; GM must read it as input only and must not edit it.
+The power increase must be materialized through `guardianPowerEvents` with `reasonType = offering`.
+
+Valid minimal receipt:
+
+```json
+{
+  "sessionId": "game-session-123",
+  "requestId": "req-111",
+  "turnNumber": 111,
+  "actionTag": "ABODE_OFFERING",
+  "resolved": true,
+  "costInFeathers": 100,
+  "resolutionType": "abodeOffering",
+  "summary": "The Abode absorbs the ink and grows denser with accumulated power.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/meta/guardians.json",
+      "game_state/meta/abode_power_journal.json"
+    ],
+    "guardianId": "guardian_azalia",
+    "powerGain": 2,
+    "returnCycleId": "return_3",
+    "powerEventId": "abode_offering_guardian_azalia_return_3"
+  }
+}
+```
+
+Matching power event:
+
+```json
+{
+  "guardianPowerEvents": [
+    {
+      "eventId": "abode_offering_guardian_azalia_return_3",
+      "guardianId": "guardian_azalia",
+      "delta": 2,
+      "reasonType": "offering",
+      "sourceSurface": "INK_FEATHER_ACTION.ABODE_OFFERING",
+      "sourceId": "return_3",
+      "title": "Подношение усилило Обитель",
+      "summary": "The Soul offered 100 Ink Feathers to the Abode.",
+      "audit": {
+        "offeringType": "ink_feathers",
+        "inkFeathersOffered": 100,
+        "returnCycleId": "return_3",
+        "capRemainingBefore": 100,
+        "baseDelta": 2,
+        "finalDelta": 2
+      }
+    }
+  ]
+}
+```
+
+Validation notes:
+- only `50`, `100`, or `150` feathers are valid in v1
+- power gain must be `+1`, `+2`, or `+3` respectively
+- total feather offerings to the same Guardian in one `returnCycleId` must not exceed `150`
+
+==================================================
+12. INVALID CASES
 ==================================================
 
 Invalid:
@@ -329,6 +394,8 @@ Invalid:
 - `DONATE_TO_GUARDIAN` uses a `reputationChange` value that does not match `min(25, max(15, costInFeathers / 3))`
 - `GUARDIAN_FAVOR` returns only lore or advice without a real reputation increase
 - `CULTIVATE_ENLIGHTENMENT` uses `experienceGain` that is not equal to `costInFeathers * 2`
+- `ABODE_OFFERING` changes guardian power without `guardianPowerEvents.reasonType = offering`
+- `ABODE_OFFERING` ignores `pending_abode_offering.json` or uses another `guardianId` / `returnCycleId`
 - `SOUL_IMPRINT` creates an imprint without summary/description or without preserved core traits / personality traits
 - `SEAL_IN_INK` does not create `game_state/control/pending_ink_actions.json`
 - `MEMORY_GATES` writes a receipt but does not create a valid `pendingMemoryLegacy`

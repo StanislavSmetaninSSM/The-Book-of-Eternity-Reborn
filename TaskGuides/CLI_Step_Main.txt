@@ -57,6 +57,19 @@
                - Canonical guardian identity now uses `canonicalName`, `nameVariants`, `manifestation`, and `manifestationHistory`; do NOT rely on legacy raw `name` as the primary field
                - `manifestation` must contain the CURRENT visible form: `currentDisplayName`, `formFlexibility`, `currentPresentationStyle`, `currentPronouns`, `appearanceDescription`, optional `presentationReason`
                - `manifestationHistory` stores only past forms; when the Guardian changes form, move the previous visible form there and update the current `manifestation`
+               - Guardian project lifecycle no longer uses `UpdateGuardians.updateProject`
+               - Use dedicated top-level surfaces:
+                 - `startGuardianProjects`
+                 - `guardianProjectUpdates`
+                 - `completeGuardianProjects`
+               - Authoritative tracker lives in `game_state/meta/guardian_projects.json`
+               - Player-facing readable chronology lives in `game_state/meta/guardian_project_journal.json`
+               - Keep at most one active guardian project per guardian in v1
+               - Any Abode Power change must go through `guardianPowerEvents` or be materialized by the client from project completion into guardianPowerEvents-compatible history; do NOT directly mutate `guardian.abodePower` as a raw GM patch
+               - Temporary recipe project effects are client-tracked, not perpetual:
+                 - `relic_forging` lasts only until the next local trade refresh and one guardian-mediated gacha use
+                 - `lore_research` hook/clue bonuses are tied to a target incarnation
+                 - `soul_preparation` applies only to the next life and is consumed at correction resolution
                - If `game_state/control/system_guardian_attraction.json` exists, the soul is deliberately seeking that exact Eternal Guardian; this attraction is deterministic for the turn and must resolve to the requested preset
                - If `game_state/control/afterlife_return_guard.json` exists with `remainingProtectedTurns > 0`, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any forced re-incarnation
                - Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn and only as a reaction to explicit player provocation against the current active Guardian
@@ -65,9 +78,15 @@
                - In Mortal World, you may use `UpdateRivalSoulArcs` to track milestone-based parallel destiny lines of OTHER souls in the current life
                - Rival soul arcs are background pressure, not a second protagonist simulation; keep at most `1` active `major` and `1` active `minor`
                - If a hostile rival arc directly targets the player, it MUST leave at least two player-visible clues before direct collision or terminal harm
+               - Every `publicSignals[]` item must include explicit boolean `visibleToPlayer`
                - If a rival arc becomes personal for the player, surface that through an ordinary player-facing soul quest in `UpdateSoulQuests` linked by `relatedRivalArcId`
                - If a world news item is one of those clues, mark that `worldEventsLog` entry with `relatedRivalArcId` too, so the player can recognize it as part of a parallel destiny line
+               - Linked `worldEventsLog` entries count as player-visible rival clues only if `visibility` is `Public`, `Regional`, or `player_known`
+               - If the underlying event is `Secret` or `Faction-Internal` but the player learned it through play, materialize the linked player-facing world event as `visibility = player_known`
+               - Hidden linked `Secret` / `Faction-Internal` world events do not spend visible lore_research clue budget until they become `Public`, `Regional`, or `player_known`
                - When practical, include `turn` or `timestamp` on visible `publicSignals` / linked world news and describe `consequences` / `impact` / `followUp`, so the player's rival-thread journal can show chronology and world changes more clearly
+               - If a player-visible rival clue is being revealed specifically through completed `lore_research`, include `bonusClueSourceProjectId`, `bonusClueRevealId`, and optional `bonusClueCost`
+               - If the SAME extra clue is surfaced through both `publicSignals` and linked `worldEventsLog`, reuse the same `bonusClueRevealId` on both surfaces so the client spends clue budget only once
                - If the player asks the current active Guardian about a relic bought from this local stock, the Guardian should know that relic as part of their own trade assortment
                - Local NPC trade may also exist as a client-side panel for mortal-world goods only
                - Local NPC trade uses `game_state/core/player_status.json.money`, never Ink Feathers, and never trades Soul Relics
@@ -269,6 +288,7 @@
             - Accepted life-evaluation turn is invalid if player_chronicle.json does not gain a new summary entry
             - MANDATORY: Check and unlock death/meta category achievements
             - If an achievement unlocks here, mention it in `response` with `[ACHIEVEMENT_UNLOCK: Achievement Name]`
+            - Optional but structured: if the completed life clearly strengthened a Guardian's domain, emit `guardianPowerEvents` with `reasonType = resonance` and full `resonanceAudit`
             - `TriggerLifeEnd` only starts the return/evaluation lifecycle; the actual Ink Feather + Soul Relic reward belongs to the later Life Evaluation turn, not to the trigger turn itself
 
             **Ascension (Enlightenment 100% + explicit player choice):**
@@ -285,10 +305,31 @@
             - Trigger: Soul is in an afterlife hub (`Chaos Sea` or `Shining Abode`) interacting with Guardians
             - Process: Apply Block_32.txt Guardian relationship mechanics
             - Output: Guardian dialogue, reputation changes, quest offerings
+            - If `UpdateGuardians.completeQuest` should change `Силу Обители`, carry `questPowerAudit`; do NOT send raw `guardianPowerEvents` with `reasonType = guardian_quest`
+            - If `guardianProjectUpdates` contains meaningful project help or sabotage, carry structured `assistAudit` / `sabotageAudit`; the client may materialize power events from them
+            - Political guardian projects use deterministic client math:
+              - completed `offensive_intrigue` + `targetGuardianId` -> client computes targetLoss / pressureDelta / stabilityDamage from current powers and political shields
+              - completed `counter_rival_operation` + `targetGuardianId` -> client relieves rival active pressure project if it exists
+              - completed `abode_fortification` -> client materializes persistent safePressure / defenseRating bonuses
+              - sabotaged `abode_fortification` may materialize `temporaryProjectModifiers` for the next internal project
             - Guardian-mediated gacha is limited per Guardian per return from mortal life: Hostile=0, Wary/Neutral=1, Friendly=2, Devoted/Legendary=3
             - Charges reset only when the Soul returns to the Chaos Sea after a new mortal life
+            - If guardian-mediated gacha finishes above `gachaBaseResult.baseRarity`, include top-level `gachaBonusAudit` with `baseRarity`, `abodePowerBonusSteps`, `relicForgingBonusSteps`, `finalRarity`, and `sourceProjectId` when a completed `relic_forging` project was actually spent
+            - Guardian `availableQuests` must respect the shared Abode Power difficulty ceiling:
+              - `0..39` -> up to `normal`
+              - `40..79` -> up to `hard`
+              - `80..100` -> up to `epic`
+            - This ceiling applies to newly offered `availableQuests`; do not retroactively invalidate already active or historical guardian quests only because power later dropped
+            - Every guardian quest in `availableQuests`, `activeQuests`, and `completedQuests` must carry a non-empty `questId`; never rely on `title`, `questOrigin`, or `sourceProjectId` as surrogate identity
             - Direct `/gacha` remains neutral and does not consume Guardian charges
             - Files: Update game_state/meta/guardians.json, game_state/quests/soul_quests.json
+- If `game_state/control/pending_abode_offering.json` exists, treat it as client-authored input only and resolve it through `guardianPowerEvents` with `reasonType = offering`
+- Whitelisted offering types may be `ink_feathers`, `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`
+- `game_state/control/archive_candidate_manifest.json` is a client-authored Life Evaluation manifest for codex-derived archive candidates; do not edit it in GM output
+- Use `afterlifeArchiveUpdates` only for exceptional/system archive rewards; ordinary codex-derived archive intake is client-driven and should not be improvised from mortal inventory
+- `game_state/control/afterlife_notifications.json` is client-owned; do not author afterlife inbox notifications manually. The client derives them from matching trade inventories, archive action receipts, guardian quest availability from canonical `questManagement`, and other canonical guardian results.
+- For accepted `archive consultation`, include machine-readable whitelist outcome fields in `archiveActionResolutions`: `guaranteedArchiveQuestCount`, `questHookCount`, `specialQuestLineUnlocks`, `visibleRivalClueBonus`, `archiveWarningTierBonus`.
+- For accepted `archive project fuel`, include machine-readable `resultMode = project_work | pressure_relief` and `resultAmount > 0` in `archiveActionResolutions`, in addition to the canonical journal/tracker result.
             - If Guardian reveals lore: add loreCodexUpdates with discoveryContext referencing the Guardian
             
             **Generate the same logical turn result as API mode** (per Block_2.txt master schema),

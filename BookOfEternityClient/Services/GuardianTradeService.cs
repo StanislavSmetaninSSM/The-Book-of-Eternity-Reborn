@@ -34,16 +34,6 @@ public sealed class GuardianTradeService
         Legendary
     }
 
-    private sealed record DomainTradeProfile(
-        string Domain,
-        string Category,
-        string PrimaryStat,
-        string SecondaryStat,
-        string TertiaryStat,
-        string ActionBonusKey,
-        string[] ThemeWords,
-        string PassiveFlavor);
-
     public sealed record GuardianTradeOffer(
         string SlotId,
         string Name,
@@ -64,6 +54,11 @@ public sealed class GuardianTradeService
         bool TradeBlocked,
         string? BlockReason,
         string TradeCycleId,
+        bool InventoryReady,
+        bool InventoryRequestPending,
+        bool InventoryRequestCreatedThisCall,
+        string? InventoryStatusMessage,
+        string? PendingGmAction,
         IReadOnlyList<GuardianTradeOffer> Offers);
 
     public sealed record GuardianSellOffer(
@@ -74,46 +69,6 @@ public sealed class GuardianTradeService
         string Description);
 
     public sealed record GuardianTradeOperationResult(bool Success, bool StateChanged, string Message);
-
-    private static readonly IReadOnlyDictionary<string, DomainTradeProfile> DomainProfiles =
-        new Dictionary<string, DomainTradeProfile>(StringComparer.OrdinalIgnoreCase)
-        {
-            ["Combat"] = new(
-                "Combat", "Combat",
-                Characteristics.Strength, Characteristics.Constitution, Characteristics.Speed, "combatBonus",
-                new[] { "Железной Доблести", "Победного Натиска", "Арены", "Ветерана", "Стального Обета", "Воинской Чести" },
-                "Пассивно укрепляет решимость в бою."),
-            ["Magic"] = new(
-                "Magic", "Magical",
-                Characteristics.Intelligence, Characteristics.Wisdom, Characteristics.Faith, "magicBonus",
-                new[] { "Звёздной Мысли", "Тихого Эфира", "Лунного Пламени", "Арканного Узора", "Безмолвного Заклинателя", "Сумеречной Руны" },
-                "Пассивно усиливает контроль над тонкими потоками магии."),
-            ["Social"] = new(
-                "Social", "Social",
-                Characteristics.Attractiveness, Characteristics.Persuasion, Characteristics.Trade, "socialBonus",
-                new[] { "Шёлкового Голоса", "Дворцовой Улыбки", "Доверия", "Сердечного Узора", "Изящного Жеста", "Салонной Грации" },
-                "Пассивно усиливает первое впечатление и эмоциональный отклик."),
-            ["Crafting"] = new(
-                "Crafting", "Utility",
-                Characteristics.Intelligence, Characteristics.Trade, Characteristics.Wisdom, "skillBonus",
-                new[] { "Мастерской Искры", "Кузни Памяти", "Точного Резца", "Тихого Ремесла", "Гранёной Идеи", "Золотых Рук" },
-                "Пассивно помогает находить более точные решения в ремесле."),
-            ["Survival"] = new(
-                "Survival", "Utility",
-                Characteristics.Dexterity, Characteristics.Perception, Characteristics.Constitution, "globalBonus",
-                new[] { "Туманных Троп", "Зоркого Следа", "Дальнего Костра", "Скрытого Следопыта", "Ночного Шага", "Крепкой Стужи" },
-                "Пассивно помогает выстоять в трудных условиях."),
-            ["Knowledge"] = new(
-                "Knowledge", "Utility",
-                Characteristics.Intelligence, Characteristics.Wisdom, Characteristics.Perception, "skillBonus",
-                new[] { "Архивной Пыли", "Забытого Свитка", "Тихой Библиотеки", "Старинной Загадки", "Памяти Учёного", "Пера Летописца" },
-                "Пассивно упорядочивает мысли и удерживает важные детали."),
-            ["Trade"] = new(
-                "Trade", "Utility",
-                Characteristics.Trade, Characteristics.Persuasion, Characteristics.Luck, "globalBonus",
-                new[] { "Честной Сделки", "Золотого Слова", "Рыночной Хитрости", "Весов Судьбы", "Счётной Книги", "Удачного Торга" },
-                "Пассивно помогает замечать выгодные возможности раньше других.")
-        };
 
     public GuardianTradeService(FileSystemManager fs, ILogger<GuardianTradeService> logger)
     {
@@ -126,14 +81,17 @@ public sealed class GuardianTradeService
         var root = await ReadGuardiansRootAsync();
         if (root == null)
             return null;
+        var trackerRoot = await ReadGuardianProjectTrackerRootAsync();
 
         var guardian = FindGuardian(root, guardianId);
         if (guardian == null)
             return null;
 
-        var (_, view, changed) = EnsureTradeInventoryState(root, guardian, currentIncarnation);
+        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(root, guardian, currentIncarnation, trackerRoot);
         if (changed)
             await _fs.WriteFileAtomicAsync(GuardiansPath, root.ToJsonString(JsonOpts));
+        if (trackerChanged && trackerRoot != null)
+            await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot.ToJsonString(JsonOpts));
 
         return view;
     }
@@ -182,6 +140,7 @@ public sealed class GuardianTradeService
     {
         var guardiansRoot = await ReadGuardiansRootAsync();
         var soulRoot = await ReadSoulStateRootAsync();
+        var trackerRoot = await ReadGuardianProjectTrackerRootAsync();
         if (guardiansRoot == null || soulRoot == null)
             return new GuardianTradeOperationResult(false, false, "Не удалось прочитать состояние торговли или души.");
 
@@ -192,9 +151,11 @@ public sealed class GuardianTradeService
         if (!GuardianTradeAllowedHere(guardiansRoot, guardian))
             return new GuardianTradeOperationResult(false, false, "Торговать можно только с текущим активным Хранителем в обители, где вы сейчас находитесь.");
 
-        var (_, view, changed) = EnsureTradeInventoryState(guardiansRoot, guardian, currentIncarnation);
+        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(guardiansRoot, guardian, currentIncarnation, trackerRoot);
         if (view.TradeBlocked)
             return new GuardianTradeOperationResult(false, false, view.BlockReason ?? "Торговля недоступна.");
+        if (!view.InventoryReady)
+            return new GuardianTradeOperationResult(false, false, view.InventoryStatusMessage ?? "Витрина Хранителя ещё не подготовлена.");
 
         if (guardian["tradeInventory"] is not JsonObject tradeInventory || tradeInventory["items"] is not JsonArray items)
             return new GuardianTradeOperationResult(false, false, "Витрина Хранителя недоступна.");
@@ -225,6 +186,8 @@ public sealed class GuardianTradeService
 
         await _fs.WriteFileAtomicAsync(SoulStatePath, soulRoot.ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(GuardiansPath, guardiansRoot.ToJsonString(JsonOpts));
+        if ((changed || trackerChanged) && trackerRoot != null)
+            await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot.ToJsonString(JsonOpts));
 
         var relicName = GetNodeString(relicData["name"]) ?? "Реликвия";
         return new GuardianTradeOperationResult(true, true, $"Куплена реликвия «{relicName}» за {price} 🪶.");
@@ -267,52 +230,128 @@ public sealed class GuardianTradeService
         return new GuardianTradeOperationResult(true, true, $"Продана реликвия «{relicName}» за {price} 🪶.");
     }
 
-    private (TradeReputationTier Tier, GuardianTradeView View, bool Changed) EnsureTradeInventoryState(JsonObject root, JsonObject guardian, int currentIncarnation)
-    {
-        var guardianId = GetNodeString(guardian["guardianId"]) ?? "";
-        var reputation = ReadGuardianReputation(guardian);
-        var tier = GetTradeReputationTier(reputation);
-        var cycleId = GetTradeCycleId(currentIncarnation);
-        var blocked = tier == TradeReputationTier.Hostile || !GuardianTradeAllowedHere(root, guardian);
-        var changed = false;
-
-        if (!blocked)
-        {
-            var tradeInventory = guardian["tradeInventory"] as JsonObject;
-            if (!TradeInventoryMatchesCycle(tradeInventory, cycleId, GetNodeString(guardian["domain"]) ?? "Knowledge"))
-            {
-                var guardianDisplayName = GuardianManifestation.GetDisplayName(guardian);
-                guardian["tradeInventory"] = GenerateTradeInventory(
-                    guardianId,
-                    string.IsNullOrWhiteSpace(guardianDisplayName) ? guardianId : guardianDisplayName,
-                    GetNodeString(guardian["domain"]) ?? "Knowledge",
-                    tier,
-                    cycleId);
-                changed = true;
-            }
-            else if (tradeInventory != null)
-            {
-                changed = RepriceTradeInventory(tradeInventory, tier);
-            }
-
-            if (changed)
-                SyncActiveGuardian(root, guardianId, guardian);
-        }
-
-        return (tier, BuildTradeView(root, guardian, cycleId, blocked), changed);
-    }
-
-    private GuardianTradeView BuildTradeView(JsonObject root, JsonObject guardian, string cycleId, bool blocked)
+    private async Task<(TradeReputationTier Tier, GuardianTradeView View, bool Changed, bool TrackerChanged)> EnsureTradeInventoryStateAsync(
+        JsonObject root,
+        JsonObject guardian,
+        int currentIncarnation,
+        JsonObject? trackerRoot)
     {
         var guardianId = GetNodeString(guardian["guardianId"]) ?? "";
         var guardianName = GuardianManifestation.GetDisplayName(guardian);
         if (string.IsNullOrWhiteSpace(guardianName))
             guardianName = guardianId;
-        var domain = GetNodeString(guardian["domain"]) ?? "Knowledge";
+        var reputation = ReadGuardianReputation(guardian);
+        var tier = GetTradeReputationTier(reputation);
+        var cycleId = GetTradeCycleId(currentIncarnation);
+        var derivedState = GuardianProjectState.ResolveGuardianDerivedState(guardian, trackerRoot);
+        var blocked = tier == TradeReputationTier.Hostile || !GuardianTradeAllowedHere(root, guardian);
+        var changed = false;
+        var trackerChanged = false;
+        var inventoryReady = false;
+        var inventoryRequestPending = false;
+        var inventoryRequestCreatedThisCall = false;
+        string? inventoryStatusMessage = null;
+        string? pendingGmAction = null;
+        var blockedReason = blocked ? BuildTradeBlockedReason(root, guardian, reputation) : null;
+
+        if (!blocked)
+        {
+            var tradeInventory = guardian["tradeInventory"] as JsonObject;
+            if (TradeInventoryMatchesContract(tradeInventory, cycleId, derivedState))
+            {
+                inventoryReady = true;
+                if (tradeInventory != null)
+                {
+                    changed = RepriceTradeInventory(tradeInventory, tier);
+                    var currentSignature = GetNodeString(tradeInventory["projectBonusSignature"]) ?? "0|0|0";
+                    if (!string.Equals(currentSignature, "0|0|0", StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(currentSignature, GuardianProjectState.BuildTradeBonusSignature(derivedState), StringComparison.OrdinalIgnoreCase))
+                    {
+                        trackerChanged = GuardianProjectState.TryConsumeRelicForgingTradeRefresh(trackerRoot, guardianId) || trackerChanged;
+                    }
+
+                    if (changed)
+                        SyncActiveGuardian(root, guardianId, guardian);
+                }
+
+                GuardianTradeRequestState.Clear(_fs);
+            }
+            else
+            {
+                var request = await GuardianTradeRequestState.ReadAsync(_fs);
+                inventoryRequestPending = GuardianTradeRequestState.MatchesCurrentContract(
+                    request,
+                    guardianId,
+                    cycleId,
+                    reputation,
+                    derivedState);
+
+                if (!inventoryRequestPending)
+                {
+                    var abodeId = guardian["abode"] is JsonObject abode ? GetNodeString(abode["abodeId"]) ?? "" : "";
+                    request = new GuardianTradeRequestState.PendingGuardianTradeRequest
+                    {
+                        GuardianId = guardianId,
+                        GuardianName = guardianName,
+                        AbodeId = abodeId,
+                        ReturnCycleId = cycleId,
+                        CurrentReputation = reputation,
+                        DerivedTradeSlotCount = derivedState.TradeSlotCount,
+                        EffectiveRarityCeilingBonusSteps = derivedState.EffectiveGuardianRarityCeilingBonusSteps,
+                        ProjectBonusSignature = GuardianProjectState.BuildTradeBonusSignature(derivedState)
+                    };
+                    await GuardianTradeRequestState.WriteAsync(_fs, request);
+                    inventoryRequestPending = true;
+                    inventoryRequestCreatedThisCall = true;
+                    pendingGmAction =
+                        $"[{GuardianTradeRequestState.ActionTag}] Игрок открывает торговлю с Хранителем {guardianName} ({guardianId}), но актуальная витрина отсутствует или устарела. " +
+                        $"Обязательно прочитай {GuardianTradeRequestState.PendingRequestPath} как client-authored contract. " +
+                        "Сгенерируй explicit guardian.tradeInventory для текущего return cycle, а не выводи ассортимент из guardian.domain. " +
+                        "Витрина должна уважать derivedTradeSlotCount, generation/pricing reputation tier и projectBonusSignature из request.";
+                }
+
+                inventoryStatusMessage = inventoryRequestCreatedThisCall
+                    ? "Витрина Хранителя подготавливается. Запрос на формирование ассортимента отправлен GM."
+                    : "Витрина Хранителя ещё подготавливается. Повторите после ответа GM.";
+            }
+        }
+
+        return (
+            tier,
+            BuildTradeView(
+                guardian,
+                cycleId,
+                blocked,
+                blockedReason,
+                inventoryReady,
+                inventoryRequestPending,
+                inventoryRequestCreatedThisCall,
+                inventoryStatusMessage,
+                pendingGmAction),
+            changed,
+            trackerChanged);
+    }
+
+    private GuardianTradeView BuildTradeView(
+        JsonObject guardian,
+        string cycleId,
+        bool blocked,
+        string? blockedReason,
+        bool inventoryReady,
+        bool inventoryRequestPending,
+        bool inventoryRequestCreatedThisCall,
+        string? inventoryStatusMessage,
+        string? pendingGmAction)
+    {
+        var guardianId = GetNodeString(guardian["guardianId"]) ?? "";
+        var guardianName = GuardianManifestation.GetDisplayName(guardian);
+        if (string.IsNullOrWhiteSpace(guardianName))
+            guardianName = guardianId;
+        var domain = GetNodeString(guardian["domain"]) ?? "";
         var rep = ReadGuardianReputation(guardian);
         var offers = new List<GuardianTradeOffer>();
 
-        if (!blocked &&
+        if (!blocked && inventoryReady &&
             guardian["tradeInventory"] is JsonObject tradeInventory &&
             tradeInventory["items"] is JsonArray items)
         {
@@ -337,133 +376,18 @@ public sealed class GuardianTradeService
             guardianId,
             guardianName,
             domain,
-            GetDomainDisplay(domain),
+            domain,
             rep,
             GetReputationTierLabel(rep),
             blocked,
-            blocked ? BuildTradeBlockedReason(root, guardian, rep) : null,
+            blockedReason,
             cycleId,
+            inventoryReady,
+            inventoryRequestPending,
+            inventoryRequestCreatedThisCall,
+            inventoryStatusMessage,
+            pendingGmAction,
             offers);
-    }
-
-    private static JsonObject GenerateTradeInventory(string guardianId, string guardianName, string domain, TradeReputationTier tier, string cycleId)
-    {
-        var profile = GetProfile(domain);
-        var rarities = GetRarityPattern(tier);
-        var themes = PickThemeWords(profile.ThemeWords, guardianId, cycleId, 4);
-        var items = new JsonArray();
-
-        for (var slotIndex = 0; slotIndex < 4; slotIndex++)
-        {
-            var rarity = rarities[slotIndex];
-            items.Add(new JsonObject
-            {
-                ["slotId"] = $"trade_{guardianId}_{cycleId}_{slotIndex + 1}",
-                ["priceInFeathers"] = ComputeBuyPrice(rarity, tier),
-                ["domainTag"] = domain,
-                ["soldOut"] = false,
-                ["relicData"] = GenerateRelicData(profile, guardianId, guardianName, rarity, themes[slotIndex], slotIndex, cycleId)
-            });
-        }
-
-        return new JsonObject
-        {
-            ["tradeCycleId"] = cycleId,
-            ["generatedAtUtc"] = DateTime.UtcNow.ToString("o"),
-            ["generationReputationTier"] = GetTradeTierCode(tier),
-            ["pricingReputationTier"] = GetTradeTierCode(tier),
-            ["items"] = items
-        };
-    }
-
-    private static JsonObject GenerateRelicData(DomainTradeProfile profile, string guardianId, string guardianName, string rarity, string themeWord, int slotIndex, string cycleId)
-    {
-        var slot = slotIndex switch
-        {
-            0 => "Ring",
-            1 => "Neck",
-            2 => "Hands",
-            _ => "Back"
-        };
-
-        var name = slotIndex switch
-        {
-            0 => $"Печать {themeWord}",
-            1 => $"Колье {themeWord}",
-            2 => $"Знак {themeWord}",
-            _ => $"Плащ {themeWord}"
-        };
-
-        var primary = GetPrimaryStatBonus(rarity);
-        var secondary = GetSecondaryStatBonus(rarity);
-        var action = GetActionBonusValue(rarity);
-        var characteristicBonuses = new JsonObject();
-        var actionCheckBonuses = new JsonObject();
-        var bonuses = new JsonArray();
-        var passiveEffects = new JsonArray();
-
-        switch (slotIndex)
-        {
-            case 0:
-                characteristicBonuses[profile.PrimaryStat] = primary;
-                bonuses.Add($"+{primary} к {Characteristics.RussianNames.GetValueOrDefault(profile.PrimaryStat, profile.PrimaryStat)}");
-                break;
-            case 1:
-                characteristicBonuses[profile.SecondaryStat] = primary;
-                characteristicBonuses[profile.PrimaryStat] = secondary;
-                bonuses.Add($"+{primary} к {Characteristics.RussianNames.GetValueOrDefault(profile.SecondaryStat, profile.SecondaryStat)}");
-                bonuses.Add($"+{secondary} к {Characteristics.RussianNames.GetValueOrDefault(profile.PrimaryStat, profile.PrimaryStat)}");
-                break;
-            case 2:
-                characteristicBonuses[profile.TertiaryStat] = secondary;
-                actionCheckBonuses[profile.ActionBonusKey] = action;
-                bonuses.Add($"+{secondary} к {Characteristics.RussianNames.GetValueOrDefault(profile.TertiaryStat, profile.TertiaryStat)}");
-                bonuses.Add(DescribeActionBonus(profile.ActionBonusKey, action));
-                passiveEffects.Add(profile.PassiveFlavor);
-                break;
-            default:
-                characteristicBonuses[profile.PrimaryStat] = secondary;
-                characteristicBonuses[profile.SecondaryStat] = secondary;
-                actionCheckBonuses[profile.ActionBonusKey] = Math.Max(1, action - 1);
-                bonuses.Add($"+{secondary} к {Characteristics.RussianNames.GetValueOrDefault(profile.PrimaryStat, profile.PrimaryStat)}");
-                bonuses.Add($"+{secondary} к {Characteristics.RussianNames.GetValueOrDefault(profile.SecondaryStat, profile.SecondaryStat)}");
-                bonuses.Add(DescribeActionBonus(profile.ActionBonusKey, Math.Max(1, action - 1)));
-                passiveEffects.Add(profile.PassiveFlavor);
-                break;
-        }
-
-        return new JsonObject
-        {
-            ["relicId"] = $"trade_{SanitizeId(guardianId)}_{profile.Domain.ToLowerInvariant()}_{SanitizeId(themeWord)}_{cycleId}_{slotIndex + 1}",
-            ["name"] = name,
-            ["rarity"] = rarity,
-            ["quality"] = rarity,
-            ["category"] = profile.Category,
-            ["slot"] = slot,
-            ["description"] = BuildRelicDescription(profile, name, slotIndex),
-            ["effects"] = new JsonObject
-            {
-                ["characteristicBonuses"] = characteristicBonuses,
-                ["actionCheckBonuses"] = actionCheckBonuses
-            },
-            ["bonuses"] = bonuses,
-            ["passiveEffects"] = passiveEffects,
-            ["equipmentData"] = new JsonObject
-            {
-                ["equipSlot"] = slot,
-                ["enlightenmentRequirement"] = GetEnlightenmentRequirement(rarity)
-            },
-            ["acquisitionData"] = new JsonObject
-            {
-                ["sourceGuardian"] = guardianId,
-                ["acquisitionStory"] = $"Выкуплена у Хранителя «{guardianName}» из его доменной витрины."
-            },
-            ["gameplayStatus"] = new JsonObject
-            {
-                ["equipped"] = false,
-                ["currentSlot"] = null
-            }
-        };
     }
 
     private async Task<JsonObject?> ReadGuardiansRootAsync()
@@ -496,6 +420,23 @@ public sealed class GuardianTradeService
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Не удалось прочитать soul_state.json для торговли");
+            return null;
+        }
+    }
+
+    private async Task<JsonObject?> ReadGuardianProjectTrackerRootAsync()
+    {
+        var json = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Не удалось прочитать guardian_projects.json для торговли Хранителя");
             return null;
         }
     }
@@ -598,7 +539,10 @@ public sealed class GuardianTradeService
 
     private static string GetTradeCycleId(int currentIncarnation) => $"return_{Math.Max(0, currentIncarnation)}";
 
-    private static bool TradeInventoryMatchesCycle(JsonObject? tradeInventory, string cycleId, string guardianDomain)
+    private static bool TradeInventoryMatchesContract(
+        JsonObject? tradeInventory,
+        string cycleId,
+        GuardianProjectState.ResolvedGuardianDerivedState derivedState)
     {
         if (tradeInventory == null)
             return false;
@@ -606,8 +550,7 @@ public sealed class GuardianTradeService
         if (!string.Equals(GetNodeString(tradeInventory["tradeCycleId"]), cycleId, StringComparison.OrdinalIgnoreCase))
             return false;
 
-        var generatedAtUtc = GetNodeString(tradeInventory["generatedAtUtc"]);
-        if (string.IsNullOrWhiteSpace(generatedAtUtc))
+        if (string.IsNullOrWhiteSpace(GetNodeString(tradeInventory["generatedAtUtc"])))
             return false;
 
         var generationTier = GetNodeString(tradeInventory["generationReputationTier"]);
@@ -618,15 +561,22 @@ public sealed class GuardianTradeService
         if (!IsValidTradeTierCode(pricingTier))
             return false;
 
-        var parsedPricingTier = ParseTradeTierCode(pricingTier);
-
-        if (tradeInventory["items"] is not JsonArray items || items.Count != 4)
+        if (tradeInventory["items"] is not JsonArray items || items.Count != derivedState.TradeSlotCount)
             return false;
+
+        if (GetNodeInt(tradeInventory["effectiveRarityCeilingBonusSteps"], int.MinValue) != derivedState.EffectiveGuardianRarityCeilingBonusSteps)
+            return false;
+
+        if (!string.Equals(
+                GetNodeString(tradeInventory["projectBonusSignature"]) ?? string.Empty,
+                GuardianProjectState.BuildTradeBonusSignature(derivedState),
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
 
         return items.OfType<JsonObject>().All(item =>
             !string.IsNullOrWhiteSpace(GetNodeString(item["slotId"])) &&
-            !string.IsNullOrWhiteSpace(GetNodeString(item["domainTag"])) &&
-            string.Equals(GetNodeString(item["domainTag"]), guardianDomain, StringComparison.OrdinalIgnoreCase) &&
             item["priceInFeathers"] is JsonValue &&
             GetNodeInt(item["priceInFeathers"], -1) >= 0 &&
             item["soldOut"] is JsonValue soldOut &&
@@ -636,8 +586,7 @@ public sealed class GuardianTradeService
             !string.IsNullOrWhiteSpace(GetNodeString(relicData["name"])) &&
             (!string.IsNullOrWhiteSpace(GetNodeString(relicData["quality"])) ||
              !string.IsNullOrWhiteSpace(GetNodeString(relicData["rarity"]))) &&
-            IsRarityAllowedForGenerationTier(GetRelicRarity(relicData), generationTier!) &&
-            GetNodeInt(item["priceInFeathers"], -1) == ComputeBuyPrice(GetRelicRarity(relicData), parsedPricingTier));
+            IsRarityAllowedForGenerationTier(GetRelicRarity(relicData), generationTier!, GetNodeInt(item["rarityBonusStepsApplied"], 0)));
     }
 
     private static bool RepriceTradeInventory(JsonObject tradeInventory, TradeReputationTier tier)
@@ -692,6 +641,9 @@ public sealed class GuardianTradeService
         ComputeBuyPrice(rarity, ParseTradeTierCode(tierCode));
 
     internal static bool IsRarityAllowedForGenerationTier(string rarity, string tierCode)
+        => IsRarityAllowedForGenerationTier(rarity, tierCode, 0);
+
+    internal static bool IsRarityAllowedForGenerationTier(string rarity, string tierCode, int rarityBonusStepsApplied)
     {
         var rarityRank = GetRarityRank(rarity);
         var maxRank = ParseTradeTierCode(tierCode) switch
@@ -704,88 +656,8 @@ public sealed class GuardianTradeService
             _ => 0
         };
 
-        return rarityRank <= maxRank;
+        return rarityRank <= Math.Min(GetRarityRank("Legendary"), maxRank + Math.Max(0, rarityBonusStepsApplied));
     }
-
-    private static string[] GetRarityPattern(TradeReputationTier tier) => tier switch
-    {
-        TradeReputationTier.Neutral => new[] { "Common", "Common", "Uncommon", "Uncommon" },
-        TradeReputationTier.Friendly => new[] { "Common", "Uncommon", "Rare", "Rare" },
-        TradeReputationTier.Devoted => new[] { "Uncommon", "Rare", "Epic", "Epic" },
-        TradeReputationTier.Legendary => new[] { "Uncommon", "Rare", "Epic", "Epic" },
-        _ => Array.Empty<string>()
-    };
-
-    private static DomainTradeProfile GetProfile(string domain) =>
-        DomainProfiles.TryGetValue(domain, out var profile) ? profile : DomainProfiles["Knowledge"];
-
-    private static string[] PickThemeWords(string[] source, string guardianId, string cycleId, int count)
-    {
-        var values = source.ToList();
-        var random = new Random(ComputeStableSeed($"{guardianId}|{cycleId}|trade"));
-        for (var i = values.Count - 1; i > 0; i--)
-        {
-            var j = random.Next(i + 1);
-            (values[i], values[j]) = (values[j], values[i]);
-        }
-
-        return values.Take(count).ToArray();
-    }
-
-    private static int ComputeStableSeed(string value)
-    {
-        unchecked
-        {
-            var hash = 17;
-            foreach (var c in value)
-                hash = hash * 31 + c;
-            return hash;
-        }
-    }
-
-    private static string BuildRelicDescription(DomainTradeProfile profile, string name, int slotIndex) => slotIndex switch
-    {
-        0 => $"{name} фокусирует чистую силу домена «{GetDomainDisplay(profile.Domain)}» и напрямую усиливает ключевой параметр.",
-        1 => $"{name} закрепляет вторичный дар домена «{GetDomainDisplay(profile.Domain)}» и делает носителя устойчивее в профильных задачах.",
-        2 => $"{name} помогает лучше раскрывать потенциал домена «{GetDomainDisplay(profile.Domain)}» в важных проверках и ситуациях.",
-        _ => $"{name} связывает несколько сторон домена «{GetDomainDisplay(profile.Domain)}» и даёт устойчивый полезный эффект."
-    };
-
-    private static int GetPrimaryStatBonus(string rarity) => rarity switch
-    {
-        "Common" => 3,
-        "Uncommon" => 5,
-        "Rare" => 8,
-        "Epic" => 12,
-        _ => 3
-    };
-
-    private static int GetSecondaryStatBonus(string rarity) => rarity switch
-    {
-        "Common" => 1,
-        "Uncommon" => 2,
-        "Rare" => 4,
-        "Epic" => 6,
-        _ => 1
-    };
-
-    private static int GetActionBonusValue(string rarity) => rarity switch
-    {
-        "Common" => 1,
-        "Uncommon" => 2,
-        "Rare" => 4,
-        "Epic" => 6,
-        _ => 1
-    };
-
-    private static int GetEnlightenmentRequirement(string rarity) => rarity switch
-    {
-        "Common" => 0,
-        "Uncommon" => 0,
-        "Rare" => 1,
-        "Epic" => 2,
-        _ => 0
-    };
 
     private static int ComputeBuyPrice(string rarity, TradeReputationTier tier)
     {
@@ -795,6 +667,7 @@ public sealed class GuardianTradeService
             "Uncommon" => 70,
             "Rare" => 140,
             "Epic" => 260,
+            "Legendary" => 420,
             _ => 30
         };
 
@@ -807,7 +680,7 @@ public sealed class GuardianTradeService
             _ => double.PositiveInfinity
         };
 
-        return (int)Math.Ceiling(basePrice * multiplier);
+        return double.IsInfinity(multiplier) ? int.MaxValue : (int)Math.Ceiling(basePrice * multiplier);
     }
 
     private static int ComputeSellPrice(string rarity, TradeReputationTier tier)
@@ -833,28 +706,6 @@ public sealed class GuardianTradeService
 
         return (int)Math.Floor(basePrice * multiplier);
     }
-
-    private static string DescribeActionBonus(string key, int value) => key switch
-    {
-        "combatBonus" => $"+{value} к боевым проверкам",
-        "magicBonus" => $"+{value} к магическим проверкам",
-        "socialBonus" => $"+{value} к социальным проверкам",
-        "skillBonus" => $"+{value} к профильным проверкам навыков",
-        "globalBonus" => $"+{value} ко всем проверкам действия",
-        _ => $"+{value} к проверкам домена"
-    };
-
-    private static string GetDomainDisplay(string domain) => domain switch
-    {
-        "Combat" => "Бой",
-        "Magic" => "Магия",
-        "Trade" => "Торговля",
-        "Social" => "Общение",
-        "Crafting" => "Ремесло",
-        "Survival" => "Выживание",
-        "Knowledge" => "Знания",
-        _ => domain
-    };
 
     private static int GetRarityRank(string rarity) => rarity switch
     {
@@ -1012,14 +863,5 @@ public sealed class GuardianTradeService
         if (node is JsonValue value && value.TryGetValue<bool>(out var boolValue))
             return boolValue;
         return false;
-    }
-
-    private static string SanitizeId(string value)
-    {
-        var chars = value
-            .ToLowerInvariant()
-            .Select(c => char.IsLetterOrDigit(c) ? c : '_')
-            .ToArray();
-        return new string(chars).Trim('_');
     }
 }

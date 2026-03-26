@@ -19,6 +19,10 @@ public class SaveLoadService
         "game_state/control/validation_repair_request.json",
         "game_state/control/validation_repair_ready.json",
         "game_state/control/terminal_protocol_failure_request.json",
+        GuardianAbodeOfferingState.PendingRequestPath,
+        GuardianTradeRequestState.PendingRequestPath,
+        AfterlifeArchiveActionState.ConsultationRequestPath,
+        AfterlifeArchiveActionState.ProjectFuelRequestPath,
         "game_state/control/gm_cli_window_binding.json",
         "game_state/control/gm_bridge_status.json",
         "output/ink_feather_action_result.json"

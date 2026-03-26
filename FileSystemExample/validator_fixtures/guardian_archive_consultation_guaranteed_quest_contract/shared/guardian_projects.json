@@ -1,0 +1,40 @@
+{
+  "activeProjects": [],
+  "completedProjects": [
+    {
+      "guardianId": "guardian_archive_001",
+      "project": {
+        "projectId": "archive_consult_project",
+        "projectType": "lore_research",
+        "projectOrigin": "archive_consultation",
+        "projectTier": "minor",
+        "projectMode": "supportive",
+        "projectName": "Архивная консультация: Летопись Серого Двора",
+        "finalState": "Completed",
+        "completionTurn": 12,
+        "projectOutcomeAudit": {
+          "bonusLoreUnlocks": 0,
+          "questHookCount": 0,
+          "guaranteedArchiveQuestCount": 1,
+          "specialQuestLineUnlocks": 0,
+          "visibleRivalClueBonus": 0,
+          "unlockedLoreFragments": []
+        },
+        "effectState": {
+          "targetIncarnation": 2,
+          "bonusLoreUnlocksApplied": 0,
+          "questHookTokensGranted": 0,
+          "questHookTokensSpent": 0,
+          "guaranteedArchiveQuestGranted": 1,
+          "guaranteedArchiveQuestSpawned": 0,
+          "guaranteedArchiveQuestConsumed": 0,
+          "specialQuestLineTokensGranted": 0,
+          "specialQuestLineTokensSpent": 0,
+          "visibleRivalClueBudgetGranted": 0,
+          "visibleRivalClueBudgetSpent": 0
+        }
+      }
+    }
+  ],
+  "temporaryProjectModifiers": []
+}
