@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging;
 
@@ -17,13 +18,7 @@ public sealed class AfterlifeArchiveCandidateService
     public const int MaxArchivedPerLife = 3;
     public const int MaxSecretArchivedPerLife = 1;
 
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    };
+    private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
     private static readonly HashSet<string> SecretTags = new(StringComparer.OrdinalIgnoreCase)
     {

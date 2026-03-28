@@ -539,10 +539,213 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     });
 
 
-    private async Task SeedNpcTradeStateAsync(bool includeSellableInventoryItem = false, bool canTrade = true, bool locationMatches = true)
+    private async Task SeedNpcTradeStateAsync(
+        bool includeSellableInventoryItem = false,
+        bool canTrade = true,
+        bool locationMatches = true,
+        bool includeTradeInventory = true,
+        bool includeTradeReceipt = true,
+        bool includeBuybackInventory = false)
     {
         await SeedMortalStateAsync();
+        await WriteJsonAsync("input/turn_request.json", new { turnNumber = 12 });
         var blockedReasonField = canTrade ? "" : ",\n              \"tradeBlockedReason\": \"Торговля сейчас недоступна.\"";
+        var tradeInventoryField = includeTradeInventory
+            ? """
+            ,
+              "tradeInventory": {
+                "tradeCycleId": "world_trade_0",
+                "generatedAtWorldDate": 100,
+                "refreshAfterWorldDate": 43200,
+                "generationTradeTier": "Good",
+                "pricingTradeTier": "Neutral",
+                "items": [
+                  {
+                    "slotId": "npc_trade_slot_001",
+                    "itemId": "npc_item_merchant_001",
+                    "price": 110,
+                    "merchantProfile": "GeneralGoods",
+                    "soldOut": false,
+                    "itemData": {
+                      "itemId": "npc_item_merchant_001",
+                      "name": "Полевой набор торговца",
+                      "description": "Тестовый authored ассортимент.",
+                      "type": "Tool",
+                      "tradeItemClass": "Functional",
+                      "quality": "Rare",
+                      "price": 90,
+                      "baseSellPrice": 36,
+                      "weight": "1.0",
+                      "group": "Инструменты"
+                    }
+                  },
+                  {
+                    "slotId": "npc_trade_slot_002",
+                    "itemId": "npc_item_merchant_002",
+                    "price": 37,
+                    "merchantProfile": "GeneralGoods",
+                    "soldOut": false,
+                    "itemData": {
+                      "itemId": "npc_item_merchant_002",
+                      "name": "Карта соседних кварталов",
+                      "description": "Тестовый authored ассортимент.",
+                      "type": "Document",
+                      "tradeItemClass": "FlavorOrUtility",
+                      "quality": "Common",
+                      "price": 30,
+                      "baseSellPrice": 12,
+                      "weight": "0.1",
+                      "group": "Документы и медиа"
+                    }
+                  },
+                  {
+                    "slotId": "npc_trade_slot_003",
+                    "itemId": "npc_item_merchant_003",
+                    "price": 25,
+                    "merchantProfile": "GeneralGoods",
+                    "soldOut": false,
+                    "itemData": {
+                      "itemId": "npc_item_merchant_003",
+                      "name": "Запас крепежа",
+                      "description": "Тестовый authored ассортимент.",
+                      "type": "Material",
+                      "tradeItemClass": "Material",
+                      "quality": "Common",
+                      "price": 20,
+                      "baseSellPrice": 8,
+                      "weight": "0.4",
+                      "group": "Материалы"
+                    }
+                  },
+                  {
+                    "slotId": "npc_trade_slot_004",
+                    "itemId": "npc_item_merchant_004",
+                    "price": 49,
+                    "merchantProfile": "GeneralGoods",
+                    "soldOut": false,
+                    "itemData": {
+                      "itemId": "npc_item_merchant_004",
+                      "name": "Дорожный фонарь",
+                      "description": "Тестовый authored ассортимент.",
+                      "type": "Tool",
+                      "tradeItemClass": "Functional",
+                      "quality": "Uncommon",
+                      "price": 40,
+                      "baseSellPrice": 16,
+                      "weight": "0.8",
+                      "group": "Инструменты"
+                    }
+                  },
+                  {
+                    "slotId": "npc_trade_slot_005",
+                    "itemId": "npc_item_merchant_005",
+                    "price": 74,
+                    "merchantProfile": "GeneralGoods",
+                    "soldOut": false,
+                    "itemData": {
+                      "itemId": "npc_item_merchant_005",
+                      "name": "Плотный плащ",
+                      "description": "Тестовый authored ассортимент.",
+                      "type": "Armor",
+                      "tradeItemClass": "Functional",
+                      "quality": "Uncommon",
+                      "price": 60,
+                      "baseSellPrice": 24,
+                      "weight": "1.5",
+                      "group": "Защита"
+                    }
+                  },
+                  {
+                    "slotId": "npc_trade_slot_006",
+                    "itemId": "npc_item_merchant_006",
+                    "price": 61,
+                    "merchantProfile": "GeneralGoods",
+                    "soldOut": false,
+                    "itemData": {
+                      "itemId": "npc_item_merchant_006",
+                      "name": "Складной кофр",
+                      "description": "Тестовый authored ассортимент.",
+                      "type": "Container",
+                      "tradeItemClass": "Functional",
+                      "quality": "Uncommon",
+                      "price": 50,
+                      "baseSellPrice": 20,
+                      "weight": "1.2",
+                      "group": "Контейнеры"
+                    }
+                  },
+                  {
+                    "slotId": "npc_trade_slot_007",
+                    "itemId": "npc_item_merchant_007",
+                    "price": 31,
+                    "merchantProfile": "GeneralGoods",
+                    "soldOut": false,
+                    "itemData": {
+                      "itemId": "npc_item_merchant_007",
+                      "name": "Записная книжка",
+                      "description": "Тестовый authored ассортимент.",
+                      "type": "Document",
+                      "tradeItemClass": "FlavorOrUtility",
+                      "quality": "Common",
+                      "price": 25,
+                      "baseSellPrice": 10,
+                      "weight": "0.1",
+                      "group": "Документы и медиа"
+                    }
+                  }
+                ]
+              }
+            """
+            : "";
+        var tradeReceiptField = includeTradeInventory && includeTradeReceipt
+            ? """
+            ,
+              "tradeInventoryReceipts": [
+                {
+                  "requestId": "npc_trade_req_seed_001",
+                  "npcId": "npc_merchant_001",
+                  "npcName": "Марек",
+                  "tradeCycleId": "world_trade_0",
+                  "merchantProfile": "GeneralGoods",
+                  "status": "ready",
+                  "itemCount": 7,
+                  "resolvedAtTurn": 5,
+                  "resolvedAtUtc": "2026-03-28T00:05:00Z"
+                }
+              ]
+            """
+            : "";
+        var buybackInventoryField = includeBuybackInventory
+            ? """
+            ,
+              "buybackInventory": [
+                {
+                  "buybackEntryId": "npc_buyback_001",
+                  "npcId": "npc_merchant_001",
+                  "npcName": "Марек",
+                  "itemId": "item_sell_lantern_001",
+                  "itemData": {
+                    "itemId": "item_sell_lantern_001",
+                    "name": "Походный фонарь",
+                    "description": "Ранее проданный фонарь.",
+                    "type": "tool",
+                    "tradeItemClass": "Functional",
+                    "quality": "Common",
+                    "price": 20,
+                    "baseSellPrice": 8
+                  },
+                  "soldByPlayerAtTurn": 6,
+                  "soldByPlayerAtUtc": "2026-03-28T00:04:00Z",
+                  "soldAtWorldDate": 95,
+                  "soldForPrice": 8,
+                  "buybackPrice": 8,
+                  "acquiredFromPlayer": true,
+                  "sourceMerchantProfile": "GeneralGoods",
+                  "status": "available"
+                }
+              ]
+            """
+            : "";
         await WriteRawJsonAsync("game_state/npcs/npc_core.json", $$"""
         {
           "UpdateNPCs": [
@@ -557,7 +760,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
               "tradeState": {
                 "canTrade": {{canTrade.ToString().ToLowerInvariant()}},
                 "merchantProfile": "GeneralGoods"{{blockedReasonField}}
-              }
+              }{{tradeInventoryField}}{{tradeReceiptField}}{{buybackInventoryField}}
             }
           ]
         }
@@ -599,8 +802,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
 
-    private async Task SeedGuardianTradeStateAsync(bool includeStoredRelicForSale = false, bool includeTradeInventory = true)
+    private async Task SeedGuardianTradeStateAsync(
+        bool includeStoredRelicForSale = false,
+        bool includeTradeInventory = true,
+        bool includeBuybackRelics = false)
     {
+        await WriteJsonAsync("input/turn_request.json", new { turnNumber = 12 });
         await WriteJsonAsync("game_state/meta/soul_state.json", new
         {
             soulName = "Тестовая Душа",
@@ -750,7 +957,32 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                                 }
                             }
                         }
-                        : null
+                        : null,
+                    buybackRelics = includeBuybackRelics
+                        ? new object[]
+                        {
+                            new
+                            {
+                                buybackEntryId = "guardian_buyback_001",
+                                guardianId = "guardian_trade_001",
+                                guardianName = "Азалия",
+                                relicId = "relic_buyback_001",
+                                relicData = new
+                                {
+                                    relicId = "relic_buyback_001",
+                                    name = "Отзвук Зеркального Двора",
+                                    rarity = "Rare",
+                                    description = "Ранее проданная Хранителю реликвия."
+                                },
+                                soldByPlayerAtTurn = 9,
+                                soldByPlayerAtUtc = "2026-03-26T00:10:00Z",
+                                soldForPrice = 60,
+                                buybackPrice = 60,
+                                acquiredFromPlayer = true,
+                                status = "available"
+                            }
+                        }
+                        : Array.Empty<object>()
                 }
             },
             activeGuardian = new
@@ -870,7 +1102,32 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                             }
                         }
                     }
-                }
+                },
+                buybackRelics = includeBuybackRelics
+                    ? new object[]
+                    {
+                        new
+                        {
+                            buybackEntryId = "guardian_buyback_001",
+                            guardianId = "guardian_trade_001",
+                            guardianName = "Азалия",
+                            relicId = "relic_buyback_001",
+                            relicData = new
+                            {
+                                relicId = "relic_buyback_001",
+                                name = "Отзвук Зеркального Двора",
+                                rarity = "Rare",
+                                description = "Ранее проданная Хранителю реликвия."
+                            },
+                            soldByPlayerAtTurn = 9,
+                            soldByPlayerAtUtc = "2026-03-26T00:10:00Z",
+                            soldForPrice = 60,
+                            buybackPrice = 60,
+                            acquiredFromPlayer = true,
+                            status = "available"
+                        }
+                    }
+                    : Array.Empty<object>()
             },
             chaosSeaNavigation = new
             {

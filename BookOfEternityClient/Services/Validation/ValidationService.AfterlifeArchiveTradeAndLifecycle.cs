@@ -1319,8 +1319,18 @@ public partial class ValidationService
 
     private void ValidateGuardianTradeState(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
     {
+        var guardianId = GetFirstNonEmptyString(guardian, "guardianId");
+        var guardianAbodeId = guardian.TryGetProperty("abode", out var abodeNode) && abodeNode.ValueKind == JsonValueKind.Object
+            ? GetFirstNonEmptyString(abodeNode, "abodeId")
+            : null;
+
+        ValidateGuardianBuybackRelics(guardian, guardianContext, guardianId, issues);
+
         if (!guardian.TryGetProperty("tradeInventory", out var tradeInventory))
+        {
+            ValidateGuardianTradeReceipts(guardian, guardianContext, guardianId, guardianAbodeId, tradeCycleId: null, expectedItemCount: null, issues);
             return;
+        }
 
         if (tradeInventory.ValueKind != JsonValueKind.Object)
         {
@@ -1533,6 +1543,383 @@ public partial class ValidationService
                 }
             }
         }
+
+        ValidateGuardianTradeReceipts(
+            guardian,
+            guardianContext,
+            guardianId,
+            guardianAbodeId,
+            tradeCycleId,
+            expectedItemCount: items.GetArrayLength(),
+            issues);
+    }
+
+    private void ValidateGuardianBuybackRelics(JsonElement guardian, string guardianContext, string? guardianId, List<ValidationIssue> issues)
+    {
+        if (!guardian.TryGetProperty("buybackRelics", out var buybackRelicsNode))
+            return;
+
+        if (buybackRelicsNode.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.buybackRelics",
+                IssueSeverity.Warning,
+                "guardian buybackRelics должен быть массивом canonical buyback entries",
+                code: "guardian_buyback_relics_root_malformed",
+                section: "tradeInventory",
+                expected: "array",
+                actual: buybackRelicsNode.ValueKind.ToString(),
+                repairHint: "Храни проданные Хранителю реликвии в guardians[].buybackRelics как массив объектов."));
+            return;
+        }
+
+        var seenEntryIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var entry in buybackRelicsNode.EnumerateArray())
+        {
+            var entryContext = $"{guardianContext}.buybackRelics[{index++}]";
+            if (!RequireObject(entry, entryContext, issues))
+                continue;
+
+            var buybackEntryId = RequireString(entry, entryContext, issues, "buybackEntryId");
+            var entryGuardianId = RequireString(entry, entryContext, issues, "guardianId");
+            RequireString(entry, entryContext, issues, "guardianName");
+            var relicId = RequireString(entry, entryContext, issues, "relicId");
+            var soldAtTurn = GetIntOrDefault(entry, "soldByPlayerAtTurn", -1);
+            var soldAtUtc = RequireString(entry, entryContext, issues, "soldByPlayerAtUtc");
+            var soldForPrice = GetIntOrDefault(entry, "soldForPrice", 0);
+            var buybackPrice = GetIntOrDefault(entry, "buybackPrice", 0);
+            var status = RequireString(entry, entryContext, issues, "status");
+
+            if (!string.IsNullOrWhiteSpace(buybackEntryId) && !seenEntryIds.Add(buybackEntryId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.buybackEntryId",
+                    IssueSeverity.Error,
+                    "guardian buybackRelics содержит duplicate buybackEntryId",
+                    code: "guardian_buyback_relic_duplicate_id",
+                    section: "tradeInventory",
+                    expected: "unique buybackEntryId per guardian",
+                    actual: buybackEntryId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(guardianId) &&
+                !string.IsNullOrWhiteSpace(entryGuardianId) &&
+                !string.Equals(entryGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.guardianId",
+                    IssueSeverity.Error,
+                    "guardian buybackRelics entry guardianId должен совпадать с guardianId самого Хранителя",
+                    code: "guardian_buyback_relic_guardian_mismatch",
+                    section: "tradeInventory",
+                    expected: guardianId,
+                    actual: entryGuardianId));
+            }
+
+            if (soldAtTurn < 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.soldByPlayerAtTurn",
+                    IssueSeverity.Error,
+                    "guardian buybackRelics entry soldByPlayerAtTurn должен быть неотрицательным",
+                    code: "guardian_buyback_relic_sold_turn_invalid",
+                    section: "tradeInventory",
+                    expected: ">= 0",
+                    actual: soldAtTurn.ToString()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(soldAtUtc) && !DateTimeOffset.TryParse(soldAtUtc, out _))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.soldByPlayerAtUtc",
+                    IssueSeverity.Error,
+                    "guardian buybackRelics entry soldByPlayerAtUtc должен быть валидным ISO timestamp",
+                    code: "guardian_buyback_relic_sold_at_invalid",
+                    section: "tradeInventory",
+                    expected: "valid ISO-8601 timestamp",
+                    actual: soldAtUtc));
+            }
+
+            if (soldForPrice <= 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.soldForPrice",
+                    IssueSeverity.Error,
+                    "guardian buybackRelics entry soldForPrice должен быть положительным",
+                    code: "guardian_buyback_relic_sold_price_invalid",
+                    section: "tradeInventory",
+                    expected: "> 0",
+                    actual: soldForPrice.ToString()));
+            }
+
+            if (buybackPrice <= 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.buybackPrice",
+                    IssueSeverity.Error,
+                    "guardian buybackRelics entry buybackPrice должен быть положительным",
+                    code: "guardian_buyback_relic_buyback_price_invalid",
+                    section: "tradeInventory",
+                    expected: "> 0",
+                    actual: buybackPrice.ToString()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(status) && !GuardianTradeService.IsValidBuybackStatusCode(status))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.status",
+                    IssueSeverity.Error,
+                    "guardian buybackRelics entry status должен быть canonical buyback status",
+                    code: "guardian_buyback_relic_status_invalid",
+                    section: "tradeInventory",
+                    expected: "available | rebought | removed",
+                    actual: status));
+            }
+
+            if (entry.TryGetProperty("acquiredFromPlayer", out var acquiredFromPlayer) &&
+                acquiredFromPlayer.ValueKind != JsonValueKind.Null)
+            {
+                if (acquiredFromPlayer.ValueKind != JsonValueKind.True &&
+                    acquiredFromPlayer.ValueKind != JsonValueKind.False)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{entryContext}.acquiredFromPlayer",
+                        IssueSeverity.Error,
+                        "guardian buybackRelics entry acquiredFromPlayer должен быть boolean",
+                        code: "guardian_buyback_relic_acquired_flag_invalid",
+                        section: "tradeInventory",
+                        expected: "boolean",
+                        actual: acquiredFromPlayer.ValueKind.ToString()));
+                }
+                else if (!acquiredFromPlayer.GetBoolean())
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{entryContext}.acquiredFromPlayer",
+                        IssueSeverity.Error,
+                        "guardian buybackRelics entry acquiredFromPlayer должен быть true",
+                        code: "guardian_buyback_relic_acquired_flag_false",
+                        section: "tradeInventory",
+                        expected: "true",
+                        actual: "false"));
+                }
+            }
+
+            if (!entry.TryGetProperty("relicData", out var relicData) || !RequireObject(relicData, $"{entryContext}.relicData", issues))
+                continue;
+
+            var relicDataId = GetFirstNonEmptyString(relicData, "relicId", "id");
+            if (!string.IsNullOrWhiteSpace(relicId) &&
+                !string.IsNullOrWhiteSpace(relicDataId) &&
+                !string.Equals(relicId, relicDataId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.relicId",
+                    IssueSeverity.Error,
+                    "guardian buybackRelics entry relicId должен совпадать с relicData.relicId",
+                    code: "guardian_buyback_relic_id_mismatch",
+                    section: "tradeInventory",
+                    expected: relicDataId,
+                    actual: relicId));
+            }
+
+            if (string.Equals(status, "rebought", StringComparison.OrdinalIgnoreCase))
+            {
+                var reboughtAtTurn = GetIntOrDefault(entry, "reboughtAtTurn", 0);
+                var reboughtAtUtc = GetFirstNonEmptyString(entry, "reboughtAtUtc");
+                if (reboughtAtTurn <= 0)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{entryContext}.reboughtAtTurn",
+                        IssueSeverity.Error,
+                        "guardian buybackRelics entry reboughtAtTurn должен быть положительным для status=rebought",
+                        code: "guardian_buyback_relic_rebought_turn_invalid",
+                        section: "tradeInventory",
+                        expected: "> 0",
+                        actual: reboughtAtTurn.ToString()));
+                }
+
+                if (string.IsNullOrWhiteSpace(reboughtAtUtc) || !DateTimeOffset.TryParse(reboughtAtUtc, out _))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{entryContext}.reboughtAtUtc",
+                        IssueSeverity.Error,
+                        "guardian buybackRelics entry reboughtAtUtc должен быть валидным ISO timestamp для status=rebought",
+                        code: "guardian_buyback_relic_rebought_at_invalid",
+                        section: "tradeInventory",
+                        expected: "valid ISO-8601 timestamp",
+                        actual: reboughtAtUtc ?? "missing"));
+                }
+            }
+        }
+    }
+
+    private void ValidateGuardianTradeReceipts(
+        JsonElement guardian,
+        string guardianContext,
+        string? guardianId,
+        string? guardianAbodeId,
+        string? tradeCycleId,
+        int? expectedItemCount,
+        List<ValidationIssue> issues)
+    {
+        if (!guardian.TryGetProperty(GuardianTradeRequestState.ReceiptsProperty, out var receiptsNode))
+            return;
+
+        if (receiptsNode.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.{GuardianTradeRequestState.ReceiptsProperty}",
+                IssueSeverity.Warning,
+                "guardian tradeInventoryReceipts должен быть массивом canonical receipts",
+                code: "guardian_trade_receipts_root_malformed",
+                section: "tradeInventory",
+                expected: "array",
+                actual: receiptsNode.ValueKind.ToString(),
+                repairHint: "Храни guardian trade ready receipts как массив объектов в guardians[].tradeInventoryReceipts."));
+            return;
+        }
+
+        var requestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var readyCurrentCycleReceipts = 0;
+        var index = 0;
+        foreach (var receipt in receiptsNode.EnumerateArray())
+        {
+            var receiptContext = $"{guardianContext}.{GuardianTradeRequestState.ReceiptsProperty}[{index++}]";
+            if (!RequireObject(receipt, receiptContext, issues))
+                continue;
+
+            var requestId = RequireString(receipt, receiptContext, issues, "requestId");
+            var receiptGuardianId = RequireString(receipt, receiptContext, issues, "guardianId");
+            RequireString(receipt, receiptContext, issues, "guardianName");
+            var receiptAbodeId = RequireString(receipt, receiptContext, issues, "abodeId");
+            var receiptTradeCycleId = RequireString(receipt, receiptContext, issues, "tradeCycleId");
+            var receiptStatus = RequireString(receipt, receiptContext, issues, "status");
+            var resolvedAtUtc = RequireString(receipt, receiptContext, issues, "resolvedAtUtc");
+            var itemCount = GetIntOrDefault(receipt, "itemCount", -1);
+            var resolvedAtTurn = GetIntOrDefault(receipt, "resolvedAtTurn", 0);
+
+            if (!string.IsNullOrWhiteSpace(requestId) && !requestIds.Add(requestId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.requestId",
+                    IssueSeverity.Error,
+                    "guardian tradeInventoryReceipts содержит duplicate requestId",
+                    code: "guardian_trade_receipt_duplicate_request_id",
+                    section: "tradeInventory",
+                    expected: "unique requestId per guardian",
+                    actual: requestId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(guardianId) &&
+                !string.IsNullOrWhiteSpace(receiptGuardianId) &&
+                !string.Equals(receiptGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.guardianId",
+                    IssueSeverity.Error,
+                    "guardian tradeInventory receipt guardianId должен совпадать с guardianId самого Хранителя",
+                    code: "guardian_trade_receipt_guardian_mismatch",
+                    section: "tradeInventory",
+                    expected: guardianId,
+                    actual: receiptGuardianId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(guardianAbodeId) &&
+                !string.IsNullOrWhiteSpace(receiptAbodeId) &&
+                !string.Equals(receiptAbodeId, guardianAbodeId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.abodeId",
+                    IssueSeverity.Error,
+                    "guardian tradeInventory receipt abodeId должен совпадать с текущей canonical обителью Хранителя",
+                    code: "guardian_trade_receipt_abode_mismatch",
+                    section: "tradeInventory",
+                    expected: guardianAbodeId,
+                    actual: receiptAbodeId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(receiptStatus) &&
+                !string.Equals(receiptStatus, GuardianTradeRequestState.ReceiptStatusReady, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.status",
+                    IssueSeverity.Error,
+                    "guardian tradeInventory receipt status должен быть ready",
+                    code: "guardian_trade_receipt_status_invalid",
+                    section: "tradeInventory",
+                    expected: GuardianTradeRequestState.ReceiptStatusReady,
+                    actual: receiptStatus));
+            }
+
+            if (itemCount < 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.itemCount",
+                    IssueSeverity.Error,
+                    "guardian tradeInventory receipt itemCount должен быть неотрицательным числом",
+                    code: "guardian_trade_receipt_item_count_invalid",
+                    section: "tradeInventory",
+                    expected: ">= 0",
+                    actual: itemCount.ToString()));
+            }
+
+            if (resolvedAtTurn <= 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.resolvedAtTurn",
+                    IssueSeverity.Error,
+                    "guardian tradeInventory receipt resolvedAtTurn должен быть положительным",
+                    code: "guardian_trade_receipt_resolved_turn_invalid",
+                    section: "tradeInventory",
+                    expected: "> 0",
+                    actual: resolvedAtTurn.ToString()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(resolvedAtUtc) && !DateTimeOffset.TryParse(resolvedAtUtc, out _))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.resolvedAtUtc",
+                    IssueSeverity.Error,
+                    "guardian tradeInventory receipt resolvedAtUtc должен быть валидным ISO timestamp",
+                    code: "guardian_trade_receipt_resolved_at_invalid",
+                    section: "tradeInventory",
+                    expected: "valid ISO-8601 timestamp",
+                    actual: resolvedAtUtc));
+            }
+
+            if (!string.IsNullOrWhiteSpace(tradeCycleId) &&
+                !string.IsNullOrWhiteSpace(receiptTradeCycleId) &&
+                string.Equals(receiptTradeCycleId, tradeCycleId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(receiptStatus, GuardianTradeRequestState.ReceiptStatusReady, StringComparison.OrdinalIgnoreCase))
+            {
+                readyCurrentCycleReceipts++;
+
+                if (expectedItemCount.HasValue && itemCount >= 0 && itemCount != expectedItemCount.Value)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{receiptContext}.itemCount",
+                        IssueSeverity.Error,
+                        "guardian tradeInventory receipt itemCount должен совпадать с числом tradeInventory.items текущего цикла",
+                        code: "guardian_trade_receipt_item_count_mismatch",
+                        section: "tradeInventory",
+                        expected: expectedItemCount.Value.ToString(),
+                        actual: itemCount.ToString()));
+                }
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(tradeCycleId) && readyCurrentCycleReceipts > 1)
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.{GuardianTradeRequestState.ReceiptsProperty}",
+                IssueSeverity.Error,
+                "guardian tradeInventory не должен иметь несколько ready receipts для одного и того же tradeCycleId",
+                code: "guardian_trade_receipt_duplicate_cycle_resolution",
+                section: "tradeInventory",
+                expected: "at most one ready receipt for current trade cycle",
+                actual: readyCurrentCycleReceipts.ToString()));
+        }
     }
 
 
@@ -1648,6 +2035,8 @@ public partial class ValidationService
                              activeTradeInventory.ValueKind == JsonValueKind.Object;
         var arrayHasTrade = guardianFromArray.TryGetProperty("tradeInventory", out var arrayTradeInventory) &&
                             arrayTradeInventory.ValueKind == JsonValueKind.Object;
+
+        CompareGuardianBuybackState(activeGuardian, activeGuardianContext, guardianFromArray, guardianArrayContext, issues);
 
         if (!activeHasTrade && !arrayHasTrade)
             return;
@@ -1765,6 +2154,45 @@ public partial class ValidationService
                     expected: expectedSignature,
                     actual: actualSignature ?? "missing slot"));
             }
+        }
+    }
+
+    private void CompareGuardianBuybackState(JsonElement activeGuardian, string activeGuardianContext,
+        JsonElement guardianFromArray, string guardianArrayContext, List<ValidationIssue> issues)
+    {
+        var activeHasBuyback = activeGuardian.TryGetProperty("buybackRelics", out var activeBuybackRelics) &&
+                               activeBuybackRelics.ValueKind == JsonValueKind.Array;
+        var arrayHasBuyback = guardianFromArray.TryGetProperty("buybackRelics", out var arrayBuybackRelics) &&
+                              arrayBuybackRelics.ValueKind == JsonValueKind.Array;
+
+        if (!activeHasBuyback && !arrayHasBuyback)
+            return;
+
+        if (activeHasBuyback != arrayHasBuyback)
+        {
+            issues.Add(new ValidationIssue(
+                $"{activeGuardianContext}.buybackRelics",
+                IssueSeverity.Warning,
+                $"activeGuardian расходится с {guardianArrayContext}.buybackRelics",
+                code: "guardian_buyback_relics_presence_mismatch",
+                section: "tradeInventory",
+                expected: "same buybackRelics presence in activeGuardian and guardians[]",
+                actual: activeHasBuyback ? "present only in activeGuardian" : "present only in guardians[]"));
+            return;
+        }
+
+        var activeSignature = BuildCanonicalJsonSignature(activeBuybackRelics);
+        var arraySignature = BuildCanonicalJsonSignature(arrayBuybackRelics);
+        if (!string.Equals(activeSignature, arraySignature, StringComparison.Ordinal))
+        {
+            issues.Add(new ValidationIssue(
+                $"{activeGuardianContext}.buybackRelics",
+                IssueSeverity.Warning,
+                $"activeGuardian расходится с {guardianArrayContext}.buybackRelics",
+                code: "guardian_buyback_relics_signature_mismatch",
+                section: "tradeInventory",
+                expected: arraySignature,
+                actual: activeSignature));
         }
     }
 

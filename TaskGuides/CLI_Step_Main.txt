@@ -51,6 +51,10 @@
                - Chaos-Sea Ink Feather whitelist: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint
                - `Sell Relic` is a separate guardian trade interaction and is NOT an Ink Feather action
                - Local guardian trade (`Buy / Sell` Soul Relics) is client-side, but canonically belongs to the current active Guardian's abode
+               - Guardian sell-side remains local, but sold Soul Relics must persist canonically in `guardians[].buybackRelics[]`; do not treat them as disappearing after sale
+               - `guardians[].buybackRelics[]` is separate from authored `guardian.tradeInventory`: it stores exact Soul Relics the player sold to that Guardian and powers local reverse-buyback without another GM stock-generation round-trip
+               - If `pending_guardian_trade_request.json` exists, answer it with explicit `guardian.tradeInventory` **and** close it through `UpdateGuardianTradeInventoryReceipts`; matching stock without receipt is invalid on accepted turn
+               - If `pending_npc_trade_inventory_requests.json` exists, answer each request with explicit `npc.tradeInventory` for the requested world-time cycle **and** close it through `UpdateNpcTradeInventoryReceipts`; matching stock without receipt is invalid on accepted turn
                - If a turn materializes the current active Guardian, you MUST also materialize the abode navigation state in `guardians.json`: `chaosSeaNavigation.currentAbodeId`, `chaosSeaNavigation.discoveredAbodes` containing that abodeId, and `abode.isDiscovered = true`
                - If `guardians.json.pendingGuardianCreation.mode = system_preset`, the client has selected a named Eternal Guardian preset; materialize THAT exact guardian, not a nearby substitute
                - If a guardian is materialized from an Eternal Guardian preset, write `sourcePreset` into the guardian object with `presetId`, `displayName`, `version`, `library`
@@ -321,13 +325,71 @@
               - `80..100` -> up to `epic`
             - This ceiling applies to newly offered `availableQuests`; do not retroactively invalidate already active or historical guardian quests only because power later dropped
             - Every guardian quest in `availableQuests`, `activeQuests`, and `completedQuests` must carry a non-empty `questId`; never rely on `title`, `questOrigin`, or `sourceProjectId` as surrogate identity
+            - If the current Guardian's Abode needs social residents, materialize them explicitly through `UpdateGuardianAbodeResidents`; do NOT derive abode residents from guardian domain
+            - `UpdateGuardianAbodeResidents` writes `game_state/meta/guardian_abode_residents.json` and should carry full resident objects with `residentId`, `guardianId`, `abodeId`, `bondLevel`, `bondTier`, `bondRewardState`, `mortalWorldImprint`, and when relevant `linkedSoulQuestId`, `historyRevealed`, `grantedRelicId`
+            - `UpdateGuardianAbodeResidentRosterReceipts` writes `guardian_abode_residents.json.rosterReceipts[]`; use it to close explicit abode resident roster requests canonically
+            - `UpdateGuardianAbodeResidentInteractionReceipts` writes `guardian_abode_residents.json.interactionReceipts[]`; use it to close resident `talk` / `history` requests with `status = accepted | rejected | cancelled`
+            - `UpdateGuardianAbodeResidentHistoryLog` writes `guardian_abode_residents.json.historyLog[]`; use it for revealed fragments of a resident's past
+            - `residentThoughtJournalUpdates` writes `guardian_abode_residents.json.thoughtJournal[]`; use it for the resident's current inner stance, expectations, hidden intent, and emotional state
+            - `residentInteractionLogUpdates` writes `guardian_abode_residents.json.interactionLog[]`; use it for short summaries of important past interactions with the resident
+            - `guardianThoughtJournalUpdates` writes `game_state/meta/guardian_thought_journal.json`; use it for the Guardian's current inner stance, motives, and evolving perception of the soul
+            - `guardianSocialJournalUpdates` writes `game_state/meta/guardian_social_journal.json`; use it for short summaries of important past conversations, promises, refusals, lessons, and social turning points with the Guardian
+            - `npcInteractionJournalUpdates` writes `game_state/npcs/npc_interaction_journal.json`; NPCs already have `NPCJournals` for current thoughts, and this new surface is for concise past interaction summaries
+            - Resident-linked soul quests remain ordinary `UpdateSoulQuests`, but may carry `relatedAfterlifeResidentId`
+            - If a resident grants a future-life companion reward, add a Soul Relic through `metaStateUpdates.soulRelicOperations.addRelic` with `relicType = companion_echo` and a complete `companionSeed`; do NOT reuse `soulImprint` for this path
             - Direct `/gacha` remains neutral and does not consume Guardian charges
-            - Files: Update game_state/meta/guardians.json, game_state/quests/soul_quests.json
+            - Files: Update game_state/meta/guardians.json, game_state/meta/guardian_abode_residents.json, game_state/quests/soul_quests.json
 - If `game_state/control/pending_abode_offering.json` exists, treat it as client-authored input only and resolve it through `guardianPowerEvents` with `reasonType = offering`
 - Whitelisted offering types may be `ink_feathers`, `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`
 - `game_state/control/archive_candidate_manifest.json` is a client-authored Life Evaluation manifest for codex-derived archive candidates; do not edit it in GM output
 - Use `afterlifeArchiveUpdates` only for exceptional/system archive rewards; ordinary codex-derived archive intake is client-driven and should not be improvised from mortal inventory
-- `game_state/control/afterlife_notifications.json` is client-owned; do not author afterlife inbox notifications manually. The client derives them from matching trade inventories, archive action receipts, guardian quest availability from canonical `questManagement`, and other canonical guardian results.
+- `game_state/control/afterlife_notifications.json` is client-owned; do not author afterlife inbox notifications manually. The client derives them from matching trade inventories, archive action receipts, guardian quest availability from canonical `questManagement`, and canonical resident results such as ready abode rosters, resident-linked soul quests, and resident relic grants.
+- If `game_state/control/pending_guardian_abode_residents_request.json` exists, read all `requests[]`, materialize an explicit resident roster for each requested Guardian's Abode in `guardian_abode_residents.json`, and close each request in the same accepted turn through `UpdateGuardianAbodeResidentRosterReceipts`.
+- If `game_state/control/pending_guardian_abode_resident_interactions.json` exists, read all `requests[]` and close each resident `talk` / `history` request in the same accepted turn through `UpdateGuardianAbodeResidentInteractionReceipts`.
+- Ordinary resident conversations still remain soft roleplay, but they can no longer be ignored:
+  - `talk` may resolve with accepted/rejected/cancelled and does not require a mechanical effect
+  - `history` may resolve with accepted/rejected/cancelled, but an accepted result must leave canonical aftermath: `historyRevealed=true`, and/or `UpdateGuardianAbodeResidentHistoryLog`, and/or updated `mortalWorldImprint`
+  - resident-linked quest -> `UpdateSoulQuests` + `relatedAfterlifeResidentId`
+  - reward granted -> `bondRewardState=granted` and `grantedRelicId=<new relicId>`
+- Accepted resident social outcomes must also leave curated memory:
+  - accepted `talk` -> add `residentThoughtJournalUpdates` and/or `residentInteractionLogUpdates`
+  - accepted `history` -> add `residentThoughtJournalUpdates` and/or `residentInteractionLogUpdates` in addition to the canonical history result
+  - resident quest grant/progress -> add `residentInteractionLogUpdates`
+  - resident reward grant -> add `residentInteractionLogUpdates`
+- Use actor memory symmetrically:
+  - NPCs: `NPCJournals` = current thoughts, `npcInteractionJournalUpdates` = important past interactions
+  - Guardians: `guardianThoughtJournalUpdates` = current thoughts, `guardianSocialJournalUpdates` = important past interactions
+  - Residents: `residentThoughtJournalUpdates` = current thoughts, `residentInteractionLogUpdates` = important past interactions, `UpdateGuardianAbodeResidentHistoryLog` = revealed past
+- If `game_state/control/pending_guardian_social_interactions.json` exists, close each request in the same accepted turn through `guardianSocialJournalUpdates`.
+- If `game_state/control/pending_npc_social_interactions.json` exists, close each request in the same accepted turn through `npcInteractionJournalUpdates`.
+- These guardian/NPC social closures are machine-readable journal entries with:
+  - `requestId`
+  - actor id (`guardianId` or `npcId`)
+  - `interactionType`
+  - `status = accepted | rejected | cancelled`
+  - optional `responseMode`
+  - ordinary `title`, `summary`, `turn`, `timestamp`
+- These journals are concise summaries, not transcripts. The full long-form continuity source remains `stories/*.jsonl`.
+- Use `Tools/Search-GmMemory.ps1` when needed; it now supports `-Source`, `-Json`, and `entityType=faction` in addition to actor/text filters.
+- Old `stories/*.jsonl` entries without `entityRefs[]` still remain searchable by text; they just cannot be treated as actor-scoped hits until newer turns write explicit actor refs.
+- Strict memory enforcement still applies fully to residents. Guardian/NPC memory becomes strict only for explicit pending social request pathways; all other freeform guardian/NPC scenes remain advisory-memory only.
+- Guardian trade readiness is also canonical now: after materializing `guardian.tradeInventory`, close the matching `pending_guardian_trade_request.json` through `UpdateGuardianTradeInventoryReceipts` with `requestId`, `tradeCycleId`, `itemCount`, `resolvedAtTurn`, and `resolvedAtUtc`.
+- Guardian sell-side now also keeps canonical memory in `guardians[].buybackRelics[]`; reverse-buyback restores exact `relicData` from that layer and does not require GM stock generation.
+- Guardian local sell-side and reverse-buyback require a real current turn for canonical timing; do not rely on `0` as a fallback turn in new writes.
+- Guardian buy-side validation/request creation also requires a real current turn; stale inventory discovered during purchase must not create a request with `createdAtTurn = 0`.
+- NPC local trade stock is explicit too: if `pending_npc_trade_inventory_requests.json` exists, materialize `npc.tradeInventory` for the requested `tradeCycleId` and close each request through `UpdateNpcTradeInventoryReceipts` with `requestId`, `npcId`, `tradeCycleId`, `merchantProfile`, `itemCount`, `resolvedAtTurn`, and `resolvedAtUtc`.
+- NPC sell-side remains local, but sold items must persist canonically in `npc.buybackInventory[]`; do not treat them as disappearing from the world.
+- `npc.buybackInventory[]` is separate from authored `npc.tradeInventory`: it stores exact items the player sold to that merchant and powers local reverse-buyback without another GM stock-generation round-trip.
+- NPC local sell-side and reverse-buyback require a real current turn for canonical timing; do not write new buyback entries with turn `0`.
+- NPC buy-side validation/request creation also requires a real current turn; stale merchant inventory discovered during purchase must not create a request with `createdAtTurn = 0`.
+- If `game_state/control/pending_resident_companion_manifestation_request.json` exists, read all `requests[]` and materialize an early mortal-world encounter or soul-quest path for each equipped companion-carrying relic:
+  - `manifestationSource = resident_relic` for `companion_echo`
+  - `manifestationSource = imprint_relic` for relics carrying embedded `soulImprint` / `npcSoulImprint`
+  When the companion fully manifests, write an ordinary mortal NPC and set `sourceCompanionRelicId`, plus `sourceAfterlifeResidentId` or `sourceSoulImprintId` when applicable.
+- Successful manifestation is surfaced in afterlife inbox through:
+  - `abode_resident_manifestation_ready` for resident-linked companion echoes
+  - `companion_imprint_manifestation_ready` for imprint-carrying relics
+- Do not arbitrarily reduce this list to one request because of relic slots. If multiple equipped companion-carrying relics exist, process all of them; slot overlap is not a limiter for next-life companion manifestation.
 - For accepted `archive consultation`, include machine-readable whitelist outcome fields in `archiveActionResolutions`: `guaranteedArchiveQuestCount`, `questHookCount`, `specialQuestLineUnlocks`, `visibleRivalClueBonus`, `archiveWarningTierBonus`.
 - For accepted `archive project fuel`, include machine-readable `resultMode = project_work | pressure_relief` and `resultAmount > 0` in `archiveActionResolutions`, in addition to the canonical journal/tracker result.
             - If Guardian reveals lore: add loreCodexUpdates with discoveryContext referencing the Guardian

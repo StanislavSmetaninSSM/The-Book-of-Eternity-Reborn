@@ -267,6 +267,7 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEngineSource();
 
         Assert.Contains("BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber)", source, StringComparison.Ordinal);
+        Assert.Contains("_actorMemoryService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber)", source, StringComparison.Ordinal);
     }
 
     [Fact]

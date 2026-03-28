@@ -184,6 +184,7 @@ public partial class ValidationService
         RequireString(item, itemContext, issues, "title");
         RequireString(item, itemContext, issues, "description");
         ValidateOptionalString(item, itemContext, issues, "relatedRivalArcId");
+        ValidateOptionalString(item, itemContext, issues, "relatedAfterlifeResidentId");
         if (item.TryGetProperty("counterToRivalArc", out _))
             RequireBooleanField(item, itemContext, issues, "counterToRivalArc");
         ValidateQuestObjectivesArray(

@@ -139,5 +139,41 @@ public partial class CanonicalStateNormalizer
         await WriteIfChangedAsync(path, currentNode, result);
     }
 
+    private async Task NormalizeNpcInteractionJournalAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        await NormalizeActorJournalAsync(NpcInteractionJournalState.StatePath, NpcInteractionJournalState.UpdateProperty, NpcInteractionJournalState.ActorIdProperty, backups);
+    }
+
+    private async Task NormalizeGuardianThoughtJournalAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        await NormalizeActorJournalAsync(GuardianThoughtJournalState.StatePath, GuardianThoughtJournalState.UpdateProperty, GuardianThoughtJournalState.ActorIdProperty, backups);
+    }
+
+    private async Task NormalizeGuardianSocialJournalAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        await NormalizeActorJournalAsync(GuardianSocialJournalState.StatePath, GuardianSocialJournalState.UpdateProperty, GuardianSocialJournalState.ActorIdProperty, backups);
+    }
+
+    private async Task NormalizeActorJournalAsync(string path, string updateProperty, string actorIdProperty, IReadOnlyDictionary<string, string>? backups)
+    {
+        var currentNode = await ReadNodeAsync(path);
+        if (currentNode == null)
+            return;
+
+        var previous = await ReadBackupObjectAsync(path, backups);
+        var result = CloneObject(previous ?? new JsonObject());
+        var entries = ActorJournalState.EnsureEntriesArray(result, actorIdProperty, updateProperty);
+
+        foreach (var entry in ActorJournalState.CollectEntries(previous, actorIdProperty, updateProperty))
+            ActorJournalState.ApplyUpdates(result, new JsonArray(entry), actorIdProperty, updateProperty);
+
+        foreach (var entry in ActorJournalState.CollectEntries(currentNode, actorIdProperty, updateProperty))
+            ActorJournalState.ApplyUpdates(result, new JsonArray(entry), actorIdProperty, updateProperty);
+
+        result[ActorJournalState.EntriesProperty] = entries;
+        result.Remove(updateProperty);
+        await WriteIfChangedAsync(path, currentNode, result);
+    }
+
 }
 

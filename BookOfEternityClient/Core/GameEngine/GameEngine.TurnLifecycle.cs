@@ -15,65 +15,17 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
+    private enum TerminalSignalWaitOutcome
+    {
+        Cancelled,
+        Completed
+    }
+
     private async Task<bool> WaitForGmResponse()
     {
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var rollbackSnapshot = GetRollbackSnapshot(manifest);
-        using var cts = new CancellationTokenSource();
-        var startTime = DateTime.UtcNow;
-
-        var waitTask = Task.Run(async () =>
-        {
-            while (!cts.Token.IsCancellationRequested)
-            {
-                if (_fs.FileExists("ready/turn_complete.json"))
-                    return true;
-                if (_fs.FileExists("ready/turn_error.json"))
-                    return false;
-                await Task.Delay(500, cts.Token);
-            }
-            return false;
-        }, cts.Token);
-
-        var result = await AnsiConsole.Status()
-            .Spinner(Spinner.Known.Dots12)
-            .SpinnerStyle(Style.Parse("cyan"))
-            .StartAsync(_loc.T("thinking"), async ctx =>
-            {
-                var keyTask = Task.Run(() =>
-                {
-                    while (!cts.Token.IsCancellationRequested)
-                    {
-                        if (Console.KeyAvailable)
-                        {
-                            var key = Console.ReadKey(true);
-                            if (key.Key == ConsoleKey.Escape)
-                            {
-                                cts.Cancel();
-                                return;
-                            }
-                        }
-                        Thread.Sleep(100);
-                    }
-                });
-
-                while (!waitTask.IsCompleted && !cts.IsCancellationRequested)
-                {
-                    var elapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
-                    if (elapsed < 15)
-                        ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
-                    else if (elapsed < 120)
-                        ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
-                    else
-                        ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
-                    await Task.Delay(1000);
-                }
-
-                try { return await waitTask; }
-                catch (OperationCanceledException) { return false; }
-            });
-
-        if (cts.IsCancellationRequested)
+        if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
@@ -181,61 +133,7 @@ public partial class GameEngine
     {
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var rollbackSnapshot = GetRollbackSnapshot(manifest);
-        using var cts = new CancellationTokenSource();
-        var startTime = DateTime.UtcNow;
-
-        var waitTask = Task.Run(async () =>
-        {
-            while (!cts.Token.IsCancellationRequested)
-            {
-                if (_fs.FileExists("ready/turn_complete.json"))
-                    return true;
-                if (_fs.FileExists("ready/turn_error.json"))
-                    return false;
-                await Task.Delay(500, cts.Token);
-            }
-            return false;
-        }, cts.Token);
-
-        var result = await AnsiConsole.Status()
-            .Spinner(Spinner.Known.Dots12)
-            .SpinnerStyle(Style.Parse("cyan"))
-            .StartAsync(_loc.T("thinking"), async ctx =>
-            {
-                var keyTask = Task.Run(() =>
-                {
-                    while (!cts.Token.IsCancellationRequested)
-                    {
-                        if (Console.KeyAvailable)
-                        {
-                            var key = Console.ReadKey(true);
-                            if (key.Key == ConsoleKey.Escape)
-                            {
-                                cts.Cancel();
-                                return;
-                            }
-                        }
-                        Thread.Sleep(100);
-                    }
-                });
-
-                while (!waitTask.IsCompleted && !cts.IsCancellationRequested)
-                {
-                    var elapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
-                    if (elapsed < 15)
-                        ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
-                    else if (elapsed < 120)
-                        ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
-                    else
-                        ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
-                    await Task.Delay(1000);
-                }
-
-                try { return await waitTask; }
-                catch (OperationCanceledException) { return false; }
-            });
-
-        if (cts.IsCancellationRequested)
+        if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
             _fs.DeleteFile("input/turn_request.json");
@@ -277,6 +175,72 @@ public partial class GameEngine
         _audioService.PlayCue(AudioCue.TurnReady);
 
         return true;
+    }
+
+    private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()
+    {
+        using var cts = new CancellationTokenSource();
+        var startTime = DateTime.UtcNow;
+
+        var waitTask = Task.Run(async () =>
+        {
+            while (!cts.Token.IsCancellationRequested)
+            {
+                if (_fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json"))
+                    return TerminalSignalWaitOutcome.Completed;
+                await Task.Delay(500, cts.Token);
+            }
+
+            return TerminalSignalWaitOutcome.Cancelled;
+        }, cts.Token);
+
+        var result = await AnsiConsole.Status()
+            .Spinner(Spinner.Known.Dots12)
+            .SpinnerStyle(Style.Parse("cyan"))
+            .StartAsync(_loc.T("thinking"), async ctx =>
+            {
+                _ = Task.Run(() =>
+                {
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        if (Console.KeyAvailable)
+                        {
+                            var key = Console.ReadKey(true);
+                            if (key.Key == ConsoleKey.Escape)
+                            {
+                                cts.Cancel();
+                                return;
+                            }
+                        }
+
+                        Thread.Sleep(100);
+                    }
+                });
+
+                while (!waitTask.IsCompleted && !cts.IsCancellationRequested)
+                {
+                    var elapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
+                    if (elapsed < 15)
+                        ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
+                    else if (elapsed < 120)
+                        ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
+                    else
+                        ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
+
+                    await Task.Delay(1000);
+                }
+
+                try
+                {
+                    return await waitTask;
+                }
+                catch (OperationCanceledException)
+                {
+                    return TerminalSignalWaitOutcome.Cancelled;
+                }
+            });
+
+        return cts.IsCancellationRequested ? TerminalSignalWaitOutcome.Cancelled : result;
     }
 
     // ═══════════════════════════════════════════════
@@ -415,7 +379,10 @@ public partial class GameEngine
                 }
                 _lastConsoleWidth = currentWidth;
             }
-            catch { }
+            catch (Exception ex) when (ex is IOException or InvalidOperationException or PlatformNotSupportedException)
+            {
+                // Some console hosts cannot report window size reliably; resize detection is best-effort.
+            }
 
             // Render current state (preserve last response for dialogue options etc.)
             _ui.RenderGameScreen(_stateManager.CurrentState, _lastResponse, _gameLoop.TurnNumber);
@@ -575,69 +542,7 @@ public partial class GameEngine
         await _fs.WriteFileAtomicAsync("input/turn_request.json",
             JsonSerializer.Serialize(request, JsonOpts));
 
-        // Show waiting status — no hard timeout, only Escape cancels
-        using var cts = new CancellationTokenSource();
-        var startTime = DateTime.UtcNow;
-
-        var waitTask = Task.Run(async () =>
-        {
-            while (!cts.Token.IsCancellationRequested)
-            {
-                if (_fs.FileExists("ready/turn_complete.json"))
-                    return true;
-                if (_fs.FileExists("ready/turn_error.json"))
-                    return false;
-                await Task.Delay(500, cts.Token);
-            }
-            return false;
-        }, cts.Token);
-
-        // Show spinner while waiting, allow Escape to cancel
-        var result = await AnsiConsole.Status()
-            .Spinner(Spinner.Known.Dots12)
-            .SpinnerStyle(Style.Parse("cyan"))
-            .StartAsync(_loc.T("thinking"), async ctx =>
-            {
-                var keyTask = Task.Run(() =>
-                {
-                    while (!cts.Token.IsCancellationRequested)
-                    {
-                        if (Console.KeyAvailable)
-                        {
-                            var key = Console.ReadKey(true);
-                            if (key.Key == ConsoleKey.Escape)
-                            {
-                                cts.Cancel();
-                                return;
-                            }
-                        }
-                        Thread.Sleep(100);
-                    }
-                });
-
-                while (!waitTask.IsCompleted && !cts.IsCancellationRequested)
-                {
-                    var elapsed = (int)(DateTime.UtcNow - startTime).TotalSeconds;
-                    if (elapsed < 15)
-                        ctx.Status($"[cyan]{_loc.T("thinking")}[/]");
-                    else if (elapsed < 120)
-                        ctx.Status($"[yellow]⏳ Ожидание GM-демона... ({elapsed}с) (Escape = отменить)[/]");
-                    else
-                        ctx.Status($"[yellow]⏳ GM обрабатывает ход... ({elapsed / 60}мин {elapsed % 60}с) (Escape = отменить)[/]");
-                    await Task.Delay(1000);
-                }
-
-                try
-                {
-                    return await waitTask;
-                }
-                catch (OperationCanceledException)
-                {
-                    return false;
-                }
-            });
-
-        if (cts.IsCancellationRequested)
+        if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
             // Delete the turn request, clean ready signals, and rollback game state
@@ -714,7 +619,8 @@ public partial class GameEngine
             state.Incarnation,
             action,
             response?.Response,
-            state.CurrentLocation);
+            state.CurrentLocation,
+            await ExtractStoryEntityRefsAsync(action));
 
         // Process statsIncreased and recompute modified characteristics
         await ProcessStatsIncreasedAsync();
@@ -743,6 +649,287 @@ public partial class GameEngine
 
         // Cleanup ready signal
         _fs.DeleteFile("ready/turn_complete.json");
+    }
+
+    private async Task<IReadOnlyCollection<StoryEntityRef>?> ExtractStoryEntityRefsAsync(
+        string? action,
+        IReadOnlyCollection<StoryEntityRef>? extraRefs = null)
+    {
+        var refs = new List<StoryEntityRef>();
+
+        if (!string.IsNullOrWhiteSpace(action))
+        {
+            var guardianId = TryExtractTaggedValue(action, "guardianId")
+                ?? TryExtractTaggedValue(action, "sourceGuardianId");
+            if (!string.IsNullOrWhiteSpace(guardianId))
+                refs.Add(await BuildStoryEntityRefAsync("guardian", guardianId));
+
+            var residentId = TryExtractTaggedValue(action, "residentId")
+                ?? TryExtractTaggedValue(action, "sourceResidentId");
+            if (!string.IsNullOrWhiteSpace(residentId))
+                refs.Add(await BuildStoryEntityRefAsync("resident", residentId));
+
+            var npcId = TryExtractTaggedValue(action, "npcId")
+                ?? TryExtractTaggedValue(action, "NPCId")
+                ?? TryExtractTaggedValue(action, "sourceNpcId");
+            if (!string.IsNullOrWhiteSpace(npcId))
+                refs.Add(await BuildStoryEntityRefAsync("npc", npcId));
+        }
+
+        if (extraRefs != null)
+            refs.AddRange(extraRefs.Where(reference => reference != null));
+
+        var hasGuardianRef = refs.Any(reference =>
+            string.Equals(reference.EntityType, "guardian", StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(reference.EntityId));
+        var hasResidentRef = refs.Any(reference =>
+            string.Equals(reference.EntityType, "resident", StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(reference.EntityId));
+        if (!hasGuardianRef &&
+            hasResidentRef &&
+            _stateManager.CurrentState.IsInAfterlifeRealm)
+        {
+            var activeGuardianRefs = await BuildActiveGuardianStoryEntityRefsAsync();
+            if (activeGuardianRefs != null)
+                refs.AddRange(activeGuardianRefs);
+        }
+
+        if (refs.Count == 0)
+            return null;
+
+        return refs
+            .GroupBy(reference => $"{reference.EntityType}:{reference.EntityId}", StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.First())
+            .ToList();
+    }
+
+    private async Task<IReadOnlyCollection<StoryEntityRef>?> BuildActiveGuardianStoryEntityRefsAsync()
+    {
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(guardiansJson))
+            return null;
+
+        try
+        {
+            using var guardiansDoc = JsonDocument.Parse(guardiansJson);
+            if (!guardiansDoc.RootElement.TryGetProperty("activeGuardian", out var activeGuardian) ||
+                activeGuardian.ValueKind != JsonValueKind.Object)
+            {
+                return null;
+            }
+
+            var guardianId = TryGetString(activeGuardian, "guardianId");
+            if (string.IsNullOrWhiteSpace(guardianId))
+                return null;
+
+            return new[] { await BuildStoryEntityRefAsync("guardian", guardianId) };
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task<IReadOnlyCollection<StoryEntityRef>?> BuildGuardianStoryEntityRefsAsync(string? guardianId)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return null;
+
+        return new[] { await BuildStoryEntityRefAsync("guardian", guardianId) };
+    }
+
+    private async Task<StoryEntityRef> BuildStoryEntityRefAsync(string entityType, string entityId)
+    {
+        return new StoryEntityRef
+        {
+            EntityType = entityType,
+            EntityId = entityId,
+            DisplayName = await ResolveStoryEntityDisplayNameAsync(entityType, entityId)
+        };
+    }
+
+    private async Task<string?> ResolveStoryEntityDisplayNameAsync(string entityType, string entityId)
+    {
+        if (string.IsNullOrWhiteSpace(entityId))
+            return null;
+
+        return entityType switch
+        {
+            "guardian" => await ResolveGuardianDisplayNameAsync(entityId),
+            "resident" => await ResolveResidentDisplayNameAsync(entityId),
+            "npc" => await ResolveNpcDisplayNameAsync(entityId),
+            _ => null
+        };
+    }
+
+    private async Task<string?> ResolveGuardianDisplayNameAsync(string guardianId)
+    {
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(guardiansJson))
+            return null;
+
+        try
+        {
+            if (JsonNode.Parse(guardiansJson) is not JsonObject guardiansRoot)
+                return null;
+
+            if (guardiansRoot["activeGuardian"] is JsonObject activeGuardian &&
+                string.Equals(activeGuardian["guardianId"]?.GetValue<string>(), guardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                return GuardianManifestation.GetDisplayName(activeGuardian) ??
+                       activeGuardian["canonicalName"]?.GetValue<string>() ??
+                       activeGuardian["name"]?.GetValue<string>();
+            }
+
+            if (guardiansRoot["guardians"] is JsonArray guardians)
+            {
+                var guardian = guardians.OfType<JsonObject>()
+                    .FirstOrDefault(item => string.Equals(item["guardianId"]?.GetValue<string>(), guardianId, StringComparison.OrdinalIgnoreCase));
+                if (guardian != null)
+                {
+                    return GuardianManifestation.GetDisplayName(guardian) ??
+                           guardian["canonicalName"]?.GetValue<string>() ??
+                           guardian["name"]?.GetValue<string>();
+                }
+            }
+        }
+        catch
+        {
+            return null;
+        }
+
+        return null;
+    }
+
+    private async Task<string?> ResolveResidentDisplayNameAsync(string residentId)
+    {
+        var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(residentsJson))
+            return null;
+
+        try
+        {
+            using var residentsDoc = JsonDocument.Parse(residentsJson);
+            foreach (var resident in EnumerateStoryResidentObjects(residentsDoc.RootElement))
+            {
+                if (string.Equals(TryGetString(resident, "residentId"), residentId, StringComparison.OrdinalIgnoreCase))
+                    return TryGetString(resident, "displayName");
+            }
+        }
+        catch
+        {
+            return null;
+        }
+
+        return null;
+    }
+
+    private async Task<string?> ResolveNpcDisplayNameAsync(string npcId)
+    {
+        var npcJson = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+        if (string.IsNullOrWhiteSpace(npcJson))
+            return null;
+
+        try
+        {
+            using var npcDoc = JsonDocument.Parse(npcJson);
+            foreach (var npc in EnumerateStoryNpcObjects(npcDoc.RootElement))
+            {
+                var currentNpcId = TryGetString(npc, "NPCId") ?? TryGetString(npc, "npcId") ?? TryGetString(npc, "id");
+                if (!string.Equals(currentNpcId, npcId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                return TryGetString(npc, "NPCName") ??
+                       TryGetString(npc, "npcName") ??
+                       TryGetString(npc, "name") ??
+                       TryGetString(npc, "displayName");
+            }
+        }
+        catch
+        {
+            return null;
+        }
+
+        return null;
+    }
+
+    private static IEnumerable<JsonElement> EnumerateStoryResidentObjects(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            yield break;
+
+        if (!root.TryGetProperty("entries", out var entries) || entries.ValueKind != JsonValueKind.Array)
+            yield break;
+
+        foreach (var resident in entries.EnumerateArray())
+        {
+            if (resident.ValueKind == JsonValueKind.Object)
+                yield return resident;
+        }
+    }
+
+    private static IEnumerable<JsonElement> EnumerateStoryNpcObjects(JsonElement root)
+    {
+        if (root.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var npc in root.EnumerateArray())
+            {
+                if (npc.ValueKind == JsonValueKind.Object)
+                    yield return npc;
+            }
+
+            yield break;
+        }
+
+        if (root.ValueKind != JsonValueKind.Object)
+            yield break;
+
+        foreach (var propertyName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
+        {
+            if (!root.TryGetProperty(propertyName, out var npcs) || npcs.ValueKind != JsonValueKind.Array)
+                continue;
+
+            foreach (var npc in npcs.EnumerateArray())
+            {
+                if (npc.ValueKind == JsonValueKind.Object)
+                    yield return npc;
+            }
+        }
+    }
+
+    private static string? TryGetString(JsonElement root, string propertyName)
+    {
+        if (!root.TryGetProperty(propertyName, out var node) || node.ValueKind != JsonValueKind.String)
+            return null;
+
+        var text = node.GetString();
+        return string.IsNullOrWhiteSpace(text) ? null : text;
+    }
+
+    private static string? TryExtractTaggedValue(string text, string key)
+    {
+        if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(key))
+            return null;
+
+        var needle = key + "=";
+        var start = text.IndexOf(needle, StringComparison.OrdinalIgnoreCase);
+        if (start < 0)
+            return null;
+
+        start += needle.Length;
+        var end = start;
+        while (end < text.Length)
+        {
+            var ch = text[end];
+            if (ch is ',' or ')' or ']' or ' ' or '\r' or '\n' or '\t')
+                break;
+            end++;
+        }
+
+        if (end <= start)
+            return null;
+
+        return text[start..end].Trim();
     }
 
     private async Task<(bool EarlyExit, GameResponse Response)> HandleAcceptedQteOfferAsync(
@@ -1068,7 +1255,10 @@ public partial class GameEngine
                     "Chaos Sea", 0,
                     "[LIFE_EVALUATION] Оценка прожитой жизни",
                     evalResponse?.Response,
-                    "Море Хаоса");
+                    "Море Хаоса",
+                    await ExtractStoryEntityRefsAsync(
+                        evalRequest.PlayerAction,
+                        await BuildActiveGuardianStoryEntityRefsAsync()));
 
                 // === PHASE 5: Show reward screen ===
                 await ShowLifeEvaluationRewards(preDeathInkFeathers, preDeathEnlightenment, preDeathSoulStateJson);
@@ -1149,7 +1339,10 @@ public partial class GameEngine
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось прочитать soulRelics для life evaluation summary.");
+            }
         }
 
         // Build reward panel
@@ -1340,6 +1533,7 @@ public partial class GameEngine
             await UpdateSoulStateRealm("Mortal World", incrementIncarnation: true);
             await _rivalSoulArcService.ResetForNewLifeAsync();
             await _guardianCorrectionService.ApplyForNewLifeAsync(_stateManager.CurrentState.Incarnation + 1);
+            await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
 
             // Initialize fresh mortal status
             var status = new
@@ -1373,7 +1567,8 @@ public partial class GameEngine
             // Mark new incarnation in story
             await _storyService.AppendMarkerAsync(
                 "Chaos Sea", 0,
-                "INCARNATION", $"Душа воплощается в новую смертную жизнь. Инкарнация #{_stateManager.CurrentState.Incarnation + 1}.");
+                "INCARNATION", $"Душа воплощается в новую смертную жизнь. Инкарнация #{_stateManager.CurrentState.Incarnation + 1}.",
+                await BuildGuardianStoryEntityRefsAsync(payload.GuardianId));
 
             // Initialize characteristics for new incarnation
             await _charService.InitializeForNewIncarnation();
@@ -1467,7 +1662,12 @@ public partial class GameEngine
             }
 
             await UpdateSoulStateRealm("Shining Abode");
-            await _storyService.AppendMarkerAsync("Shining Abode", _stateManager.CurrentState.Incarnation, "ASCENSION", "Душа достигла Сияющей Обители.");
+            await _storyService.AppendMarkerAsync(
+                "Shining Abode",
+                _stateManager.CurrentState.Incarnation,
+                "ASCENSION",
+                "Душа достигла Сияющей Обители.",
+                await BuildActiveGuardianStoryEntityRefsAsync());
 
             var shiningLorePath = "lore/shining_abode/realm_lore.json";
             if (!_fs.FileExists(shiningLorePath))
@@ -1527,7 +1727,10 @@ public partial class GameEngine
             var entry = $"[{DateTime.UtcNow:O}] {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}\n\n";
             File.AppendAllText(logPath, entry, System.Text.Encoding.UTF8);
         }
-        catch { }
+        catch
+        {
+            // Avoid recursive failures while attempting to record the original exception.
+        }
     }
 
     private async Task<bool> HasMaximumEnlightenmentAsync()
@@ -1954,6 +2157,13 @@ LOCAL GUARDIAN TRADE REQUESTS:
 If game_state/control/pending_guardian_trade_request.json exists, treat it as a client-authored request to materialize guardian.tradeInventory for the current return cycle.
 Do NOT derive trade stock from guardian.domain in the client or assume the client will do it for you.
 Answer the request by writing an explicit guardian.tradeInventory into guardians.json / activeGuardian mirror with matching tradeCycleId and a valid items array.
+Close the request canonically through UpdateGuardianTradeInventoryReceipts in guardians.json with matching requestId, tradeCycleId, itemCount, resolvedAtTurn, and resolvedAtUtc.
+
+LOCAL NPC TRADE REQUESTS:
+If game_state/control/pending_npc_trade_inventory_requests.json exists, treat it as a client-authored request to materialize explicit npc.tradeInventory for the current world-time trade cycle.
+Do NOT generate or infer NPC stock on the client.
+Answer each request by writing explicit npc.tradeInventory into npc_core.json with matching tradeCycleId, refreshAfterWorldDate, and a valid items array.
+Close each request canonically through UpdateNpcTradeInventoryReceipts in npc_core.json with matching requestId, npcId, tradeCycleId, merchantProfile, itemCount, resolvedAtTurn, and resolvedAtUtc.
 
 RIVAL SOUL ARCS — MORTAL WORLD ONLY:
 Use UpdateRivalSoulArcs to track parallel destiny lines for OTHER souls in the current mortal life.
@@ -2067,6 +2277,18 @@ You MUST NOT downgrade or ignore the client-computed baseRarity. Log the full ca
         var guardianCorrectionReminder = await _guardianCorrectionService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
         if (!string.IsNullOrWhiteSpace(guardianCorrectionReminder))
             parts.Add(guardianCorrectionReminder);
+        var actorMemoryReminder = await _actorMemoryService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);
+        if (!string.IsNullOrWhiteSpace(actorMemoryReminder))
+            parts.Add(actorMemoryReminder);
+        var actorSocialReminder = await ActorSocialInteractionRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(actorSocialReminder))
+            parts.Add(actorSocialReminder);
+        var npcTradeReminder = await NpcTradeRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(npcTradeReminder))
+            parts.Add(npcTradeReminder);
+        var abodeResidentReminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(abodeResidentReminder))
+            parts.Add(abodeResidentReminder);
         var systemGuardianReminder = await _systemGuardianLibraryService.BuildReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
         if (!string.IsNullOrWhiteSpace(systemGuardianReminder))
             parts.Add(systemGuardianReminder);

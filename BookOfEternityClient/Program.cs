@@ -109,6 +109,10 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<ILogger<StoryService>>()));
         services.AddSingleton(sp =>
+            new ActorMemoryService(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<ILogger<ActorMemoryService>>()));
+        services.AddSingleton(sp =>
             new AudioService(
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<GameSettings>(),

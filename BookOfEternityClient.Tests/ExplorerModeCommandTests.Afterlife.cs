@@ -340,8 +340,32 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("guardian_trade_sell");
+        var guardiansRaw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
         Assert.DoesNotContain("Реликвия для продажи", soulRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"buybackRelics\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"status\": \"available\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_GuardianTradeBuyback_ReacquiresPreviouslySoldRelic()
+    {
+        await SeedGuardianTradeStateAsync(includeBuybackRelics: true);
+        _console.QueueSelection("Выберите раздел", "🔁 Выкупить обратно");
+        _console.QueueSelection("Действие", "🛒 Торговать", "🔁 Выкупить");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardian_trade_buyback");
+        var guardiansRaw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.Contains("Отзвук Зеркального Двора", soulRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"status\": \"rebought\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains(_console.SelectionChoicesHistory,
+            entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase) &&
+                     entry.Choices.Contains("🔁 Выкупить обратно", StringComparer.Ordinal));
     }
 
     [Fact]
@@ -688,6 +712,115 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains(_console.SelectionChoicesHistory,
             entry => entry.Title.Contains("Архив души", StringComparison.OrdinalIgnoreCase) &&
                      entry.Choices.Any(choice => choice.Contains("Пепельная хроника", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Guardians_AbodeResidentsMissing_CreatesRosterRequestAndReturnsGmAction()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_resident_001",
+                    canonicalName = "Азалия",
+                    domain = "Social",
+                    abode = new
+                    {
+                        abodeId = "abode_social_azalia_001",
+                        name = "Обитель Неутолимого Пламени",
+                        description = "Тёплый тестовый свет.",
+                        atmosphere = "Welcoming"
+                    },
+                    nameVariants = new
+                    {
+                        @default = "Азалия",
+                        feminine = "Азалия",
+                        masculine = (string?)null,
+                        neutral = (string?)null
+                    },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия",
+                        formFlexibility = "selective",
+                        currentPresentationStyle = "feminine",
+                        currentPronouns = "она/её",
+                        appearanceDescription = "Тестовая форма Хранителя."
+                    },
+                    manifestationHistory = Array.Empty<object>(),
+                    personalityProfile = new
+                    {
+                        archetype = "Diplomat",
+                        speechPattern = "Measured",
+                        coreValues = new[] { "страсть", "связь" }
+                    },
+                    relationshipData = new
+                    {
+                        currentReputation = 130,
+                        reputationHistory = Array.Empty<object>(),
+                        lastInteraction = "2026-03-27T00:00:00Z"
+                    },
+                    questManagement = new
+                    {
+                        availableQuests = Array.Empty<object>(),
+                        activeQuests = Array.Empty<object>(),
+                        completedQuests = Array.Empty<object>()
+                    },
+                    gachaSystem = new
+                    {
+                        chargesPerReturn = 2,
+                        chargesUsedThisReturn = 0,
+                        gachaHistory = Array.Empty<object>()
+                    },
+                    abodePower = new
+                    {
+                        currentPower = 58,
+                        tier = "Могущественная",
+                        history = Array.Empty<object>()
+                    },
+                    loreFragments = Array.Empty<object>()
+                }
+            },
+            activeGuardian = new
+            {
+                guardianId = "guardian_resident_001"
+            },
+            chaosSeaNavigation = new
+            {
+                currentAbodeId = "abode_social_azalia_001"
+            }
+        });
+        _console.QueueSelection("Действие", "🏛 Обитатели Обители");
+        await _stateManager.RefreshGameStateAsync();
+
+        await _explorer.TryProcessCommand("/хранители");
+
+        AssertNoHiddenExplorerErrors("guardian_abode_residents_request");
+
+        var pendingRaw = await _fs.ReadFileAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("\"requests\": [", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("guardian_resident_001", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("abode_social_azalia_001", pendingRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Guardians_TalkAction_CreatesPendingGuardianSocialRequest()
+    {
+        await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        _console.QueueSelection("Действие", "💬 Поговорить");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardian_social_talk_request");
+        var pendingRaw = await _fs.ReadFileAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("\"guardianId\": \"guardian_trade_001\"", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("\"interactionType\": \"talk\"", pendingRaw, StringComparison.Ordinal);
     }
 
     [Fact]

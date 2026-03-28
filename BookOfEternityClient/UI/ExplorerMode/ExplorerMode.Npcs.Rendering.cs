@@ -545,6 +545,18 @@ public partial class ExplorerMode
         }
     }
 
+    private void RenderNpcInteractionJournal(List<string> lines, JsonDocument? doc, string npcId)
+    {
+        var entries = CollectActorJournalEntryElements(doc, NpcInteractionJournalState.ActorIdProperty, npcId);
+        if (entries.Count == 0)
+            return;
+
+        lines.Add("");
+        lines.Add("  [bold steelblue1]🗂 Память взаимодействий:[/]");
+        foreach (var entry in entries.Take(5))
+            lines.Add($"    • [white]{Markup.Escape(BuildActorJournalLine(entry))}[/]");
+    }
+
     // ── Masks (npc_masks.json) — Rule 17 Social Roles ──
 
     private void RenderNpcMasks(List<string> lines, JsonDocument? doc, string npcId, string npcName)

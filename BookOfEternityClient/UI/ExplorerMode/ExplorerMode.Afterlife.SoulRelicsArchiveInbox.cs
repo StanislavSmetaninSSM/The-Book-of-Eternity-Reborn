@@ -265,7 +265,7 @@ public partial class ExplorerMode
             var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
             if (notifications.Count == 0)
             {
-                ShowEmptyPanel("📬 Уведомления загробья", "Пока нет ответов Хранителей по торговле или архивным действиям.");
+                ShowEmptyPanel("📬 Уведомления загробья", "Пока нет ответов Хранителей по торговле, Архиву или резидентам Обители.");
                 return;
             }
 
@@ -280,7 +280,7 @@ public partial class ExplorerMode
             choices.Add("[grey]← Назад[/]");
 
             var selected = Prompt(new SelectionPrompt<string>()
-                .Title("[bold yellow]📬 Уведомления загробья[/] [dim](ответы GM по торговле и Архиву)[/]")
+                .Title("[bold yellow]📬 Уведомления загробья[/] [dim](торговля, Архив, резиденты Обители)[/]")
                 .PageSize(12)
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoices(choices));
@@ -342,6 +342,22 @@ public partial class ExplorerMode
         if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianQuestAvailable, StringComparison.OrdinalIgnoreCase))
             actions.Add("🛡️ Открыть Хранителей");
 
+        if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeCompanionImprintManifestationReady, StringComparison.OrdinalIgnoreCase))
+            actions.Add("💎 Открыть реликвии души");
+
+        if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentsReady, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentRelicGranted, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentManifestationReady, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTalkAnswered, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentHistoryRevealed, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentHistoryRefused, StringComparison.OrdinalIgnoreCase))
+        {
+            actions.Add("🛡️ Открыть Хранителей");
+        }
+
+        if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentQuestAvailable, StringComparison.OrdinalIgnoreCase))
+            actions.Add("🧵 Открыть квесты души");
+
         if (notification.NotificationType.StartsWith("archive_", StringComparison.OrdinalIgnoreCase))
             actions.Add("📚 Открыть Архив души");
 
@@ -381,6 +397,18 @@ public partial class ExplorerMode
         if (selected.StartsWith("🛡️", StringComparison.Ordinal))
         {
             await ShowGuardians();
+            return;
+        }
+
+        if (selected.StartsWith("🧵", StringComparison.Ordinal))
+        {
+            await ShowSoulQuests();
+            return;
+        }
+
+        if (selected.StartsWith("💎", StringComparison.Ordinal))
+        {
+            await ShowSoulRelics();
             return;
         }
 
@@ -577,6 +605,7 @@ public partial class ExplorerMode
     private async Task<bool> ShowRelicDetailPanel(string relicId, string name, string status, JsonElement relic, bool isChaosSea)
     {
         var lines = BuildSoulRelicDetailLines(name, relic, status);
+        await EnrichManifestedCompanionDetailsAsync(lines, relic);
         var slot = ResolveRelicSlot(relic);
 
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -621,6 +650,80 @@ public partial class ExplorerMode
         }
 
         return false;
+    }
+
+    private async Task EnrichManifestedCompanionDetailsAsync(List<string> lines, JsonElement relic)
+    {
+        var manifestationStatus = GetStr(relic, "companionManifestationStatus", "");
+        if (!string.Equals(manifestationStatus, "materialized", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var resolvedNpcId = GetStr(relic, "companionManifestationResolvedNpcId", "");
+        if (string.IsNullOrWhiteSpace(resolvedNpcId))
+            return;
+
+        var resolvedDisplayName = await ResolveNpcDisplayNameAsync(resolvedNpcId);
+        if (string.IsNullOrWhiteSpace(resolvedDisplayName) ||
+            string.Equals(resolvedDisplayName, resolvedNpcId, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var existingLineIndex = lines.FindIndex(line => line.Contains("👣 Проявившийся спутник:", StringComparison.Ordinal));
+        var displayNameLine = $"  👣 Проявившийся спутник: [white]{Markup.Escape(resolvedDisplayName)}[/]";
+        var idLine = $"    [dim]ID: {Markup.Escape(resolvedNpcId)}[/]";
+
+        if (existingLineIndex >= 0)
+        {
+            lines[existingLineIndex] = displayNameLine;
+            lines.Insert(existingLineIndex + 1, idLine);
+            return;
+        }
+
+        lines.Add(displayNameLine);
+        lines.Add(idLine);
+    }
+
+    private async Task<string> ResolveNpcDisplayNameAsync(string npcId)
+    {
+        if (string.IsNullOrWhiteSpace(npcId))
+            return string.Empty;
+
+        var npcDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_core.json");
+        if (npcDoc == null)
+            return string.Empty;
+
+        foreach (var npc in EnumerateNpcObjects(npcDoc.RootElement))
+        {
+            var currentNpcId = GetStr(npc, "NPCId", GetStr(npc, "npcId", GetStr(npc, "id", "")));
+            if (!string.Equals(currentNpcId, npcId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            return GetStr(npc, "displayName",
+                GetStr(npc, "NPCName",
+                    GetStr(npc, "npcName",
+                        GetStr(npc, "name", npcId))));
+        }
+
+        return string.Empty;
+    }
+
+    private static IEnumerable<JsonElement> EnumerateNpcObjects(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            yield break;
+
+        foreach (var propertyName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
+        {
+            if (!root.TryGetProperty(propertyName, out var npcs) || npcs.ValueKind != JsonValueKind.Array)
+                continue;
+
+            foreach (var npc in npcs.EnumerateArray())
+            {
+                if (npc.ValueKind == JsonValueKind.Object)
+                    yield return npc;
+            }
+        }
     }
 
     private List<string> BuildSoulRelicDetailLines(string name, JsonElement relic, string? status)
@@ -743,6 +846,35 @@ public partial class ExplorerMode
             lines.Add($"  [dim italic]📜 {Markup.Escape(narrativeOrigin)}[/]");
         }
 
+        var companionNameHint = ResolveRelicCompanionNameHint(relic);
+        var manifestationStatus = GetStr(relic, "companionManifestationStatus", "");
+        var manifestationSourceLabel = ResolveRelicManifestationSourceLabel(relic);
+        if (!string.IsNullOrEmpty(companionNameHint) || !string.IsNullOrEmpty(manifestationStatus))
+        {
+            lines.Add("");
+            if (!string.IsNullOrEmpty(companionNameHint))
+                lines.Add($"  👤 Нить спутника: [white]{Markup.Escape(companionNameHint)}[/]");
+            if (!string.IsNullOrEmpty(manifestationSourceLabel))
+                lines.Add($"  🧭 Источник воплощения: [dim]{Markup.Escape(manifestationSourceLabel)}[/]");
+
+            var resolvedNpcId = GetStr(relic, "companionManifestationResolvedNpcId", "");
+            var resolvedTurn = GetInt(relic, "companionManifestationResolvedAtTurn", 0);
+            switch (manifestationStatus.Trim().ToLowerInvariant())
+            {
+                case "pending":
+                    lines.Add("  🕯️ Путь воплощения: [yellow]ожидает проявления в смертной жизни[/]");
+                    break;
+                case "materialized":
+                    var materializedLine = "  🕯️ Путь воплощения: [green]спутник уже проявился в смертной жизни[/]";
+                    if (resolvedTurn > 0)
+                        materializedLine += $" [dim](ход {resolvedTurn})[/]";
+                    lines.Add(materializedLine);
+                    if (!string.IsNullOrEmpty(resolvedNpcId))
+                        lines.Add($"  👣 Проявившийся спутник: [dim]{Markup.Escape(resolvedNpcId)}[/]");
+                    break;
+            }
+        }
+
         if (!string.IsNullOrEmpty(status))
         {
             lines.Add("");
@@ -760,6 +892,42 @@ public partial class ExplorerMode
         if (string.IsNullOrEmpty(slot) && relic.TryGetProperty("gameplayStatus", out var gpStat))
             slot = GetStr(gpStat, "currentSlot", "");
         return slot;
+    }
+
+    private static string ResolveRelicCompanionNameHint(JsonElement relic)
+    {
+        if (relic.TryGetProperty("companionSeed", out var companionSeed) && companionSeed.ValueKind == JsonValueKind.Object)
+        {
+            var companionNameHint = GetStr(companionSeed, "companionNameHint", "");
+            if (!string.IsNullOrEmpty(companionNameHint))
+                return companionNameHint;
+        }
+
+        if (relic.TryGetProperty("soulImprint", out var soulImprint) && soulImprint.ValueKind == JsonValueKind.Object)
+            return GetStr(soulImprint, "NPCName", GetStr(soulImprint, "npcName", GetStr(soulImprint, "name", GetStr(soulImprint, "companionName", GetStr(soulImprint, "originalName", "")))));
+
+        if (relic.TryGetProperty("npcSoulImprint", out var npcSoulImprint) && npcSoulImprint.ValueKind == JsonValueKind.Object)
+            return GetStr(npcSoulImprint, "NPCName", GetStr(npcSoulImprint, "npcName", GetStr(npcSoulImprint, "name", GetStr(npcSoulImprint, "companionName", GetStr(npcSoulImprint, "originalName", "")))));
+
+        return "";
+    }
+
+    private static string ResolveRelicManifestationSourceLabel(JsonElement relic)
+    {
+        if (relic.TryGetProperty("companionSeed", out var companionSeed) &&
+            companionSeed.ValueKind == JsonValueKind.Object &&
+            !string.IsNullOrEmpty(GetStr(companionSeed, "sourceResidentId", "")))
+        {
+            return "связь с резидентом Обители";
+        }
+
+        if ((relic.TryGetProperty("soulImprint", out var soulImprint) && soulImprint.ValueKind == JsonValueKind.Object) ||
+            (relic.TryGetProperty("npcSoulImprint", out var npcSoulImprint) && npcSoulImprint.ValueKind == JsonValueKind.Object))
+        {
+            return "слепок души";
+        }
+
+        return "";
     }
 
     private static string GuardianTradeDisplayDomain(string domainTag) => domainTag switch
@@ -824,7 +992,7 @@ public partial class ExplorerMode
             equippedArr.Add(target);
 
             // Write back
-            var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
             await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
 
             MarkupLine($"[green]✅ Реликвия «{Markup.Escape(relicName)}» экипирована![/]");
@@ -875,7 +1043,7 @@ public partial class ExplorerMode
 
             storedArr.Add(target);
 
-            var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
             await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
 
             MarkupLine($"[green]✅ Реликвия «{Markup.Escape(relicName)}» снята и убрана в хранилище.[/]");
@@ -988,11 +1156,7 @@ public partial class ExplorerMode
 
             if (action.Contains("← Назад")) return anyModified;
 
-            var opts = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
+            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
             if (action.StartsWith("📥")) // Deposit
             {
@@ -1166,11 +1330,7 @@ public partial class ExplorerMode
             if (action.Contains("← Назад"))
                 return anyModified;
 
-            var opts = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
+            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
             if (action.StartsWith("📥"))
             {
@@ -1363,12 +1523,13 @@ public partial class ExplorerMode
         var unreadGuardianQuestNotifications = (await AfterlifeNotificationState.ReadAsync(_fs))
             .Where(notification =>
                 string.Equals(notification.Status, AfterlifeNotificationState.StatusUnread, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianQuestAvailable, StringComparison.OrdinalIgnoreCase))
+                (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianQuestAvailable, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentQuestAvailable, StringComparison.OrdinalIgnoreCase)))
             .ToList();
 
         if (unreadGuardianQuestNotifications.Count > 0)
         {
-            var bannerLines = new List<string> { "[bold yellow]📬 Новые квесты Хранителей[/]" };
+            var bannerLines = new List<string> { "[bold yellow]📬 Новые квесты и просьбы из загробья[/]" };
             foreach (var notification in unreadGuardianQuestNotifications.Take(3))
                 bannerLines.Add($"[dim]• {Markup.Escape(notification.Summary)}[/]");
             if (unreadGuardianQuestNotifications.Count > 3)
@@ -1565,11 +1726,7 @@ public partial class ExplorerMode
                 node["inkFeathers"] = oldVal - cost;
             }
 
-            var opts = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
+            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
             return true;
         }

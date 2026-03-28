@@ -75,6 +75,15 @@ public sealed class RivalSoulArcServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildSystemReminderFragmentAsync_NamedMortalRealm_TreatedAsMortalWorld()
+    {
+        var reminder = await _service.BuildSystemReminderFragmentAsync("Неон-Сити", 1);
+
+        Assert.NotNull(reminder);
+        Assert.Contains("OPTIONAL RIVAL SOUL ARC", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task BuildSystemReminderFragmentAsync_InMatureWorldWithoutArcs_ShowsOpportunityNudgeOnCadence()
     {
         await _fs.WriteFileAtomicAsync("game_state/quests/plot_outline.json", """

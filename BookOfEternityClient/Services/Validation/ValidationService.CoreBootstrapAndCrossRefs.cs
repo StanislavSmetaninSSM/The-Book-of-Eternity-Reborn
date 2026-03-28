@@ -39,6 +39,8 @@ public partial class ValidationService
         await ValidateSoulQuestGuardianCrossReferencesAsync(issues, knownGuardianIds);
         var knownSystemGuardianPresetIds = await ReadKnownSystemGuardianPresetIdsAsync();
         await ValidateRivalSoulArcCrossReferencesAsync(issues, knownGuardianIds, knownSystemGuardianPresetIds);
+        await ValidateResidentCrossReferencesWhenRivalArcPassSkippedAsync(issues);
+        await ValidateActorJournalCrossReferencesAsync(issues);
 
         var knownFactionIds = await ReadKnownFactionIdsAsync();
         await ValidateFactionReferenceCrossReferencesAsync(issues, knownFactionIds, knownLocationIds);
@@ -176,6 +178,9 @@ public partial class ValidationService
                 }
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось проверить согласованность soul_state.");
+        }
     }
 }

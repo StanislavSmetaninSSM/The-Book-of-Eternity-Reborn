@@ -38,6 +38,16 @@ public partial class ValidationService
             {
                 "NPCJournals", "npcJournals"
             }, issues);
+        await ValidateFlexibleStateFile(NpcInteractionJournalState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ActorJournalState.EntriesProperty, NpcInteractionJournalState.UpdateProperty
+            }, issues, ValidateNpcInteractionJournalStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(NpcInteractionJournalState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ActorJournalState.EntriesProperty
+            }, issues);
 
         await ValidateNpcFile("game_state/npcs/npc_memory.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -215,6 +225,38 @@ public partial class ValidationService
             {
                 "UpdateGuardians", "guardianPowerEvents", "guardians", "activeGuardian", "chaosSeaNavigation", "pendingGuardianCreation"
             }, issues, ValidateMetaMiscContract);
+        await ValidateFlexibleStateFile(GuardianAbodeResidentState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                GuardianAbodeResidentState.UpdateProperty,
+                GuardianAbodeResidentState.EntriesProperty,
+                GuardianAbodeResidentState.UpdateRosterReceiptsProperty,
+                GuardianAbodeResidentState.RosterReceiptsProperty,
+                GuardianAbodeResidentState.UpdateInteractionReceiptsProperty,
+                GuardianAbodeResidentState.InteractionReceiptsProperty,
+                GuardianAbodeResidentState.UpdateHistoryLogProperty,
+                GuardianAbodeResidentState.HistoryLogProperty,
+                GuardianAbodeResidentState.UpdateThoughtJournalProperty,
+                GuardianAbodeResidentState.ThoughtJournalProperty,
+                GuardianAbodeResidentState.UpdateInteractionLogProperty,
+                GuardianAbodeResidentState.InteractionLogProperty
+            }, issues, ValidateGuardianAbodeResidentsStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(GuardianAbodeResidentState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                GuardianAbodeResidentState.UpdateProperty,
+                GuardianAbodeResidentState.EntriesProperty,
+                GuardianAbodeResidentState.UpdateRosterReceiptsProperty,
+                GuardianAbodeResidentState.RosterReceiptsProperty,
+                GuardianAbodeResidentState.UpdateInteractionReceiptsProperty,
+                GuardianAbodeResidentState.InteractionReceiptsProperty,
+                GuardianAbodeResidentState.UpdateHistoryLogProperty,
+                GuardianAbodeResidentState.HistoryLogProperty,
+                GuardianAbodeResidentState.UpdateThoughtJournalProperty,
+                GuardianAbodeResidentState.ThoughtJournalProperty,
+                GuardianAbodeResidentState.UpdateInteractionLogProperty,
+                GuardianAbodeResidentState.InteractionLogProperty
+            }, issues);
         await ValidateFlexibleStateFile(GuardianPowerEventState.JournalPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "entries" }, issues, ValidateMetaMiscContract);
         await ValidateStrictTopLevelObjectFileAsync(GuardianPowerEventState.JournalPath,
@@ -245,6 +287,26 @@ public partial class ValidationService
             {
                 "characterChronicleUpdates", "entries"
             }, issues, ValidateMetaMiscContract);
+        await ValidateFlexibleStateFile(GuardianThoughtJournalState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ActorJournalState.EntriesProperty, GuardianThoughtJournalState.UpdateProperty
+            }, issues, ValidateGuardianThoughtJournalStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(GuardianThoughtJournalState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ActorJournalState.EntriesProperty
+            }, issues);
+        await ValidateFlexibleStateFile(GuardianSocialJournalState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ActorJournalState.EntriesProperty, GuardianSocialJournalState.UpdateProperty
+            }, issues, ValidateGuardianSocialJournalStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(GuardianSocialJournalState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ActorJournalState.EntriesProperty
+            }, issues);
         await ValidateFlexibleStateFile("game_state/meta/achievements.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -319,6 +381,69 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "AscensionTrigger", "playerChoice", "_lastUpdated"
+            }, issues);
+        await ValidateFlexibleStateFile(NpcTradeRequestState.PendingRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                NpcTradeRequestState.RequestsProperty,
+                "requestId", "npcId", "npcName", "merchantProfile", "tradeCycleId", "derivedTradeSlotCount", "createdAtTurn", "createdAtUtc", "createdAtWorldDate", "refreshAfterWorldDate"
+            }, issues, ValidatePendingNpcTradeInventoryRequestsFile);
+        await ValidateStrictTopLevelObjectFileAsync(NpcTradeRequestState.PendingRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                NpcTradeRequestState.RequestsProperty
+            }, issues);
+        await ValidateFlexibleStateFile(GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                GuardianAbodeResidentRequestState.ResidentsRequestsProperty,
+                "requestId", "guardianId", "guardianName", "abodeId", "abodeName", "currentReputation", "createdAtTurn", "createdAtUtc"
+            }, issues, ValidatePendingGuardianAbodeResidentsRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                GuardianAbodeResidentRequestState.ResidentsRequestsProperty,
+                "requestId", "guardianId", "guardianName", "abodeId", "abodeName", "currentReputation", "createdAtTurn", "createdAtUtc"
+            }, issues);
+        await ValidateFlexibleStateFile(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                GuardianAbodeResidentRequestState.InteractionRequestsProperty
+            }, issues, ValidatePendingGuardianAbodeResidentInteractionsRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                GuardianAbodeResidentRequestState.InteractionRequestsProperty
+            }, issues);
+        await ValidateFlexibleStateFile(GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                GuardianAbodeResidentRequestState.ManifestationRequestsProperty
+            }, issues, ValidatePendingResidentCompanionManifestationRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                GuardianAbodeResidentRequestState.ManifestationRequestsProperty
+            }, issues);
+        await ValidateFlexibleStateFile(ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ActorSocialInteractionRequestState.RequestsProperty
+            }, issues, ValidatePendingGuardianSocialInteractionsRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ActorSocialInteractionRequestState.RequestsProperty
+            }, issues);
+        await ValidateFlexibleStateFile(ActorSocialInteractionRequestState.PendingNpcRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ActorSocialInteractionRequestState.RequestsProperty
+            }, issues, ValidatePendingNpcSocialInteractionsRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ActorSocialInteractionRequestState.RequestsProperty
             }, issues);
         // Client-owned world setup surfaces are validated via mutation checks instead of GM repair-loop shape errors.
         await ValidateLifecycleControlContextAsync(issues);
@@ -1214,11 +1339,679 @@ public partial class ValidationService
                     code: "guardian_trade_request_missing_inventory_resolution",
                     section: "GuardianTrade",
                     repairHint: "На accepted turn обязательно materialize-ь guardian.tradeInventory по exact client-authored request contract; не игнорируй request и не закрывай его частично совпадающей витриной."));
+                return;
+            }
+
+            if (!GuardianTradeRequestState.ReceiptMatchesRequestContract(
+                    guardian == null ? null : GuardianTradeRequestState.FindMatchingReceipt(guardian, request),
+                    request,
+                    tradeInventory))
+            {
+                issues.Add(new ValidationIssue(
+                    GuardianTradeRequestState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "pending_guardian_trade_request из pre-turn snapshot не был закрыт canonical tradeInventory receipt",
+                    code: "guardian_trade_request_missing_receipt_resolution",
+                    section: "GuardianTrade",
+                    repairHint: $"После materialize explicit guardian.tradeInventory обязательно закрой запрос через {GuardianTradeRequestState.UpdateReceiptsProperty} и запиши matching requestId/tradeCycleId/itemCount timing в guardians[].{GuardianTradeRequestState.ReceiptsProperty}."));
             }
         }
         catch
         {
             // parse issues reported elsewhere
+        }
+    }
+
+    private async Task ValidatePendingNpcTradeInventoryRequestContextAsync(List<ValidationIssue> issues)
+    {
+        var requests = await NpcTradeRequestState.ReadRequestsAsync(_fs);
+        if (requests.Count == 0)
+            return;
+
+        if (IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        {
+            issues.Add(new ValidationIssue(
+                NpcTradeRequestState.PendingRequestPath,
+                IssueSeverity.Error,
+                "pending_npc_trade_inventory_requests.json допустим только в mortal realm",
+                code: "npc_trade_request_wrong_realm",
+                section: "NpcTrade"));
+        }
+
+        var npcRoot = await ReadJsonObjectAsync("game_state/npcs/npc_core.json");
+        foreach (var request in requests)
+        {
+            if (string.IsNullOrWhiteSpace(request.RequestId) ||
+                string.IsNullOrWhiteSpace(request.NpcId) ||
+                string.IsNullOrWhiteSpace(request.NpcName) ||
+                string.IsNullOrWhiteSpace(request.MerchantProfile) ||
+                string.IsNullOrWhiteSpace(request.TradeCycleId) ||
+                request.DerivedTradeSlotCount <= 0 ||
+                request.RefreshAfterWorldDate <= request.CreatedAtWorldDate)
+            {
+                issues.Add(new ValidationIssue(
+                    NpcTradeRequestState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "pending_npc_trade_inventory_requests.json должен содержать полный client-authored contract",
+                    code: "npc_trade_request_missing_fields",
+                    section: "NpcTrade"));
+                continue;
+            }
+
+            if (npcRoot != null &&
+                FindNpcTradeValidationEntry(npcRoot, request.NpcId) == null)
+            {
+                issues.Add(new ValidationIssue(
+                    NpcTradeRequestState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "pending NPC trade request должен ссылаться на существующего NPC",
+                    code: "npc_trade_request_unknown_npc",
+                    section: "NpcTrade",
+                    repairHint: "Создавай NPC trade request только для существующего merchant NPC из canonical npc_core state."));
+            }
+        }
+    }
+
+    private async Task ValidatePendingNpcTradeInventoryRequestResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadPreTurnTrackedFileAsync(NpcTradeRequestState.PendingRequestPath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = NpcTradeRequestState.ParseRequests(preTurnJson);
+        if (requests.Count == 0)
+            return;
+
+        var npcRoot = await ReadJsonObjectAsync("game_state/npcs/npc_core.json");
+        if (npcRoot == null)
+            return;
+
+        foreach (var request in requests)
+        {
+            var npc = FindNpcTradeValidationEntry(npcRoot, request.NpcId);
+            var tradeInventory = npc?["tradeInventory"] as JsonObject;
+            if (!NpcTradeRequestState.InventoryMatchesRequestContract(tradeInventory, request))
+            {
+                issues.Add(new ValidationIssue(
+                    NpcTradeRequestState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "pending_npc_trade_inventory_requests из pre-turn snapshot не привёл к matching npc.tradeInventory",
+                    code: "npc_trade_request_missing_inventory_resolution",
+                    section: "NpcTrade",
+                    repairHint: "На accepted turn обязательно materialize-ь explicit npc.tradeInventory по client-authored request contract; не игнорируй request и не закрывай его частично совпадающей витриной."));
+                continue;
+            }
+
+            if (!NpcTradeRequestState.ReceiptMatchesRequestContract(
+                    npc == null ? null : NpcTradeRequestState.FindMatchingReceipt(npc, request),
+                    request,
+                    tradeInventory))
+            {
+                issues.Add(new ValidationIssue(
+                    NpcTradeRequestState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "pending_npc_trade_inventory_requests из pre-turn snapshot не был закрыт canonical tradeInventory receipt",
+                    code: "npc_trade_request_missing_receipt_resolution",
+                    section: "NpcTrade",
+                    repairHint: $"После materialize explicit npc.tradeInventory обязательно закрой запрос через {NpcTradeRequestState.UpdateReceiptsProperty} и запиши matching requestId/npcId/tradeCycleId/itemCount timing в npc.{NpcTradeRequestState.ReceiptsProperty}."));
+            }
+        }
+    }
+
+    private async Task ValidatePendingGuardianAbodeResidentInteractionRequestContextAsync(List<ValidationIssue> issues)
+    {
+        var requests = await GuardianAbodeResidentRequestState.ReadInteractionRequestsAsync(_fs);
+        if (requests.Count == 0)
+            return;
+
+        if (!IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+                IssueSeverity.Error,
+                "pending_guardian_abode_resident_interactions.json допустим только в afterlife realm",
+                code: "abode_resident_interactions_wrong_realm",
+                section: "AfterlifeResidents"));
+        }
+
+        var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(residentsJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(residentsJson) is not JsonObject residentsRoot)
+                return;
+
+            GuardianAbodeResidentState.NormalizeShape(residentsRoot);
+            var receipts = GuardianAbodeResidentState.EnsureInteractionReceiptsArray(residentsRoot);
+            foreach (var request in requests)
+            {
+                if (string.IsNullOrWhiteSpace(request.RequestId) ||
+                    string.IsNullOrWhiteSpace(request.ResidentId) ||
+                    string.IsNullOrWhiteSpace(request.GuardianId) ||
+                    string.IsNullOrWhiteSpace(request.AbodeId) ||
+                    !GuardianAbodeResidentState.IsSupportedInteractionType(request.InteractionType))
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+                        IssueSeverity.Error,
+                        "pending_guardian_abode_resident_interactions.json должен содержать полный client-authored contract",
+                        code: "abode_resident_interactions_missing_fields",
+                        section: "AfterlifeResidents"));
+                    continue;
+                }
+
+                if (GuardianAbodeResidentState.FindResident(residentsRoot, request.ResidentId) == null &&
+                    GuardianAbodeResidentState.FindInteractionReceipt(receipts, request.RequestId) == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+                        IssueSeverity.Error,
+                        "pending resident interaction request должен ссылаться либо на существующего resident, либо на уже записанный interaction receipt",
+                        code: "abode_resident_interaction_missing_resident_or_receipt",
+                        section: "AfterlifeResidents",
+                        repairHint: "Не держи pending resident interaction request без resident roster и без matching receipt." ));
+                }
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+    }
+
+    private async Task ValidatePendingGuardianAbodeResidentsRequestContextAsync(List<ValidationIssue> issues)
+    {
+        var requests = await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs);
+        if (requests.Count == 0)
+            return;
+
+        if (!IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+                IssueSeverity.Error,
+                "pending_guardian_abode_residents_request.json допустим только в afterlife realm",
+                code: "abode_resident_roster_wrong_realm",
+                section: "AfterlifeResidents"));
+        }
+
+        foreach (var request in requests)
+        {
+            if (string.IsNullOrWhiteSpace(request.RequestId) ||
+                string.IsNullOrWhiteSpace(request.GuardianId) ||
+                string.IsNullOrWhiteSpace(request.AbodeId))
+            {
+                issues.Add(new ValidationIssue(
+                    GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+                    IssueSeverity.Error,
+                    "pending_guardian_abode_residents_request.json должен содержать полный client-authored roster contract",
+                    code: "abode_resident_roster_missing_fields",
+                    section: "AfterlifeResidents"));
+            }
+        }
+    }
+
+    private async Task ValidatePendingGuardianAbodeResidentInteractionResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadPreTurnTrackedFileAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = ReadPendingGuardianAbodeResidentInteractionRequests(preTurnJson);
+        if (requests.Count == 0)
+            return;
+
+        var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(residentsJson))
+            return;
+
+        try
+        {
+            var currentResidentsRoot = JsonNode.Parse(residentsJson) as JsonObject;
+            if (currentResidentsRoot == null)
+                return;
+
+            GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
+            var receipts = GuardianAbodeResidentState.EnsureInteractionReceiptsArray(currentResidentsRoot);
+            var historyLog = GuardianAbodeResidentState.EnsureHistoryLogArray(currentResidentsRoot);
+            var preTurnResidentsJson = await ReadPreTurnTrackedFileAsync(GuardianAbodeResidentState.StatePath);
+            JsonObject? preTurnResidentsRoot = null;
+            if (!string.IsNullOrWhiteSpace(preTurnResidentsJson))
+            {
+                preTurnResidentsRoot = JsonNode.Parse(preTurnResidentsJson) as JsonObject;
+                if (preTurnResidentsRoot != null)
+                    GuardianAbodeResidentState.NormalizeShape(preTurnResidentsRoot);
+            }
+
+            foreach (var request in requests)
+            {
+                var receipt = GuardianAbodeResidentState.FindInteractionReceipt(receipts, request.RequestId);
+                if (receipt == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+                        IssueSeverity.Error,
+                        "pending resident interaction request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                        code: "abode_resident_interaction_missing_resolution",
+                        section: "AfterlifeResidents",
+                        repairHint: "Каждый resident talk/history request должен закрываться в ближайшем accepted turn через guardian_abode_residents.json.interactionReceipts[]."));
+                    continue;
+                }
+
+                var status = GetNodeString(receipt["status"]);
+                if (!string.Equals(status, GuardianAbodeResidentState.InteractionStatusAccepted, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var isHistoryRequest = string.Equals(request.InteractionType, GuardianAbodeResidentState.InteractionTypeHistory, StringComparison.OrdinalIgnoreCase);
+                if (isHistoryRequest &&
+                    !ResidentHistoryRequestHasCanonicalResult(preTurnResidentsRoot, currentResidentsRoot, historyLog, request, receipt))
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+                        IssueSeverity.Error,
+                        "Accepted resident history request не привёл к canonical history result",
+                        code: "abode_resident_history_missing_canonical_result",
+                        section: "AfterlifeResidents",
+                        repairHint: "Для accepted history request либо установи historyRevealed=true, либо добавь historyLog entry, либо реально обнови mortalWorldImprint резидента."));
+                }
+
+                if (!ResidentHasNewThoughtOrInteractionMemory(preTurnResidentsRoot, currentResidentsRoot, request.ResidentId))
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+                        IssueSeverity.Error,
+                        isHistoryRequest
+                            ? "Accepted resident history request не оставил curated memory update"
+                            : "Accepted resident talk request не оставил curated memory update",
+                        code: isHistoryRequest
+                            ? "abode_resident_history_missing_memory_update"
+                            : "abode_resident_talk_missing_memory_update",
+                        section: "AfterlifeResidents",
+                        repairHint: isHistoryRequest
+                            ? "После accepted history request добавь residentThoughtJournalUpdates и/или residentInteractionLogUpdates, чтобы у ГМа осталась краткая память о результате сцены."
+                            : "После accepted talk request добавь residentThoughtJournalUpdates и/или residentInteractionLogUpdates, чтобы у ГМа осталась краткая память о результате сцены."));
+                }
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+    }
+
+    private async Task ValidatePendingGuardianAbodeResidentsResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadPreTurnTrackedFileAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = ReadPendingGuardianAbodeResidentsRequests(preTurnJson);
+        if (requests.Count == 0)
+            return;
+
+        var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(residentsJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(residentsJson) is not JsonObject residentsRoot)
+                return;
+
+            GuardianAbodeResidentState.NormalizeShape(residentsRoot);
+            var rosterReceipts = GuardianAbodeResidentState.EnsureRosterReceiptsArray(residentsRoot);
+            foreach (var request in requests)
+            {
+                if (string.IsNullOrWhiteSpace(request.RequestId) ||
+                    string.IsNullOrWhiteSpace(request.GuardianId) ||
+                    string.IsNullOrWhiteSpace(request.AbodeId))
+                {
+                    continue;
+                }
+
+                var matchingReceipt = GuardianAbodeResidentState.FindRosterReceipt(rosterReceipts, request.RequestId);
+                if (matchingReceipt == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+                        IssueSeverity.Error,
+                        "pending abode residents request из pre-turn snapshot не привёл к canonical roster receipt",
+                        code: "abode_resident_roster_missing_receipt_resolution",
+                        section: "AfterlifeResidents",
+                        repairHint: "На accepted turn закрывай pending roster request через guardian_abode_residents.json.rosterReceipts[] и сохраняй matching requestId."));
+                    continue;
+                }
+
+                var presentCount = CountPresentResidentsForAbode(residentsRoot, request.GuardianId, request.AbodeId);
+                var rosterCount = GetNodeInt(matchingReceipt["rosterCount"]);
+                if (presentCount <= 0 && rosterCount <= 0)
+                    continue;
+
+                if (presentCount <= 0 && rosterCount > 0)
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentState.StatePath,
+                        IssueSeverity.Error,
+                        "Resident roster receipt сообщает о materialized roster, но текущий resident roster пуст",
+                        code: "abode_resident_roster_receipt_without_entries",
+                        section: "AfterlifeResidents",
+                        repairHint: "Если roster receipt указывает на materialized residents, entries[] должны содержать резидентов для соответствующей Обители."));
+                }
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+    }
+
+    private async Task ValidatePendingGuardianSocialInteractionRequestContextAsync(List<ValidationIssue> issues)
+    {
+        var requests = await ActorSocialInteractionRequestState.ReadGuardianRequestsAsync(_fs);
+        if (requests.Count == 0)
+            return;
+
+        if (!IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        {
+            issues.Add(new ValidationIssue(
+                ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+                IssueSeverity.Error,
+                "pending_guardian_social_interactions.json допустим только в afterlife realm",
+                code: "guardian_social_interactions_wrong_realm",
+                section: "GuardianSocial"));
+        }
+
+        var guardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
+        var journalRoot = await ReadJsonObjectAsync(GuardianSocialJournalState.StatePath);
+        if (journalRoot != null)
+            ActorJournalState.NormalizeShape(journalRoot, GuardianSocialJournalState.ActorIdProperty, GuardianSocialJournalState.UpdateProperty);
+
+        foreach (var request in requests)
+        {
+            if (string.IsNullOrWhiteSpace(request.RequestId) ||
+                string.IsNullOrWhiteSpace(request.GuardianId) ||
+                !ActorSocialInteractionRequestState.IsSupportedGuardianInteractionType(request.InteractionType))
+            {
+                issues.Add(new ValidationIssue(
+                    ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+                    IssueSeverity.Error,
+                    "pending_guardian_social_interactions.json должен содержать полный client-authored contract",
+                    code: "guardian_social_interactions_missing_fields",
+                    section: "GuardianSocial"));
+                continue;
+            }
+
+            if (!GuardianExistsInState(guardiansRoot, request.GuardianId) &&
+                ActorSocialInteractionRequestState.FindGuardianResolutionEntry(journalRoot, request.GuardianId, request.RequestId) == null)
+            {
+                issues.Add(new ValidationIssue(
+                    ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+                    IssueSeverity.Error,
+                    "pending guardian social request должен ссылаться либо на существующего guardian, либо на уже записанный social journal closure",
+                    code: "guardian_social_interaction_missing_guardian_or_receipt",
+                    section: "GuardianSocial",
+                    repairHint: "Не держи pending guardian social request без существующего Хранителя и без matching guardian social journal entry."));
+            }
+        }
+    }
+
+    private async Task ValidatePendingNpcSocialInteractionRequestContextAsync(List<ValidationIssue> issues)
+    {
+        var requests = await ActorSocialInteractionRequestState.ReadNpcRequestsAsync(_fs);
+        if (requests.Count == 0)
+            return;
+
+        if (IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        {
+            issues.Add(new ValidationIssue(
+                ActorSocialInteractionRequestState.PendingNpcRequestPath,
+                IssueSeverity.Error,
+                "pending_npc_social_interactions.json допустим только в mortal realm",
+                code: "npc_social_interactions_wrong_realm",
+                section: "NpcSocial"));
+        }
+
+        var npcRoot = await ReadJsonObjectAsync("game_state/npcs/npc_core.json");
+        var journalRoot = await ReadJsonObjectAsync(NpcInteractionJournalState.StatePath);
+        if (journalRoot != null)
+            ActorJournalState.NormalizeShape(journalRoot, NpcInteractionJournalState.ActorIdProperty, NpcInteractionJournalState.UpdateProperty);
+
+        foreach (var request in requests)
+        {
+            if (string.IsNullOrWhiteSpace(request.RequestId) ||
+                string.IsNullOrWhiteSpace(request.NpcId) ||
+                !ActorSocialInteractionRequestState.IsSupportedNpcInteractionType(request.InteractionType))
+            {
+                issues.Add(new ValidationIssue(
+                    ActorSocialInteractionRequestState.PendingNpcRequestPath,
+                    IssueSeverity.Error,
+                    "pending_npc_social_interactions.json должен содержать полный client-authored contract",
+                    code: "npc_social_interactions_missing_fields",
+                    section: "NpcSocial"));
+                continue;
+            }
+
+            if (!NpcExistsInState(npcRoot, request.NpcId) &&
+                ActorSocialInteractionRequestState.FindNpcResolutionEntry(journalRoot, request.NpcId, request.RequestId) == null)
+            {
+                issues.Add(new ValidationIssue(
+                    ActorSocialInteractionRequestState.PendingNpcRequestPath,
+                    IssueSeverity.Error,
+                    "pending NPC social request должен ссылаться либо на существующего NPC, либо на уже записанный npc interaction closure",
+                    code: "npc_social_interaction_missing_npc_or_receipt",
+                    section: "NpcSocial",
+                    repairHint: "Не держи pending NPC social request без существующего NPC и без matching npc interaction journal entry."));
+            }
+        }
+    }
+
+    private async Task ValidatePendingGuardianSocialInteractionResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadPreTurnTrackedFileAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = ReadPendingGuardianSocialInteractionRequests(preTurnJson);
+        if (requests.Count == 0)
+            return;
+
+        var journalRoot = await ReadJsonObjectAsync(GuardianSocialJournalState.StatePath);
+        if (journalRoot == null)
+        {
+            foreach (var request in requests)
+            {
+                issues.Add(new ValidationIssue(
+                    ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+                    IssueSeverity.Error,
+                    "pending guardian social request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                    code: "guardian_social_interaction_missing_resolution",
+                    section: "GuardianSocial",
+                    repairHint: "Каждый guardian social request должен закрываться guardianSocialJournalUpdates entry с matching requestId, guardianId, interactionType и status."));
+            }
+
+            return;
+        }
+
+        ActorJournalState.NormalizeShape(journalRoot, GuardianSocialJournalState.ActorIdProperty, GuardianSocialJournalState.UpdateProperty);
+        foreach (var request in requests)
+        {
+            var resolution = ActorSocialInteractionRequestState.FindGuardianResolutionEntry(journalRoot, request.GuardianId, request.RequestId);
+            if (resolution != null)
+                continue;
+
+            issues.Add(new ValidationIssue(
+                ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+                IssueSeverity.Error,
+                "pending guardian social request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                code: "guardian_social_interaction_missing_resolution",
+                section: "GuardianSocial",
+                repairHint: "Каждый guardian social request должен закрываться guardianSocialJournalUpdates entry с matching requestId, guardianId, interactionType и status."));
+        }
+    }
+
+    private async Task ValidatePendingNpcSocialInteractionResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadPreTurnTrackedFileAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = ReadPendingNpcSocialInteractionRequests(preTurnJson);
+        if (requests.Count == 0)
+            return;
+
+        var journalRoot = await ReadJsonObjectAsync(NpcInteractionJournalState.StatePath);
+        if (journalRoot == null)
+        {
+            foreach (var request in requests)
+            {
+                issues.Add(new ValidationIssue(
+                    ActorSocialInteractionRequestState.PendingNpcRequestPath,
+                    IssueSeverity.Error,
+                    "pending NPC social request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                    code: "npc_social_interaction_missing_resolution",
+                    section: "NpcSocial",
+                    repairHint: "Каждый NPC social request должен закрываться npcInteractionJournalUpdates entry с matching requestId, npcId, interactionType и status."));
+            }
+
+            return;
+        }
+
+        ActorJournalState.NormalizeShape(journalRoot, NpcInteractionJournalState.ActorIdProperty, NpcInteractionJournalState.UpdateProperty);
+        foreach (var request in requests)
+        {
+            var resolution = ActorSocialInteractionRequestState.FindNpcResolutionEntry(journalRoot, request.NpcId, request.RequestId);
+            if (resolution != null)
+                continue;
+
+            issues.Add(new ValidationIssue(
+                ActorSocialInteractionRequestState.PendingNpcRequestPath,
+                IssueSeverity.Error,
+                "pending NPC social request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                code: "npc_social_interaction_missing_resolution",
+                section: "NpcSocial",
+                repairHint: "Каждый NPC social request должен закрываться npcInteractionJournalUpdates entry с matching requestId, npcId, interactionType и status."));
+        }
+    }
+
+    private static JsonObject? FindNpcTradeValidationEntry(JsonObject root, string npcId)
+    {
+        foreach (var propertyName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
+        {
+            if (root[propertyName] is not JsonArray entries)
+                continue;
+
+            foreach (var npc in entries.OfType<JsonObject>())
+            {
+                var currentNpcId = GetNodeString(npc["npcId"]) ?? GetNodeString(npc["NPCId"]);
+                if (string.Equals(currentNpcId, npcId, StringComparison.OrdinalIgnoreCase))
+                    return npc;
+            }
+        }
+
+        return null;
+    }
+
+    private async Task ValidateResidentMechanicalOutcomeMemoryAsync(List<ValidationIssue> issues)
+    {
+        var currentResidentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(currentResidentsJson))
+            return;
+
+        JsonObject? currentResidentsRoot;
+        try
+        {
+            currentResidentsRoot = JsonNode.Parse(currentResidentsJson) as JsonObject;
+        }
+        catch
+        {
+            return;
+        }
+
+        if (currentResidentsRoot == null)
+            return;
+
+        GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
+
+        JsonObject? preTurnResidentsRoot = null;
+        var preTurnResidentsJson = await ReadPreTurnTrackedFileAsync(GuardianAbodeResidentState.StatePath);
+        if (!string.IsNullOrWhiteSpace(preTurnResidentsJson))
+        {
+            try
+            {
+                preTurnResidentsRoot = JsonNode.Parse(preTurnResidentsJson) as JsonObject;
+                if (preTurnResidentsRoot != null)
+                    GuardianAbodeResidentState.NormalizeShape(preTurnResidentsRoot);
+            }
+            catch
+            {
+                // parse issues reported elsewhere
+            }
+        }
+
+        var preTurnSoulQuestJson = await ReadPreTurnTrackedFileAsync("game_state/quests/soul_quests.json");
+        var currentSoulQuestJson = await _fs.ReadFileAsync("game_state/quests/soul_quests.json");
+        var preTurnQuestFingerprintsByResident = CollectResidentSoulQuestFingerprints(preTurnSoulQuestJson);
+        var currentQuestFingerprintsByResident = CollectResidentSoulQuestFingerprints(currentSoulQuestJson);
+
+        foreach (var resident in GuardianAbodeResidentState.EnsureEntriesArray(currentResidentsRoot).OfType<JsonObject>())
+        {
+            var residentId = GetNodeString(resident["residentId"]);
+            if (string.IsNullOrWhiteSpace(residentId))
+                continue;
+
+            var preTurnResident = preTurnResidentsRoot == null ? null : GuardianAbodeResidentState.FindResident(preTurnResidentsRoot, residentId);
+            var currentLinkedSoulQuestId = GetNodeString(resident["linkedSoulQuestId"]);
+            var previousLinkedSoulQuestId = preTurnResident == null ? string.Empty : GetNodeString(preTurnResident["linkedSoulQuestId"]);
+            var currentRewardState = GetNodeString(resident["bondRewardState"]);
+            var previousRewardState = preTurnResident == null ? string.Empty : GetNodeString(preTurnResident["bondRewardState"]);
+            var currentGrantedRelicId = GetNodeString(resident["grantedRelicId"]);
+            var previousGrantedRelicId = preTurnResident == null ? string.Empty : GetNodeString(preTurnResident["grantedRelicId"]);
+
+            var changedResidentQuest = !string.IsNullOrWhiteSpace(currentLinkedSoulQuestId) &&
+                                       !string.Equals(currentLinkedSoulQuestId, previousLinkedSoulQuestId, StringComparison.OrdinalIgnoreCase);
+            if (!changedResidentQuest)
+            {
+                var previousQuestFingerprints = preTurnQuestFingerprintsByResident.TryGetValue(residentId, out var prevQuestSet)
+                    ? prevQuestSet
+                    : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                if (currentQuestFingerprintsByResident.TryGetValue(residentId, out var currentQuestFingerprints))
+                {
+                    changedResidentQuest = currentQuestFingerprints.Any(pair =>
+                        !previousQuestFingerprints.TryGetValue(pair.Key, out var previousFingerprint) ||
+                        !string.Equals(previousFingerprint, pair.Value, StringComparison.Ordinal));
+                }
+            }
+
+            if (changedResidentQuest && !ResidentHasNewInteractionLogMemory(preTurnResidentsRoot, currentResidentsRoot, residentId))
+            {
+                issues.Add(new ValidationIssue(
+                    GuardianAbodeResidentState.StatePath,
+                    IssueSeverity.Error,
+                    "Resident-linked soul quest появился без нового resident interaction log entry",
+                    code: "abode_resident_quest_missing_interaction_log_update",
+                    section: "AfterlifeResidents",
+                    repairHint: "Когда resident получает или продвигает личную просьбу через soul quest, добавь residentInteractionLogUpdates с кратким summary этого шага."));
+            }
+
+            var rewardAdvanced =
+                (string.Equals(currentRewardState, GuardianAbodeResidentState.RewardStateGranted, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(currentRewardState, GuardianAbodeResidentState.RewardStateConsumed, StringComparison.OrdinalIgnoreCase)) &&
+                (!string.Equals(currentRewardState, previousRewardState, StringComparison.OrdinalIgnoreCase) ||
+                 !string.Equals(currentGrantedRelicId, previousGrantedRelicId, StringComparison.OrdinalIgnoreCase));
+            if (rewardAdvanced && !ResidentHasNewInteractionLogMemory(preTurnResidentsRoot, currentResidentsRoot, residentId))
+            {
+                issues.Add(new ValidationIssue(
+                    GuardianAbodeResidentState.StatePath,
+                    IssueSeverity.Error,
+                    "Resident reward outcome не оставил нового resident interaction log entry",
+                    code: "abode_resident_reward_missing_interaction_log_update",
+                    section: "AfterlifeResidents",
+                    repairHint: "Когда resident дарует реликвию связи или переводит reward outcome в granted/consumed, добавь residentInteractionLogUpdates с кратким summary и consequence."));
+            }
         }
     }
 
@@ -2251,6 +3044,540 @@ public partial class ValidationService
                 actual: "invalid JSON",
                 repairHint: $"Исправь {filePath} до валидного JSON-объекта, не меняя canonical state contract."));
         }
+    }
+
+    private static IReadOnlyList<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentInteractionRequest> ReadPendingGuardianAbodeResidentInteractionRequests(string json)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty(GuardianAbodeResidentRequestState.InteractionRequestsProperty, out var requestsNode) ||
+                requestsNode.ValueKind != JsonValueKind.Array)
+            {
+                return Array.Empty<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentInteractionRequest>();
+            }
+
+            var result = new List<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentInteractionRequest>();
+            foreach (var item in requestsNode.EnumerateArray())
+            {
+                try
+                {
+                    var request = JsonSerializer.Deserialize<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentInteractionRequest>(item.GetRawText());
+                    if (request != null)
+                        result.Add(request);
+                }
+                catch
+                {
+                    // ignore malformed item; shape issues are reported elsewhere
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return Array.Empty<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentInteractionRequest>();
+        }
+    }
+
+    private static IReadOnlyList<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest> ReadPendingGuardianAbodeResidentsRequests(string json)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty(GuardianAbodeResidentRequestState.ResidentsRequestsProperty, out var requestsNode) ||
+                requestsNode.ValueKind != JsonValueKind.Array)
+            {
+                return Array.Empty<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest>();
+            }
+
+            var result = new List<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest>();
+            foreach (var item in requestsNode.EnumerateArray())
+            {
+                try
+                {
+                    var request = JsonSerializer.Deserialize<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest>(item.GetRawText());
+                    if (request != null)
+                        result.Add(request);
+                }
+                catch
+                {
+                    // ignore malformed item; shape issues are reported elsewhere
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return Array.Empty<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest>();
+        }
+    }
+
+    private static int CountPresentResidentsForAbode(JsonObject residentsRoot, string guardianId, string abodeId)
+    {
+        GuardianAbodeResidentState.NormalizeShape(residentsRoot);
+        if (residentsRoot[GuardianAbodeResidentState.EntriesProperty] is not JsonArray entries)
+            return 0;
+
+        return entries.OfType<JsonObject>().Count(entry =>
+            string.Equals(GetNodeString(entry["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(GetNodeString(entry["abodeId"]), abodeId, StringComparison.OrdinalIgnoreCase) &&
+            !(entry["isPresent"] is JsonValue isPresentValue &&
+              isPresentValue.TryGetValue<bool>(out var isPresent) &&
+              !isPresent));
+    }
+
+    private void ValidatePendingGuardianSocialInteractionsRequestFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(ActorSocialInteractionRequestState.RequestsProperty, out var requests) ||
+            requests.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                contextPrefix,
+                IssueSeverity.Error,
+                "pending_guardian_social_interactions.json должен содержать requests array",
+                code: "pending_guardian_social_interactions_missing_requests",
+                section: "GuardianSocial"));
+            return;
+        }
+
+        var index = 0;
+        foreach (var request in requests.EnumerateArray())
+        {
+            var requestContext = $"{contextPrefix}.{ActorSocialInteractionRequestState.RequestsProperty}[{index++}]";
+            if (!RequireObject(request, requestContext, issues))
+                continue;
+
+            ValidatePendingGuardianSocialInteractionRequestObject(request, requestContext, issues);
+        }
+    }
+
+    private void ValidatePendingNpcTradeInventoryRequestsFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(NpcTradeRequestState.RequestsProperty, out var requests) ||
+            requests.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                contextPrefix,
+                IssueSeverity.Error,
+                "pending_npc_trade_inventory_requests.json должен содержать requests array",
+                code: "pending_npc_trade_inventory_requests_missing_requests",
+                section: "NpcTrade"));
+            return;
+        }
+
+        var index = 0;
+        foreach (var request in requests.EnumerateArray())
+        {
+            var requestContext = $"{contextPrefix}.{NpcTradeRequestState.RequestsProperty}[{index++}]";
+            if (!RequireObject(request, requestContext, issues))
+                continue;
+
+            ValidatePendingNpcTradeInventoryRequestObject(request, requestContext, issues);
+        }
+    }
+
+    private void ValidatePendingNpcSocialInteractionsRequestFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(ActorSocialInteractionRequestState.RequestsProperty, out var requests) ||
+            requests.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                contextPrefix,
+                IssueSeverity.Error,
+                "pending_npc_social_interactions.json должен содержать requests array",
+                code: "pending_npc_social_interactions_missing_requests",
+                section: "NpcSocial"));
+            return;
+        }
+
+        var index = 0;
+        foreach (var request in requests.EnumerateArray())
+        {
+            var requestContext = $"{contextPrefix}.{ActorSocialInteractionRequestState.RequestsProperty}[{index++}]";
+            if (!RequireObject(request, requestContext, issues))
+                continue;
+
+            ValidatePendingNpcSocialInteractionRequestObject(request, requestContext, issues);
+        }
+    }
+
+    private void ValidatePendingNpcTradeInventoryRequestObject(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        RequireString(root, contextPrefix, issues, "requestId");
+        RequireString(root, contextPrefix, issues, "npcId");
+        ValidateOptionalString(root, contextPrefix, issues, "npcName");
+        var merchantProfile = RequireString(root, contextPrefix, issues, "merchantProfile");
+        RequireString(root, contextPrefix, issues, "tradeCycleId");
+        ValidatePositiveIntegerField(root, contextPrefix, issues, "derivedTradeSlotCount");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtTurn", "NpcTrade");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtWorldDate", "NpcTrade");
+        ValidatePositiveIntegerField(root, contextPrefix, issues, "refreshAfterWorldDate");
+        ValidateRequiredIsoTimestampField(
+            root,
+            contextPrefix,
+            issues,
+            "createdAtUtc",
+            "NpcTrade",
+            "pending_npc_trade_inventory_missing_created_at_utc",
+            "pending_npc_trade_inventory_invalid_created_at_utc",
+            "pending_npc_trade_inventory_requests.json должен содержать createdAtUtc в ISO 8601 формате.");
+
+        if (!string.IsNullOrWhiteSpace(merchantProfile) && !NpcTradeService.IsValidMerchantProfileCode(merchantProfile))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.merchantProfile",
+                IssueSeverity.Error,
+                "pending NPC trade request merchantProfile должен быть допустимым merchant profile",
+                code: "pending_npc_trade_inventory_invalid_merchant_profile",
+                section: "NpcTrade",
+                actual: merchantProfile));
+        }
+    }
+
+    private void ValidatePendingGuardianSocialInteractionRequestObject(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        RequireString(root, contextPrefix, issues, "requestId");
+        RequireString(root, contextPrefix, issues, "guardianId");
+        ValidateOptionalString(root, contextPrefix, issues, "guardianName");
+        var interactionType = RequireString(root, contextPrefix, issues, "interactionType");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtTurn", "GuardianSocial");
+        ValidateRequiredIsoTimestampField(
+            root,
+            contextPrefix,
+            issues,
+            "createdAtUtc",
+            "GuardianSocial",
+            "pending_guardian_social_interaction_missing_created_at_utc",
+            "pending_guardian_social_interaction_invalid_created_at_utc",
+            "pending_guardian_social_interactions.json должен содержать createdAtUtc в ISO 8601 формате.");
+
+        if (!string.IsNullOrWhiteSpace(interactionType) &&
+            !ActorSocialInteractionRequestState.IsSupportedGuardianInteractionType(interactionType))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.interactionType",
+                IssueSeverity.Error,
+                "guardian social request должен использовать canonical interactionType",
+                code: "pending_guardian_social_interaction_invalid_type",
+                section: "GuardianSocial",
+                expected: "talk | lore",
+                actual: interactionType,
+                repairHint: "Для pending guardian social request используй interactionType = talk или lore."));
+        }
+    }
+
+    private void ValidatePendingNpcSocialInteractionRequestObject(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        RequireString(root, contextPrefix, issues, "requestId");
+        RequireString(root, contextPrefix, issues, "npcId");
+        ValidateOptionalString(root, contextPrefix, issues, "npcName");
+        var interactionType = RequireString(root, contextPrefix, issues, "interactionType");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtTurn", "NpcSocial");
+        ValidateRequiredIsoTimestampField(
+            root,
+            contextPrefix,
+            issues,
+            "createdAtUtc",
+            "NpcSocial",
+            "pending_npc_social_interaction_missing_created_at_utc",
+            "pending_npc_social_interaction_invalid_created_at_utc",
+            "pending_npc_social_interactions.json должен содержать createdAtUtc в ISO 8601 формате.");
+
+        if (!string.IsNullOrWhiteSpace(interactionType) &&
+            !ActorSocialInteractionRequestState.IsSupportedNpcInteractionType(interactionType))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.interactionType",
+                IssueSeverity.Error,
+                "NPC social request должен использовать canonical interactionType",
+                code: "pending_npc_social_interaction_invalid_type",
+                section: "NpcSocial",
+                expected: "talk",
+                actual: interactionType,
+                repairHint: "Для pending NPC social request пока используй только interactionType = talk."));
+        }
+    }
+
+    private static IReadOnlyList<ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest> ReadPendingGuardianSocialInteractionRequests(string json)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty(ActorSocialInteractionRequestState.RequestsProperty, out var requestsNode) ||
+                requestsNode.ValueKind != JsonValueKind.Array)
+            {
+                return Array.Empty<ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest>();
+            }
+
+            var result = new List<ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest>();
+            foreach (var item in requestsNode.EnumerateArray())
+            {
+                try
+                {
+                    var request = JsonSerializer.Deserialize<ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest>(item.GetRawText());
+                    if (request != null)
+                        result.Add(request);
+                }
+                catch
+                {
+                    // ignore malformed item; shape issues are reported elsewhere
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return Array.Empty<ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest>();
+        }
+    }
+
+    private static IReadOnlyList<ActorSocialInteractionRequestState.PendingNpcSocialInteractionRequest> ReadPendingNpcSocialInteractionRequests(string json)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty(ActorSocialInteractionRequestState.RequestsProperty, out var requestsNode) ||
+                requestsNode.ValueKind != JsonValueKind.Array)
+            {
+                return Array.Empty<ActorSocialInteractionRequestState.PendingNpcSocialInteractionRequest>();
+            }
+
+            var result = new List<ActorSocialInteractionRequestState.PendingNpcSocialInteractionRequest>();
+            foreach (var item in requestsNode.EnumerateArray())
+            {
+                try
+                {
+                    var request = JsonSerializer.Deserialize<ActorSocialInteractionRequestState.PendingNpcSocialInteractionRequest>(item.GetRawText());
+                    if (request != null)
+                        result.Add(request);
+                }
+                catch
+                {
+                    // ignore malformed item; shape issues are reported elsewhere
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return Array.Empty<ActorSocialInteractionRequestState.PendingNpcSocialInteractionRequest>();
+        }
+    }
+
+    private async Task<JsonObject?> ReadJsonObjectAsync(string path)
+    {
+        var json = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static bool GuardianExistsInState(JsonObject? guardiansRoot, string guardianId)
+    {
+        if (guardiansRoot == null || string.IsNullOrWhiteSpace(guardianId))
+            return false;
+
+        if (guardiansRoot["activeGuardian"] is JsonObject activeGuardian &&
+            string.Equals(GetNodeString(activeGuardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return guardiansRoot["guardians"] is JsonArray guardians &&
+               guardians.OfType<JsonObject>().Any(guardian =>
+                   string.Equals(GetNodeString(guardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool NpcExistsInState(JsonObject? npcRoot, string npcId)
+    {
+        if (npcRoot == null || string.IsNullOrWhiteSpace(npcId))
+            return false;
+
+        foreach (var propertyName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
+        {
+            if (npcRoot[propertyName] is not JsonArray npcs)
+                continue;
+
+            if (npcs.OfType<JsonObject>().Any(npc =>
+                    string.Equals(GetNodeString(npc["NPCId"]) ?? GetNodeString(npc["npcId"]) ?? GetNodeString(npc["id"]), npcId, StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool ResidentHistoryRequestHasCanonicalResult(
+        JsonObject? preTurnResidentsRoot,
+        JsonObject currentResidentsRoot,
+        JsonArray historyLog,
+        GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentInteractionRequest request,
+        JsonObject receipt)
+    {
+        var currentResident = GuardianAbodeResidentState.FindResident(currentResidentsRoot, request.ResidentId);
+        if (currentResident == null)
+            return false;
+
+        if (currentResident["historyRevealed"] is JsonValue revealedValue &&
+            revealedValue.TryGetValue<bool>(out var historyRevealed) &&
+            historyRevealed)
+        {
+            return true;
+        }
+
+        var historyEntryId = GetNodeString(receipt["historyEntryId"]);
+        if (!string.IsNullOrWhiteSpace(historyEntryId) &&
+            historyLog.OfType<JsonObject>().Any(entry =>
+                string.Equals(GetNodeString(entry["entryId"]), historyEntryId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(entry["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase)))
+        {
+            return true;
+        }
+
+        var preTurnResident = preTurnResidentsRoot == null ? null : GuardianAbodeResidentState.FindResident(preTurnResidentsRoot, request.ResidentId);
+        var currentImprint = currentResident["mortalWorldImprint"]?.ToJsonString();
+        var previousImprint = preTurnResident?["mortalWorldImprint"]?.ToJsonString();
+        return !string.Equals(previousImprint ?? string.Empty, currentImprint ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    private static bool ResidentHasNewThoughtOrInteractionMemory(
+        JsonObject? preTurnResidentsRoot,
+        JsonObject currentResidentsRoot,
+        string residentId)
+    {
+        return ResidentHasJournalDelta(preTurnResidentsRoot, currentResidentsRoot, residentId, GuardianAbodeResidentState.ThoughtJournalProperty) ||
+               ResidentHasJournalDelta(preTurnResidentsRoot, currentResidentsRoot, residentId, GuardianAbodeResidentState.InteractionLogProperty);
+    }
+
+    private static bool ResidentHasNewInteractionLogMemory(
+        JsonObject? preTurnResidentsRoot,
+        JsonObject currentResidentsRoot,
+        string residentId)
+    {
+        return ResidentHasJournalDelta(preTurnResidentsRoot, currentResidentsRoot, residentId, GuardianAbodeResidentState.InteractionLogProperty);
+    }
+
+    private static bool ResidentHasJournalDelta(
+        JsonObject? preTurnResidentsRoot,
+        JsonObject currentResidentsRoot,
+        string residentId,
+        string journalProperty)
+    {
+        if (string.IsNullOrWhiteSpace(residentId))
+            return false;
+
+        var currentEntries = CollectResidentJournalFingerprints(currentResidentsRoot, residentId, journalProperty);
+        if (currentEntries.Count == 0)
+            return false;
+
+        var previousEntries = preTurnResidentsRoot == null
+            ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            : CollectResidentJournalFingerprints(preTurnResidentsRoot, residentId, journalProperty);
+
+        foreach (var pair in currentEntries)
+        {
+            if (!previousEntries.TryGetValue(pair.Key, out var previousFingerprint) ||
+                !string.Equals(previousFingerprint, pair.Value, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static Dictionary<string, string> CollectResidentJournalFingerprints(
+        JsonObject root,
+        string residentId,
+        string journalProperty)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (!root.TryGetPropertyValue(journalProperty, out var node) || node is not JsonArray entries)
+            return result;
+
+        foreach (var entry in entries.OfType<JsonObject>())
+        {
+            if (!string.Equals(GetNodeString(entry["residentId"]), residentId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var entryId = GetNodeString(entry["entryId"]);
+            if (string.IsNullOrWhiteSpace(entryId))
+                continue;
+
+            result[entryId] = entry.ToJsonString();
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, Dictionary<string, string>> CollectResidentSoulQuestFingerprints(string? soulQuestJson)
+    {
+        var result = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(soulQuestJson))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(soulQuestJson);
+            JsonElement questsArray = default;
+            if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                doc.RootElement.TryGetProperty("quests", out var quests) &&
+                quests.ValueKind == JsonValueKind.Array)
+            {
+                questsArray = quests;
+            }
+            else if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                     doc.RootElement.TryGetProperty("UpdateSoulQuests", out var updates) &&
+                     updates.ValueKind == JsonValueKind.Array)
+            {
+                questsArray = updates;
+            }
+
+            if (questsArray.ValueKind != JsonValueKind.Array)
+                return result;
+
+            foreach (var quest in questsArray.EnumerateArray())
+            {
+                if (quest.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var residentId = GetFirstNonEmptyString(quest, "relatedAfterlifeResidentId");
+                var questId = GetFirstNonEmptyString(quest, "questId");
+                if (string.IsNullOrWhiteSpace(residentId) || string.IsNullOrWhiteSpace(questId))
+                    continue;
+
+                if (!result.TryGetValue(residentId, out var questsById))
+                {
+                    questsById = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    result[residentId] = questsById;
+                }
+
+                questsById[questId] = quest.GetRawText();
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+
+        return result;
     }
 
     private async Task<string?> ReadGmThoughtsMarkdownAsync()

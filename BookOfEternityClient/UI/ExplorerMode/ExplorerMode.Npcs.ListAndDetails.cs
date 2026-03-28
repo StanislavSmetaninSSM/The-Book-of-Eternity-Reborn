@@ -35,6 +35,7 @@ private async Task ShowNPCs()
         // All NPC documents are loaded here as per API Spec and Rule 19.9.4
         var persDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_personality.json");
         var jourDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_journals.json");
+        var npcInteractionDoc = await _stateManager.LoadGameStateFileAsync(NpcInteractionJournalState.StatePath);
         var memDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_memory.json");
         var maskDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_masks.json");
         var fateDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_fate_cards.json");
@@ -73,7 +74,7 @@ private async Task ShowNPCs()
             if (selIdx < 0 || selIdx >= npcs.Count) break;
 
             await ShowNpcDetailPanel(npcs[selIdx], renameMap, relDoc, goalDoc, actDoc, npcInvDoc, npcEffDoc, npcSkillDoc,
-                debugMode, persDoc, jourDoc, maskDoc, memDoc, fateDoc, customDoc);
+                debugMode, persDoc, jourDoc, npcInteractionDoc, maskDoc, memDoc, fateDoc, customDoc);
         }
     }
 
@@ -81,7 +82,7 @@ private async Task ShowNPCs()
     private async Task ShowNpcDetailPanel(JsonElement npc, Dictionary<string, string> renameMap,
         JsonDocument? relDoc, JsonDocument? goalDoc,
         JsonDocument? actDoc, JsonDocument? invDoc, JsonDocument? effDoc, JsonDocument? skillDoc,
-        bool debugMode = false, JsonDocument? persDoc = null, JsonDocument? jourDoc = null,
+        bool debugMode = false, JsonDocument? persDoc = null, JsonDocument? jourDoc = null, JsonDocument? npcInteractionDoc = null,
         JsonDocument? maskDoc = null, JsonDocument? memDoc = null,
         JsonDocument? fateDoc = null, JsonDocument? customDoc = null)
     {
@@ -839,6 +840,9 @@ private async Task ShowNPCs()
         // ── Дневник / Мысли (npc_journals) ──
         RenderNpcJournals(lines, jourDoc, npcId, originalName, debugMode);
 
+        // ── Память взаимодействий (npc_interaction_journal) ──
+        RenderNpcInteractionJournal(lines, npcInteractionDoc, npcId);
+
         // ── Карты судьбы (npc_fate_cards) — разблокированные видны игроку ──
         RenderNpcFateCards(lines, fateDoc, npcId, originalName, debugMode);
 
@@ -876,8 +880,9 @@ private async Task ShowNPCs()
         var npcId = GetPrimaryNpcId(npc);
         var npcInventoryDisplay = invDoc != null ? BuildNpcInventoryDisplay(invDoc, npcId, npcName) : new NpcInventoryDisplay();
         var hasInspectableItems = npcInventoryDisplay.Items.Count > 0;
+        var socialAvailable = !string.IsNullOrWhiteSpace(npcId) && (tradeAvailable || hasImageSupport || hasInspectableItems);
 
-        if (!tradeAvailable && !hasImageSupport && !hasInspectableItems)
+        if (!tradeAvailable && !hasImageSupport && !hasInspectableItems && !socialAvailable)
         {
             WaitForKey();
             return;
@@ -885,7 +890,13 @@ private async Task ShowNPCs()
 
         while (true)
         {
+            var pendingNpcTalkRequest = socialAvailable
+                ? await ActorSocialInteractionRequestState.FindPendingNpcRequestAsync(_fs, npcId, ActorSocialInteractionRequestState.NpcInteractionTypeTalk)
+                : null;
+
             var actions = new List<string>();
+            if (socialAvailable)
+                actions.Add(pendingNpcTalkRequest == null ? "💬 Поговорить" : "[dim]💬 Разговор ожидает ответа GM[/]");
             if (tradeAvailable)
                 actions.Add("🛒 Торговать");
             if (hasInspectableItems)
@@ -908,6 +919,30 @@ private async Task ShowNPCs()
 
             if (action.Contains("Назад"))
                 return;
+
+            if (action.Contains("Поговорить", StringComparison.OrdinalIgnoreCase))
+            {
+                if (pendingNpcTalkRequest != null)
+                {
+                    MarkupLine("[yellow]Уже есть незакрытый разговор с этим NPC. Дождитесь ответа GM.[/]");
+                    return;
+                }
+
+                var request = new ActorSocialInteractionRequestState.PendingNpcSocialInteractionRequest
+                {
+                    NpcId = npcId,
+                    NpcName = npcName,
+                    InteractionType = ActorSocialInteractionRequestState.NpcInteractionTypeTalk,
+                    CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
+                };
+                await ActorSocialInteractionRequestState.WriteNpcRequestAsync(_fs, request);
+                _pendingGmAction =
+                    $"[NPC_SOCIAL_TALK_REQUEST] Игрок начинает разговор с NPC '{npcName}' (npcId={npcId}, requestId={request.RequestId}). " +
+                    "В accepted turn отыграй сцену и обязательно закрой запрос через npcInteractionJournalUpdates entry с requestId, npcId, interactionType=talk, status=accepted|rejected|cancelled, optional responseMode=talk_scene|warning|refusal|attitude_shift, title, summary, turn и timestamp. " +
+                    "NPCJournals остаётся рекомендуемым для внутреннего состояния, но matching npcInteractionJournalUpdates entry обязателен.";
+                MarkupLine("[cyan]Разговор с NPC отправлен GM.[/]");
+                return;
+            }
 
             if (action.Contains("Торговать"))
             {

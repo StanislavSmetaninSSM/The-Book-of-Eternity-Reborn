@@ -117,7 +117,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var activeGuardian = guardiansRoot["activeGuardian"]!.AsObject();
         var derivedState = GuardianProjectState.ResolveGuardianDerivedState(activeGuardian, trackerRoot: null);
         var tradeService = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
-        var tradeView = await tradeService.EnsureTradeInventoryAsync("guardian_alpha", 1);
+        var tradeView = await tradeService.EnsureTradeInventoryAsync("guardian_alpha", 1, currentTurn: 17);
         var powerJournal = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
 
         Assert.Equal(42, AbodePowerRules.GetCurrentPower(activeGuardian));
@@ -431,7 +431,9 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         Assert.True(await candidateService.ArchiveCandidateAsync(candidate.CandidateId));
 
         var soulRoot = await ReadObjectAsync("game_state/meta/soul_state.json");
-        var storedEntry = soulRoot["afterlifeArchive"]!["stored"]!.AsArray().Single().AsObject();
+        var afterlifeArchive = Assert.IsType<System.Text.Json.Nodes.JsonObject>(soulRoot["afterlifeArchive"]);
+        var storedEntries = Assert.IsType<System.Text.Json.Nodes.JsonArray>(afterlifeArchive["stored"]);
+        var storedEntry = Assert.IsType<System.Text.Json.Nodes.JsonObject>(storedEntries.Single());
         Assert.Equal("codex_life_002", storedEntry["sourceEntryId"]?.GetValue<string>());
 
         Assert.True(AfterlifeArchiveState.TryGetOfferingTypeForEntryType(

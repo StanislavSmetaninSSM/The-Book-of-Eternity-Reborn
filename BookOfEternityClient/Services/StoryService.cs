@@ -38,7 +38,7 @@ public class StoryService
     /// Appends a turn entry to the appropriate story file.
     /// </summary>
     public async Task AppendTurnAsync(int turnNumber, string realm, int incarnation,
-        string playerAction, string? narrative, string? location = null)
+        string playerAction, string? narrative, string? location = null, IReadOnlyCollection<StoryEntityRef>? entityRefs = null)
     {
         try
         {
@@ -50,7 +50,8 @@ public class StoryService
                 Realm = realm,
                 Player = playerAction,
                 Narrative = narrative ?? "",
-                Location = location
+                Location = location,
+                EntityRefs = entityRefs?.Where(reference => reference != null).ToList()
             };
 
             var line = JsonSerializer.Serialize(entry, JsonOpts);
@@ -71,7 +72,7 @@ public class StoryService
     /// <summary>
     /// Appends a special marker entry (death, incarnation, transition).
     /// </summary>
-    public async Task AppendMarkerAsync(string realm, int incarnation, string markerType, string description)
+    public async Task AppendMarkerAsync(string realm, int incarnation, string markerType, string description, IReadOnlyCollection<StoryEntityRef>? entityRefs = null)
     {
         try
         {
@@ -82,7 +83,8 @@ public class StoryService
                 Timestamp = DateTime.UtcNow.ToString("o"),
                 Realm = realm,
                 Player = $"[{markerType}]",
-                Narrative = description
+                Narrative = description,
+                EntityRefs = entityRefs?.Where(reference => reference != null).ToList()
             };
 
             var line = JsonSerializer.Serialize(entry, JsonOpts);
@@ -135,7 +137,14 @@ public class StoryService
         {
             var name = Path.GetFileNameWithoutExtension(file);
             var lineCount = 0;
-            try { lineCount = File.ReadLines(file, Encoding.UTF8).Count(); } catch { }
+            try
+            {
+                lineCount = File.ReadLines(file, Encoding.UTF8).Count();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось подсчитать количество записей story file {StoryFile}.", file);
+            }
 
             var displayName = name switch
             {
@@ -183,7 +192,10 @@ public class StoryService
                     });
                     if (entry != null) entries.Add(entry);
                 }
-                catch { /* skip malformed lines */ }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug(ex, "Пропускается повреждённая строка story file {StoryPath} at line {LineIndex}.", relativePath, i);
+                }
             }
         }
         catch (Exception ex)
@@ -207,6 +219,10 @@ public class StoryService
         sb.AppendLine("STORY FILES (full conversation history, JSONL format — one JSON object per line):");
         foreach (var s in stories)
             sb.AppendLine($"  {s.RelativePath} — {s.DisplayName} ({s.EntryCount} entries)");
+        sb.AppendLine("Curated actor memory also lives in npc_journals, npc_interaction_journal, guardian_thought_journal, guardian_social_journal, and guardian_abode_residents thought/history/interaction logs.");
+        sb.AppendLine("If exact details are needed, use Tools/Search-GmMemory.ps1 against the current game_session. The script supports -Source and -Json for narrower or machine-readable lookup.");
+        sb.AppendLine("The search tool now covers stories, actor journals, guardian project/power journals, world events, faction chronicles, and character chronicle.");
+        sb.AppendLine("Resident structured closures require curated memory updates. Guardian/NPC memory remains advisory for freeform scenes, but explicit guardian/NPC social request pathways must also close canonically through their event journals.");
         sb.AppendLine("The GM can read these files for narrative continuity and character history.");
         return sb.ToString();
     }
@@ -231,6 +247,21 @@ public class StoryEntry
 
     [JsonPropertyName("location")]
     public string? Location { get; set; }
+
+    [JsonPropertyName("entityRefs")]
+    public List<StoryEntityRef>? EntityRefs { get; set; }
+}
+
+public class StoryEntityRef
+{
+    [JsonPropertyName("entityType")]
+    public string EntityType { get; set; } = "";
+
+    [JsonPropertyName("entityId")]
+    public string EntityId { get; set; } = "";
+
+    [JsonPropertyName("displayName")]
+    public string? DisplayName { get; set; }
 }
 
 public class StoryFileInfo

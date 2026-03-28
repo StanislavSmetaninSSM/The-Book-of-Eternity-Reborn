@@ -1480,4 +1480,619 @@ public partial class ValidationService
             }
         }
     }
+
+    private void ValidateGuardianAbodeResidentsStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(GuardianAbodeResidentState.UpdateProperty, out var updates))
+        {
+            RequireArrayOfObjects(updates, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateProperty}", issues);
+            if (updates.ValueKind == JsonValueKind.Array)
+            {
+                var index = 0;
+                foreach (var resident in updates.EnumerateArray())
+                {
+                    var residentContext = $"{contextPrefix}.{GuardianAbodeResidentState.UpdateProperty}[{index++}]";
+                    if (!RequireObject(resident, residentContext, issues))
+                        continue;
+
+                    ValidateGuardianAbodeResidentObject(resident, residentContext, issues);
+                }
+            }
+        }
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.EntriesProperty, out var entries))
+        {
+            RequireArrayOfObjects(entries, $"{contextPrefix}.{GuardianAbodeResidentState.EntriesProperty}", issues);
+            if (entries.ValueKind == JsonValueKind.Array)
+            {
+                var index = 0;
+                foreach (var resident in entries.EnumerateArray())
+                {
+                    var residentContext = $"{contextPrefix}.{GuardianAbodeResidentState.EntriesProperty}[{index++}]";
+                    if (!RequireObject(resident, residentContext, issues))
+                        continue;
+
+                    ValidateGuardianAbodeResidentObject(resident, residentContext, issues);
+                }
+            }
+        }
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.UpdateRosterReceiptsProperty, out var updateRosterReceipts))
+        {
+            RequireArrayOfObjects(updateRosterReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateRosterReceiptsProperty}", issues);
+            if (updateRosterReceipts.ValueKind == JsonValueKind.Array)
+                ValidateGuardianAbodeResidentRosterReceipts(updateRosterReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateRosterReceiptsProperty}", issues);
+        }
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.RosterReceiptsProperty, out var rosterReceipts))
+        {
+            RequireArrayOfObjects(rosterReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.RosterReceiptsProperty}", issues);
+            if (rosterReceipts.ValueKind == JsonValueKind.Array)
+                ValidateGuardianAbodeResidentRosterReceipts(rosterReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.RosterReceiptsProperty}", issues);
+        }
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.UpdateInteractionReceiptsProperty, out var updateInteractionReceipts))
+        {
+            RequireArrayOfObjects(updateInteractionReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateInteractionReceiptsProperty}", issues);
+            if (updateInteractionReceipts.ValueKind == JsonValueKind.Array)
+                ValidateGuardianAbodeResidentInteractionReceipts(updateInteractionReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateInteractionReceiptsProperty}", issues);
+        }
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.InteractionReceiptsProperty, out var interactionReceipts))
+        {
+            RequireArrayOfObjects(interactionReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.InteractionReceiptsProperty}", issues);
+            if (interactionReceipts.ValueKind == JsonValueKind.Array)
+                ValidateGuardianAbodeResidentInteractionReceipts(interactionReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.InteractionReceiptsProperty}", issues);
+        }
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.UpdateHistoryLogProperty, out var updateHistoryLog))
+        {
+            RequireArrayOfObjects(updateHistoryLog, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateHistoryLogProperty}", issues);
+            if (updateHistoryLog.ValueKind == JsonValueKind.Array)
+                ValidateGuardianAbodeResidentHistoryLog(updateHistoryLog, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateHistoryLogProperty}", issues);
+        }
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.HistoryLogProperty, out var historyLog))
+        {
+            RequireArrayOfObjects(historyLog, $"{contextPrefix}.{GuardianAbodeResidentState.HistoryLogProperty}", issues);
+            if (historyLog.ValueKind == JsonValueKind.Array)
+                ValidateGuardianAbodeResidentHistoryLog(historyLog, $"{contextPrefix}.{GuardianAbodeResidentState.HistoryLogProperty}", issues);
+        }
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.UpdateThoughtJournalProperty, out var updateThoughtJournal))
+            ValidateActorJournalEntriesArray(updateThoughtJournal, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateThoughtJournalProperty}", issues, "residentId", "ResidentThoughtJournal");
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.ThoughtJournalProperty, out var thoughtJournal))
+            ValidateActorJournalEntriesArray(thoughtJournal, $"{contextPrefix}.{GuardianAbodeResidentState.ThoughtJournalProperty}", issues, "residentId", "ResidentThoughtJournal");
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.UpdateInteractionLogProperty, out var updateInteractionLog))
+            ValidateActorJournalEntriesArray(updateInteractionLog, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateInteractionLogProperty}", issues, "residentId", "ResidentInteractionLog");
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.InteractionLogProperty, out var interactionLog))
+            ValidateActorJournalEntriesArray(interactionLog, $"{contextPrefix}.{GuardianAbodeResidentState.InteractionLogProperty}", issues, "residentId", "ResidentInteractionLog");
+    }
+
+    private void ValidatePendingGuardianAbodeResidentsRequestFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(GuardianAbodeResidentRequestState.ResidentsRequestsProperty, out var requests))
+        {
+            RequireArrayOfObjects(requests, $"{contextPrefix}.{GuardianAbodeResidentRequestState.ResidentsRequestsProperty}", issues);
+            if (requests.ValueKind != JsonValueKind.Array)
+                return;
+
+            var index = 0;
+            foreach (var request in requests.EnumerateArray())
+            {
+                var requestContext = $"{contextPrefix}.{GuardianAbodeResidentRequestState.ResidentsRequestsProperty}[{index++}]";
+                if (!RequireObject(request, requestContext, issues))
+                    continue;
+
+                ValidatePendingGuardianAbodeResidentsRequestObject(request, requestContext, issues);
+            }
+
+            return;
+        }
+
+        ValidatePendingGuardianAbodeResidentsRequestObject(root, contextPrefix, issues);
+    }
+
+    private void ValidatePendingGuardianAbodeResidentInteractionsRequestFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(GuardianAbodeResidentRequestState.InteractionRequestsProperty, out var requests))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{GuardianAbodeResidentRequestState.InteractionRequestsProperty}",
+                IssueSeverity.Error,
+                "pending_guardian_abode_resident_interactions.json должен содержать requests array",
+                code: "pending_abode_resident_interactions_missing_requests",
+                section: "AfterlifeResidents",
+                expected: "requests array",
+                actual: "missing",
+                repairHint: "Сохраняй pending resident interaction requests как object с requests[]."));
+            return;
+        }
+
+        RequireArrayOfObjects(requests, $"{contextPrefix}.{GuardianAbodeResidentRequestState.InteractionRequestsProperty}", issues);
+        if (requests.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        foreach (var request in requests.EnumerateArray())
+        {
+            var requestContext = $"{contextPrefix}.{GuardianAbodeResidentRequestState.InteractionRequestsProperty}[{index++}]";
+            if (!RequireObject(request, requestContext, issues))
+                continue;
+
+            ValidatePendingGuardianAbodeResidentInteractionRequestObject(request, requestContext, issues);
+        }
+    }
+
+    private void ValidatePendingResidentCompanionManifestationRequestFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(GuardianAbodeResidentRequestState.ManifestationRequestsProperty, out var requests))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{GuardianAbodeResidentRequestState.ManifestationRequestsProperty}",
+                IssueSeverity.Error,
+                "pending_resident_companion_manifestation_request.json должен содержать requests array",
+                code: "pending_resident_companion_manifestation_missing_requests",
+                section: "AfterlifeResidents",
+                expected: "requests array",
+                actual: "missing",
+                repairHint: "Сохраняй pending manifestation requests как object с requests[]."));
+            return;
+        }
+
+        RequireArrayOfObjects(requests, $"{contextPrefix}.{GuardianAbodeResidentRequestState.ManifestationRequestsProperty}", issues);
+        if (requests.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        var seenRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var request in requests.EnumerateArray())
+        {
+            var requestContext = $"{contextPrefix}.{GuardianAbodeResidentRequestState.ManifestationRequestsProperty}[{index++}]";
+            if (!RequireObject(request, requestContext, issues))
+                continue;
+
+            RequireString(request, requestContext, issues, "requestId");
+            RequireString(request, requestContext, issues, "manifestationSource");
+            RequireString(request, requestContext, issues, "relicId");
+            RequireString(request, requestContext, issues, "relicName");
+            ValidateOptionalString(request, requestContext, issues, "sourceResidentId");
+            ValidateOptionalString(request, requestContext, issues, "sourceImprintId");
+            ValidateOptionalString(request, requestContext, issues, "sourceGuardianId");
+            ValidateOptionalString(request, requestContext, issues, "sourceGuardianName");
+            ValidatePositiveNumberField(request, requestContext, issues, "targetIncarnation");
+            RequireString(request, requestContext, issues, "companionNameHint");
+            RequireString(request, requestContext, issues, "originWorldSummary");
+            RequireString(request, requestContext, issues, "futureCompanionPrompt");
+            ValidateOptionalString(request, requestContext, issues, "bondReason");
+            if (request.TryGetProperty("coreTraits", out var coreTraits))
+                RequireArrayOfStrings(coreTraits, $"{requestContext}.coreTraits", issues);
+            if (request.TryGetProperty("archetypeHints", out var archetypeHints))
+                RequireArrayOfStrings(archetypeHints, $"{requestContext}.archetypeHints", issues);
+            if (request.TryGetProperty("appearanceMotifs", out var appearanceMotifs))
+                RequireArrayOfStrings(appearanceMotifs, $"{requestContext}.appearanceMotifs", issues);
+            ValidateRequiredIsoTimestampField(
+                request,
+                requestContext,
+                issues,
+                "createdAtUtc",
+                "AfterlifeResidents",
+                "pending_resident_companion_manifestation_missing_created_at_utc",
+                "pending_resident_companion_manifestation_invalid_created_at_utc",
+                "Каждый pending resident companion manifestation request должен содержать createdAtUtc в ISO 8601 формате.");
+
+            var manifestationSource = GetFirstNonEmptyString(request, "manifestationSource");
+            if (!string.Equals(manifestationSource, "resident_relic", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(manifestationSource, "imprint_relic", StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{requestContext}.manifestationSource",
+                    IssueSeverity.Error,
+                    "manifestationSource должен быть canonical resident companion source",
+                    code: "pending_resident_companion_manifestation_invalid_source",
+                    section: "AfterlifeResidents",
+                    expected: "resident_relic | imprint_relic",
+                    actual: manifestationSource,
+                    repairHint: "Используй manifestationSource = resident_relic для companion_echo и imprint_relic для реликвий со слепком НПС."));
+            }
+
+            if (string.Equals(manifestationSource, "resident_relic", StringComparison.OrdinalIgnoreCase) &&
+                string.IsNullOrWhiteSpace(GetFirstNonEmptyString(request, "sourceResidentId")))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{requestContext}.sourceResidentId",
+                    IssueSeverity.Error,
+                    "resident_relic manifestation request должен содержать sourceResidentId",
+                    code: "pending_resident_companion_manifestation_missing_resident_id",
+                    section: "AfterlifeResidents",
+                    repairHint: "Для companion_echo-реликвии сохраняй sourceResidentId из companionSeed."));
+            }
+
+            if (string.Equals(manifestationSource, "imprint_relic", StringComparison.OrdinalIgnoreCase) &&
+                string.IsNullOrWhiteSpace(GetFirstNonEmptyString(request, "sourceImprintId")))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{requestContext}.sourceImprintId",
+                    IssueSeverity.Error,
+                    "imprint_relic manifestation request должен содержать sourceImprintId",
+                    code: "pending_resident_companion_manifestation_missing_imprint_id",
+                    section: "AfterlifeResidents",
+                    repairHint: "Для реликвии со слепком НПС сохраняй sourceImprintId из embedded soulImprint/npcSoulImprint."));
+            }
+
+            var relicId = GetFirstNonEmptyString(request, "relicId");
+            if (!string.IsNullOrWhiteSpace(relicId) && !seenRelicIds.Add(relicId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{requestContext}.relicId",
+                    IssueSeverity.Error,
+                    "pending resident companion manifestation requests не должны дублировать relicId",
+                    code: "pending_resident_companion_manifestation_duplicate_relic_id",
+                    section: "AfterlifeResidents",
+                    expected: "unique relicId per pending request",
+                    actual: relicId,
+                    repairHint: "Не создавай несколько pending manifestation requests для одной и той же реликвии души."));
+            }
+        }
+    }
+
+    private void ValidateGuardianAbodeResidentObject(JsonElement resident, string contextPrefix, List<ValidationIssue> issues)
+    {
+        RequireString(resident, contextPrefix, issues, "residentId");
+        RequireString(resident, contextPrefix, issues, "guardianId");
+        RequireString(resident, contextPrefix, issues, "abodeId");
+        RequireString(resident, contextPrefix, issues, "displayName");
+        RequireString(resident, contextPrefix, issues, "residentKind");
+        RequireString(resident, contextPrefix, issues, "originType");
+        ValidateOptionalString(resident, contextPrefix, issues, "roleLabel");
+        ValidateOptionalString(resident, contextPrefix, issues, "summary");
+        ValidateNonNegativeIntegerField(resident, contextPrefix, issues, "bondLevel", "AfterlifeResidents");
+        RequireString(resident, contextPrefix, issues, "bondTier");
+        RequireBooleanField(resident, contextPrefix, issues, "canGrantCompanionRelic");
+        RequireString(resident, contextPrefix, issues, "bondRewardState");
+        ValidateOptionalString(resident, contextPrefix, issues, "linkedSoulQuestId");
+        ValidateOptionalString(resident, contextPrefix, issues, "grantedRelicId");
+        if (resident.TryGetProperty("historyRevealed", out var historyRevealed))
+            RequireBooleanField(resident, contextPrefix, issues, "historyRevealed");
+        RequireBooleanField(resident, contextPrefix, issues, "isPresent");
+
+        var residentKind = GetFirstNonEmptyString(resident, "residentKind");
+        if (!string.IsNullOrWhiteSpace(residentKind) && !GuardianAbodeResidentState.IsSupportedResidentKind(residentKind))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.residentKind",
+                IssueSeverity.Error,
+                "residentKind должен быть canonical afterlife resident kind",
+                code: "guardian_abode_resident_invalid_kind",
+                section: "AfterlifeResidents",
+                expected: "junior_spirit | attendant_spirit | wayfaring_soul | bound_soul",
+                actual: residentKind,
+                repairHint: "Используй для residentKind только canonical afterlife-resident kinds."));
+        }
+
+        var originType = GetFirstNonEmptyString(resident, "originType");
+        if (!string.IsNullOrWhiteSpace(originType) && !GuardianAbodeResidentState.IsSupportedOriginType(originType))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.originType",
+                IssueSeverity.Error,
+                "originType должен быть canonical resident origin type",
+                code: "guardian_abode_resident_invalid_origin_type",
+                section: "AfterlifeResidents",
+                expected: "native_spirit | traveler_soul",
+                actual: originType,
+                repairHint: "Используй для originType только native_spirit или traveler_soul."));
+        }
+
+        var bondLevel = resident.TryGetProperty("bondLevel", out var bondNode) && bondNode.ValueKind == JsonValueKind.Number && bondNode.TryGetInt32(out var parsedBond)
+            ? parsedBond
+            : 0;
+        var expectedTier = GuardianAbodeResidentState.ResolveBondTier(bondLevel);
+        var actualTier = GetFirstNonEmptyString(resident, "bondTier");
+        if (!string.IsNullOrWhiteSpace(actualTier) && !GuardianAbodeResidentState.IsSupportedBondTier(actualTier))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.bondTier",
+                IssueSeverity.Error,
+                "bondTier должен быть canonical afterlife resident tier",
+                code: "guardian_abode_resident_invalid_bond_tier",
+                section: "AfterlifeResidents",
+                expected: "stranger | familiar | trusted | bound",
+                actual: actualTier,
+                repairHint: "Используй для bondTier только stranger, familiar, trusted или bound."));
+        }
+        else if (!string.IsNullOrWhiteSpace(actualTier) &&
+                 !string.Equals(actualTier, expectedTier, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.bondTier",
+                IssueSeverity.Error,
+                "bondTier должен совпадать с tier, выведенным из bondLevel",
+                code: "guardian_abode_resident_bond_tier_mismatch",
+                section: "AfterlifeResidents",
+                expected: expectedTier,
+                actual: actualTier,
+                repairHint: "Синхронизируй bondTier с bondLevel: 0-24 stranger, 25-49 familiar, 50-74 trusted, 75-100 bound."));
+        }
+
+        var rewardState = GetFirstNonEmptyString(resident, "bondRewardState");
+        if (!string.IsNullOrWhiteSpace(rewardState) && !GuardianAbodeResidentState.IsSupportedRewardState(rewardState))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.bondRewardState",
+                IssueSeverity.Error,
+                "bondRewardState должен быть canonical resident reward state",
+                code: "guardian_abode_resident_invalid_reward_state",
+                section: "AfterlifeResidents",
+                expected: "none | eligible | granted | consumed",
+                actual: rewardState,
+                repairHint: "Используй для bondRewardState только none, eligible, granted или consumed."));
+        }
+        else if (!string.IsNullOrWhiteSpace(rewardState) &&
+                 !string.Equals(rewardState, GuardianAbodeResidentState.RewardStateNone, StringComparison.OrdinalIgnoreCase) &&
+                 !(resident.TryGetProperty("canGrantCompanionRelic", out var canGrantProp) && canGrantProp.ValueKind == JsonValueKind.True))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.bondRewardState",
+                IssueSeverity.Error,
+                "Resident без права даровать companion relic не может иметь reward state выше none",
+                code: "guardian_abode_resident_reward_state_without_grant_permission",
+                section: "AfterlifeResidents",
+                expected: GuardianAbodeResidentState.RewardStateNone,
+                actual: rewardState,
+                repairHint: "Если resident не может даровать реликвию связи, сохраняй canGrantCompanionRelic=false и bondRewardState=none."));
+        }
+
+        if ((string.Equals(rewardState, GuardianAbodeResidentState.RewardStateGranted, StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(rewardState, GuardianAbodeResidentState.RewardStateConsumed, StringComparison.OrdinalIgnoreCase)) &&
+            string.IsNullOrWhiteSpace(GetFirstNonEmptyString(resident, "grantedRelicId")))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.grantedRelicId",
+                IssueSeverity.Error,
+                "Resident с granted/consumed reward state должен хранить grantedRelicId",
+                code: "guardian_abode_resident_missing_granted_relic_id",
+                section: "AfterlifeResidents",
+                repairHint: "Когда resident дарует реликвию связи, сохраняй grantedRelicId и не очищай его после будущих воплощений."));
+        }
+
+        if (!resident.TryGetProperty("mortalWorldImprint", out var imprint) ||
+            !RequireObject(imprint, $"{contextPrefix}.mortalWorldImprint", issues))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.mortalWorldImprint",
+                IssueSeverity.Error,
+                "afterlife resident должен содержать mortalWorldImprint object",
+                code: "guardian_abode_resident_missing_imprint",
+                section: "AfterlifeResidents",
+                expected: "mortalWorldImprint object",
+                actual: !resident.TryGetProperty("mortalWorldImprint", out var actualImprint) ? "missing" : actualImprint.ValueKind.ToString(),
+                repairHint: "Сохраняй у каждого resident mortalWorldImprint с originWorldSummary и futureCompanionPrompt."));
+            return;
+        }
+
+        RequireString(imprint, $"{contextPrefix}.mortalWorldImprint", issues, "originWorldSummary");
+        RequireString(imprint, $"{contextPrefix}.mortalWorldImprint", issues, "futureCompanionPrompt");
+        ValidateOptionalString(imprint, $"{contextPrefix}.mortalWorldImprint", issues, "bondReason");
+        if (imprint.TryGetProperty("coreTraits", out var coreTraits))
+            RequireArrayOfStrings(coreTraits, $"{contextPrefix}.mortalWorldImprint.coreTraits", issues);
+        if (imprint.TryGetProperty("archetypeHints", out var archetypeHints))
+            RequireArrayOfStrings(archetypeHints, $"{contextPrefix}.mortalWorldImprint.archetypeHints", issues);
+        if (imprint.TryGetProperty("appearanceMotifs", out var appearanceMotifs))
+            RequireArrayOfStrings(appearanceMotifs, $"{contextPrefix}.mortalWorldImprint.appearanceMotifs", issues);
+
+        if (resident.TryGetProperty("availableInteractions", out var availableInteractions))
+        {
+            RequireArrayOfStrings(availableInteractions, $"{contextPrefix}.availableInteractions", issues);
+            if (availableInteractions.ValueKind == JsonValueKind.Array)
+            {
+                var interactionIndex = 0;
+                foreach (var interaction in availableInteractions.EnumerateArray())
+                {
+                    var interactionValue = interaction.ValueKind == JsonValueKind.String ? interaction.GetString() ?? string.Empty : string.Empty;
+                    if (string.IsNullOrWhiteSpace(interactionValue) || GuardianAbodeResidentState.IsSupportedInteractionType(interactionValue) || string.Equals(interactionValue, "quest", StringComparison.OrdinalIgnoreCase) || string.Equals(interactionValue, "reward", StringComparison.OrdinalIgnoreCase))
+                    {
+                        interactionIndex++;
+                        continue;
+                    }
+
+                    issues.Add(new ValidationIssue(
+                        $"{contextPrefix}.availableInteractions[{interactionIndex}]",
+                        IssueSeverity.Error,
+                        "availableInteractions должен использовать canonical resident interaction token",
+                        code: "guardian_abode_resident_invalid_interaction_token",
+                        section: "AfterlifeResidents",
+                        expected: "talk | history | quest | reward",
+                        actual: interactionValue,
+                        repairHint: "Для resident.availableInteractions используй только talk, history, quest или reward."));
+                    interactionIndex++;
+                }
+            }
+        }
+    }
+
+    private void ValidatePendingGuardianAbodeResidentsRequestObject(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        RequireString(root, contextPrefix, issues, "requestId");
+        RequireString(root, contextPrefix, issues, "guardianId");
+        RequireString(root, contextPrefix, issues, "guardianName");
+        RequireString(root, contextPrefix, issues, "abodeId");
+        ValidateOptionalString(root, contextPrefix, issues, "abodeName");
+        ValidateIntegerField(root, contextPrefix, issues, "currentReputation");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtTurn", "AfterlifeResidents");
+        ValidateRequiredIsoTimestampField(
+            root,
+            contextPrefix,
+            issues,
+            "createdAtUtc",
+            "AfterlifeResidents",
+            "pending_abode_residents_request_missing_created_at_utc",
+            "pending_abode_residents_request_invalid_created_at_utc",
+            "pending_guardian_abode_residents_request.json должен содержать createdAtUtc в ISO 8601 формате.");
+    }
+
+    private void ValidatePendingGuardianAbodeResidentInteractionRequestObject(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        RequireString(root, contextPrefix, issues, "requestId");
+        RequireString(root, contextPrefix, issues, "guardianId");
+        ValidateOptionalString(root, contextPrefix, issues, "guardianName");
+        RequireString(root, contextPrefix, issues, "abodeId");
+        ValidateOptionalString(root, contextPrefix, issues, "abodeName");
+        RequireString(root, contextPrefix, issues, "residentId");
+        ValidateOptionalString(root, contextPrefix, issues, "residentName");
+        var interactionType = RequireString(root, contextPrefix, issues, "interactionType");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtTurn", "AfterlifeResidents");
+        ValidateRequiredIsoTimestampField(
+            root,
+            contextPrefix,
+            issues,
+            "createdAtUtc",
+            "AfterlifeResidents",
+            "pending_abode_resident_interaction_missing_created_at_utc",
+            "pending_abode_resident_interaction_invalid_created_at_utc",
+            "pending_guardian_abode_resident_interactions.json должен содержать createdAtUtc в ISO 8601 формате.");
+
+        if (!string.IsNullOrWhiteSpace(interactionType) && !GuardianAbodeResidentState.IsSupportedInteractionType(interactionType))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.interactionType",
+                IssueSeverity.Error,
+                "resident interaction request должен использовать canonical interactionType",
+                code: "pending_abode_resident_interaction_invalid_type",
+                section: "AfterlifeResidents",
+                expected: $"{GuardianAbodeResidentState.InteractionTypeTalk} | {GuardianAbodeResidentState.InteractionTypeHistory}",
+                actual: interactionType,
+                repairHint: "Для pending resident interaction request используй interactionType = talk или history."));
+        }
+    }
+
+    private void ValidateGuardianAbodeResidentInteractionReceipts(JsonElement receipts, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var receiptIndex = 0;
+        foreach (var receipt in receipts.EnumerateArray())
+        {
+            var receiptContext = $"{contextPrefix}[{receiptIndex++}]";
+            if (!RequireObject(receipt, receiptContext, issues))
+                continue;
+
+            RequireString(receipt, receiptContext, issues, "requestId");
+            RequireString(receipt, receiptContext, issues, "residentId");
+            RequireString(receipt, receiptContext, issues, "guardianId");
+            RequireString(receipt, receiptContext, issues, "abodeId");
+            var interactionType = RequireString(receipt, receiptContext, issues, "interactionType");
+            var status = RequireString(receipt, receiptContext, issues, "status");
+            ValidateOptionalString(receipt, receiptContext, issues, "guardianName");
+            ValidateOptionalString(receipt, receiptContext, issues, "abodeName");
+            ValidateOptionalString(receipt, receiptContext, issues, "residentName");
+            ValidateOptionalString(receipt, receiptContext, issues, "responseMode");
+            ValidateOptionalString(receipt, receiptContext, issues, "historyEntryId");
+            ValidateOptionalString(receipt, receiptContext, issues, "reason");
+            ValidateNonNegativeIntegerField(receipt, receiptContext, issues, "resolvedAtTurn", "AfterlifeResidents");
+            ValidateRequiredIsoTimestampField(
+                receipt,
+                receiptContext,
+                issues,
+                "resolvedAtUtc",
+                "AfterlifeResidents",
+                "guardian_abode_resident_receipt_missing_resolved_at_utc",
+                "guardian_abode_resident_receipt_invalid_resolved_at_utc",
+                "Resident interaction receipt должен содержать resolvedAtUtc в ISO 8601 формате.");
+
+            if (!string.IsNullOrWhiteSpace(interactionType) && !GuardianAbodeResidentState.IsSupportedInteractionType(interactionType))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.interactionType",
+                    IssueSeverity.Error,
+                    "Resident interaction receipt использует неподдерживаемый interactionType",
+                    code: "guardian_abode_resident_receipt_invalid_interaction_type",
+                    section: "AfterlifeResidents",
+                    expected: $"{GuardianAbodeResidentState.InteractionTypeTalk} | {GuardianAbodeResidentState.InteractionTypeHistory}",
+                    actual: interactionType));
+            }
+
+            if (!string.IsNullOrWhiteSpace(status) && !GuardianAbodeResidentState.IsSupportedInteractionStatus(status))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.status",
+                    IssueSeverity.Error,
+                    "Resident interaction receipt использует неподдерживаемый status",
+                    code: "guardian_abode_resident_receipt_invalid_status",
+                    section: "AfterlifeResidents",
+                    expected: $"{GuardianAbodeResidentState.InteractionStatusAccepted} | {GuardianAbodeResidentState.InteractionStatusRejected} | {GuardianAbodeResidentState.InteractionStatusCancelled}",
+                    actual: status));
+            }
+
+            var responseMode = GetFirstNonEmptyString(receipt, "responseMode");
+            if (!string.IsNullOrWhiteSpace(responseMode) && !GuardianAbodeResidentState.IsSupportedResponseMode(responseMode))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.responseMode",
+                    IssueSeverity.Error,
+                    "Resident interaction receipt использует неподдерживаемый responseMode",
+                    code: "guardian_abode_resident_receipt_invalid_response_mode",
+                    section: "AfterlifeResidents",
+                    expected: "talk_scene | history_revealed | history_refused | history_partial | bond_shift_only",
+                    actual: responseMode));
+            }
+        }
+    }
+
+    private void ValidateGuardianAbodeResidentRosterReceipts(JsonElement receipts, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var receiptIndex = 0;
+        foreach (var receipt in receipts.EnumerateArray())
+        {
+            var receiptContext = $"{contextPrefix}[{receiptIndex++}]";
+            if (!RequireObject(receipt, receiptContext, issues))
+                continue;
+
+            RequireString(receipt, receiptContext, issues, "requestId");
+            RequireString(receipt, receiptContext, issues, "guardianId");
+            RequireString(receipt, receiptContext, issues, "abodeId");
+            ValidateOptionalString(receipt, receiptContext, issues, "guardianName");
+            ValidateOptionalString(receipt, receiptContext, issues, "abodeName");
+            ValidateNonNegativeIntegerField(receipt, receiptContext, issues, "rosterCount", "AfterlifeResidents");
+            ValidateNonNegativeIntegerField(receipt, receiptContext, issues, "resolvedAtTurn", "AfterlifeResidents");
+            ValidateRequiredIsoTimestampField(
+                receipt,
+                receiptContext,
+                issues,
+                "resolvedAtUtc",
+                "AfterlifeResidents",
+                "guardian_abode_resident_roster_receipt_missing_resolved_at_utc",
+                "guardian_abode_resident_roster_receipt_invalid_resolved_at_utc",
+                "Resident roster receipt должен содержать resolvedAtUtc в ISO 8601 формате.");
+        }
+    }
+
+    private void ValidateGuardianAbodeResidentHistoryLog(JsonElement historyLog, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var historyIndex = 0;
+        foreach (var historyEntry in historyLog.EnumerateArray())
+        {
+            var historyContext = $"{contextPrefix}[{historyIndex++}]";
+            if (!RequireObject(historyEntry, historyContext, issues))
+                continue;
+
+            RequireString(historyEntry, historyContext, issues, "entryId");
+            RequireString(historyEntry, historyContext, issues, "residentId");
+            RequireString(historyEntry, historyContext, issues, "title");
+            RequireString(historyEntry, historyContext, issues, "summary");
+            if (historyEntry.TryGetProperty("tags", out var tags))
+                RequireArrayOfStrings(tags, $"{historyContext}.tags", issues);
+            ValidateNonNegativeIntegerField(historyEntry, historyContext, issues, "revealedAtTurn", "AfterlifeResidents");
+            ValidateRequiredIsoTimestampField(
+                historyEntry,
+                historyContext,
+                issues,
+                "revealedAtUtc",
+                "AfterlifeResidents",
+                "guardian_abode_resident_history_missing_revealed_at_utc",
+                "guardian_abode_resident_history_invalid_revealed_at_utc",
+                "Resident historyLog entry должен содержать revealedAtUtc в ISO 8601 формате.");
+        }
+    }
 }

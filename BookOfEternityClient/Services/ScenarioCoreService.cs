@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging;
 
@@ -11,13 +12,7 @@ public sealed class ScenarioCoreService
 {
     public const string ManifestPath = "game_state/control/next_life_scenario_core.json";
 
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    };
+    private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
     private static readonly Dictionary<string, string[]> SlotTypesByCategory = new(StringComparer.OrdinalIgnoreCase)
     {

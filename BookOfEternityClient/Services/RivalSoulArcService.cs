@@ -634,9 +634,13 @@ public sealed class RivalSoulArcService
     }
 
     private static bool IsMortalRealm(string? realm) =>
-        string.Equals(realm, "Mortal World", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(realm, "Смертный Мир", StringComparison.OrdinalIgnoreCase) ||
-        string.IsNullOrWhiteSpace(realm);
+        !string.IsNullOrWhiteSpace(realm) && !IsAfterlifeRealm(realm);
+
+    private static bool IsAfterlifeRealm(string? realm) =>
+        string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
 
     private static string GetString(JsonElement obj, string propName)
     {

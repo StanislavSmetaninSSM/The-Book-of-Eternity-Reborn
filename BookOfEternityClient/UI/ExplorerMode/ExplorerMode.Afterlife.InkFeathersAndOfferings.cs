@@ -59,6 +59,22 @@ public partial class ExplorerMode
                 lines.Add($"  • {Markup.Escape(notification.Summary)}");
         }
 
+        var manifestationRequests = await GuardianAbodeResidentRequestState.ReadManifestationRequestsAsync(_fs);
+        var currentManifestationRequests = manifestationRequests
+            .Where(request => request.TargetIncarnation == currentIncarnation)
+            .ToList();
+        if (currentManifestationRequests.Count > 0 &&
+            string.Equals(currentRealm, "Mortal World", StringComparison.OrdinalIgnoreCase))
+        {
+            lines.Add("");
+            lines.Add($"[bold magenta]👤 Эхо спутников ищет путь в эту жизнь: {currentManifestationRequests.Count}[/]");
+            foreach (var request in currentManifestationRequests.Take(3))
+            {
+                var displayName = string.IsNullOrWhiteSpace(request.CompanionNameHint) ? request.RelicName : request.CompanionNameHint;
+                lines.Add($"  [dim]{Markup.Escape(displayName)} должно materialize-иться как ранняя встреча или soul-quest path.[/]");
+            }
+        }
+
         var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
             Header = new PanelHeader(" 🌊 Состояние души ", Justify.Center),
@@ -1184,7 +1200,7 @@ public partial class ExplorerMode
                     continue;
 
                 storedArr.RemoveAt(i);
-                var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
                 await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
                 return true;
             }
@@ -1228,7 +1244,7 @@ public partial class ExplorerMode
                     return false;
 
                 storedArr.RemoveAt(i);
-                var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
                 await _fs.WriteFileAtomicAsync(path, root.ToJsonString(opts));
                 return true;
             }

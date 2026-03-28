@@ -15,13 +15,7 @@ public class StateManager
     private readonly FileSystemManager _fs;
     private readonly ILogger<StateManager> _logger;
 
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    };
+    private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
     public AggregatedGameState CurrentState { get; private set; } = new();
     public GameSettings Settings { get; }
@@ -36,57 +30,20 @@ public class StateManager
     public async Task LoadSettingsAsync()
     {
         var json = await _fs.ReadFileAsync("config.json");
-        if (json != null)
+        if (json == null)
+            return;
+
+        try
         {
-            try
+            var loaded = JsonSerializer.Deserialize<GameSettings>(json, JsonOpts);
+            if (loaded != null)
             {
-                var loaded = JsonSerializer.Deserialize<GameSettings>(json, JsonOpts);
-                if (loaded != null)
-                {
-                    Settings.Language = loaded.Language;
-                    Settings.AllowHistoryManipulation = loaded.AllowHistoryManipulation;
-                    Settings.ShowGmThoughts = loaded.ShowGmThoughts;
-                    Settings.ShowImagesInConsole = loaded.ShowImagesInConsole;
-                    Settings.ImageProvider = loaded.ImageProvider;
-                    Settings.ImageWidth = loaded.ImageWidth;
-                    Settings.ImageHeight = loaded.ImageHeight;
-                    Settings.PollinationsApiKey = loaded.PollinationsApiKey;
-                    Settings.PollinationsImageModel = loaded.PollinationsImageModel;
-                    Settings.OpenRouterApiKey = loaded.OpenRouterApiKey;
-                    Settings.OpenRouterImageModel = loaded.OpenRouterImageModel;
-                    Settings.GameSessionPath = loaded.GameSessionPath;
-                    Settings.AutosaveIntervalTurns = loaded.AutosaveIntervalTurns;
-                    Settings.MaxAutosaves = loaded.MaxAutosaves;
-                    Settings.MaxManualSaves = loaded.MaxManualSaves;
-                    Settings.GmTimeoutSeconds = loaded.GmTimeoutSeconds;
-                    Settings.GmBridgeEnabled = loaded.GmBridgeEnabled;
-                    Settings.GmBridgeBackend = loaded.GmBridgeBackend;
-                    Settings.GmCliLaunchCommand = loaded.GmCliLaunchCommand;
-                    Settings.GmBridgeAutoStart = loaded.GmBridgeAutoStart;
-                    Settings.GmBridgePipeNameOverride = loaded.GmBridgePipeNameOverride;
-                    Settings.GameVersion = loaded.GameVersion;
-                    Settings.Difficulty = loaded.Difficulty;
-                    Settings.AutoDiscardBrokenItems = loaded.AutoDiscardBrokenItems;
-                    Settings.GenerateSceneImages = loaded.GenerateSceneImages;
-                    Settings.GenerateImagesWithoutDisplay = loaded.GenerateImagesWithoutDisplay;
-                    Settings.EnableQteEvents = loaded.EnableQteEvents;
-                    Settings.MusicEnabled = loaded.MusicEnabled;
-                    Settings.MusicVolume = Math.Clamp(loaded.MusicVolume, 0, 100);
-                    Settings.SoundEnabled = loaded.SoundEnabled;
-                    Settings.SoundVolume = Math.Clamp(loaded.SoundVolume, 0, 100);
-                    Settings.ConsoleFontSize = loaded.ConsoleFontSize > 0
-                        ? Math.Clamp(loaded.ConsoleFontSize, 14, 32)
-                        : Settings.ConsoleFontSize;
-                    Settings.EnabledSystemMods = loaded.EnabledSystemMods?
-                        .Where(name => !string.IsNullOrWhiteSpace(name))
-                        .Distinct(StringComparer.OrdinalIgnoreCase)
-                        .ToList() ?? new List<string>();
-                }
+                Settings.ApplyLoadedValues(loaded);
             }
-            catch
-            {
-                // Keep existing defaults on parse failure
-            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось загрузить config.json. Сохраняются текущие defaults.");
         }
     }
 

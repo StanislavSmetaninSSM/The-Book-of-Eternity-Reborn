@@ -205,9 +205,9 @@ public sealed class GuardianTradeServiceTests : IDisposable
         """);
 
         var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
-        var view = await service.EnsureTradeInventoryAsync("guardian_alpha", 1);
-        var sameCycleView = await service.EnsureTradeInventoryAsync("guardian_alpha", 1);
-        var nextCycleView = await service.EnsureTradeInventoryAsync("guardian_alpha", 2);
+        var view = await service.EnsureTradeInventoryAsync("guardian_alpha", 1, currentTurn: 7);
+        var sameCycleView = await service.EnsureTradeInventoryAsync("guardian_alpha", 1, currentTurn: 7);
+        var nextCycleView = await service.EnsureTradeInventoryAsync("guardian_alpha", 2, currentTurn: 8);
 
         Assert.NotNull(view);
         Assert.Equal(4, view!.Offers.Count);
@@ -289,7 +289,7 @@ public sealed class GuardianTradeServiceTests : IDisposable
             """);
 
         var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
-        var view = await service.EnsureTradeInventoryAsync("guardian_alpha", 1);
+        var view = await service.EnsureTradeInventoryAsync("guardian_alpha", 1, currentTurn: 7);
 
         Assert.NotNull(view);
         Assert.False(view!.InventoryReady);
@@ -301,6 +301,471 @@ public sealed class GuardianTradeServiceTests : IDisposable
         Assert.NotEqual("guardian_trade_old", request!.RequestId);
         Assert.Equal(4, request.DerivedTradeSlotCount);
         Assert.Equal("0|0|0", request.ProjectBonusSignature);
+    }
+
+    [Fact]
+    public async Task SellAsync_SellableRelic_CreatesGuardianBuybackEntryAndAwardsFeathers()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "domain": "Порог Сна",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 120, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guardian_alpha",
+            "canonicalName": "Азалия",
+            "domain": "Порог Сна",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 120, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+            "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          },
+          "chaosSeaNavigation": {
+            "currentAbodeId": "abode_alpha"
+          }
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "inkFeathers": { "current": 100 },
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_sell_001",
+                "name": "Реликвия для продажи",
+                "rarity": "Rare",
+                "description": "Подходит для теста продажи."
+              }
+            ]
+          }
+        }
+        """);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var result = await service.SellAsync("guardian_alpha", "relic_sell_001", currentTurn: 14);
+
+        Assert.True(result.Success);
+
+        var guardiansRaw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.DoesNotContain("Реликвия для продажи", soulRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"buybackRelics\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"status\": \"available\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"soldByPlayerAtTurn\": 14", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"current\": 100", soulRaw ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuyBackAsync_AvailableEntry_ReturnsRelicAndMarksEntryRebought()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "domain": "Порог Сна",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 120, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] },
+              "buybackRelics": [
+                {
+                  "buybackEntryId": "guardian_buyback_001",
+                  "guardianId": "guardian_alpha",
+                  "guardianName": "Азалия",
+                  "relicId": "relic_buyback_001",
+                  "relicData": {
+                    "relicId": "relic_buyback_001",
+                    "name": "Отзвук Зеркального Двора",
+                    "rarity": "Rare",
+                    "description": "Ранее проданная реликвия."
+                  },
+                  "soldByPlayerAtTurn": 11,
+                  "soldByPlayerAtUtc": "2026-03-26T00:10:00Z",
+                  "soldForPrice": 60,
+                  "buybackPrice": 60,
+                  "acquiredFromPlayer": true,
+                  "status": "available"
+                }
+              ]
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guardian_alpha",
+            "canonicalName": "Азалия",
+            "domain": "Порог Сна",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 120, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+            "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] },
+            "buybackRelics": [
+              {
+                "buybackEntryId": "guardian_buyback_001",
+                "guardianId": "guardian_alpha",
+                "guardianName": "Азалия",
+                "relicId": "relic_buyback_001",
+                "relicData": {
+                  "relicId": "relic_buyback_001",
+                  "name": "Отзвук Зеркального Двора",
+                  "rarity": "Rare",
+                  "description": "Ранее проданная реликвия."
+                },
+                "soldByPlayerAtTurn": 11,
+                "soldByPlayerAtUtc": "2026-03-26T00:10:00Z",
+                "soldForPrice": 60,
+                "buybackPrice": 60,
+                "acquiredFromPlayer": true,
+                "status": "available"
+              }
+            ]
+          },
+          "chaosSeaNavigation": {
+            "currentAbodeId": "abode_alpha"
+          }
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "inkFeathers": { "current": 100 },
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var result = await service.BuyBackAsync("guardian_alpha", "guardian_buyback_001", currentTurn: 15);
+
+        Assert.True(result.Success);
+
+        var guardiansRaw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.Contains("Отзвук Зеркального Двора", soulRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"status\": \"rebought\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"reboughtAtTurn\": 15", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"current\": 100", soulRaw ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task SellAsync_WithoutValidCurrentTurn_FailsWithoutMutatingState()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "domain": "Порог Сна",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 120, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guardian_alpha",
+            "canonicalName": "Азалия",
+            "domain": "Порог Сна",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 120, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+            "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          },
+          "chaosSeaNavigation": {
+            "currentAbodeId": "abode_alpha"
+          }
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "inkFeathers": { "current": 100 },
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_sell_001",
+                "name": "Реликвия для продажи",
+                "rarity": "Rare",
+                "description": "Подходит для теста продажи."
+              }
+            ]
+          }
+        }
+        """);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var beforeGuardians = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var beforeSoul = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await service.SellAsync("guardian_alpha", "relic_sell_001", currentTurn: 0);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("номер хода", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeGuardians, await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task BuyBackAsync_WithoutValidCurrentTurn_FailsWithoutMutatingState()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: true);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var beforeGuardians = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var beforeSoul = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await service.BuyBackAsync("guardian_alpha", "guardian_buyback_001", currentTurn: 0);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("номер хода", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeGuardians, await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task BuyAsync_WithoutValidCurrentTurn_FailsWithoutMutatingState()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeBuybackEntry: false);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var beforeGuardians = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var beforeSoul = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await service.BuyAsync("guardian_alpha", "trade_1", currentIncarnation: 1, currentTurn: 0);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("номер хода", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeGuardians, await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task BuyAsync_StaleInventoryRequest_UsesRealCurrentTurnInPendingRequest()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: false);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var result = await service.BuyAsync("guardian_alpha", "trade_1", currentIncarnation: 1, currentTurn: 13);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+
+        var request = await GuardianTradeRequestState.ReadAsync(_fs);
+        Assert.NotNull(request);
+        Assert.Equal(13, request!.CreatedAtTurn);
+        Assert.Equal("guardian_alpha", request.GuardianId);
+        Assert.Equal("return_1", request.ReturnCycleId);
+    }
+
+    private async Task SeedMinimalGuardianTradeStateAsync(bool includeTradeInventory, bool includeTradeReceipt, bool includeBuybackEntry)
+    {
+        var tradeInventoryJson = includeTradeInventory
+            ? """
+            ,
+            "tradeInventory": {
+              "tradeCycleId": "return_1",
+              "generatedAtUtc": "2026-03-26T00:00:00Z",
+              "generationReputationTier": "Friendly",
+              "pricingReputationTier": "Friendly",
+              "projectBonusSignature": "0|0|0",
+              "upgradedTradeSlots": 0,
+              "elevatedTradeSlots": 0,
+              "effectiveRarityCeilingBonusSteps": 0,
+              "items": [
+                {
+                  "slotId": "trade_1",
+                  "priceInFeathers": 30,
+                  "domainTag": "Сны и Переходы",
+                  "soldOut": false,
+                  "rarityBonusStepsApplied": 0,
+                  "relicData": {
+                    "relicId": "relic_1",
+                    "name": "Печать Сумеречного Порога",
+                    "rarity": "Common",
+                    "quality": "Common",
+                    "description": "Тестовая явная витрина."
+                  }
+                }
+              ]
+            }
+            """
+            : "";
+
+        var receiptJson = includeTradeReceipt
+            ? """
+            ,
+            "tradeInventoryReceipts": [
+              {
+                "requestId": "guardian_trade_req_001",
+                "guardianId": "guardian_alpha",
+                "guardianName": "Азалия",
+                "abodeId": "abode_alpha",
+                "tradeCycleId": "return_1",
+                "status": "ready",
+                "itemCount": 1,
+                "resolvedAtTurn": 7,
+                "resolvedAtUtc": "2026-03-26T00:10:00Z"
+              }
+            ]
+            """
+            : "";
+
+        var buybackJson = includeBuybackEntry
+            ? """
+            ,
+            "buybackRelics": [
+              {
+                "buybackEntryId": "guardian_buyback_001",
+                "guardianId": "guardian_alpha",
+                "guardianName": "Азалия",
+                "relicId": "relic_buyback_001",
+                "relicData": {
+                  "relicId": "relic_buyback_001",
+                  "name": "Отзвук Зеркального Двора",
+                  "rarity": "Rare",
+                  "description": "Ранее проданная реликвия."
+                },
+                "soldByPlayerAtTurn": 11,
+                "soldByPlayerAtUtc": "2026-03-26T00:10:00Z",
+                "soldForPrice": 60,
+                "buybackPrice": 60,
+                "acquiredFromPlayer": true,
+                "status": "available"
+              }
+            ]
+            """
+            : "";
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", $$"""
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "domain": "Порог Сна",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 120, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }{{tradeInventoryJson}}{{receiptJson}}{{buybackJson}}
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guardian_alpha",
+            "canonicalName": "Азалия",
+            "domain": "Порог Сна",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 120, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+            "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }{{tradeInventoryJson}}{{receiptJson}}{{buybackJson}}
+          },
+          "chaosSeaNavigation": {
+            "currentAbodeId": "abode_alpha"
+          }
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "inkFeathers": { "current": 100 },
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
     }
 
     public void Dispose()

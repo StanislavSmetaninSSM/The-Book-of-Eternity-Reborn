@@ -155,6 +155,45 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_NpcTrade_CreatesPendingInventoryRequestWhenStockIsMissing()
+    {
+        await SeedNpcTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false);
+        _console.QueueSelection("Действие", "🛒 Торговать");
+        _console.QueueSelection("Выберите раздел", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("npc_trade_pending_inventory_request");
+        var pendingRaw = await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("\"npcId\": \"npc_merchant_001\"", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("\"tradeCycleId\": \"world_trade_0\"", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains(_console.SelectionChoicesHistory,
+            entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase) &&
+                     entry.Choices.Contains("🔄 Проверить витрину", StringComparer.Ordinal));
+    }
+
+    [Fact]
+
+    public async Task TryProcessCommand_NpcTalkAction_CreatesPendingNpcSocialRequest()
+    {
+        await SeedNpcTradeStateAsync();
+        _console.QueueSelection("Действие", "💬 Поговорить");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("npc_social_talk_request");
+        var pendingRaw = await _fs.ReadFileAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("\"npcId\": \"npc_merchant_001\"", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("\"interactionType\": \"talk\"", pendingRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_NpcTradeAction_IsHiddenWhenTradeIsBlocked()
     {
@@ -185,8 +224,32 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("npc_trade_sell");
         var inventoryRaw = await _fs.ReadFileAsync("game_state/inventory/items.json");
         var statusRaw = await _fs.ReadFileAsync("game_state/core/player_status.json");
+        var npcRaw = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
         Assert.DoesNotContain("Походный фонарь", inventoryRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.DoesNotContain("\"money\": 500", statusRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"buybackInventory\"", npcRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"status\": \"available\"", npcRaw ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_NpcTradeBuyback_ReacquiresPreviouslySoldItem()
+    {
+        await SeedNpcTradeStateAsync(includeBuybackInventory: true, includeTradeInventory: false, includeTradeReceipt: false);
+        _console.QueueSelection("Выберите раздел", "🔁 Выкупить обратно");
+        _console.QueueSelection("Действие", "🛒 Торговать", "🔁 Выкупить");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("npc_trade_buyback");
+        var inventoryRaw = await _fs.ReadFileAsync("game_state/inventory/items.json");
+        var npcRaw = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+        Assert.Contains("Походный фонарь", inventoryRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"status\": \"rebought\"", npcRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains(_console.SelectionChoicesHistory,
+            entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase) &&
+                     entry.Choices.Contains("🔁 Выкупить обратно", StringComparer.Ordinal));
     }
 
 }

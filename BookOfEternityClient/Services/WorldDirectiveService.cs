@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging;
 
@@ -17,13 +18,7 @@ public sealed class WorldDirectiveService
 
     private static readonly string[] SupportedProfileExtensions = { ".json", ".txt", ".md" };
 
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    };
+    private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
     private readonly FileSystemManager _fs;
     private readonly ILogger<WorldDirectiveService> _logger;

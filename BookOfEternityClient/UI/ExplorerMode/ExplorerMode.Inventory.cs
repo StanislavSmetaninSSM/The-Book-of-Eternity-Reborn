@@ -1317,7 +1317,7 @@ public partial class ExplorerMode
 
             equipNode[slotKey] = !string.IsNullOrWhiteSpace(itemIdentity) ? itemIdentity : itemName;
 
-            var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
 
             var slotLabel = SlotLabels.GetValueOrDefault(slotKey, slotKey);
@@ -1346,7 +1346,7 @@ public partial class ExplorerMode
 
             node["equipment"]![slotKey] = null;
 
-            var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
             await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
 
             var slotLabel = SlotLabels.GetValueOrDefault(slotKey, slotKey);
@@ -1392,7 +1392,7 @@ public partial class ExplorerMode
                     }
                 }
 
-                var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
                 await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
                 MarkupLine($"[green]✅ «{Markup.Escape(itemName)}» выброшен.[/]");
                 MarkupLine("[dim]Нажмите любую клавишу...[/]");
@@ -1442,7 +1442,7 @@ public partial class ExplorerMode
 
                 itemsArr.Add(copy);
 
-                var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
                 await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
                 MarkupLine($"[green]✅ Стопка разделена: {currentCount - splitAmount} + {splitAmount}[/]");
                 MarkupLine("[dim]Нажмите любую клавишу...[/]");
@@ -1514,7 +1514,7 @@ public partial class ExplorerMode
             for (int j = matchingIndices.Count - 1; j >= 1; j--)
                 itemsArr.RemoveAt(matchingIndices[j]);
 
-            var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
             await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
             MarkupLine($"[green]✅ Стопки объединены: {totalCount} шт.[/]");
             MarkupLine("[dim]Нажмите любую клавишу...[/]");

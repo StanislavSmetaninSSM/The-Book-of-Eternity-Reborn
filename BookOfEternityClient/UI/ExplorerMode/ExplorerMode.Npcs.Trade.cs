@@ -22,13 +22,16 @@ public partial class ExplorerMode
 
         while (true)
         {
-            var view = await _npcTradeService.EnsureTradeInventoryAsync(npcId);
+            var view = await _npcTradeService.EnsureTradeInventoryAsync(npcId, await TryReadCurrentTurnNumberAsync());
             if (view == null)
             {
                 MarkupLine("[red]❌ Не удалось загрузить витрину торговца.[/]");
                 WaitForKey();
                 return;
             }
+
+            if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
+                _pendingGmAction = view.PendingGmAction;
 
             if (view.TradeBlocked)
             {
@@ -39,13 +42,18 @@ public partial class ExplorerMode
 
             var totalOffers = view.Offers.Count;
             var availableOffers = view.Offers.Count(offer => !offer.SoldOut);
+            var availableBuybackOffers = view.BuybackOffers.Count;
             var headerLines = new List<string>
             {
                 $"[bold purple]🛒 Торговля с {Markup.Escape(view.NpcName)}[/]",
                 $"[dim]Профиль: {Markup.Escape(view.MerchantProfileDisplay)} • Торговля NPC: {view.NpcTrade} • Торговля игрока: {view.PlayerTrade}[/]",
                 $"[dim]Отношение: {view.RelationshipLevel} • Деньги: {view.CurrentMoney}[/]",
-                $"[dim]Товаров в витрине: {availableOffers}/{totalOffers} доступно • {Markup.Escape(DescribeNpcTradeRefresh(view))}[/]"
+                $"[dim]Товаров в витрине: {availableOffers}/{totalOffers} доступно • Выкуп обратно: {availableBuybackOffers} • {Markup.Escape(DescribeNpcTradeRefresh(view))}[/]"
             };
+            if (!view.InventoryReady && !string.IsNullOrWhiteSpace(view.InventoryStatusMessage))
+                headerLines.Add($"[yellow]⏳ {Markup.Escape(view.InventoryStatusMessage)}[/]");
+            if (!view.InventoryReady && view.InventoryRequestPending)
+                headerLines.Add("[dim]Покупка товаров откроется после ответа GM и materialization витрины.[/]");
 
             Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", headerLines)))
             {
@@ -55,17 +63,42 @@ public partial class ExplorerMode
                 Expand = true
             });
 
+            var sectionChoices = new List<string>();
+            if (view.InventoryReady)
+                sectionChoices.Add("🛍 Купить товары");
+            else
+                sectionChoices.Add("🔄 Проверить витрину");
+            sectionChoices.Add("🔁 Выкупить обратно");
+            sectionChoices.Add("💰 Продать товары");
+            sectionChoices.Add("← Назад");
+
             var choice = Prompt(new SelectionPrompt<string>()
                 .Title("[bold]Выберите раздел:[/]")
                 .HighlightStyle(new Style(Color.Purple))
-                .AddChoices("🛍 Купить товары", "💰 Продать товары", "← Назад"));
+                .AddChoices(sectionChoices));
 
             if (choice.Contains("Назад"))
                 return;
 
+            if (choice.Contains("Проверить"))
+            {
+                MarkupLine($"[yellow]⏳ {Markup.Escape(view.InventoryStatusMessage ?? "Витрина торговца ещё подготавливается.")}[/]");
+                WaitForKey();
+                Clear();
+                continue;
+            }
+
             if (choice.Contains("Купить"))
             {
                 await ShowNpcBuyMenu(npcId);
+                await _stateManager.RefreshGameStateAsync();
+                Clear();
+                continue;
+            }
+
+            if (choice.Contains("Выкупить"))
+            {
+                await ShowNpcBuybackMenu(npcId);
                 await _stateManager.RefreshGameStateAsync();
                 Clear();
                 continue;
@@ -81,6 +114,73 @@ public partial class ExplorerMode
     }
 
 
+    private async Task ShowNpcBuybackMenu(string npcId)
+    {
+        if (_npcTradeService == null)
+            return;
+
+        while (true)
+        {
+            var tradeView = await _npcTradeService.EnsureTradeInventoryAsync(npcId, await TryReadCurrentTurnNumberAsync());
+            if (tradeView == null)
+            {
+                MarkupLine("[red]❌ Не удалось загрузить данные торговца.[/]");
+                WaitForKey();
+                return;
+            }
+
+            if (tradeView.TradeBlocked)
+            {
+                MarkupLine($"[red]⛔ {Markup.Escape(tradeView.BlockReason ?? "Торговля недоступна.")}[/]");
+                WaitForKey();
+                return;
+            }
+
+            if (tradeView.BuybackOffers.Count == 0)
+            {
+                MarkupLine("[dim]У этого торговца нет доступных товаров для обратного выкупа.[/]");
+                WaitForKey();
+                return;
+            }
+
+            var offerChoices = BuildUniqueChoiceOptions(tradeView.BuybackOffers, offer =>
+                ConsoleLayout.PlainChoiceLabel(
+                    $"🔁 {offer.Name}",
+                    GetNpcTradeChoiceMeta(offer.ItemData),
+                    offer.Rarity,
+                    $"💰 {offer.Price}"));
+            var choices = offerChoices.Select(item => item.Label).ToList();
+            choices.Add("← Назад");
+
+            var selected = Prompt(new SelectionPrompt<string>()
+                .Title($"[bold yellow]Обратный выкуп[/] [dim](доступно: {tradeView.BuybackOffers.Count} • деньги: {tradeView.CurrentMoney})[/]")
+                .HighlightStyle(new Style(Color.Gold1))
+                .PageSize(20)
+                .AddChoices(choices));
+
+            if (selected.Contains("Назад"))
+                return;
+
+            var selectedOffer = offerChoices.FirstOrDefault(item => string.Equals(item.Label, selected, StringComparison.Ordinal)).Value;
+            if (selectedOffer == null)
+                return;
+
+            var offer = selectedOffer;
+            if (!ShowNpcTradeBuybackPreview(offer, tradeView.CurrentMoney, tradeView.CurrentMoney >= offer.Price))
+                continue;
+
+            var result = await _npcTradeService.BuyBackAsync(npcId, offer.BuybackEntryId, await TryReadCurrentTurnNumberAsync());
+            MarkupLine(result.Success
+                ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
+                : $"[red]❌ {Markup.Escape(result.Message)}[/]");
+            WaitForKey();
+
+            if (result.StateChanged)
+                await _stateManager.RefreshGameStateAsync();
+        }
+    }
+
+
     private async Task ShowNpcBuyMenu(string npcId)
     {
         if (_npcTradeService == null)
@@ -88,7 +188,7 @@ public partial class ExplorerMode
 
         while (true)
         {
-            var refreshedView = await _npcTradeService.EnsureTradeInventoryAsync(npcId);
+            var refreshedView = await _npcTradeService.EnsureTradeInventoryAsync(npcId, await TryReadCurrentTurnNumberAsync());
             if (refreshedView == null)
             {
                 MarkupLine("[red]❌ Не удалось загрузить витрину торговца.[/]");
@@ -99,6 +199,13 @@ public partial class ExplorerMode
             if (refreshedView.TradeBlocked)
             {
                 MarkupLine($"[red]⛔ {Markup.Escape(refreshedView.BlockReason ?? "Торговля недоступна.")}[/]");
+                WaitForKey();
+                return;
+            }
+
+            if (!refreshedView.InventoryReady)
+            {
+                MarkupLine($"[yellow]⏳ {Markup.Escape(refreshedView.InventoryStatusMessage ?? "Витрина торговца ещё подготавливается.")}[/]");
                 WaitForKey();
                 return;
             }
@@ -142,7 +249,7 @@ public partial class ExplorerMode
             if (decision != GuardianTradeBuyDecision.Buy)
                 continue;
 
-            var result = await _npcTradeService.BuyAsync(npcId, offer.SlotId);
+            var result = await _npcTradeService.BuyAsync(npcId, offer.SlotId, await TryReadCurrentTurnNumberAsync());
             MarkupLine(result.Success
                 ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
                 : $"[red]❌ {Markup.Escape(result.Message)}[/]");
@@ -200,7 +307,7 @@ public partial class ExplorerMode
 
         while (true)
         {
-            var tradeView = await _npcTradeService.EnsureTradeInventoryAsync(npcId);
+            var tradeView = await _npcTradeService.EnsureTradeInventoryAsync(npcId, await TryReadCurrentTurnNumberAsync());
             if (tradeView == null)
             {
                 MarkupLine("[red]❌ Не удалось загрузить витрину торговца.[/]");
@@ -255,7 +362,7 @@ public partial class ExplorerMode
             if (!ShowNpcTradeSellPreview(offer))
                 continue;
 
-            var result = await _npcTradeService.SellAsync(npcId, offer.ItemId);
+            var result = await _npcTradeService.SellAsync(npcId, offer.ItemId, await TryReadCurrentTurnNumberAsync());
             MarkupLine(result.Success
                 ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
                 : $"[red]❌ {Markup.Escape(result.Message)}[/]");
@@ -290,6 +397,41 @@ public partial class ExplorerMode
             .AddChoices("💰 Продать", "← Назад к списку"));
 
         return action.Contains("Продать", StringComparison.OrdinalIgnoreCase);
+    }
+
+
+    private bool ShowNpcTradeBuybackPreview(Services.NpcTradeService.NpcBuybackOffer offer, int currentMoney, bool canBuy)
+    {
+        using var itemDoc = JsonDocument.Parse(offer.ItemData.ToJsonString());
+        var lines = BuildInventoryItemDetailLines(offer.Name, itemDoc.RootElement);
+        lines.Insert(1, $"  💰 Цена обратного выкупа: [yellow]{offer.Price}[/]");
+        lines.Insert(2, $"  [dim]Ранее продано этому торговцу за {offer.SoldForPrice}. Ход продажи: {offer.SoldAtTurn}.[/]");
+        lines.Insert(3, $"  💰 У вас сейчас: [gold1]{currentMoney}[/]");
+
+        if (!canBuy)
+            lines.Insert(4, "  [yellow]Статус покупки: пока не хватает денег для обратного выкупа.[/]");
+
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🔁 Обратный выкуп ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+
+        var actions = new List<string>();
+        if (canBuy)
+            actions.Add("🔁 Выкупить");
+        actions.Add("← Назад к списку");
+
+        var action = Prompt(new SelectionPrompt<string>()
+            .Title("[bold]Действие:[/]")
+            .HighlightStyle(new Style(Color.Gold1))
+            .AddChoices(actions));
+
+        return action.Contains("Выкупить", StringComparison.OrdinalIgnoreCase);
     }
 
 

@@ -29,7 +29,10 @@ public partial class GameEngine
                 if (doc.RootElement.TryGetProperty("response", out var r))
                     response.Response = r.GetString();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось прочитать output/narrative_response.json при сборке ответа.");
+            }
         }
 
         // Fallback: use narrative from state if not in output file
@@ -51,7 +54,10 @@ public partial class GameEngine
                 if (doc.RootElement.TryGetProperty("image_prompt", out var img))
                     response.ImagePrompt = img.GetString();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось прочитать output/interface_updates.json при сборке ответа.");
+            }
         }
 
         // 3. Read GM thoughts from output/debug_logs.json
@@ -64,7 +70,10 @@ public partial class GameEngine
                 if (doc.RootElement.TryGetProperty("gm_thoughts_markdown", out var gm))
                     response.GmThoughtsMarkdown = gm.GetString();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось прочитать output/debug_logs.json при сборке ответа.");
+            }
         }
 
         // 4. Read combat log from distributed combat state if exists
@@ -77,7 +86,10 @@ public partial class GameEngine
                 if (doc.RootElement.TryGetProperty("combat_log_markdown", out var cl))
                     response.CombatLogMarkdown = cl.GetString();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось прочитать game_state/combat/combat_log.json при сборке ответа.");
+            }
         }
 
         // 5. Populate status from state
@@ -258,7 +270,10 @@ public partial class GameEngine
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось очистить pending turn snapshot artifacts.");
+            }
         }
 
         if (_fs.FileExists(PendingTurnSnapshotManifestPath))
@@ -386,7 +401,11 @@ public partial class GameEngine
         await _systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync(_stateManager.CurrentState.CurrentRealm);
         await GuardianAbodeOfferingState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await GuardianTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        await NpcTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await AfterlifeArchiveActionState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await _qteSceneService.EnsureRuntimeStateHealthyAsync();
 
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
@@ -485,7 +504,10 @@ public partial class GameEngine
                 };
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось прочитать ready signal {RelativePath}.", relativePath);
+        }
 
         return null;
     }
@@ -741,8 +763,14 @@ public partial class GameEngine
     {
         foreach (var backup in snapshot.BackupFiles.Values)
         {
-            try { _fs.DeleteFile(backup); }
-            catch { }
+            try
+            {
+                _fs.DeleteFile(backup);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось удалить rollback backup {BackupPath}.", backup);
+            }
         }
     }
 }

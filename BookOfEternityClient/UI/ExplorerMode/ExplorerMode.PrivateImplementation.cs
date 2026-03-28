@@ -639,6 +639,68 @@ public partial class ExplorerMode
         return def;
     }
 
+    private static List<JsonElement> CollectActorJournalEntryElements(JsonDocument? doc, string actorIdProperty, string actorId)
+    {
+        var result = new List<JsonElement>();
+        if (doc == null || string.IsNullOrWhiteSpace(actorId))
+            return result;
+
+        if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+            !doc.RootElement.TryGetProperty(ActorJournalState.EntriesProperty, out var entries) ||
+            entries.ValueKind != JsonValueKind.Array)
+        {
+            return result;
+        }
+
+        foreach (var entry in entries.EnumerateArray())
+        {
+            if (entry.ValueKind != JsonValueKind.Object)
+                continue;
+
+            if (!string.Equals(GetStr(entry, actorIdProperty, ""), actorId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            result.Add(entry.Clone());
+        }
+
+        return result
+            .OrderByDescending(entry => GetInt(entry, "turn", GetInt(entry, "turnNumber", 0)))
+            .ThenByDescending(entry =>
+            {
+                var timestamp = GetStr(entry, "timestamp", "");
+                if (!string.IsNullOrWhiteSpace(timestamp))
+                    return timestamp;
+
+                timestamp = GetStr(entry, "revealedAtUtc", "");
+                if (!string.IsNullOrWhiteSpace(timestamp))
+                    return timestamp;
+
+                timestamp = GetStr(entry, "resolvedAtUtc", "");
+                if (!string.IsNullOrWhiteSpace(timestamp))
+                    return timestamp;
+
+                return GetStr(entry, "appliedAt", "");
+            }, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static string BuildActorJournalLine(JsonElement entry)
+    {
+        var turn = GetInt(entry, "turn", GetInt(entry, "turnNumber", 0));
+        var eventType = GetStr(entry, "eventType", "");
+        var title = GetStr(entry, "title", GetStr(entry, "name", GetStr(entry, "entryId", "")));
+        var summary = GetStr(entry, "summary", GetStr(entry, "description", GetStr(entry, "content", "")));
+
+        var prefix = turn > 0 ? $"t{turn}: " : string.Empty;
+        var typePrefix = string.IsNullOrWhiteSpace(eventType) ? string.Empty : $"{eventType}: ";
+
+        if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(summary))
+            return $"{prefix}{typePrefix}{title} — {summary}";
+        if (!string.IsNullOrWhiteSpace(summary))
+            return $"{prefix}{typePrefix}{summary}";
+        return $"{prefix}{typePrefix}{title}";
+    }
+
     private static string GetRarityColor(string rarity) => rarity.ToLower() switch
     {
         "common" or "обычный" => "white",

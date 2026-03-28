@@ -119,7 +119,10 @@ public partial class ValidationService
                         new[] { "healthPercentage", "energyPercentage", "poisePercentage", "money" }, issues);
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось проверить required fields в soul_state/player_status.");
+            }
         }
     }
 
@@ -430,15 +433,26 @@ public partial class ValidationService
         await ValidateArchiveCandidateManifestAsync(issues);
         await ValidatePendingAbodeOfferingContextAsync(issues);
         await ValidatePendingGuardianTradeRequestContextAsync(issues);
+        await ValidatePendingNpcTradeInventoryRequestContextAsync(issues);
         await ValidatePendingArchiveConsultationRequestContextAsync(issues);
         await ValidatePendingArchiveProjectFuelRequestContextAsync(issues);
+        await ValidatePendingGuardianAbodeResidentsRequestContextAsync(issues);
+        await ValidatePendingGuardianAbodeResidentInteractionRequestContextAsync(issues);
+        await ValidatePendingGuardianSocialInteractionRequestContextAsync(issues);
+        await ValidatePendingNpcSocialInteractionRequestContextAsync(issues);
         if (_fs.FileExists("ready/turn_complete.json") ||
             _fs.FileExists("ready/turn_error.json"))
         {
             await ValidatePendingAbodeOfferingResolutionAsync(issues);
             await ValidatePendingGuardianTradeRequestResolutionAsync(issues);
+            await ValidatePendingNpcTradeInventoryRequestResolutionAsync(issues);
             await ValidatePendingArchiveConsultationResolutionAsync(issues);
             await ValidatePendingArchiveProjectFuelResolutionAsync(issues);
+            await ValidatePendingGuardianAbodeResidentsResolutionAsync(issues);
+            await ValidatePendingGuardianAbodeResidentInteractionResolutionAsync(issues);
+            await ValidatePendingGuardianSocialInteractionResolutionAsync(issues);
+            await ValidatePendingNpcSocialInteractionResolutionAsync(issues);
+            await ValidateResidentMechanicalOutcomeMemoryAsync(issues);
         }
 
         if (manifest == null)

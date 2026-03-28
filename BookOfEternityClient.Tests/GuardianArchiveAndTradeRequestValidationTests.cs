@@ -311,7 +311,8 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             derivedTradeSlotCount = 4,
             effectiveRarityCeilingBonusSteps = 0,
             projectBonusSignature = "0|0|0",
-            createdAtUtc = "2026-03-26T00:00:00Z"
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            createdAtTurn = 11
         };
 
         await WriteJsonAsync(GuardianTradeRequestState.PendingRequestPath, request);
@@ -379,6 +380,177 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         var issues = await _validator.ValidateGameStateAsync();
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_inventory_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PreTurnTradeRequestWithInventoryButWithoutReceipt_FailsResolutionContract()
+    {
+        var request = new
+        {
+            requestId = "guardian_trade_test_002",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            abodeId = "abode_alpha",
+            returnCycleId = "return_1",
+            currentReputation = 110,
+            derivedTradeSlotCount = 4,
+            effectiveRarityCeilingBonusSteps = 0,
+            projectBonusSignature = "0|0|0",
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            createdAtTurn = 11
+        };
+
+        await WriteJsonAsync(GuardianTradeRequestState.PendingRequestPath, request);
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_guardian_trade_request_receipt.json";
+        await WriteJsonAsync(backupPath, request);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianTradeRequestState.PendingRequestPath] = backupPath
+        });
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "domain": "Порог Сна",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 110, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
+              "tradeInventory": {
+                "tradeCycleId": "return_1",
+                "generatedAtUtc": "2026-03-26T00:10:00Z",
+                "generationReputationTier": "Friendly",
+                "pricingReputationTier": "Friendly",
+                "projectBonusSignature": "0|0|0",
+                "effectiveRarityCeilingBonusSteps": 0,
+                "items": [
+                  { "slotId": "slot_1", "priceInFeathers": 30, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_1", "name": "Реликвия 1", "quality": "Common" } },
+                  { "slotId": "slot_2", "priceInFeathers": 70, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_2", "name": "Реликвия 2", "quality": "Uncommon" } },
+                  { "slotId": "slot_3", "priceInFeathers": 140, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_3", "name": "Реликвия 3", "quality": "Rare" } },
+                  { "slotId": "slot_4", "priceInFeathers": 140, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_4", "name": "Реликвия 4", "quality": "Rare" } }
+                ]
+              },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guardian_alpha",
+            "canonicalName": "Азалия",
+            "domain": "Порог Сна",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 110, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 10, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+            "abode": { "abodeId": "abode_alpha", "name": "Тестовая обитель" },
+            "tradeInventory": {
+              "tradeCycleId": "return_1",
+              "generatedAtUtc": "2026-03-26T00:10:00Z",
+              "generationReputationTier": "Friendly",
+              "pricingReputationTier": "Friendly",
+              "projectBonusSignature": "0|0|0",
+              "effectiveRarityCeilingBonusSteps": 0,
+              "items": [
+                { "slotId": "slot_1", "priceInFeathers": 30, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_1", "name": "Реликвия 1", "quality": "Common" } },
+                { "slotId": "slot_2", "priceInFeathers": 70, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_2", "name": "Реликвия 2", "quality": "Uncommon" } },
+                { "slotId": "slot_3", "priceInFeathers": 140, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_3", "name": "Реликвия 3", "quality": "Rare" } },
+                { "slotId": "slot_4", "priceInFeathers": 140, "soldOut": false, "rarityBonusStepsApplied": 0, "relicData": { "relicId": "relic_4", "name": "Реликвия 4", "quality": "Rare" } }
+              ]
+            },
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          },
+          "chaosSeaNavigation": {
+            "currentAbodeId": "abode_alpha"
+          }
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GuardianBuybackRelicsWithMalformedEntry_FailsValidation()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    domain = "Порог Сна",
+                    nameVariants = new { @default = "Азалия", feminine = "Азалия", masculine = (string?)null, neutral = (string?)null },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия",
+                        formFlexibility = "selective",
+                        currentPresentationStyle = "feminine",
+                        currentPronouns = "она/её",
+                        appearanceDescription = "Тестовая форма."
+                    },
+                    manifestationHistory = Array.Empty<object>(),
+                    relationshipData = new { currentReputation = 120, reputationHistory = Array.Empty<object>(), lastInteraction = (string?)null },
+                    abodePower = new { currentPower = 10, tier = "Хрупкая", lastUpdatedAt = "2026-03-24T00:00:00Z", history = Array.Empty<object>() },
+                    abode = new { abodeId = "abode_alpha", name = "Тестовая обитель" },
+                    gachaSystem = new { chargesPerReturn = 0, chargesUsedThisReturn = 0, gachaHistory = Array.Empty<object>() },
+                    buybackRelics = new object[]
+                    {
+                        new
+                        {
+                            buybackEntryId = "guardian_buyback_001",
+                            guardianId = "guardian_wrong",
+                            guardianName = "Азалия",
+                            relicId = "relic_buyback_001",
+                            relicData = new
+                            {
+                                relicId = "relic_buyback_002",
+                                name = "Сломанная запись"
+                            },
+                            soldByPlayerAtTurn = -1,
+                            soldByPlayerAtUtc = "not-a-timestamp",
+                            soldForPrice = 0,
+                            buybackPrice = 0,
+                            acquiredFromPlayer = "yes",
+                            status = "available"
+                        }
+                    }
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_buyback_relic_guardian_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_buyback_relic_id_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_buyback_relic_sold_turn_invalid", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -954,6 +1126,907 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         var issues = await _validator.ValidateGameStateAsync();
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "world_event_rival_arc_invalid_visibility", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PendingResidentTalkRequestWithoutReceipt_Fails()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Сад Нитей" }
+                }
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 30,
+                    bondTier = "familiar",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+
+        var request = new
+        {
+            requestId = "resident_talk_req_1",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            abodeId = "abode_alpha",
+            abodeName = "Сад Нитей",
+            residentId = "resident_alpha_1",
+            residentName = "Лиора",
+            interactionType = "talk",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-27T00:00:00Z"
+        };
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, new { requests = new[] { request } });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new { currentRealm = "Chaos Sea" });
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_guardian_abode_resident_interactions.json";
+        await WriteJsonAsync(backupPath, new { requests = new[] { request } });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentRequestState.PendingInteractionsRequestPath] = backupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_interaction_missing_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptedResidentHistoryWithoutCanonicalResult_Fails()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Сад Нитей" }
+                }
+            }
+        });
+
+        var currentResidentState = new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 30,
+                    bondTier = "familiar",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            },
+            interactionReceipts = new object[]
+            {
+                new
+                {
+                    requestId = "resident_history_req_1",
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    interactionType = "history",
+                    status = "accepted",
+                    responseMode = "history_partial",
+                    resolvedAtTurn = 12,
+                    resolvedAtUtc = "2026-03-27T00:05:00Z"
+                }
+            }
+        };
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, currentResidentState);
+
+        var request = new
+        {
+            requestId = "resident_history_req_1",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            abodeId = "abode_alpha",
+            abodeName = "Сад Нитей",
+            residentId = "resident_alpha_1",
+            residentName = "Лиора",
+            interactionType = "history",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-27T00:00:00Z"
+        };
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, new { requests = new[] { request } });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new { currentRealm = "Chaos Sea" });
+        const string requestBackupPath = "game_state/control/pending_turn_snapshot/pre_pending_guardian_abode_resident_interactions_history.json";
+        const string residentBackupPath = "game_state/control/pending_turn_snapshot/pre_guardian_abode_residents.json";
+        await WriteJsonAsync(requestBackupPath, new { requests = new[] { request } });
+        await WriteJsonAsync(residentBackupPath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 30,
+                    bondTier = "familiar",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentRequestState.PendingInteractionsRequestPath] = requestBackupPath,
+            [GuardianAbodeResidentState.StatePath] = residentBackupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_history_missing_canonical_result", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptedResidentTalkWithoutMemoryUpdate_Fails()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Сад Нитей" }
+                }
+            }
+        });
+
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 30,
+                    bondTier = "familiar",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            },
+            interactionReceipts = new object[]
+            {
+                new
+                {
+                    requestId = "resident_talk_req_1",
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    interactionType = "talk",
+                    status = "accepted",
+                    responseMode = "talk_scene",
+                    resolvedAtTurn = 12,
+                    resolvedAtUtc = "2026-03-27T00:05:00Z"
+                }
+            }
+        });
+
+        var request = new
+        {
+            requestId = "resident_talk_req_1",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            abodeId = "abode_alpha",
+            abodeName = "Сад Нитей",
+            residentId = "resident_alpha_1",
+            residentName = "Лиора",
+            interactionType = "talk",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-27T00:00:00Z"
+        };
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, new { requests = new[] { request } });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new { currentRealm = "Chaos Sea" });
+        const string requestBackupPath = "game_state/control/pending_turn_snapshot/pre_pending_guardian_abode_resident_interactions_talk.json";
+        const string residentBackupPath = "game_state/control/pending_turn_snapshot/pre_guardian_abode_residents_talk.json";
+        await WriteJsonAsync(requestBackupPath, new { requests = new[] { request } });
+        await WriteJsonAsync(residentBackupPath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 30,
+                    bondTier = "familiar",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentRequestState.PendingInteractionsRequestPath] = requestBackupPath,
+            [GuardianAbodeResidentState.StatePath] = residentBackupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_talk_missing_memory_update", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptedResidentHistoryWithoutMemoryUpdate_Fails()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Сад Нитей" }
+                }
+            }
+        });
+
+        var request = new
+        {
+            requestId = "resident_history_req_memory_1",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            abodeId = "abode_alpha",
+            abodeName = "Сад Нитей",
+            residentId = "resident_alpha_1",
+            residentName = "Лиора",
+            interactionType = "history",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-27T00:00:00Z"
+        };
+
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 30,
+                    bondTier = "familiar",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            },
+            interactionReceipts = new object[]
+            {
+                new
+                {
+                    requestId = request.requestId,
+                    residentId = request.residentId,
+                    guardianId = request.guardianId,
+                    abodeId = request.abodeId,
+                    interactionType = request.interactionType,
+                    status = "accepted",
+                    responseMode = "history_revealed",
+                    resolvedAtTurn = 12,
+                    resolvedAtUtc = "2026-03-27T00:05:00Z"
+                }
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, new { requests = new[] { request } });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new { currentRealm = "Chaos Sea" });
+        const string requestBackupPath = "game_state/control/pending_turn_snapshot/pre_pending_guardian_abode_resident_interactions_history_memory.json";
+        const string residentBackupPath = "game_state/control/pending_turn_snapshot/pre_guardian_abode_residents_history_memory.json";
+        await WriteJsonAsync(requestBackupPath, new { requests = new[] { request } });
+        await WriteJsonAsync(residentBackupPath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 30,
+                    bondTier = "familiar",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentRequestState.PendingInteractionsRequestPath] = requestBackupPath,
+            [GuardianAbodeResidentState.StatePath] = residentBackupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_history_missing_memory_update", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ResidentQuestGrantWithoutInteractionLog_Fails()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Сад Нитей" }
+                }
+            }
+        });
+
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 55,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "soul_quest_resident_1",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/quests/soul_quests.json", new
+        {
+            quests = new object[]
+            {
+                new
+                {
+                    questId = "soul_quest_resident_1",
+                    guardianId = "guardian_alpha",
+                    title = "След гонца",
+                    description = "Нужно вернуть долговое письмо.",
+                    relatedAfterlifeResidentId = "resident_alpha_1",
+                    status = "active",
+                    objectives = new object[]
+                    {
+                        new { objectiveId = "obj_1", description = "Найти письмо", status = "Active" }
+                    },
+                    progress = new { completed = 0, total = 1 },
+                    rewards = new { inkFeathers = 0, enlightenmentExperience = 0 },
+                    crossIncarnation = false,
+                    completionTimestamp = (string?)null
+                }
+            }
+        });
+
+        const string residentBackupPath = "game_state/control/pending_turn_snapshot/pre_guardian_abode_residents_quest_memory.json";
+        const string soulQuestBackupPath = "game_state/control/pending_turn_snapshot/pre_soul_quests_resident_memory.json";
+        await WriteJsonAsync(residentBackupPath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 55,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync(soulQuestBackupPath, new { quests = Array.Empty<object>() });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentState.StatePath] = residentBackupPath,
+            ["game_state/quests/soul_quests.json"] = soulQuestBackupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_quest_missing_interaction_log_update", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ResidentRewardGrantWithoutInteractionLog_Fails()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Сад Нитей" }
+                }
+            }
+        });
+
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 80,
+                    bondTier = "bound",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "granted",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "relic_echo_liora",
+                    historyRevealed = true,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea",
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_echo_liora",
+                        name = "Эхо Лиоры",
+                        rarity = "Rare",
+                        relicType = "companion_echo",
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_alpha_1",
+                            sourceGuardianId = "guardian_alpha",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Бывшая гонец при храме дорог.",
+                            futureCompanionPrompt = "Swift wanderer"
+                        }
+                    }
+                }
+            }
+        });
+
+        const string residentBackupPath = "game_state/control/pending_turn_snapshot/pre_guardian_abode_residents_reward_memory.json";
+        await WriteJsonAsync(residentBackupPath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 80,
+                    bondTier = "bound",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentState.StatePath] = residentBackupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_reward_missing_interaction_log_update", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ResidentWithInvalidInteractionToken_Fails()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 30,
+                    bondTier = "familiar",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    },
+                    availableInteractions = new[] { "talkk" }
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_abode_resident_invalid_interaction_token", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ResidentWithUnknownGuardian_Fails()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_unknown",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 30,
+                    bondTier = "familiar",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_abode_resident_unknown_guardian_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PendingManifestationDuplicateRelicId_Fails()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "manifest_1",
+                    manifestationSource = "imprint_relic",
+                    relicId = "relic_dup_1",
+                    relicName = "Двойной зов",
+                    sourceImprintId = "imprint_1",
+                    targetIncarnation = 2,
+                    companionNameHint = "Тарен",
+                    originWorldSummary = "Первый след.",
+                    futureCompanionPrompt = "Faithful ally",
+                    createdAtUtc = "2026-03-27T00:00:00Z"
+                },
+                new
+                {
+                    requestId = "manifest_2",
+                    manifestationSource = "imprint_relic",
+                    relicId = "relic_dup_1",
+                    relicName = "Двойной зов",
+                    sourceImprintId = "imprint_2",
+                    targetIncarnation = 2,
+                    companionNameHint = "Элис",
+                    originWorldSummary = "Второй след.",
+                    futureCompanionPrompt = "Faithful ally",
+                    createdAtUtc = "2026-03-27T00:00:01Z"
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "pending_resident_companion_manifestation_duplicate_relic_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RosterRequestWithoutCanonicalReceipt_Fails()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Сад Нитей" }
+                }
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 30,
+                    bondTier = "familiar",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+
+        var request = new
+        {
+            requestId = "abode_req_1",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            abodeId = "abode_alpha",
+            abodeName = "Сад Нитей",
+            currentReputation = 80,
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-27T00:00:00Z"
+        };
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, new { requests = new[] { request } });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new { currentRealm = "Chaos Sea" });
+        const string requestBackupPath = "game_state/control/pending_turn_snapshot/pre_pending_guardian_abode_residents_request.json";
+        await WriteJsonAsync(requestBackupPath, new { requests = new[] { request } });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentRequestState.PendingResidentsRequestPath] = requestBackupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_roster_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GuardianThoughtJournalWithUnknownGuardian_Fails()
+    {
+        await WriteJsonAsync(GuardianThoughtJournalState.StatePath, new
+        {
+            entries = new[]
+            {
+                new
+                {
+                    entryId = "gthought_1",
+                    guardianId = "guardian_missing",
+                    turn = 12,
+                    timestamp = "2026-03-27T10:00:00Z",
+                    title = "Скрытая оценка",
+                    summary = "Хранитель пока не верит душе."
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_thought_unknown_guardian_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_NpcInteractionJournalWithUnknownNpc_Fails()
+    {
+        await WriteJsonAsync(NpcInteractionJournalState.StatePath, new
+        {
+            entries = new[]
+            {
+                new
+                {
+                    entryId = "npc_event_1",
+                    npcId = "npc_missing",
+                    turn = 12,
+                    timestamp = "2026-03-27T10:00:00Z",
+                    title = "Сделка не состоялась",
+                    summary = "Торговец отказался продавать амулет."
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "npc_interaction_journal_unknown_npc_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ResidentThoughtJournalWithUnknownResident_Fails()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = Array.Empty<object>(),
+            thoughtJournal = new[]
+            {
+                new
+                {
+                    entryId = "rthought_1",
+                    residentId = "resident_missing",
+                    turn = 12,
+                    timestamp = "2026-03-27T10:00:00Z",
+                    title = "Ждёт ответа",
+                    summary = "Резидент не знает, доверять ли душе."
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "resident_thought_unknown_resident_id", StringComparison.OrdinalIgnoreCase));
     }
 
     private async Task WritePendingTurnSnapshotManifestAsync(Dictionary<string, string> rollbackBackups)

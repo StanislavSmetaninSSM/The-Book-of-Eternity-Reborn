@@ -2565,6 +2565,98 @@ public partial class ValidationService
                 actual: rarity,
                 repairHint: "Используй для Soul Relic только canonical rarity/quality enum из Block 31."));
         }
+
+        var relicType = GetFirstNonEmptyString(relic, "relicType", "type");
+        var hasCompanionSeed = relic.TryGetProperty("companionSeed", out var companionSeed);
+        if (string.Equals(relicType, GuardianAbodeResidentState.RelicTypeCompanionEcho, StringComparison.OrdinalIgnoreCase) || hasCompanionSeed)
+        {
+            if (!hasCompanionSeed || !RequireObject(companionSeed, $"{context}.companionSeed", issues))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.companionSeed",
+                    IssueSeverity.Error,
+                    "companion_echo Soul Relic должна содержать companionSeed object",
+                    code: "companion_echo_relic_missing_seed",
+                    section: section,
+                    expected: "companionSeed object",
+                    actual: hasCompanionSeed ? companionSeed.ValueKind.ToString() : "missing",
+                    repairHint: "Для companion_echo реликвии обязательно сохраняй companionSeed с sourceResidentId, sourceGuardianId, companionNameHint, originWorldSummary и futureCompanionPrompt."));
+                return;
+            }
+
+            RequireString(companionSeed, $"{context}.companionSeed", issues, "sourceResidentId");
+            RequireString(companionSeed, $"{context}.companionSeed", issues, "sourceGuardianId");
+            RequireString(companionSeed, $"{context}.companionSeed", issues, "companionNameHint");
+            RequireString(companionSeed, $"{context}.companionSeed", issues, "originWorldSummary");
+            RequireString(companionSeed, $"{context}.companionSeed", issues, "futureCompanionPrompt");
+            ValidateOptionalString(companionSeed, $"{context}.companionSeed", issues, "bondReason");
+
+            if (companionSeed.TryGetProperty("coreTraits", out var coreTraits))
+                RequireArrayOfStrings(coreTraits, $"{context}.companionSeed.coreTraits", issues);
+            if (companionSeed.TryGetProperty("archetypeHints", out var archetypeHints))
+                RequireArrayOfStrings(archetypeHints, $"{context}.companionSeed.archetypeHints", issues);
+            if (companionSeed.TryGetProperty("appearanceMotifs", out var appearanceMotifs))
+                RequireArrayOfStrings(appearanceMotifs, $"{context}.companionSeed.appearanceMotifs", issues);
+        }
+
+        var hasEmbeddedSoulImprint = relic.TryGetProperty("soulImprint", out var soulImprint) || relic.TryGetProperty("npcSoulImprint", out soulImprint);
+        if (hasEmbeddedSoulImprint)
+        {
+            var imprintContext = relic.TryGetProperty("soulImprint", out var _) ? $"{context}.soulImprint" : $"{context}.npcSoulImprint";
+            if (!RequireObject(soulImprint, imprintContext, issues))
+            {
+                issues.Add(new ValidationIssue(
+                    imprintContext,
+                    IssueSeverity.Error,
+                    "Soul Relic со слепком НПС должна содержать object-представление imprint",
+                    code: "soul_relic_embedded_imprint_invalid",
+                    section: section,
+                    expected: "soulImprint or npcSoulImprint object",
+                    actual: soulImprint.ValueKind.ToString(),
+                    repairHint: "Сохраняй embedded NPC imprint внутри реликвии как object с идентичностью, summary и core traits."));
+                return;
+            }
+
+            var imprintName = GetFirstNonEmptyString(soulImprint, "NPCName", "npcName", "name", "companionName", "originalName");
+            var imprintId = GetFirstNonEmptyString(soulImprint, "imprintId", "id");
+            var imprintDescription = GetFirstNonEmptyString(soulImprint, "description", "summary", "backgroundStory", "history");
+            if (string.IsNullOrWhiteSpace(imprintName) && string.IsNullOrWhiteSpace(imprintId))
+            {
+                issues.Add(new ValidationIssue(
+                    imprintContext,
+                    IssueSeverity.Error,
+                    "Embedded NPC imprint в реликвии должен содержать имя или imprintId",
+                    code: "soul_relic_embedded_imprint_missing_identity",
+                    section: section,
+                    repairHint: "Сохраняй в soulImprint/npcSoulImprint хотя бы NPCName/name или imprintId/id."));
+            }
+
+            if (string.IsNullOrWhiteSpace(imprintDescription))
+            {
+                issues.Add(new ValidationIssue(
+                    imprintContext,
+                    IssueSeverity.Error,
+                    "Embedded NPC imprint в реликвии должен содержать summary/description",
+                    code: "soul_relic_embedded_imprint_missing_summary",
+                    section: section,
+                    repairHint: "Сохраняй в soulImprint/npcSoulImprint краткое описание прошлого NPC."));
+            }
+
+            var hasCoreTraits =
+                (soulImprint.TryGetProperty("coreTraitsPreserved", out var coreTraitsPreserved) && coreTraitsPreserved.ValueKind == JsonValueKind.Array && coreTraitsPreserved.GetArrayLength() > 0) ||
+                (soulImprint.TryGetProperty("coreTraits", out var coreTraits) && coreTraits.ValueKind == JsonValueKind.Array && coreTraits.GetArrayLength() > 0) ||
+                (soulImprint.TryGetProperty("personalityTraits", out var personalityTraits) && personalityTraits.ValueKind == JsonValueKind.Array && personalityTraits.GetArrayLength() > 0);
+            if (!hasCoreTraits)
+            {
+                issues.Add(new ValidationIssue(
+                    imprintContext,
+                    IssueSeverity.Error,
+                    "Embedded NPC imprint в реликвии должен сохранять core traits или personality traits",
+                    code: "soul_relic_embedded_imprint_missing_traits",
+                    section: section,
+                    repairHint: "Сохраняй в soulImprint/npcSoulImprint coreTraitsPreserved, coreTraits или personalityTraits."));
+            }
+        }
     }
 
 

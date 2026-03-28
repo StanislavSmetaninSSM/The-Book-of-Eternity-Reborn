@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -9,14 +10,11 @@ internal static class GuardianTradeRequestState
 {
     public const string PendingRequestPath = "game_state/control/pending_guardian_trade_request.json";
     public const string ActionTag = "GUARDIAN_TRADE_REQUEST";
+    public const string UpdateReceiptsProperty = "UpdateGuardianTradeInventoryReceipts";
+    public const string ReceiptsProperty = "tradeInventoryReceipts";
+    public const string ReceiptStatusReady = "ready";
 
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    };
+    private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
     public sealed class PendingGuardianTradeRequest
     {
@@ -49,6 +47,39 @@ internal static class GuardianTradeRequestState
 
         [JsonPropertyName("createdAtUtc")]
         public string CreatedAtUtc { get; set; } = DateTime.UtcNow.ToString("o");
+
+        [JsonPropertyName("createdAtTurn")]
+        public int CreatedAtTurn { get; set; }
+    }
+
+    public sealed class TradeInventoryReceiptEntry
+    {
+        [JsonPropertyName("requestId")]
+        public string RequestId { get; set; } = "";
+
+        [JsonPropertyName("guardianId")]
+        public string GuardianId { get; set; } = "";
+
+        [JsonPropertyName("guardianName")]
+        public string GuardianName { get; set; } = "";
+
+        [JsonPropertyName("abodeId")]
+        public string AbodeId { get; set; } = "";
+
+        [JsonPropertyName("tradeCycleId")]
+        public string TradeCycleId { get; set; } = "";
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; } = ReceiptStatusReady;
+
+        [JsonPropertyName("itemCount")]
+        public int ItemCount { get; set; }
+
+        [JsonPropertyName("resolvedAtTurn")]
+        public int ResolvedAtTurn { get; set; }
+
+        [JsonPropertyName("resolvedAtUtc")]
+        public string ResolvedAtUtc { get; set; } = "";
     }
 
     public static async Task WriteAsync(FileSystemManager fs, PendingGuardianTradeRequest request)
@@ -73,6 +104,58 @@ internal static class GuardianTradeRequestState
     }
 
     public static void Clear(FileSystemManager fs) => fs.DeleteFile(PendingRequestPath);
+
+    public static JsonArray EnsureReceiptsArray(JsonObject guardian)
+    {
+        NormalizeGuardianTradeReceiptsShape(guardian);
+        return guardian[ReceiptsProperty]!.AsArray();
+    }
+
+    public static void NormalizeGuardianTradeReceiptsShape(JsonObject guardian)
+    {
+        if (guardian[ReceiptsProperty] is not JsonArray receipts)
+        {
+            if (guardian[UpdateReceiptsProperty] is JsonArray updateReceipts)
+                guardian[ReceiptsProperty] = updateReceipts.DeepClone();
+            else
+                guardian[ReceiptsProperty] = new JsonArray();
+        }
+
+        if (guardian[ReceiptsProperty] is not JsonArray normalizedReceipts)
+            return;
+
+        for (var i = normalizedReceipts.Count - 1; i >= 0; i--)
+        {
+            if (normalizedReceipts[i] is not JsonObject receipt)
+            {
+                normalizedReceipts.RemoveAt(i);
+                continue;
+            }
+
+            NormalizeReceiptObject(receipt);
+        }
+    }
+
+    public static void ApplyReceiptUpdates(JsonObject guardiansRoot, JsonArray updates)
+    {
+        if (guardiansRoot["guardians"] is not JsonArray guardians)
+            return;
+
+        foreach (var receipt in updates.OfType<JsonObject>())
+        {
+            NormalizeReceiptObject(receipt);
+            var guardianId = GetNodeString(receipt["guardianId"]);
+            if (string.IsNullOrWhiteSpace(guardianId))
+                continue;
+
+            var guardian = guardians.OfType<JsonObject>()
+                .FirstOrDefault(item => string.Equals(GetNodeString(item["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase));
+            if (guardian == null)
+                continue;
+
+            UpsertReceipt(EnsureReceiptsArray(guardian), receipt);
+        }
+    }
 
     public static bool MatchesCurrentContract(
         PendingGuardianTradeRequest? request,
@@ -120,6 +203,46 @@ internal static class GuardianTradeRequestState
                items.Count == request.DerivedTradeSlotCount;
     }
 
+    public static JsonObject? FindMatchingReceipt(JsonObject guardian, PendingGuardianTradeRequest request)
+    {
+        if (guardian[ReceiptsProperty] is not JsonArray receipts)
+            return null;
+
+        return receipts.OfType<JsonObject>()
+            .FirstOrDefault(receipt => ReceiptMatchesRequestContract(receipt, request, guardian["tradeInventory"] as JsonObject));
+    }
+
+    public static bool ReceiptMatchesRequestContract(JsonObject? receipt, PendingGuardianTradeRequest request, JsonObject? tradeInventory)
+    {
+        if (receipt == null || tradeInventory == null)
+            return false;
+
+        if (!string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (!string.Equals(GetNodeString(receipt["guardianId"]), request.GuardianId, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (!string.Equals(GetNodeString(receipt["abodeId"]), request.AbodeId, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (!string.Equals(GetNodeString(receipt["tradeCycleId"]), request.ReturnCycleId, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (!string.Equals(GetNodeString(receipt["status"]), ReceiptStatusReady, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (string.IsNullOrWhiteSpace(GetNodeString(receipt["resolvedAtUtc"])) || GetNodeInt(receipt["resolvedAtTurn"], 0) <= 0)
+            return false;
+
+        return GetNodeInt(receipt["itemCount"], -1) == GetTradeInventoryItemCount(tradeInventory);
+    }
+
+    public static int GetTradeInventoryItemCount(JsonObject? tradeInventory) =>
+        tradeInventory?["items"] is JsonArray items
+            ? items.OfType<JsonObject>().Count()
+            : 0;
+
     public static async Task EnsureHealthyAsync(FileSystemManager fs, string? currentRealm)
     {
         if (!fs.FileExists(PendingRequestPath))
@@ -165,6 +288,9 @@ internal static class GuardianTradeRequestState
             if (!InventoryMatchesRequestContract(tradeInventory, request))
                 return;
 
+            if (!ReceiptMatchesRequestContract(FindMatchingReceipt(guardian, request), request, tradeInventory))
+                return;
+
             fs.DeleteFile(PendingRequestPath);
         }
         catch
@@ -202,5 +328,39 @@ internal static class GuardianTradeRequestState
             return number;
 
         return fallback;
+    }
+
+    private static void NormalizeReceiptObject(JsonObject receipt)
+    {
+        receipt["requestId"] = JsonValue.Create(GetNodeString(receipt["requestId"]));
+        receipt["guardianId"] = JsonValue.Create(GetNodeString(receipt["guardianId"]));
+        receipt["guardianName"] = JsonValue.Create(GetNodeString(receipt["guardianName"]));
+        receipt["abodeId"] = JsonValue.Create(GetNodeString(receipt["abodeId"]));
+        receipt["tradeCycleId"] = JsonValue.Create(GetNodeString(receipt["tradeCycleId"]));
+        receipt["status"] = JsonValue.Create(GetNodeString(receipt["status"]));
+        receipt["itemCount"] = JsonValue.Create(GetNodeInt(receipt["itemCount"], 0));
+        receipt["resolvedAtTurn"] = JsonValue.Create(GetNodeInt(receipt["resolvedAtTurn"], 0));
+        receipt["resolvedAtUtc"] = JsonValue.Create(GetNodeString(receipt["resolvedAtUtc"]));
+    }
+
+    private static void UpsertReceipt(JsonArray receipts, JsonObject receipt)
+    {
+        var requestId = GetNodeString(receipt["requestId"]);
+        if (string.IsNullOrWhiteSpace(requestId))
+            return;
+
+        for (var i = 0; i < receipts.Count; i++)
+        {
+            if (receipts[i] is not JsonObject existing)
+                continue;
+
+            if (!string.Equals(GetNodeString(existing["requestId"]), requestId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            receipts[i] = receipt.DeepClone();
+            return;
+        }
+
+        receipts.Add(receipt.DeepClone());
     }
 }

@@ -2343,7 +2343,7 @@ public partial class ExplorerMode
 
             if (updated)
             {
-                var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
                 await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
                 if (string.IsNullOrWhiteSpace(newDirective))
                     MarkupLine($"[green]✓ Директива для {Markup.Escape(comp.displayName)} очищена.[/]");
@@ -2479,7 +2479,7 @@ public partial class ExplorerMode
 
             if (updated)
             {
-                var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
                 await _fs.WriteFileAtomicAsync(path, node.ToJsonString(opts));
                 if (string.IsNullOrWhiteSpace(newDirective))
                     MarkupLine($"[green]✓ Стратегия {Markup.Escape(faction.name)} очищена.[/]");

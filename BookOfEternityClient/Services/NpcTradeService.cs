@@ -7,327 +7,22 @@ using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.Services;
 
-public sealed class NpcTradeService
+public sealed partial class NpcTradeService
 {
     private readonly FileSystemManager _fs;
     private readonly ILogger<NpcTradeService> _logger;
 
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    };
+    private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
     private const string NpcCorePath = "game_state/npcs/npc_core.json";
     private const string ItemsPath = "game_state/inventory/items.json";
     private const string PlayerStatusPath = "game_state/core/player_status.json";
     private const string WorldTimePath = "game_state/world/world_time.json";
     private const int RefreshWindowMinutes = 30 * 24 * 60;
-
-    private enum GenerationTradeTier
-    {
-        Poor,
-        Standard,
-        Good,
-        Premium,
-        Elite
-    }
-
-    private enum PricingTradeTier
-    {
-        Hostile,
-        Wary,
-        Neutral,
-        Warm,
-        Trusted
-    }
-
-    private sealed record MerchantProfile(
-        string Key,
-        string DisplayName,
-        string[] CategoryTags,
-        string[] BonusStats,
-        string[] ActionBonuses,
-        string[] ProfileFlavors);
-
-    private sealed record TradeItemTemplate(
-        string TemplateId,
-        string TradeItemClass,
-        string[] CategoryTags,
-        string Type,
-        string Group,
-        string[] ItemNames,
-        bool Stackable,
-        int InitialCount,
-        bool IsConsumable,
-        bool IsContainer,
-        int? Capacity,
-        string? EquipmentSlot,
-        int BasePrice,
-        bool AllowsBonuses,
-        string[] DescriptionSnippets,
-        int WeightGrams);
-
-    public sealed record NpcTradeOffer(
-        string SlotId,
-        string Name,
-        string Rarity,
-        int Price,
-        string Description,
-        string MerchantProfile,
-        bool SoldOut,
-        JsonObject ItemData);
-
-    public sealed record NpcTradeView(
-        string NpcId,
-        string NpcName,
-        string MerchantProfile,
-        string MerchantProfileDisplay,
-        int NpcTrade,
-        int PlayerTrade,
-        int RelationshipLevel,
-        int CurrentMoney,
-        bool TradeBlocked,
-        string? BlockReason,
-        int CurrentWorldTimeMinutes,
-        int GeneratedAtWorldTimeMinutes,
-        int RefreshAfterWorldTimeMinutes,
-        IReadOnlyList<NpcTradeOffer> Offers);
-
-    public sealed record NpcSellOffer(
-        string ItemId,
-        string Name,
-        string Rarity,
-        int Price,
-        string Description,
-        JsonObject ItemData);
-
-    public sealed record NpcTradeOperationResult(bool Success, bool StateChanged, string Message);
-
-    internal readonly record struct NpcTradeAvailability(
-        string? MerchantProfile,
-        string MerchantProfileDisplay,
-        bool TradeAvailable,
-        string? BlockReason)
-    {
-        public bool IsMerchant => !string.IsNullOrWhiteSpace(MerchantProfile);
-    }
-
-    private const string DefaultMerchantProfileKey = "GeneralGoods";
-
-    private static readonly IReadOnlyDictionary<string, string> MerchantProfileAliases =
-        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            ["GeneralGoods"] = "GeneralGoods",
-            ["Equipment"] = "Equipment",
-            ["CraftingSupplies"] = "CraftingSupplies",
-            ["Consumables"] = "Consumables",
-            ["KnowledgeAndMedia"] = "KnowledgeAndMedia",
-            ["LuxuryAndDecor"] = "LuxuryAndDecor",
-            ["ArtifactsAndCurios"] = "ArtifactsAndCurios",
-            ["TechnicalGoods"] = "TechnicalGoods",
-            ["IllicitGoods"] = "IllicitGoods",
-            ["Blacksmith"] = "Equipment",
-            ["Alchemist"] = "Consumables",
-            ["Scholar"] = "KnowledgeAndMedia",
-            ["Outfitter"] = "Equipment",
-            ["Curio"] = "ArtifactsAndCurios",
-            ["Smuggler"] = "IllicitGoods"
-        };
-
-    private static readonly IReadOnlyDictionary<string, MerchantProfile> MerchantProfiles =
-        new Dictionary<string, MerchantProfile>(StringComparer.OrdinalIgnoreCase)
-        {
-            ["GeneralGoods"] = new(
-                "GeneralGoods", "Товары общего назначения",
-                new[] { "general", "consumable", "knowledge", "luxury" },
-                new[] { Characteristics.Trade, Characteristics.Perception, Characteristics.Luck },
-                new[] { "utilityBonus", "tradeBonus", "travelBonus" },
-                new[] { "Пригодится в дороге, хозяйстве и повседневных делах.", "Обычно это добротные товары на каждый день." }),
-            ["Equipment"] = new(
-                "Equipment", "Снаряжение и экипировка",
-                new[] { "equipment", "general" },
-                new[] { Characteristics.Strength, Characteristics.Dexterity, Characteristics.Constitution },
-                new[] { "combatBonus", "durabilityBonus", "mobilityBonus" },
-                new[] { "Сюда попадает практичная экипировка для выживания и работы.", "Ассортимент делает ставку на надёжность, защиту и удобство ношения." }),
-            ["CraftingSupplies"] = new(
-                "CraftingSupplies", "Материалы и расходники",
-                new[] { "crafting", "technical", "general" },
-                new[] { Characteristics.Intelligence, Characteristics.Trade, Characteristics.Perception },
-                new[] { "craftingBonus", "repairBonus", "resourceBonus" },
-                new[] { "Хорошо подходит для мастерских, ремонта и сборки.", "Такие товары берут ради снабжения, а не ради боевых бонусов." }),
-            ["Consumables"] = new(
-                "Consumables", "Расходуемые товары",
-                new[] { "consumable", "general" },
-                new[] { Characteristics.Constitution, Characteristics.Wisdom, Characteristics.Speed },
-                new[] { "healingBonus", "enduranceBonus", "recoveryBonus" },
-                new[] { "Это запасы, которые удобно использовать быстро и по делу.", "Основная ценность здесь в непосредственной пользе и доступности." }),
-            ["KnowledgeAndMedia"] = new(
-                "KnowledgeAndMedia", "Документы и знания",
-                new[] { "knowledge", "general" },
-                new[] { Characteristics.Intelligence, Characteristics.Perception, Characteristics.Wisdom },
-                new[] { "knowledgeBonus", "researchBonus", "focusBonus" },
-                new[] { "Ассортимент помогает с навигацией, чтением, архивами и справками.", "Такие товары часто нужны для подготовки, расследований и обучения." }),
-            ["LuxuryAndDecor"] = new(
-                "LuxuryAndDecor", "Роскошь и декор",
-                new[] { "luxury", "general" },
-                new[] { Characteristics.Attractiveness, Characteristics.Persuasion, Characteristics.Luck },
-                new[] { "socialBonus", "comfortBonus", "prestigeBonus" },
-                new[] { "Здесь важны статус, атмосфера и визуальное впечатление.", "Эти товары чаще покупают ради быта, подарков и обстановки." }),
-            ["ArtifactsAndCurios"] = new(
-                "ArtifactsAndCurios", "Артефакты и диковины",
-                new[] { "curio", "luxury", "knowledge" },
-                new[] { Characteristics.Luck, Characteristics.Intelligence, Characteristics.Perception },
-                new[] { "fortuneBonus", "loreBonus", "utilityBonus" },
-                new[] { "Это необычные вещи с историей, редким происхождением или странной репутацией.", "Ассортимент строится вокруг редкостей, находок и памятных предметов." }),
-            ["TechnicalGoods"] = new(
-                "TechnicalGoods", "Технические товары",
-                new[] { "technical", "crafting" },
-                new[] { Characteristics.Intelligence, Characteristics.Perception, Characteristics.Dexterity },
-                new[] { "analysisBonus", "repairBonus", "precisionBonus" },
-                new[] { "Такие товары ценят за точность, диагностику и обслуживание сложных систем.", "Здесь встречаются детали, приборы и рабочие технические комплекты." }),
-            ["IllicitGoods"] = new(
-                "IllicitGoods", "Теневой рынок",
-                new[] { "illicit", "technical", "curio" },
-                new[] { Characteristics.Dexterity, Characteristics.Luck, Characteristics.Trade },
-                new[] { "stealthBonus", "escapeBonus", "tradeBonus" },
-                new[] { "Эти товары предназначены для обходных схем, серых сделок и скрытного применения.", "Ассортимент держится на неприметности, редкости и неофициальном происхождении." })
-        };
-
-    private static readonly TradeItemTemplate[] Templates =
-    {
-        new("supply_crate", "Functional", new[] { "general", "technical" }, "Container", "Контейнеры",
-            new[] { "Контейнер снабжения", "Дорожный ящик", "Универсальный кофр" }, false, 1, false, true, 12, null, 65, false,
-            new[] { "Подходит для хранения, перевозки и сортировки обычных вещей.", "Удобен для запасов, инструментов и бытового имущества." }, 3200),
-        new("utility_kit", "Functional", new[] { "general", "crafting" }, "Tool", "Инструменты",
-            new[] { "Хозяйственный набор", "Набор мелкого ремонта", "Комплект полевых принадлежностей" }, false, 1, false, false, null, null, 55, true,
-            new[] { "Полезен для мелких работ, регулировки крепежа и повседневного обслуживания.", "Помогает решать обычные задачи без обращения в мастерскую." }, 1100),
-        new("fabric_roll", "Material", new[] { "general", "crafting", "luxury" }, "Material", "Материалы",
-            new[] { "Рулон складской ткани", "Плотный отрез материала", "Упаковка технического текстиля" }, true, 1, true, false, null, null, 24, false,
-            new[] { "Подходит для ремонта одежды, упаковки, перевязки и пошива.", "Это типичное сырьё для мастерских, лавок и бытовых нужд." }, 900),
-        new("route_map", "FlavorOrUtility", new[] { "general", "knowledge" }, "Document", "Документы и медиа",
-            new[] { "Карта окрестных маршрутов", "Памятка локальных дорог", "Схема торгового района" }, false, 1, false, false, null, null, 18, false,
-            new[] { "Полезна для навигации, адресов и обычной городской логистики.", "Содержит повседневные сведения, которые ценны именно в текущем регионе." }, 150),
-        new("reinforced_jacket", "Functional", new[] { "equipment" }, "Armor", "Защита",
-            new[] { "Усиленная куртка", "Служебный жилет", "Защитная накидка" }, false, 1, false, false, null, "body", 92, true,
-            new[] { "Рассчитан на повседневную защиту и длительное ношение.", "Балансирует между комфортом, практичностью и базовой защитой." }, 2200),
-        new("service_boots", "Functional", new[] { "equipment", "general" }, "Armor", "Защита",
-            new[] { "Полевые ботинки", "Служебные сапоги", "Устойчивые рабочие ботинки" }, false, 1, false, false, null, "feet", 70, true,
-            new[] { "Подходят для долгих переходов, смен и тяжёлой повседневной работы.", "Обычно выбираются за прочность и удобство передвижения." }, 1600),
-        new("work_gloves", "Functional", new[] { "equipment", "crafting" }, "Armor", "Защита",
-            new[] { "Рабочие перчатки", "Усиленные краги", "Защитные рукавицы" }, false, 1, false, false, null, "hands", 42, true,
-            new[] { "Защищают руки и помогают при обслуживании оборудования или ручной работе.", "Подходят для повседневного труда, ремонта и грубой эксплуатации." }, 450),
-        new("utility_blade", "Functional", new[] { "equipment", "general" }, "Weapon", "Снаряжение",
-            new[] { "Универсальный клинок", "Рабочий нож", "Многоцелевой резак" }, false, 1, false, false, null, "mainHand", 88, true,
-            new[] { "Полезен как инструмент и как средство самообороны.", "Часто используется там, где один предмет должен закрывать сразу несколько задач." }, 850),
-        new("signal_pendant", "FlavorOrUtility", new[] { "equipment", "curio" }, "Accessory", "Аксессуары",
-            new[] { "Сигнальный кулон", "Именной жетон", "Опознавательный медальон" }, false, 1, false, false, null, "neck", 58, true,
-            new[] { "Служит для идентификации, связи или просто удобного ношения при себе.", "Обычно ценится за практичность, привычку и личный смысл." }, 180),
-        new("fastener_case", "Material", new[] { "crafting", "technical" }, "Material", "Материалы",
-            new[] { "Ящик крепежа", "Комплект метизов", "Набор универсальных фиксаторов" }, true, 1, true, false, null, null, 18, false,
-            new[] { "Подходит для сборки, ремонта, укрепления и замены расходников.", "Это типичный запас для мастерской, склада или выездной работы." }, 650),
-        new("sealant_pack", "Material", new[] { "crafting", "technical" }, "Material", "Материалы",
-            new[] { "Пакет герметика", "Упаковка ремонтной смолы", "Набор уплотняющего состава" }, true, 1, true, false, null, null, 22, false,
-            new[] { "Полезен при ремонте швов, корпусов, упаковки и технических узлов.", "Обычно его держат под рукой для обслуживания и срочных латок." }, 500),
-        new("reagent_set", "Material", new[] { "crafting", "consumable" }, "Material", "Реагенты",
-            new[] { "Комплект реагентов", "Полевой набор составов", "Малая упаковка лабораторных смесей" }, true, 1, true, false, null, null, 44, true,
-            new[] { "Подходит для проверки веществ, подготовки составов и базовых ремесленных операций.", "Чаще всего нужен для точных работ, где важно качество расходников." }, 550),
-        new("wire_bundle", "Material", new[] { "crafting", "technical" }, "Material", "Материалы",
-            new[] { "Связка проводки", "Моток кабеля", "Комплект соединительных жил" }, true, 1, true, false, null, null, 28, false,
-            new[] { "Используется для сборки, подключения и быстрого ремонта оборудования.", "Нужен там, где приходится что-то подпаивать, перекидывать или замыкать на месте." }, 750),
-        new("parts_bundle", "Material", new[] { "crafting", "technical" }, "Component", "Технические товары",
-            new[] { "Пакет запасных деталей", "Упаковка сервисных компонентов", "Набор сменных элементов" }, true, 1, true, false, null, null, 40, false,
-            new[] { "Подходит для профилактики, замены узлов и поддержания техники в строю.", "Обычно покупается как рабочий запас, а не как предмет экипировки." }, 700),
-        new("ration_pack", "Functional", new[] { "consumable", "general" }, "Consumable", "Расходники",
-            new[] { "Походный паёк", "Питательный набор", "Набор долгого хранения" }, true, 1, true, false, null, null, 18, false,
-            new[] { "Полезен в дороге, на смене и в затяжных вылазках без нормального снабжения.", "Это обычный расходник, который ценят за предсказуемую практичность." }, 450),
-        new("water_flask", "Functional", new[] { "consumable", "general" }, "Consumable", "Расходники",
-            new[] { "Фляга с очищенной водой", "Герметичный резерв питья", "Полевой запас воды" }, true, 1, true, false, null, null, 12, false,
-            new[] { "Простой товар для базового комфорта, выездов и повседневного снабжения.", "Берут ради надёжности и того, чтобы нужный запас был под рукой." }, 900),
-        new("medical_pack", "Functional", new[] { "consumable", "general" }, "Consumable", "Расходники",
-            new[] { "Комплект перевязки", "Аптечный набор", "Пакет первой помощи" }, true, 1, true, false, null, null, 42, true,
-            new[] { "Нужен для оперативной помощи, обработки мелких травм и экстренной стабилизации.", "Это вещь из категории очевидной пользы: без пафоса, но вовремя." }, 650),
-        new("battery_pack", "Functional", new[] { "consumable", "technical" }, "Consumable", "Расходники",
-            new[] { "Сменный аккумуляторный блок", "Комплект энергомодулей", "Упаковка резервного питания" }, true, 1, true, false, null, null, 32, true,
-            new[] { "Полезен для техники, автономной работы и запасного питания вне базы.", "Чаще всего нужен там, где простой оборудования обходится дороже самого товара." }, 700),
-        new("solvent_canister", "Material", new[] { "consumable", "technical", "crafting" }, "Consumable", "Расходники",
-            new[] { "Канистра сервисного раствора", "Упаковка очищающего состава", "Флакон технического растворителя" }, true, 1, true, false, null, null, 20, false,
-            new[] { "Используется для чистки, подготовки поверхностей и обслуживания механизмов.", "Это рабочий расходник, который редко выглядит эффектно, но постоянно нужен." }, 800),
-        new("training_manual", "FlavorOrUtility", new[] { "knowledge", "general" }, "Book", "Документы и медиа",
-            new[] { "Учебное руководство", "Практический справочник", "Рабочий мануал" }, false, 1, false, false, null, null, 36, true,
-            new[] { "Содержит структурированные заметки, схемы и прикладные советы.", "Полезен для подготовки, сверки стандартов и быстрого поиска нужной информации." }, 700),
-        new("permit_packet", "FlavorOrUtility", new[] { "knowledge", "general" }, "Document", "Документы и медиа",
-            new[] { "Пакет пропусков", "Комплект служебных бумаг", "Набор регистрационных форм" }, false, 1, false, false, null, null, 26, false,
-            new[] { "Нужен там, где бюрократия, контроль доступа и формальные процедуры важнее силы.", "Содержит обычные документы, но их наличие часто экономит массу времени." }, 180),
-        new("archive_drive", "FlavorOrUtility", new[] { "knowledge", "technical" }, "Media", "Документы и медиа",
-            new[] { "Архивный носитель", "Каталогизированный накопитель", "Портативный медиа-модуль" }, false, 1, false, false, null, null, 60, true,
-            new[] { "Подходит для хранения справочных материалов, записей и рабочих архивов.", "Такие вещи покупают ради доступа к данным, а не ради внешнего вида." }, 120),
-        new("survey_map", "FlavorOrUtility", new[] { "knowledge", "general" }, "Document", "Документы и медиа",
-            new[] { "Съёмочная карта района", "Инженерная схема квартала", "Печатная карта коммуникаций" }, false, 1, false, false, null, null, 22, false,
-            new[] { "Полезна для ориентирования, планирования маршрутов и оценки местности.", "Содержит прикладные сведения, которые особенно ценны на незнакомой территории." }, 130),
-        new("tea_set", "FlavorOrUtility", new[] { "luxury", "general" }, "Household", "Роскошь и декор",
-            new[] { "Керамический чайный набор", "Домашний сервиз", "Набор для приёма гостей" }, false, 1, false, false, null, null, 55, false,
-            new[] { "Подходит для гостевого стола, быта и создания аккуратной атмосферы.", "Его ценность не в боевых свойствах, а в статусе, удобстве и впечатлении." }, 2100),
-        new("framed_print", "FlavorOrUtility", new[] { "luxury", "general" }, "Decor", "Роскошь и декор",
-            new[] { "Оформленный оттиск", "Настенная репродукция", "Коллекционная иллюстрация" }, false, 1, false, false, null, null, 40, false,
-            new[] { "Используется для оформления жилья, кабинета или витрины.", "Это товар ради атмосферы, вкуса и привычки окружать себя определёнными вещами." }, 900),
-        new("scented_lamp", "FlavorOrUtility", new[] { "luxury", "general" }, "Household", "Роскошь и декор",
-            new[] { "Ароматическая лампа", "Салонный светильник", "Домашний источник мягкого света" }, false, 1, false, false, null, null, 48, false,
-            new[] { "Подходит для освещения, уюта и спокойной обстановки в помещении.", "Чаще всего берётся ради быта, а не ради прямой механической пользы." }, 1200),
-        new("music_box", "FlavorOrUtility", new[] { "luxury", "technical", "curio" }, "Decor", "Роскошь и декор",
-            new[] { "Механическая шкатулка", "Музыкальный сувенир", "Настольная шкатулка памяти" }, false, 1, false, false, null, null, 92, true,
-            new[] { "Ценится как предмет настроения, интерьера и личной памяти.", "Это вещь для атмосферы, жеста или подарка, а не для прямого выживания." }, 900),
-        new("table_clock", "FlavorOrUtility", new[] { "luxury", "technical" }, "Device", "Роскошь и декор",
-            new[] { "Настольные часы", "Домашний хронометр", "Кабинетный таймер" }, false, 1, false, false, null, null, 76, true,
-            new[] { "Полезен для режима, рабочего ритма и упорядоченного быта.", "Это вещь на стыке функции и обстановки: нужна не всем, но многим оказывается удобной." }, 600),
-        new("vintage_compass", "Functional", new[] { "curio", "general", "knowledge" }, "Artifact", "Артефакты и диковины",
-            new[] { "Коллекционный компас", "Старинный ориентир", "Компас с необычной шкалой" }, false, 1, false, false, null, null, 90, true,
-            new[] { "Полезен в дороге, а ценится ещё и за редкость происхождения.", "Это предмет с историей: одновременно практичный и заметно отличающийся от типового товара." }, 300),
-        new("curiosity_lens", "Functional", new[] { "curio", "knowledge", "technical" }, "Artifact", "Артефакты и диковины",
-            new[] { "Линза наблюдателя", "Коллекционный объектив", "Редкий увеличительный окуляр" }, false, 1, false, false, null, null, 80, true,
-            new[] { "Подходит для осмотра деталей, символов и мелких элементов конструкции.", "Обычно её покупают те, кому нужно соединить любопытство с практической пользой." }, 250),
-        new("sealed_curio_box", "FlavorOrUtility", new[] { "curio", "luxury" }, "Container", "Артефакты и диковины",
-            new[] { "Запечатанная шкатулка", "Кейс для редкостей", "Футляр необычного образца" }, false, 1, false, true, 4, null, 95, false,
-            new[] { "Подходит для хранения памятных, деликатных или просто необычных мелочей.", "Такой товар ценят за саму форму обладания и презентации содержимого." }, 850),
-        new("resonant_token", "FlavorOrUtility", new[] { "curio", "luxury" }, "Artifact", "Артефакты и диковины",
-            new[] { "Резонансный жетон", "Памятный знак", "Странный карманный токен" }, false, 1, false, false, null, null, 72, true,
-            new[] { "Может быть личным символом, сувениром или предметом странной репутации.", "Его покупают не потому, что он обязателен, а потому что у него есть история." }, 140),
-        new("diagnostic_scanner", "Functional", new[] { "technical" }, "Device", "Технические товары",
-            new[] { "Диагностический сканер", "Портативный анализатор", "Сервисный считыватель" }, false, 1, false, false, null, null, 120, true,
-            new[] { "Полезен для поиска неисправностей, проверки узлов и оценки состояния систем.", "Это рабочий инструмент, который ценится за точность и скорость диагностики." }, 650),
-        new("precision_toolkit", "Functional", new[] { "technical", "crafting" }, "Tool", "Технические товары",
-            new[] { "Точный инструментальный набор", "Сервисный комплект регулировки", "Кейс тонкой настройки" }, false, 1, false, false, null, null, 96, true,
-            new[] { "Подходит для точной подгонки, ремонта и обслуживания чувствительных механизмов.", "Его берут ради аккуратной работы там, где грубый инструмент уже не подходит." }, 1300),
-        new("sensor_node", "Functional", new[] { "technical" }, "Component", "Технические товары",
-            new[] { "Сенсорный узел", "Пакет датчиков", "Модуль наблюдения" }, false, 1, false, false, null, null, 84, true,
-            new[] { "Подходит для наблюдения, настройки систем контроля и технического мониторинга.", "Чаще всего покупается под конкретную задачу, а не для общего антуража." }, 480),
-        new("servo_unit", "Material", new[] { "technical", "crafting" }, "Component", "Технические товары",
-            new[] { "Сервоприводной блок", "Сменный привод", "Исполнительный модуль" }, false, 1, true, false, null, null, 78, false,
-            new[] { "Нужен для ремонта, замены узлов и восстановления рабочих механизмов.", "Это типичная техническая покупка: не красивая, зато очень прикладная." }, 1100),
-        new("relay_box", "FlavorOrUtility", new[] { "technical", "general" }, "Device", "Технические товары",
-            new[] { "Релейный модуль", "Компактный узел связи", "Переходной коммутационный блок" }, false, 1, false, false, null, null, 74, false,
-            new[] { "Используется для стыковки линий, связи и технической логистики.", "Такие вещи редко производят впечатление, но часто решают неприятные практические проблемы." }, 420),
-        new("forged_pass", "FlavorOrUtility", new[] { "illicit", "knowledge" }, "Document", "Теневые товары",
-            new[] { "Поддельный пропуск", "Комплект фальшивых бумаг", "Набор обходной документации" }, false, 1, false, false, null, null, 86, false,
-            new[] { "Предназначен для обхода формальных барьеров и лишних вопросов.", "Это товар не для витрины статуса, а для тех, кто предпочитает обходные пути." }, 120),
-        new("lockpick_roll", "Functional", new[] { "illicit", "technical" }, "Tool", "Теневые товары",
-            new[] { "Скрытый набор отмычек", "Тихий инструмент вскрытия", "Свернутый комплект тонких ключей" }, false, 1, false, false, null, null, 72, true,
-            new[] { "Полезен для деликатной работы с замками, защёлками и скрытыми механизмами.", "Обычно выбирается за неприметность, а не за громкое имя или внешний вид." }, 220),
-        new("unmarked_ampoule", "Functional", new[] { "illicit", "consumable" }, "Consumable", "Теневые товары",
-            new[] { "Немаркированная ампула", "Флакон серого происхождения", "Запечатанный обходной состав" }, true, 1, true, false, null, null, 64, true,
-            new[] { "Используется быстро и без лишней огласки, когда официальный путь недоступен.", "Его ценность в скрытности происхождения и простоте применения." }, 120),
-        new("signal_jammer", "Functional", new[] { "illicit", "technical" }, "Device", "Теневые товары",
-            new[] { "Глушитель сигналов", "Карманный подавитель", "Скрытый модуль помех" }, false, 1, false, false, null, null, 112, true,
-            new[] { "Полезен там, где нужно сорвать отслеживание, пометку или передачу данных.", "Это вещь для рискованных задач, в которых заметность сама по себе уже опасна." }, 450),
-        new("cache_box", "FlavorOrUtility", new[] { "illicit", "curio" }, "Container", "Теневые товары",
-            new[] { "Тайниковый кейс", "Скрытый короб", "Неприметная кассета для хранения" }, false, 1, false, true, 6, null, 88, false,
-            new[] { "Подходит для хранения чувствительных мелочей, бумаг и скрываемых предметов.", "Главная ценность здесь в неприметности и удобстве скрытого хранения." }, 1400),
-        new("black_chip_set", "Material", new[] { "illicit", "technical" }, "Component", "Теневые товары",
-            new[] { "Немаркированный чип-набор", "Комплект серых модулей", "Пакет обходных компонентов" }, true, 1, true, false, null, null, 88, false,
-            new[] { "Используется для обходных схем, нестандартного ремонта и неофициальной настройки.", "Такие детали редко бывают красивыми, но часто оказываются незаменимыми." }, 200)
-    };
+    private const string BuybackInventoryProperty = "buybackInventory";
+    private const string BuybackStatusAvailable = "available";
+    private const string BuybackStatusRebought = "rebought";
+    private const string BuybackStatusRemoved = "removed";
 
     public NpcTradeService(FileSystemManager fs, ILogger<NpcTradeService> logger)
     {
@@ -335,8 +30,11 @@ public sealed class NpcTradeService
         _logger = logger;
     }
 
-    public async Task<NpcTradeView?> EnsureTradeInventoryAsync(string npcId)
+    public async Task<NpcTradeView?> EnsureTradeInventoryAsync(string npcId, int currentTurn)
     {
+        if (currentTurn <= 0)
+            throw new ArgumentOutOfRangeException(nameof(currentTurn), "Подготовка или проверка витрины НПС требует актуальный номер хода.");
+
         var npcRoot = await ReadNpcRootAsync();
         var itemsRoot = await ReadInventoryRootAsync();
         var statusRoot = await ReadPlayerStatusRootAsync();
@@ -348,7 +46,7 @@ public sealed class NpcTradeService
             return null;
 
         var currentWorldMinutes = await ResolveCurrentWorldMinutesAsync();
-        var changed = EnsureNpcTradeInventoryState(npcRoot, npc, statusRoot, currentWorldMinutes, out var view);
+        var (changed, view) = await EnsureNpcTradeInventoryStateAsync(npcRoot, npc, statusRoot, currentWorldMinutes, currentTurn);
         if (changed)
             await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
 
@@ -407,8 +105,11 @@ public sealed class NpcTradeService
             .ToList();
     }
 
-    public async Task<NpcTradeOperationResult> BuyAsync(string npcId, string slotId)
+    public async Task<NpcTradeOperationResult> BuyAsync(string npcId, string slotId, int currentTurn)
     {
+        if (currentTurn <= 0)
+            return new NpcTradeOperationResult(false, false, "Локальная покупка товара требует актуальный номер хода.");
+
         var npcRoot = await ReadNpcRootAsync();
         var itemsRoot = await ReadInventoryRootAsync();
         var statusRoot = await ReadPlayerStatusRootAsync();
@@ -420,11 +121,13 @@ public sealed class NpcTradeService
             return new NpcTradeOperationResult(false, false, "Торговец не найден.");
 
         var currentWorldMinutes = await ResolveCurrentWorldMinutesAsync();
-        var changed = EnsureNpcTradeInventoryState(npcRoot, npc, statusRoot, currentWorldMinutes, out var view);
+        var (changed, view) = await EnsureNpcTradeInventoryStateAsync(npcRoot, npc, statusRoot, currentWorldMinutes, currentTurn);
         if (view == null)
             return new NpcTradeOperationResult(false, false, "Не удалось подготовить витрину торговца.");
         if (view.TradeBlocked)
             return new NpcTradeOperationResult(false, false, view.BlockReason ?? "Торговля недоступна.");
+        if (!view.InventoryReady)
+            return new NpcTradeOperationResult(false, false, view.InventoryStatusMessage ?? "Витрина торговца ещё подготавливается.");
 
         if (npc["tradeInventory"] is not JsonObject tradeInventory || tradeInventory["items"] is not JsonArray items)
             return new NpcTradeOperationResult(false, false, "Витрина торговца недоступна.");
@@ -463,8 +166,11 @@ public sealed class NpcTradeService
         return new NpcTradeOperationResult(true, true, $"Куплен товар «{itemName}» за {price}.");
     }
 
-    public async Task<NpcTradeOperationResult> SellAsync(string npcId, string itemId)
+    public async Task<NpcTradeOperationResult> SellAsync(string npcId, string itemId, int currentTurn)
     {
+        if (currentTurn <= 0)
+            return new NpcTradeOperationResult(false, false, "Локальная продажа товара требует актуальный номер хода.");
+
         var npcRoot = await ReadNpcRootAsync();
         var itemsRoot = await ReadInventoryRootAsync();
         var statusRoot = await ReadPlayerStatusRootAsync();
@@ -502,20 +208,92 @@ public sealed class NpcTradeService
         var playerTrade = await ReadPlayerTradeAsync();
         var relation = ReadNpcRelationshipLevel(npc);
         var pricingTier = GetPricingTier(relation);
+        var currentWorldMinutes = await ResolveCurrentWorldMinutesAsync();
         var rarity = GetItemRarity(item);
         var baseSellPrice = GetBaseSellPrice(item, rarity);
         var price = ComputeSellPrice(baseSellPrice, playerTrade, npcTrade, pricingTier);
         if (price <= 0)
             return new NpcTradeOperationResult(false, false, "Цена продажи повреждена.");
 
+        var merchantProfile = ResolveMerchantProfile(npc)?.Key ?? DefaultMerchantProfileKey;
+        var buybackInventory = EnsureBuybackInventoryArray(npc);
+        buybackInventory.Add(CreateBuybackEntry(
+            npcId,
+            GetNodeString(npc["name"]) ?? npcId,
+            CloneObject(item),
+            merchantProfile,
+            price,
+            Math.Max(0, currentTurn),
+            currentWorldMinutes));
+
         items.RemoveAt(itemIndex);
         statusRoot["money"] = GetNodeInt(statusRoot["money"], 0) + price;
+        SyncNpcEntries(npcRoot, npcId, npc);
 
         await _fs.WriteFileAtomicAsync(ItemsPath, itemsRoot.ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(PlayerStatusPath, statusRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
 
         var itemName = GetNodeString(item["name"]) ?? "Товар";
         return new NpcTradeOperationResult(true, true, $"Продан товар «{itemName}» за {price}.");
+    }
+
+    public async Task<NpcTradeOperationResult> BuyBackAsync(string npcId, string buybackEntryId, int currentTurn)
+    {
+        if (currentTurn <= 0)
+            return new NpcTradeOperationResult(false, false, "Локальный выкуп товара требует актуальный номер хода.");
+
+        var npcRoot = await ReadNpcRootAsync();
+        var itemsRoot = await ReadInventoryRootAsync();
+        var statusRoot = await ReadPlayerStatusRootAsync();
+        if (npcRoot == null || itemsRoot == null || statusRoot == null)
+            return new NpcTradeOperationResult(false, false, "Не удалось прочитать состояние торговли, инвентаря или денег.");
+
+        var npc = FindNpcEntry(npcRoot, npcId);
+        if (npc == null)
+            return new NpcTradeOperationResult(false, false, "Торговец не найден.");
+
+        if (!NpcTradeAllowedHere(npc, out var blockedReason))
+            return new NpcTradeOperationResult(false, false, blockedReason ?? "Торговля недоступна.");
+
+        if (npc[BuybackInventoryProperty] is not JsonArray buybackInventory)
+            return new NpcTradeOperationResult(false, false, "У этого торговца нет товаров для обратного выкупа.");
+
+        var buybackEntry = buybackInventory
+            .OfType<JsonObject>()
+            .FirstOrDefault(entry =>
+                string.Equals(GetNodeString(entry["buybackEntryId"]), buybackEntryId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(entry["status"]), BuybackStatusAvailable, StringComparison.OrdinalIgnoreCase));
+        if (buybackEntry == null)
+            return new NpcTradeOperationResult(false, false, "Этот товар больше недоступен для обратного выкупа.");
+
+        if (buybackEntry["itemData"] is not JsonObject itemData)
+            return new NpcTradeOperationResult(false, false, "Данные товара для обратного выкупа повреждены.");
+
+        var price = GetNodeInt(buybackEntry["buybackPrice"], GetNodeInt(buybackEntry["soldForPrice"], 0));
+        if (price <= 0)
+            return new NpcTradeOperationResult(false, false, "Цена обратного выкупа повреждена.");
+
+        var money = GetNodeInt(statusRoot["money"], 0);
+        if (money < price)
+            return new NpcTradeOperationResult(false, false, "Недостаточно денег.");
+
+        NormalizeInventoryShape(itemsRoot);
+        var inventoryItems = itemsRoot["items"]!.AsArray();
+        UpsertInventoryItem(inventoryItems, CloneObject(itemData));
+        statusRoot["money"] = money - price;
+
+        buybackEntry["status"] = BuybackStatusRebought;
+        buybackEntry["reboughtAtTurn"] = Math.Max(0, currentTurn);
+        buybackEntry["reboughtAtUtc"] = DateTimeOffset.UtcNow.ToString("O");
+        SyncNpcEntries(npcRoot, npcId, npc);
+
+        await _fs.WriteFileAtomicAsync(ItemsPath, itemsRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(PlayerStatusPath, statusRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
+
+        var itemName = GetNodeString(itemData["name"]) ?? "Товар";
+        return new NpcTradeOperationResult(true, true, $"Выкуплен обратно товар «{itemName}» за {price}.");
     }
 
     internal static bool IsValidGenerationTierCode(string? tierCode) =>
@@ -552,6 +330,9 @@ public sealed class NpcTradeService
 
     internal static bool IsValidTradeItemClassCode(string? tradeItemClass) =>
         tradeItemClass is "Functional" or "Material" or "FlavorOrUtility";
+
+    internal static bool IsValidBuybackStatusCode(string? statusCode) =>
+        statusCode is BuybackStatusAvailable or BuybackStatusRebought or BuybackStatusRemoved;
 
     internal static string GetMerchantProfileDisplayName(string? profileCode)
     {
@@ -661,41 +442,131 @@ public sealed class NpcTradeService
         return Math.Max(0, ((year * 400) + Math.Max(0, day - 1)) * 1440 + minutes);
     }
 
-    private bool EnsureNpcTradeInventoryState(JsonObject root, JsonObject npc, JsonObject statusRoot,
-        int currentWorldMinutes, out NpcTradeView? view)
+    private async Task<(bool Changed, NpcTradeView? View)> EnsureNpcTradeInventoryStateAsync(
+        JsonObject root,
+        JsonObject npc,
+        JsonObject statusRoot,
+        int currentWorldMinutes,
+        int currentTurn)
     {
-        view = null;
         var npcId = GetNpcIdentity(npc);
+        var npcName = GetNodeString(npc["name"]) ?? npcId;
         var blocked = !NpcTradeAllowedHere(npc, out var blockedReason);
         var npcTrade = ReadNpcTradeValue(npc);
         var playerTrade = ReadPlayerTradeSync();
         var relation = ReadNpcRelationshipLevel(npc);
         var generationTier = GetGenerationTier(ReadNpcLevel(npc), npcTrade, relation);
         var pricingTier = GetPricingTier(relation);
+        var profile = ResolveMerchantProfile(npc);
+        var merchantProfile = profile?.Key ?? DefaultMerchantProfileKey;
+        var tradeCycleId = GetTradeCycleId(currentWorldMinutes);
+        var refreshAfterWorldMinutes = GetRefreshAfterWorldMinutesForCycle(currentWorldMinutes);
         var changed = false;
+        var inventoryReady = false;
+        var inventoryRequestPending = false;
+        var inventoryRequestCreatedThisCall = false;
+        string? inventoryStatusMessage = null;
+        string? pendingGmAction = null;
 
         if (!blocked)
         {
             var inventory = npc["tradeInventory"] as JsonObject;
-            if (!TradeInventoryMatchesCurrentContract(inventory, currentWorldMinutes, npc, playerTrade, npcTrade))
+            if (TradeInventoryMatchesCurrentContract(inventory, currentWorldMinutes, npc, playerTrade, npcTrade))
             {
-                npc["tradeInventory"] = GenerateTradeInventory(npcId, npc, generationTier, pricingTier, playerTrade, npcTrade, currentWorldMinutes);
-                changed = true;
-            }
-            else if (inventory != null)
-            {
-                changed = RepriceTradeInventory(inventory, playerTrade, npcTrade, pricingTier);
-            }
+                inventoryReady = true;
+                if (inventory != null)
+                {
+                    changed = RepriceTradeInventory(inventory, playerTrade, npcTrade, pricingTier);
+                    if (changed)
+                        SyncNpcEntries(root, npcId, npc);
+                }
 
-            if (changed)
-                SyncNpcEntries(root, npcId, npc);
+                var request = await NpcTradeRequestState.FindPendingRequestAsync(_fs, npcId, tradeCycleId);
+                var requestMatchesCurrentContract = NpcTradeRequestState.MatchesCurrentContract(
+                    request,
+                    npcId,
+                    merchantProfile,
+                    tradeCycleId,
+                    ComputeSlotCount(ReadNpcLevel(npc), npcTrade),
+                    refreshAfterWorldMinutes);
+                var hasMatchingReceipt = requestMatchesCurrentContract &&
+                    NpcTradeRequestState.ReceiptMatchesRequestContract(
+                        NpcTradeRequestState.FindMatchingReceipt(npc, request!),
+                        request!,
+                        inventory);
+
+                if (request != null && (!requestMatchesCurrentContract || hasMatchingReceipt))
+                    await NpcTradeRequestState.EnsureHealthyAsync(_fs, "Mortal World");
+            }
+            else
+            {
+                var derivedTradeSlotCount = ComputeSlotCount(ReadNpcLevel(npc), npcTrade);
+                var request = await NpcTradeRequestState.FindPendingRequestAsync(_fs, npcId, tradeCycleId);
+                inventoryRequestPending = NpcTradeRequestState.MatchesCurrentContract(
+                    request,
+                    npcId,
+                    merchantProfile,
+                    tradeCycleId,
+                    derivedTradeSlotCount,
+                    refreshAfterWorldMinutes);
+
+                if (!inventoryRequestPending)
+                {
+                    request = new NpcTradeRequestState.PendingNpcTradeInventoryRequest
+                    {
+                        NpcId = npcId,
+                        NpcName = npcName,
+                        MerchantProfile = merchantProfile,
+                        TradeCycleId = tradeCycleId,
+                        DerivedTradeSlotCount = derivedTradeSlotCount,
+                        CreatedAtTurn = Math.Max(0, currentTurn),
+                        CreatedAtWorldDate = currentWorldMinutes,
+                        RefreshAfterWorldDate = refreshAfterWorldMinutes
+                    };
+                    await NpcTradeRequestState.WriteRequestAsync(_fs, request);
+                    inventoryRequestPending = true;
+                    inventoryRequestCreatedThisCall = true;
+                    pendingGmAction =
+                        $"[{NpcTradeRequestState.ActionTag}] Игрок открывает торговлю с NPC {npcName} ({npcId}), но explicit витрина отсутствует или устарела для текущего world-time cycle. " +
+                        $"Обязательно прочитай {NpcTradeRequestState.PendingRequestPath} как client-authored contract. " +
+                        "Материализуй explicit npc.tradeInventory для указанного tradeCycleId и не выводи ассортимент клиентом. " +
+                        $"После materialization закрой запрос canonical receipt через {NpcTradeRequestState.UpdateReceiptsProperty} в npc_core.json. " +
+                        "Витрина должна уважать merchantProfile, tradeCycleId, refreshAfterWorldDate и derivedTradeSlotCount из request.";
+                }
+
+                inventoryStatusMessage = inventoryRequestCreatedThisCall
+                    ? "Витрина торговца подготавливается. Запрос на ассортимент отправлен GM."
+                    : "Витрина торговца ещё подготавливается. Повторите после ответа GM.";
+            }
         }
 
-        view = BuildTradeView(npc, statusRoot, currentWorldMinutes, blocked, blockedReason);
-        return changed;
+        var view = BuildTradeView(
+            npc,
+            statusRoot,
+            currentWorldMinutes,
+            blocked,
+            blockedReason,
+            tradeCycleId,
+            inventoryReady,
+            inventoryRequestPending,
+            inventoryRequestCreatedThisCall,
+            inventoryStatusMessage,
+            pendingGmAction);
+        return (changed, view);
     }
 
-    private NpcTradeView BuildTradeView(JsonObject npc, JsonObject statusRoot, int currentWorldMinutes, bool blocked, string? blockedReason)
+    private NpcTradeView BuildTradeView(
+        JsonObject npc,
+        JsonObject statusRoot,
+        int currentWorldMinutes,
+        bool blocked,
+        string? blockedReason,
+        string tradeCycleId,
+        bool inventoryReady,
+        bool inventoryRequestPending,
+        bool inventoryRequestCreatedThisCall,
+        string? inventoryStatusMessage,
+        string? pendingGmAction)
     {
         var npcId = GetNpcIdentity(npc);
         var npcName = GetNodeString(npc["name"]) ?? npcId;
@@ -704,8 +575,10 @@ public sealed class NpcTradeService
         var relation = ReadNpcRelationshipLevel(npc);
         var profile = ResolveMerchantProfile(npc);
         var offers = new List<NpcTradeOffer>();
+        var buybackOffers = ReadBuybackOffers(npc);
 
         if (!blocked &&
+            inventoryReady &&
             npc["tradeInventory"] is JsonObject tradeInventory &&
             tradeInventory["items"] is JsonArray items)
         {
@@ -737,153 +610,17 @@ public sealed class NpcTradeService
             GetNodeInt(statusRoot["money"], 0),
             blocked,
             blocked ? blockedReason : null,
+            tradeCycleId,
+            inventoryReady,
+            inventoryRequestPending,
+            inventoryRequestCreatedThisCall,
+            inventoryStatusMessage,
+            pendingGmAction,
             currentWorldMinutes,
             GetGeneratedAtWorldMinutes(npc["tradeInventory"] as JsonObject, currentWorldMinutes),
             GetRefreshAfterWorldMinutes(npc["tradeInventory"] as JsonObject, currentWorldMinutes),
-            offers);
-    }
-
-    private static JsonObject GenerateTradeInventory(string npcId, JsonObject npc, GenerationTradeTier generationTier,
-        PricingTradeTier pricingTier, int playerTrade, int npcTrade, int currentWorldMinutes)
-    {
-        var profile = ResolveMerchantProfile(npc)!;
-        var slotCount = ComputeSlotCount(ReadNpcLevel(npc), npcTrade);
-        var rarities = GenerateRarityPattern(generationTier, slotCount, npcId, currentWorldMinutes);
-        var random = new Random(ComputeStableSeed($"{npcId}|{currentWorldMinutes}|npc_trade"));
-        var items = new JsonArray();
-
-        for (var slotIndex = 0; slotIndex < slotCount; slotIndex++)
-        {
-            var template = SelectTemplate(profile, slotIndex, random);
-            var rarity = rarities[slotIndex];
-            var itemData = GenerateItemData(profile, template, npcId, rarity, slotIndex, currentWorldMinutes, random);
-            var basePrice = GetBaseBuyPrice(itemData, rarity);
-            items.Add(new JsonObject
-            {
-                ["slotId"] = $"npc_trade_{SanitizeId(npcId)}_{currentWorldMinutes}_{slotIndex + 1}",
-                ["itemId"] = GetNodeString(itemData["itemId"]) ?? "",
-                ["price"] = ComputeBuyPrice(basePrice, playerTrade, npcTrade, pricingTier),
-                ["merchantProfile"] = profile.Key,
-                ["soldOut"] = false,
-                ["itemData"] = itemData
-            });
-        }
-
-        return new JsonObject
-        {
-            ["generatedAtWorldDate"] = currentWorldMinutes,
-            ["refreshAfterWorldDate"] = currentWorldMinutes + RefreshWindowMinutes,
-            ["generationTradeTier"] = generationTier.ToString(),
-            ["pricingTradeTier"] = pricingTier.ToString(),
-            ["items"] = items
-        };
-    }
-
-    private static JsonObject GenerateItemData(MerchantProfile profile, TradeItemTemplate template, string npcId, string rarity,
-        int slotIndex, int currentWorldMinutes, Random random)
-    {
-        var itemName = template.ItemNames[random.Next(template.ItemNames.Length)];
-        var itemId = $"npc_item_{SanitizeId(npcId)}_{SanitizeId(template.TemplateId)}_{currentWorldMinutes}_{slotIndex + 1}";
-        var description = BuildItemDescription(profile, template, itemName, slotIndex, random);
-        var baseBuyPrice = ScaleBaseBuyPriceByRarity(template.BasePrice, rarity);
-
-        var item = new JsonObject
-        {
-            ["itemId"] = itemId,
-            ["name"] = itemName,
-            ["description"] = description,
-            ["type"] = template.Type,
-            ["tradeItemClass"] = template.TradeItemClass,
-            ["quality"] = rarity,
-            ["price"] = baseBuyPrice,
-            ["baseSellPrice"] = Math.Max(1, (int)Math.Floor(baseBuyPrice * 0.4)),
-            ["weight"] = ((template.WeightGrams * Math.Max(1, template.InitialCount)) / 1000.0).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture),
-            ["group"] = template.Group
-        };
-
-        if (!string.IsNullOrWhiteSpace(template.EquipmentSlot))
-            item["equipmentSlot"] = template.EquipmentSlot;
-        if (template.Stackable)
-            item["count"] = Math.Max(1, template.InitialCount);
-        if (template.IsConsumable)
-            item["isConsumption"] = true;
-        if (template.IsContainer)
-        {
-            item["isContainer"] = true;
-            if (template.Capacity.HasValue)
-                item["capacity"] = template.Capacity.Value;
-        }
-        if (template.Type is "Book" or "Document" or "Media")
-        {
-            item["textContent"] = new JsonArray
-            {
-                BuildTradeTextSnippet(template, profile, slotIndex)
-            };
-        }
-
-        if (ShouldGenerateBonuses(template, rarity, random))
-        {
-            var primaryBonus = GetPrimaryBonus(rarity);
-            var secondaryBonus = GetSecondaryBonus(rarity);
-            var actionBonusValue = GetActionBonusValue(rarity);
-            var primaryStat = profile.BonusStats[slotIndex % profile.BonusStats.Length];
-            var secondaryStat = profile.BonusStats[(slotIndex + 1) % profile.BonusStats.Length];
-            var actionBonusKey = profile.ActionBonuses[slotIndex % profile.ActionBonuses.Length];
-            var bonuses = new JsonArray
-            {
-                $"+{primaryBonus} к {DisplayStat(primaryStat)}"
-            };
-            var effects = new JsonArray
-            {
-                DescribeActionBonus(actionBonusKey, actionBonusValue)
-            };
-            var passiveEffects = new JsonArray
-            {
-                profile.ProfileFlavors[slotIndex % profile.ProfileFlavors.Length]
-            };
-            var structuredBonuses = new JsonArray
-            {
-                new JsonObject
-                {
-                    ["bonusType"] = "Characteristic",
-                    ["target"] = DisplayStat(primaryStat),
-                    ["valueType"] = "Flat",
-                    ["value"] = primaryBonus,
-                    ["application"] = "Permanent",
-                    ["description"] = $"+{primaryBonus} к {DisplayStat(primaryStat)}"
-                },
-                new JsonObject
-                {
-                    ["bonusType"] = "ActionCheck",
-                    ["target"] = DescribeActionTarget(actionBonusKey),
-                    ["valueType"] = "Percentage",
-                    ["value"] = actionBonusValue * 5,
-                    ["application"] = "Permanent",
-                    ["description"] = DescribeActionBonus(actionBonusKey, actionBonusValue)
-                }
-            };
-
-            if (secondaryBonus > 0 && GetRarityRank(rarity) >= GetRarityRank("Rare"))
-            {
-                bonuses.Add($"+{secondaryBonus} к {DisplayStat(secondaryStat)}");
-                structuredBonuses.Add(new JsonObject
-                {
-                    ["bonusType"] = "Characteristic",
-                    ["target"] = DisplayStat(secondaryStat),
-                    ["valueType"] = "Flat",
-                    ["value"] = secondaryBonus,
-                    ["application"] = "Permanent",
-                    ["description"] = $"+{secondaryBonus} к {DisplayStat(secondaryStat)}"
-                });
-            }
-
-            item["bonuses"] = bonuses;
-            item["effects"] = effects;
-            item["passiveEffects"] = passiveEffects;
-            item["structuredBonuses"] = structuredBonuses;
-        }
-
-        return item;
+            offers,
+            buybackOffers);
     }
 
     private static bool TradeInventoryMatchesCurrentContract(JsonObject? tradeInventory, int currentWorldMinutes, JsonObject npc,
@@ -892,24 +629,25 @@ public sealed class NpcTradeService
         if (tradeInventory == null)
             return false;
 
+        var expectedTradeCycleId = GetTradeCycleId(currentWorldMinutes);
         var generatedAt = GetNodeInt(tradeInventory["generatedAtWorldDate"], -1);
         var refreshAfter = GetNodeInt(tradeInventory["refreshAfterWorldDate"], -1);
+        var tradeCycleId = GetNodeString(tradeInventory["tradeCycleId"]);
         var generationTierCode = GetNodeString(tradeInventory["generationTradeTier"]);
         var pricingTierCode = GetNodeString(tradeInventory["pricingTradeTier"]);
         if (generatedAt < 0 || refreshAfter <= generatedAt)
+            return false;
+        if (!string.Equals(tradeCycleId, expectedTradeCycleId, StringComparison.OrdinalIgnoreCase))
             return false;
         if (currentWorldMinutes >= refreshAfter)
             return false;
         if (!IsValidGenerationTierCode(generationTierCode) || !IsValidPricingTierCode(pricingTierCode))
             return false;
 
-        var expectedGenerationTier = GetGenerationTier(ReadNpcLevel(npc), npcTrade, ReadNpcRelationshipLevel(npc)).ToString();
-        if (!string.Equals(generationTierCode, expectedGenerationTier, StringComparison.OrdinalIgnoreCase))
-            return false;
-
         if (tradeInventory["items"] is not JsonArray items)
             return false;
-        if (items.Count < 6 || items.Count > 20)
+        var expectedSlotCount = ComputeSlotCount(ReadNpcLevel(npc), npcTrade);
+        if (items.Count != expectedSlotCount)
             return false;
 
         var profile = ResolveMerchantProfile(npc);
@@ -1236,71 +974,6 @@ public sealed class NpcTradeService
             (!string.IsNullOrWhiteSpace(currentLocationName) && string.Equals(currentLocationName, npcLocationId, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static string BuildItemDescription(MerchantProfile profile, TradeItemTemplate template, string itemName, int slotIndex, Random random)
-    {
-        var templateSnippet = template.DescriptionSnippets[(slotIndex + random.Next(template.DescriptionSnippets.Length)) % template.DescriptionSnippets.Length];
-        var profileSnippet = profile.ProfileFlavors[(slotIndex + random.Next(profile.ProfileFlavors.Length)) % profile.ProfileFlavors.Length];
-        return $"{itemName} — товар класса «{GetTradeItemClassDisplayName(template.TradeItemClass)}» из ассортимента «{profile.DisplayName}». {templateSnippet} {profileSnippet}";
-    }
-
-    private static string BuildTradeTextSnippet(TradeItemTemplate template, MerchantProfile profile, int slotIndex)
-    {
-        var templateSnippet = template.DescriptionSnippets[slotIndex % template.DescriptionSnippets.Length];
-        return $"{templateSnippet} Ассортимент: {profile.DisplayName}.";
-    }
-
-    private static string DescribeActionBonus(string actionBonusKey, int bonusValue)
-    {
-        var target = DescribeActionTarget(actionBonusKey);
-        return $"+{bonusValue * 5}% к {target}";
-    }
-
-    private static string DescribeActionTarget(string actionBonusKey) => actionBonusKey switch
-    {
-        "combatBonus" => "боевым действиям",
-        "durabilityBonus" => "сохранению прочности",
-        "mobilityBonus" => "мобильности и перемещению",
-        "precisionBonus" => "точным действиям",
-        "repairBonus" => "ремонту и обслуживанию",
-        "craftingBonus" => "сборке и ремесленным проверкам",
-        "healingBonus" => "исцелению",
-        "enduranceBonus" => "выносливости и продолжительной нагрузке",
-        "recoveryBonus" => "восстановлению и подготовке",
-        "resourceBonus" => "восстановлению ресурсов",
-        "knowledgeBonus" => "проверкам знаний",
-        "researchBonus" => "исследованию",
-        "focusBonus" => "концентрации и работе с данными",
-        "loreBonus" => "работе с лором и текстами",
-        "stealthBonus" => "скрытности",
-        "travelBonus" => "дорожным действиям",
-        "fortuneBonus" => "удачным исходам",
-        "socialBonus" => "социальным действиям",
-        "comfortBonus" => "комфорту и бытовым действиям",
-        "prestigeBonus" => "репутационным и статусным ситуациям",
-        "tradeBonus" => "торговым сделкам",
-        "escapeBonus" => "выходу из опасных ситуаций",
-        "utilityBonus" => "полезным действиям",
-        "analysisBonus" => "анализу и диагностике",
-        _ => "профильным действиям"
-    };
-
-    private static string DisplayStat(string stat) => stat switch
-    {
-        "strength" => "Сила",
-        "dexterity" => "Ловкость",
-        "constitution" => "Выносливость",
-        "intelligence" => "Интеллект",
-        "wisdom" => "Мудрость",
-        "faith" => "Вера",
-        "attractiveness" => "Привлекательность",
-        "trade" => "Торговля",
-        "persuasion" => "Убеждение",
-        "perception" => "Восприятие",
-        "luck" => "Удача",
-        "speed" => "Скорость",
-        _ => stat
-    };
-
     private static GenerationTradeTier GetGenerationTier(int level, int npcTrade, int relationshipLevel)
     {
         var relationBonus = relationshipLevel switch
@@ -1343,66 +1016,6 @@ public sealed class NpcTradeService
 
     private static int ComputeSlotCount(int level, int trade) => Math.Clamp(6 + (int)Math.Floor(level / 8.0) + (int)Math.Floor(trade / 15.0), 6, 20);
 
-    private static string[] GenerateRarityPattern(GenerationTradeTier tier, int slotCount, string npcId, int worldTime)
-    {
-        var allowed = tier switch
-        {
-            GenerationTradeTier.Poor => new[] { "Common", "Common", "Uncommon" },
-            GenerationTradeTier.Standard => new[] { "Common", "Uncommon", "Uncommon" },
-            GenerationTradeTier.Good => new[] { "Uncommon", "Rare", "Rare" },
-            GenerationTradeTier.Premium => new[] { "Rare", "Rare", "Epic" },
-            GenerationTradeTier.Elite => new[] { "Rare", "Epic", "Epic" },
-            _ => new[] { "Common" }
-        };
-
-        var random = new Random(ComputeStableSeed($"{npcId}|{worldTime}|rarity"));
-        var result = new string[slotCount];
-        for (var i = 0; i < slotCount; i++)
-            result[i] = allowed[random.Next(allowed.Length)];
-        return result;
-    }
-
-    private static TradeItemTemplate SelectTemplate(MerchantProfile profile, int slotIndex, Random random)
-    {
-        var candidates = Templates
-            .Where(t => t.CategoryTags.Any(tag => profile.CategoryTags.Contains(tag, StringComparer.OrdinalIgnoreCase)))
-            .ToList();
-        if (candidates.Count == 0)
-            candidates = Templates.ToList();
-        return candidates[(slotIndex + random.Next(candidates.Count)) % candidates.Count];
-    }
-
-    private static bool ShouldGenerateBonuses(TradeItemTemplate template, string rarity, Random random)
-    {
-        if (!template.AllowsBonuses)
-            return false;
-
-        var chance = rarity switch
-        {
-            "Common" => 0.08,
-            "Uncommon" => 0.22,
-            "Rare" => 0.42,
-            "Epic" => 0.65,
-            _ => 0.08
-        };
-
-        return random.NextDouble() < chance;
-    }
-
-    private static int ScaleBaseBuyPriceByRarity(int templateBasePrice, string rarity)
-    {
-        var multiplier = rarity switch
-        {
-            "Common" => 1.00m,
-            "Uncommon" => 1.35m,
-            "Rare" => 1.85m,
-            "Epic" => 2.75m,
-            _ => 1.00m
-        };
-
-        return Math.Max(1, (int)Math.Ceiling(templateBasePrice * multiplier));
-    }
-
     private static bool TryNormalizeMerchantProfileCode(string? profileCode, out string normalizedProfile)
     {
         normalizedProfile = "";
@@ -1414,33 +1027,6 @@ public sealed class NpcTradeService
 
     private static bool ContainsAny(string source, params string[] fragments) =>
         fragments.Any(fragment => source.Contains(fragment, StringComparison.OrdinalIgnoreCase));
-
-    private static int GetPrimaryBonus(string rarity) => rarity switch
-    {
-        "Common" => 1,
-        "Uncommon" => 2,
-        "Rare" => 4,
-        "Epic" => 7,
-        _ => 1
-    };
-
-    private static int GetSecondaryBonus(string rarity) => rarity switch
-    {
-        "Common" => 0,
-        "Uncommon" => 1,
-        "Rare" => 2,
-        "Epic" => 4,
-        _ => 0
-    };
-
-    private static int GetActionBonusValue(string rarity) => rarity switch
-    {
-        "Common" => 1,
-        "Uncommon" => 2,
-        "Rare" => 3,
-        "Epic" => 5,
-        _ => 1
-    };
 
     private static int GetBaseBuyPrice(string rarity) => rarity switch
     {
@@ -1638,11 +1224,93 @@ public sealed class NpcTradeService
         return -1;
     }
 
+    private static JsonArray EnsureBuybackInventoryArray(JsonObject npc)
+    {
+        if (npc[BuybackInventoryProperty] is JsonArray buybackInventory)
+            return buybackInventory;
+
+        buybackInventory = new JsonArray();
+        npc[BuybackInventoryProperty] = buybackInventory;
+        return buybackInventory;
+    }
+
+    private static List<NpcBuybackOffer> ReadBuybackOffers(JsonObject npc)
+    {
+        if (npc[BuybackInventoryProperty] is not JsonArray buybackInventory)
+            return new List<NpcBuybackOffer>();
+
+        return buybackInventory
+            .OfType<JsonObject>()
+            .Where(entry => string.Equals(GetNodeString(entry["status"]), BuybackStatusAvailable, StringComparison.OrdinalIgnoreCase))
+            .Where(entry => entry["itemData"] is JsonObject)
+            .Select(entry =>
+            {
+                var itemData = CloneObject(entry["itemData"]!.AsObject());
+                return new NpcBuybackOffer(
+                    GetNodeString(entry["buybackEntryId"]) ?? "",
+                    GetNodeString(entry["itemId"]) ?? GetNodeString(itemData["itemId"]) ?? "",
+                    GetNodeString(itemData["name"]) ?? "Товар",
+                    GetItemRarity(itemData),
+                    GetNodeInt(entry["buybackPrice"], GetNodeInt(entry["soldForPrice"], 0)),
+                    GetNodeInt(entry["soldForPrice"], 0),
+                    GetNodeInt(entry["soldByPlayerAtTurn"], 0),
+                    GetNodeString(itemData["description"]) ?? "",
+                    itemData);
+            })
+            .Where(offer => !string.IsNullOrWhiteSpace(offer.BuybackEntryId))
+            .OrderByDescending(offer => GetRarityRank(offer.Rarity))
+            .ThenBy(offer => offer.Name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static JsonObject CreateBuybackEntry(
+        string npcId,
+        string npcName,
+        JsonObject itemData,
+        string merchantProfile,
+        int soldForPrice,
+        int soldAtTurn,
+        int soldAtWorldDate)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var itemId = GetNodeString(itemData["itemId"]) ?? GetNodeString(itemData["id"]) ?? GetNodeString(itemData["existedId"]) ?? "";
+        return new JsonObject
+        {
+            ["buybackEntryId"] = $"npc_buyback_{SanitizeId(npcId)}_{Guid.NewGuid():N}",
+            ["npcId"] = npcId,
+            ["npcName"] = npcName,
+            ["itemId"] = itemId,
+            ["itemData"] = itemData,
+            ["soldByPlayerAtTurn"] = soldAtTurn,
+            ["soldByPlayerAtUtc"] = now.ToString("O"),
+            ["soldAtWorldDate"] = Math.Max(0, soldAtWorldDate),
+            ["soldForPrice"] = soldForPrice,
+            ["buybackPrice"] = soldForPrice,
+            ["acquiredFromPlayer"] = true,
+            ["sourceMerchantProfile"] = merchantProfile,
+            ["status"] = BuybackStatusAvailable
+        };
+    }
+
     private static int GetRefreshAfterWorldMinutes(JsonObject? tradeInventory, int fallback) =>
         tradeInventory == null ? fallback + RefreshWindowMinutes : GetNodeInt(tradeInventory["refreshAfterWorldDate"], fallback + RefreshWindowMinutes);
 
     private static int GetGeneratedAtWorldMinutes(JsonObject? tradeInventory, int fallback) =>
         tradeInventory == null ? fallback : GetNodeInt(tradeInventory["generatedAtWorldDate"], fallback);
+
+    private static int GetTradeCycleStartWorldMinutes(int currentWorldMinutes)
+    {
+        if (currentWorldMinutes <= 0)
+            return 0;
+
+        return currentWorldMinutes / RefreshWindowMinutes * RefreshWindowMinutes;
+    }
+
+    private static int GetRefreshAfterWorldMinutesForCycle(int currentWorldMinutes) =>
+        GetTradeCycleStartWorldMinutes(currentWorldMinutes) + RefreshWindowMinutes;
+
+    private static string GetTradeCycleId(int currentWorldMinutes) =>
+        $"world_trade_{GetTradeCycleStartWorldMinutes(currentWorldMinutes)}";
 
     private static string GetItemRarity(JsonObject item) => GetNodeString(item["quality"]) ?? GetNodeString(item["rarity"]) ?? "Common";
 
@@ -1663,17 +1331,6 @@ public sealed class NpcTradeService
     {
         var chars = value.Where(char.IsLetterOrDigit).ToArray();
         return chars.Length == 0 ? "item" : new string(chars).ToLowerInvariant();
-    }
-
-    private static int ComputeStableSeed(string value)
-    {
-        unchecked
-        {
-            var hash = 17;
-            foreach (var c in value)
-                hash = hash * 31 + c;
-            return hash;
-        }
     }
 
     private static JsonObject CloneObject(JsonObject source) => JsonNode.Parse(source.ToJsonString())!.AsObject();

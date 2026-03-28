@@ -760,13 +760,285 @@ public partial class ValidationService
             if (knownArcIds.Count == 0)
             {
                 worldEventsDoc?.Dispose();
-                return;
+            }
+
+            var knownGuardianAbodes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+            if (!string.IsNullOrWhiteSpace(guardiansJson))
+            {
+                using var guardiansDoc = JsonDocument.Parse(guardiansJson);
+                if (guardiansDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                    guardiansDoc.RootElement.TryGetProperty("guardians", out var guardians) &&
+                    guardians.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var guardian in guardians.EnumerateArray())
+                    {
+                        var guardianId = GetFirstNonEmptyString(guardian, "guardianId");
+                        var abodeId = guardian.TryGetProperty("abode", out var abode) && abode.ValueKind == JsonValueKind.Object
+                            ? GetFirstNonEmptyString(abode, "abodeId", "id")
+                            : string.Empty;
+                        if (!string.IsNullOrWhiteSpace(guardianId))
+                            knownGuardianAbodes[guardianId] = abodeId ?? string.Empty;
+                    }
+                }
+            }
+
+            var knownResidentIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var residentLinkedQuestIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var residentGrantedRelicIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+            if (!string.IsNullOrWhiteSpace(residentJson))
+            {
+                using var residentDoc = JsonDocument.Parse(residentJson);
+                foreach (var resident in residentDoc.RootElement.ValueKind == JsonValueKind.Object
+                             ? residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.EntriesProperty, out var entries) && entries.ValueKind == JsonValueKind.Array
+                                 ? entries.EnumerateArray()
+                                 : Enumerable.Empty<JsonElement>()
+                             : Enumerable.Empty<JsonElement>())
+                {
+                    var residentId = GetFirstNonEmptyString(resident, "residentId");
+                    var residentGuardianId = GetFirstNonEmptyString(resident, "guardianId");
+                    var residentAbodeId = GetFirstNonEmptyString(resident, "abodeId");
+                    if (!string.IsNullOrWhiteSpace(residentId))
+                    {
+                        knownResidentIds.Add(residentId);
+                        var linkedSoulQuestId = GetFirstNonEmptyString(resident, "linkedSoulQuestId");
+                        if (!string.IsNullOrWhiteSpace(linkedSoulQuestId))
+                            residentLinkedQuestIds[residentId] = linkedSoulQuestId;
+
+                        var grantedRelicId = GetFirstNonEmptyString(resident, "grantedRelicId");
+                        if (!string.IsNullOrWhiteSpace(grantedRelicId))
+                            residentGrantedRelicIds[residentId] = grantedRelicId;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(residentGuardianId) && !knownGuardianAbodes.ContainsKey(residentGuardianId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.entries[{residentId}].guardianId",
+                            IssueSeverity.Error,
+                            $"Afterlife resident ссылается на неизвестного guardian '{residentGuardianId}'",
+                            code: "guardian_abode_resident_unknown_guardian_id",
+                            section: "AfterlifeResidents",
+                            expected: "existing guardianId from guardians.json",
+                            actual: residentGuardianId,
+                            repairHint: "Для resident.guardianId используй существующий guardianId из game_state/meta/guardians.json."));
+                    }
+                    else if (!string.IsNullOrWhiteSpace(residentGuardianId) &&
+                             knownGuardianAbodes.TryGetValue(residentGuardianId, out var expectedAbodeId) &&
+                             !string.IsNullOrWhiteSpace(expectedAbodeId) &&
+                             !string.Equals(expectedAbodeId, residentAbodeId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.entries[{residentId}].abodeId",
+                            IssueSeverity.Error,
+                            "resident.abodeId должен совпадать с canonical abodeId этого guardian",
+                            code: "guardian_abode_resident_abode_mismatch",
+                            section: "AfterlifeResidents",
+                            expected: expectedAbodeId,
+                            actual: residentAbodeId,
+                            repairHint: "Синхронизируй resident.abodeId с guardian.abode.abodeId из canonical guardians state."));
+                    }
+                }
+
+                if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                    residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.RosterReceiptsProperty, out var rosterReceipts) &&
+                    rosterReceipts.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var receipt in rosterReceipts.EnumerateArray())
+                    {
+                        var guardianId = GetFirstNonEmptyString(receipt, "guardianId");
+                        var abodeId = GetFirstNonEmptyString(receipt, "abodeId");
+                        var requestId = GetFirstNonEmptyString(receipt, "requestId");
+                        if (!string.IsNullOrWhiteSpace(guardianId) && !knownGuardianAbodes.ContainsKey(guardianId))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{GuardianAbodeResidentState.StatePath}.rosterReceipts[{requestId}].guardianId",
+                                IssueSeverity.Error,
+                                $"Resident roster receipt ссылается на неизвестного guardian '{guardianId}'",
+                                code: "guardian_abode_resident_roster_receipt_unknown_guardian_id",
+                                section: "AfterlifeResidents",
+                                expected: "existing guardianId from guardians.json",
+                                actual: guardianId,
+                                repairHint: "Для rosterReceipts.guardianId используй существующий guardianId из game_state/meta/guardians.json."));
+                        }
+                        else if (!string.IsNullOrWhiteSpace(guardianId) &&
+                                 knownGuardianAbodes.TryGetValue(guardianId, out var expectedAbodeId) &&
+                                 !string.IsNullOrWhiteSpace(expectedAbodeId) &&
+                                 !string.Equals(expectedAbodeId, abodeId, StringComparison.OrdinalIgnoreCase))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{GuardianAbodeResidentState.StatePath}.rosterReceipts[{requestId}].abodeId",
+                                IssueSeverity.Error,
+                                "resident roster receipt должен ссылаться на canonical abodeId этого guardian",
+                                code: "guardian_abode_resident_roster_receipt_abode_mismatch",
+                                section: "AfterlifeResidents",
+                                expected: expectedAbodeId,
+                                actual: abodeId,
+                                repairHint: "Синхронизируй rosterReceipts.abodeId с guardian.abode.abodeId из canonical guardians state."));
+                        }
+                    }
+                }
+
+                if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                    residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.InteractionReceiptsProperty, out var interactionReceipts) &&
+                    interactionReceipts.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var receipt in interactionReceipts.EnumerateArray())
+                    {
+                        var residentId = GetFirstNonEmptyString(receipt, "residentId");
+                        if (string.IsNullOrWhiteSpace(residentId) || knownResidentIds.Contains(residentId))
+                            continue;
+
+                        issues.Add(new ValidationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.interactionReceipts[{residentId}].residentId",
+                            IssueSeverity.Error,
+                            $"Resident interaction receipt ссылается на неизвестного resident '{residentId}'",
+                            code: "guardian_abode_resident_receipt_unknown_resident_id",
+                            section: "AfterlifeResidents",
+                            expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                            actual: residentId,
+                            repairHint: "Для interactionReceipts.residentId используй существующий residentId из guardian_abode_residents.json."));
+                    }
+                }
+
+                if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                    residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.HistoryLogProperty, out var historyLog) &&
+                    historyLog.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var historyEntry in historyLog.EnumerateArray())
+                    {
+                        var residentId = GetFirstNonEmptyString(historyEntry, "residentId");
+                        if (string.IsNullOrWhiteSpace(residentId) || knownResidentIds.Contains(residentId))
+                            continue;
+
+                        issues.Add(new ValidationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.historyLog[{residentId}].residentId",
+                            IssueSeverity.Error,
+                            $"Resident historyLog entry ссылается на неизвестного resident '{residentId}'",
+                            code: "guardian_abode_resident_history_unknown_resident_id",
+                            section: "AfterlifeResidents",
+                            expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                            actual: residentId,
+                            repairHint: "Для historyLog.residentId используй существующий residentId из guardian_abode_residents.json."));
+                    }
+                }
+            }
+
+            var knownSoulRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var relicSourceResidentIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            if (!string.IsNullOrWhiteSpace(soulStateJson))
+            {
+                using var soulStateDoc = JsonDocument.Parse(soulStateJson);
+                if (soulStateDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                    soulStateDoc.RootElement.TryGetProperty("soulRelics", out var soulRelics))
+                {
+                    IEnumerable<JsonElement> EnumerateRelics()
+                    {
+                        if (soulRelics.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var relic in soulRelics.EnumerateArray())
+                                yield return relic;
+                            yield break;
+                        }
+
+                        if (soulRelics.ValueKind != JsonValueKind.Object)
+                            yield break;
+
+                        foreach (var collectionName in new[] { "equipped", "stored" })
+                        {
+                            if (!soulRelics.TryGetProperty(collectionName, out var collection) || collection.ValueKind != JsonValueKind.Array)
+                                continue;
+
+                            foreach (var relic in collection.EnumerateArray())
+                                yield return relic;
+                        }
+                    }
+
+                    foreach (var relic in EnumerateRelics())
+                    {
+                        if (relic.ValueKind != JsonValueKind.Object)
+                            continue;
+
+                        var relicId = GetFirstNonEmptyString(relic, "relicId", "id");
+                        if (!string.IsNullOrWhiteSpace(relicId))
+                            knownSoulRelicIds.Add(relicId);
+
+                        if (relic.TryGetProperty("companionSeed", out var companionSeed) && companionSeed.ValueKind == JsonValueKind.Object)
+                        {
+                            var sourceResidentId = GetFirstNonEmptyString(companionSeed, "sourceResidentId");
+                            if (!string.IsNullOrWhiteSpace(relicId) && !string.IsNullOrWhiteSpace(sourceResidentId))
+                                relicSourceResidentIds[relicId] = sourceResidentId;
+                        }
+                    }
+                }
+            }
+
+            var npcCoreJson = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+            if (!string.IsNullOrWhiteSpace(npcCoreJson))
+            {
+                using var npcCoreDoc = JsonDocument.Parse(npcCoreJson);
+                var seenRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var npcCollectionName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
+                {
+                    if (!npcCoreDoc.RootElement.TryGetProperty(npcCollectionName, out var npcs) || npcs.ValueKind != JsonValueKind.Array)
+                        continue;
+
+                    var npcIndex = 0;
+                    foreach (var npc in npcs.EnumerateArray())
+                    {
+                        var npcContext = $"game_state/npcs/npc_core.json.{npcCollectionName}[{npcIndex++}]";
+                        var sourceRelicId = GetFirstNonEmptyString(npc, "sourceCompanionRelicId");
+                        var sourceResidentId = GetFirstNonEmptyString(npc, "sourceAfterlifeResidentId");
+                        var sourceImprintId = GetFirstNonEmptyString(npc, "sourceSoulImprintId");
+
+                        if ((!string.IsNullOrWhiteSpace(sourceResidentId) || !string.IsNullOrWhiteSpace(sourceImprintId)) &&
+                            string.IsNullOrWhiteSpace(sourceRelicId))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{npcContext}.sourceCompanionRelicId",
+                                IssueSeverity.Error,
+                                "Manifested companion NPC должен хранить sourceCompanionRelicId для однозначного closure",
+                                code: "manifested_companion_missing_source_relic_id",
+                                section: "AfterlifeResidents",
+                                repairHint: "Когда companion manifestation fully materializes mortal NPC, всегда записывай sourceCompanionRelicId вместе с sourceAfterlifeResidentId/sourceSoulImprintId."));
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(sourceRelicId) && !seenRelicIds.Add(sourceRelicId))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{npcContext}.sourceCompanionRelicId",
+                                IssueSeverity.Error,
+                                "Несколько manifested NPC не должны делить один sourceCompanionRelicId",
+                                code: "manifested_companion_duplicate_source_relic_id",
+                                section: "AfterlifeResidents",
+                                expected: "unique sourceCompanionRelicId",
+                                actual: sourceRelicId,
+                                repairHint: "Один companion-carrying relic должен materialize максимум один mortal companion path/NPC."));
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(sourceRelicId) && !knownSoulRelicIds.Contains(sourceRelicId))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{npcContext}.sourceCompanionRelicId",
+                                IssueSeverity.Error,
+                                $"Manifested companion NPC ссылается на неизвестную soul relic '{sourceRelicId}'",
+                                code: "manifested_companion_unknown_source_relic_id",
+                                section: "AfterlifeResidents",
+                                expected: "existing relicId from soul_state.json",
+                                actual: sourceRelicId,
+                                repairHint: "Для sourceCompanionRelicId используй реальную экипированную или хранимую soul relic из soul_state.json."));
+                        }
+                    }
+                }
             }
 
             var soulQuestJson = await _fs.ReadFileAsync("game_state/quests/soul_quests.json");
             if (!string.IsNullOrWhiteSpace(soulQuestJson))
             {
                 using var soulQuestDoc = JsonDocument.Parse(soulQuestJson);
+                var knownSoulQuestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var questResidentLinks = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 JsonElement quests;
                 string? questCollectionName = null;
                 if (soulQuestDoc.RootElement.TryGetProperty("quests", out quests))
@@ -787,6 +1059,10 @@ public partial class ValidationService
                     var questIndex = 0;
                     foreach (var quest in quests.EnumerateArray())
                     {
+                        var questId = GetFirstNonEmptyString(quest, "questId", "id");
+                        if (!string.IsNullOrWhiteSpace(questId))
+                            knownSoulQuestIds.Add(questId);
+
                         var relatedArcId = GetFirstNonEmptyString(quest, "relatedRivalArcId");
                         if (!string.IsNullOrWhiteSpace(relatedArcId) && !knownArcIds.Contains(relatedArcId))
                         {
@@ -801,9 +1077,105 @@ public partial class ValidationService
                                 repairHint: "Для relatedRivalArcId используй существующий arcId из game_state/world/rival_soul_arcs.json."));
                         }
 
+                        var relatedResidentId = GetFirstNonEmptyString(quest, "relatedAfterlifeResidentId");
+                        if (!string.IsNullOrWhiteSpace(relatedResidentId) && !knownResidentIds.Contains(relatedResidentId))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"game_state/quests/soul_quests.json.{questCollectionName}[{questIndex}].relatedAfterlifeResidentId",
+                                IssueSeverity.Error,
+                                $"Soul quest ссылается на неизвестного afterlife resident '{relatedResidentId}'",
+                                code: "soul_quest_unknown_afterlife_resident_id",
+                                section: "SoulQuests",
+                                expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                                actual: relatedResidentId,
+                                repairHint: $"Для relatedAfterlifeResidentId используй residentId из {GuardianAbodeResidentState.StatePath}."));
+                        }
+                        else if (!string.IsNullOrWhiteSpace(relatedResidentId) && !string.IsNullOrWhiteSpace(questId))
+                        {
+                            questResidentLinks[relatedResidentId] = questId;
+                        }
+
                         questIndex++;
                     }
+
+                    foreach (var residentQuestLink in residentLinkedQuestIds)
+                    {
+                        if (!knownSoulQuestIds.Contains(residentQuestLink.Value))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
+                                IssueSeverity.Error,
+                                $"Afterlife resident ссылается на неизвестный soul quest '{residentQuestLink.Value}'",
+                                code: "guardian_abode_resident_unknown_linked_soul_quest_id",
+                                section: "SoulQuests",
+                                expected: "existing questId from game_state/quests/soul_quests.json",
+                                actual: residentQuestLink.Value,
+                                repairHint: "Если resident хранит linkedSoulQuestId, используй существующий questId из canonical soul_quests state."));
+                            continue;
+                        }
+
+                        if (!questResidentLinks.TryGetValue(residentQuestLink.Key, out var relatedQuestId) ||
+                            !string.Equals(relatedQuestId, residentQuestLink.Value, StringComparison.OrdinalIgnoreCase))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
+                                IssueSeverity.Error,
+                                "linkedSoulQuestId должен указывать на soul quest, который ссылается обратно на этого resident через relatedAfterlifeResidentId",
+                                code: "guardian_abode_resident_linked_soul_quest_mismatch",
+                                section: "SoulQuests",
+                                expected: $"soul quest with relatedAfterlifeResidentId={residentQuestLink.Key}",
+                                actual: residentQuestLink.Value,
+                                repairHint: "Синхронизируй resident.linkedSoulQuestId и soul quest.relatedAfterlifeResidentId."));                            
+                        }
+                    }
                 }
+            }
+
+            foreach (var residentRelicLink in residentGrantedRelicIds)
+            {
+                if (!knownSoulRelicIds.Contains(residentRelicLink.Value))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
+                        IssueSeverity.Error,
+                        $"Afterlife resident ссылается на неизвестную soul relic '{residentRelicLink.Value}'",
+                        code: "guardian_abode_resident_unknown_granted_relic_id",
+                        section: "AfterlifeResidents",
+                        expected: "existing relicId from soul_state.json",
+                        actual: residentRelicLink.Value,
+                        repairHint: "Если resident хранит grantedRelicId, соответствующая soul relic должна существовать в soul_state.json."));
+                    continue;
+                }
+
+                if (relicSourceResidentIds.TryGetValue(residentRelicLink.Value, out var sourceResidentId) &&
+                    !string.Equals(sourceResidentId, residentRelicLink.Key, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
+                        IssueSeverity.Error,
+                        "grantedRelicId указывает на реликвию, привязанную к другому resident",
+                        code: "guardian_abode_resident_granted_relic_resident_mismatch",
+                        section: "AfterlifeResidents",
+                        expected: residentRelicLink.Key,
+                        actual: sourceResidentId,
+                        repairHint: "Синхронизируй resident.grantedRelicId с sourceResidentId внутри companionSeed реликвии связи."));
+                }
+            }
+
+            foreach (var relicResidentLink in relicSourceResidentIds)
+            {
+                if (knownResidentIds.Contains(relicResidentLink.Value))
+                    continue;
+
+                issues.Add(new ValidationIssue(
+                    $"game_state/meta/soul_state.json.soulRelics[{relicResidentLink.Key}].companionSeed.sourceResidentId",
+                    IssueSeverity.Error,
+                    $"Soul Relic ссылается на неизвестного afterlife resident '{relicResidentLink.Value}'",
+                    code: "companion_echo_unknown_source_resident_id",
+                    section: "AfterlifeResidents",
+                    expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                    actual: relicResidentLink.Value,
+                    repairHint: "Для companionSeed.sourceResidentId используй существующий residentId из guardian_abode_residents.json."));
             }
 
             if (worldEventCollectionName == null || worldEvents.ValueKind != JsonValueKind.Array)
@@ -1035,6 +1407,332 @@ public partial class ValidationService
         }
 
         return clueKeys.Count;
+    }
+
+    private async Task ValidateResidentCrossReferencesWhenRivalArcPassSkippedAsync(List<ValidationIssue> issues)
+    {
+        var rivalJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+        if (!string.IsNullOrWhiteSpace(rivalJson))
+        {
+            try
+            {
+                using var rivalDoc = JsonDocument.Parse(rivalJson);
+                if ((rivalDoc.RootElement.TryGetProperty("arcs", out var arcs) && arcs.ValueKind == JsonValueKind.Array) ||
+                    (rivalDoc.RootElement.TryGetProperty("UpdateRivalSoulArcs", out var updates) && updates.ValueKind == JsonValueKind.Array))
+                {
+                    return;
+                }
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        var knownGuardianAbodes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (!string.IsNullOrWhiteSpace(guardiansJson))
+        {
+            using var guardiansDoc = JsonDocument.Parse(guardiansJson);
+            if (guardiansDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                guardiansDoc.RootElement.TryGetProperty("guardians", out var guardians) &&
+                guardians.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var guardian in guardians.EnumerateArray())
+                {
+                    var guardianId = GetFirstNonEmptyString(guardian, "guardianId");
+                    var abodeId = guardian.TryGetProperty("abode", out var abode) && abode.ValueKind == JsonValueKind.Object
+                        ? GetFirstNonEmptyString(abode, "abodeId", "id")
+                        : string.Empty;
+                    if (!string.IsNullOrWhiteSpace(guardianId))
+                        knownGuardianAbodes[guardianId] = abodeId ?? string.Empty;
+                }
+            }
+        }
+
+        var knownResidentIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var residentLinkedQuestIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var residentGrantedRelicIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (!string.IsNullOrWhiteSpace(residentJson))
+        {
+            using var residentDoc = JsonDocument.Parse(residentJson);
+            if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.EntriesProperty, out var entries) &&
+                entries.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var resident in entries.EnumerateArray())
+                {
+                    var residentId = GetFirstNonEmptyString(resident, "residentId");
+                    var residentGuardianId = GetFirstNonEmptyString(resident, "guardianId");
+                    var residentAbodeId = GetFirstNonEmptyString(resident, "abodeId");
+                    if (!string.IsNullOrWhiteSpace(residentId))
+                    {
+                        knownResidentIds.Add(residentId);
+                        var linkedSoulQuestId = GetFirstNonEmptyString(resident, "linkedSoulQuestId");
+                        if (!string.IsNullOrWhiteSpace(linkedSoulQuestId))
+                            residentLinkedQuestIds[residentId] = linkedSoulQuestId;
+
+                        var grantedRelicId = GetFirstNonEmptyString(resident, "grantedRelicId");
+                        if (!string.IsNullOrWhiteSpace(grantedRelicId))
+                            residentGrantedRelicIds[residentId] = grantedRelicId;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(residentGuardianId) && !knownGuardianAbodes.ContainsKey(residentGuardianId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.entries[{residentId}].guardianId",
+                            IssueSeverity.Error,
+                            $"Afterlife resident ссылается на неизвестного guardian '{residentGuardianId}'",
+                            code: "guardian_abode_resident_unknown_guardian_id",
+                            section: "AfterlifeResidents",
+                            expected: "existing guardianId from guardians.json",
+                            actual: residentGuardianId,
+                            repairHint: "Для resident.guardianId используй существующий guardianId из game_state/meta/guardians.json."));
+                    }
+                    else if (!string.IsNullOrWhiteSpace(residentGuardianId) &&
+                             knownGuardianAbodes.TryGetValue(residentGuardianId, out var expectedAbodeId) &&
+                             !string.IsNullOrWhiteSpace(expectedAbodeId) &&
+                             !string.Equals(expectedAbodeId, residentAbodeId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.entries[{residentId}].abodeId",
+                            IssueSeverity.Error,
+                            "resident.abodeId должен совпадать с canonical abodeId этого guardian",
+                            code: "guardian_abode_resident_abode_mismatch",
+                            section: "AfterlifeResidents",
+                            expected: expectedAbodeId,
+                            actual: residentAbodeId,
+                            repairHint: "Синхронизируй resident.abodeId с guardian.abode.abodeId из canonical guardians state."));
+                    }
+                }
+            }
+
+            if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.InteractionReceiptsProperty, out var interactionReceipts) &&
+                interactionReceipts.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var receipt in interactionReceipts.EnumerateArray())
+                {
+                    var residentId = GetFirstNonEmptyString(receipt, "residentId");
+                    if (string.IsNullOrWhiteSpace(residentId) || knownResidentIds.Contains(residentId))
+                        continue;
+
+                    issues.Add(new ValidationIssue(
+                        $"{GuardianAbodeResidentState.StatePath}.interactionReceipts[{residentId}].residentId",
+                        IssueSeverity.Error,
+                        $"Resident interaction receipt ссылается на неизвестного resident '{residentId}'",
+                        code: "guardian_abode_resident_receipt_unknown_resident_id",
+                        section: "AfterlifeResidents",
+                        expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                        actual: residentId,
+                        repairHint: "Для interactionReceipts.residentId используй существующий residentId из guardian_abode_residents.json."));
+                }
+            }
+
+            if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.HistoryLogProperty, out var historyLog) &&
+                historyLog.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var historyEntry in historyLog.EnumerateArray())
+                {
+                    var residentId = GetFirstNonEmptyString(historyEntry, "residentId");
+                    if (string.IsNullOrWhiteSpace(residentId) || knownResidentIds.Contains(residentId))
+                        continue;
+
+                    issues.Add(new ValidationIssue(
+                        $"{GuardianAbodeResidentState.StatePath}.historyLog[{residentId}].residentId",
+                        IssueSeverity.Error,
+                        $"Resident historyLog entry ссылается на неизвестного resident '{residentId}'",
+                        code: "guardian_abode_resident_history_unknown_resident_id",
+                        section: "AfterlifeResidents",
+                        expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                        actual: residentId,
+                        repairHint: "Для historyLog.residentId используй существующий residentId из guardian_abode_residents.json."));
+                }
+            }
+        }
+
+        var knownSoulRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var relicSourceResidentIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (!string.IsNullOrWhiteSpace(soulStateJson))
+        {
+            using var soulStateDoc = JsonDocument.Parse(soulStateJson);
+            if (soulStateDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                soulStateDoc.RootElement.TryGetProperty("soulRelics", out var soulRelics))
+            {
+                IEnumerable<JsonElement> EnumerateRelics()
+                {
+                    if (soulRelics.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var relic in soulRelics.EnumerateArray())
+                            yield return relic;
+                        yield break;
+                    }
+
+                    if (soulRelics.ValueKind != JsonValueKind.Object)
+                        yield break;
+
+                    foreach (var collectionName in new[] { "equipped", "stored" })
+                    {
+                        if (!soulRelics.TryGetProperty(collectionName, out var collection) || collection.ValueKind != JsonValueKind.Array)
+                            continue;
+
+                        foreach (var relic in collection.EnumerateArray())
+                            yield return relic;
+                    }
+                }
+
+                foreach (var relic in EnumerateRelics())
+                {
+                    if (relic.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var relicId = GetFirstNonEmptyString(relic, "relicId", "id");
+                    if (!string.IsNullOrWhiteSpace(relicId))
+                        knownSoulRelicIds.Add(relicId);
+
+                    if (relic.TryGetProperty("companionSeed", out var companionSeed) && companionSeed.ValueKind == JsonValueKind.Object)
+                    {
+                        var sourceResidentId = GetFirstNonEmptyString(companionSeed, "sourceResidentId");
+                        if (!string.IsNullOrWhiteSpace(relicId) && !string.IsNullOrWhiteSpace(sourceResidentId))
+                            relicSourceResidentIds[relicId] = sourceResidentId;
+                    }
+                }
+            }
+        }
+
+        var soulQuestJson = await _fs.ReadFileAsync("game_state/quests/soul_quests.json");
+        if (!string.IsNullOrWhiteSpace(soulQuestJson))
+        {
+            using var soulQuestDoc = JsonDocument.Parse(soulQuestJson);
+            var knownSoulQuestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var questResidentLinks = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            JsonElement quests;
+            string? questCollectionName = null;
+            if (soulQuestDoc.RootElement.TryGetProperty("quests", out quests))
+            {
+                questCollectionName = "quests";
+            }
+            else if (soulQuestDoc.RootElement.TryGetProperty("UpdateSoulQuests", out quests))
+            {
+                questCollectionName = "UpdateSoulQuests";
+            }
+            else
+            {
+                quests = default;
+            }
+
+            if (questCollectionName != null && quests.ValueKind == JsonValueKind.Array)
+            {
+                var questIndex = 0;
+                foreach (var quest in quests.EnumerateArray())
+                {
+                    var questId = GetFirstNonEmptyString(quest, "questId", "id");
+                    if (!string.IsNullOrWhiteSpace(questId))
+                        knownSoulQuestIds.Add(questId);
+
+                    var relatedResidentId = GetFirstNonEmptyString(quest, "relatedAfterlifeResidentId");
+                    if (!string.IsNullOrWhiteSpace(relatedResidentId) && !knownResidentIds.Contains(relatedResidentId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"game_state/quests/soul_quests.json.{questCollectionName}[{questIndex}].relatedAfterlifeResidentId",
+                            IssueSeverity.Error,
+                            $"Soul quest ссылается на неизвестного afterlife resident '{relatedResidentId}'",
+                            code: "soul_quest_unknown_afterlife_resident_id",
+                            section: "SoulQuests",
+                            expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                            actual: relatedResidentId,
+                            repairHint: $"Для relatedAfterlifeResidentId используй residentId из {GuardianAbodeResidentState.StatePath}."));
+                    }
+                    else if (!string.IsNullOrWhiteSpace(relatedResidentId) && !string.IsNullOrWhiteSpace(questId))
+                    {
+                        questResidentLinks[relatedResidentId] = questId;
+                    }
+
+                    questIndex++;
+                }
+
+                foreach (var residentQuestLink in residentLinkedQuestIds)
+                {
+                    if (!knownSoulQuestIds.Contains(residentQuestLink.Value))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
+                            IssueSeverity.Error,
+                            $"Afterlife resident ссылается на неизвестный soul quest '{residentQuestLink.Value}'",
+                            code: "guardian_abode_resident_unknown_linked_soul_quest_id",
+                            section: "SoulQuests",
+                            expected: "existing questId from game_state/quests/soul_quests.json",
+                            actual: residentQuestLink.Value,
+                            repairHint: "Если resident хранит linkedSoulQuestId, используй существующий questId из canonical soul_quests state."));
+                        continue;
+                    }
+
+                    if (!questResidentLinks.TryGetValue(residentQuestLink.Key, out var relatedQuestId) ||
+                        !string.Equals(relatedQuestId, residentQuestLink.Value, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
+                            IssueSeverity.Error,
+                            "linkedSoulQuestId должен указывать на soul quest, который ссылается обратно на этого resident через relatedAfterlifeResidentId",
+                            code: "guardian_abode_resident_linked_soul_quest_mismatch",
+                            section: "SoulQuests",
+                            expected: $"soul quest with relatedAfterlifeResidentId={residentQuestLink.Key}",
+                            actual: residentQuestLink.Value,
+                            repairHint: "Синхронизируй resident.linkedSoulQuestId и soul quest.relatedAfterlifeResidentId."));
+                    }
+                }
+            }
+        }
+
+        foreach (var residentRelicLink in residentGrantedRelicIds)
+        {
+            if (!knownSoulRelicIds.Contains(residentRelicLink.Value))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
+                    IssueSeverity.Error,
+                    $"Afterlife resident ссылается на неизвестную soul relic '{residentRelicLink.Value}'",
+                    code: "guardian_abode_resident_unknown_granted_relic_id",
+                    section: "AfterlifeResidents",
+                    expected: "existing relicId from soul_state.json",
+                    actual: residentRelicLink.Value,
+                    repairHint: "Если resident хранит grantedRelicId, соответствующая soul relic должна существовать в soul_state.json."));
+                continue;
+            }
+
+            if (relicSourceResidentIds.TryGetValue(residentRelicLink.Value, out var sourceResidentId) &&
+                !string.Equals(sourceResidentId, residentRelicLink.Key, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
+                    IssueSeverity.Error,
+                    "grantedRelicId указывает на реликвию, привязанную к другому resident",
+                    code: "guardian_abode_resident_granted_relic_resident_mismatch",
+                    section: "AfterlifeResidents",
+                    expected: residentRelicLink.Key,
+                    actual: sourceResidentId,
+                    repairHint: "Синхронизируй resident.grantedRelicId с sourceResidentId внутри companionSeed реликвии связи."));
+            }
+        }
+
+        foreach (var relicResidentLink in relicSourceResidentIds)
+        {
+            if (knownResidentIds.Contains(relicResidentLink.Value))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"game_state/meta/soul_state.json.soulRelics[{relicResidentLink.Key}].companionSeed.sourceResidentId",
+                IssueSeverity.Error,
+                $"Soul Relic ссылается на неизвестного afterlife resident '{relicResidentLink.Value}'",
+                code: "companion_echo_unknown_source_resident_id",
+                section: "AfterlifeResidents",
+                expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                actual: relicResidentLink.Value,
+                repairHint: "Для companionSeed.sourceResidentId используй существующий residentId из guardian_abode_residents.json."));
+        }
     }
 
 

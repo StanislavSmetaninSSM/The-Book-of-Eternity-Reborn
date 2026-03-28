@@ -40,6 +40,18 @@ public partial class CanonicalStateNormalizer
             result["guardians"] = currentArray.DeepClone();
         }
 
+        if (previous is JsonObject previousObj &&
+            previousObj[GuardianTradeRequestState.UpdateReceiptsProperty] is JsonArray previousTradeReceiptUpdates)
+        {
+            GuardianTradeRequestState.ApplyReceiptUpdates(result, previousTradeReceiptUpdates);
+        }
+
+        if (currentNode is JsonObject currentRootObj &&
+            currentRootObj[GuardianTradeRequestState.UpdateReceiptsProperty] is JsonArray currentTradeReceiptUpdates)
+        {
+            GuardianTradeRequestState.ApplyReceiptUpdates(result, currentTradeReceiptUpdates);
+        }
+
         if (pendingPowerEvents.Count > 0)
             GuardianPowerEventState.ApplyEvents(result, pendingPowerEvents, currentTurn, powerJournalEntries);
 
@@ -49,6 +61,7 @@ public partial class CanonicalStateNormalizer
             {
                 AbodePowerRules.EnsureCanonicalState(guardian);
                 GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+                GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
             }
         }
 
@@ -59,10 +72,90 @@ public partial class CanonicalStateNormalizer
         }
 
         result.Remove("UpdateGuardians");
+        result.Remove(GuardianTradeRequestState.UpdateReceiptsProperty);
         result.Remove("guardianPowerEvents");
         await WriteIfChangedAsync(path, currentNode, result);
         if (powerJournalEntries.Count > 0)
             await GuardianPowerEventState.AppendJournalEntriesAsync(_fs, powerJournalEntries);
+    }
+
+    private async Task NormalizeGuardianAbodeResidentsAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        const string path = GuardianAbodeResidentState.StatePath;
+        var currentNode = await ReadNodeAsync(path);
+        if (currentNode == null) return;
+
+        var previous = await ReadBackupObjectAsync(path, backups);
+        var result = CloneObject(previous ?? new JsonObject());
+        var entries = GuardianAbodeResidentState.EnsureEntriesArray(result);
+        GuardianAbodeResidentState.EnsureRosterReceiptsArray(result);
+        GuardianAbodeResidentState.EnsureInteractionReceiptsArray(result);
+        GuardianAbodeResidentState.EnsureHistoryLogArray(result);
+        GuardianAbodeResidentState.EnsureThoughtJournalArray(result);
+        GuardianAbodeResidentState.EnsureInteractionLogArray(result);
+
+        foreach (var resident in CollectGuardianAbodeResidentEntries(previous))
+            GuardianAbodeResidentState.UpsertResident(entries, resident);
+        foreach (var resident in CollectGuardianAbodeResidentEntries(currentNode))
+            GuardianAbodeResidentState.UpsertResident(entries, resident);
+
+        var previousRosterReceipts = new JsonArray();
+        foreach (var receipt in CollectGuardianAbodeResidentRosterReceipts(previous))
+            previousRosterReceipts.Add(receipt);
+        GuardianAbodeResidentState.ApplyRosterReceiptUpdates(result, previousRosterReceipts);
+
+        var currentRosterReceipts = new JsonArray();
+        foreach (var receipt in CollectGuardianAbodeResidentRosterReceipts(currentNode))
+            currentRosterReceipts.Add(receipt);
+        GuardianAbodeResidentState.ApplyRosterReceiptUpdates(result, currentRosterReceipts);
+
+        var previousInteractionReceipts = new JsonArray();
+        foreach (var receipt in CollectGuardianAbodeResidentInteractionReceipts(previous))
+            previousInteractionReceipts.Add(receipt);
+        GuardianAbodeResidentState.ApplyInteractionReceiptUpdates(result, previousInteractionReceipts);
+
+        var currentInteractionReceipts = new JsonArray();
+        foreach (var receipt in CollectGuardianAbodeResidentInteractionReceipts(currentNode))
+            currentInteractionReceipts.Add(receipt);
+        GuardianAbodeResidentState.ApplyInteractionReceiptUpdates(result, currentInteractionReceipts);
+
+        var previousHistoryLog = new JsonArray();
+        foreach (var historyEntry in CollectGuardianAbodeResidentHistoryLogEntries(previous))
+            previousHistoryLog.Add(historyEntry);
+        GuardianAbodeResidentState.ApplyHistoryLogUpdates(result, previousHistoryLog);
+
+        var currentHistoryLog = new JsonArray();
+        foreach (var historyEntry in CollectGuardianAbodeResidentHistoryLogEntries(currentNode))
+            currentHistoryLog.Add(historyEntry);
+        GuardianAbodeResidentState.ApplyHistoryLogUpdates(result, currentHistoryLog);
+
+        var previousThoughtJournal = new JsonArray();
+        foreach (var entry in CollectGuardianAbodeResidentThoughtJournalEntries(previous))
+            previousThoughtJournal.Add(entry);
+        GuardianAbodeResidentState.ApplyThoughtJournalUpdates(result, previousThoughtJournal);
+
+        var currentThoughtJournal = new JsonArray();
+        foreach (var entry in CollectGuardianAbodeResidentThoughtJournalEntries(currentNode))
+            currentThoughtJournal.Add(entry);
+        GuardianAbodeResidentState.ApplyThoughtJournalUpdates(result, currentThoughtJournal);
+
+        var previousInteractionLog = new JsonArray();
+        foreach (var entry in CollectGuardianAbodeResidentInteractionLogEntries(previous))
+            previousInteractionLog.Add(entry);
+        GuardianAbodeResidentState.ApplyInteractionLogUpdates(result, previousInteractionLog);
+
+        var currentInteractionLog = new JsonArray();
+        foreach (var entry in CollectGuardianAbodeResidentInteractionLogEntries(currentNode))
+            currentInteractionLog.Add(entry);
+        GuardianAbodeResidentState.ApplyInteractionLogUpdates(result, currentInteractionLog);
+
+        result.Remove(GuardianAbodeResidentState.UpdateProperty);
+        result.Remove(GuardianAbodeResidentState.UpdateRosterReceiptsProperty);
+        result.Remove(GuardianAbodeResidentState.UpdateInteractionReceiptsProperty);
+        result.Remove(GuardianAbodeResidentState.UpdateHistoryLogProperty);
+        result.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
+        result.Remove(GuardianAbodeResidentState.UpdateInteractionLogProperty);
+        await WriteIfChangedAsync(path, currentNode, result);
     }
 
     private async Task NormalizeCharacterChronicleAsync(IReadOnlyDictionary<string, string>? backups)

@@ -231,6 +231,9 @@ public class GameResponse
     [JsonPropertyName("UpdateNPCs")]
     public JsonElement[]? UpdateNPCs { get; set; }
 
+    [JsonPropertyName("UpdateNpcTradeInventoryReceipts")]
+    public JsonElement[]? UpdateNpcTradeInventoryReceipts { get; set; }
+
     [JsonPropertyName("NPCsRenameData")]
     public JsonElement[]? NPCsRenameData { get; set; }
 
@@ -300,6 +303,9 @@ public class GameResponse
     [JsonPropertyName("NPCJournals")]
     public JsonElement[]? NPCJournals { get; set; }
 
+    [JsonPropertyName("npcInteractionJournalUpdates")]
+    public JsonElement[]? NpcInteractionJournalUpdates { get; set; }
+
     [JsonPropertyName("NPCUnlockedMemories")]
     public JsonElement[]? NPCUnlockedMemories { get; set; }
 
@@ -368,6 +374,33 @@ public class GameResponse
 
     [JsonPropertyName("UpdateGuardians")]
     public JsonElement[]? UpdateGuardians { get; set; }
+
+    [JsonPropertyName("UpdateGuardianTradeInventoryReceipts")]
+    public JsonElement[]? UpdateGuardianTradeInventoryReceipts { get; set; }
+
+    [JsonPropertyName("UpdateGuardianAbodeResidents")]
+    public JsonElement[]? UpdateGuardianAbodeResidents { get; set; }
+
+    [JsonPropertyName("UpdateGuardianAbodeResidentRosterReceipts")]
+    public JsonElement[]? UpdateGuardianAbodeResidentRosterReceipts { get; set; }
+
+    [JsonPropertyName("UpdateGuardianAbodeResidentInteractionReceipts")]
+    public JsonElement[]? UpdateGuardianAbodeResidentInteractionReceipts { get; set; }
+
+    [JsonPropertyName("UpdateGuardianAbodeResidentHistoryLog")]
+    public JsonElement[]? UpdateGuardianAbodeResidentHistoryLog { get; set; }
+
+    [JsonPropertyName("residentThoughtJournalUpdates")]
+    public JsonElement[]? ResidentThoughtJournalUpdates { get; set; }
+
+    [JsonPropertyName("residentInteractionLogUpdates")]
+    public JsonElement[]? ResidentInteractionLogUpdates { get; set; }
+
+    [JsonPropertyName("guardianThoughtJournalUpdates")]
+    public JsonElement[]? GuardianThoughtJournalUpdates { get; set; }
+
+    [JsonPropertyName("guardianSocialJournalUpdates")]
+    public JsonElement[]? GuardianSocialJournalUpdates { get; set; }
 
     [JsonPropertyName("startGuardianProjects")]
     public JsonElement[]? StartGuardianProjects { get; set; }

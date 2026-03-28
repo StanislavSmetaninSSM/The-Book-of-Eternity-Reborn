@@ -175,7 +175,7 @@ public partial class ExplorerMode
             table.AddRow("[yellow]/soul_relics[/]", "[yellow]/реликвии[/]", "[yellow]Реликвии души[/]");
             table.AddRow("[yellow]/afterlife_archive[/]", "[yellow]/архив_души[/]", "[yellow]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[yellow]/archive_candidates[/]", "[yellow]/архив_кандидаты[/]", "[yellow]Выбрать, что сохранить в Архив по итогам жизни[/]");
-            table.AddRow("[yellow]/afterlife_inbox[/]", "[yellow]/уведомления_загробья[/]", "[yellow]Ответы GM по торговле и архивным действиям[/]");
+            table.AddRow("[yellow]/afterlife_inbox[/]", "[yellow]/уведомления_загробья[/]", "[yellow]Ответы GM по торговле, Архиву и резидентам Обители[/]");
             table.AddRow("[yellow]/soul_quests[/]", "[yellow]/квесты_души[/]", "[yellow]Квесты хранителей[/]");
             table.AddRow("[gold1]/feathers[/]", "[gold1]/перья[/]", "[gold1]🪶 Чернильные перья[/]");
             table.AddRow("[cyan]/world_setup[/]", "[cyan]/настройка_мира[/]", "[cyan]Подготовить следующий смертный мир[/]");
@@ -197,7 +197,7 @@ public partial class ExplorerMode
             table.AddRow("[blue]/soul_relics[/]", "[blue]/реликвии[/]", "[blue]Реликвии души (экипировка, хранилище)[/]");
             table.AddRow("[blue]/afterlife_archive[/]", "[blue]/архив_души[/]", "[blue]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[blue]/archive_candidates[/]", "[blue]/архив_кандидаты[/]", "[blue]Выбрать записи Кодекса, которые переживут смерть[/]");
-            table.AddRow("[blue]/afterlife_inbox[/]", "[blue]/уведомления_загробья[/]", "[blue]Ответы GM по торговле и архивным действиям[/]");
+            table.AddRow("[blue]/afterlife_inbox[/]", "[blue]/уведомления_загробья[/]", "[blue]Ответы GM по торговле, Архиву и резидентам Обители[/]");
             table.AddRow("[blue]/soul_quests[/]", "[blue]/квесты_души[/]", "[blue]Квесты от хранителей[/]");
             table.AddRow("[gold1]/gacha[/]", "[gold1]/гача[/]", "[gold1]Прямое вытягивание реликвии из Моря Хаоса (без модификаторов Хранителя)[/]");
             table.AddRow("[gold1]/feathers[/]", "[gold1]/перья[/]", "[gold1]🪶 Чернильные перья (способности души)[/]");

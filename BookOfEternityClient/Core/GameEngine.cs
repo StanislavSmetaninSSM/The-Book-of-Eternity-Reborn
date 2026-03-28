@@ -31,6 +31,7 @@ public partial class GameEngine
     private readonly ValidationService _validator;
     private readonly CharacteristicsService _charService;
     private readonly StoryService _storyService;
+    private readonly ActorMemoryService _actorMemoryService;
     private readonly AudioService _audioService;
     private readonly ConsoleAppearanceService _consoleAppearance;
     private readonly SystemModService _systemModService;
@@ -63,13 +64,7 @@ public partial class GameEngine
     private const string TerminalProtocolFailureRequestPath = "game_state/control/terminal_protocol_failure_request.json";
     private const string OrdinaryPlayerTurnSourceLabel = "обработки хода";
 
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    };
+    private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
     private static readonly JsonSerializerOptions SnapshotHashJsonOpts = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -83,7 +78,7 @@ public partial class GameEngine
         GameInterface ui, ExplorerMode explorer,
         LocalizationManager loc, SaveLoadService saveLoad, ImageService imageService,
         ValidationService validator, CharacteristicsService charService,
-        StoryService storyService, AudioService audioService, ConsoleAppearanceService consoleAppearance,
+        StoryService storyService, ActorMemoryService actorMemoryService, AudioService audioService, ConsoleAppearanceService consoleAppearance,
         SystemModService systemModService,
         SystemGuardianLibraryService systemGuardianLibraryService,
         CriticalStateHealthService criticalStateHealth,
@@ -111,6 +106,7 @@ public partial class GameEngine
         _validator = validator;
         _charService = charService;
         _storyService = storyService;
+        _actorMemoryService = actorMemoryService;
         _audioService = audioService;
         _consoleAppearance = consoleAppearance;
         _systemModService = systemModService;

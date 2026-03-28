@@ -24,6 +24,10 @@ public sealed class GuardianTradeService
 
     private const string GuardiansPath = "game_state/meta/guardians.json";
     private const string SoulStatePath = "game_state/meta/soul_state.json";
+    private const string BuybackRelicsProperty = "buybackRelics";
+    private const string BuybackStatusAvailable = "available";
+    private const string BuybackStatusRebought = "rebought";
+    private const string BuybackStatusRemoved = "removed";
 
     private enum TradeReputationTier
     {
@@ -44,6 +48,17 @@ public sealed class GuardianTradeService
         bool SoldOut,
         JsonObject RelicData);
 
+    public sealed record GuardianBuybackOffer(
+        string BuybackEntryId,
+        string RelicId,
+        string Name,
+        string Rarity,
+        int PriceInFeathers,
+        int SoldForPrice,
+        int SoldAtTurn,
+        string Description,
+        JsonObject RelicData);
+
     public sealed record GuardianTradeView(
         string GuardianId,
         string GuardianName,
@@ -59,7 +74,8 @@ public sealed class GuardianTradeService
         bool InventoryRequestCreatedThisCall,
         string? InventoryStatusMessage,
         string? PendingGmAction,
-        IReadOnlyList<GuardianTradeOffer> Offers);
+        IReadOnlyList<GuardianTradeOffer> Offers,
+        IReadOnlyList<GuardianBuybackOffer> BuybackOffers);
 
     public sealed record GuardianSellOffer(
         string RelicId,
@@ -76,8 +92,11 @@ public sealed class GuardianTradeService
         _logger = logger;
     }
 
-    public async Task<GuardianTradeView?> EnsureTradeInventoryAsync(string guardianId, int currentIncarnation)
+    public async Task<GuardianTradeView?> EnsureTradeInventoryAsync(string guardianId, int currentIncarnation, int currentTurn)
     {
+        if (currentTurn <= 0)
+            throw new ArgumentOutOfRangeException(nameof(currentTurn), "Подготовка или проверка витрины Хранителя требует актуальный номер хода.");
+
         var root = await ReadGuardiansRootAsync();
         if (root == null)
             return null;
@@ -87,7 +106,7 @@ public sealed class GuardianTradeService
         if (guardian == null)
             return null;
 
-        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(root, guardian, currentIncarnation, trackerRoot);
+        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(root, guardian, currentIncarnation, currentTurn, trackerRoot);
         if (changed)
             await _fs.WriteFileAtomicAsync(GuardiansPath, root.ToJsonString(JsonOpts));
         if (trackerChanged && trackerRoot != null)
@@ -136,8 +155,11 @@ public sealed class GuardianTradeService
             .ToList();
     }
 
-    public async Task<GuardianTradeOperationResult> BuyAsync(string guardianId, string slotId, int currentIncarnation)
+    public async Task<GuardianTradeOperationResult> BuyAsync(string guardianId, string slotId, int currentIncarnation, int currentTurn)
     {
+        if (currentTurn <= 0)
+            return new GuardianTradeOperationResult(false, false, "Локальная покупка реликвии требует актуальный номер хода.");
+
         var guardiansRoot = await ReadGuardiansRootAsync();
         var soulRoot = await ReadSoulStateRootAsync();
         var trackerRoot = await ReadGuardianProjectTrackerRootAsync();
@@ -151,7 +173,7 @@ public sealed class GuardianTradeService
         if (!GuardianTradeAllowedHere(guardiansRoot, guardian))
             return new GuardianTradeOperationResult(false, false, "Торговать можно только с текущим активным Хранителем в обители, где вы сейчас находитесь.");
 
-        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(guardiansRoot, guardian, currentIncarnation, trackerRoot);
+        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(guardiansRoot, guardian, currentIncarnation, currentTurn, trackerRoot);
         if (view.TradeBlocked)
             return new GuardianTradeOperationResult(false, false, view.BlockReason ?? "Торговля недоступна.");
         if (!view.InventoryReady)
@@ -187,14 +209,17 @@ public sealed class GuardianTradeService
         await _fs.WriteFileAtomicAsync(SoulStatePath, soulRoot.ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(GuardiansPath, guardiansRoot.ToJsonString(JsonOpts));
         if ((changed || trackerChanged) && trackerRoot != null)
-            await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot.ToJsonString(JsonOpts));
+            await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot!.ToJsonString(JsonOpts));
 
         var relicName = GetNodeString(relicData["name"]) ?? "Реликвия";
         return new GuardianTradeOperationResult(true, true, $"Куплена реликвия «{relicName}» за {price} 🪶.");
     }
 
-    public async Task<GuardianTradeOperationResult> SellAsync(string guardianId, string relicId)
+    public async Task<GuardianTradeOperationResult> SellAsync(string guardianId, string relicId, int currentTurn)
     {
+        if (currentTurn <= 0)
+            return new GuardianTradeOperationResult(false, false, "Локальная продажа реликвии требует актуальный номер хода.");
+
         var guardiansRoot = await ReadGuardiansRootAsync();
         var soulRoot = await ReadSoulStateRootAsync();
         if (guardiansRoot == null || soulRoot == null)
@@ -224,16 +249,85 @@ public sealed class GuardianTradeService
         if (!TryModifyInkFeathers(soulRoot, price))
             return new GuardianTradeOperationResult(false, false, "Не удалось обновить баланс перьев.");
 
+        var buybackRelics = EnsureBuybackRelicsArray(guardian);
+        buybackRelics.Add(CreateBuybackEntry(
+            guardianId,
+            GuardianManifestation.GetDisplayName(guardian),
+            CloneObject(relic),
+            price,
+            Math.Max(0, currentTurn)));
+        SyncActiveGuardian(guardiansRoot, guardianId, guardian);
+
         await _fs.WriteFileAtomicAsync(SoulStatePath, soulRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(GuardiansPath, guardiansRoot.ToJsonString(JsonOpts));
 
         var relicName = GetNodeString(relic["name"]) ?? "Реликвия";
         return new GuardianTradeOperationResult(true, true, $"Продана реликвия «{relicName}» за {price} 🪶.");
+    }
+
+    public async Task<GuardianTradeOperationResult> BuyBackAsync(string guardianId, string buybackEntryId, int currentTurn)
+    {
+        if (currentTurn <= 0)
+            return new GuardianTradeOperationResult(false, false, "Локальный выкуп реликвии требует актуальный номер хода.");
+
+        var guardiansRoot = await ReadGuardiansRootAsync();
+        var soulRoot = await ReadSoulStateRootAsync();
+        if (guardiansRoot == null || soulRoot == null)
+            return new GuardianTradeOperationResult(false, false, "Не удалось прочитать состояние торговли или души.");
+
+        var guardian = FindGuardian(guardiansRoot, guardianId);
+        if (guardian == null)
+            return new GuardianTradeOperationResult(false, false, "Хранитель не найден.");
+
+        if (!GuardianTradeAllowedHere(guardiansRoot, guardian))
+            return new GuardianTradeOperationResult(false, false, "Торговать можно только с текущим активным Хранителем в обители, где вы сейчас находитесь.");
+
+        var tier = GetTradeReputationTier(ReadGuardianReputation(guardian));
+        if (tier == TradeReputationTier.Hostile)
+            return new GuardianTradeOperationResult(false, false, "Этот Хранитель отказывается торговать с вами.");
+
+        if (guardian[BuybackRelicsProperty] is not JsonArray buybackRelics)
+            return new GuardianTradeOperationResult(false, false, "У этого Хранителя нет реликвий для обратного выкупа.");
+
+        var buybackEntry = buybackRelics
+            .OfType<JsonObject>()
+            .FirstOrDefault(entry =>
+                string.Equals(GetNodeString(entry["buybackEntryId"]), buybackEntryId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(entry["status"]), BuybackStatusAvailable, StringComparison.OrdinalIgnoreCase));
+        if (buybackEntry == null)
+            return new GuardianTradeOperationResult(false, false, "Эта реликвия больше недоступна для обратного выкупа.");
+
+        if (buybackEntry["relicData"] is not JsonObject relicData)
+            return new GuardianTradeOperationResult(false, false, "Данные реликвии для обратного выкупа повреждены.");
+
+        var price = GetNodeInt(buybackEntry["buybackPrice"], GetNodeInt(buybackEntry["soldForPrice"], 0));
+        if (price <= 0)
+            return new GuardianTradeOperationResult(false, false, "Цена обратного выкупа повреждена.");
+
+        if (!TryModifyInkFeathers(soulRoot, -price))
+            return new GuardianTradeOperationResult(false, false, "Недостаточно Чернильных Перьев.");
+
+        NormalizeSoulRelicsShape(soulRoot);
+        var stored = ((JsonObject)soulRoot["soulRelics"]!)["stored"]!.AsArray();
+        UpsertRelic(stored, CloneObject(relicData));
+
+        buybackEntry["status"] = BuybackStatusRebought;
+        buybackEntry["reboughtAtTurn"] = Math.Max(0, currentTurn);
+        buybackEntry["reboughtAtUtc"] = DateTimeOffset.UtcNow.ToString("O");
+        SyncActiveGuardian(guardiansRoot, guardianId, guardian);
+
+        await _fs.WriteFileAtomicAsync(SoulStatePath, soulRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(GuardiansPath, guardiansRoot.ToJsonString(JsonOpts));
+
+        var relicName = GetNodeString(relicData["name"]) ?? "Реликвия";
+        return new GuardianTradeOperationResult(true, true, $"Выкуплена обратно реликвия «{relicName}» за {price} 🪶.");
     }
 
     private async Task<(TradeReputationTier Tier, GuardianTradeView View, bool Changed, bool TrackerChanged)> EnsureTradeInventoryStateAsync(
         JsonObject root,
         JsonObject guardian,
         int currentIncarnation,
+        int currentTurn,
         JsonObject? trackerRoot)
     {
         var guardianId = GetNodeString(guardian["guardianId"]) ?? "";
@@ -260,6 +354,14 @@ public sealed class GuardianTradeService
             if (TradeInventoryMatchesContract(tradeInventory, cycleId, derivedState))
             {
                 inventoryReady = true;
+                var request = await GuardianTradeRequestState.ReadAsync(_fs);
+                var requestMatchesCurrentContract = request != null &&
+                    GuardianTradeRequestState.MatchesCurrentContract(request, guardianId, cycleId, reputation, derivedState);
+                var hasMatchingReceipt = requestMatchesCurrentContract &&
+                    GuardianTradeRequestState.ReceiptMatchesRequestContract(
+                        GuardianTradeRequestState.FindMatchingReceipt(guardian, request!),
+                        request!,
+                        tradeInventory);
                 if (tradeInventory != null)
                 {
                     changed = RepriceTradeInventory(tradeInventory, tier);
@@ -274,7 +376,8 @@ public sealed class GuardianTradeService
                         SyncActiveGuardian(root, guardianId, guardian);
                 }
 
-                GuardianTradeRequestState.Clear(_fs);
+                if (request != null && (!requestMatchesCurrentContract || hasMatchingReceipt))
+                    GuardianTradeRequestState.Clear(_fs);
             }
             else
             {
@@ -298,7 +401,8 @@ public sealed class GuardianTradeService
                         CurrentReputation = reputation,
                         DerivedTradeSlotCount = derivedState.TradeSlotCount,
                         EffectiveRarityCeilingBonusSteps = derivedState.EffectiveGuardianRarityCeilingBonusSteps,
-                        ProjectBonusSignature = GuardianProjectState.BuildTradeBonusSignature(derivedState)
+                        ProjectBonusSignature = GuardianProjectState.BuildTradeBonusSignature(derivedState),
+                        CreatedAtTurn = Math.Max(0, currentTurn)
                     };
                     await GuardianTradeRequestState.WriteAsync(_fs, request);
                     inventoryRequestPending = true;
@@ -307,6 +411,7 @@ public sealed class GuardianTradeService
                         $"[{GuardianTradeRequestState.ActionTag}] Игрок открывает торговлю с Хранителем {guardianName} ({guardianId}), но актуальная витрина отсутствует или устарела. " +
                         $"Обязательно прочитай {GuardianTradeRequestState.PendingRequestPath} как client-authored contract. " +
                         "Сгенерируй explicit guardian.tradeInventory для текущего return cycle, а не выводи ассортимент из guardian.domain. " +
+                        $"После materialization закрой запрос canonical receipt через {GuardianTradeRequestState.UpdateReceiptsProperty} в guardians.json. " +
                         "Витрина должна уважать derivedTradeSlotCount, generation/pricing reputation tier и projectBonusSignature из request.";
                 }
 
@@ -350,6 +455,7 @@ public sealed class GuardianTradeService
         var domain = GetNodeString(guardian["domain"]) ?? "";
         var rep = ReadGuardianReputation(guardian);
         var offers = new List<GuardianTradeOffer>();
+        var buybackOffers = ReadBuybackOffers(guardian);
 
         if (!blocked && inventoryReady &&
             guardian["tradeInventory"] is JsonObject tradeInventory &&
@@ -387,7 +493,8 @@ public sealed class GuardianTradeService
             inventoryRequestCreatedThisCall,
             inventoryStatusMessage,
             pendingGmAction,
-            offers);
+            offers,
+            buybackOffers);
     }
 
     private async Task<JsonObject?> ReadGuardiansRootAsync()
@@ -637,6 +744,9 @@ public sealed class GuardianTradeService
             or nameof(TradeReputationTier.Devoted)
             or nameof(TradeReputationTier.Legendary);
 
+    internal static bool IsValidBuybackStatusCode(string? statusCode) =>
+        statusCode is BuybackStatusAvailable or BuybackStatusRebought or BuybackStatusRemoved;
+
     internal static int ComputeBuyPriceForTierCode(string rarity, string tierCode) =>
         ComputeBuyPrice(rarity, ParseTradeTierCode(tierCode));
 
@@ -827,6 +937,76 @@ public sealed class GuardianTradeService
         }
 
         return null;
+    }
+
+    private static JsonArray EnsureBuybackRelicsArray(JsonObject guardian)
+    {
+        if (guardian[BuybackRelicsProperty] is JsonArray buybackRelics)
+            return buybackRelics;
+
+        buybackRelics = new JsonArray();
+        guardian[BuybackRelicsProperty] = buybackRelics;
+        return buybackRelics;
+    }
+
+    private static IReadOnlyList<GuardianBuybackOffer> ReadBuybackOffers(JsonObject guardian)
+    {
+        if (guardian[BuybackRelicsProperty] is not JsonArray buybackRelics)
+            return Array.Empty<GuardianBuybackOffer>();
+
+        return buybackRelics
+            .OfType<JsonObject>()
+            .Where(entry => string.Equals(GetNodeString(entry["status"]), BuybackStatusAvailable, StringComparison.OrdinalIgnoreCase))
+            .Select(entry =>
+            {
+                if (entry["relicData"] is not JsonObject relicData)
+                    return null;
+
+                return new GuardianBuybackOffer(
+                    GetNodeString(entry["buybackEntryId"]) ?? "",
+                    GetNodeString(entry["relicId"]) ?? GetNodeString(relicData["relicId"]) ?? "",
+                    GetNodeString(relicData["name"]) ?? "Реликвия",
+                    GetRelicRarity(relicData),
+                    GetNodeInt(entry["buybackPrice"], GetNodeInt(entry["soldForPrice"], 0)),
+                    GetNodeInt(entry["soldForPrice"], 0),
+                    GetNodeInt(entry["soldByPlayerAtTurn"], 0),
+                    GetNodeString(relicData["description"]) ?? "",
+                    CloneObject(relicData));
+            })
+            .Where(offer => offer != null &&
+                            !string.IsNullOrWhiteSpace(offer.BuybackEntryId) &&
+                            !string.IsNullOrWhiteSpace(offer.RelicId))
+            .Cast<GuardianBuybackOffer>()
+            .OrderByDescending(offer => GetRarityRank(offer.Rarity))
+            .ThenBy(offer => offer.Name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static JsonObject CreateBuybackEntry(string guardianId, string? guardianName, JsonObject relicData, int soldForPrice, int currentTurn)
+    {
+        var relicId = GetNodeString(relicData["relicId"]) ?? GetNodeString(relicData["id"]) ?? "";
+        return new JsonObject
+        {
+            ["buybackEntryId"] = $"guardian_buyback_{SanitizeIdentifierPart(guardianId)}_{Guid.NewGuid():N}",
+            ["guardianId"] = guardianId,
+            ["guardianName"] = string.IsNullOrWhiteSpace(guardianName) ? guardianId : guardianName,
+            ["relicId"] = relicId,
+            ["relicData"] = CloneObject(relicData),
+            ["soldByPlayerAtTurn"] = currentTurn,
+            ["soldByPlayerAtUtc"] = DateTimeOffset.UtcNow.ToString("O"),
+            ["soldForPrice"] = soldForPrice,
+            ["buybackPrice"] = soldForPrice,
+            ["acquiredFromPlayer"] = true,
+            ["status"] = BuybackStatusAvailable
+        };
+    }
+
+    private static string SanitizeIdentifierPart(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "unknown";
+
+        return new string(value.Select(ch => char.IsLetterOrDigit(ch) ? ch : '_').ToArray());
     }
 
     private static JsonObject CloneObject(JsonObject source) => source.DeepClone() as JsonObject ?? new JsonObject();

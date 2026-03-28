@@ -844,6 +844,121 @@ public partial class CanonicalStateNormalizer
             yield return NormalizeQuestStateEntry(obj);
     }
 
+    private static IEnumerable<JsonObject> CollectGuardianAbodeResidentEntries(JsonNode? root)
+    {
+        if (root is JsonArray rootArray)
+        {
+            foreach (var item in rootArray.OfType<JsonObject>())
+                yield return CloneObject(item);
+            yield break;
+        }
+
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var propName in new[] { GuardianAbodeResidentState.EntriesProperty, GuardianAbodeResidentState.UpdateProperty })
+        {
+            if (obj[propName] is not JsonArray arr)
+                continue;
+
+            foreach (var item in arr.OfType<JsonObject>())
+                yield return CloneObject(item);
+        }
+
+        if (obj.ContainsKey("residentId"))
+            yield return CloneObject(obj);
+    }
+
+    private static IEnumerable<JsonObject> CollectGuardianAbodeResidentInteractionReceipts(JsonNode? root)
+    {
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var propName in new[] { GuardianAbodeResidentState.InteractionReceiptsProperty, GuardianAbodeResidentState.UpdateInteractionReceiptsProperty })
+        {
+            if (obj[propName] is not JsonArray arr)
+                continue;
+
+            foreach (var item in arr.OfType<JsonObject>())
+                yield return CloneObject(item);
+        }
+
+        if (obj.ContainsKey("requestId") && obj.ContainsKey("residentId") && obj.ContainsKey("interactionType"))
+            yield return CloneObject(obj);
+    }
+
+    private static IEnumerable<JsonObject> CollectGuardianAbodeResidentRosterReceipts(JsonNode? root)
+    {
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var propName in new[] { GuardianAbodeResidentState.RosterReceiptsProperty, GuardianAbodeResidentState.UpdateRosterReceiptsProperty })
+        {
+            if (obj[propName] is not JsonArray arr)
+                continue;
+
+            foreach (var item in arr.OfType<JsonObject>())
+                yield return CloneObject(item);
+        }
+
+        if (obj.ContainsKey("requestId") && obj.ContainsKey("guardianId") && obj.ContainsKey("abodeId") && obj.ContainsKey("rosterCount"))
+            yield return CloneObject(obj);
+    }
+
+    private static IEnumerable<JsonObject> CollectGuardianAbodeResidentHistoryLogEntries(JsonNode? root)
+    {
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var propName in new[] { GuardianAbodeResidentState.HistoryLogProperty, GuardianAbodeResidentState.UpdateHistoryLogProperty })
+        {
+            if (obj[propName] is not JsonArray arr)
+                continue;
+
+            foreach (var item in arr.OfType<JsonObject>())
+                yield return CloneObject(item);
+        }
+
+        if (obj.ContainsKey("entryId") && obj.ContainsKey("residentId") && obj.ContainsKey("title"))
+            yield return CloneObject(obj);
+    }
+
+    private static IEnumerable<JsonObject> CollectGuardianAbodeResidentThoughtJournalEntries(JsonNode? root)
+    {
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var propName in new[] { GuardianAbodeResidentState.ThoughtJournalProperty, GuardianAbodeResidentState.UpdateThoughtJournalProperty })
+        {
+            if (obj[propName] is not JsonArray arr)
+                continue;
+
+            foreach (var item in arr.OfType<JsonObject>())
+                yield return CloneObject(item);
+        }
+
+        if (obj.ContainsKey("entryId") && obj.ContainsKey("residentId") && obj.ContainsKey("summary") && obj.ContainsKey("intent"))
+            yield return CloneObject(obj);
+    }
+
+    private static IEnumerable<JsonObject> CollectGuardianAbodeResidentInteractionLogEntries(JsonNode? root)
+    {
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var propName in new[] { GuardianAbodeResidentState.InteractionLogProperty, GuardianAbodeResidentState.UpdateInteractionLogProperty })
+        {
+            if (obj[propName] is not JsonArray arr)
+                continue;
+
+            foreach (var item in arr.OfType<JsonObject>())
+                yield return CloneObject(item);
+        }
+
+        if (obj.ContainsKey("entryId") && obj.ContainsKey("residentId") && obj.ContainsKey("summary") && obj.ContainsKey("eventType"))
+            yield return CloneObject(obj);
+    }
+
     private static IEnumerable<JsonObject> CollectRivalSoulArcEntries(JsonNode? root)
     {
         if (root is JsonArray rootArray)

@@ -14,13 +14,7 @@ public class StateDistributor
 {
     private readonly Core.FileSystemManager _fs;
     private readonly ILogger<StateDistributor> _logger;
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        WriteIndented = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-    };
+    private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
     public StateDistributor(Core.FileSystemManager fs, ILogger<StateDistributor> logger)
     {

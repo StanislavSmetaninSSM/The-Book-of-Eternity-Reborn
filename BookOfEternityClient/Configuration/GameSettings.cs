@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace BookOfEternityClient.Configuration;
 
 /// <summary>
@@ -5,6 +7,11 @@ namespace BookOfEternityClient.Configuration;
 /// </summary>
 public class GameSettings
 {
+    private static readonly PropertyInfo[] WritableProperties = typeof(GameSettings)
+        .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        .Where(prop => prop.CanRead && prop.CanWrite)
+        .ToArray();
+
     public string Language { get; set; } = "ru";
     public bool AllowHistoryManipulation { get; set; } = false;
     public bool ShowGmThoughts { get; set; } = false;
@@ -89,6 +96,24 @@ public class GameSettings
     /// Each file is one mod and affects the whole game when enabled.
     /// </summary>
     public List<string> EnabledSystemMods { get; set; } = new();
+
+    public void ApplyLoadedValues(GameSettings loaded)
+    {
+        var currentFontSize = ConsoleFontSize;
+
+        foreach (var property in WritableProperties)
+            property.SetValue(this, property.GetValue(loaded));
+
+        MusicVolume = Math.Clamp(MusicVolume, 0, 100);
+        SoundVolume = Math.Clamp(SoundVolume, 0, 100);
+        ConsoleFontSize = loaded.ConsoleFontSize > 0
+            ? Math.Clamp(loaded.ConsoleFontSize, 14, 32)
+            : currentFontSize;
+        EnabledSystemMods = loaded.EnabledSystemMods?
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList() ?? new List<string>();
+    }
 }
 
 /// <summary>

@@ -49,6 +49,7 @@ public partial class CanonicalStateNormalizer
     {
         "game_state/meta/soul_state.json",
         "game_state/meta/guardians.json",
+        GuardianAbodeResidentState.StatePath,
         GuardianProjectState.TrackerPath,
         GuardianPowerEventState.JournalPath,
         "game_state/meta/character_chronicle.json",
@@ -59,10 +60,14 @@ public partial class CanonicalStateNormalizer
         "game_state/quests/quest_history.json",
         "game_state/world/rival_soul_arcs.json",
         "game_state/factions/faction_core.json",
+        "game_state/npcs/npc_core.json",
+        NpcInteractionJournalState.StatePath,
         "game_state/inventory/item_resources.json",
         "game_state/inventory/item_bonds.json",
         "game_state/inventory/item_text_updates.json",
         "game_state/npcs/item_journals.json",
+        GuardianThoughtJournalState.StatePath,
+        GuardianSocialJournalState.StatePath,
         "game_state/factions/faction_structure.json",
         "game_state/factions/faction_resources.json",
         "game_state/factions/faction_projects.json",
@@ -89,6 +94,7 @@ public partial class CanonicalStateNormalizer
     {
         await NormalizeSoulStateAsync(backups);
         await NormalizeGuardiansAsync(backups);
+        await NormalizeGuardianAbodeResidentsAsync(backups);
         await NormalizeGuardianProjectsAsync(backups);
         await NormalizeCharacterChronicleAsync(backups);
         await NormalizeAchievementsAsync(backups);
@@ -98,10 +104,14 @@ public partial class CanonicalStateNormalizer
         await NormalizeQuestHistoryAsync(backups);
         await NormalizeRivalSoulArcsAsync(backups);
         await NormalizeFactionCoreAsync(backups);
+        await NormalizeNpcTradeCoreAsync(backups);
+        await NormalizeNpcInteractionJournalAsync(backups);
         await NormalizeInventoryItemResourcesAsync(backups);
         await NormalizeInventoryItemBondsAsync(backups);
         await NormalizeInventoryItemTextsAsync(backups);
         await NormalizeItemJournalsAsync(backups);
+        await NormalizeGuardianThoughtJournalAsync(backups);
+        await NormalizeGuardianSocialJournalAsync(backups);
         await NormalizeFactionStructureAsync(backups);
         await NormalizeFactionResourcesAsync(backups);
         await NormalizeFactionProjectsAsync(backups);

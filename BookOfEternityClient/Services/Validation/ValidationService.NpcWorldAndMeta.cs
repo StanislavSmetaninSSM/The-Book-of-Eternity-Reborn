@@ -38,6 +38,7 @@ public partial class ValidationService
     private static readonly HashSet<string> NpcStructuredSingleActorSections = new(StringComparer.OrdinalIgnoreCase)
     {
         "UpdateNPCs",
+        "UpdateNpcTradeInventoryReceipts",
         "NPCGoalUpdates",
         "NPCQuestUpdates",
         "NPCRelationshipChanges",
@@ -1558,7 +1559,10 @@ public partial class ValidationService
                 }
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось проверить обязательные поля файла {FilePath}.", filePath);
+        }
     }
 
     private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
@@ -1623,12 +1627,13 @@ public partial class ValidationService
 
     private void ValidateNpcSceneArray(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
-        var tradeSignaturesByNpc = new Dictionary<string, (string Context, string? TradeStateSignature, string? TradeInventorySignature)>(StringComparer.OrdinalIgnoreCase);
+        var tradeSignaturesByNpc = new Dictionary<string, (string Context, string? TradeStateSignature, string? TradeInventorySignature, string? BuybackInventorySignature)>(StringComparer.OrdinalIgnoreCase);
         var sameTurnLocationInitialIds = CollectSameTurnLocationInitialIds(root);
         var currentSceneAnchor = ReadCurrentSceneLocationAnchorSync();
         var currentSceneLocationId = currentSceneAnchor.LocationId;
         var currentSceneInitialId = currentSceneAnchor.InitialId;
         var currentSceneMissingInitialAnchor = IsCurrentSceneNewLocationWithoutInitialIdSync();
+        ValidateCompanionManifestationNpcSources(root, contextPrefix, issues);
 
         foreach (var sectionName in new[] { "NPCsInScene", "UpdateNPCs" })
         {
@@ -1789,15 +1794,19 @@ public partial class ValidationService
 
                 string? tradeStateSignature = null;
                 string? tradeInventorySignature = null;
+                string? buybackInventorySignature = null;
                 if (item.TryGetProperty("tradeState", out var tradeState) && tradeState.ValueKind == JsonValueKind.Object)
                     tradeStateSignature = BuildCanonicalJsonSignature(tradeState);
                 if (item.TryGetProperty("tradeInventory", out var tradeInventory) && tradeInventory.ValueKind == JsonValueKind.Object)
                     tradeInventorySignature = BuildCanonicalJsonSignature(tradeInventory);
+                if (item.TryGetProperty("buybackInventory", out var buybackInventory) && buybackInventory.ValueKind == JsonValueKind.Array)
+                    buybackInventorySignature = BuildCanonicalJsonSignature(buybackInventory);
 
                 if (tradeSignaturesByNpc.TryGetValue(npcId!, out var existing))
                 {
                     if (!string.Equals(existing.TradeStateSignature, tradeStateSignature, StringComparison.Ordinal) ||
-                        !string.Equals(existing.TradeInventorySignature, tradeInventorySignature, StringComparison.Ordinal))
+                        !string.Equals(existing.TradeInventorySignature, tradeInventorySignature, StringComparison.Ordinal) ||
+                        !string.Equals(existing.BuybackInventorySignature, buybackInventorySignature, StringComparison.Ordinal))
                     {
                         issues.Add(new ValidationIssue(
                             itemContext,
@@ -1805,13 +1814,60 @@ public partial class ValidationService
                             $"Локальная торговля NPC {npcId} расходится между {existing.Context} и {itemContext}",
                             code: "npc_trade_state_mismatch",
                             section: "tradeInventory",
-                            expected: existing.TradeInventorySignature ?? existing.TradeStateSignature ?? "none",
-                            actual: tradeInventorySignature ?? tradeStateSignature ?? "none"));
+                            expected: existing.TradeInventorySignature ?? existing.BuybackInventorySignature ?? existing.TradeStateSignature ?? "none",
+                            actual: tradeInventorySignature ?? buybackInventorySignature ?? tradeStateSignature ?? "none"));
                     }
                 }
                 else
                 {
-                    tradeSignaturesByNpc[npcId!] = (itemContext, tradeStateSignature, tradeInventorySignature);
+                    tradeSignaturesByNpc[npcId!] = (itemContext, tradeStateSignature, tradeInventorySignature, buybackInventorySignature);
+                }
+            }
+        }
+    }
+
+    private void ValidateCompanionManifestationNpcSources(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var seenCompanionSourceRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var sectionName in new[] { "NPCsInScene", "UpdateNPCs", "NPCs", "npcs", "npcDataChanges" })
+        {
+            if (!root.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
+                continue;
+
+            var index = 0;
+            foreach (var item in arr.EnumerateArray())
+            {
+                var itemContext = $"{contextPrefix}.{sectionName}[{index++}]";
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var sourceCompanionRelicId = GetFirstNonEmptyString(item, "sourceCompanionRelicId");
+                var sourceAfterlifeResidentId = GetFirstNonEmptyString(item, "sourceAfterlifeResidentId");
+                var sourceSoulImprintId = GetFirstNonEmptyString(item, "sourceSoulImprintId");
+                if ((!string.IsNullOrWhiteSpace(sourceAfterlifeResidentId) || !string.IsNullOrWhiteSpace(sourceSoulImprintId)) &&
+                    string.IsNullOrWhiteSpace(sourceCompanionRelicId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.sourceCompanionRelicId",
+                        IssueSeverity.Error,
+                        "Manifested companion NPC должен хранить sourceCompanionRelicId для однозначного closure",
+                        code: "manifested_companion_missing_source_relic_id",
+                        section: "AfterlifeResidents",
+                        repairHint: "Когда companion manifestation fully materializes mortal NPC, всегда записывай sourceCompanionRelicId вместе с sourceAfterlifeResidentId/sourceSoulImprintId."));
+                    continue;
+                }
+
+                if (!string.IsNullOrWhiteSpace(sourceCompanionRelicId) && !seenCompanionSourceRelicIds.Add(sourceCompanionRelicId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.sourceCompanionRelicId",
+                        IssueSeverity.Error,
+                        "Несколько manifested NPC не должны делить один sourceCompanionRelicId",
+                        code: "manifested_companion_duplicate_source_relic_id",
+                        section: "AfterlifeResidents",
+                        expected: "unique sourceCompanionRelicId",
+                        actual: sourceCompanionRelicId,
+                        repairHint: "Один companion-carrying relic должен materialize максимум один mortal companion path/NPC."));
                 }
             }
         }
@@ -2559,6 +2615,24 @@ public partial class ValidationService
                 actual: "tradeState missing"));
         }
 
+        var merchantProfile = "";
+        var hasTradeState = npc.TryGetProperty("tradeState", out tradeState) && tradeState.ValueKind == JsonValueKind.Object;
+        var hasCanTradeTrue = false;
+        if (hasTradeState)
+        {
+            merchantProfile = GetFirstNonEmptyString(tradeState, "merchantProfile") ?? "";
+            if (tradeState.TryGetProperty("canTrade", out var canTradeNode) && canTradeNode.ValueKind == JsonValueKind.True)
+                hasCanTradeTrue = true;
+        }
+        var normalizedMerchantProfile = NpcTradeService.ResolveMerchantProfileCode(
+            merchantProfile,
+            GetFirstNonEmptyString(npc, "role"),
+            GetFirstNonEmptyString(npc, "occupation"),
+            GetFirstNonEmptyString(npc, "class"),
+            GetFirstNonEmptyString(npc, "name"));
+
+        ValidateNpcBuybackInventory(npc, npcContext, normalizedMerchantProfile, issues);
+
         if (!npc.TryGetProperty("tradeInventory", out var tradeInventory))
             return;
 
@@ -2566,6 +2640,7 @@ public partial class ValidationService
             return;
 
         var tradeContext = $"{npcContext}.tradeInventory";
+        var tradeCycleId = RequireString(tradeInventory, tradeContext, issues, "tradeCycleId");
         ValidateNonNegativeNumberField(tradeInventory, tradeContext, issues, "generatedAtWorldDate");
         ValidatePositiveNumberField(tradeInventory, tradeContext, issues, "refreshAfterWorldDate");
         var generationTier = RequireString(tradeInventory, tradeContext, issues, "generationTradeTier");
@@ -2613,6 +2688,18 @@ public partial class ValidationService
                 actual: refreshAfter.ToString()));
         }
 
+        if (string.IsNullOrWhiteSpace(tradeCycleId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{tradeContext}.tradeCycleId",
+                IssueSeverity.Error,
+                "tradeInventory.tradeCycleId должен быть непустой строкой world-time цикла",
+                code: "npc_trade_inventory_cycle_id_missing",
+                section: "tradeInventory",
+                expected: "non-empty tradeCycleId",
+                actual: "missing-or-empty"));
+        }
+
         if (!tradeInventory.TryGetProperty("items", out var items) || items.ValueKind != JsonValueKind.Array)
         {
             issues.Add(new ValidationIssue(
@@ -2639,22 +2726,6 @@ public partial class ValidationService
                 actual: items.GetArrayLength().ToString(),
                 repairHint: "Сохраняй в tradeInventory.items от 6 до 20 торговых слотов по canonical NPC trade contract."));
         }
-
-        var merchantProfile = "";
-        var hasTradeState = npc.TryGetProperty("tradeState", out tradeState) && tradeState.ValueKind == JsonValueKind.Object;
-        var hasCanTradeTrue = false;
-        if (hasTradeState)
-        {
-            merchantProfile = GetFirstNonEmptyString(tradeState, "merchantProfile") ?? "";
-            if (tradeState.TryGetProperty("canTrade", out var canTradeNode) && canTradeNode.ValueKind == JsonValueKind.True)
-                hasCanTradeTrue = true;
-        }
-        var normalizedMerchantProfile = NpcTradeService.ResolveMerchantProfileCode(
-            merchantProfile,
-            GetFirstNonEmptyString(npc, "role"),
-            GetFirstNonEmptyString(npc, "occupation"),
-            GetFirstNonEmptyString(npc, "class"),
-            GetFirstNonEmptyString(npc, "name"));
 
         if (hasCanTradeTrue && string.IsNullOrWhiteSpace(normalizedMerchantProfile))
         {
@@ -2804,6 +2875,323 @@ public partial class ValidationService
                         section: "tradeInventory",
                         expected: expectedPrice.ToString(),
                         actual: actualPrice.ToString()));
+                }
+            }
+        }
+
+        if (npc.TryGetProperty(NpcTradeRequestState.ReceiptsProperty, out var receiptsNode))
+        {
+            if (receiptsNode.ValueKind != JsonValueKind.Array)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{npcContext}.{NpcTradeRequestState.ReceiptsProperty}",
+                    IssueSeverity.Error,
+                    "npc tradeInventoryReceipts должен быть массивом canonical receipts",
+                    code: "npc_trade_receipts_invalid_root",
+                    section: "tradeInventory",
+                    expected: "array",
+                    actual: receiptsNode.ValueKind.ToString(),
+                    repairHint: "Храни npc trade ready receipts как массив объектов в npc.tradeInventoryReceipts."));
+            }
+            else
+            {
+                var seenRequestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var currentCycleReadyReceipts = 0;
+                var receiptIndex = 0;
+                foreach (var receipt in receiptsNode.EnumerateArray())
+                {
+                    var receiptContext = $"{npcContext}.{NpcTradeRequestState.ReceiptsProperty}[{receiptIndex++}]";
+                    if (!RequireObject(receipt, receiptContext, issues))
+                        continue;
+
+                    var requestId = RequireString(receipt, receiptContext, issues, "requestId");
+                    var receiptNpcId = RequireString(receipt, receiptContext, issues, "npcId");
+                    ValidateOptionalString(receipt, receiptContext, issues, "npcName");
+                    var receiptCycleId = RequireString(receipt, receiptContext, issues, "tradeCycleId");
+                    var receiptMerchantProfile = RequireString(receipt, receiptContext, issues, "merchantProfile");
+                    var receiptStatus = RequireString(receipt, receiptContext, issues, "status");
+                    ValidateNonNegativeNumberField(receipt, receiptContext, issues, "itemCount");
+                    ValidatePositiveNumberField(receipt, receiptContext, issues, "resolvedAtTurn");
+                    var resolvedAtUtc = RequireString(receipt, receiptContext, issues, "resolvedAtUtc");
+
+                    if (!string.IsNullOrWhiteSpace(requestId) && !seenRequestIds.Add(requestId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{receiptContext}.requestId",
+                            IssueSeverity.Error,
+                            "npc tradeInventoryReceipts содержит duplicate requestId",
+                            code: "npc_trade_receipts_duplicate_request_id",
+                            section: "tradeInventory",
+                            actual: requestId));
+                    }
+
+                    var npcId = GetFirstNonEmptyString(npc, "npcId", "NPCId") ?? "";
+                    if (!string.IsNullOrWhiteSpace(receiptNpcId) &&
+                        !string.Equals(receiptNpcId, npcId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{receiptContext}.npcId",
+                            IssueSeverity.Error,
+                            "npc trade receipt.npcId должен совпадать с владельцем receipt",
+                            code: "npc_trade_receipt_npc_mismatch",
+                            section: "tradeInventory",
+                            expected: npcId,
+                            actual: receiptNpcId));
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(receiptStatus) &&
+                        !string.Equals(receiptStatus, NpcTradeRequestState.ReceiptStatusReady, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{receiptContext}.status",
+                            IssueSeverity.Error,
+                            "npc trade receipt.status должен быть ready",
+                            code: "npc_trade_receipt_status_invalid",
+                            section: "tradeInventory",
+                            expected: NpcTradeRequestState.ReceiptStatusReady,
+                            actual: receiptStatus));
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(receiptMerchantProfile) &&
+                        !NpcTradeService.IsValidMerchantProfileCode(receiptMerchantProfile))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{receiptContext}.merchantProfile",
+                            IssueSeverity.Error,
+                            "npc trade receipt.merchantProfile должен быть допустимым merchant profile",
+                            code: "npc_trade_receipt_profile_invalid",
+                            section: "tradeInventory",
+                            actual: receiptMerchantProfile));
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(receiptMerchantProfile) &&
+                        !string.IsNullOrWhiteSpace(normalizedMerchantProfile) &&
+                        !string.Equals(NpcTradeService.ResolveMerchantProfileCode(receiptMerchantProfile), normalizedMerchantProfile, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{receiptContext}.merchantProfile",
+                            IssueSeverity.Error,
+                            "npc trade receipt.merchantProfile должен совпадать с merchantProfile НПС",
+                            code: "npc_trade_receipt_profile_mismatch",
+                            section: "tradeInventory",
+                            expected: normalizedMerchantProfile,
+                            actual: receiptMerchantProfile));
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(receiptCycleId) &&
+                        !string.IsNullOrWhiteSpace(tradeCycleId) &&
+                        string.Equals(receiptCycleId, tradeCycleId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        currentCycleReadyReceipts++;
+
+                        var itemCount = receipt.TryGetProperty("itemCount", out var itemCountNode) && itemCountNode.ValueKind == JsonValueKind.Number && itemCountNode.TryGetInt32(out var parsedItemCount)
+                            ? parsedItemCount
+                            : -1;
+                        if (itemCount != items.GetArrayLength())
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{receiptContext}.itemCount",
+                                IssueSeverity.Error,
+                                "npc trade receipt.itemCount должен совпадать с количеством tradeInventory.items текущего цикла",
+                                code: "npc_trade_receipt_item_count_mismatch",
+                                section: "tradeInventory",
+                                expected: items.GetArrayLength().ToString(),
+                                actual: itemCount < 0 ? "missing" : itemCount.ToString()));
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(resolvedAtUtc) &&
+                        !DateTimeOffset.TryParse(resolvedAtUtc, out _))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{receiptContext}.resolvedAtUtc",
+                            IssueSeverity.Error,
+                            "npc trade receipt.resolvedAtUtc должен быть валидным ISO timestamp",
+                            code: "npc_trade_receipt_timestamp_invalid",
+                            section: "tradeInventory",
+                            actual: resolvedAtUtc));
+                    }
+                }
+
+                if (currentCycleReadyReceipts > 1)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{npcContext}.{NpcTradeRequestState.ReceiptsProperty}",
+                        IssueSeverity.Error,
+                        "Для одного NPC и текущего tradeCycleId допустим только один ready receipt",
+                        code: "npc_trade_receipts_duplicate_current_cycle",
+                        section: "tradeInventory",
+                        actual: currentCycleReadyReceipts.ToString()));
+                }
+            }
+        }
+    }
+
+    private void ValidateNpcBuybackInventory(JsonElement npc, string npcContext, string? normalizedMerchantProfile, List<ValidationIssue> issues)
+    {
+        if (!npc.TryGetProperty("buybackInventory", out var buybackInventoryNode))
+            return;
+
+        if (buybackInventoryNode.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{npcContext}.buybackInventory",
+                IssueSeverity.Error,
+                "npc buybackInventory должен быть массивом canonical buyback entries",
+                code: "npc_buyback_inventory_invalid_root",
+                section: "tradeInventory",
+                expected: "array",
+                actual: buybackInventoryNode.ValueKind.ToString(),
+                repairHint: "Храни выкупленные у игрока товары в npc.buybackInventory как массив объектов, а не scalar/object surrogate."));
+            return;
+        }
+
+        var npcId = GetFirstNonEmptyString(npc, "npcId", "NPCId") ?? "";
+        var seenEntryIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var entry in buybackInventoryNode.EnumerateArray())
+        {
+            var entryContext = $"{npcContext}.buybackInventory[{index++}]";
+            if (!RequireObject(entry, entryContext, issues))
+                continue;
+
+            var buybackEntryId = RequireString(entry, entryContext, issues, "buybackEntryId");
+            var entryNpcId = RequireString(entry, entryContext, issues, "npcId");
+            ValidateOptionalString(entry, entryContext, issues, "npcName");
+            var itemId = RequireString(entry, entryContext, issues, "itemId");
+            ValidateNonNegativeNumberField(entry, entryContext, issues, "soldByPlayerAtTurn");
+            ValidateOptionalString(entry, entryContext, issues, "soldByPlayerAtUtc");
+            ValidateNonNegativeNumberField(entry, entryContext, issues, "soldAtWorldDate");
+            ValidatePositiveNumberField(entry, entryContext, issues, "soldForPrice");
+            ValidatePositiveNumberField(entry, entryContext, issues, "buybackPrice");
+            if (entry.TryGetProperty("acquiredFromPlayer", out var acquiredFromPlayerNode) &&
+                acquiredFromPlayerNode.ValueKind != JsonValueKind.True &&
+                acquiredFromPlayerNode.ValueKind != JsonValueKind.False)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.acquiredFromPlayer",
+                    IssueSeverity.Error,
+                    "npc buyback entry.acquiredFromPlayer должен быть boolean",
+                    code: "npc_buyback_entry_acquired_flag_invalid",
+                    section: "tradeInventory",
+                    expected: "true or false",
+                    actual: acquiredFromPlayerNode.ValueKind.ToString()));
+            }
+            var sourceMerchantProfile = RequireString(entry, entryContext, issues, "sourceMerchantProfile");
+            var status = RequireString(entry, entryContext, issues, "status");
+
+            if (!string.IsNullOrWhiteSpace(buybackEntryId) && !seenEntryIds.Add(buybackEntryId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.buybackEntryId",
+                    IssueSeverity.Error,
+                    "npc buybackInventory содержит duplicate buybackEntryId",
+                    code: "npc_buyback_entry_duplicate_id",
+                    section: "tradeInventory",
+                    actual: buybackEntryId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(entryNpcId) &&
+                !string.Equals(entryNpcId, npcId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.npcId",
+                    IssueSeverity.Error,
+                    "npc buyback entry.npcId должен совпадать с владельцем записи",
+                    code: "npc_buyback_entry_npc_mismatch",
+                    section: "tradeInventory",
+                    expected: npcId,
+                    actual: entryNpcId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(sourceMerchantProfile) &&
+                !NpcTradeService.IsValidMerchantProfileCode(sourceMerchantProfile))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.sourceMerchantProfile",
+                    IssueSeverity.Error,
+                    "npc buyback entry.sourceMerchantProfile должен быть допустимым merchant profile",
+                    code: "npc_buyback_entry_profile_invalid",
+                    section: "tradeInventory",
+                    actual: sourceMerchantProfile));
+            }
+
+            if (!string.IsNullOrWhiteSpace(sourceMerchantProfile) &&
+                !string.IsNullOrWhiteSpace(normalizedMerchantProfile) &&
+                !string.Equals(NpcTradeService.ResolveMerchantProfileCode(sourceMerchantProfile), normalizedMerchantProfile, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.sourceMerchantProfile",
+                    IssueSeverity.Error,
+                    "npc buyback entry.sourceMerchantProfile должен совпадать с merchantProfile НПС",
+                    code: "npc_buyback_entry_profile_mismatch",
+                    section: "tradeInventory",
+                    expected: normalizedMerchantProfile,
+                    actual: sourceMerchantProfile));
+            }
+
+            if (!string.IsNullOrWhiteSpace(status) && !NpcTradeService.IsValidBuybackStatusCode(status))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.status",
+                    IssueSeverity.Error,
+                    "npc buyback entry.status должен быть допустимым состоянием buyback",
+                    code: "npc_buyback_entry_status_invalid",
+                    section: "tradeInventory",
+                    expected: "available | rebought | removed",
+                    actual: status));
+            }
+
+            if (!entry.TryGetProperty("itemData", out var itemData) || !RequireObject(itemData, $"{entryContext}.itemData", issues))
+                continue;
+
+            var itemDataContext = $"{entryContext}.itemData";
+            var itemDataItemId = RequireString(itemData, itemDataContext, issues, "itemId");
+            RequireString(itemData, itemDataContext, issues, "name");
+            ValidatePositiveNumberField(itemData, itemDataContext, issues, "price");
+            ValidateNonNegativeNumberField(itemData, itemDataContext, issues, "baseSellPrice");
+
+            if (!string.IsNullOrWhiteSpace(itemId) &&
+                !string.IsNullOrWhiteSpace(itemDataItemId) &&
+                !string.Equals(itemId, itemDataItemId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.itemId",
+                    IssueSeverity.Error,
+                    "npc buyback entry.itemId должен совпадать с itemData.itemId",
+                    code: "npc_buyback_entry_item_mismatch",
+                    section: "tradeInventory",
+                    expected: itemDataItemId,
+                    actual: itemId));
+            }
+
+            if (string.Equals(status, "rebought", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!entry.TryGetProperty("reboughtAtTurn", out var reboughtAtTurnNode) ||
+                    reboughtAtTurnNode.ValueKind != JsonValueKind.Number ||
+                    !reboughtAtTurnNode.TryGetInt32(out var reboughtAtTurn) ||
+                    reboughtAtTurn <= 0)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{entryContext}.reboughtAtTurn",
+                        IssueSeverity.Error,
+                        "rebought buyback entry должен иметь положительный reboughtAtTurn",
+                        code: "npc_buyback_entry_rebought_turn_invalid",
+                        section: "tradeInventory",
+                        expected: "positive integer",
+                        actual: entry.TryGetProperty("reboughtAtTurn", out var rawTurn) ? rawTurn.ToString() : "missing"));
+                }
+
+                var reboughtAtUtc = GetFirstNonEmptyString(entry, "reboughtAtUtc");
+                if (string.IsNullOrWhiteSpace(reboughtAtUtc) || !DateTimeOffset.TryParse(reboughtAtUtc, out _))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{entryContext}.reboughtAtUtc",
+                        IssueSeverity.Error,
+                        "rebought buyback entry должен иметь валидный reboughtAtUtc",
+                        code: "npc_buyback_entry_rebought_timestamp_invalid",
+                        section: "tradeInventory",
+                        actual: reboughtAtUtc ?? "missing"));
                 }
             }
         }
