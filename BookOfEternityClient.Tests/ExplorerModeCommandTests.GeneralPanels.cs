@@ -70,6 +70,22 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Guardians_InMortalRealm_UsesAfterlifeCycleCopy()
+    {
+        await SeedMortalStateAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardians_denial_afterlife_cycle_copy");
+        Assert.Contains(_console.MarkupLines,
+            line => line.Contains("загробном цикле", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(_console.MarkupLines,
+            line => line.Contains("только в Море Хаоса", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_FactionDirective_UpdatesFactionCoreWithoutException()
     {

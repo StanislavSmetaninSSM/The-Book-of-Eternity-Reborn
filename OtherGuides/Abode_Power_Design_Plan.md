@@ -1,5 +1,37 @@
 # Сила Обители: дизайн-план
 
+## Статус документа
+
+`LEGACY DESIGN DOC / HISTORICAL RATIONALE`
+
+Этот файл больше не является полным canonical implementation spec.
+Он сохранён как исторический дизайн-документ и объяснение исходной логики системы `Силы Обители`.
+
+Актуальный source-of-truth сейчас распределён по runtime/spec слоям:
+
+- `CLI_API_Specification.md`
+- `CLI_Agent_Daemon_Specification.md`
+- `BookOfEternityClient/Core/AbodePowerRules.cs`
+- `BookOfEternityClient/Services/GuardianProjectState.cs`
+- `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.GuardianProjectHelpers.cs`
+- `BookOfEternityClient/Services/GuardianCorrectionService.cs`
+- `BookOfEternityClient/Services/RivalSoulArcService.cs`
+- `BookOfEternityClient/Services/GuardianTradeService.cs`
+- `BookOfEternityClient/Services/GuardianAbodeResidentState.cs`
+
+Что важно помнить при чтении этого файла:
+
+- часть идей из него реализована напрямую;
+- часть реализована в более жёсткой и детализированной форме, чем здесь описано;
+- часть была superseded отдельными системами, которых в исходном плане ещё не было или которые здесь описаны слишком общо:
+  - explicit guardian trade inventory requests/receipts
+  - `rival_soul_arcs.json`
+  - `guardian_corrections.json`
+  - `guardian_abode_residents.json`
+  - archive consultation / archive project fuel
+  - полноценный guardian project tracker с `projectTier`, `projectMode`, `pressure`, `stability`, terminal states и audit trail
+- не все старые идеи из этого файла обязательны для внедрения только потому, что они здесь записаны; например, общий decay/stagnation за игнор проекта в текущей версии не считается обязательной механикой.
+
 ## Цель
 Добавить для каждого Хранителя числовой параметр `Сила Обители`, который:
 

@@ -235,6 +235,29 @@ public sealed class GuardianProjectStateTests
     }
 
     [Fact]
+    public void EnsureRecipeEffectState_NamedMortalRealm_TargetsCurrentIncarnation()
+    {
+        var project = JsonNode.Parse("""
+        {
+          "projectId": "research_named_world",
+          "projectType": "lore_research",
+          "projectTier": "major",
+          "finalState": "Completed",
+          "projectOutcomeAudit": {
+            "bonusLoreUnlocks": 1,
+            "questHookCount": 1,
+            "specialQuestLineUnlocks": 0,
+            "visibleRivalClueBonus": 1
+          }
+        }
+        """)!.AsObject();
+
+        var effectState = GuardianProjectState.EnsureRecipeEffectState(project, 4, "Неон-Сити");
+
+        Assert.Equal(4, effectState["targetIncarnation"]!.GetValue<int>());
+    }
+
+    [Fact]
     public void ResolveDerivedEffects_TracksGuaranteedArchiveQuestSeparatelyFromOrdinaryHooks()
     {
         var trackerRoot = JsonNode.Parse("""

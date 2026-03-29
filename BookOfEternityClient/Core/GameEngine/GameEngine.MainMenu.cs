@@ -365,8 +365,10 @@ public partial class GameEngine
                 ? state.SoulName
                 : _loc.T("main_menu_continue_desc");
 
-        var realm = state.IsInShiningAbode
-            ? _loc.T("realm_shining_abode")
+        var realm = state.IsInShiningAbodePendingBootstrap
+            ? "Сияющая Обитель (handoff)"
+            : state.IsInShiningAbode
+                ? _loc.T("realm_shining_abode")
             : state.IsInChaosSea
                 ? _loc.T("realm_chaos_sea")
                 : string.IsNullOrWhiteSpace(state.CurrentRealm)
@@ -1046,6 +1048,112 @@ public partial class GameEngine
         await ProcessPlayerTurn(action);
     }
 
+    private async Task HandleReenterShiningAbode()
+    {
+        if (!_stateManager.CurrentState.IsInChaosSea)
+            return;
+
+        var shiningRoot = await TryReadShiningAbodeStateRootAsync();
+        if (shiningRoot == null)
+            return;
+
+        if (!string.Equals(GetNodeString(shiningRoot["availability"]), "active", StringComparison.OrdinalIgnoreCase))
+        {
+            AnsiConsole.MarkupLine("[yellow]Сияющая Обитель сейчас недоступна для возврата.[/]");
+            return;
+        }
+
+        if (shiningRoot["preparedIncarnationPackage"] != null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Возврат в Сияющую Обитель невозможен, пока ожидается bootstrap следующей жизни.[/]");
+            return;
+        }
+
+        var rawReturnGuard = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
+        var guardSemanticState = AfterlifeReturnGuardService.Classify(rawReturnGuard, out var returnGuard);
+        if (guardSemanticState == AfterlifeReturnGuardSemanticState.BlockingInvalid)
+        {
+            AnsiConsole.MarkupLine("[yellow]Возврат в Сияющую Обитель заблокирован, пока клиент не очистит повреждённый или семантически невалидный post-life guard.[/]");
+            return;
+        }
+
+        if (guardSemanticState == AfterlifeReturnGuardSemanticState.ActiveValid && returnGuard != null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Сначала должен пройти хотя бы один обычный ход в Море Хаоса после Оценки Жизни.[/]");
+            return;
+        }
+
+        shiningRoot["availability"] = "active";
+        await WriteJsonObjectAsync("game_state/meta/shining_abode_state.json", shiningRoot);
+
+        await UpdateSoulStateRealm("Shining Abode");
+        await RefreshCanonicalStateAsync();
+        GameInterface.RenderShiningAbodeReturnTransition();
+        AnsiConsole.MarkupLine("[yellow]✨ Вы возвращаетесь в активную Сияющую Обитель.[/]");
+    }
+
+    private async Task HandleReturnToChaosSeaFromShiningAbode()
+    {
+        if (!_stateManager.CurrentState.IsInShiningAbode)
+            return;
+
+        var shiningRoot = await TryReadShiningAbodeStateRootAsync();
+        if (shiningRoot == null)
+            return;
+
+        if (!string.Equals(GetNodeString(shiningRoot["availability"]), "active", StringComparison.OrdinalIgnoreCase))
+        {
+            AnsiConsole.MarkupLine("[yellow]Сияющая Обитель уже запечатана или недоступна для обычного выхода.[/]");
+            return;
+        }
+
+        if (shiningRoot["preparedIncarnationPackage"] != null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Нельзя покинуть Сияющую Обитель, пока frozen package ожидает bootstrap.[/]");
+            return;
+        }
+
+        var gates = shiningRoot["gates"] as JsonObject;
+        if (gates != null)
+        {
+            gates["hasOpenDraft"] = false;
+            gates["isStale"] = false;
+            gates["allCandidateBlessingCards"] = new JsonArray();
+            gates["availableBlessingCards"] = new JsonArray();
+            gates["shownBlessingCardIds"] = new JsonArray();
+            gates["selectedBlessingCardIds"] = new JsonArray();
+            gates["nextCandidateCursor"] = 0;
+            gates["rerollsRemaining"] = 0;
+        }
+
+        shiningRoot["availability"] = "sealed_until_next_ascension";
+        shiningRoot["preparedIncarnationPackage"] = null;
+        shiningRoot["pendingNativeFactionDiscovery"] = null;
+        await WriteJsonObjectAsync("game_state/meta/shining_abode_state.json", shiningRoot);
+
+        var soulRoot = await TryReadSoulStateRootAsync();
+        if (soulRoot != null)
+        {
+            soulRoot["currentRealm"] = "Chaos Sea";
+            var enlightenment = soulRoot["enlightenment"] as JsonObject ?? new JsonObject();
+            enlightenment["currentTier"] = "Новичок";
+            enlightenment["experience"] = 0;
+            enlightenment["level"] = 0;
+            if (enlightenment.ContainsKey("progressPercent"))
+                enlightenment["progressPercent"] = 0;
+            soulRoot["enlightenment"] = enlightenment;
+            await WriteJsonObjectAsync("game_state/meta/soul_state.json", soulRoot);
+        }
+        else
+        {
+            await UpdateSoulStateRealm("Chaos Sea");
+        }
+
+        await RefreshCanonicalStateAsync();
+        GameInterface.RenderRealmTransition(true);
+        AnsiConsole.MarkupLine("[blue]🌊 Сияющая Обитель запечатана. Вы возвращаетесь в Море Хаоса.[/]");
+    }
+
     private async Task HandleNewGamePlus()
     {
         if (!_stateManager.CurrentState.IsInShiningAbode)
@@ -1143,6 +1251,55 @@ public partial class GameEngine
         await RefreshCanonicalStateAsync();
         GameInterface.RenderRealmTransition(true);
         AnsiConsole.MarkupLine("[yellow]✨ Новый Цикл начался. Вы снова в Море Хаоса.[/]");
+    }
+
+    private async Task<JsonObject?> TryReadShiningAbodeStateRootAsync()
+    {
+        var json = await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json");
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            AnsiConsole.MarkupLine("[yellow]Не найден state Сияющей Обители.[/]");
+            return null;
+        }
+
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject;
+        }
+        catch
+        {
+            AnsiConsole.MarkupLine("[red]Состояние Сияющей Обители повреждено и не может быть прочитано.[/]");
+            return null;
+        }
+    }
+
+    private async Task<JsonObject?> TryReadSoulStateRootAsync()
+    {
+        var json = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task WriteJsonObjectAsync(string path, JsonObject root)
+    {
+        await _fs.WriteFileAtomicAsync(path, root.ToJsonString(JsonOpts));
+    }
+
+    private static string GetNodeString(JsonNode? node)
+    {
+        if (node is JsonValue value && value.TryGetValue<string>(out var text))
+            return text ?? "";
+
+        return "";
     }
 
     /// <summary>

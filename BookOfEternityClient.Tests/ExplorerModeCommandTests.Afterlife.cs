@@ -650,6 +650,108 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SoulInfo_NamedMortalRealm_ShowsManifestationHint()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Неон-Сити",
+            currentIncarnation = 2,
+            inkFeathers = new { current = 25 }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "manifest_req_named_world",
+                    relicId = "relic_companion_echo_001",
+                    relicName = "Отзвук Спутника",
+                    manifestationSource = "imprint_relic",
+                    targetIncarnation = 2,
+                    companionNameHint = "Старый Друг"
+                }
+            }
+        });
+        _console.QueueSelection("Действие души", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/душа"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("soul_info_named_world_manifestation_hint");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Эхо спутников ищет путь в эту жизнь: 1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Старый Друг", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_InkFeathers_ShiningAbode_UsesAfterlifeActions()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Shining Abode",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 120 }
+        });
+        _console.QueueSelection("Выберите действие", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/перья"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("ink_feathers_shining_abode_afterlife");
+        var actionPrompt = Assert.Single(_console.SelectionChoicesHistory,
+            entry => entry.Title.Contains("Выберите действие", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(actionPrompt.Choices, choice => choice.Contains("Пожертвовать Хранителю", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(actionPrompt.Choices, choice => choice.Contains("Открыть Судьбу", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SoulRelics_ShiningAbode_AllowsManagement()
+    {
+        await SeedSessionForCommandAsync("/душа");
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Shining Abode",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 10 },
+            soulRelics = new
+            {
+                stored = new[]
+                {
+                    new
+                    {
+                        relicId = "relic_test_001",
+                        name = "Искра Памяти",
+                        description = "Реликвия для проверки режима управления.",
+                        rarity = "Rare"
+                    }
+                },
+                equipped = Array.Empty<object>()
+            }
+        });
+        _console.QueueSelection("Действие души", "💎 Реликвии души");
+        _console.QueueSelection("✨", "← Назад");
+        _console.QueueAnySelection("← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/душа"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("soul_relics_shining_abode_management");
+        Assert.Contains(_console.SelectionTitles,
+            title => title.Contains("выберите для просмотра / управления", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(_console.SelectionTitles,
+            title => title.Contains("только просмотр", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_AfterlifeArchive_ShowsUnreadArchiveBannerInRenderedPanel()
     {

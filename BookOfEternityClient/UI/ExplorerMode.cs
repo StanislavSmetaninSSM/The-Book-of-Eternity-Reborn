@@ -206,7 +206,7 @@ public partial class ExplorerMode
                 return _pendingGmAction ?? "";
             }
 
-            MarkupLine("[yellow]⚠️ Эта команда доступна только в Море Хаоса (загробная жизнь).[/]");
+            MarkupLine("[yellow]⚠️ Эта команда доступна только в загробном цикле.[/]");
             MarkupLine("[dim]В смертной жизни вы не можете взаимодействовать с хранителями.[/]");
             WaitForKey();
             return "";
@@ -221,7 +221,7 @@ public partial class ExplorerMode
             }
 
             MarkupLine("[yellow]⚠️ Эта команда доступна только в смертной жизни.[/]");
-            MarkupLine("[dim]В Море Хаоса у вас нет смертного инвентаря, карты и т.д.[/]");
+            MarkupLine("[dim]В загробном цикле у вас нет смертного инвентаря, карты и т.д.[/]");
             MarkupLine("[dim]Используйте /воплотиться чтобы войти в смертную жизнь.[/]");
             WaitForKey();
             return "";

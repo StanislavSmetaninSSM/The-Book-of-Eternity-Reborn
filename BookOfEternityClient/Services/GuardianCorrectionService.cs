@@ -363,11 +363,7 @@ public sealed class GuardianCorrectionService
 
     public async Task<string?> BuildSystemReminderFragmentAsync(string? currentRealm)
     {
-        var realm = currentRealm ?? "";
-        var isMortal =
-            string.Equals(realm, "Mortal World", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(realm, "Мир Смертных", StringComparison.OrdinalIgnoreCase);
-        if (!isMortal)
+        if (!RealmSemantics.IsMortalRealm(currentRealm))
             return null;
 
         var state = await ReadAsync();

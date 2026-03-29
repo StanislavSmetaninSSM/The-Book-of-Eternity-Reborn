@@ -64,7 +64,7 @@ public partial class ExplorerMode
             .Where(request => request.TargetIncarnation == currentIncarnation)
             .ToList();
         if (currentManifestationRequests.Count > 0 &&
-            string.Equals(currentRealm, "Mortal World", StringComparison.OrdinalIgnoreCase))
+            RealmSemantics.IsMortalRealm(currentRealm))
         {
             lines.Add("");
             lines.Add($"[bold magenta]👤 Эхо спутников ищет путь в эту жизнь: {currentManifestationRequests.Count}[/]");
@@ -88,17 +88,23 @@ public partial class ExplorerMode
             Clear();
             Write(panel);
 
+            var isPendingBootstrap = _stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
+            var choices = new List<string>();
+            if (!isPendingBootstrap)
+            {
+                choices.Add("✏️ Сменить имя души");
+                choices.Add("🪶 Чернильные Перья");
+                choices.Add("💎 Реликвии души");
+                choices.Add("🌟 Квесты души");
+                choices.Add("📬 Ответы Хранителей");
+            }
+            choices.Add("← Назад");
+
             var choice = Prompt(
                 new SelectionPrompt<string>()
                     .Title("[bold cyan]Действие души[/]")
                     .HighlightStyle(new Style(Color.Cyan1))
-                    .AddChoices(
-                        "✏️ Сменить имя души",
-                        "🪶 Чернильные Перья",
-                        "💎 Реликвии души",
-                        "🌟 Квесты души",
-                        "📬 Ответы Хранителей",
-                        "← Назад"));
+                    .AddChoices(choices));
 
             if (choice.Contains("Назад", StringComparison.Ordinal))
                 return;
@@ -138,20 +144,25 @@ public partial class ExplorerMode
 
     private async Task ShowInkFeathersMenu()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Чернильные Перья"))
+            return;
+
         _diceRevealed = false;
         while (true)
         {
             var feathers = await ReadInkFeathersBalance();
-            var isChaosSea = _stateManager.CurrentState.IsInChaosSea;
+            var isAfterlifeRealm = IsOrdinaryAfterlifeInteractionState;
             Services.PendingTurnState? pendingTurnState = null;
-            if (!isChaosSea && _pendingTurnState != null)
+            if (!isAfterlifeRealm && _pendingTurnState != null)
             {
                 pendingTurnState = await _pendingTurnState.GetOrCreateAsync();
                 _diceRevealed = pendingTurnState.IsFateLocked;
             }
 
-            var phaseLabel = isChaosSea ? "[blue]Море Хаоса[/]" : "[green]Смертная жизнь[/]";
-            var pendingLegacySummary = isChaosSea ? await ReadPendingMemoryLegacySummaryAsync() : null;
+            var phaseLabel = isAfterlifeRealm
+                ? $"[blue]{Markup.Escape(_stateManager.CurrentState.CurrentRealm)}[/]"
+                : "[green]Смертная жизнь[/]";
+            var pendingLegacySummary = isAfterlifeRealm ? await ReadPendingMemoryLegacySummaryAsync() : null;
             Write(new Panel(new Markup(
                 $"🪶 Чернильные Перья: [bold yellow]{feathers}[/]\n" +
                 $"📍 Фаза: {phaseLabel}" +
@@ -166,7 +177,7 @@ public partial class ExplorerMode
             // Build options
             var choices = new List<string>();
 
-            if (!isChaosSea)
+            if (!isAfterlifeRealm)
             {
                 // Mortal Life options
                 var costReveal = Math.Max(5, (int)(feathers * 0.10));
@@ -241,7 +252,7 @@ public partial class ExplorerMode
             }
 
             // Route to handler
-            if (!isChaosSea)
+            if (!isAfterlifeRealm)
             {
                 if (choice.Contains("Открыть Судьбу"))
                     await HandleRevealFate(feathers);
@@ -507,6 +518,9 @@ public partial class ExplorerMode
 
     private async Task ShowAbodeOffering()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Подношение Обители"))
+            return;
+
         var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
         if (guardiansDoc == null)
         {
@@ -1168,11 +1182,7 @@ public partial class ExplorerMode
         return 0;
     }
 
-    private static bool IsAfterlifeRealm(string? realm) =>
-        string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
+    private static bool IsAfterlifeRealm(string? realm) => RealmSemantics.IsAfterlifeRealm(realm);
 
     private async Task SyncAfterlifeNotificationsAsync()
     {

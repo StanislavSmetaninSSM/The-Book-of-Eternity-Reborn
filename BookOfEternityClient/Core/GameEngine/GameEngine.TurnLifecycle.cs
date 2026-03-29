@@ -438,11 +438,27 @@ public partial class GameEngine
                 continue;
             }
 
+            if ((input.Equals("/reenter_shining_abode", StringComparison.OrdinalIgnoreCase) ||
+                 input.Equals("/вернуться_в_обитель", StringComparison.OrdinalIgnoreCase)) &&
+                _stateManager.CurrentState.IsInChaosSea)
+            {
+                await HandleReenterShiningAbode();
+                continue;
+            }
+
             if ((input.Equals("/new_game_plus", StringComparison.OrdinalIgnoreCase) ||
                  input.Equals("/новая_игра+", StringComparison.OrdinalIgnoreCase)) &&
                 _stateManager.CurrentState.IsInShiningAbode)
             {
                 await HandleNewGamePlus();
+                continue;
+            }
+
+            if ((input.Equals("/return_to_chaos_sea", StringComparison.OrdinalIgnoreCase) ||
+                 input.Equals("/вернуться_в_море_хаоса", StringComparison.OrdinalIgnoreCase)) &&
+                _stateManager.CurrentState.IsInShiningAbode)
+            {
+                await HandleReturnToChaosSeaFromShiningAbode();
                 continue;
             }
 
@@ -1445,7 +1461,8 @@ public partial class GameEngine
             var rawReturnGuard = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
             if (payload.IsGuardianForced && !string.IsNullOrWhiteSpace(rawReturnGuard))
             {
-                if (!AfterlifeReturnGuardService.TryParse(rawReturnGuard, out var activeReturnGuard))
+                var guardSemanticState = AfterlifeReturnGuardService.Classify(rawReturnGuard, out var activeReturnGuard);
+                if (guardSemanticState == AfterlifeReturnGuardSemanticState.BlockingInvalid)
                 {
                     _logger.LogWarning(
                         "guardian_forced incarnation trigger ignored because afterlife_return_guard is invalid. Failing closed to preserve the protected return turn.");
@@ -1453,7 +1470,7 @@ public partial class GameEngine
                     return;
                 }
 
-                if (activeReturnGuard.RemainingProtectedTurns > 0)
+                if (guardSemanticState == AfterlifeReturnGuardSemanticState.ActiveValid && activeReturnGuard != null)
                 {
                     _logger.LogWarning(
                         "guardian_forced incarnation trigger ignored because afterlife_return_guard is still active (remainingProtectedTurns={Turns}).",
@@ -1630,7 +1647,7 @@ public partial class GameEngine
         if (string.IsNullOrWhiteSpace(ascensionJson))
             return;
 
-        if (!_stateManager.CurrentState.IsInAfterlifeRealm || _stateManager.CurrentState.IsInShiningAbode)
+        if (!_stateManager.CurrentState.IsInAfterlifeRealm || _stateManager.CurrentState.IsInAnyShiningAbodeState)
         {
             _fs.DeleteFile("game_state/control/ascension.json");
             return;
@@ -1827,20 +1844,33 @@ public partial class GameEngine
         // Show realm-aware prompt
         var isChaosSea = _stateManager.CurrentState.IsInChaosSea;
         var isShiningAbode = _stateManager.CurrentState.IsInShiningAbode;
+        var isPendingShiningAbodeBootstrap = _stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
         var isAfterlife = _stateManager.CurrentState.IsInAfterlifeRealm;
-        var accentColor = isShiningAbode ? "yellow" : (isAfterlife ? "blue" : "green3");
-        var realmLabel = isShiningAbode ? _loc.T("realm_shining_abode") : (isAfterlife ? _loc.T("realm_chaos_sea") : _loc.T("realm_mortal"));
+        var accentColor = isPendingShiningAbodeBootstrap
+            ? "khaki1"
+            : (isShiningAbode ? "yellow" : (isAfterlife ? "blue" : "green3"));
+        var realmLabel = isPendingShiningAbodeBootstrap
+            ? "Shining Abode Handoff"
+            : (isShiningAbode ? _loc.T("realm_shining_abode") : (isAfterlife ? _loc.T("realm_chaos_sea") : _loc.T("realm_mortal")));
         AnsiConsole.Write(new Rule($"[bold {accentColor}]✦ Ваш ход ✦[/]").RuleStyle(accentColor));
 
-        if (isShiningAbode)
+        if (isPendingShiningAbodeBootstrap)
+        {
+            AnsiConsole.MarkupLine("[dim]  Подготовка следующей жизни уже передана в bootstrap.[/]");
+            AnsiConsole.MarkupLine("[dim]  Обычные действия Мира Хаоса и Сияющей Обители здесь недоступны.[/]");
+        }
+        else if (isShiningAbode)
         {
             AnsiConsole.MarkupLine("[dim]  Свободный ролеплей с Хранителями в Сияющей Обители[/]");
-            AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /душа │ /новая_игра+ │ /help[/]");
+            AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /душа │ /вернуться_в_море_хаоса /новая_игра+ │ /help[/]");
         }
         else if (isChaosSea)
         {
             AnsiConsole.MarkupLine("[dim]  Говорите с Хранителем: торговать, квесты, реликвии души, вытягивание реликвий, сменить хранителя[/]");
-            AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /гача /душа │ /воплотиться │ /help[/]");
+            if (_stateManager.CurrentState.CanReenterShiningAbode)
+                AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /гача /душа │ /воплотиться /вернуться_в_обитель │ /help[/]");
+            else
+                AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /гача /душа │ /воплотиться │ /help[/]");
         }
         else
         {
@@ -1980,18 +2010,29 @@ setCharacteristics: Use ONLY for extraordinary events (divine intervention, meta
 REALM SEGREGATION — ABSOLUTE LAW:
 Read Context.worldState.currentRealm (projected from game_state/meta/soul_state.json.currentRealm) BEFORE applying any mechanic.
 
-IF REALM = Chaos Sea OR Shining Abode:
+IF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_abode_state.json.preparedIncarnationPackage != null:
+  TREAT THIS AS Shining Abode pending-bootstrap handoff, NOT as ordinary active Shining Abode.
+  ALLOWED: only mortal bootstrap / next-life materialization that consumes or clears the frozen package.
+  FORBIDDEN: ordinary Guardian interactions, ordinary Abode interactions, Chaos-Sea-only afterlife interactions, archive/relic/world-setup meta flows, Mortal World systems.
+
+ELSE IF REALM = Chaos Sea:
   FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
-  ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, Abode/Guardian interactions, Life Evaluation, Incarnation setup.
+  ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, guardian/abode afterlife interactions, Life Evaluation, Incarnation setup.
   CHAOS-SEA INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint.
   Sell Relic is a separate guardian trade interaction, not an Ink Feather action.
-  Shining Abode is the ascended endgame free-roleplay zone above the Chaos Sea. It still uses afterlife/guardian systems, not Mortal World systems.
-  If the player chooses New Game+ from Shining Abode, the new cycle returns to Chaos Sea with Enlightenment and Ink Feathers reset while Soul Relics and Guardians are preserved.
+  If game_state/meta/shining_abode_state.json.availability = active and afterlife_return_guard is absent, or semantic-valid (`reason=post_life_return`) and inactive, the player MAY use the client-owned local command /reenter_shining_abode to re-enter the already-active Shining Abode. A malformed guard or a parsed guard with the wrong reason still blocks re-entry until client normalization clears it. This is an ordinary return route, not Ascension, and not a GM-authored turn.
   LIFE EVALUATION REWARD GUARANTEE:
     - Every completed mortal life MUST grant at least 10 Ink Feathers.
     - Every completed mortal life MUST grant at least one NEW Soul Relic with a new relicId.
     - Reward quality may vary by achievements, but zero-reward life evaluation is a protocol violation.
     - If the completed life clearly strengthened a Guardian's domain, you MAY emit guardianPowerEvents with reasonType=resonance and full resonanceAudit on the dedicated Life Evaluation turn only.
+
+ELSE IF REALM = Shining Abode:
+  FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
+  ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, Abode/Guardian interactions, Life Evaluation, Incarnation setup.
+  Shining Abode is the ascended endgame free-roleplay zone above the Chaos Sea. It still uses afterlife/guardian systems, not Mortal World systems.
+  The player may use the client-owned local command /return_to_chaos_sea to return to Chaos Sea and seal the Shining Abode without triggering destructive New Game+ reset.
+  Optional New Game+ from Shining Abode is the separate destructive global reset path: it returns to Chaos Sea with Enlightenment and Ink Feathers reset while Soul Relics and Guardians are preserved.
 
 IF REALM = Mortal World:
   FORBIDDEN: UpdateGuardians, Guardian-specific reputation/project/musings/lore commands, Abode navigation, Soul Relic Gacha, Chaos-Sea-only spending of Ink Feathers.
@@ -2197,8 +2238,9 @@ If the SAME extra clue is mirrored through both publicSignals and linked worldEv
 Do NOT use rival arcs in Chaos Sea or Shining Abode.
 
 GUARDIAN-FORCED INCARNATION — HARD REQUIREMENT:
-If game_state/control/afterlife_return_guard.json exists with remainingProtectedTurns > 0, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any Guardian-forced incarnation.
-Do NOT immediately kick the soul back into a new life on that protected return turn.
+If game_state/control/afterlife_return_guard.json is semantic-valid (`reason = post_life_return`) and has remainingProtectedTurns > 0, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any Guardian-forced incarnation.
+If afterlife_return_guard.json is malformed, unreadable, or parsed with the wrong reason, Guardian-forced incarnation is ALSO forbidden fail-closed until client normalization clears that invalid guard state.
+Do NOT immediately kick the soul back into a new life on a protected or invalid-guard return state.
 Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn as a response to explicit player provocation against the current active Guardian.
 If you write game_state/control/incarnation_trigger.json in this forced mode, include:
   - source = guardian_forced

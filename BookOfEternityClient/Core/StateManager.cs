@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models.GameState;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.Core;
@@ -138,6 +139,23 @@ public class StateManager
                 enl.TryGetProperty("currentTier", out var tier))
                 state.EnlightenmentTier = tier.GetString() ?? "Новичок";
         });
+
+        // Meta: Shining Abode lifecycle handoff
+        await TryLoadJson("game_state/meta/shining_abode_state.json", (doc) =>
+        {
+            var root = doc.RootElement;
+            state.ShiningAbodeAvailability = GetString(root, "availability", "");
+            if (root.TryGetProperty("preparedIncarnationPackage", out var pkg))
+                state.HasPendingShiningAbodeBootstrapPackage = pkg.ValueKind != JsonValueKind.Null;
+        });
+
+        // Control: Post-life guard for the first ordinary afterlife turn.
+        // A malformed or semantically invalid guard still blocks re-entry until runtime normalization clears it.
+        var rawReturnGuard = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
+        var guardSemanticState = AfterlifeReturnGuardService.Classify(rawReturnGuard, out _);
+        state.HasBlockingAfterlifeReturnGuard =
+            guardSemanticState is AfterlifeReturnGuardSemanticState.ActiveValid or
+            AfterlifeReturnGuardSemanticState.BlockingInvalid;
 
         // Meta: Guardians (active guardian name)
         await TryLoadJson("game_state/meta/guardians.json", (doc) =>

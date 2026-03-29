@@ -451,6 +451,40 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
         Assert.Equal(0, secondClaimant.PreparationBudgetPoints);
     }
 
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_NamedMortalRealm_ReturnsReminder()
+    {
+        await WriteRawAsync(GuardianCorrectionService.StatePath, """
+        {
+          "lifeIncarnation": 3,
+          "appliedAt": "2026-03-27T00:00:00Z",
+          "guardianId": "guard_test_azalia",
+          "guardianName": "Азалия",
+          "intent": "friendly",
+          "reputationAtApplication": 90,
+          "powerBefore": 70,
+          "powerAfter": 63,
+          "baseBudgetPoints": 2,
+          "remainingBudgetPoints": 0,
+          "totalAbodePowerSpent": 7,
+          "summary": "Азалия мягко корректирует старт.",
+          "scenarioCoreSnapshot": {
+            "scenarioCoreAssertions": [],
+            "openCorrectionSlots": []
+          },
+          "claimants": [],
+          "contestedSlots": [],
+          "resolutionOrder": [],
+          "corrections": []
+        }
+        """);
+
+        var reminder = await _guardianCorrectionService.BuildSystemReminderFragmentAsync("Неон-Сити");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("GUARDIAN CORRECTIONS FOR THIS LIFE", reminder, StringComparison.Ordinal);
+    }
+
     private async Task WriteRawAsync(string path, string content)
     {
         await _fs.WriteFileAtomicAsync(path, content);

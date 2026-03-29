@@ -27,6 +27,9 @@ public class AggregatedGameState
     public int InkFeathers { get; set; }
     public string EnlightenmentTier { get; set; } = "Новичок";
     public string ActiveGuardianName { get; set; } = string.Empty;
+    public string ShiningAbodeAvailability { get; set; } = string.Empty;
+    public bool HasPendingShiningAbodeBootstrapPackage { get; set; }
+    public bool HasBlockingAfterlifeReturnGuard { get; set; }
     
     // Timestamps
     public DateTime LastUpdated { get; set; }
@@ -38,10 +41,34 @@ public class AggregatedGameState
                                 || string.Equals(CurrentRealm, "Море Хаоса", StringComparison.OrdinalIgnoreCase)
                                 || string.IsNullOrEmpty(CurrentRealm);
 
-    public bool IsInShiningAbode => string.Equals(CurrentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase)
-                                    || string.Equals(CurrentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
+    private bool IsShiningAbodeRealmBucket => string.Equals(CurrentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase)
+                                              || string.Equals(CurrentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
 
-    public bool IsInAfterlifeRealm => IsInChaosSea || IsInShiningAbode;
+    /// <summary>
+    /// True for any Shining Abode realm bucket state, including the pending-bootstrap handoff.
+    /// </summary>
+    public bool IsInAnyShiningAbodeState => IsShiningAbodeRealmBucket;
+
+    /// <summary>
+    /// True only for ordinary active Shining Abode mode, not the pending-bootstrap handoff state.
+    /// </summary>
+    public bool IsInShiningAbode => IsShiningAbodeRealmBucket && !HasPendingShiningAbodeBootstrapPackage;
+
+    /// <summary>
+    /// True when the soul is still in the Shining Abode realm bucket, but control has already been handed to mortal bootstrap.
+    /// </summary>
+    public bool IsInShiningAbodePendingBootstrap => IsShiningAbodeRealmBucket && HasPendingShiningAbodeBootstrapPackage;
+
+    public bool IsInAfterlifeRealm => IsInChaosSea || IsInAnyShiningAbodeState;
+
+    public bool HasActiveStoredShiningAbode =>
+        string.Equals(ShiningAbodeAvailability, "active", StringComparison.OrdinalIgnoreCase);
+
+    public bool CanReenterShiningAbode =>
+        IsInChaosSea &&
+        HasActiveStoredShiningAbode &&
+        !HasPendingShiningAbodeBootstrapPackage &&
+        !HasBlockingAfterlifeReturnGuard;
 }
 
 public class PlayerStatusState

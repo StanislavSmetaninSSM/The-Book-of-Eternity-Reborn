@@ -118,6 +118,21 @@ public partial class ExplorerMode
     private readonly Dictionary<string, Func<Task>> _universalCommands;
     // Commands ONLY available in Chaos Sea (afterlife)
     private readonly Dictionary<string, Func<Task>> _chaosSeaOnlyCommands;
+
+    private bool IsOrdinaryAfterlifeInteractionState =>
+        _stateManager.CurrentState.IsInAfterlifeRealm &&
+        !_stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
+
+    private bool EnsureOrdinaryAfterlifeInteractionAvailable(string title)
+    {
+        if (!_stateManager.CurrentState.IsInShiningAbodePendingBootstrap)
+            return true;
+
+        ShowEmptyPanel(
+            title,
+            "Сейчас активен handoff к следующей смертной жизни. Обычные действия Моря Хаоса, Хранителей и Сияющей Обители недоступны до завершения bootstrap.");
+        return false;
+    }
     // Commands ONLY available in Mortal Life
     private readonly Dictionary<string, Func<Task>> _mortalOnlyCommands;
     // Commands available in both but behave differently

@@ -77,13 +77,19 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 **Канонический источник этого значения в файловом состоянии:** `game_state/meta/soul_state.json` → `currentRealm`.
 В runtime-контексте это же значение считается доступным как `Context.worldState.currentRealm`.
 
+Для обычного realm routing этого достаточно, но есть один lifecycle override:
+
+- если `currentRealm = "Shining Abode"` и одновременно `game_state/meta/shining_abode_state.json.preparedIncarnationPackage != null`, runtime должен трактовать это не как обычную активную Сияющую Обитель, а как `Shining Abode pending-bootstrap handoff mode`
+
 | Значение | Режим | Активные системы | ЗАПРЕЩЁННЫЕ системы |
 |----------|-------|-------------------|---------------------|
+| `"Shining Abode"` + `preparedIncarnationPackage != null` | pending-bootstrap handoff | только mortal bootstrap lifecycle и consume/clear frozen package | обычные Guardian / Abode interactions, Chaos-Sea-only afterlife interactions, Mortal World turn systems |
 | `"Chaos Sea"` / `null` / пусто | Посмертие | Хранители, Обители, Реликвии Души, Чернильные Перья, Гача | Бой, опыт, уровни, навыки, НПС, квесты, деньги, инвентарь, погода |
 | `"Shining Abode"` | Посмертие | Свободный ролеплей с Хранителями, Реликвии Души, afterlife meta systems | Mortal-world combat/NPC/faction/location mechanics |
 | `"Mortal World"` / иное | Смертный мир | Бой, навыки, НПС, квесты, фракции, инвентарь, погода, время, whitelist-действия Чернильных Перьев | Хранители, Обители, Гача, Chaos-Sea-only трата Чернильных Перьев |
 
 **JSON gate после Realm Check:**
+- В `Shining Abode pending-bootstrap handoff mode` разрешены только lifecycle/bootstrap mutations, которые materialize-ят следующую смертную жизнь и consume/clear `preparedIncarnationPackage`.
 - В `Chaos Sea` и `Shining Abode` запрещены: `experienceGained`, `statsIncreased`, `statsDecreased`, `currentPoiseChange`, `currentEnergyChange`, `currentHealthChange`, `moneyChange`, `activeSkillChanges`, `passiveSkillChanges`, `skillMasteryChanges`, `UpdateInventory`, `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, `worldEventsLog`, `factionDataChanges`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`, `enemiesData`, `alliesData`, `combat_log_markdown`.
 - В `Mortal World` запрещены: `UpdateGuardians`, Guardian-specific reputation/project/musings/lore commands, Abode navigation data, Soul Relic Gacha processing, Chaos-Sea-only spending of Ink Feathers.
 - В `Mortal World` разрешены только explicit Ink Feather exceptions: `Reveal Fate`, `Rewrite Fate`, `Sacrifice to Chaos`, `Absorb Feathers`, `Learn Skill`, `Fate Shield`, `Seal in Ink`.
@@ -260,9 +266,20 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 - `progressionProcessingReport` — обязательный отчёт о реально обработанных progression cycles, если они были due
 - UI-элементы: `image_prompt`, `dialogueOptions`
 - Контроль жизни: `TriggerLifeEnd`, `TriggerIncarnation`, `AscensionTrigger`
+- Client-owned local lifecycle commands: `reenter_shining_abode`, `return_to_chaos_sea`
+- Эти две команды выполняются локально клиентом вне GM turn pipeline, не требуют `ProcessPlayerTurn`, не являются control triggers и не должны подменяться GM-авторским accepted turn
 - `TriggerLifeEnd` — только для Mortal World, только с `reason = Death|Voluntary`, и только как старт отдельного Life Evaluation lifecycle
+- canonical completion point этого lifecycle — accepted turn, чей `manifest.SourceLabel` распознаётся через `LifeEvaluationRewardAnalyzer.IsLifeEvaluationSourceLabel(...)`
+- current v1 Life Evaluation source labels: `оценки жизни`, `автоматической оценки жизни`
+- normal post-life destination этого lifecycle в current v1 runtime — `Chaos Sea`
+- этот normal post-life route не меняет stored `shining_abode_state.availability`; он остаётся тем же until explicit `return_to_chaos_sea`
+- accepted Life Evaluation turn всегда активирует client-owned `game_state/control/afterlife_return_guard.json` с `reason = post_life_return`, но это только protective guard первого ordinary afterlife turn
+- `afterlife_return_guard.json` не является отдельным lifecycle completion marker и не должен переинтерпретироваться как automatic return в `Shining Abode`
+- ordinary afterlife turn consumes this guard only when it is semantic-valid (`reason = post_life_return`); malformed guard state, or a parsed guard with the wrong `reason`, is not consumed by ordinary turns and remains blocked until runtime normalization clears it
 - `AscensionTrigger` — реальный переход из Chaos Sea в Shining Abode; допускается только при maximum Enlightenment и явном `playerChoice=Ascension`, никогда не смешивается с `TriggerLifeEnd`
-- Optional New Game+ from Shining Abode resets Enlightenment and Ink Feathers while preserving Soul Relics and Guardians
+- ordinary later re-entry from `Chaos Sea` into an already-stored active Shining Abode uses a separate explicit client-owned local `reenter_shining_abode` route; it is allowed only when stored `shining_abode_state.availability = active` and `afterlife_return_guard.json` is absent, or semantic-valid (`reason = post_life_return`) and inactive; malformed guard state, or a parsed guard with the wrong `reason`, blocks re-entry fail-closed until runtime normalization clears it; this route does not reset ascension-local Shining Abode counters and does not refill `lightSparks`
+- explicit client-owned local `return_to_chaos_sea` is a Shining-Abode-local seal/exit route and must not be collapsed into destructive optional New Game+ reset
+- optional New Game+ from active Shining Abode remains the separate global reset path that resets Enlightenment and Ink Feathers while preserving Soul Relics and Guardians
 - Для обычного accepted GM turn поле `response` обязательно и должно содержать непустой нарратив для игрока
 
 **Полная схема ответа (100+ полей):** см. секцию "JSON Response Schema" в `CLI_API_Specification.md`.

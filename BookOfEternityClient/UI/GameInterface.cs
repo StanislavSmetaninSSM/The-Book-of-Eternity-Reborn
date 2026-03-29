@@ -9,7 +9,7 @@ namespace BookOfEternityClient.UI;
 /// <summary>
 /// Main game interface using Spectre.Console.
 /// Renders the multi-panel game layout with rich formatting.
-/// Realm-aware: Chaos Sea uses blue/purple theme, Mortal Life uses green/cyan theme.
+/// Realm-aware: afterlife realms use blue/gold theme, mortal life uses green/cyan theme.
 /// </summary>
 public class GameInterface
 {
@@ -44,10 +44,10 @@ public class GameInterface
             RenderCombatLog(lastResponse.CombatLogMarkdown);
         }
         
-        // Status bars only in mortal life; soul info bar in Chaos Sea
-        if (state.IsInChaosSea)
+        // Status bars only in mortal life; afterlife realms use the soul-status block.
+        if (ShouldRenderAfterlifeStatus(state))
         {
-            RenderChaosSeaStatus(state);
+            RenderAfterlifeStatus(state);
         }
         else
         {
@@ -140,17 +140,31 @@ public class GameInterface
         Console.ReadKey(true);
     }
 
+    internal static bool ShouldRenderAfterlifeStatus(AggregatedGameState state)
+    {
+        return state.IsInAfterlifeRealm;
+    }
+
     private void RenderHeader(AggregatedGameState state, int turnNumber)
     {
         var isAfterlife = state.IsInAfterlifeRealm;
         var isShiningAbode = state.IsInShiningAbode;
-        var themeColor = isShiningAbode ? Color.Gold1 : (isAfterlife ? Color.Blue : Color.Green3);
-        var accentColor = isShiningAbode ? "yellow" : (isAfterlife ? "blue" : "green3");
-        var dimAccent = isShiningAbode ? "khaki1" : (isAfterlife ? "steelblue1" : "darkseagreen");
+        var isPendingShiningAbodeBootstrap = state.IsInShiningAbodePendingBootstrap;
+        var themeColor = isPendingShiningAbodeBootstrap
+            ? Color.Khaki1
+            : (isShiningAbode ? Color.Gold1 : (isAfterlife ? Color.Blue : Color.Green3));
+        var accentColor = isPendingShiningAbodeBootstrap
+            ? "khaki1"
+            : (isShiningAbode ? "yellow" : (isAfterlife ? "blue" : "green3"));
+        var dimAccent = isPendingShiningAbodeBootstrap
+            ? "wheat1"
+            : (isShiningAbode ? "khaki1" : (isAfterlife ? "steelblue1" : "darkseagreen"));
 
         // Realm banner line
-        var realmIcon = isShiningAbode ? "✨" : (isAfterlife ? "🌊" : "⚔️");
-        var realmName = isShiningAbode ? _loc.T("realm_shining_abode") : (isAfterlife ? _loc.T("realm_chaos_sea") : _loc.T("realm_mortal"));
+        var realmIcon = isPendingShiningAbodeBootstrap ? "⏳" : (isShiningAbode ? "✨" : (isAfterlife ? "🌊" : "⚔️"));
+        var realmName = isPendingShiningAbodeBootstrap
+            ? "Сияющая Обитель: handoff"
+            : (isShiningAbode ? _loc.T("realm_shining_abode") : (isAfterlife ? _loc.T("realm_chaos_sea") : _loc.T("realm_mortal")));
         var timeStr = string.IsNullOrEmpty(state.WorldTime) ? "" : $" 🕐 {EscapeMarkup(state.WorldTime)}";
 
         AnsiConsole.Write(new Rule($"[bold {accentColor}]{realmIcon} {realmName}[/]  [dim]Ход {turnNumber}{timeStr}[/]")
@@ -185,7 +199,7 @@ public class GameInterface
         AnsiConsole.WriteLine();
     }
 
-    private void RenderNarrative(string narrative, bool isChaosSea)
+    private void RenderNarrative(string narrative, bool isAfterlife)
     {
         if (string.IsNullOrWhiteSpace(narrative))
         {
@@ -202,10 +216,10 @@ public class GameInterface
             return string.Empty;
         }).Trim();
 
-        var borderColor = isChaosSea ? Color.Blue : Color.Green3;
-        var borderStyle = isChaosSea ? BoxBorder.Heavy : BoxBorder.Rounded;
-        var headerIcon = isChaosSea ? "🌊" : "📜";
-        var textColor = isChaosSea ? "white" : "white";
+        var borderColor = isAfterlife ? Color.Blue : Color.Green3;
+        var borderStyle = isAfterlife ? BoxBorder.Heavy : BoxBorder.Rounded;
+        var headerIcon = isAfterlife ? "🌊" : "📜";
+        var textColor = isAfterlife ? "white" : "white";
         if (!string.IsNullOrWhiteSpace(cleanNarrative))
         {
             var escaped = EscapeMarkup(cleanNarrative);
@@ -261,6 +275,35 @@ public class GameInterface
             "[/][yellow]  Перед вами раскрывается Сияющая Обитель.\n" +
             "  Здесь можно проводить время с Хранителями в свободном ролеплее\n" +
             "  и начать Новый Цикл, когда вы сами этого захотите.[/]");
+
+        AnsiConsole.Write(new Panel(text)
+        {
+            Border = BoxBorder.Heavy,
+            BorderStyle = new Style(Color.Yellow),
+            Padding = new Padding(4, 1),
+            Expand = true
+        });
+    }
+
+    public static void RenderShiningAbodeReturnTransition()
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.WriteLine();
+        AnsiConsole.WriteLine();
+        AnsiConsole.Write(new FigletText("Shining Abode")
+            .Color(Color.Gold1)
+            .Centered());
+        AnsiConsole.WriteLine();
+        AnsiConsole.Write(new Rule("[bold yellow]═══ ✨ Возвращение в Сияющую Обитель ✨ ═══[/]")
+            .RuleStyle("yellow"));
+        AnsiConsole.WriteLine();
+
+        var text = new Markup(
+            "[gold1]  Море Хаоса медленно отступает, словно туман за спиной.\n" +
+            "  Душа снова находит путь к уже знакомому сиянию.\n\n" +
+            "[/][yellow]  Перед вами вновь раскрывается Сияющая Обитель.\n" +
+            "  Её залы пробуждаются без нового вознесения,\n" +
+            "  и прежний ритм её сияния продолжается дальше.[/]");
 
         AnsiConsole.Write(new Panel(text)
         {
@@ -351,7 +394,7 @@ public class GameInterface
         AnsiConsole.WriteLine();
     }
 
-    private void RenderChaosSeaStatus(AggregatedGameState state)
+    private void RenderAfterlifeStatus(AggregatedGameState state)
     {
         var parts = new List<string>();
 
@@ -412,10 +455,12 @@ public class GameInterface
         if (state.IsInAfterlifeRealm)
         {
             AnsiConsole.Write(ConsoleLayout.CreateFactGrid(
-                $"[{(state.IsInShiningAbode ? "gold1" : "blue")} dim]🔄 {_loc.T("incarnation")}: {state.Incarnation}[/]",
-                state.IsInShiningAbode
-                    ? "[gold1 dim]✨ Вы находитесь в Сияющей Обители — над Морем Хаоса.[/]"
-                    : $"[blue dim]🌊 {_loc.T("chaos_sea_welcome")}[/]"));
+                $"[{(state.IsInShiningAbodePendingBootstrap ? "khaki1" : (state.IsInShiningAbode ? "gold1" : "blue"))} dim]🔄 {_loc.T("incarnation")}: {state.Incarnation}[/]",
+                state.IsInShiningAbodePendingBootstrap
+                    ? "[khaki1 dim]⏳ Подготовка следующей жизни уже передана в bootstrap; обычные действия Обители и Моря Хаоса заблокированы.[/]"
+                    : (state.IsInShiningAbode
+                        ? "[gold1 dim]✨ Вы находитесь в Сияющей Обители — над Морем Хаоса.[/]"
+                        : $"[blue dim]🌊 {_loc.T("chaos_sea_welcome")}[/]")));
         }
         else
         {

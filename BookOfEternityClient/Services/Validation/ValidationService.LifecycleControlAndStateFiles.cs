@@ -2452,19 +2452,20 @@ public partial class ValidationService
         var guardJson = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
         if (!string.IsNullOrWhiteSpace(guardJson))
         {
-            if (!AfterlifeReturnGuardService.TryParse(guardJson, out var returnGuard))
+            var guardSemanticState = AfterlifeReturnGuardService.Classify(guardJson, out var returnGuard);
+            if (guardSemanticState == AfterlifeReturnGuardSemanticState.BlockingInvalid)
             {
                 issues.Add(new ValidationIssue(
                     AfterlifeReturnGuardService.GuardPath,
                     IssueSeverity.Error,
-                    "Повреждённый afterlife_return_guard.json не может отключить защиту первого afterlife-turn; guardian-forced incarnation блокируется fail-closed.",
+                    "Невалидный afterlife_return_guard.json не может отключить защиту первого afterlife-turn; guardian-forced incarnation блокируется fail-closed.",
                     code: "forced_incarnation_blocked_by_invalid_safe_return_guard",
                     section: "Lifecycle",
                     expected: "valid afterlife_return_guard.json or no forced incarnation",
-                    actual: "invalid guard file",
-                    repairHint: "На этом ходе убери guardian_forced incarnation. Клиентский afterlife_return_guard.json должен быть валидным или очищенным самой runtime-нормализацией."));
+                    actual: "malformed or semantically invalid guard file",
+                    repairHint: "На этом ходе убери guardian_forced incarnation. Клиентский afterlife_return_guard.json должен быть валидным по semantic contract (`reason=post_life_return`) или очищенным самой runtime-нормализацией."));
             }
-            else if (returnGuard.RemainingProtectedTurns > 0)
+            else if (guardSemanticState == AfterlifeReturnGuardSemanticState.ActiveValid && returnGuard != null)
             {
                 issues.Add(new ValidationIssue(
                     AfterlifeReturnGuardService.GuardPath,

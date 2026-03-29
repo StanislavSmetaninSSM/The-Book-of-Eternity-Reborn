@@ -12,7 +12,10 @@ namespace BookOfEternityClient.UI;
 public partial class ExplorerMode
 {private async Task ShowSoulRelics()
     {
-        var isChaosSea = _stateManager.CurrentState.IsInChaosSea;
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable(_loc.T("soul_relics")))
+            return;
+
+        var isAfterlifeRealm = IsOrdinaryAfterlifeInteractionState;
 
         while (true)
         {
@@ -94,8 +97,8 @@ public partial class ExplorerMode
 
             var selected = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold yellow]✨ {_loc.T("soul_relics")}[/]" +
-                    (isChaosSea ? "  [dim](выберите для просмотра / управления)[/]"
-                                : "  [yellow dim](только просмотр — управление в Море Хаоса)[/]"))
+                    (isAfterlifeRealm ? "  [dim](выберите для просмотра / управления)[/]"
+                                      : "  [yellow dim](только просмотр — управление в загробном цикле)[/]"))
                 .PageSize(15)
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoices(choices));
@@ -106,7 +109,7 @@ public partial class ExplorerMode
             if (selIdx < 0 || selIdx >= allRelics.Count) break;
 
             var (relicId, relicName, relicStatus, relicData, _) = allRelics[selIdx];
-            var shouldRefresh = await ShowRelicDetailPanel(relicId, relicName, relicStatus, relicData, isChaosSea);
+            var shouldRefresh = await ShowRelicDetailPanel(relicId, relicName, relicStatus, relicData, isAfterlifeRealm);
             if (shouldRefresh)
                 await _stateManager.RefreshGameStateAsync();
         }
@@ -114,6 +117,9 @@ public partial class ExplorerMode
 
     private async Task ShowAfterlifeArchive()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Архив души"))
+            return;
+
         while (true)
         {
             await SyncAfterlifeNotificationsAsync();
@@ -259,6 +265,9 @@ public partial class ExplorerMode
 
     private async Task ShowAfterlifeInbox()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Уведомления загробья"))
+            return;
+
         while (true)
         {
             await SyncAfterlifeNotificationsAsync();
@@ -424,6 +433,9 @@ public partial class ExplorerMode
 
     private async Task ShowAfterlifeArchiveCandidates()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Кандидаты в Архив"))
+            return;
+
         if (_afterlifeArchiveCandidateService == null)
         {
             ShowEmptyPanel("Кандидаты в Архив", "Сервис кандидатов в Архив души недоступен.");
@@ -431,11 +443,7 @@ public partial class ExplorerMode
         }
 
         var realm = _stateManager.CurrentState.CurrentRealm ?? "Chaos Sea";
-        var isAfterlifeRealm =
-            string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
+        var isAfterlifeRealm = RealmSemantics.IsAfterlifeRealm(realm);
 
         if (!isAfterlifeRealm)
         {
@@ -602,7 +610,7 @@ public partial class ExplorerMode
     /// In Chaos Sea: offers equip/unequip actions that modify soul_state.json directly.
     /// Returns true if state was modified (needs refresh).
     /// </summary>
-    private async Task<bool> ShowRelicDetailPanel(string relicId, string name, string status, JsonElement relic, bool isChaosSea)
+    private async Task<bool> ShowRelicDetailPanel(string relicId, string name, string status, JsonElement relic, bool isAfterlifeRealm)
     {
         var lines = BuildSoulRelicDetailLines(name, relic, status);
         await EnrichManifestedCompanionDetailsAsync(lines, relic);
@@ -618,7 +626,7 @@ public partial class ExplorerMode
         });
 
         // Action menu
-        if (isChaosSea)
+        if (isAfterlifeRealm)
         {
             var actions = new List<string>();
             if (status == "stored")
@@ -645,7 +653,7 @@ public partial class ExplorerMode
         }
         else
         {
-            MarkupLine("[yellow dim]  ⚠ Управление реликвиями доступно только в Море Хаоса.[/]");
+            MarkupLine("[yellow dim]  ⚠ Управление реликвиями доступно только в загробном цикле.[/]");
             WaitForKey();
         }
 
@@ -1512,6 +1520,9 @@ public partial class ExplorerMode
 
     private async Task ShowSoulQuests()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable(_loc.T("guardian_quests")))
+            return;
+
         await SyncAfterlifeNotificationsAsync();
         var doc = await _stateManager.LoadGameStateFileAsync("game_state/quests/soul_quests.json");
         if (doc == null)

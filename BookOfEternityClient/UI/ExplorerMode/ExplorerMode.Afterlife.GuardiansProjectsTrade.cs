@@ -39,6 +39,9 @@ public partial class ExplorerMode
 
     private async Task ShowGuardians()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable(_loc.T("guardians_info")))
+            return;
+
         while (true)
         {
             await SyncAfterlifeNotificationsAsync();
@@ -238,6 +241,9 @@ public partial class ExplorerMode
 
     private async Task ShowSearchAbodePrompt()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Поиск новой обители"))
+            return;
+
         while (true)
         {
             var searchModes = new List<string>
@@ -300,6 +306,9 @@ public partial class ExplorerMode
 
     private async Task ShowGuardianProjects()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Проекты Хранителей"))
+            return;
+
         var trackerDoc = await _stateManager.LoadGameStateFileAsync(GuardianProjectState.TrackerPath);
         if (trackerDoc == null || trackerDoc.RootElement.ValueKind != JsonValueKind.Object)
         {
@@ -362,6 +371,9 @@ public partial class ExplorerMode
 
     private async Task ShowAbodePower()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Сила Обители"))
+            return;
+
         var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
         if (guardiansDoc == null || guardiansDoc.RootElement.ValueKind != JsonValueKind.Object)
         {
@@ -608,6 +620,9 @@ public partial class ExplorerMode
 
     private async Task ShowAbodesNavigation()
     {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Обители"))
+            return;
+
         var doc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
         if (doc == null) { ShowEmptyPanel("Обители", "Данные хранителей недоступны"); return; }
 

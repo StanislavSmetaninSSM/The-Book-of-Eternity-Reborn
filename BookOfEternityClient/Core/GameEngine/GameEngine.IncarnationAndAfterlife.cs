@@ -613,7 +613,8 @@ public partial class GameEngine
         if (!string.Equals(manifest?.SourceLabel, OrdinaryPlayerTurnSourceLabel, StringComparison.OrdinalIgnoreCase))
             return;
 
-        if (!_stateManager.CurrentState.IsInAfterlifeRealm)
+        if (!_stateManager.CurrentState.IsInAfterlifeRealm ||
+            _stateManager.CurrentState.IsInShiningAbodePendingBootstrap)
             return;
 
         await _afterlifeReturnGuardService.ConsumeAfterAcceptedAfterlifeTurnAsync(_gameLoop.TurnNumber);

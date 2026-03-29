@@ -260,16 +260,8 @@ public sealed class ScenarioCoreService
         if (manifest == null)
             return null;
 
-        var realm = currentRealm ?? "";
-        var isRelevantRealm =
-            string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(realm, "Mortal World", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(realm, "Мир Смертных", StringComparison.OrdinalIgnoreCase);
-
-        if (!isRelevantRealm)
+        if (!RealmSemantics.IsAfterlifeRealm(currentRealm) &&
+            !RealmSemantics.IsMortalRealm(currentRealm))
             return null;
 
         var parts = new List<string>

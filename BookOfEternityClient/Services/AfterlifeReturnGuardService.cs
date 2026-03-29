@@ -45,9 +45,19 @@ public sealed class AfterlifeReturnGuardService
 
     public async Task ConsumeAfterAcceptedAfterlifeTurnAsync(int completedTurnNumber)
     {
-        var state = await ReadAsync();
-        if (state == null)
+        var (semanticState, state) = await ReadSemanticStateAsync();
+        if (semanticState == AfterlifeReturnGuardSemanticState.Absent ||
+            semanticState == AfterlifeReturnGuardSemanticState.BlockingInvalid ||
+            state == null)
+        {
             return;
+        }
+
+        if (semanticState == AfterlifeReturnGuardSemanticState.InactiveValid)
+        {
+            await ClearAsync();
+            return;
+        }
 
         state.RemainingProtectedTurns = Math.Max(0, state.RemainingProtectedTurns - 1);
         state.ConsumedAtTurnNumber = completedTurnNumber;
@@ -74,9 +84,9 @@ public sealed class AfterlifeReturnGuardService
             return;
         }
 
-        if (!TryParse(raw, out var state) ||
-            !string.Equals(state.Reason, PostLifeReturnReason, StringComparison.OrdinalIgnoreCase) ||
-            state.RemainingProtectedTurns <= 0)
+        var semanticState = Classify(raw, out _);
+        if (semanticState is AfterlifeReturnGuardSemanticState.BlockingInvalid or
+            AfterlifeReturnGuardSemanticState.InactiveValid)
         {
             _logger.LogWarning("afterlife_return_guard.json невалиден или неактуален. Очистка client-authored guard state.");
             await ClearAsync();
@@ -85,11 +95,11 @@ public sealed class AfterlifeReturnGuardService
 
     public async Task<AfterlifeReturnGuardState?> ReadAsync()
     {
-        var raw = await _fs.ReadFileAsync(GuardPath);
-        if (string.IsNullOrWhiteSpace(raw))
-            return null;
-
-        return TryParse(raw, out var state) ? state : null;
+        var (semanticState, state) = await ReadSemanticStateAsync();
+        return semanticState is AfterlifeReturnGuardSemanticState.ActiveValid or
+            AfterlifeReturnGuardSemanticState.InactiveValid
+            ? state
+            : null;
     }
 
     public async Task<string?> BuildSystemReminderFragmentAsync(string? currentRealm)
@@ -97,8 +107,8 @@ public sealed class AfterlifeReturnGuardService
         if (!IsAfterlifeRealm(currentRealm))
             return null;
 
-        var state = await ReadAsync();
-        if (state == null || state.RemainingProtectedTurns <= 0)
+        var (semanticState, state) = await ReadSemanticStateAsync();
+        if (semanticState != AfterlifeReturnGuardSemanticState.ActiveValid || state == null)
             return null;
 
         var guardianFragment = string.IsNullOrWhiteSpace(state.GuardianName)
@@ -170,6 +180,32 @@ public sealed class AfterlifeReturnGuardService
         }
     }
 
+    public static AfterlifeReturnGuardSemanticState Classify(string? raw, out AfterlifeReturnGuardState? state)
+    {
+        state = null;
+
+        if (string.IsNullOrWhiteSpace(raw))
+            return AfterlifeReturnGuardSemanticState.Absent;
+
+        if (!TryParse(raw, out var parsed))
+            return AfterlifeReturnGuardSemanticState.BlockingInvalid;
+
+        if (!string.Equals(parsed.Reason, PostLifeReturnReason, StringComparison.OrdinalIgnoreCase))
+            return AfterlifeReturnGuardSemanticState.BlockingInvalid;
+
+        state = parsed;
+        return parsed.RemainingProtectedTurns > 0
+            ? AfterlifeReturnGuardSemanticState.ActiveValid
+            : AfterlifeReturnGuardSemanticState.InactiveValid;
+    }
+
+    private async Task<(AfterlifeReturnGuardSemanticState SemanticState, AfterlifeReturnGuardState? State)> ReadSemanticStateAsync()
+    {
+        var raw = await _fs.ReadFileAsync(GuardPath);
+        var semanticState = Classify(raw, out var state);
+        return (semanticState, state);
+    }
+
     private async Task WriteAsync(AfterlifeReturnGuardState state)
     {
         await _fs.WriteFileAtomicAsync(GuardPath, JsonSerializer.Serialize(state, JsonOpts));
@@ -181,6 +217,14 @@ public sealed class AfterlifeReturnGuardService
         string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase) ||
         string.IsNullOrWhiteSpace(realm);
+}
+
+public enum AfterlifeReturnGuardSemanticState
+{
+    Absent,
+    ActiveValid,
+    InactiveValid,
+    BlockingInvalid
 }
 
 public sealed class AfterlifeReturnGuardState

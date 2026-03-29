@@ -1227,9 +1227,7 @@ internal static class GuardianProjectState
 
     private static int ResolveLoreResearchTargetIncarnation(int currentIncarnation, string? currentRealm)
     {
-        var realm = (currentRealm ?? "").Trim();
-        return string.Equals(realm, "Mortal World", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(realm, "Мир Смертных", StringComparison.OrdinalIgnoreCase)
+        return RealmSemantics.IsMortalRealm(currentRealm)
             ? Math.Max(1, currentIncarnation)
             : Math.Max(1, currentIncarnation + 1);
     }

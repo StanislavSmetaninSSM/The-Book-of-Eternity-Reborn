@@ -155,16 +155,23 @@ public partial class ExplorerMode
     {
         var isChaosSea = _stateManager.CurrentState.IsInChaosSea;
         var isShiningAbode = _stateManager.CurrentState.IsInShiningAbode;
+        var isPendingShiningAbodeBootstrap = _stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
         var isAfterlife = _stateManager.CurrentState.IsInAfterlifeRealm;
 
         var table = new Table()
             .Border(TableBorder.HeavyEdge)
-            .BorderColor(isShiningAbode ? Color.Gold1 : (isAfterlife ? Color.Blue : Color.Green3))
+            .BorderColor(isPendingShiningAbodeBootstrap ? Color.Khaki1 : (isShiningAbode ? Color.Gold1 : (isAfterlife ? Color.Blue : Color.Green3)))
             .AddColumn(new TableColumn("[bold]EN[/]").Width(18))
             .AddColumn(new TableColumn("[bold]RU[/]").Width(20))
             .AddColumn("[bold]Описание[/]");
 
-        if (isShiningAbode)
+        if (isPendingShiningAbodeBootstrap)
+        {
+            table.AddRow("[bold khaki1]── SHINING ABODE HANDOFF ──[/]", "", "");
+            table.AddRow("[khaki1]/status[/]", "[khaki1]/статус[/]", "[khaki1]Проверить, что handoff package всё ещё ожидает bootstrap следующей жизни[/]");
+            table.AddRow("[khaki1]/help[/]", "[khaki1]/помощь[/]", "[khaki1]Показать этот экран; обычные команды Обители и Моря Хаоса пока недоступны[/]");
+        }
+        else if (isShiningAbode)
         {
             table.AddRow("[bold yellow]── СИЯЮЩАЯ ОБИТЕЛЬ ──[/]", "", "");
             table.AddRow("[yellow]/guardians[/]", "[yellow]/хранители[/]", "[yellow]Информация о хранителях[/]");
@@ -181,6 +188,7 @@ public partial class ExplorerMode
             table.AddRow("[cyan]/world_setup[/]", "[cyan]/настройка_мира[/]", "[cyan]Подготовить следующий смертный мир[/]");
             table.AddRow("[magenta]/guardian_corrections[/]", "[magenta]/коррективы_хранителя[/]", "[magenta]Просмотр корректив текущей смертной жизни[/]");
             table.AddRow("", "", "");
+            table.AddRow("[blue]/return_to_chaos_sea[/]", "[blue]/вернуться_в_море_хаоса[/]", "[blue]Вернуться в Море Хаоса и запечатать Сияющую Обитель без New Game+ reset[/]");
             table.AddRow("[bold gold1]/new_game_plus[/]", "[bold gold1]/новая_игра+[/]", "[bold gold1]Начать Новый Цикл, сохранив Реликвии Души и Хранителей[/]");
             table.AddRow("", "", "");
             table.AddRow("[dim]💡 Это финальная зона свободного ролеплея над Морем Хаоса[/]", "", "");
@@ -205,6 +213,8 @@ public partial class ExplorerMode
             table.AddRow("[magenta]/guardian_corrections[/]", "[magenta]/коррективы_хранителя[/]", "[magenta]Просмотр корректив текущей смертной жизни[/]");
             table.AddRow("", "", "");
             table.AddRow("[yellow]/incarnate[/]", "[yellow]/воплотиться[/]", "[yellow]⚔️ Войти в смертную жизнь через Врата Души[/]");
+            if (_stateManager.CurrentState.CanReenterShiningAbode)
+                table.AddRow("[yellow]/reenter_shining_abode[/]", "[yellow]/вернуться_в_обитель[/]", "[yellow]✨ Вернуться в уже активную Сияющую Обитель[/]");
             table.AddRow("", "", "");
             table.AddRow("[dim]💡 Говорите с Хранителем свободным текстом:[/]", "", "");
             table.AddRow("[dim]   торговать, брать квесты, менять реликвии, сменить хранителя[/]", "", "");

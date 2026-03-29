@@ -75,6 +75,23 @@ public sealed class ScenarioCoreServiceTests : IDisposable
         Assert.Contains(refreshed!.ScenarioCoreAssertions, item => string.Equals(item.CandidateId, candidate.CandidateId, StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_NamedMortalRealm_ReturnsReminder()
+    {
+        await _worldDirectiveService.WritePendingSetupAsync(new WorldDirectiveService.PendingWorldSetup
+        {
+            Mode = "manual",
+            CharacterDescription = "Я начинаю как дворянин в осаждённой столице.",
+            StartingCircumstances = "Просыпаюсь в каменных покоях северной цитадели."
+        });
+
+        await _scenarioCoreService.RefreshFromPendingSetupAsync();
+        var reminder = await _scenarioCoreService.BuildSystemReminderFragmentAsync("Неон-Сити");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("NEXT-LIFE SCENARIO CORE", reminder, StringComparison.Ordinal);
+    }
+
     public void Dispose()
     {
         try

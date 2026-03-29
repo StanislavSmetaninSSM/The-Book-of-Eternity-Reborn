@@ -472,6 +472,9 @@ public partial class ExplorerMode
             return;
         }
 
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Настройка мира"))
+            return;
+
         if (!_stateManager.CurrentState.IsInAfterlifeRealm)
         {
             ShowEmptyPanel("Настройка мира", "Подготовка следующего мира доступна только в Море Хаоса или Сияющей Обители. Для текущего мира используйте /world_rules.");
