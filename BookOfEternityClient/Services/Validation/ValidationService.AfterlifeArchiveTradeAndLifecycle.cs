@@ -344,8 +344,8 @@ public partial class ValidationService
         IReadOnlySet<string> reservedRequestIds,
         List<ValidationIssue> issues)
     {
-        var trackerJson = _fs.ReadFileAsync(GuardianProjectState.TrackerPath).GetAwaiter().GetResult();
         var journalJson = _fs.ReadFileAsync(GuardianProjectState.JournalPath).GetAwaiter().GetResult();
+        var hasTrackerValidationRoot = TryResolveGuardianProjectTrackerValidationRootSync(out var trackerRoot, out var trackerContext);
 
         var receiptIndex = 0;
         foreach (var receipt in actionReceipts.EnumerateArray())
@@ -411,7 +411,20 @@ public partial class ValidationService
                 }
 
                 if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase) &&
-                    !ArchiveConsultationReceiptHasMatchingCompletedProject(trackerJson, requestId, archiveId, guardianId, receipt))
+                    !hasTrackerValidationRoot)
+                {
+                    issues.Add(new ValidationIssue(
+                        receiptContext,
+                        IssueSeverity.Error,
+                        "Accepted archive consultation receipt требует readable validated pre-turn project tracker baseline и не использует current tracker как authority fallback.",
+                        code: "afterlife_archive_missing_validated_preturn_tracker_snapshot",
+                        section: "AfterlifeArchive",
+                        expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
+                        actual: DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus),
+                        repairHint: $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для accepted archive consultation receipts. Без этого completed lore_research provenance нельзя доказывать через current tracker alone."));
+                }
+                else if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase) &&
+                         !ArchiveConsultationReceiptHasMatchingCompletedProject(trackerRoot, requestId, archiveId, guardianId, receipt))
                 {
                     issues.Add(new ValidationIssue(
                         receiptContext,
@@ -498,6 +511,68 @@ public partial class ValidationService
         }
     }
 
+
+    private static bool ArchiveConsultationReceiptHasMatchingCompletedProject(
+        JsonElement trackerRoot,
+        string? requestId,
+        string? archiveId,
+        string? guardianId,
+        JsonElement receipt)
+    {
+        if (!trackerRoot.TryGetProperty("completedProjects", out var completedProjects) || completedProjects.ValueKind != JsonValueKind.Array)
+            return false;
+
+        foreach (var entry in completedProjects.EnumerateArray())
+        {
+            if (!string.Equals(GetFirstNonEmptyString(entry, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase) ||
+                !entry.TryGetProperty("project", out var project) ||
+                project.ValueKind != JsonValueKind.Object ||
+                !string.Equals(GetFirstNonEmptyString(project, "projectOrigin"), "archive_consultation", StringComparison.OrdinalIgnoreCase) ||
+                (!string.Equals(GetFirstNonEmptyString(project, "consultationRequestId"), requestId, StringComparison.OrdinalIgnoreCase) &&
+                 !string.Equals(GetFirstNonEmptyString(project, "consultationArchiveId"), archiveId, StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+
+            if (!project.TryGetProperty("projectOutcomeAudit", out var audit) || audit.ValueKind != JsonValueKind.Object)
+                return true;
+
+            return ConsultationOutcomeMatchesAudit(receipt, audit);
+        }
+
+        return false;
+    }
+
+    private static bool ArchiveConsultationReceiptHasMatchingCompletedProject(
+        JsonElement trackerRoot,
+        string? requestId,
+        string? archiveId,
+        string? guardianId,
+        JsonObject receipt)
+    {
+        if (!trackerRoot.TryGetProperty("completedProjects", out var completedProjects) || completedProjects.ValueKind != JsonValueKind.Array)
+            return false;
+
+        foreach (var entry in completedProjects.EnumerateArray())
+        {
+            if (!string.Equals(GetFirstNonEmptyString(entry, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase) ||
+                !entry.TryGetProperty("project", out var project) ||
+                project.ValueKind != JsonValueKind.Object ||
+                !string.Equals(GetFirstNonEmptyString(project, "projectOrigin"), "archive_consultation", StringComparison.OrdinalIgnoreCase) ||
+                (!string.Equals(GetFirstNonEmptyString(project, "consultationRequestId"), requestId, StringComparison.OrdinalIgnoreCase) &&
+                 !string.Equals(GetFirstNonEmptyString(project, "consultationArchiveId"), archiveId, StringComparison.OrdinalIgnoreCase)))
+            {
+                continue;
+            }
+
+            if (!project.TryGetProperty("projectOutcomeAudit", out var audit) || audit.ValueKind != JsonValueKind.Object)
+                return true;
+
+            return ConsultationOutcomeMatchesAudit(receipt, audit);
+        }
+
+        return false;
+    }
 
     private static bool ArchiveConsultationReceiptHasMatchingCompletedProject(
         string? trackerJson,
@@ -1430,7 +1505,19 @@ public partial class ValidationService
                 actual: pricingTier));
         }
 
-        var derivedState = ResolveGuardianDerivedStateForValidation(guardian);
+        if (!TryResolveGuardianDerivedStateForValidation(
+                guardian,
+                tradeContext,
+                "Guardian trade inventory validation требует readable validated pre-turn project tracker baseline и не использует current tracker как authority fallback.",
+                "guardian_trade_inventory_missing_validated_preturn_tracker_snapshot",
+                "tradeInventory",
+                $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для guardian trade inventory validation. Без этого trade slots и project-derived stock bonuses не должны выводиться из current tracker state.",
+                issues,
+                out var derivedState))
+        {
+            return;
+        }
+
         var expectedSlotCount = derivedState.TradeSlotCount;
         if (!tradeInventory.TryGetProperty("items", out var items) || items.ValueKind != JsonValueKind.Array)
         {
@@ -1923,7 +2010,13 @@ public partial class ValidationService
     }
 
 
-    private void ValidateGuaranteedArchiveConsultationQuestPresence(JsonElement questManagement, string questContext, string guardianId, List<ValidationIssue> issues)
+    private void ValidateGuaranteedArchiveConsultationQuestPresence(
+        JsonElement questManagement,
+        string questContext,
+        string guardianId,
+        JsonElement trackerRoot,
+        bool hasTrackerValidationRoot,
+        List<ValidationIssue> issues)
     {
         if (questManagement.ValueKind != JsonValueKind.Object || string.IsNullOrWhiteSpace(guardianId))
             return;
@@ -1932,14 +2025,12 @@ public partial class ValidationService
         if (currentIncarnation <= 0)
             return;
 
-        var trackerJson = ReadCurrentTrackedFileSync(GuardianProjectState.TrackerPath);
-        if (string.IsNullOrWhiteSpace(trackerJson))
+        if (!hasTrackerValidationRoot)
             return;
 
         try
         {
-            using var trackerDoc = JsonDocument.Parse(trackerJson);
-            if (!trackerDoc.RootElement.TryGetProperty("completedProjects", out var completedProjects) ||
+            if (!trackerRoot.TryGetProperty("completedProjects", out var completedProjects) ||
                 completedProjects.ValueKind != JsonValueKind.Array)
             {
                 return;

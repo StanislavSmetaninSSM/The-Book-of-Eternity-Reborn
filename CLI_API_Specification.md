@@ -1297,6 +1297,37 @@ Image authoring contract for Guardian data:
 | Devoted | +130..+229 | Very high trust, personal quests and premium rewards |
 | Legendary | +230..+300 | Near-mythic standing, unique relic and exclusive content access |
 
+### Canonical Inter-Guardian Standing
+
+Guardian-to-guardian politics uses canonical `guardianRelationships[]`, not player-facing Guardian reputation.
+
+Each Guardian object should carry:
+
+```json
+"guardianRelationships": [
+  {
+    "targetGuardianId": "string",
+    "targetName": "string|null",
+    "attitudeScore": "integer (-100..100)",
+    "attitudeTier": "string (trusted|ally|neutral|competitive|rival|enemy)",
+    "reason": "string",
+    "lastChangedAt": "string|null (ISO 8601 timestamp)"
+  }
+],
+"socialProfile": {
+  "jealousyFactor": "integer 0..100",
+  "curiosityFactor": "integer 0..100",
+  "competitiveFactor": "integer 0..100",
+  "generosityFactor": "integer 0..100",
+  "isolationistTendency": "integer 0..100"
+}
+```
+
+- `guardianRelationships[]` is a directed network: `A -> B` may differ from `B -> A`.
+- The canonical network should contain one directed entry for every other known Guardian.
+- `socialProfile` is a personality modifier layer for seeding and reactions; it does not replace canonical pairwise standing.
+- Strong hostile or friendly standing should usually come from authored reasons or major events, not from random drift.
+
 ### `UpdateGuardians` Commands
 
 ```json
@@ -1412,10 +1443,15 @@ Use dedicated top-level surfaces instead:
     "outcome": "string",
     "abodePowerDelta": "integer",
     "targetGuardianId": "string|null",
+    "betrayalReason": "string|null",
     "offensiveImpactAudit": { /* object or null */ }
   }
 ]
 ```
+
+- `betrayalReason` is optional by default, but completed `offensive_intrigue` against an `ally|trusted` target must have an explicit betrayal rationale either on the active project itself or on the completion command.
+- Completed `offensive_intrigue` may include relation-derived `targetAttitudeScore`, `targetAttitudeTier`, `hostilityWeight`, and `preferredHostileTarget` fields inside `offensiveImpactAudit`.
+- Completed `counter_rival_operation` may include relation-derived `coalitionSupportBonus` and `coalitionEligible` fields inside `projectOutcomeAudit` only when non-hostile Guardians coordinate against the same hostile target through an explicit current political project trace.
 
 Guardian quest origin contract for lore-derived quests:
 - `questOrigin = lore_research_hook` -> ordinary lore-research hook quest, consumes one `questHookToken`
@@ -1530,7 +1566,7 @@ Canonical Abode Power changes must flow through `guardianPowerEvents` or be clie
 - If the same extra clue is mirrored across both surfaces, reuse the same `bonusClueRevealId` so the client consumes clue budget only once.
 
 ### Guardian Data Storage
-- `game_state/meta/guardians.json` ← Guardian core state (identity, reputation, abodePower, mood, lore, musings)
+- `game_state/meta/guardians.json` ← Guardian core state (identity, reputation, abodePower, mood, lore, musings, socialProfile, guardianRelationships)
 - `game_state/meta/guardian_projects.json` ← authoritative guardian project tracker
 - `game_state/meta/guardian_project_journal.json` ← player-facing readable guardian project chronology
 - `game_state/meta/abode_power_journal.json` ← player-facing readable journal of Abode Power changes

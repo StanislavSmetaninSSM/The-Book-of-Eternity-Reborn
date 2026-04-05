@@ -15,24 +15,12 @@ public partial class CanonicalStateNormalizer
             UpsertGuardianProjectEntry(target, CloneObject(item));
     }
 
-    private static JsonObject GetOrCreateGuardianProjectEntry(List<JsonObject> entries, string guardianId, string projectId)
+    private static JsonObject? FindGuardianProjectEntry(List<JsonObject> entries, string guardianId, string projectId)
     {
         var existing = entries.FirstOrDefault(item =>
             string.Equals(GuardianProjectState.GetGuardianId(item), guardianId, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(GuardianProjectState.GetProjectId(item), projectId, StringComparison.OrdinalIgnoreCase));
-        if (existing != null)
-            return existing;
-
-        var created = new JsonObject
-        {
-            ["guardianId"] = guardianId,
-            ["project"] = new JsonObject
-            {
-                ["projectId"] = projectId
-            }
-        };
-        entries.Add(created);
-        return created;
+        return existing;
     }
 
     private static void UpsertGuardianProjectEntry(List<JsonObject> entries, JsonObject candidate)
@@ -53,15 +41,42 @@ public partial class CanonicalStateNormalizer
 
     private static void ApplyGuardianProjectStartCommands(
         List<JsonObject> activeProjects,
+        List<JsonObject> completedProjects,
         List<JsonObject> temporaryModifiers,
         JsonArray commands,
         List<JsonObject> journalEntries,
-        int currentTurn)
+        int currentTurn,
+        JsonObject? guardiansRoot)
     {
+        var duplicateStartGuardianIds = commands
+            .OfType<JsonObject>()
+            .Select(item => GetNodeString(item["guardianId"]))
+            .Where(guardianId => !string.IsNullOrWhiteSpace(guardianId))
+            .GroupBy(guardianId => guardianId, StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var existingActiveKeys = activeProjects
+            .Select(item => GuardianProjectState.BuildKey(
+                GuardianProjectState.GetGuardianId(item),
+                GuardianProjectState.GetProjectId(item)))
+            .Where(key => !string.IsNullOrWhiteSpace(key))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var existingCompletedKeys = completedProjects
+            .Select(item => GuardianProjectState.BuildKey(
+                GuardianProjectState.GetGuardianId(item),
+                GuardianProjectState.GetProjectId(item)))
+            .Where(key => !string.IsNullOrWhiteSpace(key))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
         foreach (var command in commands.OfType<JsonObject>())
         {
             var guardianId = GetNodeString(command["guardianId"]);
             if (string.IsNullOrWhiteSpace(guardianId) || command["project"] is not JsonObject project)
+                continue;
+            if (duplicateStartGuardianIds.Contains(guardianId))
+                continue;
+            if (!GuardianExists(guardiansRoot, guardianId))
                 continue;
 
             var normalizedProject = CloneObject(project);
@@ -70,8 +85,19 @@ public partial class CanonicalStateNormalizer
             var projectId = GetNodeString(normalizedProject["projectId"]);
             if (string.IsNullOrWhiteSpace(projectId))
                 continue;
+            var projectType = GetNodeString(normalizedProject["projectType"]);
+            if (IsPoliticalGuardianProjectType(projectType) &&
+                !HasResolvablePoliticalGuardianTarget(guardiansRoot, guardianId, GetNodeString(normalizedProject["targetGuardianId"])))
+            {
+                continue;
+            }
+            if (activeProjects.Any(item => string.Equals(GuardianProjectState.GetGuardianId(item), guardianId, StringComparison.OrdinalIgnoreCase)))
+                continue;
+            if (existingActiveKeys.Contains(GuardianProjectState.BuildKey(guardianId, projectId)))
+                continue;
+            if (existingCompletedKeys.Contains(GuardianProjectState.BuildKey(guardianId, projectId)))
+                continue;
 
-            activeProjects.RemoveAll(item => string.Equals(GuardianProjectState.GetGuardianId(item), guardianId, StringComparison.OrdinalIgnoreCase));
             var entry = new JsonObject
             {
                 ["guardianId"] = guardianId,
@@ -95,7 +121,8 @@ public partial class CanonicalStateNormalizer
         JsonArray commands,
         List<JsonObject> journalEntries,
         List<JsonObject> powerEvents,
-        int currentTurn)
+        int currentTurn,
+        JsonObject? guardiansRoot)
     {
         foreach (var command in commands.OfType<JsonObject>())
         {
@@ -103,8 +130,12 @@ public partial class CanonicalStateNormalizer
             var projectId = GetNodeString(command["projectId"]);
             if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(projectId))
                 continue;
+            if (!GuardianExists(guardiansRoot, guardianId))
+                continue;
 
-            var entry = GetOrCreateGuardianProjectEntry(activeProjects, guardianId!, projectId!);
+            var entry = FindGuardianProjectEntry(activeProjects, guardianId!, projectId!);
+            if (entry == null)
+                continue;
             var project = entry["project"] as JsonObject ?? new JsonObject();
             var previousProject = CloneObject(project);
 
@@ -129,7 +160,7 @@ public partial class CanonicalStateNormalizer
             entry["guardianId"] = guardianId;
             entry["project"] = project;
 
-            foreach (var powerEvent in BuildGuardianProjectUpdatePowerEvents(guardianId!, projectId!, project, command, currentTurn))
+            foreach (var powerEvent in BuildGuardianProjectUpdatePowerEvents(guardianId!, projectId!, project, command, currentTurn, guardiansRoot))
                 powerEvents.Add(powerEvent);
 
             if (HasGuardianProjectVisibleChange(previousProject, project))
@@ -152,7 +183,8 @@ public partial class CanonicalStateNormalizer
         string projectId,
         JsonObject project,
         JsonObject command,
-        int currentTurn)
+        int currentTurn,
+        JsonObject? guardiansRoot)
     {
         var projectName = GetNodeString(project["projectName"]) ?? GetNodeString(project["name"]) ?? projectId;
 
@@ -164,6 +196,7 @@ public partial class CanonicalStateNormalizer
             {
                 var reasonType = ResolveGuardianProjectAssistReasonType(assistAudit);
                 var audit = CloneObject(assistAudit);
+                audit["projectGuardianId"] ??= guardianId;
                 audit["projectId"] ??= projectId;
                 audit["projectName"] ??= projectName;
                 audit["projectType"] ??= GetNodeString(project["projectType"]);
@@ -195,12 +228,16 @@ public partial class CanonicalStateNormalizer
             if (delta != 0)
             {
                 var audit = CloneObject(sabotageAudit);
+                audit["projectGuardianId"] ??= guardianId;
                 audit["projectId"] ??= projectId;
                 audit["projectName"] ??= projectName;
                 audit["projectType"] ??= GetNodeString(project["projectType"]);
                 audit["projectTier"] ??= GetNodeString(project["projectTier"]);
                 audit["turn"] ??= currentTurn;
                 var relatedGuardianId = GetNodeString(command["relatedGuardianId"]);
+                if (!GuardianExists(guardiansRoot, relatedGuardianId) ||
+                    string.Equals(guardianId, relatedGuardianId, StringComparison.OrdinalIgnoreCase))
+                    relatedGuardianId = null;
                 yield return GuardianPowerEventState.BuildEvent(
                     $"guardian_project_update_sabotage_{guardianId}_{projectId}_{currentTurn}_{Guid.NewGuid():N}",
                     guardianId,
@@ -248,19 +285,17 @@ public partial class CanonicalStateNormalizer
             var projectId = GetNodeString(command["projectId"]);
             if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(projectId))
                 continue;
+            if (!GuardianExists(guardiansRoot, guardianId))
+                continue;
 
             var existing = activeProjects.FirstOrDefault(item =>
                 string.Equals(GuardianProjectState.GetGuardianId(item), guardianId, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(GuardianProjectState.GetProjectId(item), projectId, StringComparison.OrdinalIgnoreCase));
 
-            var completedEntry = existing != null ? CloneObject(existing) : new JsonObject
-            {
-                ["guardianId"] = guardianId,
-                ["project"] = new JsonObject
-                {
-                    ["projectId"] = projectId
-                }
-            };
+            if (existing == null)
+                continue;
+
+            var completedEntry = CloneObject(existing);
 
             var project = completedEntry["project"] as JsonObject ?? new JsonObject();
             var previousProject = CloneObject(project);
@@ -270,6 +305,8 @@ public partial class CanonicalStateNormalizer
                 project["projectName"] = GetNodeString(command["projectName"]);
             if (!string.IsNullOrWhiteSpace(GetNodeString(command["outcome"])))
                 project["outcome"] = GetNodeString(command["outcome"]);
+            if (!string.IsNullOrWhiteSpace(GetNodeString(command["betrayalReason"])))
+                project["betrayalReason"] = GetNodeString(command["betrayalReason"]);
             if (!string.IsNullOrWhiteSpace(finalState))
                 project["finalState"] = finalState;
             project["completionTurn"] = currentTurn;
@@ -277,12 +314,18 @@ public partial class CanonicalStateNormalizer
                 project["abodePowerDelta"] = command["abodePowerDelta"]?.DeepClone();
             else
                 project["abodePowerDelta"] = GuardianProjectState.GetDefaultTerminalAbodePowerDelta(GetNodeString(project["projectType"]), finalState, GetNodeString(project["projectTier"]));
-            if (command["targetGuardianId"] != null)
+            if (string.IsNullOrWhiteSpace(GetNodeString(project["targetGuardianId"])) &&
+                command["targetGuardianId"] != null)
+            {
                 project["targetGuardianId"] = command["targetGuardianId"]?.DeepClone();
-            if (command["offensiveImpactAudit"] != null)
-                project["offensiveImpactAudit"] = command["offensiveImpactAudit"]?.DeepClone();
+            }
             var projectType = GetNodeString(project["projectType"]) ?? string.Empty;
             var projectTier = GetNodeString(project["projectTier"]) ?? string.Empty;
+            if (IsPoliticalGuardianProjectType(projectType) &&
+                !HasResolvablePoliticalGuardianTarget(guardiansRoot, guardianId, GetNodeString(project["targetGuardianId"])))
+            {
+                continue;
+            }
             var normalizedOutcomeAudit = BuildDefaultGuardianProjectOutcomeAudit(
                 projectType,
                 finalState,
@@ -308,8 +351,10 @@ public partial class CanonicalStateNormalizer
                     politicalTrackerRoot,
                     guardiansRoot,
                     guardianId!,
-                    targetGuardianId: GetNodeString(command["targetGuardianId"]),
+                    targetGuardianId: GetNodeString(project["targetGuardianId"]),
                     projectTier);
+                if (normalizedOffensiveAudit == null)
+                    continue;
                 if (normalizedOffensiveAudit != null)
                     project["offensiveImpactAudit"] = normalizedOffensiveAudit;
             }
@@ -317,7 +362,12 @@ public partial class CanonicalStateNormalizer
             if (string.Equals(projectType, "counter_rival_operation", StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase))
             {
+                var politicalTrackerRoot = BuildGuardianProjectsTrackerRoot(activeProjects, completedProjects, temporaryModifiers);
                 var counterAudit = NormalizeCounterOperationImpactAudit(
+                    guardiansRoot,
+                    politicalTrackerRoot,
+                    guardianId!,
+                    GetNodeString(project["targetGuardianId"]),
                     command["projectOutcomeAudit"] as JsonObject,
                     projectTier);
                 project["projectOutcomeAudit"] = counterAudit;
@@ -349,8 +399,10 @@ public partial class CanonicalStateNormalizer
                     ResolveGuardianProjectPowerReasonType(GetNodeString(project["projectType"]), finalState, defensive: false)));
             }
 
-            var targetGuardianId = GetNodeString(command["targetGuardianId"]);
-            if (!string.IsNullOrWhiteSpace(targetGuardianId) &&
+            var targetGuardianId = GetNodeString(project["targetGuardianId"]);
+            if (string.Equals(projectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase) &&
+                !string.IsNullOrWhiteSpace(targetGuardianId) &&
                 project["offensiveImpactAudit"] is JsonObject offensiveAudit)
             {
                 var targetLoss = GetNodeInt(offensiveAudit["targetLoss"]);
@@ -363,7 +415,8 @@ public partial class CanonicalStateNormalizer
                         -targetLoss,
                         "rival_strike",
                         relatedGuardianId: guardianId!,
-                        auditOverride: CloneObject(offensiveAudit)));
+                        auditOverride: CloneObject(offensiveAudit),
+                        projectGuardianIdOverride: guardianId!));
                 }
             }
 
@@ -376,6 +429,13 @@ public partial class CanonicalStateNormalizer
                 project,
                 finalState,
                 targetGuardianId);
+
+            guardiansChanged = ApplyGuardianProjectRelationshipEffects(
+                guardiansRoot,
+                guardianId!,
+                project,
+                finalState,
+                targetGuardianId) || guardiansChanged;
 
             ApplyGuardianProjectTerminalModifiers(temporaryModifiers, guardianId!, projectId!, project, finalState);
             guardiansChanged = ApplyGuardianProjectRecipeSideEffects(guardiansRoot, guardianId!, projectId!, project) || guardiansChanged;
@@ -419,6 +479,32 @@ public partial class CanonicalStateNormalizer
         return root;
     }
 
+    private static bool IsPoliticalGuardianProjectType(string? projectType) =>
+        string.Equals(projectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(projectType, "counter_rival_operation", StringComparison.OrdinalIgnoreCase);
+
+    private static bool GuardianExists(JsonObject? guardiansRoot, string? guardianId)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId) || guardiansRoot == null)
+            return false;
+
+        return guardiansRoot["guardians"] is JsonArray guardians &&
+               guardians.OfType<JsonObject>().Any(item =>
+                   string.Equals(GetNodeString(item["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool HasResolvablePoliticalGuardianTarget(JsonObject? guardiansRoot, string sourceGuardianId, string? targetGuardianId)
+    {
+        if (string.IsNullOrWhiteSpace(sourceGuardianId) ||
+            string.IsNullOrWhiteSpace(targetGuardianId) ||
+            string.Equals(sourceGuardianId, targetGuardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return GuardianExists(guardiansRoot, targetGuardianId);
+    }
+
     private static JsonObject? NormalizeOffensiveImpactAudit(
         JsonObject? rawAudit,
         JsonObject trackerRoot,
@@ -428,12 +514,12 @@ public partial class CanonicalStateNormalizer
         string projectTier)
     {
         if (guardiansRoot == null || string.IsNullOrWhiteSpace(targetGuardianId))
-            return rawAudit == null ? null : CloneObject(rawAudit);
+            return null;
 
         var attackerPower = TryReadGuardianCurrentPower(guardiansRoot, attackerGuardianId);
         var targetPower = TryReadGuardianCurrentPower(guardiansRoot, targetGuardianId!);
         if (!attackerPower.HasValue || !targetPower.HasValue)
-            return rawAudit == null ? null : CloneObject(rawAudit);
+            return null;
 
         var playerDefenseBonus = Math.Clamp(GetNodeInt(rawAudit?["playerDefenseBonus"]), 0, 2);
         var result = GuardianProjectState.ResolveOffensiveImpact(
@@ -458,16 +544,87 @@ public partial class CanonicalStateNormalizer
         audit["targetLoss"] = result.TargetLoss;
         audit["pressureDelta"] = result.PressureDelta;
         audit["stabilityDamage"] = result.StabilityDamage;
+        if (TryResolvePoliticalTargetRelationship(guardiansRoot, attackerGuardianId, targetGuardianId!, out var targetAttitudeScore, out var targetAttitudeTier))
+        {
+            var hostilityWeight = GuardianRelationshipRules.ResolvePoliticalTargetWeight(targetAttitudeScore);
+            audit["targetAttitudeScore"] = targetAttitudeScore;
+            audit["targetAttitudeTier"] = targetAttitudeTier;
+            audit["hostilityWeight"] = hostilityWeight;
+            audit["preferredHostileTarget"] = hostilityWeight > 0;
+        }
         return audit;
     }
 
-    private static JsonObject NormalizeCounterOperationImpactAudit(JsonObject? rawAudit, string projectTier)
+    private static JsonObject NormalizeCounterOperationImpactAudit(
+        JsonObject? guardiansRoot,
+        JsonObject trackerRoot,
+        string sourceGuardianId,
+        string? targetGuardianId,
+        JsonObject? rawAudit,
+        string projectTier)
     {
         var audit = rawAudit != null ? CloneObject(rawAudit) : new JsonObject();
-        audit["pressureRelief"] = GuardianProjectState.GetCounterOperationPressureRelief(projectTier);
-        audit["stabilityRelief"] = GuardianProjectState.GetCounterOperationStabilityRelief(projectTier);
+        var coalitionSupportBonus = ResolveCounterOperationCoalitionBonus(
+            guardiansRoot,
+            trackerRoot,
+            sourceGuardianId,
+            targetGuardianId);
+        audit["pressureRelief"] = GuardianProjectState.GetCounterOperationPressureRelief(projectTier) + coalitionSupportBonus;
+        audit["stabilityRelief"] = GuardianProjectState.GetCounterOperationStabilityRelief(projectTier) + coalitionSupportBonus;
         audit["abodePowerGain"] = GuardianProjectState.GetCounterOperationAbodePowerGain(projectTier);
+        audit["coalitionSupportBonus"] = coalitionSupportBonus;
+        audit["coalitionEligible"] = coalitionSupportBonus > 0;
         return audit;
+    }
+
+    private static int ResolveCounterOperationCoalitionBonus(
+        JsonObject? guardiansRoot,
+        JsonObject trackerRoot,
+        string sourceGuardianId,
+        string? targetGuardianId)
+    {
+        if (guardiansRoot?["guardians"] is not JsonArray guardians ||
+            string.IsNullOrWhiteSpace(sourceGuardianId) ||
+            string.IsNullOrWhiteSpace(targetGuardianId))
+        {
+            return 0;
+        }
+
+        var guardianObjects = guardians.OfType<JsonObject>().ToList();
+        var sourceGuardian = guardianObjects.FirstOrDefault(item =>
+            string.Equals(GetNodeString(item["guardianId"]), sourceGuardianId, StringComparison.OrdinalIgnoreCase));
+        if (sourceGuardian == null)
+            return 0;
+
+        return GuardianRelationshipRules.ResolveCoalitionSupportBonus(sourceGuardian, targetGuardianId!, guardianObjects, trackerRoot);
+    }
+
+    private static bool TryResolvePoliticalTargetRelationship(
+        JsonObject guardiansRoot,
+        string sourceGuardianId,
+        string targetGuardianId,
+        out int score,
+        out string tier)
+    {
+        score = 0;
+        tier = string.Empty;
+
+        if (guardiansRoot["guardians"] is not JsonArray guardians ||
+            string.IsNullOrWhiteSpace(sourceGuardianId) ||
+            string.IsNullOrWhiteSpace(targetGuardianId))
+        {
+            return false;
+        }
+
+        var sourceGuardian = guardians
+            .OfType<JsonObject>()
+            .FirstOrDefault(item => string.Equals(GetNodeString(item["guardianId"]), sourceGuardianId, StringComparison.OrdinalIgnoreCase));
+        if (sourceGuardian == null)
+            return false;
+
+        score = GuardianRelationshipRules.GetRelationshipScore(sourceGuardian, targetGuardianId);
+        tier = GuardianRelationshipRules.ResolveAttitudeTier(score);
+        return true;
     }
 
     private static int? TryReadGuardianCurrentPower(JsonObject guardiansRoot, string guardianId)
@@ -525,6 +682,46 @@ public partial class CanonicalStateNormalizer
                 targetGuardianId!,
                 counterAudit);
         }
+    }
+
+    private static bool ApplyGuardianProjectRelationshipEffects(
+        JsonObject? guardiansRoot,
+        string sourceGuardianId,
+        JsonObject sourceProject,
+        string? finalState,
+        string? targetGuardianId)
+    {
+        if (guardiansRoot == null || string.IsNullOrWhiteSpace(targetGuardianId))
+            return false;
+
+        var projectType = GetNodeString(sourceProject["projectType"]);
+        if (string.Equals(projectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase))
+        {
+            return GuardianRelationshipRules.ApplyMutualDelta(
+                guardiansRoot,
+                sourceGuardianId,
+                targetGuardianId!,
+                -18,
+                -10,
+                $"Escalated hostile standing after completed offensive_intrigue against {targetGuardianId}.",
+                $"Relations worsened after being targeted by offensive_intrigue from {sourceGuardianId}.");
+        }
+
+        if (string.Equals(projectType, "counter_rival_operation", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase))
+        {
+            return GuardianRelationshipRules.ApplyMutualDelta(
+                guardiansRoot,
+                sourceGuardianId,
+                targetGuardianId!,
+                -10,
+                -6,
+                $"Relations worsened after completed counter_rival_operation against {targetGuardianId}.",
+                $"Relations worsened after {sourceGuardianId} completed a defensive counter-rival operation.");
+        }
+
+        return false;
     }
 
     private static void ApplyOffensiveProjectImpactToTargetActiveProject(
@@ -1102,20 +1299,39 @@ public partial class CanonicalStateNormalizer
         int delta,
         string reasonType,
         string? relatedGuardianId = null,
-        JsonObject? auditOverride = null)
+        JsonObject? auditOverride = null,
+        string? projectGuardianIdOverride = null)
     {
         var projectName = GetNodeString(project["projectName"]) ?? GetNodeString(project["name"]) ?? projectId;
         var projectType = GetNodeString(project["projectType"]);
         var projectTier = GetNodeString(project["projectTier"]);
         var finalState = GetNodeString(project["finalState"]);
-        var audit = auditOverride ?? new JsonObject
+        var audit = new JsonObject
         {
+            ["projectGuardianId"] = string.IsNullOrWhiteSpace(projectGuardianIdOverride) ? guardianId : projectGuardianIdOverride,
             ["projectId"] = projectId,
             ["projectName"] = projectName,
             ["projectType"] = projectType,
             ["projectTier"] = projectTier,
             ["finalState"] = finalState
         };
+        if (auditOverride != null)
+        {
+            foreach (var property in auditOverride)
+            {
+                if (string.Equals(property.Key, "projectId", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(property.Key, "projectGuardianId", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(property.Key, "projectName", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(property.Key, "projectType", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(property.Key, "projectTier", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(property.Key, "finalState", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                audit[property.Key] = property.Value?.DeepClone();
+            }
+        }
 
         var title = delta >= 0
             ? $"Проект «{projectName}» изменил силу Обители"

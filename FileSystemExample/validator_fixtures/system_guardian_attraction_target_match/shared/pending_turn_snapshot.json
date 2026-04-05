@@ -1,0 +1,22 @@
+{
+  "sessionId": "fixture-session",
+  "requestId": "fixture-request",
+  "turnNumber": 1,
+  "requestTimestamp": "2026-03-20T11:00:00Z",
+  "playerAction": "Душа пробуждается в Море Хаоса и ожидает встречи с выбранным системным Хранителем.",
+  "files": {
+    "game_state/meta/guardians.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
+  },
+  "snapshotFileHashes": {
+    "game_state/meta/guardians.json": "60AFB1CB1654B9B7C7B630D0B98455BCDE03523F006999A6E755C07A7B681858"
+  },
+  "clientOwnedValidationHashes": {},
+  "rollbackBackups": {
+    "game_state/meta/guardians.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
+  },
+  "rollbackBaselineFiles": [
+    "game_state/meta/guardians.json"
+  ],
+  "sourceLabel": "ответа GM",
+  "manifestPayloadHash": "2161202F2A6AEB09400965C07E75AF42E2AA21F5A77A8C09598C37B32340F748"
+}

@@ -902,12 +902,21 @@ internal static class GuardianProjectState
                 lines.Add($"+ урон rival-Обители по формуле: target loss {GetOutcomeInt(projectOutcomeAudit, "targetLoss", 0)}");
                 lines.Add($"+ hostile pressure к активному проекту цели: {GetOutcomeInt(projectOutcomeAudit, "pressureDelta", GetPoliticalPressureByTier(projectTier))}");
                 lines.Add($"+ direct stability damage к активному проекту цели: {GetOutcomeInt(projectOutcomeAudit, "stabilityDamage", GetPoliticalBaseHitDamageByTier(projectTier) + 4)}");
+                var hostilityWeight = GetOutcomeInt(projectOutcomeAudit, "hostilityWeight", 0);
+                if (hostilityWeight > 0)
+                    lines.Add($"+ preferred hostile target weight: {hostilityWeight}");
+                var targetAttitudeTier = GetNodeString(projectOutcomeAudit?["targetAttitudeTier"]);
+                if (string.Equals(targetAttitudeTier, GuardianRelationshipRules.NeutralTier, StringComparison.OrdinalIgnoreCase))
+                    lines.Add("! neutral target: политическое давление считается слабо мотивированным");
                 break;
 
             case "counter_rival_operation" when string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase):
                 lines.Add($"+ relief pressure defended project: {GetOutcomeInt(projectOutcomeAudit, "pressureRelief", GetCounterOperationPressureRelief(projectTier))}");
                 lines.Add($"+ relief stability defended project: {GetOutcomeInt(projectOutcomeAudit, "stabilityRelief", GetCounterOperationStabilityRelief(projectTier))}");
                 lines.Add($"+ сила Обители: {GetOutcomeInt(projectOutcomeAudit, "abodePowerGain", GetCounterOperationAbodePowerGain(projectTier))}");
+                var coalitionSupportBonus = GetOutcomeInt(projectOutcomeAudit, "coalitionSupportBonus", 0);
+                if (coalitionSupportBonus > 0)
+                    lines.Add($"+ coalition support bonus: {coalitionSupportBonus}");
                 break;
         }
 

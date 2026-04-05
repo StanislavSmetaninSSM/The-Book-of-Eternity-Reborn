@@ -1,0 +1,72 @@
+{
+  "guardians": [
+    {
+      "guardianId": "guardian_alpha",
+      "canonicalName": "Азалия",
+      "domain": "Порог Сна",
+      "nameVariants": {
+        "default": "Азалия",
+        "feminine": "Азалия"
+      },
+      "manifestation": {
+        "currentDisplayName": "Азалия",
+        "formFlexibility": "selective",
+        "currentPresentationStyle": "feminine",
+        "currentPronouns": "она/её",
+        "appearanceDescription": "Хранительница fixture baseline."
+      },
+      "manifestationHistory": [],
+      "personalityProfile": {
+        "archetype": "Tide Keeper",
+        "speechPattern": "Measured and tidal",
+        "coreValues": [ "balance", "memory", "patience" ]
+      },
+      "relationshipData": {
+        "currentReputation": 60,
+        "reputationHistory": [],
+        "lastInteraction": null
+      },
+      "abodePower": {
+        "currentPower": 40,
+        "tier": "Стабильная",
+        "lastUpdatedAt": "2026-03-24T00:00:00Z",
+        "history": []
+      },
+      "abode": {
+        "abodeId": "abode_alpha",
+        "title": "Обитель Азалии",
+        "isDiscovered": true
+      },
+      "guardianRelationships": [],
+      "mood": {
+        "current": "focused",
+        "intensity": 40,
+        "reason": "Fixture baseline.",
+        "since": 1
+      },
+      "loreFragments": [
+        { "fragmentId": "guardian_alpha_lore_1", "category": "personal_history", "title": "След памяти", "content": null, "requiredReputation": 0 },
+        { "fragmentId": "guardian_alpha_lore_2", "category": "cosmic_secret", "title": "Тайна прилива", "content": null, "requiredReputation": 50 },
+        { "fragmentId": "guardian_alpha_lore_3", "category": "domain_mastery", "title": "Узел домена", "content": null, "requiredReputation": 130 },
+        { "fragmentId": "guardian_alpha_lore_4", "category": "lost_world", "title": "Утраченный берег", "content": null, "requiredReputation": 230 },
+        { "fragmentId": "guardian_alpha_lore_5", "category": "other_guardians", "title": "Сеть хранителей", "content": null, "requiredReputation": 0 },
+        { "fragmentId": "guardian_alpha_lore_6", "category": "soul_mechanics", "title": "Механика души", "content": null, "requiredReputation": 50 },
+        { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возврат волны", "content": null, "requiredReputation": 130 }
+      ],
+      "questManagement": {
+        "availableQuests": [],
+        "activeQuests": [],
+        "completedQuests": []
+      },
+      "gachaSystem": {
+        "chargesPerReturn": 2,
+        "chargesUsedThisReturn": 0,
+        "gachaHistory": []
+      }
+    }
+  ],
+  "activeGuardian": null,
+  "chaosSeaNavigation": {
+    "currentAbodeId": null
+  }
+}

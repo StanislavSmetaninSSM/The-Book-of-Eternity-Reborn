@@ -1,37 +1,59 @@
 {
-  "guardians": [
+  "UpdateGuardians": [
     {
-      "guardianId": "guard_social_azalia_001",
-      "name": "Азалия",
-      "domain": "Social",
-      "abode": {
-        "abodeId": "abode_social_azalia_001",
-        "name": "Обитель Неутолимого Пламени",
-        "isDiscovered": true
-      },
-      "sourcePreset": {
-        "presetId": "wrong_preset",
-        "displayName": "Кто-то другой",
-        "version": "1.0",
-        "library": "built_in"
+      "command": "create",
+      "data": {
+        "guardianId": "guard_social_azalia_001",
+        "canonicalName": "Азалия",
+        "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": "Азалия", "neutral": "Азалия" },
+        "manifestation": {
+          "currentDisplayName": "Азалия",
+          "formFlexibility": "selective",
+          "currentPresentationStyle": "feminine",
+          "currentPronouns": "она/её",
+          "appearanceDescription": "Broken pending preset fixture should fail on mismatched sourcePreset after valid create authorization."
+        },
+        "manifestationHistory": [],
+        "domain": "Social",
+        "abode": { "abodeId": "abode_social_azalia_001", "title": "Обитель Неутолимого Пламени" },
+        "personalityProfile": {
+          "archetype": "Diplomatic Flame",
+          "speechPattern": "Warm and persuasive",
+          "coreValues": [ "passion", "power", "devotion" ]
+        },
+        "relationshipData": { "currentReputation": 18, "reputationHistory": [], "lastInteraction": null },
+        "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+        "guardianRelationships": [],
+        "mood": { "current": "focused", "intensity": 40, "reason": "Awaiting pending preset materialization.", "since": 10 },
+        "loreFragments": [
+          { "fragmentId": "guard_social_azalia_001_lore_1", "category": "personal_history", "title": "Первая искра", "content": null, "requiredReputation": 0 },
+          { "fragmentId": "guard_social_azalia_001_lore_2", "category": "cosmic_secret", "title": "Тайна пламени", "content": null, "requiredReputation": 50 },
+          { "fragmentId": "guard_social_azalia_001_lore_3", "category": "domain_mastery", "title": "Власть слова", "content": null, "requiredReputation": 130 },
+          { "fragmentId": "guard_social_azalia_001_lore_4", "category": "lost_world", "title": "Следы обители", "content": null, "requiredReputation": 230 },
+          { "fragmentId": "guard_social_azalia_001_lore_5", "category": "other_guardians", "title": "Имена союзников", "content": null, "requiredReputation": 0 },
+          { "fragmentId": "guard_social_azalia_001_lore_6", "category": "soul_mechanics", "title": "Память души", "content": null, "requiredReputation": 50 },
+          { "fragmentId": "guard_social_azalia_001_lore_7", "category": "personal_history", "title": "Возвращение искры", "content": null, "requiredReputation": 130 }
+        ],
+        "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+        "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] },
+        "sourcePreset": {
+          "presetId": "wrong_preset",
+          "displayName": "Кто-то другой",
+          "version": "1.0",
+          "library": "built_in"
+        }
       }
     }
   ],
-  "activeGuardian": {
-    "guardianId": "guard_social_azalia_001",
-    "name": "Азалия",
-    "domain": "Social",
-    "abode": {
-      "abodeId": "abode_social_azalia_001",
-      "name": "Обитель Неутолимого Пламени",
-      "isDiscovered": true
-    },
-    "sourcePreset": {
-      "presetId": "wrong_preset",
-      "displayName": "Кто-то другой",
-      "version": "1.0",
-      "library": "built_in"
-    }
+  "pendingGuardianCreation": {
+    "mode": "system_preset",
+    "description": "Дипломатичная хранительница страсти, власти и преданности.",
+    "soulName": "Тестовая Душа",
+    "presetId": "azalia",
+    "presetDisplayName": "Азалия",
+    "presetVersion": "1.0",
+    "sourceLibrary": "built_in",
+    "renderedPromptPackage": "PresetId: azalia"
   },
   "chaosSeaNavigation": {
     "currentAbodeId": "abode_social_azalia_001",

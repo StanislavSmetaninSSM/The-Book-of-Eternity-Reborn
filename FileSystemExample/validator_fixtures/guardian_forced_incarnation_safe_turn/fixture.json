@@ -4,6 +4,11 @@
   "description": "Guardian-forced incarnation must be rejected on the protected first afterlife turn after returning from a mortal life.",
   "shared": [
     {
+      "source": "shared/input_turn_request.json",
+      "target": "input/turn_request.json",
+      "mode": "Replace"
+    },
+    {
       "source": "shared/pending_turn_snapshot.json",
       "target": "game_state/control/pending_turn_snapshot.json",
       "mode": "Replace"

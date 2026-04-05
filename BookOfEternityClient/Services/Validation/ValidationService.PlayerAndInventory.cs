@@ -1009,17 +1009,214 @@ public partial class ValidationService
 
     private async Task ValidateGuardianResonancePowerEventsAsync(List<ValidationIssue> issues)
     {
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
-        if (manifest == null)
-            return;
-
-        var preJournalJson = await ReadPreTurnTrackedFileAsync(GuardianPowerEventState.JournalPath);
         var postJournalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
-        var newResonanceEntries = CollectNewGuardianPowerJournalEntries(preJournalJson, postJournalJson)
+        if (!TryReadGuardianPowerJournalEntriesForCurrentSemanticProof(postJournalJson, out var rawPostEntries))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "Новые resonance power events требуют readable canonical current abode_power_journal proof.",
+                code: "guardian_resonance_invalid_current_journal",
+                section: "LifeEvaluation",
+                expected: "readable current abode_power_journal with canonical resonance entries",
+                actual: "current journal unreadable, malformed or semantically invalid",
+                repairHint: "Для resonance materialize current abode_power_journal.json как canonical guardian power journal. Любой unreadable или semantically invalid current journal не считается proof surface."));
+            return;
+        }
+
+        var semanticCurrentResonanceEntries = rawPostEntries
             .Where(entry => string.Equals(GetFirstNonEmptyString(entry, "reasonType"), "resonance", StringComparison.OrdinalIgnoreCase))
             .ToList();
+        if (semanticCurrentResonanceEntries.Count == 0)
+            return;
 
-        if (!LifeEvaluationRewardAnalyzer.IsLifeEvaluationSourceLabel(manifest.SourceLabel))
+        var currentJournalProof = ReadStrictGuardianPowerJournalEntriesForCurrentProof(postJournalJson, "resonance");
+        if (currentJournalProof.Status == GuardianPowerJournalCurrentProofStatus.InvalidCurrentJournal)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "Новые resonance power events требуют readable canonical current abode_power_journal proof.",
+                code: "guardian_resonance_invalid_current_journal",
+                section: "LifeEvaluation",
+                expected: "readable current abode_power_journal with canonical resonance entries",
+                actual: currentJournalProof.FailureDescription ?? "current journal unreadable, malformed or semantically invalid",
+                repairHint: "Для resonance materialize current abode_power_journal.json как canonical guardian power journal. Любой unreadable или semantically invalid current journal не считается proof surface."));
+            return;
+        }
+
+        if (currentJournalProof.Status == GuardianPowerJournalCurrentProofStatus.InvalidCurrentGuardianAuthority)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "Новые resonance power events требуют readable current guardian authority и не используют pre-turn guardian baseline как fallback authority source.",
+                code: "guardian_resonance_invalid_current_guardian_authority",
+                section: "LifeEvaluation",
+                expected: "readable current guardian authority root",
+                actual: currentJournalProof.FailureDescription ?? "current guardian authority unavailable",
+                repairHint: "Исправь current game_state/meta/guardians.json и validated guardian baseline так, чтобы kernel построил strict current guardian authority до resonance proof."));
+            return;
+        }
+
+        if (currentJournalProof.Status == GuardianPowerJournalCurrentProofStatus.InvalidCurrentTrackerAuthority)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianProjectState.TrackerPath,
+                IssueSeverity.Error,
+                "Новые resonance power events требуют readable current guardian project tracker authority и не используют current journal как fallback authority source.",
+                code: "guardian_resonance_invalid_current_tracker_authority",
+                section: "LifeEvaluation",
+                expected: $"readable current authority root for {GuardianProjectState.TrackerPath}",
+                actual: currentJournalProof.FailureDescription ?? "current tracker authority unavailable",
+                repairHint: $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил strict current tracker authority до resonance proof."));
+            return;
+        }
+
+        if (currentJournalProof.Entries == null)
+            return;
+
+        var currentResonanceEntries = currentJournalProof.Entries
+            .Where(entry =>
+                string.Equals(GetFirstNonEmptyString(entry, "reasonType"), "resonance", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        var currentResonanceCountsByLifeKey = currentResonanceEntries
+            .GroupBy(entry => BuildGuardianResonanceLifeScopeKey(entry), StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.ToList(), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var currentLifeEntries in currentResonanceCountsByLifeKey.Values)
+        {
+            if (currentLifeEntries.Count <= 1)
+                continue;
+
+            var sampleEntry = currentLifeEntries[0];
+            var guardianId = GetFirstNonEmptyString(sampleEntry, "guardianId") ?? string.Empty;
+            var lifeId = GetGuardianPowerEventAuditStringValue(sampleEntry, "lifeId");
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "За одну завершённую жизнь допустим максимум один resonance power event на одного Хранителя",
+                code: "guardian_resonance_duplicate_for_same_life",
+                section: "LifeEvaluation",
+                expected: "at most one resonance event per guardianId + lifeId per completed life",
+                actual: $"{guardianId} / {lifeId}: {currentLifeEntries.Count} resonance events",
+                repairHint: "Не дублируй resonance для одного и того же Хранителя в рамках одной оценки жизни."));
+        }
+
+        var snapshotContext = await ResolveGuardianValidatedSnapshotContextAsync();
+        if (snapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable || snapshotContext.Manifest == null)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "Новые resonance power events требуют current validated pending turn snapshot life-evaluation context.",
+                code: "guardian_resonance_invalid_validated_snapshot_context",
+                section: "LifeEvaluation",
+                expected: "current validated life-evaluation snapshot manifest",
+                actual: DescribeValidatedPendingTurnSnapshotStatus(snapshotContext.SnapshotStatus),
+                repairHint: "Не используй stale или отсутствующий pending turn snapshot для resonance. Life Evaluation turn должен сохранять current validated snapshot manifest и journal snapshot."));
+            return;
+        }
+
+        var preJournalJson = await ReadValidatedPendingTurnSnapshotFileAsync(snapshotContext.Manifest, GuardianPowerEventState.JournalPath);
+        var preTurnJournalKnowledgeResult = await ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync("resonance");
+        if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "Новые resonance power events требуют canonical validated snapshot guardians baseline для pre-turn proof knowledge.",
+                code: "guardian_resonance_invalid_validated_snapshot_guardians",
+                section: "LifeEvaluation",
+                expected: "canonical validated snapshot guardians.json for resonance proof knowledge",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot guardians baseline invalid",
+                repairHint: "Для resonance сохраняй в validated pending turn snapshot canonical game_state/meta/guardians.json. Proof knowledge не может строиться из partial или invalid guardian snapshot."));
+            return;
+        }
+
+        if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotTracker)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianProjectState.TrackerPath,
+                IssueSeverity.Error,
+                "Новые resonance power events требуют canonical validated snapshot guardian project tracker baseline для pre-turn proof knowledge.",
+                code: "guardian_resonance_invalid_validated_snapshot_tracker",
+                section: "LifeEvaluation",
+                expected: $"canonical validated snapshot {GuardianProjectState.TrackerPath} for resonance proof knowledge",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot tracker baseline invalid",
+                repairHint: $"Для resonance сохраняй в validated pending turn snapshot canonical {GuardianProjectState.TrackerPath}. Proof knowledge не может строиться из partial или invalid tracker snapshot."));
+            return;
+        }
+
+        if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotJournal)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "Новые resonance power events требуют canonical validated snapshot abode_power_journal baseline для pre-turn proof knowledge.",
+                code: "guardian_resonance_invalid_validated_snapshot_journal",
+                section: "LifeEvaluation",
+                expected: $"canonical validated snapshot {GuardianPowerEventState.JournalPath} for resonance proof knowledge",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot journal baseline invalid",
+                repairHint: $"Для resonance сохраняй в validated pending turn snapshot canonical {GuardianPowerEventState.JournalPath}. Proof knowledge не может строиться из missing, stale или invalid journal baseline."));
+            return;
+        }
+
+        if (preTurnJournalKnowledgeResult.Knowledge == null ||
+            !TryReadStrictGuardianPowerJournalEntriesForValidatedBaselineProof(
+                preJournalJson,
+                preTurnJournalKnowledgeResult.Knowledge,
+                "resonance",
+                out var preEntries))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "Новые resonance power events требуют readable validated pre-turn abode_power_journal baseline.",
+                code: "guardian_resonance_invalid_validated_snapshot_journal",
+                section: "LifeEvaluation",
+                expected: "readable validated pre-turn abode_power_journal snapshot",
+                actual: "validated snapshot journal missing, unreadable or malformed",
+                repairHint: "Для resonance сохраняй в validated pending turn snapshot корректный abode_power_journal baseline; без читаемого baseline нельзя доказывать new resonance events."));
+            return;
+        }
+
+        var postEntries = currentJournalProof.Entries;
+        if (!TryValidateGuardianPowerJournalAppendOnlyIdentity(preEntries, postEntries, out var appendOnlyFailureDescription))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "guardian_resonance требует append-only current abode_power_journal без переписывания pre-turn baseline entries",
+                code: "guardian_resonance_invalid_current_journal",
+                section: "LifeEvaluation",
+                expected: "append-only current journal preserving validated pre-turn entries",
+                actual: appendOnlyFailureDescription,
+                repairHint: "Не переписывай pre-turn abode_power_journal entries и не переиспользуй их identity для новых resonance events."));
+            return;
+        }
+
+        var knownEventIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in preEntries)
+        {
+            var eventId = GetStringValue(entry, "eventId");
+            if (!string.IsNullOrWhiteSpace(eventId))
+                knownEventIds.Add(eventId);
+        }
+
+        var newResonanceEntries = currentResonanceEntries
+            .Where(entry =>
+            {
+                var eventId = GetStringValue(entry, "eventId");
+                return !string.IsNullOrWhiteSpace(eventId) &&
+                       !knownEventIds.Contains(eventId);
+            })
+            .ToList();
+        if (newResonanceEntries.Count == 0)
+            return;
+
+        if (!LifeEvaluationRewardAnalyzer.IsLifeEvaluationSourceLabel(snapshotContext.Manifest.SourceLabel))
         {
             foreach (var entry in newResonanceEntries)
             {
@@ -1036,22 +1233,33 @@ public partial class ValidationService
 
             return;
         }
+    }
 
-        foreach (var group in newResonanceEntries.GroupBy(entry => GetFirstNonEmptyString(entry, "guardianId") ?? string.Empty, StringComparer.OrdinalIgnoreCase))
+    private static string BuildGuardianResonanceLifeScopeKey(JsonElement entry)
+        => TryBuildGuardianResonanceLifeScopeKey(entry, out var key) ? key : string.Empty;
+
+    private static bool TryBuildGuardianResonanceLifeScopeKey(JsonElement entry, out string key)
+    {
+        key = string.Empty;
+        var guardianId = GetFirstNonEmptyString(entry, "guardianId");
+        var lifeId = GetGuardianPowerEventAuditStringValue(entry, "lifeId");
+        if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(lifeId))
+            return false;
+
+        key = $"{guardianId}::{lifeId}";
+        return true;
+    }
+
+    private static string GetGuardianPowerEventAuditStringValue(JsonElement entry, string propName)
+    {
+        if (entry.ValueKind != JsonValueKind.Object ||
+            !entry.TryGetProperty("audit", out var audit) ||
+            audit.ValueKind != JsonValueKind.Object)
         {
-            if (group.Count() <= 1)
-                continue;
-
-            issues.Add(new ValidationIssue(
-                GuardianPowerEventState.JournalPath,
-                IssueSeverity.Error,
-                "За одну завершённую жизнь допустим максимум один resonance power event на одного Хранителя",
-                code: "guardian_resonance_duplicate_for_same_life",
-                section: "LifeEvaluation",
-                expected: "at most one resonance event per guardian per completed life",
-                actual: $"{group.Key}: {group.Count()} resonance events",
-                repairHint: "Не дублируй resonance для одного и того же Хранителя в рамках одной оценки жизни."));
+            return string.Empty;
         }
+
+        return GetStringValue(audit, propName);
     }
 
     private void ValidatePlayerSkillChanges(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)

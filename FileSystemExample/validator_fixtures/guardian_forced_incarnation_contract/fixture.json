@@ -4,6 +4,11 @@
   "description": "Guardian-forced incarnation requires explicit provocation metadata and sufficiently hostile reputation.",
   "shared": [
     {
+      "source": "shared/input_turn_request.json",
+      "target": "input/turn_request.json",
+      "mode": "Replace"
+    },
+    {
       "source": "shared/pending_turn_snapshot.json",
       "target": "game_state/control/pending_turn_snapshot.json",
       "mode": "Replace"
@@ -11,6 +16,11 @@
     {
       "source": "shared/pre_turn_soul_state.json",
       "target": "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/pre_turn_guardians.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
       "mode": "Replace"
     },
     {
@@ -35,6 +45,11 @@
     {
       "source": "fixed/pending_turn_snapshot.json",
       "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "fixed/pre_turn_guardians.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
       "mode": "Replace"
     },
     {

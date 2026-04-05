@@ -35,6 +35,27 @@ public partial class ValidationService
         public HashSet<string> Aliases { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 
+    private sealed class StructuredActorExtractionResult
+    {
+        public List<StructuredActorUpdate> Updates { get; } = new();
+        public bool DirectCanonicalGuardianDiffRequiredButSnapshotMissing { get; set; }
+    }
+
+    private sealed class GuardianReasoningIdentityContext
+    {
+        public bool GuardianStateReadable { get; set; } = true;
+        public bool HasActiveGuardianMirror { get; set; }
+        public bool HasCanonicalActiveGuardian { get; set; }
+        public GuardianReasoningActiveGuardianStatus ActiveGuardianStatus { get; set; }
+        public bool HasUsableValidatedPreTurnGuardiansSnapshot { get; set; }
+        public HashSet<string> ActiveGuardianNames { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> CanonicalGuardianAliases { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, List<string>> CanonicalGuardianAliasLookup { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> BaselineGuardianIds { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> AuthoritativeGuardianIds { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> MirrorGuardianAliases { get; } = new(StringComparer.OrdinalIgnoreCase);
+    }
+
     private static readonly HashSet<string> NpcStructuredSingleActorSections = new(StringComparer.OrdinalIgnoreCase)
     {
         "UpdateNPCs",
@@ -82,6 +103,14 @@ public partial class ValidationService
         WorldProgression,
         GuardianCentric,
         Mixed
+    }
+
+    private enum GuardianReasoningActiveGuardianStatus
+    {
+        NoActiveGuardian,
+        MirrorMissingCanonical,
+        CanonicalResolved,
+        GuardianStateUnreadable
     }
 
     private static bool TryParseReasoningScope(string thoughts, out ReasoningScopeManifest scope)
@@ -631,42 +660,83 @@ public partial class ValidationService
 
     private async Task<HashSet<string>> CollectImportantGuardianNamesAsync(string realm)
     {
-        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         if (!IsChaosSeaRealm(realm))
-            return result;
+            return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        var guardianJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (string.IsNullOrWhiteSpace(guardianJson))
-            return result;
-
-        try
-        {
-            using var doc = JsonDocument.Parse(guardianJson);
-            if (doc.RootElement.TryGetProperty("activeGuardian", out var activeGuardian) &&
-                activeGuardian.ValueKind == JsonValueKind.Object)
-            {
-                var activeName = GuardianManifestation.GetDisplayName(activeGuardian);
-                if (!string.IsNullOrWhiteSpace(activeName))
-                    result.Add(activeName);
-                var canonicalName = GuardianManifestation.GetCanonicalName(activeGuardian);
-                if (!string.IsNullOrWhiteSpace(canonicalName))
-                    result.Add(canonicalName);
-            }
-        }
-        catch
-        {
-            return result;
-        }
-
-        return result;
+        var context = await ResolveGuardianReasoningIdentityContextAsync();
+        return context.ActiveGuardianStatus == GuardianReasoningActiveGuardianStatus.CanonicalResolved
+            ? new HashSet<string>(context.ActiveGuardianNames, StringComparer.OrdinalIgnoreCase)
+            : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     }
 
-    private async Task<List<StructuredActorUpdate>> CollectStructuredActorUpdatesAsync()
+    private async Task<GuardianReasoningIdentityContext> ResolveGuardianReasoningIdentityContextAsync()
     {
-        var updates = new List<StructuredActorUpdate>();
-        await CollectStructuredNpcUpdatesAsync(updates);
-        await CollectStructuredGuardianUpdatesAsync(updates);
-        return updates;
+        var policyContext = await ResolveGuardianPolicyContextAsync();
+        return BuildGuardianReasoningIdentityContext(policyContext);
+    }
+
+    private GuardianReasoningIdentityContext BuildGuardianReasoningIdentityContext(GuardianPolicyContext policyContext)
+    {
+        var context = new GuardianReasoningIdentityContext
+        {
+            GuardianStateReadable = policyContext.CurrentStateReadable,
+            HasUsableValidatedPreTurnGuardiansSnapshot = policyContext.HasUsableValidatedPreTurnGuardiansSnapshot
+        };
+
+        foreach (var (guardianId, aliases) in policyContext.ReasoningAliasLookup)
+        {
+            context.CanonicalGuardianAliasLookup[guardianId] = new List<string>(aliases);
+            foreach (var alias in aliases)
+                context.CanonicalGuardianAliases.Add(alias);
+        }
+
+        foreach (var guardianId in policyContext.BaselineGuardianIds)
+            context.BaselineGuardianIds.Add(guardianId);
+        foreach (var guardianId in policyContext.AuthoritativeGuardianIds)
+            context.AuthoritativeGuardianIds.Add(guardianId);
+
+        if (!policyContext.CurrentStateReadable)
+        {
+            context.ActiveGuardianStatus = GuardianReasoningActiveGuardianStatus.GuardianStateUnreadable;
+            return context;
+        }
+
+        if (policyContext.HasCurrentActiveGuardian)
+        {
+            context.HasActiveGuardianMirror = true;
+            AddGuardianAliases(context.MirrorGuardianAliases, policyContext.CurrentActiveGuardian, includeGuardianId: false);
+        }
+
+        if (!TryGetCurrentAuthorityActiveGuardian(policyContext, out var authoritativeActiveGuardian))
+        {
+            context.ActiveGuardianStatus = context.HasActiveGuardianMirror
+                ? GuardianReasoningActiveGuardianStatus.MirrorMissingCanonical
+                : GuardianReasoningActiveGuardianStatus.NoActiveGuardian;
+            return context;
+        }
+
+        var activeGuardianId = GetFirstNonEmptyString(authoritativeActiveGuardian, "guardianId", "id");
+        if (string.IsNullOrWhiteSpace(activeGuardianId) ||
+            !policyContext.ReasoningAliasLookup.TryGetValue(activeGuardianId, out var currentGuardianAliases))
+        {
+            context.ActiveGuardianStatus = GuardianReasoningActiveGuardianStatus.MirrorMissingCanonical;
+            return context;
+        }
+
+        context.HasCanonicalActiveGuardian = true;
+        context.ActiveGuardianStatus = GuardianReasoningActiveGuardianStatus.CanonicalResolved;
+        foreach (var alias in currentGuardianAliases)
+            context.ActiveGuardianNames.Add(alias);
+
+        return context;
+    }
+
+    private async Task<StructuredActorExtractionResult> CollectStructuredActorUpdatesAsync(GuardianPolicyContext guardianPolicyContext)
+    {
+        var result = new StructuredActorExtractionResult();
+        await CollectStructuredNpcUpdatesAsync(result.Updates);
+        CollectStructuredGuardianUpdates(result, guardianPolicyContext);
+        return result;
     }
 
     private async Task CollectStructuredNpcUpdatesAsync(List<StructuredActorUpdate> updates)
@@ -716,26 +786,80 @@ public partial class ValidationService
         }
     }
 
-    private async Task CollectStructuredGuardianUpdatesAsync(List<StructuredActorUpdate> updates)
+    private void CollectStructuredGuardianUpdates(
+        StructuredActorExtractionResult extractionResult,
+        GuardianPolicyContext guardianPolicyContext)
     {
-        var guardianJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (string.IsNullOrWhiteSpace(guardianJson))
+        if (!guardianPolicyContext.CurrentStateReadable || !guardianPolicyContext.HasCurrentRoot)
             return;
 
         try
         {
-            using var doc = JsonDocument.Parse(guardianJson);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object)
-                return;
-
-            var aliasLookup = BuildGuardianAliasLookup(doc.RootElement);
-            if (!doc.RootElement.TryGetProperty(GuardianStructuredUpdateSection, out var arr) || arr.ValueKind != JsonValueKind.Array)
-                return;
-
-            foreach (var item in arr.EnumerateArray())
+            var aliasLookup = guardianPolicyContext.ReasoningAliasLookup
+                .Where(entry => guardianPolicyContext.AuthoritativeGuardianIds.Contains(entry.Key))
+                .ToDictionary(entry => entry.Key, entry => new List<string>(entry.Value), StringComparer.OrdinalIgnoreCase);
+            var authoritativeGuardianIds = new HashSet<string>(guardianPolicyContext.BaselineGuardianIds, StringComparer.OrdinalIgnoreCase);
+            var scratchIssues = new List<ValidationIssue>();
+            if (guardianPolicyContext.HasCurrentRoot &&
+                guardianPolicyContext.CurrentRoot.TryGetProperty(GuardianStructuredUpdateSection, out var arr) &&
+                arr.ValueKind == JsonValueKind.Array)
             {
-                if (TryCreateGuardianStructuredActorUpdate(item, aliasLookup, out var update))
-                    updates.Add(update);
+                var commandIndex = 0;
+                foreach (var item in arr.EnumerateArray())
+                {
+                    var commandContext = $"game_state/meta/guardians.json.{GuardianStructuredUpdateSection}[{commandIndex++}]";
+                    if (TryCreateGuardianStructuredActorUpdate(item, aliasLookup, authoritativeGuardianIds, scratchIssues, commandContext, out var update))
+                        extractionResult.Updates.Add(update);
+                }
+            }
+
+            if (guardianPolicyContext.CurrentRoot.TryGetProperty("guardianPowerEvents", out var guardianPowerEvents) &&
+                guardianPowerEvents.ValueKind == JsonValueKind.Array)
+            {
+                var eventIndex = 0;
+                foreach (var evt in guardianPowerEvents.EnumerateArray())
+                {
+                    var eventContext = $"game_state/meta/guardians.json.guardianPowerEvents[{eventIndex++}]";
+                    if (evt.ValueKind != JsonValueKind.Object)
+                    {
+                        extractionResult.Updates.Add(CreateUnresolvedGuardianStructuredActorUpdate(eventContext, "guardianPowerEvents"));
+                        continue;
+                    }
+
+                    AddGuardianStructuredActorTouchFromReference(
+                        extractionResult.Updates,
+                        evt,
+                        "guardianId",
+                        "guardianPowerEvents",
+                        eventContext,
+                        aliasLookup,
+                        authoritativeGuardianIds);
+                    AddGuardianStructuredActorTouchFromReference(
+                        extractionResult.Updates,
+                        evt,
+                        "relatedGuardianId",
+                        "guardianPowerEvents",
+                        eventContext,
+                        aliasLookup,
+                        authoritativeGuardianIds);
+                }
+            }
+
+            if (guardianPolicyContext.CurrentRoot.TryGetProperty("guardians", out var currentGuardians) &&
+                currentGuardians.ValueKind == JsonValueKind.Array)
+            {
+                if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext))
+                {
+                    extractionResult.DirectCanonicalGuardianDiffRequiredButSnapshotMissing = true;
+                    return;
+                }
+
+                CollectGuardianArrayDiffStructuredActorTouches(
+                    extractionResult,
+                    guardianPolicyContext.PreTurnRoot,
+                    guardianPolicyContext.CurrentRoot,
+                    aliasLookup,
+                    authoritativeGuardianIds);
             }
         }
         catch
@@ -775,22 +899,12 @@ public partial class ValidationService
                 return;
 
             var names = new List<string>();
-            var displayName = GuardianManifestation.GetDisplayName(guardian);
-            var canonicalName = GuardianManifestation.GetCanonicalName(guardian);
-            if (!string.IsNullOrWhiteSpace(displayName))
-                names.Add(displayName);
-            if (!string.IsNullOrWhiteSpace(canonicalName) &&
-                names.All(existing => !string.Equals(existing, canonicalName, StringComparison.OrdinalIgnoreCase)))
-            {
-                names.Add(canonicalName);
-            }
+            foreach (var alias in EnumerateGuardianAliases(guardian, includeGuardianId: false))
+                names.Add(alias);
 
             if (names.Count > 0)
                 aliases[guardianId] = names;
         }
-
-        if (root.TryGetProperty("activeGuardian", out var activeGuardian) && activeGuardian.ValueKind == JsonValueKind.Object)
-            RegisterGuardian(activeGuardian);
 
         if (root.TryGetProperty("guardians", out var guardians) && guardians.ValueKind == JsonValueKind.Array)
         {
@@ -802,6 +916,287 @@ public partial class ValidationService
         }
 
         return aliases;
+    }
+
+    private static bool MergeGuardianAliasLookupFromStoredGuardians(
+        JsonElement root,
+        IDictionary<string, List<string>> aliasLookup,
+        ISet<string> authoritativeGuardianIds,
+        bool onlyKnownGuardianIds = false)
+    {
+        if (!root.TryGetProperty("guardians", out var guardians) || guardians.ValueKind != JsonValueKind.Array)
+            return false;
+
+        var mergedAny = false;
+        foreach (var guardian in guardians.EnumerateArray())
+        {
+            if (guardian.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+            if (string.IsNullOrWhiteSpace(guardianId))
+                continue;
+
+            if (onlyKnownGuardianIds && !authoritativeGuardianIds.Contains(guardianId))
+                continue;
+
+            RegisterGuardianAliasLookup(aliasLookup, guardian);
+            authoritativeGuardianIds.Add(guardianId);
+            mergedAny = true;
+        }
+
+        return mergedAny;
+    }
+
+    private void MergeGuardianAliasLookupFromCreateCommands(
+        JsonElement root,
+        IDictionary<string, List<string>> aliasLookup,
+        ISet<string> authoritativeGuardianIds,
+        ISet<string>? authorizedCreateGuardianIds = null,
+        IDictionary<string, JsonElement>? authorizedCreateGuardiansById = null)
+    {
+        if (!root.TryGetProperty("UpdateGuardians", out var updates) || updates.ValueKind != JsonValueKind.Array)
+            return;
+
+        var scratchIssues = new List<ValidationIssue>();
+        var commandIndex = 0;
+        foreach (var command in updates.EnumerateArray())
+        {
+            var commandContext = $"game_state/meta/guardians.json.UpdateGuardians[{commandIndex++}]";
+            var authorized = TryAuthorizeGuardianCreateForReasoning(
+                command,
+                aliasLookup,
+                authoritativeGuardianIds,
+                scratchIssues,
+                commandContext,
+                out var identitySource,
+                out var guardianId);
+
+            if (authorized && !string.IsNullOrWhiteSpace(guardianId))
+            {
+                authorizedCreateGuardianIds?.Add(guardianId);
+                if (authorizedCreateGuardiansById != null)
+                    authorizedCreateGuardiansById[guardianId] = identitySource.Clone();
+            }
+        }
+    }
+
+    private bool TryAuthorizeGuardianCreateForReasoning(
+        JsonElement item,
+        IDictionary<string, List<string>> aliasLookup,
+        ISet<string> authoritativeGuardianIds,
+        List<ValidationIssue> scratchIssues,
+        string commandContext,
+        out JsonElement identitySource,
+        out string? guardianId)
+    {
+        identitySource = item;
+        guardianId = null;
+
+        if (item.ValueKind != JsonValueKind.Object ||
+            !string.Equals(GetFirstNonEmptyString(item, "command"), "create", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (!item.TryGetProperty("data", out identitySource) || identitySource.ValueKind != JsonValueKind.Object)
+        {
+            identitySource = item;
+            return false;
+        }
+
+        guardianId = GetFirstNonEmptyString(identitySource, "guardianId", "id");
+        if (string.IsNullOrWhiteSpace(guardianId) ||
+            authoritativeGuardianIds.Contains(guardianId))
+        {
+            return false;
+        }
+
+        var issuesBeforeValidation = scratchIssues.Count;
+        ValidateGuardianCanonicalObject(identitySource, $"{commandContext}.data", scratchIssues);
+        var hasValidationErrors = scratchIssues
+            .Skip(issuesBeforeValidation)
+            .Any(issue => issue.Severity == IssueSeverity.Error);
+        if (hasValidationErrors)
+            return false;
+
+        RegisterGuardianAliasLookup(aliasLookup, identitySource);
+        authoritativeGuardianIds.Add(guardianId);
+        return true;
+    }
+
+    private static void CollectGuardianArrayDiffStructuredActorTouches(
+        StructuredActorExtractionResult extractionResult,
+        JsonElement preTurnRoot,
+        JsonElement currentRoot,
+        IDictionary<string, List<string>> aliasLookup,
+        ISet<string> authoritativeGuardianIds)
+    {
+        var preTurnGuardians = ReadGuardianStateMap(preTurnRoot);
+        var currentGuardians = ReadGuardianStateMap(currentRoot);
+
+        foreach (var (guardianId, currentGuardian) in currentGuardians)
+        {
+            if (!preTurnGuardians.TryGetValue(guardianId, out var preTurnGuardian) ||
+                !JsonElementsSemanticallyEqual(preTurnGuardian, currentGuardian))
+            {
+                extractionResult.Updates.Add(CreateGuardianStructuredActorTouch(
+                    guardianId,
+                    "guardians",
+                    aliasLookup,
+                    authoritativeGuardianIds));
+            }
+        }
+
+        foreach (var (guardianId, _) in preTurnGuardians)
+        {
+            if (!currentGuardians.ContainsKey(guardianId))
+            {
+                extractionResult.Updates.Add(CreateGuardianStructuredActorTouch(
+                    guardianId,
+                    "guardians",
+                    aliasLookup,
+                    authoritativeGuardianIds));
+            }
+        }
+    }
+
+    private static bool JsonElementsSemanticallyEqual(JsonElement left, JsonElement right)
+    {
+        var leftNode = JsonNode.Parse(left.GetRawText());
+        var rightNode = JsonNode.Parse(right.GetRawText());
+        return JsonNode.DeepEquals(leftNode, rightNode);
+    }
+
+    private static Dictionary<string, JsonElement> ReadGuardianStateMap(JsonElement root)
+    {
+        var guardians = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        if (!root.TryGetProperty("guardians", out var guardianArray) || guardianArray.ValueKind != JsonValueKind.Array)
+            return guardians;
+
+        foreach (var guardian in guardianArray.EnumerateArray())
+        {
+            if (guardian.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+            if (string.IsNullOrWhiteSpace(guardianId))
+                continue;
+
+            guardians[guardianId] = guardian.Clone();
+        }
+
+        return guardians;
+    }
+
+    private static void AddGuardianStructuredActorTouchFromReference(
+        ICollection<StructuredActorUpdate> updates,
+        JsonElement item,
+        string guardianIdPropertyName,
+        string section,
+        string context,
+        IDictionary<string, List<string>> aliasLookup,
+        ISet<string> authoritativeGuardianIds)
+    {
+        if (!item.TryGetProperty(guardianIdPropertyName, out var guardianIdNode))
+            return;
+
+        var guardianId = guardianIdNode.ValueKind == JsonValueKind.String
+            ? guardianIdNode.GetString()
+            : null;
+        updates.Add(CreateGuardianStructuredActorTouch(
+            guardianId,
+            section,
+            aliasLookup,
+            authoritativeGuardianIds,
+            fallbackDisplayName: $"{context}.{guardianIdPropertyName}"));
+    }
+
+    private static StructuredActorUpdate CreateGuardianStructuredActorTouch(
+        string? guardianId,
+        string section,
+        IDictionary<string, List<string>> aliasLookup,
+        ISet<string> authoritativeGuardianIds,
+        string? fallbackDisplayName = null)
+    {
+        if (!string.IsNullOrWhiteSpace(guardianId) &&
+            authoritativeGuardianIds.Contains(guardianId) &&
+            aliasLookup.TryGetValue(guardianId, out var resolvedNames))
+        {
+            var canonicalScopeName = resolvedNames.FirstOrDefault(alias =>
+                !string.IsNullOrWhiteSpace(alias) &&
+                !string.Equals(alias, guardianId, StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrWhiteSpace(canonicalScopeName))
+            {
+                var update = new StructuredActorUpdate
+                {
+                    ActorType = "Guardian",
+                    FilePath = "game_state/meta/guardians.json",
+                    Section = section,
+                    DisplayName = canonicalScopeName!,
+                    HasResolvedName = true
+                };
+
+                foreach (var resolvedName in resolvedNames)
+                {
+                    if (!string.IsNullOrWhiteSpace(resolvedName) &&
+                        !string.Equals(resolvedName, guardianId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        update.Aliases.Add(resolvedName);
+                    }
+                }
+
+                return update;
+            }
+        }
+
+        return CreateUnresolvedGuardianStructuredActorUpdate(
+            !string.IsNullOrWhiteSpace(guardianId) ? guardianId! : fallbackDisplayName ?? section,
+            section);
+    }
+
+    private static void RegisterGuardianAliasLookup(IDictionary<string, List<string>> aliasLookup, JsonElement guardian)
+    {
+        var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return;
+
+        var aliases = EnumerateGuardianAliases(guardian, includeGuardianId: false).ToList();
+        if (aliases.Count == 0)
+            return;
+
+        aliasLookup[guardianId] = aliases;
+    }
+
+    private static void AddGuardianAliases(ISet<string> aliases, JsonElement guardian, bool includeGuardianId = true)
+    {
+        foreach (var alias in EnumerateGuardianAliases(guardian, includeGuardianId))
+            aliases.Add(alias);
+    }
+
+    private static IEnumerable<string> EnumerateGuardianAliases(JsonElement guardian, bool includeGuardianId = true)
+    {
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var values = new List<string>();
+
+        void YieldIfUnique(string? value)
+        {
+            if (!string.IsNullOrWhiteSpace(value) && seen.Add(value))
+                values.Add(value);
+        }
+
+        if (includeGuardianId)
+            YieldIfUnique(GetFirstNonEmptyString(guardian, "guardianId", "id"));
+
+        if (guardian.TryGetProperty("nameVariants", out var nameVariants) &&
+            nameVariants.ValueKind == JsonValueKind.Object)
+        {
+            YieldIfUnique(GetFirstNonEmptyString(nameVariants, "default"));
+        }
+
+        YieldIfUnique(GuardianManifestation.GetDisplayName(guardian));
+        YieldIfUnique(GuardianManifestation.GetCanonicalName(guardian));
+        return values;
     }
 
     private static bool TryCreateNpcStructuredActorUpdate(JsonElement item, Dictionary<string, string> aliasLookup,
@@ -844,50 +1239,114 @@ public partial class ValidationService
         return update.Aliases.Count > 0;
     }
 
-    private static bool TryCreateGuardianStructuredActorUpdate(JsonElement item, Dictionary<string, List<string>> aliasLookup,
+    private bool TryCreateGuardianStructuredActorUpdate(
+        JsonElement item,
+        Dictionary<string, List<string>> aliasLookup,
+        ISet<string> authoritativeGuardianIds,
+        List<ValidationIssue> scratchIssues,
+        string commandContext,
         out StructuredActorUpdate update)
     {
         update = new StructuredActorUpdate();
-        if (item.ValueKind != JsonValueKind.Object)
-            return false;
+        var command = item.ValueKind == JsonValueKind.Object
+            ? GetFirstNonEmptyString(item, "command")
+            : null;
+        var unresolvedDisplayName = !string.IsNullOrWhiteSpace(command)
+            ? $"UpdateGuardians.{command}"
+            : "UpdateGuardians command";
 
-        var guardianId = GetFirstNonEmptyString(item, "guardianId", "id");
-        var name = GuardianManifestation.GetDisplayName(item);
-        var canonicalName = GuardianManifestation.GetCanonicalName(item);
-        if (string.IsNullOrWhiteSpace(name) &&
-            !string.IsNullOrWhiteSpace(guardianId) &&
-            aliasLookup.TryGetValue(guardianId, out var mappedNames))
+        if (item.ValueKind != JsonValueKind.Object)
         {
-            name = mappedNames.FirstOrDefault(alias => !string.IsNullOrWhiteSpace(alias));
+            update = CreateUnresolvedGuardianStructuredActorUpdate(unresolvedDisplayName, GuardianStructuredUpdateSection);
+            return true;
         }
 
-        if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(guardianId))
-            return false;
+        var identitySource = item;
+        var guardianId = GetFirstNonEmptyString(identitySource, "guardianId", "id");
+        var allowCanonicalResolution = !string.IsNullOrWhiteSpace(guardianId);
+        if (string.Equals(command, "create", StringComparison.OrdinalIgnoreCase))
+        {
+            allowCanonicalResolution = TryAuthorizeGuardianCreateForReasoning(
+                item,
+                aliasLookup,
+                authoritativeGuardianIds,
+                scratchIssues,
+                commandContext,
+                out identitySource,
+                out guardianId);
+
+            if (!allowCanonicalResolution)
+            {
+                if (item.TryGetProperty("data", out var data) && data.ValueKind == JsonValueKind.Object)
+                {
+                    identitySource = data;
+                    guardianId = GetFirstNonEmptyString(data, "guardianId", "id");
+                }
+                else
+                {
+                    identitySource = item;
+                    guardianId = GetFirstNonEmptyString(item, "guardianId", "id");
+                }
+            }
+        }
+
+        List<string>? resolvedNames = null;
+        if (allowCanonicalResolution &&
+            !string.IsNullOrWhiteSpace(guardianId) &&
+            authoritativeGuardianIds.Contains(guardianId) &&
+            aliasLookup.TryGetValue(guardianId, out var mappedNames))
+        {
+            resolvedNames = mappedNames;
+        }
+
+        var canonicalScopeName = resolvedNames?.FirstOrDefault(alias =>
+            !string.IsNullOrWhiteSpace(alias) &&
+            !string.Equals(alias, guardianId, StringComparison.OrdinalIgnoreCase));
+
+        if (string.IsNullOrWhiteSpace(canonicalScopeName))
+        {
+            update = CreateUnresolvedGuardianStructuredActorUpdate(
+                !string.IsNullOrWhiteSpace(guardianId) ? guardianId! : unresolvedDisplayName,
+                GuardianStructuredUpdateSection);
+            return true;
+        }
 
         update = new StructuredActorUpdate
         {
             ActorType = "Guardian",
             FilePath = "game_state/meta/guardians.json",
             Section = GuardianStructuredUpdateSection,
-            DisplayName = !string.IsNullOrWhiteSpace(name) ? name! : guardianId!,
-            HasResolvedName = !string.IsNullOrWhiteSpace(name)
+            DisplayName = !string.IsNullOrWhiteSpace(canonicalScopeName) ? canonicalScopeName! : guardianId!,
+            HasResolvedName = !string.IsNullOrWhiteSpace(canonicalScopeName)
         };
 
-        if (!string.IsNullOrWhiteSpace(name))
-            update.Aliases.Add(name);
-        if (!string.IsNullOrWhiteSpace(canonicalName))
-            update.Aliases.Add(canonicalName);
-        if (!string.IsNullOrWhiteSpace(guardianId))
+        if (!string.IsNullOrWhiteSpace(canonicalScopeName))
+            update.Aliases.Add(canonicalScopeName);
+        if (resolvedNames != null)
         {
-            update.Aliases.Add(guardianId);
-            if (aliasLookup.TryGetValue(guardianId, out var resolvedNames))
+            foreach (var resolvedName in resolvedNames)
             {
-                foreach (var resolvedName in resolvedNames)
+                if (!string.IsNullOrWhiteSpace(resolvedName) &&
+                    !string.Equals(resolvedName, guardianId, StringComparison.OrdinalIgnoreCase))
+                {
                     update.Aliases.Add(resolvedName);
+                }
             }
         }
 
-        return update.Aliases.Count > 0;
+        return true;
+    }
+
+    private static StructuredActorUpdate CreateUnresolvedGuardianStructuredActorUpdate(string displayName, string section)
+    {
+        return new StructuredActorUpdate
+        {
+            ActorType = "Guardian",
+            FilePath = "game_state/meta/guardians.json",
+            Section = section,
+            DisplayName = displayName,
+            HasResolvedName = false
+        };
     }
 
     private static IEnumerable<StructuredActorUpdate> CreateNpcRenameStructuredActorUpdates(JsonElement item, string sectionName)
@@ -982,10 +1441,27 @@ public partial class ValidationService
 
         foreach (var update in updates)
         {
-            if (update.Aliases.Any(alias => ScopeContainsRelevantActor(scope, alias)))
-                continue;
+            if (string.Equals(update.ActorType, "Guardian", StringComparison.OrdinalIgnoreCase) &&
+                !update.HasResolvedName)
+            {
+                var unresolvedKey = $"{update.ActorType}:{update.DisplayName}:unresolved";
+                if (!seen.Add(unresolvedKey))
+                    continue;
 
-            if (!update.HasResolvedName)
+                issues.Add(new ValidationIssue(
+                    update.FilePath,
+                    IssueSeverity.Error,
+                    $"Структурированное обновление Guardian '{update.DisplayName}' не имеет canonical guardian identity для scope validation",
+                    code: "structured_guardian_update_missing_canonical_identity",
+                    actor: update.DisplayName,
+                    section: update.Section,
+                    expected: "guardianId resolvable through canonical guardians[] / validated pre-turn guardian baseline",
+                    actual: update.DisplayName,
+                    repairHint: "Любой guardian-touching surface должен резолвиться через существующий canonical guardianId и authoritative guardian baseline. Guardian scope validation не опирается на unresolved identity или raw payload aliases."));
+                continue;
+            }
+
+            if (update.Aliases.Any(alias => ScopeContainsRelevantActor(scope, alias)))
                 continue;
 
             var dedupeKey = $"{update.ActorType}:{update.DisplayName}";
@@ -1578,6 +2054,9 @@ public partial class ValidationService
                normalizedPath.Equals(AfterlifeArchiveCandidateService.ManifestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeOfferingState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(AfterlifeArchiveActionState.ConsultationRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(AfterlifeArchiveActionState.ProjectFuelRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(SystemGuardianLibraryService.AttractionRequestPath, StringComparison.OrdinalIgnoreCase) ||

@@ -252,9 +252,10 @@
        {
          "targetGuardianId": "guard_combat_aleksandr_001",
          "targetName": "Aleksandr",
-         "attitude": "Rival",
+         "attitudeScore": -60,
+         "attitudeTier": "rival",
          "reason": "Competing domains - Combat vs Magic, philosophical disagreement",
-         "awarenessLevel": "High"
+         "lastChangedAt": "2026-03-30T10:00:00Z"
        }
      ],
      "socialProfile": {
@@ -266,15 +267,22 @@
      }
      ```
 
-     ATTITUDE TYPES BETWEEN GUARDIANS:
+     CANONICAL ATTITUDE TIERS BETWEEN GUARDIANS:
      ```
+     Trusted:     Deep trust, very high willingness to align interests
      Ally:        Positive relationship, encourages player to visit them
-     Neutral:     Indifferent to player's other interactions
-     Curious:     Wants to know about other Guardians, asks questions
-     Competitive: Tries to outdo other Guardian's offerings
+     Neutral:     Indifferent or mildly curious, no stable hostility
+     Competitive: Tries to outdo the other Guardian's offerings
      Rival:       Active dislike, may penalize player for visiting rival
      Enemy:       Deep hostility, demands exclusivity or sabotage
      ```
+
+     CANONICAL NETWORK NOTE:
+     - guardianRelationships is a directed network: A -> B may differ from B -> A
+     - each Guardian should carry one directed entry for every other known Guardian
+     - socialProfile modifies seeding and reactions, but does not replace pairwise standing
+     - old single-string `attitude` is now only a legacy-readable alias; canonical runtime uses attitudeScore + attitudeTier
+     - legacy `awarenessLevel` may still appear as a soft reaction hint, but it is not required for canonical runtime standing
 
      SOCIAL PROFILE FACTORS (0-100 each):
 
@@ -317,7 +325,7 @@
           "High" = 90% notice, "Medium" = 60%, "Low" = 30%
 
      3. GUARDIAN NETWORK: Allied Guardians share information
-        - If Guardian A is "Ally" with Guardian B,
+        - If Guardian A marks Guardian B as `ally` or `trusted`,
           they freely share information about the player
 
      REACTION MECHANICS:
@@ -325,21 +333,21 @@
      When a Guardian becomes AWARE that the player recently visited another Guardian:
 
      ```
-     Reaction = f(attitude toward that Guardian, socialProfile factors)
+     Reaction = f(attitudeTier / attitudeScore toward that Guardian, socialProfile factors)
 
-     IF attitude == "Ally" AND curiosityFactor > 40:
+     IF attitudeTier == "ally" AND curiosityFactor > 40:
        -> Positive: "Рад, что ты навестил [имя]. Как у него дела?"
        -> Reputation: +0 to +1
 
-     IF attitude == "Neutral":
+     IF attitudeTier == "neutral":
        -> No significant reaction, maybe a passing comment
        -> Reputation: +0
 
-     IF attitude == "Rival" AND jealousyFactor > 50:
+     IF attitudeTier == "rival" AND jealousyFactor > 50:
        -> Negative: "Вижу, ты проводишь время с [имя]. Надеюсь, ты не забыл, кто твой настоящий наставник."
        -> Reputation: -1 to -3 (based on jealousyFactor/25)
 
-     IF attitude == "Enemy" AND jealousyFactor > 70:
+     IF attitudeTier == "enemy" AND jealousyFactor > 70:
        -> Hostile: "Ты общаешься с [имя]?! Это предательство."
        -> Reputation: -3 to -5
        -> May trigger ultimatum quest (see Rule 32_ext.4)
@@ -390,7 +398,7 @@
 
      GUARDIAN RIVALRY SYSTEM:
 
-     Guardians with "Rival" or "Enemy" attitudes toward each other may offer
+     Guardians with `rival` or `enemy` standing toward each other may offer
      special interactions that pit the player between them.
 
      RIVALRY QUEST TYPES:
@@ -399,7 +407,7 @@
         Guardian A asks the player to undermine Guardian B.
 
         ```
-        Trigger: attitude == "Rival" or "Enemy", competitiveFactor > 50
+        Trigger: attitudeTier == "rival" or "enemy", competitiveFactor > 50
         Frequency: Max 1 sabotage quest per Guardian per 5 regular quests
 
         Quest Examples:
@@ -453,7 +461,7 @@
         ```
 
      4. INFORMATION TRADE ("Торговля Информацией"):
-        Curious Guardians want intel about others.
+     Guardians with high curiosityFactor want intel about others.
 
         ```
         Trigger: curiosityFactor > 60, player has visited other Guardians
@@ -475,7 +483,7 @@
         Enemy Guardian subtly undermines another through "gifts".
 
         ```
-        Trigger: attitude == "Enemy", Guardian has Devoted+ reputation with player
+        Trigger: attitudeTier == "enemy", Guardian has Devoted+ reputation with player
 
         Behavior:
         - Guardian gives player a "gift" to deliver to rival Guardian
@@ -495,7 +503,7 @@
 
      ```
      BADMOUTHING ("Наговоры"):
-     When visiting Guardian A who has "Rival"/"Enemy" attitude toward Guardian B:
+     When visiting Guardian A who has `rival`/`enemy` standing toward Guardian B:
      - Guardian A may spontaneously badmouth Guardian B
      - "Ты знаешь, что [B] когда-то предал своего ученика? Не доверяй ему."
      - Effect: Player gains a "suspicion" modifier toward Guardian B
@@ -505,7 +513,7 @@
        -> If player listens: suspicion cleared, +1 to B for being honest
 
      PRAISE ("Восхваление"):
-     When visiting Guardian A who has "Ally" attitude toward Guardian B:
+     When visiting Guardian A who has `ally` or `trusted` standing toward Guardian B:
      - Guardian A may praise Guardian B
      - "Если ещё не был у [B], обязательно загляни. Замечательный наставник."
      - Effect: +1 passive reputation bonus on next visit to B
@@ -521,7 +529,7 @@
         in rivalry. The GM should ensure a mix of social profiles.
 
      3. Inter-guardian dynamics should EMERGE from personality, not be scripted.
-        The GM uses the socialProfile and attitude system to generate organic reactions.
+        The GM uses socialProfile and the canonical guardianRelationships network to generate organic reactions.
 
      4. The rivalry system exists to make the Chaos Sea feel ALIVE and political,
         mirroring the social dynamics of the mortal world but in a spiritual context.

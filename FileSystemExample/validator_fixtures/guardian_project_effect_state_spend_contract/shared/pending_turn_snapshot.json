@@ -1,0 +1,26 @@
+{
+  "sessionId": "fixture-session",
+  "requestId": "fixture-request",
+  "turnNumber": 1,
+  "requestTimestamp": "2026-03-20T11:00:00Z",
+  "playerAction": "Проверка guardian project effect-state contract.",
+  "files": {
+    "game_state/meta/guardians.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+    "game_state/meta/guardian_projects.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json"
+  },
+  "snapshotFileHashes": {
+    "game_state/meta/guardians.json": "038424EA94A54855CA51A90A5579225246FF0A0D62DC652599AAD4544E73648B",
+    "game_state/meta/guardian_projects.json": "F01C432ED5D0DC97A1D4C29A78549F561743964FD09323C8E730F01F62F2ED1D"
+  },
+  "clientOwnedValidationHashes": {},
+  "rollbackBackups": {
+    "game_state/meta/guardians.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+    "game_state/meta/guardian_projects.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json"
+  },
+  "rollbackBaselineFiles": [
+    "game_state/meta/guardians.json",
+    "game_state/meta/guardian_projects.json"
+  ],
+  "sourceLabel": "ответа GM",
+  "manifestPayloadHash": "D0B7D252A631832C4CCE15DFB256EAA03941E1F13D14E2DA5134705DEB48F813"
+}

@@ -15,6 +15,17 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
+    private static readonly string[] GuardianPolicySnapshotRequestFiles =
+    {
+        GuardianAbodeOfferingState.PendingRequestPath,
+        GuardianTradeRequestState.PendingRequestPath,
+        GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+        GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+        ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+        AfterlifeArchiveActionState.ConsultationRequestPath,
+        AfterlifeArchiveActionState.ProjectFuelRequestPath
+    };
+
     private async Task<GameResponse> BuildGameResponseFromFiles()
     {
         var response = new GameResponse();
@@ -130,13 +141,12 @@ public partial class GameEngine
         var clientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync();
         foreach (var file in CanonicalStateNormalizer.CanonicalAccumulatedFiles)
         {
-            var content = await _fs.ReadFileAsync(file);
-            if (content == null) continue;
+            await SnapshotFileIfPresentAsync(file, files, snapshotHashes);
+        }
 
-            var snapshotPath = $"{PendingTurnSnapshotDirectory}/{file}";
-            await _fs.WriteFileAtomicAsync(snapshotPath, content);
-            files[file] = snapshotPath;
-            snapshotHashes[file] = ComputeSha256(content);
+        foreach (var file in GuardianPolicySnapshotRequestFiles)
+        {
+            await SnapshotFileIfPresentAsync(file, files, snapshotHashes);
         }
 
         var manifest = new PendingTurnSnapshotManifest
@@ -206,8 +216,9 @@ public partial class GameEngine
         if (manifest.TurnNumber != expectedTurnNumber)
             return null;
 
+        var canonicalFiles = new HashSet<string>(CanonicalStateNormalizer.CanonicalAccumulatedFiles, StringComparer.OrdinalIgnoreCase);
         return manifest.Files
-            .Where(kv => _fs.FileExists(kv.Value))
+            .Where(kv => canonicalFiles.Contains(kv.Key) && _fs.FileExists(kv.Value))
             .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase);
     }
 
@@ -242,6 +253,21 @@ public partial class GameEngine
         using var sha = SHA256.Create();
         var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(content));
         return Convert.ToHexString(bytes);
+    }
+
+    private async Task SnapshotFileIfPresentAsync(
+        string relativePath,
+        IDictionary<string, string> files,
+        IDictionary<string, string> snapshotHashes)
+    {
+        var content = await _fs.ReadFileAsync(relativePath);
+        if (content == null)
+            return;
+
+        var snapshotPath = $"{PendingTurnSnapshotDirectory}/{relativePath}";
+        await _fs.WriteFileAtomicAsync(snapshotPath, content);
+        files[relativePath] = snapshotPath;
+        snapshotHashes[relativePath] = ComputeSha256(content);
     }
 
     private async Task CleanupPendingTurnSnapshotAsync()

@@ -4,11 +4,15 @@
   "turnNumber": 11,
   "requestTimestamp": "2026-03-20T08:58:00Z",
   "playerAction": "Я возвращаюсь к Азалии, насмешливо оспариваю её власть и веду себя вызывающе.",
-  "files": {},
-  "snapshotFileHashes": {},
+  "files": {
+    "game_state/meta/soul_state.json": "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json"
+  },
+  "snapshotFileHashes": {
+    "game_state/meta/soul_state.json": "84A8F95496CD6B1113AFFDCB6E2EA62A330122CF8D199A7FCB5E40281BC5F6F1"
+  },
   "clientOwnedValidationHashes": {},
   "rollbackBackups": {},
   "rollbackBaselineFiles": [],
   "sourceLabel": "обработки хода",
-  "manifestPayloadHash": ""
+  "manifestPayloadHash": "BCE1AC1E2190F69BE0D37459070E10BE10C3524EA836BF0FF06EA5E285C15D5F"
 }

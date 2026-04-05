@@ -484,7 +484,7 @@ public partial class ValidationService
         if (changedFiles.Count == 0)
             AddMissingStateEvidenceIssue(issues, context.ActionTag, "experience", "game_state/player/experience.json должен реально измениться после ABSORB_FEATHERS.");
 
-        var previousExperience = ReadPrimaryExperienceCounter(await ReadPreTurnTrackedFileAsync("game_state/player/experience.json"));
+        var previousExperience = ReadPrimaryExperienceCounter(await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/player/experience.json"));
         var currentExperience = ReadPrimaryExperienceCounter(await _fs.ReadFileAsync("game_state/player/experience.json"));
         if (!currentExperience.HasValue)
         {
@@ -562,7 +562,7 @@ public partial class ValidationService
         }
 
         var postSkillJson = await _fs.ReadFileAsync(skillFile);
-        var preSkillJson = await ReadPreTurnTrackedFileAsync(skillFile);
+        var preSkillJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(skillFile);
         var skillExists = SkillExistsInJson(postSkillJson, skillArray, skillName);
         var skillExistedBefore = SkillExistsInJson(preSkillJson, skillArray, skillName);
 
@@ -609,7 +609,7 @@ public partial class ValidationService
             AddMissingStateEvidenceIssue(issues, context.ActionTag, "buff grant", "game_state/player/effects.json должен реально измениться после FATE_SHIELD.");
 
         var currentEffectsJson = await _fs.ReadFileAsync("game_state/player/effects.json");
-        var previousEffectsJson = await ReadPreTurnTrackedFileAsync("game_state/player/effects.json");
+        var previousEffectsJson = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/player/effects.json");
         var effectExistsNow = !string.IsNullOrWhiteSpace(effectName) &&
                               JsonContainsNamedObject(currentEffectsJson, effectName, "effectName", "name");
         var effectExistedBefore = !string.IsNullOrWhiteSpace(effectName) &&
@@ -685,17 +685,37 @@ public partial class ValidationService
 
         var guardianId = RequireString(stateEvidence, $"{InkFeatherActionResultPath}.stateEvidence", issues, "guardianId");
         var reputationChange = RequirePositiveEvidenceNumber(stateEvidence, context.ActionTag, "reputationChange", issues);
+        if (string.IsNullOrWhiteSpace(guardianId) || !reputationChange.HasValue)
+            return;
+
+        var preGuardiansSnapshot = await ReadRequiredValidatedGuardianAcceptedTurnSnapshotGuardiansAsync(
+            "game_state/meta/guardians.json",
+            context.ActionTag,
+            "pre-turn guardian reputation baseline",
+            issues);
+        if (preGuardiansSnapshot.Status != GuardianAcceptedTurnSnapshotStatus.Resolved)
+            return;
+
+        var previousGuardian = TryReadValidatedGuardianAcceptedTurnSnapshotGuardian(
+            preGuardiansSnapshot,
+            guardianId,
+            "game_state/meta/guardians.json",
+            context.ActionTag,
+            issues);
+        if (!previousGuardian.HasValue || HasGuardianAcceptedTurnSnapshotContractFailure(issues, context.ActionTag))
+            return;
+
+        var previousReputation = TryReadGuardianCurrentReputation(previousGuardian.Value);
+
         var changedFiles = await ValidateAffectedFilesChangedAsync(
             stateEvidence,
             context.ActionTag,
             issues,
             new[] { "game_state/meta/guardians.json" });
 
-        if (changedFiles.Count == 0)
+        if (changedFiles.Count == 0 &&
+            !HasGuardianAcceptedTurnSnapshotContractFailure(issues, context.ActionTag))
             AddMissingStateEvidenceIssue(issues, context.ActionTag, "guardian reputation change", "game_state/meta/guardians.json должен реально измениться после DONATE_TO_GUARDIAN.");
-
-        if (string.IsNullOrWhiteSpace(guardianId) || !reputationChange.HasValue)
-            return;
 
         var expectedReputationChange = context.ParsedCostInFeathers.HasValue
             ? Math.Min(25, Math.Max(15, context.ParsedCostInFeathers.Value / 3))
@@ -726,8 +746,8 @@ public partial class ValidationService
                 repairHint: "Следуй формуле из правил: reputation_change = min(25, max(15, cost / 3))."));
         }
 
-        var previousReputation = await ReadGuardianReputationAsync(await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json"), guardianId);
-        var currentReputation = await ReadGuardianReputationAsync(await _fs.ReadFileAsync("game_state/meta/guardians.json"), guardianId);
+        var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        var currentReputation = TryReadGuardianCurrentReputationFromPolicyContext(guardianPolicyContext, guardianId);
         if (!currentReputation.HasValue ||
             !previousReputation.HasValue ||
             currentReputation.Value <= previousReputation.Value)
@@ -776,7 +796,7 @@ public partial class ValidationService
                 repairHint: "Следуй формуле из правил: enlightenment_xp_gain = cost * 2."));
         }
 
-        var previousExperience = await ReadEnlightenmentExperienceAsync(await ReadPreTurnTrackedFileAsync("game_state/meta/soul_state.json"));
+        var previousExperience = await ReadEnlightenmentExperienceAsync(await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json"));
         var currentExperience = await ReadEnlightenmentExperienceAsync(await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
         if (!currentExperience.HasValue ||
             !previousExperience.HasValue ||
@@ -814,20 +834,40 @@ public partial class ValidationService
 
         var guardianId = RequireString(stateEvidence, $"{InkFeatherActionResultPath}.stateEvidence", issues, "guardianId");
         var reputationChange = RequirePositiveEvidenceNumber(stateEvidence, context.ActionTag, "reputationChange", issues);
+        if (string.IsNullOrWhiteSpace(guardianId) || !reputationChange.HasValue)
+            return;
+
+        var preGuardiansSnapshot = await ReadRequiredValidatedGuardianAcceptedTurnSnapshotGuardiansAsync(
+            "game_state/meta/guardians.json",
+            context.ActionTag,
+            "pre-turn guardian reputation baseline",
+            issues);
+        if (preGuardiansSnapshot.Status != GuardianAcceptedTurnSnapshotStatus.Resolved)
+            return;
+
+        var previousGuardian = TryReadValidatedGuardianAcceptedTurnSnapshotGuardian(
+            preGuardiansSnapshot,
+            guardianId,
+            "game_state/meta/guardians.json",
+            context.ActionTag,
+            issues);
+        if (!previousGuardian.HasValue || HasGuardianAcceptedTurnSnapshotContractFailure(issues, context.ActionTag))
+            return;
+
+        var previousReputation = TryReadGuardianCurrentReputation(previousGuardian.Value);
+
         var changedFiles = await ValidateAffectedFilesChangedAsync(
             stateEvidence,
             context.ActionTag,
             issues,
             new[] { "game_state/meta/guardians.json" });
 
-        if (changedFiles.Count == 0)
+        if (changedFiles.Count == 0 &&
+            !HasGuardianAcceptedTurnSnapshotContractFailure(issues, context.ActionTag))
             AddMissingStateEvidenceIssue(issues, context.ActionTag, "guardian reputation change", "game_state/meta/guardians.json должен реально измениться после GUARDIAN_FAVOR.");
 
-        if (string.IsNullOrWhiteSpace(guardianId) || !reputationChange.HasValue)
-            return;
-
-        var previousReputation = await ReadGuardianReputationAsync(await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json"), guardianId);
-        var currentReputation = await ReadGuardianReputationAsync(await _fs.ReadFileAsync("game_state/meta/guardians.json"), guardianId);
+        var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        var currentReputation = TryReadGuardianCurrentReputationFromPolicyContext(guardianPolicyContext, guardianId);
         if (!currentReputation.HasValue ||
             !previousReputation.HasValue ||
             currentReputation.Value <= previousReputation.Value)
@@ -854,31 +894,83 @@ public partial class ValidationService
         var powerGain = RequirePositiveEvidenceNumber(stateEvidence, context.ActionTag, "powerGain", issues);
         var returnCycleId = RequireString(stateEvidence, $"{InkFeatherActionResultPath}.stateEvidence", issues, "returnCycleId");
         var powerEventId = RequireString(stateEvidence, $"{InkFeatherActionResultPath}.stateEvidence", issues, "powerEventId");
-        var changedFiles = await ValidateAffectedFilesChangedAsync(
-            stateEvidence,
-            context.ActionTag,
-            issues,
-            new[] { "game_state/meta/guardians.json", GuardianPowerEventState.JournalPath });
-
-        if (changedFiles.Count == 0)
-            AddMissingStateEvidenceIssue(issues, context.ActionTag, "abode power change", $"game_state/meta/guardians.json и {GuardianPowerEventState.JournalPath} должны реально измениться после ABODE_OFFERING.");
-
         if (string.IsNullOrWhiteSpace(guardianId) || !powerGain.HasValue || string.IsNullOrWhiteSpace(returnCycleId))
             return;
 
-        var request = await GuardianAbodeOfferingState.ReadAsync(_fs);
+        var requestJson = await ReadRequiredValidatedPendingTurnSnapshotFileAsync(
+            GuardianAbodeOfferingState.PendingRequestPath,
+            issues,
+            code: "abode_offering_missing_validated_snapshot_request",
+            section: context.ActionTag,
+            message: "ABODE_OFFERING требует current validated snapshot copy of pending_abode_offering.json; live current request не считается источником истины.",
+            repairHint: "Сохраняй pending_abode_offering.json в validated pending turn snapshot и сверяй accepted-turn outcome именно с snapshot copy.");
+        if (string.IsNullOrWhiteSpace(requestJson))
+            return;
+
+        JsonDocument? requestDoc = null;
+        GuardianAbodeOfferingState.PendingAbodeOfferingRequest? request;
+        try
+        {
+            requestDoc = JsonDocument.Parse(requestJson);
+            request = JsonSerializer.Deserialize<GuardianAbodeOfferingState.PendingAbodeOfferingRequest>(requestDoc.RootElement.GetRawText());
+        }
+        catch
+        {
+            request = null;
+        }
+
         if (request == null)
         {
             issues.Add(new ValidationIssue(
                 GuardianAbodeOfferingState.PendingRequestPath,
                 IssueSeverity.Error,
-                "После ABODE_OFFERING отсутствует client-authored pending_abode_offering.json для сверки результата",
-                code: "abode_offering_missing_pending_request",
+                "ABODE_OFFERING не может быть сверен: validated snapshot copy pending_abode_offering.json не читается как request contract",
+                code: "abode_offering_invalid_validated_snapshot_request",
                 section: context.ActionTag,
-                expected: GuardianAbodeOfferingState.PendingRequestPath,
-                actual: "missing or unreadable",
-                repairHint: "Клиент должен сохранить pending_abode_offering.json перед ходом; GM не должен удалять или перезаписывать этот файл."));
+                expected: "readable validated snapshot request",
+                actual: "snapshot request unreadable",
+                repairHint: "Сохраняй в validated snapshot корректный JSON request для pending_abode_offering.json и не сверяй ABODE_OFFERING с live current файлом."));
             return;
+        }
+        using (requestDoc)
+        {
+            var issueCountBeforeRequestValidation = issues.Count;
+            ValidatePendingAbodeOfferingContract(requestDoc.RootElement, GuardianAbodeOfferingState.PendingRequestPath, context.ActionTag, issues);
+            if (issues.Count > issueCountBeforeRequestValidation)
+                return;
+        }
+
+        var preGuardiansSnapshot = await ReadRequiredValidatedGuardianAcceptedTurnSnapshotGuardiansAsync(
+            "game_state/meta/guardians.json",
+            context.ActionTag,
+            "pre-turn guardian abode power baseline",
+            issues);
+        if (preGuardiansSnapshot.Status != GuardianAcceptedTurnSnapshotStatus.Resolved)
+            return;
+
+        var preJournalJson = await ReadRequiredValidatedGuardianAcceptedTurnSnapshotFileAsync(
+            GuardianPowerEventState.JournalPath,
+            context.ActionTag,
+            "pre-turn guardian abode power journal",
+            issues);
+        if (string.IsNullOrWhiteSpace(preJournalJson))
+            return;
+
+        var requiresSoulConsumptionProof =
+            string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase);
+
+        string? preSoulJson = null;
+        if (requiresSoulConsumptionProof)
+        {
+            preSoulJson = await ReadRequiredValidatedGuardianAcceptedTurnSnapshotFileAsync(
+                "game_state/meta/soul_state.json",
+                context.ActionTag,
+                "pre-turn offering ownership baseline",
+                issues);
+            if (string.IsNullOrWhiteSpace(preSoulJson))
+                return;
         }
 
         if (!string.Equals(request.GuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
@@ -907,7 +999,9 @@ public partial class ValidationService
                 repairHint: "Не меняй returnCycleId offering-а относительно pending_abode_offering.json."));
         }
 
-        if (context.ParsedCostInFeathers.HasValue && context.ParsedCostInFeathers.Value != request.InkFeathersOffered)
+        if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase) &&
+            context.ParsedCostInFeathers.HasValue &&
+            context.ParsedCostInFeathers.Value != request.InkFeathersOffered)
         {
             issues.Add(new ValidationIssue(
                 InkFeatherActionResultPath,
@@ -920,7 +1014,20 @@ public partial class ValidationService
                 repairHint: "Сохраняй одну и ту же сумму offering-а в playerAction и pending_abode_offering.json."));
         }
 
-        var expectedGain = GuardianAbodeOfferingState.ResolvePowerGainForInkFeatherOffering(request.InkFeathersOffered);
+        var expectedGain = GuardianAbodeOfferingState.ResolvePowerGainForPendingRequest(request);
+        if (expectedGain <= 0)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeOfferingState.PendingRequestPath,
+                IssueSeverity.Error,
+                "ABODE_OFFERING не может быть сверен: validated snapshot request не задаёт поддерживаемый offering contract с положительным power gain.",
+                code: "abode_offering_invalid_validated_snapshot_request",
+                section: context.ActionTag,
+                expected: "supported offering contract with positive power gain",
+                actual: "resolved offering gain <= 0",
+                repairHint: "Сохраняй в validated snapshot canonical pending_abode_offering request с whitelisted offeringType и корректными offering fields."));
+            return;
+        }
         if (powerGain.Value != expectedGain)
         {
             issues.Add(new ValidationIssue(
@@ -934,11 +1041,161 @@ public partial class ValidationService
                 repairHint: "Следуй формуле offering-а: 50/100/150 перьев -> +1/+2/+3 силы Обители."));
         }
 
-        var preJournalJson = await ReadPreTurnTrackedFileAsync(GuardianPowerEventState.JournalPath);
+        var preTurnJournalKnowledgeResult = await ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync("offering");
+        if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "ABODE_OFFERING не может быть сверен: validated snapshot guardians baseline unreadable или semantically invalid для strict journal proof knowledge.",
+                code: "abode_offering_invalid_validated_snapshot_guardians",
+                section: context.ActionTag,
+                expected: "canonical validated snapshot guardians.json for offering proof knowledge",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot guardians baseline invalid",
+                repairHint: "Сохраняй в validated snapshot полный canonical game_state/meta/guardians.json; proof knowledge для ABODE_OFFERING не может строиться из partial или invalid guardian baseline."));
+            return;
+        }
+
+        if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotTracker)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianProjectState.TrackerPath,
+                IssueSeverity.Error,
+                "ABODE_OFFERING не может быть сверен: validated snapshot guardian project tracker unreadable или semantically invalid для strict journal proof knowledge.",
+                code: "abode_offering_invalid_validated_snapshot_tracker",
+                section: context.ActionTag,
+                expected: $"canonical validated snapshot {GuardianProjectState.TrackerPath} for offering proof knowledge",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot tracker baseline invalid",
+                repairHint: $"Сохраняй в validated snapshot canonical {GuardianProjectState.TrackerPath}; offering proof knowledge не может строиться из partial или invalid tracker baseline."));
+            return;
+        }
+
+        if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotJournal)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "ABODE_OFFERING не может быть сверен: validated snapshot abode_power_journal baseline unreadable или semantically invalid для strict journal proof knowledge.",
+                code: "abode_offering_invalid_validated_snapshot_journal",
+                section: context.ActionTag,
+                expected: $"canonical validated snapshot {GuardianPowerEventState.JournalPath} for offering proof knowledge",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot journal baseline invalid",
+                repairHint: $"Сохраняй в validated snapshot canonical {GuardianPowerEventState.JournalPath}; offering proof knowledge не может строиться из missing, stale или invalid journal baseline."));
+            return;
+        }
+
+        if (preTurnJournalKnowledgeResult.Knowledge == null)
+        {
+            issues.Add(new ValidationIssue(
+                PendingTurnSnapshotManifestPath,
+                IssueSeverity.Error,
+                "ABODE_OFFERING не может быть сверен: validated snapshot proof context unavailable для strict journal proof knowledge.",
+                code: "abode_offering_invalid_validated_snapshot_journal",
+                section: context.ActionTag,
+                expected: "usable validated snapshot proof knowledge context",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot context unavailable",
+                repairHint: "Сохраняй current validated pending turn snapshot manifest и canonical guardian/tracker baselines перед strict ABODE_OFFERING proof."));
+            return;
+        }
+
         var postJournalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
-        var preCycleFeathers = CountOfferingFeathersFromJournal(preJournalJson, guardianId, returnCycleId);
-        var postCycleFeathers = CountOfferingFeathersFromJournal(postJournalJson, guardianId, returnCycleId);
-        if (preCycleFeathers + request.InkFeathersOffered > 150)
+        var journalProof = SummarizeOfferingJournalProof(
+            preJournalJson,
+            postJournalJson,
+            request,
+            powerGain.Value,
+            preTurnJournalKnowledgeResult.Knowledge,
+            "offering",
+            powerEventId);
+        if (journalProof.Status == OfferingJournalProofStatus.InvalidValidatedBaseline)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "ABODE_OFFERING не может быть сверен: validated snapshot copy abode_power_journal.json unreadable или malformed.",
+                code: "abode_offering_invalid_validated_snapshot_journal",
+                section: context.ActionTag,
+                expected: "readable validated pre-turn abode_power_journal baseline",
+                actual: "validated snapshot journal unreadable or malformed",
+                repairHint: "Сохраняй в validated snapshot корректный JSON journal baseline и не доказывай ABODE_OFFERING через current-only journal."));
+            return;
+        }
+
+        if (journalProof.Status == OfferingJournalProofStatus.InvalidCurrentGuardianAuthority)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "ABODE_OFFERING не может быть доказан: current guardian authority unreadable или unavailable для strict journal proof.",
+                code: "abode_offering_invalid_current_guardian_authority",
+                section: context.ActionTag,
+                expected: "readable current guardian authority root",
+                actual: journalProof.FailureDescription ?? "current guardian authority unavailable",
+                repairHint: "Исправь current game_state/meta/guardians.json и validated guardian baseline так, чтобы kernel построил strict current guardian authority перед ABODE_OFFERING proof."));
+            return;
+        }
+
+        if (journalProof.Status == OfferingJournalProofStatus.InvalidCurrentTrackerAuthority)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianProjectState.TrackerPath,
+                IssueSeverity.Error,
+                "ABODE_OFFERING не может быть доказан: current guardian project tracker authority unreadable или unavailable для strict journal proof.",
+                code: "abode_offering_invalid_current_tracker_authority",
+                section: context.ActionTag,
+                expected: $"readable current authority root for {GuardianProjectState.TrackerPath}",
+                actual: journalProof.FailureDescription ?? "current tracker authority unavailable",
+                repairHint: $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил strict current tracker authority перед ABODE_OFFERING proof."));
+            return;
+        }
+
+        if (journalProof.Status == OfferingJournalProofStatus.InvalidCurrentJournal)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "ABODE_OFFERING не может быть доказан: current abode_power_journal.json unreadable или malformed.",
+                code: "abode_offering_invalid_current_journal_proof",
+                section: context.ActionTag,
+                expected: "readable current abode_power_journal proof",
+                actual: journalProof.FailureDescription ?? "current journal unreadable or malformed",
+                repairHint: "Делай current abode_power_journal.json корректным JSON и materialize offering proof только через читаемый strict journal."));
+            return;
+        }
+
+        var allowedAffectedFiles = new List<string>
+        {
+            "game_state/meta/guardians.json",
+            GuardianPowerEventState.JournalPath
+        };
+        if (requiresSoulConsumptionProof)
+            allowedAffectedFiles.Add("game_state/meta/soul_state.json");
+
+        var changedFiles = await ValidateAffectedFilesChangedAsync(
+            stateEvidence,
+            context.ActionTag,
+            issues,
+            allowedAffectedFiles);
+
+        if (changedFiles.Count == 0 &&
+            !HasGuardianAcceptedTurnSnapshotContractFailure(issues, context.ActionTag))
+            AddMissingStateEvidenceIssue(issues, context.ActionTag, "abode power change", $"game_state/meta/guardians.json и {GuardianPowerEventState.JournalPath} должны реально измениться после ABODE_OFFERING.");
+
+        if (requiresSoulConsumptionProof &&
+            !HasListedAffectedFile(stateEvidence, "game_state/meta/soul_state.json"))
+        {
+            issues.Add(new ValidationIssue(
+                $"{InkFeatherActionResultPath}.stateEvidence.affectedFiles",
+                IssueSeverity.Error,
+                "ABODE_OFFERING с relic/archive offering должен явно помечать soul_state.json как affected proof surface.",
+                code: "abode_offering_missing_soul_state_affected_file",
+                section: context.ActionTag,
+                expected: "game_state/meta/soul_state.json listed in affectedFiles",
+                actual: "soul_state.json missing from affectedFiles",
+                repairHint: "Для Soul Relic и archive offering указывай game_state/meta/soul_state.json в stateEvidence.affectedFiles, потому что именно он доказывает consumption."));
+        }
+
+        if (journalProof.PreCycleInkFeathers + request.InkFeathersOffered > 150)
         {
             issues.Add(new ValidationIssue(
                 GuardianPowerEventState.JournalPath,
@@ -947,11 +1204,11 @@ public partial class ValidationService
                 code: "abode_offering_cycle_cap_exceeded",
                 section: context.ActionTag,
                 expected: "<= 150 total feathers per guardian per return cycle",
-                actual: (preCycleFeathers + request.InkFeathersOffered).ToString(),
+                actual: (journalProof.PreCycleInkFeathers + request.InkFeathersOffered).ToString(),
                 repairHint: "Не превышай cap offering-а: максимум 150 Чернильных Перьев на одного Хранителя за одно возвращение."));
         }
 
-        if (postCycleFeathers < preCycleFeathers + request.InkFeathersOffered)
+        if (journalProof.PostCycleInkFeathers < journalProof.PreCycleInkFeathers + request.InkFeathersOffered)
         {
             issues.Add(new ValidationIssue(
                 GuardianPowerEventState.JournalPath,
@@ -959,12 +1216,12 @@ public partial class ValidationService
                 "ABODE_OFFERING не оставил полного offering audit trail в abode_power_journal.json",
                 code: "abode_offering_journal_missing_cycle_amount",
                 section: context.ActionTag,
-                expected: (preCycleFeathers + request.InkFeathersOffered).ToString(),
-                actual: postCycleFeathers.ToString(),
+                expected: (journalProof.PreCycleInkFeathers + request.InkFeathersOffered).ToString(),
+                actual: journalProof.PostCycleInkFeathers.ToString(),
                 repairHint: "Каждое offering power event должно сохранять inkFeathersOffered и returnCycleId в audit journal entry."));
         }
 
-        if (!await GuardianPowerJournalContainsEventAsync(powerEventId, guardianId, "offering", powerGain.Value, returnCycleId))
+        if (!journalProof.MatchingOfferingEventFound)
         {
             issues.Add(new ValidationIssue(
                 GuardianPowerEventState.JournalPath,
@@ -977,8 +1234,18 @@ public partial class ValidationService
                 repairHint: "ABODE_OFFERING должен materialize guardianPowerEvents с reasonType=offering и journal entry с тем же eventId."));
         }
 
-        var previousPower = await ReadGuardianAbodePowerAsync(await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json"), guardianId);
-        var currentPower = await ReadGuardianAbodePowerAsync(await _fs.ReadFileAsync("game_state/meta/guardians.json"), guardianId);
+        var previousGuardian = TryReadValidatedGuardianAcceptedTurnSnapshotGuardian(
+            preGuardiansSnapshot,
+            guardianId,
+            "game_state/meta/guardians.json",
+            context.ActionTag,
+            issues);
+        if (!previousGuardian.HasValue || HasGuardianAcceptedTurnSnapshotContractFailure(issues, context.ActionTag))
+            return;
+
+        var previousPower = (int?)AbodePowerRules.GetCurrentPower(previousGuardian.Value);
+        var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        var currentPower = TryReadGuardianCurrentAbodePowerFromPolicyContext(guardianPolicyContext, guardianId);
         if (!previousPower.HasValue || !currentPower.HasValue || currentPower.Value - previousPower.Value < powerGain.Value)
         {
             issues.Add(new ValidationIssue(
@@ -990,6 +1257,17 @@ public partial class ValidationService
                 expected: $">= +{powerGain.Value}",
                 actual: previousPower.HasValue && currentPower.HasValue ? (currentPower.Value - previousPower.Value).ToString() : "missing guardian power",
                 repairHint: "ABODE_OFFERING должен реально увеличить guardian.abodePower.currentPower и записать это через guardianPowerEvents."));
+        }
+
+        if (requiresSoulConsumptionProof)
+        {
+            var currentSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            ValidatePendingAbodeOfferingConsumptionProof(
+                preSoulJson,
+                currentSoulJson,
+                request,
+                context.ActionTag,
+                issues);
         }
     }
 
@@ -1075,6 +1353,9 @@ public partial class ValidationService
             return new List<string>();
 
         var allowedSet = new HashSet<string>(allowedFiles, StringComparer.OrdinalIgnoreCase);
+        if (RequiresValidatedGuardianSnapshotForAcceptedTurnInkFeatherAction(actionTag))
+            return await ValidateGuardianAffectedFilesChangedAsync(affectedFiles, actionTag, issues, allowedSet);
+
         var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
         if (manifest == null)
         {
@@ -1121,6 +1402,78 @@ public partial class ValidationService
                     expected: "changed file",
                     actual: file));
             }
+        }
+
+        return changedFiles;
+    }
+
+    private async Task<List<string>> ValidateGuardianAffectedFilesChangedAsync(
+        IReadOnlyList<string> affectedFiles,
+        string actionTag,
+        List<ValidationIssue> issues,
+        ISet<string> allowedFiles)
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+        {
+            issues.Add(new ValidationIssue(
+                PendingTurnSnapshotManifestPath,
+                IssueSeverity.Error,
+                $"Для проверки {actionTag} требуется current validated pending turn snapshot manifest.",
+                code: "ink_feather_guardian_action_invalid_validated_snapshot_context",
+                section: actionTag,
+                expected: "current validated pending turn snapshot manifest",
+                actual: DescribeValidatedPendingTurnSnapshotStatus(lookup.Status),
+                repairHint: "Guardian-sensitive accepted-turn actions должны сверяться только с current validated pending turn snapshot. Не используй отсутствующий, stale или изменённый manifest."));
+            return new List<string>();
+        }
+
+        var changedFiles = new List<string>();
+        foreach (var file in affectedFiles)
+        {
+            if (!allowedFiles.Contains(file))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{InkFeatherActionResultPath}.stateEvidence.affectedFiles",
+                    IssueSeverity.Error,
+                    $"Для {actionTag} указан недопустимый affected file: {file}",
+                    code: "ink_feather_unexpected_affected_file",
+                    section: actionTag,
+                    expected: string.Join(", ", allowedFiles.OrderBy(x => x)),
+                    actual: file));
+                continue;
+            }
+
+            var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, file);
+            if (string.IsNullOrWhiteSpace(snapshotJson))
+            {
+                issues.Add(new ValidationIssue(
+                    file,
+                    IssueSeverity.Error,
+                    $"Для {actionTag} отсутствует validated snapshot copy of {file}; guardian accepted-turn contract нельзя проверить строго.",
+                    code: "ink_feather_guardian_action_missing_validated_snapshot_file",
+                    section: actionTag,
+                    expected: $"validated snapshot entry for {file}",
+                    actual: "manifest.Files/snapshotFileHashes entry is missing or unreadable",
+                    repairHint: $"Сохраняй {file} в current validated pending turn snapshot и сверяй {actionTag} с validated snapshot copy, а не с rollback backup или live-only state."));
+                continue;
+            }
+
+            var current = await _fs.ReadFileAsync(file);
+            if (!string.Equals(current ?? string.Empty, snapshotJson, StringComparison.Ordinal))
+            {
+                changedFiles.Add(file);
+                continue;
+            }
+
+            issues.Add(new ValidationIssue(
+                $"{InkFeatherActionResultPath}.stateEvidence.affectedFiles",
+                IssueSeverity.Error,
+                $"Для {actionTag} listed affected file не изменился реально: {file}",
+                code: "ink_feather_affected_file_unchanged",
+                section: actionTag,
+                expected: "changed file",
+                actual: file));
         }
 
         return changedFiles;
@@ -1190,6 +1543,28 @@ public partial class ValidationService
             repairHint: repairHint));
     }
 
+    private static bool HasGuardianAcceptedTurnSnapshotContractFailure(IEnumerable<ValidationIssue> issues, string actionTag)
+    {
+        foreach (var issue in issues)
+        {
+            if (!string.Equals(issue.Section, actionTag, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (string.Equals(issue.Code, "ink_feather_guardian_action_invalid_validated_snapshot_context", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "ink_feather_guardian_action_missing_validated_snapshot_file", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "ink_feather_guardian_action_invalid_validated_snapshot_data", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "abode_offering_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "abode_offering_invalid_validated_snapshot_request", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "abode_offering_invalid_validated_snapshot_journal", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(issue.Code, "abode_offering_invalid_validated_snapshot_soul_state", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static string GetStringValue(JsonElement root, string propName)
     {
         return root.TryGetProperty(propName, out var el) && el.ValueKind == JsonValueKind.String
@@ -1235,8 +1610,11 @@ public partial class ValidationService
         if (manifest == null)
             return null;
 
-        if (manifest.RollbackBackups.TryGetValue(relativePath, out var backupPath))
+        if (manifest.RollbackBackups != null &&
+            manifest.RollbackBackups.TryGetValue(relativePath, out var backupPath))
+        {
             return await _fs.ReadFileAsync(backupPath);
+        }
 
         return null;
     }
@@ -1249,7 +1627,7 @@ public partial class ValidationService
         string repairHint,
         List<ValidationIssue> issues)
     {
-        var preTurnContent = await ReadPreTurnTrackedFileAsync(relativePath);
+        var preTurnContent = await ReadValidatedCurrentPreTurnTrackedFileAsync(relativePath);
         if (preTurnContent == null)
             return;
 
@@ -1288,7 +1666,7 @@ public partial class ValidationService
         const string skillPath = "game_state/player/skills_active.json";
         const string masteryPath = "game_state/player/skill_mastery.json";
 
-        var preSkillJson = await ReadPreTurnTrackedFileAsync(skillPath);
+        var preSkillJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(skillPath);
         var postSkillJson = await _fs.ReadFileAsync(skillPath);
         var masteryJson = await _fs.ReadFileAsync(masteryPath);
 
@@ -1323,7 +1701,7 @@ public partial class ValidationService
     {
         const string npcSkillsPath = "game_state/npcs/npc_skills.json";
 
-        var preJson = await ReadPreTurnTrackedFileAsync(npcSkillsPath);
+        var preJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(npcSkillsPath);
         var postJson = await _fs.ReadFileAsync(npcSkillsPath);
 
         var preSkillsByNpc = ParseNpcSkillChangesByActor(preJson, skillChangesSection);
@@ -1537,14 +1915,43 @@ public partial class ValidationService
         }
     }
 
+    private ValidationPendingTurnSnapshotManifest? LoadValidatedCurrentPendingTurnSnapshotManifestSync()
+    {
+        var lookup = LoadValidatedPendingTurnSnapshotLookupSync();
+        return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable
+            ? lookup.Manifest
+            : null;
+    }
+
+    private ValidatedPendingTurnSnapshotLookup LoadValidatedPendingTurnSnapshotLookupSync()
+    {
+        var manifestExists = File.Exists(_fs.ResolvePath(PendingTurnSnapshotManifestPath));
+        var manifest = LoadValidationPendingTurnSnapshotManifestSync();
+        if (manifest == null)
+        {
+            return new ValidatedPendingTurnSnapshotLookup(
+                manifestExists ? ValidatedPendingTurnSnapshotStatus.Unusable : ValidatedPendingTurnSnapshotStatus.Missing,
+                null);
+        }
+
+        return new ValidatedPendingTurnSnapshotLookup(
+            IsValidatedPendingTurnSnapshotManifestUsable(manifest)
+                ? ValidatedPendingTurnSnapshotStatus.Usable
+                : ValidatedPendingTurnSnapshotStatus.Unusable,
+            manifest);
+    }
+
     private string? ReadPreTurnTrackedFileSync(string relativePath)
     {
         var manifest = LoadValidationPendingTurnSnapshotManifestSync();
         if (manifest == null)
             return null;
 
-        if (!manifest.RollbackBackups.TryGetValue(relativePath, out var backupPath))
+        if (manifest.RollbackBackups == null ||
+            !manifest.RollbackBackups.TryGetValue(relativePath, out var backupPath))
+        {
             return null;
+        }
 
         var resolvedBackupPath = _fs.ResolvePath(backupPath);
         if (!File.Exists(resolvedBackupPath))
@@ -1559,6 +1966,1146 @@ public partial class ValidationService
             return null;
         }
     }
+
+    private async Task<string?> ReadValidatedCurrentPreTurnTrackedFileAsync(string relativePath)
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null
+            ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath)
+            : null;
+    }
+
+    private string? ReadValidatedCurrentPreTurnTrackedFileSync(string relativePath)
+    {
+        var lookup = LoadValidatedPendingTurnSnapshotLookupSync();
+        return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null
+            ? ReadValidatedPendingTurnSnapshotFileSync(lookup.Manifest, relativePath)
+            : null;
+    }
+
+    private async Task<string?> ReadValidatedPendingTurnSnapshotFileAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string relativePath)
+    {
+        if (manifest.Files == null ||
+            !manifest.Files.TryGetValue(relativePath, out var snapshotPath) ||
+            string.IsNullOrWhiteSpace(snapshotPath))
+        {
+            return null;
+        }
+
+        if (manifest.SnapshotFileHashes == null ||
+            !manifest.SnapshotFileHashes.TryGetValue(relativePath, out var expectedSnapshotHash) ||
+            string.IsNullOrWhiteSpace(expectedSnapshotHash))
+        {
+            return null;
+        }
+
+        var snapshotJson = await _fs.ReadFileAsync(snapshotPath);
+        if (string.IsNullOrWhiteSpace(snapshotJson))
+            return null;
+
+        var actualSnapshotHash = ComputeSha256(snapshotJson);
+        if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        return snapshotJson;
+    }
+
+    private string? ReadValidatedPendingTurnSnapshotFileSync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string relativePath)
+    {
+        if (manifest.Files == null ||
+            !manifest.Files.TryGetValue(relativePath, out var snapshotPath) ||
+            string.IsNullOrWhiteSpace(snapshotPath))
+        {
+            return null;
+        }
+
+        if (manifest.SnapshotFileHashes == null ||
+            !manifest.SnapshotFileHashes.TryGetValue(relativePath, out var expectedSnapshotHash) ||
+            string.IsNullOrWhiteSpace(expectedSnapshotHash))
+        {
+            return null;
+        }
+
+        var resolvedSnapshotPath = _fs.ResolvePath(snapshotPath);
+        if (!File.Exists(resolvedSnapshotPath))
+            return null;
+
+        try
+        {
+            var snapshotJson = File.ReadAllText(resolvedSnapshotPath);
+            if (string.IsNullOrWhiteSpace(snapshotJson))
+                return null;
+
+            var actualSnapshotHash = ComputeSha256(snapshotJson);
+            if (!string.Equals(actualSnapshotHash, expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            return snapshotJson;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task<ValidatedCurrentPreTurnRealmResolution> ResolveValidatedCurrentPreTurnRealmAsync()
+    {
+        var context = await ResolveGuardianValidatedSnapshotContextAsync();
+        return new ValidatedCurrentPreTurnRealmResolution(context.SnapshotStatus, context.PreTurnRealm);
+    }
+
+    private async Task<string?> ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+        string relativePath,
+        List<ValidationIssue> issues,
+        string code,
+        string section,
+        string message,
+        string repairHint)
+    {
+        var currentJson = await _fs.ReadFileAsync(relativePath);
+        if (string.IsNullOrWhiteSpace(currentJson))
+            return null;
+
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+        {
+            issues.Add(new ValidationIssue(
+                relativePath,
+                IssueSeverity.Error,
+                message,
+                code: code,
+                section: section,
+                expected: $"current validated pending turn snapshot manifest with {relativePath}",
+                actual: DescribeValidatedPendingTurnSnapshotStatus(lookup.Status),
+                repairHint: repairHint));
+            return null;
+        }
+
+        var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath);
+        if (!string.IsNullOrWhiteSpace(snapshotJson))
+            return snapshotJson;
+
+        issues.Add(new ValidationIssue(
+            relativePath,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: section,
+            expected: $"validated snapshot entry for {relativePath}",
+            actual: "current request exists but manifest.Files/snapshotFileHashes entry is missing or unreadable",
+            repairHint: repairHint));
+
+        return null;
+    }
+
+    private async Task<string?> ReadRequiredValidatedPendingTurnSnapshotFileAsync(
+        string relativePath,
+        List<ValidationIssue> issues,
+        string code,
+        string section,
+        string message,
+        string repairHint)
+    {
+        var manifest = await LoadRequiredValidatedCurrentPendingTurnSnapshotManifestAsync(
+            relativePath,
+            issues,
+            code,
+            section,
+            message,
+            repairHint);
+        if (manifest == null)
+            return null;
+
+        var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, relativePath);
+        if (!string.IsNullOrWhiteSpace(snapshotJson))
+            return snapshotJson;
+
+        issues.Add(new ValidationIssue(
+            relativePath,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: section,
+            expected: $"validated snapshot entry for {relativePath}",
+            actual: "manifest.Files/snapshotFileHashes entry is missing or unreadable",
+            repairHint: repairHint));
+
+        return null;
+    }
+
+    private async Task<ValidationPendingTurnSnapshotManifest?> LoadRequiredValidatedCurrentPendingTurnSnapshotManifestAsync(
+        string filePath,
+        List<ValidationIssue> issues,
+        string code,
+        string section,
+        string message,
+        string repairHint)
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null)
+            return lookup.Manifest;
+
+        issues.Add(new ValidationIssue(
+            filePath,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: section,
+            expected: "current validated pending turn snapshot manifest",
+            actual: DescribeValidatedPendingTurnSnapshotStatus(lookup.Status),
+            repairHint: repairHint));
+        return null;
+    }
+
+    private sealed record PendingTurnRequestValidationContext(
+        string SessionId,
+        string RequestId,
+        int TurnNumber);
+
+    private enum ValidatedPendingTurnSnapshotStatus
+    {
+        Missing,
+        Unusable,
+        Usable
+    }
+
+    private sealed record ValidatedPendingTurnSnapshotLookup(
+        ValidatedPendingTurnSnapshotStatus Status,
+        ValidationPendingTurnSnapshotManifest? Manifest);
+
+    private sealed record ValidatedCurrentPreTurnRealmResolution(
+        ValidatedPendingTurnSnapshotStatus SnapshotStatus,
+        string? Realm);
+
+    private sealed record GuardianValidatedSnapshotContext(
+        ValidatedPendingTurnSnapshotStatus SnapshotStatus,
+        ValidationPendingTurnSnapshotManifest? Manifest,
+        string? PreTurnRealm);
+
+    private enum GuardianAcceptedTurnSnapshotStatus
+    {
+        MissingValidatedSnapshot,
+        InvalidValidatedSnapshot,
+        Resolved
+    }
+
+    private sealed record GuardianAcceptedTurnSnapshotReadResult(
+        GuardianAcceptedTurnSnapshotStatus Status,
+        Dictionary<string, JsonElement>? GuardiansById);
+
+    private enum GuardianPowerJournalProofKnowledgeStatus
+    {
+        MissingValidatedSnapshotContext,
+        InvalidValidatedSnapshotGuardians,
+        InvalidValidatedSnapshotJournal,
+        InvalidValidatedSnapshotTracker,
+        Resolved
+    }
+
+    private sealed record GuardianPowerJournalProofKnowledge(
+        HashSet<string> KnownGuardianIds,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> KnownPoliticalProjects);
+
+    private sealed record GuardianPowerJournalProofKnowledgeReadResult(
+        GuardianPowerJournalProofKnowledgeStatus Status,
+        GuardianPowerJournalProofKnowledge? Knowledge,
+        string? FailureDescription);
+
+    private enum PendingResolutionContractStatus
+    {
+        NoPreTurnContract,
+        MissingValidatedSnapshot,
+        InvalidValidatedSnapshot,
+        Resolved
+    }
+
+    private sealed record PendingResolutionContractReadResult<TContract>(
+        PendingResolutionContractStatus Status,
+        TContract? Contract)
+        where TContract : class;
+
+    private readonly record struct StrictOfferingJournalEntry(
+        string EventId,
+        string GuardianId,
+        int Delta,
+        string OfferingType,
+        string ReturnCycleId,
+        int InkFeathersOffered,
+        string? RelicId,
+        string? RelicName,
+        string? RelicRarity,
+        string? ArchiveId,
+        string? ArchiveTitle,
+        string? ArchiveEntryType,
+        string? ArchiveRarity);
+
+    private enum OfferingJournalProofStatus
+    {
+        Resolved,
+        InvalidValidatedBaseline,
+        InvalidCurrentGuardianAuthority,
+        InvalidCurrentTrackerAuthority,
+        InvalidCurrentJournal
+    }
+
+    private readonly record struct OfferingJournalProofSummary(
+        OfferingJournalProofStatus Status,
+        bool MatchingOfferingEventFound,
+        int PreCycleInkFeathers,
+        int PostCycleInkFeathers,
+        string? FailureDescription = null);
+
+    private enum GuardianPowerJournalCurrentProofStatus
+    {
+        Resolved,
+        InvalidCurrentGuardianAuthority,
+        InvalidCurrentTrackerAuthority,
+        InvalidCurrentJournal
+    }
+
+    private sealed record GuardianPowerJournalCurrentProofReadResult(
+        GuardianPowerJournalCurrentProofStatus Status,
+        List<JsonElement>? Entries,
+        string? FailureDescription);
+
+    private enum SoulStateEntryPresenceStatus
+    {
+        Present,
+        Absent,
+        InvalidShape,
+        Unreadable
+    }
+
+    private sealed record SoulRelicProofEntry(
+        string RelicId,
+        string RelicName,
+        string RelicRarity);
+
+    private sealed record ArchiveProofEntry(
+        string ArchiveId,
+        string ArchiveTitle,
+        string ArchiveEntryType,
+        string ArchiveRarity);
+
+    private readonly record struct SoulRelicProofReadResult(
+        SoulStateEntryPresenceStatus Status,
+        SoulRelicProofEntry? Entry);
+
+    private readonly record struct ArchiveProofReadResult(
+        SoulStateEntryPresenceStatus Status,
+        ArchiveProofEntry? Entry);
+
+    private sealed record GuardianPowerJournalIdentityState(
+        HashSet<string> EventIds,
+        HashSet<string> ResonanceLifeScopeKeys);
+
+    private enum GuardianPowerJournalIdentityBaselineStatus
+    {
+        Resolved,
+        MissingValidatedSnapshotJournal,
+        InvalidValidatedSnapshotJournal
+    }
+
+    private sealed record GuardianPowerJournalIdentityBaselineResolution(
+        GuardianPowerJournalIdentityBaselineStatus Status,
+        GuardianPowerJournalIdentityState? IdentityState,
+        string FailureDescription);
+
+    private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(string requestPath)
+    {
+        if (!File.Exists(requestPath))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(File.ReadAllText(requestPath));
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return null;
+
+            if (!doc.RootElement.TryGetProperty("turnNumber", out var turnNode) ||
+                turnNode.ValueKind != JsonValueKind.Number ||
+                !turnNode.TryGetInt32(out var turnNumber))
+            {
+                return null;
+            }
+
+            var sessionId = GetFirstNonEmptyString(doc.RootElement, "sessionId") ?? string.Empty;
+            var requestId = GetFirstNonEmptyString(doc.RootElement, "requestId") ?? string.Empty;
+            return new PendingTurnRequestValidationContext(sessionId, requestId, turnNumber);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task<ValidationPendingTurnSnapshotManifest?> LoadValidatedCurrentPendingTurnSnapshotManifestAsync()
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable
+            ? lookup.Manifest
+            : null;
+    }
+
+    private async Task<GuardianValidatedSnapshotContext> ResolveGuardianValidatedSnapshotContextAsync()
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Missing)
+            return new GuardianValidatedSnapshotContext(ValidatedPendingTurnSnapshotStatus.Missing, null, null);
+
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+            return new GuardianValidatedSnapshotContext(ValidatedPendingTurnSnapshotStatus.Unusable, lookup.Manifest, null);
+
+        var snapshotRealm = await TryReadValidatedPendingTurnSnapshotRealmAsync(lookup.Manifest);
+        if (string.IsNullOrWhiteSpace(snapshotRealm))
+            return new GuardianValidatedSnapshotContext(ValidatedPendingTurnSnapshotStatus.Unusable, lookup.Manifest, null);
+
+        return new GuardianValidatedSnapshotContext(ValidatedPendingTurnSnapshotStatus.Usable, lookup.Manifest, snapshotRealm);
+    }
+
+    private async Task<string?> TryReadValidatedPendingTurnSnapshotRealmAsync(ValidationPendingTurnSnapshotManifest manifest)
+    {
+        var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, "game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(snapshotJson))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(snapshotJson);
+            if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                doc.RootElement.TryGetProperty("currentRealm", out var realm) &&
+                realm.ValueKind == JsonValueKind.String &&
+                !string.IsNullOrWhiteSpace(realm.GetString()))
+            {
+                return realm.GetString();
+            }
+        }
+        catch
+        {
+            return null;
+        }
+
+        return null;
+    }
+
+    private static bool RequiresValidatedGuardianSnapshotForAcceptedTurnInkFeatherAction(string actionTag) =>
+        string.Equals(actionTag, "DONATE_TO_GUARDIAN", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(actionTag, "GUARDIAN_FAVOR", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(actionTag, GuardianAbodeOfferingState.ActionTag, StringComparison.OrdinalIgnoreCase);
+
+    private async Task<string?> ResolveAcceptedTurnInkFeatherRealmAsync(
+        InkFeatherActionContext actionContext,
+        List<ValidationIssue> issues)
+    {
+        if (!RequiresValidatedGuardianSnapshotForAcceptedTurnInkFeatherAction(actionContext.ActionTag))
+            return await TryResolvePreTurnRealmAsync();
+
+        var snapshotContext = await ResolveGuardianValidatedSnapshotContextAsync();
+        if (snapshotContext.SnapshotStatus == ValidatedPendingTurnSnapshotStatus.Usable &&
+            !string.IsNullOrWhiteSpace(snapshotContext.PreTurnRealm))
+        {
+            return snapshotContext.PreTurnRealm;
+        }
+
+        issues.Add(new ValidationIssue(
+            "input/turn_request.json.playerAction",
+            IssueSeverity.Error,
+            $"Guardian-sensitive INK_FEATHER_ACTION {actionContext.ActionTag} требует current validated pending turn snapshot pre-turn realm.",
+            code: "ink_feather_guardian_action_invalid_validated_snapshot_context",
+            section: "INK_FEATHER_ACTION",
+            expected: "current validated pending turn snapshot with game_state/meta/soul_state.json",
+            actual: DescribeValidatedPendingTurnSnapshotStatus(snapshotContext.SnapshotStatus),
+            repairHint: "Для DONATE_TO_GUARDIAN, GUARDIAN_FAVOR и ABODE_OFFERING сохраняй current validated pending turn snapshot с game_state/meta/soul_state.json и не используй отсутствующий или stale snapshot."));
+        return null;
+    }
+
+    private async Task<string?> ReadRequiredValidatedGuardianAcceptedTurnSnapshotFileAsync(
+        string relativePath,
+        string actionTag,
+        string purpose,
+        List<ValidationIssue> issues)
+    {
+        return await ReadRequiredValidatedPendingTurnSnapshotFileAsync(
+            relativePath,
+            issues,
+            code: "ink_feather_guardian_action_missing_validated_snapshot_file",
+            section: actionTag,
+            message: $"Для {actionTag} требуется validated snapshot copy of {relativePath}; без неё нельзя строго проверить {purpose}.",
+            repairHint: $"Сохраняй {relativePath} в current validated pending turn snapshot и сверяй {actionTag} с validated snapshot copy, а не с rollback backup или live-only state.");
+    }
+
+    private async Task<GuardianAcceptedTurnSnapshotReadResult> ReadRequiredValidatedGuardianAcceptedTurnSnapshotGuardiansAsync(
+        string relativePath,
+        string actionTag,
+        string purpose,
+        List<ValidationIssue> issues)
+    {
+        var json = await ReadRequiredValidatedGuardianAcceptedTurnSnapshotFileAsync(
+            relativePath,
+            actionTag,
+            purpose,
+            issues);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return new GuardianAcceptedTurnSnapshotReadResult(
+                GuardianAcceptedTurnSnapshotStatus.MissingValidatedSnapshot,
+                null);
+        }
+
+        try
+        {
+            string? trackerJson = null;
+            string? journalJson = null;
+            var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+            if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null)
+            {
+                trackerJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianProjectState.TrackerPath);
+                journalJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianPowerEventState.JournalPath);
+            }
+
+            if (TryReadCanonicalGuardianSnapshotForProof(
+                    json,
+                    relativePath,
+                    trackerJson,
+                    $"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}",
+                    journalJson,
+                    $"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}",
+                    out var guardiansById,
+                    out var failureDescription))
+            {
+                return new GuardianAcceptedTurnSnapshotReadResult(
+                    GuardianAcceptedTurnSnapshotStatus.Resolved,
+                    guardiansById);
+            }
+
+            issues.Add(new ValidationIssue(
+                relativePath,
+                IssueSeverity.Error,
+                $"Для {actionTag} validated snapshot copy {relativePath} readable, но canonical guardian baseline semantically invalid.",
+                code: "ink_feather_guardian_action_invalid_validated_snapshot_data",
+                section: actionTag,
+                expected: "canonical guardian root baseline satisfying the full guardian contract",
+                actual: failureDescription,
+                repairHint: $"Сохраняй в validated snapshot полный canonical {relativePath}; partial или semantically invalid guardian root baseline не может authorizовать {actionTag}."));
+            return new GuardianAcceptedTurnSnapshotReadResult(
+                GuardianAcceptedTurnSnapshotStatus.InvalidValidatedSnapshot,
+                null);
+        }
+        catch (JsonException)
+        {
+            // fail-closed below with explicit snapshot issue
+        }
+
+        issues.Add(new ValidationIssue(
+            relativePath,
+            IssueSeverity.Error,
+            $"Для {actionTag} validated snapshot copy {relativePath} unreadable или malformed; strict guardian baseline нельзя проверить.",
+            code: "ink_feather_guardian_action_invalid_validated_snapshot_data",
+            section: actionTag,
+            expected: $"validated snapshot object with guardians[] for {relativePath}",
+            actual: "validated snapshot JSON unreadable or missing guardians[] array",
+            repairHint: $"Сохраняй в validated snapshot корректный canonical {relativePath} с guardians[] и сверяй {actionTag} только с читаемым guardian baseline."));
+        return new GuardianAcceptedTurnSnapshotReadResult(
+            GuardianAcceptedTurnSnapshotStatus.InvalidValidatedSnapshot,
+            null);
+    }
+
+    private JsonElement? TryReadValidatedGuardianAcceptedTurnSnapshotGuardian(
+        GuardianAcceptedTurnSnapshotReadResult snapshot,
+        string guardianId,
+        string relativePath,
+        string actionTag,
+        List<ValidationIssue> issues)
+    {
+        if (snapshot.Status != GuardianAcceptedTurnSnapshotStatus.Resolved ||
+            snapshot.GuardiansById == null)
+        {
+            return null;
+        }
+
+        if (snapshot.GuardiansById.TryGetValue(guardianId, out var guardian))
+            return guardian.Clone();
+
+        issues.Add(new ValidationIssue(
+            relativePath,
+            IssueSeverity.Error,
+            $"Для {actionTag} validated snapshot copy {relativePath} не содержит guardian baseline для {guardianId}, относительно которого доказывается outcome.",
+            code: "ink_feather_guardian_action_invalid_validated_snapshot_data",
+            section: actionTag,
+            expected: $"canonical guardian baseline entry for {guardianId}",
+            actual: $"guardianId {guardianId} missing from validated snapshot guardians[]",
+            repairHint: $"Сохраняй в validated snapshot canonical guardians[] entry для {guardianId}; readable snapshot без target guardian не является valid proof context для {actionTag}."));
+        return null;
+    }
+
+    private bool TryReadCanonicalGuardianSnapshotForProof(
+        string? guardiansJson,
+        string contextPrefix,
+        string? trackerJson,
+        string trackerContextPrefix,
+        string? journalJson,
+        string journalContextPrefix,
+        out Dictionary<string, JsonElement> guardiansById,
+        out string failureDescription)
+    {
+        if (!TryReadCanonicalGuardianSnapshotStateForProof(
+                guardiansJson,
+                contextPrefix,
+                out var guardianRoot,
+                out guardiansById,
+                out failureDescription))
+        {
+            return false;
+        }
+
+        if (!guardianRoot.TryGetProperty("guardianPowerEvents", out var powerEvents) ||
+            powerEvents.ValueKind == JsonValueKind.Null)
+        {
+            return true;
+        }
+
+        if (!TryReadGuardianPowerJournalIdentityStateForProof(
+                journalJson,
+                journalContextPrefix,
+                out var snapshotJournalIdentityState,
+                out var journalFailureDescription))
+        {
+            failureDescription =
+                $"guardianPowerEvents inside validated snapshot guardians.json require canonical validated snapshot journal baseline: {journalFailureDescription}";
+            return false;
+        }
+
+        var knownPoliticalProjects = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        if (GuardianPowerEventArrayRequiresProjectTrackerAuthority(powerEvents) &&
+            !TryReadCanonicalGuardianProjectTrackerSnapshotForProof(
+                trackerJson,
+                trackerContextPrefix,
+                guardiansById,
+                out knownPoliticalProjects,
+                out var trackerFailureDescription))
+        {
+            failureDescription =
+                $"guardianPowerEvents inside validated snapshot guardians.json require canonical validated snapshot tracker baseline: {trackerFailureDescription}";
+            return false;
+        }
+
+        var scratchIssues = new List<ValidationIssue>();
+        ValidateGuardianPowerEventArrayAgainstKnownContext(
+            powerEvents,
+            $"{contextPrefix}.guardianPowerEvents",
+            scratchIssues,
+            new HashSet<string>(guardiansById.Keys, StringComparer.OrdinalIgnoreCase),
+            knownPoliticalProjects,
+            snapshotJournalIdentityState);
+        if (scratchIssues.Count != 0)
+        {
+            failureDescription = DescribeGuardianAcceptedTurnSnapshotBaselineFailure(scratchIssues);
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool TryReadCanonicalGuardianSnapshotStateForProof(
+        string? guardiansJson,
+        string contextPrefix,
+        out JsonElement guardianRoot,
+        out Dictionary<string, JsonElement> guardiansById,
+        out string failureDescription)
+    {
+        guardianRoot = default;
+        guardiansById = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        failureDescription = "validated snapshot JSON unreadable or missing guardians[] array";
+        if (string.IsNullOrWhiteSpace(guardiansJson))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(guardiansJson);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty("guardians", out var guardians) ||
+                guardians.ValueKind != JsonValueKind.Array)
+            {
+                return false;
+            }
+
+            var scratchIssues = new List<ValidationIssue>();
+            var guardiansByIdWithContext = ValidateGuardianCanonicalRootStructureForProof(
+                doc.RootElement,
+                contextPrefix,
+                scratchIssues);
+            if (scratchIssues.Count == 0)
+            {
+                var snapshotPolicyContext = BuildGuardianSnapshotProofPolicyContext(doc.RootElement, guardiansByIdWithContext);
+                AuthorizeGuardianCommandsForPolicy(
+                    doc.RootElement,
+                    contextPrefix,
+                    scratchIssues,
+                    snapshotPolicyContext);
+            }
+
+            if (scratchIssues.Count != 0)
+            {
+                failureDescription = DescribeGuardianAcceptedTurnSnapshotBaselineFailure(scratchIssues);
+                return false;
+            }
+
+            guardianRoot = doc.RootElement.Clone();
+            guardiansById = guardiansByIdWithContext.ToDictionary(
+                pair => pair.Key,
+                pair => pair.Value.Guardian.Clone(),
+                StringComparer.OrdinalIgnoreCase);
+            return true;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private GuardianPolicyContext BuildGuardianSnapshotProofPolicyContext(
+        JsonElement root,
+        IReadOnlyDictionary<string, (JsonElement Guardian, string Context)> guardiansByIdWithContext)
+    {
+        var context = new GuardianPolicyContext
+        {
+            CurrentStateReadable = true,
+            HasPreTurnRoot = true,
+            PreTurnRoot = root.Clone(),
+            PreTurnGuardiansSnapshot = new(
+                ValidatedPendingTurnSnapshotStatus.Usable,
+                GuardianTrackedSnapshotFileStatus.Usable,
+                null,
+                root.GetRawText())
+        };
+
+        foreach (var (guardianId, guardianWithContext) in guardiansByIdWithContext)
+            context.PreTurnGuardiansById[guardianId] = guardianWithContext.Guardian.Clone();
+
+        return context;
+    }
+
+    private Dictionary<string, (JsonElement Guardian, string Context)> ValidateGuardianCanonicalRootStructureForProof(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        var guardiansById = new Dictionary<string, (JsonElement Guardian, string Context)>(StringComparer.OrdinalIgnoreCase);
+        if (root.TryGetProperty("guardians", out var guardians) && guardians.ValueKind == JsonValueKind.Array)
+        {
+            var index = 0;
+            foreach (var guardian in guardians.EnumerateArray())
+            {
+                var guardianContext = $"{contextPrefix}.guardians[{index++}]";
+                if (!RequireObject(guardian, guardianContext, issues))
+                    continue;
+
+                ValidateGuardianCanonicalObject(guardian, guardianContext, issues);
+
+                var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+                if (string.IsNullOrWhiteSpace(guardianId))
+                    continue;
+
+                if (guardiansById.ContainsKey(guardianId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{guardianContext}.guardianId",
+                        IssueSeverity.Error,
+                        "Validated guardian snapshot must not contain duplicate guardianId entries.",
+                        code: "guardian_duplicate_guardian_id",
+                        section: "Guardians",
+                        expected: "unique guardianId",
+                        actual: guardianId));
+                    continue;
+                }
+
+                guardiansById[guardianId] = (guardian.Clone(), guardianContext);
+            }
+
+            ValidateGuardianRelationshipNetwork(guardiansById, issues);
+        }
+
+        if (root.TryGetProperty("activeGuardian", out var activeGuardian) && activeGuardian.ValueKind == JsonValueKind.Object)
+        {
+            var activeGuardianContext = $"{contextPrefix}.activeGuardian";
+            ValidateGuardianCanonicalObject(activeGuardian, activeGuardianContext, issues);
+
+            var activeGuardianId = GetFirstNonEmptyString(activeGuardian, "guardianId", "id");
+            if (!string.IsNullOrWhiteSpace(activeGuardianId) &&
+                guardiansById.TryGetValue(activeGuardianId, out var guardianMatch))
+            {
+                CompareGuardianGachaState(activeGuardian, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
+                CompareGuardianTradeState(activeGuardian, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
+                ValidateActiveGuardianNavigationState(root, contextPrefix, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
+            }
+            else if (!string.IsNullOrWhiteSpace(activeGuardianId))
+            {
+                var activeGuardianName = GuardianManifestation.GetDisplayName(activeGuardian);
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.activeGuardian.guardianId",
+                    IssueSeverity.Error,
+                    $"Активный хранитель '{activeGuardianName ?? activeGuardianId}' не найден в validated snapshot guardians[].",
+                    code: "active_guardian_missing_in_guardians_array",
+                    section: "Guardians",
+                    expected: "activeGuardian.guardianId matches an entry inside guardians[]",
+                    actual: $"guardianId={activeGuardianId}",
+                    repairHint: "Сохраняй в validated snapshot activeGuardian только как strict mirror существующей canonical guardian entry из guardians[]."));
+            }
+        }
+
+        return guardiansById;
+    }
+
+    private async Task<GuardianPowerJournalProofKnowledgeReadResult> ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync(
+        string? proofRelevantReasonType = null)
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+        {
+            return new GuardianPowerJournalProofKnowledgeReadResult(
+                GuardianPowerJournalProofKnowledgeStatus.MissingValidatedSnapshotContext,
+                null,
+                DescribeValidatedPendingTurnSnapshotStatus(lookup.Status));
+        }
+
+        if (lookup.Manifest.Files == null ||
+            !lookup.Manifest.Files.ContainsKey("game_state/meta/guardians.json"))
+        {
+            return new GuardianPowerJournalProofKnowledgeReadResult(
+                GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians,
+                null,
+                "validated snapshot manifest missing game_state/meta/guardians.json entry");
+        }
+
+        var guardiansJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, "game_state/meta/guardians.json");
+        if (!TryReadCanonicalGuardianSnapshotStateForProof(
+                guardiansJson,
+                "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+                out var snapshotGuardianRoot,
+                out var snapshotGuardiansById,
+                out var guardianFailureDescription))
+        {
+            return new GuardianPowerJournalProofKnowledgeReadResult(
+                GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians,
+                null,
+                guardianFailureDescription);
+        }
+
+        string? preTurnJournalJson = null;
+        GuardianPowerJournalIdentityState? snapshotJournalIdentityState = null;
+        if (snapshotGuardianRoot.TryGetProperty("guardianPowerEvents", out var snapshotPowerEventsForIdentity) &&
+            snapshotPowerEventsForIdentity.ValueKind != JsonValueKind.Null)
+        {
+            if (lookup.Manifest.Files == null ||
+                !lookup.Manifest.Files.ContainsKey(GuardianPowerEventState.JournalPath))
+            {
+                return new GuardianPowerJournalProofKnowledgeReadResult(
+                    GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotJournal,
+                    null,
+                    $"validated snapshot manifest missing {GuardianPowerEventState.JournalPath} entry");
+            }
+
+            preTurnJournalJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianPowerEventState.JournalPath);
+            if (!TryReadGuardianPowerJournalIdentityStateForProof(
+                    preTurnJournalJson,
+                    $"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}",
+                    out snapshotJournalIdentityState,
+                    out var snapshotJournalFailureDescription))
+            {
+                return new GuardianPowerJournalProofKnowledgeReadResult(
+                    GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotJournal,
+                    null,
+                    snapshotJournalFailureDescription);
+            }
+        }
+
+        var requiresTrackerProofKnowledge =
+            snapshotGuardianRoot.TryGetProperty("guardianPowerEvents", out var snapshotPowerEvents) &&
+            snapshotPowerEvents.ValueKind != JsonValueKind.Null &&
+            GuardianPowerEventArrayRequiresProjectTrackerAuthority(snapshotPowerEvents);
+
+        if (lookup.Manifest.Files != null &&
+            lookup.Manifest.Files.ContainsKey(GuardianPowerEventState.JournalPath))
+        {
+            preTurnJournalJson ??= await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianPowerEventState.JournalPath);
+            if (TryReadGuardianPowerJournalEntriesForCurrentSemanticProof(preTurnJournalJson, out var semanticPreTurnEntries) &&
+                GuardianPowerJournalEntriesRequireProjectTrackerAuthority(
+                    FilterGuardianPowerJournalEntriesForProof(semanticPreTurnEntries, proofRelevantReasonType)))
+            {
+                requiresTrackerProofKnowledge = true;
+            }
+        }
+
+        var knownPoliticalProjects = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        if (requiresTrackerProofKnowledge)
+        {
+            if (lookup.Manifest.Files == null ||
+                !lookup.Manifest.Files.ContainsKey(GuardianProjectState.TrackerPath))
+            {
+                return new GuardianPowerJournalProofKnowledgeReadResult(
+                    GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotTracker,
+                    null,
+                    $"validated snapshot manifest missing {GuardianProjectState.TrackerPath} entry");
+            }
+
+            var trackerJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianProjectState.TrackerPath);
+            if (!TryReadCanonicalGuardianProjectTrackerSnapshotForProof(
+                    trackerJson,
+                    $"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}",
+                    snapshotGuardiansById,
+                    out knownPoliticalProjects,
+                    out var trackerFailureDescription))
+            {
+                return new GuardianPowerJournalProofKnowledgeReadResult(
+                    GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotTracker,
+                    null,
+                    trackerFailureDescription);
+            }
+        }
+
+        if (snapshotGuardianRoot.TryGetProperty("guardianPowerEvents", out snapshotPowerEvents) &&
+            snapshotPowerEvents.ValueKind != JsonValueKind.Null)
+        {
+            var powerEventIssues = new List<ValidationIssue>();
+            ValidateGuardianPowerEventArrayAgainstKnownContext(
+                snapshotPowerEvents,
+                "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.guardianPowerEvents",
+                powerEventIssues,
+                new HashSet<string>(snapshotGuardiansById.Keys, StringComparer.OrdinalIgnoreCase),
+                knownPoliticalProjects,
+                snapshotJournalIdentityState);
+            if (powerEventIssues.Count != 0)
+            {
+                return new GuardianPowerJournalProofKnowledgeReadResult(
+                    GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians,
+                    null,
+                    DescribeGuardianAcceptedTurnSnapshotBaselineFailure(powerEventIssues));
+            }
+        }
+
+        return new GuardianPowerJournalProofKnowledgeReadResult(
+            GuardianPowerJournalProofKnowledgeStatus.Resolved,
+            new GuardianPowerJournalProofKnowledge(
+                new HashSet<string>(snapshotGuardiansById.Keys, StringComparer.OrdinalIgnoreCase),
+                knownPoliticalProjects),
+            null);
+    }
+
+    private bool TryReadCanonicalGuardianProjectTrackerSnapshotForProof(
+        string? trackerJson,
+        string contextPrefix,
+        IReadOnlyDictionary<string, JsonElement> guardiansById,
+        out Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        out string failureDescription)
+    {
+        knownPoliticalProjects = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        failureDescription = "validated snapshot tracker JSON missing, unreadable or semantically invalid";
+        if (string.IsNullOrWhiteSpace(trackerJson))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(trackerJson);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return false;
+
+            var knownGuardianIds = new HashSet<string>(guardiansById.Keys, StringComparer.OrdinalIgnoreCase);
+            var relationshipScores = new Dictionary<string, IReadOnlyDictionary<string, int>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var guardian in guardiansById.Values)
+                MergeGuardianIdentityValidationState(guardian, knownGuardianIds, relationshipScores);
+
+            var scratchIssues = new List<ValidationIssue>();
+            if (doc.RootElement.TryGetProperty("activeProjects", out var activeProjects))
+            {
+                ValidateGuardianProjectEntryArray(
+                    activeProjects,
+                    $"{contextPrefix}.activeProjects",
+                    scratchIssues,
+                    completed: false,
+                    relationshipScores,
+                    knownGuardianIds);
+            }
+
+            if (doc.RootElement.TryGetProperty("completedProjects", out var completedProjects))
+            {
+                ValidateGuardianProjectEntryArray(
+                    completedProjects,
+                    $"{contextPrefix}.completedProjects",
+                    scratchIssues,
+                    completed: true,
+                    relationshipScores,
+                    knownGuardianIds);
+            }
+
+            ValidateGuardianProjectIdentityCollisions(doc.RootElement, contextPrefix, scratchIssues);
+            if (doc.RootElement.TryGetProperty("temporaryProjectModifiers", out var temporaryProjectModifiers))
+                ValidateGuardianProjectTemporaryModifiers(temporaryProjectModifiers, $"{contextPrefix}.temporaryProjectModifiers", scratchIssues);
+
+            if (scratchIssues.Count == 0)
+            {
+                var knownProjects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var knownCompletedProjects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var knownProjectDetails = new Dictionary<string, GuardianProjectValidationSnapshot>(StringComparer.OrdinalIgnoreCase);
+                var knownActiveProjectIdsByGuardian = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                MergeKnownGuardianProjectKeysForValidation(knownProjects, trackerJson);
+                MergeKnownCompletedGuardianProjectKeysForValidation(knownCompletedProjects, trackerJson);
+                MergeKnownGuardianProjectsForValidation(knownProjectDetails, trackerJson);
+                MergeKnownActiveGuardianProjectIdsByGuardian(knownActiveProjectIdsByGuardian, trackerJson);
+
+                var startedThisTurn = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var startedProjectDetails = new Dictionary<string, GuardianProjectValidationSnapshot>(StringComparer.OrdinalIgnoreCase);
+                if (doc.RootElement.TryGetProperty("startGuardianProjects", out var startCommands))
+                {
+                    ValidateGuardianProjectStartCommands(
+                        startCommands,
+                        $"{contextPrefix}.startGuardianProjects",
+                        scratchIssues,
+                        knownProjects,
+                        knownCompletedProjects,
+                        knownActiveProjectIdsByGuardian,
+                        startedThisTurn,
+                        startedProjectDetails,
+                        relationshipScores,
+                        knownGuardianIds);
+                }
+
+                if (doc.RootElement.TryGetProperty("guardianProjectUpdates", out var updateCommands))
+                {
+                    ValidateGuardianProjectUpdateCommands(
+                        updateCommands,
+                        $"{contextPrefix}.guardianProjectUpdates",
+                        scratchIssues,
+                        knownProjects,
+                        startedThisTurn,
+                        knownGuardianIds);
+                }
+
+                if (doc.RootElement.TryGetProperty("completeGuardianProjects", out var completeCommands))
+                {
+                    ValidateGuardianProjectCompletionCommands(
+                        completeCommands,
+                        $"{contextPrefix}.completeGuardianProjects",
+                        scratchIssues,
+                        knownProjects,
+                        knownProjectDetails,
+                        startedProjectDetails,
+                        startedThisTurn,
+                        relationshipScores,
+                        knownGuardianIds);
+                }
+            }
+
+            if (scratchIssues.Count != 0)
+            {
+                failureDescription = DescribeGuardianAcceptedTurnSnapshotBaselineFailure(scratchIssues);
+                return false;
+            }
+
+            var ambiguousKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            MergeKnownPoliticalGuardianPowerEventProjectEntries(knownPoliticalProjects, ambiguousKeys, doc.RootElement, "activeProjects", completed: false);
+            MergeKnownPoliticalGuardianPowerEventProjectEntries(knownPoliticalProjects, ambiguousKeys, doc.RootElement, "completedProjects", completed: true);
+            return true;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static string DescribeGuardianAcceptedTurnSnapshotBaselineFailure(List<ValidationIssue> issues)
+    {
+        if (issues.Count == 0)
+            return "canonical guardian contract failure";
+
+        var firstIssue = issues[0];
+        if (!string.IsNullOrWhiteSpace(firstIssue.Code))
+            return $"{firstIssue.Code} at {firstIssue.FilePath}";
+
+        return $"{firstIssue.FilePath}: {firstIssue.Message}";
+    }
+
+    private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync()
+    {
+        var manifestExists = _fs.FileExists(PendingTurnSnapshotManifestPath);
+        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
+        if (manifest == null)
+        {
+            return new ValidatedPendingTurnSnapshotLookup(
+                manifestExists ? ValidatedPendingTurnSnapshotStatus.Unusable : ValidatedPendingTurnSnapshotStatus.Missing,
+                null);
+        }
+
+        return new ValidatedPendingTurnSnapshotLookup(
+            IsValidatedPendingTurnSnapshotManifestUsable(manifest)
+                ? ValidatedPendingTurnSnapshotStatus.Usable
+                : ValidatedPendingTurnSnapshotStatus.Unusable,
+            manifest);
+    }
+
+    private bool IsValidatedPendingTurnSnapshotManifestUsable(ValidationPendingTurnSnapshotManifest? manifest)
+    {
+        if (manifest == null || string.IsNullOrWhiteSpace(manifest.ManifestPayloadHash))
+            return false;
+
+        var actualManifestHash = ComputeManifestPayloadHash(manifest);
+        if (!string.Equals(actualManifestHash, manifest.ManifestPayloadHash, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        return IsValidatedPendingTurnSnapshotManifestCurrent(manifest);
+    }
+
+    private bool IsValidatedPendingTurnSnapshotManifestCurrent(ValidationPendingTurnSnapshotManifest manifest)
+    {
+        const string repairRequestPath = "game_state/control/validation_repair_request.json";
+        var repairContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath(repairRequestPath));
+        if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, repairContext))
+            return true;
+
+        var turnContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("input/turn_request.json"));
+        return DoesPendingTurnRequestValidationContextMatchManifest(manifest, turnContext);
+    }
+
+    private static bool DoesPendingTurnRequestValidationContextMatchManifest(
+        ValidationPendingTurnSnapshotManifest manifest,
+        PendingTurnRequestValidationContext? context)
+    {
+        if (context == null)
+            return false;
+
+        if (manifest.TurnNumber != context.TurnNumber)
+            return false;
+
+        if (!DoesPendingTurnContextIdMatch(manifest.SessionId, context.SessionId))
+            return false;
+
+        if (!DoesPendingTurnContextIdMatch(manifest.RequestId, context.RequestId))
+            return false;
+
+        return true;
+    }
+
+    private static bool DoesPendingTurnContextIdMatch(string manifestId, string contextId)
+    {
+        var hasManifestId = !string.IsNullOrWhiteSpace(manifestId);
+        var hasContextId = !string.IsNullOrWhiteSpace(contextId);
+        if (!hasManifestId && !hasContextId)
+            return true;
+        if (!hasManifestId || !hasContextId)
+            return false;
+
+        return string.Equals(manifestId, contextId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string DescribeValidatedPendingTurnSnapshotStatus(ValidatedPendingTurnSnapshotStatus status) => status switch
+    {
+        ValidatedPendingTurnSnapshotStatus.Missing => "validated pending turn snapshot manifest is missing",
+        ValidatedPendingTurnSnapshotStatus.Unusable => "validated pending turn snapshot manifest is unreadable, modified, missing required snapshot data, or not current for the active request context",
+        _ => "validated pending turn snapshot is usable"
+    };
 
     private string? ReadCurrentTrackedFileSync(string relativePath)
     {
@@ -2096,6 +3643,98 @@ public partial class ValidationService
         return null;
     }
 
+    private OfferingJournalProofSummary SummarizeOfferingJournalProof(
+        string? preJson,
+        string? postJson,
+        GuardianAbodeOfferingState.PendingAbodeOfferingRequest request,
+        int expectedGain,
+        GuardianPowerJournalProofKnowledge preTurnKnowledge,
+        string? proofRelevantReasonType = null,
+        string? expectedEventId = null)
+    {
+        if (!TryReadStrictGuardianPowerJournalEntriesForValidatedBaselineProof(
+                preJson,
+                preTurnKnowledge,
+                proofRelevantReasonType,
+                out var preEntries))
+        {
+            return new OfferingJournalProofSummary(OfferingJournalProofStatus.InvalidValidatedBaseline, false, 0, 0);
+        }
+
+        var currentProof = ReadStrictGuardianPowerJournalEntriesForCurrentProof(postJson, proofRelevantReasonType);
+        if (currentProof.Status == GuardianPowerJournalCurrentProofStatus.InvalidCurrentGuardianAuthority)
+        {
+            return new OfferingJournalProofSummary(
+                OfferingJournalProofStatus.InvalidCurrentGuardianAuthority,
+                false,
+                0,
+                0,
+                currentProof.FailureDescription);
+        }
+
+        if (currentProof.Status == GuardianPowerJournalCurrentProofStatus.InvalidCurrentTrackerAuthority)
+        {
+            return new OfferingJournalProofSummary(
+                OfferingJournalProofStatus.InvalidCurrentTrackerAuthority,
+                false,
+                0,
+                0,
+                currentProof.FailureDescription);
+        }
+
+        if (currentProof.Status != GuardianPowerJournalCurrentProofStatus.Resolved ||
+            currentProof.Entries == null)
+        {
+            return new OfferingJournalProofSummary(
+                OfferingJournalProofStatus.InvalidCurrentJournal,
+                false,
+                0,
+                0,
+                currentProof.FailureDescription);
+        }
+
+        var postEntries = currentProof.Entries;
+        if (!TryValidateGuardianPowerJournalAppendOnlyIdentity(preEntries, postEntries, out var appendOnlyFailureDescription))
+        {
+            return new OfferingJournalProofSummary(
+                OfferingJournalProofStatus.InvalidCurrentJournal,
+                false,
+                0,
+                0,
+                appendOnlyFailureDescription);
+        }
+
+        var knownEventIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in preEntries)
+        {
+            var eventId = GetStringValue(entry, "eventId");
+            if (!string.IsNullOrWhiteSpace(eventId))
+                knownEventIds.Add(eventId);
+        }
+
+        var matchingOfferingEventFound = false;
+        foreach (var entry in postEntries)
+        {
+            var eventId = GetStringValue(entry, "eventId");
+            if (string.IsNullOrWhiteSpace(eventId) ||
+                knownEventIds.Contains(eventId) ||
+                !TryParseStrictOfferingJournalEntry(entry, out var strictEntry) ||
+                !StrictOfferingJournalEntryMatchesPendingRequest(strictEntry, request, expectedGain, expectedEventId))
+            {
+                continue;
+            }
+
+            matchingOfferingEventFound = true;
+            break;
+        }
+
+        return new OfferingJournalProofSummary(
+            OfferingJournalProofStatus.Resolved,
+            matchingOfferingEventFound,
+            CountOfferingFeathersFromJournalEntries(preEntries, request.GuardianId, request.ReturnCycleId),
+            CountOfferingFeathersFromJournalEntries(postEntries, request.GuardianId, request.ReturnCycleId));
+    }
+
     private static IEnumerable<JsonElement> CollectNewGuardianPowerJournalEntries(string? preJson, string? postJson)
     {
         var knownEventIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -2145,67 +3784,610 @@ public partial class ValidationService
         }
     }
 
-    private static int CountOfferingFeathersFromJournal(string? journalJson, string guardianId, string returnCycleId)
+    private bool TryReadStrictGuardianPowerJournalEntriesForValidatedBaselineProof(
+        string? journalJson,
+        GuardianPowerJournalProofKnowledge proofKnowledge,
+        string? proofRelevantReasonType,
+        out List<JsonElement> entries)
     {
+        entries = new List<JsonElement>();
+        if (!TryReadGuardianPowerJournalEntriesForCurrentSemanticProof(journalJson, out var semanticEntries))
+            return false;
+
+        return TryReadStrictGuardianPowerJournalEntriesForProof(
+            semanticEntries,
+            proofKnowledge.KnownGuardianIds,
+            proofKnowledge.KnownPoliticalProjects,
+            proofRelevantReasonType,
+            out entries);
+    }
+
+    private GuardianPowerJournalCurrentProofReadResult ReadStrictGuardianPowerJournalEntriesForCurrentProof(
+        string? journalJson,
+        string? proofRelevantReasonType = null)
+    {
+        if (!TryReadGuardianPowerJournalEntriesForCurrentSemanticProof(journalJson, out var semanticEntries))
+        {
+            return new GuardianPowerJournalCurrentProofReadResult(
+                GuardianPowerJournalCurrentProofStatus.InvalidCurrentJournal,
+                null,
+                "current journal unreadable, malformed or semantically invalid");
+        }
+
+        if (!TryReadCurrentGuardianPowerJournalProofKnowledge(
+                GuardianPowerJournalEntriesRequireProjectTrackerAuthority(
+                    FilterGuardianPowerJournalEntriesForProof(semanticEntries, proofRelevantReasonType)),
+                out var knownGuardianIds,
+                out var knownPoliticalProjects,
+                out var authorityFailureStatus,
+                out var authorityFailureDescription))
+        {
+            return new GuardianPowerJournalCurrentProofReadResult(
+                authorityFailureStatus,
+                null,
+                authorityFailureDescription);
+        }
+
+        if (!TryReadStrictGuardianPowerJournalEntriesForProof(
+                semanticEntries,
+                knownGuardianIds,
+                knownPoliticalProjects,
+                proofRelevantReasonType,
+                out var entries))
+        {
+            return new GuardianPowerJournalCurrentProofReadResult(
+                GuardianPowerJournalCurrentProofStatus.InvalidCurrentJournal,
+                null,
+                "current journal unreadable, malformed or semantically invalid");
+        }
+
+        return new GuardianPowerJournalCurrentProofReadResult(
+            GuardianPowerJournalCurrentProofStatus.Resolved,
+            entries,
+            null);
+    }
+
+    private bool TryReadCurrentGuardianPowerJournalProofKnowledge(
+        bool requiresPoliticalProjectKnowledge,
+        out HashSet<string> knownGuardianIds,
+        out IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        out GuardianPowerJournalCurrentProofStatus failureStatus,
+        out string failureDescription)
+    {
+        knownGuardianIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        knownPoliticalProjects = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        failureStatus = GuardianPowerJournalCurrentProofStatus.InvalidCurrentGuardianAuthority;
+        failureDescription = "current guardian authority unavailable";
+
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        if (guardianPolicyContext.HasCurrentGuardianPowerEvents &&
+            guardianPolicyContext.CurrentGuardianPowerEventAuthorityStatus != GuardianPowerEventAuthorityStatus.Resolved)
+        {
+            failureDescription = string.IsNullOrWhiteSpace(guardianPolicyContext.CurrentGuardianPowerEventAuthorityFailureDescription)
+                ? $"current guardian power-event authority unavailable: {guardianPolicyContext.CurrentGuardianPowerEventAuthorityStatus}"
+                : guardianPolicyContext.CurrentGuardianPowerEventAuthorityFailureDescription!;
+            return false;
+        }
+
+        if (!guardianPolicyContext.HasCurrentAuthorityRoot ||
+            guardianPolicyContext.CurrentAuthorityRoot.ValueKind != JsonValueKind.Object ||
+            !guardianPolicyContext.CurrentAuthorityRoot.TryGetProperty("guardians", out var guardians) ||
+            guardians.ValueKind != JsonValueKind.Array)
+        {
+            failureDescription = guardianPolicyContext.HasCurrentAuthorityRoot
+                ? "current guardian authority unreadable or missing canonical guardians[]"
+                : "current guardian authority unavailable";
+            return false;
+        }
+
+        foreach (var guardian in guardians.EnumerateArray())
+        {
+            var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+            if (!string.IsNullOrWhiteSpace(guardianId))
+                knownGuardianIds.Add(guardianId);
+        }
+
+        if (!requiresPoliticalProjectKnowledge)
+        {
+            failureStatus = GuardianPowerJournalCurrentProofStatus.Resolved;
+            failureDescription = string.Empty;
+            return true;
+        }
+
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        if (!trackerContext.HasCurrentAuthorityRoot)
+        {
+            failureStatus = GuardianPowerJournalCurrentProofStatus.InvalidCurrentTrackerAuthority;
+            failureDescription = DescribeGuardianProjectTrackerAuthorityFailure(trackerContext);
+            return false;
+        }
+
+        var projects = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        var ambiguousKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        MergeKnownPoliticalGuardianPowerEventProjectsForValidation(
+            projects,
+            ambiguousKeys,
+            trackerContext.CurrentAuthorityRoot.GetRawText());
+        knownPoliticalProjects = projects;
+        failureStatus = GuardianPowerJournalCurrentProofStatus.Resolved;
+        failureDescription = string.Empty;
+        return true;
+    }
+
+    private GuardianPowerJournalIdentityBaselineResolution ResolveValidatedPreTurnGuardianPowerJournalIdentityState()
+    {
+        var trackedResolution = ResolveValidatedGuardianTrackedSnapshotFileSync(GuardianPowerEventState.JournalPath);
+        if (trackedResolution.FileStatus == GuardianTrackedSnapshotFileStatus.MissingManifest ||
+            trackedResolution.FileStatus == GuardianTrackedSnapshotFileStatus.MissingSnapshotFile)
+        {
+            return new GuardianPowerJournalIdentityBaselineResolution(
+                GuardianPowerJournalIdentityBaselineStatus.MissingValidatedSnapshotJournal,
+                null,
+                DescribeGuardianTrackedSnapshotFileStatus(GuardianPowerEventState.JournalPath, trackedResolution.FileStatus));
+        }
+
+        if (trackedResolution.FileStatus != GuardianTrackedSnapshotFileStatus.Usable)
+        {
+            return new GuardianPowerJournalIdentityBaselineResolution(
+                GuardianPowerJournalIdentityBaselineStatus.InvalidValidatedSnapshotJournal,
+                null,
+                DescribeGuardianTrackedSnapshotFileStatus(GuardianPowerEventState.JournalPath, trackedResolution.FileStatus));
+        }
+
+        if (!TryReadGuardianPowerJournalIdentityStateForProof(
+                trackedResolution.SnapshotJson,
+                $"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}",
+                out var identityState,
+                out var failureDescription))
+        {
+            return new GuardianPowerJournalIdentityBaselineResolution(
+                GuardianPowerJournalIdentityBaselineStatus.InvalidValidatedSnapshotJournal,
+                null,
+                failureDescription);
+        }
+
+        return new GuardianPowerJournalIdentityBaselineResolution(
+            GuardianPowerJournalIdentityBaselineStatus.Resolved,
+            identityState,
+            $"validated pending turn snapshot entry for {GuardianPowerEventState.JournalPath} is usable");
+    }
+
+    private bool TryReadStrictGuardianPowerJournalEntriesForProof(
+        IReadOnlyList<JsonElement> semanticEntries,
+        HashSet<string> knownGuardianIds,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        string? proofRelevantReasonType,
+        out List<JsonElement> entries)
+    {
+        entries = new List<JsonElement>();
+        var scratchIssues = new List<ValidationIssue>();
+        var identityEntries = new List<(JsonElement Entry, string Context)>();
+
+        var index = 0;
+        foreach (var entry in semanticEntries)
+        {
+            var entryContext = $"{GuardianPowerEventState.JournalPath}.entries[{index++}]";
+            if (!IsGuardianPowerJournalEntryRelevantForProof(entry, proofRelevantReasonType))
+            {
+                entries.Add(entry.Clone());
+                identityEntries.Add((entry, entryContext));
+                continue;
+            }
+
+            var repairResult = RepairGuardianPowerJournalEntryForValidation(entry, knownPoliticalProjects);
+            if (repairResult.Status == GuardianPowerJournalRepairStatus.Canonicalized)
+            {
+                scratchIssues.Add(new ValidationIssue(
+                    entryContext,
+                    IssueSeverity.Error,
+                    "Validated journal baseline must already be canonical and cannot rely on repair during proof validation.",
+                    code: "guardian_power_event_requires_canonical_repair",
+                    section: "AbodePower"));
+            }
+
+            var effectiveEntry = repairResult.EffectiveEntry;
+            ValidateGuardianPowerJournalEntryContract(
+                effectiveEntry,
+                entryContext,
+                scratchIssues,
+                knownGuardianIds,
+                knownPoliticalProjects);
+            entries.Add(effectiveEntry.Clone());
+            identityEntries.Add((effectiveEntry, entryContext));
+        }
+
+        ValidateGuardianPowerJournalIdentityContract(identityEntries, scratchIssues);
+        return scratchIssues.Count == 0;
+    }
+
+    private static bool TryReadGuardianPowerJournalEntries(string? journalJson, out List<JsonElement> entries)
+    {
+        entries = new List<JsonElement>();
         if (string.IsNullOrWhiteSpace(journalJson))
-            return 0;
+            return false;
 
         try
         {
             using var doc = JsonDocument.Parse(journalJson);
-            return GuardianAbodeOfferingState.CountOfferedInkFeathersForReturnCycle(doc.RootElement, guardianId, returnCycleId);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty("entries", out var journalEntries) ||
+                journalEntries.ValueKind != JsonValueKind.Array)
+            {
+                return false;
+            }
+
+            foreach (var entry in journalEntries.EnumerateArray())
+                entries.Add(entry.Clone());
+
+            return true;
         }
         catch (JsonException)
         {
-            return 0;
+            return false;
         }
+    }
+
+    private bool TryReadGuardianPowerJournalEntriesForCurrentSemanticProof(string? journalJson, out List<JsonElement> entries)
+    {
+        entries = new List<JsonElement>();
+        if (!TryReadGuardianPowerJournalEntries(journalJson, out var rawEntries))
+            return false;
+
+        var scratchIssues = new List<ValidationIssue>();
+        var emptyKnownPoliticalProjects = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        var identityEntries = new List<(JsonElement Entry, string Context)>();
+        var index = 0;
+        foreach (var entry in rawEntries)
+        {
+            var entryContext = $"{GuardianPowerEventState.JournalPath}.entries[{index++}]";
+            if (!RequireObject(entry, entryContext, scratchIssues))
+                continue;
+
+            RequireString(entry, entryContext, scratchIssues, "entryId");
+            RequireString(entry, entryContext, scratchIssues, "eventId");
+            var guardianId = RequireString(entry, entryContext, scratchIssues, "guardianId");
+            RequireString(entry, entryContext, scratchIssues, "guardianName");
+            ValidateNonNegativeIntegerField(entry, entryContext, scratchIssues, "turn", "AbodePower");
+            ValidateIntegerField(entry, entryContext, scratchIssues, "delta");
+
+            var reasonType = RequireString(entry, entryContext, scratchIssues, "reasonType");
+            if (!string.IsNullOrWhiteSpace(reasonType) && !GuardianPowerEventState.IsValidReasonType(reasonType))
+            {
+                scratchIssues.Add(new ValidationIssue(
+                    $"{entryContext}.reasonType",
+                    IssueSeverity.Error,
+                    "abode_power_journal.reasonType использует неподдерживаемый тип события силы Обители",
+                    code: "guardian_power_event_invalid_reason_type",
+                    section: "AbodePower"));
+            }
+            else if (string.Equals(reasonType, "guardian_quest", StringComparison.OrdinalIgnoreCase))
+            {
+                scratchIssues.Add(new ValidationIssue(
+                    $"{entryContext}.reasonType",
+                    IssueSeverity.Error,
+                    "guardian quest power change должен идти через UpdateGuardians.completeQuest.questPowerAudit, а не через raw abode_power_journal",
+                    code: "guardian_power_event_guardian_quest_wrong_surface",
+                    section: "AbodePower"));
+            }
+
+            var sourceSurface = RequireString(entry, entryContext, scratchIssues, "sourceSurface");
+            var sourceId = RequireString(entry, entryContext, scratchIssues, "sourceId");
+            RequireString(entry, entryContext, scratchIssues, "title");
+            RequireString(entry, entryContext, scratchIssues, "summary");
+
+            var visibility = RequireString(entry, entryContext, scratchIssues, "visibility");
+            if (!string.IsNullOrWhiteSpace(visibility) && !GuardianPowerEventState.IsValidVisibility(visibility))
+            {
+                scratchIssues.Add(new ValidationIssue(
+                    $"{entryContext}.visibility",
+                    IssueSeverity.Error,
+                    "abode_power_journal.visibility использует неподдерживаемое значение",
+                    code: "guardian_power_event_invalid_visibility",
+                    section: "AbodePower"));
+            }
+
+            ValidateOptionalNullableStringField(entry, entryContext, scratchIssues, "relatedGuardianId");
+            var relatedGuardianId = GetFirstNonEmptyString(entry, "relatedGuardianId");
+
+            var appliedAt = RequireString(entry, entryContext, scratchIssues, "appliedAt");
+            if (!string.IsNullOrWhiteSpace(appliedAt) && !DateTimeOffset.TryParse(appliedAt, out _))
+            {
+                scratchIssues.Add(new ValidationIssue(
+                    $"{entryContext}.appliedAt",
+                    IssueSeverity.Error,
+                    "abode_power_journal.appliedAt должен быть ISO 8601 timestamp",
+                    code: "guardian_power_event_invalid_applied_at",
+                    section: "AbodePower"));
+            }
+
+            if (!entry.TryGetProperty("audit", out var audit) || !RequireObject(audit, $"{entryContext}.audit", scratchIssues))
+            {
+                scratchIssues.Add(new ValidationIssue(
+                    $"{entryContext}.audit",
+                    IssueSeverity.Error,
+                    "abode_power_journal entry обязан содержать audit object",
+                    code: "guardian_power_event_missing_audit",
+                    section: "AbodePower"));
+            }
+            else if (!string.IsNullOrWhiteSpace(reasonType))
+            {
+                ValidateGuardianPowerEventAudit(
+                    guardianId,
+                    relatedGuardianId,
+                    sourceSurface,
+                    sourceId,
+                    reasonType,
+                    TryReadInt(entry, "delta", out var currentDelta) ? currentDelta : null,
+                    audit,
+                    entryContext,
+                    $"{entryContext}.audit",
+                    scratchIssues,
+                    emptyKnownPoliticalProjects,
+                    authorityIndependentOnly: true);
+                ValidateCompletionSourcedRivalStrikeEventContract(
+                    entry,
+                    entryContext,
+                    guardianId,
+                    relatedGuardianId,
+                    sourceSurface,
+                    sourceId,
+                    reasonType,
+                    audit,
+                    $"{entryContext}.audit",
+                    scratchIssues,
+                    emptyKnownPoliticalProjects,
+                    journalSurface: true,
+                    authorityIndependentOnly: true);
+                ValidateUpdateSourcedRivalStrikeEventContract(
+                    entry,
+                    entryContext,
+                    sourceSurface,
+                    reasonType,
+                    scratchIssues);
+            }
+
+            entries.Add(entry.Clone());
+            identityEntries.Add((entry, entryContext));
+        }
+
+        ValidateGuardianPowerJournalIdentityContract(identityEntries, scratchIssues);
+        return scratchIssues.Count == 0;
+    }
+
+    private static bool GuardianPowerJournalEntriesRequireProjectTrackerAuthority(IEnumerable<JsonElement> entries)
+    {
+        foreach (var entry in entries)
+        {
+            if (IsPoliticalGuardianPowerEventReasonType(GetFirstNonEmptyString(entry, "reasonType")))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static IEnumerable<JsonElement> FilterGuardianPowerJournalEntriesForProof(
+        IEnumerable<JsonElement> entries,
+        string? proofRelevantReasonType)
+    {
+        foreach (var entry in entries)
+        {
+            if (IsGuardianPowerJournalEntryRelevantForProof(entry, proofRelevantReasonType))
+                yield return entry;
+        }
+    }
+
+    private static bool IsGuardianPowerJournalEntryRelevantForProof(
+        JsonElement entry,
+        string? proofRelevantReasonType)
+    {
+        return string.IsNullOrWhiteSpace(proofRelevantReasonType) ||
+               string.Equals(
+                   GetFirstNonEmptyString(entry, "reasonType"),
+                   proofRelevantReasonType,
+                   StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool TryReadGuardianPowerJournalIdentityStateForProof(
+        string? journalJson,
+        string journalContextPrefix,
+        out GuardianPowerJournalIdentityState identityState,
+        out string failureDescription)
+    {
+        identityState = new GuardianPowerJournalIdentityState(
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+        failureDescription = $"{journalContextPrefix} unreadable or semantically invalid for strict guardian power-event identity proof";
+        if (!TryReadGuardianPowerJournalEntriesForCurrentSemanticProof(journalJson, out var entries))
+            return false;
+
+        foreach (var entry in entries)
+        {
+            var eventId = GetStringValue(entry, "eventId");
+            if (!string.IsNullOrWhiteSpace(eventId))
+                identityState.EventIds.Add(eventId);
+
+            if (string.Equals(GetFirstNonEmptyString(entry, "reasonType"), "resonance", StringComparison.OrdinalIgnoreCase) &&
+                TryBuildGuardianResonanceLifeScopeKey(entry, out var lifeScopeKey))
+            {
+                identityState.ResonanceLifeScopeKeys.Add(lifeScopeKey);
+            }
+        }
+
+        failureDescription = string.Empty;
+        return true;
+    }
+
+    private static bool TryValidateGuardianPowerJournalAppendOnlyIdentity(
+        IReadOnlyList<JsonElement> preEntries,
+        IReadOnlyList<JsonElement> postEntries,
+        out string failureDescription)
+    {
+        failureDescription = string.Empty;
+
+        var postByEntryId = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in postEntries)
+        {
+            var entryId = GetStringValue(entry, "entryId");
+            if (string.IsNullOrWhiteSpace(entryId))
+                continue;
+
+            postByEntryId[entryId] = BuildCanonicalJsonComparisonSignature(entry);
+        }
+
+        foreach (var preEntry in preEntries)
+        {
+            var entryId = GetStringValue(preEntry, "entryId");
+            if (string.IsNullOrWhiteSpace(entryId))
+                continue;
+
+            var preSignature = BuildCanonicalJsonComparisonSignature(preEntry);
+            if (!postByEntryId.TryGetValue(entryId, out var postSignature))
+            {
+                failureDescription = $"current journal is not append-only: baseline entryId '{entryId}' is missing";
+                return false;
+            }
+
+            if (!string.Equals(preSignature, postSignature, StringComparison.Ordinal))
+            {
+                failureDescription = $"current journal rewrote baseline entryId '{entryId}' instead of preserving append-only identity";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static string BuildCanonicalJsonComparisonSignature(JsonElement value)
+    {
+        return value.ValueKind switch
+        {
+            JsonValueKind.Object => "{" + string.Join(
+                ",",
+                value.EnumerateObject()
+                    .OrderBy(property => property.Name, StringComparer.Ordinal)
+                    .Select(property => $"{JsonSerializer.Serialize(property.Name)}:{BuildCanonicalJsonComparisonSignature(property.Value)}")) + "}",
+            JsonValueKind.Array => "[" + string.Join(",", value.EnumerateArray().Select(BuildCanonicalJsonComparisonSignature)) + "]",
+            JsonValueKind.String => JsonSerializer.Serialize(value.GetString()),
+            JsonValueKind.Number or JsonValueKind.True or JsonValueKind.False or JsonValueKind.Null => value.GetRawText(),
+            _ => value.GetRawText()
+        };
+    }
+
+    private static void RequireIntegerFieldForCurrentJournalSemanticProof(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        string propName)
+    {
+        if (!root.TryGetProperty(propName, out var value))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{propName}",
+                IssueSeverity.Error,
+                "Current journal proof audit must include the required integer field.",
+                code: "guardian_power_event_missing_audit_field",
+                section: "AbodePower"));
+            return;
+        }
+
+        if (value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out _))
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.{propName}",
+            IssueSeverity.Error,
+            "Current journal proof audit field must be an integer.",
+            code: "guardian_power_event_invalid_audit_field",
+            section: "AbodePower"));
+    }
+
+    private static void RequireNonNegativeIntegerFieldForCurrentJournalSemanticProof(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        string propName)
+    {
+        if (!root.TryGetProperty(propName, out var value))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{propName}",
+                IssueSeverity.Error,
+                "Current journal proof audit must include the required non-negative integer field.",
+                code: "guardian_power_event_missing_audit_field",
+                section: "AbodePower"));
+            return;
+        }
+
+        if (value.ValueKind == JsonValueKind.Number &&
+            value.TryGetInt32(out var intValue) &&
+            intValue >= 0)
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.{propName}",
+            IssueSeverity.Error,
+            "Current journal proof audit field must be a non-negative integer.",
+            code: "guardian_power_event_invalid_audit_field",
+            section: "AbodePower"));
+    }
+
+    private static void RequirePositiveNumberFieldForCurrentJournalSemanticProof(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        string propName)
+    {
+        if (!root.TryGetProperty(propName, out var value))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{propName}",
+                IssueSeverity.Error,
+                "Current journal proof audit must include the required positive number field.",
+                code: "guardian_power_event_missing_audit_field",
+                section: "AbodePower"));
+            return;
+        }
+
+        if (value.ValueKind == JsonValueKind.Number &&
+            value.TryGetDouble(out var numericValue) &&
+            numericValue > 0)
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.{propName}",
+            IssueSeverity.Error,
+            "Current journal proof audit field must be a positive number.",
+            code: "guardian_power_event_invalid_audit_field",
+            section: "AbodePower"));
+    }
+
+    private static int CountOfferingFeathersFromJournalEntries(IEnumerable<JsonElement> entries, string guardianId, string returnCycleId)
+    {
+        var total = 0;
+        foreach (var entry in entries)
+        {
+            if (!TryParseStrictOfferingJournalEntry(entry, out var strictEntry) ||
+                !string.Equals(strictEntry.GuardianId, guardianId, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(strictEntry.ReturnCycleId, returnCycleId, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(strictEntry.OfferingType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            total += strictEntry.InkFeathersOffered;
+        }
+
+        return total;
     }
 
     private static bool JournalEntryMatchesPendingAbodeOffering(JsonElement entry, GuardianAbodeOfferingState.PendingAbodeOfferingRequest request, int expectedGain)
     {
-        if (!string.Equals(GetStringValue(entry, "guardianId"), request.GuardianId, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(GetStringValue(entry, "reasonType"), "offering", StringComparison.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        if (entry.TryGetProperty("delta", out var deltaNode) &&
-            deltaNode.ValueKind == JsonValueKind.Number &&
-            deltaNode.TryGetInt32(out var parsedDelta) &&
-            parsedDelta != expectedGain)
-        {
-            return false;
-        }
-
-        if (!entry.TryGetProperty("audit", out var audit) || audit.ValueKind != JsonValueKind.Object)
-            return false;
-
-        if (!string.Equals(GetStringValue(audit, "offeringType"), request.OfferingType, StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(GetStringValue(audit, "returnCycleId"), request.ReturnCycleId, StringComparison.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))
-            return GetIntOrDefault(audit, "inkFeathersOffered") == request.InkFeathersOffered;
-
-        if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
-        {
-            return string.Equals(GetStringValue(audit, "relicId"), request.RelicId, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(GetStringValue(audit, "relicName"), request.RelicName, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(GetStringValue(audit, "relicRarity"), request.RelicRarity, StringComparison.OrdinalIgnoreCase);
-        }
-
-        if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
-        {
-            return string.Equals(GetStringValue(audit, "archiveId"), request.ArchiveId, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(GetStringValue(audit, "archiveTitle"), request.ArchiveTitle, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(GetStringValue(audit, "archiveEntryType"), request.ArchiveEntryType, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(GetStringValue(audit, "archiveRarity"), request.ArchiveRarity, StringComparison.OrdinalIgnoreCase);
-        }
-
-        return false;
+        return TryParseStrictOfferingJournalEntry(entry, out var strictEntry) &&
+               StrictOfferingJournalEntryMatchesPendingRequest(strictEntry, request, expectedGain);
     }
 
     private static bool JournalEntryContainsDetail(JsonElement entry, string fragment)
@@ -2230,123 +4412,389 @@ public partial class ValidationService
         return false;
     }
 
-    private async Task<bool> GuardianPowerJournalContainsEventAsync(string eventId, string guardianId, string reasonType, int delta, string? returnCycleId = null)
+    private static bool TryParseStrictOfferingJournalEntry(JsonElement entry, out StrictOfferingJournalEntry strictEntry)
     {
-        if (string.IsNullOrWhiteSpace(eventId))
-            return false;
-
-        var json = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
-        if (string.IsNullOrWhiteSpace(json))
-            return false;
-
-        try
+        strictEntry = default;
+        if (entry.ValueKind != JsonValueKind.Object ||
+            !TryReadRequiredStrictString(entry, "entryId", out _) ||
+            !TryReadRequiredStrictString(entry, "eventId", out var eventId) ||
+            !TryReadRequiredStrictString(entry, "guardianId", out var guardianId) ||
+            !TryReadRequiredStrictString(entry, "guardianName", out _) ||
+            !TryReadStrictInt32(entry, "turn", out _) ||
+            !TryReadStrictInt32(entry, "delta", out var delta) ||
+            !TryReadRequiredStrictString(entry, "reasonType", out var reasonType) ||
+            !string.Equals(reasonType, "offering", StringComparison.OrdinalIgnoreCase) ||
+            !TryReadRequiredStrictString(entry, "sourceSurface", out var sourceSurface) ||
+            !TryGetExpectedNonPoliticalGuardianPowerEventSourceSurface(reasonType, out var expectedSourceSurface) ||
+            !string.Equals(sourceSurface, expectedSourceSurface, StringComparison.OrdinalIgnoreCase) ||
+            !TryReadRequiredStrictString(entry, "sourceId", out _) ||
+            !TryReadRequiredStrictString(entry, "title", out _) ||
+            !TryReadRequiredStrictString(entry, "summary", out _) ||
+            !TryReadRequiredStrictString(entry, "visibility", out var visibility) ||
+            !GuardianPowerEventState.IsValidVisibility(visibility) ||
+            !TryReadRequiredStrictString(entry, "appliedAt", out var appliedAt) ||
+            !DateTimeOffset.TryParse(appliedAt, out _) ||
+            !entry.TryGetProperty("audit", out var audit) ||
+            audit.ValueKind != JsonValueKind.Object ||
+            !TryReadRequiredStrictString(audit, "offeringType", out var offeringType) ||
+            !TryReadRequiredStrictString(audit, "returnCycleId", out var returnCycleId) ||
+            !TryReadStrictInt32(audit, "baseDelta", out var baseDelta) ||
+            !TryReadStrictInt32(audit, "finalDelta", out var finalDelta))
         {
-            using var doc = JsonDocument.Parse(json);
-            if (!doc.RootElement.TryGetProperty("entries", out var entries) || entries.ValueKind != JsonValueKind.Array)
-                return false;
+            return false;
+        }
 
-            foreach (var entry in entries.EnumerateArray())
+        if (delta <= 0 || baseDelta <= 0 || finalDelta <= 0 || delta != finalDelta)
+            return false;
+
+        var inkFeathersOffered = 0;
+        string? relicId = null;
+        string? relicName = null;
+        string? relicRarity = null;
+        string? archiveId = null;
+        string? archiveTitle = null;
+        string? archiveEntryType = null;
+        string? archiveRarity = null;
+
+        if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!TryReadStrictPositiveInt32(audit, "inkFeathersOffered", out inkFeathersOffered) ||
+                !TryReadStrictNonNegativeInt32(audit, "capRemainingBefore", out _))
             {
-                if (!string.Equals(GetStringValue(entry, "eventId"), eventId, StringComparison.OrdinalIgnoreCase) ||
-                    !string.Equals(GetStringValue(entry, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase) ||
-                    !string.Equals(GetStringValue(entry, "reasonType"), reasonType, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                if (entry.TryGetProperty("delta", out var deltaNode) &&
-                    deltaNode.ValueKind == JsonValueKind.Number &&
-                    deltaNode.TryGetInt32(out var parsedDelta) &&
-                    parsedDelta != delta)
-                {
-                    continue;
-                }
-
-                if (!string.IsNullOrWhiteSpace(returnCycleId))
-                {
-                    if (!entry.TryGetProperty("audit", out var audit) || audit.ValueKind != JsonValueKind.Object)
-                        return false;
-
-                    if (!string.Equals(GetStringValue(audit, "returnCycleId"), returnCycleId, StringComparison.OrdinalIgnoreCase))
-                        continue;
-                }
-
-                return true;
+                return false;
             }
         }
-        catch (JsonException)
+        else if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!TryReadRequiredStrictString(audit, "relicId", out relicId) ||
+                !TryReadRequiredStrictString(audit, "relicName", out relicName) ||
+                !TryReadRequiredStrictString(audit, "relicRarity", out relicRarity) ||
+                !GuardianAbodeOfferingState.IsCanonicalSoulRelicRarity(relicRarity))
+            {
+                return false;
+            }
+        }
+        else if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!TryReadRequiredStrictString(audit, "archiveId", out archiveId) ||
+                !TryReadRequiredStrictString(audit, "archiveTitle", out archiveTitle) ||
+                !TryReadRequiredStrictString(audit, "archiveEntryType", out archiveEntryType) ||
+                !TryReadRequiredStrictString(audit, "archiveRarity", out archiveRarity) ||
+                !AfterlifeArchiveState.OfferingTypeMatchesEntryType(offeringType, archiveEntryType) ||
+                GetRarityRank(archiveRarity) == 0)
+            {
+                return false;
+            }
+        }
+        else
         {
             return false;
+        }
+
+        strictEntry = new StrictOfferingJournalEntry(
+            eventId,
+            guardianId,
+            delta,
+            offeringType,
+            returnCycleId,
+            inkFeathersOffered,
+            relicId,
+            relicName,
+            relicRarity,
+            archiveId,
+            archiveTitle,
+            archiveEntryType,
+            archiveRarity);
+        return true;
+    }
+
+    private static bool StrictOfferingJournalEntryMatchesPendingRequest(
+        StrictOfferingJournalEntry entry,
+        GuardianAbodeOfferingState.PendingAbodeOfferingRequest request,
+        int expectedGain,
+        string? expectedEventId = null)
+    {
+        if (!string.IsNullOrWhiteSpace(expectedEventId) &&
+            !string.Equals(entry.EventId, expectedEventId, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (!string.Equals(entry.GuardianId, request.GuardianId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(entry.OfferingType, request.OfferingType, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(entry.ReturnCycleId, request.ReturnCycleId, StringComparison.OrdinalIgnoreCase) ||
+            entry.Delta != expectedGain)
+        {
+            return false;
+        }
+
+        if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))
+            return entry.InkFeathersOffered == request.InkFeathersOffered;
+
+        if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(entry.RelicId, request.RelicId, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(entry.RelicName, request.RelicName, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(entry.RelicRarity, request.RelicRarity, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(entry.ArchiveId, request.ArchiveId, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(entry.ArchiveTitle, request.ArchiveTitle, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(entry.ArchiveEntryType, request.ArchiveEntryType, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(entry.ArchiveRarity, request.ArchiveRarity, StringComparison.OrdinalIgnoreCase);
         }
 
         return false;
     }
 
-    private static bool SoulStateContainsSoulRelic(string? soulJson, string? relicId)
+    private static bool TryReadRequiredStrictString(JsonElement root, string propName, out string value)
     {
-        if (string.IsNullOrWhiteSpace(soulJson) || string.IsNullOrWhiteSpace(relicId))
+        value = string.Empty;
+        if (!root.TryGetProperty(propName, out var prop) || prop.ValueKind != JsonValueKind.String)
             return false;
+
+        value = prop.GetString() ?? string.Empty;
+        return !string.IsNullOrWhiteSpace(value);
+    }
+
+    private static bool TryReadStrictInt32(JsonElement root, string propName, out int value)
+    {
+        value = 0;
+        return root.TryGetProperty(propName, out var prop) &&
+               prop.ValueKind == JsonValueKind.Number &&
+               prop.TryGetInt32(out value);
+    }
+
+    private static bool TryReadStrictPositiveInt32(JsonElement root, string propName, out int value)
+        => TryReadStrictInt32(root, propName, out value) && value > 0;
+
+    private static bool TryReadStrictNonNegativeInt32(JsonElement root, string propName, out int value)
+        => TryReadStrictInt32(root, propName, out value) && value >= 0;
+
+    private SoulRelicProofReadResult ReadSoulRelicProofEntry(string? soulJson, string? relicId)
+    {
+        if (string.IsNullOrWhiteSpace(relicId))
+            return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.Absent, null);
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.Unreadable, null);
 
         try
         {
             using var doc = JsonDocument.Parse(soulJson);
             if (!doc.RootElement.TryGetProperty("soulRelics", out var relics))
-                return false;
+                return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
 
             if (relics.ValueKind == JsonValueKind.Array)
             {
                 foreach (var relic in relics.EnumerateArray())
                 {
+                    if (relic.ValueKind != JsonValueKind.Object)
+                        return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
                     if (string.Equals(GetStringValue(relic, "relicId"), relicId, StringComparison.OrdinalIgnoreCase))
-                        return true;
+                    {
+                        if (!TryReadSoulRelicProofEntry(relic, out var proofEntry))
+                            return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+                        return new SoulRelicProofReadResult(
+                            SoulStateEntryPresenceStatus.Present,
+                            proofEntry);
+                    }
                 }
             }
             else if (relics.ValueKind == JsonValueKind.Object)
             {
+                var hasKnownContainer = false;
                 foreach (var propName in new[] { "stored", "equipped" })
                 {
-                    if (!relics.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
+                    if (!relics.TryGetProperty(propName, out var arr))
                         continue;
+
+                    hasKnownContainer = true;
+                    if (arr.ValueKind != JsonValueKind.Array)
+                        return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
 
                     foreach (var relic in arr.EnumerateArray())
                     {
+                        if (relic.ValueKind != JsonValueKind.Object)
+                            return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
                         if (string.Equals(GetStringValue(relic, "relicId"), relicId, StringComparison.OrdinalIgnoreCase))
-                            return true;
+                        {
+                            if (!TryReadSoulRelicProofEntry(relic, out var proofEntry))
+                                return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+                            return new SoulRelicProofReadResult(
+                                SoulStateEntryPresenceStatus.Present,
+                                proofEntry);
+                        }
                     }
+                }
+
+                if (!hasKnownContainer)
+                    return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+            }
+            else
+            {
+                return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+            }
+        }
+        catch (JsonException)
+        {
+            return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.Unreadable, null);
+        }
+
+        return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.Absent, null);
+    }
+
+    private ArchiveProofReadResult ReadAfterlifeArchiveProofEntry(string? soulJson, string? archiveId)
+    {
+        if (string.IsNullOrWhiteSpace(archiveId))
+            return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.Absent, null);
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.Unreadable, null);
+
+        try
+        {
+            using var doc = JsonDocument.Parse(soulJson);
+            if (!doc.RootElement.TryGetProperty("afterlifeArchive", out var archive))
+                return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+            if (archive.ValueKind != JsonValueKind.Object)
+            {
+                return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+            }
+
+            if (!archive.TryGetProperty("stored", out var stored))
+                return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+            if (archive.TryGetProperty("actionReceipts", out var actionReceipts) &&
+                actionReceipts.ValueKind != JsonValueKind.Array)
+            {
+                return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+            }
+
+            if (stored.ValueKind != JsonValueKind.Array)
+                return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+            foreach (var entry in stored.EnumerateArray())
+            {
+                if (entry.ValueKind != JsonValueKind.Object)
+                    return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+                if (string.Equals(GetStringValue(entry, "archiveId"), archiveId, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!TryReadArchiveProofEntry(entry, out var proofEntry))
+                        return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+                    return new ArchiveProofReadResult(
+                        SoulStateEntryPresenceStatus.Present,
+                        proofEntry);
                 }
             }
         }
         catch (JsonException)
         {
-            return false;
+            return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.Unreadable, null);
         }
 
-        return false;
+        return new ArchiveProofReadResult(SoulStateEntryPresenceStatus.Absent, null);
     }
 
-    private static bool SoulStateContainsAfterlifeArchiveEntry(string? soulJson, string? archiveId)
+    private bool TryReadSoulRelicProofEntry(JsonElement relic, out SoulRelicProofEntry entry)
     {
-        if (string.IsNullOrWhiteSpace(soulJson) || string.IsNullOrWhiteSpace(archiveId))
+        entry = null!;
+        var scratchIssues = new List<ValidationIssue>();
+        ValidateMinimalSoulRelicObject(relic, "game_state/meta/soul_state.json.soulRelics", scratchIssues, "SoulState");
+        if (scratchIssues.Count != 0)
             return false;
 
-        try
+        var relicId = GetStringValue(relic, "relicId");
+        var relicName = GetFirstNonEmptyString(relic, "name") ?? GetStringValue(relic, "relicName");
+        var relicRarity = GetFirstNonEmptyString(relic, "rarity") ?? GetStringValue(relic, "relicRarity");
+        if (string.IsNullOrWhiteSpace(relicId) ||
+            string.IsNullOrWhiteSpace(relicName) ||
+            string.IsNullOrWhiteSpace(relicRarity) ||
+            !GuardianAbodeOfferingState.IsCanonicalSoulRelicRarity(relicRarity))
         {
-            using var doc = JsonDocument.Parse(soulJson);
-            if (!doc.RootElement.TryGetProperty("afterlifeArchive", out var archive) || archive.ValueKind != JsonValueKind.Object)
-                return false;
-
-            if (!archive.TryGetProperty("stored", out var stored) || stored.ValueKind != JsonValueKind.Array)
-                return false;
-
-            foreach (var entry in stored.EnumerateArray())
-            {
-                if (string.Equals(GetStringValue(entry, "archiveId"), archiveId, StringComparison.OrdinalIgnoreCase))
-                    return true;
-            }
+            return false;
         }
-        catch (JsonException)
+
+        entry = new SoulRelicProofEntry(relicId, relicName, relicRarity);
+        return true;
+    }
+
+    private bool TryReadArchiveProofEntry(JsonElement archiveEntry, out ArchiveProofEntry entry)
+    {
+        entry = null!;
+        var scratchIssues = new List<ValidationIssue>();
+        ValidateAfterlifeArchiveEntryObject(archiveEntry, "game_state/meta/soul_state.json.afterlifeArchive.stored", scratchIssues);
+        if (scratchIssues.Count != 0)
+            return false;
+
+        var archiveId = GetStringValue(archiveEntry, "archiveId");
+        var archiveTitle = GetStringValue(archiveEntry, "title");
+        var archiveEntryType = GetStringValue(archiveEntry, "entryType");
+        var archiveRarity = GetStringValue(archiveEntry, "rarity");
+        if (string.IsNullOrWhiteSpace(archiveId) ||
+            string.IsNullOrWhiteSpace(archiveTitle) ||
+            string.IsNullOrWhiteSpace(archiveEntryType) ||
+            string.IsNullOrWhiteSpace(archiveRarity) ||
+            !AfterlifeArchiveState.IsAllowedEntryType(archiveEntryType) ||
+            GetRarityRank(archiveRarity) == 0)
         {
             return false;
+        }
+
+        entry = new ArchiveProofEntry(archiveId, archiveTitle, archiveEntryType, archiveRarity);
+        return true;
+    }
+
+    private static bool SoulRelicRequestMatchesProofEntry(
+        GuardianAbodeOfferingState.PendingAbodeOfferingRequest request,
+        SoulRelicProofEntry entry)
+    {
+        return string.Equals(request.RelicId, entry.RelicId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(request.RelicName, entry.RelicName, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(request.RelicRarity, entry.RelicRarity, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool ArchiveRequestMatchesProofEntry(
+        GuardianAbodeOfferingState.PendingAbodeOfferingRequest request,
+        ArchiveProofEntry entry)
+    {
+        return string.Equals(request.ArchiveId, entry.ArchiveId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(request.ArchiveTitle, entry.ArchiveTitle, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(request.ArchiveEntryType, entry.ArchiveEntryType, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(request.ArchiveRarity, entry.ArchiveRarity, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string DescribeSoulRelicProofEntry(SoulRelicProofEntry? entry)
+        => entry == null
+            ? "missing Soul Relic metadata"
+            : $"{entry.RelicId} / {entry.RelicName} / {entry.RelicRarity}";
+
+    private static string DescribeArchiveProofEntry(ArchiveProofEntry? entry)
+        => entry == null
+            ? "missing archive metadata"
+            : $"{entry.ArchiveId} / {entry.ArchiveTitle} / {entry.ArchiveEntryType} / {entry.ArchiveRarity}";
+
+    private static bool HasListedAffectedFile(JsonElement stateEvidence, string relativePath)
+    {
+        if (!stateEvidence.TryGetProperty("affectedFiles", out var affectedFiles) || affectedFiles.ValueKind != JsonValueKind.Array)
+            return false;
+
+        foreach (var item in affectedFiles.EnumerateArray())
+        {
+            if (item.ValueKind == JsonValueKind.String &&
+                string.Equals(item.GetString(), relativePath, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
         }
 
         return false;
@@ -2767,13 +5215,135 @@ public partial class ValidationService
                 repairHint: "Добавь отдельную reasoning section ('Размышления NPC', 'Размышления акторов', 'Guardian Thoughts' или эквивалентный heading) и подпункты ### [Actor Name] для всех релевантных акторов."));
         }
 
-        var structuredActorUpdates = await CollectStructuredActorUpdatesAsync();
+        var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        var guardianIdentityContext = BuildGuardianReasoningIdentityContext(guardianPolicyContext);
+        var structuredActorExtraction = await CollectStructuredActorUpdatesAsync(guardianPolicyContext);
+        var structuredActorUpdates = structuredActorExtraction.Updates;
         ValidateStructuredActorUpdatesAgainstScope(scope, structuredActorUpdates, issues);
 
-        var preTurnGuardianScopeRealm = await TryResolvePreTurnRealmAsync();
-        var activeGuardianNames = string.IsNullOrWhiteSpace(preTurnGuardianScopeRealm)
-            ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            : await CollectImportantGuardianNamesAsync(preTurnGuardianScopeRealm);
+        var requiresGuardianScopeValidation = RequiresGuardianReasoningScopeValidation(
+            scopeMode,
+            scope,
+            guardianIdentityContext,
+            structuredActorUpdates,
+            structuredActorExtraction.DirectCanonicalGuardianDiffRequiredButSnapshotMissing);
+
+        var guardianScopeSnapshotContext = requiresGuardianScopeValidation
+            ? await ResolveGuardianValidatedSnapshotContextAsync()
+            : new GuardianValidatedSnapshotContext(ValidatedPendingTurnSnapshotStatus.Missing, null, null);
+
+        if (requiresGuardianScopeValidation &&
+            guardianScopeSnapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable)
+        {
+            issues.Add(new ValidationIssue(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                "Guardian-sensitive reasoning требует current validated pending turn snapshot pre-turn realm.",
+                code: "guardian_scope_invalid_validated_snapshot_context",
+                section: "npc_scope",
+                expected: "current validated pending turn snapshot with game_state/meta/soul_state.json",
+                actual: DescribeValidatedPendingTurnSnapshotStatus(guardianScopeSnapshotContext.SnapshotStatus),
+                repairHint: "Для guardian-centric и guardian-relevant mixed reasoning используй current validated pending turn snapshot с корректными sessionId/requestId/turnNumber и snapshot copy game_state/meta/soul_state.json."));
+        }
+
+        if (requiresGuardianScopeValidation &&
+            structuredActorExtraction.DirectCanonicalGuardianDiffRequiredButSnapshotMissing)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "Guardian reasoning не может подтвердить direct canonical guardians[] touches без validated pre-turn guardians snapshot.",
+                code: "guardian_scope_missing_validated_guardians_snapshot",
+                section: "npc_scope",
+                expected: "current validated pending turn snapshot with game_state/meta/guardians.json",
+                actual: "missing or unusable validated pre-turn guardians snapshot",
+                repairHint: "Если reasoning опирается на direct canonical guardians[] state, сохрани validated pre-turn snapshot copy game_state/meta/guardians.json. Без этого guardian diff contract считается непроверяемым."));
+        }
+
+        if (requiresGuardianScopeValidation &&
+            guardianIdentityContext.ActiveGuardianStatus == GuardianReasoningActiveGuardianStatus.GuardianStateUnreadable)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "Guardian-sensitive reasoning не может быть проверен: guardians.json не читается как authoritative guardian state.",
+                code: "guardian_scope_unreadable_guardian_state",
+                section: "npc_scope",
+                expected: "readable guardians.json with canonical guardian state",
+                actual: "guardians.json unreadable",
+                repairHint: "Исправь guardians.json и оставь readable canonical guardian state. Guardian reasoning не использует fallback на partial mirror-only context."));
+        }
+
+        if (scopeMode == ReasoningScopeMode.GuardianCentric &&
+            guardianIdentityContext.ActiveGuardianStatus == GuardianReasoningActiveGuardianStatus.NoActiveGuardian)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json.activeGuardian",
+                IssueSeverity.Error,
+                "Guardian-centric reasoning требует current activeGuardian, синхронизированного с canonical guardians[].",
+                code: "guardian_scope_missing_active_guardian",
+                section: "npc_scope",
+                expected: "activeGuardian strict mirror of a canonical guardians[] entry",
+                actual: "missing activeGuardian",
+                repairHint: "Для guardian-centric reasoning materialize activeGuardian как strict mirror текущего canonical guardian entry из guardians[]."));
+        }
+
+        if (requiresGuardianScopeValidation &&
+            guardianIdentityContext.ActiveGuardianStatus == GuardianReasoningActiveGuardianStatus.MirrorMissingCanonical)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json.activeGuardian",
+                IssueSeverity.Error,
+                "Guardian-sensitive reasoning не может опираться на activeGuardian без matching canonical guardian entry в guardians[].",
+                code: "guardian_scope_invalid_active_guardian_identity",
+                section: "npc_scope",
+                expected: "activeGuardian.guardianId matches an entry inside guardians[]",
+                actual: "activeGuardian exists without canonical guardian backing entry",
+                repairHint: "Используй activeGuardian только как strict mirror/selector canonical guardian entry из guardians[]. Не authorизуй reasoning через orphan или stale activeGuardian."));
+        }
+
+        var activeGuardianNames = guardianScopeSnapshotContext.SnapshotStatus == ValidatedPendingTurnSnapshotStatus.Usable &&
+                                  !string.IsNullOrWhiteSpace(guardianScopeSnapshotContext.PreTurnRealm) &&
+                                  IsChaosSeaRealm(guardianScopeSnapshotContext.PreTurnRealm!) &&
+                                  guardianIdentityContext.ActiveGuardianStatus == GuardianReasoningActiveGuardianStatus.CanonicalResolved
+            ? new HashSet<string>(guardianIdentityContext.ActiveGuardianNames, StringComparer.OrdinalIgnoreCase)
+            : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var mirrorOnlyGuardianActors = FindMirrorOnlyGuardianScopeActors(scope, guardianIdentityContext);
+        foreach (var staleGuardianActor in mirrorOnlyGuardianActors)
+        {
+            issues.Add(new ValidationIssue(
+                "output/debug_logs.json",
+                IssueSeverity.Error,
+                $"Guardian-sensitive reasoning использует stale mirror-only alias '{staleGuardianActor}' вместо canonical guardian name.",
+                code: "guardian_scope_stale_active_guardian_alias",
+                actor: staleGuardianActor,
+                section: "npc_scope",
+                expected: guardianIdentityContext.ActiveGuardianNames.Count > 0
+                    ? string.Join(", ", guardianIdentityContext.ActiveGuardianNames.OrderBy(name => name))
+                    : "canonical active guardian alias",
+                actual: staleGuardianActor,
+                repairHint: "Для guardian reasoning используй canonical guardian aliases из guardians[]; stale mirror-only names из activeGuardian недопустимы."));
+        }
+        if (scopeMode == ReasoningScopeMode.Mixed)
+        {
+            foreach (var rawGuardianIdActor in FindRawGuardianIdScopeActors(scope, guardianIdentityContext))
+            {
+                var expectedGuardianAliases = guardianIdentityContext.CanonicalGuardianAliasLookup.TryGetValue(rawGuardianIdActor, out var aliases) &&
+                                             aliases.Count > 0
+                    ? string.Join(", ", aliases.OrderBy(name => name))
+                    : "canonical guardian alias";
+                issues.Add(new ValidationIssue(
+                    "output/debug_logs.json",
+                    IssueSeverity.Error,
+                    $"Guardian-sensitive mixed reasoning использует raw guardianId '{rawGuardianIdActor}' вместо canonical guardian alias.",
+                    code: "guardian_scope_uses_raw_guardian_id",
+                    actor: rawGuardianIdActor,
+                    section: "npc_scope",
+                    expected: expectedGuardianAliases,
+                    actual: rawGuardianIdActor,
+                    repairHint: "В Relevant actors и reasoning blocks используй canonical guardian name/alias из authoritative guardian baseline, а не transport guardianId."));
+            }
+        }
         var knownNpcReferences = await ReadKnownNpcReferencesAsync();
         var knownNpcActorAliases = new HashSet<string>(knownNpcReferences.Names, StringComparer.OrdinalIgnoreCase);
         foreach (var npcId in knownNpcReferences.Ids)
@@ -2801,6 +5371,58 @@ public partial class ValidationService
         }
 
         return issues;
+    }
+
+    private static IReadOnlyCollection<string> FindMirrorOnlyGuardianScopeActors(
+        ReasoningScopeManifest scope,
+        GuardianReasoningIdentityContext guardianIdentityContext)
+    {
+        if (guardianIdentityContext.ActiveGuardianStatus != GuardianReasoningActiveGuardianStatus.CanonicalResolved)
+            return Array.Empty<string>();
+
+        return scope.RelevantActors
+            .Where(actor =>
+                guardianIdentityContext.MirrorGuardianAliases.Contains(actor) &&
+                !guardianIdentityContext.ActiveGuardianNames.Contains(actor))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static IReadOnlyCollection<string> FindRawGuardianIdScopeActors(
+        ReasoningScopeManifest scope,
+        GuardianReasoningIdentityContext guardianIdentityContext)
+    {
+        return scope.RelevantActors
+            .Where(actor =>
+                guardianIdentityContext.AuthoritativeGuardianIds.Contains(actor) &&
+                !guardianIdentityContext.CanonicalGuardianAliases.Contains(actor))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static bool RequiresGuardianReasoningScopeValidation(
+        ReasoningScopeMode scopeMode,
+        ReasoningScopeManifest scope,
+        GuardianReasoningIdentityContext guardianIdentityContext,
+        IReadOnlyCollection<StructuredActorUpdate> structuredActorUpdates,
+        bool directCanonicalGuardianDiffRequiredButSnapshotMissing)
+    {
+        if (scopeMode == ReasoningScopeMode.GuardianCentric)
+            return true;
+
+        if (scopeMode != ReasoningScopeMode.Mixed)
+            return false;
+
+        if (directCanonicalGuardianDiffRequiredButSnapshotMissing)
+            return true;
+
+        if (structuredActorUpdates.Any(update => string.Equals(update.ActorType, "Guardian", StringComparison.OrdinalIgnoreCase)))
+            return true;
+
+        return scope.RelevantActors.Any(actor =>
+            guardianIdentityContext.CanonicalGuardianAliases.Contains(actor) ||
+            guardianIdentityContext.MirrorGuardianAliases.Contains(actor) ||
+            guardianIdentityContext.AuthoritativeGuardianIds.Contains(actor));
     }
 
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnSpecialActionOutcomesInternalAsync()
@@ -2839,7 +5461,7 @@ public partial class ValidationService
                 return issues;
             }
 
-            var currentRealm = await TryResolvePreTurnRealmAsync();
+            var currentRealm = await ResolveAcceptedTurnInkFeatherRealmAsync(actionContext, issues);
             if (string.IsNullOrWhiteSpace(currentRealm))
                 return issues;
             var isChaosSea = IsChaosSeaRealm(currentRealm);
@@ -3441,7 +6063,7 @@ public partial class ValidationService
                 return false;
             }
 
-            var preTurnJson = ReadPreTurnTrackedFileSync("game_state/player/skills_passive.json");
+            var preTurnJson = ReadValidatedCurrentPreTurnTrackedFileSync("game_state/player/skills_passive.json");
             if (string.IsNullOrWhiteSpace(preTurnJson))
                 return true;
 

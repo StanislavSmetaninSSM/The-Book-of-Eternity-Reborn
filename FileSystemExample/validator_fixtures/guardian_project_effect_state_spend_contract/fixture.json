@@ -2,6 +2,33 @@
   "id": "guardian_project_effect_state_spend_contract",
   "runner": "StateOnly",
   "description": "Completed recipe-driven guardian projects cannot spend more effect-state resource than they were granted.",
+  "shared": [
+    {
+      "source": "shared/turn_request.json",
+      "target": "input/turn_request.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/guardians.json",
+      "target": "game_state/meta/guardians.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/pre_turn_guardians.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/pre_turn_guardian_projects.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json",
+      "mode": "Replace"
+    }
+  ],
   "broken": [
     {
       "source": "broken/guardian_projects.json",

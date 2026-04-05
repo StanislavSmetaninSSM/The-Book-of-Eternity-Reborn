@@ -2157,6 +2157,8 @@ The client may materialize project_assist / rival_defense / rival_strike power e
 For political project terminals:
   - completed offensive_intrigue must point at targetGuardianId; the client will deterministically compute targetLoss, pressureDelta, and stabilityDamage from current powers and political shields
   - completed counter_rival_operation must point at targetGuardianId; the client will deterministically apply pressure/stability relief to the rival active pressure project if it exists
+  - guardians use guardianRelationships as the canonical directed inter-guardian standing network with attitudeScore/attitudeTier; prefer rival/enemy targets, treat competitive targets as lower-priority valid pressure, treat neutral targets as valid but weakly motivated pressure, and require an explicit betrayal reason before targeting ally/trusted guardians
+  - temporary anti-target coordination is valid only as derived coalition behavior: two Guardians may align against the same third Guardian only when they are non-hostile toward each other, both mark that third Guardian as rival/enemy, and there is an explicit current political project trace against that same target
   - completed abode_fortification materializes persistent safePressure / defenseRating bonuses
   - sabotaged abode_fortification may leave a temporaryProjectModifier for the next internal project start
 
@@ -2240,7 +2242,8 @@ Do NOT use rival arcs in Chaos Sea or Shining Abode.
 GUARDIAN-FORCED INCARNATION — HARD REQUIREMENT:
 If game_state/control/afterlife_return_guard.json is semantic-valid (`reason = post_life_return`) and has remainingProtectedTurns > 0, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any Guardian-forced incarnation.
 If afterlife_return_guard.json is malformed, unreadable, or parsed with the wrong reason, Guardian-forced incarnation is ALSO forbidden fail-closed until client normalization clears that invalid guard state.
-Do NOT immediately kick the soul back into a new life on a protected or invalid-guard return state.
+Do NOT immediately kick the soul back into a new life on that protected return turn.
+Do NOT immediately kick the soul back into a new life while afterlife_return_guard.json remains invalid or unreadable either; fail closed until client normalization clears that guard state.
 Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn as a response to explicit player provocation against the current active Guardian.
 If you write game_state/control/incarnation_trigger.json in this forced mode, include:
   - source = guardian_forced

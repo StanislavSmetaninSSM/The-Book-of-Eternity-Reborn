@@ -1,0 +1,87 @@
+{
+  "guardians": [
+    {
+      "guardianId": "guardian_archive_001",
+      "canonicalName": "Азалия",
+      "nameVariants": {
+        "default": "Азалия",
+        "feminine": "Азалия",
+        "masculine": null,
+        "neutral": null
+      },
+      "manifestation": {
+        "currentDisplayName": "Азалия",
+        "formFlexibility": "selective",
+        "currentPresentationStyle": "feminine",
+        "currentPronouns": "она/её",
+        "appearanceDescription": "Тестовая форма Азалии."
+      },
+      "manifestationHistory": [],
+      "domain": "Knowledge",
+      "relationshipData": {
+        "currentReputation": 55,
+        "reputationHistory": [],
+        "lastInteraction": null
+      },
+      "abodePower": {
+        "currentPower": 35,
+        "tier": "Хрупкая",
+        "lastUpdatedAt": "2026-03-26T00:00:00Z",
+        "history": []
+      },
+      "questManagement": {
+        "availableQuests": [],
+        "activeQuests": [],
+        "completedQuests": []
+      },
+      "gachaSystem": {
+        "chargesPerReturn": 2,
+        "chargesUsedThisReturn": 0,
+        "gachaHistory": []
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guardian_archive_001",
+    "canonicalName": "Азалия",
+    "nameVariants": {
+      "default": "Азалия",
+      "feminine": "Азалия",
+      "masculine": null,
+      "neutral": null
+    },
+    "manifestation": {
+      "currentDisplayName": "Азалия",
+      "formFlexibility": "selective",
+      "currentPresentationStyle": "feminine",
+      "currentPronouns": "она/её",
+      "appearanceDescription": "Тестовая форма Азалии."
+    },
+    "manifestationHistory": [],
+    "domain": "Knowledge",
+    "relationshipData": {
+      "currentReputation": 55,
+      "reputationHistory": [],
+      "lastInteraction": null
+    },
+    "abodePower": {
+      "currentPower": 35,
+      "tier": "Хрупкая",
+      "lastUpdatedAt": "2026-03-26T00:00:00Z",
+      "history": []
+    },
+    "questManagement": {
+      "availableQuests": [],
+      "activeQuests": [],
+      "completedQuests": []
+    },
+    "gachaSystem": {
+      "chargesPerReturn": 2,
+      "chargesUsedThisReturn": 0,
+      "gachaHistory": []
+    }
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": null
+  }
+}

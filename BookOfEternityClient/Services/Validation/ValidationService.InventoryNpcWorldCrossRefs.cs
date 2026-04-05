@@ -1321,10 +1321,15 @@ public partial class ValidationService
     private async Task ValidateNpcCommandCrossReferencesAsync(
         List<ValidationIssue> issues,
         (HashSet<string> Ids, HashSet<string> Names) knownNpcReferences,
-        (HashSet<string> Ids, HashSet<string> Names) knownGuardianReferences)
+        GuardianReferenceValidationState knownGuardianReferences)
     {
         var preTurnNpcReferences = await ReadPreTurnNpcReferencesAsync();
         var knownNpcCurrentActivities = await ReadKnownNpcCurrentActivitiesAsync();
+        var guardianBoundaryUnavailable =
+            knownGuardianReferences.Ids.Count == 0 &&
+            knownGuardianReferences.Names.Count == 0 &&
+            knownGuardianReferences.BaselineFailureKind != GuardianBaselineFailureKind.None;
+        var emittedGuardianBaselineIssue = false;
         foreach (var (path, sections) in new[]
                  {
                      ("game_state/npcs/npc_inventory.json", new[] { "NPCInventoryAdds", "NPCInventoryUpdates", "NPCInventoryRemovals", "NPCEquipmentChanges", "NPCInventoryResourcesChanges" }),
@@ -1343,6 +1348,22 @@ public partial class ValidationService
                 {
                     if (!doc.RootElement.TryGetProperty(section, out var arr) || arr.ValueKind != JsonValueKind.Array)
                         continue;
+
+                    if (guardianBoundaryUnavailable &&
+                        arr.GetArrayLength() > 0 &&
+                        !emittedGuardianBaselineIssue)
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{path}.{section}",
+                            IssueSeverity.Error,
+                            "Guardian/NPC command boundary validation требует kernel-backed validated pre-turn guardians baseline и не может silently disappear при broken guardian provenance.",
+                            code: "guardian_npc_command_crossrefs_missing_validated_preturn_guardians_snapshot",
+                            section: "Guardians",
+                            expected: "validated pre-turn guardians baseline for guardian/NPC collision checks",
+                            actual: DescribeGuardianTrackedSnapshotFileStatus(knownGuardianReferences.SnapshotFileStatus),
+                            repairHint: "Сохраняй readable validated snapshot copy game_state/meta/guardians.json, чтобы guardian ids и names не могли silently попадать в NPC command surfaces."));
+                        emittedGuardianBaselineIssue = true;
+                    }
 
                     var index = 0;
                     foreach (var item in arr.EnumerateArray())

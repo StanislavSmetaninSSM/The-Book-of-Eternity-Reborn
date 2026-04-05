@@ -485,6 +485,438 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
         Assert.Contains("GUARDIAN CORRECTIONS FOR THIS LIFE", reminder, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task ApplyForNewLifeAsync_MutualNonHostileCoalitionTrace_StrengthensActivePatronClaim()
+    {
+        await WriteRawAsync(ScenarioCoreService.ManifestPath, """
+        {
+          "scenarioCoreAssertions": [
+            { "assertionId": "core_role", "category": "role_status", "value": "Игрок начинает королём", "explicit": true, "source": "structured_field" }
+          ],
+          "candidateAssertions": [],
+          "openCorrectionSlots": [
+            { "slotId": "slot_rival", "slotType": "rival_thread", "maxSeverity": "strong", "allowsFriendly": true, "allowsHostile": true, "sourceAssertionId": "core_role" }
+          ]
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guard_test_active",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "guardianRelationships": [
+                { "targetGuardianId": "guard_test_rival", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Open rivalry", "lastChangedAt": null },
+                { "targetGuardianId": "guard_test_support", "attitudeScore": 5, "attitudeTier": "neutral", "reason": "Measured respect", "lastChangedAt": null }
+              ],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            },
+            {
+              "guardianId": "guard_test_rival",
+              "canonicalName": "Варак",
+              "nameVariants": { "default": "Варак", "feminine": null, "masculine": "Варак", "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Варак",
+                "formFlexibility": "fixed",
+                "currentPresentationStyle": "masculine",
+                "currentPronouns": "он/его",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": -85, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 74, "tier": "Могущественная", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "guardianRelationships": [
+                { "targetGuardianId": "guard_test_active", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Open rivalry", "lastChangedAt": null },
+                { "targetGuardianId": "guard_test_support", "attitudeScore": -30, "attitudeTier": "competitive", "reason": "Cold distance", "lastChangedAt": null }
+              ],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            },
+            {
+              "guardianId": "guard_test_support",
+              "canonicalName": "Нерис",
+              "nameVariants": { "default": "Нерис", "feminine": "Нерис", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Нерис",
+                "formFlexibility": "adaptive",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 10, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 68, "tier": "Могущественная", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "guardianRelationships": [
+                { "targetGuardianId": "guard_test_active", "attitudeScore": 0, "attitudeTier": "neutral", "reason": "Measured respect", "lastChangedAt": null },
+                { "targetGuardianId": "guard_test_rival", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Shared enemy", "lastChangedAt": null }
+              ],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guard_test_active",
+            "canonicalName": "Азалия",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+            "guardianRelationships": [
+              { "targetGuardianId": "guard_test_rival", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Open rivalry", "lastChangedAt": null },
+              { "targetGuardianId": "guard_test_support", "attitudeScore": 5, "attitudeTier": "neutral", "reason": "Measured respect", "lastChangedAt": null }
+            ],
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          }
+        }
+        """);
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [
+            {
+              "guardianId": "guard_test_support",
+              "project": {
+                "projectId": "proj_support_trace",
+                "projectType": "offensive_intrigue",
+                "projectTier": "minor",
+                "projectMode": "offensive",
+                "projectName": "Скоординированное давление",
+                "targetGuardianId": "guard_test_rival",
+                "activeState": "Coordinating against the shared enemy",
+                "totalWork": 12,
+                "workDone": 4,
+                "totalStages": 2,
+                "currentStage": 1,
+                "pressure": 4,
+                "stability": 70
+              }
+            }
+          ],
+          "completedProjects": [
+            {
+              "guardianId": "guard_test_rival",
+              "project": {
+                "projectId": "proj_intrigue_001",
+                "projectType": "offensive_intrigue",
+                "projectTier": "major",
+                "projectMode": "offensive",
+                "projectName": "Чужая интрига",
+                "targetGuardianId": "guard_test_active",
+                "finalState": "Completed",
+                "completionTurn": 10
+              }
+            }
+          ]
+        }
+        """);
+
+        await _guardianCorrectionService.ApplyForNewLifeAsync(5);
+        var state = await _guardianCorrectionService.ReadAsync();
+
+        Assert.NotNull(state);
+        var activeClaimant = Assert.Single(state!.Claimants, claimant => claimant.GuardianId == "guard_test_active");
+        Assert.Contains("coalition support +1", activeClaimant.SourceSummary, StringComparison.Ordinal);
+        Assert.True(activeClaimant.ClaimStrengthBase > AbodePowerRules.GetCorrectionClaimPowerBand(activeClaimant.CurrentPower));
+    }
+
+    [Fact]
+    public async Task ApplyForNewLifeAsync_WithoutCurrentCoalitionTrace_DoesNotGrantActivePatronSupportBonus()
+    {
+        await WriteRawAsync(ScenarioCoreService.ManifestPath, """
+        {
+          "scenarioCoreAssertions": [
+            { "assertionId": "core_role", "category": "role_status", "value": "Игрок начинает королём", "explicit": true, "source": "structured_field" }
+          ],
+          "candidateAssertions": [],
+          "openCorrectionSlots": [
+            { "slotId": "slot_rival", "slotType": "rival_thread", "maxSeverity": "strong", "allowsFriendly": true, "allowsHostile": true, "sourceAssertionId": "core_role" }
+          ]
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guard_test_active",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "guardianRelationships": [
+                { "targetGuardianId": "guard_test_rival", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Open rivalry", "lastChangedAt": null },
+                { "targetGuardianId": "guard_test_support", "attitudeScore": 55, "attitudeTier": "ally", "reason": "Trusted ally", "lastChangedAt": null }
+              ],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            },
+            {
+              "guardianId": "guard_test_rival",
+              "canonicalName": "Варак",
+              "nameVariants": { "default": "Варак", "feminine": null, "masculine": "Варак", "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Варак",
+                "formFlexibility": "fixed",
+                "currentPresentationStyle": "masculine",
+                "currentPronouns": "он/его",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": -85, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 74, "tier": "Могущественная", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "guardianRelationships": [
+                { "targetGuardianId": "guard_test_active", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Open rivalry", "lastChangedAt": null },
+                { "targetGuardianId": "guard_test_support", "attitudeScore": -30, "attitudeTier": "competitive", "reason": "Cold distance", "lastChangedAt": null }
+              ],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            },
+            {
+              "guardianId": "guard_test_support",
+              "canonicalName": "Нерис",
+              "nameVariants": { "default": "Нерис", "feminine": "Нерис", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Нерис",
+                "formFlexibility": "adaptive",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 10, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 68, "tier": "Могущественная", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "guardianRelationships": [
+                { "targetGuardianId": "guard_test_active", "attitudeScore": 60, "attitudeTier": "ally", "reason": "Support pact", "lastChangedAt": null },
+                { "targetGuardianId": "guard_test_rival", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Shared enemy", "lastChangedAt": null }
+              ],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guard_test_active",
+            "canonicalName": "Азалия",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+            "guardianRelationships": [
+              { "targetGuardianId": "guard_test_rival", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Open rivalry", "lastChangedAt": null },
+              { "targetGuardianId": "guard_test_support", "attitudeScore": 55, "attitudeTier": "ally", "reason": "Trusted ally", "lastChangedAt": null }
+            ],
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          }
+        }
+        """);
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "completedProjects": [
+            {
+              "guardianId": "guard_test_rival",
+              "project": {
+                "projectId": "proj_intrigue_001",
+                "projectType": "offensive_intrigue",
+                "projectTier": "major",
+                "projectMode": "offensive",
+                "projectName": "Чужая интрига",
+                "targetGuardianId": "guard_test_active",
+                "finalState": "Completed",
+                "completionTurn": 10
+              }
+            }
+          ]
+        }
+        """);
+
+        await _guardianCorrectionService.ApplyForNewLifeAsync(5);
+        var state = await _guardianCorrectionService.ReadAsync();
+
+        Assert.NotNull(state);
+        var activeClaimant = Assert.Single(state!.Claimants, claimant => claimant.GuardianId == "guard_test_active");
+        Assert.DoesNotContain("coalition support +1", activeClaimant.SourceSummary, StringComparison.Ordinal);
+        Assert.Equal(AbodePowerRules.GetCorrectionClaimPowerBand(activeClaimant.CurrentPower) + 1, activeClaimant.ClaimStrengthBase);
+    }
+
+    [Fact]
+    public async Task ApplyForNewLifeAsync_OneWayFriendlyButHostileReverseRelation_DoesNotGrantCoalitionSupportBonus()
+    {
+        await WriteRawAsync(ScenarioCoreService.ManifestPath, """
+        {
+          "scenarioCoreAssertions": [
+            { "assertionId": "core_role", "category": "role_status", "value": "Игрок начинает королём", "explicit": true, "source": "structured_field" }
+          ],
+          "candidateAssertions": [],
+          "openCorrectionSlots": [
+            { "slotId": "slot_rival", "slotType": "rival_thread", "maxSeverity": "strong", "allowsFriendly": true, "allowsHostile": true, "sourceAssertionId": "core_role" }
+          ]
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guard_test_active",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "guardianRelationships": [
+                { "targetGuardianId": "guard_test_rival", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Open rivalry", "lastChangedAt": null },
+                { "targetGuardianId": "guard_test_support", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Broken accord", "lastChangedAt": null }
+              ],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            },
+            {
+              "guardianId": "guard_test_rival",
+              "canonicalName": "Варак",
+              "nameVariants": { "default": "Варак", "feminine": null, "masculine": "Варак", "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Варак",
+                "formFlexibility": "fixed",
+                "currentPresentationStyle": "masculine",
+                "currentPronouns": "он/его",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": -85, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 74, "tier": "Могущественная", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "guardianRelationships": [
+                { "targetGuardianId": "guard_test_active", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Open rivalry", "lastChangedAt": null },
+                { "targetGuardianId": "guard_test_support", "attitudeScore": -30, "attitudeTier": "competitive", "reason": "Cold distance", "lastChangedAt": null }
+              ],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            },
+            {
+              "guardianId": "guard_test_support",
+              "canonicalName": "Нерис",
+              "nameVariants": { "default": "Нерис", "feminine": "Нерис", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Нерис",
+                "formFlexibility": "adaptive",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 10, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 68, "tier": "Могущественная", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "guardianRelationships": [
+                { "targetGuardianId": "guard_test_active", "attitudeScore": 60, "attitudeTier": "ally", "reason": "Old loyalty", "lastChangedAt": null },
+                { "targetGuardianId": "guard_test_rival", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Shared enemy", "lastChangedAt": null }
+              ],
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guard_test_active",
+            "canonicalName": "Азалия",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 95, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 82, "tier": "Сияющая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+            "guardianRelationships": [
+              { "targetGuardianId": "guard_test_rival", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Open rivalry", "lastChangedAt": null },
+              { "targetGuardianId": "guard_test_support", "attitudeScore": -90, "attitudeTier": "enemy", "reason": "Broken accord", "lastChangedAt": null }
+            ],
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          }
+        }
+        """);
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [
+            {
+              "guardianId": "guard_test_support",
+              "project": {
+                "projectId": "proj_support_trace",
+                "projectType": "offensive_intrigue",
+                "projectTier": "minor",
+                "projectMode": "offensive",
+                "projectName": "Запоздалая помощь",
+                "targetGuardianId": "guard_test_rival",
+                "activeState": "Attempting to coordinate",
+                "totalWork": 12,
+                "workDone": 4,
+                "totalStages": 2,
+                "currentStage": 1,
+                "pressure": 4,
+                "stability": 70
+              }
+            }
+          ],
+          "completedProjects": [
+            {
+              "guardianId": "guard_test_rival",
+              "project": {
+                "projectId": "proj_intrigue_001",
+                "projectType": "offensive_intrigue",
+                "projectTier": "major",
+                "projectMode": "offensive",
+                "projectName": "Чужая интрига",
+                "targetGuardianId": "guard_test_active",
+                "finalState": "Completed",
+                "completionTurn": 10
+              }
+            }
+          ]
+        }
+        """);
+
+        await _guardianCorrectionService.ApplyForNewLifeAsync(5);
+        var state = await _guardianCorrectionService.ReadAsync();
+
+        Assert.NotNull(state);
+        var activeClaimant = Assert.Single(state!.Claimants, claimant => claimant.GuardianId == "guard_test_active");
+        Assert.DoesNotContain("coalition support +1", activeClaimant.SourceSummary, StringComparison.Ordinal);
+    }
+
     private async Task WriteRawAsync(string path, string content)
     {
         await _fs.WriteFileAtomicAsync(path, content);

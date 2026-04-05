@@ -11,47 +11,49 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
-    private Dictionary<string, GuardianSequentialState> CollectKnownGuardianSequentialStatesForCommandValidation()
+    private Dictionary<string, GuardianSequentialState> CollectKnownGuardianSequentialStatesForCommandValidation(
+        GuardianPolicyContext? guardianPolicyContext = null)
     {
+        guardianPolicyContext ??= _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
         var states = new Dictionary<string, GuardianSequentialState>(StringComparer.OrdinalIgnoreCase);
-        var preTurnGuardiansJson = ReadPreTurnTrackedFileSync("game_state/meta/guardians.json");
-        if (string.IsNullOrWhiteSpace(preTurnGuardiansJson))
+        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext))
             return states;
 
-        try
+        var baselineRoot = guardianPolicyContext.HasPreTurnAuthorityRoot
+            ? guardianPolicyContext.PreTurnAuthorityRoot
+            : guardianPolicyContext.PreTurnRoot;
+        if (baselineRoot.ValueKind != JsonValueKind.Object ||
+            !baselineRoot.TryGetProperty("guardians", out var guardians) ||
+            guardians.ValueKind != JsonValueKind.Array)
         {
-            using var doc = JsonDocument.Parse(preTurnGuardiansJson);
-            CollectGuardianSequentialStatesFromRoot(doc.RootElement, states);
+            return states;
         }
-        catch
+
+        foreach (var guardian in guardians.EnumerateArray())
         {
-            // ignored: higher-level JSON integrity validation already covers malformed pre-turn state
+            var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+            if (!string.IsNullOrWhiteSpace(guardianId))
+                states[guardianId] = ParseGuardianSequentialState(guardian);
         }
 
         return states;
     }
 
 
-    private static void CollectGuardianSequentialStatesFromRoot(JsonElement root, Dictionary<string, GuardianSequentialState> states)
+    private static GuardianSequentialState CloneGuardianSequentialState(GuardianSequentialState source)
     {
-        if (root.TryGetProperty("guardians", out var guardians) && guardians.ValueKind == JsonValueKind.Array)
+        var clone = new GuardianSequentialState
         {
-            foreach (var guardian in guardians.EnumerateArray())
-                MergeGuardianSequentialState(states, guardian);
-        }
+            CurrentReputation = source.CurrentReputation,
+            CurrentAbodePower = source.CurrentAbodePower,
+            ChargesUsedThisReturn = source.ChargesUsedThisReturn
+        };
+        clone.AvailableQuestIds.UnionWith(source.AvailableQuestIds);
+        clone.ActiveQuestIds.UnionWith(source.ActiveQuestIds);
+        foreach (var (questId, difficulty) in source.QuestDifficultyById)
+            clone.QuestDifficultyById[questId] = difficulty;
 
-        if (root.TryGetProperty("activeGuardian", out var activeGuardian) && activeGuardian.ValueKind == JsonValueKind.Object)
-            MergeGuardianSequentialState(states, activeGuardian);
-    }
-
-
-    private static void MergeGuardianSequentialState(Dictionary<string, GuardianSequentialState> states, JsonElement guardian)
-    {
-        var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
-        if (string.IsNullOrWhiteSpace(guardianId))
-            return;
-
-        states[guardianId] = ParseGuardianSequentialState(guardian);
+        return clone;
     }
 
 
@@ -565,31 +567,613 @@ public partial class ValidationService
     private void ValidateGuardianProjectStateData(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         var isTrackerFile = contextPrefix.EndsWith(GuardianProjectState.TrackerPath, StringComparison.OrdinalIgnoreCase);
-        var hasGuardianProjectFields =
+        var hasProjectCommandFields =
             root.TryGetProperty("startGuardianProjects", out _) ||
             root.TryGetProperty("guardianProjectUpdates", out _) ||
-            root.TryGetProperty("completeGuardianProjects", out _) ||
+            root.TryGetProperty("completeGuardianProjects", out _);
+        var hasDirectTrackerState =
+            root.TryGetProperty("activeProjects", out _) ||
+            root.TryGetProperty("completedProjects", out _) ||
             root.TryGetProperty("temporaryProjectModifiers", out _);
-        if (!isTrackerFile && !hasGuardianProjectFields)
+        if (!isTrackerFile && !hasProjectCommandFields)
             return;
 
+        if ((hasProjectCommandFields || hasDirectTrackerState) &&
+            !TryRequireGuardianPreTurnBaseline(
+                contextPrefix,
+                "Guardian project/gacha validation требует readable validated pre-turn guardians baseline и не использует current guardians[] как fallback authority.",
+                "guardian_project_missing_validated_preturn_guardians_snapshot",
+                "GuardianProjects",
+                "Сохраняй validated snapshot copy game_state/meta/guardians.json для guardian project/gacha turns. Без этого project politics и guardian command sequencing не должны выводиться из current guardians[].",
+                issues))
+        {
+            return;
+        }
+
+        if ((hasProjectCommandFields || hasDirectTrackerState) &&
+            !TryRequireGuardianProjectTrackerPreTurnBaseline(
+                contextPrefix,
+                "Guardian project/gacha validation требует readable validated pre-turn project tracker baseline и не использует current tracker state как fallback authority.",
+                "guardian_project_missing_validated_preturn_tracker_snapshot",
+                "GuardianProjects",
+                $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для guardian project/gacha turns. Без этого project politics, active project identity и derived tracker state не должны выводиться из current tracker.",
+                issues))
+        {
+            return;
+        }
+
+        var guardianIdentityState = ReadGuardianProjectIdentityValidationState();
+        var relationshipScores = guardianIdentityState.RelationshipScores;
+        var knownGuardianIds = guardianIdentityState.KnownGuardianIds;
+
         if (root.TryGetProperty("activeProjects", out var activeProjects))
-            ValidateGuardianProjectEntryArray(activeProjects, $"{contextPrefix}.activeProjects", issues, completed: false);
+            ValidateGuardianProjectEntryArray(activeProjects, $"{contextPrefix}.activeProjects", issues, completed: false, relationshipScores, knownGuardianIds);
         if (root.TryGetProperty("completedProjects", out var completedProjects))
-            ValidateGuardianProjectEntryArray(completedProjects, $"{contextPrefix}.completedProjects", issues, completed: true);
+            ValidateGuardianProjectEntryArray(completedProjects, $"{contextPrefix}.completedProjects", issues, completed: true, relationshipScores, knownGuardianIds);
+        ValidateGuardianProjectIdentityCollisions(root, contextPrefix, issues);
         if (root.TryGetProperty("temporaryProjectModifiers", out var temporaryModifiers))
             ValidateGuardianProjectTemporaryModifiers(temporaryModifiers, $"{contextPrefix}.temporaryProjectModifiers", issues);
 
+        if (isTrackerFile && hasDirectTrackerState)
+            ValidateGuardianProjectMaterializedStateAgainstAuthority(root, contextPrefix, issues);
+
         var knownProjects = ReadKnownGuardianProjectKeysForValidation();
+        var knownCompletedProjects = ReadKnownCompletedGuardianProjectKeysForValidation();
+        var knownProjectDetails = ReadKnownGuardianProjectsForValidation();
+        var knownActiveProjectIdsByGuardian = ReadKnownActiveGuardianProjectIdsByGuardianForValidation();
         var startedThisTurn = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var startedProjectDetails = new Dictionary<string, GuardianProjectValidationSnapshot>(StringComparer.OrdinalIgnoreCase);
 
         if (root.TryGetProperty("startGuardianProjects", out var startCommands))
-            ValidateGuardianProjectStartCommands(startCommands, $"{contextPrefix}.startGuardianProjects", issues, startedThisTurn);
+            ValidateGuardianProjectStartCommands(startCommands, $"{contextPrefix}.startGuardianProjects", issues, knownProjects, knownCompletedProjects, knownActiveProjectIdsByGuardian, startedThisTurn, startedProjectDetails, relationshipScores, knownGuardianIds);
         if (root.TryGetProperty("guardianProjectUpdates", out var updateCommands))
-            ValidateGuardianProjectUpdateCommands(updateCommands, $"{contextPrefix}.guardianProjectUpdates", issues, knownProjects, startedThisTurn);
+            ValidateGuardianProjectUpdateCommands(updateCommands, $"{contextPrefix}.guardianProjectUpdates", issues, knownProjects, startedThisTurn, knownGuardianIds);
         if (root.TryGetProperty("completeGuardianProjects", out var completeCommands))
-            ValidateGuardianProjectCompletionCommands(completeCommands, $"{contextPrefix}.completeGuardianProjects", issues, knownProjects, startedThisTurn);
+            ValidateGuardianProjectCompletionCommands(completeCommands, $"{contextPrefix}.completeGuardianProjects", issues, knownProjects, knownProjectDetails, startedProjectDetails, startedThisTurn, relationshipScores, knownGuardianIds);
     }
+
+    private bool TryRequireGuardianPreTurnBaseline(
+        string path,
+        string message,
+        string code,
+        string section,
+        string repairHint,
+        List<ValidationIssue> issues)
+    {
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        if (HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: section,
+            expected: "current validated pending turn snapshot with readable game_state/meta/guardians.json",
+            actual: DescribeGuardianTrackedSnapshotFileStatus(guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus),
+            repairHint: repairHint));
+        return false;
+    }
+
+    private bool TryRequireGuardianProjectTrackerPreTurnBaseline(
+        string path,
+        string message,
+        string code,
+        string section,
+        string repairHint,
+        List<ValidationIssue> issues)
+    {
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        if (HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: section,
+            expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
+            actual: DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus),
+            repairHint: repairHint));
+        return false;
+    }
+
+    private bool TryRequireGuardianProjectCurrentAuthority(
+        string path,
+        string baselineMessage,
+        string baselineCode,
+        string currentAuthorityMessage,
+        string currentAuthorityCode,
+        string section,
+        string baselineRepairHint,
+        string currentAuthorityRepairHint,
+        List<ValidationIssue> issues)
+    {
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        if (!HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+        {
+            issues.Add(new ValidationIssue(
+                path,
+                IssueSeverity.Error,
+                baselineMessage,
+                code: baselineCode,
+                section: section,
+                expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
+                actual: DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus),
+                repairHint: baselineRepairHint));
+            return false;
+        }
+
+        if (trackerContext.HasCurrentAuthorityRoot)
+            return true;
+
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            currentAuthorityMessage,
+            code: currentAuthorityCode,
+            section: section,
+            expected: $"readable current {GuardianProjectState.TrackerPath} that matches kernel-authoritative project tracker state",
+            actual: DescribeGuardianProjectTrackerAuthorityFailure(trackerContext),
+            repairHint: currentAuthorityRepairHint));
+        return false;
+    }
+
+    private bool TryResolveGuardianProjectTrackerValidationRoot(
+        string path,
+        string message,
+        string code,
+        string section,
+        string repairHint,
+        List<ValidationIssue> issues,
+        out JsonElement trackerRoot)
+    {
+        if (TryResolveGuardianProjectTrackerValidationRootSync(out trackerRoot, out var trackerContext))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: section,
+            expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
+            actual: DescribeGuardianProjectTrackerAuthorityFailure(trackerContext),
+            repairHint: repairHint));
+        return false;
+    }
+
+    private static string DescribeGuardianProjectTrackerAuthorityFailure(GuardianProjectTrackerPolicyContext trackerContext)
+    {
+        if (!HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+            return DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus);
+
+        return trackerContext.CurrentStateFailureKind switch
+        {
+            GuardianCurrentStateFailureKind.MissingCurrentState => $"current {GuardianProjectState.TrackerPath} is missing",
+            GuardianCurrentStateFailureKind.UnreadableCurrentState => $"current {GuardianProjectState.TrackerPath} is unreadable or malformed",
+            _ => $"current {GuardianProjectState.TrackerPath} authority root is unavailable"
+        };
+    }
+
+    private void ValidateGuardianProjectMaterializedStateAgainstAuthority(
+        JsonElement currentTrackerRoot,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        if (!trackerContext.HasCurrentAuthorityRoot)
+            return;
+
+        ValidateGuardianProjectMaterializedArrayAgainstAuthority(
+            currentTrackerRoot,
+            trackerContext.CurrentAuthorityRoot,
+            contextPrefix,
+            "activeProjects",
+            BuildGuardianProjectMaterializedEntryMap,
+            issues);
+        ValidateGuardianProjectMaterializedArrayAgainstAuthority(
+            currentTrackerRoot,
+            trackerContext.CurrentAuthorityRoot,
+            contextPrefix,
+            "completedProjects",
+            BuildGuardianProjectMaterializedEntryMap,
+            issues);
+        ValidateGuardianProjectMaterializedArrayAgainstAuthority(
+            currentTrackerRoot,
+            trackerContext.CurrentAuthorityRoot,
+            contextPrefix,
+            "temporaryProjectModifiers",
+            BuildGuardianProjectMaterializedModifierMap,
+            issues);
+    }
+
+    private void ValidateGuardianProjectMaterializedArrayAgainstAuthority(
+        JsonElement currentTrackerRoot,
+        JsonElement authorityRoot,
+        string contextPrefix,
+        string propertyName,
+        Func<JsonElement, Dictionary<string, JsonElement>?> mapBuilder,
+        List<ValidationIssue> issues)
+    {
+        if (!currentTrackerRoot.TryGetProperty(propertyName, out var currentArray) ||
+            currentArray.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var currentEntries = mapBuilder(currentArray);
+        if (currentEntries == null)
+            return;
+
+        Dictionary<string, JsonElement> authorityEntries;
+        if (authorityRoot.ValueKind == JsonValueKind.Object &&
+            authorityRoot.TryGetProperty(propertyName, out var authorityArray) &&
+            authorityArray.ValueKind == JsonValueKind.Array)
+        {
+            authorityEntries = mapBuilder(authorityArray) ?? new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        }
+        else
+        {
+            authorityEntries = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        }
+
+        var matchesAuthority =
+            currentEntries.Count == authorityEntries.Count &&
+            currentEntries.All(pair =>
+                authorityEntries.TryGetValue(pair.Key, out var authorityEntry) &&
+                JsonElementsSemanticallyEqual(pair.Value, authorityEntry));
+
+        if (matchesAuthority)
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.{propertyName}",
+            IssueSeverity.Error,
+            $"Current {propertyName} must match kernel-authoritative guardian project tracker state reconstructed from validated pre-turn baseline and same-turn project commands.",
+            code: "guardian_project_materialized_state_outside_authority",
+            section: "GuardianProjects",
+            expected: $"kernel-authoritative {propertyName} only",
+            actual: $"materialized current {propertyName} diverges from kernel authority view",
+            repairHint: $"Rewrite {propertyName} to match the tracker state reconstructed from validated pre-turn baseline plus authorized same-turn guardian project commands. Current materialized tracker state is not an authority source by itself."));
+    }
+
+    private static Dictionary<string, JsonElement>? BuildGuardianProjectMaterializedEntryMap(JsonElement array)
+    {
+        if (array.ValueKind != JsonValueKind.Array)
+            return null;
+
+        var result = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in array.EnumerateArray())
+        {
+            var key = GuardianProjectState.BuildKey(
+                GetFirstNonEmptyString(entry, "guardianId"),
+                entry.TryGetProperty("project", out var project) ? GetFirstNonEmptyString(project, "projectId") : null);
+            if (string.IsNullOrWhiteSpace(key))
+                continue;
+            if (result.ContainsKey(key))
+                return null;
+
+            result[key] = entry;
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, JsonElement>? BuildGuardianProjectMaterializedModifierMap(JsonElement array)
+    {
+        if (array.ValueKind != JsonValueKind.Array)
+            return null;
+
+        var result = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in array.EnumerateArray())
+        {
+            var key = BuildGuardianProjectModifierKey(entry);
+            if (string.IsNullOrWhiteSpace(key))
+                continue;
+            if (result.ContainsKey(key))
+                return null;
+
+            result[key] = entry;
+        }
+
+        return result;
+    }
+
+    private static string BuildGuardianProjectModifierKey(JsonElement entry)
+    {
+        var guardianId = GetFirstNonEmptyString(entry, "guardianId");
+        var modifierId = GetFirstNonEmptyString(entry, "modifierId");
+        if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(modifierId))
+            return string.Empty;
+
+        return $"{guardianId}::{modifierId}";
+    }
+
+    private sealed record GuardianProjectValidationSnapshot(
+        string? ProjectType,
+        string? TargetGuardianId,
+        string? BetrayalReason);
+
+    private enum GuardianPowerJournalRepairStatus
+    {
+        Unchanged,
+        Canonicalized,
+        Irreparable
+    }
+
+    private sealed record GuardianPowerJournalRepairValidationResult(
+        JsonElement EffectiveEntry,
+        GuardianPowerJournalRepairStatus Status);
+
+    private sealed record PoliticalGuardianPowerEventProjectSnapshot(
+        string ProjectGuardianId,
+        string ProjectId,
+        string? ProjectName,
+        string? ProjectType,
+        string? ProjectTier,
+        string? FinalState,
+        string? TargetGuardianId);
+
+    private sealed record GuardianIdentityValidationState(
+        HashSet<string> KnownGuardianIds,
+        HashSet<string> KnownGuardianNames,
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, int>> RelationshipScores);
+
+    private IReadOnlyDictionary<string, IReadOnlyDictionary<string, int>> ReadGuardianRelationshipScoresForValidation()
+        => ReadGuardianIdentityValidationState().RelationshipScores;
+
+    private GuardianIdentityValidationState ReadGuardianProjectIdentityValidationState()
+    {
+        var knownGuardianIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var knownGuardianNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var relationshipScores = new Dictionary<string, IReadOnlyDictionary<string, int>>(StringComparer.OrdinalIgnoreCase);
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        var hasValidatedPreTurnBaseline =
+            HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) &&
+            guardianPolicyContext.HasPreTurnAuthorityRoot;
+        if (!hasValidatedPreTurnBaseline && !guardianPolicyContext.HasCurrentAuthorityRoot)
+            return new GuardianIdentityValidationState(knownGuardianIds, knownGuardianNames, relationshipScores);
+        if (hasValidatedPreTurnBaseline)
+        {
+            MergeGuardianIdentityValidationStateFromStoredGuardians(
+                guardianPolicyContext.PreTurnAuthorityRoot,
+                knownGuardianIds,
+                relationshipScores);
+        }
+
+        try
+        {
+            var guardianIdsWithCurrentNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (guardianPolicyContext.HasCurrentAuthorityRoot)
+            {
+                MergeGuardianIdentityValidationStateFromStoredGuardians(
+                    guardianPolicyContext.CurrentAuthorityRoot,
+                    knownGuardianIds,
+                    relationshipScores);
+                CollectGuardianIdentityNamesFromStoredGuardians(
+                    guardianPolicyContext.CurrentAuthorityRoot,
+                    knownGuardianIds,
+                    knownGuardianNames,
+                    guardianIdsWithCurrentNames,
+                    onlyAuthorizedGuardians: false);
+            }
+
+            if (hasValidatedPreTurnBaseline)
+            {
+                CollectGuardianIdentityNamesFromStoredGuardians(
+                    guardianPolicyContext.PreTurnAuthorityRoot,
+                    knownGuardianIds,
+                    knownGuardianNames,
+                    guardianIdsWithCurrentNames,
+                    onlyAuthorizedGuardians: false,
+                    skipGuardianIds: guardianIdsWithCurrentNames);
+            }
+        }
+        catch
+        {
+            return new GuardianIdentityValidationState(knownGuardianIds, knownGuardianNames, relationshipScores);
+        }
+
+        return new GuardianIdentityValidationState(knownGuardianIds, knownGuardianNames, relationshipScores);
+    }
+
+    private GuardianIdentityValidationState ReadGuardianIdentityValidationState()
+    {
+        var knownGuardianIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var knownGuardianNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var relationshipScores = new Dictionary<string, IReadOnlyDictionary<string, int>>(StringComparer.OrdinalIgnoreCase);
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        var hasValidatedPreTurnBaseline =
+            HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) &&
+            guardianPolicyContext.HasPreTurnAuthorityRoot;
+        if (!hasValidatedPreTurnBaseline && !guardianPolicyContext.HasCurrentAuthorityRoot)
+            return new GuardianIdentityValidationState(knownGuardianIds, knownGuardianNames, relationshipScores);
+        if (hasValidatedPreTurnBaseline)
+        {
+            MergeGuardianIdentityValidationStateFromStoredGuardians(
+                guardianPolicyContext.PreTurnAuthorityRoot,
+                knownGuardianIds,
+                relationshipScores);
+        }
+
+        try
+        {
+            var guardianIdsWithCurrentNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (guardianPolicyContext.HasCurrentAuthorityRoot)
+            {
+                MergeGuardianIdentityValidationStateFromStoredGuardians(
+                    guardianPolicyContext.CurrentAuthorityRoot,
+                    knownGuardianIds,
+                    relationshipScores);
+                CollectGuardianIdentityNamesFromStoredGuardians(
+                    guardianPolicyContext.CurrentAuthorityRoot,
+                    knownGuardianIds,
+                    knownGuardianNames,
+                    guardianIdsWithCurrentNames,
+                    onlyAuthorizedGuardians: false);
+            }
+
+            if (hasValidatedPreTurnBaseline)
+            {
+                CollectGuardianIdentityNamesFromStoredGuardians(
+                    guardianPolicyContext.PreTurnAuthorityRoot,
+                    knownGuardianIds,
+                    knownGuardianNames,
+                    guardianIdsWithCurrentNames,
+                    onlyAuthorizedGuardians: false,
+                    skipGuardianIds: guardianIdsWithCurrentNames);
+            }
+        }
+        catch
+        {
+            return new GuardianIdentityValidationState(knownGuardianIds, knownGuardianNames, relationshipScores);
+        }
+
+        return new GuardianIdentityValidationState(knownGuardianIds, knownGuardianNames, relationshipScores);
+    }
+
+    private HashSet<string> ReadKnownGuardianIdsForProjectValidation()
+        => ReadGuardianIdentityValidationState().KnownGuardianIds;
+
+    private static bool MergeGuardianIdentityValidationStateFromStoredGuardians(
+        JsonElement root,
+        HashSet<string> knownGuardianIds,
+        IDictionary<string, IReadOnlyDictionary<string, int>> relationshipScores,
+        bool onlyAuthorizedGuardians = false)
+    {
+        if (!root.TryGetProperty("guardians", out var guardians) || guardians.ValueKind != JsonValueKind.Array)
+            return false;
+
+        var mergedAny = false;
+        foreach (var guardian in guardians.EnumerateArray())
+        {
+            var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+            if (string.IsNullOrWhiteSpace(guardianId))
+                continue;
+
+            if (onlyAuthorizedGuardians && !knownGuardianIds.Contains(guardianId))
+                continue;
+
+            MergeGuardianIdentityValidationState(guardian, knownGuardianIds, relationshipScores);
+            mergedAny = true;
+        }
+
+        return mergedAny;
+    }
+
+    private static void MergeGuardianIdentityValidationState(
+        JsonElement guardian,
+        HashSet<string> knownGuardianIds,
+        IDictionary<string, IReadOnlyDictionary<string, int>> relationshipScores)
+    {
+        if (guardian.ValueKind != JsonValueKind.Object)
+            return;
+
+        var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return;
+
+        knownGuardianIds.Add(guardianId);
+        var scoresByTarget = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        if (guardian.TryGetProperty("guardianRelationships", out var relationships) && relationships.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var relationship in relationships.EnumerateArray())
+            {
+                if (relationship.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var targetGuardianId = GetFirstNonEmptyString(relationship, "targetGuardianId");
+                if (string.IsNullOrWhiteSpace(targetGuardianId) ||
+                    string.Equals(targetGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                scoresByTarget[targetGuardianId] = ResolveGuardianRelationshipScoreForValidation(relationship);
+            }
+        }
+
+        relationshipScores[guardianId] = scoresByTarget;
+    }
+
+    private static void RegisterGuardianIdentityNames(
+        JsonElement guardian,
+        HashSet<string> knownGuardianNames)
+    {
+        if (guardian.ValueKind != JsonValueKind.Object)
+            return;
+
+        var guardianName = GuardianManifestation.GetDisplayName(guardian);
+        var canonicalName = GuardianManifestation.GetCanonicalName(guardian);
+        if (!string.IsNullOrWhiteSpace(guardianName))
+            knownGuardianNames.Add(guardianName);
+        if (!string.IsNullOrWhiteSpace(canonicalName))
+            knownGuardianNames.Add(canonicalName);
+    }
+
+    private static void CollectGuardianIdentityNamesFromStoredGuardians(
+        JsonElement root,
+        HashSet<string> knownGuardianIds,
+        HashSet<string> knownGuardianNames,
+        HashSet<string> coveredGuardianIds,
+        bool onlyAuthorizedGuardians,
+        HashSet<string>? skipGuardianIds = null)
+    {
+        if (!root.TryGetProperty("guardians", out var guardians) || guardians.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var guardian in guardians.EnumerateArray())
+        {
+            var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+            if (string.IsNullOrWhiteSpace(guardianId))
+                continue;
+
+            if (onlyAuthorizedGuardians && !knownGuardianIds.Contains(guardianId))
+                continue;
+
+            if (skipGuardianIds != null && skipGuardianIds.Contains(guardianId))
+                continue;
+
+            RegisterGuardianIdentityNames(guardian, knownGuardianNames);
+            coveredGuardianIds.Add(guardianId);
+        }
+    }
+
+    private static int ResolveGuardianRelationshipScoreForValidation(JsonElement relationship)
+    {
+        if (relationship.TryGetProperty("attitudeScore", out var scoreNode) &&
+            scoreNode.ValueKind == JsonValueKind.Number &&
+            scoreNode.TryGetInt32(out var attitudeScore))
+        {
+            return Math.Clamp(attitudeScore, GuardianRelationshipRules.MinAttitudeScore, GuardianRelationshipRules.MaxAttitudeScore);
+        }
+
+        var tier = GetFirstNonEmptyString(relationship, "attitudeTier", "attitude");
+        return Math.Clamp(
+            GuardianRelationshipRules.ResolveLegacyScore(tier),
+            GuardianRelationshipRules.MinAttitudeScore,
+            GuardianRelationshipRules.MaxAttitudeScore);
+    }
+
+    private static bool RequiresGuardianPoliticalBetrayalReason(
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, int>> relationshipScores,
+        string? sourceGuardianId,
+        string? targetGuardianId)
+    {
+        if (string.IsNullOrWhiteSpace(sourceGuardianId) || string.IsNullOrWhiteSpace(targetGuardianId))
+            return false;
+
+        return relationshipScores.TryGetValue(sourceGuardianId, out var scoresByTarget) &&
+               scoresByTarget.TryGetValue(targetGuardianId, out var score) &&
+               GuardianRelationshipRules.RequiresBetrayalReason(score);
+    }
+
+    private static bool IsGuardianPoliticalProjectType(string? projectType) =>
+        string.Equals(projectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(projectType, "counter_rival_operation", StringComparison.OrdinalIgnoreCase);
 
 
     private void ValidateGuardianPowerEventData(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -602,6 +1186,80 @@ public partial class ValidationService
         if (events.ValueKind != JsonValueKind.Array)
             return;
 
+        if (!TryRequireGuardianPreTurnBaseline(
+                context,
+                "Guardian power event validation требует readable validated pre-turn guardians baseline и не использует current guardian/project state как fallback authority.",
+                "guardian_power_event_missing_validated_preturn_guardians_snapshot",
+                "AbodePower",
+                "Сохраняй validated snapshot copy game_state/meta/guardians.json для turns с guardianPowerEvents. Без этого validator не должен резолвить guardianId и source project из current-only state.",
+                issues))
+        {
+            return;
+        }
+
+        var knownGuardianIds = ReadKnownGuardianIdsForProjectValidation();
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects =
+            new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        if (GuardianPowerEventArrayRequiresProjectTrackerAuthority(events))
+        {
+            if (!TryRequireGuardianProjectCurrentAuthority(
+                    context,
+                    "Guardian power event validation требует readable validated pre-turn project tracker baseline и не использует current guardian/project state как fallback authority.",
+                    "guardian_power_event_missing_validated_preturn_tracker_snapshot",
+                    "Guardian power event validation требует readable current guardian project tracker authority и не использует projected pre-turn tracker state как fallback.",
+                    "guardian_power_event_missing_current_tracker_authority",
+                    "AbodePower",
+                    $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для turns с guardianPowerEvents. Без этого validator не должен резолвить source project из current-only tracker state.",
+                    $"Исправь current {GuardianProjectState.TrackerPath} так, чтобы validator мог построить strict current authority root. guardianPowerEvents не должны валидироваться по stale projected tracker state.",
+                    issues))
+            {
+                return;
+            }
+
+            knownPoliticalProjects = ReadKnownPoliticalGuardianPowerEventProjectsForValidation();
+        }
+
+        var preTurnJournalIdentityResolution = ResolveValidatedPreTurnGuardianPowerJournalIdentityState();
+        if (preTurnJournalIdentityResolution.Status != GuardianPowerJournalIdentityBaselineStatus.Resolved ||
+            preTurnJournalIdentityResolution.IdentityState == null)
+        {
+            var issueCode = preTurnJournalIdentityResolution.Status == GuardianPowerJournalIdentityBaselineStatus.MissingValidatedSnapshotJournal
+                ? "guardian_power_event_missing_validated_preturn_journal_snapshot"
+                : "guardian_power_event_invalid_validated_preturn_journal_snapshot";
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Guardian power event identity validation требует readable validated pre-turn abode_power_journal baseline и не использует broken snapshot journal как permissive fallback.",
+                code: issueCode,
+                section: "AbodePower",
+                expected: $"current validated pending turn snapshot with readable {GuardianPowerEventState.JournalPath}",
+                actual: preTurnJournalIdentityResolution.FailureDescription,
+                repairHint: $"Сохраняй validated snapshot copy {GuardianPowerEventState.JournalPath} для turns с guardianPowerEvents. Без baseline journal identity validator не должен резолвить append-only eventId и same-life resonance uniqueness."));
+            return;
+        }
+
+        ValidateGuardianPowerEventArrayAgainstKnownContext(
+            events,
+            context,
+            issues,
+            knownGuardianIds,
+            knownPoliticalProjects,
+            preTurnJournalIdentityResolution.IdentityState);
+    }
+
+    private void ValidateGuardianPowerEventArrayAgainstKnownContext(
+        JsonElement events,
+        string context,
+        List<ValidationIssue> issues,
+        HashSet<string> knownGuardianIds,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        GuardianPowerJournalIdentityState? preTurnJournalIdentityState)
+    {
+        RequireArrayOfObjects(events, context, issues);
+        if (events.ValueKind != JsonValueKind.Array)
+            return;
+
+        var effectiveEventsForIdentityValidation = new List<(JsonElement Entry, string Context)>();
         var index = 0;
         foreach (var item in events.EnumerateArray())
         {
@@ -609,8 +1267,11 @@ public partial class ValidationService
             if (!RequireObject(item, itemContext, issues))
                 continue;
 
+            effectiveEventsForIdentityValidation.Add((item, itemContext));
+
             RequireString(item, itemContext, issues, "eventId");
-            RequireString(item, itemContext, issues, "guardianId");
+            var guardianId = RequireString(item, itemContext, issues, "guardianId");
+            ValidateKnownGuardianId($"{itemContext}.guardianId", guardianId, issues, knownGuardianIds);
             ValidateIntegerField(item, itemContext, issues, "delta");
             var reasonType = RequireString(item, itemContext, issues, "reasonType");
             if (!string.IsNullOrWhiteSpace(reasonType) && !GuardianPowerEventState.IsValidReasonType(reasonType))
@@ -638,11 +1299,18 @@ public partial class ValidationService
                     repairHint: "Не отправляй raw guardianPowerEvents для guardian quest. Заверши квест через UpdateGuardians.completeQuest и передай questPowerAudit."));
             }
 
-            RequireString(item, itemContext, issues, "sourceSurface");
-            RequireString(item, itemContext, issues, "sourceId");
+            var sourceSurface = RequireString(item, itemContext, issues, "sourceSurface");
+            var sourceId = RequireString(item, itemContext, issues, "sourceId");
             RequireString(item, itemContext, issues, "title");
             RequireString(item, itemContext, issues, "summary");
             ValidateOptionalNullableStringField(item, itemContext, issues, "relatedGuardianId");
+            var relatedGuardianId = GetFirstNonEmptyString(item, "relatedGuardianId");
+            ValidateOptionalKnownRelatedGuardianId(
+                $"{itemContext}.relatedGuardianId",
+                guardianId,
+                relatedGuardianId,
+                issues,
+                knownGuardianIds);
             var visibility = GetFirstNonEmptyString(item, "visibility");
             if (!string.IsNullOrWhiteSpace(visibility) && !GuardianPowerEventState.IsValidVisibility(visibility))
             {
@@ -684,7 +1352,125 @@ public partial class ValidationService
             }
             else
             {
-                ValidateGuardianPowerEventAudit(reasonType, audit, $"{itemContext}.audit", issues);
+                ValidateGuardianPowerEventAudit(
+                    guardianId,
+                    relatedGuardianId,
+                    sourceSurface,
+                    sourceId,
+                    reasonType,
+                    TryReadInt(item, "delta", out var powerEventDelta) ? powerEventDelta : null,
+                    audit,
+                    itemContext,
+                    $"{itemContext}.audit",
+                    issues,
+                    knownPoliticalProjects);
+                ValidateCompletionSourcedRivalStrikeEventContract(
+                    item,
+                    itemContext,
+                    guardianId,
+                    relatedGuardianId,
+                    sourceSurface,
+                    sourceId,
+                    reasonType,
+                    audit,
+                    $"{itemContext}.audit",
+                    issues,
+                    knownPoliticalProjects,
+                    journalSurface: false);
+                ValidateUpdateSourcedRivalStrikeEventContract(
+                    item,
+                    itemContext,
+                    sourceSurface,
+                    reasonType,
+                    issues);
+            }
+        }
+
+        ValidateGuardianPowerEventIdentityContract(
+            effectiveEventsForIdentityValidation,
+            preTurnJournalIdentityState,
+            issues);
+    }
+
+    private static void ValidateGuardianPowerEventIdentityContract(
+        IReadOnlyList<(JsonElement Entry, string Context)> events,
+        GuardianPowerJournalIdentityState? preTurnJournalIdentityState,
+        List<ValidationIssue> issues)
+    {
+        var seenEventIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var seenResonanceLifeScopeKeys = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var (entry, context) in events)
+        {
+            var eventId = GetFirstNonEmptyString(entry, "eventId");
+            if (!string.IsNullOrWhiteSpace(eventId))
+            {
+                if (seenEventIds.TryGetValue(eventId, out var firstContext))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}.eventId",
+                        IssueSeverity.Error,
+                        "guardianPowerEvents.eventId должен быть уникальным в рамках raw guardianPowerEvents array",
+                        code: "guardian_power_event_duplicate_raw_event_id",
+                        section: "AbodePower",
+                        expected: "unique raw eventId",
+                        actual: $"{eventId} (already used at {firstContext}.eventId)",
+                        repairHint: "Не дублируй eventId в raw guardianPowerEvents. Каждое raw power event должно иметь собственный append-only identity key до materialization в journal."));
+                }
+                else
+                {
+                    seenEventIds[eventId] = context;
+                }
+
+                if (preTurnJournalIdentityState != null && preTurnJournalIdentityState.EventIds.Contains(eventId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}.eventId",
+                        IssueSeverity.Error,
+                        "guardianPowerEvents.eventId не должен переиспользовать validated pre-turn abode_power_journal eventId",
+                        code: "guardian_power_event_raw_event_id_conflicts_with_validated_preturn_journal",
+                        section: "AbodePower",
+                        expected: "new raw eventId not present in validated pre-turn journal baseline",
+                        actual: $"{eventId} already exists in validated pre-turn {GuardianPowerEventState.JournalPath}",
+                        repairHint: "Используй новый append-only eventId для raw guardianPowerEvents. Validated pre-turn journal eventId нельзя переиспользовать для нового power event."));
+                }
+            }
+
+            if (!string.Equals(GetFirstNonEmptyString(entry, "reasonType"), "resonance", StringComparison.OrdinalIgnoreCase) ||
+                !TryBuildGuardianResonanceLifeScopeKey(entry, out var resonanceLifeScopeKey))
+            {
+                continue;
+            }
+
+            if (seenResonanceLifeScopeKeys.TryGetValue(resonanceLifeScopeKey, out var firstLifeScopeContext))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.audit.lifeId",
+                    IssueSeverity.Error,
+                    "guardianPowerEvents.reasonType=resonance допускает максимум одно raw событие на одного Хранителя в рамках одной завершённой жизни",
+                    code: "guardian_power_event_duplicate_raw_resonance_for_same_life",
+                    section: "LifeEvaluation",
+                    expected: "at most one raw resonance event per guardianId + lifeId",
+                    actual: $"{resonanceLifeScopeKey} (already used at {firstLifeScopeContext}.audit.lifeId)",
+                    repairHint: "Не дублируй raw resonance события для одного и того же guardianId + lifeId. Повторный resonance для той же жизни не должен попадать в authority input."));
+            }
+            else
+            {
+                seenResonanceLifeScopeKeys[resonanceLifeScopeKey] = context;
+            }
+
+            if (preTurnJournalIdentityState != null &&
+                preTurnJournalIdentityState.ResonanceLifeScopeKeys.Contains(resonanceLifeScopeKey))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.audit.lifeId",
+                    IssueSeverity.Error,
+                    "guardianPowerEvents.reasonType=resonance не должен дублировать validated pre-turn resonance for the same life",
+                    code: "guardian_power_event_raw_resonance_conflicts_with_validated_preturn_journal",
+                    section: "LifeEvaluation",
+                    expected: "no validated pre-turn journal resonance for the same guardianId + lifeId",
+                    actual: $"{resonanceLifeScopeKey} already exists in validated pre-turn {GuardianPowerEventState.JournalPath}",
+                    repairHint: "Не добавляй raw resonance power event для guardianId + lifeId, который уже присутствовал в validated pre-turn abode_power_journal. Same-life duplicate должен отбраковываться до authority build."));
             }
         }
     }
@@ -702,6 +1488,40 @@ public partial class ValidationService
         if (entries.ValueKind != JsonValueKind.Array)
             return;
 
+        if (!TryRequireGuardianPreTurnBaseline(
+                contextPrefix,
+                "Abode power journal validation требует readable validated pre-turn guardians baseline и не использует current guardian/project state как fallback authority.",
+                "guardian_power_event_missing_validated_preturn_guardians_snapshot",
+                "AbodePower",
+                "Сохраняй validated snapshot copy game_state/meta/guardians.json для turns с abode_power_journal. Без этого validator не должен резолвить guardianId и source project из current-only state.",
+                issues))
+        {
+            return;
+        }
+
+        var knownGuardianIds = ReadKnownGuardianIdsForProjectValidation();
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects =
+            new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        if (GuardianPowerEventArrayRequiresProjectTrackerAuthority(entries))
+        {
+            if (!TryRequireGuardianProjectCurrentAuthority(
+                    contextPrefix,
+                    "Abode power journal validation требует readable validated pre-turn project tracker baseline и не использует current guardian/project state как fallback authority.",
+                    "guardian_power_event_missing_validated_preturn_tracker_snapshot",
+                    "Abode power journal validation требует readable current guardian project tracker authority и не использует projected pre-turn tracker state как fallback.",
+                    "guardian_power_event_missing_current_tracker_authority",
+                    "AbodePower",
+                    $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для turns с abode_power_journal. Без этого validator не должен резолвить source project из current-only tracker state.",
+                    $"Исправь current {GuardianProjectState.TrackerPath} так, чтобы validator мог построить strict current authority root. abode_power_journal не должен валидироваться по stale projected tracker state.",
+                    issues))
+            {
+                return;
+            }
+
+            knownPoliticalProjects = ReadKnownPoliticalGuardianPowerEventProjectsForValidation();
+        }
+
+        var effectiveEntriesForIdentityValidation = new List<(JsonElement Entry, string Context)>();
         var index = 0;
         foreach (var entry in entries.EnumerateArray())
         {
@@ -709,61 +1529,349 @@ public partial class ValidationService
             if (!RequireObject(entry, entryContext, issues))
                 continue;
 
-            RequireString(entry, entryContext, issues, "entryId");
-            RequireString(entry, entryContext, issues, "eventId");
-            ValidateNonNegativeIntegerField(entry, entryContext, issues, "turn", "AbodePower");
-            RequireString(entry, entryContext, issues, "guardianId");
-            RequireString(entry, entryContext, issues, "guardianName");
-            ValidateIntegerField(entry, entryContext, issues, "delta");
-            RequireString(entry, entryContext, issues, "reasonType");
-            RequireString(entry, entryContext, issues, "sourceSurface");
-            RequireString(entry, entryContext, issues, "sourceId");
-            RequireString(entry, entryContext, issues, "title");
-            RequireString(entry, entryContext, issues, "summary");
-            RequireString(entry, entryContext, issues, "visibility");
-            ValidateOptionalNullableStringField(entry, entryContext, issues, "relatedGuardianId");
-            RequireString(entry, entryContext, issues, "appliedAt");
-            if (entry.TryGetProperty("audit", out var audit))
-                RequireObject(audit, $"{entryContext}.audit", issues);
+            var repairResult = RepairGuardianPowerJournalEntryForValidation(entry, knownPoliticalProjects);
+            var effectiveEntry = repairResult.EffectiveEntry;
+            if (repairResult.Status == GuardianPowerJournalRepairStatus.Canonicalized)
+            {
+                issues.Add(new ValidationIssue(
+                    entryContext,
+                    IssueSeverity.Error,
+                    "abode_power_journal entry расходится с canonical repaired form и должен быть переписан перед прохождением strict validation",
+                    code: "guardian_power_event_requires_canonical_repair",
+                    section: "AbodePower",
+                    repairHint: "Запусти canonical journal repair/normalizer, чтобы raw journal entry хранил ту же attacker/project identity, которую использует validator."));
+            }
+
+            ValidateGuardianPowerJournalEntryContract(
+                effectiveEntry,
+                entryContext,
+                issues,
+                knownGuardianIds,
+                knownPoliticalProjects);
+            effectiveEntriesForIdentityValidation.Add((effectiveEntry, entryContext));
+        }
+
+        ValidateGuardianPowerJournalIdentityContract(effectiveEntriesForIdentityValidation, issues);
+    }
+
+    private static void ValidateGuardianPowerJournalIdentityContract(
+        IReadOnlyList<(JsonElement Entry, string Context)> entries,
+        List<ValidationIssue> issues)
+    {
+        var seenEntryIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var seenEventIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var (entry, context) in entries)
+        {
+            var entryId = GetFirstNonEmptyString(entry, "entryId");
+            if (!string.IsNullOrWhiteSpace(entryId))
+            {
+                if (seenEntryIds.TryGetValue(entryId, out var firstContext))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}.entryId",
+                        IssueSeverity.Error,
+                        "abode_power_journal.entryId должен быть уникальным в рамках всего журнала",
+                        code: "guardian_power_event_duplicate_entry_id",
+                        section: "AbodePower",
+                        expected: "unique entryId",
+                        actual: $"{entryId} (already used at {firstContext}.entryId)",
+                        repairHint: "Не дублируй entryId в abode_power_journal и не переиспользуй identity уже существующей записи."));
+                }
+                else
+                {
+                    seenEntryIds[entryId] = context;
+                }
+            }
+
+            var eventId = GetFirstNonEmptyString(entry, "eventId");
+            if (string.IsNullOrWhiteSpace(eventId))
+                continue;
+
+            if (seenEventIds.TryGetValue(eventId, out var firstEventContext))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.eventId",
+                    IssueSeverity.Error,
+                    "abode_power_journal.eventId должен быть уникальным в рамках всего журнала",
+                    code: "guardian_power_event_duplicate_event_id",
+                    section: "AbodePower",
+                    expected: "unique eventId",
+                    actual: $"{eventId} (already used at {firstEventContext}.eventId)",
+                    repairHint: "Не переиспользуй eventId для новых journal entries. Каждое событие силы Обители должно иметь собственный append-only eventId."));
+            }
+            else
+            {
+                seenEventIds[eventId] = context;
+            }
         }
     }
 
+    private void ValidateGuardianPowerJournalEntryContract(
+        JsonElement effectiveEntry,
+        string entryContext,
+        List<ValidationIssue> issues,
+        HashSet<string> knownGuardianIds,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects)
+    {
+        RequireString(effectiveEntry, entryContext, issues, "entryId");
+        RequireString(effectiveEntry, entryContext, issues, "eventId");
+        ValidateNonNegativeIntegerField(effectiveEntry, entryContext, issues, "turn", "AbodePower");
+        var guardianId = RequireString(effectiveEntry, entryContext, issues, "guardianId");
+        ValidateKnownGuardianId($"{entryContext}.guardianId", guardianId, issues, knownGuardianIds);
+        RequireString(effectiveEntry, entryContext, issues, "guardianName");
+        ValidateIntegerField(effectiveEntry, entryContext, issues, "delta");
+        var reasonType = RequireString(effectiveEntry, entryContext, issues, "reasonType");
+        if (!string.IsNullOrWhiteSpace(reasonType) && !GuardianPowerEventState.IsValidReasonType(reasonType))
+        {
+            issues.Add(new ValidationIssue(
+                $"{entryContext}.reasonType",
+                IssueSeverity.Error,
+                "abode_power_journal.reasonType использует неподдерживаемый тип события силы Обители",
+                code: "guardian_power_event_invalid_reason_type",
+                section: "AbodePower",
+                expected: string.Join(" | ", GuardianPowerEventState.AllowedReasonTypes),
+                actual: reasonType,
+                repairHint: "Используй только reasonType из canonical Abode Power contract."));
+        }
 
-    private void ValidateGuardianPowerEventAudit(string reasonType, JsonElement audit, string auditContext, List<ValidationIssue> issues)
+        var sourceSurface = RequireString(effectiveEntry, entryContext, issues, "sourceSurface");
+        var sourceId = RequireString(effectiveEntry, entryContext, issues, "sourceId");
+        RequireString(effectiveEntry, entryContext, issues, "title");
+        RequireString(effectiveEntry, entryContext, issues, "summary");
+        var visibility = RequireString(effectiveEntry, entryContext, issues, "visibility");
+        if (!string.IsNullOrWhiteSpace(visibility) && !GuardianPowerEventState.IsValidVisibility(visibility))
+        {
+            issues.Add(new ValidationIssue(
+                $"{entryContext}.visibility",
+                IssueSeverity.Error,
+                "abode_power_journal.visibility использует неподдерживаемое значение",
+                code: "guardian_power_event_invalid_visibility",
+                section: "AbodePower",
+                expected: string.Join(" | ", GuardianPowerEventState.AllowedVisibility),
+                actual: visibility,
+                repairHint: "Используй visibility=player_known или hidden."));
+        }
+
+        ValidateOptionalNullableStringField(effectiveEntry, entryContext, issues, "relatedGuardianId");
+        var relatedGuardianId = GetFirstNonEmptyString(effectiveEntry, "relatedGuardianId");
+        ValidateOptionalKnownRelatedGuardianId(
+            $"{entryContext}.relatedGuardianId",
+            guardianId,
+            relatedGuardianId,
+            issues,
+            knownGuardianIds);
+        var appliedAt = RequireString(effectiveEntry, entryContext, issues, "appliedAt");
+        if (!string.IsNullOrWhiteSpace(appliedAt) && !DateTimeOffset.TryParse(appliedAt, out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{entryContext}.appliedAt",
+                IssueSeverity.Error,
+                "abode_power_journal.appliedAt должен быть ISO 8601 timestamp",
+                code: "guardian_power_event_invalid_applied_at",
+                section: "AbodePower",
+                repairHint: "Сохраняй appliedAt как ISO 8601 timestamp."));
+        }
+
+        if (!effectiveEntry.TryGetProperty("audit", out var audit) || !RequireObject(audit, $"{entryContext}.audit", issues))
+        {
+            issues.Add(new ValidationIssue(
+                $"{entryContext}.audit",
+                IssueSeverity.Error,
+                "abode_power_journal entry обязан содержать audit object",
+                code: "guardian_power_event_missing_audit",
+                section: "AbodePower",
+                repairHint: "Каждая запись canonical abode power history должна хранить machine-readable audit object."));
+            return;
+        }
+
+        ValidateGuardianPowerEventAudit(
+            guardianId,
+            relatedGuardianId,
+            sourceSurface,
+            sourceId,
+            reasonType,
+            TryReadInt(effectiveEntry, "delta", out var journalDelta) ? journalDelta : null,
+            audit,
+            entryContext,
+            $"{entryContext}.audit",
+            issues,
+            knownPoliticalProjects);
+        ValidateCompletionSourcedRivalStrikeEventContract(
+            effectiveEntry,
+            entryContext,
+            guardianId,
+            relatedGuardianId,
+            sourceSurface,
+            sourceId,
+            reasonType,
+            audit,
+            $"{entryContext}.audit",
+            issues,
+            knownPoliticalProjects,
+            journalSurface: true);
+        ValidateUpdateSourcedRivalStrikeEventContract(
+            effectiveEntry,
+            entryContext,
+            sourceSurface,
+            reasonType,
+            issues);
+    }
+
+    private static GuardianPowerJournalRepairValidationResult RepairGuardianPowerJournalEntryForValidation(
+        JsonElement entry,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects)
+    {
+        var reasonType = GetFirstNonEmptyString(entry, "reasonType");
+        if (!IsPoliticalGuardianPowerEventReasonType(reasonType))
+            return new GuardianPowerJournalRepairValidationResult(entry, GuardianPowerJournalRepairStatus.Unchanged);
+
+        JsonObject? clone;
+        try
+        {
+            clone = JsonNode.Parse(entry.GetRawText()) as JsonObject;
+        }
+        catch
+        {
+            return new GuardianPowerJournalRepairValidationResult(entry, GuardianPowerJournalRepairStatus.Unchanged);
+        }
+
+        if (clone == null)
+            return new GuardianPowerJournalRepairValidationResult(entry, GuardianPowerJournalRepairStatus.Unchanged);
+
+        var status = CanonicalizePoliticalGuardianPowerJournalEntry(clone, knownPoliticalProjects);
+        return new GuardianPowerJournalRepairValidationResult(ToJsonElement(clone), status);
+    }
+
+
+    private void ValidateGuardianPowerEventAudit(
+        string? guardianId,
+        string? relatedGuardianId,
+        string? sourceSurface,
+        string? sourceId,
+        string reasonType,
+        int? eventDelta,
+        JsonElement audit,
+        string eventContext,
+        string auditContext,
+        List<ValidationIssue> issues,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        bool authorityIndependentOnly = false)
     {
         if (string.IsNullOrWhiteSpace(reasonType))
             return;
 
         if (string.Equals(reasonType, "resonance", StringComparison.OrdinalIgnoreCase))
         {
-            ValidateIntegerField(audit, auditContext, issues, "domainAlignment");
-            ValidateIntegerField(audit, auditContext, issues, "worldScale");
-            ValidateIntegerField(audit, auditContext, issues, "permanence");
-            ValidateIntegerField(audit, auditContext, issues, "sacrifice");
-            ValidateIntegerField(audit, auditContext, issues, "publicImpact");
-            ValidateIntegerField(audit, auditContext, issues, "resonanceScore");
+            ValidateNonPoliticalGuardianPowerEventSourceSurfaceAlignment(
+                sourceSurface,
+                reasonType,
+                $"{eventContext}.sourceSurface",
+                issues);
+            RequireString(audit, auditContext, issues, "lifeId");
+            RequireIntegerAuditField(audit, auditContext, issues, "domainAlignment");
+            RequireIntegerAuditField(audit, auditContext, issues, "worldScale");
+            RequireIntegerAuditField(audit, auditContext, issues, "permanence");
+            RequireIntegerAuditField(audit, auditContext, issues, "sacrifice");
+            RequireIntegerAuditField(audit, auditContext, issues, "publicImpact");
+            RequireIntegerAuditField(audit, auditContext, issues, "resonanceScore");
             RequireString(audit, auditContext, issues, "classification");
-            ValidateIntegerField(audit, auditContext, issues, "finalDelta");
+            RequirePositiveIntegerAuditField(audit, auditContext, issues, "finalDelta");
+
+            if (eventDelta.HasValue && eventDelta.Value <= 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{eventContext}.delta",
+                    IssueSeverity.Error,
+                    "resonance power-event должен нести положительный delta",
+                    code: "guardian_power_event_resonance_delta_sign_mismatch",
+                    section: "AbodePower",
+                    expected: "positive integer delta",
+                    actual: eventDelta.Value.ToString(),
+                    repairHint: "Для resonance сохраняй положительный delta, равный итоговому resonance gain на dedicated Life Evaluation turn."));
+            }
+
+            if (eventDelta.HasValue &&
+                TryReadInt(audit, "finalDelta", out var resonanceFinalDelta) &&
+                eventDelta.Value != resonanceFinalDelta)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{auditContext}.finalDelta",
+                    IssueSeverity.Error,
+                    "resonance power-event должен держать audit.finalDelta, равный top-level delta",
+                    code: "guardian_power_event_resonance_delta_final_delta_mismatch",
+                    section: "AbodePower",
+                    expected: eventDelta.Value.ToString(),
+                    actual: resonanceFinalDelta.ToString(),
+                    repairHint: "Синхронизируй resonance audit.finalDelta с итоговым top-level delta."));            
+            }
+
             return;
         }
 
         if (string.Equals(reasonType, "offering", StringComparison.OrdinalIgnoreCase))
         {
+            ValidateNonPoliticalGuardianPowerEventSourceSurfaceAlignment(
+                sourceSurface,
+                reasonType,
+                $"{eventContext}.sourceSurface",
+                issues);
             var offeringType = RequireString(audit, auditContext, issues, "offeringType");
             RequireString(audit, auditContext, issues, "returnCycleId");
-            ValidateIntegerField(audit, auditContext, issues, "baseDelta");
-            ValidateIntegerField(audit, auditContext, issues, "finalDelta");
+            RequirePositiveIntegerAuditField(audit, auditContext, issues, "baseDelta");
+            RequirePositiveIntegerAuditField(audit, auditContext, issues, "finalDelta");
+
+            if (eventDelta.HasValue && eventDelta.Value <= 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{eventContext}.delta",
+                    IssueSeverity.Error,
+                    "offering power-event должен нести положительный delta",
+                    code: "guardian_power_event_offering_delta_sign_mismatch",
+                    section: "AbodePower",
+                    expected: "positive integer delta",
+                    actual: eventDelta.Value.ToString(),
+                    repairHint: "Для offering сохраняй положительный delta, равный gain силы Обители."));
+            }
+
+            if (eventDelta.HasValue &&
+                TryReadInt(audit, "finalDelta", out var finalDelta) &&
+                eventDelta.Value != finalDelta)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{auditContext}.finalDelta",
+                    IssueSeverity.Error,
+                    "offering power-event должен держать audit.finalDelta, равный top-level delta",
+                    code: "guardian_power_event_offering_delta_final_delta_mismatch",
+                    section: "AbodePower",
+                    expected: eventDelta.Value.ToString(),
+                    actual: finalDelta.ToString(),
+                    repairHint: "Синхронизируй audit.finalDelta с итоговым top-level delta offering power event."));
+            }
 
             if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))
             {
-                ValidatePositiveNumberField(audit, auditContext, issues, "inkFeathersOffered");
-                ValidateNonNegativeIntegerField(audit, auditContext, issues, "capRemainingBefore", "AbodePower");
+                RequirePositiveIntegerAuditField(audit, auditContext, issues, "inkFeathersOffered");
+                RequireNonNegativeIntegerAuditField(audit, auditContext, issues, "capRemainingBefore");
             }
             else if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
             {
                 RequireString(audit, auditContext, issues, "relicId");
                 RequireString(audit, auditContext, issues, "relicName");
-                RequireString(audit, auditContext, issues, "relicRarity");
+                var relicRarity = RequireString(audit, auditContext, issues, "relicRarity");
+                if (!string.IsNullOrWhiteSpace(relicRarity) &&
+                    !GuardianAbodeOfferingState.IsCanonicalSoulRelicRarity(relicRarity))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{auditContext}.relicRarity",
+                        IssueSeverity.Error,
+                        "offering audit relicRarity должна быть canonical rarity tier с поддерживаемым power gain",
+                        code: "guardian_power_event_offering_relic_invalid_rarity",
+                        section: "AbodePower",
+                        expected: GuardianAbodeOfferingState.DescribeCanonicalSoulRelicRarities(),
+                        actual: relicRarity,
+                        repairHint: "Сохраняй для soul_relic canonical relicRarity, который реально даёт power gain по Abode Offering rules."));
+                }
             }
             else if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
                      string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
@@ -796,9 +1904,1005 @@ public partial class ValidationService
                         code: "guardian_power_event_offering_archive_invalid_rarity",
                         section: "AbodePower",
                         expected: "Common | Uncommon | Rare | Epic | Legendary | Unique",
-                        actual: archiveRarity));
+                    actual: archiveRarity));
                 }
             }
+            else if (!string.IsNullOrWhiteSpace(offeringType))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{auditContext}.offeringType",
+                    IssueSeverity.Error,
+                    "offering audit должен использовать только whitelisted offeringType",
+                    code: "guardian_power_event_offering_invalid_type",
+                    section: "AbodePower",
+                    expected: $"{GuardianAbodeOfferingState.OfferingTypeInkFeathers} | {GuardianAbodeOfferingState.OfferingTypeSoulRelic} | {GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment} | {GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord}",
+                    actual: offeringType,
+                    repairHint: "Сохраняй в offering audit только один из canonical offeringType, который поддерживает runtime contract и accepted-turn proof."));
+            }
+
+            ValidateOfferingPowerEventDeterministicGain(
+                audit,
+                auditContext,
+                eventContext,
+                offeringType,
+                eventDelta,
+                issues);
+
+            return;
+        }
+
+        if (IsPoliticalGuardianPowerEventReasonType(reasonType))
+        {
+            var completionSurface = string.Equals(sourceSurface, "completeGuardianProjects", StringComparison.OrdinalIgnoreCase);
+            ValidatePoliticalGuardianPowerEventAuditIdentity(
+                guardianId,
+                relatedGuardianId,
+                sourceSurface,
+                sourceId,
+                reasonType,
+                audit,
+                auditContext,
+                issues,
+                requireFinalState: completionSurface,
+                authorityIndependentOnly,
+                knownPoliticalProjects);
+
+            if (authorityIndependentOnly)
+                return;
+
+            if (string.Equals(reasonType, "rival_strike", StringComparison.OrdinalIgnoreCase))
+            {
+                if (completionSurface)
+                    ValidateOffensiveImpactAuditFields(audit, auditContext, issues, commandSurface: false);
+                else if (string.Equals(sourceSurface, "guardianProjectUpdates", StringComparison.OrdinalIgnoreCase))
+                    ValidateGuardianProjectSabotageAudit(audit, auditContext, issues);
+            }
+            else if (string.Equals(reasonType, "project_assist", StringComparison.OrdinalIgnoreCase) ||
+                     (string.Equals(reasonType, "rival_defense", StringComparison.OrdinalIgnoreCase) &&
+                      string.Equals(sourceSurface, "guardianProjectUpdates", StringComparison.OrdinalIgnoreCase)))
+            {
+                ValidateGuardianProjectAssistAudit(audit, auditContext, issues);
+            }
+        }
+    }
+
+    private void ValidateCompletionSourcedRivalStrikeEventContract(
+        JsonElement eventRoot,
+        string eventContext,
+        string? guardianId,
+        string? relatedGuardianId,
+        string? sourceSurface,
+        string? sourceId,
+        string reasonType,
+        JsonElement audit,
+        string auditContext,
+        List<ValidationIssue> issues,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        bool journalSurface,
+        bool authorityIndependentOnly = false)
+    {
+        if (!string.Equals(reasonType, "rival_strike", StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(sourceSurface, "completeGuardianProjects", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(relatedGuardianId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{eventContext}.relatedGuardianId",
+                IssueSeverity.Error,
+                "completion-sourced rival_strike обязан указывать source guardian в relatedGuardianId",
+                code: "guardian_power_event_rival_strike_missing_related_guardian_id",
+                section: "AbodePower",
+                expected: "existing source guardian id",
+                repairHint: "Для target-side rival_strike держи relatedGuardianId равным attacking guardian."));
+        }
+
+        var hasDelta = TryReadInt(eventRoot, "delta", out var deltaValue);
+        if (!hasDelta || deltaValue >= 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{eventContext}.delta",
+                IssueSeverity.Error,
+                "completion-sourced rival_strike должен нести отрицательный delta для цели",
+                code: "guardian_power_event_rival_strike_delta_sign_mismatch",
+                section: "AbodePower",
+                expected: "negative integer delta",
+                actual: hasDelta ? deltaValue.ToString() : "missing_or_invalid",
+                repairHint: "Для target-side rival_strike записывай отрицательный delta, равный потере силы цели."));
+        }
+
+        var hasTargetLoss = TryReadInt(audit, "targetLoss", out var targetLoss);
+        if (!hasTargetLoss || targetLoss <= 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.targetLoss",
+                IssueSeverity.Error,
+                "completion-sourced rival_strike должен нести положительный targetLoss",
+                code: "guardian_power_event_rival_strike_target_loss_invalid",
+                section: "AbodePower",
+                expected: "positive integer targetLoss",
+                actual: hasTargetLoss ? targetLoss.ToString() : "missing_or_invalid",
+                repairHint: "Сохраняй rival_strike только для реального hostile loss и передавай targetLoss > 0."));
+        }
+
+        if (hasDelta && hasTargetLoss && deltaValue < 0 && targetLoss > 0)
+        {
+            var appliedLoss = -deltaValue;
+            var mismatch = journalSurface
+                ? appliedLoss > targetLoss
+                : appliedLoss != targetLoss;
+            if (mismatch)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{auditContext}.targetLoss",
+                    IssueSeverity.Error,
+                    journalSurface
+                        ? "completion-sourced rival_strike не может применять потери больше, чем разрешает audit.targetLoss"
+                        : "raw completion-sourced rival_strike должен нести delta, точно равный hostile targetLoss до clamp",
+                    code: "guardian_power_event_rival_strike_delta_target_loss_mismatch",
+                    section: "AbodePower",
+                    expected: journalSurface ? $">= {appliedLoss}" : appliedLoss.ToString(),
+                    actual: targetLoss.ToString(),
+                    repairHint: journalSurface
+                        ? "Для completion-sourced rival_strike храни applied delta после clamp так, чтобы abs(delta) не превышал targetLoss."
+                        : "На raw guardianPowerEvents completion-sourced rival_strike должен записывать pre-clamp delta, равный targetLoss по модулю."));
+            }
+        }
+
+        if (authorityIndependentOnly)
+            return;
+
+        var snapshot = ResolvePoliticalGuardianPowerEventSnapshot(
+            guardianId,
+            relatedGuardianId,
+            sourceSurface,
+            sourceId,
+            reasonType,
+            GetFirstNonEmptyString(audit, "projectGuardianId"),
+            GetFirstNonEmptyString(audit, "projectId"),
+            knownPoliticalProjects);
+        if (snapshot == null)
+        {
+            return;
+        }
+
+        if (!string.Equals(snapshot.ProjectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.projectType",
+                IssueSeverity.Error,
+                "completion-sourced rival_strike может ссылаться только на offensive_intrigue source project",
+                code: "guardian_power_event_rival_strike_project_type_mismatch",
+                section: "AbodePower",
+                expected: "offensive_intrigue",
+                actual: snapshot.ProjectType ?? string.Empty,
+                repairHint: "Держи completion-sourced rival_strike привязанным к завершённому offensive_intrigue."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(guardianId) &&
+            !string.IsNullOrWhiteSpace(snapshot.TargetGuardianId) &&
+            !string.Equals(snapshot.TargetGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{eventContext}.guardianId",
+                IssueSeverity.Error,
+                "completion-sourced rival_strike должен указывать в guardianId ровно ту цель, которая сохранена в source offensive_intrigue",
+                code: "guardian_power_event_rival_strike_target_guardian_mismatch",
+                section: "AbodePower",
+                expected: snapshot.TargetGuardianId,
+                actual: guardianId,
+                repairHint: "Для target-side rival_strike сохраняй guardianId равным targetGuardianId исходного offensive_intrigue."));
+        }
+    }
+
+    private void ValidateUpdateSourcedRivalStrikeEventContract(
+        JsonElement eventRoot,
+        string eventContext,
+        string? sourceSurface,
+        string reasonType,
+        List<ValidationIssue> issues)
+    {
+        if (!string.Equals(reasonType, "rival_strike", StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(sourceSurface, "guardianProjectUpdates", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var hasDelta = TryReadInt(eventRoot, "delta", out var deltaValue);
+        if (!hasDelta || deltaValue >= 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{eventContext}.delta",
+                IssueSeverity.Error,
+                "update-sourced rival_strike должен нести отрицательный sabotage delta",
+                code: "guardian_power_event_update_rival_strike_delta_sign_mismatch",
+                section: "AbodePower",
+                expected: "negative integer delta",
+                actual: hasDelta ? deltaValue.ToString() : "missing_or_invalid",
+                repairHint: "Для sabotage-style rival_strike сохраняй отрицательный delta, соответствующий hostile power loss."));
+        }
+    }
+
+    private static bool IsPoliticalGuardianPowerEventReasonType(string? reasonType) =>
+        string.Equals(reasonType, "project_completion", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(reasonType, "project_failure", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(reasonType, "project_assist", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(reasonType, "rival_defense", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(reasonType, "rival_strike", StringComparison.OrdinalIgnoreCase);
+
+    private static bool GuardianPowerEventArrayRequiresProjectTrackerAuthority(JsonElement entries)
+    {
+        if (entries.ValueKind != JsonValueKind.Array)
+            return false;
+
+        foreach (var entry in entries.EnumerateArray())
+        {
+            if (IsPoliticalGuardianPowerEventReasonType(GetFirstNonEmptyString(entry, "reasonType")))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void ValidatePoliticalGuardianPowerEventAuditIdentity(
+        string? guardianId,
+        string? relatedGuardianId,
+        string? sourceSurface,
+        string? sourceId,
+        string reasonType,
+        JsonElement audit,
+        string auditContext,
+        List<ValidationIssue> issues,
+        bool requireFinalState,
+        bool authorityIndependentOnly,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects)
+    {
+        ValidatePoliticalGuardianPowerEventSourceSurfaceAlignment(sourceSurface, reasonType, auditContext, issues);
+
+        var authoredProjectGuardianId = GetFirstNonEmptyString(audit, "projectGuardianId");
+        var authoredProjectId = GetFirstNonEmptyString(audit, "projectId");
+        var authoredProjectName = GetFirstNonEmptyString(audit, "projectName");
+        var authoredProjectType = GetFirstNonEmptyString(audit, "projectType");
+        var authoredProjectTier = GetFirstNonEmptyString(audit, "projectTier");
+        var authoredFinalState = GetFirstNonEmptyString(audit, "finalState");
+        var derivedProjectGuardianId = ResolvePoliticalGuardianPowerEventProjectGuardianId(
+            guardianId,
+            relatedGuardianId,
+            sourceSurface,
+            reasonType);
+        var effectiveProjectGuardianId = !string.IsNullOrWhiteSpace(authoredProjectGuardianId)
+            ? authoredProjectGuardianId
+            : derivedProjectGuardianId;
+        if (!string.IsNullOrWhiteSpace(authoredProjectGuardianId) &&
+            !string.IsNullOrWhiteSpace(derivedProjectGuardianId) &&
+            !string.Equals(authoredProjectGuardianId, derivedProjectGuardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.projectGuardianId",
+                IssueSeverity.Error,
+                "political power-event audit.projectGuardianId расходится с ожидаемым owner guardian для этого surface/reasonType",
+                code: "guardian_power_event_project_guardian_id_mismatch",
+                section: "AbodePower",
+                expected: derivedProjectGuardianId,
+                actual: authoredProjectGuardianId,
+                repairHint: "Держи audit.projectGuardianId согласованным с source guardian проекта."));
+        }
+
+        var effectiveProjectId = !string.IsNullOrWhiteSpace(authoredProjectId)
+            ? authoredProjectId
+            : sourceId;
+        PoliticalGuardianPowerEventProjectSnapshot? snapshot = null;
+        if (!authorityIndependentOnly)
+        {
+            snapshot = ResolvePoliticalGuardianPowerEventSnapshot(
+                guardianId,
+                relatedGuardianId,
+                sourceSurface,
+                sourceId,
+                reasonType,
+                authoredProjectGuardianId,
+                effectiveProjectId,
+                knownPoliticalProjects);
+        }
+
+        var effectiveProjectName = !string.IsNullOrWhiteSpace(authoredProjectName)
+            ? authoredProjectName
+            : snapshot?.ProjectName;
+        var effectiveProjectType = !string.IsNullOrWhiteSpace(authoredProjectType)
+            ? authoredProjectType
+            : snapshot?.ProjectType;
+        var effectiveProjectTier = !string.IsNullOrWhiteSpace(authoredProjectTier)
+            ? authoredProjectTier
+            : snapshot?.ProjectTier;
+        var effectiveFinalState = !string.IsNullOrWhiteSpace(authoredFinalState)
+            ? authoredFinalState
+            : snapshot?.FinalState;
+
+        RequirePoliticalGuardianPowerEventAuditString(effectiveProjectGuardianId, $"{auditContext}.projectGuardianId", "projectGuardianId", issues);
+        RequirePoliticalGuardianPowerEventAuditString(effectiveProjectId, $"{auditContext}.projectId", "projectId", issues);
+        RequirePoliticalGuardianPowerEventAuditString(effectiveProjectName, $"{auditContext}.projectName", "projectName", issues);
+        RequirePoliticalGuardianPowerEventAuditString(effectiveProjectType, $"{auditContext}.projectType", "projectType", issues);
+        RequirePoliticalGuardianPowerEventAuditString(effectiveProjectTier, $"{auditContext}.projectTier", "projectTier", issues);
+        if (!string.IsNullOrWhiteSpace(sourceId) &&
+            !string.IsNullOrWhiteSpace(effectiveProjectId) &&
+            !string.Equals(sourceId, effectiveProjectId, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.projectId",
+                IssueSeverity.Error,
+                "political power-event audit.projectId must match sourceId for project-sourced events",
+                code: "guardian_power_event_project_source_id_mismatch",
+                section: "AbodePower",
+                expected: sourceId,
+                actual: effectiveProjectId,
+                repairHint: "Keep audit.projectId aligned with the top-level sourceId for project-sourced power events."));
+        }
+
+        if (!authorityIndependentOnly &&
+            !string.IsNullOrWhiteSpace(effectiveProjectGuardianId) &&
+            !string.IsNullOrWhiteSpace(effectiveProjectId) &&
+            snapshot == null)
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.projectId",
+                IssueSeverity.Error,
+                "political power-event ссылается на project source, которого нет в canonical guardian project state",
+                code: "guardian_power_event_unknown_source_project",
+                section: "AbodePower",
+                expected: "existing canonical guardianId + projectId pair",
+                actual: $"{effectiveProjectGuardianId}:{effectiveProjectId}",
+                repairHint: "Ссылайся только на реально существующий project source и держи audit.projectGuardianId/projectId согласованными с tracker state."));
+        }
+
+        if (!authorityIndependentOnly)
+        {
+            ValidatePoliticalGuardianPowerEventProjectMetadataAgainstSnapshot(
+                snapshot,
+                authoredProjectGuardianId,
+                authoredProjectName,
+                authoredProjectType,
+                authoredProjectTier,
+                authoredFinalState,
+                auditContext,
+                issues);
+        }
+
+        if (requireFinalState)
+        {
+            RequirePoliticalGuardianPowerEventAuditString(effectiveFinalState, $"{auditContext}.finalState", "finalState", issues);
+            if (!string.IsNullOrWhiteSpace(effectiveFinalState) && !GuardianProjectState.IsValidFinalState(effectiveFinalState))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{auditContext}.finalState",
+                    IssueSeverity.Error,
+                    "political power-event audit.finalState must use a supported guardian project terminal state",
+                    code: "guardian_power_event_invalid_project_final_state",
+                    section: "AbodePower",
+                    expected: string.Join(" | ", GuardianProjectState.AllowedFinalStates),
+                    actual: effectiveFinalState,
+                    repairHint: "Use one of the canonical guardian project terminal states in political power-event audit.finalState."));
+            }
+
+            if (!string.IsNullOrWhiteSpace(effectiveFinalState))
+                ValidatePoliticalGuardianPowerEventFinalStateAlignment(sourceSurface, reasonType, effectiveFinalState, auditContext, issues);
+        }
+    }
+
+    private void ValidatePoliticalGuardianPowerEventSourceSurfaceAlignment(
+        string? sourceSurface,
+        string reasonType,
+        string auditContext,
+        List<ValidationIssue> issues)
+    {
+        var isCompletionSurface = string.Equals(sourceSurface, "completeGuardianProjects", StringComparison.OrdinalIgnoreCase);
+        var isUpdateSurface = string.Equals(sourceSurface, "guardianProjectUpdates", StringComparison.OrdinalIgnoreCase);
+        var isValid = string.Equals(reasonType, "project_completion", StringComparison.OrdinalIgnoreCase) ||
+                      string.Equals(reasonType, "project_failure", StringComparison.OrdinalIgnoreCase)
+            ? isCompletionSurface
+            : string.Equals(reasonType, "project_assist", StringComparison.OrdinalIgnoreCase)
+                ? isUpdateSurface
+                : isCompletionSurface || isUpdateSurface;
+        if (isValid)
+            return;
+
+        var expectedSurface = string.Equals(reasonType, "project_completion", StringComparison.OrdinalIgnoreCase) ||
+                              string.Equals(reasonType, "project_failure", StringComparison.OrdinalIgnoreCase)
+            ? "completeGuardianProjects"
+            : string.Equals(reasonType, "project_assist", StringComparison.OrdinalIgnoreCase)
+                ? "guardianProjectUpdates"
+                : "guardianProjectUpdates | completeGuardianProjects";
+        issues.Add(new ValidationIssue(
+            $"{auditContext}.projectId",
+            IssueSeverity.Error,
+            "political power-event reasonType не согласован с sourceSurface runtime contract",
+            code: "guardian_power_event_reason_type_source_surface_mismatch",
+            section: "AbodePower",
+            expected: expectedSurface,
+            actual: sourceSurface ?? string.Empty,
+            repairHint: "Сохраняй political power events только на тех sourceSurface, которые реально генерирует guardian project runtime."));
+    }
+
+    private void ValidateNonPoliticalGuardianPowerEventSourceSurfaceAlignment(
+        string? sourceSurface,
+        string reasonType,
+        string sourceSurfaceContext,
+        List<ValidationIssue> issues)
+    {
+        if (!TryGetExpectedNonPoliticalGuardianPowerEventSourceSurface(reasonType, out var expectedSurface) ||
+            string.Equals(sourceSurface, expectedSurface, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            sourceSurfaceContext,
+            IssueSeverity.Error,
+            "guardian power-event reasonType не согласован с sourceSurface runtime contract",
+            code: "guardian_power_event_reason_type_source_surface_mismatch",
+            section: "AbodePower",
+            expected: expectedSurface,
+            actual: sourceSurface ?? string.Empty,
+            repairHint: "Держи non-political guardian power events только на тех sourceSurface, которые реально генерирует соответствующий runtime flow."));
+    }
+
+    private static bool TryGetExpectedNonPoliticalGuardianPowerEventSourceSurface(string reasonType, out string expectedSurface)
+    {
+        if (string.Equals(reasonType, "offering", StringComparison.OrdinalIgnoreCase))
+        {
+            expectedSurface = "guardianAbodeOffering";
+            return true;
+        }
+
+        if (string.Equals(reasonType, "resonance", StringComparison.OrdinalIgnoreCase))
+        {
+            expectedSurface = "life_evaluation";
+            return true;
+        }
+
+        expectedSurface = string.Empty;
+        return false;
+    }
+
+    private void ValidateOfferingPowerEventDeterministicGain(
+        JsonElement audit,
+        string auditContext,
+        string eventContext,
+        string? offeringType,
+        int? eventDelta,
+        List<ValidationIssue> issues)
+    {
+        if (!eventDelta.HasValue || string.IsNullOrWhiteSpace(offeringType))
+            return;
+
+        if (!TryResolveExpectedOfferingPowerDelta(audit, auditContext, offeringType, issues, out var expectedDelta))
+            return;
+
+        if (eventDelta.Value == expectedDelta)
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{eventContext}.delta",
+            IssueSeverity.Error,
+            "offering power-event должен использовать delta, детерминированно рассчитанный по canonical offering rules",
+            code: "guardian_power_event_offering_delta_formula_mismatch",
+            section: "AbodePower",
+            expected: expectedDelta.ToString(),
+            actual: eventDelta.Value.ToString(),
+            repairHint: "Не подбирай offering delta вручную; рассчитывай его из offeringType и canonical offering audit payload."));
+    }
+
+    private bool TryResolveExpectedOfferingPowerDelta(
+        JsonElement audit,
+        string auditContext,
+        string offeringType,
+        List<ValidationIssue> issues,
+        out int expectedDelta)
+    {
+        expectedDelta = 0;
+
+        if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!TryReadInt(audit, "inkFeathersOffered", out var inkFeathersOffered))
+                return false;
+
+            if (inkFeathersOffered <= 0 || inkFeathersOffered % 50 != 0 || inkFeathersOffered > 150)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{auditContext}.inkFeathersOffered",
+                    IssueSeverity.Error,
+                    "offering audit inkFeathersOffered должен использовать supported offering amounts",
+                    code: "guardian_power_event_offering_invalid_amount",
+                    section: "AbodePower",
+                    expected: "50 | 100 | 150",
+                    actual: inkFeathersOffered.ToString(),
+                    repairHint: "Для ink_feathers используй только canonical offering amounts: 50, 100 или 150."));
+                return false;
+            }
+
+            expectedDelta = GuardianAbodeOfferingState.ResolvePowerGainForInkFeatherOffering(inkFeathersOffered);
+            return expectedDelta > 0;
+        }
+
+        if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
+        {
+            var relicRarity = GetFirstNonEmptyString(audit, "relicRarity");
+            if (string.IsNullOrWhiteSpace(relicRarity))
+                return false;
+
+            expectedDelta = GuardianAbodeOfferingState.ResolvePowerGainForSoulRelicOffering(relicRarity);
+            return expectedDelta > 0;
+        }
+
+        if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            var archiveRarity = GetFirstNonEmptyString(audit, "archiveRarity");
+            if (string.IsNullOrWhiteSpace(archiveRarity))
+                return false;
+
+            expectedDelta = AbodePowerRules.ResolvePowerGainForArchiveRarity(archiveRarity);
+            return expectedDelta > 0;
+        }
+
+        return false;
+    }
+
+    private static void RequireIntegerAuditField(
+        JsonElement audit,
+        string auditContext,
+        List<ValidationIssue> issues,
+        string fieldName)
+    {
+        if (!audit.TryGetProperty(fieldName, out var value))
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.{fieldName}",
+                IssueSeverity.Error,
+                "guardian power-event audit обязан содержать обязательное integer поле",
+                code: "guardian_power_event_missing_audit_field",
+                section: "AbodePower"));
+            return;
+        }
+
+        if (value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out _))
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{auditContext}.{fieldName}",
+            IssueSeverity.Error,
+            "guardian power-event audit поле должно быть integer",
+            code: "guardian_power_event_invalid_audit_field",
+            section: "AbodePower"));
+    }
+
+    private static void RequirePositiveIntegerAuditField(
+        JsonElement audit,
+        string auditContext,
+        List<ValidationIssue> issues,
+        string fieldName)
+    {
+        if (!audit.TryGetProperty(fieldName, out var value))
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.{fieldName}",
+                IssueSeverity.Error,
+                "guardian power-event audit обязан содержать обязательное positive integer поле",
+                code: "guardian_power_event_missing_audit_field",
+                section: "AbodePower"));
+            return;
+        }
+
+        if (value.ValueKind == JsonValueKind.Number &&
+            value.TryGetInt32(out var intValue) &&
+            intValue > 0)
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            $"{auditContext}.{fieldName}",
+            IssueSeverity.Error,
+            "guardian power-event audit поле должно быть положительным integer",
+            code: "guardian_power_event_invalid_audit_field",
+            section: "AbodePower"));
+    }
+
+    private static void RequireNonNegativeIntegerAuditField(
+        JsonElement audit,
+        string auditContext,
+        List<ValidationIssue> issues,
+        string fieldName)
+    {
+        if (!audit.TryGetProperty(fieldName, out var value))
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.{fieldName}",
+                IssueSeverity.Error,
+                "guardian power-event audit обязан содержать обязательное non-negative integer поле",
+                code: "guardian_power_event_missing_audit_field",
+                section: "AbodePower"));
+            return;
+        }
+
+        if (value.ValueKind == JsonValueKind.Number &&
+            value.TryGetInt32(out var intValue) &&
+            intValue >= 0)
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            $"{auditContext}.{fieldName}",
+            IssueSeverity.Error,
+            "guardian power-event audit поле должно быть неотрицательным integer",
+            code: "guardian_power_event_invalid_audit_field",
+            section: "AbodePower"));
+    }
+
+    private static void RequirePoliticalGuardianPowerEventAuditString(
+        string? value,
+        string context,
+        string fieldName,
+        List<ValidationIssue> issues)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+            return;
+
+        issues.Add(new ValidationIssue(
+            context,
+            IssueSeverity.Error,
+            $"political power-event audit должен содержать {fieldName}",
+            code: $"guardian_power_event_missing_{fieldName}",
+            section: "AbodePower",
+            repairHint: "Сохраняй political power-event audit как decision-complete machine-readable project snapshot."));
+    }
+
+    private void ValidatePoliticalGuardianPowerEventProjectMetadataAgainstSnapshot(
+        PoliticalGuardianPowerEventProjectSnapshot? snapshot,
+        string? authoredProjectGuardianId,
+        string? authoredProjectName,
+        string? authoredProjectType,
+        string? authoredProjectTier,
+        string? authoredFinalState,
+        string auditContext,
+        List<ValidationIssue> issues)
+    {
+        if (snapshot == null)
+            return;
+
+        ValidatePoliticalGuardianPowerEventSnapshotField(snapshot.ProjectGuardianId, authoredProjectGuardianId, $"{auditContext}.projectGuardianId", "projectGuardianId", issues);
+        ValidatePoliticalGuardianPowerEventSnapshotField(snapshot.ProjectName, authoredProjectName, $"{auditContext}.projectName", "projectName", issues);
+        ValidatePoliticalGuardianPowerEventSnapshotField(snapshot.ProjectType, authoredProjectType, $"{auditContext}.projectType", "projectType", issues);
+        ValidatePoliticalGuardianPowerEventSnapshotField(snapshot.ProjectTier, authoredProjectTier, $"{auditContext}.projectTier", "projectTier", issues);
+        if (!string.IsNullOrWhiteSpace(snapshot.FinalState))
+            ValidatePoliticalGuardianPowerEventSnapshotField(snapshot.FinalState, authoredFinalState, $"{auditContext}.finalState", "finalState", issues);
+    }
+
+    private static string ResolvePoliticalGuardianPowerEventProjectGuardianId(
+        string? guardianId,
+        string? relatedGuardianId,
+        string? sourceSurface,
+        string reasonType)
+    {
+        if (string.Equals(reasonType, "rival_strike", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(sourceSurface, "completeGuardianProjects", StringComparison.OrdinalIgnoreCase))
+        {
+            return relatedGuardianId ?? string.Empty;
+        }
+
+        return guardianId ?? string.Empty;
+    }
+
+    private static string BuildPoliticalGuardianPowerEventProjectKey(string? projectGuardianId, string? projectId)
+    {
+        if (string.IsNullOrWhiteSpace(projectGuardianId) || string.IsNullOrWhiteSpace(projectId))
+            return string.Empty;
+
+        return GuardianProjectState.BuildKey(projectGuardianId, projectId);
+    }
+
+    private static GuardianPowerJournalRepairStatus CanonicalizePoliticalGuardianPowerJournalEntry(
+        JsonObject entry,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects)
+    {
+        var reasonType = GetNodeString(entry["reasonType"]);
+        if (!IsPoliticalGuardianPowerEventReasonType(reasonType))
+            return GuardianPowerJournalRepairStatus.Unchanged;
+
+        var sourceSurface = GetNodeString(entry["sourceSurface"]);
+        var sourceId = GetNodeString(entry["sourceId"]);
+        var audit = entry["audit"] as JsonObject;
+        var changed = false;
+        var createdAudit = false;
+        if (audit == null)
+        {
+            audit = new JsonObject();
+            createdAudit = true;
+        }
+
+        var snapshot = ResolvePoliticalGuardianPowerEventSnapshotForJournalRepair(
+            entry,
+            audit,
+            reasonType ?? string.Empty,
+            sourceSurface,
+            sourceId,
+            knownPoliticalProjects);
+        if (snapshot == null)
+            return GuardianPowerJournalRepairStatus.Unchanged;
+
+        if (string.Equals(reasonType, "rival_strike", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(sourceSurface, "completeGuardianProjects", StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(snapshot.TargetGuardianId))
+        {
+            var targetGuardianId = GetNodeString(entry["guardianId"]);
+            if (!string.Equals(snapshot.TargetGuardianId, targetGuardianId, StringComparison.OrdinalIgnoreCase))
+                return GuardianPowerJournalRepairStatus.Irreparable;
+        }
+
+        if (createdAudit)
+        {
+            entry["audit"] = audit;
+            changed = true;
+        }
+        changed = SetCanonicalPoliticalJournalValue(audit, "projectGuardianId", snapshot.ProjectGuardianId) || changed;
+        changed = SetCanonicalPoliticalJournalValue(audit, "projectId", snapshot.ProjectId) || changed;
+        changed = SetCanonicalPoliticalJournalValue(audit, "projectName", snapshot.ProjectName) || changed;
+        changed = SetCanonicalPoliticalJournalValue(audit, "projectType", snapshot.ProjectType) || changed;
+        changed = SetCanonicalPoliticalJournalValue(audit, "projectTier", snapshot.ProjectTier) || changed;
+        if (!string.IsNullOrWhiteSpace(snapshot.FinalState))
+            changed = SetCanonicalPoliticalJournalValue(audit, "finalState", snapshot.FinalState) || changed;
+
+        if (string.Equals(reasonType, "rival_strike", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(sourceSurface, "completeGuardianProjects", StringComparison.OrdinalIgnoreCase))
+        {
+            changed = SetCanonicalPoliticalJournalValue(entry, "relatedGuardianId", snapshot.ProjectGuardianId) || changed;
+        }
+
+        return changed
+            ? GuardianPowerJournalRepairStatus.Canonicalized
+            : GuardianPowerJournalRepairStatus.Unchanged;
+    }
+
+    private static PoliticalGuardianPowerEventProjectSnapshot? ResolvePoliticalGuardianPowerEventSnapshotForJournalRepair(
+        JsonObject entry,
+        JsonObject audit,
+        string reasonType,
+        string? sourceSurface,
+        string? sourceId,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects)
+    {
+        var projectId = GetNodeString(audit["projectId"]);
+        if (string.IsNullOrWhiteSpace(projectId))
+            projectId = sourceId ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(projectId))
+            return null;
+
+        return ResolvePoliticalGuardianPowerEventSnapshot(
+            GetNodeString(entry["guardianId"]),
+            GetNodeString(entry["relatedGuardianId"]),
+            sourceSurface,
+            sourceId,
+            reasonType,
+            GetNodeString(audit["projectGuardianId"]),
+            projectId,
+            knownPoliticalProjects);
+    }
+
+    private static PoliticalGuardianPowerEventProjectSnapshot? ResolvePoliticalGuardianPowerEventSnapshot(
+        string? guardianId,
+        string? relatedGuardianId,
+        string? sourceSurface,
+        string? sourceId,
+        string reasonType,
+        string? authoredProjectGuardianId,
+        string? authoredProjectId,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects)
+    {
+        var effectiveProjectId = authoredProjectId;
+        if (string.IsNullOrWhiteSpace(effectiveProjectId))
+            effectiveProjectId = sourceId;
+        if (string.IsNullOrWhiteSpace(effectiveProjectId))
+            return null;
+
+        var projectGuardianId = authoredProjectGuardianId;
+        if (string.IsNullOrWhiteSpace(projectGuardianId))
+        {
+            projectGuardianId = ResolvePoliticalGuardianPowerEventProjectGuardianId(
+                guardianId,
+                relatedGuardianId,
+                sourceSurface,
+                reasonType);
+        }
+
+        var lookupKey = BuildPoliticalGuardianPowerEventProjectKey(projectGuardianId, effectiveProjectId);
+        if (!string.IsNullOrWhiteSpace(lookupKey) &&
+            knownPoliticalProjects.TryGetValue(lookupKey, out var ownerBoundSnapshot))
+        {
+            if (IsEligiblePoliticalGuardianPowerEventSnapshot(ownerBoundSnapshot, sourceSurface, reasonType))
+                return ownerBoundSnapshot;
+        }
+
+        var targetAwareSnapshot = TryResolveCompletionSourcedRivalStrikeProjectByProjectIdAndTarget(
+            knownPoliticalProjects,
+            effectiveProjectId,
+            guardianId,
+            sourceSurface,
+            reasonType);
+        if (targetAwareSnapshot != null)
+            return targetAwareSnapshot;
+
+        var uniqueSnapshot = TryResolveUniquePoliticalGuardianPowerEventProjectById(knownPoliticalProjects, effectiveProjectId);
+        return IsEligiblePoliticalGuardianPowerEventSnapshot(uniqueSnapshot, sourceSurface, reasonType)
+            ? uniqueSnapshot
+            : null;
+    }
+
+    private static PoliticalGuardianPowerEventProjectSnapshot? TryResolveCompletionSourcedRivalStrikeProjectByProjectIdAndTarget(
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        string projectId,
+        string? targetGuardianId,
+        string? sourceSurface,
+        string reasonType)
+    {
+        if (!string.Equals(reasonType, "rival_strike", StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(sourceSurface, "completeGuardianProjects", StringComparison.OrdinalIgnoreCase) ||
+            string.IsNullOrWhiteSpace(projectId) ||
+            string.IsNullOrWhiteSpace(targetGuardianId))
+        {
+            return null;
+        }
+
+        PoliticalGuardianPowerEventProjectSnapshot? match = null;
+        foreach (var snapshot in knownPoliticalProjects.Values)
+        {
+            if (!string.Equals(snapshot.ProjectId, projectId, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(snapshot.ProjectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(snapshot.FinalState, "Completed", StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(snapshot.TargetGuardianId, targetGuardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (match != null)
+                return null;
+
+            match = snapshot;
+        }
+
+        return match;
+    }
+
+    private static bool IsEligiblePoliticalGuardianPowerEventSnapshot(
+        PoliticalGuardianPowerEventProjectSnapshot? snapshot,
+        string? sourceSurface,
+        string reasonType)
+    {
+        if (snapshot == null)
+            return false;
+
+        if (!string.Equals(reasonType, "rival_strike", StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(sourceSurface, "completeGuardianProjects", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return string.Equals(snapshot.ProjectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(snapshot.FinalState, "Completed", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static PoliticalGuardianPowerEventProjectSnapshot? TryResolveUniquePoliticalGuardianPowerEventProjectById(
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        string projectId)
+    {
+        PoliticalGuardianPowerEventProjectSnapshot? match = null;
+        foreach (var snapshot in knownPoliticalProjects.Values)
+        {
+            if (!string.Equals(snapshot.ProjectId, projectId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (match != null)
+                return null;
+
+            match = snapshot;
+        }
+
+        return match;
+    }
+
+    private static bool SetCanonicalPoliticalJournalValue(JsonObject target, string propertyName, string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var current = GetNodeString(target[propertyName]);
+        if (string.Equals(current, value, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        target[propertyName] = value;
+        return true;
+    }
+
+    private static JsonElement ToJsonElement(JsonObject node)
+    {
+        using var doc = JsonDocument.Parse(node.ToJsonString());
+        return doc.RootElement.Clone();
+    }
+
+    private static void ValidatePoliticalGuardianPowerEventSnapshotField(
+        string? expectedValue,
+        string? authoredValue,
+        string context,
+        string fieldName,
+        List<ValidationIssue> issues)
+    {
+        if (string.IsNullOrWhiteSpace(expectedValue) || string.IsNullOrWhiteSpace(authoredValue))
+            return;
+        if (string.Equals(expectedValue, authoredValue, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        issues.Add(new ValidationIssue(
+            context,
+            IssueSeverity.Error,
+            $"political power-event audit.{fieldName} расходится с canonical metadata referenced project",
+            code: $"guardian_power_event_{fieldName}_mismatch",
+            section: "AbodePower",
+            expected: expectedValue,
+            actual: authoredValue,
+            repairHint: "Синхронизируй political power-event audit с canonical tracker metadata проекта."));
+    }
+
+    private void ValidatePoliticalGuardianPowerEventFinalStateAlignment(
+        string? sourceSurface,
+        string reasonType,
+        string finalState,
+        string auditContext,
+        List<ValidationIssue> issues)
+    {
+        if (string.Equals(reasonType, "project_completion", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.finalState",
+                IssueSeverity.Error,
+                "project_completion power events must carry finalState=Completed",
+                code: "guardian_power_event_project_completion_final_state_mismatch",
+                section: "AbodePower",
+                expected: "Completed",
+                actual: finalState,
+                repairHint: "Keep project_completion audit.finalState aligned with the completed project outcome."));
+            return;
+        }
+
+        if (string.Equals(reasonType, "project_failure", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.finalState",
+                IssueSeverity.Error,
+                "project_failure power events must not carry finalState=Completed",
+                code: "guardian_power_event_project_failure_final_state_mismatch",
+                section: "AbodePower",
+                expected: "Abandoned | Sabotaged | Collapsed",
+                actual: finalState,
+                repairHint: "Keep project_failure audit.finalState aligned with a failed terminal project state."));
+            return;
+        }
+
+        if (string.Equals(reasonType, "rival_strike", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(sourceSurface, "completeGuardianProjects", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{auditContext}.finalState",
+                IssueSeverity.Error,
+                "completion-sourced rival_strike must carry finalState=Completed",
+                code: "guardian_power_event_rival_strike_final_state_mismatch",
+                section: "AbodePower",
+                expected: "Completed",
+                actual: finalState,
+                repairHint: "Keep completion-sourced rival_strike audit.finalState aligned with successful offensive completion."));
         }
     }
 
@@ -836,7 +2940,13 @@ public partial class ValidationService
     }
 
 
-    private void ValidateGuardianProjectEntryArray(JsonElement value, string context, List<ValidationIssue> issues, bool completed)
+    private void ValidateGuardianProjectEntryArray(
+        JsonElement value,
+        string context,
+        List<ValidationIssue> issues,
+        bool completed,
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, int>> relationshipScores,
+        HashSet<string> knownGuardianIds)
     {
         RequireArrayOfObjects(value, context, issues);
         if (value.ValueKind != JsonValueKind.Array)
@@ -851,6 +2961,8 @@ public partial class ValidationService
                 continue;
 
             var guardianId = RequireString(entry, entryContext, issues, "guardianId");
+            if (!string.IsNullOrWhiteSpace(guardianId) && !knownGuardianIds.Contains(guardianId))
+                AddUnknownGuardianProjectIssue($"{entryContext}.guardianId", guardianId, issues);
             if (!completed && !string.IsNullOrWhiteSpace(guardianId) && !activeGuardians.Add(guardianId))
             {
                 issues.Add(new ValidationIssue(
@@ -867,7 +2979,58 @@ public partial class ValidationService
             if (!entry.TryGetProperty("project", out var project) || !RequireObject(project, $"{entryContext}.project", issues))
                 continue;
 
-            ValidateGuardianFullProjectObject(project, $"{entryContext}.project", issues, completed);
+            ValidateGuardianFullProjectObject(project, $"{entryContext}.project", issues, completed, guardianId, relationshipScores, knownGuardianIds);
+        }
+    }
+
+    private void ValidateGuardianProjectIdentityCollisions(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var seenKeys = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        ValidateGuardianProjectIdentityCollisionsInArray(root, "activeProjects", $"{contextPrefix}.activeProjects", seenKeys, issues);
+        ValidateGuardianProjectIdentityCollisionsInArray(root, "completedProjects", $"{contextPrefix}.completedProjects", seenKeys, issues);
+    }
+
+    private void ValidateGuardianProjectIdentityCollisionsInArray(
+        JsonElement root,
+        string propertyName,
+        string context,
+        IDictionary<string, string> seenKeys,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(propertyName, out var entries) || entries.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        foreach (var entry in entries.EnumerateArray())
+        {
+            var entryContext = $"{context}[{index++}]";
+            if (entry.ValueKind != JsonValueKind.Object ||
+                !entry.TryGetProperty("guardianId", out var guardianIdNode) ||
+                guardianIdNode.ValueKind != JsonValueKind.String ||
+                !entry.TryGetProperty("project", out var project) ||
+                project.ValueKind != JsonValueKind.Object)
+            {
+                continue;
+            }
+
+            var guardianId = guardianIdNode.GetString();
+            var projectId = GetFirstNonEmptyString(project, "projectId");
+            if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(projectId))
+                continue;
+
+            var key = GuardianProjectState.BuildKey(guardianId, projectId);
+            if (!seenKeys.TryAdd(key, $"{entryContext}.project.projectId"))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.project.projectId",
+                    IssueSeverity.Error,
+                    "guardian project tracker не может содержать один и тот же guardianId + projectId больше одного раза в active/completed history",
+                    code: "guardian_project_duplicate_project_key",
+                    section: "GuardianProjects",
+                    expected: "historically unique guardianId + projectId key",
+                    actual: key,
+                    repairHint: "Удали collision между activeProjects/completedProjects и оставь для каждого guardianId + projectId ровно одну canonical project запись."));
+            }
         }
     }
 
@@ -907,13 +3070,30 @@ public partial class ValidationService
     }
 
 
-    private void ValidateGuardianProjectStartCommands(JsonElement value, string context, List<ValidationIssue> issues, HashSet<string> startedThisTurn)
+    private void ValidateGuardianProjectStartCommands(
+        JsonElement value,
+        string context,
+        List<ValidationIssue> issues,
+        HashSet<string> knownProjects,
+        HashSet<string> knownCompletedProjects,
+        IReadOnlyDictionary<string, string> knownActiveProjectIdsByGuardian,
+        HashSet<string> startedThisTurn,
+        IDictionary<string, GuardianProjectValidationSnapshot> startedProjectDetails,
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, int>> relationshipScores,
+        HashSet<string> knownGuardianIds)
     {
         RequireArrayOfObjects(value, context, issues);
         if (value.ValueKind != JsonValueKind.Array)
             return;
 
-        var guardiansStarted = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var duplicateGuardianIds = value.EnumerateArray()
+            .Where(item => item.ValueKind == JsonValueKind.Object)
+            .Select(item => GetFirstNonEmptyString(item, "guardianId"))
+            .Where(guardianId => !string.IsNullOrWhiteSpace(guardianId))
+            .GroupBy(guardianId => guardianId, StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key!)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var index = 0;
         foreach (var item in value.EnumerateArray())
         {
@@ -925,9 +3105,18 @@ public partial class ValidationService
             if (!item.TryGetProperty("project", out var project) || !RequireObject(project, $"{itemContext}.project", issues))
                 continue;
 
-            ValidateGuardianFullProjectObject(project, $"{itemContext}.project", issues, completed: false);
+            var issueCountBeforeProjectValidation = issues.Count;
+            ValidateGuardianFullProjectObject(project, $"{itemContext}.project", issues, completed: false, guardianId, relationshipScores, knownGuardianIds);
             var projectId = GetFirstNonEmptyString(project, "projectId");
-            if (!string.IsNullOrWhiteSpace(guardianId) && !guardiansStarted.Add(guardianId))
+            var hasProjectValidationErrors = issues.Count > issueCountBeforeProjectValidation &&
+                issues.Skip(issueCountBeforeProjectValidation).Any(issue => issue.Severity == IssueSeverity.Error);
+            var canUseForFallback = !string.IsNullOrWhiteSpace(guardianId) && !string.IsNullOrWhiteSpace(projectId);
+            if (!string.IsNullOrWhiteSpace(guardianId) && !knownGuardianIds.Contains(guardianId))
+            {
+                AddUnknownGuardianProjectIssue($"{itemContext}.guardianId", guardianId, issues);
+                canUseForFallback = false;
+            }
+            if (!string.IsNullOrWhiteSpace(guardianId) && duplicateGuardianIds.Contains(guardianId))
             {
                 issues.Add(new ValidationIssue(
                     $"{itemContext}.guardianId",
@@ -936,10 +3125,69 @@ public partial class ValidationService
                     code: "guardian_project_start_duplicate_guardian",
                     section: "GuardianProjects",
                     repairHint: "Если Хранителю нужен новый проект, запускай только один active project per guardian в v1."));
+                canUseForFallback = false;
             }
 
             if (!string.IsNullOrWhiteSpace(guardianId) && !string.IsNullOrWhiteSpace(projectId))
-                startedThisTurn.Add(GuardianProjectState.BuildKey(guardianId, projectId));
+            {
+                var key = GuardianProjectState.BuildKey(guardianId, projectId!);
+                if (knownProjects.Contains(key))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.project.projectId",
+                        IssueSeverity.Error,
+                        "startGuardianProjects не может повторно использовать projectId уже существующего canonical active project",
+                        code: "guardian_project_start_duplicate_existing_project_id",
+                        section: "GuardianProjects",
+                        expected: "new projectId for the target guardian",
+                        actual: projectId,
+                        repairHint: "Для нового проекта используй новый projectId, а для существующего active project работай через guardianProjectUpdates или completeGuardianProjects."));
+                    canUseForFallback = false;
+                }
+                else if (knownCompletedProjects.Contains(key))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.project.projectId",
+                        IssueSeverity.Error,
+                        "startGuardianProjects не может повторно использовать projectId уже завершённого проекта этого guardian",
+                        code: "guardian_project_start_duplicate_completed_project_id",
+                        section: "GuardianProjects",
+                        expected: "new historically unique projectId for the target guardian",
+                        actual: projectId,
+                        repairHint: "Не переиспользуй projectId завершённых guardian projects. Для нового проекта всегда создавай новый projectId."));
+                    canUseForFallback = false;
+                }
+
+                if (!string.IsNullOrWhiteSpace(guardianId) &&
+                    knownGuardianIds.Contains(guardianId) &&
+                    knownActiveProjectIdsByGuardian.TryGetValue(guardianId, out var existingProjectId) &&
+                    !string.IsNullOrWhiteSpace(existingProjectId) &&
+                    !string.Equals(existingProjectId, projectId, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.guardianId",
+                        IssueSeverity.Error,
+                        "startGuardianProjects не может заменять уже существующий canonical active project этого guardian",
+                        code: "guardian_project_start_guardian_already_has_active_project",
+                        section: "GuardianProjects",
+                        expected: existingProjectId,
+                        actual: projectId,
+                        repairHint: "Сначала заверши или обнови уже существующий active project Хранителя, а не запускай новый поверх него."));
+                    canUseForFallback = false;
+                }
+
+                if (hasProjectValidationErrors)
+                    canUseForFallback = false;
+
+                if (canUseForFallback)
+                {
+                    startedThisTurn.Add(key);
+                    startedProjectDetails[key] = new GuardianProjectValidationSnapshot(
+                        GetFirstNonEmptyString(project, "projectType"),
+                        GetFirstNonEmptyString(project, "targetGuardianId"),
+                        GetFirstNonEmptyString(project, "betrayalReason"));
+                }
+            }
         }
     }
 
@@ -949,7 +3197,8 @@ public partial class ValidationService
         string context,
         List<ValidationIssue> issues,
         HashSet<string> knownProjects,
-        HashSet<string> startedThisTurn)
+        HashSet<string> startedThisTurn,
+        HashSet<string> knownGuardianIds)
     {
         RequireArrayOfObjects(value, context, issues);
         if (value.ValueKind != JsonValueKind.Array)
@@ -964,6 +3213,8 @@ public partial class ValidationService
 
             var guardianId = RequireString(item, itemContext, issues, "guardianId");
             var projectId = RequireString(item, itemContext, issues, "projectId");
+            if (!string.IsNullOrWhiteSpace(guardianId) && !knownGuardianIds.Contains(guardianId))
+                AddUnknownGuardianProjectIssue($"{itemContext}.guardianId", guardianId, issues);
             var key = GuardianProjectState.BuildKey(guardianId, projectId);
             if (!string.IsNullOrWhiteSpace(guardianId) &&
                 !string.IsNullOrWhiteSpace(projectId) &&
@@ -1021,7 +3272,11 @@ public partial class ValidationService
         string context,
         List<ValidationIssue> issues,
         HashSet<string> knownProjects,
-        HashSet<string> startedThisTurn)
+        IReadOnlyDictionary<string, GuardianProjectValidationSnapshot> knownProjectDetails,
+        IReadOnlyDictionary<string, GuardianProjectValidationSnapshot> startedProjectDetails,
+        HashSet<string> startedThisTurn,
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, int>> relationshipScores,
+        HashSet<string> knownGuardianIds)
     {
         RequireArrayOfObjects(value, context, issues);
         if (value.ValueKind != JsonValueKind.Array)
@@ -1036,6 +3291,8 @@ public partial class ValidationService
 
             var guardianId = RequireString(item, itemContext, issues, "guardianId");
             var projectId = RequireString(item, itemContext, issues, "projectId");
+            if (!string.IsNullOrWhiteSpace(guardianId) && !knownGuardianIds.Contains(guardianId))
+                AddUnknownGuardianProjectIssue($"{itemContext}.guardianId", guardianId, issues);
             var key = GuardianProjectState.BuildKey(guardianId, projectId);
             if (!string.IsNullOrWhiteSpace(guardianId) &&
                 !string.IsNullOrWhiteSpace(projectId) &&
@@ -1070,23 +3327,97 @@ public partial class ValidationService
             RequireString(item, itemContext, issues, "outcome");
             ValidateIntegerField(item, itemContext, issues, "abodePowerDelta");
             var targetGuardianId = GetFirstNonEmptyString(item, "targetGuardianId");
+            var betrayalReason = GetFirstNonEmptyString(item, "betrayalReason");
             ValidateOptionalNullableStringField(item, itemContext, issues, "targetGuardianId");
+            ValidateOptionalNullableStringField(item, itemContext, issues, "betrayalReason");
+            startedProjectDetails.TryGetValue(key, out var startedProject);
+            knownProjectDetails.TryGetValue(key, out var preTurnKnownProject);
+            var knownProject = startedProject ?? preTurnKnownProject;
+            var effectiveProjectType = knownProject?.ProjectType;
+            var storedTargetGuardianId = knownProject?.TargetGuardianId;
+            var hasPoliticalTargetMismatch =
+                IsGuardianPoliticalProjectType(effectiveProjectType) &&
+                !string.IsNullOrWhiteSpace(targetGuardianId) &&
+                !string.IsNullOrWhiteSpace(storedTargetGuardianId) &&
+                !string.Equals(targetGuardianId, storedTargetGuardianId, StringComparison.OrdinalIgnoreCase);
+            var effectiveTargetGuardianId = hasPoliticalTargetMismatch && !string.IsNullOrWhiteSpace(storedTargetGuardianId)
+                ? storedTargetGuardianId
+                : !string.IsNullOrWhiteSpace(targetGuardianId)
+                    ? targetGuardianId
+                    : storedTargetGuardianId;
+            var effectiveBetrayalReason = !string.IsNullOrWhiteSpace(betrayalReason)
+                ? betrayalReason
+                : knownProject?.BetrayalReason;
+            if (hasPoliticalTargetMismatch)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.targetGuardianId",
+                    IssueSeverity.Error,
+                    "completeGuardianProjects не может менять targetGuardianId уже запущенного политического проекта",
+                    code: "guardian_project_completion_target_mismatch",
+                    section: "GuardianProjects",
+                    expected: storedTargetGuardianId,
+                    actual: targetGuardianId,
+                    repairHint: "Либо заверши проект с его исходной целью, либо не передавай targetGuardianId повторно в completion command."));
+            }
+            if (IsGuardianPoliticalProjectType(effectiveProjectType))
+                AddGuardianPoliticalTargetIdentityIssues(itemContext, issues, guardianId, effectiveTargetGuardianId, knownGuardianIds);
+            if (string.Equals(effectiveProjectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) &&
+                RequiresGuardianPoliticalBetrayalReason(relationshipScores, guardianId, effectiveTargetGuardianId) &&
+                string.IsNullOrWhiteSpace(effectiveBetrayalReason))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.betrayalReason",
+                    IssueSeverity.Error,
+                    "completed offensive_intrigue против ally/trusted target требует explicit betrayal reason на active project или completion command",
+                    code: "guardian_project_missing_betrayal_reason",
+                    section: "GuardianProjects",
+                    repairHint: "Сохрани betrayalReason либо в active project, либо прямо в completeGuardianProjects command перед завершением offensive_intrigue против ally/trusted target."));
+            }
+
+            AddGuardianPoliticalTargetPreferenceIssues(
+                itemContext,
+                issues,
+                guardianId,
+                effectiveProjectType,
+                effectiveTargetGuardianId,
+                relationshipScores);
+            var isCompletedOffensiveIntrigue =
+                string.Equals(effectiveProjectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase);
             if (item.TryGetProperty("offensiveImpactAudit", out var offensiveImpactAudit) &&
                 offensiveImpactAudit.ValueKind != JsonValueKind.Null)
             {
                 RequireObject(offensiveImpactAudit, $"{itemContext}.offensiveImpactAudit", issues);
-                if (string.IsNullOrWhiteSpace(targetGuardianId))
+                if (!isCompletedOffensiveIntrigue)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{itemContext}.offensiveImpactAudit",
+                        IssueSeverity.Error,
+                        "offensiveImpactAudit допустим только для Completed offensive_intrigue",
+                        code: "guardian_project_completion_unexpected_offensive_audit",
+                        section: "GuardianProjects",
+                        expected: "effectiveProjectType = offensive_intrigue and finalState = Completed",
+                        actual: string.IsNullOrWhiteSpace(effectiveProjectType)
+                            ? $"<unresolved>; finalState={finalState ?? "<null>"}"
+                            : $"{effectiveProjectType}; finalState={finalState ?? "<null>"}",
+                        repairHint: "Передавай offensiveImpactAudit только при завершении Completed offensive_intrigue."));
+                }
+                if (string.IsNullOrWhiteSpace(effectiveTargetGuardianId))
                 {
                     issues.Add(new ValidationIssue(
                         $"{itemContext}.targetGuardianId",
                         IssueSeverity.Error,
-                        "offensiveImpactAudit требует targetGuardianId",
+                        "offensiveImpactAudit требует разрешимый targetGuardianId из completion command или active project",
                         code: "guardian_project_completion_offensive_audit_missing_target",
                         section: "GuardianProjects",
-                        repairHint: "Если completion несёт offensiveImpactAudit, сохраняй непустой targetGuardianId."));
+                        repairHint: "Если completion несёт offensiveImpactAudit, передай targetGuardianId прямо в команде или сохрани его в активном offensive_intrigue до завершения."));
                 }
                 if (offensiveImpactAudit.ValueKind == JsonValueKind.Object)
-                    ValidateNonNegativeIntegerField(offensiveImpactAudit, $"{itemContext}.offensiveImpactAudit", issues, "targetLoss", "GuardianProjects");
+                {
+                    var offensiveAuditContext = $"{itemContext}.offensiveImpactAudit";
+                    ValidateOffensiveImpactAuditFields(offensiveImpactAudit, offensiveAuditContext, issues, commandSurface: true);
+                }
             }
             if (item.TryGetProperty("pressureAudit", out var pressureAudit))
                 RequireObject(pressureAudit, $"{itemContext}.pressureAudit", issues);
@@ -1098,7 +3429,14 @@ public partial class ValidationService
     }
 
 
-    private void ValidateGuardianFullProjectObject(JsonElement project, string context, List<ValidationIssue> issues, bool completed)
+    private void ValidateGuardianFullProjectObject(
+        JsonElement project,
+        string context,
+        List<ValidationIssue> issues,
+        bool completed,
+        string? sourceGuardianId,
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, int>> relationshipScores,
+        HashSet<string> knownGuardianIds)
     {
         RequireString(project, context, issues, "projectId");
         var projectType = RequireString(project, context, issues, "projectType");
@@ -1153,6 +3491,32 @@ public partial class ValidationService
                 repairHint: "Для offensive_intrigue и counter_rival_operation сохраняй непустой targetGuardianId."));
         }
 
+        ValidateOptionalNullableStringField(project, context, issues, "betrayalReason");
+        var targetGuardianId = GetFirstNonEmptyString(project, "targetGuardianId");
+        var betrayalReason = GetFirstNonEmptyString(project, "betrayalReason");
+        if (IsGuardianPoliticalProjectType(projectType))
+            AddGuardianPoliticalTargetIdentityIssues(context, issues, sourceGuardianId, targetGuardianId, knownGuardianIds);
+        if (string.Equals(projectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) &&
+            RequiresGuardianPoliticalBetrayalReason(relationshipScores, sourceGuardianId, targetGuardianId) &&
+            string.IsNullOrWhiteSpace(betrayalReason))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.betrayalReason",
+                IssueSeverity.Error,
+                "offensive_intrigue против ally/trusted target требует explicit betrayal reason",
+                code: "guardian_project_missing_betrayal_reason",
+                section: "GuardianProjects",
+                repairHint: "Если Хранитель атакует ally/trusted target, добавь betrayalReason с явной причиной разрыва или предательства."));
+        }
+
+        AddGuardianPoliticalTargetPreferenceIssues(
+            context,
+            issues,
+            sourceGuardianId,
+            projectType,
+            targetGuardianId,
+            relationshipScores);
+
         if (completed)
         {
             ValidateNonNegativeIntegerField(project, context, issues, "completionTurn", "GuardianProjects");
@@ -1196,6 +3560,42 @@ public partial class ValidationService
         ValidateOptionalString(project, context, issues, "assistDescription");
     }
 
+    private void AddGuardianPoliticalTargetPreferenceIssues(
+        string context,
+        List<ValidationIssue> issues,
+        string? sourceGuardianId,
+        string? projectType,
+        string? targetGuardianId,
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, int>> relationshipScores)
+    {
+        if (!string.Equals(projectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) ||
+            string.IsNullOrWhiteSpace(sourceGuardianId) ||
+            string.IsNullOrWhiteSpace(targetGuardianId))
+        {
+            return;
+        }
+
+        if (!relationshipScores.TryGetValue(sourceGuardianId, out var scoresByTarget) ||
+            !scoresByTarget.TryGetValue(targetGuardianId, out var score))
+        {
+            return;
+        }
+
+        if (GuardianRelationshipRules.IsWeakPoliticalTarget(score))
+        {
+            var tier = GuardianRelationshipRules.ResolveAttitudeTier(score);
+            issues.Add(new ValidationIssue(
+                $"{context}.targetGuardianId",
+                IssueSeverity.Warning,
+                "offensive_intrigue против neutral target остаётся допустимым, но считается слабо мотивированным политическим давлением",
+                code: "guardian_project_neutral_target_low_motivation",
+                section: "GuardianProjects",
+                expected: "preferred hostile target tier: rival | enemy",
+                actual: tier,
+                repairHint: "Для preferred hostile politics выбирай rival/enemy target; neutral target допускается, но должен быть осознанным исключением."));
+        }
+    }
+
 
     private static bool HasAnyGuardianProjectNonTerminalChanges(JsonElement item)
     {
@@ -1212,11 +3612,243 @@ public partial class ValidationService
         return false;
     }
 
+    private void ValidateOffensiveImpactAuditRelationshipMetadata(JsonElement offensiveAudit, string context, List<ValidationIssue> issues)
+    {
+        var hasTargetAttitudeScore =
+            offensiveAudit.TryGetProperty("targetAttitudeScore", out var targetAttitudeScoreNode) &&
+            targetAttitudeScoreNode.ValueKind != JsonValueKind.Null;
+        var hasTargetAttitudeTier =
+            offensiveAudit.TryGetProperty("targetAttitudeTier", out var targetAttitudeTierNode) &&
+            targetAttitudeTierNode.ValueKind != JsonValueKind.Null;
+        var hasHostilityWeight =
+            offensiveAudit.TryGetProperty("hostilityWeight", out var hostilityWeightNode) &&
+            hostilityWeightNode.ValueKind != JsonValueKind.Null;
+        var hasPreferredHostileTarget =
+            offensiveAudit.TryGetProperty("preferredHostileTarget", out var preferredHostileTargetNode) &&
+            preferredHostileTargetNode.ValueKind != JsonValueKind.Null;
+        var hasAnyRelationshipMetadata =
+            hasTargetAttitudeScore || hasTargetAttitudeTier || hasHostilityWeight || hasPreferredHostileTarget;
+        if (!hasAnyRelationshipMetadata)
+            return;
+
+        if (!(hasTargetAttitudeScore && hasTargetAttitudeTier && hasHostilityWeight && hasPreferredHostileTarget))
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "offensiveImpactAudit relation-derived metadata must be complete when any political relationship field is present",
+                code: "guardian_project_offensive_incomplete_relationship_metadata",
+                section: "GuardianProjects",
+                repairHint: "Если сохраняешь political relation metadata, сохраняй targetAttitudeScore, targetAttitudeTier, hostilityWeight и preferredHostileTarget целиком и согласованно."));
+            return;
+        }
+
+        if (!TryReadInt(offensiveAudit, "targetAttitudeScore", out var targetAttitudeScore))
+            return;
+
+        if (targetAttitudeScore < GuardianRelationshipRules.MinAttitudeScore ||
+            targetAttitudeScore > GuardianRelationshipRules.MaxAttitudeScore)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.targetAttitudeScore",
+                IssueSeverity.Error,
+                "offensiveImpactAudit.targetAttitudeScore должен быть в canonical guardian relationship range",
+                code: "guardian_project_offensive_target_attitude_score_out_of_bounds",
+                section: "GuardianProjects",
+                expected: $"{GuardianRelationshipRules.MinAttitudeScore}..{GuardianRelationshipRules.MaxAttitudeScore}",
+                actual: targetAttitudeScore.ToString(),
+                repairHint: "Используй canonical guardian relationship score range -100..100."));
+            return;
+        }
+
+        var expectedTier = GuardianRelationshipRules.ResolveAttitudeTier(targetAttitudeScore);
+        var actualTier = GetFirstNonEmptyString(offensiveAudit, "targetAttitudeTier");
+        if (!string.IsNullOrWhiteSpace(actualTier) &&
+            !string.Equals(actualTier, expectedTier, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.targetAttitudeTier",
+                IssueSeverity.Error,
+                "offensiveImpactAudit.targetAttitudeTier не совпадает с targetAttitudeScore",
+                code: "guardian_project_offensive_target_attitude_tier_mismatch",
+                section: "GuardianProjects",
+                expected: expectedTier,
+                actual: actualTier,
+                repairHint: "Согласуй targetAttitudeTier с ResolveAttitudeTier(targetAttitudeScore)."));
+        }
+
+        if (TryReadInt(offensiveAudit, "hostilityWeight", out var hostilityWeight))
+        {
+            var expectedHostilityWeight = GuardianRelationshipRules.ResolvePoliticalTargetWeight(targetAttitudeScore);
+            if (hostilityWeight != expectedHostilityWeight)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.hostilityWeight",
+                    IssueSeverity.Error,
+                    "offensiveImpactAudit.hostilityWeight не совпадает с targetAttitudeScore",
+                    code: "guardian_project_offensive_hostility_weight_mismatch",
+                    section: "GuardianProjects",
+                    expected: expectedHostilityWeight.ToString(),
+                    actual: hostilityWeight.ToString(),
+                    repairHint: "Согласуй hostilityWeight с ResolvePoliticalTargetWeight(targetAttitudeScore)."));
+            }
+        }
+
+        if (TryParseBooleanLiteral(preferredHostileTargetNode, out var preferredHostileTarget))
+        {
+            var expectedPreferredHostileTarget = GuardianRelationshipRules.ResolvePoliticalTargetWeight(targetAttitudeScore) > 0;
+            if (preferredHostileTarget != expectedPreferredHostileTarget)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.preferredHostileTarget",
+                    IssueSeverity.Error,
+                    "offensiveImpactAudit.preferredHostileTarget не совпадает с targetAttitudeScore и hostilityWeight",
+                    code: "guardian_project_offensive_preferred_hostile_target_mismatch",
+                    section: "GuardianProjects",
+                    expected: expectedPreferredHostileTarget.ToString(),
+                    actual: preferredHostileTarget.ToString(),
+                    repairHint: "Согласуй preferredHostileTarget с ResolvePoliticalTargetWeight(targetAttitudeScore) > 0."));
+            }
+        }
+    }
+
+    private void ValidateOffensiveImpactAuditFields(JsonElement offensiveAudit, string context, List<ValidationIssue> issues, bool commandSurface)
+    {
+        if (!commandSurface)
+        {
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "attackerCurrentPower", "GuardianProjects");
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "targetCurrentPower", "GuardianProjects");
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "baseLoss", "GuardianProjects");
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "attackerBonus", "GuardianProjects");
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "baseTargetShield", "GuardianProjects");
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "fortificationBonus", "GuardianProjects");
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "counterOperationBonus", "GuardianProjects");
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "targetShield", "GuardianProjects");
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "pressureDelta", "GuardianProjects");
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "stabilityDamage", "GuardianProjects");
+        }
+
+        ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "targetLoss", "GuardianProjects");
+        ValidateOffensivePlayerDefenseBonusField(offensiveAudit, context, issues);
+        if (offensiveAudit.TryGetProperty("targetAttitudeScore", out _))
+            ValidateIntegerField(offensiveAudit, context, issues, "targetAttitudeScore");
+        if (offensiveAudit.TryGetProperty("targetAttitudeTier", out var targetAttitudeTier) && targetAttitudeTier.ValueKind != JsonValueKind.Null)
+        {
+            RequireString(offensiveAudit, context, issues, "targetAttitudeTier");
+            var tier = GetFirstNonEmptyString(offensiveAudit, "targetAttitudeTier");
+            if (!string.IsNullOrWhiteSpace(tier) && !GuardianRelationshipRules.IsValidAttitudeTier(tier))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.targetAttitudeTier",
+                    IssueSeverity.Error,
+                    "offensiveImpactAudit.targetAttitudeTier должен быть canonical guardian relationship tier",
+                    code: "guardian_project_offensive_invalid_target_attitude_tier",
+                    section: "GuardianProjects",
+                    expected: "trusted | ally | neutral | competitive | rival | enemy",
+                    actual: tier));
+            }
+        }
+        if (offensiveAudit.TryGetProperty("hostilityWeight", out _))
+            ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "hostilityWeight", "GuardianProjects");
+        if (offensiveAudit.TryGetProperty("preferredHostileTarget", out var preferredHostileTarget) && preferredHostileTarget.ValueKind != JsonValueKind.Null)
+            RequireBooleanField(offensiveAudit, context, issues, "preferredHostileTarget");
+        ValidateOffensiveImpactAuditRelationshipMetadata(offensiveAudit, context, issues);
+    }
+
+    private void AddUnknownGuardianProjectIssue(string path, string guardianId, List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            $"guardian project ссылается на неизвестного guardian '{guardianId}'",
+            code: "guardian_project_unknown_guardian_id",
+            section: "GuardianProjects",
+            expected: "existing guardianId from game_state/meta/guardians.json",
+            actual: guardianId,
+            repairHint: "Используй в guardian projects только существующий guardianId из текущего canonical guardians state."));
+    }
+
+    private void AddGuardianPoliticalTargetIdentityIssues(
+        string context,
+        List<ValidationIssue> issues,
+        string? sourceGuardianId,
+        string? targetGuardianId,
+        HashSet<string> knownGuardianIds)
+    {
+        if (string.IsNullOrWhiteSpace(targetGuardianId))
+            return;
+
+        if (!string.IsNullOrWhiteSpace(sourceGuardianId) &&
+            string.Equals(sourceGuardianId, targetGuardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.targetGuardianId",
+                IssueSeverity.Error,
+                "Политический guardian project не может ссылаться на самого Хранителя как на targetGuardianId",
+                code: "guardian_project_self_target_guardian",
+                section: "GuardianProjects",
+                expected: "different existing guardianId",
+                actual: targetGuardianId,
+                repairHint: "Для offensive_intrigue и counter_rival_operation выбирай другого существующего Хранителя."));
+            return;
+        }
+
+        if (knownGuardianIds.Contains(targetGuardianId))
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{context}.targetGuardianId",
+            IssueSeverity.Error,
+            $"Политический guardian project ссылается на неизвестного target guardian '{targetGuardianId}'",
+            code: "guardian_project_unknown_target_guardian_id",
+            section: "GuardianProjects",
+            expected: "existing guardianId from game_state/meta/guardians.json",
+            actual: targetGuardianId,
+            repairHint: "Для offensive_intrigue и counter_rival_operation используй targetGuardianId существующего Хранителя."));
+    }
+
+    private void ValidateOffensivePlayerDefenseBonusField(JsonElement offensiveAudit, string context, List<ValidationIssue> issues)
+    {
+        if (!offensiveAudit.TryGetProperty("playerDefenseBonus", out var playerDefenseBonus) ||
+            playerDefenseBonus.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+
+        ValidateNonNegativeIntegerField(offensiveAudit, context, issues, "playerDefenseBonus", "GuardianProjects");
+        if (TryReadInt(offensiveAudit, "playerDefenseBonus", out var parsedValue) && (parsedValue < 0 || parsedValue > 2))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.playerDefenseBonus",
+                IssueSeverity.Error,
+                "offensiveImpactAudit.playerDefenseBonus должен быть в диапазоне 0..2",
+                code: "guardian_project_offensive_player_defense_bonus_out_of_bounds",
+                section: "GuardianProjects",
+                expected: "0..2",
+                actual: parsedValue.ToString(),
+                repairHint: "Используй только 0, 1 или 2 для playerDefenseBonus по canonical offensive contract."));
+        }
+    }
+
+    private static bool TryParseBooleanLiteral(JsonElement value, out bool parsed)
+    {
+        parsed = false;
+        return value.ValueKind switch
+        {
+            JsonValueKind.True => (parsed = true) || true,
+            JsonValueKind.False => true,
+            _ => false
+        };
+    }
+
 
     private void ValidateGuardianProjectOutcomeAudit(JsonElement project, string context, List<ValidationIssue> issues)
     {
         var projectType = GetFirstNonEmptyString(project, "projectType");
         var finalState = GetFirstNonEmptyString(project, "finalState");
+        var requiresOffensiveAudit =
+            string.Equals(projectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase);
         var requiresAudit =
             (string.Equals(projectType, "abode_fortification", StringComparison.OrdinalIgnoreCase) &&
              string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase)) ||
@@ -1227,10 +3859,28 @@ public partial class ValidationService
             (string.Equals(projectType, "soul_preparation", StringComparison.OrdinalIgnoreCase) &&
              (string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase) ||
               string.Equals(finalState, "Sabotaged", StringComparison.OrdinalIgnoreCase))) ||
-            (string.Equals(projectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) &&
-             string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase)) ||
             (string.Equals(projectType, "counter_rival_operation", StringComparison.OrdinalIgnoreCase) &&
              string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase));
+
+        if (requiresOffensiveAudit)
+        {
+            if (!project.TryGetProperty("offensiveImpactAudit", out var offensiveAudit) ||
+                !RequireObject(offensiveAudit, $"{context}.offensiveImpactAudit", issues))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.offensiveImpactAudit",
+                    IssueSeverity.Error,
+                    "Completed offensive_intrigue должен содержать offensiveImpactAudit",
+                    code: "guardian_project_missing_offensive_impact_audit",
+                    section: "GuardianProjects",
+                    repairHint: "Сохраняй offensiveImpactAudit у completed offensive_intrigue, чтобы политический удар и target pressure были детерминированы."));
+                return;
+            }
+
+            var offensiveAuditContext = $"{context}.offensiveImpactAudit";
+            ValidateOffensiveImpactAuditFields(offensiveAudit, offensiveAuditContext, issues, commandSurface: false);
+            return;
+        }
 
         if (!requiresAudit)
             return;
@@ -1329,30 +3979,16 @@ public partial class ValidationService
             return;
         }
 
-        if (string.Equals(projectType, "offensive_intrigue", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase))
-        {
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "attackerCurrentPower", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "targetCurrentPower", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "baseLoss", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "attackerBonus", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "baseTargetShield", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "fortificationBonus", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "counterOperationBonus", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "playerDefenseBonus", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "targetShield", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "targetLoss", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "pressureDelta", "GuardianProjects");
-            ValidateNonNegativeIntegerField(audit, auditContext, issues, "stabilityDamage", "GuardianProjects");
-            return;
-        }
-
         if (string.Equals(projectType, "counter_rival_operation", StringComparison.OrdinalIgnoreCase) &&
             string.Equals(finalState, "Completed", StringComparison.OrdinalIgnoreCase))
         {
             ValidateNonNegativeIntegerField(audit, auditContext, issues, "pressureRelief", "GuardianProjects");
             ValidateNonNegativeIntegerField(audit, auditContext, issues, "stabilityRelief", "GuardianProjects");
             ValidateNonNegativeIntegerField(audit, auditContext, issues, "abodePowerGain", "GuardianProjects");
+            if (audit.TryGetProperty("coalitionSupportBonus", out _))
+                ValidateNonNegativeIntegerField(audit, auditContext, issues, "coalitionSupportBonus", "GuardianProjects");
+            if (audit.TryGetProperty("coalitionEligible", out var coalitionEligible) && coalitionEligible.ValueKind != JsonValueKind.Null)
+                RequireBooleanField(audit, auditContext, issues, "coalitionEligible");
         }
     }
 
@@ -1615,30 +4251,98 @@ public partial class ValidationService
     }
 
 
-    private GuardianProjectState.ResolvedGuardianDerivedState ResolveGuardianDerivedStateForValidation(JsonElement guardian)
+    private bool TryResolveGuardianDerivedStateForValidation(
+        JsonElement guardian,
+        string path,
+        string message,
+        string code,
+        string section,
+        string repairHint,
+        List<ValidationIssue> issues,
+        out GuardianProjectState.ResolvedGuardianDerivedState derivedState)
     {
-        var trackerJson = ReadCurrentTrackedFileSync(GuardianProjectState.TrackerPath);
-        if (string.IsNullOrWhiteSpace(trackerJson))
-            return GuardianProjectState.ResolveGuardianDerivedState(guardian);
+        derivedState = GuardianProjectState.ResolveGuardianDerivedState(guardian);
+        if (!TryResolveGuardianProjectTrackerValidationRoot(
+                path,
+                message,
+                code,
+                section,
+                repairHint,
+                issues,
+                out var trackerRoot))
+        {
+            return false;
+        }
 
-        try
-        {
-            using var trackerDoc = JsonDocument.Parse(trackerJson);
-            return GuardianProjectState.ResolveGuardianDerivedState(guardian, trackerDoc.RootElement);
-        }
-        catch
-        {
-            return GuardianProjectState.ResolveGuardianDerivedState(guardian);
-        }
+        derivedState = GuardianProjectState.ResolveGuardianDerivedState(guardian, trackerRoot);
+        return true;
     }
 
 
     private HashSet<string> ReadKnownGuardianProjectKeysForValidation()
     {
         var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var json = ReadPreTurnTrackedFileSync(GuardianProjectState.TrackerPath);
-        if (string.IsNullOrWhiteSpace(json))
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) ||
+            !HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
             return result;
+
+        MergeKnownGuardianProjectKeysForValidation(result, trackerContext.PreTurnRoot.GetRawText());
+
+        return result;
+    }
+
+    private HashSet<string> ReadKnownCompletedGuardianProjectKeysForValidation()
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) ||
+            !HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+            return result;
+
+        MergeKnownCompletedGuardianProjectKeysForValidation(result, trackerContext.PreTurnRoot.GetRawText());
+
+        return result;
+    }
+
+    private IReadOnlyDictionary<string, GuardianProjectValidationSnapshot> ReadKnownGuardianProjectsForValidation()
+    {
+        var result = new Dictionary<string, GuardianProjectValidationSnapshot>(StringComparer.OrdinalIgnoreCase);
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) ||
+            !HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+            return result;
+
+        MergeKnownGuardianProjectsForValidation(result, trackerContext.PreTurnRoot.GetRawText());
+
+        return result;
+    }
+
+    private IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> ReadKnownPoliticalGuardianPowerEventProjectsForValidation()
+    {
+        var result = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) ||
+            !HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+            return result;
+
+        if (!trackerContext.HasCurrentAuthorityRoot)
+            return result;
+
+        var ambiguousKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        MergeKnownPoliticalGuardianPowerEventProjectsForValidation(result, ambiguousKeys, trackerContext.CurrentAuthorityRoot.GetRawText());
+
+        return result;
+    }
+
+    private static void MergeKnownGuardianProjectKeysForValidation(HashSet<string> result, string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return;
 
         try
         {
@@ -1647,7 +4351,7 @@ public partial class ValidationService
                 !doc.RootElement.TryGetProperty("activeProjects", out var activeProjects) ||
                 activeProjects.ValueKind != JsonValueKind.Array)
             {
-                return result;
+                return;
             }
 
             foreach (var entry in activeProjects.EnumerateArray())
@@ -1670,16 +4374,56 @@ public partial class ValidationService
         {
             // ignored
         }
-
-        return result;
     }
 
-
-    private int GetAvailableForgeGachaBonusStepsSync(string guardianId, string sourceProjectId)
+    private static void MergeKnownGuardianProjectsForValidation(
+        Dictionary<string, GuardianProjectValidationSnapshot> result,
+        string? json)
     {
-        var json = ReadPreTurnTrackedFileSync(GuardianProjectState.TrackerPath);
         if (string.IsNullOrWhiteSpace(json))
-            return 0;
+            return;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty("activeProjects", out var activeProjects) ||
+                activeProjects.ValueKind != JsonValueKind.Array)
+            {
+                return;
+            }
+
+            foreach (var entry in activeProjects.EnumerateArray())
+            {
+                if (!entry.TryGetProperty("guardianId", out var guardianIdNode) ||
+                    guardianIdNode.ValueKind != JsonValueKind.String ||
+                    !entry.TryGetProperty("project", out var project) ||
+                    project.ValueKind != JsonValueKind.Object)
+                {
+                    continue;
+                }
+
+                var guardianId = guardianIdNode.GetString();
+                var projectId = GetFirstNonEmptyString(project, "projectId");
+                if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(projectId))
+                    continue;
+
+                result[GuardianProjectState.BuildKey(guardianId!, projectId!)] = new GuardianProjectValidationSnapshot(
+                    GetFirstNonEmptyString(project, "projectType"),
+                    GetFirstNonEmptyString(project, "targetGuardianId"),
+                    GetFirstNonEmptyString(project, "betrayalReason"));
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    private static void MergeKnownCompletedGuardianProjectKeysForValidation(HashSet<string> result, string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return;
 
         try
         {
@@ -1688,45 +4432,261 @@ public partial class ValidationService
                 !doc.RootElement.TryGetProperty("completedProjects", out var completedProjects) ||
                 completedProjects.ValueKind != JsonValueKind.Array)
             {
-                return 0;
+                return;
             }
 
             foreach (var entry in completedProjects.EnumerateArray())
             {
-                if (!string.Equals(GetFirstNonEmptyString(entry, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase) ||
+                if (!entry.TryGetProperty("guardianId", out var guardianIdNode) ||
+                    guardianIdNode.ValueKind != JsonValueKind.String ||
                     !entry.TryGetProperty("project", out var project) ||
-                    project.ValueKind != JsonValueKind.Object ||
-                    !string.Equals(GetFirstNonEmptyString(project, "projectType"), "relic_forging", StringComparison.OrdinalIgnoreCase) ||
-                    !string.Equals(GetFirstNonEmptyString(project, "finalState"), "Completed", StringComparison.OrdinalIgnoreCase))
+                    project.ValueKind != JsonValueKind.Object)
                 {
                     continue;
                 }
 
-                if (!string.IsNullOrWhiteSpace(sourceProjectId) &&
-                    !string.Equals(GetFirstNonEmptyString(project, "projectId"), sourceProjectId, StringComparison.OrdinalIgnoreCase))
+                var guardianId = guardianIdNode.GetString();
+                var projectId = GetFirstNonEmptyString(project, "projectId");
+                if (!string.IsNullOrWhiteSpace(guardianId) && !string.IsNullOrWhiteSpace(projectId))
+                    result.Add(GuardianProjectState.BuildKey(guardianId!, projectId!));
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    private static void MergeKnownPoliticalGuardianPowerEventProjectsForValidation(
+        Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot> result,
+        HashSet<string> ambiguousKeys,
+        string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return;
+
+            MergeKnownPoliticalGuardianPowerEventProjectEntries(result, ambiguousKeys, doc.RootElement, "activeProjects", completed: false);
+            MergeKnownPoliticalGuardianPowerEventProjectEntries(result, ambiguousKeys, doc.RootElement, "completedProjects", completed: true);
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    private static void MergeKnownPoliticalGuardianPowerEventProjectEntries(
+        Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot> result,
+        HashSet<string> ambiguousKeys,
+        JsonElement root,
+        string propertyName,
+        bool completed)
+    {
+        if (!root.TryGetProperty(propertyName, out var entries) || entries.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var entry in entries.EnumerateArray())
+        {
+            if (!entry.TryGetProperty("guardianId", out var guardianIdNode) || guardianIdNode.ValueKind != JsonValueKind.String)
+                continue;
+            if (!entry.TryGetProperty("project", out var project) || project.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var projectGuardianId = guardianIdNode.GetString();
+            var projectId = GetFirstNonEmptyString(project, "projectId");
+            if (string.IsNullOrWhiteSpace(projectGuardianId) || string.IsNullOrWhiteSpace(projectId))
+                continue;
+
+            var key = GuardianProjectState.BuildKey(projectGuardianId!, projectId);
+            if (ambiguousKeys.Contains(key))
+                continue;
+
+            var snapshot = new PoliticalGuardianPowerEventProjectSnapshot(
+                projectGuardianId!,
+                projectId,
+                GetFirstNonEmptyString(project, "projectName"),
+                GetFirstNonEmptyString(project, "projectType"),
+                GetFirstNonEmptyString(project, "projectTier"),
+                completed ? GetFirstNonEmptyString(project, "finalState") : null,
+                GetFirstNonEmptyString(project, "targetGuardianId"));
+
+            if (result.TryGetValue(key, out var existingSnapshot))
+            {
+                if (!Equals(existingSnapshot, snapshot))
+                {
+                    result.Remove(key);
+                    ambiguousKeys.Add(key);
+                }
+
+                continue;
+            }
+
+            result[key] = snapshot;
+        }
+    }
+
+    private IReadOnlyDictionary<string, string> ReadKnownActiveGuardianProjectIdsByGuardianForValidation()
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) ||
+            !HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+        {
+            return result;
+        }
+
+        MergeKnownActiveGuardianProjectIdsByGuardian(result, trackerContext.PreTurnRoot.GetRawText());
+
+        return result;
+    }
+
+    private static void MergeKnownActiveGuardianProjectIdsByGuardian(Dictionary<string, string> result, string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty("activeProjects", out var activeProjects) ||
+                activeProjects.ValueKind != JsonValueKind.Array)
+            {
+                return;
+            }
+
+            foreach (var entry in activeProjects.EnumerateArray())
+            {
+                if (!entry.TryGetProperty("guardianId", out var guardianIdNode) ||
+                    guardianIdNode.ValueKind != JsonValueKind.String ||
+                    !entry.TryGetProperty("project", out var project) ||
+                    project.ValueKind != JsonValueKind.Object)
                 {
                     continue;
                 }
 
-                var granted = 0;
-                var spent = 0;
-                if (project.TryGetProperty("effectState", out var effectState) && effectState.ValueKind == JsonValueKind.Object)
+                var guardianId = guardianIdNode.GetString();
+                var projectId = GetFirstNonEmptyString(project, "projectId");
+                if (!string.IsNullOrWhiteSpace(guardianId) && !string.IsNullOrWhiteSpace(projectId))
+                    result[guardianId!] = projectId!;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    private void ValidateKnownGuardianId(
+        string context,
+        string? guardianId,
+        List<ValidationIssue> issues,
+        HashSet<string> knownGuardianIds)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId) || knownGuardianIds.Contains(guardianId))
+            return;
+
+        AddUnknownGuardianProjectIssue(context, guardianId, issues);
+    }
+
+    private void ValidateOptionalKnownRelatedGuardianId(
+        string context,
+        string? guardianId,
+        string? relatedGuardianId,
+        List<ValidationIssue> issues,
+        HashSet<string> knownGuardianIds)
+    {
+        if (string.IsNullOrWhiteSpace(relatedGuardianId))
+            return;
+
+        if (!string.IsNullOrWhiteSpace(guardianId) &&
+            string.Equals(guardianId, relatedGuardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "guardian power event не может ссылаться на того же Хранителя в relatedGuardianId",
+                code: "guardian_power_event_related_guardian_self_reference",
+                section: "AbodePower",
+                expected: "another existing guardian id",
+                actual: relatedGuardianId,
+                repairHint: "Используй relatedGuardianId другого Хранителя или не передавай это поле."));
+            return;
+        }
+
+        if (knownGuardianIds.Contains(relatedGuardianId))
+            return;
+
+        issues.Add(new ValidationIssue(
+            context,
+            IssueSeverity.Error,
+            $"guardian power event ссылается на неизвестного related guardian '{relatedGuardianId}'",
+            code: "guardian_power_event_unknown_related_guardian_id",
+            section: "AbodePower",
+            actual: relatedGuardianId,
+            repairHint: "Используй relatedGuardianId существующего Хранителя или не передавай это поле."));
+    }
+
+
+    private int GetAvailableForgeGachaBonusStepsSync(string guardianId, string sourceProjectId)
+    {
+        if (!TryResolveGuardianProjectTrackerValidationRootSync(out var trackerRoot, out _))
+            return 0;
+
+        var trackerMatch = ResolveAvailableForgeGachaBonusStepsFromTrackerJson(
+            trackerRoot.GetRawText(),
+            guardianId,
+            sourceProjectId);
+        if (trackerMatch.HasMatch)
+            return trackerMatch.AvailableSteps;
+
+        return 0;
+    }
+
+    private static ForgeGachaBonusLookupResult ResolveAvailableForgeGachaBonusStepsFromTrackerJson(
+        string? json,
+        string guardianId,
+        string sourceProjectId)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return ForgeGachaBonusLookupResult.NoMatch;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return ForgeGachaBonusLookupResult.NoMatch;
+
+            if (!string.IsNullOrWhiteSpace(sourceProjectId))
+            {
+                if (TryResolveForgeGachaBonusStepsByProjectId(
+                        doc.RootElement,
+                        guardianId,
+                        sourceProjectId,
+                        out var availableSteps))
                 {
-                    granted = GetIntOrDefault(effectState, "gachaUsesGranted");
-                    spent = GetIntOrDefault(effectState, "gachaUsesSpent");
+                    return new ForgeGachaBonusLookupResult(true, availableSteps);
                 }
+            }
 
-                if (granted <= 0)
-                    granted = 1;
+            if (!doc.RootElement.TryGetProperty("completedProjects", out var completedProjects) ||
+                completedProjects.ValueKind != JsonValueKind.Array)
+            {
+                return ForgeGachaBonusLookupResult.NoMatch;
+            }
 
-                var remainingUses = Math.Max(0, granted - spent);
-                if (remainingUses <= 0)
-                    return 0;
+            foreach (var entry in completedProjects.EnumerateArray())
+            {
+                if (!TryResolveForgeGachaBonusStepsFromCompletedEntry(entry, guardianId, sourceProjectId, out var availableSteps))
+                    continue;
 
-                if (project.TryGetProperty("projectOutcomeAudit", out var audit) && audit.ValueKind == JsonValueKind.Object)
-                    return GetIntOrDefault(audit, "guardianRarityCeilingBonusSteps");
-
-                return GuardianProjectState.GetDefaultRelicForgingRarityBonusSteps(GetFirstNonEmptyString(project, "projectTier"));
+                return new ForgeGachaBonusLookupResult(true, availableSteps);
             }
         }
         catch
@@ -1734,7 +4694,127 @@ public partial class ValidationService
             // ignored
         }
 
-        return 0;
+        return ForgeGachaBonusLookupResult.NoMatch;
+    }
+
+    private static bool TryResolveForgeGachaBonusStepsByProjectId(
+        JsonElement trackerRoot,
+        string guardianId,
+        string sourceProjectId,
+        out int availableSteps)
+    {
+        if (trackerRoot.TryGetProperty("completedProjects", out var completedProjects) &&
+            completedProjects.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in completedProjects.EnumerateArray())
+            {
+                if (!TryMatchForgeProjectIdentity(entry, guardianId, sourceProjectId))
+                    continue;
+
+                availableSteps = TryIsCompletedRelicForgingProject(entry)
+                    ? ResolveForgeGachaBonusStepsFromProjectEntry(entry)
+                    : 0;
+                return true;
+            }
+        }
+
+        if (trackerRoot.TryGetProperty("activeProjects", out var activeProjects) &&
+            activeProjects.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in activeProjects.EnumerateArray())
+            {
+                if (!TryMatchForgeProjectIdentity(entry, guardianId, sourceProjectId))
+                    continue;
+
+                availableSteps = 0;
+                return true;
+            }
+        }
+
+        availableSteps = 0;
+        return false;
+    }
+
+    private static bool TryResolveForgeGachaBonusStepsFromCompletedEntry(
+        JsonElement entry,
+        string guardianId,
+        string sourceProjectId,
+        out int availableSteps)
+    {
+        if (!string.Equals(GetFirstNonEmptyString(entry, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase) ||
+            !entry.TryGetProperty("project", out var project) ||
+            project.ValueKind != JsonValueKind.Object ||
+            !string.Equals(GetFirstNonEmptyString(project, "projectType"), "relic_forging", StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetFirstNonEmptyString(project, "finalState"), "Completed", StringComparison.OrdinalIgnoreCase))
+        {
+            availableSteps = 0;
+            return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(sourceProjectId) &&
+            !string.Equals(GetFirstNonEmptyString(project, "projectId"), sourceProjectId, StringComparison.OrdinalIgnoreCase))
+        {
+            availableSteps = 0;
+            return false;
+        }
+
+        availableSteps = ResolveForgeGachaBonusStepsFromProjectEntry(entry);
+        return true;
+    }
+
+    private static bool TryMatchForgeProjectIdentity(
+        JsonElement entry,
+        string guardianId,
+        string sourceProjectId)
+    {
+        if (!string.Equals(GetFirstNonEmptyString(entry, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase) ||
+            !entry.TryGetProperty("project", out var project) ||
+            project.ValueKind != JsonValueKind.Object ||
+            !string.Equals(GetFirstNonEmptyString(project, "projectId"), sourceProjectId, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool TryIsCompletedRelicForgingProject(JsonElement entry)
+    {
+        return entry.TryGetProperty("project", out var project) &&
+               project.ValueKind == JsonValueKind.Object &&
+               string.Equals(GetFirstNonEmptyString(project, "projectType"), "relic_forging", StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetFirstNonEmptyString(project, "finalState"), "Completed", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static int ResolveForgeGachaBonusStepsFromProjectEntry(JsonElement entry)
+    {
+        if (!entry.TryGetProperty("project", out var project) || project.ValueKind != JsonValueKind.Object)
+            return 0;
+
+        var granted = 0;
+        var spent = 0;
+        if (project.TryGetProperty("effectState", out var effectState) && effectState.ValueKind == JsonValueKind.Object)
+        {
+            granted = GetIntOrDefault(effectState, "gachaUsesGranted");
+            spent = GetIntOrDefault(effectState, "gachaUsesSpent");
+        }
+
+        if (granted <= 0)
+            granted = 1;
+
+        var remainingUses = Math.Max(0, granted - spent);
+        if (remainingUses <= 0)
+            return 0;
+
+        if (project.TryGetProperty("projectOutcomeAudit", out var audit) && audit.ValueKind == JsonValueKind.Object)
+            return GetIntOrDefault(audit, "guardianRarityCeilingBonusSteps");
+
+        return GuardianProjectState.GetDefaultRelicForgingRarityBonusSteps(GetFirstNonEmptyString(project, "projectTier"));
+    }
+
+    private readonly record struct ForgeGachaBonusLookupResult(bool HasMatch, int AvailableSteps)
+    {
+        public static ForgeGachaBonusLookupResult NoMatch => new(false, 0);
     }
 
 

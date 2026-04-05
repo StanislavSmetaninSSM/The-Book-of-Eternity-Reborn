@@ -148,11 +148,24 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private void ApplyGuardianCommands(JsonObject root, JsonArray updates, int currentTurn, List<JsonObject> pendingPowerEvents)
+    private static void ApplyGuardianCommands(
+        JsonObject root,
+        JsonArray updates,
+        int currentTurn,
+        List<JsonObject> pendingPowerEvents,
+        IReadOnlyDictionary<string, JsonObject>? authorizedCreateGuardiansById = null)
+        => ApplyGuardianCommands(root, updates.OfType<JsonObject>(), currentTurn, pendingPowerEvents, authorizedCreateGuardiansById);
+
+    private static void ApplyGuardianCommands(
+        JsonObject root,
+        IEnumerable<JsonObject> updates,
+        int currentTurn,
+        List<JsonObject> pendingPowerEvents,
+        IReadOnlyDictionary<string, JsonObject>? authorizedCreateGuardiansById = null)
     {
         var guardians = EnsureArray(root, "guardians");
 
-        foreach (var commandNode in updates.OfType<JsonObject>())
+        foreach (var commandNode in updates)
         {
             var command = GetNodeString(commandNode["command"]);
             if (string.IsNullOrWhiteSpace(command))
@@ -163,11 +176,28 @@ public partial class CanonicalStateNormalizer
                 case "create":
                     if (commandNode["data"] is JsonObject data)
                     {
-                        AbodePowerRules.EnsureCanonicalState(data);
-                        GuardianGachaChargeRules.NormalizeGuardianGachaState(data);
-                        UpsertGuardian(guardians, data);
-                        if (root["activeGuardian"] == null)
-                            root["activeGuardian"] = data.DeepClone();
+                        JsonObject? createdGuardian = null;
+                        if (authorizedCreateGuardiansById != null)
+                        {
+                            var guardianId = GetNodeString(data["guardianId"]);
+                            if (!string.IsNullOrWhiteSpace(guardianId) &&
+                                authorizedCreateGuardiansById.TryGetValue(guardianId!, out var authorizedGuardian))
+                            {
+                                createdGuardian = CloneObject(authorizedGuardian);
+                            }
+                        }
+                        else
+                        {
+                            createdGuardian = CloneObject(data);
+                        }
+
+                        if (createdGuardian != null)
+                        {
+                            AbodePowerRules.EnsureCanonicalState(createdGuardian);
+                            GuardianGachaChargeRules.NormalizeGuardianGachaState(createdGuardian);
+                            if (TryAddGuardian(guardians, createdGuardian) && root["activeGuardian"] == null)
+                                root["activeGuardian"] = createdGuardian.DeepClone();
+                        }
                     }
                     break;
 
@@ -356,7 +386,7 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private JsonObject? BuildGuardianQuestPowerEvent(
+    private static JsonObject? BuildGuardianQuestPowerEvent(
         JsonObject guardian,
         JsonObject commandNode,
         JsonObject questPowerAudit,
@@ -621,7 +651,7 @@ public partial class CanonicalStateNormalizer
         return null;
     }
 
-    private static void UpsertGuardian(JsonArray guardians, JsonObject guardian)
+    private static bool TryAddGuardian(JsonArray guardians, JsonObject guardian)
     {
         GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
         var guardianId = GetNodeString(guardian["guardianId"]);
@@ -632,9 +662,10 @@ public partial class CanonicalStateNormalizer
                 string.Equals(GetNodeString(g["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase));
 
         if (existing != null)
-            MergeObject(existing, guardian);
-        else
-            guardians.Add(guardian.DeepClone());
+            return false;
+
+        guardians.Add(guardian.DeepClone());
+        return true;
     }
 
     private static void SyncActiveGuardian(JsonObject root, string guardianId, JsonObject guardian)

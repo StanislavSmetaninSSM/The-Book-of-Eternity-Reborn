@@ -340,6 +340,7 @@ public sealed class GuardianCorrectionService
             ? "Подходящих совместимых слотов для явных корректив в этом сценарии не нашлось."
             : string.Join(" ", corrections.Select(c => c.Summary));
         trackerChanged = GuardianProjectState.ConsumeSoulPreparationForLife(trackerRoot, lifeIncarnation) || trackerChanged;
+        var relationshipChanged = ApplyCorrectionRelationshipEffects(guardiansRoot, claimants, corrections, contestedSlots);
 
         if (state.TotalAbodePowerSpent > 0)
         {
@@ -349,10 +350,14 @@ public sealed class GuardianCorrectionService
                 corrections.Select(BuildPowerSpendEvent),
                 0,
                 powerJournalEntries);
-            if (changed)
+            if (changed || relationshipChanged)
                 await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansRoot.ToJsonString(JsonOpts));
             if (powerJournalEntries.Count > 0)
                 await GuardianPowerEventState.AppendJournalEntriesAsync(_fs, powerJournalEntries);
+        }
+        else if (relationshipChanged)
+        {
+            await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansRoot.ToJsonString(JsonOpts));
         }
 
         if (trackerChanged && trackerRoot != null)
@@ -462,6 +467,7 @@ public sealed class GuardianCorrectionService
             var projectEffects = derivedState.ProjectEffects;
             var preparationBudget = projectEffects.PreparationBudgetPoints;
             var preparationClaimBonus = projectEffects.PreparationClaimPriorityBonus;
+            var relationshipPressureBonus = GuardianRelationshipRules.ResolveCorrectionPressureBonus(guardian, activeGuardianId, allGuardians, trackerRoot);
             var claimant = new ClaimantRuntime
             {
                 GuardianId = guardianId,
@@ -476,10 +482,10 @@ public sealed class GuardianCorrectionService
                 RemainingPower = currentPower,
                 Reputation = GuardianGachaChargeRules.ResolveGuardianReputation(guardian),
                 PreparationClaimBonus = preparationClaimBonus + hostilePriorityBonus,
-                ProjectClaimBonus = offensiveBonus,
-                ClaimStrengthBase = AbodePowerRules.GetCorrectionClaimPowerBand(currentPower) + offensiveBonus + preparationClaimBonus + hostilePriorityBonus,
+                ProjectClaimBonus = offensiveBonus + relationshipPressureBonus,
+                ClaimStrengthBase = AbodePowerRules.GetCorrectionClaimPowerBand(currentPower) + offensiveBonus + relationshipPressureBonus + preparationClaimBonus + hostilePriorityBonus,
                 Eligible = true,
-                SourceSummary = $"Враждебный claim через completed offensive_intrigue против {activeGuardianId}. Political bonus +{offensiveBonus}, preparation +{preparationClaimBonus}, hostile priority +{hostilePriorityBonus}."
+                SourceSummary = $"Враждебный claim через completed offensive_intrigue против {activeGuardianId}. Political bonus +{offensiveBonus}, relation pressure +{relationshipPressureBonus}, preparation +{preparationClaimBonus}, hostile priority +{hostilePriorityBonus}."
             };
             rivalClaimants.Add(claimant);
         }
@@ -497,6 +503,9 @@ public sealed class GuardianCorrectionService
             var topRival = rivalClaimants.FirstOrDefault();
             var counterBonus = topRival != null
                 ? GuardianProjectState.GetLatestCompletedCounterOperationBonus(trackerRoot, activeGuardianId, topRival.GuardianId)
+                : 0;
+            var coalitionDefenseBonus = topRival != null
+                ? GuardianRelationshipRules.ResolveCorrectionDefenseSupportBonus(allGuardians, activeGuardianId, topRival.GuardianId, trackerRoot)
                 : 0;
             var preparationBudget = activeProjectEffects.PreparationBudgetPoints;
             var preparationClaimBonus = activeProjectEffects.PreparationClaimPriorityBonus;
@@ -516,10 +525,10 @@ public sealed class GuardianCorrectionService
                 RemainingPower = activePower,
                 Reputation = activeReputation,
                 PreparationClaimBonus = preparationClaimBonus,
-                ProjectClaimBonus = fortificationBonus + counterBonus + 1,
-                ClaimStrengthBase = AbodePowerRules.GetCorrectionClaimPowerBand(activePower) + preparationClaimBonus + fortificationBonus + counterBonus + 1,
+                ProjectClaimBonus = fortificationBonus + counterBonus + 1 + coalitionDefenseBonus,
+                ClaimStrengthBase = AbodePowerRules.GetCorrectionClaimPowerBand(activePower) + preparationClaimBonus + fortificationBonus + counterBonus + 1 + coalitionDefenseBonus,
                 Eligible = true,
-                SourceSummary = $"Active patron claim. Fortification shield +{fortificationBonus}, counter-operation +{counterBonus}, preparation +{preparationClaimBonus}."
+                SourceSummary = $"Active patron claim. Fortification shield +{fortificationBonus}, counter-operation +{counterBonus}, coalition support +{coalitionDefenseBonus}, preparation +{preparationClaimBonus}."
             });
         }
 
@@ -549,6 +558,41 @@ public sealed class GuardianCorrectionService
             Eligible = claimant.Eligible,
             SourceSummary = claimant.SourceSummary
         };
+    }
+
+    private static bool ApplyCorrectionRelationshipEffects(
+        JsonObject guardiansRoot,
+        IReadOnlyList<ClaimantRuntime> claimants,
+        IReadOnlyList<GuardianCorrectionEntry> corrections,
+        IReadOnlyList<GuardianCorrectionContest> contestedSlots)
+    {
+        var activeClaimant = claimants.FirstOrDefault(item => item.IsActivePatron);
+        var hostileClaimant = claimants.FirstOrDefault(item =>
+            !item.IsActivePatron &&
+            string.Equals(item.Intent, "hostile", StringComparison.OrdinalIgnoreCase));
+        if (activeClaimant == null || hostileClaimant == null)
+            return false;
+
+        var hostileWon = corrections.Any(item =>
+            string.Equals(item.SourceGuardianId, hostileClaimant.GuardianId, StringComparison.OrdinalIgnoreCase));
+        var directlyContested = contestedSlots.Any(contest =>
+            contest.Candidates.Any(candidate => string.Equals(candidate.SourceGuardianId, activeClaimant.GuardianId, StringComparison.OrdinalIgnoreCase)) &&
+            contest.Candidates.Any(candidate => string.Equals(candidate.SourceGuardianId, hostileClaimant.GuardianId, StringComparison.OrdinalIgnoreCase)));
+        if (!hostileWon && !directlyContested)
+            return false;
+
+        return GuardianRelationshipRules.ApplyMutualDelta(
+            guardiansRoot,
+            hostileClaimant.GuardianId,
+            activeClaimant.GuardianId,
+            hostileWon ? -10 : -6,
+            hostileWon ? -8 : -4,
+            hostileWon
+                ? $"Relations worsened after hostile correction claims from {hostileClaimant.GuardianId} prevailed against {activeClaimant.GuardianId}."
+                : $"Relations worsened after hostile correction conflict against {activeClaimant.GuardianId}.",
+            hostileWon
+                ? $"Relations worsened after {hostileClaimant.GuardianId} pushed hostile life corrections against this Guardian."
+                : $"Relations worsened after a contested hostile correction claim from {hostileClaimant.GuardianId}.");
     }
 
     private static (List<GuardianCorrectionEntry> Corrections, List<GuardianCorrectionContest> ContestedSlots, List<string> ResolutionOrder)

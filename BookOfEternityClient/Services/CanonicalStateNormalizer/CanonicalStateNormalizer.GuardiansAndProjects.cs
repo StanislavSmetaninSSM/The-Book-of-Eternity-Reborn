@@ -7,6 +7,127 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
+    internal static JsonObject BuildGuardianProjectAuthorityRootForValidation(
+        JsonObject? preTurnTrackerRoot,
+        JsonObject? currentTrackerRoot,
+        JsonObject? preTurnGuardiansRoot,
+        JsonObject? currentGuardiansRoot,
+        int currentTurn,
+        int currentIncarnation,
+        string? currentRealm)
+    {
+        var activeProjects = new List<JsonObject>();
+        var completedProjects = new List<JsonObject>();
+        var temporaryModifiers = new List<JsonObject>();
+
+        CollectGuardianProjectEntries(preTurnTrackerRoot, "activeProjects", activeProjects);
+        CollectGuardianProjectEntries(preTurnTrackerRoot, "completedProjects", completedProjects);
+        CollectGuardianProjectEntries(preTurnTrackerRoot, "temporaryProjectModifiers", temporaryModifiers);
+
+        if (currentTrackerRoot != null)
+        {
+            if (currentTrackerRoot["startGuardianProjects"] is JsonArray startCommands)
+                ApplyGuardianProjectStartCommands(activeProjects, completedProjects, temporaryModifiers, startCommands, new List<JsonObject>(), currentTurn, currentGuardiansRoot);
+
+            if (currentTrackerRoot["guardianProjectUpdates"] is JsonArray updateCommands)
+                ApplyGuardianProjectUpdateCommands(activeProjects, updateCommands, new List<JsonObject>(), new List<JsonObject>(), currentTurn, currentGuardiansRoot);
+
+            if (currentTrackerRoot["completeGuardianProjects"] is JsonArray completionCommands)
+            {
+                var guardiansChanged = false;
+                ApplyGuardianProjectCompletionCommands(
+                    activeProjects,
+                    completedProjects,
+                    temporaryModifiers,
+                    completionCommands,
+                    new List<JsonObject>(),
+                    new List<JsonObject>(),
+                    currentTurn,
+                    currentIncarnation,
+                    currentRealm,
+                    currentGuardiansRoot,
+                    ref guardiansChanged);
+            }
+        }
+
+        if (preTurnGuardiansRoot != null && currentGuardiansRoot != null)
+        {
+            ConsumeLoreResearchQuestTokens(completedProjects, preTurnGuardiansRoot, currentGuardiansRoot, currentIncarnation, new List<JsonObject>());
+            ConsumeRelicForgingGachaUses(completedProjects, preTurnGuardiansRoot, currentGuardiansRoot, new List<JsonObject>());
+        }
+
+        var authorityRoot = BuildGuardianProjectsTrackerRoot(activeProjects, completedProjects, temporaryModifiers);
+        GuardianProjectState.ExpireLifeBoundEffects(authorityRoot, currentIncarnation);
+
+        return authorityRoot;
+    }
+
+    internal static JsonObject BuildGuardianAuthorityRootForValidation(
+        JsonObject? preTurnRoot,
+        JsonObject? currentRoot,
+        IReadOnlyCollection<JsonObject>? authorizedCommands,
+        IReadOnlyDictionary<string, JsonObject>? authorizedCreateGuardiansById,
+        IReadOnlyCollection<JsonObject>? authorizedPowerEvents,
+        int currentTurn)
+    {
+        var result = CloneObject(preTurnRoot ?? new JsonObject());
+        var pendingPowerEvents = new List<JsonObject>();
+        var powerJournalEntries = new List<JsonObject>();
+
+        if (authorizedCommands is { Count: > 0 })
+        {
+            ApplyGuardianCommands(
+                result,
+                authorizedCommands,
+                currentTurn,
+                pendingPowerEvents,
+                authorizedCreateGuardiansById);
+        }
+
+        if (authorizedPowerEvents != null)
+            pendingPowerEvents.AddRange(authorizedPowerEvents.Select(CloneObject));
+
+        if (pendingPowerEvents.Count > 0)
+            GuardianPowerEventState.ApplyEvents(result, pendingPowerEvents, currentTurn, powerJournalEntries);
+
+        if (result["guardians"] is JsonArray guardians)
+        {
+            foreach (var guardian in guardians.OfType<JsonObject>())
+            {
+                AbodePowerRules.EnsureCanonicalState(guardian);
+                GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+                GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
+            }
+
+            GuardianRelationshipRules.EnsureCanonicalNetwork(guardians);
+        }
+
+        if (result["activeGuardian"] is JsonObject resultActiveGuardian &&
+            result["guardians"] is JsonArray resultGuardians &&
+            resultGuardians.OfType<JsonObject>().FirstOrDefault(item =>
+                string.Equals(GetNodeString(item["guardianId"]), GetNodeString(resultActiveGuardian["guardianId"]), StringComparison.OrdinalIgnoreCase)) is JsonObject syncedResultGuardian)
+        {
+            result["activeGuardian"] = syncedResultGuardian.DeepClone();
+        }
+        else if (currentRoot?["activeGuardian"] is JsonObject currentActiveGuardian &&
+                 result["guardians"] is JsonArray currentAuthorityGuardians &&
+                 currentAuthorityGuardians.OfType<JsonObject>().FirstOrDefault(item =>
+                     string.Equals(GetNodeString(item["guardianId"]), GetNodeString(currentActiveGuardian["guardianId"]), StringComparison.OrdinalIgnoreCase)) is JsonObject syncedCurrentGuardian)
+        {
+            result["activeGuardian"] = syncedCurrentGuardian.DeepClone();
+        }
+        else
+        {
+            result.Remove("activeGuardian");
+        }
+
+        result.Remove("UpdateGuardians");
+        result.Remove(GuardianTradeRequestState.UpdateReceiptsProperty);
+        result.Remove("guardianPowerEvents");
+
+        return result;
+    }
+
     private async Task NormalizeGuardiansAsync(IReadOnlyDictionary<string, string>? backups)
     {
         const string path = "game_state/meta/guardians.json";
@@ -63,12 +184,22 @@ public partial class CanonicalStateNormalizer
                 GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
                 GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
             }
+
+            GuardianRelationshipRules.EnsureCanonicalNetwork(normalizedGuardians);
         }
 
         if (result["activeGuardian"] is JsonObject activeGuardianRoot)
         {
-            AbodePowerRules.EnsureCanonicalState(activeGuardianRoot);
-            GuardianGachaChargeRules.NormalizeGuardianGachaState(activeGuardianRoot);
+            if (result["guardians"] is JsonArray guardiansArray &&
+                guardiansArray.OfType<JsonObject>().FirstOrDefault(item =>
+                    string.Equals(GetNodeString(item["guardianId"]), GetNodeString(activeGuardianRoot["guardianId"]), StringComparison.OrdinalIgnoreCase)) is JsonObject syncedGuardian)
+            {
+                result["activeGuardian"] = syncedGuardian.DeepClone();
+            }
+            else
+            {
+                result.Remove("activeGuardian");
+            }
         }
 
         result.Remove("UpdateGuardians");
@@ -211,12 +342,12 @@ public partial class CanonicalStateNormalizer
 
             if (currentObj["startGuardianProjects"] is JsonArray startCommands)
             {
-                ApplyGuardianProjectStartCommands(activeProjects, temporaryModifiers, startCommands, journalEntries, currentTurn);
+                ApplyGuardianProjectStartCommands(activeProjects, completedProjects, temporaryModifiers, startCommands, journalEntries, currentTurn, guardiansRoot);
             }
 
             if (currentObj["guardianProjectUpdates"] is JsonArray updateCommands)
             {
-                ApplyGuardianProjectUpdateCommands(activeProjects, updateCommands, journalEntries, pendingPowerEvents, currentTurn);
+                ApplyGuardianProjectUpdateCommands(activeProjects, updateCommands, journalEntries, pendingPowerEvents, currentTurn, guardiansRoot);
             }
 
             if (currentObj["completeGuardianProjects"] is JsonArray completionCommands)
@@ -262,6 +393,8 @@ public partial class CanonicalStateNormalizer
 
         if (powerJournalEntries.Count > 0)
             await GuardianPowerEventState.AppendJournalEntriesAsync(_fs, powerJournalEntries);
+        else
+            await GuardianPowerEventState.RepairJournalAsync(_fs);
 
         if (guardiansChanged && guardiansRoot != null)
             await _fs.WriteFileAtomicAsync(guardiansPath, guardiansRoot.ToJsonString(JsonOpts));

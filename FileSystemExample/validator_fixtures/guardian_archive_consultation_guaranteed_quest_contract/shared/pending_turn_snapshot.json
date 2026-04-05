@@ -1,0 +1,26 @@
+{
+  "sessionId": "fixture-session",
+  "requestId": "fixture-request",
+  "turnNumber": 1,
+  "requestTimestamp": "2026-03-20T11:00:00Z",
+  "playerAction": "Archive consultation guardian contract fixture.",
+  "files": {
+    "game_state/meta/guardians.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+    "game_state/meta/guardian_projects.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json"
+  },
+  "snapshotFileHashes": {
+    "game_state/meta/guardians.json": "2EB9E1585C9ED5A08BF7220238E951E2A6332359A017B05C58F8D4F96B700448",
+    "game_state/meta/guardian_projects.json": "F01C432ED5D0DC97A1D4C29A78549F561743964FD09323C8E730F01F62F2ED1D"
+  },
+  "clientOwnedValidationHashes": {},
+  "rollbackBackups": {
+    "game_state/meta/guardians.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+    "game_state/meta/guardian_projects.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json"
+  },
+  "rollbackBaselineFiles": [
+    "game_state/meta/guardians.json",
+    "game_state/meta/guardian_projects.json"
+  ],
+  "sourceLabel": "fixture",
+  "manifestPayloadHash": "17396B65ED097D4200CF1291278B980B8D1999F51AC6437F062DFF154DB5F134"
+}

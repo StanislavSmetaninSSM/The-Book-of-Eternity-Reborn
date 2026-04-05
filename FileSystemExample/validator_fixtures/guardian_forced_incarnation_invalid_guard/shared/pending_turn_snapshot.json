@@ -4,11 +4,15 @@
   "turnNumber": 13,
   "requestTimestamp": "2026-03-20T09:40:00Z",
   "playerAction": "[GUARDIAN_PROVOCATION: guard_social_azalia_001] Я открыто оскорбляю Азалию и бросаю ей вызов в её собственной обители.",
-  "files": {},
-  "snapshotFileHashes": {},
+  "files": {
+    "game_state/meta/soul_state.json": "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json"
+  },
+  "snapshotFileHashes": {
+    "game_state/meta/soul_state.json": "B658A291ED62C255CD4CE749BB8E9A3EEEFD53FD86C70AB93803E93022805307"
+  },
   "clientOwnedValidationHashes": {},
   "rollbackBackups": {},
   "rollbackBaselineFiles": [],
   "sourceLabel": "обработки хода",
-  "manifestPayloadHash": ""
+  "manifestPayloadHash": "F719AC9A8FDE57ABF6BBCE43E17BDF3666606E46D962DEC6A1A862F949ACE436"
 }

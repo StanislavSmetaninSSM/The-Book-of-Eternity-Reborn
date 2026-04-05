@@ -1,0 +1,101 @@
+{
+  "guardians": [
+    {
+      "guardianId": "guardian_difficulty_cap_001",
+      "canonicalName": "Азалия",
+      "nameVariants": {
+        "default": "Азалия",
+        "feminine": "Азалия",
+        "masculine": null,
+        "neutral": null
+      },
+      "manifestation": {
+        "currentDisplayName": "Азалия",
+        "formFlexibility": "selective",
+        "currentPresentationStyle": "feminine",
+        "currentPronouns": "она/её",
+        "appearanceDescription": "Тестовая форма Азалии."
+      },
+      "manifestationHistory": [],
+      "domain": "Knowledge",
+      "relationshipData": {
+        "currentReputation": 25,
+        "reputationHistory": [],
+        "lastInteraction": null
+      },
+      "abodePower": {
+        "currentPower": 35,
+        "tier": "Хрупкая",
+        "lastUpdatedAt": "2026-03-26T00:00:00Z",
+        "history": []
+      },
+      "questManagement": {
+        "availableQuests": [
+          {
+            "questId": "guardian_cap_quest_001",
+            "questName": "Поддержать ритуальный контур",
+            "difficulty": "normal",
+            "description": "Квест укладывается в потолок сложности этой Обители."
+          }
+        ],
+        "activeQuests": [],
+        "completedQuests": []
+      },
+      "gachaSystem": {
+        "chargesPerReturn": 1,
+        "chargesUsedThisReturn": 0,
+        "gachaHistory": []
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guardian_difficulty_cap_001",
+    "canonicalName": "Азалия",
+    "nameVariants": {
+      "default": "Азалия",
+      "feminine": "Азалия",
+      "masculine": null,
+      "neutral": null
+    },
+    "manifestation": {
+      "currentDisplayName": "Азалия",
+      "formFlexibility": "selective",
+      "currentPresentationStyle": "feminine",
+      "currentPronouns": "она/её",
+      "appearanceDescription": "Тестовая форма Азалии."
+    },
+    "manifestationHistory": [],
+    "domain": "Knowledge",
+    "relationshipData": {
+      "currentReputation": 25,
+      "reputationHistory": [],
+      "lastInteraction": null
+    },
+    "abodePower": {
+      "currentPower": 35,
+      "tier": "Хрупкая",
+      "lastUpdatedAt": "2026-03-26T00:00:00Z",
+      "history": []
+    },
+    "questManagement": {
+      "availableQuests": [
+        {
+          "questId": "guardian_cap_quest_001",
+          "questName": "Поддержать ритуальный контур",
+          "difficulty": "normal",
+          "description": "Квест укладывается в потолок сложности этой Обители."
+        }
+      ],
+      "activeQuests": [],
+      "completedQuests": []
+    },
+    "gachaSystem": {
+      "chargesPerReturn": 1,
+      "chargesUsedThisReturn": 0,
+      "gachaHistory": []
+    }
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": null
+  }
+}

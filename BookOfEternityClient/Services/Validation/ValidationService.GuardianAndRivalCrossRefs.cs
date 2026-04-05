@@ -13,70 +13,40 @@ public partial class ValidationService
 {
     private async Task ValidateGuardianCrossReferencesAsync(List<ValidationIssue> issues)
     {
-        var guardianJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (string.IsNullOrWhiteSpace(guardianJson))
+        var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        if (!guardianPolicyContext.CurrentStateReadable || !guardianPolicyContext.HasCurrentRoot)
             return;
 
         try
         {
-            using var doc = JsonDocument.Parse(guardianJson);
-            var root = doc.RootElement;
-            var preTurnGuardiansJson = await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json");
-            var preTurnGuardianIds = ReadGuardianIdsFromJson(preTurnGuardiansJson);
             var guardiansById = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var guardiansByName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var guardianStateById = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
 
-            if (root.TryGetProperty("guardians", out var guardians) && guardians.ValueKind == JsonValueKind.Array)
+            if (guardianPolicyContext.CurrentRoot.TryGetProperty("guardians", out var guardians) && guardians.ValueKind == JsonValueKind.Array)
             {
                 var index = 0;
                 foreach (var guardian in guardians.EnumerateArray())
                 {
                     var guardianContext = $"game_state/meta/guardians.json.guardians[{index}]";
                     var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
-                    var guardianName = GuardianManifestation.GetDisplayName(guardian);
-                    var guardianCanonicalName = GuardianManifestation.GetCanonicalName(guardian);
                     if (!string.IsNullOrWhiteSpace(guardianId))
-                        guardiansById[guardianId] = guardianContext;
-                    if (!string.IsNullOrWhiteSpace(guardianName))
-                        guardiansByName[guardianName] = guardianContext;
-                    if (!string.IsNullOrWhiteSpace(guardianCanonicalName))
-                        guardiansByName[guardianCanonicalName] = guardianContext;
-
-                    var guardianDomain = GetFirstNonEmptyString(guardian, "domain");
-                    if (!string.IsNullOrWhiteSpace(guardianId) &&
-                        !preTurnGuardianIds.Contains(guardianId) &&
-                        (string.IsNullOrWhiteSpace(guardianDomain) ||
-                         string.Equals(guardianName, guardianId, StringComparison.OrdinalIgnoreCase)))
                     {
-                        issues.Add(new ValidationIssue(
-                            guardianContext,
-                            IssueSeverity.Error,
-                            $"Guardian '{guardianId}' появился без valid create surface; non-create команды не могут создавать placeholder guardian state.",
-                            code: "guardian_unknown_non_create_target",
-                            section: "UpdateGuardians",
-                            repairHint: "Используй UpdateGuardians.create для нового Хранителя или ссылайся только на существующий guardianId."));
+                        guardiansById[guardianId] = guardianContext;
+                        guardianStateById[guardianId] = guardian.Clone();
                     }
 
                     index++;
                 }
             }
 
-            if (root.TryGetProperty("activeGuardian", out var activeGuardian) &&
-                activeGuardian.ValueKind == JsonValueKind.Object)
+            if (guardianPolicyContext.HasCurrentActiveGuardian)
             {
+                var activeGuardian = guardianPolicyContext.CurrentActiveGuardian;
                 var activeGuardianId = GetFirstNonEmptyString(activeGuardian, "guardianId", "id");
                 var activeGuardianName = GuardianManifestation.GetDisplayName(activeGuardian);
-                var activeGuardianCanonicalName = GuardianManifestation.GetCanonicalName(activeGuardian);
-                var found = false;
+                var found = !string.IsNullOrWhiteSpace(activeGuardianId) && guardiansById.ContainsKey(activeGuardianId);
 
-                if (!string.IsNullOrWhiteSpace(activeGuardianId) && guardiansById.ContainsKey(activeGuardianId))
-                    found = true;
-                if (!found && !string.IsNullOrWhiteSpace(activeGuardianName) && guardiansByName.ContainsKey(activeGuardianName))
-                    found = true;
-                if (!found && !string.IsNullOrWhiteSpace(activeGuardianCanonicalName) && guardiansByName.ContainsKey(activeGuardianCanonicalName))
-                    found = true;
-
-                if (!found && (guardiansById.Count > 0 || guardiansByName.Count > 0))
+                if (!found)
                 {
                     var activeGuardianRef = !string.IsNullOrWhiteSpace(activeGuardianId)
                         ? $"guardianId={activeGuardianId}"
@@ -89,26 +59,79 @@ public partial class ValidationService
                         $"Активный хранитель '{activeGuardianName ?? activeGuardianId ?? "unknown"}' не найден в массиве guardians",
                         code: "active_guardian_missing_in_guardians_array",
                         section: "Guardians",
-                        expected: "activeGuardian that resolves to an entry inside guardians[]",
+                        expected: "activeGuardian.guardianId matches an entry inside guardians[]",
                         actual: activeGuardianRef,
-                        repairHint: "Синхронно обновляй activeGuardian тем же guardianId/name, который реально присутствует в массиве guardians[]. Не оставляй activeGuardian ссылкой на устаревший или несозданный guardian entry."));
+                        repairHint: "Синхронно обновляй activeGuardian как strict mirror той же guardian entry из guardians[]. Не оставляй activeGuardian со stale guardianId, даже если имя визуально совпадает."));
+                }
+                else if (!string.IsNullOrWhiteSpace(activeGuardianId) &&
+                         guardianStateById.TryGetValue(activeGuardianId, out var canonicalGuardian))
+                {
+                    var activeAbodeId = TryReadGuardianAbodeId(activeGuardian);
+                    var canonicalAbodeId = TryReadGuardianAbodeId(canonicalGuardian);
+                    if (!string.IsNullOrWhiteSpace(activeAbodeId) &&
+                        !string.IsNullOrWhiteSpace(canonicalAbodeId) &&
+                        !string.Equals(activeAbodeId, canonicalAbodeId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            "game_state/meta/guardians.json.activeGuardian.abode.abodeId",
+                            IssueSeverity.Error,
+                            "activeGuardian должен зеркалить canonical abodeId из guardians[].",
+                            code: "active_guardian_mirror_abode_mismatch",
+                            section: "Guardians",
+                            expected: canonicalAbodeId,
+                            actual: activeAbodeId,
+                            repairHint: "Синхронизируй activeGuardian.abode.abodeId с canonical guardian entry из guardians[]. Не держи stale mirror для policy-sensitive abode context."));
+                    }
+
+                    var activeReputation = TryReadGuardianCurrentReputation(activeGuardian);
+                    var canonicalReputation = TryReadGuardianCurrentReputation(canonicalGuardian);
+                    if (activeReputation.HasValue &&
+                        canonicalReputation.HasValue &&
+                        activeReputation.Value != canonicalReputation.Value)
+                    {
+                        issues.Add(new ValidationIssue(
+                            "game_state/meta/guardians.json.activeGuardian.relationshipData.currentReputation",
+                            IssueSeverity.Error,
+                            "activeGuardian должен зеркалить canonical currentReputation из guardians[].",
+                            code: "active_guardian_mirror_reputation_mismatch",
+                            section: "Guardians",
+                            expected: canonicalReputation.Value.ToString(),
+                            actual: activeReputation.Value.ToString(),
+                            repairHint: "Синхронизируй activeGuardian.relationshipData.currentReputation с canonical guardian entry из guardians[]. Mirror не должен расходиться с authoritative guardian state."));
+                    }
                 }
             }
 
-            var pendingPresetId = TryReadPendingSystemGuardianPresetId(preTurnGuardiansJson);
+            var currentPendingPresetId = TryReadPendingSystemGuardianPresetId(guardianPolicyContext.CurrentRoot);
+            if (!string.IsNullOrWhiteSpace(currentPendingPresetId) &&
+                TryGetGuardianBaselineFailureKind(guardianPolicyContext, out var guardianBaselineFailureKind))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.pendingGuardianCreation",
+                    IssueSeverity.Error,
+                    "Client-selected system guardian preset требует kernel-backed validated pre-turn guardians baseline и не может проверяться по current guardians[] fallback.",
+                    code: "system_guardian_pending_preset_missing_validated_guardians_snapshot",
+                    section: "SystemGuardianPresets",
+                    expected: "validated pre-turn guardians.json snapshot with pendingGuardianCreation.mode=system_preset",
+                    actual: DescribeGuardianTrackedSnapshotFileStatus(guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus),
+                    repairHint: $"Для system_preset flows сохраняй usable validated snapshot copy game_state/meta/guardians.json. Preset materialization нельзя подтверждать только по current state; baseline failure = {guardianBaselineFailureKind}."));
+            }
+
+            var pendingPresetId = HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext)
+                ? TryReadPendingSystemGuardianPresetId(guardianPolicyContext.PreTurnRoot)
+                : null;
             if (!string.IsNullOrWhiteSpace(pendingPresetId))
             {
-                if (!root.TryGetProperty("activeGuardian", out var selectedActiveGuardian) ||
-                    selectedActiveGuardian.ValueKind != JsonValueKind.Object)
+                if (!TryGetCurrentAuthorityActiveGuardian(guardianPolicyContext, out var selectedActiveGuardian))
                 {
                     issues.Add(new ValidationIssue(
                         "game_state/meta/guardians.json.activeGuardian",
                         IssueSeverity.Error,
-                        "Системный guardian preset был выбран клиентом, но активный Хранитель не materialized.",
+                        "Системный guardian preset был выбран клиентом, но kernel-authoritative activeGuardian не materialized.",
                         code: "system_guardian_pending_preset_missing_active_guardian",
                         section: "SystemGuardianPresets",
                         expected: $"activeGuardian.sourcePreset.presetId = {pendingPresetId}",
-                        actual: "missing"));
+                        actual: guardianPolicyContext.HasCurrentActiveGuardian ? "raw mirror without kernel authority" : "missing"));
                 }
                 else
                 {
@@ -134,33 +157,23 @@ public partial class ValidationService
         }
     }
 
-
-    private static string? TryReadPendingSystemGuardianPresetId(string? guardiansJson)
+    private static string? TryReadPendingSystemGuardianPresetId(JsonElement root)
     {
-        if (string.IsNullOrWhiteSpace(guardiansJson))
+        if (root.ValueKind != JsonValueKind.Object)
             return null;
 
-        try
-        {
-            using var doc = JsonDocument.Parse(guardiansJson);
-            if (!doc.RootElement.TryGetProperty("pendingGuardianCreation", out var pending) ||
-                pending.ValueKind != JsonValueKind.Object)
-            {
-                return null;
-            }
-
-            var mode = GetFirstNonEmptyString(pending, "mode");
-            if (!string.Equals(mode, "system_preset", StringComparison.OrdinalIgnoreCase))
-                return null;
-
-            return GetFirstNonEmptyString(pending, "presetId");
-        }
-        catch
+        if (!root.TryGetProperty("pendingGuardianCreation", out var pending) ||
+            pending.ValueKind != JsonValueKind.Object)
         {
             return null;
         }
+
+        var mode = GetFirstNonEmptyString(pending, "mode");
+        if (!string.Equals(mode, "system_preset", StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        return GetFirstNonEmptyString(pending, "presetId");
     }
-
 
     private static string? TryReadGuardianSourcePresetId(JsonElement guardian)
     {
@@ -192,14 +205,6 @@ public partial class ValidationService
                         ids.Add(guardianId);
                 }
             }
-
-            if (doc.RootElement.TryGetProperty("activeGuardian", out var activeGuardian) &&
-                activeGuardian.ValueKind == JsonValueKind.Object)
-            {
-                var guardianId = GetFirstNonEmptyString(activeGuardian, "guardianId", "id");
-                if (!string.IsNullOrWhiteSpace(guardianId))
-                    ids.Add(guardianId);
-            }
         }
         catch
         {
@@ -210,84 +215,33 @@ public partial class ValidationService
     }
 
 
-    private async Task<HashSet<string>> ReadKnownGuardianIdsAsync()
+    private Task<HashSet<string>> ReadKnownGuardianIdsAsync()
     {
-        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var state = ReadGuardianIdentityValidationState();
+        return Task.FromResult(new HashSet<string>(state.KnownGuardianIds, StringComparer.OrdinalIgnoreCase));
+    }
 
-        var preTurnJson = await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json");
-        if (!string.IsNullOrWhiteSpace(preTurnJson))
-        {
-            try
-            {
-                using var doc = JsonDocument.Parse(preTurnJson);
-                CollectGuardianIdsFromStateRoot(doc.RootElement, ids, includeCommandSurfaces: false);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
+    private sealed record GuardianReferenceValidationState(
+        HashSet<string> Ids,
+        HashSet<string> Names,
+        GuardianBaselineFailureKind BaselineFailureKind,
+        GuardianTrackedSnapshotFileStatus SnapshotFileStatus);
 
-        var currentJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (!string.IsNullOrWhiteSpace(currentJson))
-        {
-            try
-            {
-                using var doc = JsonDocument.Parse(currentJson);
-                CollectCreatedGuardianIdsFromStateRoot(doc.RootElement, ids);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        return ids;
+    private Task<GuardianReferenceValidationState> ReadKnownGuardianReferencesAsync()
+    {
+        var state = ReadGuardianIdentityValidationState();
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+        var failureKind = ResolveGuardianBaselineFailureKind(guardianPolicyContext);
+        return Task.FromResult(new GuardianReferenceValidationState(
+            new HashSet<string>(state.KnownGuardianIds, StringComparer.OrdinalIgnoreCase),
+            new HashSet<string>(state.KnownGuardianNames, StringComparer.OrdinalIgnoreCase),
+            failureKind,
+            guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus));
     }
 
 
-    private async Task<(HashSet<string> Ids, HashSet<string> Names)> ReadKnownGuardianReferencesAsync()
+    private async Task ValidateGuardianNpcBoundaryAsync(List<ValidationIssue> issues, GuardianReferenceValidationState knownGuardianReferences)
     {
-        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        var preTurnJson = await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json");
-        if (!string.IsNullOrWhiteSpace(preTurnJson))
-        {
-            try
-            {
-                using var doc = JsonDocument.Parse(preTurnJson);
-                CollectGuardianReferencesFromStateRoot(doc.RootElement, ids, names, includeCommandSurfaces: false);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        var currentJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (!string.IsNullOrWhiteSpace(currentJson))
-        {
-            try
-            {
-                using var doc = JsonDocument.Parse(currentJson);
-                CollectCreatedGuardianReferencesFromStateRoot(doc.RootElement, ids, names);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        return (ids, names);
-    }
-
-
-    private async Task ValidateGuardianNpcBoundaryAsync(List<ValidationIssue> issues, (HashSet<string> Ids, HashSet<string> Names) knownGuardianReferences)
-    {
-        if (knownGuardianReferences.Ids.Count == 0 && knownGuardianReferences.Names.Count == 0)
-            return;
-
         var json = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
         if (string.IsNullOrWhiteSpace(json))
             return;
@@ -295,6 +249,41 @@ public partial class ValidationService
         try
         {
             using var doc = JsonDocument.Parse(json);
+            var hasNpcSurface = false;
+            foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
+            {
+                if (doc.RootElement.TryGetProperty(sectionName, out var sectionArray) &&
+                    sectionArray.ValueKind == JsonValueKind.Array &&
+                    sectionArray.GetArrayLength() > 0)
+                {
+                    hasNpcSurface = true;
+                    break;
+                }
+            }
+
+            if (knownGuardianReferences.Ids.Count == 0 &&
+                knownGuardianReferences.Names.Count == 0 &&
+                knownGuardianReferences.BaselineFailureKind != GuardianBaselineFailureKind.None)
+            {
+                if (hasNpcSurface)
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/npcs/npc_core.json",
+                        IssueSeverity.Error,
+                        "Guardian/NPC boundary validation требует kernel-backed validated pre-turn guardians baseline и не может silently disappear при broken guardian provenance.",
+                        code: "guardian_npc_boundary_missing_validated_preturn_guardians_snapshot",
+                        section: "Guardians",
+                        expected: "validated pre-turn guardians baseline for guardian/NPC collision checks",
+                        actual: DescribeGuardianTrackedSnapshotFileStatus(knownGuardianReferences.SnapshotFileStatus),
+                        repairHint: "Сохраняй readable validated snapshot copy game_state/meta/guardians.json, чтобы boundary validator мог отличить guardians от NPC surfaces."));
+                }
+
+                return;
+            }
+
+            if (knownGuardianReferences.Ids.Count == 0 && knownGuardianReferences.Names.Count == 0)
+                return;
+
             foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
             {
                 if (!doc.RootElement.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
@@ -709,52 +698,54 @@ public partial class ValidationService
 
             if (visibleBonusClueUsage.Count > 0)
             {
-                var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
-                JsonDocument? trackerDoc = null;
-                try
+                var hasTrackerValidationRoot = TryResolveGuardianProjectTrackerValidationRootSync(out var trackerRoot, out var trackerContext);
+                if (!hasTrackerValidationRoot)
                 {
-                    if (!string.IsNullOrWhiteSpace(trackerJson))
-                        trackerDoc = JsonDocument.Parse(trackerJson);
+                    issues.Add(new ValidationIssue(
+                        $"{RivalSoulArcService.StatePath}.{collectionName}",
+                        IssueSeverity.Error,
+                        "Rival arc bonus clue validation требует readable validated pre-turn project tracker baseline и не использует current tracker как authority fallback.",
+                        code: "rival_arc_bonus_clue_missing_validated_preturn_tracker_snapshot",
+                        section: "RivalSoulArcs",
+                        expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
+                        actual: DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus),
+                        repairHint: $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для lore_research-derived bonus clues. Без этого clue budget нельзя выводить из current tracker alone."));
                 }
-                catch
+                else
                 {
-                    trackerDoc = null;
-                }
-
-                foreach (var usage in visibleBonusClueUsage)
-                {
-                    var parts = usage.Key.Split(new[] { "::" }, 2, StringSplitOptions.None);
-                    if (parts.Length != 2)
-                        continue;
-
-                    var grantedBudget = ReadGrantedLoreResearchVisibleClueBudget(trackerDoc?.RootElement, parts[0], parts[1]);
-                    if (grantedBudget <= 0)
+                    foreach (var usage in visibleBonusClueUsage)
                     {
-                        issues.Add(new ValidationIssue(
-                            $"{RivalSoulArcService.StatePath}.{collectionName}",
-                            IssueSeverity.Error,
-                            $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но у guardian '{parts[0]}' нет completed lore_research с clue budget",
-                            code: "rival_arc_bonus_clue_unknown_source_project",
-                            section: "RivalSoulArcs",
-                            repairHint: "Для bonusClueSourceProjectId используй completed lore_research projectId того же guardian sponsor-а."));
-                        continue;
-                    }
+                        var parts = usage.Key.Split(new[] { "::" }, 2, StringSplitOptions.None);
+                        if (parts.Length != 2)
+                            continue;
 
-                    if (usage.Value > grantedBudget)
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{RivalSoulArcService.StatePath}.{collectionName}",
-                            IssueSeverity.Error,
-                            "Rival arc bonus clue usage превышает granted lore_research visible clue budget",
-                            code: "rival_arc_bonus_clue_budget_exceeded",
-                            section: "RivalSoulArcs",
-                            expected: $"<= {grantedBudget}",
-                            actual: usage.Value.ToString(),
-                            repairHint: "Не раскрывай через bonusClueSourceProjectId больше player-visible extra clues, чем даёт completed lore_research project."));
+                        var grantedBudget = ReadGrantedLoreResearchVisibleClueBudget(trackerRoot, parts[0], parts[1]);
+                        if (grantedBudget <= 0)
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{RivalSoulArcService.StatePath}.{collectionName}",
+                                IssueSeverity.Error,
+                                $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но у guardian '{parts[0]}' нет completed lore_research с clue budget",
+                                code: "rival_arc_bonus_clue_unknown_source_project",
+                                section: "RivalSoulArcs",
+                                repairHint: "Для bonusClueSourceProjectId используй completed lore_research projectId того же guardian sponsor-а."));
+                            continue;
+                        }
+
+                        if (usage.Value > grantedBudget)
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{RivalSoulArcService.StatePath}.{collectionName}",
+                                IssueSeverity.Error,
+                                "Rival arc bonus clue usage превышает granted lore_research visible clue budget",
+                                code: "rival_arc_bonus_clue_budget_exceeded",
+                                section: "RivalSoulArcs",
+                                expected: $"<= {grantedBudget}",
+                                actual: usage.Value.ToString(),
+                                repairHint: "Не раскрывай через bonusClueSourceProjectId больше player-visible extra clues, чем даёт completed lore_research project."));
+                        }
                     }
                 }
-
-                trackerDoc?.Dispose();
             }
 
             if (knownArcIds.Count == 0)
@@ -762,26 +753,8 @@ public partial class ValidationService
                 worldEventsDoc?.Dispose();
             }
 
-            var knownGuardianAbodes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-            if (!string.IsNullOrWhiteSpace(guardiansJson))
-            {
-                using var guardiansDoc = JsonDocument.Parse(guardiansJson);
-                if (guardiansDoc.RootElement.ValueKind == JsonValueKind.Object &&
-                    guardiansDoc.RootElement.TryGetProperty("guardians", out var guardians) &&
-                    guardians.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var guardian in guardians.EnumerateArray())
-                    {
-                        var guardianId = GetFirstNonEmptyString(guardian, "guardianId");
-                        var abodeId = guardian.TryGetProperty("abode", out var abode) && abode.ValueKind == JsonValueKind.Object
-                            ? GetFirstNonEmptyString(abode, "abodeId", "id")
-                            : string.Empty;
-                        if (!string.IsNullOrWhiteSpace(guardianId))
-                            knownGuardianAbodes[guardianId] = abodeId ?? string.Empty;
-                    }
-                }
-            }
+            var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+            var knownGuardianAbodes = BuildGuardianAbodeMap(guardianPolicyContext);
 
             var knownResidentIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var residentLinkedQuestIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -1429,26 +1402,8 @@ public partial class ValidationService
             }
         }
 
-        var knownGuardianAbodes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (!string.IsNullOrWhiteSpace(guardiansJson))
-        {
-            using var guardiansDoc = JsonDocument.Parse(guardiansJson);
-            if (guardiansDoc.RootElement.ValueKind == JsonValueKind.Object &&
-                guardiansDoc.RootElement.TryGetProperty("guardians", out var guardians) &&
-                guardians.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var guardian in guardians.EnumerateArray())
-                {
-                    var guardianId = GetFirstNonEmptyString(guardian, "guardianId");
-                    var abodeId = guardian.TryGetProperty("abode", out var abode) && abode.ValueKind == JsonValueKind.Object
-                        ? GetFirstNonEmptyString(abode, "abodeId", "id")
-                        : string.Empty;
-                    if (!string.IsNullOrWhiteSpace(guardianId))
-                        knownGuardianAbodes[guardianId] = abodeId ?? string.Empty;
-                }
-            }
-        }
+        var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        var knownGuardianAbodes = BuildGuardianAbodeMap(guardianPolicyContext);
 
         var knownResidentIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var residentLinkedQuestIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Reflection;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -299,31 +300,112 @@ public sealed class ActorSocialInteractionValidationTests : IDisposable
 
     private async Task WritePendingTurnSnapshotManifestAsync(Dictionary<string, string> rollbackBackups)
     {
-        var manifestFiles = rollbackBackups
-            .ToDictionary(
-                pair => pair.Key.Replace('\\', '/'),
-                pair => pair.Value.Replace('\\', '/'),
-                StringComparer.OrdinalIgnoreCase);
-
-        var joined = string.Join("\n", manifestFiles
-            .OrderBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase)
-            .Select(pair => $"{pair.Key}|{pair.Value}"));
-        var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(joined));
-        var manifestHash = Convert.ToHexString(hashBytes);
-
-        var manifest = new
+        var manifest = new PendingTurnSnapshotManifest
         {
-            sessionId = "test-session",
-            requestId = "test-request",
-            turnNumber = 12,
-            createdAtUtc = "2026-03-27T00:00:00Z",
-            sourceLabel = "actor-social-validation-tests",
-            files = manifestFiles,
-            manifestPayloadHash = manifestHash
+            SessionId = "test-session",
+            RequestId = "test-request",
+            TurnNumber = 12,
+            RequestTimestamp = "2026-03-27T00:00:00Z",
+            PlayerAction = "test",
+            Files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
+            SnapshotFileHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
+            ClientOwnedValidationHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
+            RollbackBackups = rollbackBackups.ToDictionary(
+                pair => NormalizeRelativePath(pair.Key),
+                pair => NormalizeRelativePath(pair.Value),
+                StringComparer.OrdinalIgnoreCase),
+            RollbackBaselineFiles = new List<string>(),
+            SourceLabel = "actor-social-validation-tests",
+            ManifestPayloadHash = string.Empty
         };
 
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = manifest.SessionId,
+            requestId = manifest.RequestId,
+            turnNumber = manifest.TurnNumber
+        });
+
+        await RegisterSnapshotFilesAsync(manifest);
+        manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
         await WriteJsonAsync("game_state/control/pending_turn_snapshot.json", manifest);
     }
+
+    private async Task RegisterSnapshotFilesAsync(PendingTurnSnapshotManifest manifest)
+    {
+        foreach (var pair in manifest.RollbackBackups)
+        {
+            var snapshotPath = $"game_state/control/pending_turn_snapshot/{pair.Key}";
+            var snapshotJson = await _fs.ReadFileAsync(snapshotPath);
+            if (string.IsNullOrWhiteSpace(snapshotJson))
+            {
+                snapshotJson = await _fs.ReadFileAsync(pair.Value);
+                if (string.IsNullOrWhiteSpace(snapshotJson))
+                    continue;
+
+                await _fs.WriteFileAtomicAsync(snapshotPath, snapshotJson);
+            }
+
+            manifest.Files[pair.Key] = snapshotPath;
+            manifest.SnapshotFileHashes[pair.Key] = ComputeSha256(snapshotJson);
+        }
+
+        var snapshotRoot = _fs.ResolvePath("game_state/control/pending_turn_snapshot");
+        if (!Directory.Exists(snapshotRoot))
+            return;
+
+        foreach (var snapshotFile in Directory.GetFiles(snapshotRoot, "*", SearchOption.AllDirectories))
+        {
+            var relativeSnapshotPath = NormalizeRelativePath(Path.GetRelativePath(snapshotRoot, snapshotFile));
+            if (!relativeSnapshotPath.Contains('/'))
+                continue;
+
+            if (manifest.Files.ContainsKey(relativeSnapshotPath))
+                continue;
+
+            var snapshotJson = await File.ReadAllTextAsync(snapshotFile);
+            if (string.IsNullOrWhiteSpace(snapshotJson))
+                continue;
+
+            manifest.Files[relativeSnapshotPath] = $"game_state/control/pending_turn_snapshot/{relativeSnapshotPath}";
+            manifest.SnapshotFileHashes[relativeSnapshotPath] = ComputeSha256(snapshotJson);
+        }
+    }
+
+    private static string ComputeManifestPayloadHash(PendingTurnSnapshotManifest manifest)
+    {
+        var payload = new PendingTurnSnapshotManifest
+        {
+            SessionId = manifest.SessionId,
+            RequestId = manifest.RequestId,
+            TurnNumber = manifest.TurnNumber,
+            RequestTimestamp = manifest.RequestTimestamp,
+            PlayerAction = manifest.PlayerAction,
+            Files = manifest.Files,
+            SnapshotFileHashes = manifest.SnapshotFileHashes,
+            ClientOwnedValidationHashes = manifest.ClientOwnedValidationHashes,
+            RollbackBackups = manifest.RollbackBackups,
+            RollbackBaselineFiles = manifest.RollbackBaselineFiles,
+            SourceLabel = manifest.SourceLabel,
+            ManifestPayloadHash = string.Empty
+        };
+
+        var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+
+        return ComputeSha256(json);
+    }
+
+    private static string ComputeSha256(string content)
+    {
+        using var sha = SHA256.Create();
+        return Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(content)));
+    }
+
+    private static string NormalizeRelativePath(string path) => path.Replace('\\', '/');
 
     private async Task WriteJsonAsync(string relativePath, object payload)
     {
@@ -356,5 +438,21 @@ public sealed class ActorSocialInteractionValidationTests : IDisposable
         {
             // ignored
         }
+    }
+
+    private sealed class PendingTurnSnapshotManifest
+    {
+        public string SessionId { get; set; } = string.Empty;
+        public string RequestId { get; set; } = string.Empty;
+        public int TurnNumber { get; set; }
+        public string RequestTimestamp { get; set; } = string.Empty;
+        public string PlayerAction { get; set; } = string.Empty;
+        public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> RollbackBackups { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public List<string> RollbackBaselineFiles { get; set; } = new();
+        public string? SourceLabel { get; set; }
+        public string ManifestPayloadHash { get; set; } = string.Empty;
     }
 }

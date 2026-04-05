@@ -18,6 +18,16 @@
       },
       "manifestationHistory": [],
       "domain": "Knowledge",
+      "abode": {
+        "abodeId": "abode_archive_001",
+        "title": "Палата летописей",
+        "isDiscovered": true
+      },
+      "personalityProfile": {
+        "archetype": "Archive Keeper",
+        "speechPattern": "Measured and archival",
+        "coreValues": [ "memory", "clarity", "duty" ]
+      },
       "relationshipData": {
         "currentReputation": 55,
         "reputationHistory": [],
@@ -29,6 +39,22 @@
         "lastUpdatedAt": "2026-03-26T00:00:00Z",
         "history": []
       },
+      "guardianRelationships": [],
+      "mood": {
+        "current": "focused",
+        "intensity": 40,
+        "reason": "Архивная консультация materialized квест корректно.",
+        "since": 1
+      },
+      "loreFragments": [
+        { "fragmentId": "guardian_archive_001_lore_1", "category": "personal_history", "title": "Память двора", "content": null, "requiredReputation": 0 },
+        { "fragmentId": "guardian_archive_001_lore_2", "category": "cosmic_secret", "title": "Серый архив", "content": null, "requiredReputation": 50 },
+        { "fragmentId": "guardian_archive_001_lore_3", "category": "domain_mastery", "title": "Связь хроник", "content": null, "requiredReputation": 130 },
+        { "fragmentId": "guardian_archive_001_lore_4", "category": "lost_world", "title": "Утраченное крыло", "content": null, "requiredReputation": 230 },
+        { "fragmentId": "guardian_archive_001_lore_5", "category": "other_guardians", "title": "Имена стражей", "content": null, "requiredReputation": 0 },
+        { "fragmentId": "guardian_archive_001_lore_6", "category": "soul_mechanics", "title": "Архив души", "content": null, "requiredReputation": 50 },
+        { "fragmentId": "guardian_archive_001_lore_7", "category": "personal_history", "title": "Порог зала", "content": null, "requiredReputation": 130 }
+      ],
       "questManagement": {
         "availableQuests": [
           {
@@ -70,6 +96,16 @@
     },
     "manifestationHistory": [],
     "domain": "Knowledge",
+    "abode": {
+      "abodeId": "abode_archive_001",
+      "title": "Палата летописей",
+      "isDiscovered": true
+    },
+    "personalityProfile": {
+      "archetype": "Archive Keeper",
+      "speechPattern": "Measured and archival",
+      "coreValues": [ "memory", "clarity", "duty" ]
+    },
     "relationshipData": {
       "currentReputation": 55,
       "reputationHistory": [],
@@ -81,6 +117,22 @@
       "lastUpdatedAt": "2026-03-26T00:00:00Z",
       "history": []
     },
+    "guardianRelationships": [],
+    "mood": {
+      "current": "focused",
+      "intensity": 40,
+      "reason": "Архивная консультация materialized квест корректно.",
+      "since": 1
+    },
+    "loreFragments": [
+      { "fragmentId": "guardian_archive_001_lore_1", "category": "personal_history", "title": "Память двора", "content": null, "requiredReputation": 0 },
+      { "fragmentId": "guardian_archive_001_lore_2", "category": "cosmic_secret", "title": "Серый архив", "content": null, "requiredReputation": 50 },
+      { "fragmentId": "guardian_archive_001_lore_3", "category": "domain_mastery", "title": "Связь хроник", "content": null, "requiredReputation": 130 },
+      { "fragmentId": "guardian_archive_001_lore_4", "category": "lost_world", "title": "Утраченное крыло", "content": null, "requiredReputation": 230 },
+      { "fragmentId": "guardian_archive_001_lore_5", "category": "other_guardians", "title": "Имена стражей", "content": null, "requiredReputation": 0 },
+      { "fragmentId": "guardian_archive_001_lore_6", "category": "soul_mechanics", "title": "Архив души", "content": null, "requiredReputation": 50 },
+      { "fragmentId": "guardian_archive_001_lore_7", "category": "personal_history", "title": "Порог зала", "content": null, "requiredReputation": 130 }
+    ],
     "questManagement": {
       "availableQuests": [
         {
@@ -104,6 +156,6 @@
     }
   },
   "chaosSeaNavigation": {
-    "currentAbodeId": null
+    "currentAbodeId": "abode_archive_001"
   }
 }

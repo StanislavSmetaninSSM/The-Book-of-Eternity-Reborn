@@ -11,29 +11,70 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
+    private sealed class GuardianCommandAuthorizationResult
+    {
+        public Dictionary<string, JsonElement> AuthorizedCreateGuardiansById { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public List<JsonObject> AuthorizedCommands { get; } = new();
+        public List<JsonObject> AuthorizedNonCreateCommands { get; } = new();
+    }
+
     private void ValidateGuardianCommands(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
-        if (!root.TryGetProperty("UpdateGuardians", out var updates))
-            return;
-        if (updates.ValueKind == JsonValueKind.Null)
-            return;
-        if (!TryGetArray(root, "UpdateGuardians", $"{contextPrefix}.UpdateGuardians", issues, out var arr))
-            return;
+        AuthorizeGuardianCommandsForPolicy(root, contextPrefix, issues);
+    }
 
-        var knownGuardianIds = CollectKnownGuardianIds(root);
-        var guardianSequentialStates = CollectKnownGuardianSequentialStatesForCommandValidation();
+    private GuardianCommandAuthorizationResult AuthorizeGuardianCommandsForPolicy(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue>? issues = null,
+        GuardianPolicyContext? guardianPolicyContext = null)
+    {
+        var result = new GuardianCommandAuthorizationResult();
+        if (!root.TryGetProperty("UpdateGuardians", out var updates))
+            return result;
+        if (updates.ValueKind == JsonValueKind.Null)
+            return result;
+
+        var issueSink = issues ?? new List<ValidationIssue>();
+        if (!TryGetArray(root, "UpdateGuardians", $"{contextPrefix}.UpdateGuardians", issueSink, out var arr))
+            return result;
+
+        guardianPolicyContext ??= _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
+        var hasUsableValidatedPreTurnBaseline = HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext);
+        var containsNonCreateCommand = arr.EnumerateArray()
+            .Any(item =>
+                item.ValueKind == JsonValueKind.Object &&
+                !string.Equals(GetFirstNonEmptyString(item, "command"), "create", StringComparison.OrdinalIgnoreCase));
+
+        if (containsNonCreateCommand && !hasUsableValidatedPreTurnBaseline && issues != null)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.UpdateGuardians",
+                IssueSeverity.Error,
+                "Non-create UpdateGuardians commands требуют readable validated pre-turn guardians baseline и не используют current guardians[] как authority fallback.",
+                code: "guardian_commands_missing_validated_preturn_guardians_snapshot",
+                section: "UpdateGuardians",
+                expected: "validated pre-turn guardians baseline or earlier valid same-turn create",
+                actual: $"{guardianPolicyContext.PreTurnGuardiansSnapshot.ManifestStatus}/{guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus}",
+                repairHint: "Для non-create UpdateGuardians сохраняй readable validated snapshot copy game_state/meta/guardians.json. Без этого команды должны fail-closed вместо вывода authority из current guardians[]."));
+        }
+
+        var knownGuardianIds = CollectKnownGuardianIds(guardianPolicyContext);
+        var createConflictGuardianIds = CollectKnownGuardianIdsForCreateConflictValidation(guardianPolicyContext);
+        var guardianSequentialStates = CollectKnownGuardianSequentialStatesForCommandValidation(guardianPolicyContext);
         var index = 0;
         foreach (var item in arr.EnumerateArray())
         {
             var itemContext = $"{contextPrefix}.UpdateGuardians[{index++}]";
-            if (!RequireObject(item, itemContext, issues)) continue;
-            var command = RequireString(item, itemContext, issues, "command");
+            if (!RequireObject(item, itemContext, issueSink))
+                continue;
 
+            var command = RequireString(item, itemContext, issueSink, "command");
             if (string.Equals(command, "create", StringComparison.OrdinalIgnoreCase))
             {
-                if (!item.TryGetProperty("data", out var data) || !RequireObject(data, $"{itemContext}.data", issues))
+                if (!item.TryGetProperty("data", out var data) || !RequireObject(data, $"{itemContext}.data", issueSink))
                 {
-                    issues.Add(new ValidationIssue(
+                    issueSink.Add(new ValidationIssue(
                         $"{itemContext}.data",
                         IssueSeverity.Error,
                         "UpdateGuardians.create должен использовать nested data object с полным объектом Хранителя",
@@ -45,22 +86,47 @@ public partial class ValidationService
                     continue;
                 }
 
-                var issuesBeforeCreateValidation = issues.Count;
-                ValidateGuardianCanonicalObject(data, $"{itemContext}.data", issues);
+                var issuesBeforeCreateValidation = issueSink.Count;
                 var createdGuardianId = GetFirstNonEmptyString(data, "guardianId");
-                if (issues.Count == issuesBeforeCreateValidation &&
+                if (!string.IsNullOrWhiteSpace(createdGuardianId) && createConflictGuardianIds.Contains(createdGuardianId))
+                {
+                    issueSink.Add(new ValidationIssue(
+                        $"{itemContext}.data.guardianId",
+                        IssueSeverity.Error,
+                        $"UpdateGuardians.create не может повторно создавать guardianId '{createdGuardianId}'",
+                        code: "guardian_create_duplicate_guardian_id",
+                        section: "UpdateGuardians.create",
+                        expected: "new guardianId not present in guardians.json or earlier valid create commands",
+                        actual: createdGuardianId,
+                        repairHint: "Для существующего Хранителя используй non-create команды. UpdateGuardians.create допустим только для нового уникального guardianId."));
+                }
+                ValidateGuardianCanonicalObject(data, $"{itemContext}.data", issueSink);
+                if (issueSink.Count == issuesBeforeCreateValidation &&
                     !string.IsNullOrWhiteSpace(createdGuardianId))
                 {
                     knownGuardianIds.Add(createdGuardianId);
+                    createConflictGuardianIds.Add(createdGuardianId);
                     guardianSequentialStates[createdGuardianId] = ParseGuardianSequentialState(data);
+                    result.AuthorizedCreateGuardiansById[createdGuardianId] = data.Clone();
+                    var authorizedCreateCommand = TryParseJsonObject(item);
+                    if (authorizedCreateCommand != null)
+                        result.AuthorizedCommands.Add(authorizedCreateCommand);
                 }
                 continue;
             }
 
-            var guardianId = RequireString(item, itemContext, issues, "guardianId");
+            if (!hasUsableValidatedPreTurnBaseline)
+                continue;
+
+            var issuesBeforeCommandValidation = issueSink.Count;
+            var guardianId = RequireString(item, itemContext, issueSink, "guardianId");
+            var proposedGuardianState = !string.IsNullOrWhiteSpace(guardianId) &&
+                                       guardianSequentialStates.TryGetValue(guardianId, out var currentGuardianState)
+                ? CloneGuardianSequentialState(currentGuardianState)
+                : null;
             if (!string.IsNullOrWhiteSpace(guardianId) && !knownGuardianIds.Contains(guardianId))
             {
-                issues.Add(new ValidationIssue(
+                issueSink.Add(new ValidationIssue(
                     $"{itemContext}.guardianId",
                     IssueSeverity.Error,
                     $"UpdateGuardians.{command} не может ссылаться на неизвестный guardianId '{guardianId}'",
@@ -74,28 +140,28 @@ public partial class ValidationService
             switch (command)
             {
                 case "updateReputation":
-                    ValidateIntegerField(item, itemContext, issues, "reputationChange");
-                    RequireString(item, itemContext, issues, "reason");
+                    ValidateIntegerField(item, itemContext, issueSink, "reputationChange");
+                    RequireString(item, itemContext, issueSink, "reason");
                     if (!string.IsNullOrWhiteSpace(guardianId) &&
-                        guardianSequentialStates.TryGetValue(guardianId, out var guardianState) &&
+                        proposedGuardianState != null &&
                         item.TryGetProperty("reputationChange", out var reputationDeltaNode) &&
                         reputationDeltaNode.ValueKind == JsonValueKind.Number &&
                         reputationDeltaNode.TryGetInt32(out var reputationDelta) &&
-                        guardianState.CurrentReputation.HasValue)
+                        proposedGuardianState.CurrentReputation.HasValue)
                     {
-                        guardianState.CurrentReputation += reputationDelta;
+                        proposedGuardianState.CurrentReputation += reputationDelta;
                     }
-                    RejectLegacyGuardianDataShape(item, itemContext, issues, command,
+                    RejectLegacyGuardianDataShape(item, itemContext, issueSink, command,
                         "Top-level reputationChange + reason",
                         "Убери data и вынеси reputationChange/reason на верхний уровень updateReputation.");
                     break;
 
                 case "completeQuest":
-                    var questId = RequireString(item, itemContext, issues, "questId");
-                    var outcome = RequireString(item, itemContext, issues, "outcome");
+                    var questId = RequireString(item, itemContext, issueSink, "questId");
+                    var outcome = RequireString(item, itemContext, issueSink, "outcome");
                     if (!string.IsNullOrWhiteSpace(outcome) && !AllowedGuardianQuestOutcomes.Contains(outcome))
                     {
-                        issues.Add(new ValidationIssue(
+                        issueSink.Add(new ValidationIssue(
                             $"{itemContext}.outcome",
                             IssueSeverity.Error,
                             "completeQuest.outcome должен быть success, failure или partial",
@@ -106,14 +172,14 @@ public partial class ValidationService
                     }
                     if (!string.IsNullOrWhiteSpace(guardianId) &&
                         !string.IsNullOrWhiteSpace(questId) &&
-                        guardianSequentialStates.TryGetValue(guardianId, out var questState))
+                        proposedGuardianState != null)
                     {
                         var knownQuest =
-                            questState.AvailableQuestIds.Contains(questId) ||
-                            questState.ActiveQuestIds.Contains(questId);
+                            proposedGuardianState.AvailableQuestIds.Contains(questId) ||
+                            proposedGuardianState.ActiveQuestIds.Contains(questId);
                         if (!knownQuest)
                         {
-                            issues.Add(new ValidationIssue(
+                            issueSink.Add(new ValidationIssue(
                                 $"{itemContext}.questId",
                                 IssueSeverity.Error,
                                 "UpdateGuardians.completeQuest ссылается на questId, которого нет в canonical questManagement этого Хранителя",
@@ -125,8 +191,8 @@ public partial class ValidationService
                         }
                         else
                         {
-                            questState.AvailableQuestIds.Remove(questId);
-                            questState.ActiveQuestIds.Remove(questId);
+                            proposedGuardianState.AvailableQuestIds.Remove(questId);
+                            proposedGuardianState.ActiveQuestIds.Remove(questId);
                         }
 
                         ValidateGuardianQuestPowerAudit(
@@ -135,8 +201,8 @@ public partial class ValidationService
                             guardianId,
                             questId,
                             outcome,
-                            questState,
-                            issues);
+                            proposedGuardianState,
+                            issueSink);
                     }
                     else
                     {
@@ -147,41 +213,41 @@ public partial class ValidationService
                             questId,
                             outcome,
                             null,
-                            issues);
+                            issueSink);
                     }
-                    RejectLegacyGuardianDataShape(item, itemContext, issues, command,
+                    RejectLegacyGuardianDataShape(item, itemContext, issueSink, command,
                         "Top-level questId + outcome",
                         "Убери data и вынеси questId/outcome на верхний уровень completeQuest.");
                     break;
 
                 case "processGacha":
-                    ValidatePositiveNumberField(item, itemContext, issues, "inkFeathersSpent");
+                    ValidatePositiveNumberField(item, itemContext, issueSink, "inkFeathersSpent");
                     if (!string.IsNullOrWhiteSpace(guardianId) &&
-                        guardianSequentialStates.TryGetValue(guardianId, out var gachaState) &&
-                        gachaState.CurrentReputation.HasValue)
+                        proposedGuardianState != null &&
+                        proposedGuardianState.CurrentReputation.HasValue)
                     {
-                        var chargesPerReturn = GetExpectedGuardianGachaCharges(gachaState.CurrentReputation.Value, gachaState.CurrentAbodePower);
-                        if (gachaState.ChargesUsedThisReturn >= chargesPerReturn)
+                        var chargesPerReturn = GetExpectedGuardianGachaCharges(proposedGuardianState.CurrentReputation.Value, proposedGuardianState.CurrentAbodePower);
+                        if (proposedGuardianState.ChargesUsedThisReturn >= chargesPerReturn)
                         {
-                            issues.Add(new ValidationIssue(
+                            issueSink.Add(new ValidationIssue(
                                 $"{itemContext}.guardianId",
                                 IssueSeverity.Error,
                                 "processGacha нельзя вызывать для Хранителя без оставшихся charges в текущем return cycle",
                                 code: "guardian_process_gacha_no_remaining_charges",
                                 section: "UpdateGuardians.processGacha",
-                                expected: $"chargesUsedThisReturn < chargesPerReturn ({gachaState.ChargesUsedThisReturn} < {chargesPerReturn})",
-                                actual: $"chargesUsedThisReturn={gachaState.ChargesUsedThisReturn}, chargesPerReturn={chargesPerReturn}, currentReputation={gachaState.CurrentReputation.Value}",
+                                expected: $"chargesUsedThisReturn < chargesPerReturn ({proposedGuardianState.ChargesUsedThisReturn} < {chargesPerReturn})",
+                                actual: $"chargesUsedThisReturn={proposedGuardianState.ChargesUsedThisReturn}, chargesPerReturn={chargesPerReturn}, currentReputation={proposedGuardianState.CurrentReputation.Value}",
                                 repairHint: "Не эмить processGacha, если у этого Хранителя уже нет оставшихся попыток в текущем возвращении. Используй другого Хранителя или direct /gacha без guardian-mediated command."));
                         }
                         else
                         {
-                            gachaState.ChargesUsedThisReturn++;
+                            proposedGuardianState.ChargesUsedThisReturn++;
                         }
                     }
 
-                    if (!item.TryGetProperty("result", out var result) || !RequireObject(result, $"{itemContext}.result", issues))
+                    if (!item.TryGetProperty("result", out var resultNode) || !RequireObject(resultNode, $"{itemContext}.result", issueSink))
                     {
-                        issues.Add(new ValidationIssue(
+                        issueSink.Add(new ValidationIssue(
                             $"{itemContext}.result",
                             IssueSeverity.Error,
                             "processGacha должен использовать top-level поле result с объектом реликвии",
@@ -193,15 +259,15 @@ public partial class ValidationService
                     }
                     else
                     {
-                        ValidateMinimalSoulRelicObject(result, $"{itemContext}.result", issues, "UpdateGuardians.processGacha");
+                        ValidateMinimalSoulRelicObject(resultNode, $"{itemContext}.result", issueSink, "UpdateGuardians.processGacha");
 
                         var baseRarity = TryReadCurrentTurnGachaBaseRaritySync();
-                        var finalRarity = GetFirstNonEmptyString(result, "rarity", "quality");
+                        var finalRarity = GetFirstNonEmptyString(resultNode, "rarity", "quality");
                         if (!string.IsNullOrWhiteSpace(baseRarity))
                         {
                             if (string.IsNullOrWhiteSpace(finalRarity))
                             {
-                                issues.Add(new ValidationIssue(
+                                issueSink.Add(new ValidationIssue(
                                     $"{itemContext}.result.rarity",
                                     IssueSeverity.Error,
                                     "processGacha.result должен явно сохранять final rarity реликвии",
@@ -213,7 +279,7 @@ public partial class ValidationService
                             }
                             else if (GetRarityRank(finalRarity) < GetRarityRank(baseRarity))
                             {
-                                issues.Add(new ValidationIssue(
+                                issueSink.Add(new ValidationIssue(
                                     $"{itemContext}.result.rarity",
                                     IssueSeverity.Error,
                                     "processGacha не может понизить редкость ниже client-computed gachaBaseResult.baseRarity",
@@ -225,9 +291,7 @@ public partial class ValidationService
                             }
                         }
 
-                        var currentPower = guardianSequentialStates.TryGetValue(guardianId ?? "", out var processGachaState)
-                            ? processGachaState.CurrentAbodePower
-                            : 0;
+                        var currentPower = proposedGuardianState?.CurrentAbodePower ?? 0;
                         ValidateGuardianGachaBonusAudit(
                             item,
                             itemContext,
@@ -235,20 +299,20 @@ public partial class ValidationService
                             baseRarity,
                             finalRarity,
                             currentPower,
-                            issues);
+                            issueSink);
                     }
 
-                    RejectLegacyGuardianDataShape(item, itemContext, issues, command,
+                    RejectLegacyGuardianDataShape(item, itemContext, issueSink, command,
                         "Top-level inkFeathersSpent + result",
                         "Убери data и вынеси inkFeathersSpent/result на верхний уровень processGacha.");
                     break;
 
                 case "addMusings":
-                    ValidateGuardianMusingsCommand(item, itemContext, issues);
+                    ValidateGuardianMusingsCommand(item, itemContext, issueSink);
                     break;
 
                 case "updateProject":
-                    issues.Add(new ValidationIssue(
+                    issueSink.Add(new ValidationIssue(
                         itemContext,
                         IssueSeverity.Error,
                         "Guardian project lifecycle больше не поддерживается через UpdateGuardians.updateProject",
@@ -261,9 +325,9 @@ public partial class ValidationService
 
                 case "unlockLore":
                     if (!item.TryGetProperty("loreFragment", out var loreFragment) ||
-                        !RequireObject(loreFragment, $"{itemContext}.loreFragment", issues))
+                        !RequireObject(loreFragment, $"{itemContext}.loreFragment", issueSink))
                     {
-                        issues.Add(new ValidationIssue(
+                        issueSink.Add(new ValidationIssue(
                             $"{itemContext}.loreFragment",
                             IssueSeverity.Error,
                             "unlockLore должен содержать top-level объект loreFragment",
@@ -275,15 +339,15 @@ public partial class ValidationService
                     }
                     else
                     {
-                        ValidateGuardianLoreFragmentObject(loreFragment, $"{itemContext}.loreFragment", issues, allowNullableContent: false);
+                        ValidateGuardianLoreFragmentObject(loreFragment, $"{itemContext}.loreFragment", issueSink, allowNullableContent: false);
                     }
                     break;
 
                 case "setMood":
                     if (!item.TryGetProperty("mood", out var mood) ||
-                        !RequireObject(mood, $"{itemContext}.mood", issues))
+                        !RequireObject(mood, $"{itemContext}.mood", issueSink))
                     {
-                        issues.Add(new ValidationIssue(
+                        issueSink.Add(new ValidationIssue(
                             $"{itemContext}.mood",
                             IssueSeverity.Error,
                             "setMood должен содержать top-level объект mood",
@@ -295,12 +359,12 @@ public partial class ValidationService
                     }
                     else
                     {
-                        ValidateGuardianMoodObject(mood, $"{itemContext}.mood", issues);
+                        ValidateGuardianMoodObject(mood, $"{itemContext}.mood", issueSink);
                     }
                     break;
 
                 default:
-                    issues.Add(new ValidationIssue(
+                    issueSink.Add(new ValidationIssue(
                         itemContext,
                         IssueSeverity.Error,
                         $"Неподдерживаемая guardian command: {command}",
@@ -311,7 +375,22 @@ public partial class ValidationService
                         repairHint: "Используй только те guardian commands, которые реально поддерживаются current CLI contract."));
                     break;
             }
+
+            if (issueSink.Count == issuesBeforeCommandValidation)
+            {
+                var authorizedCommand = TryParseJsonObject(item);
+                if (authorizedCommand != null)
+                {
+                    result.AuthorizedCommands.Add(authorizedCommand);
+                    result.AuthorizedNonCreateCommands.Add(authorizedCommand);
+                }
+
+                if (!string.IsNullOrWhiteSpace(guardianId) && proposedGuardianState != null)
+                    guardianSequentialStates[guardianId] = proposedGuardianState;
+            }
         }
+
+        return result;
     }
 
 
@@ -333,25 +412,26 @@ public partial class ValidationService
     }
 
 
-    private HashSet<string> CollectKnownGuardianIds(JsonElement root)
+    private HashSet<string> CollectKnownGuardianIds(GuardianPolicyContext? guardianPolicyContext = null)
     {
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var preTurnGuardiansJson = ReadPreTurnTrackedFileSync("game_state/meta/guardians.json");
-        if (!string.IsNullOrWhiteSpace(preTurnGuardiansJson))
-        {
-            try
-            {
-                using var doc = JsonDocument.Parse(preTurnGuardiansJson);
-                CollectGuardianIdsFromStateRoot(doc.RootElement, ids, includeCommandSurfaces: false);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
+        guardianPolicyContext ??= _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
 
-        var ignoredNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        CollectCreatedGuardianReferencesFromStateRoot(root, ids, ignoredNames);
+        if (HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext))
+        {
+            foreach (var guardianId in guardianPolicyContext.PreTurnGuardiansById.Keys)
+                ids.Add(guardianId);
+        }
+        return ids;
+    }
+
+    private HashSet<string> CollectKnownGuardianIdsForCreateConflictValidation(GuardianPolicyContext? guardianPolicyContext = null)
+    {
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        guardianPolicyContext ??= _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
+
+        foreach (var guardianId in guardianPolicyContext.PreTurnGuardiansById.Keys)
+            ids.Add(guardianId);
 
         return ids;
     }
@@ -367,13 +447,6 @@ public partial class ValidationService
                 if (!string.IsNullOrWhiteSpace(guardianId))
                     ids.Add(guardianId);
             }
-        }
-
-        if (root.TryGetProperty("activeGuardian", out var activeGuardian) && activeGuardian.ValueKind == JsonValueKind.Object)
-        {
-            var guardianId = GetFirstNonEmptyString(activeGuardian, "guardianId", "id");
-                if (!string.IsNullOrWhiteSpace(guardianId))
-                    ids.Add(guardianId);
         }
 
         if (includeCommandSurfaces &&
@@ -744,7 +817,24 @@ public partial class ValidationService
 
     private void ValidateGuardianStateData(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
         var guardiansById = new Dictionary<string, (JsonElement Guardian, string Context)>(StringComparer.OrdinalIgnoreCase);
+        var validatedPreTurnGuardianIds = new HashSet<string>(guardianPolicyContext.PreTurnGuardiansById.Keys, StringComparer.OrdinalIgnoreCase);
+        if (guardianPolicyContext.HasCurrentGuardiansArray &&
+            TryGetGuardianBaselineFailureKind(guardianPolicyContext, out _))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "Current canonical guardians[] требует readable validated pre-turn guardians baseline и не использует raw current guardians[] как authority fallback.",
+                code: "guardian_missing_validated_preturn_guardians_snapshot",
+                section: "Guardians",
+                expected: "current validated pending turn snapshot entry for game_state/meta/guardians.json",
+                actual: DescribeGuardianTrackedSnapshotFileStatus(guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus),
+                repairHint: "Если current turn materializes guardians[], сохраняй readable validated snapshot copy game_state/meta/guardians.json и не допускай missing/unusable guardian baseline."));
+        }
+
+        ValidateGuardianMaterializedStateAgainstAuthority(root, guardianPolicyContext, contextPrefix, issues);
 
         if (root.TryGetProperty("guardians", out var guardians) && guardians.ValueKind == JsonValueKind.Array)
         {
@@ -761,9 +851,26 @@ public partial class ValidationService
                     guardianIdNode.ValueKind == JsonValueKind.String &&
                     !string.IsNullOrWhiteSpace(guardianIdNode.GetString()))
                 {
-                    guardiansById[guardianIdNode.GetString()!] = (guardian, guardianContext);
+                    var guardianId = guardianIdNode.GetString()!;
+                    guardiansById[guardianId] = (guardian, guardianContext);
+                    if (guardianPolicyContext.HasUsableValidatedPreTurnGuardiansSnapshot &&
+                        !validatedPreTurnGuardianIds.Contains(guardianId) &&
+                        !guardianPolicyContext.AuthorizedSameTurnCreateGuardianIds.Contains(guardianId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{guardianContext}.guardianId",
+                            IssueSeverity.Error,
+                            "Current canonical guardians[] не может materialize нового Хранителя поверх validated pre-turn guardian baseline без explicit create surface.",
+                            code: "guardian_materialized_without_create_surface",
+                            section: "Guardians",
+                            expected: "guardianId already present in validated pre-turn guardians[]",
+                            actual: guardianId,
+                            repairHint: "Нового Хранителя вводи через valid UpdateGuardians.create. Не materialize новый guardian напрямую в current guardians[] поверх уже существующего validated pre-turn canonical state."));
+                    }
                 }
             }
+
+            ValidateGuardianRelationshipNetwork(guardiansById, issues);
         }
 
         if (root.TryGetProperty("activeGuardian", out var activeGuardian) && activeGuardian.ValueKind == JsonValueKind.Object)
@@ -782,6 +889,125 @@ public partial class ValidationService
                 ValidateActiveGuardianNavigationState(root, contextPrefix, activeGuardianContext, guardianMatch.Guardian, guardianMatch.Context, issues);
             }
         }
+    }
+
+    private void ValidateGuardianMaterializedStateAgainstAuthority(
+        JsonElement currentGuardiansRoot,
+        GuardianPolicyContext guardianPolicyContext,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        if (!guardianPolicyContext.HasCurrentAuthorityRoot)
+            return;
+
+        ValidateGuardianMaterializedGuardiansArrayAgainstAuthority(
+            currentGuardiansRoot,
+            guardianPolicyContext.CurrentAuthorityRoot,
+            contextPrefix,
+            issues);
+        ValidateGuardianMaterializedActiveGuardianAgainstAuthority(
+            currentGuardiansRoot,
+            guardianPolicyContext.CurrentAuthorityRoot,
+            contextPrefix,
+            issues);
+    }
+
+    private void ValidateGuardianMaterializedGuardiansArrayAgainstAuthority(
+        JsonElement currentGuardiansRoot,
+        JsonElement authorityRoot,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        if (!currentGuardiansRoot.TryGetProperty("guardians", out var currentGuardians) ||
+            currentGuardians.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var currentEntries = BuildGuardianMaterializedEntryMap(currentGuardians);
+        if (currentEntries == null)
+            return;
+
+        Dictionary<string, JsonElement> authorityEntries;
+        if (authorityRoot.ValueKind == JsonValueKind.Object &&
+            authorityRoot.TryGetProperty("guardians", out var authorityGuardians) &&
+            authorityGuardians.ValueKind == JsonValueKind.Array)
+        {
+            authorityEntries = BuildGuardianMaterializedEntryMap(authorityGuardians) ??
+                               new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        }
+        else
+        {
+            authorityEntries = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        }
+
+        var matchesAuthority =
+            currentEntries.Count == authorityEntries.Count &&
+            currentEntries.All(pair =>
+                authorityEntries.TryGetValue(pair.Key, out var authorityEntry) &&
+                JsonElementsSemanticallyEqual(pair.Value, authorityEntry));
+
+        if (matchesAuthority)
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.guardians",
+            IssueSeverity.Error,
+            "Current guardians[] must match kernel-authoritative guardian state reconstructed from validated pre-turn baseline and authorized same-turn guardian mutations.",
+            code: "guardian_materialized_state_outside_authority",
+            section: "Guardians",
+            expected: "kernel-authoritative guardians[] only",
+            actual: "materialized current guardians[] diverges from kernel authority view",
+            repairHint: "Rewrite current guardians[] to match the guardian state reconstructed from validated pre-turn baseline plus authorized same-turn guardian mutations. Raw current guardians[] is a materialized surface, not an authority source."));
+    }
+
+    private void ValidateGuardianMaterializedActiveGuardianAgainstAuthority(
+        JsonElement currentGuardiansRoot,
+        JsonElement authorityRoot,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        if (!currentGuardiansRoot.TryGetProperty("activeGuardian", out var currentActiveGuardian) ||
+            currentActiveGuardian.ValueKind != JsonValueKind.Object)
+        {
+            return;
+        }
+
+        if (authorityRoot.ValueKind != JsonValueKind.Object ||
+            !authorityRoot.TryGetProperty("activeGuardian", out var authorityActiveGuardian) ||
+            authorityActiveGuardian.ValueKind != JsonValueKind.Object ||
+            !JsonElementsSemanticallyEqual(currentActiveGuardian, authorityActiveGuardian))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.activeGuardian",
+                IssueSeverity.Error,
+                "Current activeGuardian must match kernel-authoritative guardian mirror state.",
+                code: "guardian_materialized_state_outside_authority",
+                section: "Guardians",
+                expected: "kernel-authoritative activeGuardian only",
+                actual: "materialized current activeGuardian diverges from kernel authority view",
+                repairHint: "Rewrite current activeGuardian to match the mirror reconstructed from kernel-authoritative guardian state. Raw current activeGuardian is not an authority source by itself."));
+        }
+    }
+
+    private static Dictionary<string, JsonElement>? BuildGuardianMaterializedEntryMap(JsonElement array)
+    {
+        if (array.ValueKind != JsonValueKind.Array)
+            return null;
+
+        var result = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        foreach (var guardian in array.EnumerateArray())
+        {
+            var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+            if (string.IsNullOrWhiteSpace(guardianId))
+                continue;
+            if (result.ContainsKey(guardianId))
+                return null;
+
+            result[guardianId] = guardian;
+        }
+
+        return result;
     }
 
 
@@ -902,16 +1128,46 @@ public partial class ValidationService
         ValidateGuardianAbodePowerObject(guardian, guardianContext, issues);
         RequireString(guardian, guardianContext, issues, "domain");
 
+        ValidateGuardianCanonicalNameIdentity(guardian, guardianContext, issues);
+
         ValidateGuardianSourcePreset(guardian, guardianContext, issues);
         ValidateGuardianNameVariants(guardian, guardianContext, issues);
         ValidateGuardianManifestation(guardian, guardianContext, issues);
         ValidateGuardianManifestationHistory(guardian, guardianContext, issues);
         ValidateGuardianPersonalityProfile(guardian, guardianContext, issues);
+        ValidateGuardianSocialProfile(guardian, guardianContext, issues);
+        ValidateGuardianInterGuardianRelationships(guardian, guardianContext, issues);
         ValidateGuardianRelationshipData(guardian, guardianContext, issues);
         ValidateGuardianQuestManagement(guardian, guardianContext, issues);
         ValidateGuardianGachaState(guardian, guardianContext, issues);
         ValidateGuardianTradeState(guardian, guardianContext, issues);
         ValidateGuardianStoredInnerLifeState(guardian, guardianContext, issues);
+    }
+
+    private void ValidateGuardianCanonicalNameIdentity(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
+    {
+        var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return;
+
+        var canonicalFacingNames = EnumerateGuardianAliases(guardian, includeGuardianId: false)
+            .Cast<string>()
+            .ToList();
+        if (canonicalFacingNames.Count == 0)
+            return;
+
+        if (canonicalFacingNames.All(name => string.Equals(name, guardianId, StringComparison.OrdinalIgnoreCase)))
+        {
+            issues.Add(new ValidationIssue(
+                guardianContext,
+                IssueSeverity.Error,
+                "Canonical guardian identity должен иметь хотя бы один canonical alias, отличный от raw guardianId.",
+                code: "guardian_canonical_name_collapses_to_guardian_id",
+                section: "Guardians",
+                expected: "canonicalName, nameVariants.default or manifestation.currentDisplayName distinct from guardianId",
+                actual: guardianId,
+                repairHint: "Используй для canonical guardian identity человекочитаемое имя/alias. Raw guardianId допустим как technical identifier, но не как единственный canonical display alias."));
+        }
     }
 
 
@@ -1122,6 +1378,251 @@ public partial class ValidationService
         }
     }
 
+    private void ValidateGuardianSocialProfile(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
+    {
+        if (!guardian.TryGetProperty("socialProfile", out var socialProfile) || socialProfile.ValueKind == JsonValueKind.Null)
+            return;
+
+        if (!RequireObject(socialProfile, $"{guardianContext}.socialProfile", issues))
+            return;
+
+        var socialContext = $"{guardianContext}.socialProfile";
+        ValidateGuardianSocialFactor(socialProfile, socialContext, issues, "jealousyFactor");
+        ValidateGuardianSocialFactor(socialProfile, socialContext, issues, "curiosityFactor");
+        ValidateGuardianSocialFactor(socialProfile, socialContext, issues, "competitiveFactor");
+        ValidateGuardianSocialFactor(socialProfile, socialContext, issues, "generosityFactor");
+        ValidateGuardianSocialFactor(socialProfile, socialContext, issues, "isolationistTendency");
+    }
+
+    private void ValidateGuardianSocialFactor(JsonElement socialProfile, string socialContext, List<ValidationIssue> issues, string fieldName)
+    {
+        if (!socialProfile.TryGetProperty(fieldName, out var value) || value.ValueKind == JsonValueKind.Null)
+            return;
+
+        if (!value.TryGetInt32(out var parsed))
+        {
+            issues.Add(new ValidationIssue(
+                $"{socialContext}.{fieldName}",
+                IssueSeverity.Error,
+                "Guardian socialProfile factor должен быть integer",
+                code: "guardian_social_profile_factor_invalid_type",
+                section: "Guardians",
+                expected: "integer 0..100",
+                actual: value.ValueKind.ToString(),
+                repairHint: $"Сохраняй {fieldName} как integer 0..100."));
+            return;
+        }
+
+        if (parsed < 0 || parsed > 100)
+        {
+            issues.Add(new ValidationIssue(
+                $"{socialContext}.{fieldName}",
+                IssueSeverity.Error,
+                "Guardian socialProfile factor должен быть в диапазоне 0..100",
+                code: "guardian_social_profile_factor_out_of_bounds",
+                section: "Guardians",
+                expected: "0..100",
+                actual: parsed.ToString(),
+                repairHint: $"Ограничь {fieldName} canonical диапазоном 0..100."));
+        }
+    }
+
+    private void ValidateGuardianInterGuardianRelationships(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
+    {
+        if (!guardian.TryGetProperty("guardianRelationships", out var relationships) || relationships.ValueKind == JsonValueKind.Null)
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.guardianRelationships",
+                IssueSeverity.Error,
+                "Canonical guardian state должен содержать guardianRelationships array",
+                code: "guardian_missing_inter_guardian_relationships",
+                section: "Guardians",
+                expected: "guardianRelationships array",
+                actual: "missing",
+                repairHint: "Сохраняй guardianRelationships как canonical межхранительскую сеть, даже если она пока пуста."));
+            return;
+        }
+
+        RequireArrayOfObjects(relationships, $"{guardianContext}.guardianRelationships", issues);
+        if (relationships.ValueKind != JsonValueKind.Array)
+            return;
+
+        var selfGuardianId = GetFirstNonEmptyString(guardian, "guardianId", "id") ?? string.Empty;
+        var seenTargets = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var relationship in relationships.EnumerateArray())
+        {
+            var relationshipContext = $"{guardianContext}.guardianRelationships[{index++}]";
+            if (!RequireObject(relationship, relationshipContext, issues))
+                continue;
+
+            var targetGuardianId = RequireString(relationship, relationshipContext, issues, "targetGuardianId");
+            ValidateOptionalNullableStringField(relationship, relationshipContext, issues, "targetName");
+            RequireString(relationship, relationshipContext, issues, "reason");
+            ValidateOptionalNullableStringField(relationship, relationshipContext, issues, "lastChangedAt");
+            ValidateOptionalNullableStringField(relationship, relationshipContext, issues, "awarenessLevel");
+
+            if (!string.IsNullOrWhiteSpace(targetGuardianId) &&
+                string.Equals(targetGuardianId, selfGuardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{relationshipContext}.targetGuardianId",
+                    IssueSeverity.Error,
+                    "guardianRelationships не должен ссылаться на самого себя",
+                    code: "guardian_relationship_self_reference",
+                    section: "Guardians",
+                    actual: targetGuardianId,
+                    repairHint: "Не создавай inter-guardian standing entry на самого себя."));
+            }
+
+            if (!string.IsNullOrWhiteSpace(targetGuardianId) && !seenTargets.Add(targetGuardianId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{relationshipContext}.targetGuardianId",
+                    IssueSeverity.Error,
+                    "guardianRelationships не должен содержать duplicate targetGuardianId",
+                    code: "guardian_relationship_duplicate_target",
+                    section: "Guardians",
+                    actual: targetGuardianId,
+                    repairHint: "Для каждой пары Хранителей сохраняй только одну directed entry."));
+            }
+
+            if (!relationship.TryGetProperty("attitudeScore", out var scoreNode) ||
+                scoreNode.ValueKind != JsonValueKind.Number ||
+                !scoreNode.TryGetInt32(out var attitudeScore))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{relationshipContext}.attitudeScore",
+                    IssueSeverity.Error,
+                    "guardianRelationships entry должен содержать integer attitudeScore",
+                    code: "guardian_relationship_missing_attitude_score",
+                    section: "Guardians",
+                    expected: "integer -100..100",
+                    actual: relationship.TryGetProperty("attitudeScore", out var actualNode) ? actualNode.ValueKind.ToString() : "missing",
+                    repairHint: "Сохраняй attitudeScore как canonical numeric standing между Хранителями."));
+                continue;
+            }
+
+            if (attitudeScore < GuardianRelationshipRules.MinAttitudeScore || attitudeScore > GuardianRelationshipRules.MaxAttitudeScore)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{relationshipContext}.attitudeScore",
+                    IssueSeverity.Error,
+                    "guardianRelationships.attitudeScore должен быть в диапазоне -100..100",
+                    code: "guardian_relationship_attitude_score_out_of_bounds",
+                    section: "Guardians",
+                    expected: "-100..100",
+                    actual: attitudeScore.ToString(),
+                    repairHint: "Не выводи attitudeScore за пределы canonical scale -100..100."));
+            }
+
+            var attitudeTier = RequireString(relationship, relationshipContext, issues, "attitudeTier");
+            if (!string.IsNullOrWhiteSpace(attitudeTier) && !GuardianRelationshipRules.IsValidAttitudeTier(attitudeTier))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{relationshipContext}.attitudeTier",
+                    IssueSeverity.Error,
+                    "guardianRelationships.attitudeTier должен быть canonical tier value",
+                    code: "guardian_relationship_invalid_attitude_tier",
+                    section: "Guardians",
+                    expected: "trusted|ally|neutral|competitive|rival|enemy",
+                    actual: attitudeTier,
+                    repairHint: "Используй только canonical attitude tier значения для межхранительской сети."));
+            }
+            else if (!string.IsNullOrWhiteSpace(attitudeTier))
+            {
+                var expectedTier = GuardianRelationshipRules.ResolveAttitudeTier(attitudeScore);
+                if (!string.Equals(attitudeTier, expectedTier, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{relationshipContext}.attitudeTier",
+                        IssueSeverity.Error,
+                        "guardianRelationships.attitudeTier должен совпадать с derived tier от attitudeScore",
+                        code: "guardian_relationship_attitude_tier_mismatch",
+                        section: "Guardians",
+                        expected: expectedTier,
+                        actual: attitudeTier,
+                        repairHint: "Синхронизируй attitudeTier с canonical derived tier от attitudeScore."));
+                }
+            }
+
+            if (relationship.TryGetProperty("lastChangedAt", out var lastChangedAt) && lastChangedAt.ValueKind == JsonValueKind.String)
+            {
+                var lastChangedAtValue = lastChangedAt.GetString();
+                if (!string.IsNullOrWhiteSpace(lastChangedAtValue) && !DateTimeOffset.TryParse(lastChangedAtValue, out _))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{relationshipContext}.lastChangedAt",
+                        IssueSeverity.Error,
+                        "guardianRelationships.lastChangedAt должен быть ISO 8601 timestamp или null",
+                        code: "guardian_relationship_invalid_last_changed_at",
+                        section: "Guardians",
+                        expected: "ISO 8601 timestamp or null",
+                        actual: lastChangedAtValue,
+                        repairHint: "Используй для lastChangedAt ISO 8601 timestamp или null."));
+                }
+            }
+        }
+    }
+
+    private void ValidateGuardianRelationshipNetwork(
+        Dictionary<string, (JsonElement Guardian, string Context)> guardiansById,
+        List<ValidationIssue> issues)
+    {
+        if (guardiansById.Count <= 1)
+            return;
+
+        foreach (var (guardianId, guardianEntry) in guardiansById)
+        {
+            if (!guardianEntry.Guardian.TryGetProperty("guardianRelationships", out var relationships) ||
+                relationships.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            var targets = relationships.EnumerateArray()
+                .Where(item => item.ValueKind == JsonValueKind.Object)
+                .Select(item => GetFirstNonEmptyString(item, "targetGuardianId"))
+                .Where(item => !string.IsNullOrWhiteSpace(item))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var targetGuardianId in targets)
+            {
+                if (!guardiansById.ContainsKey(targetGuardianId!))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{guardianEntry.Context}.guardianRelationships",
+                        IssueSeverity.Error,
+                        "guardianRelationships ссылается на неизвестного Хранителя",
+                        code: "guardian_relationship_unknown_target",
+                        section: "Guardians",
+                        actual: targetGuardianId,
+                        repairHint: "Используй в targetGuardianId только существующий guardianId из canonical guardians state."));
+                    continue;
+                }
+            }
+
+            foreach (var otherGuardianId in guardiansById.Keys)
+            {
+                if (string.Equals(otherGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (!targets.Contains(otherGuardianId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{guardianEntry.Context}.guardianRelationships",
+                        IssueSeverity.Error,
+                        "Canonical inter-guardian network должен содержать directed entry для каждого другого Хранителя",
+                        code: "guardian_relationship_missing_network_edge",
+                        section: "Guardians",
+                        expected: otherGuardianId,
+                        actual: "missing",
+                        repairHint: "Для каждой пары Хранителей materialize directed guardianRelationships entry в обе стороны."));
+                }
+            }
+        }
+    }
+
 
     private void ValidateGuardianRelationshipData(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
     {
@@ -1265,6 +1766,8 @@ public partial class ValidationService
 
         var guardianId = GetFirstNonEmptyString(guardian, "guardianId");
         var questContext = $"{guardianContext}.questManagement";
+        var hasTrackerValidationRoot = TryResolveGuardianProjectTrackerValidationRootSync(out var trackerRoot, out _);
+
         if (!questManagement.TryGetProperty("availableQuests", out var availableQuests) ||
             availableQuests.ValueKind == JsonValueKind.Null)
         {
@@ -1281,9 +1784,11 @@ public partial class ValidationService
         else
         {
             RequireArrayOfObjects(availableQuests, $"{questContext}.availableQuests", issues);
-            var derivedState = ResolveGuardianDerivedStateForValidation(guardian);
-            var questCap = derivedState.GuardianQuestCap;
-            if (availableQuests.ValueKind == JsonValueKind.Array && availableQuests.GetArrayLength() > questCap)
+            var derivedState = hasTrackerValidationRoot
+                ? GuardianProjectState.ResolveGuardianDerivedState(guardian, trackerRoot)
+                : GuardianProjectState.ResolveGuardianDerivedState(guardian);
+            if (availableQuests.ValueKind == JsonValueKind.Array &&
+                availableQuests.GetArrayLength() > derivedState.GuardianQuestCap)
             {
                 issues.Add(new ValidationIssue(
                     $"{questContext}.availableQuests",
@@ -1291,7 +1796,7 @@ public partial class ValidationService
                     "Guardian questManagement превышает cap доступных квестов для текущей силы Обители",
                     code: "guardian_available_quests_limit_exceeded",
                     section: "Guardians",
-                    expected: $"0..{questCap} available quests",
+                    expected: $"0..{derivedState.GuardianQuestCap} available quests",
                     actual: availableQuests.GetArrayLength().ToString(),
                     repairHint: "Синхронизируй число availableQuests с shared derived guardianQuestCap, а не с локальной ad-hoc формулой."));
             }
@@ -1300,7 +1805,9 @@ public partial class ValidationService
                 $"{questContext}.availableQuests",
                 derivedState.GuardianQuestDifficultyCeiling,
                 issues);
-            ValidateGuardianLoreResearchQuestOrigins(availableQuests, $"{questContext}.availableQuests", guardianId ?? string.Empty, issues);
+
+            if (hasTrackerValidationRoot)
+                ValidateGuardianLoreResearchQuestOrigins(availableQuests, $"{questContext}.availableQuests", guardianId ?? string.Empty, trackerRoot, issues);
         }
 
         if (!questManagement.TryGetProperty("activeQuests", out var activeQuests) ||
@@ -1319,7 +1826,8 @@ public partial class ValidationService
         else
         {
             RequireArrayOfObjects(activeQuests, $"{questContext}.activeQuests", issues);
-            ValidateGuardianLoreResearchQuestOrigins(activeQuests, $"{questContext}.activeQuests", guardianId ?? string.Empty, issues);
+            if (hasTrackerValidationRoot)
+                ValidateGuardianLoreResearchQuestOrigins(activeQuests, $"{questContext}.activeQuests", guardianId ?? string.Empty, trackerRoot, issues);
         }
 
         if (!questManagement.TryGetProperty("completedQuests", out var completedQuests) ||
@@ -1387,17 +1895,22 @@ public partial class ValidationService
             questManagement,
             questContext,
             guardianId ?? string.Empty,
+            trackerRoot,
+            hasTrackerValidationRoot,
             issues);
     }
 
 
-    private void ValidateGuardianLoreResearchQuestOrigins(JsonElement questArray, string arrayContext, string guardianId, List<ValidationIssue> issues)
+    private void ValidateGuardianLoreResearchQuestOrigins(
+        JsonElement questArray,
+        string arrayContext,
+        string guardianId,
+        JsonElement trackerRoot,
+        List<ValidationIssue> issues)
     {
         if (questArray.ValueKind != JsonValueKind.Array || string.IsNullOrWhiteSpace(guardianId))
             return;
 
-        var trackerJson = ReadCurrentTrackedFileSync(GuardianProjectState.TrackerPath);
-        using var trackerDoc = !string.IsNullOrWhiteSpace(trackerJson) ? JsonDocument.Parse(trackerJson) : null;
         var loreUsageCounts = new Dictionary<string, (int hookCount, int specialCount, int archiveCount)>(StringComparer.OrdinalIgnoreCase);
 
         var index = 0;
@@ -1445,7 +1958,7 @@ public partial class ValidationService
                 continue;
             }
 
-            var grantedTokens = ReadGrantedLoreResearchQuestTokens(trackerDoc?.RootElement, guardianId, sourceProjectId, questOrigin ?? string.Empty);
+            var grantedTokens = ReadGrantedLoreResearchQuestTokens(trackerRoot, guardianId, sourceProjectId, questOrigin ?? string.Empty);
             if (grantedTokens <= 0)
             {
                 issues.Add(new ValidationIssue(
@@ -1466,9 +1979,9 @@ public partial class ValidationService
                     : (currentUsage.Item1 + 1, currentUsage.Item2, currentUsage.Item3);
             loreUsageCounts[sourceProjectId] = currentUsage;
 
-            if (currentUsage.Item1 > ReadGrantedLoreResearchQuestTokens(trackerDoc?.RootElement, guardianId, sourceProjectId, GuardianProjectState.LoreResearchHookOrigin) ||
-                currentUsage.Item2 > ReadGrantedLoreResearchQuestTokens(trackerDoc?.RootElement, guardianId, sourceProjectId, GuardianProjectState.LoreResearchSpecialLineOrigin) ||
-                currentUsage.Item3 > ReadGrantedLoreResearchQuestTokens(trackerDoc?.RootElement, guardianId, sourceProjectId, GuardianProjectState.ArchiveConsultationHookOrigin))
+            if (currentUsage.Item1 > ReadGrantedLoreResearchQuestTokens(trackerRoot, guardianId, sourceProjectId, GuardianProjectState.LoreResearchHookOrigin) ||
+                currentUsage.Item2 > ReadGrantedLoreResearchQuestTokens(trackerRoot, guardianId, sourceProjectId, GuardianProjectState.LoreResearchSpecialLineOrigin) ||
+                currentUsage.Item3 > ReadGrantedLoreResearchQuestTokens(trackerRoot, guardianId, sourceProjectId, GuardianProjectState.ArchiveConsultationHookOrigin))
             {
                 issues.Add(new ValidationIssue(
                     $"{questContext}.sourceProjectId",

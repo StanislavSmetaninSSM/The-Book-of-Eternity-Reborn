@@ -67,6 +67,12 @@ internal static class GuardianAbodeOfferingState
     public static int ResolvePowerGainForSoulRelicOffering(string? relicRarity) =>
         AbodePowerRules.ResolvePowerGainForSoulRelicOffering(relicRarity);
 
+    public static bool IsCanonicalSoulRelicRarity(string? relicRarity) =>
+        AbodePowerRules.IsCanonicalSoulRelicRarity(relicRarity);
+
+    public static string DescribeCanonicalSoulRelicRarities() =>
+        AbodePowerRules.AllowedSoulRelicRaritiesDisplay;
+
     public static int ResolvePowerGainForPendingRequest(PendingAbodeOfferingRequest request)
     {
         if (string.Equals(request.OfferingType, OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))

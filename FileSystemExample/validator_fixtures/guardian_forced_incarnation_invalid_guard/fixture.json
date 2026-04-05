@@ -4,6 +4,11 @@
   "description": "A broken afterlife_return_guard.json must fail closed and still block guardian-forced incarnation.",
   "shared": [
     {
+      "source": "shared/input_turn_request.json",
+      "target": "input/turn_request.json",
+      "mode": "Replace"
+    },
+    {
       "source": "shared/pending_turn_snapshot.json",
       "target": "game_state/control/pending_turn_snapshot.json",
       "mode": "Replace"

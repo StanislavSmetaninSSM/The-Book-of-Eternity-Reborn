@@ -1117,21 +1117,28 @@ public partial class ExplorerMode
                         }
                     }
                 }
-                var attitude = GetStr(rel, "attitude", "");
+                var attitude = GetStr(rel, "attitudeTier", GetStr(rel, "attitude", ""));
+                var attitudeScore = GetInt(rel, "attitudeScore", 0);
                 var reason = GetStr(rel, "reason", "");
+                var lastChangedAt = GetStr(rel, "lastChangedAt", "");
                 var (attIcon, attColor, attRu) = attitude.ToLowerInvariant() switch
                 {
+                    "trusted" => ("✨", "springgreen2", "Глубокое доверие"),
                     "ally" => ("🤝", "green", "Союзник"),
                     "neutral" => ("😐", "grey", "Нейтрален"),
-                    "curious" => ("🔍", "cyan", "Любопытствует"),
                     "competitive" => ("⚔", "yellow", "Конкурент"),
                     "rival" => ("⚔", "orange1", "Соперник"),
                     "enemy" => ("💀", "red", "Враг"),
                     _ => ("👤", "white", attitude)
                 };
-                lines.Add($"    {attIcon} [{attColor}]{Markup.Escape(tgtName)}[/] — [{attColor}]{Markup.Escape(attRu)}[/]");
+                var scoreText = attitudeScore > 0
+                    ? $"+{attitudeScore}"
+                    : attitudeScore.ToString();
+                lines.Add($"    {attIcon} [{attColor}]{Markup.Escape(tgtName)}[/] — [{attColor}]{Markup.Escape(attRu)}[/] [dim]({Markup.Escape(scoreText)})[/]");
                 if (!string.IsNullOrEmpty(reason))
                     lines.Add($"      [dim italic]{Markup.Escape(reason)}[/]");
+                if (!string.IsNullOrEmpty(lastChangedAt) && lastChangedAt.Length >= 10)
+                    lines.Add($"      [dim]Обновлено: {Markup.Escape(lastChangedAt[..10])}[/]");
             }
         }
 

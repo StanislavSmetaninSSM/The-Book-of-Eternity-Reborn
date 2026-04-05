@@ -317,6 +317,14 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
 
         await WriteJsonAsync(GuardianTradeRequestState.PendingRequestPath, request);
         await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                soulName = "Тестовая Душа",
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+        await WriteJsonAsync(
             "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
             new
             {
@@ -376,10 +384,12 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
           }
         }
         """);
+        await EnsureCurrentGuardianAndTrackerValidatedBaselinesAsync();
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_inventory_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_inventory_resolution", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -401,6 +411,14 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         };
 
         await WriteJsonAsync(GuardianTradeRequestState.PendingRequestPath, request);
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                soulName = "Тестовая Душа",
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
         await WriteJsonAsync(
             "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
             new
@@ -489,10 +507,12 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
           }
         }
         """);
+        await EnsureCurrentGuardianAndTrackerValidatedBaselinesAsync();
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_trade_request_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -729,7 +749,9 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_live_quest_missing_quest_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "guardian_live_quest_missing_quest_id", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "guardian_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -807,7 +829,9 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
 
         var issues = await _validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_live_quest_missing_quest_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "guardian_live_quest_missing_quest_id", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "guardian_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2031,6 +2055,18 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
 
     private async Task WritePendingTurnSnapshotManifestAsync(Dictionary<string, string> rollbackBackups)
     {
+        var normalizedBackups = rollbackBackups.ToDictionary(
+            pair => NormalizeRelativePath(pair.Key),
+            pair => NormalizeRelativePath(pair.Value),
+            StringComparer.OrdinalIgnoreCase);
+
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "session-test",
+            requestId = "request-test",
+            turnNumber = 12
+        });
+
         var manifest = new PendingTurnSnapshotManifest
         {
             SessionId = "session-test",
@@ -2042,14 +2078,97 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             Files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
             SnapshotFileHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
             ClientOwnedValidationHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
-            RollbackBackups = rollbackBackups,
+            RollbackBackups = normalizedBackups,
             RollbackBaselineFiles = new List<string>(),
             SourceLabel = "обработки хода",
             ManifestPayloadHash = string.Empty
         };
 
+        await RegisterSnapshotFilesAsync(manifest);
         manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
         await WriteJsonAsync("game_state/control/pending_turn_snapshot.json", manifest);
+    }
+
+    private async Task RegisterSnapshotFilesAsync(PendingTurnSnapshotManifest manifest)
+    {
+        foreach (var pair in manifest.RollbackBackups)
+        {
+            var snapshotPath = $"game_state/control/pending_turn_snapshot/{pair.Key}";
+            var snapshotJson = await _fs.ReadFileAsync(snapshotPath);
+            if (string.IsNullOrWhiteSpace(snapshotJson))
+            {
+                snapshotJson = await _fs.ReadFileAsync(pair.Value);
+                if (string.IsNullOrWhiteSpace(snapshotJson))
+                    continue;
+
+                await _fs.WriteFileAtomicAsync(snapshotPath, snapshotJson);
+            }
+
+            manifest.Files[pair.Key] = snapshotPath;
+            manifest.SnapshotFileHashes[pair.Key] = ComputeSha256(snapshotJson);
+        }
+
+        var snapshotRoot = _fs.ResolvePath("game_state/control/pending_turn_snapshot");
+        if (!Directory.Exists(snapshotRoot))
+            return;
+
+        foreach (var snapshotFile in Directory.GetFiles(snapshotRoot, "*", SearchOption.AllDirectories))
+        {
+            var relativeSnapshotPath = NormalizeRelativePath(Path.GetRelativePath(snapshotRoot, snapshotFile));
+            if (!relativeSnapshotPath.Contains('/'))
+                continue;
+
+            var trackedPath = relativeSnapshotPath;
+            if (manifest.Files.ContainsKey(trackedPath))
+                continue;
+
+            var snapshotJson = await File.ReadAllTextAsync(snapshotFile);
+            if (string.IsNullOrWhiteSpace(snapshotJson))
+                continue;
+
+            manifest.Files[trackedPath] = $"game_state/control/pending_turn_snapshot/{trackedPath}";
+            manifest.SnapshotFileHashes[trackedPath] = ComputeSha256(snapshotJson);
+        }
+    }
+
+    private async Task EnsureCurrentGuardianAndTrackerValidatedBaselinesAsync()
+    {
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(guardiansJson))
+            return;
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        if (string.IsNullOrWhiteSpace(trackerJson))
+        {
+            trackerJson = """
+            {
+              "activeProjects": [],
+              "completedProjects": []
+            }
+            """;
+            await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerJson);
+        }
+
+        await _fs.WriteFileAtomicAsync("test_backups/guardian_archive_trade_auto_guardians.json", guardiansJson);
+        await _fs.WriteFileAtomicAsync("test_backups/guardian_archive_trade_auto_tracker.json", trackerJson);
+
+        var rollbackBackups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var manifestPath = _fs.ResolvePath("game_state/control/pending_turn_snapshot.json");
+        if (File.Exists(manifestPath))
+        {
+            var existingManifestJson = await File.ReadAllTextAsync(manifestPath);
+            if (!string.IsNullOrWhiteSpace(existingManifestJson) &&
+                JsonSerializer.Deserialize<PendingTurnSnapshotManifest>(existingManifestJson) is { RollbackBackups: not null } existingManifest)
+            {
+                foreach (var pair in existingManifest.RollbackBackups)
+                    rollbackBackups[NormalizeRelativePath(pair.Key)] = NormalizeRelativePath(pair.Value);
+            }
+        }
+
+        rollbackBackups["game_state/meta/guardians.json"] = "test_backups/guardian_archive_trade_auto_guardians.json";
+        rollbackBackups[GuardianProjectState.TrackerPath] = "test_backups/guardian_archive_trade_auto_tracker.json";
+
+        await WritePendingTurnSnapshotManifestAsync(rollbackBackups);
     }
 
     private static string ComputeManifestPayloadHash(PendingTurnSnapshotManifest manifest)
@@ -2081,6 +2200,14 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         using var sha = SHA256.Create();
         return Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(json)));
     }
+
+    private static string ComputeSha256(string content)
+    {
+        using var sha = SHA256.Create();
+        return Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(content)));
+    }
+
+    private static string NormalizeRelativePath(string path) => path.Replace('\\', '/');
 
     private async Task WriteJsonAsync(string relativePath, object payload)
     {

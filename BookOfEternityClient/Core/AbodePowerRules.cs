@@ -8,6 +8,17 @@ internal static class AbodePowerRules
     public const int MinPower = 0;
     public const int MaxPower = 100;
     public const int DefaultCurrentPower = 35;
+    private static readonly string[] CanonicalSoulRelicRarities =
+    {
+        "common",
+        "uncommon",
+        "rare",
+        "epic",
+        "legendary"
+    };
+
+    public static IReadOnlyList<string> AllowedSoulRelicRarities => CanonicalSoulRelicRarities;
+    public static string AllowedSoulRelicRaritiesDisplay => "Common | Uncommon | Rare | Epic | Legendary";
 
     public static int ClampCurrentPower(int value) => Math.Clamp(value, MinPower, MaxPower);
 
@@ -227,14 +238,19 @@ internal static class AbodePowerRules
         return Math.Clamp(inkFeathersOffered / 50, 0, 3);
     }
 
+    public static bool IsCanonicalSoulRelicRarity(string? relicRarity) =>
+        Array.Exists(
+            CanonicalSoulRelicRarities,
+            candidate => string.Equals(candidate, (relicRarity ?? string.Empty).Trim(), StringComparison.OrdinalIgnoreCase));
+
     public static int ResolvePowerGainForSoulRelicOffering(string? relicRarity) =>
         (relicRarity ?? string.Empty).Trim().ToLowerInvariant() switch
         {
-            "legendary" or "mythic" or "divine" => 4,
+            "legendary" => 4,
             "epic" => 3,
             "rare" => 2,
             "common" or "uncommon" => 1,
-            _ => 1
+            _ => 0
         };
 
     public static int ResolvePowerGainForArchiveRarity(string? rarity) =>

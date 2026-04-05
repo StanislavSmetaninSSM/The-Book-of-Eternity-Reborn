@@ -4,11 +4,17 @@
   "turnNumber": 12,
   "requestTimestamp": "2026-03-20T09:18:00Z",
   "playerAction": "[GUARDIAN_PROVOCATION: guard_social_azalia_001] Я открыто насмехаюсь над Азалией, унижаю её в собственной обители и бросаю ей вызов.",
-  "files": {},
-  "snapshotFileHashes": {},
+  "files": {
+    "game_state/meta/soul_state.json": "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+    "game_state/meta/guardians.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
+  },
+  "snapshotFileHashes": {
+    "game_state/meta/soul_state.json": "90AD1903DEAC1A76A4B635BD946621B32D25BA3393C07995CF036FC9DBCBB0FF",
+    "game_state/meta/guardians.json": "092564640681996E7CC4F0F587333E46D083C8B723DD818FCC9C54536E2511AD"
+  },
   "clientOwnedValidationHashes": {},
   "rollbackBackups": {},
   "rollbackBaselineFiles": [],
   "sourceLabel": "обработки хода",
-  "manifestPayloadHash": ""
+  "manifestPayloadHash": "996C29A081D72FC10B7A6B967509C8A8B40F55D09FE54AE3CF2E99524B2AFE45"
 }

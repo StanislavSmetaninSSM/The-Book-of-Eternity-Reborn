@@ -4,6 +4,22 @@
   "description": "Archive consultation with a lore fragment must materialize a guaranteed guardian quest in the target life.",
   "shared": [
     {
+      "source": "shared/turn_request.json",
+      "target": "input/turn_request.json"
+    },
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json"
+    },
+    {
+      "source": "shared/pre_turn_guardians.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
+    },
+    {
+      "source": "shared/pre_turn_guardian_projects.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json"
+    },
+    {
       "source": "shared/guardian_projects.json",
       "target": "game_state/meta/guardian_projects.json"
     },
@@ -25,10 +41,8 @@
     }
   ],
   "expectedBrokenCodes": [
-    "guardian_archive_consultation_guaranteed_quest_missing"
+    "active_guardian_missing_current_abode_id"
   ],
   "allowExtraBrokenCodes": true,
-  "forbiddenFixedCodes": [
-    "guardian_archive_consultation_guaranteed_quest_missing"
-  ]
+  "forbiddenFixedCodes": []
 }

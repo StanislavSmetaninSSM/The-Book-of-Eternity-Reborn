@@ -4,11 +4,17 @@
   "turnNumber": 12,
   "requestTimestamp": "2026-03-20T09:18:00Z",
   "playerAction": "Я прихожу к Азалии и прошу минуту тишины, сохраняя холодную дистанцию.",
-  "files": {},
-  "snapshotFileHashes": {},
+  "files": {
+    "game_state/meta/soul_state.json": "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+    "game_state/meta/guardians.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
+  },
+  "snapshotFileHashes": {
+    "game_state/meta/soul_state.json": "90AD1903DEAC1A76A4B635BD946621B32D25BA3393C07995CF036FC9DBCBB0FF",
+    "game_state/meta/guardians.json": "D92DEA7883560F884AC4CBB2DF4BA06C8F23F80D1CBD7F757D67BA630DFEFF91"
+  },
   "clientOwnedValidationHashes": {},
   "rollbackBackups": {},
   "rollbackBaselineFiles": [],
   "sourceLabel": "обработки хода",
-  "manifestPayloadHash": ""
+  "manifestPayloadHash": "188B7FE01DD2A0F2CE634403A381C4359A1F6E56EB1E7D446E3849E91C05BB15"
 }

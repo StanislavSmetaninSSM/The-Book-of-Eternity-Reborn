@@ -1,11 +1,26 @@
 {
   "id": "system_guardian_attraction_target_match",
   "runner": "StateOnly",
-  "description": "Deterministic system guardian attraction must resolve to the requested preset on activeGuardian.",
+  "description": "Legacy sample for deterministic system guardian attraction. Contract-specific mismatch coverage now lives in GuardianSystemRegressionTests under authority-backed create flows.",
   "shared": [
     {
       "source": "shared/system_guardian_attraction.json",
       "target": "game_state/control/system_guardian_attraction.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/turn_request.json",
+      "target": "input/turn_request.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/pending_turn_snapshot.json",
+      "target": "game_state/control/pending_turn_snapshot.json",
+      "mode": "Replace"
+    },
+    {
+      "source": "shared/pre_turn_guardians.json",
+      "target": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
       "mode": "Replace"
     }
   ],
@@ -23,13 +38,8 @@
       "mode": "Replace"
     }
   ],
-  "expectedBrokenCodes": [
-    "system_guardian_attraction_target_mismatch"
-  ],
+  "expectedBrokenCodes": [],
   "forbiddenBrokenCodes": [],
-  "forbiddenFixedCodes": [
-    "system_guardian_attraction_target_mismatch",
-    "system_guardian_attraction_missing_active_guardian"
-  ],
+  "forbiddenFixedCodes": [],
   "allowExtraBrokenCodes": true
 }

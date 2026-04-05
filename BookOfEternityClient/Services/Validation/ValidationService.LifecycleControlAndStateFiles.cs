@@ -741,13 +741,8 @@ public partial class ValidationService
             if (string.IsNullOrWhiteSpace(targetPresetId))
                 return;
 
-            var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-            if (string.IsNullOrWhiteSpace(guardiansJson))
-                return;
-
-            using var guardiansDoc = JsonDocument.Parse(guardiansJson);
-            if (!guardiansDoc.RootElement.TryGetProperty("activeGuardian", out var activeGuardian) ||
-                activeGuardian.ValueKind != JsonValueKind.Object)
+            var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+            if (!guardianPolicyContext.CurrentStateReadable)
             {
                 issues.Add(new ValidationIssue(
                     "game_state/meta/guardians.json.activeGuardian",
@@ -757,6 +752,19 @@ public partial class ValidationService
                     section: "SystemGuardianPresets",
                     expected: $"activeGuardian.sourcePreset.presetId = {targetPresetId}",
                     actual: "missing"));
+                return;
+            }
+
+            if (!TryGetCurrentAuthorityActiveGuardian(guardianPolicyContext, out var activeGuardian))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.activeGuardian",
+                    IssueSeverity.Error,
+                    "После deterministic attraction к системному Хранителю должен существовать kernel-authoritative activeGuardian.",
+                    code: "system_guardian_attraction_missing_active_guardian",
+                    section: "SystemGuardianPresets",
+                    expected: $"activeGuardian.sourcePreset.presetId = {targetPresetId}",
+                    actual: guardianPolicyContext.HasCurrentActiveGuardian ? "raw mirror without kernel authority" : "missing"));
                 return;
             }
 
@@ -786,6 +794,9 @@ public partial class ValidationService
     }
 
     private void ValidatePendingAbodeOfferingStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+        => ValidatePendingAbodeOfferingContract(root, contextPrefix, "GuardianOfferings", issues);
+
+    private void ValidatePendingAbodeOfferingContract(JsonElement root, string contextPrefix, string section, List<ValidationIssue> issues)
     {
         RequireString(root, contextPrefix, issues, "guardianId");
         RequireString(root, contextPrefix, issues, "guardianName");
@@ -801,7 +812,7 @@ public partial class ValidationService
                 IssueSeverity.Error,
                 "pending_abode_offering.json поддерживает только whitelisted offering types",
                 code: "abode_offering_invalid_type",
-                section: "GuardianOfferings",
+                section: section,
                 expected: $"{GuardianAbodeOfferingState.OfferingTypeInkFeathers} | {GuardianAbodeOfferingState.OfferingTypeSoulRelic} | {GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment} | {GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord}",
                 actual: offeringType,
                 repairHint: "Используй один из whitelisted offering types: ink_feathers, soul_relic, archive_lore_fragment или archive_secret_record."));
@@ -818,7 +829,7 @@ public partial class ValidationService
                     IssueSeverity.Error,
                     "pending_abode_offering.json должен использовать сумму, кратную 50 и не выше 150",
                     code: "abode_offering_invalid_amount",
-                    section: "GuardianOfferings",
+                    section: section,
                     expected: "50 | 100 | 150",
                     actual: offered.ToString(),
                     repairHint: "Поддерживаемые offering amounts: 50, 100 или 150 Чернильных Перьев."));
@@ -828,7 +839,19 @@ public partial class ValidationService
         {
             RequireString(root, contextPrefix, issues, "relicId");
             RequireString(root, contextPrefix, issues, "relicName");
-            RequireString(root, contextPrefix, issues, "relicRarity");
+            var relicRarity = RequireString(root, contextPrefix, issues, "relicRarity");
+            if (!string.IsNullOrWhiteSpace(relicRarity) && !GuardianAbodeOfferingState.IsCanonicalSoulRelicRarity(relicRarity))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.relicRarity",
+                    IssueSeverity.Error,
+                    "pending_abode_offering relicRarity должна быть canonical Soul Relic rarity tier",
+                    code: "abode_offering_soul_relic_invalid_rarity",
+                    section: section,
+                    expected: GuardianAbodeOfferingState.DescribeCanonicalSoulRelicRarities(),
+                    actual: relicRarity,
+                    repairHint: "Используй для soul_relic только canonical rarity/quality enum из Soul Relic contract."));
+            }
         }
         else if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
@@ -845,7 +868,7 @@ public partial class ValidationService
                     IssueSeverity.Error,
                     "pending_abode_offering archiveEntryType не соответствует выбранному offeringType",
                     code: "abode_offering_archive_type_mismatch",
-                    section: "GuardianOfferings",
+                    section: section,
                     expected: string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase)
                         ? AfterlifeArchiveState.EntryTypeLoreFragment
                         : AfterlifeArchiveState.EntryTypeSecretRecord,
@@ -859,7 +882,7 @@ public partial class ValidationService
                     IssueSeverity.Error,
                     "pending_abode_offering archiveRarity должна быть canonical rarity tier",
                     code: "abode_offering_archive_invalid_rarity",
-                    section: "GuardianOfferings",
+                    section: section,
                     expected: "Common | Uncommon | Rare | Epic | Legendary | Unique",
                     actual: archiveRarity));
             }
@@ -874,7 +897,7 @@ public partial class ValidationService
                 IssueSeverity.Error,
                 "pending_abode_offering.json.createdAtUtc должен быть ISO 8601 timestamp",
                 code: "abode_offering_invalid_created_at",
-                section: "GuardianOfferings",
+                section: section,
                 expected: "ISO 8601 timestamp",
                 actual: createdAtUtc));
         }
@@ -1141,6 +1164,29 @@ public partial class ValidationService
         }
     }
 
+    private async Task<string?> ResolveGuardianValidatedPreTurnRealmForContextAsync(
+        string requestPath,
+        List<ValidationIssue> issues,
+        string code,
+        string section)
+    {
+        var resolution = await ResolveValidatedCurrentPreTurnRealmAsync();
+        if (resolution.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable)
+        {
+            issues.Add(new ValidationIssue(
+                requestPath,
+                IssueSeverity.Error,
+                $"{requestPath} нельзя проверить по pre-turn realm, потому что validated pending turn snapshot недоступен или не соответствует текущему accepted-turn context.",
+                code: code,
+                section: section,
+                expected: "current validated pending turn snapshot with game_state/meta/soul_state.json",
+                actual: DescribeValidatedPendingTurnSnapshotStatus(resolution.SnapshotStatus),
+                repairHint: "Не используй stale или изменённый pending turn snapshot; manifest должен совпадать с текущими sessionId/requestId/turnNumber и содержать snapshot game_state/meta/soul_state.json."));
+        }
+
+        return resolution.Realm;
+    }
+
     private async Task ValidatePendingAbodeOfferingContextAsync(List<ValidationIssue> issues)
     {
         var json = await _fs.ReadFileAsync(GuardianAbodeOfferingState.PendingRequestPath);
@@ -1164,20 +1210,10 @@ public partial class ValidationService
             }
 
             ValidatePendingAbodeOfferingStateFile(doc.RootElement, GuardianAbodeOfferingState.PendingRequestPath, issues);
-
-            var currentRealm = await TryResolvePreTurnRealmAsync();
-            if (!IsChaosSeaRealm(currentRealm))
-            {
-                issues.Add(new ValidationIssue(
-                    GuardianAbodeOfferingState.PendingRequestPath,
-                    IssueSeverity.Error,
-                    "pending_abode_offering.json допустим только в afterlife realm",
-                    code: "abode_offering_wrong_realm",
-                    section: "GuardianOfferings",
-                    expected: "Chaos Sea or Shining Abode pre-turn realm",
-                    actual: currentRealm ?? "unknown",
-                    repairHint: "Не создавай pending_abode_offering.json в Mortal World."));
-            }
+            await ValidatePendingAbodeOfferingRequestRealmContextAsync(
+                GuardianAbodeOfferingState.PendingRequestPath,
+                "GuardianOfferings",
+                issues);
         }
         catch (JsonException ex)
         {
@@ -1193,20 +1229,175 @@ public partial class ValidationService
 
     private async Task ValidatePendingAbodeOfferingResolutionAsync(List<ValidationIssue> issues)
     {
-        var request = await GuardianAbodeOfferingState.ReadAsync(_fs);
-        if (request == null)
+        var requestResolution = await ReadValidatedPendingResolutionContractAsync<GuardianAbodeOfferingState.PendingAbodeOfferingRequest>(
+            GuardianAbodeOfferingState.PendingRequestPath,
+            issues,
+            missingCode: "abode_offering_missing_validated_snapshot_request",
+            invalidCode: "abode_offering_invalid_validated_snapshot_request",
+            section: "GuardianOfferings",
+            missingMessage: "Strict validated pending turn snapshot contract для pending_abode_offering.json недоступен. Guardian offering нельзя проверить строго.",
+            invalidMessage: "validated pending turn snapshot для pending_abode_offering.json существует, но request contract внутри него unreadable или malformed. Guardian offering нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_abode_offering.json в manifest.Files и snapshotFileHashes, а snapshot copy должна оставаться валидным JSON contract с теми же session/request/turn coordinates.",
+            semanticValidator: (root, contextPrefix, validationIssues) => ValidatePendingAbodeOfferingContract(root, contextPrefix, "GuardianOfferings", validationIssues));
+        if (requestResolution.Status != PendingResolutionContractStatus.Resolved || requestResolution.Contract == null)
+            return;
+
+        var request = requestResolution.Contract;
+        var issueCountBeforeContextValidation = issues.Count;
+        await ValidatePendingAbodeOfferingRequestRealmContextAsync(
+            GuardianAbodeOfferingState.PendingRequestPath,
+            "GuardianOfferings",
+            issues);
+        if (issues.Count > issueCountBeforeContextValidation)
             return;
 
         var expectedGain = GuardianAbodeOfferingState.ResolvePowerGainForPendingRequest(request);
         if (expectedGain <= 0)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeOfferingState.PendingRequestPath,
+                IssueSeverity.Error,
+                "validated pending_abode_offering snapshot не даёт корректный canonical offering power gain contract.",
+                code: "abode_offering_invalid_validated_snapshot_request",
+                section: "GuardianOfferings",
+                expected: "supported offering contract with positive power gain",
+                actual: "resolved offering gain <= 0",
+                repairHint: "Исправь validated snapshot contract pending_abode_offering.json; offeringType и audit-driving fields должны задавать положительный canonical power gain."));
+            return;
+        }
+
+        var preJournalJson = await ReadRequiredValidatedPendingTurnSnapshotFileAsync(
+            GuardianPowerEventState.JournalPath,
+            issues,
+            code: "abode_offering_missing_validated_snapshot_journal",
+            section: "GuardianOfferings",
+            message: "pending_abode_offering strict resolution требует validated pre-turn abode_power_journal baseline; без него journal proof нельзя проверить строго.",
+            repairHint: $"Сохраняй {GuardianPowerEventState.JournalPath} в validated pending turn snapshot и не проверяй pending_abode_offering по current-only journal.");
+        if (string.IsNullOrWhiteSpace(preJournalJson))
             return;
 
-        var preJournalJson = await ReadPreTurnTrackedFileAsync(GuardianPowerEventState.JournalPath);
-        var postJournalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
-        var matchingOfferingEventFound = CollectNewGuardianPowerJournalEntries(preJournalJson, postJournalJson)
-            .Any(entry => JournalEntryMatchesPendingAbodeOffering(entry, request, expectedGain));
+        var preTurnJournalKnowledgeResult = await ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync("offering");
+        if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "pending_abode_offering strict resolution требует canonical validated snapshot guardians baseline для journal proof knowledge.",
+                code: "abode_offering_invalid_validated_snapshot_guardians",
+                section: "GuardianOfferings",
+                expected: "canonical validated snapshot guardians.json for offering proof knowledge",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot guardians baseline invalid",
+                repairHint: "Сохраняй в validated pending turn snapshot canonical game_state/meta/guardians.json. Proof knowledge не может строиться из partial или invalid guardian snapshot."));
+            return;
+        }
 
-        if (!matchingOfferingEventFound)
+        if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotTracker)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianProjectState.TrackerPath,
+                IssueSeverity.Error,
+                "pending_abode_offering strict resolution требует canonical validated snapshot guardian project tracker baseline для journal proof knowledge.",
+                code: "abode_offering_invalid_validated_snapshot_tracker",
+                section: "GuardianOfferings",
+                expected: $"canonical validated snapshot {GuardianProjectState.TrackerPath} for offering proof knowledge",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot tracker baseline invalid",
+                repairHint: $"Сохраняй в validated pending turn snapshot canonical {GuardianProjectState.TrackerPath}. Proof knowledge не может строиться из partial или invalid tracker snapshot."));
+            return;
+        }
+
+        if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotJournal)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "pending_abode_offering strict resolution требует canonical validated snapshot abode_power_journal baseline для journal proof knowledge.",
+                code: "abode_offering_invalid_validated_snapshot_journal",
+                section: "GuardianOfferings",
+                expected: $"canonical validated snapshot {GuardianPowerEventState.JournalPath} for offering proof knowledge",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot journal baseline invalid",
+                repairHint: $"Сохраняй в validated pending turn snapshot canonical {GuardianPowerEventState.JournalPath}; offering proof knowledge не может строиться из missing, stale или invalid journal baseline."));
+            return;
+        }
+
+        if (preTurnJournalKnowledgeResult.Knowledge == null)
+        {
+            issues.Add(new ValidationIssue(
+                PendingTurnSnapshotManifestPath,
+                IssueSeverity.Error,
+                "pending_abode_offering strict resolution требует usable validated snapshot proof context для journal proof knowledge.",
+                code: "abode_offering_invalid_validated_snapshot_journal",
+                section: "GuardianOfferings",
+                expected: "usable validated snapshot proof knowledge context",
+                actual: preTurnJournalKnowledgeResult.FailureDescription ?? "validated snapshot context unavailable",
+                repairHint: "Сохраняй current validated pending turn snapshot manifest и canonical guardian/tracker baselines перед strict pending_abode_offering resolution."));
+            return;
+        }
+
+        var postJournalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
+        var journalProof = SummarizeOfferingJournalProof(
+            preJournalJson,
+            postJournalJson,
+            request,
+            expectedGain,
+            preTurnJournalKnowledgeResult.Knowledge,
+            "offering");
+        if (journalProof.Status == OfferingJournalProofStatus.InvalidValidatedBaseline)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "pending_abode_offering strict resolution требует readable validated pre-turn abode_power_journal baseline; corrupted snapshot journal нельзя считать empty baseline.",
+                code: "abode_offering_invalid_validated_snapshot_journal",
+                section: "GuardianOfferings",
+                expected: "readable validated snapshot abode_power_journal baseline",
+                actual: "validated snapshot journal unreadable or malformed",
+                repairHint: "Сохраняй в validated pending turn snapshot корректный JSON abode_power_journal и не доказывай offering через current-only journal."));
+            return;
+        }
+
+        if (journalProof.Status == OfferingJournalProofStatus.InvalidCurrentGuardianAuthority)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "pending_abode_offering strict resolution не может доказать journal outcome: current guardian authority unreadable или unavailable.",
+                code: "abode_offering_invalid_current_guardian_authority",
+                section: "GuardianOfferings",
+                expected: "readable current guardian authority root",
+                actual: journalProof.FailureDescription ?? "current guardian authority unavailable",
+                repairHint: "Исправь current game_state/meta/guardians.json и validated guardian baseline так, чтобы kernel построил strict current guardian authority перед proving pending_abode_offering outcome."));
+            return;
+        }
+
+        if (journalProof.Status == OfferingJournalProofStatus.InvalidCurrentTrackerAuthority)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianProjectState.TrackerPath,
+                IssueSeverity.Error,
+                "pending_abode_offering strict resolution не может доказать journal outcome: current guardian project tracker authority unreadable или unavailable.",
+                code: "abode_offering_invalid_current_tracker_authority",
+                section: "GuardianOfferings",
+                expected: $"readable current authority root for {GuardianProjectState.TrackerPath}",
+                actual: journalProof.FailureDescription ?? "current tracker authority unavailable",
+                repairHint: $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил strict current tracker authority перед proving pending_abode_offering outcome."));
+            return;
+        }
+
+        if (journalProof.Status == OfferingJournalProofStatus.InvalidCurrentJournal)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianPowerEventState.JournalPath,
+                IssueSeverity.Error,
+                "pending_abode_offering strict resolution не может доказать journal outcome: current abode_power_journal.json unreadable или malformed.",
+                code: "abode_offering_invalid_current_journal_proof",
+                section: "GuardianOfferings",
+                expected: "readable current abode_power_journal proof",
+                actual: journalProof.FailureDescription ?? "current journal unreadable or malformed",
+                repairHint: "Делай current abode_power_journal.json корректным JSON и materialize offering proof только через читаемый strict journal."));
+            return;
+        }
+
+        if (!journalProof.MatchingOfferingEventFound)
         {
             issues.Add(new ValidationIssue(
                 GuardianPowerEventState.JournalPath,
@@ -1217,8 +1408,9 @@ public partial class ValidationService
                 repairHint: "Разрешай pending_abode_offering.json через guardianPowerEvents.reasonType=offering с audit, совпадающим с client-authored request."));
         }
 
-        var previousPower = await ReadGuardianAbodePowerAsync(await ReadPreTurnTrackedFileAsync("game_state/meta/guardians.json"), request.GuardianId);
-        var currentPower = await ReadGuardianAbodePowerAsync(await _fs.ReadFileAsync("game_state/meta/guardians.json"), request.GuardianId);
+        var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        var previousPower = TryReadGuardianCurrentAbodePowerFromPolicyContext(guardianPolicyContext, request.GuardianId, preTurn: true);
+        var currentPower = TryReadGuardianCurrentAbodePowerFromPolicyContext(guardianPolicyContext, request.GuardianId);
         if (!previousPower.HasValue || !currentPower.HasValue || currentPower.Value - previousPower.Value < expectedGain)
         {
             issues.Add(new ValidationIssue(
@@ -1232,104 +1424,123 @@ public partial class ValidationService
                 repairHint: "Каждое valid abode offering должно реально увеличивать guardian.abodePower.currentPower и оставлять matching offering event в journal."));
         }
 
-        if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
         {
+            var preTurnSoulJson = await ReadRequiredValidatedPendingTurnSnapshotFileAsync(
+                "game_state/meta/soul_state.json",
+                issues,
+                code: "abode_offering_missing_validated_snapshot_soul_state",
+                section: "GuardianOfferings",
+                message: "pending_abode_offering strict resolution требует validated pre-turn soul_state baseline; без него consumption proof нельзя проверить строго.",
+                repairHint: "Сохраняй game_state/meta/soul_state.json в validated pending turn snapshot и доказывай offering через pre-turn ownership плюс current consumption.");
+            if (string.IsNullOrWhiteSpace(preTurnSoulJson))
+                return;
+
             var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-            if (SoulStateContainsSoulRelic(soulJson, request.RelicId))
-            {
-                issues.Add(new ValidationIssue(
-                    "game_state/meta/soul_state.json",
-                    IssueSeverity.Error,
-                    "Поднесённая Реликвия Души всё ещё находится в soul_state после pending abode offering",
-                    code: "abode_offering_soul_relic_not_consumed",
-                    section: "GuardianOfferings",
-                    repairHint: "Клиентский offering path должен локально удалить offered Soul Relic из soul_state перед GM turn."));
-            }
-        }
-        else if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
-        {
-            var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-            if (SoulStateContainsAfterlifeArchiveEntry(soulJson, request.ArchiveId))
-            {
-                issues.Add(new ValidationIssue(
-                    "game_state/meta/soul_state.json",
-                    IssueSeverity.Error,
-                    "Поднесённая архивная запись всё ещё находится в afterlifeArchive после pending abode offering",
-                    code: "abode_offering_archive_entry_not_consumed",
-                    section: "GuardianOfferings",
-                    repairHint: "Клиентский offering path должен локально удалить offered archive entry из soul_state.afterlifeArchive.stored перед GM turn."));
-            }
+            ValidatePendingAbodeOfferingConsumptionProof(
+                preTurnSoulJson,
+                soulJson,
+                request,
+                "GuardianOfferings",
+                issues);
         }
     }
 
     private async Task ValidatePendingGuardianTradeRequestContextAsync(List<ValidationIssue> issues)
     {
-        var request = await GuardianTradeRequestState.ReadAsync(_fs);
-        if (request == null)
-            return;
-
-        if (!IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
-        {
-            issues.Add(new ValidationIssue(
-                GuardianTradeRequestState.PendingRequestPath,
-                IssueSeverity.Error,
-                "pending_guardian_trade_request.json допустим только в afterlife realm",
-                code: "guardian_trade_request_wrong_realm",
-                section: "GuardianTrade"));
-        }
-
-        if (string.IsNullOrWhiteSpace(request.RequestId) ||
-            string.IsNullOrWhiteSpace(request.GuardianId) ||
-            string.IsNullOrWhiteSpace(request.GuardianName) ||
-            string.IsNullOrWhiteSpace(request.AbodeId) ||
-            string.IsNullOrWhiteSpace(request.ReturnCycleId) ||
-            request.DerivedTradeSlotCount <= 0)
-        {
-            issues.Add(new ValidationIssue(
-                GuardianTradeRequestState.PendingRequestPath,
-                IssueSeverity.Error,
-                "pending_guardian_trade_request.json должен содержать полный client-authored contract",
-                code: "guardian_trade_request_missing_fields",
-                section: "GuardianTrade"));
-        }
-    }
-
-    private async Task ValidatePendingGuardianTradeRequestResolutionAsync(List<ValidationIssue> issues)
-    {
-        var preTurnJson = await ReadPreTurnTrackedFileAsync(GuardianTradeRequestState.PendingRequestPath);
-        if (string.IsNullOrWhiteSpace(preTurnJson))
+        var json = await _fs.ReadFileAsync(GuardianTradeRequestState.PendingRequestPath);
+        if (string.IsNullOrWhiteSpace(json))
             return;
 
         GuardianTradeRequestState.PendingGuardianTradeRequest? request;
         try
         {
-            request = JsonSerializer.Deserialize<GuardianTradeRequestState.PendingGuardianTradeRequest>(preTurnJson);
+            using var doc = JsonDocument.Parse(json);
+            ValidatePendingGuardianTradeRequestStateFile(doc.RootElement, GuardianTradeRequestState.PendingRequestPath, "GuardianTrade", issues);
+            request = JsonSerializer.Deserialize<GuardianTradeRequestState.PendingGuardianTradeRequest>(json);
         }
-        catch
+        catch (JsonException ex)
         {
+            issues.Add(new ValidationIssue(
+                GuardianTradeRequestState.PendingRequestPath,
+                IssueSeverity.Error,
+                $"pending_guardian_trade_request.json не читается как валидный JSON: {ex.Message}",
+                code: "guardian_trade_request_invalid_json",
+                section: "GuardianTrade",
+                repairHint: "Сохраняй pending_guardian_trade_request.json как корректный client-authored JSON contract."));
             return;
         }
 
         if (request == null)
             return;
 
-        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (string.IsNullOrWhiteSpace(guardiansJson))
+        await ValidatePendingGuardianTradeRequestRealmContextAsync(
+            GuardianTradeRequestState.PendingRequestPath,
+            "GuardianTrade",
+            issues);
+    }
+
+    private async Task ValidatePendingGuardianTradeRequestResolutionAsync(List<ValidationIssue> issues)
+    {
+        var requestResolution = await ReadValidatedPendingResolutionContractAsync<GuardianTradeRequestState.PendingGuardianTradeRequest>(
+            GuardianTradeRequestState.PendingRequestPath,
+            issues,
+            missingCode: "guardian_trade_request_missing_validated_snapshot_request",
+            invalidCode: "guardian_trade_request_invalid_validated_snapshot_request",
+            section: "GuardianTrade",
+            missingMessage: "Strict validated pending turn snapshot contract для pending_guardian_trade_request.json недоступен. Guardian trade нельзя проверить строго.",
+            invalidMessage: "validated pending turn snapshot для pending_guardian_trade_request.json существует, но request contract внутри него unreadable или malformed. Guardian trade нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй current pending_guardian_trade_request.json в manifest.Files и snapshotFileHashes, а snapshot copy должна оставаться валидным JSON contract.",
+            semanticValidator: (root, contextPrefix, validationIssues) => ValidatePendingGuardianTradeRequestStateFile(root, contextPrefix, "GuardianTrade", validationIssues));
+        if (requestResolution.Status != PendingResolutionContractStatus.Resolved || requestResolution.Contract == null)
             return;
+
+        var request = requestResolution.Contract;
+        var issueCountBeforeContextValidation = issues.Count;
+        await ValidatePendingGuardianTradeRequestRealmContextAsync(
+            GuardianTradeRequestState.PendingRequestPath,
+            "GuardianTrade",
+            issues);
+        if (issues.Count > issueCountBeforeContextValidation)
+            return;
+
+        var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        if (!guardianPolicyContext.CurrentStateReadable)
+        {
+            issues.Add(new ValidationIssue(
+                GuardianTradeRequestState.PendingRequestPath,
+                IssueSeverity.Error,
+                "pending_guardian_trade_request не может быть строго разрешён: current guardians.json unreadable.",
+                code: "guardian_trade_request_missing_guardian_resolution",
+                section: "GuardianTrade",
+                expected: $"readable materialized guardian {request.GuardianId} in current guardians[]",
+                actual: "current guardians.json unreadable",
+                repairHint: "Сделай current guardians.json readable и materialize-ь guardian entry, которая закрывает pending_guardian_trade_request exact contract."));
+            return;
+        }
 
         try
         {
-            if (JsonNode.Parse(guardiansJson) is not JsonObject guardiansRoot ||
-                guardiansRoot["guardians"] is not JsonArray guardians)
+            if (!TryBuildGuardianTradeResolutionGuardian(guardianPolicyContext, request.GuardianId, out var guardian, out var tradeResolutionActual))
             {
+                issues.Add(new ValidationIssue(
+                    GuardianTradeRequestState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "pending_guardian_trade_request из pre-turn snapshot не привёл к authority-backed guardian resolution.",
+                    code: "guardian_trade_request_missing_guardian_resolution",
+                    section: "GuardianTrade",
+                    expected: $"authority-backed guardian {request.GuardianId} in current guardians state",
+                    actual: tradeResolutionActual,
+                    repairHint: "Разрешай pending_guardian_trade_request только через authority-backed guardian state. Current guardian materialization должна совпадать с kernel authority, а tradeInventory/receipt должны materialize exact client-authored request contract."));
                 return;
             }
 
-            var guardian = guardians.OfType<JsonObject>()
-                .FirstOrDefault(item =>
-                    string.Equals(GetNodeString(item["guardianId"]), request.GuardianId, StringComparison.OrdinalIgnoreCase));
-            var tradeInventory = guardian?["tradeInventory"] as JsonObject;
+            JsonObject? tradeInventory = null;
+            if (guardian["tradeInventory"] is JsonObject tradeInventoryObject)
+                tradeInventory = tradeInventoryObject;
+
             if (!GuardianTradeRequestState.InventoryMatchesRequestContract(tradeInventory, request))
             {
                 issues.Add(new ValidationIssue(
@@ -1360,6 +1571,506 @@ public partial class ValidationService
         {
             // parse issues reported elsewhere
         }
+    }
+
+    private async Task<PendingResolutionContractReadResult<TContract>> ReadValidatedPendingResolutionContractAsync<TContract>(
+        string relativePath,
+        List<ValidationIssue> issues,
+        string missingCode,
+        string invalidCode,
+        string section,
+        string missingMessage,
+        string invalidMessage,
+        string repairHint,
+        Action<JsonElement, string, List<ValidationIssue>>? semanticValidator = null)
+        where TContract : class
+    {
+        var currentJson = await _fs.ReadFileAsync(relativePath);
+        var hasCurrentFile = !string.IsNullOrWhiteSpace(currentJson);
+        var rawManifestJson = await _fs.ReadFileAsync(PendingTurnSnapshotManifestPath);
+        var rawManifestExists = !string.IsNullOrWhiteSpace(rawManifestJson);
+        var rawManifest = await LoadValidationPendingTurnSnapshotManifestAsync();
+        if (rawManifestExists && rawManifest == null)
+        {
+            issues.Add(new ValidationIssue(
+                relativePath,
+                IssueSeverity.Error,
+                invalidMessage,
+                code: invalidCode,
+                section: section,
+                expected: $"readable pending turn snapshot manifest registering {relativePath}",
+                actual: "pending_turn_snapshot.json exists but is unreadable or malformed",
+                repairHint: repairHint));
+            return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.InvalidValidatedSnapshot, null);
+        }
+
+        var hasConventionalSnapshotCopy = _fs.FileExists(_fs.ResolvePath($"game_state/control/pending_turn_snapshot/{relativePath}"));
+        var hasRawManifestReference = rawManifestJson?.Contains(relativePath, StringComparison.OrdinalIgnoreCase) == true;
+        var hasPreTurnContractEvidence = hasCurrentFile ||
+                                         hasConventionalSnapshotCopy ||
+                                         hasRawManifestReference ||
+                                         (rawManifest != null && HasPendingResolutionValidatedSnapshotRegistration(rawManifest, relativePath));
+        if (!hasPreTurnContractEvidence)
+            return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.NoPreTurnContract, null);
+
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+        {
+            issues.Add(new ValidationIssue(
+                relativePath,
+                IssueSeverity.Error,
+                missingMessage,
+                code: missingCode,
+                section: section,
+                expected: $"validated pending turn snapshot manifest with {relativePath}",
+                actual: DescribeValidatedPendingTurnSnapshotStatus(lookup.Status),
+                repairHint: repairHint));
+            return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.MissingValidatedSnapshot, null);
+        }
+
+        var hasValidatedSnapshotRegistration = HasPendingResolutionValidatedSnapshotRegistration(lookup.Manifest, relativePath);
+        var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath);
+        if (string.IsNullOrWhiteSpace(snapshotJson))
+        {
+            issues.Add(new ValidationIssue(
+                relativePath,
+                IssueSeverity.Error,
+                missingMessage,
+                code: missingCode,
+                section: section,
+                expected: $"validated snapshot entry for {relativePath}",
+                actual: (hasValidatedSnapshotRegistration || !hasCurrentFile)
+                    ? "validated snapshot contract is registered but snapshot entry/file is missing or unreadable"
+                    : "current request exists but manifest.Files/snapshotFileHashes entry is missing or unreadable",
+                repairHint: repairHint));
+            return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.MissingValidatedSnapshot, null);
+        }
+
+        try
+        {
+            using var snapshotDoc = JsonDocument.Parse(snapshotJson);
+            if (semanticValidator != null)
+            {
+                var issueCountBeforeValidation = issues.Count;
+                semanticValidator(snapshotDoc.RootElement, relativePath, issues);
+                if (issues.Count > issueCountBeforeValidation)
+                    return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.InvalidValidatedSnapshot, null);
+            }
+
+            var contract = JsonSerializer.Deserialize<TContract>(snapshotDoc.RootElement.GetRawText());
+            if (contract != null)
+                return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.Resolved, contract);
+        }
+        catch
+        {
+            // explicit fail-closed issue emitted below
+        }
+
+        issues.Add(new ValidationIssue(
+            relativePath,
+            IssueSeverity.Error,
+            invalidMessage,
+            code: invalidCode,
+            section: section,
+            expected: $"well-formed validated snapshot contract for {relativePath}",
+            actual: "validated snapshot entry exists but JSON contract is unreadable or malformed",
+            repairHint: repairHint));
+
+        return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.InvalidValidatedSnapshot, null);
+    }
+
+    private static bool HasPendingResolutionValidatedSnapshotRegistration(ValidationPendingTurnSnapshotManifest manifest, string relativePath)
+    {
+        return manifest.Files.ContainsKey(relativePath) ||
+               manifest.SnapshotFileHashes.ContainsKey(relativePath) ||
+               manifest.RollbackBackups.ContainsKey(relativePath);
+    }
+
+    private async Task ValidatePendingAbodeOfferingRequestRealmContextAsync(
+        string requestPath,
+        string section,
+        List<ValidationIssue> issues)
+    {
+        var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            requestPath,
+            issues,
+            code: "abode_offering_invalid_validated_snapshot_context",
+            section: section);
+        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
+        {
+            issues.Add(new ValidationIssue(
+                requestPath,
+                IssueSeverity.Error,
+                "pending_abode_offering.json допустим только в afterlife realm",
+                code: "abode_offering_wrong_realm",
+                section: section,
+                expected: "Chaos Sea or Shining Abode pre-turn realm",
+                actual: currentRealm,
+                repairHint: "Не создавай и не разрешай pending_abode_offering.json вне afterlife realm."));
+        }
+    }
+
+    private async Task ValidatePendingGuardianTradeRequestRealmContextAsync(
+        string requestPath,
+        string section,
+        List<ValidationIssue> issues)
+    {
+        var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            requestPath,
+            issues,
+            code: "guardian_trade_request_invalid_validated_snapshot_context",
+            section: section);
+        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
+        {
+            issues.Add(new ValidationIssue(
+                requestPath,
+                IssueSeverity.Error,
+                "pending_guardian_trade_request.json допустим только в afterlife realm",
+                code: "guardian_trade_request_wrong_realm",
+                section: section,
+                expected: "Chaos Sea or Shining Abode pre-turn realm",
+                actual: currentRealm,
+                repairHint: "Не создавай и не разрешай pending_guardian_trade_request.json вне afterlife realm."));
+        }
+    }
+
+    private void ValidatePendingAbodeOfferingConsumptionProof(
+        string? preTurnSoulJson,
+        string? currentSoulJson,
+        GuardianAbodeOfferingState.PendingAbodeOfferingRequest request,
+        string section,
+        List<ValidationIssue> issues)
+    {
+        if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
+        {
+            var preTurnRelicProof = ReadSoulRelicProofEntry(preTurnSoulJson, request.RelicId);
+            if (preTurnRelicProof.Status == SoulStateEntryPresenceStatus.Unreadable ||
+                preTurnRelicProof.Status == SoulStateEntryPresenceStatus.InvalidShape)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "pending abode offering с Soul Relic не может быть доказан: validated pre-turn soul_state unreadable или malformed.",
+                    code: "abode_offering_invalid_validated_snapshot_soul_state",
+                    section: section,
+                    expected: "readable validated pre-turn soul_state baseline",
+                    actual: "validated pre-turn soul_state unreadable or malformed",
+                    repairHint: "Сохраняй в validated snapshot корректный JSON soul_state и доказывай relic offering через читаемый pre-turn ownership baseline."));
+                return;
+            }
+
+            if (preTurnRelicProof.Status != SoulStateEntryPresenceStatus.Present)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "pending abode offering с Soul Relic не доказан: offered relic отсутствовал в validated pre-turn soul_state.",
+                    code: "abode_offering_soul_relic_missing_preturn_ownership",
+                    section: section,
+                    expected: request.RelicId ?? "validated pre-turn owned Soul Relic",
+                    actual: "relic missing from validated pre-turn soul_state",
+                    repairHint: "Доказывай offering Soul Relic через validated pre-turn ownership и current consumption, а не только через journal/power outcome."));
+                return;
+            }
+
+            if (preTurnRelicProof.Entry == null || !SoulRelicRequestMatchesProofEntry(request, preTurnRelicProof.Entry))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "pending abode offering с Soul Relic не доказан: authored relic metadata не совпадают с реально consumed pre-turn relic.",
+                    code: "abode_offering_soul_relic_metadata_mismatch",
+                    section: section,
+                    expected: DescribeSoulRelicProofEntry(preTurnRelicProof.Entry),
+                    actual: $"{request.RelicId} / {request.RelicName} / {request.RelicRarity}",
+                    repairHint: "Синхронизируй pending_abode_offering и offering audit с canonical metadata той Soul Relic, которая реально существовала в validated pre-turn soul_state."));
+                return;
+            }
+
+            var currentRelicProof = ReadSoulRelicProofEntry(currentSoulJson, request.RelicId);
+            if (currentRelicProof.Status == SoulStateEntryPresenceStatus.Unreadable ||
+                currentRelicProof.Status == SoulStateEntryPresenceStatus.InvalidShape)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "pending abode offering с Soul Relic не может быть доказан: current soul_state unreadable или malformed.",
+                    code: "abode_offering_invalid_current_soul_state",
+                    section: section,
+                    expected: "readable current soul_state proving relic consumption",
+                    actual: "current soul_state unreadable or malformed",
+                    repairHint: "Делай current soul_state.json корректным JSON и доказывай relic consumption через читаемое current состояние души."));
+                return;
+            }
+
+            if (currentRelicProof.Status == SoulStateEntryPresenceStatus.Present)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "Поднесённая Реликвия Души всё ещё находится в soul_state после pending abode offering",
+                    code: "abode_offering_soul_relic_not_consumed",
+                    section: section,
+                    repairHint: "Клиентский offering path должен локально удалить offered Soul Relic из soul_state перед GM turn."));
+            }
+
+            return;
+        }
+
+        if (!string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var preTurnArchiveProof = ReadAfterlifeArchiveProofEntry(preTurnSoulJson, request.ArchiveId);
+        if (preTurnArchiveProof.Status == SoulStateEntryPresenceStatus.Unreadable ||
+            preTurnArchiveProof.Status == SoulStateEntryPresenceStatus.InvalidShape)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "pending abode offering с archive entry не может быть доказан: validated pre-turn soul_state unreadable или malformed.",
+                code: "abode_offering_invalid_validated_snapshot_soul_state",
+                section: section,
+                expected: "readable validated pre-turn soul_state baseline",
+                actual: "validated pre-turn soul_state unreadable or malformed",
+                repairHint: "Сохраняй в validated snapshot корректный JSON soul_state и доказывай archive offering через читаемый pre-turn ownership baseline."));
+            return;
+        }
+
+        if (preTurnArchiveProof.Status != SoulStateEntryPresenceStatus.Present)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "pending abode offering с archive entry не доказан: offered archive entry отсутствовал в validated pre-turn soul_state.",
+                code: "abode_offering_archive_entry_missing_preturn_ownership",
+                section: section,
+                expected: request.ArchiveId ?? "validated pre-turn owned archive entry",
+                actual: "archive entry missing from validated pre-turn soul_state",
+                repairHint: "Доказывай archive offering через validated pre-turn ownership и current consumption, а не только через journal/power outcome."));
+            return;
+        }
+
+        if (preTurnArchiveProof.Entry == null || !ArchiveRequestMatchesProofEntry(request, preTurnArchiveProof.Entry))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "pending abode offering с archive entry не доказан: authored archive metadata не совпадают с реально consumed pre-turn archive entry.",
+                code: "abode_offering_archive_entry_metadata_mismatch",
+                section: section,
+                expected: DescribeArchiveProofEntry(preTurnArchiveProof.Entry),
+                actual: $"{request.ArchiveId} / {request.ArchiveTitle} / {request.ArchiveEntryType} / {request.ArchiveRarity}",
+                repairHint: "Синхронизируй pending_abode_offering и offering audit с canonical metadata той archive entry, которая реально существовала в validated pre-turn soul_state."));
+            return;
+        }
+
+        var currentArchiveProof = ReadAfterlifeArchiveProofEntry(currentSoulJson, request.ArchiveId);
+        if (currentArchiveProof.Status == SoulStateEntryPresenceStatus.Unreadable ||
+            currentArchiveProof.Status == SoulStateEntryPresenceStatus.InvalidShape)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "pending abode offering с archive entry не может быть доказан: current soul_state unreadable или malformed.",
+                code: "abode_offering_invalid_current_soul_state",
+                section: section,
+                expected: "readable current soul_state proving archive consumption",
+                actual: "current soul_state unreadable or malformed",
+                repairHint: "Делай current soul_state.json корректным JSON и доказывай archive offering через читаемое current состояние души."));
+            return;
+        }
+
+        if (currentArchiveProof.Status == SoulStateEntryPresenceStatus.Present)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Поднесённая архивная запись всё ещё находится в afterlifeArchive после pending abode offering",
+                code: "abode_offering_archive_entry_not_consumed",
+                section: section,
+                repairHint: "Клиентский offering path должен локально удалить offered archive entry из soul_state.afterlifeArchive.stored перед GM turn."));
+        }
+    }
+
+    private void ValidatePendingGuardianTradeRequestStateFile(JsonElement root, string contextPrefix, string section, List<ValidationIssue> issues)
+    {
+        var requestId = RequireString(root, contextPrefix, issues, "requestId");
+        var guardianId = RequireString(root, contextPrefix, issues, "guardianId");
+        var guardianName = RequireString(root, contextPrefix, issues, "guardianName");
+        var abodeId = RequireString(root, contextPrefix, issues, "abodeId");
+        var returnCycleId = RequireString(root, contextPrefix, issues, "returnCycleId");
+        ValidateIntegerField(root, contextPrefix, issues, "currentReputation");
+        ValidatePositiveNumberField(root, contextPrefix, issues, "derivedTradeSlotCount");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "effectiveRarityCeilingBonusSteps", section);
+        var projectBonusSignature = RequireString(root, contextPrefix, issues, "projectBonusSignature");
+        var derivedTradeSlotCount = TryReadIntField(root, "derivedTradeSlotCount", out var parsedSlotCount) ? parsedSlotCount : 0;
+        var hasCurrentReputation = root.TryGetProperty("currentReputation", out var currentReputationProp) &&
+                                   currentReputationProp.ValueKind == JsonValueKind.Number &&
+                                   currentReputationProp.TryGetInt32(out _);
+        var hasEffectiveRarityCeilingBonusSteps = root.TryGetProperty("effectiveRarityCeilingBonusSteps", out var rarityBonusProp) &&
+                                                  rarityBonusProp.ValueKind == JsonValueKind.Number &&
+                                                  rarityBonusProp.TryGetInt32(out var parsedRarityBonus) &&
+                                                  parsedRarityBonus >= 0;
+        var createdAtUtc = RequireString(root, contextPrefix, issues, "createdAtUtc");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtTurn", section);
+        var hasCreatedAtTurn = root.TryGetProperty("createdAtTurn", out var createdAtTurnProp) &&
+                               createdAtTurnProp.ValueKind == JsonValueKind.Number &&
+                               createdAtTurnProp.TryGetInt32(out var createdAtTurn) &&
+                               createdAtTurn >= 0;
+
+        if (!string.IsNullOrWhiteSpace(createdAtUtc) && !DateTimeOffset.TryParse(createdAtUtc, out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.createdAtUtc",
+                IssueSeverity.Error,
+                "pending_guardian_trade_request.json.createdAtUtc должен быть ISO 8601 timestamp",
+                code: "guardian_trade_request_invalid_created_at",
+                section: section,
+                expected: "ISO 8601 timestamp",
+                actual: createdAtUtc));
+        }
+
+        if (string.IsNullOrWhiteSpace(requestId) ||
+            string.IsNullOrWhiteSpace(guardianId) ||
+            string.IsNullOrWhiteSpace(guardianName) ||
+            string.IsNullOrWhiteSpace(abodeId) ||
+            string.IsNullOrWhiteSpace(returnCycleId) ||
+            !hasCurrentReputation ||
+            derivedTradeSlotCount <= 0 ||
+            !hasEffectiveRarityCeilingBonusSteps ||
+            string.IsNullOrWhiteSpace(projectBonusSignature) ||
+            !hasCreatedAtTurn)
+        {
+            issues.Add(new ValidationIssue(
+                contextPrefix,
+                IssueSeverity.Error,
+                "pending_guardian_trade_request.json должен содержать полный client-authored contract",
+                code: "guardian_trade_request_missing_fields",
+                section: section));
+        }
+    }
+
+    private async Task<TContract?> ReadRequiredValidatedCurrentPreTurnTrackedContractAsync<TContract>(
+        string relativePath,
+        List<ValidationIssue> issues,
+        string missingCode,
+        string invalidCode,
+        string section,
+        string missingMessage,
+        string invalidMessage,
+        string repairHint)
+        where TContract : class
+    {
+        var snapshotJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            relativePath,
+            issues,
+            code: missingCode,
+            section: section,
+            message: missingMessage,
+            repairHint: repairHint);
+        if (string.IsNullOrWhiteSpace(snapshotJson))
+            return null;
+
+        try
+        {
+            var contract = JsonSerializer.Deserialize<TContract>(snapshotJson);
+            if (contract != null)
+                return contract;
+        }
+        catch
+        {
+            // explicit fail-closed issue emitted below
+        }
+
+        issues.Add(new ValidationIssue(
+            relativePath,
+            IssueSeverity.Error,
+            invalidMessage,
+            code: invalidCode,
+            section: section,
+            expected: $"well-formed validated snapshot contract for {relativePath}",
+            actual: "validated snapshot entry exists but JSON contract is unreadable or malformed",
+            repairHint: repairHint));
+
+        return null;
+    }
+
+    private static bool TryBuildGuardianTradeResolutionGuardian(
+        GuardianPolicyContext context,
+        string guardianId,
+        out JsonObject guardian,
+        out string actual)
+    {
+        guardian = null!;
+        actual = "guardian authority unavailable";
+
+        if (!TryGetCurrentGuardian(context, guardianId, out var authorityGuardianElement))
+        {
+            actual = $"guardian {guardianId} missing from current guardian authority";
+            return false;
+        }
+
+        if (JsonNode.Parse(authorityGuardianElement.GetRawText()) is not JsonObject authorityGuardian)
+        {
+            actual = $"guardian {guardianId} current authority unreadable";
+            return false;
+        }
+
+        if (!TryGetCurrentMaterializedGuardian(context, guardianId, out var materializedGuardianElement))
+        {
+            actual = $"guardian {guardianId} missing from current guardians[]";
+            return false;
+        }
+
+        if (JsonNode.Parse(materializedGuardianElement.GetRawText()) is not JsonObject materializedGuardian)
+        {
+            actual = $"guardian {guardianId} materialized guardian state unreadable";
+            return false;
+        }
+
+        var authorityAbodeId = authorityGuardian["abode"] is JsonObject authorityAbode
+            ? authorityAbode["abodeId"]?.GetValue<string>()
+            : null;
+        var materializedAbodeId = materializedGuardian["abode"] is JsonObject materializedAbode
+            ? materializedAbode["abodeId"]?.GetValue<string>()
+            : null;
+        if (!string.Equals(materializedAbodeId, authorityAbodeId, StringComparison.OrdinalIgnoreCase))
+        {
+            actual = $"guardian {guardianId} materialized guardian state points to non-authoritative abode";
+            return false;
+        }
+
+        if (!MaterializedGuardianMatchesAuthorityOutsideTradeResolutionSurface(authorityGuardian, materializedGuardian))
+        {
+            actual = $"guardian {guardianId} materialized guardian state diverges from current authority outside trade resolution surfaces";
+            return false;
+        }
+
+        guardian = authorityGuardian.DeepClone().AsObject();
+        guardian.Remove("tradeInventory");
+        guardian.Remove(GuardianTradeRequestState.ReceiptsProperty);
+        if (materializedGuardian["tradeInventory"] != null)
+            guardian["tradeInventory"] = materializedGuardian["tradeInventory"]?.DeepClone();
+        if (materializedGuardian[GuardianTradeRequestState.ReceiptsProperty] != null)
+            guardian[GuardianTradeRequestState.ReceiptsProperty] = materializedGuardian[GuardianTradeRequestState.ReceiptsProperty]?.DeepClone();
+
+        return true;
+    }
+
+    private static bool MaterializedGuardianMatchesAuthorityOutsideTradeResolutionSurface(
+        JsonObject authorityGuardian,
+        JsonObject materializedGuardian)
+    {
+        var authorityComparable = authorityGuardian.DeepClone().AsObject();
+        var materializedComparable = materializedGuardian.DeepClone().AsObject();
+        authorityComparable.Remove("tradeInventory");
+        authorityComparable.Remove(GuardianTradeRequestState.ReceiptsProperty);
+        materializedComparable.Remove("tradeInventory");
+        materializedComparable.Remove(GuardianTradeRequestState.ReceiptsProperty);
+        return JsonNode.DeepEquals(authorityComparable, materializedComparable);
     }
 
     private async Task ValidatePendingNpcTradeInventoryRequestContextAsync(List<ValidationIssue> issues)
@@ -1464,7 +2175,12 @@ public partial class ValidationService
         if (requests.Count == 0)
             return;
 
-        if (!IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+            issues,
+            code: "abode_resident_interactions_invalid_validated_snapshot_context",
+            section: "AfterlifeResidents");
+        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
         {
             issues.Add(new ValidationIssue(
                 GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
@@ -1527,7 +2243,12 @@ public partial class ValidationService
         if (requests.Count == 0)
             return;
 
-        if (!IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+            issues,
+            code: "abode_resident_roster_invalid_validated_snapshot_context",
+            section: "AfterlifeResidents");
+        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
         {
             issues.Add(new ValidationIssue(
                 GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
@@ -1555,7 +2276,13 @@ public partial class ValidationService
 
     private async Task ValidatePendingGuardianAbodeResidentInteractionResolutionAsync(List<ValidationIssue> issues)
     {
-        var preTurnJson = await ReadPreTurnTrackedFileAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath);
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+            issues,
+            code: "abode_resident_interaction_missing_validated_snapshot_request",
+            section: "AfterlifeResidents",
+            message: "pending_guardian_abode_resident_interactions.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Resident interaction contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_guardian_abode_resident_interactions.json в manifest.Files и snapshotFileHashes.");
         if (string.IsNullOrWhiteSpace(preTurnJson))
             return;
 
@@ -1576,7 +2303,7 @@ public partial class ValidationService
             GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
             var receipts = GuardianAbodeResidentState.EnsureInteractionReceiptsArray(currentResidentsRoot);
             var historyLog = GuardianAbodeResidentState.EnsureHistoryLogArray(currentResidentsRoot);
-            var preTurnResidentsJson = await ReadPreTurnTrackedFileAsync(GuardianAbodeResidentState.StatePath);
+            var preTurnResidentsJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(GuardianAbodeResidentState.StatePath);
             JsonObject? preTurnResidentsRoot = null;
             if (!string.IsNullOrWhiteSpace(preTurnResidentsJson))
             {
@@ -1645,7 +2372,13 @@ public partial class ValidationService
 
     private async Task ValidatePendingGuardianAbodeResidentsResolutionAsync(List<ValidationIssue> issues)
     {
-        var preTurnJson = await ReadPreTurnTrackedFileAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath);
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+            issues,
+            code: "abode_resident_roster_missing_validated_snapshot_request",
+            section: "AfterlifeResidents",
+            message: "pending_guardian_abode_residents_request.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Resident roster contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_guardian_abode_residents_request.json в manifest.Files и snapshotFileHashes.");
         if (string.IsNullOrWhiteSpace(preTurnJson))
             return;
 
@@ -1715,7 +2448,12 @@ public partial class ValidationService
         if (requests.Count == 0)
             return;
 
-        if (!IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+            issues,
+            code: "guardian_social_interaction_invalid_validated_snapshot_context",
+            section: "GuardianSocial");
+        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
         {
             issues.Add(new ValidationIssue(
                 ActorSocialInteractionRequestState.PendingGuardianRequestPath,
@@ -1811,7 +2549,13 @@ public partial class ValidationService
 
     private async Task ValidatePendingGuardianSocialInteractionResolutionAsync(List<ValidationIssue> issues)
     {
-        var preTurnJson = await ReadPreTurnTrackedFileAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath);
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+            issues,
+            code: "guardian_social_interaction_missing_validated_snapshot_request",
+            section: "GuardianSocial",
+            message: "pending_guardian_social_interactions.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Guardian social contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_guardian_social_interactions.json в manifest.Files и snapshotFileHashes.");
         if (string.IsNullOrWhiteSpace(preTurnJson))
             return;
 
@@ -1937,7 +2681,7 @@ public partial class ValidationService
         GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
 
         JsonObject? preTurnResidentsRoot = null;
-        var preTurnResidentsJson = await ReadPreTurnTrackedFileAsync(GuardianAbodeResidentState.StatePath);
+        var preTurnResidentsJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(GuardianAbodeResidentState.StatePath);
         if (!string.IsNullOrWhiteSpace(preTurnResidentsJson))
         {
             try
@@ -1952,7 +2696,7 @@ public partial class ValidationService
             }
         }
 
-        var preTurnSoulQuestJson = await ReadPreTurnTrackedFileAsync("game_state/quests/soul_quests.json");
+        var preTurnSoulQuestJson = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/quests/soul_quests.json");
         var currentSoulQuestJson = await _fs.ReadFileAsync("game_state/quests/soul_quests.json");
         var preTurnQuestFingerprintsByResident = CollectResidentSoulQuestFingerprints(preTurnSoulQuestJson);
         var currentQuestFingerprintsByResident = CollectResidentSoulQuestFingerprints(currentSoulQuestJson);
@@ -2021,7 +2765,12 @@ public partial class ValidationService
         if (request == null)
             return;
 
-        if (!IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            issues,
+            code: "archive_consultation_request_invalid_validated_snapshot_context",
+            section: "AfterlifeArchive");
+        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
         {
             issues.Add(new ValidationIssue(
                 AfterlifeArchiveActionState.ConsultationRequestPath,
@@ -2078,7 +2827,13 @@ public partial class ValidationService
 
     private async Task ValidatePendingArchiveConsultationResolutionAsync(List<ValidationIssue> issues)
     {
-        var preTurnJson = await ReadPreTurnTrackedFileAsync(AfterlifeArchiveActionState.ConsultationRequestPath);
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            issues,
+            code: "archive_consultation_request_missing_validated_snapshot_request",
+            section: "AfterlifeArchive",
+            message: "pending_archive_consultation_request.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Archive consultation contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_archive_consultation_request.json в manifest.Files и snapshotFileHashes.");
         if (string.IsNullOrWhiteSpace(preTurnJson))
             return;
 
@@ -2124,8 +2879,19 @@ public partial class ValidationService
             var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
             if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
             {
-                var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
-                if (!ArchiveConsultationReceiptHasMatchingCompletedProject(trackerJson, request.RequestId, request.ArchiveId, request.GuardianId, receipt))
+                if (!TryResolveGuardianProjectTrackerValidationRootSync(out var trackerRoot, out var trackerContext))
+                {
+                    issues.Add(new ValidationIssue(
+                        AfterlifeArchiveActionState.ConsultationRequestPath,
+                        IssueSeverity.Error,
+                        "Accepted archive consultation request требует readable validated pre-turn project tracker baseline и не использует current tracker как authority fallback.",
+                        code: "archive_consultation_request_missing_validated_preturn_tracker_snapshot",
+                        section: "AfterlifeArchive",
+                        expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
+                        actual: DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus),
+                        repairHint: $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для archive consultation resolution. Без этого completed lore_research provenance нельзя подтверждать по current tracker alone."));
+                }
+                else if (!ArchiveConsultationReceiptHasMatchingCompletedProject(trackerRoot, request.RequestId, request.ArchiveId, request.GuardianId, receipt))
                 {
                     issues.Add(new ValidationIssue(
                         AfterlifeArchiveActionState.ConsultationRequestPath,
@@ -2162,7 +2928,12 @@ public partial class ValidationService
         if (request == null)
             return;
 
-        if (!IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            issues,
+            code: "archive_project_fuel_request_invalid_validated_snapshot_context",
+            section: "AfterlifeArchive");
+        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
         {
             issues.Add(new ValidationIssue(
                 AfterlifeArchiveActionState.ProjectFuelRequestPath,
@@ -2219,7 +2990,13 @@ public partial class ValidationService
 
     private async Task ValidatePendingArchiveProjectFuelResolutionAsync(List<ValidationIssue> issues)
     {
-        var preTurnJson = await ReadPreTurnTrackedFileAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath);
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            issues,
+            code: "archive_project_fuel_request_missing_validated_snapshot_request",
+            section: "AfterlifeArchive",
+            message: "pending_archive_project_fuel_request.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Archive project fuel contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_archive_project_fuel_request.json в manifest.Files и snapshotFileHashes.");
         if (string.IsNullOrWhiteSpace(preTurnJson))
             return;
 
@@ -2398,7 +3175,11 @@ public partial class ValidationService
         if (!IncarnationTriggerContract.TryParse(json, out var payload))
             return;
 
-        var preTurnRealm = await TryResolvePreTurnRealmAsync();
+        var preTurnRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            "game_state/control/incarnation_trigger.json",
+            issues,
+            code: "incarnation_trigger_invalid_validated_snapshot_context",
+            section: "Lifecycle");
         if (string.IsNullOrWhiteSpace(preTurnRealm))
             return;
 
@@ -2421,8 +3202,15 @@ public partial class ValidationService
 
     private async Task ValidateForcedGuardianIncarnationContextAsync(IncarnationTriggerPayload payload, List<ValidationIssue> issues)
     {
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
-        if (!string.Equals(manifest?.SourceLabel, "обработки хода", StringComparison.OrdinalIgnoreCase))
+        var manifest = await LoadRequiredValidatedCurrentPendingTurnSnapshotManifestAsync(
+            "game_state/control/incarnation_trigger.json",
+            issues,
+            code: "forced_incarnation_invalid_validated_snapshot_context",
+            section: "Lifecycle",
+            message: "Guardian-forced TriggerIncarnation требует current validated pending turn snapshot ordinary afterlife context.",
+            repairHint: "Используй current validated pending turn snapshot с корректными sessionId/requestId/turnNumber, ordinary afterlife sourceLabel и сохранённым playerAction текущего хода.");
+        if (manifest != null &&
+            !string.Equals(manifest.SourceLabel, "обработки хода", StringComparison.OrdinalIgnoreCase))
         {
             issues.Add(new ValidationIssue(
                 "game_state/control/incarnation_trigger.json",
@@ -2431,12 +3219,12 @@ public partial class ValidationService
                 code: "forced_incarnation_invalid_source_turn",
                 section: "Lifecycle",
                 expected: "ordinary player-driven Chaos Sea turn",
-                actual: manifest?.SourceLabel ?? "missing sourceLabel",
+                actual: manifest.SourceLabel ?? "missing sourceLabel",
                 repairHint: "Не навязывай принудительное воплощение на lifecycle/system turns. Сначала верни душу в обитель, дай ей хотя бы один обычный afterlife turn, и только затем реагируй на провокацию."));
         }
 
         var playerAction = manifest?.PlayerAction ?? string.Empty;
-        if (!HasGuardianProvocationEvidence(playerAction, payload))
+        if (manifest != null && !HasGuardianProvocationEvidence(playerAction, payload))
         {
             issues.Add(new ValidationIssue(
                 "input/turn_request.json.playerAction",
@@ -2479,18 +3267,18 @@ public partial class ValidationService
             }
         }
 
-        var guardianContext = await TryReadActiveGuardianIncarnationContextAsync();
+        var guardianContext = await TryReadCanonicalForcedGuardianIncarnationContextAsync();
         if (guardianContext == null)
         {
             issues.Add(new ValidationIssue(
-                "game_state/meta/guardians.json.activeGuardian",
+                "game_state/meta/guardians.json",
                 IssueSeverity.Error,
-                "Guardian-forced TriggerIncarnation требует materialized activeGuardian и его текущую обитель.",
+                "Guardian-forced TriggerIncarnation требует activeGuardian selector и matching canonical guardian context из guardians[].",
                 code: "forced_incarnation_missing_active_guardian_context",
                 section: "Lifecycle",
-                expected: "activeGuardian + current abode context",
-                actual: "missing or invalid guardians active context",
-                repairHint: "Сначала materialize activeGuardian, его abode и chaosSeaNavigation.currentAbodeId. Только после этого возможна санкция конкретного Хранителя."));
+                expected: "activeGuardian.guardianId matching guardians[] entry + current abode context",
+                actual: "missing or invalid canonical guardian context",
+                repairHint: "Сначала синхронизируй activeGuardian с guardians[] по guardianId и materialize canonical guardian abode/reputation state вместе с chaosSeaNavigation.currentAbodeId."));
             return;
         }
 
@@ -2579,50 +3367,33 @@ public partial class ValidationService
         return false;
     }
 
-    private async Task<ForcedGuardianIncarnationContext?> TryReadActiveGuardianIncarnationContextAsync()
+    private async Task<ForcedGuardianIncarnationContext?> TryReadCanonicalForcedGuardianIncarnationContextAsync()
     {
-        var json = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        if (string.IsNullOrWhiteSpace(json))
+        var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        if (!guardianPolicyContext.CurrentStateReadable ||
+            !TryGetCurrentAuthorityActiveGuardian(guardianPolicyContext, out var activeGuardian))
             return null;
 
         try
         {
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-            if (root.ValueKind != JsonValueKind.Object ||
-                !root.TryGetProperty("activeGuardian", out var activeGuardian) ||
-                activeGuardian.ValueKind != JsonValueKind.Object)
-            {
-                return null;
-            }
-
             var guardianId = GetFirstNonEmptyString(activeGuardian, "guardianId", "id") ?? "";
             if (string.IsNullOrWhiteSpace(guardianId))
                 return null;
 
-            var expectedAbodeId = "";
-            if (activeGuardian.TryGetProperty("abode", out var abode) && abode.ValueKind == JsonValueKind.Object)
-                expectedAbodeId = GetFirstNonEmptyString(abode, "abodeId") ?? "";
+            if (!TryGetCurrentGuardian(guardianPolicyContext, guardianId, out var canonicalGuardian))
+                return null;
+
+            var expectedAbodeId = TryReadGuardianAbodeId(canonicalGuardian) ?? "";
 
             var currentAbodeId = "";
-            if (root.TryGetProperty("chaosSeaNavigation", out var navigation) && navigation.ValueKind == JsonValueKind.Object)
+            if (guardianPolicyContext.HasCurrentRoot &&
+                guardianPolicyContext.CurrentRoot.TryGetProperty("chaosSeaNavigation", out var navigation) &&
+                navigation.ValueKind == JsonValueKind.Object)
+            {
                 currentAbodeId = GetFirstNonEmptyString(navigation, "currentAbodeId") ?? "";
+            }
 
-            var currentReputation = 0;
-            if (activeGuardian.TryGetProperty("relationshipData", out var relationshipData) &&
-                relationshipData.ValueKind == JsonValueKind.Object &&
-                relationshipData.TryGetProperty("currentReputation", out var reputationNode) &&
-                reputationNode.ValueKind == JsonValueKind.Number &&
-                reputationNode.TryGetInt32(out var relationshipReputation))
-            {
-                currentReputation = relationshipReputation;
-            }
-            else if (activeGuardian.TryGetProperty("reputation", out var reputationProp) &&
-                     reputationProp.ValueKind == JsonValueKind.Number &&
-                     reputationProp.TryGetInt32(out var directReputation))
-            {
-                currentReputation = directReputation;
-            }
+            var currentReputation = TryReadGuardianCurrentReputation(canonicalGuardian) ?? 0;
 
             return new ForcedGuardianIncarnationContext
             {
@@ -3389,16 +4160,38 @@ public partial class ValidationService
         }
     }
 
+    private static string? TryReadGuardianAbodeId(JsonElement guardian)
+    {
+        return guardian.TryGetProperty("abode", out var abode) && abode.ValueKind == JsonValueKind.Object
+            ? GetFirstNonEmptyString(abode, "abodeId")
+            : null;
+    }
+
+    private static int? TryReadGuardianCurrentReputation(JsonElement guardian)
+    {
+        if (guardian.TryGetProperty("relationshipData", out var relationshipData) &&
+            relationshipData.ValueKind == JsonValueKind.Object &&
+            relationshipData.TryGetProperty("currentReputation", out var reputationNode) &&
+            reputationNode.ValueKind == JsonValueKind.Number &&
+            reputationNode.TryGetInt32(out var relationshipReputation))
+        {
+            return relationshipReputation;
+        }
+
+        if (guardian.TryGetProperty("reputation", out var reputationProp) &&
+            reputationProp.ValueKind == JsonValueKind.Number &&
+            reputationProp.TryGetInt32(out var directReputation))
+        {
+            return directReputation;
+        }
+
+        return null;
+    }
+
     private static bool GuardianExistsInState(JsonObject? guardiansRoot, string guardianId)
     {
         if (guardiansRoot == null || string.IsNullOrWhiteSpace(guardianId))
             return false;
-
-        if (guardiansRoot["activeGuardian"] is JsonObject activeGuardian &&
-            string.Equals(GetNodeString(activeGuardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
 
         return guardiansRoot["guardians"] is JsonArray guardians &&
                guardians.OfType<JsonObject>().Any(guardian =>

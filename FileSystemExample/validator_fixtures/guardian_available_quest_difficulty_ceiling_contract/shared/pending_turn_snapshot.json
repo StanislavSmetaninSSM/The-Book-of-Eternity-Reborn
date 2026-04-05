@@ -1,0 +1,22 @@
+{
+  "sessionId": "fixture-session",
+  "requestId": "fixture-request",
+  "turnNumber": 1,
+  "requestTimestamp": "2026-03-20T11:00:00Z",
+  "playerAction": "Guardian difficulty ceiling fixture.",
+  "files": {
+    "game_state/meta/guardians.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
+  },
+  "snapshotFileHashes": {
+    "game_state/meta/guardians.json": "B7A5630C3688AB9FC09F83368F4942E48C001B0B5051596FF409AB2159C31F04"
+  },
+  "clientOwnedValidationHashes": {},
+  "rollbackBackups": {
+    "game_state/meta/guardians.json": "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
+  },
+  "rollbackBaselineFiles": [
+    "game_state/meta/guardians.json"
+  ],
+  "sourceLabel": "fixture",
+  "manifestPayloadHash": "A171A345CFCBC07095BBB4655BAD2D1EBDAA42EEEAB1E5EA94C7E3CF334A745F"
+}

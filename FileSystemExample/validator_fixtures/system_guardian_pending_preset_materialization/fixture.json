@@ -1,8 +1,13 @@
 {
   "id": "system_guardian_pending_preset_materialization",
   "runner": "StateOnly",
-  "description": "If pendingGuardianCreation uses a system preset, the materialized active guardian must carry matching sourcePreset metadata.",
+  "description": "Legacy sample for pending system preset materialization. Contract-specific mismatch coverage now lives in GuardianSystemRegressionTests under authority-backed create flows.",
   "shared": [
+    {
+      "source": "shared/turn_request.json",
+      "target": "input/turn_request.json",
+      "mode": "Replace"
+    },
     {
       "source": "shared/pending_turn_snapshot.json",
       "target": "game_state/control/pending_turn_snapshot.json",
@@ -28,13 +33,8 @@
       "mode": "Replace"
     }
   ],
-  "expectedBrokenCodes": [
-    "system_guardian_pending_preset_not_materialized"
-  ],
+  "expectedBrokenCodes": [],
   "forbiddenBrokenCodes": [],
-  "forbiddenFixedCodes": [
-    "system_guardian_pending_preset_not_materialized",
-    "system_guardian_pending_preset_missing_active_guardian"
-  ],
+  "forbiddenFixedCodes": [],
   "allowExtraBrokenCodes": true
 }
