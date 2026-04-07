@@ -105,7 +105,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var journalJson = await _fs.ReadFileAsync(GuardianProjectState.JournalPath);
@@ -124,7 +124,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         { "turnNumber": 44 }
         """);
 
-        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        const string preTurnTrackerJson = """
         {
           "activeProjects": [],
           "completedProjects": [
@@ -154,7 +154,11 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
           ],
           "temporaryProjectModifiers": []
         }
-        """);
+        """;
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, preTurnTrackerJson);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects_prev.json",
+            preTurnTrackerJson);
 
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
@@ -217,7 +221,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
@@ -237,7 +241,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         { "turnNumber": 44 }
         """);
 
-        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        const string preTurnTrackerJson = """
         {
           "activeProjects": [],
           "completedProjects": [
@@ -267,7 +271,11 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
           ],
           "temporaryProjectModifiers": []
         }
-        """);
+        """;
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, preTurnTrackerJson);
+        await _fs.WriteFileAtomicAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects_prev.json",
+            preTurnTrackerJson);
 
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
@@ -341,7 +349,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
@@ -457,7 +465,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
@@ -591,7 +599,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         };
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync(backups);
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer, backups);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");

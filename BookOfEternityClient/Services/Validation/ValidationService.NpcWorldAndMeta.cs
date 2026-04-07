@@ -848,7 +848,7 @@ public partial class ValidationService
             if (guardianPolicyContext.CurrentRoot.TryGetProperty("guardians", out var currentGuardians) &&
                 currentGuardians.ValueKind == JsonValueKind.Array)
             {
-                if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext))
+                if (!TryGetGenericSharedStrictPreTurnGuardianAuthorityRoot(guardianPolicyContext, out var preTurnAuthorityRoot))
                 {
                     extractionResult.DirectCanonicalGuardianDiffRequiredButSnapshotMissing = true;
                     return;
@@ -856,7 +856,7 @@ public partial class ValidationService
 
                 CollectGuardianArrayDiffStructuredActorTouches(
                     extractionResult,
-                    guardianPolicyContext.PreTurnRoot,
+                    preTurnAuthorityRoot,
                     guardianPolicyContext.CurrentRoot,
                     aliasLookup,
                     authoritativeGuardianIds);
@@ -2045,6 +2045,7 @@ public partial class ValidationService
     {
         return normalizedPath.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.StartsWith(QteSceneService.QteNormalizerBackupDirectory + "/", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/validation_repair_request.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||

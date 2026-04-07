@@ -692,7 +692,8 @@ public partial class ValidationService
             "game_state/meta/guardians.json",
             context.ActionTag,
             "pre-turn guardian reputation baseline",
-            issues);
+            issues,
+            authorityProofScope: CreateGuardianPowerEventAuthorityScopeForGuardian(guardianId));
         if (preGuardiansSnapshot.Status != GuardianAcceptedTurnSnapshotStatus.Resolved)
             return;
 
@@ -747,6 +748,20 @@ public partial class ValidationService
         }
 
         var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        if (!TryEnsureCurrentGuardianAuthorityForPowerEventSensitiveOutcome(guardianPolicyContext, out var currentGuardianAuthorityFailure))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "DONATE_TO_GUARDIAN не может быть доказан: current guardian authority unreadable или unavailable для strict reputation proof.",
+                code: "ink_feather_guardian_invalid_current_authority",
+                section: context.ActionTag,
+                expected: "readable current guardian authority root",
+                actual: currentGuardianAuthorityFailure,
+                repairHint: "Исправь current game_state/meta/guardians.json, validated guardian baselines и raw guardianPowerEvents так, чтобы kernel построил strict current guardian authority перед DONATE_TO_GUARDIAN proof."));
+            return;
+        }
+
         var currentReputation = TryReadGuardianCurrentReputationFromPolicyContext(guardianPolicyContext, guardianId);
         if (!currentReputation.HasValue ||
             !previousReputation.HasValue ||
@@ -841,7 +856,8 @@ public partial class ValidationService
             "game_state/meta/guardians.json",
             context.ActionTag,
             "pre-turn guardian reputation baseline",
-            issues);
+            issues,
+            authorityProofScope: CreateGuardianPowerEventAuthorityScopeForGuardian(guardianId));
         if (preGuardiansSnapshot.Status != GuardianAcceptedTurnSnapshotStatus.Resolved)
             return;
 
@@ -867,6 +883,20 @@ public partial class ValidationService
             AddMissingStateEvidenceIssue(issues, context.ActionTag, "guardian reputation change", "game_state/meta/guardians.json должен реально измениться после GUARDIAN_FAVOR.");
 
         var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        if (!TryEnsureCurrentGuardianAuthorityForPowerEventSensitiveOutcome(guardianPolicyContext, out var currentGuardianAuthorityFailure))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "GUARDIAN_FAVOR не может быть доказан: current guardian authority unreadable или unavailable для strict reputation proof.",
+                code: "ink_feather_guardian_invalid_current_authority",
+                section: context.ActionTag,
+                expected: "readable current guardian authority root",
+                actual: currentGuardianAuthorityFailure,
+                repairHint: "Исправь current game_state/meta/guardians.json, validated guardian baselines и raw guardianPowerEvents так, чтобы kernel построил strict current guardian authority перед GUARDIAN_FAVOR proof."));
+            return;
+        }
+
         var currentReputation = TryReadGuardianCurrentReputationFromPolicyContext(guardianPolicyContext, guardianId);
         if (!currentReputation.HasValue ||
             !previousReputation.HasValue ||
@@ -944,7 +974,9 @@ public partial class ValidationService
             "game_state/meta/guardians.json",
             context.ActionTag,
             "pre-turn guardian abode power baseline",
-            issues);
+            issues,
+            CreateGuardianPowerEventProofScopeForOffering(request),
+            CreateGuardianPowerEventAuthorityScopeForGuardian(request.GuardianId));
         if (preGuardiansSnapshot.Status != GuardianAcceptedTurnSnapshotStatus.Resolved)
             return;
 
@@ -1041,7 +1073,8 @@ public partial class ValidationService
                 repairHint: "Следуй формуле offering-а: 50/100/150 перьев -> +1/+2/+3 силы Обители."));
         }
 
-        var preTurnJournalKnowledgeResult = await ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync("offering");
+        var preTurnJournalKnowledgeResult = await ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync(
+            CreateGuardianPowerEventProofScopeForOffering(request));
         if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians)
         {
             issues.Add(new ValidationIssue(
@@ -1245,6 +1278,20 @@ public partial class ValidationService
 
         var previousPower = (int?)AbodePowerRules.GetCurrentPower(previousGuardian.Value);
         var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        if (!TryEnsureCurrentGuardianAuthorityForPowerEventSensitiveOutcome(guardianPolicyContext, out var currentGuardianAuthorityFailure))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "ABODE_OFFERING не может быть доказан: current guardian authority unreadable или unavailable для strict power proof.",
+                code: "abode_offering_invalid_current_guardian_authority",
+                section: context.ActionTag,
+                expected: "readable current guardian authority root",
+                actual: currentGuardianAuthorityFailure,
+                repairHint: "Исправь current game_state/meta/guardians.json, validated guardian baselines и raw guardianPowerEvents так, чтобы kernel построил strict current guardian authority перед ABODE_OFFERING power proof."));
+            return;
+        }
+
         var currentPower = TryReadGuardianCurrentAbodePowerFromPolicyContext(guardianPolicyContext, guardianId);
         if (!previousPower.HasValue || !currentPower.HasValue || currentPower.Value - previousPower.Value < powerGain.Value)
         {
@@ -2193,6 +2240,21 @@ public partial class ValidationService
         Resolved
     }
 
+    private enum GuardianSnapshotProofFailureKind
+    {
+        Guardians,
+        Journal,
+        Tracker
+    }
+
+    private enum SnapshotTrackerGuardianEffectDependencyStatus
+    {
+        NoTrackerDependency,
+        TrackerRequiredAndResolved,
+        MissingValidatedSnapshotTracker,
+        InvalidValidatedSnapshotTracker
+    }
+
     private sealed record GuardianAcceptedTurnSnapshotReadResult(
         GuardianAcceptedTurnSnapshotStatus Status,
         Dictionary<string, JsonElement>? GuardiansById);
@@ -2209,6 +2271,64 @@ public partial class ValidationService
     private sealed record GuardianPowerJournalProofKnowledge(
         HashSet<string> KnownGuardianIds,
         IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> KnownPoliticalProjects);
+
+    private readonly record struct GuardianPowerEventProofScope(
+        string? ReasonType,
+        string? GuardianId,
+        string? OfferingType,
+        string? ReturnCycleId,
+        int? InkFeathersOffered,
+        string? RelicId,
+        string? ArchiveId,
+        bool GuardianBaselineScope);
+
+    private static GuardianPowerEventProofScope CreateGuardianPowerEventProofScopeForReasonType(string reasonType)
+        => new(
+            reasonType,
+            GuardianId: null,
+            OfferingType: null,
+            ReturnCycleId: null,
+            InkFeathersOffered: null,
+            RelicId: null,
+            ArchiveId: null,
+            GuardianBaselineScope: false);
+
+    private static GuardianPowerEventProofScope CreateGuardianPowerEventProofScopeForOffering(
+        GuardianAbodeOfferingState.PendingAbodeOfferingRequest request)
+        => new(
+            "offering",
+            request.GuardianId,
+            request.OfferingType,
+            request.ReturnCycleId,
+            request.InkFeathersOffered,
+            request.RelicId,
+            request.ArchiveId,
+            GuardianBaselineScope: false);
+
+    private static GuardianPowerEventProofScope CreateGuardianPowerEventAuthorityScopeForGuardian(string guardianId)
+        => new(
+            ReasonType: null,
+            GuardianId: guardianId,
+            OfferingType: null,
+            ReturnCycleId: null,
+            InkFeathersOffered: null,
+            RelicId: null,
+            ArchiveId: null,
+            GuardianBaselineScope: true);
+
+    private static GuardianPowerEventProofScope CreateGuardianPowerEventAuthorityScopeForAllGuardians()
+        => new(
+            ReasonType: null,
+            GuardianId: null,
+            OfferingType: null,
+            ReturnCycleId: null,
+            InkFeathersOffered: null,
+            RelicId: null,
+            ArchiveId: null,
+            GuardianBaselineScope: true);
+
+    private static string? GetGuardianPowerEventProofScopeReasonType(GuardianPowerEventProofScope? proofScope)
+        => proofScope?.ReasonType;
 
     private sealed record GuardianPowerJournalProofKnowledgeReadResult(
         GuardianPowerJournalProofKnowledgeStatus Status,
@@ -2442,7 +2562,9 @@ public partial class ValidationService
         string relativePath,
         string actionTag,
         string purpose,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        GuardianPowerEventProofScope? proofScope = null,
+        GuardianPowerEventProofScope? authorityProofScope = null)
     {
         var json = await ReadRequiredValidatedGuardianAcceptedTurnSnapshotFileAsync(
             relativePath,
@@ -2459,22 +2581,33 @@ public partial class ValidationService
         try
         {
             string? trackerJson = null;
+            var hasTrackerSnapshotEntry = false;
             string? journalJson = null;
+            string? soulStateJson = null;
             var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
             if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null)
             {
+                hasTrackerSnapshotEntry = lookup.Manifest.Files != null &&
+                                          lookup.Manifest.Files.ContainsKey(GuardianProjectState.TrackerPath);
                 trackerJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianProjectState.TrackerPath);
                 journalJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianPowerEventState.JournalPath);
+                soulStateJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, "game_state/meta/soul_state.json");
             }
 
             if (TryReadCanonicalGuardianSnapshotForProof(
                     json,
                     relativePath,
                     trackerJson,
+                    hasTrackerSnapshotEntry,
                     $"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}",
                     journalJson,
                     $"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}",
+                    soulStateJson,
+                    proofScope,
+                    authorityProofScope,
+                    out _,
                     out var guardiansById,
+                    out _,
                     out var failureDescription))
             {
                 return new GuardianAcceptedTurnSnapshotReadResult(
@@ -2546,67 +2679,229 @@ public partial class ValidationService
         string? guardiansJson,
         string contextPrefix,
         string? trackerJson,
+        bool hasTrackerSnapshotEntry,
         string trackerContextPrefix,
         string? journalJson,
         string journalContextPrefix,
+        string? soulStateJson,
+        GuardianPowerEventProofScope? proofScope,
+        GuardianPowerEventProofScope? authorityProofScope,
+        out JsonElement authorityRoot,
         out Dictionary<string, JsonElement> guardiansById,
+        out GuardianSnapshotProofFailureKind failureKind,
         out string failureDescription)
     {
+        authorityRoot = default;
+        failureKind = GuardianSnapshotProofFailureKind.Guardians;
+        guardiansById = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+
         if (!TryReadCanonicalGuardianSnapshotStateForProof(
                 guardiansJson,
                 contextPrefix,
                 out var guardianRoot,
-                out guardiansById,
+                out var rawGuardiansById,
+                out var commandAuthorizationResult,
                 out failureDescription))
         {
             return false;
         }
 
-        if (!guardianRoot.TryGetProperty("guardianPowerEvents", out var powerEvents) ||
-            powerEvents.ValueKind == JsonValueKind.Null)
+        var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
+        var guardianRootObject = TryParseJsonObject(guardianRoot);
+        if (guardianRootObject == null)
         {
+            failureDescription = "validated snapshot guardian root cannot be materialized into authority";
+            return false;
+        }
+
+        var authorizedCreateObjects = BuildGuardianCreateObjectsForSnapshotProof(commandAuthorizationResult);
+        var baseAuthorityRoot = CanonicalStateNormalizer.BuildGuardianAuthorityRootForValidation(
+            guardianRootObject.DeepClone().AsObject(),
+            guardianRootObject.DeepClone().AsObject(),
+            commandAuthorizationResult.AuthorizedCommands,
+            authorizedCreateObjects,
+            authorizedPowerEvents: null,
+            currentTurn);
+        var baseAuthorityElement = CloneJsonObjectToElement(baseAuthorityRoot);
+        var baseGuardiansById = BuildGuardiansByIdFromAuthorityRoot(baseAuthorityElement);
+        var effectiveAuthorityProofScope = authorityProofScope ?? proofScope;
+        var proofRelevantPowerEvents = new List<(JsonElement Entry, string Context)>();
+        var authorityRelevantPowerEvents = new List<(JsonElement Entry, string Context)>();
+        var hasAuthorityRelevantPowerEvents = false;
+
+        if (guardianRoot.TryGetProperty("guardianPowerEvents", out var powerEvents) &&
+            powerEvents.ValueKind != JsonValueKind.Null)
+        {
+            if (powerEvents.ValueKind != JsonValueKind.Array)
+            {
+                failureDescription = $"{contextPrefix}.guardianPowerEvents must be an array when the property is present";
+                failureKind = GuardianSnapshotProofFailureKind.Guardians;
+                return false;
+            }
+
+            if (HasNonEmptyGuardianPowerEventArray(powerEvents))
+            {
+                if (!TryCollectGuardianPowerEventEntriesForProof(
+                        powerEvents,
+                        $"{contextPrefix}.guardianPowerEvents",
+                        proofScope,
+                        out proofRelevantPowerEvents,
+                        out var proofSelectionFailureDescription))
+                {
+                    failureDescription = proofSelectionFailureDescription;
+                    failureKind = GuardianSnapshotProofFailureKind.Guardians;
+                    return false;
+                }
+
+                if (Nullable.Equals(effectiveAuthorityProofScope, proofScope))
+                {
+                    authorityRelevantPowerEvents = proofRelevantPowerEvents;
+                }
+                else if (!TryCollectGuardianPowerEventEntriesForProof(
+                             powerEvents,
+                             $"{contextPrefix}.guardianPowerEvents",
+                             effectiveAuthorityProofScope,
+                             out authorityRelevantPowerEvents,
+                             out var authoritySelectionFailureDescription))
+                {
+                    failureDescription = authoritySelectionFailureDescription;
+                    failureKind = GuardianSnapshotProofFailureKind.Guardians;
+                    return false;
+                }
+
+                hasAuthorityRelevantPowerEvents = authorityRelevantPowerEvents.Count > 0;
+            }
+        }
+
+        var requiresTrackerGuardianMaterialization = false;
+        var trackerGuardianMaterializationStatus = ResolveSnapshotTrackerGuardianEffectDependency(
+            trackerJson,
+            hasTrackerSnapshotEntry,
+            authorityProofScope,
+            out requiresTrackerGuardianMaterialization,
+            out var trackerGuardianMaterializationFailureDescription);
+        if (trackerGuardianMaterializationStatus == SnapshotTrackerGuardianEffectDependencyStatus.MissingValidatedSnapshotTracker ||
+            trackerGuardianMaterializationStatus == SnapshotTrackerGuardianEffectDependencyStatus.InvalidValidatedSnapshotTracker)
+        {
+            failureDescription = trackerGuardianMaterializationFailureDescription;
+            failureKind = GuardianSnapshotProofFailureKind.Tracker;
+            return false;
+        }
+        if (!hasAuthorityRelevantPowerEvents && !requiresTrackerGuardianMaterialization)
+        {
+            authorityRoot = baseAuthorityElement;
+            guardiansById = baseGuardiansById;
             return true;
         }
 
-        if (!TryReadGuardianPowerJournalIdentityStateForProof(
+        GuardianPowerJournalIdentityState? snapshotJournalIdentityState = null;
+        if (hasAuthorityRelevantPowerEvents &&
+            !TryReadGuardianPowerJournalIdentityStateForProof(
                 journalJson,
                 journalContextPrefix,
-                out var snapshotJournalIdentityState,
+                out snapshotJournalIdentityState,
                 out var journalFailureDescription))
         {
             failureDescription =
                 $"guardianPowerEvents inside validated snapshot guardians.json require canonical validated snapshot journal baseline: {journalFailureDescription}";
+            failureKind = GuardianSnapshotProofFailureKind.Journal;
             return false;
         }
 
         var knownPoliticalProjects = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
-        if (GuardianPowerEventArrayRequiresProjectTrackerAuthority(powerEvents) &&
+        var requiresTrackerProofKnowledgeForRawEvents =
+            hasAuthorityRelevantPowerEvents &&
+            GuardianPowerEventEntriesRequireProjectTrackerAuthority(authorityRelevantPowerEvents);
+
+        if ((requiresTrackerProofKnowledgeForRawEvents || requiresTrackerGuardianMaterialization) &&
             !TryReadCanonicalGuardianProjectTrackerSnapshotForProof(
                 trackerJson,
                 trackerContextPrefix,
-                guardiansById,
+                soulStateJson,
+                baseAuthorityElement,
+                baseGuardiansById,
+                out _,
+                out _,
+                out _,
                 out knownPoliticalProjects,
                 out var trackerFailureDescription))
         {
             failureDescription =
-                $"guardianPowerEvents inside validated snapshot guardians.json require canonical validated snapshot tracker baseline: {trackerFailureDescription}";
+                $"validated snapshot guardian baseline requires canonical tracker materialization: {trackerFailureDescription}";
+            failureKind = GuardianSnapshotProofFailureKind.Tracker;
             return false;
         }
 
-        var scratchIssues = new List<ValidationIssue>();
-        ValidateGuardianPowerEventArrayAgainstKnownContext(
-            powerEvents,
-            $"{contextPrefix}.guardianPowerEvents",
-            scratchIssues,
-            new HashSet<string>(guardiansById.Keys, StringComparer.OrdinalIgnoreCase),
-            knownPoliticalProjects,
-            snapshotJournalIdentityState);
-        if (scratchIssues.Count != 0)
+        var authorityAfterRawElement = baseAuthorityElement;
+        var guardiansAfterRawById = baseGuardiansById;
+        if (hasAuthorityRelevantPowerEvents)
         {
-            failureDescription = DescribeGuardianAcceptedTurnSnapshotBaselineFailure(scratchIssues);
+            var scratchIssues = new List<ValidationIssue>();
+            ValidateGuardianPowerEventEntriesAgainstKnownContext(
+                authorityRelevantPowerEvents,
+                scratchIssues,
+                new HashSet<string>(baseGuardiansById.Keys, StringComparer.OrdinalIgnoreCase),
+                knownPoliticalProjects,
+                snapshotJournalIdentityState);
+            if (scratchIssues.Count != 0)
+            {
+                failureDescription = DescribeGuardianAcceptedTurnSnapshotBaselineFailure(scratchIssues);
+                failureKind = GuardianSnapshotProofFailureKind.Guardians;
+                return false;
+            }
+
+            var powerEventAuthorizationContext = BuildGuardianSnapshotPowerEventAuthorizationContext(baseAuthorityElement, baseGuardiansById);
+            if (!TryBuildAuthorizedGuardianPowerEventsForSnapshotProof(
+                    authorityRelevantPowerEvents,
+                    powerEventAuthorizationContext,
+                    knownPoliticalProjects,
+                    snapshotJournalIdentityState,
+                    out var authorizedPowerEvents,
+                    out var powerEventAuthorizationFailureDescription))
+            {
+                failureDescription = powerEventAuthorizationFailureDescription;
+                failureKind = GuardianSnapshotProofFailureKind.Guardians;
+                return false;
+            }
+
+            var authorityAfterRawRoot = CanonicalStateNormalizer.BuildGuardianAuthorityRootForValidation(
+                baseAuthorityRoot.DeepClone().AsObject(),
+                guardianRootObject.DeepClone().AsObject(),
+                authorizedCommands: null,
+                authorizedCreateGuardiansById: null,
+                authorizedPowerEvents,
+                currentTurn);
+            authorityAfterRawElement = CloneJsonObjectToElement(authorityAfterRawRoot);
+            guardiansAfterRawById = BuildGuardiansByIdFromAuthorityRoot(authorityAfterRawElement);
+        }
+
+        if (!requiresTrackerGuardianMaterialization)
+        {
+            authorityRoot = authorityAfterRawElement;
+            guardiansById = guardiansAfterRawById;
+            return true;
+        }
+
+        if (!TryReadCanonicalGuardianProjectTrackerSnapshotForProof(
+                trackerJson,
+                trackerContextPrefix,
+                soulStateJson,
+                authorityAfterRawElement,
+                guardiansAfterRawById,
+                out _,
+                out var guardianAuthorityAfterTracker,
+                out var guardiansAfterTrackerById,
+                out _,
+                out var trackerAuthorityFailureDescription))
+        {
+            failureDescription =
+                $"validated snapshot tracker side effects cannot be materialized into guardian baseline: {trackerAuthorityFailureDescription}";
+            failureKind = GuardianSnapshotProofFailureKind.Tracker;
             return false;
         }
 
+        authorityRoot = guardianAuthorityAfterTracker;
+        guardiansById = guardiansAfterTrackerById;
         return true;
     }
 
@@ -2615,10 +2910,12 @@ public partial class ValidationService
         string contextPrefix,
         out JsonElement guardianRoot,
         out Dictionary<string, JsonElement> guardiansById,
+        out GuardianCommandAuthorizationResult commandAuthorizationResult,
         out string failureDescription)
     {
         guardianRoot = default;
         guardiansById = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        commandAuthorizationResult = new GuardianCommandAuthorizationResult();
         failureDescription = "validated snapshot JSON unreadable or missing guardians[] array";
         if (string.IsNullOrWhiteSpace(guardiansJson))
             return false;
@@ -2641,7 +2938,7 @@ public partial class ValidationService
             if (scratchIssues.Count == 0)
             {
                 var snapshotPolicyContext = BuildGuardianSnapshotProofPolicyContext(doc.RootElement, guardiansByIdWithContext);
-                AuthorizeGuardianCommandsForPolicy(
+                commandAuthorizationResult = AuthorizeGuardianCommandsForPolicy(
                     doc.RootElement,
                     contextPrefix,
                     scratchIssues,
@@ -2676,6 +2973,8 @@ public partial class ValidationService
             CurrentStateReadable = true,
             HasPreTurnRoot = true,
             PreTurnRoot = root.Clone(),
+            HasProofLocalCommandAuthorizationBaselineRoot = true,
+            ProofLocalCommandAuthorizationBaselineRoot = root.Clone(),
             PreTurnGuardiansSnapshot = new(
                 ValidatedPendingTurnSnapshotStatus.Usable,
                 GuardianTrackedSnapshotFileStatus.Usable,
@@ -2687,6 +2986,105 @@ public partial class ValidationService
             context.PreTurnGuardiansById[guardianId] = guardianWithContext.Guardian.Clone();
 
         return context;
+    }
+
+    private static IReadOnlyDictionary<string, JsonObject> BuildGuardianCreateObjectsForSnapshotProof(
+        GuardianCommandAuthorizationResult commandAuthorizationResult)
+    {
+        var result = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+        foreach (var (guardianId, guardian) in commandAuthorizationResult.AuthorizedCreateGuardiansById)
+        {
+            if (guardian.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var guardianObject = TryParseJsonObject(guardian);
+            if (guardianObject != null)
+                result[guardianId] = guardianObject;
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, JsonElement> BuildGuardiansByIdFromAuthorityRoot(JsonElement authorityRoot)
+    {
+        var result = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        if (authorityRoot.ValueKind != JsonValueKind.Object ||
+            !authorityRoot.TryGetProperty("guardians", out var guardians) ||
+            guardians.ValueKind != JsonValueKind.Array)
+        {
+            return result;
+        }
+
+        foreach (var guardian in guardians.EnumerateArray())
+        {
+            var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+            if (!string.IsNullOrWhiteSpace(guardianId))
+                result[guardianId] = guardian.Clone();
+        }
+
+        return result;
+    }
+
+    private static GuardianPolicyContext BuildGuardianSnapshotPowerEventAuthorizationContext(
+        JsonElement authorityRoot,
+        IReadOnlyDictionary<string, JsonElement> guardiansById)
+    {
+        var context = new GuardianPolicyContext
+        {
+            HasCurrentAuthorityRoot = true,
+            CurrentAuthorityRoot = authorityRoot.Clone()
+        };
+
+        foreach (var guardianId in guardiansById.Keys)
+            context.AuthoritativeGuardianIds.Add(guardianId);
+
+        return context;
+    }
+
+    private bool TryBuildAuthorizedGuardianPowerEventsForSnapshotProof(
+        IReadOnlyList<(JsonElement Entry, string Context)> events,
+        GuardianPolicyContext guardianPolicyContext,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        GuardianPowerJournalIdentityState? preTurnJournalIdentityState,
+        out List<JsonObject> authorizedPowerEvents,
+        out string failureDescription)
+    {
+        authorizedPowerEvents = new List<JsonObject>();
+        failureDescription = "validated snapshot guardianPowerEvents cannot be authorized into strict snapshot guardian authority";
+
+        var seenEventIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var seenResonanceLifeScopeKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (preTurnJournalIdentityState != null)
+        {
+            seenEventIds.UnionWith(preTurnJournalIdentityState.EventIds);
+            seenResonanceLifeScopeKeys.UnionWith(preTurnJournalIdentityState.ResonanceLifeScopeKeys);
+        }
+
+        foreach (var (entry, _) in events)
+        {
+            if (!TryAuthorizeGuardianPowerEventForAuthority(entry, guardianPolicyContext, knownPoliticalProjects, out var authorizedEvent))
+                return false;
+
+            var eventId = GuardianPowerEventState.GetEventId(authorizedEvent);
+            if (!string.IsNullOrWhiteSpace(eventId) && !seenEventIds.Add(eventId))
+            {
+                failureDescription = $"validated snapshot guardianPowerEvents reuses append-only eventId '{eventId}'";
+                return false;
+            }
+
+            if (string.Equals(GetFirstNonEmptyString(entry, "reasonType"), "resonance", StringComparison.OrdinalIgnoreCase) &&
+                TryBuildGuardianResonanceLifeScopeKey(entry, out var resonanceLifeScopeKey) &&
+                !seenResonanceLifeScopeKeys.Add(resonanceLifeScopeKey))
+            {
+                failureDescription = $"validated snapshot guardianPowerEvents duplicates resonance life scope '{resonanceLifeScopeKey}'";
+                return false;
+            }
+
+            authorizedPowerEvents.Add(authorizedEvent);
+        }
+
+        failureDescription = string.Empty;
+        return true;
     }
 
     private Dictionary<string, (JsonElement Guardian, string Context)> ValidateGuardianCanonicalRootStructureForProof(
@@ -2761,8 +3159,9 @@ public partial class ValidationService
     }
 
     private async Task<GuardianPowerJournalProofKnowledgeReadResult> ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync(
-        string? proofRelevantReasonType = null)
+        GuardianPowerEventProofScope? proofScope = null)
     {
+        var proofRelevantReasonType = GetGuardianPowerEventProofScopeReasonType(proofScope);
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
         {
@@ -2782,56 +3181,54 @@ public partial class ValidationService
         }
 
         var guardiansJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, "game_state/meta/guardians.json");
-        if (!TryReadCanonicalGuardianSnapshotStateForProof(
+        var trackerJson = lookup.Manifest.Files != null &&
+                          lookup.Manifest.Files.ContainsKey(GuardianProjectState.TrackerPath)
+            ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianProjectState.TrackerPath)
+            : null;
+        var preTurnJournalJson = lookup.Manifest.Files != null &&
+                                 lookup.Manifest.Files.ContainsKey(GuardianPowerEventState.JournalPath)
+            ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianPowerEventState.JournalPath)
+            : null;
+        var snapshotSoulJson = lookup.Manifest.Files != null &&
+                               lookup.Manifest.Files.ContainsKey("game_state/meta/soul_state.json")
+            ? await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, "game_state/meta/soul_state.json")
+            : null;
+
+        if (!TryReadCanonicalGuardianSnapshotForProof(
                 guardiansJson,
                 "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
-                out var snapshotGuardianRoot,
+                trackerJson,
+                lookup.Manifest.Files != null && lookup.Manifest.Files.ContainsKey(GuardianProjectState.TrackerPath),
+                $"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}",
+                preTurnJournalJson,
+                $"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}",
+                snapshotSoulJson,
+                proofScope,
+                null,
+                out var snapshotGuardianAuthorityRoot,
                 out var snapshotGuardiansById,
+                out var snapshotGuardianFailureKind,
                 out var guardianFailureDescription))
         {
+            var status = snapshotGuardianFailureKind switch
+            {
+                GuardianSnapshotProofFailureKind.Journal => GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotJournal,
+                GuardianSnapshotProofFailureKind.Tracker => GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotTracker,
+                _ => GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians
+            };
             return new GuardianPowerJournalProofKnowledgeReadResult(
-                GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians,
+                status,
                 null,
                 guardianFailureDescription);
         }
 
-        string? preTurnJournalJson = null;
-        GuardianPowerJournalIdentityState? snapshotJournalIdentityState = null;
-        if (snapshotGuardianRoot.TryGetProperty("guardianPowerEvents", out var snapshotPowerEventsForIdentity) &&
-            snapshotPowerEventsForIdentity.ValueKind != JsonValueKind.Null)
+        var requiresTrackerProofKnowledge = false;
+        var nonPoliticalProofReasonType =
+            string.Equals(proofRelevantReasonType, "offering", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(proofRelevantReasonType, "resonance", StringComparison.OrdinalIgnoreCase);
+        if (!nonPoliticalProofReasonType &&
+            !string.IsNullOrWhiteSpace(preTurnJournalJson))
         {
-            if (lookup.Manifest.Files == null ||
-                !lookup.Manifest.Files.ContainsKey(GuardianPowerEventState.JournalPath))
-            {
-                return new GuardianPowerJournalProofKnowledgeReadResult(
-                    GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotJournal,
-                    null,
-                    $"validated snapshot manifest missing {GuardianPowerEventState.JournalPath} entry");
-            }
-
-            preTurnJournalJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianPowerEventState.JournalPath);
-            if (!TryReadGuardianPowerJournalIdentityStateForProof(
-                    preTurnJournalJson,
-                    $"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}",
-                    out snapshotJournalIdentityState,
-                    out var snapshotJournalFailureDescription))
-            {
-                return new GuardianPowerJournalProofKnowledgeReadResult(
-                    GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotJournal,
-                    null,
-                    snapshotJournalFailureDescription);
-            }
-        }
-
-        var requiresTrackerProofKnowledge =
-            snapshotGuardianRoot.TryGetProperty("guardianPowerEvents", out var snapshotPowerEvents) &&
-            snapshotPowerEvents.ValueKind != JsonValueKind.Null &&
-            GuardianPowerEventArrayRequiresProjectTrackerAuthority(snapshotPowerEvents);
-
-        if (lookup.Manifest.Files != null &&
-            lookup.Manifest.Files.ContainsKey(GuardianPowerEventState.JournalPath))
-        {
-            preTurnJournalJson ??= await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianPowerEventState.JournalPath);
             if (TryReadGuardianPowerJournalEntriesForCurrentSemanticProof(preTurnJournalJson, out var semanticPreTurnEntries) &&
                 GuardianPowerJournalEntriesRequireProjectTrackerAuthority(
                     FilterGuardianPowerJournalEntriesForProof(semanticPreTurnEntries, proofRelevantReasonType)))
@@ -2852,11 +3249,15 @@ public partial class ValidationService
                     $"validated snapshot manifest missing {GuardianProjectState.TrackerPath} entry");
             }
 
-            var trackerJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, GuardianProjectState.TrackerPath);
             if (!TryReadCanonicalGuardianProjectTrackerSnapshotForProof(
                     trackerJson,
                     $"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}",
+                    snapshotSoulJson,
+                    snapshotGuardianAuthorityRoot,
                     snapshotGuardiansById,
+                    out _,
+                    out _,
+                    out _,
                     out knownPoliticalProjects,
                     out var trackerFailureDescription))
             {
@@ -2864,26 +3265,6 @@ public partial class ValidationService
                     GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotTracker,
                     null,
                     trackerFailureDescription);
-            }
-        }
-
-        if (snapshotGuardianRoot.TryGetProperty("guardianPowerEvents", out snapshotPowerEvents) &&
-            snapshotPowerEvents.ValueKind != JsonValueKind.Null)
-        {
-            var powerEventIssues = new List<ValidationIssue>();
-            ValidateGuardianPowerEventArrayAgainstKnownContext(
-                snapshotPowerEvents,
-                "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.guardianPowerEvents",
-                powerEventIssues,
-                new HashSet<string>(snapshotGuardiansById.Keys, StringComparer.OrdinalIgnoreCase),
-                knownPoliticalProjects,
-                snapshotJournalIdentityState);
-            if (powerEventIssues.Count != 0)
-            {
-                return new GuardianPowerJournalProofKnowledgeReadResult(
-                    GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians,
-                    null,
-                    DescribeGuardianAcceptedTurnSnapshotBaselineFailure(powerEventIssues));
             }
         }
 
@@ -2898,10 +3279,18 @@ public partial class ValidationService
     private bool TryReadCanonicalGuardianProjectTrackerSnapshotForProof(
         string? trackerJson,
         string contextPrefix,
+        string? soulStateJson,
+        JsonElement guardianAuthorityRoot,
         IReadOnlyDictionary<string, JsonElement> guardiansById,
+        out JsonElement trackerAuthorityRoot,
+        out JsonElement guardianAuthorityRootAfterTracker,
+        out Dictionary<string, JsonElement> guardiansByIdAfterTracker,
         out Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
         out string failureDescription)
     {
+        trackerAuthorityRoot = default;
+        guardianAuthorityRootAfterTracker = default;
+        guardiansByIdAfterTracker = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
         knownPoliticalProjects = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
         failureDescription = "validated snapshot tracker JSON missing, unreadable or semantically invalid";
         if (string.IsNullOrWhiteSpace(trackerJson))
@@ -2912,6 +3301,14 @@ public partial class ValidationService
             using var doc = JsonDocument.Parse(trackerJson);
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
                 return false;
+
+            var trackerRootObject = TryParseJsonObject(doc.RootElement);
+            var guardianAuthorityRootObject = TryParseJsonObject(guardianAuthorityRoot);
+            if (trackerRootObject == null || guardianAuthorityRootObject == null)
+            {
+                failureDescription = "validated snapshot tracker or guardian authority cannot be materialized into canonical project authority";
+                return false;
+            }
 
             var knownGuardianIds = new HashSet<string>(guardiansById.Keys, StringComparer.OrdinalIgnoreCase);
             var relationshipScores = new Dictionary<string, IReadOnlyDictionary<string, int>>(StringComparer.OrdinalIgnoreCase);
@@ -2943,7 +3340,24 @@ public partial class ValidationService
 
             ValidateGuardianProjectIdentityCollisions(doc.RootElement, contextPrefix, scratchIssues);
             if (doc.RootElement.TryGetProperty("temporaryProjectModifiers", out var temporaryProjectModifiers))
-                ValidateGuardianProjectTemporaryModifiers(temporaryProjectModifiers, $"{contextPrefix}.temporaryProjectModifiers", scratchIssues);
+            {
+                ValidateGuardianProjectModifierAuthorityArray(
+                    temporaryProjectModifiers,
+                    $"{contextPrefix}.temporaryProjectModifiers",
+                    scratchIssues,
+                    knownGuardianIds);
+            }
+
+            JsonObject? preTurnTrackerAuthorityRootObject = null;
+            if (scratchIssues.Count == 0 &&
+                !TryBuildGuardianProjectTrackerPreTurnAuthorityRoot(
+                    trackerRootObject.DeepClone().AsObject(),
+                    guardianAuthorityRoot,
+                    out preTurnTrackerAuthorityRootObject,
+                    out failureDescription))
+            {
+                return false;
+            }
 
             if (scratchIssues.Count == 0)
             {
@@ -2951,10 +3365,11 @@ public partial class ValidationService
                 var knownCompletedProjects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 var knownProjectDetails = new Dictionary<string, GuardianProjectValidationSnapshot>(StringComparer.OrdinalIgnoreCase);
                 var knownActiveProjectIdsByGuardian = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                MergeKnownGuardianProjectKeysForValidation(knownProjects, trackerJson);
-                MergeKnownCompletedGuardianProjectKeysForValidation(knownCompletedProjects, trackerJson);
-                MergeKnownGuardianProjectsForValidation(knownProjectDetails, trackerJson);
-                MergeKnownActiveGuardianProjectIdsByGuardian(knownActiveProjectIdsByGuardian, trackerJson);
+                var preTurnTrackerAuthorityJson = preTurnTrackerAuthorityRootObject!.ToJsonString();
+                MergeKnownGuardianProjectKeysForValidation(knownProjects, preTurnTrackerAuthorityJson);
+                MergeKnownCompletedGuardianProjectKeysForValidation(knownCompletedProjects, preTurnTrackerAuthorityJson);
+                MergeKnownGuardianProjectsForValidation(knownProjectDetails, preTurnTrackerAuthorityJson);
+                MergeKnownActiveGuardianProjectIdsByGuardian(knownActiveProjectIdsByGuardian, preTurnTrackerAuthorityJson);
 
                 var startedThisTurn = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 var startedProjectDetails = new Dictionary<string, GuardianProjectValidationSnapshot>(StringComparer.OrdinalIgnoreCase);
@@ -3005,14 +3420,57 @@ public partial class ValidationService
                 return false;
             }
 
+            var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
+            var (currentIncarnation, currentRealm) = ReadSoulStateForProjectAuthority(soulStateJson);
+            var preTurnGuardianAuthorityRootObject = guardianAuthorityRootObject.DeepClone().AsObject();
+            var currentGuardianAuthorityRootObject = guardianAuthorityRootObject.DeepClone().AsObject();
+            var materializedTrackerAuthorityRoot = CanonicalStateNormalizer.BuildGuardianProjectAuthorityRootForValidation(
+                preTurnTrackerAuthorityRootObject!.DeepClone().AsObject(),
+                trackerRootObject.DeepClone().AsObject(),
+                preTurnGuardianAuthorityRootObject,
+                currentGuardianAuthorityRootObject,
+                currentTurn,
+                currentIncarnation,
+                currentRealm);
+            trackerAuthorityRoot = CloneJsonObjectToElement(materializedTrackerAuthorityRoot);
+            guardianAuthorityRootAfterTracker = CloneJsonObjectToElement(currentGuardianAuthorityRootObject);
+            guardiansByIdAfterTracker = BuildGuardiansByIdFromAuthorityRoot(guardianAuthorityRootAfterTracker);
+
             var ambiguousKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            MergeKnownPoliticalGuardianPowerEventProjectEntries(knownPoliticalProjects, ambiguousKeys, doc.RootElement, "activeProjects", completed: false);
-            MergeKnownPoliticalGuardianPowerEventProjectEntries(knownPoliticalProjects, ambiguousKeys, doc.RootElement, "completedProjects", completed: true);
+            MergeKnownPoliticalGuardianPowerEventProjectsForValidation(
+                knownPoliticalProjects,
+                ambiguousKeys,
+                trackerAuthorityRoot.GetRawText());
             return true;
         }
         catch (JsonException)
         {
             return false;
+        }
+    }
+
+    private static (int CurrentIncarnation, string? CurrentRealm) ReadSoulStateForProjectAuthority(string? soulStateJson)
+    {
+        if (string.IsNullOrWhiteSpace(soulStateJson))
+            return (0, null);
+
+        try
+        {
+            using var doc = JsonDocument.Parse(soulStateJson);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return (0, null);
+
+            var currentIncarnation = doc.RootElement.TryGetProperty("currentIncarnation", out var incarnationNode) &&
+                                     incarnationNode.ValueKind == JsonValueKind.Number &&
+                                     incarnationNode.TryGetInt32(out var parsedIncarnation)
+                ? parsedIncarnation
+                : 0;
+            var currentRealm = GetFirstNonEmptyString(doc.RootElement, "currentRealm");
+            return (currentIncarnation, currentRealm);
+        }
+        catch
+        {
+            return (0, null);
         }
     }
 
@@ -3860,7 +4318,8 @@ public partial class ValidationService
         failureDescription = "current guardian authority unavailable";
 
         var guardianPolicyContext = ResolveGuardianPolicyContextSync();
-        if (guardianPolicyContext.HasCurrentGuardianPowerEvents &&
+        if (requiresPoliticalProjectKnowledge &&
+            guardianPolicyContext.CurrentGuardianPowerEventAuthorityStatus != GuardianPowerEventAuthorityStatus.None &&
             guardianPolicyContext.CurrentGuardianPowerEventAuthorityStatus != GuardianPowerEventAuthorityStatus.Resolved)
         {
             failureDescription = string.IsNullOrWhiteSpace(guardianPolicyContext.CurrentGuardianPowerEventAuthorityFailureDescription)
@@ -3869,14 +4328,16 @@ public partial class ValidationService
             return false;
         }
 
-        if (!guardianPolicyContext.HasCurrentAuthorityRoot ||
-            guardianPolicyContext.CurrentAuthorityRoot.ValueKind != JsonValueKind.Object ||
-            !guardianPolicyContext.CurrentAuthorityRoot.TryGetProperty("guardians", out var guardians) ||
+        if (!guardianPolicyContext.HasStrictCurrentAuthorityRoot ||
+            guardianPolicyContext.StrictCurrentAuthorityRoot.ValueKind != JsonValueKind.Object ||
+            !guardianPolicyContext.StrictCurrentAuthorityRoot.TryGetProperty("guardians", out var guardians) ||
             guardians.ValueKind != JsonValueKind.Array)
         {
-            failureDescription = guardianPolicyContext.HasCurrentAuthorityRoot
-                ? "current guardian authority unreadable or missing canonical guardians[]"
-                : "current guardian authority unavailable";
+            failureDescription = HasResolvedStrictPreTurnGuardianAuthority(guardianPolicyContext)
+                ? guardianPolicyContext.HasStrictCurrentAuthorityRoot
+                    ? "current guardian authority unreadable or missing canonical guardians[]"
+                    : "current strict guardian authority unavailable"
+                : DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext);
             return false;
         }
 
@@ -3894,11 +4355,12 @@ public partial class ValidationService
             return true;
         }
 
-        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
-        if (!trackerContext.HasCurrentAuthorityRoot)
+        if (!TryResolveStrictGuardianProjectTrackerAuthorityRootForProof(
+                out var strictTrackerAuthorityRoot,
+                out var strictTrackerAuthorityFailure))
         {
             failureStatus = GuardianPowerJournalCurrentProofStatus.InvalidCurrentTrackerAuthority;
-            failureDescription = DescribeGuardianProjectTrackerAuthorityFailure(trackerContext);
+            failureDescription = strictTrackerAuthorityFailure;
             return false;
         }
 
@@ -3907,7 +4369,7 @@ public partial class ValidationService
         MergeKnownPoliticalGuardianPowerEventProjectsForValidation(
             projects,
             ambiguousKeys,
-            trackerContext.CurrentAuthorityRoot.GetRawText());
+            strictTrackerAuthorityRoot.GetRawText());
         knownPoliticalProjects = projects;
         failureStatus = GuardianPowerJournalCurrentProofStatus.Resolved;
         failureDescription = string.Empty;
@@ -4185,6 +4647,152 @@ public partial class ValidationService
                    GetFirstNonEmptyString(entry, "reasonType"),
                    proofRelevantReasonType,
                    StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool HasNonEmptyGuardianPowerEventArray(JsonElement events)
+        => events.ValueKind == JsonValueKind.Array && events.GetArrayLength() > 0;
+
+    private static SnapshotTrackerGuardianEffectDependencyStatus ResolveSnapshotTrackerGuardianEffectDependency(
+        string? trackerJson,
+        bool hasTrackerSnapshotEntry,
+        GuardianPowerEventProofScope? authorityProofScope,
+        out bool shouldMaterialize,
+        out string failureDescription)
+    {
+        shouldMaterialize = false;
+        failureDescription = string.Empty;
+        if (!authorityProofScope.HasValue)
+            return SnapshotTrackerGuardianEffectDependencyStatus.NoTrackerDependency;
+
+        if (CanSafelyProveSnapshotTrackerIrrelevantToGuardian(
+                trackerJson,
+                hasTrackerSnapshotEntry,
+                authorityProofScope.Value))
+        {
+            return SnapshotTrackerGuardianEffectDependencyStatus.NoTrackerDependency;
+        }
+
+        if (!hasTrackerSnapshotEntry)
+        {
+            failureDescription = "validated snapshot tracker is missing and tracker irrelevance to the guardian baseline cannot be proven";
+            return SnapshotTrackerGuardianEffectDependencyStatus.MissingValidatedSnapshotTracker;
+        }
+
+        if (string.IsNullOrWhiteSpace(trackerJson))
+        {
+            failureDescription = "validated snapshot tracker unreadable or empty when guardian baseline materialization may depend on tracker side effects";
+            return SnapshotTrackerGuardianEffectDependencyStatus.InvalidValidatedSnapshotTracker;
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(trackerJson);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                failureDescription = "validated snapshot tracker must be a canonical object when guardian baseline materialization depends on tracker side effects";
+                return SnapshotTrackerGuardianEffectDependencyStatus.InvalidValidatedSnapshotTracker;
+            }
+
+            var guardianId = authorityProofScope.Value.GuardianId;
+            if (string.IsNullOrWhiteSpace(guardianId))
+            {
+                shouldMaterialize = true;
+                return SnapshotTrackerGuardianEffectDependencyStatus.TrackerRequiredAndResolved;
+            }
+
+            shouldMaterialize = TrackerSnapshotTouchesGuardian(doc.RootElement, guardianId);
+            return shouldMaterialize
+                ? SnapshotTrackerGuardianEffectDependencyStatus.TrackerRequiredAndResolved
+                : SnapshotTrackerGuardianEffectDependencyStatus.NoTrackerDependency;
+        }
+        catch (JsonException)
+        {
+            failureDescription = "validated snapshot tracker unreadable or malformed for guardian baseline materialization";
+            return SnapshotTrackerGuardianEffectDependencyStatus.InvalidValidatedSnapshotTracker;
+        }
+    }
+
+    private static bool CanSafelyProveSnapshotTrackerIrrelevantToGuardian(
+        string? trackerJson,
+        bool hasTrackerSnapshotEntry,
+        GuardianPowerEventProofScope authorityProofScope)
+    {
+        if (!authorityProofScope.GuardianBaselineScope)
+            return true;
+
+        var guardianId = authorityProofScope.GuardianId;
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return false;
+
+        if (!hasTrackerSnapshotEntry || string.IsNullOrWhiteSpace(trackerJson))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(trackerJson);
+            return doc.RootElement.ValueKind == JsonValueKind.Object &&
+                   !TrackerSnapshotTouchesGuardian(doc.RootElement, guardianId);
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static bool TrackerSnapshotTouchesGuardian(JsonElement root, string guardianId)
+    {
+        if (TrackerSnapshotCollectionTouchesGuardian(root, "activeProjects", guardianId))
+            return true;
+        if (TrackerSnapshotCollectionTouchesGuardian(root, "completedProjects", guardianId))
+            return true;
+        if (TrackerSnapshotCollectionTouchesGuardian(root, "startGuardianProjects", guardianId))
+            return true;
+        if (TrackerSnapshotCollectionTouchesGuardian(root, "guardianProjectUpdates", guardianId))
+            return true;
+        if (TrackerSnapshotCollectionTouchesGuardian(root, "completeGuardianProjects", guardianId))
+            return true;
+
+        return false;
+    }
+
+    private static bool TrackerSnapshotCollectionTouchesGuardian(JsonElement root, string propertyName, string guardianId)
+    {
+        if (!root.TryGetProperty(propertyName, out var collection) || collection.ValueKind == JsonValueKind.Null)
+            return false;
+        if (collection.ValueKind != JsonValueKind.Array)
+            return true;
+
+        foreach (var entry in collection.EnumerateArray())
+        {
+            if (entry.ValueKind != JsonValueKind.Object)
+                return true;
+
+            var entryGuardianId = GetFirstNonEmptyString(entry, "guardianId");
+            if (!string.IsNullOrWhiteSpace(entryGuardianId) &&
+                string.Equals(entryGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            var directTargetGuardianId = GetFirstNonEmptyString(entry, "targetGuardianId");
+            if (!string.IsNullOrWhiteSpace(directTargetGuardianId) &&
+                string.Equals(directTargetGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (entry.TryGetProperty("project", out var project) && project.ValueKind == JsonValueKind.Object)
+            {
+                var projectTargetGuardianId = GetFirstNonEmptyString(project, "targetGuardianId");
+                if (!string.IsNullOrWhiteSpace(projectTargetGuardianId) &&
+                    string.Equals(projectTargetGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private bool TryReadGuardianPowerJournalIdentityStateForProof(
@@ -4715,7 +5323,7 @@ public partial class ValidationService
 
         var relicId = GetStringValue(relic, "relicId");
         var relicName = GetFirstNonEmptyString(relic, "name") ?? GetStringValue(relic, "relicName");
-        var relicRarity = GetFirstNonEmptyString(relic, "rarity") ?? GetStringValue(relic, "relicRarity");
+        var relicRarity = GetFirstNonEmptyString(relic, "rarity", "quality", "relicRarity");
         if (string.IsNullOrWhiteSpace(relicId) ||
             string.IsNullOrWhiteSpace(relicName) ||
             string.IsNullOrWhiteSpace(relicRarity) ||

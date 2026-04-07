@@ -345,7 +345,6 @@ public partial class ValidationService
         List<ValidationIssue> issues)
     {
         var journalJson = _fs.ReadFileAsync(GuardianProjectState.JournalPath).GetAwaiter().GetResult();
-        var hasTrackerValidationRoot = TryResolveGuardianProjectTrackerValidationRootSync(out var trackerRoot, out var trackerContext);
 
         var receiptIndex = 0;
         foreach (var receipt in actionReceipts.EnumerateArray())
@@ -410,28 +409,25 @@ public partial class ValidationService
                         actual: requestId));
                 }
 
-                if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase) &&
-                    !hasTrackerValidationRoot)
+                if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase))
                 {
-                    issues.Add(new ValidationIssue(
-                        receiptContext,
-                        IssueSeverity.Error,
-                        "Accepted archive consultation receipt требует readable validated pre-turn project tracker baseline и не использует current tracker как authority fallback.",
-                        code: "afterlife_archive_missing_validated_preturn_tracker_snapshot",
-                        section: "AfterlifeArchive",
-                        expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
-                        actual: DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus),
-                        repairHint: $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для accepted archive consultation receipts. Без этого completed lore_research provenance нельзя доказывать через current tracker alone."));
-                }
-                else if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase) &&
-                         !ArchiveConsultationReceiptHasMatchingCompletedProject(trackerRoot, requestId, archiveId, guardianId, receipt))
-                {
-                    issues.Add(new ValidationIssue(
-                        receiptContext,
-                        IssueSeverity.Error,
-                        "Accepted archive consultation receipt не привёл к matching archive_consultation result",
-                        code: "afterlife_archive_consultation_receipt_missing_result",
-                        section: "AfterlifeArchive"));
+                    if (TryResolveGuardianProjectTrackerValidationRoot(
+                            receiptContext,
+                            "Accepted archive consultation receipt требует readable current guardian project tracker authority и не использует isolated pre-turn tracker baseline как authority fallback.",
+                            "afterlife_archive_missing_current_tracker_authority",
+                            "AfterlifeArchive",
+                            $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед proving completed lore_research consultation receipt.",
+                            issues,
+                            out var trackerRoot) &&
+                        !ArchiveConsultationReceiptHasMatchingCompletedProject(trackerRoot, requestId, archiveId, guardianId, receipt))
+                    {
+                        issues.Add(new ValidationIssue(
+                            receiptContext,
+                            IssueSeverity.Error,
+                            "Accepted archive consultation receipt не привёл к matching archive_consultation result",
+                            code: "afterlife_archive_consultation_receipt_missing_result",
+                            section: "AfterlifeArchive"));
+                    }
                 }
 
                 if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase) &&
@@ -1508,10 +1504,10 @@ public partial class ValidationService
         if (!TryResolveGuardianDerivedStateForValidation(
                 guardian,
                 tradeContext,
-                "Guardian trade inventory validation требует readable validated pre-turn project tracker baseline и не использует current tracker как authority fallback.",
-                "guardian_trade_inventory_missing_validated_preturn_tracker_snapshot",
+                "Guardian trade inventory validation требует readable current guardian project tracker authority и не использует guardian-only derived state как fallback.",
+                "guardian_trade_inventory_missing_current_tracker_authority",
                 "tradeInventory",
-                $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для guardian trade inventory validation. Без этого trade slots и project-derived stock bonuses не должны выводиться из current tracker state.",
+                $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед trade inventory validation.",
                 issues,
                 out var derivedState))
         {

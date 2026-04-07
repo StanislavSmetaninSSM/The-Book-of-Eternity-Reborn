@@ -130,7 +130,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         var projectJournalJson = await _fs.ReadFileAsync(GuardianProjectState.JournalPath);
@@ -242,7 +242,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
@@ -367,7 +367,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         Assert.NotNull(trackerJson);
@@ -497,7 +497,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var journalJson = await _fs.ReadFileAsync(GuardianProjectState.JournalPath);

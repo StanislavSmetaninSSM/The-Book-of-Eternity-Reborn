@@ -113,12 +113,12 @@ public partial class ValidationService
                     code: "system_guardian_pending_preset_missing_validated_guardians_snapshot",
                     section: "SystemGuardianPresets",
                     expected: "validated pre-turn guardians.json snapshot with pendingGuardianCreation.mode=system_preset",
-                    actual: DescribeGuardianTrackedSnapshotFileStatus(guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus),
+                    actual: DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext),
                     repairHint: $"Для system_preset flows сохраняй usable validated snapshot copy game_state/meta/guardians.json. Preset materialization нельзя подтверждать только по current state; baseline failure = {guardianBaselineFailureKind}."));
             }
 
-            var pendingPresetId = HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext)
-                ? TryReadPendingSystemGuardianPresetId(guardianPolicyContext.PreTurnRoot)
+            var pendingPresetId = HasResolvedStrictPreTurnGuardianAuthority(guardianPolicyContext)
+                ? TryReadPendingSystemGuardianPresetId(guardianPolicyContext.PreTurnAuthorityRoot)
                 : null;
             if (!string.IsNullOrWhiteSpace(pendingPresetId))
             {
@@ -131,7 +131,9 @@ public partial class ValidationService
                         code: "system_guardian_pending_preset_missing_active_guardian",
                         section: "SystemGuardianPresets",
                         expected: $"activeGuardian.sourcePreset.presetId = {pendingPresetId}",
-                        actual: guardianPolicyContext.HasCurrentActiveGuardian ? "raw mirror without kernel authority" : "missing"));
+                        actual: guardianPolicyContext.HasCurrentActiveGuardian
+                            ? $"raw mirror without strict kernel authority ({DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext)})"
+                            : DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext)));
                 }
                 else
                 {
@@ -225,7 +227,8 @@ public partial class ValidationService
         HashSet<string> Ids,
         HashSet<string> Names,
         GuardianBaselineFailureKind BaselineFailureKind,
-        GuardianTrackedSnapshotFileStatus SnapshotFileStatus);
+        GuardianTrackedSnapshotFileStatus SnapshotFileStatus,
+        string BaselineFailureDescription);
 
     private Task<GuardianReferenceValidationState> ReadKnownGuardianReferencesAsync()
     {
@@ -236,7 +239,8 @@ public partial class ValidationService
             new HashSet<string>(state.KnownGuardianIds, StringComparer.OrdinalIgnoreCase),
             new HashSet<string>(state.KnownGuardianNames, StringComparer.OrdinalIgnoreCase),
             failureKind,
-            guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus));
+            guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus,
+            DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext)));
     }
 
 
@@ -274,7 +278,7 @@ public partial class ValidationService
                         code: "guardian_npc_boundary_missing_validated_preturn_guardians_snapshot",
                         section: "Guardians",
                         expected: "validated pre-turn guardians baseline for guardian/NPC collision checks",
-                        actual: DescribeGuardianTrackedSnapshotFileStatus(knownGuardianReferences.SnapshotFileStatus),
+                        actual: knownGuardianReferences.BaselineFailureDescription,
                         repairHint: "Сохраняй readable validated snapshot copy game_state/meta/guardians.json, чтобы boundary validator мог отличить guardians от NPC surfaces."));
                 }
 
@@ -698,18 +702,15 @@ public partial class ValidationService
 
             if (visibleBonusClueUsage.Count > 0)
             {
-                var hasTrackerValidationRoot = TryResolveGuardianProjectTrackerValidationRootSync(out var trackerRoot, out var trackerContext);
-                if (!hasTrackerValidationRoot)
-                {
-                    issues.Add(new ValidationIssue(
+                if (!TryResolveGuardianProjectTrackerValidationRoot(
                         $"{RivalSoulArcService.StatePath}.{collectionName}",
-                        IssueSeverity.Error,
-                        "Rival arc bonus clue validation требует readable validated pre-turn project tracker baseline и не использует current tracker как authority fallback.",
-                        code: "rival_arc_bonus_clue_missing_validated_preturn_tracker_snapshot",
-                        section: "RivalSoulArcs",
-                        expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
-                        actual: DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus),
-                        repairHint: $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для lore_research-derived bonus clues. Без этого clue budget нельзя выводить из current tracker alone."));
+                        "Rival arc bonus clue validation требует readable current guardian project tracker authority и не использует isolated pre-turn tracker baseline как authority fallback.",
+                        "rival_arc_bonus_clue_missing_current_tracker_authority",
+                        "RivalSoulArcs",
+                        $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед validating lore_research-derived bonus clues.",
+                        issues,
+                        out var trackerRoot))
+                {
                 }
                 else
                 {

@@ -764,7 +764,9 @@ public partial class ValidationService
                     code: "system_guardian_attraction_missing_active_guardian",
                     section: "SystemGuardianPresets",
                     expected: $"activeGuardian.sourcePreset.presetId = {targetPresetId}",
-                    actual: guardianPolicyContext.HasCurrentActiveGuardian ? "raw mirror without kernel authority" : "missing"));
+                    actual: guardianPolicyContext.HasCurrentActiveGuardian
+                        ? $"raw mirror without strict kernel authority ({DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext)})"
+                        : DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext)));
                 return;
             }
 
@@ -1276,7 +1278,8 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(preJournalJson))
             return;
 
-        var preTurnJournalKnowledgeResult = await ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync("offering");
+        var offeringProofScope = CreateGuardianPowerEventProofScopeForOffering(request);
+        var preTurnJournalKnowledgeResult = await ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync(offeringProofScope);
         if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians)
         {
             issues.Add(new ValidationIssue(
@@ -1408,8 +1411,85 @@ public partial class ValidationService
                 repairHint: "Разрешай pending_abode_offering.json через guardianPowerEvents.reasonType=offering с audit, совпадающим с client-authored request."));
         }
 
+        var preTurnGuardiansJson = await ReadRequiredValidatedPendingTurnSnapshotFileAsync(
+            "game_state/meta/guardians.json",
+            issues,
+            code: "abode_offering_missing_validated_snapshot_guardians",
+            section: "GuardianOfferings",
+            message: "pending_abode_offering strict resolution требует validated pre-turn guardians baseline; без него pre-turn guardian power нельзя проверить строго.",
+            repairHint: "Сохраняй game_state/meta/guardians.json в validated pending turn snapshot и доказывай pending_abode_offering power proof через canonical pre-turn guardian baseline.");
+        if (string.IsNullOrWhiteSpace(preTurnGuardiansJson))
+            return;
+
+        var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var snapshotManifest = snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Usable
+            ? snapshotLookup.Manifest
+            : null;
+        var preTurnTrackerJson = snapshotManifest == null
+            ? null
+            : await ReadValidatedPendingTurnSnapshotFileAsync(snapshotManifest, GuardianProjectState.TrackerPath);
+        var preTurnSnapshotSoulJson = snapshotManifest == null
+            ? null
+            : await ReadValidatedPendingTurnSnapshotFileAsync(snapshotManifest, "game_state/meta/soul_state.json");
+
+        if (!TryReadCanonicalGuardianSnapshotForProof(
+                preTurnGuardiansJson,
+                "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+                preTurnTrackerJson,
+                snapshotManifest?.Files != null && snapshotManifest.Files.ContainsKey(GuardianProjectState.TrackerPath),
+                $"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}",
+                preJournalJson,
+                $"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}",
+                preTurnSnapshotSoulJson,
+                offeringProofScope,
+                CreateGuardianPowerEventAuthorityScopeForGuardian(request.GuardianId),
+                out _,
+                out var preTurnGuardiansById,
+                out _,
+                out var preTurnGuardianFailureDescription))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "pending_abode_offering strict resolution требует canonical validated snapshot guardians baseline для pre-turn guardian power proof.",
+                code: "abode_offering_invalid_validated_snapshot_guardians",
+                section: "GuardianOfferings",
+                expected: "canonical validated snapshot guardians.json for pending abode offering power proof",
+                actual: preTurnGuardianFailureDescription,
+                repairHint: "Сохраняй в validated pending turn snapshot canonical game_state/meta/guardians.json; pre-turn offering power proof не может строиться из partial или invalid guardian baseline."));
+            return;
+        }
+
+        if (!preTurnGuardiansById.TryGetValue(request.GuardianId, out var preTurnGuardian))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "pending_abode_offering strict resolution требует guardian baseline для того Хранителя, относительно которого доказывается power gain.",
+                code: "abode_offering_invalid_validated_snapshot_guardians",
+                section: "GuardianOfferings",
+                expected: $"canonical guardian baseline entry for {request.GuardianId}",
+                actual: $"guardianId {request.GuardianId} missing from validated snapshot guardians[]",
+                repairHint: $"Сохраняй в validated pending turn snapshot canonical guardians[] entry для {request.GuardianId}; pending_abode_offering power proof не может опираться на baseline без target guardian."));
+            return;
+        }
+
         var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
-        var previousPower = TryReadGuardianCurrentAbodePowerFromPolicyContext(guardianPolicyContext, request.GuardianId, preTurn: true);
+        var previousPower = (int?)AbodePowerRules.GetCurrentPower(preTurnGuardian);
+        if (!TryEnsureCurrentGuardianAuthorityForPowerEventSensitiveOutcome(guardianPolicyContext, out var currentGuardianAuthorityFailure))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "pending_abode_offering не может быть доказан: current guardian authority unreadable или unavailable для strict power proof.",
+                code: "abode_offering_invalid_current_guardian_authority",
+                section: "GuardianOfferings",
+                expected: "readable current guardian authority root",
+                actual: currentGuardianAuthorityFailure,
+                repairHint: "Исправь current game_state/meta/guardians.json, validated guardian baselines и raw guardianPowerEvents так, чтобы validator построил strict current guardian authority перед pending_abode_offering power proof."));
+            return;
+        }
+
         var currentPower = TryReadGuardianCurrentAbodePowerFromPolicyContext(guardianPolicyContext, request.GuardianId);
         if (!previousPower.HasValue || !currentPower.HasValue || currentPower.Value - previousPower.Value < expectedGain)
         {
@@ -2009,7 +2089,9 @@ public partial class ValidationService
 
         if (!TryGetCurrentGuardian(context, guardianId, out var authorityGuardianElement))
         {
-            actual = $"guardian {guardianId} missing from current guardian authority";
+            actual = context.HasStrictCurrentAuthorityRoot
+                ? $"guardian {guardianId} missing from current strict guardian authority"
+                : DescribeCurrentGuardianAuthorityFailure(context);
             return false;
         }
 
@@ -2879,17 +2961,15 @@ public partial class ValidationService
             var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
             if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
             {
-                if (!TryResolveGuardianProjectTrackerValidationRootSync(out var trackerRoot, out var trackerContext))
-                {
-                    issues.Add(new ValidationIssue(
+                if (!TryResolveGuardianProjectTrackerValidationRoot(
                         AfterlifeArchiveActionState.ConsultationRequestPath,
-                        IssueSeverity.Error,
-                        "Accepted archive consultation request требует readable validated pre-turn project tracker baseline и не использует current tracker как authority fallback.",
-                        code: "archive_consultation_request_missing_validated_preturn_tracker_snapshot",
-                        section: "AfterlifeArchive",
-                        expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
-                        actual: DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus),
-                        repairHint: $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для archive consultation resolution. Без этого completed lore_research provenance нельзя подтверждать по current tracker alone."));
+                        "Accepted archive consultation request требует readable current guardian project tracker authority и не использует isolated pre-turn tracker baseline как authority fallback.",
+                        "archive_consultation_request_missing_current_tracker_authority",
+                        "AfterlifeArchive",
+                        $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед archive consultation resolution.",
+                        issues,
+                        out var trackerRoot))
+                {
                 }
                 else if (!ArchiveConsultationReceiptHasMatchingCompletedProject(trackerRoot, request.RequestId, request.ArchiveId, request.GuardianId, receipt))
                 {

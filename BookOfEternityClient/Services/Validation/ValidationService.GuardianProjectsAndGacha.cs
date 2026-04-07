@@ -16,12 +16,8 @@ public partial class ValidationService
     {
         guardianPolicyContext ??= _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
         var states = new Dictionary<string, GuardianSequentialState>(StringComparer.OrdinalIgnoreCase);
-        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext))
+        if (!TryGetGuardianPreTurnBaselineRootForCommandAuthorization(guardianPolicyContext, out var baselineRoot))
             return states;
-
-        var baselineRoot = guardianPolicyContext.HasPreTurnAuthorityRoot
-            ? guardianPolicyContext.PreTurnAuthorityRoot
-            : guardianPolicyContext.PreTurnRoot;
         if (baselineRoot.ValueKind != JsonValueKind.Object ||
             !baselineRoot.TryGetProperty("guardians", out var guardians) ||
             guardians.ValueKind != JsonValueKind.Array)
@@ -383,7 +379,25 @@ public partial class ValidationService
 
         if (relicForgingBonusSteps > 0 && !string.IsNullOrWhiteSpace(guardianId))
         {
-            var availableForgeSteps = GetAvailableForgeGachaBonusStepsSync(guardianId, sourceProjectId ?? string.Empty);
+            if (!TryResolveGuardianProjectTrackerValidationRoot(
+                    $"{auditContext}.relicForgingBonusSteps",
+                    "gachaBonusAudit.relicForgingBonusSteps требует readable current guardian project tracker authority и не использует forge bonus fallback без canonical tracker provenance.",
+                    "guardian_process_gacha_bonus_audit_missing_current_tracker_authority",
+                    "UpdateGuardians.processGacha",
+                    $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед audit relic forging bonus steps.",
+                    issues,
+                    out var trackerRoot))
+            {
+                return;
+            }
+
+            var trackerMatch = ResolveAvailableForgeGachaBonusStepsFromTrackerJson(
+                trackerRoot.GetRawText(),
+                guardianId,
+                sourceProjectId ?? string.Empty);
+            var availableForgeSteps = trackerMatch.HasMatch
+                ? trackerMatch.AvailableSteps
+                : 0;
             if (relicForgingBonusSteps > availableForgeSteps)
             {
                 issues.Add(new ValidationIssue(
@@ -595,6 +609,8 @@ public partial class ValidationService
                 contextPrefix,
                 "Guardian project/gacha validation требует readable validated pre-turn project tracker baseline и не использует current tracker state как fallback authority.",
                 "guardian_project_missing_validated_preturn_tracker_snapshot",
+                "Guardian project/gacha validation требует semantically valid validated pre-turn project tracker baseline и не использует broken tracker snapshot как fallback authority.",
+                "guardian_project_invalid_validated_preturn_tracker_snapshot",
                 "GuardianProjects",
                 $"Сохраняй validated snapshot copy {GuardianProjectState.TrackerPath} для guardian project/gacha turns. Без этого project politics, active project identity и derived tracker state не должны выводиться из current tracker.",
                 issues))
@@ -641,7 +657,7 @@ public partial class ValidationService
         List<ValidationIssue> issues)
     {
         var guardianPolicyContext = ResolveGuardianPolicyContextSync();
-        if (HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext))
+        if (HasResolvedGenericSharedStrictPreTurnGuardianAuthority(guardianPolicyContext))
             return true;
 
         issues.Add(new ValidationIssue(
@@ -651,22 +667,30 @@ public partial class ValidationService
             code: code,
             section: section,
             expected: "current validated pending turn snapshot with readable game_state/meta/guardians.json",
-            actual: DescribeGuardianTrackedSnapshotFileStatus(guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus),
+            actual: DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext),
             repairHint: repairHint));
         return false;
     }
 
     private bool TryRequireGuardianProjectTrackerPreTurnBaseline(
         string path,
-        string message,
-        string code,
+        string missingMessage,
+        string missingCode,
+        string invalidMessage,
+        string invalidCode,
         string section,
         string repairHint,
         List<ValidationIssue> issues)
     {
-        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
-        if (HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+        if (TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRootSync(out _, out _, out var trackerFailureDescription))
             return true;
+
+        var (message, code) = ResolveGuardianProjectTrackerPreTurnBaselineIssueSurface(
+            missingMessage,
+            missingCode,
+            invalidMessage,
+            invalidCode,
+            trackerFailureDescription);
 
         issues.Add(new ValidationIssue(
             path,
@@ -674,16 +698,18 @@ public partial class ValidationService
             message,
             code: code,
             section: section,
-            expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
-            actual: DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus),
+            expected: $"validated shared pre-turn {GuardianProjectState.TrackerPath} authority root",
+            actual: trackerFailureDescription,
             repairHint: repairHint));
         return false;
     }
 
     private bool TryRequireGuardianProjectCurrentAuthority(
         string path,
-        string baselineMessage,
-        string baselineCode,
+        string baselineMissingMessage,
+        string baselineMissingCode,
+        string baselineInvalidMessage,
+        string baselineInvalidCode,
         string currentAuthorityMessage,
         string currentAuthorityCode,
         string section,
@@ -691,22 +717,33 @@ public partial class ValidationService
         string currentAuthorityRepairHint,
         List<ValidationIssue> issues)
     {
-        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
-        if (!HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+        if (!TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRootSync(
+                out _,
+                out _,
+                out var preTurnTrackerAuthorityFailureDescription))
         {
+            var (baselineMessage, baselineCode) = ResolveGuardianProjectTrackerPreTurnBaselineIssueSurface(
+                baselineMissingMessage,
+                baselineMissingCode,
+                baselineInvalidMessage,
+                baselineInvalidCode,
+                preTurnTrackerAuthorityFailureDescription);
+
             issues.Add(new ValidationIssue(
                 path,
                 IssueSeverity.Error,
                 baselineMessage,
                 code: baselineCode,
                 section: section,
-                expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
-                actual: DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus),
+                expected: $"validated shared pre-turn {GuardianProjectState.TrackerPath} authority root",
+                actual: preTurnTrackerAuthorityFailureDescription,
                 repairHint: baselineRepairHint));
             return false;
         }
 
-        if (trackerContext.HasCurrentAuthorityRoot)
+        if (TryResolveStrictGuardianProjectTrackerAuthorityRootForValidation(
+                out _,
+                out var strictTrackerAuthorityFailureDescription))
             return true;
 
         issues.Add(new ValidationIssue(
@@ -715,10 +752,22 @@ public partial class ValidationService
             currentAuthorityMessage,
             code: currentAuthorityCode,
             section: section,
-            expected: $"readable current {GuardianProjectState.TrackerPath} that matches kernel-authoritative project tracker state",
-            actual: DescribeGuardianProjectTrackerAuthorityFailure(trackerContext),
+            expected: $"strict guardian-backed current {GuardianProjectState.TrackerPath} authority root",
+            actual: strictTrackerAuthorityFailureDescription,
             repairHint: currentAuthorityRepairHint));
         return false;
+    }
+
+    private static (string Message, string Code) ResolveGuardianProjectTrackerPreTurnBaselineIssueSurface(
+        string missingMessage,
+        string missingCode,
+        string invalidMessage,
+        string invalidCode,
+        string failureDescription)
+    {
+        return failureDescription.Contains("semantically invalid", StringComparison.OrdinalIgnoreCase)
+            ? (invalidMessage, invalidCode)
+            : (missingMessage, missingCode);
     }
 
     private bool TryResolveGuardianProjectTrackerValidationRoot(
@@ -730,7 +779,7 @@ public partial class ValidationService
         List<ValidationIssue> issues,
         out JsonElement trackerRoot)
     {
-        if (TryResolveGuardianProjectTrackerValidationRootSync(out trackerRoot, out var trackerContext))
+        if (TryResolveGuardianProjectTrackerValidationRootSync(out trackerRoot, out _, out var trackerFailureDescription))
             return true;
 
         issues.Add(new ValidationIssue(
@@ -739,8 +788,8 @@ public partial class ValidationService
             message,
             code: code,
             section: section,
-            expected: $"current validated pending turn snapshot with readable {GuardianProjectState.TrackerPath}",
-            actual: DescribeGuardianProjectTrackerAuthorityFailure(trackerContext),
+            expected: $"shared-strict guardian-backed current {GuardianProjectState.TrackerPath} authority root",
+            actual: trackerFailureDescription,
             repairHint: repairHint));
         return false;
     }
@@ -754,6 +803,7 @@ public partial class ValidationService
         {
             GuardianCurrentStateFailureKind.MissingCurrentState => $"current {GuardianProjectState.TrackerPath} is missing",
             GuardianCurrentStateFailureKind.UnreadableCurrentState => $"current {GuardianProjectState.TrackerPath} is unreadable or malformed",
+            GuardianCurrentStateFailureKind.SemanticallyInvalidCurrentState => trackerContext.CurrentStateFailureDescription ?? $"current {GuardianProjectState.TrackerPath} is semantically invalid",
             _ => $"current {GuardianProjectState.TrackerPath} authority root is unavailable"
         };
     }
@@ -763,27 +813,35 @@ public partial class ValidationService
         string contextPrefix,
         List<ValidationIssue> issues)
     {
-        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
-        if (!trackerContext.HasCurrentAuthorityRoot)
+        if (!TryResolveGuardianProjectTrackerValidationRoot(
+                contextPrefix,
+                "Current guardian project tracker materialized state requires readable current tracker authority and cannot be compared against a missing authority root.",
+                "guardian_project_materialized_state_missing_current_tracker_authority",
+                "GuardianProjects",
+                $"Исправь current {GuardianProjectState.TrackerPath} так, чтобы validator мог построить shared-strict current tracker authority root перед сравнением materialized tracker arrays.",
+                issues,
+                out var trackerAuthorityRoot))
+        {
             return;
+        }
 
         ValidateGuardianProjectMaterializedArrayAgainstAuthority(
             currentTrackerRoot,
-            trackerContext.CurrentAuthorityRoot,
+            trackerAuthorityRoot,
             contextPrefix,
             "activeProjects",
             BuildGuardianProjectMaterializedEntryMap,
             issues);
         ValidateGuardianProjectMaterializedArrayAgainstAuthority(
             currentTrackerRoot,
-            trackerContext.CurrentAuthorityRoot,
+            trackerAuthorityRoot,
             contextPrefix,
             "completedProjects",
             BuildGuardianProjectMaterializedEntryMap,
             issues);
         ValidateGuardianProjectMaterializedArrayAgainstAuthority(
             currentTrackerRoot,
-            trackerContext.CurrentAuthorityRoot,
+            trackerAuthorityRoot,
             contextPrefix,
             "temporaryProjectModifiers",
             BuildGuardianProjectMaterializedModifierMap,
@@ -932,14 +990,13 @@ public partial class ValidationService
         var relationshipScores = new Dictionary<string, IReadOnlyDictionary<string, int>>(StringComparer.OrdinalIgnoreCase);
         var guardianPolicyContext = ResolveGuardianPolicyContextSync();
         var hasValidatedPreTurnBaseline =
-            HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) &&
-            guardianPolicyContext.HasPreTurnAuthorityRoot;
-        if (!hasValidatedPreTurnBaseline && !guardianPolicyContext.HasCurrentAuthorityRoot)
+            TryGetGenericSharedStrictPreTurnGuardianAuthorityRoot(guardianPolicyContext, out var preTurnAuthorityRoot);
+        if (!hasValidatedPreTurnBaseline && !guardianPolicyContext.HasStrictCurrentAuthorityRoot)
             return new GuardianIdentityValidationState(knownGuardianIds, knownGuardianNames, relationshipScores);
         if (hasValidatedPreTurnBaseline)
         {
             MergeGuardianIdentityValidationStateFromStoredGuardians(
-                guardianPolicyContext.PreTurnAuthorityRoot,
+                preTurnAuthorityRoot,
                 knownGuardianIds,
                 relationshipScores);
         }
@@ -947,14 +1004,14 @@ public partial class ValidationService
         try
         {
             var guardianIdsWithCurrentNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            if (guardianPolicyContext.HasCurrentAuthorityRoot)
+            if (guardianPolicyContext.HasStrictCurrentAuthorityRoot)
             {
                 MergeGuardianIdentityValidationStateFromStoredGuardians(
-                    guardianPolicyContext.CurrentAuthorityRoot,
+                    guardianPolicyContext.StrictCurrentAuthorityRoot,
                     knownGuardianIds,
                     relationshipScores);
                 CollectGuardianIdentityNamesFromStoredGuardians(
-                    guardianPolicyContext.CurrentAuthorityRoot,
+                    guardianPolicyContext.StrictCurrentAuthorityRoot,
                     knownGuardianIds,
                     knownGuardianNames,
                     guardianIdsWithCurrentNames,
@@ -964,7 +1021,7 @@ public partial class ValidationService
             if (hasValidatedPreTurnBaseline)
             {
                 CollectGuardianIdentityNamesFromStoredGuardians(
-                    guardianPolicyContext.PreTurnAuthorityRoot,
+                    preTurnAuthorityRoot,
                     knownGuardianIds,
                     knownGuardianNames,
                     guardianIdsWithCurrentNames,
@@ -987,14 +1044,13 @@ public partial class ValidationService
         var relationshipScores = new Dictionary<string, IReadOnlyDictionary<string, int>>(StringComparer.OrdinalIgnoreCase);
         var guardianPolicyContext = ResolveGuardianPolicyContextSync();
         var hasValidatedPreTurnBaseline =
-            HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) &&
-            guardianPolicyContext.HasPreTurnAuthorityRoot;
-        if (!hasValidatedPreTurnBaseline && !guardianPolicyContext.HasCurrentAuthorityRoot)
+            TryGetGenericSharedStrictPreTurnGuardianAuthorityRoot(guardianPolicyContext, out var preTurnAuthorityRoot);
+        if (!hasValidatedPreTurnBaseline && !guardianPolicyContext.HasStrictCurrentAuthorityRoot)
             return new GuardianIdentityValidationState(knownGuardianIds, knownGuardianNames, relationshipScores);
         if (hasValidatedPreTurnBaseline)
         {
             MergeGuardianIdentityValidationStateFromStoredGuardians(
-                guardianPolicyContext.PreTurnAuthorityRoot,
+                preTurnAuthorityRoot,
                 knownGuardianIds,
                 relationshipScores);
         }
@@ -1002,14 +1058,14 @@ public partial class ValidationService
         try
         {
             var guardianIdsWithCurrentNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            if (guardianPolicyContext.HasCurrentAuthorityRoot)
+            if (guardianPolicyContext.HasStrictCurrentAuthorityRoot)
             {
                 MergeGuardianIdentityValidationStateFromStoredGuardians(
-                    guardianPolicyContext.CurrentAuthorityRoot,
+                    guardianPolicyContext.StrictCurrentAuthorityRoot,
                     knownGuardianIds,
                     relationshipScores);
                 CollectGuardianIdentityNamesFromStoredGuardians(
-                    guardianPolicyContext.CurrentAuthorityRoot,
+                    guardianPolicyContext.StrictCurrentAuthorityRoot,
                     knownGuardianIds,
                     knownGuardianNames,
                     guardianIdsWithCurrentNames,
@@ -1019,7 +1075,7 @@ public partial class ValidationService
             if (hasValidatedPreTurnBaseline)
             {
                 CollectGuardianIdentityNamesFromStoredGuardians(
-                    guardianPolicyContext.PreTurnAuthorityRoot,
+                    preTurnAuthorityRoot,
                     knownGuardianIds,
                     knownGuardianNames,
                     guardianIdsWithCurrentNames,
@@ -1185,6 +1241,8 @@ public partial class ValidationService
         RequireArrayOfObjects(events, context, issues);
         if (events.ValueKind != JsonValueKind.Array)
             return;
+        if (!HasNonEmptyGuardianPowerEventArray(events))
+            return;
 
         if (!TryRequireGuardianPreTurnBaseline(
                 context,
@@ -1206,6 +1264,8 @@ public partial class ValidationService
                     context,
                     "Guardian power event validation требует readable validated pre-turn project tracker baseline и не использует current guardian/project state как fallback authority.",
                     "guardian_power_event_missing_validated_preturn_tracker_snapshot",
+                    "Guardian power event validation требует semantically valid validated pre-turn project tracker baseline и не использует broken validated tracker snapshot как authority.",
+                    "guardian_power_event_invalid_validated_preturn_tracker_snapshot",
                     "Guardian power event validation требует readable current guardian project tracker authority и не использует projected pre-turn tracker state как fallback.",
                     "guardian_power_event_missing_current_tracker_authority",
                     "AbodePower",
@@ -1259,11 +1319,24 @@ public partial class ValidationService
         if (events.ValueKind != JsonValueKind.Array)
             return;
 
+        ValidateGuardianPowerEventEntriesAgainstKnownContext(
+            CollectGuardianPowerEventEntriesForProof(events, context, proofRelevantReasonType: null),
+            issues,
+            knownGuardianIds,
+            knownPoliticalProjects,
+            preTurnJournalIdentityState);
+    }
+
+    private void ValidateGuardianPowerEventEntriesAgainstKnownContext(
+        IReadOnlyList<(JsonElement Entry, string Context)> events,
+        List<ValidationIssue> issues,
+        HashSet<string> knownGuardianIds,
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        GuardianPowerJournalIdentityState? preTurnJournalIdentityState)
+    {
         var effectiveEventsForIdentityValidation = new List<(JsonElement Entry, string Context)>();
-        var index = 0;
-        foreach (var item in events.EnumerateArray())
+        foreach (var (item, itemContext) in events)
         {
-            var itemContext = $"{context}[{index++}]";
             if (!RequireObject(item, itemContext, issues))
                 continue;
 
@@ -1392,6 +1465,227 @@ public partial class ValidationService
             issues);
     }
 
+    private static bool TryCollectGuardianPowerEventEntriesForProof(
+        JsonElement entries,
+        string context,
+        GuardianPowerEventProofScope? proofScope,
+        out List<(JsonElement Entry, string Context)> result,
+        out string failureDescription)
+    {
+        result = new List<(JsonElement Entry, string Context)>();
+        failureDescription = "guardianPowerEvents proof surface unreadable";
+        if (entries.ValueKind != JsonValueKind.Array)
+            return false;
+
+        if (proofScope == null)
+        {
+            result = CollectGuardianPowerEventEntriesForProof(entries, context, proofRelevantReasonType: null);
+            failureDescription = string.Empty;
+            return true;
+        }
+
+        var scope = proofScope.Value;
+        var index = 0;
+        foreach (var entry in entries.EnumerateArray())
+        {
+            var entryContext = $"{context}[{index++}]";
+            if (!TryClassifyGuardianPowerEventProofRelevance(
+                    entry,
+                    entryContext,
+                    scope,
+                    out var isRelevant,
+                    out failureDescription))
+            {
+                return false;
+            }
+
+            if (isRelevant)
+                result.Add((entry, entryContext));
+        }
+
+        failureDescription = string.Empty;
+        return true;
+    }
+
+    private static bool TryClassifyGuardianPowerEventProofRelevance(
+        JsonElement entry,
+        string entryContext,
+        GuardianPowerEventProofScope proofScope,
+        out bool isRelevant,
+        out string failureDescription)
+    {
+        isRelevant = false;
+        failureDescription = string.Empty;
+        if (entry.ValueKind != JsonValueKind.Object)
+        {
+            failureDescription = $"{entryContext} must be an object to classify strict guardian power-event proof relevance";
+            return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(proofScope.GuardianId))
+        {
+            var guardianId = GetFirstNonEmptyString(entry, "guardianId");
+            if (string.IsNullOrWhiteSpace(guardianId))
+            {
+                failureDescription =
+                    $"{entryContext}.guardianId missing or empty; strict snapshot proof cannot determine whether this raw power event belongs to guardian-scoped proof";
+                return false;
+            }
+
+            if (!string.Equals(guardianId, proofScope.GuardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                isRelevant = false;
+                return true;
+            }
+        }
+
+        var reasonType = GetFirstNonEmptyString(entry, "reasonType");
+        if (string.IsNullOrWhiteSpace(reasonType) || !GuardianPowerEventState.IsValidReasonType(reasonType))
+        {
+            failureDescription =
+                $"{entryContext}.reasonType missing or unsupported; strict snapshot proof cannot classify this raw power event as relevant or irrelevant";
+            return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(proofScope.ReasonType) &&
+            !string.Equals(reasonType, proofScope.ReasonType, StringComparison.OrdinalIgnoreCase))
+        {
+            isRelevant = false;
+            return true;
+        }
+
+        if (string.Equals(reasonType, "offering", StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(proofScope.OfferingType))
+        {
+            return TryClassifyGuardianOfferingPowerEventProofRelevance(
+                entry,
+                entryContext,
+                proofScope,
+                out isRelevant,
+                out failureDescription);
+        }
+
+        isRelevant = true;
+        return true;
+    }
+
+    private static bool TryClassifyGuardianOfferingPowerEventProofRelevance(
+        JsonElement entry,
+        string entryContext,
+        GuardianPowerEventProofScope proofScope,
+        out bool isRelevant,
+        out string failureDescription)
+    {
+        isRelevant = false;
+        failureDescription = string.Empty;
+        if (!entry.TryGetProperty("audit", out var audit) || audit.ValueKind != JsonValueKind.Object)
+        {
+            failureDescription =
+                $"{entryContext}.audit missing or invalid; strict snapshot offering proof cannot determine whether this raw event belongs to the validated request";
+            return false;
+        }
+
+        if (!TryReadRequiredStrictString(audit, "offeringType", out var offeringType))
+        {
+            failureDescription =
+                $"{entryContext}.audit.offeringType missing or invalid; strict snapshot offering proof cannot classify raw offering relevance";
+            return false;
+        }
+
+        if (!string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            failureDescription =
+                $"{entryContext}.audit.offeringType uses an unsupported value; strict snapshot offering proof cannot classify raw offering relevance";
+            return false;
+        }
+
+        if (!string.Equals(offeringType, proofScope.OfferingType, StringComparison.OrdinalIgnoreCase))
+        {
+            isRelevant = false;
+            return true;
+        }
+
+        if (!TryReadRequiredStrictString(audit, "returnCycleId", out var returnCycleId))
+        {
+            failureDescription =
+                $"{entryContext}.audit.returnCycleId missing or invalid; strict snapshot offering proof cannot classify raw offering relevance";
+            return false;
+        }
+
+        if (!string.Equals(returnCycleId, proofScope.ReturnCycleId, StringComparison.OrdinalIgnoreCase))
+        {
+            isRelevant = false;
+            return true;
+        }
+
+        if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!TryReadStrictPositiveInt32(audit, "inkFeathersOffered", out var inkFeathersOffered))
+            {
+                failureDescription =
+                    $"{entryContext}.audit.inkFeathersOffered missing or invalid; strict snapshot offering proof cannot classify raw offering relevance";
+                return false;
+            }
+
+            isRelevant = proofScope.InkFeathersOffered.HasValue && inkFeathersOffered == proofScope.InkFeathersOffered.Value;
+            return true;
+        }
+
+        if (string.Equals(offeringType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!TryReadRequiredStrictString(audit, "relicId", out var relicId))
+            {
+                failureDescription =
+                    $"{entryContext}.audit.relicId missing or invalid; strict snapshot offering proof cannot classify raw offering relevance";
+                return false;
+            }
+
+            isRelevant = !string.IsNullOrWhiteSpace(proofScope.RelicId) &&
+                         string.Equals(relicId, proofScope.RelicId, StringComparison.OrdinalIgnoreCase);
+            return true;
+        }
+
+        if (!TryReadRequiredStrictString(audit, "archiveId", out var archiveId))
+        {
+            failureDescription =
+                $"{entryContext}.audit.archiveId missing or invalid; strict snapshot offering proof cannot classify raw offering relevance";
+            return false;
+        }
+
+        isRelevant = !string.IsNullOrWhiteSpace(proofScope.ArchiveId) &&
+                     string.Equals(archiveId, proofScope.ArchiveId, StringComparison.OrdinalIgnoreCase);
+        return true;
+    }
+
+    private static List<(JsonElement Entry, string Context)> CollectGuardianPowerEventEntriesForProof(
+        JsonElement entries,
+        string context,
+        string? proofRelevantReasonType)
+    {
+        var result = new List<(JsonElement Entry, string Context)>();
+        if (entries.ValueKind != JsonValueKind.Array)
+            return result;
+
+        var index = 0;
+        foreach (var entry in entries.EnumerateArray())
+        {
+            var entryContext = $"{context}[{index++}]";
+            if (string.IsNullOrWhiteSpace(proofRelevantReasonType) ||
+                string.Equals(
+                    GetFirstNonEmptyString(entry, "reasonType"),
+                    proofRelevantReasonType,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                result.Add((entry, entryContext));
+            }
+        }
+
+        return result;
+    }
+
     private static void ValidateGuardianPowerEventIdentityContract(
         IReadOnlyList<(JsonElement Entry, string Context)> events,
         GuardianPowerJournalIdentityState? preTurnJournalIdentityState,
@@ -1508,6 +1802,8 @@ public partial class ValidationService
                     contextPrefix,
                     "Abode power journal validation требует readable validated pre-turn project tracker baseline и не использует current guardian/project state как fallback authority.",
                     "guardian_power_event_missing_validated_preturn_tracker_snapshot",
+                    "Abode power journal validation требует semantically valid validated pre-turn project tracker baseline и не использует broken validated tracker snapshot как authority.",
+                    "guardian_power_event_invalid_validated_preturn_tracker_snapshot",
                     "Abode power journal validation требует readable current guardian project tracker authority и не использует projected pre-turn tracker state как fallback.",
                     "guardian_power_event_missing_current_tracker_authority",
                     "AbodePower",
@@ -2138,6 +2434,18 @@ public partial class ValidationService
             return false;
 
         foreach (var entry in entries.EnumerateArray())
+        {
+            if (IsPoliticalGuardianPowerEventReasonType(GetFirstNonEmptyString(entry, "reasonType")))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool GuardianPowerEventEntriesRequireProjectTrackerAuthority(
+        IEnumerable<(JsonElement Entry, string Context)> entries)
+    {
+        foreach (var (entry, _) in entries)
         {
             if (IsPoliticalGuardianPowerEventReasonType(GetFirstNonEmptyString(entry, "reasonType")))
                 return true;
@@ -3041,6 +3349,7 @@ public partial class ValidationService
         if (value.ValueKind != JsonValueKind.Array)
             return;
 
+        var seenModifierKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var index = 0;
         foreach (var item in value.EnumerateArray())
         {
@@ -3048,8 +3357,8 @@ public partial class ValidationService
             if (!RequireObject(item, itemContext, issues))
                 continue;
 
-            RequireString(item, itemContext, issues, "guardianId");
-            RequireString(item, itemContext, issues, "modifierId");
+            var guardianId = RequireString(item, itemContext, issues, "guardianId");
+            var modifierId = RequireString(item, itemContext, issues, "modifierId");
             var modifierType = RequireString(item, itemContext, issues, "modifierType");
             if (!string.IsNullOrWhiteSpace(modifierType) &&
                 !string.Equals(modifierType, "next_internal_project_starting_pressure", StringComparison.OrdinalIgnoreCase))
@@ -3066,6 +3375,23 @@ public partial class ValidationService
             }
             ValidateIntegerField(item, itemContext, issues, "value");
             ValidateNonNegativeIntegerField(item, itemContext, issues, "remainingApplications", "GuardianProjects");
+
+            if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(modifierId))
+                continue;
+
+            var key = $"{guardianId}::{modifierId}";
+            if (seenModifierKeys.Add(key))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.modifierId",
+                IssueSeverity.Error,
+                "temporaryProjectModifiers не может содержать один и тот же guardianId + modifierId больше одного раза",
+                code: "guardian_project_duplicate_modifier_key",
+                section: "GuardianProjects",
+                expected: "historically unique guardianId + modifierId key",
+                actual: key,
+                repairHint: "Оставь для temporaryProjectModifiers только одну canonical запись на каждую пару guardianId + modifierId."));
         }
     }
 
@@ -4282,13 +4608,10 @@ public partial class ValidationService
     private HashSet<string> ReadKnownGuardianProjectKeysForValidation()
     {
         var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
-        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
-        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) ||
-            !HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+        if (!TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRootSync(out var trackerRoot, out _))
             return result;
 
-        MergeKnownGuardianProjectKeysForValidation(result, trackerContext.PreTurnRoot.GetRawText());
+        MergeKnownGuardianProjectKeysForValidation(result, trackerRoot.GetRawText());
 
         return result;
     }
@@ -4296,13 +4619,10 @@ public partial class ValidationService
     private HashSet<string> ReadKnownCompletedGuardianProjectKeysForValidation()
     {
         var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
-        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
-        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) ||
-            !HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+        if (!TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRootSync(out var trackerRoot, out _))
             return result;
 
-        MergeKnownCompletedGuardianProjectKeysForValidation(result, trackerContext.PreTurnRoot.GetRawText());
+        MergeKnownCompletedGuardianProjectKeysForValidation(result, trackerRoot.GetRawText());
 
         return result;
     }
@@ -4310,33 +4630,21 @@ public partial class ValidationService
     private IReadOnlyDictionary<string, GuardianProjectValidationSnapshot> ReadKnownGuardianProjectsForValidation()
     {
         var result = new Dictionary<string, GuardianProjectValidationSnapshot>(StringComparer.OrdinalIgnoreCase);
-        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
-        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
-        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) ||
-            !HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+        if (!TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRootSync(out var trackerRoot, out _))
             return result;
 
-        MergeKnownGuardianProjectsForValidation(result, trackerContext.PreTurnRoot.GetRawText());
+        MergeKnownGuardianProjectsForValidation(result, trackerRoot.GetRawText());
 
         return result;
     }
 
     private IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> ReadKnownPoliticalGuardianPowerEventProjectsForValidation()
     {
-        var result = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
-        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
-        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
-        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) ||
-            !HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
-            return result;
-
-        if (!trackerContext.HasCurrentAuthorityRoot)
-            return result;
-
-        var ambiguousKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        MergeKnownPoliticalGuardianPowerEventProjectsForValidation(result, ambiguousKeys, trackerContext.CurrentAuthorityRoot.GetRawText());
-
-        return result;
+        return TryReadKnownPoliticalGuardianPowerEventProjectsFromStrictTrackerAuthority(
+                out var projects,
+                out _)
+            ? projects
+            : new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
     }
 
     private static void MergeKnownGuardianProjectKeysForValidation(HashSet<string> result, string? json)
@@ -4533,15 +4841,12 @@ public partial class ValidationService
     private IReadOnlyDictionary<string, string> ReadKnownActiveGuardianProjectIdsByGuardianForValidation()
     {
         var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var guardianPolicyContext = ResolveGuardianPolicyContextSync();
-        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
-        if (!HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext) ||
-            !HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+        if (!TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRootSync(out var trackerRoot, out _))
         {
             return result;
         }
 
-        MergeKnownActiveGuardianProjectIdsByGuardian(result, trackerContext.PreTurnRoot.GetRawText());
+        MergeKnownActiveGuardianProjectIdsByGuardian(result, trackerRoot.GetRawText());
 
         return result;
     }
@@ -4633,21 +4938,6 @@ public partial class ValidationService
             repairHint: "Используй relatedGuardianId существующего Хранителя или не передавай это поле."));
     }
 
-
-    private int GetAvailableForgeGachaBonusStepsSync(string guardianId, string sourceProjectId)
-    {
-        if (!TryResolveGuardianProjectTrackerValidationRootSync(out var trackerRoot, out _))
-            return 0;
-
-        var trackerMatch = ResolveAvailableForgeGachaBonusStepsFromTrackerJson(
-            trackerRoot.GetRawText(),
-            guardianId,
-            sourceProjectId);
-        if (trackerMatch.HasMatch)
-            return trackerMatch.AvailableSteps;
-
-        return 0;
-    }
 
     private static ForgeGachaBonusLookupResult ResolveAvailableForgeGachaBonusStepsFromTrackerJson(
         string? json,

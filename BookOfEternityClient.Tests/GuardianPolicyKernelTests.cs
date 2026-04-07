@@ -659,6 +659,277 @@ public sealed class GuardianPolicyKernelTests : IDisposable
     }
 
     [Fact]
+    public async Task DebugGuardianProjectTrackerPolicyContext_SemanticallyInvalidPreTurnTrackerDoesNotProjectAuthority()
+    {
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Current tracker policy context should reject semantically invalid validated tracker baseline."
+              },
+              "manifestationHistory": [],
+              "domain": "Tide",
+              "abode": { "abodeId": "abode_alpha", "title": "Тихий прилив" },
+              "personalityProfile": {
+                "archetype": "Tide Keeper",
+                "speechPattern": "Measured and tidal",
+                "coreValues": [ "balance", "memory", "patience" ]
+              },
+              "relationshipData": { "currentReputation": 18, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ]
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_preturn_guardians_for_semantic_invalid_tracker.json",
+            """
+            {
+              "guardians": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "canonicalName": "Азалия",
+                  "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+                  "manifestation": {
+                    "currentDisplayName": "Азалия",
+                    "formFlexibility": "selective",
+                    "currentPresentationStyle": "feminine",
+                    "currentPronouns": "она/её",
+                    "appearanceDescription": "Validated guardian baseline exists."
+                  },
+                  "manifestationHistory": [],
+                  "domain": "Tide",
+                  "abode": { "abodeId": "abode_alpha", "title": "Тихий прилив" },
+                  "personalityProfile": {
+                    "archetype": "Tide Keeper",
+                    "speechPattern": "Measured and tidal",
+                    "coreValues": [ "balance", "memory", "patience" ]
+                  },
+                  "relationshipData": { "currentReputation": 18, "reputationHistory": [], "lastInteraction": null },
+                  "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+                  "guardianRelationships": [],
+                  "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                }
+              ]
+            }
+            """);
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": []
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_semantic_invalid_tracker_baseline.json",
+            """
+            {
+              "activeProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_semantic_invalid_alpha",
+                    "projectType": "abode_expansion",
+                    "projectTier": "minor",
+                    "projectMode": "internal",
+                    "projectName": "First conflicting active project",
+                    "activeState": "Tracking invalid authority",
+                    "totalWork": 10,
+                    "workDone": 1,
+                    "totalStages": 2,
+                    "currentStage": 1,
+                    "pressure": 0,
+                    "stability": 10,
+                    "startedTurn": 4
+                  }
+                },
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_semantic_invalid_beta",
+                    "projectType": "abode_fortification",
+                    "projectTier": "minor",
+                    "projectMode": "internal",
+                    "projectName": "Second conflicting active project",
+                    "activeState": "Duplicate guardian slot must invalidate tracker authority",
+                    "totalWork": 8,
+                    "workDone": 0,
+                    "totalStages": 2,
+                    "currentStage": 0,
+                    "pressure": 0,
+                    "stability": 10,
+                    "startedTurn": 4
+                  }
+                }
+              ],
+              "completedProjects": [],
+              "temporaryProjectModifiers": []
+            }
+            """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianProjectTrackerPolicyContextAsync();
+
+        Assert.True(snapshot.HasPreTurnRoot);
+        Assert.Equal("None", snapshot.CurrentStateFailureKind);
+        Assert.False(snapshot.HasProjectedAuthorityRoot);
+        Assert.False(snapshot.HasCurrentAuthorityRoot);
+    }
+
+    [Fact]
+    public async Task DebugGuardianProjectTrackerPolicyContext_SemanticallyInvalidCurrentTrackerDoesNotBuildAuthority()
+    {
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Current tracker authority should fail on semantically invalid same-turn commands."
+              },
+              "manifestationHistory": [],
+              "domain": "Tide",
+              "abode": { "abodeId": "abode_alpha", "title": "Тихий прилив" },
+              "personalityProfile": {
+                "archetype": "Tide Keeper",
+                "speechPattern": "Measured and tidal",
+                "coreValues": [ "balance", "memory", "patience" ]
+              },
+              "relationshipData": { "currentReputation": 18, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ]
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_preturn_guardians_for_semantic_invalid_current_tracker.json",
+            """
+            {
+              "guardians": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "canonicalName": "Азалия",
+                  "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+                  "manifestation": {
+                    "currentDisplayName": "Азалия",
+                    "formFlexibility": "selective",
+                    "currentPresentationStyle": "feminine",
+                    "currentPronouns": "она/её",
+                    "appearanceDescription": "Validated guardian baseline exists."
+                  },
+                  "manifestationHistory": [],
+                  "domain": "Tide",
+                  "abode": { "abodeId": "abode_alpha", "title": "Тихий прилив" },
+                  "personalityProfile": {
+                    "archetype": "Tide Keeper",
+                    "speechPattern": "Measured and tidal",
+                    "coreValues": [ "balance", "memory", "patience" ]
+                  },
+                  "relationshipData": { "currentReputation": 18, "reputationHistory": [], "lastInteraction": null },
+                  "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+                  "guardianRelationships": [],
+                  "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                }
+              ]
+            }
+            """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_tracker_preturn_for_semantic_invalid_current_tracker.json",
+            """
+            {
+              "activeProjects": [],
+              "completedProjects": [],
+              "temporaryProjectModifiers": []
+            }
+            """);
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": [],
+          "startGuardianProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_kernel_invalid_current_alpha",
+                "projectType": "abode_expansion",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Первый конфликтующий старт",
+                "activeState": "Preparing",
+                "totalWork": 10,
+                "workDone": 0,
+                "totalStages": 2,
+                "currentStage": 0,
+                "pressure": 0,
+                "stability": 10,
+                "startedTurn": 5
+              }
+            },
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_kernel_invalid_current_beta",
+                "projectType": "abode_fortification",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Второй конфликтующий старт",
+                "activeState": "Preparing",
+                "totalWork": 8,
+                "workDone": 0,
+                "totalStages": 2,
+                "currentStage": 0,
+                "pressure": 0,
+                "stability": 10,
+                "startedTurn": 5
+              }
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianProjectTrackerPolicyContextAsync();
+
+        Assert.True(snapshot.HasPreTurnRoot);
+        Assert.Equal("SemanticallyInvalidCurrentState", snapshot.CurrentStateFailureKind);
+        Assert.False(snapshot.HasProjectedAuthorityRoot);
+        Assert.False(snapshot.HasCurrentAuthorityRoot);
+    }
+
+    [Fact]
     public async Task DebugGuardianProjectTrackerPolicyContext_InvalidRawGuardianCreateDoesNotAuthorizeProjectAuthority()
     {
         await WriteRawAsync("game_state/meta/guardians.json", """
@@ -720,14 +991,125 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         var snapshot = await validator.DebugResolveGuardianProjectTrackerPolicyContextAsync();
 
-        Assert.True(snapshot.HasProjectedAuthorityRoot);
-        Assert.True(snapshot.HasCurrentAuthorityRoot);
-        Assert.Empty(snapshot.ProjectedActiveProjectKeys);
-        Assert.Empty(snapshot.CurrentActiveProjectKeys);
+        Assert.Equal("SemanticallyInvalidCurrentState", snapshot.CurrentStateFailureKind);
+        Assert.False(snapshot.HasProjectedAuthorityRoot);
+        Assert.False(snapshot.HasCurrentAuthorityRoot);
     }
 
     [Fact]
-    public async Task DebugGuardianProjectTrackerPolicyContext_CommandShapedGuardianMutationFeedsProjectAuthority()
+    public async Task DebugGuardianProjectTrackerPolicyContext_DuplicateCurrentTemporaryModifiersDoNotAuthorizeProjectAuthority()
+    {
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Modifier authority must stay strict."
+              },
+              "manifestationHistory": [],
+              "domain": "Tide",
+              "abode": { "abodeId": "abode_alpha", "title": "Тихий прилив" },
+              "personalityProfile": {
+                "archetype": "Tide Keeper",
+                "speechPattern": "Measured and tidal",
+                "coreValues": [ "balance", "memory", "patience" ]
+              },
+              "relationshipData": { "currentReputation": 60, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+              "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ]
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_duplicate_current_modifier_guardians_baseline.json",
+            """
+            {
+              "guardians": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "canonicalName": "Азалия",
+                  "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+                  "manifestation": {
+                    "currentDisplayName": "Азалия",
+                    "formFlexibility": "selective",
+                    "currentPresentationStyle": "feminine",
+                    "currentPronouns": "она/её",
+                    "appearanceDescription": "Validated guardian baseline exists."
+                  },
+                  "manifestationHistory": [],
+                  "domain": "Tide",
+                  "abode": { "abodeId": "abode_alpha", "title": "Тихий прилив" },
+                  "personalityProfile": {
+                    "archetype": "Tide Keeper",
+                    "speechPattern": "Measured and tidal",
+                    "coreValues": [ "balance", "memory", "patience" ]
+                  },
+                  "relationshipData": { "currentReputation": 60, "reputationHistory": [], "lastInteraction": null },
+                  "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+                  "guardianRelationships": [],
+                  "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+                  "gachaSystem": { "chargesPerReturn": 2, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                }
+              ]
+            }
+            """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_duplicate_current_modifier_tracker_baseline.json",
+            """
+            {
+              "activeProjects": [],
+              "completedProjects": [],
+              "temporaryProjectModifiers": []
+            }
+            """);
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": [
+            {
+              "modifierId": "tmp_guardian_alpha_dup",
+              "guardianId": "guardian_alpha",
+              "modifierType": "next_internal_project_starting_pressure",
+              "value": 2,
+              "remainingApplications": 1
+            },
+            {
+              "modifierId": "tmp_guardian_alpha_dup",
+              "guardianId": "guardian_alpha",
+              "modifierType": "next_internal_project_starting_pressure",
+              "value": 3,
+              "remainingApplications": 1
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianProjectTrackerPolicyContextAsync();
+
+        Assert.Equal("SemanticallyInvalidCurrentState", snapshot.CurrentStateFailureKind);
+        Assert.False(snapshot.HasProjectedAuthorityRoot);
+        Assert.False(snapshot.HasCurrentAuthorityRoot);
+    }
+
+    [Fact]
+    public async Task DebugGuardianProjectTrackerPolicyContext_CommandShapedGuardianMutationDoesNotPromoteCompatibilityTrackerAuthority()
     {
         await WriteRawAsync("input/turn_request.json", """
         { "sessionId": "test-session", "requestId": "test-request", "turnNumber": 52 }
@@ -867,7 +1249,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         var project = Assert.IsType<JsonObject>(completedEntry["project"]);
         var offensiveImpactAudit = Assert.IsType<JsonObject>(project["offensiveImpactAudit"]);
 
-        Assert.Equal(57, offensiveImpactAudit["attackerCurrentPower"]!.GetValue<int>());
+        Assert.Equal(50, offensiveImpactAudit["attackerCurrentPower"]!.GetValue<int>());
         Assert.Equal(52, offensiveImpactAudit["targetCurrentPower"]!.GetValue<int>());
     }
 
@@ -1424,6 +1806,521 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
         Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
     }
+
+    [Fact]
+    public async Task DebugGuardianPolicyContext_SnapshotTrackerCompletionDoesNotPromotePartialStrictPreTurnAuthorityIntoGenericCurrentAuthority()
+    {
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Current authority should build from strict snapshot pre-turn baseline."
+              },
+              "manifestationHistory": [],
+              "domain": "Tide",
+              "abode": { "abodeId": "abode_alpha", "title": "Тихий прилив" },
+              "personalityProfile": {
+                "archetype": "Tide Keeper",
+                "speechPattern": "Measured and tidal",
+                "coreValues": [ "balance", "memory", "patience" ]
+              },
+              "relationshipData": { "currentReputation": 18, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 42, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "mood": { "current": "focused", "intensity": 40, "reason": "Current calm.", "since": 10 },
+              "loreFragments": [
+                { "fragmentId": "guardian_alpha_lore_1", "category": "personal_history", "title": "Берег памяти", "content": null, "requiredReputation": 0 },
+                { "fragmentId": "guardian_alpha_lore_2", "category": "cosmic_secret", "title": "Тайна глубины", "content": null, "requiredReputation": 50 },
+                { "fragmentId": "guardian_alpha_lore_3", "category": "domain_mastery", "title": "Узел течений", "content": null, "requiredReputation": 130 },
+                { "fragmentId": "guardian_alpha_lore_4", "category": "lost_world", "title": "Затонувший берег", "content": null, "requiredReputation": 230 },
+                { "fragmentId": "guardian_alpha_lore_5", "category": "other_guardians", "title": "Имена в пене", "content": null, "requiredReputation": 0 },
+                { "fragmentId": "guardian_alpha_lore_6", "category": "soul_mechanics", "title": "Память соли", "content": null, "requiredReputation": 50 },
+                { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
+              ],
+              "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ]
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_snapshot_tracker_preturn_guardians.json",
+            """
+            {
+              "guardians": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "canonicalName": "Азалия",
+                  "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+                  "manifestation": {
+                    "currentDisplayName": "Азалия",
+                    "formFlexibility": "selective",
+                    "currentPresentationStyle": "feminine",
+                    "currentPronouns": "она/её",
+                    "appearanceDescription": "Pre-turn guardian before tracker-only power provenance."
+                  },
+                  "manifestationHistory": [],
+                  "domain": "Tide",
+                  "abode": { "abodeId": "abode_alpha", "title": "Тихий прилив" },
+                  "personalityProfile": {
+                    "archetype": "Tide Keeper",
+                    "speechPattern": "Measured and tidal",
+                    "coreValues": [ "balance", "memory", "patience" ]
+                  },
+                  "relationshipData": { "currentReputation": 18, "reputationHistory": [], "lastInteraction": null },
+                  "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+                  "guardianRelationships": [],
+                  "mood": { "current": "focused", "intensity": 40, "reason": "Pre-turn calm.", "since": 10 },
+                  "loreFragments": [
+                    { "fragmentId": "guardian_alpha_lore_1", "category": "personal_history", "title": "Берег памяти", "content": null, "requiredReputation": 0 },
+                    { "fragmentId": "guardian_alpha_lore_2", "category": "cosmic_secret", "title": "Тайна глубины", "content": null, "requiredReputation": 50 },
+                    { "fragmentId": "guardian_alpha_lore_3", "category": "domain_mastery", "title": "Узел течений", "content": null, "requiredReputation": 130 },
+                    { "fragmentId": "guardian_alpha_lore_4", "category": "lost_world", "title": "Затонувший берег", "content": null, "requiredReputation": 230 },
+                    { "fragmentId": "guardian_alpha_lore_5", "category": "other_guardians", "title": "Имена в пене", "content": null, "requiredReputation": 0 },
+                    { "fragmentId": "guardian_alpha_lore_6", "category": "soul_mechanics", "title": "Память соли", "content": null, "requiredReputation": 50 },
+                    { "fragmentId": "guardian_alpha_lore_7", "category": "personal_history", "title": "Возвращение волны", "content": null, "requiredReputation": 130 }
+                  ],
+                  "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+                  "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+                }
+              ]
+            }
+            """);
+
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            GuardianPowerEventState.JournalPath,
+            "test_backups/kernel_snapshot_tracker_preturn_journal.json",
+            """
+            {
+              "entries": []
+            }
+            """);
+
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_snapshot_tracker_preturn_tracker.json",
+            """
+            {
+              "activeProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_tracker_power",
+                    "projectType": "abode_expansion",
+                    "projectTier": "minor",
+                    "projectMode": "internal",
+                    "projectName": "Малое расширение Обители",
+                    "activeState": "Sealing a new chamber",
+                    "totalWork": 12,
+                    "workDone": 12,
+                    "totalStages": 2,
+                    "currentStage": 2,
+                    "pressure": 3,
+                    "stability": 82
+                  }
+                }
+              ],
+              "completedProjects": [],
+              "temporaryProjectModifiers": [],
+              "completeGuardianProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "projectId": "proj_kernel_tracker_power",
+                  "finalState": "Completed",
+                  "outcome": "Snapshot tracker completion should feed strict pre-turn authority root.",
+                  "abodePowerDelta": 1
+                }
+              ]
+            }
+            """);
+
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/kernel_snapshot_tracker_preturn_soul.json",
+            """
+            {
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 1
+            }
+            """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianPolicyContextAsync();
+
+        Assert.False(snapshot.HasPreTurnAuthorityRoot);
+        Assert.Equal("InvalidValidatedSnapshotGuardians", snapshot.StrictPreTurnGuardianAuthorityStatus);
+        Assert.Null(snapshot.PreTurnAuthorityRootJson);
+        Assert.True(snapshot.HasCurrentAuthorityRoot);
+        Assert.NotNull(snapshot.CurrentAuthorityRootJson);
+
+        var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
+        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"])).AsObject();
+        var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
+        Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task DebugGuardianPolicyContext_GenericSharedStrictPreTurnAuthority_ResolvesSnapshotRelationshipsWithoutRawFallback()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    relationships: new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["targetGuardianId"] = "guardian_beta",
+                            ["attitudeScore"] = -80,
+                            ["attitudeTier"] = "enemy",
+                            ["reason"] = "Open hostility",
+                            ["lastChangedAt"] = null
+                        }
+                    }),
+                BuildCanonicalGuardian(
+                    "guardian_beta",
+                    "Варак",
+                    reputation: 10,
+                    power: 35,
+                    relationships: new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["targetGuardianId"] = "guardian_alpha",
+                            ["attitudeScore"] = -60,
+                            ["attitudeTier"] = "rival",
+                            ["reason"] = "Mutual hostility",
+                            ["lastChangedAt"] = null
+                        }
+                    },
+                    defaultName: "Варак",
+                    masculineName: "Варак",
+                    presentationStyle: "masculine",
+                    pronouns: "он/его"))));
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_generic_shared_relationship_snapshot.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    relationships: new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["targetGuardianId"] = "guardian_beta",
+                            ["attitudeScore"] = -80,
+                            ["attitudeTier"] = "enemy",
+                            ["reason"] = "Open hostility",
+                            ["lastChangedAt"] = null
+                        }
+                    }),
+                BuildCanonicalGuardian(
+                    "guardian_beta",
+                    "Варак",
+                    reputation: 10,
+                    power: 35,
+                    relationships: new JsonArray
+                    {
+                        new JsonObject
+                        {
+                            ["targetGuardianId"] = "guardian_alpha",
+                            ["attitudeScore"] = -60,
+                            ["attitudeTier"] = "rival",
+                            ["reason"] = "Mutual hostility",
+                            ["lastChangedAt"] = null
+                        }
+                    },
+                    defaultName: "Варак",
+                    masculineName: "Варак",
+                    presentationStyle: "masculine",
+                    pronouns: "он/его"))));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianPolicyContextAsync();
+
+        Assert.True(
+            snapshot.HasGenericSharedStrictPreTurnAuthorityRoot,
+            $"{snapshot.GenericSharedStrictPreTurnGuardianAuthorityStatus}: {snapshot.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription}");
+        Assert.Equal("Resolved", snapshot.GenericSharedStrictPreTurnGuardianAuthorityStatus);
+        Assert.NotNull(snapshot.GenericSharedStrictPreTurnAuthorityRootJson);
+
+        var genericSharedStrictPreTurnAuthorityRoot = JsonNode.Parse(snapshot.GenericSharedStrictPreTurnAuthorityRootJson!)!.AsObject();
+        var guardians = Assert.IsType<JsonArray>(genericSharedStrictPreTurnAuthorityRoot["guardians"]);
+        Assert.Equal(2, guardians.Count);
+        var guardianAlpha = guardians
+            .Select(node => Assert.IsType<JsonObject>(node))
+            .Single(guardian => string.Equals(guardian["guardianId"]?.GetValue<string>(), "guardian_alpha", StringComparison.OrdinalIgnoreCase));
+        var guardianRelationships = Assert.IsType<JsonArray>(guardianAlpha["guardianRelationships"]);
+        var relationship = Assert.Single(guardianRelationships).AsObject();
+        Assert.Equal("guardian_beta", relationship["targetGuardianId"]!.GetValue<string>());
+        Assert.Equal(-80, relationship["attitudeScore"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task DebugGuardianPolicyContext_GenericSharedStrictPreTurnAuthority_MaterializesSnapshotCreateGuardian()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            """
+            {
+              "guardians": []
+            }
+            """);
+
+        var createdGuardian = BuildCanonicalGuardian(
+            "guardian_new",
+            "Лира",
+            reputation: 25,
+            power: 18,
+            defaultName: "Лира",
+            feminineName: "Лира",
+            masculineName: "Лира",
+            neutralName: "Лира");
+
+        var preTurnSnapshotRoot = BuildGuardiansRoot();
+        preTurnSnapshotRoot["UpdateGuardians"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["command"] = "create",
+                ["data"] = createdGuardian.DeepClone()
+            }
+        };
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_generic_shared_snapshot_create_guardian.json",
+            SerializeJson(preTurnSnapshotRoot));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianPolicyContextAsync();
+
+        Assert.True(
+            snapshot.HasGenericSharedStrictPreTurnAuthorityRoot,
+            $"{snapshot.GenericSharedStrictPreTurnGuardianAuthorityStatus}: {snapshot.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription}");
+        Assert.Equal("Resolved", snapshot.GenericSharedStrictPreTurnGuardianAuthorityStatus);
+        Assert.NotNull(snapshot.GenericSharedStrictPreTurnAuthorityRootJson);
+
+        var genericSharedStrictPreTurnAuthorityRoot = JsonNode.Parse(snapshot.GenericSharedStrictPreTurnAuthorityRootJson!)!.AsObject();
+        var guardians = Assert.IsType<JsonArray>(genericSharedStrictPreTurnAuthorityRoot["guardians"]);
+        var createdGuardianEntry = Assert.Single(guardians).AsObject();
+        Assert.Equal("guardian_new", createdGuardianEntry["guardianId"]!.GetValue<string>());
+        Assert.Equal("Лира", createdGuardianEntry["canonicalName"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task DebugGuardianPolicyContext_GenericSharedStrictPreTurnAuthority_IgnoresProofOnlyTrackerRequirement()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian("guardian_alpha", "Азалия", reputation: 18, power: 40))));
+
+        var preTurnSnapshotRoot = BuildGuardiansRoot(
+            BuildCanonicalGuardian("guardian_alpha", "Азалия", reputation: 18, power: 40));
+        preTurnSnapshotRoot["guardianPowerEvents"] = new JsonArray
+        {
+            BuildOfferingGuardianPowerEvent(
+                "offering_evt_generic_shared_missing_journal",
+                "guardian_alpha",
+                "generic_shared_missing_journal",
+                2)
+        };
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_generic_shared_missing_journal_guardians.json",
+            SerializeJson(preTurnSnapshotRoot));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianPolicyContextAsync();
+
+        Assert.False(snapshot.HasPreTurnAuthorityRoot, snapshot.StrictPreTurnGuardianAuthorityFailureDescription);
+        Assert.Equal("MissingValidatedSnapshotTracker", snapshot.StrictPreTurnGuardianAuthorityStatus);
+        Assert.Null(snapshot.PreTurnAuthorityRootJson);
+
+        Assert.True(
+            snapshot.HasGenericSharedStrictPreTurnAuthorityRoot,
+            $"{snapshot.GenericSharedStrictPreTurnGuardianAuthorityStatus}: {snapshot.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription}");
+        Assert.Equal("Resolved", snapshot.GenericSharedStrictPreTurnGuardianAuthorityStatus);
+        Assert.NotNull(snapshot.GenericSharedStrictPreTurnAuthorityRootJson);
+
+        var genericSharedStrictPreTurnAuthorityRoot = JsonNode.Parse(snapshot.GenericSharedStrictPreTurnAuthorityRootJson!)!.AsObject();
+        var guardian = Assert.Single(Assert.IsType<JsonArray>(genericSharedStrictPreTurnAuthorityRoot["guardians"])).AsObject();
+        var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
+        Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
+    }
+
+    private static string SerializeJson(JsonNode node)
+        => node.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+
+    private static JsonObject BuildGuardiansRoot(params JsonObject[] guardians)
+    {
+        var guardiansArray = new JsonArray();
+        foreach (var guardian in guardians)
+            guardiansArray.Add(guardian.DeepClone());
+
+        return new JsonObject
+        {
+            ["guardians"] = guardiansArray
+        };
+    }
+
+    private static JsonObject BuildCanonicalGuardian(
+        string guardianId,
+        string canonicalName,
+        int reputation,
+        int power,
+        JsonArray? relationships = null,
+        string? defaultName = null,
+        string? feminineName = null,
+        string? masculineName = null,
+        string? neutralName = null,
+        string? presentationStyle = null,
+        string? pronouns = null,
+        string? appearanceDescription = null)
+    {
+        defaultName ??= canonicalName;
+        feminineName ??= defaultName;
+        masculineName ??= defaultName;
+        neutralName ??= defaultName;
+        presentationStyle ??= "feminine";
+        pronouns ??= "она/её";
+        appearanceDescription ??= $"Canonical fixture for {guardianId}.";
+        var canonicalPower = AbodePowerRules.ClampCurrentPower(power);
+        var gachaChargesPerReturn = GuardianGachaChargeRules.GetChargesPerReturnForReputation(reputation, canonicalPower);
+        var nameVariants = new JsonObject
+        {
+            ["default"] = defaultName,
+            ["feminine"] = feminineName,
+            ["masculine"] = masculineName,
+            ["neutral"] = neutralName
+        };
+
+        return new JsonObject
+        {
+            ["guardianId"] = guardianId,
+            ["canonicalName"] = canonicalName,
+            ["nameVariants"] = nameVariants,
+            ["manifestation"] = new JsonObject
+            {
+                ["currentDisplayName"] = defaultName,
+                ["formFlexibility"] = "selective",
+                ["currentPresentationStyle"] = presentationStyle,
+                ["currentPronouns"] = pronouns,
+                ["appearanceDescription"] = appearanceDescription
+            },
+            ["manifestationHistory"] = new JsonArray(),
+            ["domain"] = "Tide",
+            ["abode"] = new JsonObject
+            {
+                ["abodeId"] = $"abode_{guardianId}",
+                ["title"] = $"Обитель {canonicalName}"
+            },
+            ["personalityProfile"] = new JsonObject
+            {
+                ["archetype"] = "Tide Keeper",
+                ["speechPattern"] = "Measured and tidal",
+                ["coreValues"] = new JsonArray("balance", "memory", "patience")
+            },
+            ["relationshipData"] = new JsonObject
+            {
+                ["currentReputation"] = reputation,
+                ["reputationHistory"] = new JsonArray(),
+                ["lastInteraction"] = null
+            },
+            ["abodePower"] = new JsonObject
+            {
+                ["currentPower"] = canonicalPower,
+                ["tier"] = AbodePowerRules.GetTierLabel(canonicalPower),
+                ["lastUpdatedAt"] = "2026-03-24T00:00:00Z",
+                ["history"] = new JsonArray()
+            },
+            ["guardianRelationships"] = relationships?.DeepClone() ?? new JsonArray(),
+            ["mood"] = new JsonObject
+            {
+                ["current"] = "focused",
+                ["intensity"] = 40,
+                ["reason"] = "Kernel fixture calm.",
+                ["since"] = 10
+            },
+            ["loreFragments"] = new JsonArray
+            {
+                new JsonObject { ["fragmentId"] = $"{guardianId}_lore_1", ["category"] = "personal_history", ["title"] = "Берег памяти", ["content"] = null, ["requiredReputation"] = 0 },
+                new JsonObject { ["fragmentId"] = $"{guardianId}_lore_2", ["category"] = "cosmic_secret", ["title"] = "Тайна глубины", ["content"] = null, ["requiredReputation"] = 50 },
+                new JsonObject { ["fragmentId"] = $"{guardianId}_lore_3", ["category"] = "domain_mastery", ["title"] = "Узел течений", ["content"] = null, ["requiredReputation"] = 130 },
+                new JsonObject { ["fragmentId"] = $"{guardianId}_lore_4", ["category"] = "lost_world", ["title"] = "Затонувший берег", ["content"] = null, ["requiredReputation"] = 230 },
+                new JsonObject { ["fragmentId"] = $"{guardianId}_lore_5", ["category"] = "other_guardians", ["title"] = "Имена в пене", ["content"] = null, ["requiredReputation"] = 0 },
+                new JsonObject { ["fragmentId"] = $"{guardianId}_lore_6", ["category"] = "soul_mechanics", ["title"] = "Память соли", ["content"] = null, ["requiredReputation"] = 50 },
+                new JsonObject { ["fragmentId"] = $"{guardianId}_lore_7", ["category"] = "personal_history", ["title"] = "Возвращение волны", ["content"] = null, ["requiredReputation"] = 130 }
+            },
+            ["questManagement"] = new JsonObject
+            {
+                ["availableQuests"] = new JsonArray(),
+                ["activeQuests"] = new JsonArray(),
+                ["completedQuests"] = new JsonArray()
+            },
+            ["gachaSystem"] = new JsonObject
+            {
+                ["chargesPerReturn"] = gachaChargesPerReturn,
+                ["chargesUsedThisReturn"] = 0,
+                ["gachaHistory"] = new JsonArray()
+            }
+        };
+    }
+
+    private static JsonObject BuildOfferingGuardianPowerEvent(
+        string eventId,
+        string guardianId,
+        string sourceId,
+        int delta)
+        => new()
+        {
+            ["eventId"] = eventId,
+            ["guardianId"] = guardianId,
+            ["delta"] = delta,
+            ["reasonType"] = "offering",
+            ["sourceSurface"] = "guardianAbodeOffering",
+            ["sourceId"] = sourceId,
+            ["title"] = "Snapshot offering event",
+            ["summary"] = "Generic shared strict pre-turn authority should ignore proof-only journal requirements.",
+            ["visibility"] = "player_known",
+            ["appliedAt"] = "2026-03-24T00:00:00Z",
+            ["audit"] = new JsonObject
+            {
+                ["offeringType"] = "ink_feathers",
+                ["returnCycleId"] = $"cycle_{sourceId}",
+                ["baseDelta"] = delta,
+                ["finalDelta"] = delta,
+                ["inkFeathersOffered"] = 100,
+                ["capRemainingBefore"] = 150
+            }
+        };
 
     private async Task WriteRawAsync(string path, string json) =>
         await _fs.WriteFileAtomicAsync(path, json);

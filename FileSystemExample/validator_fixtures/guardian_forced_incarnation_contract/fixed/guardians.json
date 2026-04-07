@@ -2,32 +2,74 @@
   "guardians": [
     {
       "guardianId": "guard_social_azalia_001",
-      "name": "Азалия",
-      "domain": "Passion",
-      "abode": {
-        "abodeId": "abode_unquenchable_flame_001",
-        "isDiscovered": true
+      "canonicalName": "Азалия",
+      "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+      "manifestation": {
+        "currentDisplayName": "Азалия",
+        "formFlexibility": "selective",
+        "currentPresentationStyle": "feminine",
+        "currentPronouns": "она/её",
+        "appearanceDescription": "Fixed forced-incarnation guardian keeps canonical shape and severe hostility."
       },
-      "relationshipData": {
-        "currentReputation": -80,
-        "reputationHistory": [],
-        "lastInteraction": "2026-03-20T09:10:00Z"
-      }
+      "manifestationHistory": [],
+      "domain": "Passion",
+      "abode": { "abodeId": "abode_unquenchable_flame_001", "title": "Неугасимое пламя" },
+      "personalityProfile": {
+        "archetype": "Passion Keeper",
+        "speechPattern": "Sharp and intimate",
+        "coreValues": [ "devotion", "intensity", "control" ]
+      },
+      "relationshipData": { "currentReputation": -80, "reputationHistory": [], "lastInteraction": "2026-03-20T09:10:00Z" },
+      "abodePower": { "currentPower": 48, "tier": "Стабильная", "lastUpdatedAt": "2026-03-20T09:10:00Z", "history": [] },
+      "guardianRelationships": [],
+      "mood": { "current": "furious", "intensity": 90, "reason": "Open humiliation justifies forced incarnation severity.", "since": 10 },
+      "loreFragments": [
+        { "fragmentId": "guard_social_azalia_001_lore_1", "category": "personal_history", "title": "Первое пламя", "content": null, "requiredReputation": 0 },
+        { "fragmentId": "guard_social_azalia_001_lore_2", "category": "cosmic_secret", "title": "Сердце жара", "content": null, "requiredReputation": 50 },
+        { "fragmentId": "guard_social_azalia_001_lore_3", "category": "domain_mastery", "title": "Ритм углей", "content": null, "requiredReputation": 130 },
+        { "fragmentId": "guard_social_azalia_001_lore_4", "category": "lost_world", "title": "Пепельная память", "content": null, "requiredReputation": 230 },
+        { "fragmentId": "guard_social_azalia_001_lore_5", "category": "other_guardians", "title": "Союзы жара", "content": null, "requiredReputation": 0 },
+        { "fragmentId": "guard_social_azalia_001_lore_6", "category": "soul_mechanics", "title": "Пламя души", "content": null, "requiredReputation": 50 },
+        { "fragmentId": "guard_social_azalia_001_lore_7", "category": "personal_history", "title": "Возвращение искры", "content": null, "requiredReputation": 130 }
+      ],
+      "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+      "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
     }
   ],
   "activeGuardian": {
     "guardianId": "guard_social_azalia_001",
-    "name": "Азалия",
-    "domain": "Passion",
-    "abode": {
-      "abodeId": "abode_unquenchable_flame_001",
-      "isDiscovered": true
+    "canonicalName": "Азалия",
+    "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+    "manifestation": {
+      "currentDisplayName": "Азалия",
+      "formFlexibility": "selective",
+      "currentPresentationStyle": "feminine",
+      "currentPronouns": "она/её",
+      "appearanceDescription": "Fixed forced-incarnation active guardian."
     },
-    "relationshipData": {
-      "currentReputation": -80,
-      "reputationHistory": [],
-      "lastInteraction": "2026-03-20T09:10:00Z"
-    }
+    "manifestationHistory": [],
+    "domain": "Passion",
+    "abode": { "abodeId": "abode_unquenchable_flame_001", "title": "Неугасимое пламя" },
+    "personalityProfile": {
+      "archetype": "Passion Keeper",
+      "speechPattern": "Sharp and intimate",
+      "coreValues": [ "devotion", "intensity", "control" ]
+    },
+    "relationshipData": { "currentReputation": -80, "reputationHistory": [], "lastInteraction": "2026-03-20T09:10:00Z" },
+    "abodePower": { "currentPower": 48, "tier": "Стабильная", "lastUpdatedAt": "2026-03-20T09:10:00Z", "history": [] },
+    "guardianRelationships": [],
+    "mood": { "current": "furious", "intensity": 90, "reason": "Open humiliation justifies forced incarnation severity.", "since": 10 },
+    "loreFragments": [
+      { "fragmentId": "guard_social_azalia_001_lore_1", "category": "personal_history", "title": "Первое пламя", "content": null, "requiredReputation": 0 },
+      { "fragmentId": "guard_social_azalia_001_lore_2", "category": "cosmic_secret", "title": "Сердце жара", "content": null, "requiredReputation": 50 },
+      { "fragmentId": "guard_social_azalia_001_lore_3", "category": "domain_mastery", "title": "Ритм углей", "content": null, "requiredReputation": 130 },
+      { "fragmentId": "guard_social_azalia_001_lore_4", "category": "lost_world", "title": "Пепельная память", "content": null, "requiredReputation": 230 },
+      { "fragmentId": "guard_social_azalia_001_lore_5", "category": "other_guardians", "title": "Союзы жара", "content": null, "requiredReputation": 0 },
+      { "fragmentId": "guard_social_azalia_001_lore_6", "category": "soul_mechanics", "title": "Пламя души", "content": null, "requiredReputation": 50 },
+      { "fragmentId": "guard_social_azalia_001_lore_7", "category": "personal_history", "title": "Возвращение искры", "content": null, "requiredReputation": 130 }
+    ],
+    "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+    "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
   },
   "chaosSeaNavigation": {
     "currentAbodeId": "abode_unquenchable_flame_001",

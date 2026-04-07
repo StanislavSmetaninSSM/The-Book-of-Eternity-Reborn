@@ -10,11 +10,11 @@
   },
   "snapshotFileHashes": {
     "game_state/meta/soul_state.json": "90AD1903DEAC1A76A4B635BD946621B32D25BA3393C07995CF036FC9DBCBB0FF",
-    "game_state/meta/guardians.json": "092564640681996E7CC4F0F587333E46D083C8B723DD818FCC9C54536E2511AD"
+    "game_state/meta/guardians.json": "7BFAAFEB63789CD48FA2397B7EBD496E875C20702B21787346F6D77B98030D62"
   },
   "clientOwnedValidationHashes": {},
   "rollbackBackups": {},
   "rollbackBaselineFiles": [],
   "sourceLabel": "обработки хода",
-  "manifestPayloadHash": "996C29A081D72FC10B7A6B967509C8A8B40F55D09FE54AE3CF2E99524B2AFE45"
+  "manifestPayloadHash": "E9BCC87A28E006438193DB32FE4D629720FD740614413EA21DA808C2E6BBC9CB"
 }

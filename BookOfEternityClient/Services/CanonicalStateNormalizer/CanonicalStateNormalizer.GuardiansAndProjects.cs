@@ -19,6 +19,8 @@ public partial class CanonicalStateNormalizer
         var activeProjects = new List<JsonObject>();
         var completedProjects = new List<JsonObject>();
         var temporaryModifiers = new List<JsonObject>();
+        var projectedJournalEntries = new List<JsonObject>();
+        var projectedPowerEvents = new List<JsonObject>();
 
         CollectGuardianProjectEntries(preTurnTrackerRoot, "activeProjects", activeProjects);
         CollectGuardianProjectEntries(preTurnTrackerRoot, "completedProjects", completedProjects);
@@ -27,10 +29,23 @@ public partial class CanonicalStateNormalizer
         if (currentTrackerRoot != null)
         {
             if (currentTrackerRoot["startGuardianProjects"] is JsonArray startCommands)
-                ApplyGuardianProjectStartCommands(activeProjects, completedProjects, temporaryModifiers, startCommands, new List<JsonObject>(), currentTurn, currentGuardiansRoot);
+                ApplyGuardianProjectStartCommands(
+                    activeProjects,
+                    completedProjects,
+                    temporaryModifiers,
+                    startCommands,
+                    projectedJournalEntries,
+                    currentTurn,
+                    currentGuardiansRoot);
 
             if (currentTrackerRoot["guardianProjectUpdates"] is JsonArray updateCommands)
-                ApplyGuardianProjectUpdateCommands(activeProjects, updateCommands, new List<JsonObject>(), new List<JsonObject>(), currentTurn, currentGuardiansRoot);
+                ApplyGuardianProjectUpdateCommands(
+                    activeProjects,
+                    updateCommands,
+                    projectedJournalEntries,
+                    projectedPowerEvents,
+                    currentTurn,
+                    currentGuardiansRoot);
 
             if (currentTrackerRoot["completeGuardianProjects"] is JsonArray completionCommands)
             {
@@ -40,8 +55,8 @@ public partial class CanonicalStateNormalizer
                     completedProjects,
                     temporaryModifiers,
                     completionCommands,
-                    new List<JsonObject>(),
-                    new List<JsonObject>(),
+                    projectedJournalEntries,
+                    projectedPowerEvents,
                     currentTurn,
                     currentIncarnation,
                     currentRealm,
@@ -54,6 +69,35 @@ public partial class CanonicalStateNormalizer
         {
             ConsumeLoreResearchQuestTokens(completedProjects, preTurnGuardiansRoot, currentGuardiansRoot, currentIncarnation, new List<JsonObject>());
             ConsumeRelicForgingGachaUses(completedProjects, preTurnGuardiansRoot, currentGuardiansRoot, new List<JsonObject>());
+        }
+
+        if (currentGuardiansRoot != null && projectedPowerEvents.Count > 0)
+        {
+            GuardianPowerEventState.ApplyEvents(
+                currentGuardiansRoot,
+                projectedPowerEvents,
+                currentTurn,
+                projectedJournalEntries);
+
+            if (currentGuardiansRoot["guardians"] is JsonArray guardians)
+            {
+                foreach (var guardian in guardians.OfType<JsonObject>())
+                {
+                    AbodePowerRules.EnsureCanonicalState(guardian);
+                    GuardianGachaChargeRules.NormalizeGuardianGachaState(guardian);
+                    GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
+                }
+
+                GuardianRelationshipRules.EnsureCanonicalNetwork(guardians);
+            }
+
+            if (currentGuardiansRoot["activeGuardian"] is JsonObject currentActiveGuardian &&
+                currentGuardiansRoot["guardians"] is JsonArray currentGuardians &&
+                currentGuardians.OfType<JsonObject>().FirstOrDefault(item =>
+                    string.Equals(GetNodeString(item["guardianId"]), GetNodeString(currentActiveGuardian["guardianId"]), StringComparison.OrdinalIgnoreCase)) is JsonObject syncedGuardian)
+            {
+                currentGuardiansRoot["activeGuardian"] = syncedGuardian.DeepClone();
+            }
         }
 
         var authorityRoot = BuildGuardianProjectsTrackerRoot(activeProjects, completedProjects, temporaryModifiers);
@@ -315,6 +359,7 @@ public partial class CanonicalStateNormalizer
         var previous = await ReadBackupObjectAsync(GuardianProjectState.TrackerPath, backups);
         var previousGuardians = await ReadBackupObjectAsync(guardiansPath, backups);
         var result = CloneObject(previous ?? new JsonObject());
+        var currentObj = currentNode as JsonObject;
 
         var activeProjects = new List<JsonObject>();
         var completedProjects = new List<JsonObject>();
@@ -334,12 +379,8 @@ public partial class CanonicalStateNormalizer
         var currentRealm = GetNodeString(soulStateRoot?["currentRealm"]);
         var guardiansChanged = false;
 
-        if (currentNode is JsonObject currentObj)
+        if (currentObj != null)
         {
-            CollectGuardianProjectEntries(currentObj, "activeProjects", activeProjects);
-            CollectGuardianProjectEntries(currentObj, "completedProjects", completedProjects);
-            CollectGuardianProjectEntries(currentObj, "temporaryProjectModifiers", temporaryModifiers);
-
             if (currentObj["startGuardianProjects"] is JsonArray startCommands)
             {
                 ApplyGuardianProjectStartCommands(activeProjects, completedProjects, temporaryModifiers, startCommands, journalEntries, currentTurn, guardiansRoot);

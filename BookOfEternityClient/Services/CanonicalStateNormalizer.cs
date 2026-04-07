@@ -75,6 +75,21 @@ public partial class CanonicalStateNormalizer
         "game_state/factions/faction_chronicles.json"
     };
 
+    public static readonly string[] NormalizerBackupInputFiles = CanonicalAccumulatedFiles
+        .Concat(new[]
+        {
+            "game_state/world/world_events.json"
+        })
+        .ToArray();
+
+    public static readonly string[] NormalizerRollbackTrackedFiles = NormalizerBackupInputFiles
+        .Concat(new[]
+        {
+            GuardianProjectState.JournalPath
+        })
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .ToArray();
+
     private readonly FileSystemManager _fs;
     private readonly ILogger<CanonicalStateNormalizer> _logger;
 

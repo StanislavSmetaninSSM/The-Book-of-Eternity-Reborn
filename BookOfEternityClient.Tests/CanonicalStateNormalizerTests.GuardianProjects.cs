@@ -105,7 +105,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
@@ -212,7 +212,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
         Assert.NotNull(journalJson);
@@ -338,7 +338,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
@@ -476,7 +476,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
@@ -551,7 +551,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
@@ -665,7 +665,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         var powerJournalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
@@ -788,7 +788,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
@@ -908,7 +908,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var powerJournalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
@@ -1003,7 +1003,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         var powerJournalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
@@ -1141,7 +1141,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
@@ -1231,7 +1231,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         Assert.NotNull(guardiansJson);
@@ -1423,7 +1423,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         var expectedStabilityRelief = GuardianProjectState.GetCounterOperationStabilityRelief("major") + 1;
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         Assert.NotNull(trackerJson);
@@ -1590,7 +1590,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         var expectedStabilityRelief = GuardianProjectState.GetCounterOperationStabilityRelief("major");
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         Assert.NotNull(trackerJson);
@@ -1689,7 +1689,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         Assert.NotNull(trackerJson);
@@ -1741,7 +1741,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         }
         """);
 
-        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_guardian_projects_existing_active.json", """
         {
           "activeProjects": [
             {
@@ -1762,6 +1762,13 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
               }
             }
           ],
+          "completedProjects": [],
+          "temporaryProjectModifiers": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        {
           "startGuardianProjects": [
             {
               "guardianId": "guardian_alpha",
@@ -1785,7 +1792,10 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [GuardianProjectState.TrackerPath] = "test_backups/preturn_guardian_projects_existing_active.json"
+        });
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         Assert.NotNull(trackerJson);
@@ -1794,6 +1804,161 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.NotNull(activeProjects);
         Assert.Single(activeProjects!);
         Assert.Equal("proj_existing", activeProjects![0]!["project"]!["projectId"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_CurrentMaterializedTrackerArraysDoNotSeedAuthorityState()
+    {
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_phantom_active",
+                "projectType": "abode_expansion",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Phantom active state"
+              }
+            }
+          ],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_phantom_completed",
+                "projectType": "abode_fortification",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Phantom completed state"
+              }
+            }
+          ],
+          "temporaryProjectModifiers": [
+            {
+              "modifierId": "tmp_guardian_alpha_phantom",
+              "guardianId": "guardian_alpha",
+              "modifierType": "next_internal_project_starting_pressure",
+              "value": 2,
+              "remainingApplications": 1
+            }
+          ]
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        Assert.NotNull(trackerJson);
+        var trackerRoot = JsonNode.Parse(trackerJson!)!.AsObject();
+
+        Assert.Empty(trackerRoot["activeProjects"]!.AsArray());
+        Assert.Empty(trackerRoot["completedProjects"]!.AsArray());
+        Assert.Empty(trackerRoot["temporaryProjectModifiers"]!.AsArray());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_NoBackupsWithCommands_DoesNotReuseCurrentMaterializedTrackerArraysAsBaseline()
+    {
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", """
+        { "turnNumber": 60 }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая хранительница."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 75, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 40, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "gachaSystem": { "chargesPerReturn": 1, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_phantom_active",
+                "projectType": "abode_expansion",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Phantom active state"
+              }
+            }
+          ],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_phantom_completed",
+                "projectType": "abode_fortification",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Phantom completed state"
+              }
+            }
+          ],
+          "temporaryProjectModifiers": [
+            {
+              "modifierId": "tmp_guardian_alpha_phantom",
+              "guardianId": "guardian_alpha",
+              "modifierType": "next_internal_project_starting_pressure",
+              "value": 2,
+              "remainingApplications": 1
+            }
+          ],
+          "startGuardianProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_started",
+                "projectType": "abode_expansion",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Started from command",
+                "activeState": "Planning",
+                "totalWork": 5,
+                "workDone": 0,
+                "totalStages": 1,
+                "currentStage": 0,
+                "pressure": 1,
+                "stability": 100
+              }
+            }
+          ]
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        Assert.NotNull(trackerJson);
+        var trackerRoot = JsonNode.Parse(trackerJson!)!.AsObject();
+        var activeProjects = trackerRoot["activeProjects"]!.AsArray();
+
+        Assert.Single(activeProjects);
+        Assert.Equal("proj_started", activeProjects[0]!["project"]!["projectId"]!.GetValue<string>());
+        Assert.Empty(trackerRoot["completedProjects"]!.AsArray());
+        Assert.Empty(trackerRoot["temporaryProjectModifiers"]!.AsArray());
     }
 
     [Fact]
@@ -1883,7 +2048,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         Assert.NotNull(trackerJson);
@@ -1986,7 +2151,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
         Assert.NotNull(journalJson);
@@ -2082,7 +2247,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
         Assert.NotNull(journalJson);
@@ -2197,7 +2362,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
         Assert.NotNull(journalJson);
@@ -2343,7 +2508,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
         Assert.NotNull(journalJson);
@@ -2495,7 +2660,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
         var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
         Assert.NotNull(journalJson);
@@ -2532,3 +2697,4 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
 
 
 }
+

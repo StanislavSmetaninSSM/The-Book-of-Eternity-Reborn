@@ -28,7 +28,8 @@ public partial class ValidationService
         MissingManifest,
         UnusableManifest,
         MissingSnapshotFile,
-        InvalidSnapshotFile
+        InvalidSnapshotFile,
+        InvalidAuthority
     }
 
     private sealed class GuardianPolicyContext
@@ -38,10 +39,25 @@ public partial class ValidationService
         public JsonElement CurrentRoot { get; set; }
         public bool HasPreTurnRoot { get; set; }
         public JsonElement PreTurnRoot { get; set; }
+        public bool HasProofLocalCommandAuthorizationBaselineRoot { get; set; }
+        public JsonElement ProofLocalCommandAuthorizationBaselineRoot { get; set; }
         public bool HasCurrentAuthorityRoot { get; set; }
         public JsonElement CurrentAuthorityRoot { get; set; }
+        public bool HasStrictCurrentAuthorityRoot { get; set; }
+        public JsonElement StrictCurrentAuthorityRoot { get; set; }
         public bool HasPreTurnAuthorityRoot { get; set; }
         public JsonElement PreTurnAuthorityRoot { get; set; }
+        public bool HasCompatibilityPreTurnAuthorityRoot { get; set; }
+        public JsonElement CompatibilityPreTurnAuthorityRoot { get; set; }
+        public bool HasStrictPreTurnAuthorityRoot { get; set; }
+        public bool HasGenericSharedStrictPreTurnAuthorityRoot { get; set; }
+        public JsonElement GenericSharedStrictPreTurnAuthorityRoot { get; set; }
+        public bool IsBuildingGuardianAuthorityRoots { get; set; }
+        public bool IsBuildingStrictPreTurnAuthority { get; set; }
+        public StrictPreTurnGuardianAuthorityStatus StrictPreTurnGuardianAuthorityStatus { get; set; } = StrictPreTurnGuardianAuthorityStatus.None;
+        public string? StrictPreTurnGuardianAuthorityFailureDescription { get; set; }
+        public GenericSharedStrictPreTurnGuardianAuthorityStatus GenericSharedStrictPreTurnGuardianAuthorityStatus { get; set; } = GenericSharedStrictPreTurnGuardianAuthorityStatus.None;
+        public string? GenericSharedStrictPreTurnGuardianAuthorityFailureDescription { get; set; }
         public bool HasCurrentGuardiansArray { get; set; }
         public bool HasCurrentUpdateGuardians { get; set; }
         public bool HasCurrentGuardianPowerEvents { get; set; }
@@ -71,6 +87,7 @@ public partial class ValidationService
         public bool HasCurrentRoot { get; set; }
         public JsonElement CurrentRoot { get; set; }
         public GuardianCurrentStateFailureKind CurrentStateFailureKind { get; set; } = GuardianCurrentStateFailureKind.MissingCurrentState;
+        public string? CurrentStateFailureDescription { get; set; }
         public bool HasPreTurnRoot { get; set; }
         public JsonElement PreTurnRoot { get; set; }
         public bool HasProjectedAuthorityRoot { get; set; }
@@ -88,7 +105,8 @@ public partial class ValidationService
     {
         None,
         MissingCurrentState,
-        UnreadableCurrentState
+        UnreadableCurrentState,
+        SemanticallyInvalidCurrentState
     }
 
     private enum GuardianPowerEventAuthorityStatus
@@ -98,6 +116,30 @@ public partial class ValidationService
         MissingValidatedPreTurnJournalIdentity,
         InvalidValidatedPreTurnJournalIdentity,
         InvalidRawPowerEvents
+    }
+
+    private enum StrictPreTurnGuardianAuthorityStatus
+    {
+        None,
+        Resolved,
+        MissingValidatedSnapshotGuardians,
+        InvalidValidatedSnapshotGuardians,
+        MissingValidatedSnapshotTracker,
+        InvalidValidatedSnapshotTracker,
+        MissingValidatedSnapshotJournal,
+        InvalidValidatedSnapshotJournal
+    }
+
+    private enum GenericSharedStrictPreTurnGuardianAuthorityStatus
+    {
+        None,
+        Resolved,
+        MissingValidatedSnapshotGuardians,
+        InvalidValidatedSnapshotGuardians,
+        MissingValidatedSnapshotTracker,
+        InvalidValidatedSnapshotTracker,
+        MissingValidatedSnapshotJournal,
+        InvalidValidatedSnapshotJournal
     }
 
     internal sealed record GuardianPolicyContextDebugSnapshot(
@@ -118,7 +160,13 @@ public partial class ValidationService
         string? CurrentGuardianPowerEventAuthorityFailureDescription,
         bool HasPreTurnAuthorityRoot,
         bool HasCurrentAuthorityRoot,
+        bool HasGenericSharedStrictPreTurnAuthorityRoot,
+        string StrictPreTurnGuardianAuthorityStatus,
+        string? StrictPreTurnGuardianAuthorityFailureDescription,
+        string GenericSharedStrictPreTurnGuardianAuthorityStatus,
+        string? GenericSharedStrictPreTurnGuardianAuthorityFailureDescription,
         string? PreTurnAuthorityRootJson,
+        string? GenericSharedStrictPreTurnAuthorityRootJson,
         string? CurrentAuthorityRootJson);
 
     internal sealed record GuardianProjectTrackerPolicyContextDebugSnapshot(
@@ -168,8 +216,6 @@ public partial class ValidationService
                     using var preTurnDoc = JsonDocument.Parse(preTurnResolution.SnapshotJson);
                     context.PreTurnRoot = preTurnDoc.RootElement.Clone();
                     context.HasPreTurnRoot = context.PreTurnRoot.ValueKind == JsonValueKind.Object;
-                    foreach (var (guardianId, guardian) in ReadGuardianStateMap(context.PreTurnRoot))
-                        context.PreTurnGuardiansById[guardianId] = guardian;
                 }
                 catch
                 {
@@ -204,7 +250,7 @@ public partial class ValidationService
                     updates.ValueKind == JsonValueKind.Array;
                 context.HasCurrentGuardianPowerEvents =
                     context.CurrentRoot.TryGetProperty("guardianPowerEvents", out var eventsNode) &&
-                    eventsNode.ValueKind == JsonValueKind.Array;
+                    HasNonEmptyGuardianPowerEventArray(eventsNode);
                 if (context.CurrentRoot.TryGetProperty("activeGuardian", out var activeGuardian) &&
                     activeGuardian.ValueKind == JsonValueKind.Object)
                 {
@@ -305,6 +351,12 @@ public partial class ValidationService
 
     private void BuildGuardianAuthorityRoots(GuardianPolicyContext context)
     {
+        if (context.IsBuildingGuardianAuthorityRoots)
+            return;
+
+        context.IsBuildingGuardianAuthorityRoots = true;
+        try
+        {
         if (!HasUsableValidatedPreTurnGuardianBaseline(context))
             return;
 
@@ -313,16 +365,99 @@ public partial class ValidationService
             return;
 
         var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
-        var preTurnAuthorityRoot = CanonicalStateNormalizer.BuildGuardianAuthorityRootForValidation(
+        var rawPreTurnAuthorityRoot = CanonicalStateNormalizer.BuildGuardianAuthorityRootForValidation(
             preTurnRoot,
             currentRoot: null,
             authorizedCommands: null,
             authorizedCreateGuardiansById: null,
             authorizedPowerEvents: null,
             currentTurn);
-        context.PreTurnAuthorityRoot = CloneJsonObjectToElement(preTurnAuthorityRoot);
-        context.HasPreTurnAuthorityRoot = true;
+        var compatibilityPreTurnGuardiansById = BuildGuardiansByIdFromAuthorityRoot(CloneJsonObjectToElement(rawPreTurnAuthorityRoot));
+        var compatibilityPreTurnAuthorityRoot = rawPreTurnAuthorityRoot;
 
+        if (!HasResolvedStrictPreTurnGuardianAuthority(context) &&
+            TryMaterializeValidatedPreTurnTrackerGuardianEffects(
+                context,
+                CloneJsonObjectToElement(compatibilityPreTurnAuthorityRoot),
+                compatibilityPreTurnGuardiansById,
+                out var trackerMaterializedPreTurnAuthorityRoot,
+                out var trackerMaterializedPreTurnGuardiansById))
+        {
+            compatibilityPreTurnAuthorityRoot = trackerMaterializedPreTurnAuthorityRoot;
+            compatibilityPreTurnGuardiansById = trackerMaterializedPreTurnGuardiansById;
+        }
+
+        context.CompatibilityPreTurnAuthorityRoot = CloneJsonObjectToElement(compatibilityPreTurnAuthorityRoot);
+        context.HasCompatibilityPreTurnAuthorityRoot = true;
+        context.HasGenericSharedStrictPreTurnAuthorityRoot = false;
+        context.GenericSharedStrictPreTurnAuthorityRoot = default;
+        context.GenericSharedStrictPreTurnGuardianAuthorityStatus = GenericSharedStrictPreTurnGuardianAuthorityStatus.None;
+        context.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription = null;
+
+        if (TryBuildGenericSharedStrictValidatedPreTurnGuardianAuthorityRoot(
+                context,
+                out var genericSharedStrictPreTurnAuthorityRoot,
+                out var genericSharedStrictStatus,
+                out var genericSharedStrictFailureDescription))
+        {
+            context.HasGenericSharedStrictPreTurnAuthorityRoot = true;
+            context.GenericSharedStrictPreTurnAuthorityRoot = CloneJsonObjectToElement(genericSharedStrictPreTurnAuthorityRoot);
+            context.GenericSharedStrictPreTurnGuardianAuthorityStatus = GenericSharedStrictPreTurnGuardianAuthorityStatus.Resolved;
+            context.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription = null;
+        }
+        else
+        {
+            context.HasGenericSharedStrictPreTurnAuthorityRoot = false;
+            context.GenericSharedStrictPreTurnAuthorityRoot = default;
+            context.GenericSharedStrictPreTurnGuardianAuthorityStatus = genericSharedStrictStatus;
+            context.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription = genericSharedStrictFailureDescription;
+        }
+
+        if (!context.IsBuildingStrictPreTurnAuthority)
+        {
+            context.IsBuildingStrictPreTurnAuthority = true;
+            try
+            {
+                if (TryBuildStrictValidatedPreTurnGuardianAuthorityRoot(
+                        context,
+                        out var strictPreTurnAuthorityRoot,
+                        out var strictPreTurnGuardiansById,
+                        out var strictStatus,
+                        out var strictFailureDescription))
+                {
+                    context.HasStrictPreTurnAuthorityRoot = true;
+                    context.StrictPreTurnGuardianAuthorityStatus = StrictPreTurnGuardianAuthorityStatus.Resolved;
+                    context.StrictPreTurnGuardianAuthorityFailureDescription = null;
+                    context.PreTurnAuthorityRoot = CloneJsonObjectToElement(strictPreTurnAuthorityRoot);
+                    context.HasPreTurnAuthorityRoot = true;
+                    context.PreTurnGuardiansById.Clear();
+                    foreach (var (guardianId, guardian) in strictPreTurnGuardiansById)
+                    {
+                        context.PreTurnGuardiansById[guardianId] = guardian.Clone();
+                        context.AuthoritativeGuardianIds.Add(guardianId);
+                        context.BaselineGuardianIds.Add(guardianId);
+                    }
+                }
+                else
+                {
+                    context.HasStrictPreTurnAuthorityRoot = false;
+                    context.HasPreTurnAuthorityRoot = false;
+                    context.PreTurnAuthorityRoot = default;
+                    context.PreTurnGuardiansById.Clear();
+                    context.StrictPreTurnGuardianAuthorityStatus = strictStatus;
+                    context.StrictPreTurnGuardianAuthorityFailureDescription = strictFailureDescription;
+                }
+            }
+            finally
+            {
+                context.IsBuildingStrictPreTurnAuthority = false;
+            }
+        }
+
+        context.HasCurrentAuthorityRoot = false;
+        context.CurrentAuthorityRoot = default;
+        context.HasStrictCurrentAuthorityRoot = false;
+        context.StrictCurrentAuthorityRoot = default;
         if (!context.CurrentStateReadable || !context.HasCurrentRoot)
             return;
 
@@ -331,15 +466,480 @@ public partial class ValidationService
             return;
 
         var authorizedCreatesById = BuildAuthorizedGuardianCreateObjectsForAuthority(context);
-        var currentAuthorityRoot = CanonicalStateNormalizer.BuildGuardianAuthorityRootForValidation(
-            preTurnAuthorityRoot.DeepClone().AsObject(),
+        if (HasResolvedGenericSharedStrictPreTurnGuardianAuthority(context))
+        {
+            var genericSharedCurrentBaselineRoot = TryParseJsonObject(context.GenericSharedStrictPreTurnAuthorityRoot);
+            if (genericSharedCurrentBaselineRoot != null)
+            {
+                var currentAuthorityRoot = CanonicalStateNormalizer.BuildGuardianAuthorityRootForValidation(
+                    genericSharedCurrentBaselineRoot.DeepClone().AsObject(),
+                    currentRoot,
+                    context.AuthorizedSameTurnGuardianCommands,
+                    authorizedCreatesById,
+                    context.AuthorizedCurrentGuardianPowerEvents,
+                    currentTurn);
+                context.CurrentAuthorityRoot = CloneJsonObjectToElement(currentAuthorityRoot);
+                context.HasCurrentAuthorityRoot = true;
+            }
+        }
+
+        if (!HasResolvedStrictPreTurnGuardianAuthority(context))
+            return;
+
+        var strictCurrentBaselineRoot = TryParseJsonObject(context.PreTurnAuthorityRoot);
+        if (strictCurrentBaselineRoot == null)
+            return;
+
+        var strictCurrentAuthorityRoot = CanonicalStateNormalizer.BuildGuardianAuthorityRootForValidation(
+            strictCurrentBaselineRoot.DeepClone().AsObject(),
             currentRoot,
             context.AuthorizedSameTurnGuardianCommands,
             authorizedCreatesById,
             context.AuthorizedCurrentGuardianPowerEvents,
             currentTurn);
-        context.CurrentAuthorityRoot = CloneJsonObjectToElement(currentAuthorityRoot);
-        context.HasCurrentAuthorityRoot = true;
+        context.StrictCurrentAuthorityRoot = CloneJsonObjectToElement(strictCurrentAuthorityRoot);
+        context.HasStrictCurrentAuthorityRoot = true;
+        }
+        finally
+        {
+            context.IsBuildingGuardianAuthorityRoots = false;
+        }
+    }
+
+    private bool TryBuildGenericSharedStrictValidatedPreTurnGuardianAuthorityRoot(
+        GuardianPolicyContext context,
+        out JsonObject authorityRoot,
+        out GenericSharedStrictPreTurnGuardianAuthorityStatus failureStatus,
+        out string failureDescription)
+    {
+        authorityRoot = new JsonObject();
+        failureStatus = GenericSharedStrictPreTurnGuardianAuthorityStatus.None;
+        failureDescription = string.Empty;
+
+        if (!context.HasUsableValidatedPreTurnGuardiansSnapshot ||
+            string.IsNullOrWhiteSpace(context.PreTurnGuardiansSnapshot.SnapshotJson))
+        {
+            failureStatus = context.PreTurnGuardiansSnapshot.FileStatus switch
+            {
+                GuardianTrackedSnapshotFileStatus.MissingManifest => GenericSharedStrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotGuardians,
+                GuardianTrackedSnapshotFileStatus.MissingSnapshotFile => GenericSharedStrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotGuardians,
+                GuardianTrackedSnapshotFileStatus.UnusableManifest => GenericSharedStrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians,
+                GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile => GenericSharedStrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians,
+                _ => GenericSharedStrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians
+            };
+            failureDescription = DescribeGuardianTrackedSnapshotFileStatus("game_state/meta/guardians.json", context.PreTurnGuardiansSnapshot.FileStatus);
+            return false;
+        }
+
+        List<JsonObject>? authorizedCommands = null;
+        IReadOnlyDictionary<string, JsonObject>? authorizedCreateObjects = null;
+        JsonElement guardianRoot;
+        if (TryReadCanonicalGuardianSnapshotStateForProof(
+                context.PreTurnGuardiansSnapshot.SnapshotJson,
+                "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+                out guardianRoot,
+                out _,
+                out var commandAuthorizationResult,
+                out _))
+        {
+            authorizedCommands = commandAuthorizationResult.AuthorizedCommands;
+            authorizedCreateObjects = BuildGuardianCreateObjectsForSnapshotProof(commandAuthorizationResult);
+        }
+        else if (!TryReadGenericSharedStrictGuardianSnapshotState(
+                     context.PreTurnGuardiansSnapshot.SnapshotJson,
+                     "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+                     out guardianRoot,
+                     out failureDescription))
+        {
+            failureStatus = GenericSharedStrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians;
+            return false;
+        }
+
+        var guardianRootObject = TryParseJsonObject(guardianRoot);
+        if (guardianRootObject == null)
+        {
+            failureStatus = GenericSharedStrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians;
+            failureDescription = "generic shared strict pre-turn guardian authority root unreadable after validated snapshot canonicalization";
+            return false;
+        }
+
+        var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
+        authorityRoot = CanonicalStateNormalizer.BuildGuardianAuthorityRootForValidation(
+            guardianRootObject.DeepClone().AsObject(),
+            guardianRootObject.DeepClone().AsObject(),
+            authorizedCommands,
+            authorizedCreateObjects,
+            authorizedPowerEvents: null,
+            currentTurn);
+
+        failureStatus = GenericSharedStrictPreTurnGuardianAuthorityStatus.Resolved;
+        failureDescription = string.Empty;
+        return true;
+    }
+
+    private static bool TryReadGenericSharedStrictGuardianSnapshotState(
+        string snapshotJson,
+        string snapshotContext,
+        out JsonElement guardianRoot,
+        out string failureDescription)
+    {
+        guardianRoot = default;
+        failureDescription = "validated shared pre-turn guardian snapshot is unreadable";
+        if (string.IsNullOrWhiteSpace(snapshotJson))
+        {
+            failureDescription = $"{snapshotContext} is empty";
+            return false;
+        }
+
+        try
+        {
+            var rootNode = JsonNode.Parse(snapshotJson) as JsonObject;
+            if (rootNode == null)
+            {
+                failureDescription = $"{snapshotContext} must be a JSON object";
+                return false;
+            }
+
+            if (!rootNode.TryGetPropertyValue("guardians", out var guardiansNode) || guardiansNode is not JsonArray guardiansArray)
+            {
+                failureDescription = $"{snapshotContext}.guardians must be an array for shared strict guardian baseline";
+                return false;
+            }
+
+            for (var index = 0; index < guardiansArray.Count; index++)
+            {
+                if (guardiansArray[index] is not JsonObject guardianObject)
+                {
+                    failureDescription = $"{snapshotContext}.guardians[{index}] must be an object for shared strict guardian baseline";
+                    return false;
+                }
+
+                if (!TryValidateGenericSharedStrictGuardianSnapshotObject(
+                        guardianObject,
+                        $"{snapshotContext}.guardians[{index}]",
+                        out failureDescription))
+                {
+                    return false;
+                }
+            }
+
+            guardianRoot = CloneJsonObjectToElement(rootNode.DeepClone().AsObject());
+            failureDescription = string.Empty;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            failureDescription = $"{snapshotContext} is unreadable: {ex.Message}";
+            return false;
+        }
+    }
+
+    private static bool TryValidateGenericSharedStrictGuardianSnapshotObject(
+        JsonObject guardianObject,
+        string guardianContext,
+        out string failureDescription)
+    {
+        failureDescription = string.Empty;
+        if (!TryReadRequiredGenericSharedStrictString(guardianObject, "guardianId", out _))
+        {
+            failureDescription = $"{guardianContext}.guardianId missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        if (!TryReadRequiredGenericSharedStrictString(guardianObject, "canonicalName", out _))
+        {
+            failureDescription = $"{guardianContext}.canonicalName missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        if (!guardianObject.TryGetPropertyValue("nameVariants", out var nameVariantsNode) || nameVariantsNode is not JsonObject nameVariants)
+        {
+            failureDescription = $"{guardianContext}.nameVariants missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        if (!TryReadRequiredGenericSharedStrictString(nameVariants, "default", out _))
+        {
+            failureDescription = $"{guardianContext}.nameVariants.default missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        if (!guardianObject.TryGetPropertyValue("manifestation", out var manifestationNode) || manifestationNode is not JsonObject manifestation)
+        {
+            failureDescription = $"{guardianContext}.manifestation missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        foreach (var propertyName in new[] { "currentDisplayName", "formFlexibility", "currentPresentationStyle", "currentPronouns", "appearanceDescription" })
+        {
+            if (!TryReadRequiredGenericSharedStrictString(manifestation, propertyName, out _))
+            {
+                failureDescription = $"{guardianContext}.manifestation.{propertyName} missing or invalid for shared strict guardian baseline";
+                return false;
+            }
+        }
+
+        if (!guardianObject.TryGetPropertyValue("manifestationHistory", out var manifestationHistoryNode) || manifestationHistoryNode is not JsonArray)
+        {
+            failureDescription = $"{guardianContext}.manifestationHistory missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        if (!guardianObject.TryGetPropertyValue("relationshipData", out var relationshipDataNode) || relationshipDataNode is not JsonObject relationshipData)
+        {
+            failureDescription = $"{guardianContext}.relationshipData missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        if (!TryReadRequiredGenericSharedStrictNumber(relationshipData, "currentReputation"))
+        {
+            failureDescription = $"{guardianContext}.relationshipData.currentReputation missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        if (!guardianObject.TryGetPropertyValue("abodePower", out var abodePowerNode) || abodePowerNode is not JsonObject abodePower)
+        {
+            failureDescription = $"{guardianContext}.abodePower missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        if (!TryReadRequiredGenericSharedStrictNumber(abodePower, "currentPower") ||
+            !TryReadRequiredGenericSharedStrictString(abodePower, "tier", out _) ||
+            !TryReadRequiredGenericSharedStrictString(abodePower, "lastUpdatedAt", out _))
+        {
+            failureDescription = $"{guardianContext}.abodePower missing required shared strict fields";
+            return false;
+        }
+
+        if (!abodePower.TryGetPropertyValue("history", out var abodePowerHistoryNode) || abodePowerHistoryNode is not JsonArray)
+        {
+            failureDescription = $"{guardianContext}.abodePower.history missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        if (!guardianObject.TryGetPropertyValue("guardianRelationships", out var guardianRelationshipsNode) || guardianRelationshipsNode is not JsonArray guardianRelationships)
+        {
+            failureDescription = $"{guardianContext}.guardianRelationships missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        for (var index = 0; index < guardianRelationships.Count; index++)
+        {
+            if (guardianRelationships[index] is not JsonObject relationshipObject)
+            {
+                failureDescription = $"{guardianContext}.guardianRelationships[{index}] must be an object for shared strict guardian baseline";
+                return false;
+            }
+
+            if (!TryReadRequiredGenericSharedStrictString(relationshipObject, "targetGuardianId", out _) ||
+                !TryReadRequiredGenericSharedStrictNumber(relationshipObject, "attitudeScore"))
+            {
+                failureDescription = $"{guardianContext}.guardianRelationships[{index}] missing required shared strict fields";
+                return false;
+            }
+        }
+
+        if (!guardianObject.TryGetPropertyValue("gachaSystem", out var gachaSystemNode) || gachaSystemNode is not JsonObject gachaSystem)
+        {
+            failureDescription = $"{guardianContext}.gachaSystem missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        if (!TryReadRequiredGenericSharedStrictNumber(gachaSystem, "chargesPerReturn") ||
+            !TryReadRequiredGenericSharedStrictNumber(gachaSystem, "chargesUsedThisReturn"))
+        {
+            failureDescription = $"{guardianContext}.gachaSystem missing required shared strict fields";
+            return false;
+        }
+
+        if (!gachaSystem.TryGetPropertyValue("gachaHistory", out var gachaHistoryNode) || gachaHistoryNode is not JsonArray)
+        {
+            failureDescription = $"{guardianContext}.gachaSystem.gachaHistory missing or invalid for shared strict guardian baseline";
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool TryReadRequiredGenericSharedStrictString(JsonObject obj, string propertyName, out string value)
+    {
+        value = string.Empty;
+        if (!obj.TryGetPropertyValue(propertyName, out var node) || node is not JsonValue jsonValue)
+            return false;
+
+        var candidate = jsonValue.TryGetValue<string>(out var parsedValue) ? parsedValue : null;
+        if (string.IsNullOrWhiteSpace(candidate))
+            return false;
+
+        value = candidate;
+        return true;
+    }
+
+    private static bool TryReadRequiredGenericSharedStrictNumber(JsonObject obj, string propertyName)
+    {
+        if (!obj.TryGetPropertyValue(propertyName, out var node) || node is not JsonValue jsonValue)
+            return false;
+
+        return jsonValue.TryGetValue<int>(out _) ||
+               jsonValue.TryGetValue<long>(out _) ||
+               jsonValue.TryGetValue<double>(out _) ||
+               jsonValue.TryGetValue<decimal>(out _);
+    }
+
+    private bool TryBuildStrictValidatedPreTurnGuardianAuthorityRoot(
+        GuardianPolicyContext context,
+        out JsonObject authorityRoot,
+        out Dictionary<string, JsonElement> guardiansById,
+        out StrictPreTurnGuardianAuthorityStatus failureStatus,
+        out string failureDescription)
+    {
+        authorityRoot = new JsonObject();
+        guardiansById = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        failureStatus = StrictPreTurnGuardianAuthorityStatus.None;
+        failureDescription = string.Empty;
+        if (!context.HasUsableValidatedPreTurnGuardiansSnapshot ||
+            string.IsNullOrWhiteSpace(context.PreTurnGuardiansSnapshot.SnapshotJson))
+        {
+            failureStatus = context.PreTurnGuardiansSnapshot.FileStatus switch
+            {
+                GuardianTrackedSnapshotFileStatus.MissingManifest => StrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotGuardians,
+                GuardianTrackedSnapshotFileStatus.MissingSnapshotFile => StrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotGuardians,
+                GuardianTrackedSnapshotFileStatus.UnusableManifest => StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians,
+                GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile => StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians,
+                _ => StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians
+            };
+            failureDescription = DescribeGuardianTrackedSnapshotFileStatus("game_state/meta/guardians.json", context.PreTurnGuardiansSnapshot.FileStatus);
+            return false;
+        }
+
+        var manifest = context.PreTurnGuardiansSnapshot.Manifest;
+        var trackerJson = manifest?.Files != null &&
+                          manifest.Files.ContainsKey(GuardianProjectState.TrackerPath)
+            ? ReadValidatedPendingTurnSnapshotFileSync(manifest, GuardianProjectState.TrackerPath)
+            : null;
+        var journalJson = manifest?.Files != null &&
+                          manifest.Files.ContainsKey(GuardianPowerEventState.JournalPath)
+            ? ReadValidatedPendingTurnSnapshotFileSync(manifest, GuardianPowerEventState.JournalPath)
+            : null;
+        var soulStateJson = manifest?.Files != null &&
+                            manifest.Files.ContainsKey("game_state/meta/soul_state.json")
+            ? ReadValidatedPendingTurnSnapshotFileSync(manifest, "game_state/meta/soul_state.json")
+            : null;
+        var hasTrackerSnapshotEntry = manifest?.Files != null &&
+                                      manifest.Files.ContainsKey(GuardianProjectState.TrackerPath);
+        var hasJournalSnapshotEntry = manifest?.Files != null &&
+                                      manifest.Files.ContainsKey(GuardianPowerEventState.JournalPath);
+        if (!TryReadCanonicalGuardianSnapshotForProof(
+                context.PreTurnGuardiansSnapshot.SnapshotJson,
+                "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json",
+                trackerJson,
+                hasTrackerSnapshotEntry,
+                $"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}",
+                journalJson,
+                $"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}",
+                soulStateJson,
+                proofScope: null,
+                authorityProofScope: CreateGuardianPowerEventAuthorityScopeForAllGuardians(),
+                out var authorityElement,
+                out guardiansById,
+                out var failureKind,
+                out var snapshotFailureDescription))
+        {
+            failureStatus = failureKind switch
+            {
+                GuardianSnapshotProofFailureKind.Journal when !hasJournalSnapshotEntry || string.IsNullOrWhiteSpace(journalJson)
+                    => StrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotJournal,
+                GuardianSnapshotProofFailureKind.Journal
+                    => StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotJournal,
+                GuardianSnapshotProofFailureKind.Tracker when !hasTrackerSnapshotEntry || string.IsNullOrWhiteSpace(trackerJson)
+                    => StrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotTracker,
+                GuardianSnapshotProofFailureKind.Tracker
+                    => StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotTracker,
+                _ => StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians
+            };
+            failureDescription = snapshotFailureDescription;
+            guardiansById.Clear();
+            return false;
+        }
+
+        var parsedAuthorityRoot = TryParseJsonObject(authorityElement);
+        if (parsedAuthorityRoot == null)
+        {
+            guardiansById.Clear();
+            failureStatus = StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians;
+            failureDescription = "strict validated pre-turn guardian authority root unreadable after canonical snapshot proof";
+            return false;
+        }
+
+        authorityRoot = parsedAuthorityRoot;
+        failureStatus = StrictPreTurnGuardianAuthorityStatus.Resolved;
+        return true;
+    }
+
+    private static bool SnapshotJsonHasNonEmptyGuardianPowerEvents(string? guardiansJson)
+    {
+        if (string.IsNullOrWhiteSpace(guardiansJson))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(guardiansJson);
+            return doc.RootElement.ValueKind == JsonValueKind.Object &&
+                   doc.RootElement.TryGetProperty("guardianPowerEvents", out var powerEvents) &&
+                   HasNonEmptyGuardianPowerEventArray(powerEvents);
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private bool TryMaterializeValidatedPreTurnTrackerGuardianEffects(
+        GuardianPolicyContext context,
+        JsonElement guardianAuthorityRoot,
+        IReadOnlyDictionary<string, JsonElement> guardiansById,
+        out JsonObject materializedAuthorityRoot,
+        out Dictionary<string, JsonElement> materializedGuardiansById)
+    {
+        materializedAuthorityRoot = new JsonObject();
+        materializedGuardiansById = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        var manifest = context.PreTurnGuardiansSnapshot.Manifest;
+        if (manifest?.Files == null ||
+            !manifest.Files.ContainsKey(GuardianProjectState.TrackerPath))
+        {
+            return false;
+        }
+
+        var trackerJson = ReadValidatedPendingTurnSnapshotFileSync(manifest, GuardianProjectState.TrackerPath);
+        if (string.IsNullOrWhiteSpace(trackerJson))
+            return false;
+
+        var soulStateJson = manifest.Files.ContainsKey("game_state/meta/soul_state.json")
+            ? ReadValidatedPendingTurnSnapshotFileSync(manifest, "game_state/meta/soul_state.json")
+            : null;
+
+        if (!TryReadCanonicalGuardianProjectTrackerSnapshotForProof(
+                trackerJson,
+                $"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}",
+                soulStateJson,
+                guardianAuthorityRoot,
+                guardiansById,
+                out _,
+                out var guardianAuthorityAfterTracker,
+                out var guardiansByIdAfterTracker,
+                out _,
+                out _))
+        {
+            return false;
+        }
+
+        var parsedMaterializedRoot = TryParseJsonObject(guardianAuthorityAfterTracker);
+        if (parsedMaterializedRoot == null)
+            return false;
+
+        materializedAuthorityRoot = parsedMaterializedRoot;
+        materializedGuardiansById = guardiansByIdAfterTracker;
+        return true;
     }
 
     private void BuildAuthorizedGuardianPowerEventsForAuthority(GuardianPolicyContext context)
@@ -350,14 +950,37 @@ public partial class ValidationService
         if (!context.HasCurrentRoot ||
             !context.HasCurrentAuthorityRoot ||
             !context.CurrentRoot.TryGetProperty("guardianPowerEvents", out var powerEvents) ||
-            powerEvents.ValueKind != JsonValueKind.Array)
+            powerEvents.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+
+        if (powerEvents.ValueKind != JsonValueKind.Array)
+        {
+            context.CurrentGuardianPowerEventAuthorityStatus = GuardianPowerEventAuthorityStatus.InvalidRawPowerEvents;
+            context.CurrentGuardianPowerEventAuthorityFailureDescription =
+                "current guardianPowerEvents must be an array when the property is present";
+            return;
+        }
+
+        if (!HasNonEmptyGuardianPowerEventArray(powerEvents))
         {
             return;
         }
 
         context.CurrentGuardianPowerEventAuthorityStatus = GuardianPowerEventAuthorityStatus.Resolved;
-        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
-        var knownPoliticalProjects = ReadKnownPoliticalGuardianPowerEventProjectsFromTrackerContext(trackerContext);
+        IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects =
+            new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        if (GuardianPowerEventArrayRequiresProjectTrackerAuthority(powerEvents) &&
+            !TryReadKnownPoliticalGuardianPowerEventProjectsFromStrictTrackerAuthority(
+                context,
+                out knownPoliticalProjects,
+                out var trackerAuthorityFailureDescription))
+        {
+            context.CurrentGuardianPowerEventAuthorityStatus = GuardianPowerEventAuthorityStatus.InvalidRawPowerEvents;
+            context.CurrentGuardianPowerEventAuthorityFailureDescription = trackerAuthorityFailureDescription;
+            return;
+        }
         var seenEventIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var seenResonanceLifeScopeKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var preTurnJournalIdentityResolution = ResolveValidatedPreTurnGuardianPowerJournalIdentityState();
@@ -523,19 +1146,38 @@ public partial class ValidationService
         return true;
     }
 
-    private static IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> ReadKnownPoliticalGuardianPowerEventProjectsFromTrackerContext(
-        GuardianProjectTrackerPolicyContext trackerContext)
+    private bool TryReadKnownPoliticalGuardianPowerEventProjectsFromStrictTrackerAuthority(
+        GuardianPolicyContext guardianPolicyContext,
+        out IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        out string failureDescription)
     {
-        var result = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
-        if (!trackerContext.HasCurrentAuthorityRoot)
-            return result;
+        knownPoliticalProjects = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
+        failureDescription = string.Empty;
+        if (!TryResolveStrictGuardianProjectTrackerAuthorityRoot(
+                guardianPolicyContext,
+                out var strictTrackerRoot,
+                out failureDescription))
+        return false;
 
+        var result = new Dictionary<string, PoliticalGuardianPowerEventProjectSnapshot>(StringComparer.OrdinalIgnoreCase);
         var ambiguousKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         MergeKnownPoliticalGuardianPowerEventProjectsForValidation(
             result,
             ambiguousKeys,
-            trackerContext.CurrentAuthorityRoot.GetRawText());
-        return result;
+            strictTrackerRoot.GetRawText());
+        knownPoliticalProjects = result;
+        return true;
+    }
+
+    private bool TryReadKnownPoliticalGuardianPowerEventProjectsFromStrictTrackerAuthority(
+        out IReadOnlyDictionary<string, PoliticalGuardianPowerEventProjectSnapshot> knownPoliticalProjects,
+        out string failureDescription)
+    {
+        var guardianPolicyContext = _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
+        return TryReadKnownPoliticalGuardianPowerEventProjectsFromStrictTrackerAuthority(
+            guardianPolicyContext,
+            out knownPoliticalProjects,
+            out failureDescription);
     }
 
     private static IReadOnlyDictionary<string, JsonObject> BuildAuthorizedGuardianCreateObjectsForAuthority(GuardianPolicyContext context)
@@ -557,19 +1199,75 @@ public partial class ValidationService
     private static bool HasUsableValidatedPreTurnGuardianBaseline(GuardianPolicyContext context)
         => context.HasUsableValidatedPreTurnGuardiansSnapshot && context.HasPreTurnRoot;
 
+    private static bool HasResolvedStrictPreTurnGuardianAuthority(GuardianPolicyContext context)
+        => context.HasPreTurnAuthorityRoot &&
+           context.HasStrictPreTurnAuthorityRoot &&
+           context.StrictPreTurnGuardianAuthorityStatus == StrictPreTurnGuardianAuthorityStatus.Resolved;
+
+    private static bool HasResolvedGenericSharedStrictPreTurnGuardianAuthority(GuardianPolicyContext context)
+        => context.HasGenericSharedStrictPreTurnAuthorityRoot &&
+           context.GenericSharedStrictPreTurnGuardianAuthorityStatus == GenericSharedStrictPreTurnGuardianAuthorityStatus.Resolved;
+
+    private static bool TryGetGenericSharedStrictPreTurnGuardianAuthorityRoot(
+        GuardianPolicyContext context,
+        out JsonElement authorityRoot)
+    {
+        if (HasResolvedGenericSharedStrictPreTurnGuardianAuthority(context))
+        {
+            authorityRoot = context.GenericSharedStrictPreTurnAuthorityRoot;
+            return true;
+        }
+
+        authorityRoot = default;
+        return false;
+    }
+
+    private static bool TryGetSharedGuardianPreTurnBaselineRootForValidation(
+        GuardianPolicyContext context,
+        out JsonElement authorityRoot)
+        => TryGetGenericSharedStrictPreTurnGuardianAuthorityRoot(context, out authorityRoot);
+
+    private static bool TryGetGuardianPreTurnBaselineRootForCommandAuthorization(
+        GuardianPolicyContext context,
+        out JsonElement authorityRoot)
+    {
+        if (TryGetGenericSharedStrictPreTurnGuardianAuthorityRoot(context, out authorityRoot))
+            return true;
+
+        if (HasResolvedStrictPreTurnGuardianAuthority(context))
+        {
+            authorityRoot = context.PreTurnAuthorityRoot;
+            return true;
+        }
+
+        if (context.HasProofLocalCommandAuthorizationBaselineRoot)
+        {
+            authorityRoot = context.ProofLocalCommandAuthorizationBaselineRoot;
+            return true;
+        }
+
+        authorityRoot = default;
+        return false;
+    }
+
     private static GuardianBaselineFailureKind ResolveGuardianBaselineFailureKind(GuardianPolicyContext context)
     {
-        if (HasUsableValidatedPreTurnGuardianBaseline(context))
-            return GuardianBaselineFailureKind.None;
-
-        return context.PreTurnGuardiansSnapshot.FileStatus switch
+        if (!HasUsableValidatedPreTurnGuardianBaseline(context))
         {
-            GuardianTrackedSnapshotFileStatus.MissingManifest => GuardianBaselineFailureKind.MissingManifest,
-            GuardianTrackedSnapshotFileStatus.UnusableManifest => GuardianBaselineFailureKind.UnusableManifest,
-            GuardianTrackedSnapshotFileStatus.MissingSnapshotFile => GuardianBaselineFailureKind.MissingSnapshotFile,
-            GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile => GuardianBaselineFailureKind.InvalidSnapshotFile,
-            _ => GuardianBaselineFailureKind.InvalidSnapshotFile
-        };
+            return context.PreTurnGuardiansSnapshot.FileStatus switch
+            {
+                GuardianTrackedSnapshotFileStatus.MissingManifest => GuardianBaselineFailureKind.MissingManifest,
+                GuardianTrackedSnapshotFileStatus.UnusableManifest => GuardianBaselineFailureKind.UnusableManifest,
+                GuardianTrackedSnapshotFileStatus.MissingSnapshotFile => GuardianBaselineFailureKind.MissingSnapshotFile,
+                GuardianTrackedSnapshotFileStatus.InvalidSnapshotFile => GuardianBaselineFailureKind.InvalidSnapshotFile,
+                _ => GuardianBaselineFailureKind.InvalidSnapshotFile
+            };
+        }
+
+        if (!HasResolvedGenericSharedStrictPreTurnGuardianAuthority(context))
+            return GuardianBaselineFailureKind.InvalidAuthority;
+
+        return GuardianBaselineFailureKind.None;
     }
 
     private static bool TryGetGuardianBaselineFailureKind(
@@ -599,6 +1297,56 @@ public partial class ValidationService
         GuardianTrackedSnapshotFileStatus.Usable => $"validated pending turn snapshot entry for {relativePath} is usable",
         _ => status.ToString()
     };
+
+    private static string DescribeStrictPreTurnGuardianAuthorityStatus(StrictPreTurnGuardianAuthorityStatus status) => status switch
+    {
+        StrictPreTurnGuardianAuthorityStatus.None => "validated pre-turn guardian authority has not been resolved",
+        StrictPreTurnGuardianAuthorityStatus.Resolved => "validated pre-turn guardian authority is resolved",
+        StrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotGuardians => "validated pre-turn guardian snapshot is missing",
+        StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians => "validated pre-turn guardian snapshot is semantically invalid",
+        StrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotTracker => "validated pre-turn tracker snapshot is missing",
+        StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotTracker => "validated pre-turn tracker snapshot is semantically invalid",
+        StrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotJournal => "validated pre-turn guardian power journal snapshot is missing",
+        StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotJournal => "validated pre-turn guardian power journal snapshot is semantically invalid",
+        _ => status.ToString()
+    };
+
+    private static string DescribeGenericSharedStrictPreTurnGuardianAuthorityStatus(GenericSharedStrictPreTurnGuardianAuthorityStatus status) => status switch
+    {
+        GenericSharedStrictPreTurnGuardianAuthorityStatus.None => "validated shared pre-turn guardian authority has not been resolved",
+        GenericSharedStrictPreTurnGuardianAuthorityStatus.Resolved => "validated shared pre-turn guardian authority is resolved",
+        GenericSharedStrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotGuardians => "validated shared pre-turn guardian snapshot is missing",
+        GenericSharedStrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotGuardians => "validated shared pre-turn guardian snapshot is semantically invalid",
+        GenericSharedStrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotTracker => "validated shared pre-turn tracker snapshot is missing",
+        GenericSharedStrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotTracker => "validated shared pre-turn tracker snapshot is semantically invalid",
+        GenericSharedStrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotJournal => "validated shared pre-turn guardian power journal snapshot is missing",
+        GenericSharedStrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotJournal => "validated shared pre-turn guardian power journal snapshot is semantically invalid",
+        _ => status.ToString()
+    };
+
+    private static string DescribeGuardianPreTurnBaselineFailure(GuardianPolicyContext context)
+    {
+        var baselineFailureKind = ResolveGuardianBaselineFailureKind(context);
+        if (baselineFailureKind == GuardianBaselineFailureKind.InvalidAuthority &&
+            !HasResolvedGenericSharedStrictPreTurnGuardianAuthority(context))
+        {
+            if (!string.IsNullOrWhiteSpace(context.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription))
+                return context.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription!;
+
+            return DescribeGenericSharedStrictPreTurnGuardianAuthorityStatus(context.GenericSharedStrictPreTurnGuardianAuthorityStatus);
+        }
+
+        if (HasResolvedStrictPreTurnGuardianAuthority(context))
+            return DescribeStrictPreTurnGuardianAuthorityStatus(StrictPreTurnGuardianAuthorityStatus.Resolved);
+
+        if (!string.IsNullOrWhiteSpace(context.StrictPreTurnGuardianAuthorityFailureDescription))
+            return context.StrictPreTurnGuardianAuthorityFailureDescription!;
+
+        if (baselineFailureKind == GuardianBaselineFailureKind.InvalidAuthority)
+            return DescribeStrictPreTurnGuardianAuthorityStatus(context.StrictPreTurnGuardianAuthorityStatus);
+
+        return DescribeGuardianTrackedSnapshotFileStatus(context.PreTurnGuardiansSnapshot.FileStatus);
+    }
 
     private async Task<GuardianTrackedSnapshotFileResolution> ResolveValidatedGuardianTrackedSnapshotFileAsync(string relativePath)
     {
@@ -744,12 +1492,14 @@ public partial class ValidationService
                     context.CurrentRoot = currentDoc.RootElement.Clone();
                     context.HasCurrentRoot = true;
                     context.CurrentStateFailureKind = GuardianCurrentStateFailureKind.None;
+                    context.CurrentStateFailureDescription = null;
                 }
             }
             catch
             {
                 context.CurrentStateReadable = false;
                 context.CurrentStateFailureKind = GuardianCurrentStateFailureKind.UnreadableCurrentState;
+                context.CurrentStateFailureDescription = null;
             }
         }
 
@@ -758,8 +1508,20 @@ public partial class ValidationService
 
         var preTurnTrackerRoot = TryParseJsonObject(context.PreTurnRoot);
         var currentTrackerRoot = context.HasCurrentRoot ? TryParseJsonObject(context.CurrentRoot) : null;
-        var preTurnGuardiansRoot = guardianPolicyContext.HasPreTurnAuthorityRoot
-            ? TryParseJsonObject(guardianPolicyContext.PreTurnAuthorityRoot)
+        JsonObject? preTurnTrackerAuthorityRoot = null;
+        if (preTurnTrackerRoot != null &&
+            TryGetGenericSharedStrictPreTurnGuardianAuthorityRoot(guardianPolicyContext, out var genericSharedPreTurnGuardiansRoot) &&
+            TryBuildGuardianProjectTrackerPreTurnAuthorityRoot(
+                preTurnTrackerRoot,
+                genericSharedPreTurnGuardiansRoot,
+                out var builtPreTurnTrackerAuthorityRoot,
+                out _))
+        {
+            preTurnTrackerAuthorityRoot = builtPreTurnTrackerAuthorityRoot;
+        }
+
+        var preTurnGuardiansRoot = TryGetGenericSharedStrictPreTurnGuardianAuthorityRoot(guardianPolicyContext, out var genericSharedStrictPreTurnGuardiansRoot)
+            ? TryParseJsonObject(genericSharedStrictPreTurnGuardiansRoot)
             : null;
         var currentGuardiansRoot = guardianPolicyContext.HasCurrentAuthorityRoot
             ? TryParseJsonObject(guardianPolicyContext.CurrentAuthorityRoot)
@@ -767,12 +1529,28 @@ public partial class ValidationService
         var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
         var (currentIncarnation, currentRealm) = ReadCurrentSoulStateForProjectAuthority();
 
-        if (preTurnTrackerRoot != null &&
+        if (preTurnTrackerAuthorityRoot != null &&
             preTurnGuardiansRoot != null &&
             currentGuardiansRoot != null)
         {
+            if (context.CurrentStateFailureKind == GuardianCurrentStateFailureKind.None &&
+                currentTrackerRoot != null &&
+                !TryValidateGuardianProjectCurrentTrackerAuthorityInput(
+                    context.CurrentRoot,
+                    preTurnTrackerAuthorityRoot,
+                    genericSharedStrictPreTurnGuardiansRoot,
+                    guardianPolicyContext.CurrentAuthorityRoot,
+                    out var currentTrackerSemanticFailureDescription))
+            {
+                context.CurrentStateFailureKind = GuardianCurrentStateFailureKind.SemanticallyInvalidCurrentState;
+                context.CurrentStateFailureDescription = currentTrackerSemanticFailureDescription;
+            }
+
+            if (context.CurrentStateFailureKind == GuardianCurrentStateFailureKind.SemanticallyInvalidCurrentState)
+                return context;
+
             var projectedAuthorityRoot = CanonicalStateNormalizer.BuildGuardianProjectAuthorityRootForValidation(
-                preTurnTrackerRoot,
+                preTurnTrackerAuthorityRoot,
                 currentTrackerRoot,
                 preTurnGuardiansRoot,
                 currentGuardiansRoot,
@@ -822,19 +1600,548 @@ public partial class ValidationService
     private bool TryResolveGuardianProjectTrackerValidationRootSync(
         out JsonElement trackerRoot,
         out GuardianProjectTrackerPolicyContext trackerContext)
+        => TryResolveGuardianProjectTrackerValidationRootSync(
+            out trackerRoot,
+            out trackerContext,
+            out _);
+
+    private bool TryResolveGuardianProjectTrackerValidationRootSync(
+        out JsonElement trackerRoot,
+        out GuardianProjectTrackerPolicyContext trackerContext,
+        out string failureDescription)
     {
         trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        var guardianPolicyContext = _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
         trackerRoot = default;
-        if (!HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
-            return false;
+        failureDescription = "current guardian project tracker authority unavailable";
 
-        if (trackerContext.HasCurrentAuthorityRoot)
+        if (!HasResolvedGenericSharedStrictPreTurnGuardianAuthority(guardianPolicyContext))
         {
-            trackerRoot = trackerContext.CurrentAuthorityRoot;
-            return true;
+            failureDescription = DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext);
+            return false;
         }
 
+        if (!guardianPolicyContext.HasCurrentAuthorityRoot)
+        {
+            failureDescription = DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext);
+            return false;
+        }
+
+        if (!TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRoot(
+                guardianPolicyContext,
+                trackerContext,
+                out var preTurnTrackerAuthorityRoot,
+                out failureDescription))
+        {
+            return false;
+        }
+
+        if (!trackerContext.HasCurrentRoot || trackerContext.CurrentStateFailureKind != GuardianCurrentStateFailureKind.None)
+        {
+            failureDescription = DescribeGuardianProjectTrackerAuthorityFailure(trackerContext);
+            return false;
+        }
+
+        var preTurnTrackerRoot = TryParseJsonObject(preTurnTrackerAuthorityRoot);
+        var currentTrackerRoot = TryParseJsonObject(trackerContext.CurrentRoot);
+        var preTurnGuardiansRoot = TryParseJsonObject(guardianPolicyContext.GenericSharedStrictPreTurnAuthorityRoot);
+        var currentGuardiansRoot = TryParseJsonObject(guardianPolicyContext.CurrentAuthorityRoot);
+        if (preTurnTrackerRoot == null ||
+            currentTrackerRoot == null ||
+            preTurnGuardiansRoot == null ||
+            currentGuardiansRoot == null)
+        {
+            failureDescription = "shared strict guardian-backed tracker authority root unreadable";
+            return false;
+        }
+
+        var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
+        var (currentIncarnation, currentRealm) = ReadCurrentSoulStateForProjectAuthority();
+        var projectedAuthorityRoot = CanonicalStateNormalizer.BuildGuardianProjectAuthorityRootForValidation(
+            preTurnTrackerRoot,
+            currentTrackerRoot,
+            preTurnGuardiansRoot,
+            currentGuardiansRoot,
+            currentTurn,
+            currentIncarnation,
+            currentRealm);
+        trackerRoot = CloneJsonObjectToElement(projectedAuthorityRoot);
+        return true;
+    }
+
+    private bool TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRootSync(
+        out JsonElement trackerRoot,
+        out GuardianProjectTrackerPolicyContext trackerContext)
+        => TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRootSync(
+            out trackerRoot,
+            out trackerContext,
+            out _);
+
+    private bool TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRootSync(
+        out JsonElement trackerRoot,
+        out GuardianProjectTrackerPolicyContext trackerContext,
+        out string failureDescription)
+    {
+        trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        var guardianPolicyContext = _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
+        return TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRoot(
+            guardianPolicyContext,
+            trackerContext,
+            out trackerRoot,
+            out failureDescription);
+    }
+
+    private bool TryResolveSharedGuardianProjectTrackerPreTurnAuthorityRoot(
+        GuardianPolicyContext guardianPolicyContext,
+        GuardianProjectTrackerPolicyContext trackerContext,
+        out JsonElement trackerRoot,
+        out string failureDescription)
+    {
+        trackerRoot = default;
+        failureDescription = "validated shared pre-turn guardian project tracker authority unavailable";
+
+        if (!TryGetGenericSharedStrictPreTurnGuardianAuthorityRoot(guardianPolicyContext, out var preTurnGuardiansRoot))
+        {
+            failureDescription = DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext);
+            return false;
+        }
+
+        if (!HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+        {
+            failureDescription = DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus);
+            return false;
+        }
+
+        var parsedTrackerRoot = TryParseJsonObject(trackerContext.PreTurnRoot);
+        if (parsedTrackerRoot == null)
+        {
+            failureDescription = "validated pre-turn guardian project tracker baseline unreadable";
+            return false;
+        }
+
+        if (!TryBuildGuardianProjectTrackerPreTurnAuthorityRoot(
+                parsedTrackerRoot,
+                preTurnGuardiansRoot,
+                out var sharedAuthorityRoot,
+                out failureDescription))
+        {
+            return false;
+        }
+
+        trackerRoot = CloneJsonObjectToElement(sharedAuthorityRoot);
+        return true;
+    }
+
+    private bool TryBuildGuardianProjectTrackerPreTurnAuthorityRoot(
+        JsonObject parsedTrackerRoot,
+        JsonElement preTurnGuardiansRoot,
+        out JsonObject authorityRoot,
+        out string failureDescription)
+    {
+        authorityRoot = new JsonObject();
+        failureDescription = "validated shared pre-turn guardian project tracker authority unavailable";
+
+        var knownGuardianIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (!MergeGuardianIdentityValidationStateFromStoredGuardians(
+                preTurnGuardiansRoot,
+                knownGuardianIds,
+                new Dictionary<string, IReadOnlyDictionary<string, int>>(StringComparer.OrdinalIgnoreCase)))
+        {
+            if (!preTurnGuardiansRoot.TryGetProperty("guardians", out var guardians) ||
+                guardians.ValueKind != JsonValueKind.Array)
+            {
+                failureDescription = "validated shared pre-turn guardian authority unreadable";
+                return false;
+            }
+        }
+
+        var parsedTrackerElement = CloneJsonObjectToElement(parsedTrackerRoot);
+        var issues = new List<ValidationIssue>();
+        if (parsedTrackerElement.TryGetProperty("activeProjects", out var activeProjects))
+        {
+            ValidateGuardianProjectIdentityAuthorityArray(
+                activeProjects,
+                "validated_pre_turn_tracker.activeProjects",
+                issues,
+                completed: false,
+                knownGuardianIds);
+        }
+
+        if (parsedTrackerElement.TryGetProperty("completedProjects", out var completedProjects))
+        {
+            ValidateGuardianProjectIdentityAuthorityArray(
+                completedProjects,
+                "validated_pre_turn_tracker.completedProjects",
+                issues,
+                completed: true,
+                knownGuardianIds);
+        }
+
+        if (parsedTrackerElement.TryGetProperty("temporaryProjectModifiers", out var temporaryProjectModifiers))
+        {
+            ValidateGuardianProjectModifierAuthorityArray(
+                temporaryProjectModifiers,
+                "validated_pre_turn_tracker.temporaryProjectModifiers",
+                issues,
+                knownGuardianIds);
+        }
+
+        ValidateGuardianProjectIdentityCollisions(parsedTrackerElement, "validated_pre_turn_tracker", issues);
+
+        var firstError = issues.FirstOrDefault(issue => issue.Severity == IssueSeverity.Error);
+        if (firstError != null)
+        {
+            failureDescription =
+                $"validated pre-turn guardian project tracker baseline is semantically invalid: {firstError.Message}";
+            return false;
+        }
+
+        authorityRoot = BuildGuardianProjectTrackerPreTurnAuthorityRoot(parsedTrackerRoot);
+        return true;
+    }
+
+    private bool TryValidateGuardianProjectCurrentTrackerAuthorityInput(
+        JsonElement currentTrackerRoot,
+        JsonObject preTurnTrackerAuthorityRoot,
+        JsonElement preTurnGuardiansRoot,
+        JsonElement currentGuardiansRoot,
+        out string failureDescription)
+    {
+        failureDescription = $"current {GuardianProjectState.TrackerPath} is semantically invalid";
+
+        var issues = new List<ValidationIssue>();
+        var knownGuardianIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var relationshipScores = new Dictionary<string, IReadOnlyDictionary<string, int>>(StringComparer.OrdinalIgnoreCase);
+        MergeGuardianIdentityValidationStateFromStoredGuardians(preTurnGuardiansRoot, knownGuardianIds, relationshipScores);
+        MergeGuardianIdentityValidationStateFromStoredGuardians(currentGuardiansRoot, knownGuardianIds, relationshipScores);
+
+        var preTurnTrackerJson = preTurnTrackerAuthorityRoot.ToJsonString();
+        var knownProjects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var knownCompletedProjects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var knownProjectDetails = new Dictionary<string, GuardianProjectValidationSnapshot>(StringComparer.OrdinalIgnoreCase);
+        var knownActiveProjectIdsByGuardian = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        MergeKnownGuardianProjectKeysForValidation(knownProjects, preTurnTrackerJson);
+        MergeKnownCompletedGuardianProjectKeysForValidation(knownCompletedProjects, preTurnTrackerJson);
+        MergeKnownGuardianProjectsForValidation(knownProjectDetails, preTurnTrackerJson);
+        MergeKnownActiveGuardianProjectIdsByGuardian(knownActiveProjectIdsByGuardian, preTurnTrackerJson);
+
+        var startedThisTurn = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var startedProjectDetails = new Dictionary<string, GuardianProjectValidationSnapshot>(StringComparer.OrdinalIgnoreCase);
+        if (currentTrackerRoot.TryGetProperty("startGuardianProjects", out var startCommands))
+        {
+            ValidateGuardianProjectStartCommands(
+                startCommands,
+                "current_tracker_authority.startGuardianProjects",
+                issues,
+                knownProjects,
+                knownCompletedProjects,
+                knownActiveProjectIdsByGuardian,
+                startedThisTurn,
+                startedProjectDetails,
+                relationshipScores,
+                knownGuardianIds);
+        }
+
+        if (currentTrackerRoot.TryGetProperty("guardianProjectUpdates", out var updateCommands))
+        {
+            ValidateGuardianProjectUpdateCommands(
+                updateCommands,
+                "current_tracker_authority.guardianProjectUpdates",
+                issues,
+                knownProjects,
+                startedThisTurn,
+                knownGuardianIds);
+        }
+
+        if (currentTrackerRoot.TryGetProperty("completeGuardianProjects", out var completionCommands))
+        {
+            ValidateGuardianProjectCompletionCommands(
+                completionCommands,
+                "current_tracker_authority.completeGuardianProjects",
+                issues,
+                knownProjects,
+                knownProjectDetails,
+                startedProjectDetails,
+                startedThisTurn,
+                relationshipScores,
+                knownGuardianIds);
+        }
+
+        if (currentTrackerRoot.TryGetProperty("temporaryProjectModifiers", out var temporaryProjectModifiers))
+        {
+            ValidateGuardianProjectModifierAuthorityArray(
+                temporaryProjectModifiers,
+                "current_tracker_authority.temporaryProjectModifiers",
+                issues,
+                knownGuardianIds);
+        }
+
+        var firstError = issues.FirstOrDefault(issue => issue.Severity == IssueSeverity.Error);
+        if (firstError == null)
+            return true;
+
+        failureDescription = $"current {GuardianProjectState.TrackerPath} is semantically invalid: {firstError.Message}";
         return false;
+    }
+
+    private void ValidateGuardianProjectModifierAuthorityArray(
+        JsonElement value,
+        string context,
+        List<ValidationIssue> issues,
+        HashSet<string> knownGuardianIds)
+    {
+        RequireArrayOfObjects(value, context, issues);
+        if (value.ValueKind != JsonValueKind.Array)
+            return;
+
+        var seenModifierKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var item in value.EnumerateArray())
+        {
+            var itemContext = $"{context}[{index++}]";
+            if (!RequireObject(item, itemContext, issues))
+                continue;
+
+            var guardianId = RequireString(item, itemContext, issues, "guardianId");
+            var modifierId = RequireString(item, itemContext, issues, "modifierId");
+            if (!string.IsNullOrWhiteSpace(guardianId) && !knownGuardianIds.Contains(guardianId))
+                AddUnknownGuardianProjectIssue($"{itemContext}.guardianId", guardianId, issues);
+
+            var modifierType = RequireString(item, itemContext, issues, "modifierType");
+            if (!string.IsNullOrWhiteSpace(modifierType) &&
+                !string.Equals(modifierType, "next_internal_project_starting_pressure", StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.modifierType",
+                    IssueSeverity.Error,
+                    "temporaryProjectModifiers.modifierType использует неподдерживаемый тип",
+                    code: "guardian_project_invalid_modifier_type",
+                    section: "GuardianProjects",
+                    expected: "next_internal_project_starting_pressure",
+                    actual: modifierType,
+                    repairHint: "В текущем этапе используй только next_internal_project_starting_pressure."));
+            }
+
+            ValidateIntegerField(item, itemContext, issues, "value");
+            ValidateNonNegativeIntegerField(item, itemContext, issues, "remainingApplications", "GuardianProjects");
+
+            if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(modifierId))
+                continue;
+
+            var key = $"{guardianId}::{modifierId}";
+            if (seenModifierKeys.Add(key))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.modifierId",
+                IssueSeverity.Error,
+                "temporaryProjectModifiers не может содержать один и тот же guardianId + modifierId больше одного раза",
+                code: "guardian_project_duplicate_modifier_key",
+                section: "GuardianProjects",
+                expected: "historically unique guardianId + modifierId key",
+                actual: key,
+                repairHint: "Оставь для temporaryProjectModifiers только одну canonical запись на каждую пару guardianId + modifierId."));
+        }
+    }
+
+    private void ValidateGuardianProjectIdentityAuthorityArray(
+        JsonElement value,
+        string context,
+        List<ValidationIssue> issues,
+        bool completed,
+        HashSet<string> knownGuardianIds)
+    {
+        RequireArrayOfObjects(value, context, issues);
+        if (value.ValueKind != JsonValueKind.Array)
+            return;
+
+        var activeGuardians = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var entry in value.EnumerateArray())
+        {
+            var entryContext = $"{context}[{index++}]";
+            if (!RequireObject(entry, entryContext, issues))
+                continue;
+
+            var guardianId = RequireString(entry, entryContext, issues, "guardianId");
+            if (!string.IsNullOrWhiteSpace(guardianId) && !knownGuardianIds.Contains(guardianId))
+                AddUnknownGuardianProjectIssue($"{entryContext}.guardianId", guardianId, issues);
+            if (!completed && !string.IsNullOrWhiteSpace(guardianId) && !activeGuardians.Add(guardianId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{entryContext}.guardianId",
+                    IssueSeverity.Error,
+                    "У одного Хранителя не может быть больше одного активного guardian project в v1",
+                    code: "guardian_project_duplicate_active_guardian",
+                    section: "GuardianProjects",
+                    expected: "at most one active project per guardian",
+                    actual: guardianId,
+                    repairHint: "Оставляй у одного guardianId не более одной записи в activeProjects[]."));
+            }
+
+            if (!entry.TryGetProperty("project", out var project) ||
+                !RequireObject(project, $"{entryContext}.project", issues))
+            {
+                continue;
+            }
+
+            RequireString(project, $"{entryContext}.project", issues, "projectId");
+        }
+    }
+
+    private static JsonObject BuildGuardianProjectTrackerPreTurnAuthorityRoot(JsonObject trackerRoot)
+    {
+        var authorityRoot = new JsonObject
+        {
+            ["activeProjects"] = trackerRoot["activeProjects"] is JsonArray activeProjects
+                ? activeProjects.DeepClone()
+                : new JsonArray(),
+            ["completedProjects"] = trackerRoot["completedProjects"] is JsonArray completedProjects
+                ? completedProjects.DeepClone()
+                : new JsonArray(),
+            ["temporaryProjectModifiers"] = trackerRoot["temporaryProjectModifiers"] is JsonArray temporaryProjectModifiers
+                ? temporaryProjectModifiers.DeepClone()
+                : new JsonArray()
+        };
+
+        return authorityRoot;
+    }
+
+    private bool TryResolveStrictGuardianProjectTrackerAuthorityRootForProof(
+        out JsonElement trackerRoot,
+        out string failureDescription)
+        => TryResolveStrictGuardianProjectTrackerAuthorityRootForValidation(
+            out trackerRoot,
+            out failureDescription);
+
+    private bool TryResolveStrictGuardianProjectTrackerAuthorityRootForValidation(
+        out JsonElement trackerRoot,
+        out string failureDescription)
+    {
+        var guardianPolicyContext = _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        return TryResolveStrictGuardianProjectTrackerAuthorityRoot(
+            guardianPolicyContext,
+            trackerContext,
+            out trackerRoot,
+            out failureDescription);
+    }
+
+    private bool TryResolveStrictGuardianProjectTrackerAuthorityRoot(
+        GuardianPolicyContext guardianPolicyContext,
+        out JsonElement trackerRoot,
+        out string failureDescription)
+    {
+        var trackerContext = ResolveGuardianProjectTrackerPolicyContextSync();
+        return TryResolveStrictGuardianProjectTrackerAuthorityRoot(
+            guardianPolicyContext,
+            trackerContext,
+            out trackerRoot,
+            out failureDescription);
+    }
+
+    private bool TryResolveStrictGuardianProjectTrackerAuthorityRoot(
+        GuardianPolicyContext guardianPolicyContext,
+        GuardianProjectTrackerPolicyContext trackerContext,
+        out JsonElement trackerRoot,
+        out string failureDescription)
+    {
+        trackerRoot = default;
+        failureDescription = "current guardian project tracker authority unavailable";
+
+        if (!HasResolvedStrictPreTurnGuardianAuthority(guardianPolicyContext))
+        {
+            failureDescription = DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext);
+            return false;
+        }
+
+        if (!guardianPolicyContext.HasStrictCurrentAuthorityRoot)
+        {
+            failureDescription = "current strict guardian authority unavailable";
+            return false;
+        }
+
+        if (!TryResolveStrictGuardianProjectTrackerPreTurnAuthorityRoot(
+                guardianPolicyContext,
+                trackerContext,
+                out var preTurnTrackerAuthorityRoot,
+                out failureDescription))
+        {
+            return false;
+        }
+
+        if (!trackerContext.HasCurrentRoot || trackerContext.CurrentStateFailureKind != GuardianCurrentStateFailureKind.None)
+        {
+            failureDescription = DescribeGuardianProjectTrackerAuthorityFailure(trackerContext);
+            return false;
+        }
+
+        var preTurnTrackerRoot = TryParseJsonObject(preTurnTrackerAuthorityRoot);
+        var currentTrackerRoot = TryParseJsonObject(trackerContext.CurrentRoot);
+        var preTurnGuardiansRoot = TryParseJsonObject(guardianPolicyContext.PreTurnAuthorityRoot);
+        var currentGuardiansRoot = TryParseJsonObject(guardianPolicyContext.StrictCurrentAuthorityRoot);
+        if (preTurnTrackerRoot == null ||
+            currentTrackerRoot == null ||
+            preTurnGuardiansRoot == null ||
+            currentGuardiansRoot == null)
+        {
+            failureDescription = "strict guardian-backed tracker authority root unreadable";
+            return false;
+        }
+
+        var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
+        var (currentIncarnation, currentRealm) = ReadCurrentSoulStateForProjectAuthority();
+        var projectedAuthorityRoot = CanonicalStateNormalizer.BuildGuardianProjectAuthorityRootForValidation(
+            preTurnTrackerRoot,
+            currentTrackerRoot,
+            preTurnGuardiansRoot,
+            currentGuardiansRoot,
+            currentTurn,
+            currentIncarnation,
+            currentRealm);
+        trackerRoot = CloneJsonObjectToElement(projectedAuthorityRoot);
+        return true;
+    }
+
+    private bool TryResolveStrictGuardianProjectTrackerPreTurnAuthorityRoot(
+        GuardianPolicyContext guardianPolicyContext,
+        GuardianProjectTrackerPolicyContext trackerContext,
+        out JsonElement trackerRoot,
+        out string failureDescription)
+    {
+        trackerRoot = default;
+        failureDescription = "validated strict pre-turn guardian project tracker authority unavailable";
+
+        if (!HasResolvedStrictPreTurnGuardianAuthority(guardianPolicyContext))
+        {
+            failureDescription = DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext);
+            return false;
+        }
+
+        if (!HasUsableValidatedPreTurnGuardianProjectTrackerBaseline(trackerContext))
+        {
+            failureDescription = DescribeGuardianTrackedSnapshotFileStatus(trackerContext.PreTurnTrackerSnapshot.FileStatus);
+            return false;
+        }
+
+        var parsedTrackerRoot = TryParseJsonObject(trackerContext.PreTurnRoot);
+        if (parsedTrackerRoot == null)
+        {
+            failureDescription = "validated pre-turn guardian project tracker baseline unreadable";
+            return false;
+        }
+
+        if (!TryBuildGuardianProjectTrackerPreTurnAuthorityRoot(
+                parsedTrackerRoot,
+                guardianPolicyContext.PreTurnAuthorityRoot,
+                out var strictAuthorityRoot,
+                out failureDescription))
+        {
+            return false;
+        }
+
+        trackerRoot = CloneJsonObjectToElement(strictAuthorityRoot);
+        return true;
     }
 
     private static bool TryResolveGuardianProjectProjectedAuthorityRootSync(
@@ -993,7 +2300,15 @@ public partial class ValidationService
             context.CurrentGuardianPowerEventAuthorityFailureDescription,
             context.HasPreTurnAuthorityRoot,
             context.HasCurrentAuthorityRoot,
+            context.HasGenericSharedStrictPreTurnAuthorityRoot,
+            context.StrictPreTurnGuardianAuthorityStatus.ToString(),
+            context.StrictPreTurnGuardianAuthorityFailureDescription,
+            context.GenericSharedStrictPreTurnGuardianAuthorityStatus.ToString(),
+            context.GenericSharedStrictPreTurnGuardianAuthorityFailureDescription,
             context.HasPreTurnAuthorityRoot ? context.PreTurnAuthorityRoot.GetRawText() : null,
+            HasResolvedGenericSharedStrictPreTurnGuardianAuthority(context)
+                ? context.GenericSharedStrictPreTurnAuthorityRoot.GetRawText()
+                : null,
             context.HasCurrentAuthorityRoot ? context.CurrentAuthorityRoot.GetRawText() : null);
     }
 
@@ -1027,6 +2342,62 @@ public partial class ValidationService
         guardian = default;
         return context.HasCurrentAuthorityRoot &&
                TryGetGuardianFromAuthorityRoot(context.CurrentAuthorityRoot, guardianId, out guardian);
+    }
+
+    private static bool TryGetStrictCurrentGuardian(GuardianPolicyContext context, string guardianId, out JsonElement guardian)
+    {
+        guardian = default;
+        return context.HasStrictCurrentAuthorityRoot &&
+               TryGetGuardianFromAuthorityRoot(context.StrictCurrentAuthorityRoot, guardianId, out guardian);
+    }
+
+    private static bool TryEnsureCurrentGuardianAuthorityForPowerEventSensitiveOutcome(
+        GuardianPolicyContext context,
+        out string failureDescription)
+    {
+        failureDescription = "current guardian authority unavailable";
+
+        if (!HasResolvedStrictPreTurnGuardianAuthority(context))
+        {
+            failureDescription = DescribeGuardianPreTurnBaselineFailure(context);
+            return false;
+        }
+
+        if (context.CurrentGuardianPowerEventAuthorityStatus != GuardianPowerEventAuthorityStatus.None &&
+            context.CurrentGuardianPowerEventAuthorityStatus != GuardianPowerEventAuthorityStatus.Resolved)
+        {
+            failureDescription = string.IsNullOrWhiteSpace(context.CurrentGuardianPowerEventAuthorityFailureDescription)
+                ? $"current guardian power-event authority unavailable: {context.CurrentGuardianPowerEventAuthorityStatus}"
+                : context.CurrentGuardianPowerEventAuthorityFailureDescription!;
+            return false;
+        }
+
+        if (!context.HasStrictCurrentAuthorityRoot ||
+            context.StrictCurrentAuthorityRoot.ValueKind != JsonValueKind.Object ||
+            !context.StrictCurrentAuthorityRoot.TryGetProperty("guardians", out var guardians) ||
+            guardians.ValueKind != JsonValueKind.Array)
+        {
+            failureDescription = context.HasStrictCurrentAuthorityRoot
+                ? "current guardian authority unreadable or missing canonical guardians[]"
+                : "current guardian authority unavailable";
+            return false;
+        }
+
+        return true;
+    }
+
+    private static string DescribeCurrentGuardianAuthorityFailure(GuardianPolicyContext context)
+    {
+        if (!context.CurrentStateReadable || !context.HasCurrentRoot)
+            return "current guardians.json unreadable or missing";
+
+        if (!HasResolvedGenericSharedStrictPreTurnGuardianAuthority(context))
+            return DescribeGuardianPreTurnBaselineFailure(context);
+
+        if (!context.HasCurrentAuthorityRoot)
+            return "current guardian authority unavailable";
+
+        return "current guardian authority unreadable or missing canonical guardians[]";
     }
 
     private static bool TryGetPreTurnGuardian(GuardianPolicyContext context, string guardianId, out JsonElement guardian)
@@ -1078,7 +2449,7 @@ public partial class ValidationService
                 ? TryReadGuardianCurrentReputation(preTurnGuardian)
                 : null;
 
-        return TryGetCurrentGuardian(context, guardianId, out var currentGuardian)
+        return TryGetStrictCurrentGuardian(context, guardianId, out var currentGuardian)
             ? TryReadGuardianCurrentReputation(currentGuardian)
             : null;
     }
@@ -1097,7 +2468,7 @@ public partial class ValidationService
                 !TryGetGuardianFromAuthorityRoot(context.PreTurnAuthorityRoot, guardianId, out guardian))
                 return null;
         }
-        else if (!TryGetCurrentGuardian(context, guardianId, out guardian))
+        else if (!TryGetStrictCurrentGuardian(context, guardianId, out guardian))
         {
             return null;
         }
@@ -1109,7 +2480,7 @@ public partial class ValidationService
     {
         var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var source = preTurn
-            ? (context.HasPreTurnAuthorityRoot ? context.PreTurnAuthorityRoot : default)
+            ? (HasResolvedGenericSharedStrictPreTurnGuardianAuthority(context) ? context.GenericSharedStrictPreTurnAuthorityRoot : default)
             : (context.HasCurrentAuthorityRoot ? context.CurrentAuthorityRoot : default);
 
         if (source.ValueKind != JsonValueKind.Object ||

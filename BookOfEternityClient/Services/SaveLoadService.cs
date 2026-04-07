@@ -31,7 +31,8 @@ public class SaveLoadService
 
     private static readonly string[] EphemeralPathPrefixes =
     {
-        "game_state/control/pending_turn_snapshot/"
+        "game_state/control/pending_turn_snapshot/",
+        QteSceneService.QteNormalizerBackupDirectory + "/"
     };
 
     private readonly FileSystemManager _fs;

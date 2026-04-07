@@ -1360,7 +1360,7 @@ public partial class ValidationService
                             code: "guardian_npc_command_crossrefs_missing_validated_preturn_guardians_snapshot",
                             section: "Guardians",
                             expected: "validated pre-turn guardians baseline for guardian/NPC collision checks",
-                            actual: DescribeGuardianTrackedSnapshotFileStatus(knownGuardianReferences.SnapshotFileStatus),
+                            actual: knownGuardianReferences.BaselineFailureDescription,
                             repairHint: "Сохраняй readable validated snapshot copy game_state/meta/guardians.json, чтобы guardian ids и names не могли silently попадать в NPC command surfaces."));
                         emittedGuardianBaselineIssue = true;
                     }

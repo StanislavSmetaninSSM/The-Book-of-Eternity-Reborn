@@ -17,6 +17,7 @@ public sealed class QteSceneService
     public const string QteRuntimePath = "game_state/control/qte_runtime.json";
     public const string QteHistoryPath = "game_state/history/qte_history.json";
     public const string OrdinaryPlayerTurnSourceLabel = "обработки хода";
+    internal const string QteNormalizerBackupDirectory = "game_state/control/qte_normalizer_backups";
     private const int ExperienceBaseXp = 100;
     private const double ExperienceExponent = 2.5;
 
@@ -32,6 +33,12 @@ public sealed class QteSceneService
     private readonly ILogger<QteSceneService> _logger;
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+
+    private sealed class QteNormalizationBaseline
+    {
+        public Dictionary<string, string?> RestoreBackupsByPath { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> NormalizerBackupsByPath { get; } = new(StringComparer.OrdinalIgnoreCase);
+    }
 
     public QteSceneService(
         FileSystemManager fs,
@@ -433,6 +440,61 @@ public sealed class QteSceneService
 
     private async Task<GameResponse> ApplyTerminalOutcomeAsync(QteTerminalOutcome outcome)
     {
+        var response = await ApplyTerminalOutcomeValidatedStateChangesAsync(outcome);
+        await ShowTerminalOutcomeScreenAsync(outcome);
+        return response;
+    }
+
+    internal async Task<GameResponse> ApplyTerminalOutcomeValidatedStateChangesAsync(QteTerminalOutcome outcome)
+    {
+        var response = BuildTerminalOutcomeResponse(outcome);
+        var baseline = await CaptureQteNormalizationBaselineAsync(response);
+        try
+        {
+            await ApplyTerminalOutcomeStateChangesCoreAsync(response, baseline.NormalizerBackupsByPath);
+            await _stateManager.RefreshGameStateAsync();
+
+            var issues = await _validator.ValidateGameStateAsync();
+            var errors = issues.Where(issue => issue.Severity == IssueSeverity.Error).ToList();
+            if (errors.Count > 0)
+                throw new InvalidOperationException("Локальный QTE outcome нарушил контракт состояния.");
+
+            return response;
+        }
+        catch
+        {
+            await RestoreQteNormalizationBaselineAsync(baseline);
+            await _stateManager.RefreshGameStateAsync();
+            throw;
+        }
+        finally
+        {
+            CleanupQteNormalizationBaseline(baseline);
+        }
+    }
+
+    internal async Task<GameResponse> ApplyTerminalOutcomeStateChangesAsync(QteTerminalOutcome outcome)
+    {
+        var response = BuildTerminalOutcomeResponse(outcome);
+        var baseline = await CaptureQteNormalizationBaselineAsync(response);
+        try
+        {
+            await ApplyTerminalOutcomeStateChangesCoreAsync(response, baseline.NormalizerBackupsByPath);
+            return response;
+        }
+        catch
+        {
+            await RestoreQteNormalizationBaselineAsync(baseline);
+            throw;
+        }
+        finally
+        {
+            CleanupQteNormalizationBaseline(baseline);
+        }
+    }
+
+    private GameResponse BuildTerminalOutcomeResponse(QteTerminalOutcome outcome)
+    {
         var response = outcome.ResponseFragment != null
             ? JsonSerializer.Deserialize<GameResponse>(outcome.ResponseFragment.ToJsonString(), JsonOpts)
             : new GameResponse();
@@ -441,19 +503,148 @@ public sealed class QteSceneService
         if (string.IsNullOrWhiteSpace(response.Response))
             response.Response = outcome.FinalNarrative;
         response.ImagePrompt = null;
+        return response;
+    }
 
+    private async Task ApplyTerminalOutcomeStateChangesCoreAsync(
+        GameResponse response,
+        IReadOnlyDictionary<string, string> normalizerBackups)
+    {
         await _stateDistributor.DistributeAsync(response);
         await ApplyAuthoritativeExperienceAsync(response.ExperienceGained);
-        await _normalizer.NormalizeAccumulatedStateAsync();
-        await _stateManager.RefreshGameStateAsync();
+        await _normalizer.NormalizeAccumulatedStateAsync(normalizerBackups);
+    }
 
-        var issues = await _validator.ValidateGameStateAsync();
-        var errors = issues.Where(issue => issue.Severity == IssueSeverity.Error).ToList();
-        if (errors.Count > 0)
-            throw new InvalidOperationException("Локальный QTE outcome нарушил контракт состояния.");
+    private async Task<QteNormalizationBaseline> CaptureQteNormalizationBaselineAsync(GameResponse response)
+    {
+        var baseline = new QteNormalizationBaseline();
+        var runId = Guid.NewGuid().ToString("N");
+        var fileIndex = 0;
 
-        await ShowTerminalOutcomeScreenAsync(outcome);
-        return response;
+        foreach (var relativePath in CollectQteTrackedPaths(response))
+        {
+            var content = await _fs.ReadFileAsync(relativePath);
+            if (content == null)
+            {
+                baseline.RestoreBackupsByPath[relativePath] = null;
+                continue;
+            }
+
+            var sanitizedPath = relativePath.Replace('/', '_').Replace('\\', '_').Replace(':', '_');
+            var backupPath = $"{QteNormalizerBackupDirectory}/{runId}/{fileIndex:D2}_{sanitizedPath}";
+            await _fs.WriteFileAtomicAsync(backupPath, content);
+            baseline.RestoreBackupsByPath[relativePath] = backupPath;
+            if (CanonicalStateNormalizer.NormalizerBackupInputFiles.Contains(relativePath, StringComparer.OrdinalIgnoreCase))
+                baseline.NormalizerBackupsByPath[relativePath] = backupPath;
+            fileIndex++;
+        }
+
+        return baseline;
+    }
+
+    private static HashSet<string> CollectQteTrackedPaths(GameResponse response)
+    {
+        var trackedPaths = new HashSet<string>(CanonicalStateNormalizer.NormalizerRollbackTrackedFiles, StringComparer.OrdinalIgnoreCase);
+        var responseElement = JsonSerializer.SerializeToElement(response, JsonOpts);
+        if (responseElement.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var property in responseElement.EnumerateObject())
+            {
+                if (property.Value.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+                    continue;
+
+                if (FileMapping.FieldToFile.TryGetValue(property.Name, out var targetPath))
+                    trackedPaths.Add(targetPath);
+            }
+        }
+
+        if (response.Response != null &&
+            FileMapping.OutputFiles.TryGetValue("narrative", out var narrativePath))
+        {
+            trackedPaths.Add(narrativePath);
+        }
+
+        if ((response.DialogueOptions != null || response.ImagePrompt != null) &&
+            FileMapping.OutputFiles.TryGetValue("interface", out var interfacePath))
+        {
+            trackedPaths.Add(interfacePath);
+        }
+
+        if (response.GmThoughtsMarkdown != null &&
+            FileMapping.OutputFiles.TryGetValue("debug", out var debugPath))
+        {
+            trackedPaths.Add(debugPath);
+        }
+
+        return trackedPaths;
+    }
+
+    private async Task RestoreQteNormalizationBaselineAsync(QteNormalizationBaseline baseline)
+    {
+        foreach (var (relativePath, backupPath) in baseline.RestoreBackupsByPath)
+        {
+            if (string.IsNullOrWhiteSpace(backupPath))
+            {
+                _fs.DeleteFile(relativePath);
+                continue;
+            }
+
+            var content = await _fs.ReadFileAsync(backupPath);
+            if (content == null)
+            {
+                _fs.DeleteFile(relativePath);
+                continue;
+            }
+
+            await _fs.WriteFileAtomicAsync(relativePath, content);
+        }
+    }
+
+    private void CleanupQteNormalizationBaseline(QteNormalizationBaseline? baseline)
+    {
+        if (baseline == null)
+            return;
+
+        var runDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var backupPath in baseline.RestoreBackupsByPath.Values)
+        {
+            if (string.IsNullOrWhiteSpace(backupPath))
+                continue;
+
+            var absoluteBackupPath = _fs.ResolvePath(backupPath);
+            var runDirectory = Path.GetDirectoryName(absoluteBackupPath);
+            if (!string.IsNullOrWhiteSpace(runDirectory))
+                runDirectories.Add(runDirectory);
+
+            _fs.DeleteFile(backupPath);
+        }
+
+        foreach (var runDirectory in runDirectories.OrderByDescending(path => path.Length))
+            TryDeleteDirectoryIfEmpty(runDirectory);
+
+        TryDeleteDirectoryIfEmpty(_fs.ResolvePath(QteNormalizerBackupDirectory));
+    }
+
+    private void TryDeleteDirectoryIfEmpty(string? absolutePath)
+    {
+        if (string.IsNullOrWhiteSpace(absolutePath) || !Directory.Exists(absolutePath))
+            return;
+
+        try
+        {
+            if (Directory.EnumerateFileSystemEntries(absolutePath).Any())
+                return;
+
+            Directory.Delete(absolutePath, recursive: false);
+        }
+        catch (IOException ex)
+        {
+            _logger.LogDebug(ex, "Не удалось удалить пустой каталог временных backup-артефактов QTE: {Path}", absolutePath);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogDebug(ex, "Нет доступа к удалению пустого каталога временных backup-артефактов QTE: {Path}", absolutePath);
+        }
     }
 
     private async Task ShowTerminalOutcomeScreenAsync(QteTerminalOutcome outcome)

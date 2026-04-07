@@ -1047,6 +1047,51 @@ public partial class ValidationService
 
         if (currentJournalProof.Status == GuardianPowerJournalCurrentProofStatus.InvalidCurrentGuardianAuthority)
         {
+            var guardianPolicyContext = ResolveGuardianPolicyContextSync();
+            if (!HasResolvedStrictPreTurnGuardianAuthority(guardianPolicyContext))
+            {
+                if (guardianPolicyContext.StrictPreTurnGuardianAuthorityStatus == StrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotTracker ||
+                    guardianPolicyContext.StrictPreTurnGuardianAuthorityStatus == StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotTracker)
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianProjectState.TrackerPath,
+                        IssueSeverity.Error,
+                        "Новые resonance power events требуют canonical validated snapshot guardian project tracker baseline для pre-turn proof knowledge.",
+                        code: "guardian_resonance_invalid_validated_snapshot_tracker",
+                        section: "LifeEvaluation",
+                        expected: $"canonical validated snapshot {GuardianProjectState.TrackerPath} for resonance proof knowledge",
+                        actual: currentJournalProof.FailureDescription ?? DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext),
+                        repairHint: $"Для resonance сохраняй в validated pending turn snapshot canonical {GuardianProjectState.TrackerPath}. Proof knowledge не может строиться из partial или invalid tracker snapshot."));
+                    return;
+                }
+
+                if (guardianPolicyContext.StrictPreTurnGuardianAuthorityStatus == StrictPreTurnGuardianAuthorityStatus.MissingValidatedSnapshotJournal ||
+                    guardianPolicyContext.StrictPreTurnGuardianAuthorityStatus == StrictPreTurnGuardianAuthorityStatus.InvalidValidatedSnapshotJournal)
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianPowerEventState.JournalPath,
+                        IssueSeverity.Error,
+                        "Новые resonance power events требуют canonical validated snapshot abode_power_journal baseline для pre-turn proof knowledge.",
+                        code: "guardian_resonance_invalid_validated_snapshot_journal",
+                        section: "LifeEvaluation",
+                        expected: $"canonical validated snapshot {GuardianPowerEventState.JournalPath} for resonance proof knowledge",
+                        actual: currentJournalProof.FailureDescription ?? DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext),
+                        repairHint: $"Для resonance сохраняй в validated pending turn snapshot canonical {GuardianPowerEventState.JournalPath}. Proof knowledge не может строиться из partial или invalid journal snapshot."));
+                    return;
+                }
+
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json",
+                    IssueSeverity.Error,
+                    "Новые resonance power events требуют canonical validated snapshot guardians baseline для pre-turn proof knowledge.",
+                    code: "guardian_resonance_invalid_validated_snapshot_guardians",
+                    section: "LifeEvaluation",
+                    expected: "canonical validated snapshot guardians.json for resonance proof knowledge",
+                    actual: currentJournalProof.FailureDescription ?? DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext),
+                    repairHint: "Для resonance сохраняй в validated pending turn snapshot canonical game_state/meta/guardians.json. Proof knowledge не может строиться из partial или invalid guardian snapshot."));
+                return;
+            }
+
             issues.Add(new ValidationIssue(
                 "game_state/meta/guardians.json",
                 IssueSeverity.Error,
@@ -1120,7 +1165,8 @@ public partial class ValidationService
         }
 
         var preJournalJson = await ReadValidatedPendingTurnSnapshotFileAsync(snapshotContext.Manifest, GuardianPowerEventState.JournalPath);
-        var preTurnJournalKnowledgeResult = await ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync("resonance");
+        var preTurnJournalKnowledgeResult = await ReadValidatedPreTurnGuardianPowerJournalProofKnowledgeAsync(
+            CreateGuardianPowerEventProofScopeForReasonType("resonance"));
         if (preTurnJournalKnowledgeResult.Status == GuardianPowerJournalProofKnowledgeStatus.InvalidValidatedSnapshotGuardians)
         {
             issues.Add(new ValidationIssue(

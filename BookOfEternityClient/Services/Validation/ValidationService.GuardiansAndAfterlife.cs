@@ -40,7 +40,8 @@ public partial class ValidationService
             return result;
 
         guardianPolicyContext ??= _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
-        var hasUsableValidatedPreTurnBaseline = HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext);
+        var hasUsableValidatedPreTurnBaseline =
+            TryGetGuardianPreTurnBaselineRootForCommandAuthorization(guardianPolicyContext, out _);
         var containsNonCreateCommand = arr.EnumerateArray()
             .Any(item =>
                 item.ValueKind == JsonValueKind.Object &&
@@ -55,7 +56,7 @@ public partial class ValidationService
                 code: "guardian_commands_missing_validated_preturn_guardians_snapshot",
                 section: "UpdateGuardians",
                 expected: "validated pre-turn guardians baseline or earlier valid same-turn create",
-                actual: $"{guardianPolicyContext.PreTurnGuardiansSnapshot.ManifestStatus}/{guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus}",
+                actual: DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext),
                 repairHint: "Для non-create UpdateGuardians сохраняй readable validated snapshot copy game_state/meta/guardians.json. Без этого команды должны fail-closed вместо вывода authority из current guardians[]."));
         }
 
@@ -417,11 +418,8 @@ public partial class ValidationService
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         guardianPolicyContext ??= _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
 
-        if (HasUsableValidatedPreTurnGuardianBaseline(guardianPolicyContext))
-        {
-            foreach (var guardianId in guardianPolicyContext.PreTurnGuardiansById.Keys)
-                ids.Add(guardianId);
-        }
+        if (TryGetGuardianPreTurnBaselineRootForCommandAuthorization(guardianPolicyContext, out var preTurnAuthorityRoot))
+            CollectGuardianIdsFromStateRoot(preTurnAuthorityRoot, ids, includeCommandSurfaces: false);
         return ids;
     }
 
@@ -430,8 +428,8 @@ public partial class ValidationService
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         guardianPolicyContext ??= _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
 
-        foreach (var guardianId in guardianPolicyContext.PreTurnGuardiansById.Keys)
-            ids.Add(guardianId);
+        if (TryGetGuardianPreTurnBaselineRootForCommandAuthorization(guardianPolicyContext, out var preTurnAuthorityRoot))
+            CollectGuardianIdsFromStateRoot(preTurnAuthorityRoot, ids, includeCommandSurfaces: false);
 
         return ids;
     }
@@ -819,7 +817,9 @@ public partial class ValidationService
     {
         var guardianPolicyContext = ResolveGuardianPolicyContextSync();
         var guardiansById = new Dictionary<string, (JsonElement Guardian, string Context)>(StringComparer.OrdinalIgnoreCase);
-        var validatedPreTurnGuardianIds = new HashSet<string>(guardianPolicyContext.PreTurnGuardiansById.Keys, StringComparer.OrdinalIgnoreCase);
+        var validatedPreTurnGuardianIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (TryGetSharedGuardianPreTurnBaselineRootForValidation(guardianPolicyContext, out var preTurnAuthorityRoot))
+            CollectGuardianIdsFromStateRoot(preTurnAuthorityRoot, validatedPreTurnGuardianIds, includeCommandSurfaces: false);
         if (guardianPolicyContext.HasCurrentGuardiansArray &&
             TryGetGuardianBaselineFailureKind(guardianPolicyContext, out _))
         {
@@ -830,7 +830,7 @@ public partial class ValidationService
                 code: "guardian_missing_validated_preturn_guardians_snapshot",
                 section: "Guardians",
                 expected: "current validated pending turn snapshot entry for game_state/meta/guardians.json",
-                actual: DescribeGuardianTrackedSnapshotFileStatus(guardianPolicyContext.PreTurnGuardiansSnapshot.FileStatus),
+                actual: DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext),
                 repairHint: "Если current turn materializes guardians[], сохраняй readable validated snapshot copy game_state/meta/guardians.json и не допускай missing/unusable guardian baseline."));
         }
 
@@ -897,17 +897,17 @@ public partial class ValidationService
         string contextPrefix,
         List<ValidationIssue> issues)
     {
-        if (!guardianPolicyContext.HasCurrentAuthorityRoot)
+        if (!guardianPolicyContext.HasStrictCurrentAuthorityRoot)
             return;
 
         ValidateGuardianMaterializedGuardiansArrayAgainstAuthority(
             currentGuardiansRoot,
-            guardianPolicyContext.CurrentAuthorityRoot,
+            guardianPolicyContext.StrictCurrentAuthorityRoot,
             contextPrefix,
             issues);
         ValidateGuardianMaterializedActiveGuardianAgainstAuthority(
             currentGuardiansRoot,
-            guardianPolicyContext.CurrentAuthorityRoot,
+            guardianPolicyContext.StrictCurrentAuthorityRoot,
             contextPrefix,
             issues);
     }
@@ -1766,7 +1766,29 @@ public partial class ValidationService
 
         var guardianId = GetFirstNonEmptyString(guardian, "guardianId");
         var questContext = $"{guardianContext}.questManagement";
-        var hasTrackerValidationRoot = TryResolveGuardianProjectTrackerValidationRootSync(out var trackerRoot, out _);
+        var hasTrackerValidationRoot = false;
+        var triedTrackerValidationRoot = false;
+        var trackerRoot = default(JsonElement);
+
+        bool TryEnsureQuestTrackerValidationRoot(string path)
+        {
+            if (hasTrackerValidationRoot)
+                return true;
+
+            if (triedTrackerValidationRoot)
+                return false;
+
+            triedTrackerValidationRoot = true;
+            hasTrackerValidationRoot = TryResolveGuardianProjectTrackerValidationRoot(
+                path,
+                "Guardian questManagement validation требует readable current guardian project tracker authority и не использует guardian-only derived state как fallback.",
+                "guardian_quest_management_missing_current_tracker_authority",
+                "Guardians",
+                $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед validating questManagement-derived caps и lore_research quest origins.",
+                issues,
+                out trackerRoot);
+            return hasTrackerValidationRoot;
+        }
 
         if (!questManagement.TryGetProperty("availableQuests", out var availableQuests) ||
             availableQuests.ValueKind == JsonValueKind.Null)
@@ -1784,9 +1806,7 @@ public partial class ValidationService
         else
         {
             RequireArrayOfObjects(availableQuests, $"{questContext}.availableQuests", issues);
-            var derivedState = hasTrackerValidationRoot
-                ? GuardianProjectState.ResolveGuardianDerivedState(guardian, trackerRoot)
-                : GuardianProjectState.ResolveGuardianDerivedState(guardian);
+            var derivedState = GuardianProjectState.ResolveGuardianDerivedState(guardian);
             if (availableQuests.ValueKind == JsonValueKind.Array &&
                 availableQuests.GetArrayLength() > derivedState.GuardianQuestCap)
             {
@@ -1806,7 +1826,8 @@ public partial class ValidationService
                 derivedState.GuardianQuestDifficultyCeiling,
                 issues);
 
-            if (hasTrackerValidationRoot)
+            if (HasTrackerBackedQuestOrigins(availableQuests) &&
+                TryEnsureQuestTrackerValidationRoot($"{questContext}.availableQuests"))
                 ValidateGuardianLoreResearchQuestOrigins(availableQuests, $"{questContext}.availableQuests", guardianId ?? string.Empty, trackerRoot, issues);
         }
 
@@ -1826,7 +1847,8 @@ public partial class ValidationService
         else
         {
             RequireArrayOfObjects(activeQuests, $"{questContext}.activeQuests", issues);
-            if (hasTrackerValidationRoot)
+            if (HasTrackerBackedQuestOrigins(activeQuests) &&
+                TryEnsureQuestTrackerValidationRoot($"{questContext}.activeQuests"))
                 ValidateGuardianLoreResearchQuestOrigins(activeQuests, $"{questContext}.activeQuests", guardianId ?? string.Empty, trackerRoot, issues);
         }
 
@@ -1898,6 +1920,29 @@ public partial class ValidationService
             trackerRoot,
             hasTrackerValidationRoot,
             issues);
+    }
+
+
+    private static bool HasTrackerBackedQuestOrigins(JsonElement questArray)
+    {
+        if (questArray.ValueKind != JsonValueKind.Array)
+            return false;
+
+        foreach (var quest in questArray.EnumerateArray())
+        {
+            if (quest.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var questOrigin = GetFirstNonEmptyString(quest, "questOrigin");
+            if (string.Equals(questOrigin, GuardianProjectState.LoreResearchHookOrigin, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(questOrigin, GuardianProjectState.LoreResearchSpecialLineOrigin, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(questOrigin, GuardianProjectState.ArchiveConsultationHookOrigin, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

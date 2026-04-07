@@ -7,6 +7,7 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ValidationServiceQteTests : IDisposable
 {
+    private const string QteNormalizerBackupDirectory = "game_state/control/qte_normalizer_backups";
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly ValidationService _validator;
@@ -101,6 +102,17 @@ public sealed class ValidationServiceQteTests : IDisposable
         var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
 
         Assert.DoesNotContain(issues, issue => issue.Code == "qte_offer_invalid_json");
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_IgnoresQteNormalizerBackupArtifacts()
+    {
+        await _fs.WriteFileAtomicAsync($"{QteNormalizerBackupDirectory}/stale_backup.json", "{ invalid backup json");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.FilePath.StartsWith(QteNormalizerBackupDirectory + "/", StringComparison.OrdinalIgnoreCase));
     }
 
     public void Dispose()
