@@ -121,11 +121,16 @@ public partial class GameEngine
         return GameResponseRefreshMerger.Merge(_lastResponse, refreshed);
     }
 
-    private async Task RefreshCanonicalStateAsync(IReadOnlyDictionary<string, string>? backups = null)
+    private async Task RefreshRuntimeStateAsync()
     {
-        await _normalizer.NormalizeAccumulatedStateAsync(backups);
         await _stateManager.RefreshGameStateAsync();
         await _progressionSchedule.EnsureInitializedAsync();
+    }
+
+    private async Task RefreshCanonicalStateAsync(IReadOnlyDictionary<string, string> backups)
+    {
+        await _normalizer.NormalizeAccumulatedStateAsync(backups);
+        await RefreshRuntimeStateAsync();
     }
 
 
@@ -779,7 +784,7 @@ public partial class GameEngine
             }
         }
 
-        await RefreshCanonicalStateAsync();
+        await RefreshRuntimeStateAsync();
     }
 
     /// <summary>

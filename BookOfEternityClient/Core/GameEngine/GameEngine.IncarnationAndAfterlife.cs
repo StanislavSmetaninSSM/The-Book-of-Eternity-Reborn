@@ -498,7 +498,7 @@ public partial class GameEngine
 
             root["pendingMemoryLegacy"] = null;
             await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", root.ToJsonString(JsonOpts));
-            await RefreshCanonicalStateAsync();
+            await RefreshRuntimeStateAsync();
         }
         catch (Exception ex)
         {

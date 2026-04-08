@@ -778,10 +778,30 @@ public partial class ValidationService
         string repairHint,
         List<ValidationIssue> issues,
         out JsonElement trackerRoot)
+        => TryResolveGuardianProjectTrackerValidationRoot(
+            path,
+            message,
+            code,
+            section,
+            repairHint,
+            issues,
+            out trackerRoot,
+            out _);
+
+    private bool TryResolveGuardianProjectTrackerValidationRoot(
+        string path,
+        string message,
+        string code,
+        string section,
+        string repairHint,
+        List<ValidationIssue> issues,
+        out JsonElement trackerRoot,
+        out GuardianProjectTrackerPolicyContext trackerContext)
     {
-        if (TryResolveGuardianProjectTrackerValidationRootSync(out trackerRoot, out _, out var trackerFailureDescription))
+        if (TryResolveGuardianProjectTrackerValidationRootSync(out trackerRoot, out trackerContext, out var trackerFailureDescription))
             return true;
 
+        trackerContext = default;
         issues.Add(new ValidationIssue(
             path,
             IssueSeverity.Error,
@@ -5107,6 +5127,11 @@ public partial class ValidationService
         public static ForgeGachaBonusLookupResult NoMatch => new(false, 0);
     }
 
+    private readonly record struct LoreResearchVisibleClueBudgetLookupResult(bool HasProject, bool IsCurrentLifeApplicable, int GrantedBudget)
+    {
+        public static LoreResearchVisibleClueBudgetLookupResult NoMatch => new(false, false, 0);
+    }
+
 
     private static int ReadAvailableLoreResearchQuestTokens(JsonElement? trackerRoot, string guardianId, string sourceProjectId, string questOrigin)
     {
@@ -5181,13 +5206,17 @@ public partial class ValidationService
     }
 
 
-    private static int ReadGrantedLoreResearchVisibleClueBudget(JsonElement? trackerRoot, string guardianId, string sourceProjectId)
+    private static LoreResearchVisibleClueBudgetLookupResult ReadGrantedLoreResearchVisibleClueBudget(
+        JsonElement? trackerRoot,
+        string guardianId,
+        string sourceProjectId,
+        int currentIncarnation)
     {
         if (trackerRoot == null || trackerRoot.Value.ValueKind != JsonValueKind.Object ||
             !trackerRoot.Value.TryGetProperty("completedProjects", out var completedProjects) ||
             completedProjects.ValueKind != JsonValueKind.Array)
         {
-            return 0;
+            return LoreResearchVisibleClueBudgetLookupResult.NoMatch;
         }
 
         foreach (var entry in completedProjects.EnumerateArray())
@@ -5201,24 +5230,17 @@ public partial class ValidationService
                 continue;
             }
 
-            if (project.TryGetProperty("effectState", out var effectState) &&
-                effectState.ValueKind == JsonValueKind.Object &&
-                TryReadIntField(effectState, "visibleRivalClueBudgetGranted", out var granted))
-            {
-                return granted;
-            }
+            if (TryParseJsonObject(project) is not JsonObject projectRoot)
+                return new LoreResearchVisibleClueBudgetLookupResult(true, false, 0);
 
-            if (project.TryGetProperty("projectOutcomeAudit", out var audit) &&
-                audit.ValueKind == JsonValueKind.Object &&
-                TryReadIntField(audit, "visibleRivalClueBonus", out var auditGranted))
-            {
-                return auditGranted;
-            }
-
-            return 0;
+            var grantedBudget = GuardianProjectState.GetGrantedVisibleRivalClueBudgetForCurrentLife(projectRoot, currentIncarnation);
+            var isCurrentLifeApplicable =
+                projectRoot["effectState"] is JsonObject effectState &&
+                GetNodeInt(effectState["targetIncarnation"]) == currentIncarnation;
+            return new LoreResearchVisibleClueBudgetLookupResult(true, isCurrentLifeApplicable, grantedBudget);
         }
 
-        return 0;
+        return LoreResearchVisibleClueBudgetLookupResult.NoMatch;
     }
 
 

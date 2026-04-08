@@ -242,13 +242,16 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
-    public void AcceptedTurnRepairLoop_MustUsePreTurnSnapshotOnlyForInitialCanonicalMaterialization()
+    public void AcceptedTurnRepairLoop_MustUseSnapshotBackedCanonicalRefresh_AndRuntimeViewRefresh()
     {
         var source = ReadGameEngineSource();
 
         Assert.Contains("RefreshAcceptedTurnCanonicalStateForValidationAsync", source, StringComparison.Ordinal);
         Assert.Equal(1, source.Split("RefreshCanonicalStateAsync(snapshot)", StringSplitOptions.None).Length - 1);
-        Assert.Contains("await RefreshCanonicalStateAsync();", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("await RefreshCanonicalStateAsync();", source, StringComparison.Ordinal);
+        Assert.Contains("private async Task RefreshRuntimeStateAsync()", source, StringComparison.Ordinal);
+        Assert.Contains("await RefreshRuntimeStateAsync();", source, StringComparison.Ordinal);
+        Assert.Contains("RefreshCanonicalStateAsync(IReadOnlyDictionary<string, string> backups)", source, StringComparison.Ordinal);
     }
 
     [Fact]

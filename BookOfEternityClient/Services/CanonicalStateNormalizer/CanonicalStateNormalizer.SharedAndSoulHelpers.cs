@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class CanonicalStateNormalizer
 {
-    private void ApplyMetaStateUpdates(JsonObject root, JsonObject updates)
+    private static void ApplyMetaStateUpdates(JsonObject root, JsonObject updates)
     {
         if (updates["inkFeatherChanges"] is JsonObject feathers)
         {
@@ -475,6 +475,139 @@ public partial class CanonicalStateNormalizer
     private async Task<JsonObject?> ReadObjectAsync(string relativePath)
     {
         return await ReadNodeAsync(relativePath) as JsonObject;
+    }
+
+    private async Task<JsonObject?> ReadGuardianProjectBackupBaselineAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        return await ReadBackupObjectAsync(GuardianProjectState.TrackerPath, backups);
+    }
+
+    private async Task<JsonObject?> ReadGuardianProjectGuardiansBackupBaselineAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        return await ReadBackupObjectAsync(GuardiansStatePath, backups);
+    }
+
+    private async Task<JsonObject?> ReadCurrentGuardianProjectTrackerRootAsync()
+    {
+        return await ReadCurrentGuardianProjectAuthorityObjectAsync(
+            GuardianProjectState.TrackerPath,
+            required: _fs.FileExists(GuardianProjectState.TrackerPath),
+            GuardianProjectCurrentTrackerReadableRequiredMessage);
+    }
+
+    private async Task<JsonObject?> ReadCurrentGuardianProjectGuardiansRootAsync(bool required)
+    {
+        return await ReadCurrentGuardianProjectAuthorityObjectAsync(
+            GuardiansStatePath,
+            required,
+            GuardianProjectCurrentGuardiansReadableRequiredMessage);
+    }
+
+    private async Task<JsonObject?> ReadCurrentGuardianProjectSoulStateRootAsync(bool required)
+    {
+        return await ReadCurrentGuardianProjectAuthorityObjectAsync(
+            "game_state/meta/soul_state.json",
+            required,
+            GuardianProjectCurrentSoulStateReadableRequiredMessage);
+    }
+
+    private async Task<(JsonObject? TrackerRoot, JsonObject? GuardiansRoot)> ReadGuardianProjectAuthorityBaselinesAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        var trackerRoot = await ReadGuardianProjectBackupBaselineAsync(backups);
+        var guardiansRoot = await ReadGuardianProjectGuardiansBackupBaselineAsync(backups);
+        return (trackerRoot, guardiansRoot);
+    }
+
+    private async Task<GuardianProjectNormalizationInputs> ReadGuardianProjectNormalizationInputsAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        var (trackerRoot, guardiansRoot) = await ReadGuardianProjectAuthorityBaselinesAsync(backups);
+        RequireGuardianProjectAuthorityBaselines(trackerRoot, guardiansRoot);
+
+        var currentTrackerRoot = await ReadCurrentGuardianProjectTrackerRootAsync();
+        var soulContextRequirements = ResolveRequiredCurrentGuardianProjectSoulContext(currentTrackerRoot, trackerRoot);
+        var currentSoulStateRoot = await ReadCurrentGuardianProjectSoulStateRootAsync(soulContextRequirements.RequiresReadableCurrentSoulState);
+        var (currentIncarnation, currentRealm) = await ReadEffectiveGuardianProjectSoulContextAsync(
+            backups,
+            soulContextRequirements,
+            currentSoulStateRoot);
+        var requiresReadableCurrentGuardians = RequiresReadableCurrentGuardianProjectGuardians(
+            currentTrackerRoot,
+            trackerRoot,
+            currentIncarnation,
+            currentRealm);
+        await ReadCurrentGuardianProjectGuardiansRootAsync(requiresReadableCurrentGuardians);
+
+        return new GuardianProjectNormalizationInputs(
+            currentTrackerRoot,
+            trackerRoot,
+            guardiansRoot,
+            requiresReadableCurrentGuardians,
+            currentIncarnation,
+            currentRealm);
+    }
+
+    private void RequireGuardianProjectAuthorityBaselines(JsonObject? trackerRoot, JsonObject? guardiansRoot)
+    {
+        if (!_fs.FileExists(GuardianProjectState.TrackerPath))
+            return;
+
+        var requiresGuardiansBaseline = _fs.FileExists(GuardiansStatePath);
+        if (trackerRoot != null && (!requiresGuardiansBaseline || guardiansRoot != null))
+            return;
+
+        throw new InvalidOperationException(GuardianProjectBackupBaselineRequiredMessage);
+    }
+
+    private async Task<JsonObject?> ReadCurrentGuardianProjectAuthorityObjectAsync(
+        string relativePath,
+        bool required,
+        string failureMessage)
+    {
+        var root = await ReadCurrentAuthorityNodeAsync(relativePath, required, failureMessage);
+        if (root is JsonObject obj)
+            return obj;
+
+        if (required)
+            throw new InvalidOperationException(failureMessage);
+
+        return null;
+    }
+
+    private async Task<JsonNode?> ReadCurrentAuthorityNodeAsync(
+        string relativePath,
+        bool required,
+        string failureMessage)
+    {
+        if (!_fs.FileExists(relativePath))
+        {
+            if (required)
+                throw new InvalidOperationException(failureMessage);
+
+            return null;
+        }
+
+        var json = await _fs.ReadFileAsync(relativePath);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            if (required)
+                throw new InvalidOperationException(failureMessage);
+
+            return null;
+        }
+
+        try
+        {
+            return JsonNode.Parse(json);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Failed to parse guardian-policy current authority surface: {Path}", relativePath);
+        }
+
+        if (required)
+            throw new InvalidOperationException(failureMessage);
+
+        return null;
     }
 
     private async Task<JsonObject?> ReadBackupObjectAsync(string originalRelativePath, IReadOnlyDictionary<string, string>? backups)

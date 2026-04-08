@@ -1791,10 +1791,22 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         }
         """);
 
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": []
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_guardians_existing_active.json", """
+        {
+          "guardians": []
+        }
+        """);
+
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
         await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
         {
-            [GuardianProjectState.TrackerPath] = "test_backups/preturn_guardian_projects_existing_active.json"
+            [GuardianProjectState.TrackerPath] = "test_backups/preturn_guardian_projects_existing_active.json",
+            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_existing_active.json"
         });
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
@@ -1807,7 +1819,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
     }
 
     [Fact]
-    public async Task NormalizeAccumulatedStateAsync_CurrentMaterializedTrackerArraysDoNotSeedAuthorityState()
+    public async Task NormalizeAccumulatedStateAsync_CurrentMaterializedTrackerArraysWithoutBackups_RaisesExplicitBaselineFailure()
     {
         await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
         {
@@ -1848,19 +1860,20 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => normalizer.NormalizeAccumulatedStateAsync());
+        Assert.Contains("usable pre-normalization backup baseline", exception.Message, StringComparison.OrdinalIgnoreCase);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         Assert.NotNull(trackerJson);
         var trackerRoot = JsonNode.Parse(trackerJson!)!.AsObject();
 
-        Assert.Empty(trackerRoot["activeProjects"]!.AsArray());
-        Assert.Empty(trackerRoot["completedProjects"]!.AsArray());
-        Assert.Empty(trackerRoot["temporaryProjectModifiers"]!.AsArray());
+        Assert.Single(trackerRoot["activeProjects"]!.AsArray());
+        Assert.Single(trackerRoot["completedProjects"]!.AsArray());
+        Assert.Single(trackerRoot["temporaryProjectModifiers"]!.AsArray());
     }
 
     [Fact]
-    public async Task NormalizeAccumulatedStateAsync_NoBackupsWithCommands_DoesNotReuseCurrentMaterializedTrackerArraysAsBaseline()
+    public async Task NormalizeAccumulatedStateAsync_NoBackupsWithCommands_RaisesExplicitBaselineFailure()
     {
         await _fs.WriteFileAtomicAsync("input/turn_request.json", """
         { "turnNumber": 60 }
@@ -1948,17 +1961,1072 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
-        await normalizer.NormalizeAccumulatedStateAsync();
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => normalizer.NormalizeAccumulatedStateAsync());
+        Assert.Contains("usable pre-normalization backup baseline", exception.Message, StringComparison.OrdinalIgnoreCase);
 
         var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
         Assert.NotNull(trackerJson);
         var trackerRoot = JsonNode.Parse(trackerJson!)!.AsObject();
-        var activeProjects = trackerRoot["activeProjects"]!.AsArray();
 
-        Assert.Single(activeProjects);
-        Assert.Equal("proj_started", activeProjects[0]!["project"]!["projectId"]!.GetValue<string>());
-        Assert.Empty(trackerRoot["completedProjects"]!.AsArray());
-        Assert.Empty(trackerRoot["temporaryProjectModifiers"]!.AsArray());
+        Assert.Single(trackerRoot["activeProjects"]!.AsArray());
+        Assert.Single(trackerRoot["completedProjects"]!.AsArray());
+        Assert.Single(trackerRoot["temporaryProjectModifiers"]!.AsArray());
+        Assert.Single(trackerRoot["startGuardianProjects"]!.AsArray());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_PartialBackupsWithoutTrackerBaseline_RaisesExplicitBaselineFailure()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "inkFeathers": 5
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_phantom_active",
+                "projectType": "abode_expansion",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Phantom active state"
+              }
+            }
+          ]
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["game_state/meta/soul_state.json"] = "test_backups/unrelated_soul_state_backup.json"
+            }));
+        Assert.Contains("usable pre-normalization backup baseline", exception.Message, StringComparison.OrdinalIgnoreCase);
+
+        var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.NotNull(soulStateJson);
+        using var soulStateDoc = JsonDocument.Parse(soulStateJson!);
+        Assert.Equal(JsonValueKind.Number, soulStateDoc.RootElement.GetProperty("inkFeathers").ValueKind);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_TrackerBaselineWithoutGuardiansBaseline_RaisesExplicitBaselineFailure()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "inkFeathers": 5
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        {
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_lore_token",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Lore token project",
+                "effectState": {
+                  "questHookTokensRemaining": 1
+                }
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_tracker_only_baseline.json", """
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_lore_token",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Lore token project",
+                "effectState": {
+                  "questHookTokensRemaining": 1
+                }
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_only_baseline.json"
+            }));
+        Assert.Contains("usable pre-normalization backup baseline", exception.Message, StringComparison.OrdinalIgnoreCase);
+
+        var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.NotNull(soulStateJson);
+        using var soulStateDoc = JsonDocument.Parse(soulStateJson!);
+        Assert.Equal(JsonValueKind.Number, soulStateDoc.RootElement.GetProperty("inkFeathers").ValueKind);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_MissingGuardianProjectBaseline_FailsBeforeEarlierFilesAreNormalized()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "inkFeathers": 5
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_phantom_active",
+                "projectType": "abode_expansion",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Phantom active state"
+              }
+            }
+          ]
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => normalizer.NormalizeAccumulatedStateAsync());
+        Assert.Contains("usable pre-normalization backup baseline", exception.Message, StringComparison.OrdinalIgnoreCase);
+
+        var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.NotNull(soulStateJson);
+        using var soulStateDoc = JsonDocument.Parse(soulStateJson!);
+        Assert.Equal(JsonValueKind.Number, soulStateDoc.RootElement.GetProperty("inkFeathers").ValueKind);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_MalformedCurrentGuardianProjectTracker_RaisesExplicitCurrentTrackerFailure()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "inkFeathers": 3
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_tracker_current_malformed.json", """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_guardians_current_malformed.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, "{ malformed tracker");
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_current_malformed.json",
+                ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_current_malformed.json"
+            }));
+
+        Assert.Contains("readable current guardian_projects.json tracker surface", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("{ malformed tracker", await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
+        Assert.Contains("\"inkFeathers\": 3", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_MalformedCurrentGuardiansDuringProjectReconciliation_RaisesExplicitCurrentGuardiansFailure()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "inkFeathers": 5
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", """
+        { "turnNumber": 61 }
+        """);
+
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_tracker_current_guardians_invalid.json", """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_guardians_current_guardians_invalid.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+
+        var currentTrackerJson = """
+        {
+          "startGuardianProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_start_requires_guardian_state",
+                "projectType": "abode_expansion",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Проект, требующий guardian reconciliation",
+                "activeState": "Planning",
+                "totalWork": 5,
+                "workDone": 0,
+                "totalStages": 1,
+                "currentStage": 0,
+                "pressure": 1,
+                "stability": 100
+              }
+            }
+          ]
+        }
+        """;
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, currentTrackerJson);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", "{ malformed guardians");
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_current_guardians_invalid.json",
+                ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_current_guardians_invalid.json"
+            }));
+
+        Assert.Contains("readable current guardians.json authority surface", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(currentTrackerJson, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
+        Assert.Equal("{ malformed guardians", await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        Assert.Contains("\"inkFeathers\": 5", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("lore_research")]
+    [InlineData("relic_forging")]
+    public async Task NormalizeAccumulatedStateAsync_MissingCurrentGuardiansDuringCompletedProjectSideConsumption_RaisesExplicitCurrentGuardiansFailure(string projectType)
+    {
+        var projectSpecificStateJson = string.Equals(projectType, "lore_research", StringComparison.OrdinalIgnoreCase)
+            ? """
+                "projectOutcomeAudit": {
+                  "questHookCount": 1,
+                  "visibleRivalClueBonus": 0
+                },
+                "effectState": {
+                  "targetIncarnation": 0,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 0,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 0,
+                  "visibleRivalClueBudgetSpent": 0
+                }
+            """
+            : """
+                "effectState": {
+                  "gachaUsesGranted": 1,
+                  "gachaUsesSpent": 0
+                }
+            """;
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 0,
+          "inkFeathers": 7
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_tracker_side_consumption_guardians_missing.json", $$"""
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_completed_side_consumption",
+                "projectType": "{{projectType}}",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Completed side-consumption project",
+                "finalState": "Completed",
+                {{projectSpecificStateJson}}
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_guardians_side_consumption_guardians_missing.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+
+        var currentTrackerJson = $$"""
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_completed_side_consumption",
+                "projectType": "{{projectType}}",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Completed side-consumption project",
+                "finalState": "Completed",
+                {{projectSpecificStateJson}}
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, currentTrackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_side_consumption_guardians_missing.json",
+                ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_side_consumption_guardians_missing.json"
+            }));
+
+        Assert.Contains("readable current guardians.json authority surface", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(currentTrackerJson, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
+        Assert.Contains("\"inkFeathers\": 7", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("lore_research")]
+    [InlineData("relic_forging")]
+    public async Task NormalizeAccumulatedStateAsync_MissingCurrentGuardiansWithOnlyTrackerLocalCompletedEffects_DoesNotRequireCurrentGuardians(string projectType)
+    {
+        var projectSpecificStateJson = string.Equals(projectType, "lore_research", StringComparison.OrdinalIgnoreCase)
+            ? """
+                "projectOutcomeAudit": {
+                  "questHookCount": 1,
+                  "visibleRivalClueBonus": 1
+                },
+                "effectState": {
+                  "targetIncarnation": 0,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 1,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 1,
+                  "visibleRivalClueBudgetSpent": 0
+                }
+            """
+            : """
+                "effectState": {
+                  "gachaUsesGranted": 1,
+                  "gachaUsesSpent": 1
+                }
+            """;
+        var expectedTrackerMarker = string.Equals(projectType, "lore_research", StringComparison.OrdinalIgnoreCase)
+            ? "\"visibleRivalClueBudgetSpent\": 0"
+            : "\"gachaUsesSpent\": 1";
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "inkFeathers": 9
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_tracker_tracker_only_guardians_absent.json", $$"""
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_completed_tracker_only",
+                "projectType": "{{projectType}}",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Completed tracker-only project",
+                "finalState": "Completed",
+                {{projectSpecificStateJson}}
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_guardians_tracker_only_guardians_absent.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+
+        var currentTrackerJson = $$"""
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_completed_tracker_only",
+                "projectType": "{{projectType}}",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Completed tracker-only project",
+                "finalState": "Completed",
+                {{projectSpecificStateJson}}
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, currentTrackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_tracker_only_guardians_absent.json",
+            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_tracker_only_guardians_absent.json"
+        });
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        Assert.NotNull(trackerJson);
+        Assert.Contains(expectedTrackerMarker, trackerJson, StringComparison.Ordinal);
+        Assert.False(_fs.FileExists("game_state/meta/guardians.json"));
+        Assert.Contains("\"current\": 9", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_MissingCurrentGuardiansWithFutureIncarnationLoreConsumables_DoesNotRequireCurrentGuardians()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 0,
+          "currentRealm": "underworld",
+          "inkFeathers": 11
+        }
+        """);
+
+        const string trackerBackupPath = "test_backups/preturn_tracker_future_incarnation_lore_guardians_absent.json";
+        const string guardiansBackupPath = "test_backups/preturn_guardians_future_incarnation_lore_guardians_absent.json";
+        var trackerJson = """
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_future_incarnation_lore",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Future-incarnation lore project",
+                "finalState": "Completed",
+                "projectOutcomeAudit": {
+                  "questHookCount": 1,
+                  "visibleRivalClueBonus": 0
+                },
+                "effectState": {
+                  "targetIncarnation": 1,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 0,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 0,
+                  "visibleRivalClueBudgetSpent": 0
+                }
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(trackerBackupPath, trackerJson);
+        await _fs.WriteFileAtomicAsync(guardiansBackupPath, """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianProjectState.TrackerPath] = trackerBackupPath,
+            ["game_state/meta/guardians.json"] = guardiansBackupPath
+        });
+
+        var normalizedTracker = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        Assert.Contains("\"targetIncarnation\": 1", normalizedTracker, StringComparison.Ordinal);
+        Assert.Contains("\"questHookTokensSpent\": 0", normalizedTracker, StringComparison.Ordinal);
+        Assert.False(_fs.FileExists("game_state/meta/guardians.json"));
+        Assert.Contains("\"current\": 11", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_BackupDerivedCurrentLoreIncarnationStillRequiresCurrentGuardians()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "inkFeathers": 13
+        }
+        """);
+
+        const string trackerBackupPath = "test_backups/preturn_tracker_backup_derived_current_lore_guardians_missing.json";
+        const string guardiansBackupPath = "test_backups/preturn_guardians_backup_derived_current_lore_guardians_missing.json";
+        const string soulStateBackupPath = "test_backups/preturn_soul_state_backup_derived_current_lore_guardians_missing.json";
+        var trackerJson = """
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_backup_derived_current_lore",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Backup-derived current lore project",
+                "finalState": "Completed",
+                "projectOutcomeAudit": {
+                  "questHookCount": 1,
+                  "visibleRivalClueBonus": 0
+                },
+                "effectState": {
+                  "targetIncarnation": 3,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 0,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 0,
+                  "visibleRivalClueBudgetSpent": 0
+                }
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(trackerBackupPath, trackerJson);
+        await _fs.WriteFileAtomicAsync(guardiansBackupPath, """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(soulStateBackupPath, """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "inkFeathers": {
+            "current": 13,
+            "total": 13
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [GuardianProjectState.TrackerPath] = trackerBackupPath,
+                ["game_state/meta/guardians.json"] = guardiansBackupPath,
+                ["game_state/meta/soul_state.json"] = soulStateBackupPath
+            }));
+
+        Assert.Contains("readable current guardians.json authority surface", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(trackerJson, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
+        var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.Contains("\"inkFeathers\": 13", soulStateJson, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"currentIncarnation\": 3", soulStateJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_BackupDerivedFutureLoreIncarnationDoesNotRequireCurrentGuardians()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "inkFeathers": 17
+        }
+        """);
+
+        const string trackerBackupPath = "test_backups/preturn_tracker_backup_derived_future_lore_guardians_absent.json";
+        const string guardiansBackupPath = "test_backups/preturn_guardians_backup_derived_future_lore_guardians_absent.json";
+        const string soulStateBackupPath = "test_backups/preturn_soul_state_backup_derived_future_lore_guardians_absent.json";
+        var trackerJson = """
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_backup_derived_future_lore",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Backup-derived future lore project",
+                "finalState": "Completed",
+                "projectOutcomeAudit": {
+                  "questHookCount": 1,
+                  "visibleRivalClueBonus": 0
+                },
+                "effectState": {
+                  "targetIncarnation": 4,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 0,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 0,
+                  "visibleRivalClueBudgetSpent": 0
+                }
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(trackerBackupPath, trackerJson);
+        await _fs.WriteFileAtomicAsync(guardiansBackupPath, """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(soulStateBackupPath, """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Shining Abode",
+          "inkFeathers": {
+            "current": 17,
+            "total": 17
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianProjectState.TrackerPath] = trackerBackupPath,
+            ["game_state/meta/guardians.json"] = guardiansBackupPath,
+            ["game_state/meta/soul_state.json"] = soulStateBackupPath
+        });
+
+        var normalizedTracker = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        Assert.Contains("\"targetIncarnation\": 4", normalizedTracker, StringComparison.Ordinal);
+        Assert.Contains("\"questHookTokensSpent\": 0", normalizedTracker, StringComparison.Ordinal);
+        Assert.False(_fs.FileExists("game_state/meta/guardians.json"));
+        var normalizedSoulState = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.Contains("\"currentIncarnation\": 3", normalizedSoulState, StringComparison.Ordinal);
+        Assert.Contains("\"current\": 17", normalizedSoulState, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_CurrentIncarnationOnlySoulPreparationDoesNotRequireCurrentRealm()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 4,
+          "inkFeathers": 23
+        }
+        """);
+
+        const string trackerBackupPath = "test_backups/preturn_tracker_soul_preparation_incarnation_only_soul.json";
+        var trackerJson = """
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_soul_prep_incarnation_only",
+                "projectType": "soul_preparation",
+                "projectTier": "major",
+                "projectMode": "internal",
+                "projectName": "Soul preparation with incarnation-only soul context",
+                "finalState": "Completed"
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(trackerBackupPath, trackerJson);
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianProjectState.TrackerPath] = trackerBackupPath
+        });
+
+        var normalizedTracker = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        Assert.Contains("\"targetIncarnation\": 5", normalizedTracker, StringComparison.Ordinal);
+        Assert.Contains("\"preparationBudgetPointsSpent\": 0", normalizedTracker, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"currentRealm\"", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_BackupDerivedCurrentLoreIncarnationWithMalformedCurrentSoulState_RaisesExplicitSoulStateFailure()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{ malformed soul");
+
+        const string trackerBackupPath = "test_backups/preturn_tracker_backup_derived_current_lore_malformed_soul_state.json";
+        const string guardiansBackupPath = "test_backups/preturn_guardians_backup_derived_current_lore_malformed_soul_state.json";
+        const string soulStateBackupPath = "test_backups/preturn_soul_state_backup_derived_current_lore_malformed_soul_state.json";
+        var trackerJson = """
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_backup_derived_current_lore_malformed_soul",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Backup-derived current lore with malformed soul_state",
+                "finalState": "Completed",
+                "projectOutcomeAudit": {
+                  "questHookCount": 1,
+                  "visibleRivalClueBonus": 0
+                },
+                "effectState": {
+                  "targetIncarnation": 3,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 0,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 0,
+                  "visibleRivalClueBudgetSpent": 0
+                }
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(trackerBackupPath, trackerJson);
+        await _fs.WriteFileAtomicAsync(guardiansBackupPath, """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(soulStateBackupPath, """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "inkFeathers": {
+            "current": 19,
+            "total": 19
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [GuardianProjectState.TrackerPath] = trackerBackupPath,
+                ["game_state/meta/guardians.json"] = guardiansBackupPath,
+                ["game_state/meta/soul_state.json"] = soulStateBackupPath
+            }));
+
+        Assert.Contains("readable current soul_state.json authority surface", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(trackerJson, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
+        Assert.Equal("{ malformed soul", await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.False(_fs.FileExists("game_state/meta/guardians.json"));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_BackupDerivedFutureLoreIncarnationWithMissingCurrentSoulState_RaisesExplicitSoulStateFailure()
+    {
+        const string trackerBackupPath = "test_backups/preturn_tracker_backup_derived_future_lore_missing_soul_state.json";
+        const string guardiansBackupPath = "test_backups/preturn_guardians_backup_derived_future_lore_missing_soul_state.json";
+        const string soulStateBackupPath = "test_backups/preturn_soul_state_backup_derived_future_lore_missing_soul_state.json";
+        var trackerJson = """
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_backup_derived_future_lore_missing_soul",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Backup-derived future lore with missing soul_state",
+                "finalState": "Completed",
+                "projectOutcomeAudit": {
+                  "questHookCount": 1,
+                  "visibleRivalClueBonus": 0
+                },
+                "effectState": {
+                  "targetIncarnation": 4,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 0,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 0,
+                  "visibleRivalClueBudgetSpent": 0
+                }
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(trackerBackupPath, trackerJson);
+        await _fs.WriteFileAtomicAsync(guardiansBackupPath, """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(soulStateBackupPath, """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Shining Abode",
+          "inkFeathers": {
+            "current": 23,
+            "total": 23
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [GuardianProjectState.TrackerPath] = trackerBackupPath,
+                ["game_state/meta/guardians.json"] = guardiansBackupPath,
+                ["game_state/meta/soul_state.json"] = soulStateBackupPath
+            }));
+
+        Assert.Contains("readable current soul_state.json authority surface", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(trackerJson, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
+        Assert.False(_fs.FileExists("game_state/meta/soul_state.json"));
+        Assert.False(_fs.FileExists("game_state/meta/guardians.json"));
     }
 
     [Fact]

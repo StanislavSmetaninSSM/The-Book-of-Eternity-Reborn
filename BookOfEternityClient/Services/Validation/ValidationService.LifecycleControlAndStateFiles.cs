@@ -765,7 +765,7 @@ public partial class ValidationService
                     section: "SystemGuardianPresets",
                     expected: $"activeGuardian.sourcePreset.presetId = {targetPresetId}",
                     actual: guardianPolicyContext.HasCurrentActiveGuardian
-                        ? $"raw mirror without strict kernel authority ({DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext)})"
+                        ? $"raw mirror without current guardian authority ({DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext)})"
                         : DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext)));
                 return;
             }
@@ -2089,8 +2089,8 @@ public partial class ValidationService
 
         if (!TryGetCurrentGuardian(context, guardianId, out var authorityGuardianElement))
         {
-            actual = context.HasStrictCurrentAuthorityRoot
-                ? $"guardian {guardianId} missing from current strict guardian authority"
+            actual = context.HasCurrentAuthorityRoot
+                ? $"guardian {guardianId} missing from current guardian authority"
                 : DescribeCurrentGuardianAuthorityFailure(context);
             return false;
         }

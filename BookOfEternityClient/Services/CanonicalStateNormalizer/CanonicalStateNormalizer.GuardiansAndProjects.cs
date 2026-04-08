@@ -352,14 +352,13 @@ public partial class CanonicalStateNormalizer
         await WriteIfChangedAsync(path, currentNode, result);
     }
 
-    private async Task NormalizeGuardianProjectsAsync(IReadOnlyDictionary<string, string>? backups)
+    private async Task NormalizeGuardianProjectsAsync(GuardianProjectNormalizationInputs inputs)
     {
-        const string guardiansPath = "game_state/meta/guardians.json";
-        var currentNode = await ReadNodeAsync(GuardianProjectState.TrackerPath);
-        var previous = await ReadBackupObjectAsync(GuardianProjectState.TrackerPath, backups);
-        var previousGuardians = await ReadBackupObjectAsync(guardiansPath, backups);
+        var currentObj = inputs.CurrentTrackerRoot;
+        var previous = inputs.PreviousTrackerRoot;
+        var previousGuardians = inputs.PreviousGuardiansRoot;
+
         var result = CloneObject(previous ?? new JsonObject());
-        var currentObj = currentNode as JsonObject;
 
         var activeProjects = new List<JsonObject>();
         var completedProjects = new List<JsonObject>();
@@ -373,10 +372,9 @@ public partial class CanonicalStateNormalizer
         var journalEntries = new List<JsonObject>();
         var powerJournalEntries = new List<JsonObject>();
         var pendingPowerEvents = new List<JsonObject>();
-        var guardiansRoot = await ReadObjectAsync(guardiansPath);
-        var soulStateRoot = await ReadObjectAsync("game_state/meta/soul_state.json");
-        var currentIncarnation = GetNodeInt(soulStateRoot?["currentIncarnation"], 0);
-        var currentRealm = GetNodeString(soulStateRoot?["currentRealm"]);
+        var guardiansRoot = await ReadCurrentGuardianProjectGuardiansRootAsync(inputs.RequiresReadableCurrentGuardians);
+        var currentIncarnation = inputs.CurrentIncarnation;
+        var currentRealm = inputs.CurrentRealm;
         var guardiansChanged = false;
 
         if (currentObj != null)
@@ -414,7 +412,7 @@ public partial class CanonicalStateNormalizer
             ConsumeRelicForgingGachaUses(completedProjects, previousGuardians, guardiansRoot, journalEntries);
         }
 
-        if (currentNode == null && previous == null && activeProjects.Count == 0 && completedProjects.Count == 0 && temporaryModifiers.Count == 0)
+        if (currentObj == null && previous == null && activeProjects.Count == 0 && completedProjects.Count == 0 && temporaryModifiers.Count == 0)
             return;
 
         result["activeProjects"] = ToArray(activeProjects);
@@ -425,7 +423,7 @@ public partial class CanonicalStateNormalizer
         result.Remove("guardianProjectUpdates");
         result.Remove("completeGuardianProjects");
 
-        await WriteIfChangedAsync(GuardianProjectState.TrackerPath, currentNode, result);
+        await WriteIfChangedAsync(GuardianProjectState.TrackerPath, currentObj, result);
         if (journalEntries.Count > 0)
             await AppendGuardianProjectJournalEntriesAsync(journalEntries);
 
@@ -438,7 +436,104 @@ public partial class CanonicalStateNormalizer
             await GuardianPowerEventState.RepairJournalAsync(_fs);
 
         if (guardiansChanged && guardiansRoot != null)
-            await _fs.WriteFileAtomicAsync(guardiansPath, guardiansRoot.ToJsonString(JsonOpts));
+            await _fs.WriteFileAtomicAsync(GuardiansStatePath, guardiansRoot.ToJsonString(JsonOpts));
+    }
+
+    private static bool HasGuardianProjectCommandPayload(JsonObject? trackerRoot)
+    {
+        return HasCommandEntries(trackerRoot, "startGuardianProjects") ||
+               HasCommandEntries(trackerRoot, "guardianProjectUpdates") ||
+               HasCommandEntries(trackerRoot, "completeGuardianProjects");
+    }
+
+    private static bool HasCommandEntries(JsonObject? trackerRoot, string propertyName)
+    {
+        return trackerRoot?[propertyName] is JsonArray commands && commands.OfType<JsonObject>().Any();
+    }
+
+    private static bool HasGuardianProjectGuardianSideConsumption(
+        IEnumerable<JsonObject> completedProjects,
+        int currentIncarnation,
+        string? currentRealm)
+    {
+        foreach (var completedProject in completedProjects)
+        {
+            if (GuardianProjectState.RequiresCurrentGuardianSideReconciliation(completedProject, currentIncarnation, currentRealm))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static GuardianProjectSoulContextRequirements GetGuardianProjectSoulContextRequirementsForCompletions(
+        JsonObject? currentTrackerRoot,
+        JsonObject? previousTrackerRoot)
+    {
+        var requirements = default(GuardianProjectSoulContextRequirements);
+        if (currentTrackerRoot?["completeGuardianProjects"] is not JsonArray completionCommands)
+            return requirements;
+
+        var activeProjects = new List<JsonObject>();
+        CollectGuardianProjectEntries(previousTrackerRoot, "activeProjects", activeProjects);
+
+        foreach (var command in completionCommands.OfType<JsonObject>())
+        {
+            var guardianId = GetNodeString(command["guardianId"]);
+            var projectId = GetNodeString(command["projectId"]);
+            if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(projectId))
+                continue;
+
+            var existing = activeProjects.FirstOrDefault(item =>
+                string.Equals(GuardianProjectState.GetGuardianId(item), guardianId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GuardianProjectState.GetProjectId(item), projectId, StringComparison.OrdinalIgnoreCase));
+            if (existing?["project"] is not JsonObject project)
+                continue;
+
+            requirements = requirements.Merge(GuardianProjectState.GetCurrentSoulContextRequirementsForNormalization(project));
+            if (requirements.RequiresCurrentIncarnation && requirements.RequiresCurrentRealm)
+                return requirements;
+        }
+
+        return requirements;
+    }
+
+    private static GuardianProjectSoulContextRequirements GetGuardianProjectSoulContextRequirementsForCompletedProjects(JsonObject? previousTrackerRoot)
+    {
+        var requirements = default(GuardianProjectSoulContextRequirements);
+        var completedProjects = new List<JsonObject>();
+        CollectGuardianProjectEntries(previousTrackerRoot, "completedProjects", completedProjects);
+
+        foreach (var item in completedProjects)
+        {
+            requirements = requirements.Merge(
+                GuardianProjectState.GetCurrentSoulContextRequirementsForCompletedProjectNormalization(item["project"] as JsonObject));
+            if (requirements.RequiresCurrentIncarnation && requirements.RequiresCurrentRealm)
+                return requirements;
+        }
+
+        return requirements;
+    }
+
+    internal static GuardianProjectSoulContextRequirements ResolveRequiredCurrentGuardianProjectSoulContext(
+        JsonObject? currentTrackerRoot,
+        JsonObject? previousTrackerRoot)
+    {
+        return GetGuardianProjectSoulContextRequirementsForCompletions(currentTrackerRoot, previousTrackerRoot)
+            .Merge(GetGuardianProjectSoulContextRequirementsForCompletedProjects(previousTrackerRoot));
+    }
+
+    private static bool RequiresReadableCurrentGuardianProjectGuardians(
+        JsonObject? currentTrackerRoot,
+        JsonObject? previousTrackerRoot,
+        int currentIncarnation,
+        string? currentRealm)
+    {
+        if (HasGuardianProjectCommandPayload(currentTrackerRoot))
+            return true;
+
+        var completedProjects = new List<JsonObject>();
+        CollectGuardianProjectEntries(previousTrackerRoot, "completedProjects", completedProjects);
+        return HasGuardianProjectGuardianSideConsumption(completedProjects, currentIncarnation, currentRealm);
     }
 
 }

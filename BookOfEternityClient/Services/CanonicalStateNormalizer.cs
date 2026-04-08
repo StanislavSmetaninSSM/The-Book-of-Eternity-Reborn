@@ -99,6 +99,40 @@ public partial class CanonicalStateNormalizer
         Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
+    private const string GuardiansStatePath = "game_state/meta/guardians.json";
+
+    private const string GuardianProjectBackupBaselineRequiredMessage =
+        "Guardian project normalization requires an explicit usable pre-normalization backup baseline. " +
+        "NormalizeAccumulatedStateAsync cannot reconstruct guardian project authority without readable tracker and guardians backups.";
+
+    private const string GuardianProjectCurrentTrackerReadableRequiredMessage =
+        "Guardian project normalization requires a readable current guardian_projects.json tracker surface. " +
+        "The client cannot reconstruct guardian project authority from malformed or unreadable current tracker state.";
+
+    private const string GuardianProjectCurrentGuardiansReadableRequiredMessage =
+        "Guardian project normalization requires a readable current guardians.json authority surface. " +
+        "The client cannot reconcile guardian project commands or guardian-side effects from malformed or unreadable current guardian state.";
+
+    internal const string GuardianProjectCurrentSoulStateReadableRequiredMessage =
+        "Guardian project normalization requires a readable current soul_state.json authority surface. " +
+        "The client cannot reconcile guardian project soul-context-dependent effects from malformed or unreadable current soul state.";
+
+    private const string RivalSoulArcCurrentStateReadableRequiredMessage =
+        "Rival soul arc normalization requires a readable current rival_soul_arcs.json surface. " +
+        "The client cannot reconcile lore-derived rival clue state from malformed or unreadable current rival arc data.";
+
+    private const string RivalWorldEventsCurrentStateReadableRequiredMessage =
+        "Rival soul arc normalization requires a readable current world_events.json surface. " +
+        "The client cannot reconcile lore-derived rival clue state from malformed or unreadable current world event data.";
+
+    private sealed record GuardianProjectNormalizationInputs(
+        JsonObject? CurrentTrackerRoot,
+        JsonObject? PreviousTrackerRoot,
+        JsonObject? PreviousGuardiansRoot,
+        bool RequiresReadableCurrentGuardians,
+        int CurrentIncarnation,
+        string? CurrentRealm);
+
     public CanonicalStateNormalizer(FileSystemManager fs, ILogger<CanonicalStateNormalizer> logger)
     {
         _fs = fs;
@@ -107,10 +141,12 @@ public partial class CanonicalStateNormalizer
 
     public async Task NormalizeAccumulatedStateAsync(IReadOnlyDictionary<string, string>? backups = null)
     {
+        var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
+
         await NormalizeSoulStateAsync(backups);
         await NormalizeGuardiansAsync(backups);
         await NormalizeGuardianAbodeResidentsAsync(backups);
-        await NormalizeGuardianProjectsAsync(backups);
+        await NormalizeGuardianProjectsAsync(guardianProjectInputs);
         await NormalizeCharacterChronicleAsync(backups);
         await NormalizeAchievementsAsync(backups);
         await NormalizeCodexAsync(backups);

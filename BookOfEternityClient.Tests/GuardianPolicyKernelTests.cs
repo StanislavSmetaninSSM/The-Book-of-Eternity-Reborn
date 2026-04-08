@@ -2176,6 +2176,477 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
     }
 
+    [Fact]
+    public async Task DebugGuardianProjectTrackerPolicyContext_ReadablePartialCurrentSoulStateMergesValidatedSnapshotSoulContext()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Current guardian authority should use merged soul-state context for tracker materialization."))));
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_partial_current_soul_guardians_snapshot.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Validated guardian baseline for merged soul-state tracker authority."))));
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": [],
+          "completeGuardianProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "projectId": "proj_kernel_lore_completion",
+              "finalState": "Completed",
+              "outcome": "Readable partial current soul_state should merge with validated snapshot soul context."
+            }
+          ]
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_partial_current_soul_tracker_snapshot.json",
+            """
+            {
+              "activeProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_lore_completion",
+                    "projectType": "lore_research",
+                    "projectTier": "major",
+                    "projectMode": "internal",
+                    "projectName": "Исследование прилива памяти",
+                    "activeState": "Preparing the final archive hook",
+                    "totalWork": 18,
+                    "workDone": 18,
+                    "totalStages": 3,
+                    "currentStage": 3,
+                    "pressure": 4,
+                    "stability": 84
+                  }
+                }
+              ],
+              "completedProjects": [],
+              "temporaryProjectModifiers": []
+            }
+            """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "inkFeathers": {
+            "current": 1,
+            "total": 1
+          }
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/kernel_partial_current_soul_snapshot.json",
+            """
+            {
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 3
+            }
+            """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianProjectTrackerPolicyContextAsync();
+
+        Assert.Equal("None", snapshot.CurrentStateFailureKind);
+        Assert.True(snapshot.HasCurrentAuthorityRoot);
+        Assert.NotNull(snapshot.CurrentAuthorityRootJson);
+
+        var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
+        var completedProjects = Assert.IsType<JsonArray>(currentAuthorityRoot["completedProjects"]);
+        var completedEntry = Assert.Single(completedProjects).AsObject();
+        var project = Assert.IsType<JsonObject>(completedEntry["project"]);
+        var effectState = Assert.IsType<JsonObject>(project["effectState"]);
+
+        Assert.Equal(4, effectState["targetIncarnation"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task DebugGuardianProjectTrackerPolicyContext_MalformedCurrentSoulStateInvalidatesSoulDependentTrackerAuthority()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Malformed current soul_state must invalidate soul-dependent tracker authority."))));
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_invalid_current_soul_guardians_snapshot.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Validated guardian baseline for invalid current soul-state test."))));
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": [],
+          "completeGuardianProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "projectId": "proj_kernel_invalid_current_soul",
+              "finalState": "Completed",
+              "outcome": "Malformed current soul_state must fail tracker authority before fallback."
+            }
+          ]
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_invalid_current_soul_tracker_snapshot.json",
+            """
+            {
+              "activeProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_invalid_current_soul",
+                    "projectType": "lore_research",
+                    "projectTier": "major",
+                    "projectMode": "internal",
+                    "projectName": "Исследование без читаемой души",
+                    "activeState": "The completion requires soul-context-aware authority.",
+                    "totalWork": 18,
+                    "workDone": 18,
+                    "totalStages": 3,
+                    "currentStage": 3,
+                    "pressure": 4,
+                    "stability": 84
+                  }
+                }
+              ],
+              "completedProjects": [],
+              "temporaryProjectModifiers": []
+            }
+            """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", "{ malformed soul");
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/kernel_invalid_current_soul_snapshot.json",
+            """
+            {
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 3
+            }
+            """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianProjectTrackerPolicyContextAsync();
+
+        Assert.Equal("SemanticallyInvalidCurrentState", snapshot.CurrentStateFailureKind);
+        Assert.False(snapshot.HasProjectedAuthorityRoot);
+        Assert.False(snapshot.HasCurrentAuthorityRoot);
+    }
+
+    [Fact]
+    public async Task DebugGuardianProjectTrackerPolicyContext_CurrentIncarnationOnlySoulPreparationAuthorityDoesNotRequireCurrentRealm()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Soul preparation tracker authority should accept incarnation-only soul context."))));
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_soul_preparation_incarnation_only_guardians_snapshot.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Validated guardian baseline for incarnation-only soul preparation authority."))));
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": [],
+          "completeGuardianProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "projectId": "proj_kernel_soul_preparation_incarnation_only",
+              "finalState": "Completed",
+              "outcome": "Incarnation-only soul context should be enough for soul preparation tracker authority."
+            }
+          ]
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_soul_preparation_incarnation_only_tracker_snapshot.json",
+            """
+            {
+              "activeProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_soul_preparation_incarnation_only",
+                    "projectType": "soul_preparation",
+                    "projectTier": "major",
+                    "projectMode": "internal",
+                    "projectName": "Подготовка души без realm",
+                    "activeState": "Only the current incarnation should matter for this completion.",
+                    "totalWork": 12,
+                    "workDone": 12,
+                    "totalStages": 2,
+                    "currentStage": 2,
+                    "pressure": 2,
+                    "stability": 91
+                  }
+                }
+              ],
+              "completedProjects": [],
+              "temporaryProjectModifiers": []
+            }
+            """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "inkFeathers": {
+            "current": 2,
+            "total": 2
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianProjectTrackerPolicyContextAsync();
+
+        Assert.Equal("None", snapshot.CurrentStateFailureKind);
+        Assert.True(snapshot.HasCurrentAuthorityRoot);
+        Assert.NotNull(snapshot.CurrentAuthorityRootJson);
+
+        var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
+        var completedProjects = Assert.IsType<JsonArray>(currentAuthorityRoot["completedProjects"]);
+        var completedEntry = Assert.Single(completedProjects).AsObject();
+        var project = Assert.IsType<JsonObject>(completedEntry["project"]);
+        var effectState = Assert.IsType<JsonObject>(project["effectState"]);
+
+        Assert.Equal(4, effectState["targetIncarnation"]!.GetValue<int>());
+        Assert.Equal(0, effectState["preparationBudgetPointsSpent"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task DebugGuardianPolicyContext_PartialValidatedSnapshotSoulStateInvalidatesSoulDependentSnapshotTrackerProof()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Strict snapshot proof should fail when validated snapshot soul_state is only partial."))));
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_partial_snapshot_soul_guardians_snapshot.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Validated guardian baseline for partial snapshot soul proof failure."))));
+
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_partial_snapshot_soul_tracker_snapshot.json",
+            """
+            {
+              "activeProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_partial_snapshot_soul",
+                    "projectType": "lore_research",
+                    "projectTier": "major",
+                    "projectMode": "internal",
+                    "projectName": "Исследование неполного snapshot soul",
+                    "activeState": "Strict snapshot proof requires soul-derived tracker materialization.",
+                    "totalWork": 18,
+                    "workDone": 18,
+                    "totalStages": 3,
+                    "currentStage": 3,
+                    "pressure": 4,
+                    "stability": 84
+                  }
+                }
+              ],
+              "completedProjects": [],
+              "temporaryProjectModifiers": [],
+              "completeGuardianProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "projectId": "proj_kernel_partial_snapshot_soul",
+                  "finalState": "Completed",
+                  "outcome": "Readable partial validated snapshot soul_state without trusted baseline must invalidate strict snapshot tracker proof."
+                }
+              ]
+            }
+            """);
+
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/kernel_partial_snapshot_soul_snapshot.json",
+            """
+            {
+              "inkFeathers": {
+                "current": 1,
+                "total": 1
+              }
+            }
+            """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianPolicyContextAsync();
+
+        Assert.False(snapshot.HasPreTurnAuthorityRoot);
+        Assert.Equal("InvalidValidatedSnapshotTracker", snapshot.StrictPreTurnGuardianAuthorityStatus);
+        Assert.Contains(
+            "readable current soul_state.json authority surface",
+            snapshot.StrictPreTurnGuardianAuthorityFailureDescription,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task DebugGuardianPolicyContext_PartialValidatedSnapshotSoulStateWithoutRealmAllowsSoulPreparationSnapshotTrackerProof()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Snapshot soul preparation proof should accept incarnation-only soul context."))));
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_partial_snapshot_soul_preparation_guardians_snapshot.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Validated guardian baseline for incarnation-only soul preparation proof."))));
+
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_partial_snapshot_soul_preparation_tracker_snapshot.json",
+            """
+            {
+              "activeProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_partial_snapshot_soul_preparation",
+                    "projectType": "soul_preparation",
+                    "projectTier": "major",
+                    "projectMode": "internal",
+                    "projectName": "Подготовка души из partial snapshot soul",
+                    "activeState": "Strict snapshot proof should only require current incarnation here.",
+                    "totalWork": 10,
+                    "workDone": 10,
+                    "totalStages": 2,
+                    "currentStage": 2,
+                    "pressure": 2,
+                    "stability": 93
+                  }
+                }
+              ],
+              "completedProjects": [],
+              "temporaryProjectModifiers": [],
+              "completeGuardianProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "projectId": "proj_kernel_partial_snapshot_soul_preparation",
+                  "finalState": "Completed",
+                  "outcome": "Readable partial validated snapshot soul_state without realm should remain valid for soul preparation proof."
+                }
+              ]
+            }
+            """);
+
+        await AddTrackedFileToCurrentPendingTurnSnapshotAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/kernel_partial_snapshot_soul_preparation_snapshot.json",
+            """
+            {
+              "currentIncarnation": 2,
+              "inkFeathers": {
+                "current": 1,
+                "total": 1
+              }
+            }
+            """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianPolicyContextAsync();
+
+        Assert.True(
+            snapshot.HasPreTurnAuthorityRoot,
+            $"{snapshot.StrictPreTurnGuardianAuthorityStatus}: {snapshot.StrictPreTurnGuardianAuthorityFailureDescription}");
+        Assert.Equal("Resolved", snapshot.StrictPreTurnGuardianAuthorityStatus);
+        Assert.NotNull(snapshot.PreTurnAuthorityRootJson);
+    }
+
     private static string SerializeJson(JsonNode node)
         => node.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
 

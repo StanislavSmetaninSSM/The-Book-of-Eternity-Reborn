@@ -1527,12 +1527,25 @@ public partial class ValidationService
             ? TryParseJsonObject(guardianPolicyContext.CurrentAuthorityRoot)
             : null;
         var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
-        var (currentIncarnation, currentRealm) = ReadCurrentSoulStateForProjectAuthority();
 
         if (preTurnTrackerAuthorityRoot != null &&
             preTurnGuardiansRoot != null &&
             currentGuardiansRoot != null)
         {
+            if (!TryResolveCurrentSoulStateForProjectAuthority(
+                    currentTrackerRoot,
+                    preTurnTrackerAuthorityRoot,
+                    context.PreTurnTrackerSnapshot.Manifest,
+                    currentTurn,
+                    out var currentIncarnation,
+                    out var currentRealm,
+                    out var soulStateFailureDescription))
+            {
+                context.CurrentStateFailureKind = GuardianCurrentStateFailureKind.SemanticallyInvalidCurrentState;
+                context.CurrentStateFailureDescription = soulStateFailureDescription;
+                return context;
+            }
+
             if (context.CurrentStateFailureKind == GuardianCurrentStateFailureKind.None &&
                 currentTrackerRoot != null &&
                 !TryValidateGuardianProjectCurrentTrackerAuthorityInput(
@@ -1656,7 +1669,18 @@ public partial class ValidationService
         }
 
         var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
-        var (currentIncarnation, currentRealm) = ReadCurrentSoulStateForProjectAuthority();
+        if (!TryResolveCurrentSoulStateForProjectAuthority(
+                currentTrackerRoot,
+                preTurnTrackerRoot,
+                trackerContext.PreTurnTrackerSnapshot.Manifest,
+                currentTurn,
+                out var currentIncarnation,
+                out var currentRealm,
+                out failureDescription))
+        {
+            return false;
+        }
+
         var projectedAuthorityRoot = CanonicalStateNormalizer.BuildGuardianProjectAuthorityRootForValidation(
             preTurnTrackerRoot,
             currentTrackerRoot,
@@ -2090,7 +2114,18 @@ public partial class ValidationService
         }
 
         var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
-        var (currentIncarnation, currentRealm) = ReadCurrentSoulStateForProjectAuthority();
+        if (!TryResolveCurrentSoulStateForProjectAuthority(
+                currentTrackerRoot,
+                preTurnTrackerRoot,
+                trackerContext.PreTurnTrackerSnapshot.Manifest,
+                currentTurn,
+                out var currentIncarnation,
+                out var currentRealm,
+                out failureDescription))
+        {
+            return false;
+        }
+
         var projectedAuthorityRoot = CanonicalStateNormalizer.BuildGuardianProjectAuthorityRootForValidation(
             preTurnTrackerRoot,
             currentTrackerRoot,
@@ -2209,30 +2244,35 @@ public partial class ValidationService
         return turnContext?.TurnNumber ?? 0;
     }
 
-    private (int CurrentIncarnation, string? CurrentRealm) ReadCurrentSoulStateForProjectAuthority()
+    private string? ReadValidatedPendingTurnSnapshotSoulStateJsonSync(ValidationPendingTurnSnapshotManifest? manifest)
     {
-        var soulJson = ReadCurrentTrackedFileSync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
-            return (0, null);
+        return manifest?.Files != null &&
+               manifest.Files.ContainsKey("game_state/meta/soul_state.json")
+            ? ReadValidatedPendingTurnSnapshotFileSync(manifest, "game_state/meta/soul_state.json")
+            : null;
+    }
 
-        try
-        {
-            using var doc = JsonDocument.Parse(soulJson);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object)
-                return (0, null);
-
-            var currentIncarnation = doc.RootElement.TryGetProperty("currentIncarnation", out var incarnationNode) &&
-                                     incarnationNode.ValueKind == JsonValueKind.Number &&
-                                     incarnationNode.TryGetInt32(out var parsedIncarnation)
-                ? parsedIncarnation
-                : 0;
-            var currentRealm = GetFirstNonEmptyString(doc.RootElement, "currentRealm");
-            return (currentIncarnation, currentRealm);
-        }
-        catch
-        {
-            return (0, null);
-        }
+    private bool TryResolveCurrentSoulStateForProjectAuthority(
+        JsonObject? currentTrackerRoot,
+        JsonObject? preTurnTrackerRoot,
+        ValidationPendingTurnSnapshotManifest? manifest,
+        int currentTurn,
+        out int currentIncarnation,
+        out string? currentRealm,
+        out string failureDescription)
+    {
+        var currentSoulJson = ReadCurrentTrackedFileSync("game_state/meta/soul_state.json");
+        var preTurnSoulJson = ReadValidatedPendingTurnSnapshotSoulStateJsonSync(manifest);
+        var soulContextRequirements =
+            CanonicalStateNormalizer.ResolveRequiredCurrentGuardianProjectSoulContext(currentTrackerRoot, preTurnTrackerRoot);
+        return CanonicalStateNormalizer.TryResolveGuardianProjectAuthoritySoulContext(
+            currentSoulJson,
+            preTurnSoulJson,
+            currentTurn,
+            soulContextRequirements,
+            out currentIncarnation,
+            out currentRealm,
+            out failureDescription);
     }
 
     internal async Task<GuardianPolicyContextDebugSnapshot> DebugResolveGuardianPolicyContextAsync()

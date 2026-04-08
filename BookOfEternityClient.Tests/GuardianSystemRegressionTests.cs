@@ -196,9 +196,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await WriteCurrentGuardiansNormalizerBackupAsync("test_backups/preturn_guardians_lore_research_bonus_loop_normalizer.json");
         await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
         {
-            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_lore_research_bonus_loop.json"
+            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_lore_research_bonus_loop.json",
+            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_lore_research_bonus_loop_normalizer.json"
         });
 
         var guardiansRoot = await ReadObjectAsync("game_state/meta/guardians.json");
@@ -470,9 +472,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await WriteCurrentGuardiansNormalizerBackupAsync("test_backups/preturn_guardians_politics_loop_completion_normalizer.json");
         await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
         {
-            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_politics_loop_completion.json"
+            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_politics_loop_completion.json",
+            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_politics_loop_completion_normalizer.json"
         });
 
         var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
@@ -709,9 +713,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await WriteCurrentGuardiansNormalizerBackupAsync("test_backups/preturn_guardians_lore_research_bonus_loop_normalizer_second.json");
         await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
         {
-            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_lore_research_bonus_loop.json"
+            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_lore_research_bonus_loop.json",
+            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_lore_research_bonus_loop_normalizer_second.json"
         });
 
         var guardiansRoot = await ReadObjectAsync("game_state/meta/guardians.json");
@@ -726,9 +732,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         await _fs.WriteFileAtomicAsync(
             "test_backups/preturn_tracker_lore_research_bonus_loop.json",
             trackerAfterFirst.ToJsonString());
+        await WriteCurrentGuardiansNormalizerBackupAsync("test_backups/preturn_guardians_lore_research_bonus_loop_normalizer_second_pass.json");
         await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
         {
-            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_lore_research_bonus_loop.json"
+            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_lore_research_bonus_loop.json",
+            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_lore_research_bonus_loop_normalizer_second_pass.json"
         });
         var trackerAfterSecond = await ReadObjectAsync(GuardianProjectState.TrackerPath);
         var spent = trackerAfterSecond["completedProjects"]!
@@ -740,6 +748,81 @@ public sealed class GuardianSystemRegressionTests : IDisposable
             .GetValue<int>();
 
         Assert.Equal(1, spent);
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_CurrentLifeLoreResearchBudgetRemainsValid()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_bonus_clue_unknown_source_project", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "rival_arc_bonus_clue_inactive_source_project", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "rival_arc_bonus_clue_budget_exceeded", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_FutureIncarnationLoreResearchBudgetIsRejected()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 4);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_bonus_clue_inactive_source_project", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_bonus_clue_budget_exceeded", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_MalformedCurrentRivalSoulArcsProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await _fs.WriteFileAtomicAsync(RivalSoulArcService.StatePath, "{");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_MalformedCurrentWorldEventsProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+              "relatedRivalArcId": "arc_hunter",
+              "bonusClueSourceProjectId": "research_major"
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_MalformedIrrelevantCurrentWorldEventsDoNotProduceIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", "{");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "rival_arc_world_event_invalid_current_state", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -9127,10 +9210,20 @@ public sealed class GuardianSystemRegressionTests : IDisposable
             string.Equals(issue.Code, "guardian_project_unknown_guardian_id", StringComparison.OrdinalIgnoreCase) &&
             issue.FilePath.EndsWith(".startGuardianProjects[0].guardianId", StringComparison.OrdinalIgnoreCase));
 
+        await _fs.WriteFileAtomicAsync("test_backups/preturn_tracker_same_turn_created_guardian_project.json", """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": []
+        }
+        """);
+
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await WriteCurrentGuardiansNormalizerBackupAsync("test_backups/preturn_guardians_same_turn_created_guardian_project_normalizer.json");
         await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
         {
-            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_lore_research_bonus_loop.json"
+            [GuardianProjectState.TrackerPath] = "test_backups/preturn_tracker_same_turn_created_guardian_project.json",
+            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_same_turn_created_guardian_project_normalizer.json"
         });
 
         var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
@@ -10309,8 +10402,10 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         var issues = await validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
+        var missingGuardianIssue = Assert.Single(
+            issues,
+            issue => string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal("guardian guardian_alpha missing from current guardian authority", missingGuardianIssue.Actual);
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_inventory_resolution", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue =>
@@ -20085,8 +20180,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         var issues = await validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "system_guardian_attraction_missing_active_guardian", StringComparison.OrdinalIgnoreCase));
+        var missingActiveGuardianIssue = Assert.Single(
+            issues,
+            issue => string.Equals(issue.Code, "system_guardian_attraction_missing_active_guardian", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("raw mirror without current guardian authority", missingActiveGuardianIssue.Actual ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("strict kernel authority", missingActiveGuardianIssue.Actual ?? string.Empty, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "system_guardian_attraction_target_mismatch", StringComparison.OrdinalIgnoreCase));
     }
@@ -25399,8 +25497,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         var issues = await validator.ValidateGameStateAsync();
 
-        Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "system_guardian_pending_preset_missing_active_guardian", StringComparison.OrdinalIgnoreCase));
+        var missingActiveGuardianIssue = Assert.Single(
+            issues,
+            issue => string.Equals(issue.Code, "system_guardian_pending_preset_missing_active_guardian", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("raw mirror without current guardian authority", missingActiveGuardianIssue.Actual ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("strict kernel authority", missingActiveGuardianIssue.Actual ?? string.Empty, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "system_guardian_pending_preset_not_materialized", StringComparison.OrdinalIgnoreCase));
     }
@@ -26929,6 +27030,155 @@ public sealed class GuardianSystemRegressionTests : IDisposable
             string.Equals(issue.Code, "guardian_npc_boundary_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_leaked_into_npc_surface", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task SeedRivalBonusClueValidationScenarioAsync(int targetIncarnation)
+    {
+        await WriteRawAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "domain": "Knowledge",
+              "abode": { "abodeId": "abode_alpha", "title": "Обитель Азалии" },
+              "relationshipData": { "currentReputation": 80, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 35, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guardian_alpha",
+            "canonicalName": "Азалия",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "domain": "Knowledge",
+            "abode": { "abodeId": "abode_alpha", "title": "Обитель Азалии" },
+            "relationshipData": { "currentReputation": 80, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 35, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+            "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          }
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World"
+        }
+        """);
+
+        var trackerJson = $$"""
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "research_major",
+                "projectType": "lore_research",
+                "projectTier": "major",
+                "projectMode": "supportive",
+                "projectName": "Раскрытие архива",
+                "finalState": "Completed",
+                "projectOutcomeAudit": {
+                  "bonusLoreUnlocks": 1,
+                  "questHookCount": 1,
+                  "specialQuestLineUnlocks": 0,
+                  "visibleRivalClueBonus": 1,
+                  "unlockedLoreFragments": []
+                },
+                "effectState": {
+                  "targetIncarnation": {{targetIncarnation}},
+                  "bonusLoreUnlocksApplied": 1,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 1,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestSpawned": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 1,
+                  "visibleRivalClueBudgetSpent": 0,
+                  "archiveWarningTierBonusGranted": 0
+                }
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+        await WriteRawAsync(GuardianProjectState.TrackerPath, trackerJson);
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            $"test_backups/preturn_tracker_rival_bonus_validation_{targetIncarnation}.json",
+            trackerJson);
+
+        await WriteRawAsync(RivalSoulArcService.StatePath, """
+        {
+          "arcs": [
+            {
+              "arcId": "arc_hunter",
+              "scope": "major",
+              "arcType": "hostile_hunt",
+              "status": "rising",
+              "objective": "Find the player",
+              "sponsorGuardianRef": {
+                "mode": "guardianId",
+                "guardianId": "guardian_alpha",
+                "displayName": "Азалия"
+              },
+              "rivalSoul": {
+                "rivalSoulId": "rival_1",
+                "displayNameOrMoniker": "Багровый Охотник",
+                "roleSummary": "Охотник rival-Хранителя",
+                "isKnownToPlayer": true
+              },
+              "playerIntersection": {
+                "targetsPlayerDirectly": true,
+                "stakes": "Опасность для героя",
+                "canBecomeSoulQuest": true,
+                "recommendedCounterQuestTone": "urgent"
+              },
+              "milestones": [
+                { "stage": 1, "title": "Слух", "summary": "О нём говорят", "visibleToPlayer": true }
+              ],
+              "currentStage": 1,
+              "publicSignals": [
+                {
+                  "signalId": "sig_new",
+                  "stage": 1,
+                  "source": "Слух",
+                  "description": "Наёмник ищет след героя",
+                  "visibleToPlayer": true,
+                  "bonusClueSourceProjectId": "research_major",
+                  "bonusClueRevealId": "reveal_sig_new",
+                  "bonusClueCost": 1
+                }
+              ],
+              "resolution": { "outcome": "ongoing", "notes": "" }
+            }
+          ]
+        }
+        """);
     }
 
     private async Task WriteRawAsync(string path, string json)
@@ -31322,6 +31572,25 @@ public sealed class GuardianSystemRegressionTests : IDisposable
             "game_state/meta/guardians.json",
             backupPath,
             snapshotRoot.ToJsonString());
+    }
+
+    private async Task WriteCurrentGuardiansNormalizerBackupAsync(string backupPath)
+    {
+        var raw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        Assert.False(string.IsNullOrWhiteSpace(raw));
+
+        var guardiansRoot = JsonNode.Parse(raw!) as JsonObject;
+        Assert.NotNull(guardiansRoot);
+
+        guardiansRoot!.Remove("UpdateGuardians");
+        guardiansRoot.Remove("guardianPowerEvents");
+        guardiansRoot.Remove(GuardianTradeRequestState.UpdateReceiptsProperty);
+
+        await _fs.WriteFileAtomicAsync(backupPath, guardiansRoot.ToJsonString(new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        }));
     }
 
     private async Task EnsureReadableCurrentGuardianProjectTrackerAsync(string? currentTrackerJson = null)

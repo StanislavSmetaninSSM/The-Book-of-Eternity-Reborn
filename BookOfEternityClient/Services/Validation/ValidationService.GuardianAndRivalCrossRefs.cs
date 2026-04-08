@@ -132,7 +132,7 @@ public partial class ValidationService
                         section: "SystemGuardianPresets",
                         expected: $"activeGuardian.sourcePreset.presetId = {pendingPresetId}",
                         actual: guardianPolicyContext.HasCurrentActiveGuardian
-                            ? $"raw mirror without strict kernel authority ({DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext)})"
+                            ? $"raw mirror without current guardian authority ({DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext)})"
                             : DescribeCurrentGuardianAuthorityFailure(guardianPolicyContext)));
                 }
                 else
@@ -553,16 +553,34 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(json))
             return;
 
+        JsonDocument rivalDoc;
         try
         {
-            using var doc = JsonDocument.Parse(json);
+            rivalDoc = JsonDocument.Parse(json);
+        }
+        catch
+        {
+            issues.Add(new ValidationIssue(
+                RivalSoulArcService.StatePath,
+                IssueSeverity.Error,
+                "Rival soul arc validation требует readable current rival_soul_arcs.json и не может доказывать bonus clue/cross-reference contracts поверх malformed current rival state.",
+                code: "rival_arc_invalid_current_state",
+                section: "RivalSoulArcs",
+                expected: "readable current rival_soul_arcs.json",
+                actual: "current rival_soul_arcs.json unreadable or malformed",
+                repairHint: "Сделай current rival_soul_arcs.json корректным JSON перед validation rival soul arc contracts и lore-derived bonus clues."));
+            return;
+        }
+
+        using (rivalDoc)
+        {
             string collectionName;
             JsonElement arcs;
-            if (doc.RootElement.TryGetProperty("arcs", out arcs))
+            if (rivalDoc.RootElement.TryGetProperty("arcs", out arcs))
             {
                 collectionName = "arcs";
             }
-            else if (doc.RootElement.TryGetProperty("UpdateRivalSoulArcs", out arcs))
+            else if (rivalDoc.RootElement.TryGetProperty("UpdateRivalSoulArcs", out arcs))
             {
                 collectionName = "UpdateRivalSoulArcs";
             }
@@ -579,27 +597,11 @@ public partial class ValidationService
             string? worldEventCollectionName = null;
             var relatedWorldEventsByArcId = new Dictionary<string, List<JsonElement>>(StringComparer.OrdinalIgnoreCase);
             var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
-            if (!string.IsNullOrWhiteSpace(worldEventsJson))
-            {
-                worldEventsDoc = JsonDocument.Parse(worldEventsJson);
-                if (worldEventsDoc.RootElement.TryGetProperty("worldEventsLog", out worldEvents))
-                {
-                    worldEventCollectionName = "worldEventsLog";
-                }
-                else if (worldEventsDoc.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    worldEvents = worldEventsDoc.RootElement;
-                    worldEventCollectionName = "worldEventsLog";
-                }
-
-                if (worldEventCollectionName != null && worldEvents.ValueKind == JsonValueKind.Array)
-                    relatedWorldEventsByArcId = BuildRelatedWorldEventsByArcId(worldEvents);
-            }
-
             var knownArcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var knownArcSponsorGuardianIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var visibleBonusClueUsage = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             var countedVisibleBonusClueRevealKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var hostileClueContractArcs = new List<(JsonElement Arc, string ArcContext)>();
             var index = 0;
             foreach (var arc in arcs.EnumerateArray())
             {
@@ -607,6 +609,7 @@ public partial class ValidationService
                 var arcId = GetFirstNonEmptyString(arc, "arcId");
                 if (!string.IsNullOrWhiteSpace(arcId))
                     knownArcIds.Add(arcId);
+                hostileClueContractArcs.Add((arc, arcContext));
 
                 if (arc.ValueKind != JsonValueKind.Object ||
                     !arc.TryGetProperty("sponsorGuardianRef", out var sponsorRef) ||
@@ -655,8 +658,6 @@ public partial class ValidationService
                     }
                 }
 
-                ValidateHostileDirectTargetRivalArcClueContract(arc, arcContext, issues, relatedWorldEventsByArcId);
-
                 if (arc.ValueKind == JsonValueKind.Object &&
                     arc.TryGetProperty("publicSignals", out var publicSignals) &&
                     publicSignals.ValueKind == JsonValueKind.Array)
@@ -700,59 +701,57 @@ public partial class ValidationService
                 index++;
             }
 
-            if (visibleBonusClueUsage.Count > 0)
+            var requiresCurrentWorldEventsForHostileClueContract = hostileClueContractArcs.Any(context => HostileDirectTargetRivalArcMayNeedWorldEvents(context.Arc));
+            var requiresCurrentWorldEventsForRelatedRivalWorldValidation =
+                CanonicalStateNormalizer.RawJsonMayContainRelatedRivalWorldEvents(worldEventsJson, knownArcIds, requireBonusClueSource: false);
+            var requiresCurrentWorldEventsForBonusClueValidation =
+                CanonicalStateNormalizer.RawJsonMayContainRelatedRivalWorldEvents(worldEventsJson, knownArcSponsorGuardianIds.Keys, requireBonusClueSource: true);
+
+            if (!string.IsNullOrWhiteSpace(worldEventsJson) &&
+                (requiresCurrentWorldEventsForHostileClueContract ||
+                 requiresCurrentWorldEventsForRelatedRivalWorldValidation ||
+                 requiresCurrentWorldEventsForBonusClueValidation))
             {
-                if (!TryResolveGuardianProjectTrackerValidationRoot(
-                        $"{RivalSoulArcService.StatePath}.{collectionName}",
-                        "Rival arc bonus clue validation требует readable current guardian project tracker authority и не использует isolated pre-turn tracker baseline как authority fallback.",
-                        "rival_arc_bonus_clue_missing_current_tracker_authority",
-                        "RivalSoulArcs",
-                        $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед validating lore_research-derived bonus clues.",
-                        issues,
-                        out var trackerRoot))
+                try
                 {
+                    worldEventsDoc = JsonDocument.Parse(worldEventsJson);
                 }
-                else
+                catch
                 {
-                    foreach (var usage in visibleBonusClueUsage)
-                    {
-                        var parts = usage.Key.Split(new[] { "::" }, 2, StringSplitOptions.None);
-                        if (parts.Length != 2)
-                            continue;
-
-                        var grantedBudget = ReadGrantedLoreResearchVisibleClueBudget(trackerRoot, parts[0], parts[1]);
-                        if (grantedBudget <= 0)
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{RivalSoulArcService.StatePath}.{collectionName}",
-                                IssueSeverity.Error,
-                                $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но у guardian '{parts[0]}' нет completed lore_research с clue budget",
-                                code: "rival_arc_bonus_clue_unknown_source_project",
-                                section: "RivalSoulArcs",
-                                repairHint: "Для bonusClueSourceProjectId используй completed lore_research projectId того же guardian sponsor-а."));
-                            continue;
-                        }
-
-                        if (usage.Value > grantedBudget)
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{RivalSoulArcService.StatePath}.{collectionName}",
-                                IssueSeverity.Error,
-                                "Rival arc bonus clue usage превышает granted lore_research visible clue budget",
-                                code: "rival_arc_bonus_clue_budget_exceeded",
-                                section: "RivalSoulArcs",
-                                expected: $"<= {grantedBudget}",
-                                actual: usage.Value.ToString(),
-                                repairHint: "Не раскрывай через bonusClueSourceProjectId больше player-visible extra clues, чем даёт completed lore_research project."));
-                        }
-                    }
+                    issues.Add(new ValidationIssue(
+                        "game_state/world/world_events.json",
+                        IssueSeverity.Error,
+                        requiresCurrentWorldEventsForBonusClueValidation
+                            ? "Rival/world bonus clue validation требует readable current world_events.json и не может доказывать linked lore clue contracts поверх malformed current world event state."
+                            : "Rival soul arc validation требует readable current world_events.json и не может проверять linked world-event rivalry contracts поверх malformed current world event state.",
+                        code: requiresCurrentWorldEventsForBonusClueValidation
+                            ? "world_event_bonus_clue_invalid_current_state"
+                            : "rival_arc_world_event_invalid_current_state",
+                        section: "RivalSoulArcs",
+                        expected: "readable current world_events.json",
+                        actual: "current world_events.json unreadable or malformed",
+                        repairHint: requiresCurrentWorldEventsForBonusClueValidation
+                            ? "Сделай current world_events.json корректным JSON перед validation linked world-event bonus clue contracts."
+                            : "Сделай current world_events.json корректным JSON перед validation linked rival world-event contracts."));
+                    return;
                 }
+
+                if (worldEventsDoc.RootElement.TryGetProperty("worldEventsLog", out worldEvents))
+                {
+                    worldEventCollectionName = "worldEventsLog";
+                }
+                else if (worldEventsDoc.RootElement.ValueKind == JsonValueKind.Array)
+                {
+                    worldEvents = worldEventsDoc.RootElement;
+                    worldEventCollectionName = "worldEventsLog";
+                }
+
+                if (worldEventCollectionName != null && worldEvents.ValueKind == JsonValueKind.Array)
+                    relatedWorldEventsByArcId = BuildRelatedWorldEventsByArcId(worldEvents);
             }
 
-            if (knownArcIds.Count == 0)
-            {
-                worldEventsDoc?.Dispose();
-            }
+            foreach (var (arc, arcContext) in hostileClueContractArcs)
+                ValidateHostileDirectTargetRivalArcClueContract(arc, arcContext, issues, relatedWorldEventsByArcId);
 
             var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
             var knownGuardianAbodes = BuildGuardianAbodeMap(guardianPolicyContext);
@@ -1152,122 +1151,195 @@ public partial class ValidationService
                     repairHint: "Для companionSeed.sourceResidentId используй существующий residentId из guardian_abode_residents.json."));
             }
 
-            if (worldEventCollectionName == null || worldEvents.ValueKind != JsonValueKind.Array)
+            if (worldEventCollectionName != null && worldEvents.ValueKind == JsonValueKind.Array)
             {
-                worldEventsDoc?.Dispose();
-                return;
-            }
-            
-
-            var eventIndex = 0;
-            foreach (var worldEvent in worldEvents.EnumerateArray())
-            {
-                var eventContext = $"game_state/world/world_events.json.{worldEventCollectionName}[{eventIndex}]";
-                ValidateOptionalString(worldEvent, eventContext, issues, "bonusClueSourceProjectId");
-                ValidateOptionalString(worldEvent, eventContext, issues, "bonusClueRevealId");
-                if (worldEvent.TryGetProperty("bonusClueCost", out _))
-                    ValidateNonNegativeIntegerField(worldEvent, eventContext, issues, "bonusClueCost", "RivalSoulArcs");
-
-                var relatedArcId = GetFirstNonEmptyString(worldEvent, "relatedRivalArcId");
-                if (!string.IsNullOrWhiteSpace(relatedArcId) && !knownArcIds.Contains(relatedArcId))
+                var eventIndex = 0;
+                foreach (var worldEvent in worldEvents.EnumerateArray())
                 {
-                    issues.Add(new ValidationIssue(
-                        $"game_state/world/world_events.json.{worldEventCollectionName}[{eventIndex}].relatedRivalArcId",
-                        IssueSeverity.Error,
-                        $"World event ссылается на неизвестный rival arc '{relatedArcId}'",
-                        code: "world_event_unknown_rival_arc_id",
-                        section: "RivalSoulArcs",
-                        expected: "existing arcId from canonical rival_soul_arcs state",
-                        actual: relatedArcId,
-                        repairHint: "Если world event является сигналом чужой нити судьбы, используй существующий relatedRivalArcId из game_state/world/rival_soul_arcs.json."));
-                }
+                    var eventContext = $"game_state/world/world_events.json.{worldEventCollectionName}[{eventIndex}]";
+                    ValidateOptionalString(worldEvent, eventContext, issues, "bonusClueSourceProjectId");
+                    ValidateOptionalString(worldEvent, eventContext, issues, "bonusClueRevealId");
+                    if (worldEvent.TryGetProperty("bonusClueCost", out _))
+                        ValidateNonNegativeIntegerField(worldEvent, eventContext, issues, "bonusClueCost", "RivalSoulArcs");
 
-                if (!string.IsNullOrWhiteSpace(relatedArcId))
-                {
-                    var visibility = GetFirstNonEmptyString(worldEvent, "visibility");
-                    if (string.IsNullOrWhiteSpace(visibility))
+                    var relatedArcId = GetFirstNonEmptyString(worldEvent, "relatedRivalArcId");
+                    if (!string.IsNullOrWhiteSpace(relatedArcId) && !knownArcIds.Contains(relatedArcId))
                     {
                         issues.Add(new ValidationIssue(
-                            $"{eventContext}.visibility",
+                            $"game_state/world/world_events.json.{worldEventCollectionName}[{eventIndex}].relatedRivalArcId",
                             IssueSeverity.Error,
-                            "World event, связанный с rival soul arc, обязан явно указывать visibility",
-                            code: "world_event_rival_arc_missing_visibility",
+                            $"World event ссылается на неизвестный rival arc '{relatedArcId}'",
+                            code: "world_event_unknown_rival_arc_id",
                             section: "RivalSoulArcs",
-                            expected: "Public | Regional | Secret | Faction-Internal | player_known",
-                            repairHint: "Для linked rival-thread world event всегда указывай visibility. Используй Public/Regional для обычных новостей, Secret/Faction-Internal для скрытых событий и player_known, если игрок уже добыл эту информацию через игру."));
-                    }
-                    else if (!IsRecognizedRivalWorldEventVisibility(visibility))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{eventContext}.visibility",
-                            IssueSeverity.Error,
-                            "World event, связанный с rival soul arc, использует неподдерживаемое visibility",
-                            code: "world_event_rival_arc_invalid_visibility",
-                            section: "RivalSoulArcs",
-                            expected: "Public | Regional | Secret | Faction-Internal | player_known",
-                            actual: visibility,
-                            repairHint: "Для linked rival-thread world event используй только Public, Regional, Secret, Faction-Internal или player_known. Если игрок реально узнал о скрытом событии, переведи его в player_known."));
-                    }
-                }
-
-                var sourceProjectId = GetFirstNonEmptyString(worldEvent, "bonusClueSourceProjectId");
-                if (!string.IsNullOrWhiteSpace(sourceProjectId))
-                {
-                    var revealId = GetFirstNonEmptyString(worldEvent, "bonusClueRevealId");
-                    if (string.IsNullOrWhiteSpace(revealId))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{eventContext}.bonusClueRevealId",
-                            IssueSeverity.Error,
-                            "world event lore_research bonus clue должен иметь bonusClueRevealId для cross-surface dedupe",
-                            code: "world_event_bonus_clue_missing_reveal_id",
-                            section: "RivalSoulArcs",
-                            repairHint: "Для linked world event clue с bonusClueSourceProjectId всегда передавай stable bonusClueRevealId. Если тот же clue mirrored в publicSignals, используй тот же reveal id."));
+                            expected: "existing arcId from canonical rival_soul_arcs state",
+                            actual: relatedArcId,
+                            repairHint: "Если world event является сигналом чужой нити судьбы, используй существующий relatedRivalArcId из game_state/world/rival_soul_arcs.json."));
                     }
 
-                    if (string.IsNullOrWhiteSpace(relatedArcId))
+                    if (!string.IsNullOrWhiteSpace(relatedArcId))
                     {
-                        issues.Add(new ValidationIssue(
-                            $"{eventContext}.relatedRivalArcId",
-                            IssueSeverity.Error,
-                            "world event lore_research bonus clue требует relatedRivalArcId",
-                            code: "world_event_bonus_clue_missing_related_arc",
-                            section: "RivalSoulArcs",
-                            repairHint: "Если world event тратит lore_research bonus clue, привяжи его к существующему rival arc через relatedRivalArcId."));
-                    }
-                    else if (knownArcSponsorGuardianIds.TryGetValue(relatedArcId, out var sponsorGuardianId))
-                    {
-                        if (IsPlayerVisibleRivalWorldEvent(worldEvent))
+                        var visibility = GetFirstNonEmptyString(worldEvent, "visibility");
+                        if (string.IsNullOrWhiteSpace(visibility))
                         {
-                            var clueCost = TryReadIntField(worldEvent, "bonusClueCost", out var parsedCost) ? Math.Max(1, parsedCost) : 1;
-                            var revealKey = BuildVisibleBonusClueRevealKey(relatedArcId, worldEvent, isWorldEvent: true);
-                            if (countedVisibleBonusClueRevealKeys.Add(revealKey))
-                            {
-                                var usageKey = $"{sponsorGuardianId}::{sourceProjectId}";
-                                visibleBonusClueUsage[usageKey] = visibleBonusClueUsage.GetValueOrDefault(usageKey) + clueCost;
-                            }
+                            issues.Add(new ValidationIssue(
+                                $"{eventContext}.visibility",
+                                IssueSeverity.Error,
+                                "World event, связанный с rival soul arc, обязан явно указывать visibility",
+                                code: "world_event_rival_arc_missing_visibility",
+                                section: "RivalSoulArcs",
+                                expected: "Public | Regional | Secret | Faction-Internal | player_known",
+                                repairHint: "Для linked rival-thread world event всегда указывай visibility. Используй Public/Regional для обычных новостей, Secret/Faction-Internal для скрытых событий и player_known, если игрок уже добыл эту информацию через игру."));
+                        }
+                        else if (!IsRecognizedRivalWorldEventVisibility(visibility))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{eventContext}.visibility",
+                                IssueSeverity.Error,
+                                "World event, связанный с rival soul arc, использует неподдерживаемое visibility",
+                                code: "world_event_rival_arc_invalid_visibility",
+                                section: "RivalSoulArcs",
+                                expected: "Public | Regional | Secret | Faction-Internal | player_known",
+                                actual: visibility,
+                                repairHint: "Для linked rival-thread world event используй только Public, Regional, Secret, Faction-Internal или player_known. Если игрок реально узнал о скрытом событии, переведи его в player_known."));
                         }
                     }
-                    else if (!string.IsNullOrWhiteSpace(relatedArcId))
+
+                    var sourceProjectId = GetFirstNonEmptyString(worldEvent, "bonusClueSourceProjectId");
+                    if (!string.IsNullOrWhiteSpace(sourceProjectId))
                     {
-                        issues.Add(new ValidationIssue(
-                            $"{eventContext}.bonusClueSourceProjectId",
-                            IssueSeverity.Error,
-                            "Bonus clue от lore_research допустим только для world event, связанного с rival arc со sponsorGuardianRef.mode=guardianId",
-                            code: "world_event_bonus_clue_requires_guardian_sponsor",
-                            section: "RivalSoulArcs",
-                            repairHint: "Используй bonusClueSourceProjectId только там, где relatedRivalArcId указывает на rival arc со sponsorGuardianRef.mode=guardianId."));
+                        var revealId = GetFirstNonEmptyString(worldEvent, "bonusClueRevealId");
+                        if (string.IsNullOrWhiteSpace(revealId))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{eventContext}.bonusClueRevealId",
+                                IssueSeverity.Error,
+                                "world event lore_research bonus clue должен иметь bonusClueRevealId для cross-surface dedupe",
+                                code: "world_event_bonus_clue_missing_reveal_id",
+                                section: "RivalSoulArcs",
+                                repairHint: "Для linked world event clue с bonusClueSourceProjectId всегда передавай stable bonusClueRevealId. Если тот же clue mirrored в publicSignals, используй тот же reveal id."));
+                        }
+
+                        if (string.IsNullOrWhiteSpace(relatedArcId))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{eventContext}.relatedRivalArcId",
+                                IssueSeverity.Error,
+                                "world event lore_research bonus clue требует relatedRivalArcId",
+                                code: "world_event_bonus_clue_missing_related_arc",
+                                section: "RivalSoulArcs",
+                                repairHint: "Если world event тратит lore_research bonus clue, привяжи его к существующему rival arc через relatedRivalArcId."));
+                        }
+                        else if (knownArcSponsorGuardianIds.TryGetValue(relatedArcId, out var sponsorGuardianId))
+                        {
+                            if (IsPlayerVisibleRivalWorldEvent(worldEvent))
+                            {
+                                var clueCost = TryReadIntField(worldEvent, "bonusClueCost", out var parsedCost) ? Math.Max(1, parsedCost) : 1;
+                                var revealKey = BuildVisibleBonusClueRevealKey(relatedArcId, worldEvent, isWorldEvent: true);
+                                if (countedVisibleBonusClueRevealKeys.Add(revealKey))
+                                {
+                                    var usageKey = $"{sponsorGuardianId}::{sourceProjectId}";
+                                    visibleBonusClueUsage[usageKey] = visibleBonusClueUsage.GetValueOrDefault(usageKey) + clueCost;
+                                }
+                            }
+                        }
+                        else if (!string.IsNullOrWhiteSpace(relatedArcId))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{eventContext}.bonusClueSourceProjectId",
+                                IssueSeverity.Error,
+                                "Bonus clue от lore_research допустим только для world event, связанного с rival arc со sponsorGuardianRef.mode=guardianId",
+                                code: "world_event_bonus_clue_requires_guardian_sponsor",
+                                section: "RivalSoulArcs",
+                                repairHint: "Используй bonusClueSourceProjectId только там, где relatedRivalArcId указывает на rival arc со sponsorGuardianRef.mode=guardianId."));
+                        }
+                    }
+
+                    eventIndex++;
+                }
+            }
+
+            if (visibleBonusClueUsage.Count > 0)
+            {
+                if (!TryResolveGuardianProjectTrackerValidationRoot(
+                        $"{RivalSoulArcService.StatePath}.{collectionName}",
+                        "Rival arc bonus clue validation требует readable current guardian project tracker authority и не использует isolated pre-turn tracker baseline как authority fallback.",
+                        "rival_arc_bonus_clue_missing_current_tracker_authority",
+                        "RivalSoulArcs",
+                        $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед validating lore_research-derived bonus clues.",
+                        issues,
+                        out var trackerRoot,
+                        out var trackerContext))
+                {
+                }
+                else if (!TryResolveVisibleRivalClueCurrentIncarnation(
+                             trackerContext,
+                             $"{RivalSoulArcService.StatePath}.{collectionName}",
+                             issues,
+                             out var currentIncarnation))
+                {
+                }
+                else
+                {
+                    foreach (var usage in visibleBonusClueUsage)
+                    {
+                        var parts = usage.Key.Split(new[] { "::" }, 2, StringSplitOptions.None);
+                        if (parts.Length != 2)
+                            continue;
+
+                        var clueBudget = ReadGrantedLoreResearchVisibleClueBudget(trackerRoot, parts[0], parts[1], currentIncarnation);
+                        if (!clueBudget.HasProject)
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{RivalSoulArcService.StatePath}.{collectionName}",
+                                IssueSeverity.Error,
+                                $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но у guardian '{parts[0]}' нет completed lore_research с clue budget",
+                                code: "rival_arc_bonus_clue_unknown_source_project",
+                                section: "RivalSoulArcs",
+                                repairHint: "Для bonusClueSourceProjectId используй completed lore_research projectId того же guardian sponsor-а."));
+                            continue;
+                        }
+
+                        if (!clueBudget.IsCurrentLifeApplicable)
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{RivalSoulArcService.StatePath}.{collectionName}",
+                                IssueSeverity.Error,
+                                $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но его lore_research budget не активен в текущей инкарнации",
+                                code: "rival_arc_bonus_clue_inactive_source_project",
+                                section: "RivalSoulArcs",
+                                repairHint: "Используй lore_research projectId, чей targetIncarnation совпадает с текущей жизнью, либо перенеси bonusClueSourceProjectId на ту инкарнацию, где проект активен."));
+                            continue;
+                        }
+
+                        if (clueBudget.GrantedBudget <= 0)
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{RivalSoulArcService.StatePath}.{collectionName}",
+                                IssueSeverity.Error,
+                                $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но у guardian '{parts[0]}' нет completed lore_research с clue budget",
+                                code: "rival_arc_bonus_clue_unknown_source_project",
+                                section: "RivalSoulArcs",
+                                repairHint: "Для bonusClueSourceProjectId используй completed lore_research projectId того же guardian sponsor-а."));
+                            continue;
+                        }
+
+                        if (usage.Value > clueBudget.GrantedBudget)
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{RivalSoulArcService.StatePath}.{collectionName}",
+                                IssueSeverity.Error,
+                                "Rival arc bonus clue usage превышает granted lore_research visible clue budget",
+                                code: "rival_arc_bonus_clue_budget_exceeded",
+                                section: "RivalSoulArcs",
+                                expected: $"<= {clueBudget.GrantedBudget}",
+                                actual: usage.Value.ToString(),
+                                repairHint: "Не раскрывай через bonusClueSourceProjectId больше player-visible extra clues, чем даёт completed lore_research project."));
+                        }
                     }
                 }
-
-                eventIndex++;
             }
 
             worldEventsDoc?.Dispose();
-        }
-        catch
-        {
-            // ignored
         }
     }
 
@@ -1377,6 +1449,54 @@ public partial class ValidationService
                     continue;
 
                 clueKeys.Add(BuildVisibleBonusClueRevealKey(arcId, worldEvent, isWorldEvent: true));
+            }
+        }
+
+        return clueKeys.Count;
+    }
+
+    private static bool HostileDirectTargetRivalArcMayNeedWorldEvents(JsonElement arc)
+    {
+        if (arc.ValueKind != JsonValueKind.Object ||
+            !arc.TryGetProperty("playerIntersection", out var playerIntersection) ||
+            playerIntersection.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        var targetsPlayerDirectly =
+            playerIntersection.TryGetProperty("targetsPlayerDirectly", out var targetsNode) &&
+            targetsNode.ValueKind == JsonValueKind.True;
+        var arcType = GetFirstNonEmptyString(arc, "arcType");
+        var status = GetFirstNonEmptyString(arc, "status");
+        if (!targetsPlayerDirectly ||
+            !string.Equals(arcType, "hostile_hunt", StringComparison.OrdinalIgnoreCase) ||
+            (!string.Equals(status, "intersecting", StringComparison.OrdinalIgnoreCase) &&
+             !string.Equals(status, "resolved", StringComparison.OrdinalIgnoreCase) &&
+             !string.Equals(status, "failed", StringComparison.OrdinalIgnoreCase)))
+        {
+            return false;
+        }
+
+        return CountPlayerVisiblePublicRivalClues(arc, GetFirstNonEmptyString(arc, "arcId") ?? string.Empty) < 2;
+    }
+
+    private static int CountPlayerVisiblePublicRivalClues(JsonElement arc, string arcId)
+    {
+        var clueKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (arc.TryGetProperty("publicSignals", out var publicSignals) &&
+            publicSignals.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var signal in publicSignals.EnumerateArray())
+            {
+                if (signal.ValueKind != JsonValueKind.Object ||
+                    !signal.TryGetProperty("visibleToPlayer", out var visibleNode) ||
+                    visibleNode.ValueKind != JsonValueKind.True)
+                {
+                    continue;
+                }
+
+                clueKeys.Add(BuildVisibleBonusClueRevealKey(arcId, signal, isWorldEvent: false));
             }
         }
 
@@ -1691,6 +1811,42 @@ public partial class ValidationService
         }
     }
 
+
+    private bool TryResolveVisibleRivalClueCurrentIncarnation(
+        GuardianProjectTrackerPolicyContext trackerContext,
+        string path,
+        List<ValidationIssue> issues,
+        out int currentIncarnation)
+    {
+        currentIncarnation = 0;
+        var currentSoulJson = ReadCurrentTrackedFileSync("game_state/meta/soul_state.json");
+        var preTurnSoulJson = ReadValidatedPendingTurnSnapshotSoulStateJsonSync(trackerContext.PreTurnTrackerSnapshot.Manifest);
+        var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
+        if (CanonicalStateNormalizer.TryResolveGuardianProjectAuthoritySoulContext(
+                currentSoulJson,
+                preTurnSoulJson,
+                currentTurn,
+                new GuardianProjectSoulContextRequirements(
+                    RequiresCurrentIncarnation: true,
+                    RequiresCurrentRealm: false),
+                out currentIncarnation,
+                out _,
+                out var failureDescription))
+        {
+            return true;
+        }
+
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            "Rival arc bonus clue validation требует readable current soul_state для current-life lore budget resolution",
+            code: "rival_arc_bonus_clue_invalid_current_soul_state",
+            section: "RivalSoulArcs",
+            expected: "readable current soul_state with valid currentIncarnation for lore_research bonus clue validation",
+            actual: failureDescription,
+            repairHint: "Сделай current soul_state.json читаемым и сохрани в нём valid currentIncarnation; если current soul_state partial, validated pending turn snapshot должен содержать usable soul baseline для current-life lore budget resolution."));
+        return false;
+    }
 
     private static void ValidateHostileDirectTargetRivalArcClueContract(
         JsonElement arc,

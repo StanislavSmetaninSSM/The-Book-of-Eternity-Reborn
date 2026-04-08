@@ -355,7 +355,7 @@ public partial class GameEngine
 
     private async Task<string> BuildContinueDescriptionAsync()
     {
-        await RefreshCanonicalStateAsync();
+        await RefreshRuntimeStateAsync();
         var state = _stateManager.CurrentState;
         var turnNumber = await DetectCurrentSessionTurnNumberAsync();
 
@@ -411,7 +411,7 @@ public partial class GameEngine
         var pendingManifest = await LoadPendingTurnSnapshotManifestAsync();
         var hasPendingTerminalSignal = _fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json");
 
-        await RefreshCanonicalStateAsync();
+        await RefreshRuntimeStateAsync();
         var state = _stateManager.CurrentState;
         var sessionId = !string.IsNullOrWhiteSpace(state.SessionId)
             ? state.SessionId
@@ -808,7 +808,7 @@ public partial class GameEngine
             });
 
         _gameLoop.SetSession(sessionId, 0);
-        await RefreshCanonicalStateAsync();
+        await RefreshRuntimeStateAsync();
 
         // Write game settings (difficulty flags) for GM
         await WriteGameSettingsForGm();
@@ -1087,7 +1087,7 @@ public partial class GameEngine
         await WriteJsonObjectAsync("game_state/meta/shining_abode_state.json", shiningRoot);
 
         await UpdateSoulStateRealm("Shining Abode");
-        await RefreshCanonicalStateAsync();
+        await RefreshRuntimeStateAsync();
         GameInterface.RenderShiningAbodeReturnTransition();
         AnsiConsole.MarkupLine("[yellow]✨ Вы возвращаетесь в активную Сияющую Обитель.[/]");
     }
@@ -1149,7 +1149,7 @@ public partial class GameEngine
             await UpdateSoulStateRealm("Chaos Sea");
         }
 
-        await RefreshCanonicalStateAsync();
+        await RefreshRuntimeStateAsync();
         GameInterface.RenderRealmTransition(true);
         AnsiConsole.MarkupLine("[blue]🌊 Сияющая Обитель запечатана. Вы возвращаетесь в Море Хаоса.[/]");
     }
@@ -1248,7 +1248,7 @@ public partial class GameEngine
 
         _gameLoop.SetSession(newSessionId, 0);
         await _storyService.AppendMarkerAsync("Chaos Sea", 0, "NEW_GAME_PLUS", "Начат Новый Цикл после Вознесения. Просветление сброшено, Реликвии Души и Хранители сохранены.");
-        await RefreshCanonicalStateAsync();
+        await RefreshRuntimeStateAsync();
         GameInterface.RenderRealmTransition(true);
         AnsiConsole.MarkupLine("[yellow]✨ Новый Цикл начался. Вы снова в Море Хаоса.[/]");
     }

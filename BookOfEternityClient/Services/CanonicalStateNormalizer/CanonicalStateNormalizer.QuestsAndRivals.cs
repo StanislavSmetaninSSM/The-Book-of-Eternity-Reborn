@@ -65,7 +65,10 @@ public partial class CanonicalStateNormalizer
     private async Task NormalizeRivalSoulArcsAsync(IReadOnlyDictionary<string, string>? backups)
     {
         const string path = RivalSoulArcService.StatePath;
-        var currentNode = await ReadNodeAsync(path);
+        var currentNode = await ReadCurrentAuthorityNodeAsync(
+            path,
+            required: _fs.FileExists(path),
+            RivalSoulArcCurrentStateReadableRequiredMessage);
         if (currentNode == null) return;
 
         var previous = await ReadBackupObjectAsync(path, backups);
@@ -73,23 +76,49 @@ public partial class CanonicalStateNormalizer
         var arcs = EnsureArray(result, "arcs");
         var trackerRoot = await ReadObjectAsync(GuardianProjectState.TrackerPath);
         var currentTurn = await TryReadCurrentTurnNumberAsync();
-        var soulStateRoot = await ReadObjectAsync("game_state/meta/soul_state.json");
-        var currentIncarnation = GetNodeInt(soulStateRoot?["currentIncarnation"], 0);
         var projectJournalEntries = new List<JsonObject>();
         const string worldEventsPath = "game_state/world/world_events.json";
         var previousWorldEvents = await ReadBackupNodeAsync(worldEventsPath, backups);
-        var currentWorldEvents = await ReadNodeAsync(worldEventsPath);
 
         foreach (var arc in CollectRivalSoulArcEntries(previous))
             UpsertByIdentity(arcs, arc, "arcId");
         foreach (var arc in CollectRivalSoulArcEntries(currentNode))
             UpsertByIdentity(arcs, arc, "arcId");
 
+        var currentWorldEvents = default(JsonNode);
+        if (trackerRoot != null &&
+            _fs.FileExists(worldEventsPath) &&
+            RequiresCurrentWorldEventsForVisibleRivalClueConsumption(
+                result,
+                await _fs.ReadFileAsync(worldEventsPath)))
+        {
+            currentWorldEvents = await ReadCurrentAuthorityNodeAsync(
+                worldEventsPath,
+                required: true,
+                RivalWorldEventsCurrentStateReadableRequiredMessage);
+        }
+
+        var requiresCurrentIncarnation =
+            trackerRoot != null &&
+            RequiresCurrentIncarnationForVisibleRivalClueConsumption(previous, result, previousWorldEvents, currentWorldEvents);
+        var currentIncarnation = 0;
+        if (requiresCurrentIncarnation)
+        {
+            var currentSoulStateRoot = await ReadCurrentGuardianProjectSoulStateRootAsync(required: true);
+            (currentIncarnation, _) = await ReadEffectiveGuardianProjectSoulContextAsync(
+                backups,
+                new GuardianProjectSoulContextRequirements(
+                    RequiresCurrentIncarnation: true,
+                    RequiresCurrentRealm: false),
+                currentSoulStateRoot);
+        }
+
         result.Remove("UpdateRivalSoulArcs");
         await WriteIfChangedAsync(path, currentNode, result);
 
         var worldEventsChanged = false;
         if (trackerRoot != null &&
+            requiresCurrentIncarnation &&
             currentIncarnation > 0 &&
             ConsumeLoreResearchVisibleRivalClues(previous, result, previousWorldEvents, currentWorldEvents, trackerRoot, currentIncarnation, currentTurn, projectJournalEntries, out worldEventsChanged))
         {
@@ -101,6 +130,141 @@ public partial class CanonicalStateNormalizer
 
         if (projectJournalEntries.Count > 0)
             await AppendGuardianProjectJournalEntriesAsync(projectJournalEntries);
+    }
+
+    internal static bool RawJsonMayContainRelatedRivalWorldEvents(string? rawJson, IEnumerable<string> relatedArcIds, bool requireBonusClueSource)
+    {
+        if (string.IsNullOrWhiteSpace(rawJson))
+            return false;
+
+        if (!rawJson.Contains("relatedRivalArcId", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (requireBonusClueSource &&
+            !rawJson.Contains("bonusClueSourceProjectId", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        foreach (var arcId in relatedArcIds)
+        {
+            if (!string.IsNullOrWhiteSpace(arcId) &&
+                rawJson.Contains(arcId, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool RequiresCurrentWorldEventsForVisibleRivalClueConsumption(
+        JsonObject currentArcsRoot,
+        string? rawCurrentWorldEventsJson)
+    {
+        var sponsoredArcIds = CollectGuardianSponsoredRivalArcIds(currentArcsRoot);
+        if (sponsoredArcIds.Count == 0)
+            return false;
+
+        return RawJsonMayContainRelatedRivalWorldEvents(rawCurrentWorldEventsJson, sponsoredArcIds, requireBonusClueSource: true);
+    }
+
+    private static bool RequiresCurrentIncarnationForVisibleRivalClueConsumption(
+        JsonObject? previousArcsRoot,
+        JsonObject currentArcsRoot,
+        JsonNode? previousWorldEventsRoot,
+        JsonNode? currentWorldEventsRoot)
+    {
+        var previousRevealKeys = CollectVisibleBonusClueRevealKeys(previousArcsRoot, previousWorldEventsRoot);
+        if (currentArcsRoot["arcs"] is not JsonArray arcs)
+            return false;
+
+        var consumedRevealKeys = new HashSet<string>(previousRevealKeys, StringComparer.OrdinalIgnoreCase);
+        var sponsorGuardianByArcId = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var arc in arcs.OfType<JsonObject>())
+        {
+            var arcId = GetNodeString(arc["arcId"]);
+            var sponsorGuardianId = GetNodeString((arc["sponsorGuardianRef"] as JsonObject)?["guardianId"]);
+            if (string.IsNullOrWhiteSpace(arcId) ||
+                string.IsNullOrWhiteSpace(sponsorGuardianId) ||
+                arc["publicSignals"] is not JsonArray publicSignals)
+            {
+                continue;
+            }
+
+            sponsorGuardianByArcId[arcId!] = sponsorGuardianId!;
+
+            foreach (var signal in publicSignals.OfType<JsonObject>())
+            {
+                if (!GetJsonBool(signal["visibleToPlayer"]))
+                    continue;
+
+                var sourceProjectId = GetNodeString(signal["bonusClueSourceProjectId"]);
+                if (string.IsNullOrWhiteSpace(sourceProjectId))
+                    continue;
+
+                var revealKey = BuildVisibleBonusClueRevealKey(arcId!, signal, isWorldEvent: false);
+                if (GetJsonBool(signal["bonusClueConsumed"]))
+                {
+                    if (!string.IsNullOrWhiteSpace(revealKey))
+                        consumedRevealKeys.Add(revealKey);
+                    continue;
+                }
+
+                if (!string.IsNullOrWhiteSpace(revealKey) && consumedRevealKeys.Contains(revealKey))
+                    continue;
+
+                return true;
+            }
+        }
+
+        foreach (var worldEvent in EnumerateWorldEventObjects(currentWorldEventsRoot))
+        {
+            var relatedArcId = GetNodeString(worldEvent["relatedRivalArcId"]);
+            var sourceProjectId = GetNodeString(worldEvent["bonusClueSourceProjectId"]);
+            if (string.IsNullOrWhiteSpace(relatedArcId) ||
+                string.IsNullOrWhiteSpace(sourceProjectId) ||
+                !IsPlayerVisibleRivalWorldEvent(worldEvent) ||
+                !sponsorGuardianByArcId.ContainsKey(relatedArcId!))
+            {
+                continue;
+            }
+
+            var revealKey = BuildVisibleBonusClueRevealKey(relatedArcId!, worldEvent, isWorldEvent: true);
+            if (GetJsonBool(worldEvent["bonusClueConsumed"]))
+            {
+                if (!string.IsNullOrWhiteSpace(revealKey))
+                    consumedRevealKeys.Add(revealKey);
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(revealKey) && consumedRevealKeys.Contains(revealKey))
+                continue;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private static HashSet<string> CollectGuardianSponsoredRivalArcIds(JsonObject currentArcsRoot)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (currentArcsRoot["arcs"] is not JsonArray arcs)
+            return result;
+
+        foreach (var arc in arcs.OfType<JsonObject>())
+        {
+            var arcId = GetNodeString(arc["arcId"]);
+            var sponsorGuardianId = GetNodeString((arc["sponsorGuardianRef"] as JsonObject)?["guardianId"]);
+            if (!string.IsNullOrWhiteSpace(arcId) &&
+                !string.IsNullOrWhiteSpace(sponsorGuardianId))
+            {
+                result.Add(arcId!);
+            }
+        }
+
+        return result;
     }
 
     private static bool ConsumeLoreResearchVisibleRivalClues(

@@ -88,7 +88,6 @@ public partial class GameEngine
         ProgressionControl? progressionControl)
     {
         var criticalRepairAttempt = 0;
-        var canonicalStateMaterializedFromPreTurnSnapshot = false;
 
         while (true)
         {
@@ -109,10 +108,7 @@ public partial class GameEngine
                 continue;
             }
 
-            await RefreshAcceptedTurnCanonicalStateForValidationAsync(
-                expectedTurn,
-                usePreTurnSnapshotBaseline: !canonicalStateMaterializedFromPreTurnSnapshot);
-            canonicalStateMaterializedFromPreTurnSnapshot = true;
+            await RefreshAcceptedTurnCanonicalStateForValidationAsync(expectedTurn);
 
             await EnsureClientOwnedSystemFilesHealthyAsync();
             var canonicalIssues = await _criticalStateHealth.ValidateCriticalCanonicalStateAsync();
@@ -134,23 +130,21 @@ public partial class GameEngine
             if (!await ValidateCurrentGameStateOrShowErrorsAsync(source, rollbackSnapshot, progressionControl, allowRepairLoop: true))
                 return false;
 
-            await RefreshCanonicalStateAsync();
+            await RefreshRuntimeStateAsync();
             return true;
         }
     }
 
-    private async Task RefreshAcceptedTurnCanonicalStateForValidationAsync(
-        int expectedTurn,
-        bool usePreTurnSnapshotBaseline)
+    private async Task RefreshAcceptedTurnCanonicalStateForValidationAsync(int expectedTurn)
     {
-        if (usePreTurnSnapshotBaseline)
+        var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
+        if (snapshot == null)
         {
-            var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
-            await RefreshCanonicalStateAsync(snapshot);
-            return;
+            throw new InvalidOperationException(
+                "Accepted-turn canonical materialization requires a readable pending-turn snapshot baseline.");
         }
 
-        await RefreshCanonicalStateAsync();
+        await RefreshCanonicalStateAsync(snapshot);
     }
 
     private static bool RequiresFreshNarrativePayload(string source)

@@ -4,7 +4,7 @@
 
 `IMPLEMENTED ARCHITECTURE`
 
-Документ фиксирует достигнутый guardian authority contract и финальную converged architecture.
+Документ фиксирует достигнутый guardian authority contract после полного closure remediation phases.
 
 ## Итоговая цель
 
@@ -21,7 +21,8 @@
 - tracker truth для political validation/proof строится только поверх strict guardian authority;
 - missing tracker/journal/snapshot provenance больше не превращается в usable fallback baseline в policy paths;
 - current tracker authority и tracker drift validation доведены до fail-closed strict contract;
-- normalizer, proof-local tracker snapshot validation и tracker issue taxonomy доведены до того же tracker authority contract.
+- normalizer, proof-local tracker snapshot validation и tracker issue taxonomy доведены до того же tracker authority contract;
+- guardian-project normalization теперь требует полный authority-relevant pre-turn baseline set там, где normalizer диффит current guardian side effects against pre-turn guardian state.
 
 ## Final Source Of Truth
 
@@ -205,6 +206,24 @@ Shared policy readers migrated off raw fallback:
 - QTE rollback восстанавливает guardian project journal и другие tracked normalizer writes before surfacing validation failure;
 - temporary QTE normalizer backup artifacts удаляются после run completion и не считаются persistent state.
 
+### Phase 8. Guardian Project Normalizer Full Baseline Contract
+
+Фаза закрыта.
+
+Что сделано:
+
+- guardian-project normalization больше не допускает partial baseline mode, где usable tracker backup есть, а authority-relevant guardians backup silently missing;
+- если current `game_state/meta/guardians.json` участвует в guardian-project side-effect reconciliation, usable pre-turn guardians backup обязателен вместе с tracker backup;
+- missing/unreadable guardian backup теперь surface-ится как explicit baseline failure before normalization writes, а не как empty pre-turn guardian history;
+- generic current active-guardian diagnostics в system-guardian flows больше не называют generic current authority как `strict kernel authority`.
+
+Итог:
+
+- guardian-project normalization decision-complete по baseline dependencies: tracker backup сам по себе больше не считается достаточным там, где reconciliation зависит от pre-turn guardian state;
+- lore-research / archive-consultation quest token consumption и relic-forging gacha-use consumption больше не могут переизрасходоваться только потому, что pre-turn guardian baseline silently missing;
+- generic current active-guardian diagnostics в system-guardian flows называют тот authority channel, который реально используется;
+- после этого guardian policy remediation считается fully converged across validation, proof, normalization и runtime orchestration.
+
 ## Validation Rules To Preserve
 
 При будущих изменениях нельзя ломать следующие правила:
@@ -223,6 +242,8 @@ Shared policy readers migrated off raw fallback:
 12. `CanonicalStateNormalizer` не должен использовать raw current tracker materialized arrays как authority input для guardian project state.
 13. Proof-local tracker snapshot validation не должна быть слабее shared/current strict tracker authority semantics.
 14. Semantic-invalid validated tracker baseline не должен репортиться как просто `missing snapshot`.
+15. Guardian-project normalization не должен считать достаточным tracker backup без остальных authority-relevant pre-turn baselines, если current guardian side effects diff-ятся against pre-turn guardian state.
+16. Diagnostics не должны называть generic current authority как strict current authority.
 
 ## Regression Expectations
 
@@ -242,6 +263,8 @@ Shared policy readers migrated off raw fallback:
 - normalizer does not preserve phantom current `activeProjects` / `completedProjects` / `temporaryProjectModifiers` solely because they already exist in the current tracker file;
 - proof-local tracker snapshot validation rejects authority-bearing modifier/project data that shared/current strict tracker authority would reject;
 - semantic-invalid validated pre-turn tracker baseline emits an authority-invalid tracker issue surface, not only `guardian_project_missing_validated_preturn_tracker_snapshot`;
+- guardian-project normalization with tracker backup but missing guardian backup does not consume lore-research quest tokens or relic-forging gacha uses against an empty pre-turn guardian history;
+- system-guardian active-guardian failures name the generic current authority channel correctly and do not claim strict authority unless the path actually uses strict current authority;
 - readable raw snapshot сам по себе не считается usable policy baseline, если strict authority unresolved;
 - compatibility/debug helpers могут оставаться зелёными, но validation truth от них не зависит.
 

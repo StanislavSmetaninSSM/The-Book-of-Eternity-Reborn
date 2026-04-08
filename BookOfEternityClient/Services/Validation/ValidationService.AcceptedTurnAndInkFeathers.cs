@@ -3031,8 +3031,8 @@ public partial class ValidationService
     {
         var context = new GuardianPolicyContext
         {
-            HasCurrentAuthorityRoot = true,
-            CurrentAuthorityRoot = authorityRoot.Clone()
+            HasStrictCurrentAuthorityRoot = true,
+            StrictCurrentAuthorityRoot = authorityRoot.Clone()
         };
 
         foreach (var guardianId in guardiansById.Keys)
@@ -3421,7 +3421,22 @@ public partial class ValidationService
             }
 
             var currentTurn = ReadCurrentTurnNumberForProjectAuthority();
-            var (currentIncarnation, currentRealm) = ReadSoulStateForProjectAuthority(soulStateJson);
+            var soulContextRequirements =
+                CanonicalStateNormalizer.ResolveRequiredCurrentGuardianProjectSoulContext(
+                    trackerRootObject,
+                    preTurnTrackerAuthorityRootObject);
+            if (!CanonicalStateNormalizer.TryResolveGuardianProjectAuthoritySoulContext(
+                    soulStateJson,
+                    null,
+                    currentTurn,
+                    soulContextRequirements,
+                    out var currentIncarnation,
+                    out var currentRealm,
+                    out failureDescription))
+            {
+                return false;
+            }
+
             var preTurnGuardianAuthorityRootObject = guardianAuthorityRootObject.DeepClone().AsObject();
             var currentGuardianAuthorityRootObject = guardianAuthorityRootObject.DeepClone().AsObject();
             var materializedTrackerAuthorityRoot = CanonicalStateNormalizer.BuildGuardianProjectAuthorityRootForValidation(
@@ -3446,31 +3461,6 @@ public partial class ValidationService
         catch (JsonException)
         {
             return false;
-        }
-    }
-
-    private static (int CurrentIncarnation, string? CurrentRealm) ReadSoulStateForProjectAuthority(string? soulStateJson)
-    {
-        if (string.IsNullOrWhiteSpace(soulStateJson))
-            return (0, null);
-
-        try
-        {
-            using var doc = JsonDocument.Parse(soulStateJson);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object)
-                return (0, null);
-
-            var currentIncarnation = doc.RootElement.TryGetProperty("currentIncarnation", out var incarnationNode) &&
-                                     incarnationNode.ValueKind == JsonValueKind.Number &&
-                                     incarnationNode.TryGetInt32(out var parsedIncarnation)
-                ? parsedIncarnation
-                : 0;
-            var currentRealm = GetFirstNonEmptyString(doc.RootElement, "currentRealm");
-            return (currentIncarnation, currentRealm);
-        }
-        catch
-        {
-            return (0, null);
         }
     }
 

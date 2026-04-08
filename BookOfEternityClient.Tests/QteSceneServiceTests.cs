@@ -224,7 +224,7 @@ public sealed class QteSceneServiceTests : IDisposable
                   "targetIncarnation": 3,
                   "bonusLoreUnlocksApplied": 1,
                   "questHookTokensGranted": 1,
-                  "questHookTokensSpent": 0,
+                  "questHookTokensSpent": 1,
                   "specialQuestLineTokensGranted": 0,
                   "specialQuestLineTokensSpent": 0,
                   "visibleRivalClueBudgetGranted": 2,

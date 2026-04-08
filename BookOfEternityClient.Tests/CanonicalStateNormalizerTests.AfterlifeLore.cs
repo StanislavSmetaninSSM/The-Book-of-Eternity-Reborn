@@ -128,6 +128,13 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
           ]
         }
         """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 1,
+          "currentRealm": "Mortal World",
+          "inkFeathers": 5
+        }
+        """);
 
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
         await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);

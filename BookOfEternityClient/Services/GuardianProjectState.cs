@@ -4,6 +4,18 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
+internal readonly record struct GuardianProjectSoulContextRequirements(
+    bool RequiresCurrentIncarnation,
+    bool RequiresCurrentRealm)
+{
+    public bool RequiresReadableCurrentSoulState => RequiresCurrentIncarnation || RequiresCurrentRealm;
+
+    public GuardianProjectSoulContextRequirements Merge(GuardianProjectSoulContextRequirements other) =>
+        new(
+            RequiresCurrentIncarnation || other.RequiresCurrentIncarnation,
+            RequiresCurrentRealm || other.RequiresCurrentRealm);
+}
+
 internal static class GuardianProjectState
 {
     public const string TrackerPath = "game_state/meta/guardian_projects.json";
@@ -463,6 +475,77 @@ internal static class GuardianProjectState
         return false;
     }
 
+    internal static bool RequiresCurrentGuardianSideReconciliation(
+        JsonObject? completedProjectEntry,
+        int currentIncarnation,
+        string? currentRealm)
+    {
+        if (completedProjectEntry?["project"] is not JsonObject project ||
+            !string.Equals(GetNodeString(project["finalState"]), "Completed", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var projectType = GetNodeString(project["projectType"]);
+        var effectState = project["effectState"] as JsonObject;
+        var audit = project["projectOutcomeAudit"] as JsonObject;
+        var projectTier = GetNodeString(project["projectTier"]);
+
+        if (string.Equals(projectType, "lore_research", StringComparison.OrdinalIgnoreCase))
+        {
+            var effectiveEffectState = effectState ?? BuildDefaultEffectState(project, currentIncarnation, currentRealm);
+            if (GetNodeInt(effectiveEffectState["targetIncarnation"]) != currentIncarnation)
+                return false;
+
+            return GetQuestHookTokensRemaining(effectiveEffectState, audit, projectTier) > 0 ||
+                   GetGuaranteedArchiveQuestRemaining(effectiveEffectState, audit, projectTier) > 0 ||
+                   GetSpecialQuestLineTokensRemaining(effectiveEffectState, audit, projectTier) > 0;
+        }
+
+        if (string.Equals(projectType, "relic_forging", StringComparison.OrdinalIgnoreCase))
+            return GetGachaUsesRemaining(effectState, audit, projectTier) > 0;
+
+        return false;
+    }
+
+    internal static GuardianProjectSoulContextRequirements GetCurrentSoulContextRequirementsForNormalization(JsonObject? project)
+    {
+        var projectType = GetNodeString(project?["projectType"]);
+        if (string.Equals(projectType, "lore_research", StringComparison.OrdinalIgnoreCase))
+            return new GuardianProjectSoulContextRequirements(RequiresCurrentIncarnation: true, RequiresCurrentRealm: true);
+
+        if (string.Equals(projectType, "soul_preparation", StringComparison.OrdinalIgnoreCase))
+            return new GuardianProjectSoulContextRequirements(RequiresCurrentIncarnation: true, RequiresCurrentRealm: false);
+
+        return default;
+    }
+
+    internal static GuardianProjectSoulContextRequirements GetCurrentSoulContextRequirementsForCompletedProjectNormalization(JsonObject? project)
+    {
+        var projectType = GetNodeString(project?["projectType"]);
+        if (string.Equals(projectType, "soul_preparation", StringComparison.OrdinalIgnoreCase))
+            return new GuardianProjectSoulContextRequirements(RequiresCurrentIncarnation: true, RequiresCurrentRealm: false);
+
+        if (!string.Equals(projectType, "lore_research", StringComparison.OrdinalIgnoreCase))
+            return default;
+
+        if (project?["effectState"] is not JsonObject effectState)
+            return GetCurrentSoulContextRequirementsForNormalization(project);
+
+        var audit = project["projectOutcomeAudit"] as JsonObject;
+        var projectTier = GetNodeString(project["projectTier"]);
+        return GetQuestHookTokensRemaining(effectState, audit, projectTier) > 0 ||
+               GetGuaranteedArchiveQuestRemaining(effectState, audit, projectTier) > 0 ||
+               GetSpecialQuestLineTokensRemaining(effectState, audit, projectTier) > 0
+            ? new GuardianProjectSoulContextRequirements(RequiresCurrentIncarnation: true, RequiresCurrentRealm: false)
+            : default;
+    }
+
+    internal static bool RequiresCurrentSoulContextForNormalization(JsonObject? project)
+    {
+        return GetCurrentSoulContextRequirementsForNormalization(project).RequiresReadableCurrentSoulState;
+    }
+
     public static DerivedProjectEffects ResolveDerivedEffects(JsonObject? trackerRoot, string guardianId)
     {
         if (trackerRoot == null || string.IsNullOrWhiteSpace(guardianId))
@@ -769,6 +852,25 @@ internal static class GuardianProjectState
         }
 
         return 0;
+    }
+
+    public static int GetGrantedVisibleRivalClueBudgetForCurrentLife(JsonObject? project, int currentIncarnation)
+    {
+        if (project == null ||
+            !string.Equals(GetNodeString(project["projectType"]), "lore_research", StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(project["finalState"]), "Completed", StringComparison.OrdinalIgnoreCase) ||
+            project["effectState"] is not JsonObject effectState ||
+            GetNodeInt(effectState["targetIncarnation"]) != currentIncarnation)
+        {
+            return 0;
+        }
+
+        return GetNodeInt(
+            effectState["visibleRivalClueBudgetGranted"],
+            GetOutcomeInt(
+                project["projectOutcomeAudit"] as JsonObject,
+                "visibleRivalClueBonus",
+                GetDefaultLoreResearchVisibleRivalClueBonus(GetNodeString(project["projectTier"]))));
     }
 
     public static bool TryConsumeVisibleRivalClue(

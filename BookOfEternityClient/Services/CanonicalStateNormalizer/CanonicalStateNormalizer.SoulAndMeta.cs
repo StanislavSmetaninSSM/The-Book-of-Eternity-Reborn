@@ -7,20 +7,17 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
-    private async Task NormalizeSoulStateAsync(IReadOnlyDictionary<string, string>? backups)
+    private static JsonObject BuildNormalizedSoulStateRoot(
+        JsonObject current,
+        JsonObject? previous,
+        int currentTurn)
     {
-        const string path = "game_state/meta/soul_state.json";
-        var current = await ReadObjectAsync(path);
-        if (current == null) return;
-
-        var previous = await ReadBackupObjectAsync(path, backups);
         var result = CloneObject(previous ?? new JsonObject());
         MergeObject(result, current);
 
         NormalizeInkFeathersShape(result);
         NormalizeSoulRelicsShape(result);
         AfterlifeArchiveState.NormalizeShape(result);
-        var currentTurn = await TryReadCurrentTurnNumberAsync();
 
         if (current["metaStateUpdates"] is JsonObject updates)
             ApplyMetaStateUpdates(result, updates);
@@ -32,6 +29,153 @@ public partial class CanonicalStateNormalizer
         result.Remove("metaStateUpdates");
         result.Remove("afterlifeArchiveUpdates");
         result.Remove("archiveActionResolutions");
+        return result;
+    }
+
+    private static bool TryReadGuardianProjectAuthoritySoulStateRoot(
+        string? soulStateJson,
+        bool required,
+        out JsonObject? root,
+        out string? failureDescription)
+    {
+        root = null;
+        failureDescription = null;
+
+        if (string.IsNullOrWhiteSpace(soulStateJson))
+        {
+            if (!required)
+                return true;
+
+            failureDescription = GuardianProjectCurrentSoulStateReadableRequiredMessage;
+            return false;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(soulStateJson) is JsonObject parsedRoot)
+            {
+                root = parsedRoot;
+                return true;
+            }
+        }
+        catch
+        {
+        }
+
+        if (!required)
+            return true;
+
+        failureDescription = GuardianProjectCurrentSoulStateReadableRequiredMessage;
+        return false;
+    }
+
+    private static bool HasCompleteGuardianProjectCurrentIncarnation(JsonObject soulStateRoot)
+    {
+        return soulStateRoot["currentIncarnation"] is JsonValue value && value.TryGetValue<int>(out _);
+    }
+
+    private static bool HasCompleteGuardianProjectAuthoritySoulContext(
+        JsonObject soulStateRoot,
+        GuardianProjectSoulContextRequirements requirements)
+    {
+        if (requirements.RequiresCurrentIncarnation &&
+            !HasCompleteGuardianProjectCurrentIncarnation(soulStateRoot))
+        {
+            return false;
+        }
+
+        if (requirements.RequiresCurrentRealm &&
+            string.IsNullOrWhiteSpace(GetNodeString(soulStateRoot["currentRealm"])))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    internal static bool TryResolveGuardianProjectAuthoritySoulContext(
+        string? currentSoulStateJson,
+        string? preTurnSoulStateJson,
+        int currentTurn,
+        GuardianProjectSoulContextRequirements requirements,
+        out int currentIncarnation,
+        out string? currentRealm,
+        out string failureDescription)
+    {
+        currentIncarnation = 0;
+        currentRealm = null;
+        failureDescription = string.Empty;
+
+        if (!TryReadGuardianProjectAuthoritySoulStateRoot(
+                currentSoulStateJson,
+                requirements.RequiresReadableCurrentSoulState,
+                out var currentRoot,
+                out var currentFailureDescription))
+        {
+            failureDescription = currentFailureDescription ?? GuardianProjectCurrentSoulStateReadableRequiredMessage;
+            return false;
+        }
+
+        if (currentRoot == null)
+            return true;
+
+        TryReadGuardianProjectAuthoritySoulStateRoot(
+            preTurnSoulStateJson,
+            required: false,
+            out var preTurnRoot,
+            out _);
+        var soulStateRoot = BuildNormalizedSoulStateRoot(currentRoot, preTurnRoot, currentTurn);
+        if (requirements.RequiresReadableCurrentSoulState &&
+            !HasCompleteGuardianProjectAuthoritySoulContext(soulStateRoot, requirements))
+        {
+            failureDescription = GuardianProjectCurrentSoulStateReadableRequiredMessage;
+            return false;
+        }
+
+        currentIncarnation = GetNodeInt(soulStateRoot["currentIncarnation"], 0);
+        currentRealm = GetNodeString(soulStateRoot["currentRealm"]);
+        return true;
+    }
+
+    private async Task<JsonObject?> BuildNormalizedSoulStateRootAsync(
+        IReadOnlyDictionary<string, string>? backups,
+        JsonObject? current = null)
+    {
+        const string path = "game_state/meta/soul_state.json";
+        current ??= await ReadObjectAsync(path);
+        if (current == null) return null;
+
+        var previous = await ReadBackupObjectAsync(path, backups);
+        var currentTurn = await TryReadCurrentTurnNumberAsync();
+        return BuildNormalizedSoulStateRoot(current, previous, currentTurn);
+    }
+
+    private async Task<(int CurrentIncarnation, string? CurrentRealm)> ReadEffectiveGuardianProjectSoulContextAsync(
+        IReadOnlyDictionary<string, string>? backups,
+        GuardianProjectSoulContextRequirements requirements,
+        JsonObject? currentSoulStateRoot = null)
+    {
+        var soulStateRoot = await BuildNormalizedSoulStateRootAsync(backups, currentSoulStateRoot);
+        if (requirements.RequiresReadableCurrentSoulState &&
+            (soulStateRoot == null || !HasCompleteGuardianProjectAuthoritySoulContext(soulStateRoot, requirements)))
+        {
+            throw new InvalidOperationException(GuardianProjectCurrentSoulStateReadableRequiredMessage);
+        }
+
+        return (
+            GetNodeInt(soulStateRoot?["currentIncarnation"], 0),
+            GetNodeString(soulStateRoot?["currentRealm"]));
+    }
+
+    private async Task NormalizeSoulStateAsync(IReadOnlyDictionary<string, string>? backups)
+    {
+        const string path = "game_state/meta/soul_state.json";
+        var current = await ReadObjectAsync(path);
+        if (current == null) return;
+
+        var result = await BuildNormalizedSoulStateRootAsync(backups, current);
+        if (result == null) return;
+
         await WriteIfChangedAsync(path, current, result);
     }
 

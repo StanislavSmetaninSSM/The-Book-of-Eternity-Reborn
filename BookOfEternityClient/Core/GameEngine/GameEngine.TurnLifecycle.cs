@@ -257,7 +257,7 @@ public partial class GameEngine
         // Check if there's already a correlated completion signal waiting
         if (_fs.FileExists("ready/turn_complete.json"))
         {
-            await RefreshCanonicalStateAsync();
+            await RefreshRuntimeStateAsync();
         }
 
         while (_inGame)
@@ -375,7 +375,7 @@ public partial class GameEngine
                 if (_lastConsoleWidth > 0 && currentWidth != _lastConsoleWidth)
                 {
                     await NormalizeRuntimeUiArtifactsAsync();
-                    await RefreshCanonicalStateAsync();
+                    await RefreshRuntimeStateAsync();
                 }
                 _lastConsoleWidth = currentWidth;
             }
@@ -405,7 +405,7 @@ public partial class GameEngine
                 input.Equals("/обновить", StringComparison.OrdinalIgnoreCase))
             {
                 await NormalizeRuntimeUiArtifactsAsync();
-                await RefreshCanonicalStateAsync();
+                await RefreshRuntimeStateAsync();
                 var refreshedResponse = MergeWithLastResponse(await BuildGameResponseFromFiles());
                 if (!await ValidateCurrentGameStateOrShowErrorsAsync("ручного обновления"))
                     continue;
@@ -1302,7 +1302,7 @@ public partial class GameEngine
     private async Task ShowLifeEvaluationRewards(int preDeathInkFeathers, string preDeathEnlightenment, string? preDeathSoulStateJson)
     {
         // Re-read soul state for latest values (GM should have updated it)
-        await RefreshCanonicalStateAsync();
+        await RefreshRuntimeStateAsync();
         await _afterlifeArchiveCandidateService.RefreshFromCurrentStateAsync();
         var state = _stateManager.CurrentState;
 
@@ -1627,7 +1627,7 @@ public partial class GameEngine
             // Wait for GM response describing the new mortal world
             if (await WaitForGmResponse())
             {
-                await RefreshCanonicalStateAsync();
+                await RefreshRuntimeStateAsync();
                 await _worldDirectiveService.MaterializePendingToActiveAsync(worldDesc, circumstances);
             }
         }
@@ -1699,7 +1699,7 @@ public partial class GameEngine
 
             _fs.DeleteFile("game_state/control/ascension.json");
             GameInterface.RenderAscensionTransition();
-            await RefreshCanonicalStateAsync();
+            await RefreshRuntimeStateAsync();
         }
         catch (Exception ex)
         {
