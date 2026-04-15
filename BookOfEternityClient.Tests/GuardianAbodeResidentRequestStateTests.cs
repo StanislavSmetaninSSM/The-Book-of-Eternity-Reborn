@@ -97,6 +97,208 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureManifestationRequestForCurrentIncarnationAsync_ResidentCompanionSeedCarriesPersonalityAndAbodeSnapshot()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_snapshot",
+                        name = "Эхо Лиоры",
+                        rarity = "Epic",
+                        slot = "Neck",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001",
+                            sourceGuardianId = "guardian_social_001",
+                            sourceAbodeId = "abode_social_001",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Бывшая гонец при храме семи дорог.",
+                            futureCompanionPrompt = "Swift wanderer with ember-thread cloak",
+                            bondReason = "Она всегда возвращалась к тем, кого однажды назвала своими.",
+                            coreTraits = new[] { "верность", "смелость" },
+                            archetypeHints = new[] { "courier", "pathfinder" },
+                            appearanceMotifs = new[] { "ember-thread cloak" },
+                            personalityProfile = new
+                            {
+                                archetype = "Road Messenger",
+                                worldview = "Каждая связь требует движения.",
+                                culturalLayer = "Храм дорог и клятвенных маршрутов",
+                                coreValues = new[] { "верность", "путь", "долг" },
+                                personalityTraits = new object[]
+                                {
+                                    new { traitName = "Restless Loyalty", value = 8, valueDescription = "Всегда ищет дорогу обратно." }
+                                }
+                            },
+                            abodeDisposition = new
+                            {
+                                powerSensitivity = "medium",
+                                migrationDisposition = "selective",
+                                communalOrientation = "high",
+                                stabilityNeed = "medium"
+                            },
+                            abodeDevotionLevel = 74,
+                            abodeDevotionTier = "devoted",
+                            restlessness = 28,
+                            migrationState = "settled"
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
+
+        var requests = await GuardianAbodeResidentRequestState.ReadManifestationRequestsAsync(_fs);
+        var request = Assert.Single(requests);
+        Assert.NotNull(request.PersonalityProfile);
+        Assert.NotNull(request.AbodeDisposition);
+        Assert.Equal("Road Messenger", request.PersonalityProfile!.Archetype);
+        Assert.Equal(74, request.AbodeDevotionLevel);
+        Assert.Equal("devoted", request.AbodeDevotionTier);
+        Assert.Equal(28, request.Restlessness);
+        Assert.Equal("settled", request.MigrationState);
+
+        var reminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, "Mortal World");
+        Assert.NotNull(reminder);
+        Assert.Contains("архетип=Road Messenger", reminder, StringComparison.Ordinal);
+        Assert.Contains("преданность=Предан 74/100", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_AfterlifePressureStates_SurfaceLeavePressureWithoutTransferInstruction()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия",
+                        formFlexibility = "selective",
+                        currentPresentationStyle = "feminine",
+                        currentPronouns = "она/её",
+                        appearanceDescription = "Тестовая форма."
+                    },
+                    manifestationHistory = Array.Empty<object>()
+                }
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    roleLabel = "Вестница",
+                    summary = "Тонкая душа на границе светлых троп.",
+                    bondLevel = 48,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    personalityProfile = new
+                    {
+                        archetype = "Road Messenger",
+                        worldview = "Belonging must still feel true to remain sacred.",
+                        culturalLayer = "Way shrine pilgrim traditions",
+                        coreValues = new[] { "верность", "путь" },
+                        personalityTraits = new object[]
+                        {
+                            new
+                            {
+                                traitName = "sensitivity_to_decline",
+                                value = 8,
+                                valueDescription = "замечает упадок быстро"
+                            }
+                        }
+                    },
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "high",
+                        migrationDisposition = "selective",
+                        communalOrientation = "medium",
+                        stabilityNeed = "high"
+                    },
+                    abodeDevotionLevel = 26,
+                    abodeDevotionTier = "uncertain",
+                    restlessness = 63,
+                    migrationState = "considering_departure",
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+
+        var reminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, "Chaos Sea");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("ABODE RESIDENT PRESSURE STATES:", reminder, StringComparison.Ordinal);
+        Assert.Contains("Лиора", reminder, StringComparison.Ordinal);
+        Assert.Contains("considering_departure", reminder, StringComparison.Ordinal);
+        Assert.Contains("Do not reassign or transfer residents automatically", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_AfterlifeTransferRequests_SurfaceCanonicalTransferContract()
+    {
+        await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(_fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest
+        {
+            RequestId = "resident_transfer_req_1",
+            ResidentId = "resident_liora",
+            ResidentName = "Лиора",
+            SourceGuardianId = "guardian_alpha",
+            SourceGuardianName = "Азалия",
+            SourceAbodeId = "abode_alpha",
+            SourceAbodeName = "Лазурная Обитель",
+            TargetGuardianId = "guardian_beta",
+            TargetGuardianName = "Мириэль",
+            TargetAbodeId = "abode_beta",
+            TargetAbodeName = "Сад Перекрёстков",
+            AbodeDevotionLevel = 12,
+            AbodeDevotionTier = "alienated",
+            Restlessness = 84,
+            MigrationState = "ready_to_transfer",
+            TransferMode = GuardianAbodeResidentState.TransferModeAcceptedTransfer,
+            CreatedAtTurn = 41,
+            CreatedAtUtc = "2026-04-16T04:41:00Z"
+        });
+
+        var reminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, "Chaos Sea");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("ABODE RESIDENT TRANSFER REQUESTS:", reminder, StringComparison.Ordinal);
+        Assert.Contains("resident=Лиора", reminder, StringComparison.Ordinal);
+        Assert.Contains("pending_guardian_abode_resident_transfers.json", reminder, StringComparison.Ordinal);
+        Assert.Contains("transferReceipts[]", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task EnsureManifestationRequestForCurrentIncarnationAsync_ImprintRelic_CreatesManifestationRequest()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
@@ -139,7 +341,312 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureHealthyAsync_MaterializedCompanion_ClearsPendingRequestAndMarksRelicResolved()
+    public async Task EnsureManifestationRequestForCurrentIncarnationAsync_MalformedCurrentCompanionSeed_DoesNotCreateManifestationRequest()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_broken",
+                        name = "Эхо Без Семени",
+                        rarity = "Epic",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001"
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
+
+        Assert.False(_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath));
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.DoesNotContain("\"companionManifestationStatus\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"companionManifestationLastRequestedIncarnation\"", soulRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureManifestationRequestForCurrentIncarnationAsync_MalformedEmbeddedImprint_DoesNotCreateManifestationRequest()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_imprint_broken",
+                        name = "Печать Без Черт",
+                        rarity = "Rare",
+                        soulImprint = new
+                        {
+                            imprintId = "imprint_guard_broken",
+                            npcName = "Страж Кел",
+                            description = "Бывший страж северных ворот."
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
+
+        Assert.False(_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath));
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.DoesNotContain("\"companionManifestationStatus\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"companionManifestationLastRequestedIncarnation\"", soulRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureManifestationRequestForCurrentIncarnationAsync_MalformedCurrentIncarnation_DoesNotCreateManifestationRequest()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = new
+            {
+                bogus = 2
+            },
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_invalid_incarnation",
+                        name = "Эхо Сломанной Инкарнации",
+                        rarity = "Rare",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001",
+                            sourceGuardianId = "guardian_social_001",
+                            sourceAbodeId = "abode_social_001",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Путь между мирами.",
+                            futureCompanionPrompt = "Swift wanderer with ember-thread cloak"
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
+
+        Assert.False(_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath));
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.DoesNotContain("\"companionManifestationStatus\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"companionManifestationLastRequestedIncarnation\"", soulRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureManifestationRequestForCurrentIncarnationAsync_MalformedSiblingCanonicalRoot_DoesNotCreateManifestationRequest()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            inkFeathers = new
+            {
+                current = "5"
+            },
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_invalid_sibling_root",
+                        name = "Эхо Сломанного Корня",
+                        rarity = "Rare",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001",
+                            sourceGuardianId = "guardian_social_001",
+                            sourceAbodeId = "abode_social_001",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Путь между мирами.",
+                            futureCompanionPrompt = "Swift wanderer with ember-thread cloak"
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
+
+        Assert.False(_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath));
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.DoesNotContain("\"companionManifestationStatus\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"companionManifestationLastRequestedIncarnation\"", soulRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureManifestationRequestForCurrentIncarnationAsync_RecordLifeCompletionWithOrphanedPendingSnapshot_DoesNotCreateManifestationRequest()
+    {
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 2
+        });
+        await WriteJsonAsync("game_state/control/life_transitions.json", new
+        {
+            reason = "Death",
+            summary = "Жизнь завершена."
+        });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            metaStateUpdates = new
+            {
+                lifeTransitions = new
+                {
+                    recordLifeCompletion = new
+                    {
+                        characterFinalState = new { causeOfDeath = "Test" },
+                        majorAchievements = Array.Empty<string>(),
+                        relationshipsFormed = Array.Empty<object>(),
+                        moralChoices = Array.Empty<object>(),
+                        skillsLearned = Array.Empty<string>(),
+                        enlightenmentGained = 0
+                    }
+                }
+            },
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_orphaned_snapshot",
+                        name = "Эхо Осиротевшего Снэпшота",
+                        rarity = "Epic",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001",
+                            sourceGuardianId = "guardian_social_001",
+                            sourceAbodeId = "abode_social_001",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Бывшая гонец при храме семи дорог.",
+                            futureCompanionPrompt = "Swift wanderer with ember-thread cloak",
+                            bondReason = "Она всегда возвращалась к тем, кого однажды назвала своими.",
+                            coreTraits = new[] { "верность", "смелость" },
+                            archetypeHints = new[] { "courier", "pathfinder" },
+                            appearanceMotifs = new[] { "ember-thread cloak" }
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
+
+        Assert.False(_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath));
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.DoesNotContain("\"companionManifestationStatus\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"companionManifestationLastRequestedIncarnation\"", soulRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureManifestationRequestForCurrentIncarnationAsync_PrunesUnsafeSameRelicAddButPreservesUnrelatedPendingMetaWork()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 2,
+          "crossIncarnationData": {
+            "legacyThreadId": "thread_alpha"
+          },
+          "metaStateUpdates": {
+            "soulRelicOperations": {
+              "addRelic": {
+                "relicId": "relic_companion_echo_001"
+              },
+              "updateRelicField": {
+                "relicId": "relic_companion_echo_001",
+                "field": "companionManifestationStatus",
+                "newValue": "outdated"
+              },
+              "removeRelic": {
+                "relicId": "relic_keep"
+              }
+            },
+            "memoryLegacyGrant": {
+              "legacyId": "legacy_keep",
+              "legacyType": "startingCharacteristicBonus",
+              "sourceLifeHint": "life_001",
+              "characteristic": "strength",
+              "bonus": 2
+            }
+          },
+          "afterlifeArchiveUpdates": [],
+          "archiveActionResolutions": [],
+          "soulRelics": {
+            "equipped": [
+              {
+                "relicId": "relic_companion_echo_001",
+                "name": "Эхо Вестницы",
+                "rarity": "Epic",
+                "slot": "Neck",
+                "relicType": "companion_echo",
+                "companionSeed": {
+                  "sourceResidentId": "resident_echo_001",
+                  "sourceGuardianId": "guardian_social_001",
+                  "sourceAbodeId": "abode_social_001",
+                  "companionNameHint": "Лиора",
+                  "originWorldSummary": "Бывшая гонец при храме семи дорог.",
+                  "futureCompanionPrompt": "Swift wanderer with ember-thread cloak"
+                }
+              }
+            ],
+            "stored": []
+          }
+        }
+        """);
+
+        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.False(soulDoc.RootElement.TryGetProperty("crossIncarnationData", out _));
+        var metaStateUpdates = soulDoc.RootElement.GetProperty("metaStateUpdates");
+        var soulRelicOperations = metaStateUpdates.GetProperty("soulRelicOperations");
+        Assert.False(soulRelicOperations.TryGetProperty("addRelic", out _));
+        Assert.False(soulRelicOperations.TryGetProperty("updateRelicField", out _));
+        Assert.True(soulRelicOperations.TryGetProperty("removeRelic", out var removeRelic));
+        Assert.Equal("relic_keep", removeRelic.GetProperty("relicId").GetString());
+        Assert.True(metaStateUpdates.TryGetProperty("memoryLegacyGrant", out _));
+        Assert.True(soulDoc.RootElement.TryGetProperty("afterlifeArchiveUpdates", out _));
+        Assert.True(soulDoc.RootElement.TryGetProperty("archiveActionResolutions", out _));
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_MaterializedCompanion_PrunesUnsafeSameRelicAddAndMarksRelicResolved()
     {
         await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
         {
@@ -172,6 +679,40 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
             soulName = "Тестовая Душа",
             currentRealm = "Mortal World",
             currentIncarnation = 2,
+            crossIncarnationData = new
+            {
+                legacyThreadId = "thread_alpha"
+            },
+            metaStateUpdates = new
+            {
+                soulRelicOperations = new
+                {
+                    addRelic = new
+                    {
+                        relicId = "relic_companion_echo_001"
+                    },
+                    updateRelicField = new
+                    {
+                        relicId = "relic_companion_echo_001",
+                        field = "companionManifestationResolvedNpcId",
+                        newValue = "npc_outdated"
+                    },
+                    removeRelic = new
+                    {
+                        relicId = "relic_keep"
+                    }
+                },
+                memoryLegacyGrant = new
+                {
+                    legacyId = "legacy_keep",
+                    legacyType = "startingCharacteristicBonus",
+                    sourceLifeHint = "life_001",
+                    characteristic = "strength",
+                    bonus = 2
+                }
+            },
+            afterlifeArchiveUpdates = Array.Empty<object>(),
+            archiveActionResolutions = Array.Empty<object>(),
             soulRelics = new
             {
                 equipped = new object[]
@@ -200,6 +741,520 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
             }
         });
 
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_manifested_liora",
+              "npcName": "Лиора",
+              "introducedAtTurn": 18,
+              "introducedAtUtc": "2026-03-27T00:18:00Z",
+              "sourceCompanionRelicId": "relic_companion_echo_001",
+              "sourceAfterlifeResidentId": "resident_echo_001"
+            }
+          ]
+        }
+        """);
+
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Mortal World");
+
+        var pendingRaw = await _fs.ReadFileAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath);
+        Assert.True(string.IsNullOrWhiteSpace(pendingRaw), "Pending manifestation request should be cleared after materialization.");
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.False(soulDoc.RootElement.TryGetProperty("crossIncarnationData", out _));
+        var metaStateUpdates = soulDoc.RootElement.GetProperty("metaStateUpdates");
+        var soulRelicOperations = metaStateUpdates.GetProperty("soulRelicOperations");
+        Assert.False(soulRelicOperations.TryGetProperty("addRelic", out _));
+        Assert.False(soulRelicOperations.TryGetProperty("updateRelicField", out _));
+        Assert.True(soulRelicOperations.TryGetProperty("removeRelic", out var removeRelic));
+        Assert.Equal("relic_keep", removeRelic.GetProperty("relicId").GetString());
+        Assert.True(metaStateUpdates.TryGetProperty("memoryLegacyGrant", out _));
+        Assert.True(soulDoc.RootElement.TryGetProperty("afterlifeArchiveUpdates", out _));
+        Assert.True(soulDoc.RootElement.TryGetProperty("archiveActionResolutions", out _));
+        var resolvedRelic = soulDoc.RootElement.GetProperty("soulRelics").GetProperty("equipped").EnumerateArray().Single();
+        Assert.Equal("materialized", resolvedRelic.GetProperty("companionManifestationStatus").GetString());
+        Assert.Equal("resident_manifest_req_1", resolvedRelic.GetProperty("companionManifestationResolvedRequestId").GetString());
+        Assert.Equal("npc_manifested_liora", resolvedRelic.GetProperty("companionManifestationResolvedNpcId").GetString());
+        Assert.Equal(18, resolvedRelic.GetProperty("companionManifestationResolvedAtTurn").GetInt32());
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_MatchedNpcWithoutReadableSoulRelics_KeepsManifestationRequestRetryable()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "resident_manifest_req_unreadable_relics",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_companion_echo_unreadable",
+                    relicName = "Эхо Непрочитанной Вестницы",
+                    sourceResidentId = "resident_echo_001",
+                    sourceGuardianId = "guardian_social_001",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 2,
+                    companionNameHint = "Лиора",
+                    originWorldSummary = "Бывшая гонец при храме семи дорог.",
+                    futureCompanionPrompt = "Swift wanderer with ember-thread cloak",
+                    createdAtUtc = "2026-03-27T00:00:00Z"
+                }
+            }
+        });
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2
+        });
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_manifested_liora",
+              "npcName": "Лиора",
+              "introducedAtTurn": 18,
+              "introducedAtUtc": "2026-03-27T00:18:00Z",
+              "sourceCompanionRelicId": "relic_companion_echo_unreadable",
+              "sourceAfterlifeResidentId": "resident_echo_001"
+            }
+          ]
+        }
+        """);
+
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Mortal World");
+
+        var pendingRaw = await _fs.ReadFileAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("resident_manifest_req_unreadable_relics", pendingRaw, StringComparison.Ordinal);
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.False(soulDoc.RootElement.TryGetProperty("soulRelics", out _));
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_MaterializedCompanion_DoesNotDuplicateRelicOnNextNormalizationPass()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "resident_manifest_req_replay",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_companion_echo_replay",
+                    relicName = "Эхо Проводника",
+                    sourceResidentId = "resident_echo_001",
+                    sourceGuardianId = "guardian_social_001",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 2,
+                    companionNameHint = "Лиора",
+                    originWorldSummary = "Путь между мирами.",
+                    futureCompanionPrompt = "Swift wanderer with ember-thread cloak",
+                    createdAtUtc = "2026-03-27T00:00:00Z"
+                }
+            }
+        });
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            metaStateUpdates = new
+            {
+                soulRelicOperations = new
+                {
+                    addRelic = new
+                    {
+                        relicId = "relic_companion_echo_replay",
+                        name = "Эхо Проводника",
+                        rarity = "Epic",
+                        slot = "Neck",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho
+                    },
+                    updateRelicField = new
+                    {
+                        relicId = "relic_companion_echo_replay",
+                        field = "companionManifestationResolvedNpcId",
+                        newValue = "npc_outdated"
+                    }
+                }
+            },
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_replay",
+                        name = "Эхо Проводника",
+                        rarity = "Epic",
+                        slot = "Neck",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionManifestationStatus = "pending",
+                        lastManifestationRequestId = "resident_manifest_req_replay",
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001",
+                            sourceGuardianId = "guardian_social_001",
+                            sourceAbodeId = "abode_social_001",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Путь между мирами.",
+                            futureCompanionPrompt = "Swift wanderer with ember-thread cloak"
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_manifested_replay",
+              "npcName": "Лиора",
+              "introducedAtTurn": 18,
+              "introducedAtUtc": "2026-03-27T00:18:00Z",
+              "sourceCompanionRelicId": "relic_companion_echo_replay",
+              "sourceAfterlifeResidentId": "resident_echo_001"
+            }
+          ]
+        }
+        """);
+
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Mortal World");
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        var soulRelics = soulDoc.RootElement.GetProperty("soulRelics");
+        var duplicateCount =
+            soulRelics.GetProperty("equipped").EnumerateArray().Count(relic => relic.GetProperty("relicId").GetString() == "relic_companion_echo_replay") +
+            soulRelics.GetProperty("stored").EnumerateArray().Count(relic => relic.GetProperty("relicId").GetString() == "relic_companion_echo_replay");
+        Assert.Equal(1, duplicateCount);
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_MaterializedStoredCompanion_PreservesSafeSameRelicAddAndDoesNotDuplicateOnReplay()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "resident_manifest_req_stored",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_companion_echo_stored",
+                    relicName = "Эхо Хранительницы",
+                    sourceResidentId = "resident_echo_001",
+                    sourceGuardianId = "guardian_social_001",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 2,
+                    companionNameHint = "Лиора",
+                    originWorldSummary = "Путь между мирами.",
+                    futureCompanionPrompt = "Swift wanderer with ember-thread cloak",
+                    createdAtUtc = "2026-03-27T00:00:00Z"
+                }
+            }
+        });
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            metaStateUpdates = new
+            {
+                soulRelicOperations = new
+                {
+                    addRelic = new
+                    {
+                        relicId = "relic_companion_echo_stored",
+                        name = "Эхо Хранительницы",
+                        rarity = "Epic",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho
+                    },
+                    updateRelicField = new
+                    {
+                        relicId = "relic_companion_echo_stored",
+                        field = "companionManifestationResolvedNpcId",
+                        newValue = "npc_outdated"
+                    }
+                }
+            },
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_stored",
+                        name = "Эхо Хранительницы",
+                        rarity = "Epic",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionManifestationStatus = "pending",
+                        lastManifestationRequestId = "resident_manifest_req_stored",
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001",
+                            sourceGuardianId = "guardian_social_001",
+                            sourceAbodeId = "abode_social_001",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Путь между мирами.",
+                            futureCompanionPrompt = "Swift wanderer with ember-thread cloak"
+                        }
+                    }
+                }
+            }
+        });
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_manifested_stored",
+              "npcName": "Лиора",
+              "introducedAtTurn": 18,
+              "introducedAtUtc": "2026-03-27T00:18:00Z",
+              "sourceCompanionRelicId": "relic_companion_echo_stored",
+              "sourceAfterlifeResidentId": "resident_echo_001"
+            }
+          ]
+        }
+        """);
+
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Mortal World");
+
+        using (var patchedSoulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!))
+        {
+            var metaStateUpdates = patchedSoulDoc.RootElement.GetProperty("metaStateUpdates");
+            var soulRelicOperations = metaStateUpdates.GetProperty("soulRelicOperations");
+            Assert.True(soulRelicOperations.TryGetProperty("addRelic", out _));
+            Assert.False(soulRelicOperations.TryGetProperty("updateRelicField", out _));
+        }
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        var soulRelics = soulDoc.RootElement.GetProperty("soulRelics");
+        var duplicateCount =
+            soulRelics.GetProperty("equipped").EnumerateArray().Count(relic => relic.GetProperty("relicId").GetString() == "relic_companion_echo_stored") +
+            soulRelics.GetProperty("stored").EnumerateArray().Count(relic => relic.GetProperty("relicId").GetString() == "relic_companion_echo_stored");
+        Assert.Equal(1, duplicateCount);
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_MalformedCurrentSoulRelics_KeepsManifestationRequestRetryable()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "resident_manifest_req_broken",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_companion_echo_broken",
+                    relicName = "Эхо Без Семени",
+                    sourceResidentId = "resident_echo_001",
+                    sourceGuardianId = "guardian_social_001",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 2,
+                    companionNameHint = "Лиора",
+                    originWorldSummary = "Бывшая гонец при храме семи дорог.",
+                    futureCompanionPrompt = "Swift wanderer with ember-thread cloak",
+                    createdAtUtc = "2026-03-27T00:00:00Z"
+                }
+            }
+        });
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_broken",
+                        name = "Эхо Без Семени",
+                        rarity = "Epic",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionManifestationStatus = "pending",
+                        lastManifestationRequestId = "resident_manifest_req_broken",
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001"
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_manifested_liora",
+              "npcName": "Лиора",
+              "sourceCompanionRelicId": "relic_companion_echo_broken",
+              "sourceAfterlifeResidentId": "resident_echo_001"
+            }
+          ]
+        }
+        """);
+
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Mortal World");
+
+        var pendingRaw = await _fs.ReadFileAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath);
+        Assert.Contains("\"requestId\": \"resident_manifest_req_broken\"", pendingRaw, StringComparison.Ordinal);
+
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.DoesNotContain("\"companionManifestationStatus\": \"materialized\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"companionManifestationResolvedRequestId\": \"resident_manifest_req_broken\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"companionManifestationResolvedNpcId\": \"npc_manifested_liora\"", soulRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_MalformedCurrentIncarnation_KeepsManifestationRequestRetryable()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "resident_manifest_req_invalid_incarnation",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_companion_echo_invalid_incarnation",
+                    relicName = "Эхо Сломанной Инкарнации",
+                    sourceResidentId = "resident_echo_001",
+                    sourceGuardianId = "guardian_social_001",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 2,
+                    companionNameHint = "Лиора",
+                    originWorldSummary = "Бывшая гонец при храме семи дорог.",
+                    futureCompanionPrompt = "Swift wanderer with ember-thread cloak",
+                    createdAtUtc = "2026-03-27T00:00:00Z"
+                }
+            }
+        });
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = new
+            {
+                bogus = 2
+            },
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_invalid_incarnation",
+                        name = "Эхо Сломанной Инкарнации",
+                        rarity = "Epic",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionManifestationStatus = "pending",
+                        lastManifestationRequestId = "resident_manifest_req_invalid_incarnation",
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001",
+                            sourceGuardianId = "guardian_social_001",
+                            sourceAbodeId = "abode_social_001",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Бывшая гонец при храме семи дорог.",
+                            futureCompanionPrompt = "Swift wanderer with ember-thread cloak"
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Mortal World");
+
+        var pendingRaw = await _fs.ReadFileAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath);
+        Assert.Contains("\"requestId\": \"resident_manifest_req_invalid_incarnation\"", pendingRaw, StringComparison.Ordinal);
+
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.DoesNotContain("\"companionManifestationStatus\": \"materialized\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"companionManifestationResolvedRequestId\": \"resident_manifest_req_invalid_incarnation\"", soulRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_LegacyAliasNpcSectionDoesNotResolveManifestationRequest()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "resident_manifest_req_legacy_alias",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_companion_echo_legacy",
+                    relicName = "Эхо Вестницы",
+                    sourceResidentId = "resident_echo_001",
+                    sourceGuardianId = "guardian_social_001",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 2,
+                    companionNameHint = "Лиора",
+                    originWorldSummary = "Бывшая гонец при храме семи дорог.",
+                    futureCompanionPrompt = "Swift wanderer with ember-thread cloak",
+                    createdAtUtc = "2026-03-27T00:00:00Z"
+                }
+            }
+        });
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_legacy",
+                        name = "Эхо Вестницы",
+                        rarity = "Epic",
+                        slot = "Neck",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionManifestationStatus = "pending",
+                        lastManifestationRequestId = "resident_manifest_req_legacy_alias",
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001",
+                            sourceGuardianId = "guardian_social_001",
+                            sourceAbodeId = "abode_social_001",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Бывшая гонец при храме семи дорог.",
+                            futureCompanionPrompt = "Swift wanderer with ember-thread cloak"
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
         await WriteJsonAsync("game_state/npcs/npc_core.json", new
         {
             npcs = new object[]
@@ -210,7 +1265,7 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
                     npcName = "Лиора",
                     introducedAtTurn = 18,
                     introducedAtUtc = "2026-03-27T00:18:00Z",
-                    sourceCompanionRelicId = "relic_companion_echo_001",
+                    sourceCompanionRelicId = "relic_companion_echo_legacy",
                     sourceAfterlifeResidentId = "resident_echo_001"
                 }
             }
@@ -219,14 +1274,11 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
         await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Mortal World");
 
         var pendingRaw = await _fs.ReadFileAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath);
-        Assert.True(string.IsNullOrWhiteSpace(pendingRaw), "Pending manifestation request should be cleared after materialization.");
+        Assert.Contains("\"requestId\": \"resident_manifest_req_legacy_alias\"", pendingRaw, StringComparison.Ordinal);
 
         var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        Assert.NotNull(soulRaw);
-        Assert.Contains("\"companionManifestationStatus\": \"materialized\"", soulRaw, StringComparison.Ordinal);
-        Assert.Contains("\"companionManifestationResolvedRequestId\": \"resident_manifest_req_1\"", soulRaw, StringComparison.Ordinal);
-        Assert.Contains("\"companionManifestationResolvedNpcId\": \"npc_manifested_liora\"", soulRaw, StringComparison.Ordinal);
-        Assert.Contains("\"companionManifestationResolvedAtTurn\": 18", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"companionManifestationStatus\": \"materialized\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"companionManifestationResolvedRequestId\": \"resident_manifest_req_legacy_alias\"", soulRaw, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -273,25 +1325,24 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
             {
                 equipped = new object[]
                 {
-                    new { relicId = "relic_imprint_001", name = "Печать Друга I", companionManifestationStatus = "pending", soulImprint = new { imprintId = "imprint_shared_1", npcName = "Тарен" } },
-                    new { relicId = "relic_imprint_002", name = "Печать Друга II", companionManifestationStatus = "pending", soulImprint = new { imprintId = "imprint_shared_1", npcName = "Тарен" } }
+                    new { relicId = "relic_imprint_001", name = "Печать Друга I", rarity = "Rare", companionManifestationStatus = "pending", soulImprint = new { imprintId = "imprint_shared_1", npcName = "Тарен", description = "Первый отголосок спутника.", personalityTraits = new[] { "верность" } } },
+                    new { relicId = "relic_imprint_002", name = "Печать Друга II", rarity = "Rare", companionManifestationStatus = "pending", soulImprint = new { imprintId = "imprint_shared_1", npcName = "Тарен", description = "Второй отголосок спутника.", personalityTraits = new[] { "стойкость" } } }
                 },
                 stored = Array.Empty<object>()
             }
         });
 
-        await WriteJsonAsync("game_state/npcs/npc_core.json", new
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
         {
-            npcs = new object[]
+          "UpdateNPCs": [
             {
-                new
-                {
-                    npcId = "npc_manifested_taren",
-                    npcName = "Тарен",
-                    sourceSoulImprintId = "imprint_shared_1"
-                }
+              "npcId": "npc_manifested_taren",
+              "npcName": "Тарен",
+              "sourceSoulImprintId": "imprint_shared_1"
             }
-        });
+          ]
+        }
+        """);
 
         await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Mortal World");
 
@@ -347,26 +1398,25 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
             {
                 equipped = new object[]
                 {
-                    new { relicId = "relic_imprint_001", name = "Печать Друга I", companionManifestationStatus = "pending", soulImprint = new { imprintId = "imprint_shared_1", npcName = "Тарен" } },
-                    new { relicId = "relic_imprint_002", name = "Печать Друга II", companionManifestationStatus = "pending", soulImprint = new { imprintId = "imprint_shared_1", npcName = "Тарен" } }
+                    new { relicId = "relic_imprint_001", name = "Печать Друга I", rarity = "Rare", companionManifestationStatus = "pending", soulImprint = new { imprintId = "imprint_shared_1", npcName = "Тарен", description = "Первый отголосок спутника.", personalityTraits = new[] { "верность" } } },
+                    new { relicId = "relic_imprint_002", name = "Печать Друга II", rarity = "Rare", companionManifestationStatus = "pending", soulImprint = new { imprintId = "imprint_shared_1", npcName = "Тарен", description = "Второй отголосок спутника.", personalityTraits = new[] { "стойкость" } } }
                 },
                 stored = Array.Empty<object>()
             }
         });
 
-        await WriteJsonAsync("game_state/npcs/npc_core.json", new
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
         {
-            npcs = new object[]
+          "UpdateNPCs": [
             {
-                new
-                {
-                    npcId = "npc_manifested_taren",
-                    npcName = "Тарен",
-                    sourceCompanionRelicId = "relic_imprint_001",
-                    sourceSoulImprintId = "imprint_shared_1"
-                }
+              "npcId": "npc_manifested_taren",
+              "npcName": "Тарен",
+              "sourceCompanionRelicId": "relic_imprint_001",
+              "sourceSoulImprintId": "imprint_shared_1"
             }
-        });
+          ]
+        }
+        """);
 
         await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Mortal World");
 

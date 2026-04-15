@@ -2263,11 +2263,13 @@ public partial class ValidationService
     {
         var currentSoulJson = ReadCurrentTrackedFileSync("game_state/meta/soul_state.json");
         var preTurnSoulJson = ReadValidatedPendingTurnSnapshotSoulStateJsonSync(manifest);
+        var currentLifeTransitionsJson = ReadCurrentTrackedFileSync("game_state/control/life_transitions.json");
         var soulContextRequirements =
             CanonicalStateNormalizer.ResolveRequiredCurrentGuardianProjectSoulContext(currentTrackerRoot, preTurnTrackerRoot);
         return CanonicalStateNormalizer.TryResolveGuardianProjectAuthoritySoulContext(
             currentSoulJson,
             preTurnSoulJson,
+            currentLifeTransitionsJson,
             currentTurn,
             soulContextRequirements,
             out currentIncarnation,

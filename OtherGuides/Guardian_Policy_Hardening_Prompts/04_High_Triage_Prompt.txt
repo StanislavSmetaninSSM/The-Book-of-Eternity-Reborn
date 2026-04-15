@@ -1,0 +1,71 @@
+Проведи triage для найденного high-level finding в системе политики хранителей.
+
+Контекст:
+- до этого мы делали hardening-консолидацию kernel/gateway/authority model;
+- мы не хотим автоматически запускать новый длинный цикл фиксов;
+- сначала нужно понять, является ли новый high:
+  1. реальным regression against agreed hardening contract;
+  2. missed seam того же самого класса проблем;
+  3. accepted/documented residual risk;
+  4. новым отдельным классом high-level проблемы.
+
+Твоя задача:
+- взять конкретный high finding, который был найден;
+- сверить его с кодом;
+- сверить его с текущим hardening basis / authority contract / audit assumptions;
+- определить, действительно ли это high и к какому классу он относится.
+
+Правила:
+- не предлагай сразу implementation plan;
+- не раздувай ответ в общий code review;
+- не уходи в unrelated bugs;
+- если finding некорректно классифицирован как high, скажи это прямо;
+- если finding уже покрыт accepted residual risk или explicit threat-model limitation, скажи это прямо;
+- если finding действительно новый, отдели root cause от симптомов.
+
+Считай особенно важным:
+- bypass shared authority/kernel/gateway layers;
+- raw pending snapshot / rollback / current-state authority outside approved helpers;
+- validator/runtime/normalizer drift against one agreed authority contract;
+- destructive paths driven by raw manifest/snapshot data;
+- fail-open behavior where contract says fail-closed;
+- documented residual risks that were explicitly accepted.
+
+Формат ответа:
+1. Triage Verdict
+2. Contract Comparison
+3. Classification
+4. Recommendation
+
+Требования к разделам:
+
+1. Triage Verdict
+- one-line verdict:
+  - `True High`
+  - `Not High`
+  - `Accepted Residual`
+  - `Needs Reclassification`
+
+2. Contract Comparison
+- кратко объясни, нарушает ли finding уже согласованный hardening contract;
+- если да, укажи какой именно инвариант нарушен;
+- если нет, укажи почему это вне предыдущего scope или уже было принято как limitation.
+
+3. Classification
+- выбери ровно один вариант:
+  - `Regression Against Existing Contract`
+  - `Missed Seam In Same Problem Class`
+  - `Accepted Residual Risk`
+  - `New High-Level Problem Class`
+- обязательно поясни выбор в 2-4 предложениях.
+
+4. Recommendation
+- если это regression: скажи, что нужен точечный fix + regression/source guard;
+- если это missed seam: скажи, что нужен небольшой extension current hardening;
+- если это accepted residual: скажи, что фикс не обязателен и почему;
+- если это новый класс: скажи, что нужен отдельный план, а не продолжение старого.
+
+Ограничения:
+- максимум 3 пункта в сумме по всему ответу, если используешь bullets;
+- приоритет точности классификации над полнотой;
+- если для оценки нужен assumption, укажи его явно.

@@ -105,6 +105,44 @@ public sealed class SoulIdentityServiceTests : IDisposable
         Assert.Equal("Имя души не может быть пустым.", result.ErrorMessage);
     }
 
+    [Fact]
+    public async Task RenameSoulAsync_PreservesUnrelatedTransientCommandRootsButStripsLegacySoulStateRootKeysOnWrite()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Аурелия",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 2,
+          "crossIncarnationData": {
+            "legacyThreadId": "thread_alpha"
+          },
+          "metaStateUpdates": {
+            "memoryLegacyGrant": {
+              "legacyId": "legacy_alpha",
+              "legacyType": "startingCharacteristicBonus",
+              "sourceLifeHint": "life_001",
+              "characteristic": "strength",
+              "bonus": 2
+            }
+          },
+          "afterlifeArchiveUpdates": [],
+          "archiveActionResolutions": []
+        }
+        """);
+
+        var result = await _service.RenameSoulAsync("Пепельная Искра");
+
+        Assert.True(result.Success);
+
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.NotNull(soulRaw);
+        Assert.Contains("\"soulName\": \"Пепельная Искра\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("crossIncarnationData", soulRaw, StringComparison.Ordinal);
+        Assert.Contains("metaStateUpdates", soulRaw, StringComparison.Ordinal);
+        Assert.Contains("afterlifeArchiveUpdates", soulRaw, StringComparison.Ordinal);
+        Assert.Contains("archiveActionResolutions", soulRaw, StringComparison.Ordinal);
+    }
+
     public void Dispose()
     {
         try

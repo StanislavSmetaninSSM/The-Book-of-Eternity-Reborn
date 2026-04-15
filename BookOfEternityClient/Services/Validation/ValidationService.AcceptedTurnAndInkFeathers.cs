@@ -1403,18 +1403,18 @@ public partial class ValidationService
         if (RequiresValidatedGuardianSnapshotForAcceptedTurnInkFeatherAction(actionTag))
             return await ValidateGuardianAffectedFilesChangedAsync(affectedFiles, actionTag, issues, allowedSet);
 
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
+        var manifest = await LoadValidatedCurrentPendingTurnSnapshotManifestAsync();
         if (manifest == null)
         {
             issues.Add(new ValidationIssue(
                 PendingTurnSnapshotManifestPath,
                 IssueSeverity.Error,
-                $"Для проверки {actionTag} отсутствует pending turn snapshot manifest",
+                $"Для проверки {actionTag} требуется current validated pending turn snapshot manifest",
                 code: "ink_feather_missing_snapshot_manifest",
                 section: actionTag,
                 expected: PendingTurnSnapshotManifestPath,
-                actual: "missing",
-                repairHint: "Accepted-turn validation feather action требует pre-turn snapshot context."));
+                actual: "missing or invalid validated manifest",
+                repairHint: "Accepted-turn validation feather action требует current validated pre-turn snapshot context."));
             return new List<string>();
         }
 
@@ -1434,20 +1434,30 @@ public partial class ValidationService
                 continue;
             }
 
-            if (await DidFileChangeAgainstManifestAsync(manifest, file))
+            switch (await DescribeTrackedFileChangeAgainstManifestAsync(manifest, file))
             {
-                changedFiles.Add(file);
-            }
-            else
-            {
-                issues.Add(new ValidationIssue(
-                    $"{InkFeatherActionResultPath}.stateEvidence.affectedFiles",
-                    IssueSeverity.Error,
-                    $"Для {actionTag} listed affected file не изменился реально: {file}",
-                    code: "ink_feather_affected_file_unchanged",
-                    section: actionTag,
-                    expected: "changed file",
-                    actual: file));
+                case ValidatedTrackedFileChangeStatus.Changed:
+                    changedFiles.Add(file);
+                    break;
+                case ValidatedTrackedFileChangeStatus.MissingValidatedBaseline:
+                    AddMissingValidatedTrackedBaselineIssue(
+                        issues,
+                        file,
+                        "ink_feather_affected_file_missing_validated_baseline",
+                        actionTag,
+                        $"Для {actionTag} не удалось строго проверить affected file {file}: validated pre-turn baseline missing.",
+                        "При создании pending turn snapshot сохраняй affected file в manifest.Files/snapshotFileHashes и не допускай missing validated baseline для ink-feather proof.");
+                    break;
+                default:
+                    issues.Add(new ValidationIssue(
+                        $"{InkFeatherActionResultPath}.stateEvidence.affectedFiles",
+                        IssueSeverity.Error,
+                        $"Для {actionTag} listed affected file не изменился реально: {file}",
+                        code: "ink_feather_affected_file_unchanged",
+                        section: actionTag,
+                        expected: "changed file",
+                        actual: file));
+                    break;
             }
         }
 
@@ -1637,33 +1647,60 @@ public partial class ValidationService
 
     private static string ComputeManifestPayloadHash(ValidationPendingTurnSnapshotManifest manifest)
     {
-        var originalHash = manifest.ManifestPayloadHash;
-        manifest.ManifestPayloadHash = string.Empty;
-        var payload = JsonSerializer.Serialize(manifest, ManifestHashJsonOpts);
-        manifest.ManifestPayloadHash = originalHash;
-        return ComputeSha256(payload);
+        return PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(
+            manifest,
+            ManifestHashJsonOpts,
+            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash);
     }
 
     private static string ComputeSha256(string content)
     {
-        using var sha = SHA256.Create();
-        var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(content));
-        return Convert.ToHexString(bytes);
+        return PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
 
     private async Task<string?> ReadPreTurnTrackedFileAsync(string relativePath)
     {
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
-        if (manifest == null)
-            return null;
+        return await ReadValidatedCurrentPreTurnTrackedFileAsync(relativePath);
+    }
 
-        if (manifest.RollbackBackups != null &&
-            manifest.RollbackBackups.TryGetValue(relativePath, out var backupPath))
-        {
-            return await _fs.ReadFileAsync(backupPath);
-        }
+    private static bool HasValidatedTrackedSnapshotRegistration(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string relativePath)
+    {
+        return PendingTurnSnapshotAuthority.HasValidatedSnapshotCoverage(
+            manifest,
+            static snapshotManifest => snapshotManifest.Files,
+            static snapshotManifest => snapshotManifest.SnapshotFileHashes,
+            new[] { relativePath },
+            out _);
+    }
 
-        return null;
+    private static bool IsTrackedByValidatedBaseline(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string relativePath)
+    {
+        return (manifest.RollbackBaselineFiles ?? new List<string>())
+            .Any(path => string.Equals(path, relativePath, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void AddMissingValidatedTrackedBaselineIssue(
+        List<ValidationIssue> issues,
+        string filePath,
+        string code,
+        string section,
+        string message,
+        string repairHint)
+    {
+        issues.Add(new ValidationIssue(
+            filePath,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: section,
+            expected: $"validated pre-turn snapshot baseline for {filePath}",
+            actual: "tracked file should have a validated pre-turn snapshot entry, but snapshot file/hash is missing or unreadable",
+            repairHint: repairHint));
     }
 
     private async Task ValidateAcceptedTurnTransientOutputFreshnessAsync(
@@ -1974,6 +2011,7 @@ public partial class ValidationService
     {
         var manifestExists = File.Exists(_fs.ResolvePath(PendingTurnSnapshotManifestPath));
         var manifest = LoadValidationPendingTurnSnapshotManifestSync();
+        var authorityJson = ReadPendingTurnSnapshotAuthoritySync();
         if (manifest == null)
         {
             return new ValidatedPendingTurnSnapshotLookup(
@@ -1982,36 +2020,50 @@ public partial class ValidationService
         }
 
         return new ValidatedPendingTurnSnapshotLookup(
-            IsValidatedPendingTurnSnapshotManifestUsable(manifest)
+            IsValidatedPendingTurnSnapshotManifestUsable(manifest, authorityJson)
                 ? ValidatedPendingTurnSnapshotStatus.Usable
                 : ValidatedPendingTurnSnapshotStatus.Unusable,
             manifest);
     }
 
-    private string? ReadPreTurnTrackedFileSync(string relativePath)
+    private string? ReadPendingTurnSnapshotAuthoritySync()
     {
-        var manifest = LoadValidationPendingTurnSnapshotManifestSync();
-        if (manifest == null)
-            return null;
-
-        if (manifest.RollbackBackups == null ||
-            !manifest.RollbackBackups.TryGetValue(relativePath, out var backupPath))
-        {
-            return null;
-        }
-
-        var resolvedBackupPath = _fs.ResolvePath(backupPath);
-        if (!File.Exists(resolvedBackupPath))
+        var authorityPath = _fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath);
+        if (!File.Exists(authorityPath))
             return null;
 
         try
         {
-            return File.ReadAllText(resolvedBackupPath);
+            return File.ReadAllText(authorityPath);
         }
         catch
         {
             return null;
         }
+    }
+
+    private string? ReadRelativeFileFromWorkspace(string relativePath)
+    {
+        if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
+            return null;
+
+        var fullPath = _fs.ResolvePath(relativePath);
+        if (!File.Exists(fullPath))
+            return null;
+
+        try
+        {
+            return File.ReadAllText(fullPath);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private string? ReadPreTurnTrackedFileSync(string relativePath)
+    {
+        return ReadValidatedCurrentPreTurnTrackedFileSync(relativePath);
     }
 
     private async Task<string?> ReadValidatedCurrentPreTurnTrackedFileAsync(string relativePath)
@@ -2030,13 +2082,24 @@ public partial class ValidationService
             : null;
     }
 
+    private bool HasLifecycleAuthorizedCurrentTriggerLifeEndSync()
+    {
+        return CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEnd(
+            ReadCurrentTrackedFileSync("game_state/control/life_transitions.json"),
+            CanonicalStateNormalizer.TryReadStrictCurrentRealm(
+                ReadValidatedCurrentPreTurnTrackedFileSync("game_state/meta/soul_state.json")),
+            CanonicalStateNormalizer.TryReadStrictCurrentRealm(
+                ReadCurrentTrackedFileSync("game_state/meta/soul_state.json")));
+    }
+
     private async Task<string?> ReadValidatedPendingTurnSnapshotFileAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         string relativePath)
     {
         if (manifest.Files == null ||
             !manifest.Files.TryGetValue(relativePath, out var snapshotPath) ||
-            string.IsNullOrWhiteSpace(snapshotPath))
+            string.IsNullOrWhiteSpace(snapshotPath) ||
+            !PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath))
         {
             return null;
         }
@@ -2065,7 +2128,8 @@ public partial class ValidationService
     {
         if (manifest.Files == null ||
             !manifest.Files.TryGetValue(relativePath, out var snapshotPath) ||
-            string.IsNullOrWhiteSpace(snapshotPath))
+            string.IsNullOrWhiteSpace(snapshotPath) ||
+            !PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath))
         {
             return null;
         }
@@ -2092,6 +2156,25 @@ public partial class ValidationService
                 return null;
 
             return snapshotJson;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private string? ReadRelativeWorkspaceFileSync(string relativePath)
+    {
+        if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
+            return null;
+
+        var fullPath = _fs.ResolvePath(relativePath);
+        if (!File.Exists(fullPath))
+            return null;
+
+        try
+        {
+            return File.ReadAllText(fullPath);
         }
         catch
         {
@@ -2208,6 +2291,59 @@ public partial class ValidationService
         return null;
     }
 
+    private async Task<string?> ReadRequiredValidatedPendingTurnSnapshotRealmAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string filePath,
+        List<ValidationIssue> issues,
+        string code,
+        string section,
+        string message,
+        string repairHint)
+    {
+        var realm = await TryReadValidatedPendingTurnSnapshotRealmAsync(manifest);
+        if (!string.IsNullOrWhiteSpace(realm))
+            return realm;
+
+        issues.Add(new ValidationIssue(
+            filePath,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: section,
+            expected: "validated snapshot game_state/meta/soul_state.json with canonical currentRealm",
+            actual: "validated snapshot game_state/meta/soul_state.json is missing, unreadable, or lacks canonical currentRealm",
+            repairHint: repairHint));
+        return null;
+    }
+
+    private async Task<string?> LoadRequiredValidatedCurrentPreTurnRealmAsync(
+        string filePath,
+        List<ValidationIssue> issues,
+        string code,
+        string section,
+        string message,
+        string repairHint)
+    {
+        var manifest = await LoadRequiredValidatedCurrentPendingTurnSnapshotManifestAsync(
+            filePath,
+            issues,
+            code,
+            section,
+            message,
+            repairHint);
+        if (manifest == null)
+            return null;
+
+        return await ReadRequiredValidatedPendingTurnSnapshotRealmAsync(
+            manifest,
+            filePath,
+            issues,
+            code,
+            section,
+            message,
+            repairHint);
+    }
+
     private sealed record PendingTurnRequestValidationContext(
         string SessionId,
         string RequestId,
@@ -2227,6 +2363,13 @@ public partial class ValidationService
     private sealed record ValidatedCurrentPreTurnRealmResolution(
         ValidatedPendingTurnSnapshotStatus SnapshotStatus,
         string? Realm);
+
+    private enum ValidatedTrackedFileChangeStatus
+    {
+        Changed,
+        Unchanged,
+        MissingValidatedBaseline
+    }
 
     private sealed record GuardianValidatedSnapshotContext(
         ValidatedPendingTurnSnapshotStatus SnapshotStatus,
@@ -2522,7 +2665,26 @@ public partial class ValidationService
         List<ValidationIssue> issues)
     {
         if (!RequiresValidatedGuardianSnapshotForAcceptedTurnInkFeatherAction(actionContext.ActionTag))
-            return await TryResolvePreTurnRealmAsync();
+        {
+            var manifest = await LoadRequiredValidatedCurrentPendingTurnSnapshotManifestAsync(
+                "input/turn_request.json.playerAction",
+                issues,
+                code: "ink_feather_action_missing_validated_snapshot_context",
+                section: "INK_FEATHER_ACTION",
+                message: $"INK_FEATHER_ACTION {actionContext.ActionTag} требует current validated pending turn snapshot manifest.",
+                repairHint: "Для accepted-turn INK_FEATHER_ACTION сохраняй current validated pending turn snapshot и не опирайся на отсутствующий или tampered manifest.");
+            if (manifest == null)
+                return null;
+
+            return await ReadRequiredValidatedPendingTurnSnapshotRealmAsync(
+                manifest,
+                "input/turn_request.json.playerAction",
+                issues,
+                code: "ink_feather_action_invalid_validated_snapshot_realm",
+                section: "INK_FEATHER_ACTION",
+                message: $"INK_FEATHER_ACTION {actionContext.ActionTag} требует validated pre-turn realm из snapshot soul_state.",
+                repairHint: "Для accepted-turn INK_FEATHER_ACTION сохраняй validated snapshot copy of game_state/meta/soul_state.json с canonical currentRealm.");
+        }
 
         var snapshotContext = await ResolveGuardianValidatedSnapshotContextAsync();
         if (snapshotContext.SnapshotStatus == ValidatedPendingTurnSnapshotStatus.Usable &&
@@ -3428,6 +3590,7 @@ public partial class ValidationService
             if (!CanonicalStateNormalizer.TryResolveGuardianProjectAuthoritySoulContext(
                     soulStateJson,
                     null,
+                    ReadCurrentTrackedFileSync("game_state/control/life_transitions.json"),
                     currentTurn,
                     soulContextRequirements,
                     out var currentIncarnation,
@@ -3480,6 +3643,7 @@ public partial class ValidationService
     {
         var manifestExists = _fs.FileExists(PendingTurnSnapshotManifestPath);
         var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
+        var authorityJson = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
         if (manifest == null)
         {
             return new ValidatedPendingTurnSnapshotLookup(
@@ -3488,20 +3652,51 @@ public partial class ValidationService
         }
 
         return new ValidatedPendingTurnSnapshotLookup(
-            IsValidatedPendingTurnSnapshotManifestUsable(manifest)
+            IsValidatedPendingTurnSnapshotManifestUsable(manifest, authorityJson)
                 ? ValidatedPendingTurnSnapshotStatus.Usable
                 : ValidatedPendingTurnSnapshotStatus.Unusable,
             manifest);
     }
 
-    private bool IsValidatedPendingTurnSnapshotManifestUsable(ValidationPendingTurnSnapshotManifest? manifest)
+    private async Task<PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload?> LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync()
     {
-        if (manifest == null || string.IsNullOrWhiteSpace(manifest.ManifestPayloadHash))
+        var authorityJson = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
+        if (!PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(authorityJson, out var payload) || payload == null)
+            return null;
+
+        return IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(payload)
+            ? payload
+            : null;
+    }
+
+    private bool IsValidatedPendingTurnSnapshotManifestUsable(
+        ValidationPendingTurnSnapshotManifest? manifest,
+        string? authorityJson)
+    {
+        if (manifest == null)
             return false;
 
-        var actualManifestHash = ComputeManifestPayloadHash(manifest);
-        if (!string.Equals(actualManifestHash, manifest.ManifestPayloadHash, StringComparison.OrdinalIgnoreCase))
+        if (!PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
+                manifest,
+                authorityJson,
+                ManifestHashJsonOpts,
+                static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+                static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
+                static snapshotManifest => snapshotManifest.SessionId,
+                static snapshotManifest => snapshotManifest.RequestId,
+                static snapshotManifest => snapshotManifest.TurnNumber,
+                static snapshotManifest => snapshotManifest.Files,
+                static snapshotManifest => snapshotManifest.SnapshotFileHashes,
+                static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
+                static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
+                static snapshotManifest => snapshotManifest.SourceLabel,
+                static snapshotManifest => snapshotManifest.RollbackBackups,
+                ReadRelativeFileFromWorkspace,
+                out _,
+                out _))
+        {
             return false;
+        }
 
         return IsValidatedPendingTurnSnapshotManifestCurrent(manifest);
     }
@@ -3515,6 +3710,18 @@ public partial class ValidationService
 
         var turnContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("input/turn_request.json"));
         return DoesPendingTurnRequestValidationContextMatchManifest(manifest, turnContext);
+    }
+
+    private bool IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
+        PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload)
+    {
+        const string repairRequestPath = "game_state/control/validation_repair_request.json";
+        var repairContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath(repairRequestPath));
+        if (DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, repairContext))
+            return true;
+
+        var turnContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("input/turn_request.json"));
+        return DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, turnContext);
     }
 
     private static bool DoesPendingTurnRequestValidationContextMatchManifest(
@@ -3538,20 +3745,13 @@ public partial class ValidationService
 
     private static bool DoesPendingTurnContextIdMatch(string manifestId, string contextId)
     {
-        var hasManifestId = !string.IsNullOrWhiteSpace(manifestId);
-        var hasContextId = !string.IsNullOrWhiteSpace(contextId);
-        if (!hasManifestId && !hasContextId)
-            return true;
-        if (!hasManifestId || !hasContextId)
-            return false;
-
-        return string.Equals(manifestId, contextId, StringComparison.OrdinalIgnoreCase);
+        return PendingTurnSnapshotAuthority.DoesPendingTurnContextIdMatch(manifestId, contextId);
     }
 
     private static string DescribeValidatedPendingTurnSnapshotStatus(ValidatedPendingTurnSnapshotStatus status) => status switch
     {
         ValidatedPendingTurnSnapshotStatus.Missing => "validated pending turn snapshot manifest is missing",
-        ValidatedPendingTurnSnapshotStatus.Unusable => "validated pending turn snapshot manifest is unreadable, modified, missing required snapshot data, or not current for the active request context",
+        ValidatedPendingTurnSnapshotStatus.Unusable => "validated pending turn snapshot manifest is unreadable, detached-authority invalid, modified, missing required snapshot data, or not current for the active request context",
         _ => "validated pending turn snapshot is usable"
     };
 
@@ -3681,16 +3881,26 @@ public partial class ValidationService
         }
     }
 
-    private async Task<bool> DidFileChangeAgainstManifestAsync(ValidationPendingTurnSnapshotManifest manifest, string relativePath)
+    private async Task<ValidatedTrackedFileChangeStatus> DescribeTrackedFileChangeAgainstManifestAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string relativePath)
     {
-        var current = await _fs.ReadFileAsync(relativePath);
-        if (manifest.RollbackBackups.TryGetValue(relativePath, out var backupPath))
+        var current = await _fs.ReadFileAsync(relativePath) ?? string.Empty;
+        var hasValidatedRegistration = HasValidatedTrackedSnapshotRegistration(manifest, relativePath);
+        if (!hasValidatedRegistration)
         {
-            var previous = await _fs.ReadFileAsync(backupPath);
-            return !string.Equals(current ?? string.Empty, previous ?? string.Empty, StringComparison.Ordinal);
+            return IsTrackedByValidatedBaseline(manifest, relativePath) || !string.IsNullOrWhiteSpace(current)
+                ? ValidatedTrackedFileChangeStatus.MissingValidatedBaseline
+                : ValidatedTrackedFileChangeStatus.Unchanged;
         }
 
-        return !string.IsNullOrWhiteSpace(current);
+        var previous = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, relativePath);
+        if (previous == null)
+            return ValidatedTrackedFileChangeStatus.MissingValidatedBaseline;
+
+        return string.Equals(current, previous, StringComparison.Ordinal)
+            ? ValidatedTrackedFileChangeStatus.Unchanged
+            : ValidatedTrackedFileChangeStatus.Changed;
     }
 
     private IEnumerable<string> EnumerateStoryContinuityFiles()
@@ -3880,13 +4090,31 @@ public partial class ValidationService
         return files;
     }
 
-    private async Task<List<string>> GetChangedTrackedFilesAgainstManifestAsync(ValidationPendingTurnSnapshotManifest manifest)
+    private async Task<List<string>> GetChangedTrackedFilesAgainstManifestAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        List<ValidationIssue> issues,
+        string missingBaselineCode,
+        string section,
+        string repairHint)
     {
         var changedFiles = new List<string>();
         foreach (var relativePath in EnumerateTrackedFilesForValidation(manifest))
         {
-            if (await DidFileChangeAgainstManifestAsync(manifest, relativePath))
-                changedFiles.Add(relativePath);
+            switch (await DescribeTrackedFileChangeAgainstManifestAsync(manifest, relativePath))
+            {
+                case ValidatedTrackedFileChangeStatus.Changed:
+                    changedFiles.Add(relativePath);
+                    break;
+                case ValidatedTrackedFileChangeStatus.MissingValidatedBaseline:
+                    AddMissingValidatedTrackedBaselineIssue(
+                        issues,
+                        relativePath,
+                        missingBaselineCode,
+                        section,
+                        $"Не удалось строго вычислить diff для {relativePath}: validated pre-turn baseline missing.",
+                        repairHint);
+                    break;
+            }
         }
 
         return changedFiles;
@@ -4855,6 +5083,25 @@ public partial class ValidationService
         return true;
     }
 
+    private static bool DoesPendingTurnRequestValidationContextMatchAuthorityPayload(
+        PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload,
+        PendingTurnRequestValidationContext? context)
+    {
+        if (context == null)
+            return false;
+
+        if (payload.TurnNumber != context.TurnNumber)
+            return false;
+
+        if (!DoesPendingTurnContextIdMatch(payload.SessionId, context.SessionId))
+            return false;
+
+        if (!DoesPendingTurnContextIdMatch(payload.RequestId, context.RequestId))
+            return false;
+
+        return true;
+    }
+
     private static string BuildCanonicalJsonComparisonSignature(JsonElement value)
     {
         return value.ValueKind switch
@@ -5173,12 +5420,15 @@ public partial class ValidationService
     private static bool TryReadStrictNonNegativeInt32(JsonElement root, string propName, out int value)
         => TryReadStrictInt32(root, propName, out value) && value >= 0;
 
-    private SoulRelicProofReadResult ReadSoulRelicProofEntry(string? soulJson, string? relicId)
+    private SoulRelicProofReadResult ReadSoulRelicProofEntry(string? soulJson, string? relicId, bool strictCurrentShape)
     {
         if (string.IsNullOrWhiteSpace(relicId))
             return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.Absent, null);
         if (string.IsNullOrWhiteSpace(soulJson))
             return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.Unreadable, null);
+
+        if (strictCurrentShape)
+            return ReadStrictCurrentSoulRelicProofEntry(soulJson, relicId);
 
         try
         {
@@ -5239,6 +5489,63 @@ public partial class ValidationService
             else
             {
                 return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+            }
+        }
+        catch (JsonException)
+        {
+            return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.Unreadable, null);
+        }
+
+        return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.Absent, null);
+    }
+
+    private SoulRelicProofReadResult ReadStrictCurrentSoulRelicProofEntry(string soulJson, string relicId)
+    {
+        try
+        {
+            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
+                return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+            var hasCanonicalTriggerLifeEnd = HasLifecycleAuthorizedCurrentTriggerLifeEndSync();
+
+            if (!GuardianPolicyContracts.TryReadStrictCurrentSoulRelicCollections(
+                    soulRoot,
+                    hasCanonicalTriggerLifeEnd,
+                    out var equipped,
+                    out var stored,
+                    out _))
+            {
+                return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+            }
+
+            if (equipped == null || stored == null)
+                return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+            var rootElement = CloneJsonObjectToElement(soulRoot);
+            if (!rootElement.TryGetProperty("soulRelics", out var soulRelics) ||
+                !soulRelics.TryGetProperty("stored", out var storedElement) ||
+                storedElement.ValueKind != JsonValueKind.Array ||
+                !soulRelics.TryGetProperty("equipped", out var equippedElement) ||
+                equippedElement.ValueKind != JsonValueKind.Array)
+            {
+                return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+            }
+
+            foreach (var collection in new[] { storedElement, equippedElement })
+            {
+                foreach (var relic in collection.EnumerateArray())
+                {
+                    if (relic.ValueKind != JsonValueKind.Object)
+                        return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+                    if (!string.Equals(GetStringValue(relic, "relicId"), relicId, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    if (!TryReadSoulRelicProofEntry(relic, out var proofEntry))
+                        return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.InvalidShape, null);
+
+                    return new SoulRelicProofReadResult(SoulStateEntryPresenceStatus.Present, proofEntry);
+                }
             }
         }
         catch (JsonException)
@@ -6572,8 +6879,7 @@ public partial class ValidationService
 
     private async Task<string?> ReadPreviousPendingMemoryLegacyJsonAsync()
     {
-        const string snapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
-        var json = await _fs.ReadFileAsync(snapshotPath);
+        var json = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(json))
             return null;
 

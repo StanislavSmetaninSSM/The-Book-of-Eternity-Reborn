@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
@@ -25,6 +26,19 @@ internal static class LifeEvaluationRewardAnalyzer
 
     public static bool TryComputeDelta(string? preSoulStateJson, string? postSoulStateJson,
         out LifeEvaluationRewardDelta? delta, out string? error)
+        => TryComputeDelta(
+            preSoulStateJson,
+            postSoulStateJson,
+            hasCanonicalTriggerLifeEnd: false,
+            out delta,
+            out error);
+
+    public static bool TryComputeDelta(
+        string? preSoulStateJson,
+        string? postSoulStateJson,
+        bool hasCanonicalTriggerLifeEnd,
+        out LifeEvaluationRewardDelta? delta,
+        out string? error)
     {
         delta = null;
         error = null;
@@ -43,14 +57,38 @@ internal static class LifeEvaluationRewardAnalyzer
 
         try
         {
-            using var preDoc = JsonDocument.Parse(preSoulStateJson);
-            using var postDoc = JsonDocument.Parse(postSoulStateJson);
+            if (JsonNode.Parse(preSoulStateJson) is not JsonObject preRoot)
+            {
+                error = "pre-turn soul_state snapshot must be a JsonObject";
+                return false;
+            }
 
-            var preInkFeathers = ReadInkFeathersCurrent(preDoc.RootElement);
-            var postInkFeathers = ReadInkFeathersCurrent(postDoc.RootElement);
+            if (JsonNode.Parse(postSoulStateJson) is not JsonObject postRoot)
+            {
+                error = "current soul_state must be a JsonObject";
+                return false;
+            }
 
-            var preRelics = ReadRelics(preDoc.RootElement);
-            var postRelics = ReadRelics(postDoc.RootElement);
+            if (GuardianPolicyContracts.TryDescribeInvalidPolicySensitiveReadableSoulStateRoot(preRoot, out var preFailure))
+            {
+                error = $"invalid pre-turn soul_state snapshot: {preFailure}";
+                return false;
+            }
+
+            if (GuardianPolicyContracts.TryDescribeInvalidPolicySensitiveReadableSoulStateRoot(
+                    postRoot,
+                    hasCanonicalTriggerLifeEnd,
+                    out var postFailure))
+            {
+                error = $"invalid current soul_state: {postFailure}";
+                return false;
+            }
+
+            var preInkFeathers = ReadCanonicalInkFeathersCurrent(preRoot);
+            var postInkFeathers = ReadCanonicalInkFeathersCurrent(postRoot);
+
+            var preRelics = ReadCanonicalRelics(preRoot);
+            var postRelics = ReadCanonicalRelics(postRoot);
 
             var newRelics = postRelics.Values
                 .Where(relic => !preRelics.ContainsKey(relic.RelicId))
@@ -67,44 +105,41 @@ internal static class LifeEvaluationRewardAnalyzer
         }
     }
 
-    private static int ReadInkFeathersCurrent(JsonElement root)
+    private static int ReadCanonicalInkFeathersCurrent(JsonObject root)
     {
-        if (!root.TryGetProperty("inkFeathers", out var inkNode))
+        if (root["inkFeathers"] is not JsonObject inkNode)
             return 0;
 
-        if (inkNode.ValueKind == JsonValueKind.Number && inkNode.TryGetInt32(out var numeric))
-            return numeric;
-
-        if (inkNode.ValueKind == JsonValueKind.Object &&
-            inkNode.TryGetProperty("current", out var currentNode))
+        if (inkNode["current"] is JsonValue currentNode &&
+            currentNode.TryGetValue<int>(out var numeric))
         {
-            if (currentNode.ValueKind == JsonValueKind.Number && currentNode.TryGetInt32(out var currentNumeric))
-                return currentNumeric;
-            if (currentNode.ValueKind == JsonValueKind.String &&
-                int.TryParse(currentNode.GetString(), out var currentString))
-                return currentString;
+            return numeric;
+        }
+
+        if (inkNode["current"] is JsonValue longCurrentNode &&
+            longCurrentNode.TryGetValue<long>(out var longNumeric) &&
+            longNumeric is >= 0 and <= int.MaxValue)
+        {
+            return (int)longNumeric;
         }
 
         return 0;
     }
 
-    private static Dictionary<string, LifeEvaluationRewardRelic> ReadRelics(JsonElement root)
+    private static Dictionary<string, LifeEvaluationRewardRelic> ReadCanonicalRelics(JsonObject root)
     {
         var relics = new Dictionary<string, LifeEvaluationRewardRelic>(StringComparer.OrdinalIgnoreCase);
-        if (!root.TryGetProperty("soulRelics", out var soulRelics) || soulRelics.ValueKind != JsonValueKind.Object)
+        if (root["soulRelics"] is not JsonObject soulRelics)
             return relics;
 
         foreach (var arrayName in new[] { "stored", "equipped" })
         {
-            if (!soulRelics.TryGetProperty(arrayName, out var relicArray) || relicArray.ValueKind != JsonValueKind.Array)
+            if (soulRelics[arrayName] is not JsonArray relicArray)
                 continue;
 
-            foreach (var relic in relicArray.EnumerateArray())
+            foreach (var relic in relicArray.OfType<JsonObject>())
             {
-                if (relic.ValueKind != JsonValueKind.Object)
-                    continue;
-
-                var relicId = GetFirstNonEmptyString(relic, "relicId", "id");
+                var relicId = GetFirstNonEmptyString(relic, "relicId");
                 if (string.IsNullOrWhiteSpace(relicId))
                     continue;
 
@@ -117,16 +152,18 @@ internal static class LifeEvaluationRewardAnalyzer
         return relics;
     }
 
-    private static string? GetFirstNonEmptyString(JsonElement element, params string[] propertyNames)
+    private static string? GetFirstNonEmptyString(JsonObject element, params string[] propertyNames)
     {
         foreach (var propertyName in propertyNames)
         {
-            if (!element.TryGetProperty(propertyName, out var node) || node.ValueKind != JsonValueKind.String)
+            if (element[propertyName] is not JsonValue node ||
+                !node.TryGetValue<string>(out var value) ||
+                string.IsNullOrWhiteSpace(value))
+            {
                 continue;
+            }
 
-            var value = node.GetString();
-            if (!string.IsNullOrWhiteSpace(value))
-                return value;
+            return value;
         }
 
         return null;

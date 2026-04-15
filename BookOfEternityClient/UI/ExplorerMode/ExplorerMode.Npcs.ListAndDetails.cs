@@ -1160,10 +1160,7 @@ private async Task ShowNPCs()
 
 
     private static IEnumerable<string> GetNpcCoreArrayKeys()
-    {
-        yield return "NPCsInScene";
-        yield return "UpdateNPCs";
-    }
+        => GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections;
 
 
     private static IEnumerable<JsonArray> GetNpcCoreArrays(JsonObject root)

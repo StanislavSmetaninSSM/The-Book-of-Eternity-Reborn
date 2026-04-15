@@ -307,6 +307,142 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
     }
 
     [Fact]
+    public async Task SyncFromCurrentStateAsync_ArchiveConsultationAcceptedWithoutCanonicalOutcomeReceipt_DoesNotCreateAcceptedNotification()
+    {
+        await WriteJsonAsync(AfterlifeArchiveActionState.ConsultationRequestPath, new
+        {
+            requestId = "archive_consult_req_strict",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            archiveId = "archive_1",
+            archiveTitle = "Тень старого закона",
+            archiveEntryType = "lore_fragment",
+            archiveRarity = "Rare",
+            archiveSourceKind = "codex",
+            targetIncarnation = 2,
+            createdAtTurn = 7,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "consultation"
+        });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            afterlifeArchive = new
+            {
+                stored = Array.Empty<object>(),
+                actionReceipts = new object[]
+                {
+                    new
+                    {
+                        requestId = "archive_consult_req_strict",
+                        archiveId = "archive_1",
+                        requestedMode = "consultation",
+                        status = "accepted",
+                        guardianId = "guardian_alpha",
+                        guardianName = "Азалия",
+                        resolvedAtTurn = 8,
+                        resolvedAtUtc = "2026-03-26T00:05:00Z"
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync(GuardianProjectState.TrackerPath, new
+        {
+            activeProjects = Array.Empty<object>(),
+            completedProjects = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    project = new
+                    {
+                        projectOrigin = "archive_consultation",
+                        consultationRequestId = "archive_consult_req_other",
+                        consultationArchiveId = "archive_1",
+                        projectOutcomeAudit = new
+                        {
+                            guaranteedArchiveQuestCount = 1,
+                            questHookCount = 0,
+                            specialQuestLineUnlocks = 0,
+                            visibleRivalClueBonus = 0,
+                            archiveWarningTierBonus = 0
+                        }
+                    }
+                }
+            }
+        });
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_ArchiveConsultationAcceptedWithMalformedCurrentArchiveOwnerState_DoesNotCreateAcceptedNotification()
+    {
+        await WriteJsonAsync(AfterlifeArchiveActionState.ConsultationRequestPath, new
+        {
+            requestId = "archive_consult_req_owner_invalid",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            archiveId = "archive_1",
+            archiveTitle = "Тень старого закона",
+            archiveEntryType = "lore_fragment",
+            archiveRarity = "Rare",
+            archiveSourceKind = "codex",
+            targetIncarnation = 2,
+            createdAtTurn = 7,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "consultation"
+        });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            afterlifeArchive = new
+            {
+                actionReceipts = new object[]
+                {
+                    new
+                    {
+                        requestId = "archive_consult_req_owner_invalid",
+                        archiveId = "archive_1",
+                        requestedMode = "consultation",
+                        status = "accepted",
+                        guardianId = "guardian_alpha",
+                        guardianName = "Азалия",
+                        guaranteedArchiveQuestCount = 1,
+                        resolvedAtTurn = 8,
+                        resolvedAtUtc = "2026-03-26T00:05:00Z"
+                    }
+                }
+            }
+        });
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_MalformedArchiveConsultationRequest_CreatesAttentionNotification()
+    {
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            """
+            {
+              "requestId": "archive_consult_req_broken",
+              "guardianId":
+            """
+        );
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        var notification = Assert.Single(notifications);
+        Assert.Equal(AfterlifeNotificationState.TypeArchiveConsultationPendingAttention, notification.NotificationType);
+        Assert.Contains("повреждён", notification.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("заблокирован", notification.Summary, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task SyncFromCurrentStateAsync_ArchiveProjectFuelReceipt_UsesExactWorkDeltaInSummary()
     {
         await WriteJsonAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath, new
@@ -380,6 +516,147 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
         var notification = Assert.Single(notifications);
         Assert.Equal(AfterlifeNotificationState.TypeArchiveProjectFuelAccepted, notification.NotificationType);
         Assert.Contains("работа +2", notification.Summary, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_ArchiveProjectFuelAcceptedWithoutCanonicalResultReceipt_DoesNotCreateAcceptedNotification()
+    {
+        await WriteJsonAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath, new
+        {
+            requestId = "archive_fuel_req_strict",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            archiveId = "archive_2",
+            archiveTitle = "Медная карта осад",
+            archiveEntryType = "lore_fragment",
+            archiveRarity = "Rare",
+            archiveSourceKind = "codex",
+            targetProjectId = "project_alpha",
+            targetProjectName = "Башня Наблюдений",
+            createdAtTurn = 7,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "project_fuel"
+        });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            afterlifeArchive = new
+            {
+                stored = Array.Empty<object>(),
+                actionReceipts = new object[]
+                {
+                    new
+                    {
+                        requestId = "archive_fuel_req_strict",
+                        archiveId = "archive_2",
+                        requestedMode = "project_fuel",
+                        status = "accepted",
+                        guardianId = "guardian_alpha",
+                        guardianName = "Азалия",
+                        targetProjectId = "project_alpha",
+                        resolvedAtTurn = 8,
+                        resolvedAtUtc = "2026-03-26T00:05:00Z"
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync(
+            GuardianProjectState.JournalPath,
+            new
+            {
+                entries = new[]
+                {
+                    new
+                    {
+                        entryId = "jp_strict",
+                        turn = 8,
+                        guardianId = "guardian_alpha",
+                        projectId = "project_alpha",
+                        eventType = "assisted",
+                        archiveFuelRequestId = "archive_fuel_req_other",
+                        title = "Проект усилен архивной записью",
+                        summary = "Хранитель продвинул проект вперёд.",
+                        details = new[]
+                        {
+                            "Проект: Башня Наблюдений",
+                            "Работа: 6 -> 8",
+                            "ArchiveId: archive_2"
+                        }
+                    }
+                }
+            });
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_ArchiveProjectFuelAcceptedWithMalformedCurrentArchiveOwnerState_DoesNotCreateAcceptedNotification()
+    {
+        await WriteJsonAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath, new
+        {
+            requestId = "archive_fuel_req_owner_invalid",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            archiveId = "archive_2",
+            archiveTitle = "Медная карта осад",
+            archiveEntryType = "lore_fragment",
+            archiveRarity = "Rare",
+            archiveSourceKind = "codex",
+            targetProjectId = "project_alpha",
+            targetProjectName = "Башня Наблюдений",
+            createdAtTurn = 7,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "project_fuel"
+        });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            afterlifeArchive = new
+            {
+                actionReceipts = new object[]
+                {
+                    new
+                    {
+                        requestId = "archive_fuel_req_owner_invalid",
+                        archiveId = "archive_2",
+                        requestedMode = "project_fuel",
+                        status = "accepted",
+                        guardianId = "guardian_alpha",
+                        guardianName = "Азалия",
+                        targetProjectId = "project_alpha",
+                        resultMode = "project_work",
+                        resultAmount = 2,
+                        resolvedAtTurn = 8,
+                        resolvedAtUtc = "2026-03-26T00:05:00Z"
+                    }
+                }
+            }
+        });
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_MalformedArchiveProjectFuelRequest_CreatesAttentionNotification()
+    {
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            """
+            {
+              "requestId": "archive_fuel_req_broken",
+              "guardianId":
+            """
+        );
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        var notification = Assert.Single(notifications);
+        Assert.Equal(AfterlifeNotificationState.TypeArchiveProjectFuelPendingAttention, notification.NotificationType);
+        Assert.Contains("повреждён", notification.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("заблокирован", notification.Summary, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -682,6 +959,185 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
     }
 
     [Fact]
+    public async Task SyncFromCurrentStateAsync_ResidentRelicGrantedWithMalformedCurrentSoulRelics_DoesNotCreateNotification()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    roleLabel = "Вестница",
+                    summary = "Тонкая душа на границе светлых троп.",
+                    bondLevel = 80,
+                    bondTier = "bound",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "granted",
+                    linkedSoulQuestId = "soul_quest_resident_1",
+                    grantedRelicId = "relic_echo_liora",
+                    historyRevealed = true,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            },
+            interactionLog = new object[]
+            {
+                new
+                {
+                    entryId = "resident_relic_log_1",
+                    residentId = "resident_alpha_1",
+                    turn = 22,
+                    timestamp = "2026-03-27T00:22:00Z",
+                    eventType = "relic_grant",
+                    title = "Дар реликвии",
+                    summary = "Лиора доверила душе реликвию связи.",
+                    relatedRelicId = "relic_echo_liora"
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_echo_liora",
+                        name = "Эхо Лиоры",
+                        rarity = "Rare",
+                        relicType = "companion_echo",
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_alpha_1"
+                        }
+                    }
+                }
+            }
+        });
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_ResidentRelicGrantedWithOrphanedPendingSnapshotTriggerContext_DoesNotCreateNotification()
+    {
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 2
+        });
+        await WriteJsonAsync("game_state/control/life_transitions.json", new
+        {
+            reason = "Death",
+            summary = "Жизнь завершена."
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    roleLabel = "Вестница",
+                    summary = "Тонкая душа на границе светлых троп.",
+                    bondLevel = 80,
+                    bondTier = "bound",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "granted",
+                    linkedSoulQuestId = "soul_quest_resident_1",
+                    grantedRelicId = "relic_echo_liora",
+                    historyRevealed = true,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            },
+            interactionLog = new object[]
+            {
+                new
+                {
+                    entryId = "resident_relic_log_1",
+                    residentId = "resident_alpha_1",
+                    turn = 22,
+                    timestamp = "2026-03-27T00:22:00Z",
+                    eventType = "relic_grant",
+                    title = "Дар реликвии",
+                    summary = "Лиора доверила душе реликвию связи.",
+                    relatedRelicId = "relic_echo_liora"
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            metaStateUpdates = new
+            {
+                lifeTransitions = new
+                {
+                    recordLifeCompletion = new
+                    {
+                        characterFinalState = new { causeOfDeath = "Test" },
+                        majorAchievements = Array.Empty<string>(),
+                        relationshipsFormed = Array.Empty<object>(),
+                        moralChoices = Array.Empty<object>(),
+                        skillsLearned = Array.Empty<string>(),
+                        enlightenmentGained = 0
+                    }
+                }
+            },
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_echo_liora",
+                        name = "Эхо Лиоры",
+                        rarity = "Rare",
+                        relicType = "companion_echo",
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_alpha_1",
+                            sourceGuardianId = "guardian_alpha",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Бывшая гонец при храме дорог.",
+                            futureCompanionPrompt = "Swift wanderer"
+                        }
+                    }
+                }
+            }
+        });
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+    }
+
+    [Fact]
     public async Task SyncFromCurrentStateAsync_ResidentManifestationReady_CreatesNotification()
     {
         await WriteJsonAsync("game_state/meta/guardians.json", new
@@ -766,19 +1222,18 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
                 stored = Array.Empty<object>()
             }
         });
-        await WriteJsonAsync("game_state/npcs/npc_core.json", new
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
         {
-            npcs = new object[]
+          "UpdateNPCs": [
             {
-                new
-                {
-                    npcId = "npc_manifested_liora",
-                    npcName = "Лиора из новой жизни",
-                    sourceCompanionRelicId = "relic_echo_liora",
-                    sourceAfterlifeResidentId = "resident_alpha_1"
-                }
+              "npcId": "npc_manifested_liora",
+              "npcName": "Лиора из новой жизни",
+              "sourceCompanionRelicId": "relic_echo_liora",
+              "sourceAfterlifeResidentId": "resident_alpha_1"
             }
-        });
+          ]
+        }
+        """);
 
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
 
@@ -795,7 +1250,141 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
     }
 
     [Fact]
+    public async Task SyncFromCurrentStateAsync_ResidentManifestationReadyWithMalformedCurrentSoulRelics_DoesNotCreateNotification()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    roleLabel = "Вестница",
+                    summary = "Тонкая душа на границе светлых троп.",
+                    bondLevel = 80,
+                    bondTier = "bound",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "consumed",
+                    linkedSoulQuestId = "soul_quest_resident_1",
+                    grantedRelicId = "relic_echo_liora",
+                    historyRevealed = true,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_echo_liora",
+                        name = "Эхо Лиоры",
+                        rarity = "Rare",
+                        relicType = "companion_echo",
+                        companionManifestationStatus = "materialized",
+                        companionManifestationResolvedRequestId = "resident_manifest_req_1",
+                        companionManifestationResolvedNpcId = "npc_manifested_liora",
+                        companionManifestationResolvedAtTurn = 18,
+                        companionManifestationResolvedAtUtc = "2026-03-27T00:18:00Z",
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_alpha_1"
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_manifested_liora",
+              "npcName": "Лиора из новой жизни",
+              "sourceCompanionRelicId": "relic_echo_liora",
+              "sourceAfterlifeResidentId": "resident_alpha_1"
+            }
+          ]
+        }
+        """);
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+    }
+
+    [Fact]
     public async Task SyncFromCurrentStateAsync_ImprintManifestationReady_CreatesDedicatedNotification()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_imprint_1",
+                        name = "Отголосок стража",
+                        rarity = "Rare",
+                        companionManifestationStatus = "materialized",
+                        companionManifestationResolvedRequestId = "imprint_manifest_req_1",
+                        companionManifestationResolvedNpcId = "npc_manifested_guard",
+                        companionManifestationResolvedAtTurn = 22,
+                        companionManifestationResolvedAtUtc = "2026-03-27T00:22:00Z",
+                        soulImprint = new
+                        {
+                            imprintId = "imprint_guard_1",
+                            npcName = "Страж Кел",
+                            description = "Бывший страж северных ворот.",
+                            personalityTraits = new[] { "стойкость" }
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_manifested_guard",
+              "npcName": "Кел Страж",
+              "sourceCompanionRelicId": "relic_imprint_1",
+              "sourceSoulImprintId": "imprint_guard_1"
+            }
+          ]
+        }
+        """);
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        var notification = Assert.Single(
+            notifications,
+            entry => string.Equals(entry.NotificationType, AfterlifeNotificationState.TypeCompanionImprintManifestationReady, StringComparison.OrdinalIgnoreCase));
+        Assert.Equal("imprint_manifest_req_1", notification.RequestId);
+        Assert.Equal(22, notification.CreatedAtTurn);
+        Assert.Equal("2026-03-27T00:22:00Z", notification.CreatedAtUtc);
+        Assert.Contains("Кел", notification.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("спутника", notification.Summary, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_ImprintManifestationReadyWithMalformedCurrentSoulRelics_DoesNotCreateNotification()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
         {
@@ -824,16 +1413,67 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
                 stored = Array.Empty<object>()
             }
         });
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_manifested_guard",
+              "npcName": "Кел Страж",
+              "sourceCompanionRelicId": "relic_imprint_1",
+              "sourceSoulImprintId": "imprint_guard_1"
+            }
+          ]
+        }
+        """);
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_ManifestationReady_LegacyAliasNpcSectionDoesNotCreateCanonicalNotification()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_echo_liora",
+                        name = "Эхо Лиоры",
+                        rarity = "Rare",
+                        relicType = "companion_echo",
+                        companionManifestationStatus = "materialized",
+                        companionManifestationResolvedRequestId = "resident_manifest_req_legacy_alias",
+                        companionManifestationResolvedNpcId = "npc_manifested_liora",
+                        companionManifestationResolvedAtTurn = 18,
+                        companionManifestationResolvedAtUtc = "2026-03-27T00:18:00Z",
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_alpha_1",
+                            sourceGuardianId = "guardian_alpha",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Бывшая гонец при храме дорог.",
+                            futureCompanionPrompt = "Swift wanderer"
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
         await WriteJsonAsync("game_state/npcs/npc_core.json", new
         {
             npcs = new object[]
             {
                 new
                 {
-                    npcId = "npc_manifested_guard",
-                    npcName = "Кел Страж",
-                    sourceCompanionRelicId = "relic_imprint_1",
-                    sourceSoulImprintId = "imprint_guard_1"
+                    npcId = "npc_manifested_liora",
+                    npcName = "Лиора из новой жизни",
+                    sourceCompanionRelicId = "relic_echo_liora",
+                    sourceAfterlifeResidentId = "resident_alpha_1"
                 }
             }
         });
@@ -841,14 +1481,12 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
 
         var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
-        var notification = Assert.Single(
+        Assert.DoesNotContain(
             notifications,
-            entry => string.Equals(entry.NotificationType, AfterlifeNotificationState.TypeCompanionImprintManifestationReady, StringComparison.OrdinalIgnoreCase));
-        Assert.Equal("imprint_manifest_req_1", notification.RequestId);
-        Assert.Equal(22, notification.CreatedAtTurn);
-        Assert.Equal("2026-03-27T00:22:00Z", notification.CreatedAtUtc);
-        Assert.Contains("Кел", notification.Summary, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("спутника", notification.Summary, StringComparison.OrdinalIgnoreCase);
+            entry => string.Equals(entry.RequestId, "resident_manifest_req_legacy_alias", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(
+            notifications,
+            entry => string.Equals(entry.NotificationType, AfterlifeNotificationState.TypeAbodeResidentManifestationReady, StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -1199,6 +1837,237 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
     }
 
     [Fact]
+    public async Task SyncFromCurrentStateAsync_PressuredResidentInitialBaseline_DoesNotCreateBacklogNotification()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, BuildResidentPressureState(
+            GuardianAbodeResidentState.MigrationStateRestless,
+            abodeDevotionLevel: 34,
+            abodeDevotionTier: GuardianAbodeResidentState.AbodeDevotionTierUncertain,
+            restlessness: 61,
+            turn: 21,
+            timestamp: "2026-03-27T00:21:00Z"));
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_ResidentWaveringTransition_CreatesSingleNotificationWithoutDuplicates()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, BuildResidentPressureState(
+            GuardianAbodeResidentState.MigrationStateSettled,
+            abodeDevotionLevel: 72,
+            abodeDevotionTier: GuardianAbodeResidentState.AbodeDevotionTierDevoted,
+            restlessness: 18,
+            turn: 19,
+            timestamp: "2026-03-27T00:19:00Z"));
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, BuildResidentPressureState(
+            GuardianAbodeResidentState.MigrationStateWavering,
+            abodeDevotionLevel: 58,
+            abodeDevotionTier: GuardianAbodeResidentState.AbodeDevotionTierAttached,
+            restlessness: 32,
+            turn: 22,
+            timestamp: "2026-03-27T00:22:00Z"));
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        var notification = Assert.Single(notifications);
+        Assert.Equal(AfterlifeNotificationState.TypeAbodeResidentWavering, notification.NotificationType);
+        Assert.Contains("заколебался", notification.Summary, StringComparison.OrdinalIgnoreCase);
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+        notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        Assert.Single(notifications);
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_ResidentPressureRecoveryAndReentry_ReissuesNotification()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, BuildResidentPressureState(
+            GuardianAbodeResidentState.MigrationStateSettled,
+            abodeDevotionLevel: 68,
+            abodeDevotionTier: GuardianAbodeResidentState.AbodeDevotionTierDevoted,
+            restlessness: 20,
+            turn: 18,
+            timestamp: "2026-03-27T00:18:00Z"));
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, BuildResidentPressureState(
+            GuardianAbodeResidentState.MigrationStateRestless,
+            abodeDevotionLevel: 36,
+            abodeDevotionTier: GuardianAbodeResidentState.AbodeDevotionTierUncertain,
+            restlessness: 63,
+            turn: 23,
+            timestamp: "2026-03-27T00:23:00Z"));
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+        var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        Assert.Single(notifications);
+        Assert.Equal(AfterlifeNotificationState.TypeAbodeResidentRestless, notifications[0].NotificationType);
+
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, BuildResidentPressureState(
+            GuardianAbodeResidentState.MigrationStateSettled,
+            abodeDevotionLevel: 61,
+            abodeDevotionTier: GuardianAbodeResidentState.AbodeDevotionTierDevoted,
+            restlessness: 22,
+            turn: 24,
+            timestamp: "2026-03-27T00:24:00Z"));
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+        Assert.Empty(await AfterlifeNotificationState.ReadAsync(_fs));
+
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, BuildResidentPressureState(
+            GuardianAbodeResidentState.MigrationStateRestless,
+            abodeDevotionLevel: 31,
+            abodeDevotionTier: GuardianAbodeResidentState.AbodeDevotionTierUncertain,
+            restlessness: 66,
+            turn: 25,
+            timestamp: "2026-03-27T00:25:00Z"));
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        var notification = Assert.Single(notifications);
+        Assert.Equal(AfterlifeNotificationState.TypeAbodeResidentRestless, notification.NotificationType);
+        Assert.Equal("resident_pressure:resident_alpha_1:restless", notification.RequestId);
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_ReadyToTransfer_UsesConsideringDepartureNotificationType()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, BuildResidentPressureState(
+            GuardianAbodeResidentState.MigrationStateSettled,
+            abodeDevotionLevel: 62,
+            abodeDevotionTier: GuardianAbodeResidentState.AbodeDevotionTierDevoted,
+            restlessness: 20,
+            turn: 18,
+            timestamp: "2026-03-27T00:18:00Z"));
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, BuildResidentPressureState(
+            GuardianAbodeResidentState.MigrationStateReadyToTransfer,
+            abodeDevotionLevel: 12,
+            abodeDevotionTier: GuardianAbodeResidentState.AbodeDevotionTierAlienated,
+            restlessness: 79,
+            turn: 27,
+            timestamp: "2026-03-27T00:27:00Z"));
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        var notification = Assert.Single(notifications);
+        Assert.Equal(AfterlifeNotificationState.TypeAbodeResidentConsideringDeparture, notification.NotificationType);
+        Assert.Contains("готов искать иной свет", notification.Summary, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_PendingResidentTransferRequest_CreatesPendingNotification()
+    {
+        await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(_fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest
+        {
+            RequestId = "resident_transfer_req_1",
+            ResidentId = "resident_alpha_1",
+            ResidentName = "Лиора",
+            SourceGuardianId = "guardian_alpha",
+            SourceGuardianName = "Азалия",
+            SourceAbodeId = "abode_alpha",
+            SourceAbodeName = "Лазурная Обитель",
+            TargetGuardianId = "guardian_beta",
+            TargetGuardianName = "Мириэль",
+            TargetAbodeId = "abode_beta",
+            TargetAbodeName = "Сад Перекрёстков",
+            AbodeDevotionLevel = 12,
+            AbodeDevotionTier = "alienated",
+            Restlessness = 84,
+            MigrationState = "ready_to_transfer",
+            TransferMode = GuardianAbodeResidentState.TransferModeAcceptedTransfer,
+            CreatedAtTurn = 41,
+            CreatedAtUtc = "2026-04-16T04:41:00Z"
+        });
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        var notification = Assert.Single(notifications);
+        Assert.Equal(AfterlifeNotificationState.TypeAbodeResidentTransferPending, notification.NotificationType);
+        Assert.Equal("resident_transfer_req_1", notification.RequestId);
+        Assert.Contains("может перейти", notification.Summary, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SyncFromCurrentStateAsync_ResidentTransferReceipt_CreatesAcceptedNotificationAndClearsPendingRequestNotice()
+    {
+        await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(_fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest
+        {
+            RequestId = "resident_transfer_req_2",
+            ResidentId = "resident_alpha_1",
+            ResidentName = "Лиора",
+            SourceGuardianId = "guardian_alpha",
+            SourceGuardianName = "Азалия",
+            SourceAbodeId = "abode_alpha",
+            SourceAbodeName = "Лазурная Обитель",
+            TargetGuardianId = "guardian_beta",
+            TargetGuardianName = "Мириэль",
+            TargetAbodeId = "abode_beta",
+            TargetAbodeName = "Сад Перекрёстков",
+            AbodeDevotionLevel = 12,
+            AbodeDevotionTier = "alienated",
+            Restlessness = 84,
+            MigrationState = "ready_to_transfer",
+            TransferMode = GuardianAbodeResidentState.TransferModeAcceptedTransfer,
+            CreatedAtTurn = 41,
+            CreatedAtUtc = "2026-04-16T04:41:00Z"
+        });
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        GuardianAbodeResidentRequestState.ClearTransferRequests(_fs);
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = Array.Empty<object>(),
+            transferReceipts = new object[]
+            {
+                new
+                {
+                    requestId = "resident_transfer_req_2",
+                    residentId = "resident_alpha_1",
+                    residentName = "Лиора",
+                    sourceGuardianId = "guardian_alpha",
+                    sourceGuardianName = "Азалия",
+                    sourceAbodeId = "abode_alpha",
+                    sourceAbodeName = "Лазурная Обитель",
+                    targetGuardianId = "guardian_beta",
+                    targetGuardianName = "Мириэль",
+                    targetAbodeId = "abode_beta",
+                    targetAbodeName = "Сад Перекрёстков",
+                    status = "accepted",
+                    transferMode = "accepted_transfer",
+                    departureHistoryEntryId = "resident_transfer_depart_1",
+                    arrivalHistoryEntryId = "resident_transfer_arrive_1",
+                    resolvedAtTurn = 42,
+                    resolvedAtUtc = "2026-04-16T04:42:00Z"
+                }
+            },
+            historyLog = Array.Empty<object>(),
+            interactionReceipts = Array.Empty<object>(),
+            rosterReceipts = Array.Empty<object>(),
+            thoughtJournal = Array.Empty<object>(),
+            interactionLog = Array.Empty<object>()
+        });
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        Assert.DoesNotContain(notifications, notification => string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTransferPending, StringComparison.OrdinalIgnoreCase));
+        var acceptedNotification = Assert.Single(notifications);
+        Assert.Equal(AfterlifeNotificationState.TypeAbodeResidentTransferAccepted, acceptedNotification.NotificationType);
+        Assert.Contains("принят", acceptedNotification.Summary, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_TrimsOldReadNotificationsButKeepsUnread()
     {
         var notifications = Enumerable.Range(0, 105)
@@ -1256,6 +2125,88 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
             WriteIndented = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         }));
+
+    private static object BuildResidentPressureState(
+        string migrationState,
+        int abodeDevotionLevel,
+        string abodeDevotionTier,
+        int restlessness,
+        int turn,
+        string timestamp) => new
+    {
+        entries = new object[]
+        {
+            new
+            {
+                residentId = "resident_alpha_1",
+                guardianId = "guardian_alpha",
+                abodeId = "abode_alpha",
+                displayName = "Лиора",
+                residentKind = "wayfaring_soul",
+                originType = "traveler_soul",
+                roleLabel = "Вестница",
+                summary = "Тонкая душа на границе светлых троп.",
+                bondLevel = 56,
+                bondTier = "trusted",
+                canGrantCompanionRelic = true,
+                bondRewardState = "none",
+                linkedSoulQuestId = "",
+                grantedRelicId = "",
+                historyRevealed = true,
+                isPresent = true,
+                personalityProfile = new
+                {
+                    archetype = "Road Messenger",
+                    worldview = "Belonging must still feel true to remain sacred.",
+                    culturalLayer = "Way shrine pilgrim traditions",
+                    coreValues = new[] { "верность", "путь" },
+                    personalityTraits = new object[]
+                    {
+                        new
+                        {
+                            traitName = "sensitivity_to_decline",
+                            value = 7,
+                            valueDescription = "замечает упадок быстро"
+                        }
+                    }
+                },
+                abodeDisposition = new
+                {
+                    powerSensitivity = "high",
+                    migrationDisposition = "selective",
+                    communalOrientation = "medium",
+                    stabilityNeed = "high"
+                },
+                abodeDevotionLevel,
+                abodeDevotionTier,
+                restlessness,
+                migrationState,
+                mortalWorldImprint = new
+                {
+                    originWorldSummary = "Бывшая гонец при храме дорог.",
+                    futureCompanionPrompt = "Swift wanderer",
+                    bondReason = "Она помнит старые клятвы.",
+                    coreTraits = new[] { "верность" },
+                    archetypeHints = new[] { "courier" },
+                    appearanceMotifs = new[] { "threaded cloak" }
+                }
+            }
+        },
+        thoughtJournal = new object[]
+        {
+            new
+            {
+                entryId = $"resident_pressure_{turn}",
+                residentId = "resident_alpha_1",
+                title = "Сдвиг в сердце Обители",
+                summary = "Лиора ощущает, как её связь с Обителью меняется.",
+                eventType = "abode_devotion_shift",
+                consequence = "migration_pressure",
+                turn,
+                timestamp
+            }
+        }
+    };
 
     public void Dispose()
     {

@@ -21,11 +21,8 @@ public partial class CanonicalStateNormalizer
             changed = true;
         }
 
-        foreach (var propertyName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
+        foreach (var npcs in GuardianPolicyContracts.EnumerateCanonicalNpcObjectArrays(result))
         {
-            if (result[propertyName] is not JsonArray npcs)
-                continue;
-
             foreach (var npc in npcs.OfType<JsonObject>())
             {
                 var before = npc.ToJsonString();

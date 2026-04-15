@@ -202,6 +202,13 @@ public partial class ExplorerMode
                      string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentRelicGranted, StringComparison.OrdinalIgnoreCase) ||
                      string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentManifestationReady, StringComparison.OrdinalIgnoreCase) ||
                      string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeCompanionImprintManifestationReady, StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentWavering, StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentRestless, StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentConsideringDeparture, StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTransferPending, StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTransferAccepted, StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTransferRefused, StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTransferDeparted, StringComparison.OrdinalIgnoreCase) ||
                      string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTalkAnswered, StringComparison.OrdinalIgnoreCase) ||
                      string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentHistoryRevealed, StringComparison.OrdinalIgnoreCase) ||
                      string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentHistoryRefused, StringComparison.OrdinalIgnoreCase)))
@@ -1908,6 +1915,7 @@ public partial class ExplorerMode
 
         var abodeId = GetStr(abode, "abodeId", "");
         var abodeName = GetStr(abode, "name", "Обитель");
+        var currentAbodePower = AbodePowerRules.GetCurrentPower(guardian);
         if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(abodeId))
         {
             ShowEmptyPanel("Обитатели Обители", "Обитель ещё не materialized достаточно явно для resident roster.");
@@ -1918,7 +1926,7 @@ public partial class ExplorerMode
         {
             var residentsDoc = await _stateManager.LoadGameStateFileAsync(GuardianAbodeResidentState.StatePath);
             var residents = residentsDoc != null
-                ? GuardianAbodeResidentState.CollectEntries(residentsDoc.RootElement, guardianId, abodeId)
+                ? GuardianAbodeResidentState.CollectEntries(residentsDoc.RootElement, guardianId, abodeId, currentAbodePower)
                 : new List<GuardianAbodeResidentState.ResidentEntry>();
 
             if (residents.Count == 0)
@@ -1946,7 +1954,8 @@ public partial class ExplorerMode
                     _pendingGmAction =
                         $"[ABODE_RESIDENT_ROSTER_REQUEST] Игрок открыл roster Обители Хранителя '{guardianName}' (guardianId={guardianId}, abodeId={abodeId}, abodeName={abodeName}). " +
                         "В accepted turn materialize explicit residents через UpdateGuardianAbodeResidents в guardian_abode_residents.json и закрой request через UpdateGuardianAbodeResidentRosterReceipts. " +
-                        "Не выводи roster из домена Хранителя. Авторски создай 2-4 afterlife residents с residentId, residentKind, roleLabel, bondLevel, bondTier, canGrantCompanionRelic, bondRewardState и mortalWorldImprint.";
+                        "Не выводи roster из домена Хранителя. Авторски создай 2-4 afterlife residents с residentId, residentKind, roleLabel, bondLevel, bondTier, canGrantCompanionRelic, bondRewardState, personalityProfile, abodeDisposition, abodeDevotionLevel, abodeDevotionTier, restlessness, migrationState и mortalWorldImprint. " +
+                        "abodeDevotionTier и migrationState должны быть canonical derived values, а не свободным prose.";
                 }
 
                 var pendingLines = new List<string>
@@ -1980,9 +1989,18 @@ public partial class ExplorerMode
                     GuardianAbodeResidentState.BondTierFamiliar => "cyan",
                     _ => "grey"
                 };
+                var devotionColor = resident.AbodeDevotionTier switch
+                {
+                    GuardianAbodeResidentState.AbodeDevotionTierSteadfast => "gold1",
+                    GuardianAbodeResidentState.AbodeDevotionTierDevoted => "green",
+                    GuardianAbodeResidentState.AbodeDevotionTierAttached => "cyan",
+                    GuardianAbodeResidentState.AbodeDevotionTierUncertain => "yellow",
+                    _ => "grey"
+                };
                 return (
                     $"👤 {Markup.Escape(resident.DisplayName)} [dim]({Markup.Escape(GuardianAbodeResidentState.GetResidentKindLabel(resident.ResidentKind))})[/] " +
-                    $"[{bondColor}]{Markup.Escape(GuardianAbodeResidentState.GetBondTierLabel(resident.BondTier))}[/] [dim]{resident.BondLevel}/100[/]",
+                    $"[{bondColor}]{Markup.Escape(GuardianAbodeResidentState.GetBondTierLabel(resident.BondTier))}[/] [dim]{resident.BondLevel}/100[/] " +
+                    $"[dim]•[/] [{devotionColor}]{Markup.Escape(GuardianAbodeResidentState.GetAbodeDevotionTierLabel(resident.AbodeDevotionTier))}[/]",
                     resident.ResidentId);
             }).ToList());
             choices.Add("[grey]← Назад[/]");
@@ -2023,7 +2041,11 @@ public partial class ExplorerMode
         var historyLogEntries = residentStateDoc != null
             ? GuardianAbodeResidentState.CollectHistoryLogEntries(residentStateDoc.RootElement, resident.ResidentId)
             : new List<GuardianAbodeResidentState.HistoryLogEntry>();
+        var transferReceiptEntries = residentStateDoc != null
+            ? GuardianAbodeResidentState.CollectTransferReceipts(residentStateDoc.RootElement, resident.ResidentId)
+            : new List<GuardianAbodeResidentState.TransferReceiptEntry>();
         var pendingInteractionRequests = await GuardianAbodeResidentRequestState.ReadInteractionRequestsAsync(_fs);
+        var pendingTransferRequest = await GuardianAbodeResidentRequestState.FindPendingTransferAsync(_fs, resident.ResidentId);
         var pendingTalkRequest = pendingInteractionRequests.FirstOrDefault(request =>
             string.Equals(request.ResidentId, resident.ResidentId, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(request.InteractionType, GuardianAbodeResidentState.InteractionTypeTalk, StringComparison.OrdinalIgnoreCase));
@@ -2038,9 +2060,14 @@ public partial class ExplorerMode
             $"  Вид: [white]{Markup.Escape(GuardianAbodeResidentState.GetResidentKindLabel(resident.ResidentKind))}[/]",
             $"  Роль: [dim]{Markup.Escape(resident.RoleLabel)}[/]",
             $"  Связь: [white]{Markup.Escape(GuardianAbodeResidentState.GetBondTierLabel(resident.BondTier))}[/] [dim]({resident.BondLevel}/100)[/]",
+            $"  Преданность Обители: [white]{Markup.Escape(GuardianAbodeResidentState.GetAbodeDevotionTierLabel(resident.AbodeDevotionTier))}[/] [dim]({resident.AbodeDevotionLevel}/100)[/]",
+            $"  Внутреннее состояние: [white]{Markup.Escape(GuardianAbodeResidentState.GetMigrationStateLabel(resident.MigrationState))}[/] [dim](restlessness {resident.Restlessness}/100)[/]",
             $"  История: {(resident.HistoryRevealed ? "[green]раскрыта[/]" : "[dim]ещё не раскрыта[/]")}",
             $"  Награда связи: [dim]{Markup.Escape(GuardianAbodeResidentState.GetRewardStateLabel(resident.BondRewardState))}[/]"
         };
+        var pressureNarrative = GuardianAbodeResidentState.GetMigrationStatePressureNarrative(resident.MigrationState);
+        if (!string.IsNullOrWhiteSpace(pressureNarrative))
+            lines.Add($"  Давление ухода: [yellow]{Markup.Escape(pressureNarrative)}[/]");
 
         if (!string.IsNullOrWhiteSpace(resident.Summary))
         {
@@ -2056,10 +2083,40 @@ public partial class ExplorerMode
             lines.Add($"  Черты: [dim]{Markup.Escape(string.Join(", ", resident.CoreTraits))}[/]");
         if (resident.ArchetypeHints.Count > 0)
             lines.Add($"  Архетипы: [dim]{Markup.Escape(string.Join(", ", resident.ArchetypeHints))}[/]");
+        if (!string.IsNullOrWhiteSpace(resident.PersonalityProfile.Archetype))
+            lines.Add($"  Личность: [white]{Markup.Escape(resident.PersonalityProfile.Archetype)}[/]");
+        if (!string.IsNullOrWhiteSpace(resident.PersonalityProfile.Worldview))
+            lines.Add($"  Мировоззрение: [dim]{Markup.Escape(resident.PersonalityProfile.Worldview)}[/]");
+        if (!string.IsNullOrWhiteSpace(resident.PersonalityProfile.CulturalLayer))
+            lines.Add($"  Культурный слой: [dim]{Markup.Escape(resident.PersonalityProfile.CulturalLayer)}[/]");
+        if (resident.PersonalityProfile.CoreValues.Count > 0)
+            lines.Add($"  Ключевые ценности: [dim]{Markup.Escape(string.Join(", ", resident.PersonalityProfile.CoreValues))}[/]");
+        if (resident.PersonalityProfile.PersonalityTraits.Count > 0)
+        {
+            lines.Add("  Черты личности:");
+            foreach (var trait in resident.PersonalityProfile.PersonalityTraits.Take(4))
+                lines.Add($"    [dim]• {Markup.Escape(trait.TraitName)} {trait.Value}/10 — {Markup.Escape(trait.ValueDescription)}[/]");
+        }
+        lines.Add($"  Склад Обители: [dim]{Markup.Escape(GuardianAbodeResidentState.GetPowerSensitivityLabel(resident.AbodeDisposition.PowerSensitivity))}; {Markup.Escape(GuardianAbodeResidentState.GetMigrationDispositionLabel(resident.AbodeDisposition.MigrationDisposition))}; {Markup.Escape(GuardianAbodeResidentState.GetCommunalOrientationLabel(resident.AbodeDisposition.CommunalOrientation))}; {Markup.Escape(GuardianAbodeResidentState.GetStabilityNeedLabel(resident.AbodeDisposition.StabilityNeed))}[/]");
         if (!string.IsNullOrWhiteSpace(resident.LinkedSoulQuestId))
             lines.Add($"  Связанный квест души: [yellow]{Markup.Escape(resident.LinkedSoulQuestId)}[/]");
         if (!string.IsNullOrWhiteSpace(resident.GrantedRelicId))
             lines.Add($"  Дарованная реликвия: [green]{Markup.Escape(resident.GrantedRelicId)}[/]");
+        if (pendingTransferRequest != null)
+        {
+            var targetLabel = string.Equals(pendingTransferRequest.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase)
+                ? "offscreen departure"
+                : $"{pendingTransferRequest.TargetGuardianName} / {pendingTransferRequest.TargetAbodeName}";
+            lines.Add($"  Переход: [yellow]ожидает решения GM[/] [dim](mode={Markup.Escape(pendingTransferRequest.TransferMode)}, target={Markup.Escape(targetLabel)}, requestId={Markup.Escape(pendingTransferRequest.RequestId)})[/]");
+        }
+        else if (transferReceiptEntries.Count > 0)
+        {
+            var latestTransfer = transferReceiptEntries[0];
+            var targetLabel = string.Equals(latestTransfer.Status, GuardianAbodeResidentState.TransferStatusAccepted, StringComparison.OrdinalIgnoreCase)
+                ? $"{latestTransfer.TargetGuardianName} / {latestTransfer.TargetAbodeName}"
+                : latestTransfer.SourceAbodeName;
+            lines.Add($"  Последний переход: [dim]{Markup.Escape(GuardianAbodeResidentState.GetTransferStatusLabel(latestTransfer.Status))}[/] [dim]({Markup.Escape(targetLabel)}, turn {latestTransfer.ResolvedAtTurn})[/]");
+        }
         if (pendingTalkRequest != null)
             lines.Add($"  Разговор: [yellow]ожидает ответа GM[/] [dim](requestId={Markup.Escape(pendingTalkRequest.RequestId)})[/]");
         if (pendingHistoryRequest != null)
@@ -2125,6 +2182,11 @@ public partial class ExplorerMode
         {
             actions.Add("💎 Принять реликвию связи");
         }
+        if (string.Equals(resident.MigrationState, GuardianAbodeResidentState.MigrationStateReadyToTransfer, StringComparison.OrdinalIgnoreCase) &&
+            pendingTransferRequest == null)
+        {
+            actions.Add("🚪 Разрешить переход в другую Обитель");
+        }
         actions.Add("← Назад");
 
         var action = Prompt(new SelectionPrompt<string>()
@@ -2140,8 +2202,9 @@ public partial class ExplorerMode
             _pendingGmAction =
                 $"[ABODE_RESIDENT_RELIC_GRANT] Игрок принимает реликвию связи от afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, abodeId={abodeId}, abodeName={abodeName}). " +
                 "В accepted turn выдай новую Soul Relic через metaStateUpdates.soulRelicOperations.addRelic. " +
-                $"Реликвия должна иметь relicType={GuardianAbodeResidentState.RelicTypeCompanionEcho}, sourceResidentId={resident.ResidentId}, sourceGuardianId={guardianId}, sourceGuardianName={guardianName}, rarity не ниже Rare и complete companionSeed с companionNameHint, originWorldSummary, futureCompanionPrompt, bondReason, coreTraits, archetypeHints, appearanceMotifs. " +
+                $"Реликвия должна иметь relicType={GuardianAbodeResidentState.RelicTypeCompanionEcho}, sourceResidentId={resident.ResidentId}, sourceGuardianId={guardianId}, sourceGuardianName={guardianName}, rarity не ниже Rare и complete companionSeed с companionNameHint, originWorldSummary, futureCompanionPrompt, bondReason, coreTraits, archetypeHints, appearanceMotifs, rich personalityProfile, abodeDisposition, abodeDevotionLevel/abodeDevotionTier и restlessness/migrationState. " +
                 $"Также обнови resident state через UpdateGuardianAbodeResidents так, чтобы bondRewardState стал '{GuardianAbodeResidentState.RewardStateGranted}', а grantedRelicId указывал на выданную реликвию. " +
+                "Если вручение заметно меняет отношение резидента к Обители, обнови также abodeDevotionLevel/restlessness/migrationState в bounded canonical steps, выведенных из outcome, текущей силы Обители, abodeDisposition и bondLevel. " +
                 "Не забудь добавить residentInteractionLogUpdates с кратким summary вручения реликвии и его последствия.";
             MarkupLine("[cyan]Реликвия связи запрошена у GM.[/]");
             return;
@@ -2153,7 +2216,7 @@ public partial class ExplorerMode
                 $"[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, abodeId={abodeId}). " +
                 "В accepted turn roleplay the request and materialize/advance an ordinary soul quest via UpdateSoulQuests. " +
                 $"Soul quest должен иметь guardianId={guardianId}, relatedAfterlifeResidentId={resident.ResidentId} и player-facing title/description. " +
-                "При необходимости также обнови resident bondLevel/bondTier и linkedSoulQuestId через UpdateGuardianAbodeResidents. " +
+                "При необходимости также обнови resident bondLevel/bondTier, linkedSoulQuestId и abodeDevotionLevel/restlessness/migrationState через UpdateGuardianAbodeResidents; resident abode state меняй только в small canonical steps, выведенных из quest outcome, текущей силы Обители, abodeDisposition и bondLevel. " +
                 "Оставь residentInteractionLogUpdates с коротким summary просьбы/прогресса, чтобы у ГМа была curated память этого шага.";
             MarkupLine("[cyan]Личная просьба обитателя отправлена GM.[/]");
             return;
@@ -2184,8 +2247,17 @@ public partial class ExplorerMode
                 "В accepted turn обязательно закрой запрос через UpdateGuardianAbodeResidentInteractionReceipts со status=accepted|rejected|cancelled. " +
                 "Если история действительно раскрыта, либо установи historyRevealed=true, либо добавь запись через UpdateGuardianAbodeResidentHistoryLog, либо обнови mortalWorldImprint. " +
                 "После accepted ответа обязательно добавь residentThoughtJournalUpdates и/или residentInteractionLogUpdates с краткой памятью результата сцены. " +
+                "Если сцена заметно меняет отношение резидента к Обители, обнови abodeDevotionLevel/restlessness/migrationState через UpdateGuardianAbodeResidents только в bounded canonical steps, выведенных из responseMode/outcome, текущей силы Обители, abodeDisposition и bondLevel. " +
                 "Обычный отказ допустим, но он тоже должен быть явно закрыт receipt-ом.";
             MarkupLine("[cyan]История обитателя запрошена у GM.[/]");
+            return;
+        }
+
+        if (action.StartsWith("🚪", StringComparison.Ordinal))
+        {
+            var transferCreated = await StartResidentTransferRequestAsync(resident, guardianId, guardianName, abodeId, abodeName);
+            if (transferCreated)
+                await _stateManager.RefreshGameStateAsync();
             return;
         }
 
@@ -2213,12 +2285,133 @@ public partial class ExplorerMode
                 $"[ABODE_RESIDENT_TALK] Игрок разговаривает с afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, abodeId={abodeId}, abodeName={abodeName}, requestId={request.RequestId}). " +
                 "В accepted turn отыграй сцену и обязательно закрой запрос через UpdateGuardianAbodeResidentInteractionReceipts со status=accepted|rejected|cancelled. " +
                 "После accepted ответа обязательно оставь residentThoughtJournalUpdates и/или residentInteractionLogUpdates с краткой памятью результата сцены. " +
-                "Если были meaningful state changes, обнови resident state через UpdateGuardianAbodeResidents.";
+                "Если были meaningful state changes, обнови resident state через UpdateGuardianAbodeResidents; abodeDevotionLevel/restlessness/migrationState меняй только в bounded canonical steps, выведенных из responseMode/outcome, текущей силы Обители, abodeDisposition и bondLevel.";
             MarkupLine("[cyan]Разговор с обитателем Обители отправлен GM.[/]");
             return;
         }
 
         return;
+    }
+
+    private async Task<bool> StartResidentTransferRequestAsync(
+        GuardianAbodeResidentState.ResidentEntry resident,
+        string sourceGuardianId,
+        string sourceGuardianName,
+        string sourceAbodeId,
+        string sourceAbodeName)
+    {
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        var choices = new List<(string Label, string TransferMode, string TargetGuardianId, string TargetGuardianName, string TargetAbodeId, string TargetAbodeName)>();
+
+        if (guardiansDoc != null &&
+            guardiansDoc.RootElement.TryGetProperty("guardians", out var guardians) &&
+            guardians.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var guardian in guardians.EnumerateArray())
+            {
+                var guardianId = GetStr(guardian, "guardianId", "");
+                if (string.IsNullOrWhiteSpace(guardianId))
+                    continue;
+
+                var guardianName = GuardianManifestation.GetDisplayName(guardian);
+                if (guardian.TryGetProperty("abode", out var abode) is false || abode.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var abodeId = GetStr(abode, "abodeId", "");
+                var abodeName = GetStr(abode, "name", "Обитель");
+                if (string.IsNullOrWhiteSpace(abodeId))
+                    continue;
+
+                if (string.Equals(guardianId, sourceGuardianId, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(abodeId, sourceAbodeId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                choices.Add((
+                    $"🏛 {guardianName} — {abodeName}",
+                    GuardianAbodeResidentState.TransferModeAcceptedTransfer,
+                    guardianId,
+                    guardianName,
+                    abodeId,
+                    abodeName));
+            }
+        }
+
+        choices = choices
+            .OrderBy(choice => choice.TargetGuardianName, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(choice => choice.TargetAbodeName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        choices.Add((
+            "🌫 Отпустить без новой Обители",
+            GuardianAbodeResidentState.TransferModeDepartureOnly,
+            "",
+            "",
+            "",
+            ""));
+
+        if (choices.Count == 1)
+        {
+            MarkupLine("[yellow]Нет другой materialized Обители для целевого перехода. Доступен только offscreen departure.[/]");
+        }
+
+        var labels = choices.Select(choice => choice.Label).Append("← Назад").ToList();
+        var selected = Prompt(new SelectionPrompt<string>()
+            .Title("[bold]Выберите, как разрешить переход резидента:[/]")
+            .HighlightStyle(new Style(Color.Cyan1))
+            .AddChoices(labels));
+
+        if (selected.Contains("← Назад", StringComparison.Ordinal))
+            return false;
+
+        var choiceIndex = labels.IndexOf(selected);
+        if (choiceIndex < 0 || choiceIndex >= choices.Count)
+            return false;
+
+        var choice = choices[choiceIndex];
+        var request = new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest
+        {
+            ResidentId = resident.ResidentId,
+            ResidentName = resident.DisplayName,
+            SourceGuardianId = sourceGuardianId,
+            SourceGuardianName = sourceGuardianName,
+            SourceAbodeId = sourceAbodeId,
+            SourceAbodeName = sourceAbodeName,
+            TargetGuardianId = choice.TargetGuardianId,
+            TargetGuardianName = choice.TargetGuardianName,
+            TargetAbodeId = choice.TargetAbodeId,
+            TargetAbodeName = choice.TargetAbodeName,
+            AbodeDevotionLevel = resident.AbodeDevotionLevel,
+            AbodeDevotionTier = resident.AbodeDevotionTier,
+            Restlessness = resident.Restlessness,
+            MigrationState = resident.MigrationState,
+            TransferMode = choice.TransferMode,
+            CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
+        };
+
+        await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(_fs, request);
+
+        if (string.Equals(choice.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase))
+        {
+            _pendingGmAction =
+                $"[ABODE_RESIDENT_TRANSFER_REQUEST] Игрок разрешает afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, sourceGuardianId={sourceGuardianId}, sourceAbodeId={sourceAbodeId}, requestId={request.RequestId}) покинуть текущую Обитель без новой materialized цели. " +
+                "В accepted turn закрой запрос через UpdateGuardianAbodeResidentTransferReceipts с transferMode=departure_only и status=departed_only. " +
+                "Resident должен перестать быть present в текущем resident roster, а guardian_abode_residents.json.historyLog должен получить departure entry. " +
+                "Не materialize нового guardian/abode назначения прозой и не оставляй request без canonical receipt.";
+            MarkupLine("[cyan]Запрос на уход резидента без новой Обители отправлен GM.[/]");
+        }
+        else
+        {
+            _pendingGmAction =
+                $"[ABODE_RESIDENT_TRANSFER_REQUEST] Игрок разрешает afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, sourceGuardianId={sourceGuardianId}, sourceAbodeId={sourceAbodeId}, requestId={request.RequestId}) попытаться перейти в Обитель '{choice.TargetAbodeName}' Хранителя {choice.TargetGuardianName} (targetGuardianId={choice.TargetGuardianId}, targetAbodeId={choice.TargetAbodeId}). " +
+                "В accepted turn закрой запрос через UpdateGuardianAbodeResidentTransferReceipts. " +
+                $"Если переход принят, resident должен сохранить тот же residentId, перейти в target guardian/abode через UpdateGuardianAbodeResidents, получить canonical arrival abode state для новой Обители и оставить departure+arrival history entries. " +
+                "Если переход отвергнут, resident остаётся в source guardian/abode, а receipt должен иметь status=refused и refusal history entry. " +
+                "Не разрешай transfer только prose-описанием и не оставляй resident одновременно в source и target Abodes.";
+            MarkupLine("[cyan]Запрос на переход резидента в другую Обитель отправлен GM.[/]");
+        }
+
+        return true;
     }
 
     private static string FormatAchievementRewardText(string rewardType, string rewardValue)

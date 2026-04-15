@@ -1,5 +1,7 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -32,6 +34,7 @@ internal sealed class ValidatorFixtureHarness : IDisposable
     {
         await ApplyMappingsAsync(_definition.Shared);
         await ApplyMappingsAsync(_definition.Broken);
+        await NormalizePendingTurnSnapshotFixtureAuthorityAsync();
         return await ExecuteAsync();
     }
 
@@ -39,6 +42,7 @@ internal sealed class ValidatorFixtureHarness : IDisposable
     {
         await ApplyMappingsAsync(_definition.Shared);
         await ApplyMappingsAsync(_definition.Fixed);
+        await NormalizePendingTurnSnapshotFixtureAuthorityAsync();
         return await ExecuteAsync();
     }
 
@@ -141,6 +145,126 @@ internal sealed class ValidatorFixtureHarness : IDisposable
 
         foreach (var file in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
             File.Copy(file, file.Replace(sourceDir, destinationDir), overwrite: true);
+    }
+
+    private async Task NormalizePendingTurnSnapshotFixtureAuthorityAsync()
+    {
+        const string manifestPath = "game_state/control/pending_turn_snapshot.json";
+        var manifestJson = await _fs.ReadFileAsync(manifestPath);
+        if (string.IsNullOrWhiteSpace(manifestJson))
+            return;
+
+        JsonObject? manifest;
+        try
+        {
+            manifest = JsonNode.Parse(manifestJson) as JsonObject;
+        }
+        catch
+        {
+            return;
+        }
+
+        if (manifest == null)
+            return;
+
+        var sessionId = manifest["sessionId"]?.GetValue<string>() ?? "fixture-session";
+        var requestId = manifest["requestId"]?.GetValue<string>() ?? "fixture-request";
+        var turnNumber = manifest["turnNumber"]?.GetValue<int>() ?? 1;
+
+        await _fs.WriteFileAtomicAsync(
+            "input/turn_request.json",
+            JsonSerializer.Serialize(new
+            {
+                sessionId,
+                requestId,
+                turnNumber
+            }, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            }));
+
+        var files = manifest["files"] as JsonObject ?? new JsonObject();
+        var snapshotFileHashes = manifest["snapshotFileHashes"] as JsonObject ?? new JsonObject();
+        var clientOwnedValidationHashes = manifest["clientOwnedValidationHashes"] as JsonObject ?? new JsonObject();
+        var rollbackBaselineFiles = manifest["rollbackBaselineFiles"] as JsonArray ?? new JsonArray();
+        if (manifest["rollbackBackups"] is JsonObject rollbackBackups)
+        {
+            foreach (var pair in rollbackBackups)
+            {
+                if (pair.Value is not JsonValue backupPathNode ||
+                    !backupPathNode.TryGetValue<string>(out var backupPath) ||
+                    string.IsNullOrWhiteSpace(backupPath))
+                {
+                    continue;
+                }
+
+                var normalizedPath = backupPath.Replace('\\', '/');
+                if (files[pair.Key] == null)
+                    files[pair.Key] = normalizedPath;
+
+                var content = await _fs.ReadFileAsync(normalizedPath);
+                if (string.IsNullOrWhiteSpace(content))
+                    continue;
+
+                if (snapshotFileHashes[pair.Key] == null)
+                    snapshotFileHashes[pair.Key] = ComputeSha256(content);
+            }
+        }
+
+        foreach (var pair in files)
+        {
+            if (snapshotFileHashes[pair.Key] != null ||
+                pair.Value is not JsonValue snapshotPathNode ||
+                !snapshotPathNode.TryGetValue<string>(out var snapshotPath) ||
+                string.IsNullOrWhiteSpace(snapshotPath))
+            {
+                continue;
+            }
+
+            var content = await _fs.ReadFileAsync(snapshotPath.Replace('\\', '/'));
+            if (string.IsNullOrWhiteSpace(content))
+                continue;
+
+            snapshotFileHashes[pair.Key] = ComputeSha256(content);
+        }
+
+        if (rollbackBaselineFiles.Count == 0)
+        {
+            foreach (var pair in files.OrderBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase))
+                rollbackBaselineFiles.Add(pair.Key);
+        }
+
+        if (clientOwnedValidationHashes["game_state/history/chat_log.json"] == null)
+        {
+            var chatLogContent = await _fs.ReadFileAsync("game_state/history/chat_log.json");
+            clientOwnedValidationHashes["game_state/history/chat_log.json"] = ComputeSha256(chatLogContent ?? string.Empty);
+        }
+
+        if (manifest["sourceLabel"] == null ||
+            (manifest["sourceLabel"] is JsonValue sourceLabelNode &&
+             (!sourceLabelNode.TryGetValue<string>(out var sourceLabel) || string.IsNullOrWhiteSpace(sourceLabel))))
+        {
+            manifest["sourceLabel"] = "validator-fixture-harness";
+        }
+
+        manifest["files"] = files;
+        manifest["snapshotFileHashes"] = snapshotFileHashes;
+        manifest["clientOwnedValidationHashes"] = clientOwnedValidationHashes;
+        manifest["rollbackBaselineFiles"] = rollbackBaselineFiles;
+        manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+
+        await _fs.WriteFileAtomicAsync(
+            manifestPath,
+            JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+    }
+
+    private static string ComputeSha256(string content)
+    {
+        using var sha = System.Security.Cryptography.SHA256.Create();
+        var bytes = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(content));
+        return Convert.ToHexString(bytes);
     }
 
     public void Dispose()

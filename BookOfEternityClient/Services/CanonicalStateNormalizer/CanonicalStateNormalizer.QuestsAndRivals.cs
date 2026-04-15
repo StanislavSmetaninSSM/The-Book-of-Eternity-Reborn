@@ -85,24 +85,47 @@ public partial class CanonicalStateNormalizer
         foreach (var arc in CollectRivalSoulArcEntries(currentNode))
             UpsertByIdentity(arcs, arc, "arcId");
 
+        var rawCurrentWorldEventsJson = _fs.FileExists(worldEventsPath)
+            ? await _fs.ReadFileAsync(worldEventsPath)
+            : null;
+        var currentWorldEventsFileExists = _fs.FileExists(worldEventsPath);
         var currentWorldEvents = default(JsonNode);
-        if (trackerRoot != null &&
-            _fs.FileExists(worldEventsPath) &&
-            RequiresCurrentWorldEventsForVisibleRivalClueConsumption(
+        var currentIncarnation = 0;
+        var resolvedCurrentIncarnation = false;
+        var requiresCurrentIncarnationPreflight =
+            RequiresCurrentIncarnationForVisibleRivalCluePreflight(
                 result,
-                await _fs.ReadFileAsync(worldEventsPath)))
+                trackerRoot,
+                currentWorldEventsFileExists,
+                rawCurrentWorldEventsJson);
+        if (trackerRoot != null && requiresCurrentIncarnationPreflight)
         {
-            currentWorldEvents = await ReadCurrentAuthorityNodeAsync(
-                worldEventsPath,
-                required: true,
-                RivalWorldEventsCurrentStateReadableRequiredMessage);
+            var currentSoulStateRoot = await ReadCurrentGuardianProjectSoulStateRootAsync(required: true);
+            (currentIncarnation, _) = await ReadEffectiveGuardianProjectSoulContextAsync(
+                backups,
+                new GuardianProjectSoulContextRequirements(
+                    RequiresCurrentIncarnation: true,
+                    RequiresCurrentRealm: false),
+                currentSoulStateRoot);
+            resolvedCurrentIncarnation = true;
+
+            if (RequiresCurrentWorldEventsForVisibleRivalClueConsumption(
+                    result,
+                    trackerRoot,
+                    currentIncarnation,
+                    rawCurrentWorldEventsJson))
+            {
+                currentWorldEvents = await ReadCurrentAuthorityNodeAsync(
+                    worldEventsPath,
+                    required: true,
+                    RivalWorldEventsCurrentStateReadableRequiredMessage);
+            }
         }
 
         var requiresCurrentIncarnation =
             trackerRoot != null &&
             RequiresCurrentIncarnationForVisibleRivalClueConsumption(previous, result, previousWorldEvents, currentWorldEvents);
-        var currentIncarnation = 0;
-        if (requiresCurrentIncarnation)
+        if (requiresCurrentIncarnation && !resolvedCurrentIncarnation)
         {
             var currentSoulStateRoot = await ReadCurrentGuardianProjectSoulStateRootAsync(required: true);
             (currentIncarnation, _) = await ReadEffectiveGuardianProjectSoulContextAsync(
@@ -158,15 +181,375 @@ public partial class CanonicalStateNormalizer
         return false;
     }
 
-    private static bool RequiresCurrentWorldEventsForVisibleRivalClueConsumption(
+    private static bool TryGetTrimmedWorldEventContainerJson(string? rawJson, out string trimmed)
+    {
+        trimmed = string.Empty;
+        if (string.IsNullOrWhiteSpace(rawJson))
+            return false;
+
+        trimmed = rawJson.Trim();
+        if (trimmed.Length <= 1)
+            return false;
+
+        return trimmed.StartsWith("[", StringComparison.Ordinal) ||
+               trimmed.Contains("\"worldEventsLog\"", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Contains("\"events\"", StringComparison.OrdinalIgnoreCase);
+    }
+
+    internal static bool RawJsonMayContainCurrentWorldEventSurface(string? rawJson)
+    {
+        if (!TryGetTrimmedWorldEventContainerJson(rawJson, out _))
+            return false;
+
+        // When the current pass has no visible sponsored public-signal clue surface, any
+        // malformed current world-events container is potentially authority-relevant.
+        return true;
+    }
+
+    internal static bool RawJsonMayContainCurrentLinkedWorldEventBonusClueSurface(string? rawJson)
+    {
+        if (!TryGetTrimmedWorldEventContainerJson(rawJson, out var trimmed))
+            return false;
+
+        return trimmed.Contains("\"relatedRivalArcId\"", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Contains("\"bonusClueSourceProjectId\"", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Contains("\"bonusClueRevealId\"", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static readonly string[] RelevantCurrentWorldEventFieldNames =
+    {
+        "eventId",
+        "eventTitle",
+        "title",
+        "summary",
+        "description",
+        "visibility",
+        "relatedRivalArcId",
+        "bonusClueSourceProjectId",
+        "bonusClueRevealId"
+    };
+
+    private static bool RawJsonMayContainCurrentWorldEventCandidateSurface(string? rawJson)
+    {
+        if (!TryGetTrimmedWorldEventContainerJson(rawJson, out var trimmed))
+            return false;
+
+        return trimmed.Contains("\"eventId\"", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Contains("\"eventTitle\"", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Contains("\"title\"", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Contains("\"summary\"", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Contains("\"description\"", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Contains("\"visibility\"", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool RawJsonMayContainCurrentWorldEventStartedEntrySurface(string? rawJson)
+    {
+        if (!TryGetTrimmedWorldEventContainerJson(rawJson, out var trimmed))
+            return false;
+
+        var arrayStart = trimmed.IndexOf('[', StringComparison.Ordinal);
+        if (arrayStart < 0)
+            return false;
+
+        var index = arrayStart + 1;
+        while (index < trimmed.Length && char.IsWhiteSpace(trimmed[index]))
+            index++;
+
+        if (index >= trimmed.Length || trimmed[index] != '{')
+            return false;
+
+        index++;
+        while (index < trimmed.Length && char.IsWhiteSpace(trimmed[index]))
+            index++;
+
+        // Treat both a bare/truncated event object start and a partially typed
+        // relevant field key as authority-relevant on a semantically required
+        // current-pass path. This closes the remaining fail-open where malformed
+        // current world-events stop after entering the event object but before a
+        // full candidate/clue-marker field name is present.
+        if (index >= trimmed.Length)
+            return true;
+
+        var objectTail = trimmed[index..].TrimEnd();
+        if (objectTail.Length == 0)
+            return true;
+
+        var lastQuote = objectTail.LastIndexOf('"');
+        if (lastQuote < 0)
+            return false;
+
+        var partialField = objectTail[(lastQuote + 1)..];
+        if (partialField.Length == 0)
+            return true;
+
+        if (partialField.IndexOfAny(['"', ':', ',', '{', '}', '[', ']']) >= 0)
+            return false;
+
+        return RelevantCurrentWorldEventFieldNames.Any(name =>
+            name.StartsWith(partialField, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static Dictionary<string, int> CollectVisibleSponsoredPublicSignalBonusClueUsage(JsonObject currentArcsRoot)
+    {
+        var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        if (currentArcsRoot["arcs"] is not JsonArray arcs)
+            return result;
+
+        var countedVisibleBonusClueRevealKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var arc in arcs.OfType<JsonObject>())
+        {
+            var arcId = GetNodeString(arc["arcId"]);
+            var sponsorGuardianId = GetNodeString((arc["sponsorGuardianRef"] as JsonObject)?["guardianId"]);
+            if (string.IsNullOrWhiteSpace(arcId) ||
+                string.IsNullOrWhiteSpace(sponsorGuardianId) ||
+                arc["publicSignals"] is not JsonArray publicSignals)
+            {
+                continue;
+            }
+
+            foreach (var signal in publicSignals.OfType<JsonObject>())
+            {
+                var sourceProjectId = GetNodeString(signal["bonusClueSourceProjectId"]);
+                if (!GetJsonBool(signal["visibleToPlayer"]) ||
+                    string.IsNullOrWhiteSpace(sourceProjectId))
+                {
+                    continue;
+                }
+
+                var revealKey = BuildVisibleBonusClueRevealKey(arcId!, signal, isWorldEvent: false);
+                if (!countedVisibleBonusClueRevealKeys.Add(revealKey))
+                    continue;
+
+                var clueCost = Math.Max(1, GetNodeInt(signal["bonusClueCost"], 1));
+                var usageKey = $"{sponsorGuardianId}::{sourceProjectId}";
+                result[usageKey] = result.GetValueOrDefault(usageKey) + clueCost;
+            }
+        }
+
+        return result;
+    }
+
+    private static bool HasVisibleSponsoredPublicSignalBonusClueSurface(JsonObject currentArcsRoot) =>
+        CollectVisibleSponsoredPublicSignalBonusClueUsage(currentArcsRoot).Count > 0;
+
+    internal static bool RequiresCurrentIncarnationForVisibleRivalCluePreflight(
         JsonObject currentArcsRoot,
+        JsonObject? trackerRoot,
+        bool hasCurrentWorldEventsFile,
         string? rawCurrentWorldEventsJson)
     {
+        if (!HasSponsoredVisibleRivalClueBudgetCandidate(currentArcsRoot, trackerRoot))
+            return false;
+
+        if (HasVisibleSponsoredPublicSignalBonusClueSurface(currentArcsRoot))
+            return true;
+
+        return CurrentPassMayHaveLinkedWorldEventBonusClueSurfaceForPreflight(
+            currentArcsRoot,
+            hasCurrentWorldEventsFile,
+            rawCurrentWorldEventsJson);
+    }
+
+    private static HashSet<string> CollectGuardianSponsoredGuardianIds(JsonObject currentArcsRoot)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (currentArcsRoot["arcs"] is not JsonArray arcs)
+            return result;
+
+        foreach (var arc in arcs.OfType<JsonObject>())
+        {
+            var sponsorGuardianId = GetNodeString((arc["sponsorGuardianRef"] as JsonObject)?["guardianId"]);
+            if (!string.IsNullOrWhiteSpace(sponsorGuardianId))
+                result.Add(sponsorGuardianId!);
+        }
+
+        return result;
+    }
+
+    internal static bool HasSponsoredVisibleRivalClueBudgetCandidate(JsonObject currentArcsRoot, JsonObject? trackerRoot)
+    {
+        if (trackerRoot?["completedProjects"] is not JsonArray completedProjects)
+            return false;
+
+        var sponsoredGuardianIds = CollectGuardianSponsoredGuardianIds(currentArcsRoot);
+        if (sponsoredGuardianIds.Count == 0)
+            return false;
+
+        foreach (var entry in completedProjects.OfType<JsonObject>())
+        {
+            var guardianId = GetNodeString(entry["guardianId"]);
+            if (string.IsNullOrWhiteSpace(guardianId) ||
+                !sponsoredGuardianIds.Contains(guardianId!) ||
+                entry["project"] is not JsonObject project ||
+                !string.Equals(GetNodeString(project["projectType"]), "lore_research", StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(GetNodeString(project["finalState"]), "Completed", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (GetPotentialVisibleRivalClueBudget(project) > 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static int GetPotentialVisibleRivalClueBudget(JsonObject project)
+    {
+        var effectState = project["effectState"] as JsonObject;
+        var audit = project["projectOutcomeAudit"] as JsonObject;
+        var grantedFromEffectState = GetNodeInt(effectState?["visibleRivalClueBudgetGranted"]);
+        var grantedFromAudit = GetNodeInt(audit?["visibleRivalClueBonus"]);
+        return Math.Max(grantedFromEffectState, grantedFromAudit);
+    }
+
+    private static int GetRemainingVisibleRivalClueBudgetForCurrentLife(JsonObject project, int currentIncarnation)
+    {
+        if (!string.Equals(GetNodeString(project["projectType"]), "lore_research", StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(project["finalState"]), "Completed", StringComparison.OrdinalIgnoreCase) ||
+            project["effectState"] is not JsonObject effectState ||
+            GetNodeInt(effectState["targetIncarnation"]) != currentIncarnation)
+        {
+            return 0;
+        }
+
+        var granted = GuardianProjectState.GetGrantedVisibleRivalClueBudgetForCurrentLife(project, currentIncarnation);
+        var spent = GetNodeInt(effectState["visibleRivalClueBudgetSpent"]);
+        return Math.Max(0, granted - spent);
+    }
+
+    private static bool CurrentPassMayNeedLinkedWorldEventBonusClueSurface(
+        JsonObject currentArcsRoot,
+        JsonObject? trackerRoot,
+        int currentIncarnation)
+    {
+        if (trackerRoot == null ||
+            currentIncarnation <= 0 ||
+            trackerRoot["completedProjects"] is not JsonArray completedProjects)
+        {
+            return false;
+        }
+
+        var sponsoredGuardianIds = CollectGuardianSponsoredGuardianIds(currentArcsRoot);
+        if (sponsoredGuardianIds.Count == 0)
+            return false;
+
+        var visiblePublicSignalUsage = CollectVisibleSponsoredPublicSignalBonusClueUsage(currentArcsRoot);
+        foreach (var entry in completedProjects.OfType<JsonObject>())
+        {
+            var guardianId = GetNodeString(entry["guardianId"]);
+            if (string.IsNullOrWhiteSpace(guardianId) ||
+                !sponsoredGuardianIds.Contains(guardianId!) ||
+                entry["project"] is not JsonObject project)
+            {
+                continue;
+            }
+
+            var sourceProjectId = GetNodeString(project["projectId"]);
+            if (string.IsNullOrWhiteSpace(sourceProjectId))
+                continue;
+
+            var remainingBudget = GetRemainingVisibleRivalClueBudgetForCurrentLife(project, currentIncarnation);
+            if (remainingBudget <= 0)
+                continue;
+
+            var usageKey = $"{guardianId}::{sourceProjectId}";
+            var visibleUsage = visiblePublicSignalUsage.GetValueOrDefault(usageKey);
+            // Equality still needs strict current-world handling: visible publicSignals may
+            // already occupy the full remaining budget while malformed current world-events
+            // hide one more linked clue that would otherwise escape fail-closed validation.
+            if ((visibleUsage == 0 && remainingBudget > 0) ||
+                (visibleUsage > 0 && remainingBudget >= visibleUsage))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool CurrentPassMayHaveLinkedWorldEventBonusClueSurfaceForPreflight(
+        JsonObject currentArcsRoot,
+        bool hasCurrentWorldEventsFile,
+        string? rawCurrentWorldEventsJson)
+    {
+        if (!hasCurrentWorldEventsFile || string.IsNullOrWhiteSpace(rawCurrentWorldEventsJson))
+            return true;
+
+        if (TryParseCurrentWorldEventsRoot(rawCurrentWorldEventsJson) is JsonNode currentWorldEventsRoot)
+            return CurrentWorldEventsContainVisibleLinkedBonusClueSurface(currentArcsRoot, currentWorldEventsRoot);
+
+        return RawJsonMayContainCurrentLinkedWorldEventBonusClueSurface(rawCurrentWorldEventsJson) ||
+               RawJsonMayContainCurrentWorldEventCandidateSurface(rawCurrentWorldEventsJson) ||
+               RawJsonMayContainCurrentWorldEventStartedEntrySurface(rawCurrentWorldEventsJson);
+    }
+
+    private static JsonNode? TryParseCurrentWorldEventsRoot(string? rawCurrentWorldEventsJson)
+    {
+        if (string.IsNullOrWhiteSpace(rawCurrentWorldEventsJson))
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(rawCurrentWorldEventsJson);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static bool CurrentWorldEventsContainVisibleLinkedBonusClueSurface(
+        JsonObject currentArcsRoot,
+        JsonNode? currentWorldEventsRoot)
+    {
+        if (currentWorldEventsRoot == null)
+            return false;
+
         var sponsoredArcIds = CollectGuardianSponsoredRivalArcIds(currentArcsRoot);
         if (sponsoredArcIds.Count == 0)
             return false;
 
-        return RawJsonMayContainRelatedRivalWorldEvents(rawCurrentWorldEventsJson, sponsoredArcIds, requireBonusClueSource: true);
+        foreach (var worldEvent in EnumerateWorldEventObjects(currentWorldEventsRoot))
+        {
+            var relatedArcId = GetNodeString(worldEvent["relatedRivalArcId"]);
+            var sourceProjectId = GetNodeString(worldEvent["bonusClueSourceProjectId"]);
+            if (string.IsNullOrWhiteSpace(relatedArcId) ||
+                string.IsNullOrWhiteSpace(sourceProjectId) ||
+                !IsPlayerVisibleRivalWorldEvent(worldEvent) ||
+                !sponsoredArcIds.Contains(relatedArcId!))
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    internal static bool RequiresCurrentWorldEventsForVisibleRivalClueConsumption(
+        JsonObject currentArcsRoot,
+        JsonObject? trackerRoot,
+        int currentIncarnation,
+        string? rawCurrentWorldEventsJson)
+    {
+        var currentPassMayNeedLinkedWorldEvents = CurrentPassMayNeedLinkedWorldEventBonusClueSurface(
+            currentArcsRoot,
+            trackerRoot,
+            currentIncarnation);
+        if (!currentPassMayNeedLinkedWorldEvents)
+            return false;
+
+        if (string.IsNullOrWhiteSpace(rawCurrentWorldEventsJson))
+            return true;
+
+        if (!RawJsonMayContainCurrentWorldEventSurface(rawCurrentWorldEventsJson))
+            return false;
+
+        if (RawJsonMayContainCurrentLinkedWorldEventBonusClueSurface(rawCurrentWorldEventsJson))
+            return true;
+
+        return RawJsonMayContainCurrentWorldEventCandidateSurface(rawCurrentWorldEventsJson) ||
+               RawJsonMayContainCurrentWorldEventStartedEntrySurface(rawCurrentWorldEventsJson);
     }
 
     private static bool RequiresCurrentIncarnationForVisibleRivalClueConsumption(

@@ -173,6 +173,8 @@ public sealed class ActorMemoryServiceTests : IDisposable
         Assert.Contains("Guardian project continuity", reminder, StringComparison.Ordinal);
         Assert.Contains("Abode power continuity", reminder, StringComparison.Ordinal);
         Assert.Contains("Лиора", reminder, StringComparison.Ordinal);
+        Assert.Contains("abode", reminder, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("profile:", reminder, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Разговор у края сада", reminder, StringComparison.Ordinal);
     }
 
@@ -434,6 +436,45 @@ public sealed class ActorMemoryServiceTests : IDisposable
         Assert.NotNull(reminder);
         Assert.Contains("Wider continuity", reminder, StringComparison.Ordinal);
         Assert.Contains("Старый след", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_MortalWorld_IgnoresAliasOnlyNpcCoreSections()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "locationId": "loc_market",
+          "name": "Рынок"
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "npcs": [
+            {
+              "NPCId": "npc_merchant_01",
+              "name": "Старый Торговец",
+              "currentLocationId": "loc_market"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_journals.json", """
+        {
+          "NPCJournals": [
+            {
+              "NPCId": "npc_merchant_01",
+              "NPCName": "Старый Торговец",
+              "lastJournalNote": "Если alias section будет прочитан как canonical, этот текст попадёт в digest."
+            }
+          ]
+        }
+        """);
+
+        var reminder = await _service.BuildSystemReminderFragmentAsync("Mortal World", 10);
+
+        Assert.Null(reminder);
     }
 
     public void Dispose()

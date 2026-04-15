@@ -143,7 +143,6 @@ public partial class CanonicalStateNormalizer
     {
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
-        await NormalizeSoulStateAsync(backups);
         await NormalizeGuardiansAsync(backups);
         await NormalizeGuardianAbodeResidentsAsync(backups);
         await NormalizeGuardianProjectsAsync(guardianProjectInputs);
@@ -154,6 +153,7 @@ public partial class CanonicalStateNormalizer
         await NormalizeQuestStateAsync("game_state/quests/soul_quests.json", "UpdateSoulQuests", backups);
         await NormalizeQuestHistoryAsync(backups);
         await NormalizeRivalSoulArcsAsync(backups);
+        await NormalizeSoulStateAsync(backups);
         await NormalizeFactionCoreAsync(backups);
         await NormalizeNpcTradeCoreAsync(backups);
         await NormalizeNpcInteractionJournalAsync(backups);

@@ -2597,6 +2597,7 @@ public partial class ValidationService
                 RequireArrayOfStrings(archetypeHints, $"{context}.companionSeed.archetypeHints", issues);
             if (companionSeed.TryGetProperty("appearanceMotifs", out var appearanceMotifs))
                 RequireArrayOfStrings(appearanceMotifs, $"{context}.companionSeed.appearanceMotifs", issues);
+            ValidateResidentCompanionSnapshotFields(companionSeed, $"{context}.companionSeed", issues, section);
         }
 
         var hasEmbeddedSoulImprint = relic.TryGetProperty("soulImprint", out var soulImprint) || relic.TryGetProperty("npcSoulImprint", out soulImprint);
@@ -2655,6 +2656,228 @@ public partial class ValidationService
                     code: "soul_relic_embedded_imprint_missing_traits",
                     section: section,
                     repairHint: "Сохраняй в soulImprint/npcSoulImprint coreTraitsPreserved, coreTraits или personalityTraits."));
+            }
+        }
+    }
+
+    private void ValidateResidentCompanionSnapshotFields(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string section)
+    {
+        if (root.TryGetProperty("personalityProfile", out var personalityProfile) &&
+            personalityProfile.ValueKind != JsonValueKind.Null)
+        {
+            ValidateResidentCompanionPersonalityProfile(personalityProfile, $"{contextPrefix}.personalityProfile", issues, section);
+        }
+
+        if (root.TryGetProperty("abodeDisposition", out var abodeDisposition) &&
+            abodeDisposition.ValueKind != JsonValueKind.Null)
+        {
+            ValidateResidentCompanionAbodeDisposition(abodeDisposition, $"{contextPrefix}.abodeDisposition", issues, section);
+        }
+
+        var hasAnyAbodeRelationField =
+            root.TryGetProperty("abodeDevotionLevel", out _) ||
+            root.TryGetProperty("abodeDevotionTier", out _) ||
+            root.TryGetProperty("restlessness", out _) ||
+            root.TryGetProperty("migrationState", out _);
+        if (hasAnyAbodeRelationField)
+            ValidateResidentCompanionAbodeRelation(root, contextPrefix, issues, section);
+    }
+
+    private void ValidateResidentCompanionPersonalityProfile(JsonElement value, string contextPrefix, List<ValidationIssue> issues, string section)
+    {
+        if (!RequireObject(value, contextPrefix, issues))
+            return;
+
+        RequireString(value, contextPrefix, issues, "archetype");
+        RequireString(value, contextPrefix, issues, "worldview");
+        RequireString(value, contextPrefix, issues, "culturalLayer");
+        if (value.TryGetProperty("coreValues", out var coreValues))
+            RequireArrayOfStrings(coreValues, $"{contextPrefix}.coreValues", issues);
+        if (value.TryGetProperty("personalityTraits", out var personalityTraits))
+            ValidateArrayItems(personalityTraits, $"{contextPrefix}.personalityTraits", issues, ValidateResidentCompanionPersonalityTrait);
+    }
+
+    private void ValidateResidentCompanionPersonalityTrait(JsonElement value, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!RequireObject(value, contextPrefix, issues))
+            return;
+
+        RequireString(value, contextPrefix, issues, "traitName");
+        RequireString(value, contextPrefix, issues, "valueDescription");
+        ValidateIntegerField(value, contextPrefix, issues, "value");
+        ValidateOptionalString(value, contextPrefix, issues, "description");
+
+        if (TryReadInt(value, "value", out var traitValue) && (traitValue < 1 || traitValue > 10))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.value",
+                IssueSeverity.Error,
+                "Resident companion personality trait value должен быть в диапазоне 1..10",
+                code: "companion_seed_personality_trait_value_out_of_bounds",
+                section: "SoulRelics",
+                expected: "1..10",
+                actual: traitValue.ToString(),
+                repairHint: "Сохраняй companionSeed.personalityProfile.personalityTraits[].value как integer от 1 до 10."));
+        }
+    }
+
+    private void ValidateResidentCompanionAbodeDisposition(JsonElement value, string contextPrefix, List<ValidationIssue> issues, string section)
+    {
+        if (!RequireObject(value, contextPrefix, issues))
+            return;
+
+        var powerSensitivity = RequireString(value, contextPrefix, issues, "powerSensitivity");
+        if (!string.IsNullOrWhiteSpace(powerSensitivity) && !GuardianAbodeResidentState.IsSupportedPowerSensitivity(powerSensitivity))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.powerSensitivity",
+                IssueSeverity.Error,
+                "Resident companion abodeDisposition.powerSensitivity должен быть canonical enum значением",
+                code: "companion_seed_invalid_power_sensitivity",
+                section: section,
+                expected: "low | medium | high",
+                actual: powerSensitivity,
+                repairHint: "Используй для companionSeed.abodeDisposition.powerSensitivity только low, medium или high."));
+        }
+
+        var migrationDisposition = RequireString(value, contextPrefix, issues, "migrationDisposition");
+        if (!string.IsNullOrWhiteSpace(migrationDisposition) && !GuardianAbodeResidentState.IsSupportedMigrationDisposition(migrationDisposition))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.migrationDisposition",
+                IssueSeverity.Error,
+                "Resident companion abodeDisposition.migrationDisposition должен быть canonical enum значением",
+                code: "companion_seed_invalid_migration_disposition",
+                section: section,
+                expected: "rooted | selective | opportunistic | wandering",
+                actual: migrationDisposition,
+                repairHint: "Используй для companionSeed.abodeDisposition.migrationDisposition только rooted, selective, opportunistic или wandering."));
+        }
+
+        var communalOrientation = RequireString(value, contextPrefix, issues, "communalOrientation");
+        if (!string.IsNullOrWhiteSpace(communalOrientation) && !GuardianAbodeResidentState.IsSupportedCommunalOrientation(communalOrientation))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.communalOrientation",
+                IssueSeverity.Error,
+                "Resident companion abodeDisposition.communalOrientation должен быть canonical enum значением",
+                code: "companion_seed_invalid_communal_orientation",
+                section: section,
+                expected: "low | medium | high",
+                actual: communalOrientation,
+                repairHint: "Используй для companionSeed.abodeDisposition.communalOrientation только low, medium или high."));
+        }
+
+        var stabilityNeed = RequireString(value, contextPrefix, issues, "stabilityNeed");
+        if (!string.IsNullOrWhiteSpace(stabilityNeed) && !GuardianAbodeResidentState.IsSupportedStabilityNeed(stabilityNeed))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.stabilityNeed",
+                IssueSeverity.Error,
+                "Resident companion abodeDisposition.stabilityNeed должен быть canonical enum значением",
+                code: "companion_seed_invalid_stability_need",
+                section: section,
+                expected: "low | medium | high",
+                actual: stabilityNeed,
+                repairHint: "Используй для companionSeed.abodeDisposition.stabilityNeed только low, medium или high."));
+        }
+    }
+
+    private void ValidateResidentCompanionAbodeRelation(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string section)
+    {
+        ValidateIntegerField(root, contextPrefix, issues, "abodeDevotionLevel");
+        ValidateIntegerField(root, contextPrefix, issues, "restlessness");
+        RequireString(root, contextPrefix, issues, "abodeDevotionTier");
+        RequireString(root, contextPrefix, issues, "migrationState");
+
+        if (TryReadInt(root, "abodeDevotionLevel", out var abodeDevotionLevel) &&
+            (abodeDevotionLevel < 0 || abodeDevotionLevel > 100))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.abodeDevotionLevel",
+                IssueSeverity.Error,
+                "Resident companion abodeDevotionLevel должен быть в диапазоне 0..100",
+                code: "companion_seed_abode_devotion_out_of_bounds",
+                section: section,
+                expected: "0..100",
+                actual: abodeDevotionLevel.ToString(),
+                repairHint: "Сохраняй companionSeed.abodeDevotionLevel как integer от 0 до 100."));
+        }
+
+        if (TryReadInt(root, "restlessness", out var restlessness) &&
+            (restlessness < 0 || restlessness > 100))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.restlessness",
+                IssueSeverity.Error,
+                "Resident companion restlessness должен быть в диапазоне 0..100",
+                code: "companion_seed_restlessness_out_of_bounds",
+                section: section,
+                expected: "0..100",
+                actual: restlessness.ToString(),
+                repairHint: "Сохраняй companionSeed.restlessness как integer от 0 до 100."));
+        }
+
+        var actualTier = GetFirstNonEmptyString(root, "abodeDevotionTier");
+        if (!string.IsNullOrWhiteSpace(actualTier) && !GuardianAbodeResidentState.IsSupportedAbodeDevotionTier(actualTier))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.abodeDevotionTier",
+                IssueSeverity.Error,
+                "Resident companion abodeDevotionTier должен быть canonical devotion tier",
+                code: "companion_seed_invalid_abode_devotion_tier",
+                section: section,
+                expected: "alienated | uncertain | attached | devoted | steadfast",
+                actual: actualTier,
+                repairHint: "Используй для companionSeed.abodeDevotionTier только alienated, uncertain, attached, devoted или steadfast."));
+        }
+        else if (TryReadInt(root, "abodeDevotionLevel", out var devotionLevel))
+        {
+            var expectedTier = GuardianAbodeResidentState.ResolveAbodeDevotionTier(devotionLevel);
+            if (!string.IsNullOrWhiteSpace(actualTier) &&
+                !string.Equals(actualTier, expectedTier, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.abodeDevotionTier",
+                    IssueSeverity.Error,
+                    "Resident companion abodeDevotionTier должен совпадать с tier, выведенным из abodeDevotionLevel",
+                    code: "companion_seed_abode_devotion_tier_mismatch",
+                    section: section,
+                    expected: expectedTier,
+                    actual: actualTier,
+                    repairHint: "Синхронизируй companionSeed.abodeDevotionTier с abodeDevotionLevel по canonical 5-tier mapping."));
+            }
+        }
+
+        var actualMigrationState = GetFirstNonEmptyString(root, "migrationState");
+        if (!string.IsNullOrWhiteSpace(actualMigrationState) && !GuardianAbodeResidentState.IsSupportedMigrationState(actualMigrationState))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.migrationState",
+                IssueSeverity.Error,
+                "Resident companion migrationState должен быть canonical migration state",
+                code: "companion_seed_invalid_migration_state",
+                section: section,
+                expected: "settled | wavering | restless | considering_departure | ready_to_transfer",
+                actual: actualMigrationState,
+                repairHint: "Используй для companionSeed.migrationState только settled, wavering, restless, considering_departure или ready_to_transfer."));
+        }
+        else if (TryReadInt(root, "abodeDevotionLevel", out var currentDevotionLevel) &&
+                 TryReadInt(root, "restlessness", out var currentRestlessness))
+        {
+            var expectedMigrationState = GuardianAbodeResidentState.ResolveMigrationState(currentDevotionLevel, currentRestlessness);
+            if (!string.IsNullOrWhiteSpace(actualMigrationState) &&
+                !string.Equals(actualMigrationState, expectedMigrationState, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.migrationState",
+                    IssueSeverity.Error,
+                    "Resident companion migrationState должен совпадать с state, выведенным из abodeDevotionLevel и restlessness",
+                    code: "companion_seed_migration_state_mismatch",
+                    section: section,
+                    expected: expectedMigrationState,
+                    actual: actualMigrationState,
+                    repairHint: "Синхронизируй companionSeed.migrationState с canonical resolver, зависящим от abodeDevotionLevel и restlessness."));
             }
         }
     }

@@ -4,6 +4,16 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class GameEngineSourceGuardTests
 {
+    private static string ReadGameEnginePartialSource(string fileName)
+    {
+        return File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Core",
+            "GameEngine",
+            fileName));
+    }
+
     private static string ReadGameEngineSource()
     {
         var rootFile = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "Core", "GameEngine.cs");
@@ -14,6 +24,14 @@ public sealed class GameEngineSourceGuardTests
             files.AddRange(Directory.GetFiles(partialDir, "*.cs", SearchOption.TopDirectoryOnly).OrderBy(path => path, StringComparer.OrdinalIgnoreCase));
 
         return string.Join(Environment.NewLine + Environment.NewLine, files.Select(File.ReadAllText));
+    }
+
+    private static string ReadGameMasterDaemonSource()
+    {
+        return File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "game_master_daemon.ps1"));
     }
 
     [Fact]
@@ -130,6 +148,169 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn", source, StringComparison.Ordinal);
         Assert.Contains("Do NOT immediately kick the soul back into a new life on that protected return turn", source, StringComparison.Ordinal);
         Assert.Contains("source = guardian_forced", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RuntimePrompt_MustRequireResidentReasoningForResidentStateAndJournalUpdates()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.Contains("The same scope discipline applies to afterlife residents", source, StringComparison.Ordinal);
+        Assert.Contains("UpdateGuardianAbodeResidents", source, StringComparison.Ordinal);
+        Assert.Contains("residentThoughtJournalUpdates", source, StringComparison.Ordinal);
+        Assert.Contains("residentInteractionLogUpdates", source, StringComparison.Ordinal);
+        Assert.Contains("UpdateGuardianAbodeResidentHistoryLog", source, StringComparison.Ordinal);
+        Assert.Contains("If a turn changes a resident's abode devotion, restlessness, migration state", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void CheckLifeTransitions_MustUseSharedCanonicalTriggerLifeEndParser()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.Contains("CanonicalStateNormalizer.TryReadCanonicalTriggerLifeEnd(root, out var reason, out var summary)", source, StringComparison.Ordinal);
+        Assert.Contains("CanonicalStateNormalizer.ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("TryReadLifeTransitionPayload(root, out var reason, out var summary)", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("if (root.TryGetProperty(\"TriggerLifeEnd\", out var nested) && nested.ValueKind == JsonValueKind.Object)", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("TryReadPreTurnSoulStateRealmFromPendingSnapshotAsync()", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AcceptedTurnHappyPath_MustKeepPendingSnapshotAliveUntilLifeTransitionChecksFinish()
+    {
+        var source = ReadGameEngineSource();
+        var acceptedTurnAnchor = source.IndexOf("// Turn accepted — backup no longer needed", StringComparison.Ordinal);
+        Assert.True(acceptedTurnAnchor >= 0);
+
+        var lifeTransitionIndex = source.IndexOf("await CheckLifeTransitions();", acceptedTurnAnchor, StringComparison.Ordinal);
+        var cleanupIndex = source.IndexOf("await CleanupPendingTurnSnapshotAsync();", acceptedTurnAnchor, StringComparison.Ordinal);
+
+        Assert.True(lifeTransitionIndex >= 0);
+        Assert.True(cleanupIndex >= 0);
+        Assert.True(lifeTransitionIndex < cleanupIndex, "accepted-turn pending snapshot cleanup must happen after CheckLifeTransitions()");
+    }
+
+    [Fact]
+    public void CheckLifeTransitions_MustResolveCurrentRealmFromSoulStateFile_NotStaleRuntimeCache()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.Contains("var currentSoulStateJson = await _fs.ReadFileAsync(\"game_state/meta/soul_state.json\");", source, StringComparison.Ordinal);
+        Assert.Contains("currentSoulStateRoot);", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("transJson,\r\n                _stateManager.CurrentState.CurrentRealm", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AcceptedTurnCanonicalBaselineRefresh_MustUseValidatedManifestStructureAndSnapshotHashes()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.Contains("PendingTurnSnapshotAuthority.TryValidateManifestForDestructiveAuthority(", source, StringComparison.Ordinal);
+        Assert.Contains("await LoadValidatedCurrentPendingTurnSnapshotAuthorityPayloadAsync(manifest)", source, StringComparison.Ordinal);
+        Assert.Contains("payload.RollbackBaselineFiles", source, StringComparison.Ordinal);
+        Assert.Contains("payload.SnapshotFileHashes.TryGetValue(relativePath, out var expectedSnapshotHash)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AcceptedTurnCanonicalBaselineRefresh_MustRequireFullCanonicalCoverage()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.Contains("PendingTurnSnapshotAuthority.HasValidatedSnapshotCoverage(", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("if (!rollbackBaselineFiles.Contains(relativePath))", source, StringComparison.Ordinal);
+        Assert.Contains("return snapshot.Count == canonicalFiles.Count ? snapshot : null;", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.DoesNotContain("foreach (var snapshotPath in manifest.Files.Values)", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("foreach (var rollbackPath in manifest.RollbackBackups.Values)", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("GetRollbackSnapshot(manifest)", source, StringComparison.Ordinal);
+        Assert.Contains("BuildValidatedRollbackSnapshot(snapshotContext)", source, StringComparison.Ordinal);
+        Assert.Contains("Directory.Delete(snapshotDirectoryPath, recursive: true);", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AcceptedTurnRuntimeAuthorityBranches_MustUseValidatedSnapshotContextInsteadOfRawManifestFields()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.Contains("LoadValidatedPendingTurnSnapshotContextAsync(manifest)", source, StringComparison.Ordinal);
+        Assert.Contains("snapshotContext?.SourceLabel", source, StringComparison.Ordinal);
+        Assert.Contains("snapshotContext?.PlayerAction", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("manifest?.SourceLabel", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("manifest?.PlayerAction", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ValidationRepairFlow_MustUseValidatedPendingSnapshotContext_ForRepairCorrelationAndMetadata()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+
+        Assert.Contains("ResolveActivePendingTurnSnapshotContextAsync()", source, StringComparison.Ordinal);
+        Assert.Contains("IsMatchingRepairReady(ready, pendingSnapshot.Context)", source, StringComparison.Ordinal);
+        Assert.Contains("BuildProtocolRequestMetadata(pendingSnapshot)", source, StringComparison.Ordinal);
+        Assert.Contains("BuildValidationRepairRequestInstructions(pendingSnapshot)", source, StringComparison.Ordinal);
+        Assert.Contains("BuildProtocolRequestMetadataWarning(pendingSnapshot)", source, StringComparison.Ordinal);
+        Assert.Contains("BuildInvalidRepairReadyRepairHint(pendingSnapshot)", source, StringComparison.Ordinal);
+        Assert.Contains("BuildMismatchedRepairReadyRepairHint(pendingSnapshot)", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("IsMatchingRepairReady(ready, manifest)", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("manifest?.SessionId ?? existingRequest?.SessionId", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("manifest?.RequestId ?? existingRequest?.RequestId", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("manifest?.TurnNumber ?? existingRequest?.TurnNumber", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("snapshotContext?.SessionId ?? existingRequest?.SessionId", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("snapshotContext?.RequestId ?? existingRequest?.RequestId", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("snapshotContext?.TurnNumber ?? existingRequest?.TurnNumber", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("snapshotContext?.SessionId ?? _gameLoop.SessionId", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("snapshotContext?.TurnNumber ?? (_gameLoop.TurnNumber + 1)", source, StringComparison.Ordinal);
+        Assert.Contains("PendingTurnSnapshotResolutionStatus.Missing =>", source, StringComparison.Ordinal);
+        Assert.Contains("PendingTurnSnapshotResolutionStatus.Unusable =>", source, StringComparison.Ordinal);
+        Assert.Contains("Не копируй sentinel metadata из текущего validation_repair_request.json.", source, StringComparison.Ordinal);
+        Assert.Contains("Текущий validation_repair_request.json использует diagnostic-only sentinel metadata.", source, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "\"Пересоздай validation_repair_ready.json и скопируй sessionId/requestId/turnNumber ровно из validation_repair_request.json.\");",
+            source,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DaemonRepairAndTerminalPrompts_MustDescribeDiagnosticOnlySentinelMetadata()
+    {
+        var source = ReadGameMasterDaemonSource();
+
+        Assert.Contains("function Test-ProtocolRequestUsesDiagnosticOnlyMetadata", source, StringComparison.Ordinal);
+        Assert.Contains("$RequestObject.metadataDiagnosticOnly", source, StringComparison.Ordinal);
+        Assert.Contains("diagnostic-only sentinel values", source, StringComparison.Ordinal);
+        Assert.Contains("Do NOT copy those sentinel metadata into", source, StringComparison.Ordinal);
+        Assert.Contains("Do NOT treat them as authoritative correlation metadata", source, StringComparison.Ordinal);
+        Assert.Contains("Legacy fallback for requests written before metadataDiagnosticOnly was added", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("$repair.gmInstructions -and $repair.gmInstructions.Contains(\"служат только для диагностики\")", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("$failure.gmInstructions -and $failure.gmInstructions.Contains(\"служат только для диагностики\")", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("with matching sessionId/requestId/turnNumber copied from the CURRENT repair request. If your ready file is malformed or mismatched", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RepairAndTerminalRequestWriters_MustEmitStructuredDiagnosticOnlyMetadataFlag()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.Contains("public bool MetadataDiagnosticOnly { get; set; }", source, StringComparison.Ordinal);
+        Assert.Contains("var metadataDiagnosticOnly = BuildProtocolRequestMetadataDiagnosticOnly(pendingSnapshot);", source, StringComparison.Ordinal);
+        Assert.Contains("MetadataDiagnosticOnly = metadataDiagnosticOnly,", source, StringComparison.Ordinal);
+        Assert.Contains("return pendingSnapshot.Status is PendingTurnSnapshotResolutionStatus.Missing or PendingTurnSnapshotResolutionStatus.Unusable;", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ContinueFlow_MustNotHydrateFromRawPendingManifestPresence()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+
+        Assert.Contains("var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();", source, StringComparison.Ordinal);
+        Assert.Contains("pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable || hasPendingTerminalSignal", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("pendingManifest != null || _fs.FileExists(\"ready/turn_complete.json\")", source, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -297,6 +478,23 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEngineSource();
 
         Assert.Contains("_rivalSoulArcService.ResetForNewLifeAsync();", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LifeEvaluationRewardScreen_MustNotFallbackToPermissiveSoulRelicParsingAfterStrictDeltaFailure()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.DoesNotContain("else if (soulJson != null)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NewGamePlus_MustNotReadOrRehydrateLegacyCrossIncarnationDataIntoCanonicalSoulState()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.DoesNotContain("crossIncarnationData", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("resetSoulState[\"crossIncarnationData\"] = crossIncarnationData;", source, StringComparison.Ordinal);
     }
 
     [Fact]

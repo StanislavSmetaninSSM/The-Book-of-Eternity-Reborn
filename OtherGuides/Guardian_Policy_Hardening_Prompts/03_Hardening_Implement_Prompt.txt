@@ -1,0 +1,13 @@
+Implement the plan.
+
+При реализации:
+- предпочитай migration на shared gateway/kernel layers, а не локальные специальные ветки;
+- добавляй regressions и source/architecture guards для найденного seam;
+- не трогай unrelated dirty-worktree changes;
+- не откатывай чужие изменения;
+- если есть выбор между permissive fallback и fail-closed behavior в policy-sensitive path, предпочитай fail-closed;
+- если есть выбор между новым локальным helper и расширением уже существующего authority/kernel слоя, предпочитай расширение существующего слоя;
+- по завершении обязательно:
+  - кратко опиши, какой root cause закрыт;
+  - укажи, какие тесты прогнаны;
+  - если что-то не удалось проверить, скажи это явно.

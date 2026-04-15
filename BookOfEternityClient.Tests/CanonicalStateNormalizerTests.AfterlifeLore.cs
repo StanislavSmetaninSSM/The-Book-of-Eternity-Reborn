@@ -132,7 +132,10 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         {
           "currentIncarnation": 1,
           "currentRealm": "Mortal World",
-          "inkFeathers": 5
+          "inkFeathers": {
+            "current": 5,
+            "total": 5
+          }
         }
         """);
 

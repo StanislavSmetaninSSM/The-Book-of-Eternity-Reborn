@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -349,28 +350,48 @@ public class CharacteristicsService
 
         try
         {
-            using var doc = JsonDocument.Parse(json);
-            if (!doc.RootElement.TryGetProperty("soulRelics", out var relics)) return;
-            if (!relics.TryGetProperty("equipped", out var equipped)) return;
-            if (equipped.ValueKind != JsonValueKind.Array) return;
+            if (JsonNode.Parse(json) is not JsonObject soulRoot)
+                return;
 
-            foreach (var relic in equipped.EnumerateArray())
+            var lifeTransitionsJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
+            var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
+                _fs,
+                lifeTransitionsJson,
+                soulRoot);
+
+            if (!GuardianPolicyContracts.TryReadStrictCurrentSoulRelicCollections(
+                    soulRoot,
+                    hasCanonicalTriggerLifeEnd,
+                    out var equipped,
+                    out _,
+                    out var failureDescription))
             {
-                var relicId = relic.TryGetProperty("relicId", out var rid)
-                    ? rid.GetString() ?? "?"
-                    : relic.TryGetProperty("name", out var rn) ? rn.GetString() ?? "?" : "Реликвия";
+                _logger.LogWarning(
+                    "Пропускаю бонусы реликвий: current soul_state.soulRelics нечитаем для strict guardian-policy path ({FailureDescription})",
+                    failureDescription);
+                return;
+            }
 
-                if (!relic.TryGetProperty("effects", out var effects)) continue;
-                if (!effects.TryGetProperty("characteristicBonuses", out var bonuses)) continue;
-                if (bonuses.ValueKind != JsonValueKind.Object) continue;
+            if (equipped == null)
+                return;
 
-                foreach (var prop in bonuses.EnumerateObject())
+            foreach (var relic in equipped.OfType<JsonObject>())
+            {
+                var relicId = relic["relicId"] is JsonValue ridValue && ridValue.TryGetValue<string>(out var rid)
+                    ? rid ?? "?"
+                    : relic["name"] is JsonValue rnValue && rnValue.TryGetValue<string>(out var rn) ? rn ?? "?" : "Реликвия";
+
+                if (relic["effects"] is not JsonObject effects) continue;
+                if (effects["characteristicBonuses"] is not JsonObject bonuses) continue;
+
+                foreach (var prop in bonuses)
                 {
-                    var statName = prop.Name.ToLowerInvariant();
+                    var statName = prop.Key.ToLowerInvariant();
                     if (!permanent.ContainsKey(statName)) continue;
 
-                    var value = prop.Value.ValueKind == JsonValueKind.Number
-                        ? prop.Value.GetInt32()
+                    var value = prop.Value is JsonValue bonusValue &&
+                                bonusValue.TryGetValue<int>(out var parsedValue)
+                        ? parsedValue
                         : 0;
                     if (value != 0)
                     {

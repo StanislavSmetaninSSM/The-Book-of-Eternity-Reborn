@@ -408,7 +408,7 @@ public partial class GameEngine
         }
 
         await NormalizeRuntimeUiArtifactsAsync();
-        var pendingManifest = await LoadPendingTurnSnapshotManifestAsync();
+        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
         var hasPendingTerminalSignal = _fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json");
 
         await RefreshRuntimeStateAsync();
@@ -420,7 +420,7 @@ public partial class GameEngine
         _gameLoop.SetSession(sessionId, turnNumber);
 
         if (string.IsNullOrWhiteSpace(_lastResponse?.Response) &&
-            (pendingManifest != null || _fs.FileExists("ready/turn_complete.json")))
+            (pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable || hasPendingTerminalSignal))
         {
             var response = await BuildGameResponseFromFiles();
             if (response != null)
@@ -720,8 +720,7 @@ public partial class GameEngine
                     livesHistory = Array.Empty<object>(),
                     pendingMemoryLegacy = (object?)null
                 };
-                _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json",
-                    JsonSerializer.Serialize(soulState, JsonOpts)).Wait();
+                WriteCanonicalSoulStateAsync(soulState).Wait();
 
                 // Initialize guardian
                 var guardian = new
@@ -1142,7 +1141,7 @@ public partial class GameEngine
             if (enlightenment.ContainsKey("progressPercent"))
                 enlightenment["progressPercent"] = 0;
             soulRoot["enlightenment"] = enlightenment;
-            await WriteJsonObjectAsync("game_state/meta/soul_state.json", soulRoot);
+            await WriteCanonicalSoulStateAsync(soulRoot);
         }
         else
         {
@@ -1177,7 +1176,6 @@ public partial class GameEngine
         object soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() };
         object afterlifeArchive = new { stored = Array.Empty<object>() };
         object livesHistory = Array.Empty<object>();
-        object? crossIncarnationData = null;
         object? soulImprint = null;
 
         if (!string.IsNullOrWhiteSpace(soulJson))
@@ -1194,8 +1192,6 @@ public partial class GameEngine
                 afterlifeArchive = JsonSerializer.Deserialize<object>(archive.GetRawText()) ?? afterlifeArchive;
             if (root.TryGetProperty("livesHistory", out var history))
                 livesHistory = JsonSerializer.Deserialize<object>(history.GetRawText()) ?? livesHistory;
-            if (root.TryGetProperty("crossIncarnationData", out var crossData))
-                crossIncarnationData = JsonSerializer.Deserialize<object>(crossData.GetRawText());
             if (root.TryGetProperty("soulImprint", out var imprint))
                 soulImprint = JsonSerializer.Deserialize<object>(imprint.GetRawText());
         }
@@ -1216,12 +1212,10 @@ public partial class GameEngine
             ["livesHistory"] = livesHistory,
             ["pendingMemoryLegacy"] = null
         };
-        if (crossIncarnationData != null)
-            resetSoulState["crossIncarnationData"] = crossIncarnationData;
         if (soulImprint != null)
             resetSoulState["soulImprint"] = soulImprint;
 
-        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", JsonSerializer.Serialize(resetSoulState, JsonOpts));
+        await WriteCanonicalSoulStateAsync(resetSoulState);
         _afterlifeArchiveCandidateService.Clear();
         if (!string.IsNullOrWhiteSpace(guardiansJson))
             await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansJson);

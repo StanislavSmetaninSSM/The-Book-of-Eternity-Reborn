@@ -73,7 +73,11 @@ public sealed class SoulIdentityService
             if (soulState["previousSoulNames"] is null)
             {
                 soulState["previousSoulNames"] = CreateJsonArray(previousSoulNames);
-                await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulState.ToJsonString(JsonWriteOptions));
+                await _fs.WriteFileAtomicAsync(
+                    "game_state/meta/soul_state.json",
+                    GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                        soulState,
+                        GuardianPolicyContracts.SoulStatePatchConflictContext.None).ToJsonString(JsonWriteOptions));
             }
 
             return new SoulRenameResult(
@@ -92,7 +96,11 @@ public sealed class SoulIdentityService
 
         soulState["soulName"] = normalizedNewName;
         soulState["previousSoulNames"] = CreateJsonArray(previousSoulNames);
-        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulState.ToJsonString(JsonWriteOptions));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                soulState,
+                GuardianPolicyContracts.SoulStatePatchConflictContext.None).ToJsonString(JsonWriteOptions));
 
         await SyncPendingGuardianCreationSoulNameAsync(normalizedNewName);
 

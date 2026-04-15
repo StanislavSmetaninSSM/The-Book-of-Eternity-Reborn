@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
@@ -24,6 +25,71 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
 
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         _validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PendingManifestationRequestWithInvalidResidentTierSnapshot_Fails()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = Array.Empty<object>()
+            }
+        });
+
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "resident_manifest_req_invalid_snapshot",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_companion_echo_snapshot_invalid",
+                    relicName = "Эхо Лиоры",
+                    sourceResidentId = "resident_alpha_1",
+                    sourceGuardianId = "guardian_alpha",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 2,
+                    companionNameHint = "Лиора",
+                    originWorldSummary = "Бывшая гонец при храме дорог.",
+                    futureCompanionPrompt = "Swift wanderer",
+                    personalityProfile = new
+                    {
+                        archetype = "Road Messenger",
+                        worldview = "Каждая связь требует движения.",
+                        culturalLayer = "Храм дорог",
+                        coreValues = new[] { "верность", "путь" },
+                        personalityTraits = new object[]
+                        {
+                            new { traitName = "Restless Loyalty", value = 8, valueDescription = "Всегда ищет дорогу обратно." }
+                        }
+                    },
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "medium",
+                        migrationDisposition = "selective",
+                        communalOrientation = "high",
+                        stabilityNeed = "medium"
+                    },
+                    abodeDevotionLevel = 74,
+                    abodeDevotionTier = "uncertain",
+                    restlessness = 28,
+                    migrationState = "settled",
+                    createdAtUtc = "2026-04-15T00:00:00Z"
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "guardian_abode_resident_abode_devotion_tier_mismatch", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("pending_resident_companion_manifestation_request", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -54,6 +120,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             "game_state/meta/soul_state.json",
             new
             {
+                soulName = "Тестовая Душа",
                 currentRealm = "Chaos Sea",
                 currentIncarnation = 1,
                 afterlifeArchive = new
@@ -143,6 +210,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                 "guardian_archive_consultation_guaranteed_quest_contract",
                 "fixed",
                 "guardians.json")));
+        await EnsureCurrentGuardianAndTrackerValidatedBaselinesAsync();
 
         await WriteJsonAsync(
             "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
@@ -164,6 +232,540 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_reservation", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_resolution", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_canonical_result", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AfterlifeArchiveDuplicateReceiptIdentity_Fails()
+    {
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                soulName = "Тестовая Душа",
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = new[]
+                    {
+                        new
+                        {
+                            archiveId = "archive_duplicate",
+                            entryType = "lore_fragment",
+                            title = "Летопись Серого Двора",
+                            summary = "Описание",
+                            rarity = "Rare",
+                            sourceLife = 1,
+                            sourceKind = "codex",
+                            acquiredAtUtc = "2026-03-26T00:00:00Z"
+                        }
+                    },
+                    actionReceipts = new object[]
+                    {
+                        new
+                        {
+                            requestId = "req_duplicate",
+                            archiveId = "archive_duplicate",
+                            requestedMode = "consultation",
+                            status = "rejected",
+                            guardianId = "guardian_archive_001",
+                            guardianName = "Азалия",
+                            reason = "",
+                            resolvedAtTurn = 12,
+                            resolvedAtUtc = "2026-03-26T00:01:00Z"
+                        },
+                        new
+                        {
+                            requestId = " req_duplicate ",
+                            archiveId = " archive_duplicate ",
+                            requestedMode = "consultation",
+                            status = "rejected",
+                            guardianId = "guardian_archive_001",
+                            guardianName = "Азалия",
+                            reason = "",
+                            resolvedAtTurn = 13,
+                            resolvedAtUtc = "2026-03-26T00:02:00Z"
+                        }
+                    }
+                }
+            });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "afterlife_archive_duplicate_receipt_identity", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ArchiveConsultationRequest_DoesNotAcceptReceiptWithWrongArchiveIdentity()
+    {
+        const string requestId = "archive_consult_identity_mismatch";
+
+        await WriteJsonAsync(AfterlifeArchiveActionState.ConsultationRequestPath, new
+        {
+            requestId,
+            guardianId = "guardian_archive_001",
+            guardianName = "Азалия",
+            archiveId = "archive_expected",
+            archiveTitle = "Летопись Серого Двора",
+            archiveEntryType = "lore_fragment",
+            archiveRarity = "Rare",
+            archiveSourceKind = "codex",
+            targetIncarnation = 2,
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "consultation"
+        });
+
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                soulName = "Тестовая Душа",
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = Array.Empty<object>(),
+                    actionReceipts = new[]
+                    {
+                        new
+                        {
+                            requestId,
+                            archiveId = "archive_other",
+                            requestedMode = "consultation",
+                            status = "accepted",
+                            guardianId = "guardian_archive_001",
+                            guardianName = "Азалия",
+                            guaranteedArchiveQuestCount = 1,
+                            questHookCount = 0,
+                            specialQuestLineUnlocks = 0,
+                            visibleRivalClueBonus = 0,
+                            archiveWarningTierBonus = 0,
+                            resolvedAtTurn = 12,
+                            resolvedAtUtc = "2026-03-26T00:01:00Z"
+                        }
+                    }
+                }
+            });
+
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_reservation", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ArchiveConsultationRequest_WithMalformedCurrentArchiveOwnerState_RaisesCurrentArchiveAuthorityIssue()
+    {
+        await WriteJsonAsync(AfterlifeArchiveActionState.ConsultationRequestPath, new
+        {
+            requestId = "archive_consult_malformed_current_owner",
+            guardianId = "guardian_archive_001",
+            guardianName = "Азалия",
+            archiveId = "archive_expected",
+            archiveTitle = "Летопись Серого Двора",
+            archiveEntryType = "lore_fragment",
+            archiveRarity = "Rare",
+            archiveSourceKind = "codex",
+            targetIncarnation = 2,
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "consultation"
+        });
+
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                soulName = "Тестовая Душа",
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = Array.Empty<object>(),
+                    foo = 1
+                }
+            });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_current_archive_authority", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_reservation", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptedArchiveConsultation_DoesNotAcceptPreTurnReceiptWithWrongArchiveIdentity()
+    {
+        const string requestId = "archive_consult_resolution_mismatch";
+        const string guardianId = "guardian_archive_001";
+
+        var request = new
+        {
+            requestId,
+            guardianId,
+            guardianName = "Азалия",
+            archiveId = "archive_expected",
+            archiveTitle = "Летопись Серого Двора",
+            archiveEntryType = "lore_fragment",
+            archiveRarity = "Rare",
+            archiveSourceKind = "codex",
+            targetIncarnation = 2,
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "consultation"
+        };
+
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = Array.Empty<object>(),
+                    actionReceipts = new[]
+                    {
+                        new
+                        {
+                            requestId,
+                            archiveId = "archive_other",
+                            requestedMode = "consultation",
+                            status = "accepted",
+                            guardianId,
+                            guardianName = "Азалия",
+                            guaranteedArchiveQuestCount = 1,
+                            questHookCount = 0,
+                            specialQuestLineUnlocks = 0,
+                            visibleRivalClueBonus = 0,
+                            archiveWarningTierBonus = 0,
+                            resolvedAtTurn = 12,
+                            resolvedAtUtc = "2026-03-26T00:01:00Z"
+                        }
+                    }
+                }
+            });
+
+        await WriteJsonAsync(
+            GuardianProjectState.TrackerPath,
+            new
+            {
+                activeProjects = Array.Empty<object>(),
+                completedProjects = new[]
+                {
+                    new
+                    {
+                        guardianId,
+                        project = new
+                        {
+                            projectId = "archive_consult_project_identity_mismatch",
+                            projectType = "lore_research",
+                            projectOrigin = "archive_consultation",
+                            projectTier = "minor",
+                            projectMode = "supportive",
+                            projectName = "Архивная консультация: Летопись Серого Двора",
+                            finalState = "Completed",
+                            completionTurn = 12,
+                            consultationRequestId = requestId,
+                            consultationArchiveId = "archive_other",
+                            projectOutcomeAudit = new
+                            {
+                                bonusLoreUnlocks = 0,
+                                questHookCount = 0,
+                                guaranteedArchiveQuestCount = 1,
+                                specialQuestLineUnlocks = 0,
+                                visibleRivalClueBonus = 0,
+                                unlockedLoreFragments = Array.Empty<object>()
+                            },
+                            effectState = new
+                            {
+                                targetIncarnation = 2,
+                                bonusLoreUnlocksApplied = 0,
+                                questHookTokensGranted = 0,
+                                questHookTokensSpent = 0,
+                                guaranteedArchiveQuestGranted = 1,
+                                guaranteedArchiveQuestSpawned = 0,
+                                guaranteedArchiveQuestConsumed = 0,
+                                specialQuestLineTokensGranted = 0,
+                                specialQuestLineTokensSpent = 0,
+                                visibleRivalClueBudgetGranted = 0,
+                                visibleRivalClueBudgetSpent = 0
+                            }
+                        }
+                    }
+                },
+                temporaryProjectModifiers = Array.Empty<object>()
+            });
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/guardians.json",
+            await File.ReadAllTextAsync(Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "FileSystemExample",
+                "validator_fixtures",
+                "guardian_archive_consultation_guaranteed_quest_contract",
+                "fixed",
+                "guardians.json")));
+        await EnsureCurrentGuardianAndTrackerValidatedBaselinesAsync();
+
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_archive_consultation_request_identity_mismatch.json";
+        await WriteJsonAsync(backupPath, request);
+        await WriteJsonAsync(AfterlifeArchiveActionState.ConsultationRequestPath, request);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [AfterlifeArchiveActionState.ConsultationRequestPath] = backupPath
+        });
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "accepted": true
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptedArchiveConsultation_RequiresMatchingConsultationRequestIdForCanonicalResult()
+    {
+        const string requestId = "archive_consult_result_request_mismatch";
+        const string archiveId = "archive_expected";
+        const string guardianId = "guardian_archive_001";
+
+        var request = new
+        {
+            requestId,
+            guardianId,
+            guardianName = "Азалия",
+            archiveId,
+            archiveTitle = "Летопись Серого Двора",
+            archiveEntryType = "lore_fragment",
+            archiveRarity = "Rare",
+            archiveSourceKind = "codex",
+            targetIncarnation = 2,
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "consultation"
+        };
+
+        await WriteJsonAsync(AfterlifeArchiveActionState.ConsultationRequestPath, request);
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                soulName = "Тестовая Душа",
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = Array.Empty<object>(),
+                    actionReceipts = new[]
+                    {
+                        new
+                        {
+                            requestId,
+                            archiveId,
+                            requestedMode = "consultation",
+                            status = "accepted",
+                            guardianId,
+                            guardianName = "Азалия",
+                            guaranteedArchiveQuestCount = 1,
+                            questHookCount = 0,
+                            specialQuestLineUnlocks = 0,
+                            visibleRivalClueBonus = 0,
+                            archiveWarningTierBonus = 0,
+                            resolvedAtTurn = 12,
+                            resolvedAtUtc = "2026-03-26T00:01:00Z"
+                        }
+                    }
+                }
+            });
+
+        await WriteJsonAsync(
+            GuardianProjectState.TrackerPath,
+            new
+            {
+                activeProjects = Array.Empty<object>(),
+                completedProjects = new[]
+                {
+                    new
+                    {
+                        guardianId,
+                        project = new
+                        {
+                            projectId = "archive_consult_project_request_mismatch",
+                            projectType = "lore_research",
+                            projectOrigin = "archive_consultation",
+                            projectTier = "minor",
+                            projectMode = "supportive",
+                            projectName = "Архивная консультация: Летопись Серого Двора",
+                            finalState = "Completed",
+                            completionTurn = 12,
+                            consultationRequestId = "archive_consult_other_request",
+                            consultationArchiveId = archiveId,
+                            projectOutcomeAudit = new
+                            {
+                                bonusLoreUnlocks = 0,
+                                questHookCount = 0,
+                                guaranteedArchiveQuestCount = 1,
+                                specialQuestLineUnlocks = 0,
+                                visibleRivalClueBonus = 0,
+                                unlockedLoreFragments = Array.Empty<object>()
+                            },
+                            effectState = new
+                            {
+                                targetIncarnation = 2,
+                                bonusLoreUnlocksApplied = 0,
+                                questHookTokensGranted = 0,
+                                questHookTokensSpent = 0,
+                                guaranteedArchiveQuestGranted = 1,
+                                guaranteedArchiveQuestSpawned = 0,
+                                guaranteedArchiveQuestConsumed = 0,
+                                specialQuestLineTokensGranted = 0,
+                                specialQuestLineTokensSpent = 0,
+                                visibleRivalClueBudgetGranted = 0,
+                                visibleRivalClueBudgetSpent = 0
+                            }
+                        }
+                    }
+                },
+                temporaryProjectModifiers = Array.Empty<object>()
+            });
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/guardians.json",
+            await File.ReadAllTextAsync(Path.Combine(
+                TestRepoPaths.RepoRoot,
+                "FileSystemExample",
+                "validator_fixtures",
+                "guardian_archive_consultation_guaranteed_quest_contract",
+                "fixed",
+                "guardians.json")));
+        await EnsureCurrentGuardianAndTrackerValidatedBaselinesAsync();
+
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_archive_consultation_request_request_mismatch.json";
+        await WriteJsonAsync(backupPath, request);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [AfterlifeArchiveActionState.ConsultationRequestPath] = backupPath
+        });
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "accepted": true
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_missing_canonical_result", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptedArchiveConsultation_FlagsMalformedValidatedSnapshotRequest()
+    {
+        const string requestId = "archive_consult_snapshot_malformed";
+        const string archiveId = "archive_expected";
+        const string guardianId = "guardian_archive_001";
+
+        await WriteJsonAsync(AfterlifeArchiveActionState.ConsultationRequestPath, new
+        {
+            requestId,
+            guardianId,
+            guardianName = "Азалия",
+            archiveId,
+            archiveTitle = "Летопись Серого Двора",
+            archiveEntryType = "lore_fragment",
+            archiveRarity = "Rare",
+            archiveSourceKind = "codex",
+            targetIncarnation = 2,
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "consultation"
+        });
+
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = Array.Empty<object>(),
+                    actionReceipts = new[]
+                    {
+                        new
+                        {
+                            requestId,
+                            archiveId,
+                            requestedMode = "consultation",
+                            status = "accepted",
+                            guardianId,
+                            guardianName = "Азалия",
+                            guaranteedArchiveQuestCount = 1,
+                            questHookCount = 0,
+                            specialQuestLineUnlocks = 0,
+                            visibleRivalClueBonus = 0,
+                            archiveWarningTierBonus = 0,
+                            resolvedAtTurn = 12,
+                            resolvedAtUtc = "2026-03-26T00:01:00Z"
+                        }
+                    }
+                }
+            });
+
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_archive_consultation_request_malformed.json";
+        await _fs.WriteFileAtomicAsync(backupPath, """
+        {
+          "requestId": "archive_consult_snapshot_malformed",
+          "guardianId":
+        }
+        """);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [AfterlifeArchiveActionState.ConsultationRequestPath] = backupPath
+        });
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "accepted": true
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_malformed_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -652,6 +1254,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                     }
                 }
             });
+        await EnsureCurrentGuardianAndTrackerValidatedBaselinesAsync();
 
         await WriteJsonAsync(
             "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
@@ -672,6 +1275,429 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "afterlife_archive_project_fuel_receipt_invalid_result_mode", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "afterlife_archive_project_fuel_receipt_invalid_result_amount", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ArchiveProjectFuelRequest_DoesNotAcceptReceiptWithWrongArchiveIdentity()
+    {
+        const string requestId = "archive_project_fuel_identity_mismatch";
+
+        await WriteJsonAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath, new
+        {
+            requestId,
+            guardianId = "guardian_archive_001",
+            guardianName = "Азалия",
+            archiveId = "archive_expected",
+            archiveTitle = "Секрет старого договора",
+            archiveEntryType = "secret_record",
+            archiveRarity = "Epic",
+            archiveSourceKind = "codex",
+            targetProjectId = "project_pressure_001",
+            targetProjectName = "Нить тайного двора",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "project_fuel"
+        });
+
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = Array.Empty<object>(),
+                    actionReceipts = new[]
+                    {
+                        new
+                        {
+                            requestId,
+                            archiveId = "archive_other",
+                            requestedMode = "project_fuel",
+                            status = "accepted",
+                            guardianId = "guardian_archive_001",
+                            guardianName = "Азалия",
+                            targetProjectId = "project_pressure_001",
+                            resultMode = "project_work",
+                            resultAmount = 2,
+                            resolvedAtTurn = 12,
+                            resolvedAtUtc = "2026-03-26T00:01:00Z"
+                        }
+                    }
+                }
+            });
+
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_missing_reservation", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ArchiveProjectFuelResolution_WithMalformedCurrentArchiveOwnerState_RaisesCurrentArchiveAuthorityIssue()
+    {
+        const string requestId = "archive_project_fuel_malformed_current_owner";
+        const string projectId = "project_pressure_001";
+
+        var request = new
+        {
+            requestId,
+            guardianId = "guardian_archive_001",
+            guardianName = "Азалия",
+            archiveId = "archive_expected",
+            archiveTitle = "Секрет старого договора",
+            archiveEntryType = "secret_record",
+            archiveRarity = "Epic",
+            archiveSourceKind = "codex",
+            targetProjectId = projectId,
+            targetProjectName = "Нить тайного двора",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "project_fuel"
+        };
+
+        await WriteJsonAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath, request);
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = Array.Empty<object>(),
+                    foo = 1
+                }
+            });
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_archive_project_fuel_request_malformed_current_owner.json";
+        await WriteJsonAsync(backupPath, request);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [AfterlifeArchiveActionState.ProjectFuelRequestPath] = backupPath
+        });
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "accepted": true
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_missing_current_archive_authority", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_missing_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ArchiveProjectFuelResolution_DoesNotAcceptPreTurnReceiptWithWrongArchiveIdentity()
+    {
+        const string requestId = "archive_project_fuel_resolution_mismatch";
+        const string guardianId = "guardian_archive_001";
+        const string projectId = "project_pressure_001";
+
+        var request = new
+        {
+            requestId,
+            guardianId,
+            guardianName = "Азалия",
+            archiveId = "archive_expected",
+            archiveTitle = "Секрет старого договора",
+            archiveEntryType = "secret_record",
+            archiveRarity = "Epic",
+            archiveSourceKind = "codex",
+            targetProjectId = projectId,
+            targetProjectName = "Нить тайного двора",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "project_fuel"
+        };
+
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = Array.Empty<object>(),
+                    actionReceipts = new[]
+                    {
+                        new
+                        {
+                            requestId,
+                            archiveId = "archive_other",
+                            requestedMode = "project_fuel",
+                            status = "accepted",
+                            guardianId,
+                            guardianName = "Азалия",
+                            targetProjectId = projectId,
+                            resultMode = "project_work",
+                            resultAmount = 2,
+                            resolvedAtTurn = 12,
+                            resolvedAtUtc = "2026-03-26T00:01:00Z"
+                        }
+                    }
+                }
+            });
+
+        await WriteJsonAsync(
+            GuardianProjectState.JournalPath,
+            new
+            {
+                entries = new[]
+                {
+                    new
+                    {
+                        entryId = "journal_fuel_identity_mismatch",
+                        turn = 12,
+                        guardianId,
+                        projectId,
+                        eventType = "assisted",
+                        visibility = "player_known",
+                        archiveFuelRequestId = requestId,
+                        title = "Проект усилен архивной записью",
+                        summary = "Хранитель ослабил давление на проект.",
+                        details = new[]
+                        {
+                            "Проект: Нить тайного двора",
+                            "Pressure: 9 -> 4",
+                            "ArchiveId: archive_other"
+                        }
+                    }
+                }
+            });
+
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_archive_project_fuel_request_identity_mismatch.json";
+        await WriteJsonAsync(backupPath, request);
+        await WriteJsonAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath, request);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [AfterlifeArchiveActionState.ProjectFuelRequestPath] = backupPath
+        });
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "accepted": true
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_missing_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptedArchiveProjectFuel_RequiresMatchingArchiveFuelRequestIdForCanonicalResult()
+    {
+        const string requestId = "archive_project_fuel_result_request_mismatch";
+        const string archiveId = "archive_expected";
+        const string guardianId = "guardian_archive_001";
+        const string projectId = "project_pressure_001";
+
+        var request = new
+        {
+            requestId,
+            guardianId,
+            guardianName = "Азалия",
+            archiveId,
+            archiveTitle = "Секрет старого договора",
+            archiveEntryType = "secret_record",
+            archiveRarity = "Epic",
+            archiveSourceKind = "codex",
+            targetProjectId = projectId,
+            targetProjectName = "Нить тайного двора",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "project_fuel"
+        };
+
+        await WriteJsonAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath, request);
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = Array.Empty<object>(),
+                    actionReceipts = new[]
+                    {
+                        new
+                        {
+                            requestId,
+                            archiveId,
+                            requestedMode = "project_fuel",
+                            status = "accepted",
+                            guardianId,
+                            guardianName = "Азалия",
+                            targetProjectId = projectId,
+                            resultMode = "project_work",
+                            resultAmount = 2,
+                            resolvedAtTurn = 12,
+                            resolvedAtUtc = "2026-03-26T00:01:00Z"
+                        }
+                    }
+                }
+            });
+
+        await WriteJsonAsync(
+            GuardianProjectState.JournalPath,
+            new
+            {
+                entries = new[]
+                {
+                    new
+                    {
+                        entryId = "journal_fuel_request_mismatch",
+                        turn = 12,
+                        guardianId,
+                        projectId,
+                        eventType = "assisted",
+                        visibility = "player_known",
+                        archiveFuelRequestId = "archive_project_fuel_other_request",
+                        title = "Проект усилен архивной записью",
+                        summary = "Хранитель ослабил давление на проект.",
+                        details = new[]
+                        {
+                            "Проект: Нить тайного двора",
+                            "Pressure: 9 -> 4",
+                            $"ArchiveId: {archiveId}"
+                        }
+                    }
+                }
+            });
+
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_archive_project_fuel_request_request_mismatch.json";
+        await WriteJsonAsync(backupPath, request);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [AfterlifeArchiveActionState.ProjectFuelRequestPath] = backupPath
+        });
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "accepted": true
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_missing_canonical_result", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptedArchiveProjectFuel_FlagsMalformedValidatedSnapshotRequest()
+    {
+        const string requestId = "archive_project_fuel_snapshot_malformed";
+        const string archiveId = "archive_expected";
+        const string guardianId = "guardian_archive_001";
+        const string projectId = "project_pressure_001";
+
+        await WriteJsonAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath, new
+        {
+            requestId,
+            guardianId,
+            guardianName = "Азалия",
+            archiveId,
+            archiveTitle = "Секрет старого договора",
+            archiveEntryType = "secret_record",
+            archiveRarity = "Epic",
+            archiveSourceKind = "codex",
+            targetProjectId = projectId,
+            targetProjectName = "Нить тайного двора",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            requestedMode = "project_fuel"
+        });
+
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                afterlifeArchive = new
+                {
+                    stored = Array.Empty<object>(),
+                    actionReceipts = new[]
+                    {
+                        new
+                        {
+                            requestId,
+                            archiveId,
+                            requestedMode = "project_fuel",
+                            status = "accepted",
+                            guardianId,
+                            guardianName = "Азалия",
+                            targetProjectId = projectId,
+                            resultMode = "project_work",
+                            resultAmount = 2,
+                            resolvedAtTurn = 12,
+                            resolvedAtUtc = "2026-03-26T00:01:00Z"
+                        }
+                    }
+                }
+            });
+
+        await WriteJsonAsync(
+            "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1
+            });
+
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_archive_project_fuel_request_malformed.json";
+        await _fs.WriteFileAtomicAsync(backupPath, """
+        {
+          "requestId": "archive_project_fuel_snapshot_malformed",
+          "guardianId":
+        }
+        """);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [AfterlifeArchiveActionState.ProjectFuelRequestPath] = backupPath
+        });
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """
+        {
+          "accepted": true
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_malformed_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -1796,6 +2822,630 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_ResidentAbodeShiftWithoutCanonicalTrigger_Fails()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Сад Нитей" }
+                }
+            }
+        });
+
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 55,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "medium",
+                        migrationDisposition = "selective",
+                        communalOrientation = "high",
+                        stabilityNeed = "medium"
+                    },
+                    abodeDevotionLevel = 24,
+                    abodeDevotionTier = "uncertain",
+                    restlessness = 70,
+                    migrationState = "considering_departure",
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            },
+            interactionReceipts = Array.Empty<object>(),
+            historyLog = Array.Empty<object>(),
+            thoughtJournal = Array.Empty<object>(),
+            interactionLog = Array.Empty<object>()
+        });
+
+        const string residentBackupPath = "game_state/control/pending_turn_snapshot/pre_guardian_abode_residents_drift_trigger.json";
+        await WriteJsonAsync(residentBackupPath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    bondLevel = 55,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "medium",
+                        migrationDisposition = "selective",
+                        communalOrientation = "high",
+                        stabilityNeed = "medium"
+                    },
+                    abodeDevotionLevel = 55,
+                    abodeDevotionTier = "attached",
+                    restlessness = 34,
+                    migrationState = "wavering",
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            },
+            interactionReceipts = Array.Empty<object>(),
+            historyLog = Array.Empty<object>(),
+            thoughtJournal = Array.Empty<object>(),
+            interactionLog = Array.Empty<object>()
+        });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentState.StatePath] = residentBackupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_devotion_shift_missing_canonical_trigger", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ResidentTransferRequestBelowReadyToTransfer_Fails()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "resident_transfer_req_invalid_gate",
+                    residentId = "resident_alpha_1",
+                    residentName = "Лиора",
+                    sourceGuardianId = "guardian_alpha",
+                    sourceGuardianName = "Азалия",
+                    sourceAbodeId = "abode_alpha",
+                    sourceAbodeName = "Лазурная Обитель",
+                    targetGuardianId = "guardian_beta",
+                    targetGuardianName = "Мириэль",
+                    targetAbodeId = "abode_beta",
+                    targetAbodeName = "Сад Перекрёстков",
+                    abodeDevotionLevel = 24,
+                    abodeDevotionTier = "uncertain",
+                    restlessness = 60,
+                    migrationState = "considering_departure",
+                    transferMode = "accepted_transfer",
+                    createdAtTurn = 12,
+                    createdAtUtc = "2026-04-16T04:12:00Z"
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "pending_abode_resident_transfer_invalid_migration_gate", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PendingResidentTransferWithoutMatchingReceipt_Fails()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    currentReputation = 60,
+                    abode = new
+                    {
+                        abodeId = "abode_alpha",
+                        name = "Лазурная Обитель",
+                        abodePower = new { currentPower = 28 }
+                    }
+                },
+                new
+                {
+                    guardianId = "guardian_beta",
+                    canonicalName = "Мириэль",
+                    currentReputation = 88,
+                    abode = new
+                    {
+                        abodeId = "abode_beta",
+                        name = "Сад Перекрёстков",
+                        abodePower = new { currentPower = 74 }
+                    }
+                }
+            }
+        });
+
+        var residentState = new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    roleLabel = "Вестница",
+                    summary = "Тонкая душа на границе светлых троп.",
+                    bondLevel = 61,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "high",
+                        migrationDisposition = "selective",
+                        communalOrientation = "medium",
+                        stabilityNeed = "high"
+                    },
+                    abodeDevotionLevel = 12,
+                    abodeDevotionTier = "alienated",
+                    restlessness = 79,
+                    migrationState = "ready_to_transfer",
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            },
+            transferReceipts = Array.Empty<object>(),
+            interactionReceipts = Array.Empty<object>(),
+            historyLog = Array.Empty<object>(),
+            thoughtJournal = Array.Empty<object>(),
+            interactionLog = Array.Empty<object>()
+        };
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, residentState);
+
+        var request = new
+        {
+            requestId = "resident_transfer_req_missing_receipt",
+            residentId = "resident_alpha_1",
+            residentName = "Лиора",
+            sourceGuardianId = "guardian_alpha",
+            sourceGuardianName = "Азалия",
+            sourceAbodeId = "abode_alpha",
+            sourceAbodeName = "Лазурная Обитель",
+            targetGuardianId = "guardian_beta",
+            targetGuardianName = "Мириэль",
+            targetAbodeId = "abode_beta",
+            targetAbodeName = "Сад Перекрёстков",
+            abodeDevotionLevel = 12,
+            abodeDevotionTier = "alienated",
+            restlessness = 79,
+            migrationState = "ready_to_transfer",
+            transferMode = "accepted_transfer",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-04-16T04:12:00Z"
+        };
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, new { requests = new[] { request } });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new { currentRealm = "Chaos Sea" });
+        var requestBackupPath = "test_backups/resident_transfer_req_missing_receipt.json";
+        var residentBackupPath = "test_backups/resident_transfer_state_missing_receipt.json";
+        await WriteJsonAsync(requestBackupPath, new { requests = new[] { request } });
+        await WriteJsonAsync(residentBackupPath, residentState);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentRequestState.PendingTransfersRequestPath] = requestBackupPath,
+            [GuardianAbodeResidentState.StatePath] = residentBackupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_transfer_missing_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PendingResidentTransferMustMatchValidatedPreTurnReadyState()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea"
+        });
+
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    currentReputation = 60,
+                    abode = new
+                    {
+                        abodeId = "abode_alpha",
+                        name = "Лазурная Обитель",
+                        abodePower = new { currentPower = 28 }
+                    }
+                },
+                new
+                {
+                    guardianId = "guardian_beta",
+                    canonicalName = "Мириэль",
+                    currentReputation = 88,
+                    abode = new
+                    {
+                        abodeId = "abode_beta",
+                        name = "Сад Перекрёстков",
+                        abodePower = new { currentPower = 74 }
+                    }
+                }
+            }
+        });
+
+        var currentResidentState = new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    roleLabel = "Вестница",
+                    summary = "Тонкая душа на границе светлых троп.",
+                    bondLevel = 61,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "high",
+                        migrationDisposition = "selective",
+                        communalOrientation = "medium",
+                        stabilityNeed = "high"
+                    },
+                    abodeDevotionLevel = 12,
+                    abodeDevotionTier = "alienated",
+                    restlessness = 79,
+                    migrationState = "ready_to_transfer",
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            },
+            transferReceipts = Array.Empty<object>(),
+            interactionReceipts = Array.Empty<object>(),
+            historyLog = Array.Empty<object>(),
+            thoughtJournal = Array.Empty<object>(),
+            interactionLog = Array.Empty<object>()
+        };
+        var preTurnResidentState = new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_alpha_1",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    roleLabel = "Вестница",
+                    summary = "Тонкая душа на границе светлых троп.",
+                    bondLevel = 61,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "high",
+                        migrationDisposition = "selective",
+                        communalOrientation = "medium",
+                        stabilityNeed = "high"
+                    },
+                    abodeDevotionLevel = 24,
+                    abodeDevotionTier = "uncertain",
+                    restlessness = 60,
+                    migrationState = "considering_departure",
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            },
+            transferReceipts = Array.Empty<object>(),
+            interactionReceipts = Array.Empty<object>(),
+            historyLog = Array.Empty<object>(),
+            thoughtJournal = Array.Empty<object>(),
+            interactionLog = Array.Empty<object>()
+        };
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, currentResidentState);
+
+        var request = new
+        {
+            requestId = "resident_transfer_req_invalid_preturn_gate",
+            residentId = "resident_alpha_1",
+            residentName = "Лиора",
+            sourceGuardianId = "guardian_alpha",
+            sourceGuardianName = "Азалия",
+            sourceAbodeId = "abode_alpha",
+            sourceAbodeName = "Лазурная Обитель",
+            targetGuardianId = "guardian_beta",
+            targetGuardianName = "Мириэль",
+            targetAbodeId = "abode_beta",
+            targetAbodeName = "Сад Перекрёстков",
+            abodeDevotionLevel = 12,
+            abodeDevotionTier = "alienated",
+            restlessness = 79,
+            migrationState = "ready_to_transfer",
+            transferMode = "accepted_transfer",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-04-16T04:12:00Z"
+        };
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, new { requests = new[] { request } });
+
+        var soulStateBackupPath = "test_backups/resident_transfer_invalid_preturn_gate_soul_state.json";
+        var residentBackupPath = "test_backups/resident_transfer_invalid_preturn_gate_residents.json";
+        await WriteJsonAsync(soulStateBackupPath, new { currentRealm = "Chaos Sea" });
+        await WriteJsonAsync(residentBackupPath, preTurnResidentState);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["game_state/meta/soul_state.json"] = soulStateBackupPath,
+            [GuardianAbodeResidentState.StatePath] = residentBackupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_transfer_invalid_preturn_eligibility", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptedResidentTransferCanonicalArrivalDoesNotTripGenericDriftMismatch()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea"
+        });
+
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    currentReputation = 60,
+                    abode = new
+                    {
+                        abodeId = "abode_alpha",
+                        name = "Лазурная Обитель",
+                        abodePower = new { currentPower = 28 }
+                    }
+                },
+                new
+                {
+                    guardianId = "guardian_beta",
+                    canonicalName = "Мириэль",
+                    currentReputation = 88,
+                    abode = new
+                    {
+                        abodeId = "abode_beta",
+                        name = "Сад Перекрёстков",
+                        abodePower = new { currentPower = 74 }
+                    }
+                }
+            }
+        });
+
+        var preTurnResident = JsonNode.Parse("""
+        {
+          "residentId": "resident_alpha_1",
+          "guardianId": "guardian_alpha",
+          "guardianName": "Азалия",
+          "abodeId": "abode_alpha",
+          "abodeName": "Лазурная Обитель",
+          "displayName": "Лиора",
+          "residentKind": "wayfaring_soul",
+          "originType": "traveler_soul",
+          "roleLabel": "Вестница",
+          "summary": "Тонкая душа на границе светлых троп.",
+          "bondLevel": 61,
+          "bondTier": "trusted",
+          "canGrantCompanionRelic": true,
+          "bondRewardState": "none",
+          "linkedSoulQuestId": "",
+          "grantedRelicId": "",
+          "historyRevealed": true,
+          "isPresent": true,
+          "abodeDisposition": {
+            "powerSensitivity": "high",
+            "migrationDisposition": "selective",
+            "communalOrientation": "medium",
+            "stabilityNeed": "high"
+          },
+          "abodeDevotionLevel": 12,
+          "abodeDevotionTier": "alienated",
+          "restlessness": 79,
+          "migrationState": "ready_to_transfer",
+          "mortalWorldImprint": {
+            "originWorldSummary": "Бывшая гонец при храме дорог.",
+            "futureCompanionPrompt": "Swift wanderer"
+          }
+        }
+        """)!.AsObject();
+        var arrivalSeed = preTurnResident.DeepClone().AsObject();
+        arrivalSeed["guardianId"] = "guardian_beta";
+        arrivalSeed["guardianName"] = "Мириэль";
+        arrivalSeed["abodeId"] = "abode_beta";
+        arrivalSeed["abodeName"] = "Сад Перекрёстков";
+        var canonicalArrival = GuardianAbodeResidentState.BuildCanonicalTransferArrivalResident(arrivalSeed, targetAbodePower: 74);
+
+        var currentResidentsRoot = new JsonObject
+        {
+            ["entries"] = new JsonArray(canonicalArrival),
+            ["transferReceipts"] = new JsonArray(
+                new JsonObject
+                {
+                    ["requestId"] = "resident_transfer_req_accepted",
+                    ["residentId"] = "resident_alpha_1",
+                    ["residentName"] = "Лиора",
+                    ["sourceGuardianId"] = "guardian_alpha",
+                    ["sourceGuardianName"] = "Азалия",
+                    ["sourceAbodeId"] = "abode_alpha",
+                    ["sourceAbodeName"] = "Лазурная Обитель",
+                    ["targetGuardianId"] = "guardian_beta",
+                    ["targetGuardianName"] = "Мириэль",
+                    ["targetAbodeId"] = "abode_beta",
+                    ["targetAbodeName"] = "Сад Перекрёстков",
+                    ["status"] = "accepted",
+                    ["transferMode"] = "accepted_transfer",
+                    ["departureHistoryEntryId"] = "hist_departure_1",
+                    ["arrivalHistoryEntryId"] = "hist_arrival_1",
+                    ["resolvedAtTurn"] = 12,
+                    ["resolvedAtUtc"] = "2026-04-16T04:15:00Z"
+                }),
+            ["interactionReceipts"] = new JsonArray(),
+            ["historyLog"] = new JsonArray(
+                new JsonObject
+                {
+                    ["entryId"] = "hist_departure_1",
+                    ["residentId"] = "resident_alpha_1",
+                    ["title"] = "Лиора покинула Обитель",
+                    ["summary"] = "Лиора оставила Лазурную Обитель и шагнула к иному свету.",
+                    ["tags"] = new JsonArray("departure", "transfer"),
+                    ["revealedAtTurn"] = 12,
+                    ["revealedAtUtc"] = "2026-04-16T04:15:00Z"
+                },
+                new JsonObject
+                {
+                    ["entryId"] = "hist_arrival_1",
+                    ["residentId"] = "resident_alpha_1",
+                    ["title"] = "Лиора прибыла в новую Обитель",
+                    ["summary"] = "Лиора обрела новое пристанище в Саду Перекрёстков.",
+                    ["tags"] = new JsonArray("arrival", "transfer"),
+                    ["revealedAtTurn"] = 12,
+                    ["revealedAtUtc"] = "2026-04-16T04:15:00Z"
+                }),
+            ["thoughtJournal"] = new JsonArray(),
+            ["interactionLog"] = new JsonArray()
+        };
+        await _fs.WriteFileAtomicAsync(
+            GuardianAbodeResidentState.StatePath,
+            currentResidentsRoot.ToJsonString());
+
+        var request = new
+        {
+            requestId = "resident_transfer_req_accepted",
+            residentId = "resident_alpha_1",
+            residentName = "Лиора",
+            sourceGuardianId = "guardian_alpha",
+            sourceGuardianName = "Азалия",
+            sourceAbodeId = "abode_alpha",
+            sourceAbodeName = "Лазурная Обитель",
+            targetGuardianId = "guardian_beta",
+            targetGuardianName = "Мириэль",
+            targetAbodeId = "abode_beta",
+            targetAbodeName = "Сад Перекрёстков",
+            abodeDevotionLevel = 12,
+            abodeDevotionTier = "alienated",
+            restlessness = 79,
+            migrationState = "ready_to_transfer",
+            transferMode = "accepted_transfer",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-04-16T04:12:00Z"
+        };
+
+        var requestBackupPath = "test_backups/resident_transfer_req_accepted.json";
+        var residentBackupPath = "test_backups/resident_transfer_state_accepted.json";
+        await WriteJsonAsync(requestBackupPath, new { requests = new[] { request } });
+        await _fs.WriteFileAtomicAsync(
+            residentBackupPath,
+            new JsonObject
+            {
+                ["entries"] = new JsonArray(preTurnResident),
+                ["transferReceipts"] = new JsonArray(),
+                ["interactionReceipts"] = new JsonArray(),
+                ["historyLog"] = new JsonArray(),
+                ["thoughtJournal"] = new JsonArray(),
+                ["interactionLog"] = new JsonArray()
+            }.ToJsonString());
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentRequestState.PendingTransfersRequestPath] = requestBackupPath,
+            [GuardianAbodeResidentState.StatePath] = residentBackupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "abode_resident_transfer_invalid_accepted_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "abode_resident_devotion_projection_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ResidentWithInvalidInteractionToken_Fails()
     {
         await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
@@ -2053,6 +3703,145 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         Assert.Contains(issues, issue => string.Equals(issue.Code, "resident_thought_unknown_resident_id", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_MalformedArchiveConsultationRequestFile_ReportMalformedControlFile()
+    {
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            """
+            {
+              "requestId": "consult_req_broken",
+              "guardianId":
+            """
+        );
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_consultation_request_malformed_file", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MalformedArchiveProjectFuelRequestFile_ReportMalformedControlFile()
+    {
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            """
+            {
+              "requestId": "project_fuel_req_broken",
+              "guardianId":
+            """
+        );
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "archive_project_fuel_request_malformed_file", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MetaStateUpdatesRejectsInvalidInkFeatherBuckets()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            metaStateUpdates = new
+            {
+                inkFeatherChanges = new
+                {
+                    add = "broken",
+                    spend = -1,
+                    bonus = 3
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_invalid_ink_feather_change_value", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_unknown_ink_feather_change_key", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MetaStateUpdatesRejectsMalformedEnlightenmentProgression()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            metaStateUpdates = new
+            {
+                enlightenmentProgression = new
+                {
+                    newTier = -1,
+                    bonus = 3
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_invalid_enlightenment_progression_value", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_unknown_enlightenment_progression_key", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_missing_enlightenment_progression_experience", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MetaStateUpdatesRejectsMalformedSoulRelicOperations()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            metaStateUpdates = new
+            {
+                soulRelicOperations = new
+                {
+                    addRelic = new
+                    {
+                        name = "Broken relic"
+                    },
+                    updateRelicField = new
+                    {
+                        relicId = "relic_alpha"
+                    },
+                    changeRelic = new
+                    {
+                        relicId = "relic_beta"
+                    }
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "missing_required_string", StringComparison.OrdinalIgnoreCase) &&
+                                         issue.FilePath.Contains("metaStateUpdates.soulRelicOperations.addRelic.relicId", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "missing_required_string", StringComparison.OrdinalIgnoreCase) &&
+                                         issue.FilePath.Contains("metaStateUpdates.soulRelicOperations.updateRelicField.field", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_unknown_soul_relic_operation_key", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MetaStateUpdatesRejectsUnknownTopLevelCommand()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            metaStateUpdates = new
+            {
+                unknownCommand = new
+                {
+                    value = 1
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "meta_state_unknown_top_level_update_key", StringComparison.OrdinalIgnoreCase));
+    }
+
     private async Task WritePendingTurnSnapshotManifestAsync(Dictionary<string, string> rollbackBackups)
     {
         var normalizedBackups = rollbackBackups.ToDictionary(
@@ -2079,7 +3868,9 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
             SnapshotFileHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
             ClientOwnedValidationHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
             RollbackBackups = normalizedBackups,
-            RollbackBaselineFiles = new List<string>(),
+            RollbackBaselineFiles = normalizedBackups.Keys
+                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+                .ToList(),
             SourceLabel = "обработки хода",
             ManifestPayloadHash = string.Empty
         };
@@ -2087,6 +3878,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         await RegisterSnapshotFilesAsync(manifest);
         manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
         await WriteJsonAsync("game_state/control/pending_turn_snapshot.json", manifest);
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
     private async Task RegisterSnapshotFilesAsync(PendingTurnSnapshotManifest manifest)

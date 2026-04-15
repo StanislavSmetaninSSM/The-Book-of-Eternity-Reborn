@@ -25,12 +25,22 @@ internal static class AfterlifeNotificationState
     public const string TypeAbodeResidentTalkAnswered = "abode_resident_talk_answered";
     public const string TypeAbodeResidentHistoryRevealed = "abode_resident_history_revealed";
     public const string TypeAbodeResidentHistoryRefused = "abode_resident_history_refused";
+    public const string TypeAbodeResidentWavering = "abode_resident_wavering";
+    public const string TypeAbodeResidentRestless = "abode_resident_restless";
+    public const string TypeAbodeResidentConsideringDeparture = "abode_resident_considering_departure";
+    public const string TypeAbodeResidentTransferPending = "abode_resident_transfer_pending";
+    public const string TypeAbodeResidentTransferAccepted = "abode_resident_transfer_accepted";
+    public const string TypeAbodeResidentTransferRefused = "abode_resident_transfer_refused";
+    public const string TypeAbodeResidentTransferDeparted = "abode_resident_transfer_departed";
     public const string TypeArchiveConsultationAccepted = "archive_consultation_accepted";
     public const string TypeArchiveConsultationRejected = "archive_consultation_rejected";
     public const string TypeArchiveConsultationCancelled = "archive_consultation_cancelled";
+    public const string TypeArchiveConsultationPendingAttention = "archive_consultation_pending_attention";
     public const string TypeArchiveProjectFuelAccepted = "archive_project_fuel_accepted";
     public const string TypeArchiveProjectFuelRejected = "archive_project_fuel_rejected";
     public const string TypeArchiveProjectFuelCancelled = "archive_project_fuel_cancelled";
+    public const string TypeArchiveProjectFuelPendingAttention = "archive_project_fuel_pending_attention";
+    private const string ResidentPressureStateMarkersProperty = "residentPressureStateMarkers";
 
     private static readonly HashSet<string> AllowedStatuses = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -50,12 +60,21 @@ internal static class AfterlifeNotificationState
         TypeAbodeResidentTalkAnswered,
         TypeAbodeResidentHistoryRevealed,
         TypeAbodeResidentHistoryRefused,
+        TypeAbodeResidentWavering,
+        TypeAbodeResidentRestless,
+        TypeAbodeResidentConsideringDeparture,
+        TypeAbodeResidentTransferPending,
+        TypeAbodeResidentTransferAccepted,
+        TypeAbodeResidentTransferRefused,
+        TypeAbodeResidentTransferDeparted,
         TypeArchiveConsultationAccepted,
         TypeArchiveConsultationRejected,
         TypeArchiveConsultationCancelled,
+        TypeArchiveConsultationPendingAttention,
         TypeArchiveProjectFuelAccepted,
         TypeArchiveProjectFuelRejected,
-        TypeArchiveProjectFuelCancelled
+        TypeArchiveProjectFuelCancelled,
+        TypeArchiveProjectFuelPendingAttention
     };
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
@@ -148,6 +167,7 @@ internal static class AfterlifeNotificationState
         }
 
         changed |= TrimReadNotifications(notifications);
+        changed |= SanitizeResidentPressureStateMarkers(EnsureResidentPressureStateMarkers(root));
 
         if (changed)
             await WriteRootAsync(fs, root);
@@ -168,6 +188,8 @@ internal static class AfterlifeNotificationState
         changed |= await SyncAbodeResidentManifestationNotificationsAsync(fs, notifications);
         changed |= await SyncCompanionImprintManifestationNotificationsAsync(fs, notifications);
         changed |= await SyncAbodeResidentInteractionNotificationsAsync(fs, notifications);
+        changed |= await SyncAbodeResidentTransferNotificationsAsync(fs, notifications);
+        changed |= await SyncAbodeResidentPressureNotificationsAsync(fs, root, notifications);
         changed |= await SyncArchiveConsultationNotificationsAsync(fs, notifications);
         changed |= await SyncArchiveProjectFuelNotificationsAsync(fs, notifications);
 
@@ -279,12 +301,21 @@ internal static class AfterlifeNotificationState
             TypeAbodeResidentTalkAnswered => "Резидент ответил",
             TypeAbodeResidentHistoryRevealed => "История раскрыта",
             TypeAbodeResidentHistoryRefused => "История не раскрыта",
+            TypeAbodeResidentWavering => "Резидент колеблется",
+            TypeAbodeResidentRestless => "Резидент беспокоен",
+            TypeAbodeResidentConsideringDeparture => "Резидент может уйти",
+            TypeAbodeResidentTransferPending => "Переход ожидает решения",
+            TypeAbodeResidentTransferAccepted => "Переход принят",
+            TypeAbodeResidentTransferRefused => "Переход отклонён",
+            TypeAbodeResidentTransferDeparted => "Резидент покинул Обитель",
             TypeArchiveConsultationAccepted => "Консультация принята",
             TypeArchiveConsultationRejected => "Консультация отклонена",
             TypeArchiveConsultationCancelled => "Консультация отменена",
+            TypeArchiveConsultationPendingAttention => "Консультация требует внимания",
             TypeArchiveProjectFuelAccepted => "Подпитка проекта принята",
             TypeArchiveProjectFuelRejected => "Подпитка проекта отклонена",
             TypeArchiveProjectFuelCancelled => "Подпитка проекта отменена",
+            TypeArchiveProjectFuelPendingAttention => "Подпитка проекта требует внимания",
             _ => "Уведомление"
         };
 
@@ -452,11 +483,42 @@ internal static class AfterlifeNotificationState
 
     private static async Task<bool> SyncArchiveConsultationNotificationsAsync(FileSystemManager fs, JsonArray notifications)
     {
-        var request = await AfterlifeArchiveActionState.ReadConsultationAsync(fs);
+        var requestState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(fs);
+        if (!requestState.Exists)
+            return false;
+
+        if (requestState.IsMalformed)
+        {
+            var malformedRequest = requestState.Request;
+            return UpsertNotification(
+                notifications,
+                BuildNotificationId(
+                    TypeArchiveConsultationPendingAttention,
+                    ResolveArchivePendingNotificationRequestId(
+                        malformedRequest?.RequestId,
+                        AfterlifeArchiveActionState.ConsultationRequestPath)),
+                TypeArchiveConsultationPendingAttention,
+                ResolveArchivePendingNotificationRequestId(
+                    malformedRequest?.RequestId,
+                    AfterlifeArchiveActionState.ConsultationRequestPath),
+                malformedRequest?.GuardianId,
+                malformedRequest?.GuardianName,
+                malformedRequest?.ArchiveId,
+                malformedRequest?.ArchiveTitle,
+                targetProjectId: null,
+                targetProjectName: null,
+                summary: BuildMalformedArchiveRequestSummary(
+                    AfterlifeArchiveActionState.ConsultationRequestPath,
+                    "архивную консультацию"),
+                createdAtTurn: malformedRequest?.CreatedAtTurn ?? 0,
+                createdAtUtc: malformedRequest?.CreatedAtUtc ?? DateTime.UtcNow.ToString("o"));
+        }
+
+        var request = requestState.Request;
         if (request == null)
             return false;
 
-        var receipt = await ReadArchiveReceiptAsync(fs, request.RequestId);
+        var receipt = await ReadArchiveReceiptAsync(fs, request.RequestId, request.ArchiveId, request.RequestedMode);
         if (receipt == null)
             return false;
 
@@ -680,14 +742,12 @@ internal static class AfterlifeNotificationState
     private static async Task<bool> SyncAbodeResidentRelicNotificationsAsync(FileSystemManager fs, JsonArray notifications)
     {
         var residentsJson = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
-        var soulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(residentsJson) || string.IsNullOrWhiteSpace(soulJson))
+        if (string.IsNullOrWhiteSpace(residentsJson))
             return false;
 
         try
         {
-            if (JsonNode.Parse(residentsJson) is not JsonObject residentsRoot ||
-                JsonNode.Parse(soulJson) is not JsonObject soulRoot)
+            if (JsonNode.Parse(residentsJson) is not JsonObject residentsRoot)
             {
                 return false;
             }
@@ -701,7 +761,7 @@ internal static class AfterlifeNotificationState
             if (residentMap.Count == 0)
                 return false;
 
-            var relicMap = BuildSoulRelicMap(soulRoot);
+            var relicMap = await ReadStrictCurrentSoulRelicMapAsync(fs);
             if (relicMap.Count == 0)
                 return false;
 
@@ -743,14 +803,12 @@ internal static class AfterlifeNotificationState
     private static async Task<bool> SyncAbodeResidentManifestationNotificationsAsync(FileSystemManager fs, JsonArray notifications)
     {
         var residentsJson = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
-        var soulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(residentsJson) || string.IsNullOrWhiteSpace(soulJson))
+        if (string.IsNullOrWhiteSpace(residentsJson))
             return false;
 
         try
         {
-            if (JsonNode.Parse(residentsJson) is not JsonObject residentsRoot ||
-                JsonNode.Parse(soulJson) is not JsonObject soulRoot)
+            if (JsonNode.Parse(residentsJson) is not JsonObject residentsRoot)
             {
                 return false;
             }
@@ -769,7 +827,7 @@ internal static class AfterlifeNotificationState
             if (residentMap.Count == 0)
                 return false;
 
-            var relicMap = BuildSoulRelicMap(soulRoot);
+            var relicMap = await ReadStrictCurrentSoulRelicMapAsync(fs);
             if (relicMap.Count == 0)
                 return false;
 
@@ -824,21 +882,14 @@ internal static class AfterlifeNotificationState
 
     private static async Task<bool> SyncCompanionImprintManifestationNotificationsAsync(FileSystemManager fs, JsonArray notifications)
     {
-        var soulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
-            return false;
-
         try
         {
-            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
-                return false;
-
             JsonObject? npcRoot = null;
             var npcJson = await fs.ReadFileAsync("game_state/npcs/npc_core.json");
             if (!string.IsNullOrWhiteSpace(npcJson))
                 npcRoot = JsonNode.Parse(npcJson) as JsonObject;
 
-            var relicMap = BuildSoulRelicMap(soulRoot);
+            var relicMap = await ReadStrictCurrentSoulRelicMapAsync(fs);
             if (relicMap.Count == 0)
                 return false;
 
@@ -991,13 +1042,208 @@ internal static class AfterlifeNotificationState
         }
     }
 
+    private static async Task<bool> SyncAbodeResidentTransferNotificationsAsync(FileSystemManager fs, JsonArray notifications)
+    {
+        var changed = false;
+        var transferRequests = await GuardianAbodeResidentRequestState.ReadTransferRequestsAsync(fs);
+        var activePendingRequestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var request in transferRequests)
+        {
+            if (string.IsNullOrWhiteSpace(request.RequestId) || string.IsNullOrWhiteSpace(request.ResidentId))
+                continue;
+
+            activePendingRequestIds.Add(request.RequestId);
+            changed |= UpsertNotification(
+                notifications,
+                BuildNotificationId(TypeAbodeResidentTransferPending, request.RequestId),
+                TypeAbodeResidentTransferPending,
+                request.RequestId,
+                request.SourceGuardianId,
+                request.SourceGuardianName,
+                archiveId: null,
+                archiveTitle: null,
+                targetProjectId: null,
+                targetProjectName: null,
+                summary: BuildResidentTransferPendingSummary(request),
+                createdAtTurn: request.CreatedAtTurn,
+                createdAtUtc: request.CreatedAtUtc);
+        }
+
+        changed |= RemoveResidentTransferPendingNotificationsExcept(notifications, activePendingRequestIds);
+
+        var residentsJson = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(residentsJson))
+            return changed;
+
+        try
+        {
+            if (JsonNode.Parse(residentsJson) is not JsonObject residentsRoot)
+                return changed;
+
+            GuardianAbodeResidentState.NormalizeShape(residentsRoot);
+            var receipts = GuardianAbodeResidentState.EnsureTransferReceiptsArray(residentsRoot);
+            foreach (var receipt in receipts.OfType<JsonObject>())
+            {
+                var requestId = GetNodeString(receipt["requestId"]);
+                if (string.IsNullOrWhiteSpace(requestId))
+                    continue;
+
+                var notificationType = ResolveResidentTransferNotificationType(GetNodeString(receipt["status"]));
+                if (string.IsNullOrWhiteSpace(notificationType))
+                    continue;
+
+                changed |= UpsertNotification(
+                    notifications,
+                    BuildNotificationId(notificationType, requestId),
+                    notificationType,
+                    requestId,
+                    GetNodeString(receipt["sourceGuardianId"]) ?? string.Empty,
+                    GetNodeString(receipt["sourceGuardianName"]) ?? string.Empty,
+                    archiveId: null,
+                    archiveTitle: null,
+                    targetProjectId: null,
+                    targetProjectName: null,
+                    summary: BuildResidentTransferReceiptSummary(receipt),
+                    createdAtTurn: GetNodeInt(receipt["resolvedAtTurn"], 0),
+                    createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
+            }
+
+            return changed;
+        }
+        catch
+        {
+            return changed;
+        }
+    }
+
+    private static async Task<bool> SyncAbodeResidentPressureNotificationsAsync(FileSystemManager fs, JsonObject root, JsonArray notifications)
+    {
+        var residentsJson = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        var markers = EnsureResidentPressureStateMarkers(root);
+        var changed = false;
+
+        if (string.IsNullOrWhiteSpace(residentsJson))
+        {
+            changed |= RemoveAllResidentPressureNotifications(notifications);
+            changed |= ClearResidentPressureStateMarkers(markers);
+            return changed;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(residentsJson) is not JsonObject residentsRoot)
+                return false;
+
+            JsonObject? guardiansRoot = null;
+            var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
+            if (!string.IsNullOrWhiteSpace(guardiansJson))
+                guardiansRoot = JsonNode.Parse(guardiansJson) as JsonObject;
+
+            var residentMap = BuildResidentNotificationMap(residentsRoot, guardiansRoot);
+            var seenResidentIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var resident in residentMap.Values.Where(info => info.IsPresent))
+            {
+                seenResidentIds.Add(resident.ResidentId);
+
+                var effectivePressureState = ResolveResidentPressureStateForNotifications(resident.MigrationState);
+                var hasPreviousMarker = TryReadResidentPressureStateMarker(markers, resident.ResidentId, out var previousPressureState);
+                if (!hasPreviousMarker)
+                {
+                    SetResidentPressureStateMarker(markers, resident.ResidentId, effectivePressureState);
+                    changed = true;
+                    continue;
+                }
+
+                if (string.Equals(previousPressureState, effectivePressureState, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                changed |= RemoveResidentPressureNotifications(notifications, resident.ResidentId);
+
+                if (!string.Equals(effectivePressureState, GuardianAbodeResidentState.MigrationStateSettled, StringComparison.OrdinalIgnoreCase))
+                {
+                    var notificationType = ResolveResidentPressureNotificationType(effectivePressureState);
+                    var requestId = BuildResidentPressureNotificationRequestId(resident.ResidentId, effectivePressureState);
+                    var (createdAtTurn, createdAtUtc) = ResolveResidentPressureNotificationTiming(residentsRoot, resident.ResidentId);
+                    var summary = BuildResidentPressureSummary(resident);
+
+                    changed |= UpsertNotification(
+                        notifications,
+                        BuildNotificationId(notificationType, requestId),
+                        notificationType,
+                        requestId,
+                        resident.GuardianId,
+                        resident.GuardianName,
+                        archiveId: null,
+                        archiveTitle: null,
+                        targetProjectId: null,
+                        targetProjectName: null,
+                        summary: summary,
+                        createdAtTurn: createdAtTurn,
+                        createdAtUtc: createdAtUtc);
+                }
+
+                SetResidentPressureStateMarker(markers, resident.ResidentId, effectivePressureState);
+                changed = true;
+            }
+
+            foreach (var markerEntry in markers.ToList())
+            {
+                if (string.IsNullOrWhiteSpace(markerEntry.Key) || seenResidentIds.Contains(markerEntry.Key))
+                    continue;
+
+                markers.Remove(markerEntry.Key);
+                changed |= RemoveResidentPressureNotifications(notifications, markerEntry.Key);
+                changed = true;
+            }
+
+            return changed;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private static async Task<bool> SyncArchiveProjectFuelNotificationsAsync(FileSystemManager fs, JsonArray notifications)
     {
-        var request = await AfterlifeArchiveActionState.ReadProjectFuelAsync(fs);
+        var requestState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(fs);
+        if (!requestState.Exists)
+            return false;
+
+        if (requestState.IsMalformed)
+        {
+            var malformedRequest = requestState.Request;
+            return UpsertNotification(
+                notifications,
+                BuildNotificationId(
+                    TypeArchiveProjectFuelPendingAttention,
+                    ResolveArchivePendingNotificationRequestId(
+                        malformedRequest?.RequestId,
+                        AfterlifeArchiveActionState.ProjectFuelRequestPath)),
+                TypeArchiveProjectFuelPendingAttention,
+                ResolveArchivePendingNotificationRequestId(
+                    malformedRequest?.RequestId,
+                    AfterlifeArchiveActionState.ProjectFuelRequestPath),
+                malformedRequest?.GuardianId,
+                malformedRequest?.GuardianName,
+                malformedRequest?.ArchiveId,
+                malformedRequest?.ArchiveTitle,
+                malformedRequest?.TargetProjectId,
+                malformedRequest?.TargetProjectName,
+                summary: BuildMalformedArchiveRequestSummary(
+                    AfterlifeArchiveActionState.ProjectFuelRequestPath,
+                    "архивную подпитку проекта"),
+                createdAtTurn: malformedRequest?.CreatedAtTurn ?? 0,
+                createdAtUtc: malformedRequest?.CreatedAtUtc ?? DateTime.UtcNow.ToString("o"));
+        }
+
+        var request = requestState.Request;
         if (request == null)
             return false;
 
-        var receipt = await ReadArchiveReceiptAsync(fs, request.RequestId);
+        var receipt = await ReadArchiveReceiptAsync(fs, request.RequestId, request.ArchiveId, request.RequestedMode);
         if (receipt == null)
             return false;
 
@@ -1098,6 +1344,14 @@ internal static class AfterlifeNotificationState
         return true;
     }
 
+    private static string ResolveArchivePendingNotificationRequestId(string? requestId, string requestPath) =>
+        !string.IsNullOrWhiteSpace(requestId)
+            ? requestId
+            : $"pending:{Path.GetFileNameWithoutExtension(requestPath)}";
+
+    private static string BuildMalformedArchiveRequestSummary(string requestPath, string actionLabel) =>
+        $"Файл {Path.GetFileName(requestPath)} повреждён или неполон. Новый запрос на {actionLabel} заблокирован, пока pending request не будет исправлен или очищен.";
+
     private static string BuildNotificationId(string notificationType, string requestId) =>
         $"{notificationType}:{requestId}";
 
@@ -1182,7 +1436,8 @@ internal static class AfterlifeNotificationState
                 .FirstOrDefault(projectNode =>
                     projectNode != null &&
                     string.Equals(GetNodeString(projectNode["projectOrigin"]), "archive_consultation", StringComparison.OrdinalIgnoreCase) &&
-                    (string.Equals(GetNodeString(projectNode["consultationRequestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(GetNodeString(projectNode["consultationRequestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) &&
+                    (string.IsNullOrWhiteSpace(GetNodeString(projectNode["consultationArchiveId"])) ||
                      string.Equals(GetNodeString(projectNode["consultationArchiveId"]), request.ArchiveId, StringComparison.OrdinalIgnoreCase)));
 
             var outcomeLabel = BuildConsultationOutcomeLabel(project?["projectOutcomeAudit"] as JsonObject);
@@ -1234,8 +1489,7 @@ internal static class AfterlifeNotificationState
                     string.Equals(GetNodeString(item["guardianId"]), request.GuardianId, StringComparison.OrdinalIgnoreCase) &&
                     string.Equals(GetNodeString(item["projectId"]), request.TargetProjectId, StringComparison.OrdinalIgnoreCase) &&
                     string.Equals(GetNodeString(item["eventType"]), "assisted", StringComparison.OrdinalIgnoreCase) &&
-                    (string.Equals(GetNodeString(item["archiveFuelRequestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) ||
-                     JournalEntryContainsDetail(item, request.ArchiveId)));
+                    string.Equals(GetNodeString(item["archiveFuelRequestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase));
 
             if (entry == null)
                 return $"Хранитель {request.GuardianName} обработал архивную подпитку проекта «{projectName}».";
@@ -1297,6 +1551,11 @@ internal static class AfterlifeNotificationState
         public string DisplayName { get; init; } = "";
         public string GuardianId { get; init; } = "";
         public string GuardianName { get; init; } = "";
+        public string AbodeDevotionTier { get; init; } = GuardianAbodeResidentState.AbodeDevotionTierAttached;
+        public int AbodeDevotionLevel { get; init; }
+        public int Restlessness { get; init; }
+        public string MigrationState { get; init; } = GuardianAbodeResidentState.MigrationStateSettled;
+        public bool IsPresent { get; init; } = true;
         public string GrantedRelicId { get; init; } = "";
     }
 
@@ -1330,6 +1589,13 @@ internal static class AfterlifeNotificationState
                 GuardianName = guardianNameMap.TryGetValue(GetNodeString(resident["guardianId"]) ?? string.Empty, out var guardianName)
                     ? guardianName
                     : string.Empty,
+                AbodeDevotionTier = GetNodeString(resident["abodeDevotionTier"]) ?? GuardianAbodeResidentState.AbodeDevotionTierAttached,
+                AbodeDevotionLevel = GetNodeInt(resident["abodeDevotionLevel"], 0),
+                Restlessness = GetNodeInt(resident["restlessness"], 0),
+                MigrationState = GetNodeString(resident["migrationState"]) ?? GuardianAbodeResidentState.MigrationStateSettled,
+                IsPresent = !(resident["isPresent"] is JsonValue isPresentValue &&
+                              isPresentValue.TryGetValue<bool>(out var isPresent) &&
+                              !isPresent),
                 GrantedRelicId = GetNodeString(resident["grantedRelicId"]) ?? string.Empty
             })
             .Where(info => !string.IsNullOrWhiteSpace(info.ResidentId))
@@ -1413,6 +1679,42 @@ internal static class AfterlifeNotificationState
         return result;
     }
 
+    private static async Task<Dictionary<string, SoulRelicNotificationInfo>> ReadStrictCurrentSoulRelicMapAsync(
+        FileSystemManager fs)
+    {
+        var soulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return new Dictionary<string, SoulRelicNotificationInfo>(StringComparer.OrdinalIgnoreCase);
+
+        try
+        {
+            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
+                return new Dictionary<string, SoulRelicNotificationInfo>(StringComparer.OrdinalIgnoreCase);
+
+            var lifeTransitionsJson = await fs.ReadFileAsync("game_state/control/life_transitions.json");
+            var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
+                fs,
+                lifeTransitionsJson,
+                soulRoot);
+
+            if (!GuardianPolicyContracts.TryReadStrictCurrentSoulRelicCollections(
+                    soulRoot,
+                    hasCanonicalTriggerLifeEnd,
+                    out _,
+                    out _,
+                    out _))
+            {
+                return new Dictionary<string, SoulRelicNotificationInfo>(StringComparer.OrdinalIgnoreCase);
+            }
+
+            return BuildSoulRelicMap(soulRoot);
+        }
+        catch
+        {
+            return new Dictionary<string, SoulRelicNotificationInfo>(StringComparer.OrdinalIgnoreCase);
+        }
+    }
+
     private static bool TryGetEmbeddedImprint(JsonObject relic, out JsonObject imprint)
     {
         if (relic["soulImprint"] is JsonObject soulImprint)
@@ -1475,20 +1777,14 @@ internal static class AfterlifeNotificationState
         if (npcRoot == null)
             return result;
 
-        foreach (var propertyName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
+        foreach (var npc in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(npcRoot))
         {
-            if (npcRoot[propertyName] is not JsonArray npcs)
+            var npcId = GetNodeString(npc["NPCId"]) ?? GetNodeString(npc["npcId"]) ?? GetNodeString(npc["id"]);
+            if (string.IsNullOrWhiteSpace(npcId))
                 continue;
 
-            foreach (var npc in npcs.OfType<JsonObject>())
-            {
-                var npcId = GetNodeString(npc["NPCId"]) ?? GetNodeString(npc["npcId"]) ?? GetNodeString(npc["id"]);
-                if (string.IsNullOrWhiteSpace(npcId))
-                    continue;
-
-                var name = GetNodeString(npc["NPCName"]) ?? GetNodeString(npc["npcName"]) ?? GetNodeString(npc["name"]) ?? GetNodeString(npc["displayName"]) ?? npcId;
-                result[npcId] = name;
-            }
+            var name = GetNodeString(npc["NPCName"]) ?? GetNodeString(npc["npcName"]) ?? GetNodeString(npc["name"]) ?? GetNodeString(npc["displayName"]) ?? npcId;
+            result[npcId] = name;
         }
 
         return result;
@@ -1602,7 +1898,11 @@ internal static class AfterlifeNotificationState
         return null;
     }
 
-    private static async Task<JsonObject?> ReadArchiveReceiptAsync(FileSystemManager fs, string requestId)
+    private static async Task<JsonObject?> ReadArchiveReceiptAsync(
+        FileSystemManager fs,
+        string requestId,
+        string archiveId,
+        string requestedMode)
     {
         var soulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(soulJson))
@@ -1613,10 +1913,18 @@ internal static class AfterlifeNotificationState
             if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
                 return null;
 
-            AfterlifeArchiveState.NormalizeShape(soulRoot);
-            var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(soulRoot);
-            return receipts.OfType<JsonObject>()
-                .FirstOrDefault(receipt => string.Equals(GetNodeString(receipt["requestId"]), requestId, StringComparison.OrdinalIgnoreCase));
+            if (AfterlifeArchiveState.TryDescribeInvalidCanonicalArchiveRoot(soulRoot, out _))
+                return null;
+
+            if (!soulRoot.TryGetPropertyValue(AfterlifeArchiveState.ContainerProperty, out var archiveRootNode) ||
+                archiveRootNode is not JsonObject archiveRoot ||
+                !archiveRoot.TryGetPropertyValue(AfterlifeArchiveState.ActionReceiptsProperty, out var receiptsNode) ||
+                receiptsNode is not JsonArray receipts)
+            {
+                return null;
+            }
+
+            return AfterlifeArchiveState.FindActionReceipt(receipts, requestId, archiveId, requestedMode);
         }
         catch
         {
@@ -1676,6 +1984,9 @@ internal static class AfterlifeNotificationState
     {
         if (root[NotificationsProperty] is not JsonArray)
             root[NotificationsProperty] = new JsonArray();
+
+        if (root[ResidentPressureStateMarkersProperty] is not JsonObject)
+            root[ResidentPressureStateMarkersProperty] = new JsonObject();
     }
 
     private static JsonArray EnsureNotificationsArray(JsonObject root)
@@ -1684,11 +1995,272 @@ internal static class AfterlifeNotificationState
         return root[NotificationsProperty]!.AsArray();
     }
 
+    private static JsonObject EnsureResidentPressureStateMarkers(JsonObject root)
+    {
+        NormalizeShape(root);
+        return root[ResidentPressureStateMarkersProperty]!.AsObject();
+    }
+
     private static bool IsSupportedStatus(string? status) =>
         !string.IsNullOrWhiteSpace(status) && AllowedStatuses.Contains(status.Trim());
 
     private static bool IsSupportedType(string? notificationType) =>
         !string.IsNullOrWhiteSpace(notificationType) && AllowedTypes.Contains(notificationType.Trim());
+
+    private static bool IsResidentPressureNotificationType(string? notificationType) =>
+        string.Equals(notificationType, TypeAbodeResidentWavering, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, TypeAbodeResidentRestless, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, TypeAbodeResidentConsideringDeparture, StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsResidentTransferNotificationType(string? notificationType) =>
+        string.Equals(notificationType, TypeAbodeResidentTransferPending, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, TypeAbodeResidentTransferAccepted, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, TypeAbodeResidentTransferRefused, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, TypeAbodeResidentTransferDeparted, StringComparison.OrdinalIgnoreCase);
+
+    private static string ResolveResidentTransferNotificationType(string? status) =>
+        (status ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            GuardianAbodeResidentState.TransferStatusAccepted => TypeAbodeResidentTransferAccepted,
+            GuardianAbodeResidentState.TransferStatusRefused => TypeAbodeResidentTransferRefused,
+            GuardianAbodeResidentState.TransferStatusDepartedOnly => TypeAbodeResidentTransferDeparted,
+            _ => string.Empty
+        };
+
+    private static string BuildResidentTransferPendingSummary(GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest request)
+    {
+        var sourceAbodeName = string.IsNullOrWhiteSpace(request.SourceAbodeName) ? request.SourceAbodeId : request.SourceAbodeName;
+        if (string.Equals(request.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase))
+        {
+            return $"Резидент «{request.ResidentName}» готов покинуть Обитель «{sourceAbodeName}». Переход ждёт канонического решения.";
+        }
+
+        var targetAbodeName = string.IsNullOrWhiteSpace(request.TargetAbodeName) ? request.TargetAbodeId : request.TargetAbodeName;
+        var targetGuardianName = string.IsNullOrWhiteSpace(request.TargetGuardianName) ? request.TargetGuardianId : request.TargetGuardianName;
+        return $"Резидент «{request.ResidentName}» может перейти в Обитель «{targetAbodeName}» Хранителя {targetGuardianName}. Решение ждёт канонического закрытия.";
+    }
+
+    private static string BuildResidentTransferReceiptSummary(JsonObject receipt)
+    {
+        var residentName = GetNodeString(receipt["residentName"]) ?? GetNodeString(receipt["residentId"]) ?? "резидент";
+        var sourceAbodeName = GetNodeString(receipt["sourceAbodeName"]) ?? GetNodeString(receipt["sourceAbodeId"]) ?? string.Empty;
+        var targetAbodeName = GetNodeString(receipt["targetAbodeName"]) ?? GetNodeString(receipt["targetAbodeId"]) ?? string.Empty;
+        var targetGuardianName = GetNodeString(receipt["targetGuardianName"]) ?? GetNodeString(receipt["targetGuardianId"]) ?? string.Empty;
+
+        return (GetNodeString(receipt["status"]) ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            GuardianAbodeResidentState.TransferStatusAccepted =>
+                $"Резидент «{residentName}» покинул Обитель «{sourceAbodeName}» и принят в Обитель «{targetAbodeName}» Хранителя {targetGuardianName}.",
+            GuardianAbodeResidentState.TransferStatusRefused =>
+                $"Переход резидента «{residentName}» из Обители «{sourceAbodeName}» не состоялся. Резидент остался на месте.",
+            GuardianAbodeResidentState.TransferStatusDepartedOnly =>
+                $"Резидент «{residentName}» покинул Обитель «{sourceAbodeName}» и ушёл за пределы текущего resident roster.",
+            _ => string.Empty
+        };
+    }
+
+    private static string ResolveResidentPressureStateForNotifications(string? migrationState) =>
+        (migrationState ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            GuardianAbodeResidentState.MigrationStateWavering => GuardianAbodeResidentState.MigrationStateWavering,
+            GuardianAbodeResidentState.MigrationStateRestless => GuardianAbodeResidentState.MigrationStateRestless,
+            GuardianAbodeResidentState.MigrationStateConsideringDeparture => GuardianAbodeResidentState.MigrationStateConsideringDeparture,
+            GuardianAbodeResidentState.MigrationStateReadyToTransfer => GuardianAbodeResidentState.MigrationStateConsideringDeparture,
+            _ => GuardianAbodeResidentState.MigrationStateSettled
+        };
+
+    private static string ResolveResidentPressureNotificationType(string effectivePressureState) =>
+        effectivePressureState switch
+        {
+            GuardianAbodeResidentState.MigrationStateWavering => TypeAbodeResidentWavering,
+            GuardianAbodeResidentState.MigrationStateRestless => TypeAbodeResidentRestless,
+            _ => TypeAbodeResidentConsideringDeparture
+        };
+
+    private static string BuildResidentPressureNotificationRequestId(string residentId, string effectivePressureState) =>
+        $"resident_pressure:{residentId}:{effectivePressureState}";
+
+    private static string BuildResidentPressureSummary(ResidentNotificationInfo resident)
+    {
+        var devotionLabel = GuardianAbodeResidentState.GetAbodeDevotionTierLabel(resident.AbodeDevotionTier);
+        var pressureLine = resident.MigrationState.Trim().ToLowerInvariant() switch
+        {
+            GuardianAbodeResidentState.MigrationStateWavering =>
+                $"Резидент «{resident.DisplayName}» заколебался и уже не чувствует Обитель безусловным домом.",
+            GuardianAbodeResidentState.MigrationStateRestless =>
+                $"Резидент «{resident.DisplayName}» стал внутренне беспокоен и тяжелее переносит слабость Обители.",
+            GuardianAbodeResidentState.MigrationStateReadyToTransfer =>
+                $"Резидент «{resident.DisplayName}» уже внутренне готов искать иной свет, если упадок не будет преодолён.",
+            _ =>
+                $"Резидент «{resident.DisplayName}» всерьёз думает об уходе и может покинуть Обитель, если упадок продолжится."
+        };
+
+        return $"{pressureLine} Текущее состояние: {GuardianAbodeResidentState.GetMigrationStateLabel(resident.MigrationState)}, преданность Обители — {devotionLabel} ({resident.AbodeDevotionLevel}/100), неспокойствие — {resident.Restlessness}/100.";
+    }
+
+    private static (int CreatedAtTurn, string CreatedAtUtc) ResolveResidentPressureNotificationTiming(JsonObject residentsRoot, string residentId)
+    {
+        GuardianAbodeResidentState.NormalizeShape(residentsRoot);
+        var latestTurn = 0;
+        var latestUtc = string.Empty;
+
+        if (residentsRoot[GuardianAbodeResidentState.ThoughtJournalProperty] is JsonArray thoughtJournal)
+        {
+            foreach (var entry in thoughtJournal.OfType<JsonObject>()
+                         .Where(entry => string.Equals(GetNodeString(entry["residentId"]), residentId, StringComparison.OrdinalIgnoreCase))
+                         .OrderByDescending(entry => GetNodeInt(entry["turn"], 0))
+                         .ThenByDescending(entry => GetNodeString(entry["timestamp"]), StringComparer.OrdinalIgnoreCase))
+            {
+                latestTurn = GetNodeInt(entry["turn"], latestTurn);
+                latestUtc = GetNodeString(entry["timestamp"]) ?? latestUtc;
+                break;
+            }
+        }
+
+        if (residentsRoot[GuardianAbodeResidentState.InteractionLogProperty] is JsonArray interactionLog)
+        {
+            foreach (var entry in interactionLog.OfType<JsonObject>()
+                         .Where(entry => string.Equals(GetNodeString(entry["residentId"]), residentId, StringComparison.OrdinalIgnoreCase))
+                         .OrderByDescending(entry => GetNodeInt(entry["turn"], 0))
+                         .ThenByDescending(entry => GetNodeString(entry["timestamp"]), StringComparer.OrdinalIgnoreCase))
+            {
+                var entryTurn = GetNodeInt(entry["turn"], 0);
+                var entryUtc = GetNodeString(entry["timestamp"]) ?? string.Empty;
+                if (entryTurn > latestTurn ||
+                    (entryTurn == latestTurn && string.CompareOrdinal(entryUtc, latestUtc) > 0))
+                {
+                    latestTurn = entryTurn;
+                    latestUtc = entryUtc;
+                }
+
+                break;
+            }
+        }
+
+        return (latestTurn, !string.IsNullOrWhiteSpace(latestUtc) ? latestUtc : DateTime.UtcNow.ToString("o"));
+    }
+
+    private static bool TryReadResidentPressureStateMarker(JsonObject markers, string residentId, out string pressureState)
+    {
+        pressureState = GuardianAbodeResidentState.MigrationStateSettled;
+        if (string.IsNullOrWhiteSpace(residentId) ||
+            markers[residentId] is not JsonValue value ||
+            !value.TryGetValue<string>(out var storedState) ||
+            string.IsNullOrWhiteSpace(storedState))
+        {
+            return false;
+        }
+
+        pressureState = ResolveResidentPressureStateForNotifications(storedState);
+        return true;
+    }
+
+    private static void SetResidentPressureStateMarker(JsonObject markers, string residentId, string effectivePressureState)
+    {
+        if (string.IsNullOrWhiteSpace(residentId))
+            return;
+
+        markers[residentId] = string.IsNullOrWhiteSpace(effectivePressureState)
+            ? GuardianAbodeResidentState.MigrationStateSettled
+            : effectivePressureState;
+    }
+
+    private static bool ClearResidentPressureStateMarkers(JsonObject markers)
+    {
+        if (markers.Count == 0)
+            return false;
+
+        markers.Clear();
+        return true;
+    }
+
+    private static bool RemoveResidentTransferPendingNotificationsExcept(JsonArray notifications, HashSet<string> activeRequestIds)
+    {
+        var changed = false;
+        for (var i = notifications.Count - 1; i >= 0; i--)
+        {
+            if (notifications[i] is not JsonObject notification ||
+                !string.Equals(GetNodeString(notification["notificationType"]), TypeAbodeResidentTransferPending, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var requestId = GetNodeString(notification["requestId"]);
+            if (!string.IsNullOrWhiteSpace(requestId) && activeRequestIds.Contains(requestId))
+                continue;
+
+            notifications.RemoveAt(i);
+            changed = true;
+        }
+
+        return changed;
+    }
+
+    private static bool RemoveAllResidentPressureNotifications(JsonArray notifications)
+    {
+        var changed = false;
+        for (var i = notifications.Count - 1; i >= 0; i--)
+        {
+            if (notifications[i] is not JsonObject notification ||
+                !IsResidentPressureNotificationType(GetNodeString(notification["notificationType"])))
+            {
+                continue;
+            }
+
+            notifications.RemoveAt(i);
+            changed = true;
+        }
+
+        return changed;
+    }
+
+    private static bool SanitizeResidentPressureStateMarkers(JsonObject markers)
+    {
+        var changed = false;
+        foreach (var entry in markers.ToList())
+        {
+            if (string.IsNullOrWhiteSpace(entry.Key) ||
+                entry.Value is not JsonValue value ||
+                !value.TryGetValue<string>(out var storedState))
+            {
+                markers.Remove(entry.Key);
+                changed = true;
+                continue;
+            }
+
+            var normalizedState = ResolveResidentPressureStateForNotifications(storedState);
+            if (!string.Equals(storedState, normalizedState, StringComparison.OrdinalIgnoreCase))
+            {
+                markers[entry.Key] = normalizedState;
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
+    private static bool RemoveResidentPressureNotifications(JsonArray notifications, string residentId)
+    {
+        if (string.IsNullOrWhiteSpace(residentId))
+            return false;
+
+        var requestPrefix = $"resident_pressure:{residentId}:";
+        var changed = false;
+        for (var i = notifications.Count - 1; i >= 0; i--)
+        {
+            if (notifications[i] is not JsonObject notification ||
+                !IsResidentPressureNotificationType(GetNodeString(notification["notificationType"])) ||
+                !(GetNodeString(notification["requestId"])?.StartsWith(requestPrefix, StringComparison.OrdinalIgnoreCase) ?? false))
+            {
+                continue;
+            }
+
+            notifications.RemoveAt(i);
+            changed = true;
+        }
+
+        return changed;
+    }
 
     private static string? GetNodeString(JsonNode? node)
     {

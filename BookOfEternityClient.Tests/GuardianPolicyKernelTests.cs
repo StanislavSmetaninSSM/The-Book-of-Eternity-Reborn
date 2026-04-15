@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -2370,6 +2371,294 @@ public sealed class GuardianPolicyKernelTests : IDisposable
     }
 
     [Fact]
+    public async Task DebugGuardianProjectTrackerPolicyContext_UnsupportedTopLevelCurrentSoulStateInvalidatesSoulDependentTrackerAuthority()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Unsupported current soul_state top-level key must invalidate soul-dependent tracker authority."))));
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_invalid_current_soul_unsupported_key_guardians_snapshot.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Validated guardian baseline for unsupported-key current soul-state test."))));
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": [],
+          "completeGuardianProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "projectId": "proj_kernel_invalid_current_soul_unsupported_key",
+              "finalState": "Completed",
+              "outcome": "Mixed valid and unsupported current soul_state keys must fail tracker authority before fallback."
+            }
+          ]
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_invalid_current_soul_unsupported_key_tracker_snapshot.json",
+            """
+            {
+              "activeProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_invalid_current_soul_unsupported_key",
+                    "projectType": "lore_research",
+                    "projectTier": "major",
+                    "projectMode": "internal",
+                    "projectName": "Исследование с unsupported current soul_state key",
+                    "activeState": "The completion requires strict soul-context-aware authority.",
+                    "totalWork": 18,
+                    "workDone": 18,
+                    "totalStages": 3,
+                    "currentStage": 3,
+                    "pressure": 4,
+                    "stability": 84
+                  }
+                }
+              ],
+              "completedProjects": [],
+              "temporaryProjectModifiers": []
+            }
+            """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 3,
+          "foo": []
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/kernel_invalid_current_soul_unsupported_key_snapshot.json",
+            """
+            {
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 3
+            }
+            """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianProjectTrackerPolicyContextAsync();
+
+        Assert.Equal("SemanticallyInvalidCurrentState", snapshot.CurrentStateFailureKind);
+        Assert.False(snapshot.HasProjectedAuthorityRoot);
+        Assert.False(snapshot.HasCurrentAuthorityRoot);
+    }
+
+    [Fact]
+    public async Task DebugGuardianProjectTrackerPolicyContext_ArchiveActionResolutionsCurrentSoulStateRemainsValidStrictAuthority()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Canonical archiveActionResolutions key must remain valid strict soul authority."))));
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_archive_action_resolutions_guardians_snapshot.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Validated guardian baseline for archiveActionResolutions current soul-state test."))));
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": [],
+          "completeGuardianProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "projectId": "proj_kernel_archive_action_resolutions",
+              "finalState": "Completed",
+              "outcome": "Canonical archiveActionResolutions current soul_state key must not invalidate tracker authority."
+            }
+          ]
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_archive_action_resolutions_tracker_snapshot.json",
+            """
+            {
+              "activeProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_archive_action_resolutions",
+                    "projectType": "lore_research",
+                    "projectTier": "major",
+                    "projectMode": "internal",
+                    "projectName": "Исследование с archiveActionResolutions в current soul_state",
+                    "activeState": "The completion requires strict soul-context-aware authority.",
+                    "totalWork": 18,
+                    "workDone": 18,
+                    "totalStages": 3,
+                    "currentStage": 3,
+                    "pressure": 4,
+                    "stability": 84
+                  }
+                }
+              ],
+              "completedProjects": [],
+              "temporaryProjectModifiers": []
+            }
+            """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 3,
+          "archiveActionResolutions": []
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/kernel_archive_action_resolutions_soul_snapshot.json",
+            """
+            {
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 3
+            }
+            """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianProjectTrackerPolicyContextAsync();
+
+        Assert.Equal("None", snapshot.CurrentStateFailureKind);
+        Assert.True(snapshot.HasProjectedAuthorityRoot);
+        Assert.True(snapshot.HasCurrentAuthorityRoot);
+        Assert.NotNull(snapshot.CurrentAuthorityRootJson);
+    }
+
+    [Fact]
+    public async Task DebugGuardianProjectTrackerPolicyContext_CrossIncarnationDataCurrentSoulStateRemainsReadableOnLifecycleAuthority()
+    {
+        await WriteRawAsync(
+            "game_state/meta/guardians.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Non-canonical crossIncarnationData root key must not remain strict guardian-policy soul authority."))));
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_cross_incarnation_data_guardians_snapshot.json",
+            SerializeJson(BuildGuardiansRoot(
+                BuildCanonicalGuardian(
+                    "guardian_alpha",
+                    "Азалия",
+                    reputation: 18,
+                    power: 40,
+                    appearanceDescription: "Validated guardian baseline for crossIncarnationData strict soul-state test."))));
+
+        await WriteRawAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": [],
+          "completeGuardianProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "projectId": "proj_kernel_cross_incarnation_data",
+              "finalState": "Completed",
+              "outcome": "crossIncarnationData root key must fail strict soul authority instead of slipping through as canonical state."
+            }
+          ]
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/kernel_cross_incarnation_data_tracker_snapshot.json",
+            """
+            {
+              "activeProjects": [
+                {
+                  "guardianId": "guardian_alpha",
+                  "project": {
+                    "projectId": "proj_kernel_cross_incarnation_data",
+                    "projectType": "lore_research",
+                    "projectTier": "major",
+                    "projectMode": "internal",
+                    "projectName": "Исследование с lifecycle-compatible crossIncarnationData в current soul_state",
+                    "activeState": "The completion requires lifecycle-aware soul-context authority.",
+                    "totalWork": 18,
+                    "workDone": 18,
+                    "totalStages": 3,
+                    "currentStage": 3,
+                    "pressure": 4,
+                    "stability": 84
+                  }
+                }
+              ],
+              "completedProjects": [],
+              "temporaryProjectModifiers": []
+            }
+            """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 3,
+          "crossIncarnationData": {
+            "legacyThreadId": "thread_alpha"
+          }
+        }
+        """);
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/kernel_cross_incarnation_data_soul_snapshot.json",
+            """
+            {
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 3
+            }
+            """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var snapshot = await validator.DebugResolveGuardianProjectTrackerPolicyContextAsync();
+
+        Assert.Equal("None", snapshot.CurrentStateFailureKind);
+        Assert.True(snapshot.HasProjectedAuthorityRoot);
+        Assert.True(snapshot.HasCurrentAuthorityRoot);
+    }
+
+    [Fact]
     public async Task DebugGuardianProjectTrackerPolicyContext_CurrentIncarnationOnlySoulPreparationAuthorityDoesNotRequireCurrentRealm()
     {
         await WriteRawAsync(
@@ -2852,7 +3141,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
             {
                 [trackedPath] = backupPath
             },
-            ["rollbackBaselineFiles"] = new JsonArray(),
+            ["rollbackBaselineFiles"] = new JsonArray(trackedPath),
             ["sourceLabel"] = "guardian-policy-kernel-tests",
             ["manifestPayloadHash"] = string.Empty
         };
@@ -2860,13 +3149,8 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(manifest);
         await _fs.WriteFileAtomicAsync(
             "game_state/control/pending_turn_snapshot.json",
-            manifest.ToJsonString(new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            }));
+            manifest.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
     private async Task AddTrackedFileToCurrentPendingTurnSnapshotAsync(string trackedPath, string backupPath, string json)
@@ -2881,25 +3165,24 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         var files = manifest["files"] as JsonObject ?? new JsonObject();
         var snapshotHashes = manifest["snapshotFileHashes"] as JsonObject ?? new JsonObject();
         var rollbackBackups = manifest["rollbackBackups"] as JsonObject ?? new JsonObject();
+        var rollbackBaselineFiles = manifest["rollbackBaselineFiles"] as JsonArray ?? new JsonArray();
 
         files[trackedPath] = snapshotPath;
         snapshotHashes[trackedPath] = ComputeSha256(json);
         rollbackBackups[trackedPath] = backupPath;
+        if (!rollbackBaselineFiles.Any(node => string.Equals(node?.GetValue<string>(), trackedPath, StringComparison.OrdinalIgnoreCase)))
+            rollbackBaselineFiles.Add(trackedPath);
 
         manifest["files"] = files;
         manifest["snapshotFileHashes"] = snapshotHashes;
         manifest["rollbackBackups"] = rollbackBackups;
+        manifest["rollbackBaselineFiles"] = rollbackBaselineFiles;
         manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(manifest);
 
         await _fs.WriteFileAtomicAsync(
             "game_state/control/pending_turn_snapshot.json",
-            manifest.ToJsonString(new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            }));
+            manifest.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
     private static string ComputeManifestPayloadHash(JsonObject manifest)

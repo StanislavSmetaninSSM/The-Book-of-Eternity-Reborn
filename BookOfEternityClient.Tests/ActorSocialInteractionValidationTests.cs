@@ -314,7 +314,10 @@ public sealed class ActorSocialInteractionValidationTests : IDisposable
                 pair => NormalizeRelativePath(pair.Key),
                 pair => NormalizeRelativePath(pair.Value),
                 StringComparer.OrdinalIgnoreCase),
-            RollbackBaselineFiles = new List<string>(),
+            RollbackBaselineFiles = rollbackBackups.Keys
+                .Select(NormalizeRelativePath)
+                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+                .ToList(),
             SourceLabel = "actor-social-validation-tests",
             ManifestPayloadHash = string.Empty
         };
@@ -329,6 +332,7 @@ public sealed class ActorSocialInteractionValidationTests : IDisposable
         await RegisterSnapshotFilesAsync(manifest);
         manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
         await WriteJsonAsync("game_state/control/pending_turn_snapshot.json", manifest);
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
     private async Task RegisterSnapshotFilesAsync(PendingTurnSnapshotManifest manifest)

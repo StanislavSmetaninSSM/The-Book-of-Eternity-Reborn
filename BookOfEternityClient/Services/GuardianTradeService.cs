@@ -194,6 +194,7 @@ public sealed class GuardianTradeService
         if (price <= 0)
             return new GuardianTradeOperationResult(false, false, "Цена товара повреждена.");
 
+        GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
         if (!TryModifyInkFeathers(soulRoot, -price))
             return new GuardianTradeOperationResult(false, false, "Недостаточно Чернильных Перьев.");
 
@@ -206,7 +207,14 @@ public sealed class GuardianTradeService
         slot["soldOut"] = true;
         SyncActiveGuardian(guardiansRoot, guardianId, guardian);
 
-        await _fs.WriteFileAtomicAsync(SoulStatePath, soulRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(
+            SoulStatePath,
+            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                soulRoot,
+                new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
+                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                    upsertedSoulRelicIds: new[] { GetNodeString(relicData["relicId"]) ?? string.Empty })).ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(GuardiansPath, guardiansRoot.ToJsonString(JsonOpts));
         if ((changed || trackerChanged) && trackerRoot != null)
             await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot!.ToJsonString(JsonOpts));
@@ -236,6 +244,7 @@ public sealed class GuardianTradeService
         if (tier == TradeReputationTier.Hostile)
             return new GuardianTradeOperationResult(false, false, "Этот Хранитель отказывается торговать с вами.");
 
+        GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
         NormalizeSoulRelicsShape(soulRoot);
         var stored = ((JsonObject)soulRoot["soulRelics"]!)["stored"]?.AsArray();
         if (stored == null)
@@ -258,7 +267,14 @@ public sealed class GuardianTradeService
             Math.Max(0, currentTurn)));
         SyncActiveGuardian(guardiansRoot, guardianId, guardian);
 
-        await _fs.WriteFileAtomicAsync(SoulStatePath, soulRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(
+            SoulStatePath,
+            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                soulRoot,
+                new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
+                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                    removedSoulRelicIds: new[] { relicId })).ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(GuardiansPath, guardiansRoot.ToJsonString(JsonOpts));
 
         var relicName = GetNodeString(relic["name"]) ?? "Реликвия";
@@ -304,6 +320,7 @@ public sealed class GuardianTradeService
         if (price <= 0)
             return new GuardianTradeOperationResult(false, false, "Цена обратного выкупа повреждена.");
 
+        GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
         if (!TryModifyInkFeathers(soulRoot, -price))
             return new GuardianTradeOperationResult(false, false, "Недостаточно Чернильных Перьев.");
 
@@ -316,7 +333,14 @@ public sealed class GuardianTradeService
         buybackEntry["reboughtAtUtc"] = DateTimeOffset.UtcNow.ToString("O");
         SyncActiveGuardian(guardiansRoot, guardianId, guardian);
 
-        await _fs.WriteFileAtomicAsync(SoulStatePath, soulRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(
+            SoulStatePath,
+            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                soulRoot,
+                new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
+                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                    upsertedSoulRelicIds: new[] { GetNodeString(relicData["relicId"]) ?? string.Empty })).ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(GuardiansPath, guardiansRoot.ToJsonString(JsonOpts));
 
         var relicName = GetNodeString(relicData["name"]) ?? "Реликвия";

@@ -231,7 +231,7 @@ public partial class ValidationService
             try
             {
                 using var doc = JsonDocument.Parse(npcJson);
-                foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
+                foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
                 {
                     if (!doc.RootElement.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
                         continue;
@@ -268,7 +268,7 @@ public partial class ValidationService
         try
         {
             using var doc = JsonDocument.Parse(npcJson);
-            foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
+            foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
             {
                 if (!doc.RootElement.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
                     continue;
@@ -309,7 +309,7 @@ public partial class ValidationService
             try
             {
                 using var doc = JsonDocument.Parse(npcJson);
-                foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
+                foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
                 {
                     if (!doc.RootElement.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
                         continue;
@@ -360,7 +360,7 @@ public partial class ValidationService
             try
             {
                 using var doc = JsonDocument.Parse(npcJson);
-                foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
+                foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
                 {
                     if (!doc.RootElement.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
                         continue;
@@ -1012,7 +1012,7 @@ public partial class ValidationService
         try
         {
             using var doc = JsonDocument.Parse(npcJson);
-            foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
+            foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
             {
                 if (!doc.RootElement.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
                     continue;
@@ -2515,7 +2515,7 @@ public partial class ValidationService
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                foreach (var section in new[] { "UpdateNPCs", "NPCsInScene" })
+                foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
                 {
                     if (!doc.RootElement.TryGetProperty(section, out var arr) || arr.ValueKind != JsonValueKind.Array)
                         continue;
@@ -2560,7 +2560,7 @@ public partial class ValidationService
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                foreach (var section in new[] { "UpdateNPCs", "NPCsInScene" })
+                foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
                 {
                     if (!doc.RootElement.TryGetProperty(section, out var arr) || arr.ValueKind != JsonValueKind.Array)
                         continue;
@@ -2635,7 +2635,7 @@ public partial class ValidationService
             try
             {
                 using var doc = JsonDocument.Parse(json);
-                foreach (var section in new[] { "UpdateNPCs", "NPCsInScene" })
+                foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
                 {
                     if (!doc.RootElement.TryGetProperty(section, out var arr) || arr.ValueKind != JsonValueKind.Array)
                         continue;

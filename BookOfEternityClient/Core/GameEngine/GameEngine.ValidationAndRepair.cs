@@ -108,7 +108,32 @@ public partial class GameEngine
                 continue;
             }
 
-            await RefreshAcceptedTurnCanonicalStateForValidationAsync(expectedTurn);
+            if (!await RefreshAcceptedTurnCanonicalStateForValidationAsync(expectedTurn))
+            {
+                criticalRepairAttempt++;
+                var baselineErrors = new List<ValidationIssue>
+                {
+                    new(
+                        "game_state/control/pending_turn_snapshot.json",
+                        IssueSeverity.Error,
+                        "Accepted-turn canonical materialization requires a readable validated pending-turn snapshot baseline.",
+                        code: "accepted_turn_invalid_snapshot_baseline",
+                        section: "AcceptedTurnCanonicalState",
+                        expected: "usable current pending turn snapshot manifest with detached authority and hash-validated canonical baseline files",
+                        actual: "validated snapshot baseline is missing, detached-authority-invalid, modified, structurally invalid, or mismatched to the active request context",
+                        repairHint: "Восстанови current pending_turn_snapshot.json, detached snapshot authority и canonical snapshot files без tampering; accepted-turn canonical validation должна читать pre-turn baseline только из validated snapshot authority.")
+                };
+
+                _logger.LogError(
+                    "Critical accepted-turn canonical baseline authority failure after {Source}: {Count} errors",
+                    source,
+                    baselineErrors.Count);
+
+                if (!await WaitForContractRepairAsync(source, baselineErrors, criticalRepairAttempt, rollbackSnapshot))
+                    return false;
+
+                continue;
+            }
 
             await EnsureClientOwnedSystemFilesHealthyAsync();
             var canonicalIssues = await _criticalStateHealth.ValidateCriticalCanonicalStateAsync();
@@ -135,16 +160,14 @@ public partial class GameEngine
         }
     }
 
-    private async Task RefreshAcceptedTurnCanonicalStateForValidationAsync(int expectedTurn)
+    private async Task<bool> RefreshAcceptedTurnCanonicalStateForValidationAsync(int expectedTurn)
     {
         var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn);
         if (snapshot == null)
-        {
-            throw new InvalidOperationException(
-                "Accepted-turn canonical materialization requires a readable pending-turn snapshot baseline.");
-        }
+            return false;
 
         await RefreshCanonicalStateAsync(snapshot);
+        return true;
     }
 
     private static bool RequiresFreshNarrativePayload(string source)
@@ -270,6 +293,7 @@ public partial class GameEngine
 
             var readyJson = await _fs.ReadFileAsync(ValidationRepairReadyPath);
             var ready = await ReadValidationRepairReadyAsync();
+            var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
             if (ready == null)
             {
                 _logger.LogWarning("Отклонён validation_repair_ready: файл не читается как валидный JSON");
@@ -281,24 +305,23 @@ public partial class GameEngine
                     "Клиент отклонил validation_repair_ready.json: файл не читается как валидный JSON.",
                     "Valid JSON object with matching sessionId/requestId/turnNumber for the active repair cycle",
                     string.IsNullOrWhiteSpace(readyJson) ? "missing or empty file" : TruncateDiagnosticValue(readyJson),
-                    "Перезапиши validation_repair_ready.json валидным JSON и скопируй в него точные sessionId/requestId/turnNumber из validation_repair_request.json.");
+                    BuildInvalidRepairReadyRepairHint(pendingSnapshot));
                 await DeleteValidationRepairReadyAsync();
                 AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
                 await Task.Delay(500);
                 continue;
             }
 
-            var manifest = await LoadPendingTurnSnapshotManifestAsync();
-            if (!IsMatchingRepairReady(ready, manifest))
+            if (!IsMatchingRepairReady(ready, pendingSnapshot.Context))
             {
                 _logger.LogWarning(
                     "Отклонён validation_repair_ready(session={Session}, request={Request}, turn={Turn}) — ожидается (session={ExpectedSession}, request={ExpectedRequest}, turn={ExpectedTurn})",
                     ready.SessionId,
                     ready.RequestId,
                     ready.TurnNumber,
-                    manifest?.SessionId,
-                    manifest?.RequestId,
-                    manifest?.TurnNumber);
+                    pendingSnapshot.Context?.SessionId,
+                    pendingSnapshot.Context?.RequestId,
+                    pendingSnapshot.Context?.TurnNumber);
 
                 await ReportRejectedRepairReadyAsync(
                     source,
@@ -306,9 +329,9 @@ public partial class GameEngine
                     attempt,
                     "mismatched_repair_ready_context",
                     "Клиент отклонил validation_repair_ready.json: metadata не совпадает с активным repair cycle.",
-                    BuildExpectedRepairContext(manifest),
-                    BuildActualRepairContext(ready, manifest),
-                    "Пересоздай validation_repair_ready.json и скопируй sessionId/requestId/turnNumber ровно из validation_repair_request.json.");
+                    BuildExpectedRepairContext(pendingSnapshot),
+                    BuildActualRepairContext(ready, pendingSnapshot),
+                    BuildMismatchedRepairReadyRepairHint(pendingSnapshot));
                 await DeleteValidationRepairReadyAsync();
                 AnsiConsole.MarkupLine("[yellow]⚠ Клиент запросил новую попытку исправления. GM продолжает корректировать данные.[/]");
                 await Task.Delay(500);
@@ -323,21 +346,21 @@ public partial class GameEngine
     private async Task WriteValidationRepairRequestAsync(string source, List<ValidationIssue> errors, int attempt)
     {
         var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
-        var manifest = await LoadPendingTurnSnapshotManifestAsync();
-        var existingRequest = await ReadValidationRepairRequestAsync();
+        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+        var requestMetadata = BuildProtocolRequestMetadata(pendingSnapshot);
+        var metadataDiagnosticOnly = BuildProtocolRequestMetadataDiagnosticOnly(pendingSnapshot);
+        var gmInstructions = BuildValidationRepairRequestInstructions(pendingSnapshot);
+
         var request = new ValidationRepairRequest
         {
-            SessionId = manifest?.SessionId ?? existingRequest?.SessionId ?? _gameLoop.SessionId,
-            RequestId = manifest?.RequestId ?? existingRequest?.RequestId ?? "",
-            TurnNumber = manifest?.TurnNumber ?? existingRequest?.TurnNumber ?? (_gameLoop.TurnNumber + 1),
+            SessionId = requestMetadata.SessionId,
+            RequestId = requestMetadata.RequestId,
+            TurnNumber = requestMetadata.TurnNumber,
+            MetadataDiagnosticOnly = metadataDiagnosticOnly,
             Source = source,
             DetectedAtUtc = DateTime.UtcNow.ToString("o"),
             RevalidationAttempt = attempt,
-            GmInstructions =
-                "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. " +
-                "Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. После исправлений создай game_state/control/validation_repair_ready.json с sessionId/requestId/turnNumber. " +
-                "Если ошибка касается canonical accumulated state (guardians/quests/factions/rival_soul_arcs и т.п.), правь итоговое canonical состояние явно: нужное удаление или замена должны остаться и после повторной нормализации. " +
-                "Если клиент переписал этот repair request повторно, используй ТОЛЬКО самые свежие metadata из текущего файла.",
+            GmInstructions = gmInstructions,
             SummaryGroups = BuildValidationSummaryLines(prioritizedErrors, 6),
             Errors = prioritizedErrors.Select(e => new ValidationRepairIssue
             {
@@ -360,18 +383,26 @@ public partial class GameEngine
     private async Task WriteTerminalProtocolFailureRequestAsync(string source, List<ValidationIssue> errors)
     {
         var prioritizedErrors = PrioritizeValidationErrors(errors).ToList();
-        var manifest = await LoadPendingTurnSnapshotManifestAsync();
+        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+        var requestMetadata = BuildProtocolRequestMetadata(pendingSnapshot);
+        var metadataDiagnosticOnly = BuildProtocolRequestMetadataDiagnosticOnly(pendingSnapshot);
+        var degradedMetadataWarning = BuildProtocolRequestMetadataWarning(pendingSnapshot);
+        var gmInstructions =
+            "Клиент отклонил terminal ready signal как protocol failure. Это НЕ validation_repair_request.json и НЕ repair loop. " +
+            "Не создавай validation_repair_ready.json и не пытайся продолжать этот уже закрытый wait cycle. " +
+            "Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt, разберись с terminal protocol problem по списку ошибок ниже и исправь логику для следующего корректного хода.";
+        if (!string.IsNullOrWhiteSpace(degradedMetadataWarning))
+            gmInstructions += " " + degradedMetadataWarning;
+
         var request = new TerminalProtocolFailureRequest
         {
-            SessionId = manifest?.SessionId ?? _gameLoop.SessionId,
-            RequestId = manifest?.RequestId ?? "",
-            TurnNumber = manifest?.TurnNumber ?? (_gameLoop.TurnNumber + 1),
+            SessionId = requestMetadata.SessionId,
+            RequestId = requestMetadata.RequestId,
+            TurnNumber = requestMetadata.TurnNumber,
+            MetadataDiagnosticOnly = metadataDiagnosticOnly,
             Source = source,
             DetectedAtUtc = DateTime.UtcNow.ToString("o"),
-            GmInstructions =
-                "Клиент отклонил terminal ready signal как protocol failure. Это НЕ validation_repair_request.json и НЕ repair loop. " +
-                "Не создавай validation_repair_ready.json и не пытайся продолжать этот уже закрытый wait cycle. " +
-                "Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt, разберись с terminal protocol problem по списку ошибок ниже и исправь логику для следующего корректного хода.",
+            GmInstructions = gmInstructions,
             SummaryGroups = BuildValidationSummaryLines(prioritizedErrors, 6),
             Errors = prioritizedErrors.Select(e => new ValidationRepairIssue
             {
@@ -389,6 +420,83 @@ public partial class GameEngine
         };
 
         await _fs.WriteFileAtomicAsync(TerminalProtocolFailureRequestPath, JsonSerializer.Serialize(request, JsonOpts));
+    }
+
+    private static string BuildValidationRepairRequestInstructions(PendingTurnSnapshotResolution pendingSnapshot)
+    {
+        const string commonPrefix =
+            "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. " +
+            "Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. ";
+        const string commonSuffix =
+            "Если ошибка касается canonical accumulated state (guardians/quests/factions/rival_soul_arcs и т.п.), правь итоговое canonical состояние явно: нужное удаление или замена должны остаться и после повторной нормализации. " +
+            "Если клиент переписал этот repair request повторно, используй ТОЛЬКО самые свежие metadata из текущего файла.";
+
+        var repairReadyInstruction = pendingSnapshot.Status switch
+        {
+            PendingTurnSnapshotResolutionStatus.Missing =>
+                "Текущий validation_repair_request.json использует diagnostic-only sentinel metadata. Не создавай validation_repair_ready.json по этим sessionId/requestId/turnNumber. Сначала восстанови pending snapshot context, дождись самого свежего client-authored repair request с authoritative metadata и только потом используй его ids для validation_repair_ready.json. ",
+            PendingTurnSnapshotResolutionStatus.Unusable =>
+                "Текущий validation_repair_request.json использует diagnostic-only sentinel metadata. Не создавай validation_repair_ready.json по этим sessionId/requestId/turnNumber. Сначала восстанови pending snapshot authority/integrity, дождись самого свежего client-authored repair request с authoritative metadata и только потом используй его ids для validation_repair_ready.json. ",
+            _ =>
+                "После исправлений создай game_state/control/validation_repair_ready.json с sessionId/requestId/turnNumber. "
+        };
+
+        return commonPrefix + repairReadyInstruction + commonSuffix;
+    }
+
+    private static (string SessionId, string RequestId, int TurnNumber) BuildProtocolRequestMetadata(
+        PendingTurnSnapshotResolution pendingSnapshot)
+    {
+        return pendingSnapshot is
+        {
+            Status: PendingTurnSnapshotResolutionStatus.Usable,
+            Context: not null
+        }
+            ? (pendingSnapshot.Context.SessionId, pendingSnapshot.Context.RequestId, pendingSnapshot.Context.TurnNumber)
+            : (string.Empty, string.Empty, 0);
+    }
+
+    private static bool BuildProtocolRequestMetadataDiagnosticOnly(PendingTurnSnapshotResolution pendingSnapshot)
+    {
+        return pendingSnapshot.Status is PendingTurnSnapshotResolutionStatus.Missing or PendingTurnSnapshotResolutionStatus.Unusable;
+    }
+
+    private static string BuildProtocolRequestMetadataWarning(PendingTurnSnapshotResolution pendingSnapshot)
+    {
+        return pendingSnapshot.Status switch
+        {
+            PendingTurnSnapshotResolutionStatus.Missing =>
+                "Validated pending snapshot context сейчас отсутствует, поэтому sessionId/requestId/turnNumber в этом файле заполнены sentinel-значениями и служат только для диагностики. Не копируй их в validation_repair_ready.json и не используй как active correlation metadata; сначала восстанови pending snapshot context и затем используй metadata из самого свежего client-authored request.",
+            PendingTurnSnapshotResolutionStatus.Unusable =>
+                "Validated pending snapshot context сейчас unreadable или invalid, поэтому sessionId/requestId/turnNumber в этом файле заполнены sentinel-значениями и служат только для диагностики. Не копируй их в validation_repair_ready.json и не используй как active correlation metadata; сначала восстанови pending snapshot authority/integrity и затем используй metadata из самого свежего client-authored request.",
+            _ => string.Empty
+        };
+    }
+
+    private static string BuildInvalidRepairReadyRepairHint(PendingTurnSnapshotResolution pendingSnapshot)
+    {
+        return pendingSnapshot.Status switch
+        {
+            PendingTurnSnapshotResolutionStatus.Missing =>
+                "Не копируй sentinel metadata из текущего validation_repair_request.json. Сначала восстанови pending snapshot context, дождись самого свежего client-authored repair request с authoritative metadata и только потом перепиши validation_repair_ready.json валидным JSON.",
+            PendingTurnSnapshotResolutionStatus.Unusable =>
+                "Не копируй sentinel metadata из текущего validation_repair_request.json. Сначала восстанови pending snapshot authority/integrity, дождись самого свежего client-authored repair request с authoritative metadata и только потом перепиши validation_repair_ready.json валидным JSON.",
+            _ =>
+                "Перезапиши validation_repair_ready.json валидным JSON и скопируй в него точные sessionId/requestId/turnNumber из validation_repair_request.json."
+        };
+    }
+
+    private static string BuildMismatchedRepairReadyRepairHint(PendingTurnSnapshotResolution pendingSnapshot)
+    {
+        return pendingSnapshot.Status switch
+        {
+            PendingTurnSnapshotResolutionStatus.Missing =>
+                "Не копируй sentinel metadata из текущего validation_repair_request.json. Сначала восстанови pending snapshot context, дождись самого свежего client-authored repair request с authoritative metadata и только потом пересоздай validation_repair_ready.json.",
+            PendingTurnSnapshotResolutionStatus.Unusable =>
+                "Не копируй sentinel metadata из текущего validation_repair_request.json. Сначала восстанови pending snapshot authority/integrity, дождись самого свежего client-authored repair request с authoritative metadata и только потом пересоздай validation_repair_ready.json.",
+            _ =>
+                "Пересоздай validation_repair_ready.json и скопируй sessionId/requestId/turnNumber ровно из validation_repair_request.json."
+        };
     }
 
     private static List<string> BuildValidationSummaryLines(IEnumerable<ValidationIssue> issues, int maxGroups)
@@ -470,22 +578,6 @@ public partial class GameEngine
         _ => "State"
     };
 
-    private async Task<ValidationRepairRequest?> ReadValidationRepairRequestAsync()
-    {
-        var json = await _fs.ReadFileAsync(ValidationRepairRequestPath);
-        if (string.IsNullOrWhiteSpace(json))
-            return null;
-
-        try
-        {
-            return JsonSerializer.Deserialize<ValidationRepairRequest>(json, JsonOpts);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
     private async Task ReportRejectedRepairReadyAsync(string source, List<ValidationIssue> baseErrors, int attempt,
         string code, string message, string expected, string actual, string repairHint)
     {
@@ -521,29 +613,43 @@ public partial class GameEngine
         }
     }
 
-    private bool IsMatchingRepairReady(ValidationRepairReady ready, PendingTurnSnapshotManifest? manifest)
+    private bool IsMatchingRepairReady(ValidationRepairReady ready, ValidatedPendingTurnSnapshotContext? snapshotContext)
     {
-        if (manifest == null)
+        if (snapshotContext == null)
             return false;
 
-        return ready.TurnNumber == manifest.TurnNumber &&
+        return ready.TurnNumber == snapshotContext.TurnNumber &&
                !string.IsNullOrWhiteSpace(ready.RequestId) &&
-               string.Equals(ready.RequestId, manifest.RequestId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(ready.RequestId, snapshotContext.RequestId, StringComparison.OrdinalIgnoreCase) &&
                !string.IsNullOrWhiteSpace(ready.SessionId) &&
-               string.Equals(ready.SessionId, manifest.SessionId, StringComparison.OrdinalIgnoreCase);
+               string.Equals(ready.SessionId, snapshotContext.SessionId, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static string BuildExpectedRepairContext(PendingTurnSnapshotManifest? manifest)
+    private static string BuildExpectedRepairContext(PendingTurnSnapshotResolution resolution)
     {
-        return manifest == null
-            ? "Existing pending turn snapshot manifest with the active sessionId/requestId/turnNumber"
-            : $"sessionId={manifest.SessionId}, requestId={manifest.RequestId}, turnNumber={manifest.TurnNumber}";
+        return resolution.Status switch
+        {
+            PendingTurnSnapshotResolutionStatus.Missing =>
+                "Existing validated pending turn snapshot context for the active repair cycle",
+            PendingTurnSnapshotResolutionStatus.Unusable =>
+                "Readable and validated pending turn snapshot context for the active repair cycle",
+            _ when resolution.Context != null =>
+                $"sessionId={resolution.Context.SessionId}, requestId={resolution.Context.RequestId}, turnNumber={resolution.Context.TurnNumber}",
+            _ => "Readable and validated pending turn snapshot context for the active repair cycle"
+        };
     }
 
-    private static string BuildActualRepairContext(ValidationRepairReady ready, PendingTurnSnapshotManifest? manifest)
+    private static string BuildActualRepairContext(ValidationRepairReady ready, PendingTurnSnapshotResolution resolution)
     {
-        if (manifest == null)
-            return $"ready signal sessionId={ready.SessionId}, requestId={ready.RequestId}, turnNumber={ready.TurnNumber}; pending snapshot manifest is missing";
+        if (resolution.Status == PendingTurnSnapshotResolutionStatus.Missing)
+        {
+            return $"ready signal sessionId={ready.SessionId}, requestId={ready.RequestId}, turnNumber={ready.TurnNumber}; validated pending snapshot context is missing";
+        }
+
+        if (resolution.Status == PendingTurnSnapshotResolutionStatus.Unusable)
+        {
+            return $"ready signal sessionId={ready.SessionId}, requestId={ready.RequestId}, turnNumber={ready.TurnNumber}; validated pending snapshot context is unreadable or invalid";
+        }
 
         return $"ready signal sessionId={ready.SessionId}, requestId={ready.RequestId}, turnNumber={ready.TurnNumber}";
     }
@@ -614,11 +720,11 @@ public partial class GameEngine
 
     private async Task<bool> HandleRejectedActiveReadySignalAsync(string sourceLabel,
         ReadySignalMetadata? signal,
-        PendingTurnSnapshotManifest? manifest,
+        ValidatedPendingTurnSnapshotContext? snapshotContext,
         RollbackSnapshot? rollbackSnapshot)
     {
-        var protocolErrors = BuildRejectedActiveReadySignalIssues(sourceLabel, signal, manifest);
-        if (!await DiscardMismatchedReadySignalAsync(sourceLabel, signal, manifest, preservePendingSnapshot: true))
+        var protocolErrors = BuildRejectedActiveReadySignalIssues(sourceLabel, signal, snapshotContext);
+        if (!await DiscardMismatchedReadySignalAsync(sourceLabel, signal, snapshotContext, preservePendingSnapshot: true))
             return false;
 
         await WriteTerminalProtocolFailureRequestAsync($"terminal protocol failure: {sourceLabel}", protocolErrors);
@@ -637,7 +743,7 @@ public partial class GameEngine
         return true;
     }
 
-    private async Task HandleMissingActiveTerminalOutcomeAsync(PendingTurnSnapshotManifest? manifest,
+    private async Task HandleMissingActiveTerminalOutcomeAsync(ValidatedPendingTurnSnapshotContext? snapshotContext,
         RollbackSnapshot? rollbackSnapshot)
     {
         var errors = new List<ValidationIssue>
@@ -649,7 +755,7 @@ public partial class GameEngine
                 code: "missing_correlated_terminal_signal_after_wait",
                 section: "terminal_ready",
                 expected: "Exactly one correlated ready/turn_complete.json or ready/turn_error.json for the active turn",
-                actual: BuildMissingActiveTerminalOutcomeActual(manifest),
+                actual: BuildMissingActiveTerminalOutcomeActual(snapshotContext),
                 repairHint: "Записывай ровно один terminal signal с точными sessionId/requestId/turnNumber, не удаляй и не перезаписывай его после записи и не смешивай terminal protocol failure с validation repair loop.")
         };
 
@@ -670,36 +776,36 @@ public partial class GameEngine
         await CleanupPendingTurnSnapshotAsync();
     }
 
-    private async Task<bool> ResolveConcurrentActiveTerminalSignalsAsync(PendingTurnSnapshotManifest? manifest,
+    private async Task<bool> ResolveConcurrentActiveTerminalSignalsAsync(ValidatedPendingTurnSnapshotContext? snapshotContext,
         RollbackSnapshot? rollbackSnapshot)
     {
         if (!_fs.FileExists("ready/turn_complete.json") || !_fs.FileExists("ready/turn_error.json"))
             return false;
 
-        if (manifest == null)
+        if (snapshotContext == null)
             return false;
 
         var completionSignal = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
         var errorSignal = await ReadReadySignalMetadataAsync("ready/turn_error.json");
         if (completionSignal != null &&
-            IsMatchingReadySignal(completionSignal, manifest) &&
+            IsMatchingReadySignal(completionSignal, snapshotContext) &&
             !HasValidTerminalSignalContract("turn_complete", completionSignal))
         {
-            return await HandleRejectedActiveReadySignalAsync("turn_complete", completionSignal, manifest, rollbackSnapshot);
+            return await HandleRejectedActiveReadySignalAsync("turn_complete", completionSignal, snapshotContext, rollbackSnapshot);
         }
 
         if (errorSignal != null &&
-            IsMatchingReadySignal(errorSignal, manifest) &&
+            IsMatchingReadySignal(errorSignal, snapshotContext) &&
             !HasValidTerminalSignalContract("turn_error", errorSignal))
         {
-            return await HandleRejectedActiveReadySignalAsync("turn_error", errorSignal, manifest, rollbackSnapshot);
+            return await HandleRejectedActiveReadySignalAsync("turn_error", errorSignal, snapshotContext, rollbackSnapshot);
         }
 
         var completionMatches = completionSignal != null &&
-                                IsMatchingReadySignal(completionSignal, manifest) &&
+                                IsMatchingReadySignal(completionSignal, snapshotContext) &&
                                 HasValidTerminalSignalContract("turn_complete", completionSignal);
         var errorMatches = errorSignal != null &&
-                           IsMatchingReadySignal(errorSignal, manifest) &&
+                           IsMatchingReadySignal(errorSignal, snapshotContext) &&
                            HasValidTerminalSignalContract("turn_error", errorSignal);
 
         if (completionMatches && !errorMatches)
@@ -762,29 +868,29 @@ public partial class GameEngine
         return $"{Describe("turn_complete", completionSignal)}; {Describe("turn_error", errorSignal)}";
     }
 
-    private string BuildMissingActiveTerminalOutcomeActual(PendingTurnSnapshotManifest? manifest)
+    private string BuildMissingActiveTerminalOutcomeActual(ValidatedPendingTurnSnapshotContext? snapshotContext)
     {
         var turnCompleteExists = _fs.FileExists("ready/turn_complete.json");
         var turnErrorExists = _fs.FileExists("ready/turn_error.json");
-        var manifestDescription = manifest == null
+        var manifestDescription = snapshotContext == null
             ? "pendingSnapshot=missing"
-            : $"pendingSnapshot=sessionId={manifest.SessionId}, requestId={manifest.RequestId}, turnNumber={manifest.TurnNumber}";
+            : $"pendingSnapshot=sessionId={snapshotContext.SessionId}, requestId={snapshotContext.RequestId}, turnNumber={snapshotContext.TurnNumber}";
         return $"turn_complete_exists={turnCompleteExists}; turn_error_exists={turnErrorExists}; {manifestDescription}";
     }
 
     private async Task<ActiveTerminalOutcomeResolution> ResolveFinalActiveTerminalOutcomeAsync(
-        PendingTurnSnapshotManifest? manifest,
+        ValidatedPendingTurnSnapshotContext? snapshotContext,
         RollbackSnapshot? rollbackSnapshot)
     {
-        if (await ResolveConcurrentActiveTerminalSignalsAsync(manifest, rollbackSnapshot))
+        if (await ResolveConcurrentActiveTerminalSignalsAsync(snapshotContext, rollbackSnapshot))
             return new ActiveTerminalOutcomeResolution { Kind = "failure" };
 
         if (_fs.FileExists("ready/turn_complete.json"))
         {
             var completionSignal = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
             if (completionSignal != null &&
-                manifest != null &&
-                IsMatchingReadySignal(completionSignal, manifest) &&
+                snapshotContext != null &&
+                IsMatchingReadySignal(completionSignal, snapshotContext) &&
                 HasValidTerminalSignalContract("turn_complete", completionSignal))
             {
                 return new ActiveTerminalOutcomeResolution
@@ -794,7 +900,7 @@ public partial class GameEngine
                 };
             }
 
-            if (await HandleRejectedActiveReadySignalAsync("turn_complete", completionSignal, manifest, rollbackSnapshot))
+            if (await HandleRejectedActiveReadySignalAsync("turn_complete", completionSignal, snapshotContext, rollbackSnapshot))
                 return new ActiveTerminalOutcomeResolution { Kind = "failure" };
         }
 
@@ -802,8 +908,8 @@ public partial class GameEngine
         {
             var errorSignal = await ReadReadySignalMetadataAsync("ready/turn_error.json");
             if (errorSignal != null &&
-                manifest != null &&
-                IsMatchingReadySignal(errorSignal, manifest) &&
+                snapshotContext != null &&
+                IsMatchingReadySignal(errorSignal, snapshotContext) &&
                 HasValidTerminalSignalContract("turn_error", errorSignal))
             {
                 return new ActiveTerminalOutcomeResolution
@@ -813,16 +919,16 @@ public partial class GameEngine
                 };
             }
 
-            if (await HandleRejectedActiveReadySignalAsync("turn_error", errorSignal, manifest, rollbackSnapshot))
+            if (await HandleRejectedActiveReadySignalAsync("turn_error", errorSignal, snapshotContext, rollbackSnapshot))
                 return new ActiveTerminalOutcomeResolution { Kind = "failure" };
         }
 
-        await HandleMissingActiveTerminalOutcomeAsync(manifest, rollbackSnapshot);
+        await HandleMissingActiveTerminalOutcomeAsync(snapshotContext, rollbackSnapshot);
         return new ActiveTerminalOutcomeResolution { Kind = "failure" };
     }
 
     private List<ValidationIssue> BuildRejectedActiveReadySignalIssues(string sourceLabel,
-        ReadySignalMetadata? signal, PendingTurnSnapshotManifest? manifest)
+        ReadySignalMetadata? signal, ValidatedPendingTurnSnapshotContext? snapshotContext)
     {
         if (signal == null)
         {
@@ -906,7 +1012,7 @@ public partial class GameEngine
                 return issues;
         }
 
-        if (manifest == null)
+        if (snapshotContext == null)
         {
             return
             [
@@ -934,7 +1040,7 @@ public partial class GameEngine
                 "Terminal ready signal содержит metadata, не совпадающие с активным ходом",
                 code: "mismatched_terminal_ready_context",
                 section: "terminal_ready",
-                expected: $"sessionId={manifest.SessionId}, requestId={manifest.RequestId}, turnNumber={manifest.TurnNumber}",
+                expected: $"sessionId={snapshotContext.SessionId}, requestId={snapshotContext.RequestId}, turnNumber={snapshotContext.TurnNumber}",
                 actual: $"sessionId={signal.SessionId}, requestId={signal.RequestId}, turnNumber={signal.TurnNumber}",
                 repairHint: "Копируй sessionId/requestId/turnNumber в terminal ready signal ровно из текущего turn_request.json и записывай ready-файл только после завершения всех остальных файлов хода.")
         ];

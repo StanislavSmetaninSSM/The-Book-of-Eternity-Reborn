@@ -16,7 +16,7 @@ public partial class ValidationService
         await ValidateNpcFile("game_state/npcs/npc_core.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "UpdateNPCs", "NPCsRenameData", "NPCsInScene"
+                "UpdateNPCs", "NPCsRenameData", "NPCsInScene", "UpdateNpcTradeInventoryReceipts"
             }, issues);
 
         await ValidateNpcFile("game_state/npcs/npc_skills.json",
@@ -234,6 +234,8 @@ public partial class ValidationService
                 GuardianAbodeResidentState.RosterReceiptsProperty,
                 GuardianAbodeResidentState.UpdateInteractionReceiptsProperty,
                 GuardianAbodeResidentState.InteractionReceiptsProperty,
+                GuardianAbodeResidentState.UpdateTransferReceiptsProperty,
+                GuardianAbodeResidentState.TransferReceiptsProperty,
                 GuardianAbodeResidentState.UpdateHistoryLogProperty,
                 GuardianAbodeResidentState.HistoryLogProperty,
                 GuardianAbodeResidentState.UpdateThoughtJournalProperty,
@@ -250,6 +252,8 @@ public partial class ValidationService
                 GuardianAbodeResidentState.RosterReceiptsProperty,
                 GuardianAbodeResidentState.UpdateInteractionReceiptsProperty,
                 GuardianAbodeResidentState.InteractionReceiptsProperty,
+                GuardianAbodeResidentState.UpdateTransferReceiptsProperty,
+                GuardianAbodeResidentState.TransferReceiptsProperty,
                 GuardianAbodeResidentState.UpdateHistoryLogProperty,
                 GuardianAbodeResidentState.HistoryLogProperty,
                 GuardianAbodeResidentState.UpdateThoughtJournalProperty,
@@ -404,6 +408,21 @@ public partial class ValidationService
             {
                 GuardianAbodeResidentRequestState.ResidentsRequestsProperty,
                 "requestId", "guardianId", "guardianName", "abodeId", "abodeName", "currentReputation", "createdAtTurn", "createdAtUtc"
+            }, issues);
+        await ValidateFlexibleStateFile(GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                GuardianAbodeResidentRequestState.TransferRequestsProperty,
+                "requestId", "residentId", "residentName",
+                "sourceGuardianId", "sourceGuardianName", "sourceAbodeId", "sourceAbodeName",
+                "targetGuardianId", "targetGuardianName", "targetAbodeId", "targetAbodeName",
+                "abodeDevotionLevel", "abodeDevotionTier", "restlessness", "migrationState",
+                "transferMode", "createdAtTurn", "createdAtUtc"
+            }, issues, ValidatePendingGuardianAbodeResidentTransfersRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                GuardianAbodeResidentRequestState.TransferRequestsProperty
             }, issues);
         await ValidateFlexibleStateFile(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -1684,16 +1703,25 @@ public partial class ValidationService
             return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.InvalidValidatedSnapshot, null);
         }
 
-        var hasConventionalSnapshotCopy = _fs.FileExists(_fs.ResolvePath($"game_state/control/pending_turn_snapshot/{relativePath}"));
-        var hasRawManifestReference = rawManifestJson?.Contains(relativePath, StringComparison.OrdinalIgnoreCase) == true;
+        var hasManifestRegistrationEvidence = rawManifest != null && HasPendingResolutionValidatedSnapshotRegistration(rawManifest, relativePath);
+        var hasDeletedCurrentRequestRecoveryBridgeCandidate =
+            !hasCurrentFile &&
+            _fs.FileExists("ready/turn_complete.json") &&
+            _fs.FileExists(_fs.ResolvePath($"game_state/control/pending_turn_snapshot/{relativePath}"));
         var hasPreTurnContractEvidence = hasCurrentFile ||
-                                         hasConventionalSnapshotCopy ||
-                                         hasRawManifestReference ||
-                                         (rawManifest != null && HasPendingResolutionValidatedSnapshotRegistration(rawManifest, relativePath));
+                                         hasManifestRegistrationEvidence ||
+                                         hasDeletedCurrentRequestRecoveryBridgeCandidate;
         if (!hasPreTurnContractEvidence)
             return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.NoPreTurnContract, null);
 
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var hasValidatedSnapshotRegistration = lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
+                                              lookup.Manifest != null &&
+                                              HasPendingResolutionValidatedSnapshotRegistration(lookup.Manifest, relativePath);
+        var hasDeletedCurrentRequestRecoveryBridge = hasDeletedCurrentRequestRecoveryBridgeCandidate &&
+                                                     (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+                                                      lookup.Manifest == null ||
+                                                      !hasValidatedSnapshotRegistration);
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
         {
             issues.Add(new ValidationIssue(
@@ -1708,7 +1736,6 @@ public partial class ValidationService
             return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.MissingValidatedSnapshot, null);
         }
 
-        var hasValidatedSnapshotRegistration = HasPendingResolutionValidatedSnapshotRegistration(lookup.Manifest, relativePath);
         var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath);
         if (string.IsNullOrWhiteSpace(snapshotJson))
         {
@@ -1719,8 +1746,8 @@ public partial class ValidationService
                 code: missingCode,
                 section: section,
                 expected: $"validated snapshot entry for {relativePath}",
-                actual: (hasValidatedSnapshotRegistration || !hasCurrentFile)
-                    ? "validated snapshot contract is registered but snapshot entry/file is missing or unreadable"
+                actual: (hasValidatedSnapshotRegistration || hasDeletedCurrentRequestRecoveryBridge)
+                    ? "validated snapshot contract or deleted-current recovery bridge exists, but snapshot entry/file is missing or unreadable"
                     : "current request exists but manifest.Files/snapshotFileHashes entry is missing or unreadable",
                 repairHint: repairHint));
             return new PendingResolutionContractReadResult<TContract>(PendingResolutionContractStatus.MissingValidatedSnapshot, null);
@@ -1763,7 +1790,7 @@ public partial class ValidationService
     {
         return manifest.Files.ContainsKey(relativePath) ||
                manifest.SnapshotFileHashes.ContainsKey(relativePath) ||
-               manifest.RollbackBackups.ContainsKey(relativePath);
+               manifest.RollbackBaselineFiles.Contains(relativePath);
     }
 
     private async Task ValidatePendingAbodeOfferingRequestRealmContextAsync(
@@ -1823,7 +1850,7 @@ public partial class ValidationService
     {
         if (string.Equals(request.OfferingType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
         {
-            var preTurnRelicProof = ReadSoulRelicProofEntry(preTurnSoulJson, request.RelicId);
+            var preTurnRelicProof = ReadSoulRelicProofEntry(preTurnSoulJson, request.RelicId, strictCurrentShape: false);
             if (preTurnRelicProof.Status == SoulStateEntryPresenceStatus.Unreadable ||
                 preTurnRelicProof.Status == SoulStateEntryPresenceStatus.InvalidShape)
             {
@@ -1867,7 +1894,7 @@ public partial class ValidationService
                 return;
             }
 
-            var currentRelicProof = ReadSoulRelicProofEntry(currentSoulJson, request.RelicId);
+            var currentRelicProof = ReadSoulRelicProofEntry(currentSoulJson, request.RelicId, strictCurrentShape: true);
             if (currentRelicProof.Status == SoulStateEntryPresenceStatus.Unreadable ||
                 currentRelicProof.Status == SoulStateEntryPresenceStatus.InvalidShape)
             {
@@ -2219,9 +2246,13 @@ public partial class ValidationService
         if (npcRoot == null)
             return;
 
+        var effectiveNpcRoot = NpcTradeRequestState.CreateReceiptAppliedValidationView(npcRoot);
+        if (effectiveNpcRoot == null)
+            return;
+
         foreach (var request in requests)
         {
-            var npc = FindNpcTradeValidationEntry(npcRoot, request.NpcId);
+            var npc = FindNpcTradeValidationEntry(effectiveNpcRoot, request.NpcId);
             var tradeInventory = npc?["tradeInventory"] as JsonObject;
             if (!NpcTradeRequestState.InventoryMatchesRequestContract(tradeInventory, request))
             {
@@ -2351,8 +2382,104 @@ public partial class ValidationService
                     IssueSeverity.Error,
                     "pending_guardian_abode_residents_request.json должен содержать полный client-authored roster contract",
                     code: "abode_resident_roster_missing_fields",
-                    section: "AfterlifeResidents"));
+                section: "AfterlifeResidents"));
             }
+        }
+    }
+
+    private async Task ValidatePendingGuardianAbodeResidentTransferRequestContextAsync(List<ValidationIssue> issues)
+    {
+        var requests = await GuardianAbodeResidentRequestState.ReadTransferRequestsAsync(_fs);
+        if (requests.Count == 0)
+            return;
+
+        var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+            issues,
+            code: "abode_resident_transfer_invalid_validated_snapshot_context",
+            section: "AfterlifeResidents");
+        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                IssueSeverity.Error,
+                "pending_guardian_abode_resident_transfers.json допустим только в afterlife realm",
+                code: "abode_resident_transfer_wrong_realm",
+                section: "AfterlifeResidents"));
+        }
+
+        var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(residentsJson))
+            return;
+
+        var preTurnResidentsJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            GuardianAbodeResidentState.StatePath,
+            issues,
+            code: "abode_resident_transfer_missing_validated_snapshot_roster",
+            section: "AfterlifeResidents",
+            message: "pending_guardian_abode_resident_transfers.json существует, но validated pending turn snapshot не содержит guardian_abode_residents.json. Нельзя строго доказать, что resident уже достиг ready_to_transfer.",
+            repairHint: "При создании pending turn snapshot сохраняй guardian_abode_residents.json в manifest.Files и snapshotFileHashes.");
+        if (string.IsNullOrWhiteSpace(preTurnResidentsJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(residentsJson) is not JsonObject residentsRoot)
+                return;
+
+            if (JsonNode.Parse(preTurnResidentsJson) is not JsonObject preTurnResidentsRoot)
+                return;
+
+            GuardianAbodeResidentState.NormalizeShape(residentsRoot);
+            GuardianAbodeResidentState.NormalizeShape(preTurnResidentsRoot);
+            var receipts = GuardianAbodeResidentState.EnsureTransferReceiptsArray(residentsRoot);
+            foreach (var request in requests)
+            {
+                if (string.IsNullOrWhiteSpace(request.RequestId) ||
+                    string.IsNullOrWhiteSpace(request.ResidentId) ||
+                    string.IsNullOrWhiteSpace(request.SourceGuardianId) ||
+                    string.IsNullOrWhiteSpace(request.SourceAbodeId) ||
+                    !GuardianAbodeResidentState.IsSupportedTransferMode(request.TransferMode))
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                        IssueSeverity.Error,
+                        "pending_guardian_abode_resident_transfers.json должен содержать полный client-authored transfer contract",
+                        code: "abode_resident_transfer_missing_fields",
+                        section: "AfterlifeResidents"));
+                    continue;
+                }
+
+                if (!TryResolveEligiblePreTurnTransferResident(preTurnResidentsRoot, request, out _, out var preTurnEligibilityActual))
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                        IssueSeverity.Error,
+                        "Resident transfer request не подтверждается validated pre-turn source resident state.",
+                        code: "abode_resident_transfer_invalid_preturn_eligibility",
+                        section: "AfterlifeResidents",
+                        expected: "resident present in source abode with migrationState=ready_to_transfer",
+                        actual: preTurnEligibilityActual,
+                        repairHint: "Создавай resident transfer request только для validated pre-turn resident из source Обители, который уже находится в состоянии ready_to_transfer."));
+                    continue;
+                }
+
+                if (GuardianAbodeResidentState.FindResident(residentsRoot, request.ResidentId) == null &&
+                    GuardianAbodeResidentState.FindTransferReceipt(receipts, request.RequestId) == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                        IssueSeverity.Error,
+                        "pending resident transfer request должен ссылаться либо на существующего resident, либо на уже записанный transfer receipt",
+                        code: "abode_resident_transfer_missing_resident_or_receipt",
+                        section: "AfterlifeResidents",
+                        repairHint: "Не держи pending resident transfer request без resident roster и без matching transfer receipt."));
+                }
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
         }
     }
 
@@ -2443,6 +2570,205 @@ public partial class ValidationService
                         repairHint: isHistoryRequest
                             ? "После accepted history request добавь residentThoughtJournalUpdates и/или residentInteractionLogUpdates, чтобы у ГМа осталась краткая память о результате сцены."
                             : "После accepted talk request добавь residentThoughtJournalUpdates и/или residentInteractionLogUpdates, чтобы у ГМа осталась краткая память о результате сцены."));
+                }
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+    }
+
+    private async Task ValidatePendingGuardianAbodeResidentTransferResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+            issues,
+            code: "abode_resident_transfer_missing_validated_snapshot_request",
+            section: "AfterlifeResidents",
+            message: "pending_guardian_abode_resident_transfers.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Resident transfer contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_guardian_abode_resident_transfers.json в manifest.Files и snapshotFileHashes.");
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = ReadPendingGuardianAbodeResidentTransferRequests(preTurnJson);
+        if (requests.Count == 0)
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(preTurnJson);
+                if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                    doc.RootElement.TryGetProperty(GuardianAbodeResidentRequestState.TransferRequestsProperty, out var requestsNode) &&
+                    requestsNode.ValueKind == JsonValueKind.Array &&
+                    requestsNode.GetArrayLength() == 0)
+                {
+                    return;
+                }
+            }
+            catch
+            {
+                // explicit fail-closed issue below
+            }
+
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                IssueSeverity.Error,
+                "validated snapshot pending_guardian_abode_resident_transfers.json unreadable или malformed.",
+                code: "abode_resident_transfer_malformed_validated_snapshot_request",
+                section: "AfterlifeResidents",
+                repairHint: "Сохраняй в validated pending snapshot machine-readable pending_guardian_abode_resident_transfers.json exact client-authored contract."));
+            return;
+        }
+
+        var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(residentsJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(residentsJson) is not JsonObject currentResidentsRoot)
+                return;
+
+            GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
+            var receipts = GuardianAbodeResidentState.EnsureTransferReceiptsArray(currentResidentsRoot);
+            var historyLog = GuardianAbodeResidentState.EnsureHistoryLogArray(currentResidentsRoot);
+
+            JsonObject? preTurnResidentsRoot = null;
+            var preTurnResidentsJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(GuardianAbodeResidentState.StatePath);
+            if (!string.IsNullOrWhiteSpace(preTurnResidentsJson))
+            {
+                preTurnResidentsRoot = JsonNode.Parse(preTurnResidentsJson) as JsonObject;
+                if (preTurnResidentsRoot != null)
+                    GuardianAbodeResidentState.NormalizeShape(preTurnResidentsRoot);
+            }
+
+            var guardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
+            var currentGuardianPowerById = GuardianAbodeResidentState.CollectGuardianAbodePowerById(guardiansRoot);
+
+            foreach (var request in requests)
+            {
+                if (!TryResolveEligiblePreTurnTransferResident(preTurnResidentsRoot, request, out var preTurnResident, out var preTurnEligibilityActual))
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                        IssueSeverity.Error,
+                        "Validated pending resident transfer request не подтверждается pre-turn resident eligibility.",
+                        code: "abode_resident_transfer_invalid_preturn_eligibility",
+                        section: "AfterlifeResidents",
+                        expected: "resident present in source abode with migrationState=ready_to_transfer",
+                        actual: preTurnEligibilityActual,
+                        repairHint: "Сохраняй в pending resident transfer request только resident, который в validated pre-turn roster ещё находится в source Обители и уже достиг ready_to_transfer."));
+                    continue;
+                }
+
+                var receipt = GuardianAbodeResidentState.FindTransferReceipt(receipts, request.RequestId);
+                if (receipt == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                        IssueSeverity.Error,
+                        "pending resident transfer request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                        code: "abode_resident_transfer_missing_resolution",
+                        section: "AfterlifeResidents",
+                        repairHint: "Каждый resident transfer request должен закрываться в ближайшем accepted turn через guardian_abode_residents.json.transferReceipts[]."));
+                    continue;
+                }
+
+                if (!TransferReceiptMatchesMode(receipt, request))
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                        IssueSeverity.Error,
+                        "Resident transfer receipt использует status/transferMode, несовместимый с исходным request contract.",
+                        code: "abode_resident_transfer_receipt_mode_mismatch",
+                        section: "AfterlifeResidents",
+                        expected: request.TransferMode,
+                        actual: $"{GetNodeString(receipt["status"])} / {GetNodeString(receipt["transferMode"])}",
+                        repairHint: "Синхронизируй transfer receipt с canonical request mode: departure_only -> departed_only, accepted transfer -> accepted, refused transfer -> refused."));
+                    continue;
+                }
+
+                var status = GetNodeString(receipt["status"]);
+                var departureHistoryEntryId = GetNodeString(receipt["departureHistoryEntryId"]);
+                var arrivalHistoryEntryId = GetNodeString(receipt["arrivalHistoryEntryId"]);
+                var currentResidents = GuardianAbodeResidentState.EnsureEntriesArray(currentResidentsRoot).OfType<JsonObject>().ToList();
+                var sourceResidentPresent = currentResidents.Any(resident =>
+                    string.Equals(GetNodeString(resident["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(GetNodeString(resident["guardianId"]), request.SourceGuardianId, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(GetNodeString(resident["abodeId"]), request.SourceAbodeId, StringComparison.OrdinalIgnoreCase) &&
+                    ResidentIsPresent(resident));
+                var targetResident = currentResidents.FirstOrDefault(resident =>
+                    string.Equals(GetNodeString(resident["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(GetNodeString(resident["guardianId"]), request.TargetGuardianId, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(GetNodeString(resident["abodeId"]), request.TargetAbodeId, StringComparison.OrdinalIgnoreCase) &&
+                    ResidentIsPresent(resident));
+
+                if (string.Equals(status, GuardianAbodeResidentState.TransferStatusAccepted, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (string.IsNullOrWhiteSpace(departureHistoryEntryId) ||
+                        string.IsNullOrWhiteSpace(arrivalHistoryEntryId) ||
+                        !GuardianAbodeResidentState.HasHistoryLogEntry(historyLog, departureHistoryEntryId) ||
+                        !GuardianAbodeResidentState.HasHistoryLogEntry(historyLog, arrivalHistoryEntryId) ||
+                        sourceResidentPresent ||
+                        !ResidentTransferArrivalMatches(targetResident, preTurnResident, request, currentGuardianPowerById))
+                    {
+                        issues.Add(new ValidationIssue(
+                            GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                            IssueSeverity.Error,
+                            "Accepted resident transfer не привёл к canonical departure/arrival resolution.",
+                            code: "abode_resident_transfer_invalid_accepted_resolution",
+                            section: "AfterlifeResidents",
+                            expected: "source departure + target arrival + matching history entries",
+                            actual: BuildResidentTransferStateSummary(sourceResidentPresent, targetResident, departureHistoryEntryId, arrivalHistoryEntryId),
+                            repairHint: "Для accepted transfer убери resident из source Обители, materialize-ь того же residentId в target Обители с canonical arrival state и запиши обе history references в transfer receipt."));
+                    }
+
+                    continue;
+                }
+
+                if (string.Equals(status, GuardianAbodeResidentState.TransferStatusRefused, StringComparison.OrdinalIgnoreCase))
+                {
+                    var sourceResident = currentResidents.FirstOrDefault(resident =>
+                        string.Equals(GetNodeString(resident["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(GetNodeString(resident["guardianId"]), request.SourceGuardianId, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(GetNodeString(resident["abodeId"]), request.SourceAbodeId, StringComparison.OrdinalIgnoreCase) &&
+                        ResidentIsPresent(resident));
+                    if (sourceResident == null ||
+                        targetResident != null ||
+                        string.IsNullOrWhiteSpace(departureHistoryEntryId) ||
+                        !GuardianAbodeResidentState.HasHistoryLogEntry(historyLog, departureHistoryEntryId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                            IssueSeverity.Error,
+                            "Refused resident transfer не привёл к canonical refusal resolution.",
+                            code: "abode_resident_transfer_invalid_refused_resolution",
+                            section: "AfterlifeResidents",
+                            expected: "resident remains in source abode with refusal history and no target arrival",
+                            actual: BuildResidentTransferStateSummary(sourceResident != null, targetResident, departureHistoryEntryId, arrivalHistoryEntryId),
+                            repairHint: "Для refused transfer сохрани resident в source Обители, не materialize-ь target arrival и запиши refusal history entry в transfer receipt."));
+                    }
+
+                    continue;
+                }
+
+                if (string.Equals(status, GuardianAbodeResidentState.TransferStatusDepartedOnly, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (sourceResidentPresent ||
+                        targetResident != null ||
+                        string.IsNullOrWhiteSpace(departureHistoryEntryId) ||
+                        !GuardianAbodeResidentState.HasHistoryLogEntry(historyLog, departureHistoryEntryId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                            IssueSeverity.Error,
+                            "Departure-only resident transfer не привёл к canonical departure resolution.",
+                            code: "abode_resident_transfer_invalid_departure_resolution",
+                            section: "AfterlifeResidents",
+                            expected: "resident removed from source abode with departure history and no target arrival",
+                            actual: BuildResidentTransferStateSummary(sourceResidentPresent, targetResident, departureHistoryEntryId, arrivalHistoryEntryId),
+                            repairHint: "Для departure_only убери resident из source Обители, не materialize-ь target arrival и запиши departure history entry в transfer receipt."));
+                    }
                 }
             }
         }
@@ -2782,6 +3108,39 @@ public partial class ValidationService
         var currentSoulQuestJson = await _fs.ReadFileAsync("game_state/quests/soul_quests.json");
         var preTurnQuestFingerprintsByResident = CollectResidentSoulQuestFingerprints(preTurnSoulQuestJson);
         var currentQuestFingerprintsByResident = CollectResidentSoulQuestFingerprints(currentSoulQuestJson);
+        var preTurnGuardiansJson = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/guardians.json");
+        var currentGuardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        JsonObject? preTurnGuardiansRoot = null;
+        JsonObject? currentGuardiansRoot = null;
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(preTurnGuardiansJson))
+                preTurnGuardiansRoot = JsonNode.Parse(preTurnGuardiansJson) as JsonObject;
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(currentGuardiansJson))
+                currentGuardiansRoot = JsonNode.Parse(currentGuardiansJson) as JsonObject;
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+
+        var previousGuardianPowerById = GuardianAbodeResidentState.CollectGuardianAbodePowerById(preTurnGuardiansRoot);
+        var currentGuardianPowerById = GuardianAbodeResidentState.CollectGuardianAbodePowerById(currentGuardiansRoot);
+        var preTurnTransferRequestsJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath);
+        var preTurnTransferRequests = ReadPendingGuardianAbodeResidentTransferRequests(preTurnTransferRequestsJson);
+        var acceptedTransferArrivalResidentIds = CollectAcceptedTransferArrivalResidentIds(
+            currentResidentsRoot,
+            preTurnResidentsRoot,
+            preTurnTransferRequests,
+            currentGuardianPowerById);
 
         foreach (var resident in GuardianAbodeResidentState.EnsureEntriesArray(currentResidentsRoot).OfType<JsonObject>())
         {
@@ -2790,6 +3149,74 @@ public partial class ValidationService
                 continue;
 
             var preTurnResident = preTurnResidentsRoot == null ? null : GuardianAbodeResidentState.FindResident(preTurnResidentsRoot, residentId);
+            if (preTurnResident != null && !acceptedTransferArrivalResidentIds.Contains(residentId))
+            {
+                var previousDevotionLevel = GetNodeInt(preTurnResident["abodeDevotionLevel"]);
+                var currentDevotionLevel = GetNodeInt(resident["abodeDevotionLevel"]);
+                var previousRestlessness = GetNodeInt(preTurnResident["restlessness"]);
+                var currentRestlessness = GetNodeInt(resident["restlessness"]);
+                var previousMigrationState = GetNodeString(preTurnResident["migrationState"]);
+                var currentMigrationState = GetNodeString(resident["migrationState"]);
+                var hasAbodeShift =
+                    previousDevotionLevel != currentDevotionLevel ||
+                    previousRestlessness != currentRestlessness ||
+                    !string.Equals(previousMigrationState, currentMigrationState, StringComparison.OrdinalIgnoreCase);
+
+                if (hasAbodeShift)
+                {
+                    var driftContext = GuardianAbodeResidentState.BuildCanonicalDriftContext(
+                        preTurnResidentsRoot,
+                        currentResidentsRoot,
+                        preTurnResident,
+                        resident,
+                        previousGuardianPowerById,
+                        currentGuardianPowerById,
+                        preTurnQuestFingerprintsByResident,
+                        currentQuestFingerprintsByResident);
+                    var projection = GuardianAbodeResidentState.ProjectCanonicalAbodeDrift(preTurnResident, resident, driftContext);
+                    if (!projection.HasCanonicalTrigger)
+                    {
+                        issues.Add(new ValidationIssue(
+                            GuardianAbodeResidentState.StatePath,
+                            IssueSeverity.Error,
+                            "Resident abode devotion/restlessness shift произошёл без canonical trigger.",
+                            code: "abode_resident_devotion_shift_missing_canonical_trigger",
+                            section: "AfterlifeResidents",
+                            actual: $"{residentId}: {previousDevotionLevel}/{previousRestlessness}/{previousMigrationState} -> {currentDevotionLevel}/{currentRestlessness}/{currentMigrationState}",
+                            repairHint: "Меняй abode devotion/restlessness только при canonical resident-facing trigger: power-tier shift, resident talk/history, quest progression, reward outcome или явная resident сцена."));
+                    }
+                    else if (currentDevotionLevel != projection.AbodeDevotionLevel ||
+                             currentRestlessness != projection.Restlessness ||
+                             !string.Equals(currentMigrationState, projection.MigrationState, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            GuardianAbodeResidentState.StatePath,
+                            IssueSeverity.Error,
+                            "Resident abode devotion/restlessness shift не совпадает с canonical drift projection.",
+                            code: "abode_resident_devotion_projection_mismatch",
+                            section: "AfterlifeResidents",
+                            expected: $"{projection.AbodeDevotionLevel}/{projection.Restlessness}/{projection.MigrationState} ({projection.TriggerSummary})",
+                            actual: $"{currentDevotionLevel}/{currentRestlessness}/{currentMigrationState}",
+                            repairHint: "Для resident abode drift используй canonical bounded step projection от abodeDisposition, bondLevel, abode power direction и resident-facing accepted outcome."));
+                    }
+
+                    var requiresCuratedMemory =
+                        Math.Abs(currentDevotionLevel - previousDevotionLevel) >= 8 ||
+                        Math.Abs(currentRestlessness - previousRestlessness) >= 8;
+                    if (requiresCuratedMemory &&
+                        !ResidentHasNewThoughtOrInteractionMemory(preTurnResidentsRoot, currentResidentsRoot, residentId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            GuardianAbodeResidentState.StatePath,
+                            IssueSeverity.Error,
+                            "Meaningful resident abode shift не оставил curated memory update.",
+                            code: "abode_resident_devotion_shift_missing_memory_update",
+                            section: "AfterlifeResidents",
+                            repairHint: "Если resident devotion/restlessness заметно сместились, добавь residentThoughtJournalUpdates и/или residentInteractionLogUpdates с кратким объяснением этого сдвига."));
+                    }
+                }
+            }
+
             var currentLinkedSoulQuestId = GetNodeString(resident["linkedSoulQuestId"]);
             var previousLinkedSoulQuestId = preTurnResident == null ? string.Empty : GetNodeString(preTurnResident["linkedSoulQuestId"]);
             var currentRewardState = GetNodeString(resident["bondRewardState"]);
@@ -2843,9 +3270,23 @@ public partial class ValidationService
 
     private async Task ValidatePendingArchiveConsultationRequestContextAsync(List<ValidationIssue> issues)
     {
-        var request = await AfterlifeArchiveActionState.ReadConsultationAsync(_fs);
-        if (request == null)
+        var requestState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
+        if (!requestState.Exists)
             return;
+
+        if (requestState.IsMalformed || requestState.Request == null)
+        {
+            issues.Add(new ValidationIssue(
+                AfterlifeArchiveActionState.ConsultationRequestPath,
+                IssueSeverity.Error,
+                "pending_archive_consultation_request.json не читается как валидный JSON contract.",
+                code: "archive_consultation_request_malformed_file",
+                section: "AfterlifeArchive",
+                repairHint: "Сохраняй pending_archive_consultation_request.json как корректный client-authored JSON object."));
+            return;
+        }
+
+        var request = requestState.Request;
 
         var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
             AfterlifeArchiveActionState.ConsultationRequestPath,
@@ -2878,32 +3319,26 @@ public partial class ValidationService
                 section: "AfterlifeArchive"));
         }
 
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
+        var soulRoot = await TryReadStrictCurrentArchiveOwnerState(
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            "archive_consultation_request_missing_current_archive_authority",
+            "AfterlifeArchive",
+            "Исправь current game_state/meta/soul_state.json так, чтобы afterlifeArchive оставался canonical object со stored[] и actionReceipts[]; consultation request нельзя валидировать по malformed current archive owner state.",
+            issues);
+        if (soulRoot == null)
             return;
 
-        try
+        var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
+        var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(soulRoot);
+        if (!AfterlifeArchiveState.HasMatchingReservation(stored, request.ArchiveId, request.RequestId, AfterlifeArchiveState.ReservationKindConsultation) &&
+            !AfterlifeArchiveState.HasActionReceipt(receipts, request.RequestId, request.ArchiveId, request.RequestedMode))
         {
-            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
-                return;
-
-            AfterlifeArchiveState.NormalizeShape(soulRoot);
-            var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
-            var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(soulRoot);
-            if (!AfterlifeArchiveState.HasMatchingReservation(stored, request.ArchiveId, request.RequestId, AfterlifeArchiveState.ReservationKindConsultation) &&
-                !AfterlifeArchiveState.HasActionReceipt(receipts, request.RequestId))
-            {
-                issues.Add(new ValidationIssue(
-                    AfterlifeArchiveActionState.ConsultationRequestPath,
-                    IssueSeverity.Error,
-                    "pending_archive_consultation_request должен ссылаться либо на активную reservation, либо на уже записанный action receipt",
-                    code: "archive_consultation_request_missing_reservation",
-                    section: "AfterlifeArchive"));
-            }
-        }
-        catch
-        {
-            // parse issues reported elsewhere
+            issues.Add(new ValidationIssue(
+                AfterlifeArchiveActionState.ConsultationRequestPath,
+                IssueSeverity.Error,
+                "pending_archive_consultation_request должен ссылаться либо на активную reservation, либо на уже записанный action receipt",
+                code: "archive_consultation_request_missing_reservation",
+                section: "AfterlifeArchive"));
         }
     }
 
@@ -2919,94 +3354,107 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(preTurnJson))
             return;
 
-        AfterlifeArchiveActionState.PendingArchiveConsultationRequest? request;
-        try
+        var requestState = AfterlifeArchiveActionState.ParseConsultationState(preTurnJson);
+        if (requestState.IsMalformed || requestState.Request == null)
         {
-            request = JsonSerializer.Deserialize<AfterlifeArchiveActionState.PendingArchiveConsultationRequest>(preTurnJson);
-        }
-        catch
-        {
+            issues.Add(new ValidationIssue(
+                AfterlifeArchiveActionState.ConsultationRequestPath,
+                IssueSeverity.Error,
+                "validated snapshot pending_archive_consultation_request unreadable или malformed.",
+                code: "archive_consultation_request_malformed_validated_snapshot_request",
+                section: "AfterlifeArchive",
+                repairHint: "Сохраняй в validated pending snapshot machine-readable pending_archive_consultation_request.json exact client-authored contract."));
             return;
         }
 
+        var request = requestState.Request;
         if (request == null)
             return;
 
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
+        var soulRoot = await TryReadStrictCurrentArchiveOwnerState(
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            "archive_consultation_request_missing_current_archive_authority",
+            "AfterlifeArchive",
+            "Исправь current game_state/meta/soul_state.json так, чтобы validator читал canonical afterlifeArchive owner state перед строгой archive consultation resolution.",
+            issues);
+        if (soulRoot == null)
             return;
 
-        try
+        var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(soulRoot);
+        var receipt = AfterlifeArchiveState.FindActionReceipt(receipts, request.RequestId, request.ArchiveId, request.RequestedMode);
+        if (receipt == null)
         {
-            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
-                return;
+            issues.Add(new ValidationIssue(
+                AfterlifeArchiveActionState.ConsultationRequestPath,
+                IssueSeverity.Error,
+                "pending_archive_consultation_request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                code: "archive_consultation_request_missing_resolution",
+                section: "AfterlifeArchive",
+                repairHint: "Каждый archive consultation request должен закрываться в ближайшем accepted turn через archiveActionResolutions со status=accepted|rejected|cancelled."));
+            return;
+        }
 
-            AfterlifeArchiveState.NormalizeShape(soulRoot);
-            var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(soulRoot);
-            var receipt = receipts.OfType<JsonObject>()
-                .FirstOrDefault(item => string.Equals(GetNodeString(item["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase));
-            if (receipt == null)
+        var status = GetNodeString(receipt["status"]);
+        var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
+        if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!TryResolveGuardianProjectTrackerValidationRoot(
+                    AfterlifeArchiveActionState.ConsultationRequestPath,
+                    "Accepted archive consultation request требует readable current guardian project tracker authority и не использует isolated pre-turn tracker baseline как authority fallback.",
+                    "archive_consultation_request_missing_current_tracker_authority",
+                    "AfterlifeArchive",
+                    $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед archive consultation resolution.",
+                    issues,
+                    out var trackerRoot))
+            {
+                return;
+            }
+
+            if (!ArchiveConsultationReceiptHasMatchingCompletedProject(trackerRoot, request.RequestId, request.ArchiveId, request.GuardianId, receipt))
             {
                 issues.Add(new ValidationIssue(
                     AfterlifeArchiveActionState.ConsultationRequestPath,
                     IssueSeverity.Error,
-                    "pending_archive_consultation_request из pre-turn snapshot не был закрыт в текущем accepted turn",
-                    code: "archive_consultation_request_missing_resolution",
+                    "Accepted archive consultation request не привёл к canonical archive_consultation result",
+                    code: "archive_consultation_request_missing_canonical_result",
                     section: "AfterlifeArchive",
-                    repairHint: "Каждый archive consultation request должен закрываться в ближайшем accepted turn через archiveActionResolutions со status=accepted|rejected|cancelled."));
-                return;
-            }
-
-            var status = GetNodeString(receipt["status"]);
-            var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
-            if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
-            {
-                if (!TryResolveGuardianProjectTrackerValidationRoot(
-                        AfterlifeArchiveActionState.ConsultationRequestPath,
-                        "Accepted archive consultation request требует readable current guardian project tracker authority и не использует isolated pre-turn tracker baseline как authority fallback.",
-                        "archive_consultation_request_missing_current_tracker_authority",
-                        "AfterlifeArchive",
-                        $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед archive consultation resolution.",
-                        issues,
-                        out var trackerRoot))
-                {
-                }
-                else if (!ArchiveConsultationReceiptHasMatchingCompletedProject(trackerRoot, request.RequestId, request.ArchiveId, request.GuardianId, receipt))
-                {
-                    issues.Add(new ValidationIssue(
-                        AfterlifeArchiveActionState.ConsultationRequestPath,
-                        IssueSeverity.Error,
-                        "Accepted archive consultation request не привёл к canonical archive_consultation result",
-                        code: "archive_consultation_request_missing_canonical_result",
-                        section: "AfterlifeArchive",
-                        repairHint: "Для accepted archive consultation materialize-ь completed lore_research project с projectOrigin=archive_consultation и matching consultationRequestId/consultationArchiveId."));
-                }
-            }
-            else if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusRejected, StringComparison.OrdinalIgnoreCase) ||
-                     string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusCancelled, StringComparison.OrdinalIgnoreCase))
-            {
-                if (!ArchiveEntryIsAvailableAfterRejectedResolution(stored, request.ArchiveId, request.RequestId, AfterlifeArchiveState.ReservationKindConsultation))
-                {
-                    issues.Add(new ValidationIssue(
-                        AfterlifeArchiveActionState.ConsultationRequestPath,
-                        IssueSeverity.Error,
-                        "Rejected/cancelled archive consultation request должен возвращать запись в Архив без активной reservation",
-                        code: "archive_consultation_request_rejected_entry_not_restored",
-                        section: "AfterlifeArchive"));
-                }
+                    repairHint: "Для accepted archive consultation materialize-ь completed lore_research project с projectOrigin=archive_consultation и matching consultationRequestId/consultationArchiveId."));
             }
         }
-        catch
+        else if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusRejected, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusCancelled, StringComparison.OrdinalIgnoreCase))
         {
-            // parse issues reported elsewhere
+            if (!ArchiveEntryIsAvailableAfterRejectedResolution(stored, request.ArchiveId, request.RequestId, AfterlifeArchiveState.ReservationKindConsultation))
+            {
+                issues.Add(new ValidationIssue(
+                    AfterlifeArchiveActionState.ConsultationRequestPath,
+                    IssueSeverity.Error,
+                    "Rejected/cancelled archive consultation request должен возвращать запись в Архив без активной reservation",
+                    code: "archive_consultation_request_rejected_entry_not_restored",
+                    section: "AfterlifeArchive"));
+            }
         }
     }
 
     private async Task ValidatePendingArchiveProjectFuelRequestContextAsync(List<ValidationIssue> issues)
     {
-        var request = await AfterlifeArchiveActionState.ReadProjectFuelAsync(_fs);
-        if (request == null)
+        var requestState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs);
+        if (!requestState.Exists)
             return;
+
+        if (requestState.IsMalformed || requestState.Request == null)
+        {
+            issues.Add(new ValidationIssue(
+                AfterlifeArchiveActionState.ProjectFuelRequestPath,
+                IssueSeverity.Error,
+                "pending_archive_project_fuel_request.json не читается как валидный JSON contract.",
+                code: "archive_project_fuel_request_malformed_file",
+                section: "AfterlifeArchive",
+                repairHint: "Сохраняй pending_archive_project_fuel_request.json как корректный client-authored JSON object."));
+            return;
+        }
+
+        var request = requestState.Request;
 
         var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
             AfterlifeArchiveActionState.ProjectFuelRequestPath,
@@ -3039,32 +3487,26 @@ public partial class ValidationService
                 section: "AfterlifeArchive"));
         }
 
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
+        var soulRoot = await TryReadStrictCurrentArchiveOwnerState(
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            "archive_project_fuel_request_missing_current_archive_authority",
+            "AfterlifeArchive",
+            "Исправь current game_state/meta/soul_state.json так, чтобы afterlifeArchive оставался canonical object со stored[] и actionReceipts[]; project fuel request нельзя валидировать по malformed current archive owner state.",
+            issues);
+        if (soulRoot == null)
             return;
 
-        try
+        var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
+        var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(soulRoot);
+        if (!AfterlifeArchiveState.HasMatchingReservation(stored, request.ArchiveId, request.RequestId, AfterlifeArchiveState.ReservationKindProjectFuel) &&
+            !AfterlifeArchiveState.HasActionReceipt(receipts, request.RequestId, request.ArchiveId, request.RequestedMode))
         {
-            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
-                return;
-
-            AfterlifeArchiveState.NormalizeShape(soulRoot);
-            var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
-            var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(soulRoot);
-            if (!AfterlifeArchiveState.HasMatchingReservation(stored, request.ArchiveId, request.RequestId, AfterlifeArchiveState.ReservationKindProjectFuel) &&
-                !AfterlifeArchiveState.HasActionReceipt(receipts, request.RequestId))
-            {
-                issues.Add(new ValidationIssue(
-                    AfterlifeArchiveActionState.ProjectFuelRequestPath,
-                    IssueSeverity.Error,
-                    "pending_archive_project_fuel_request должен ссылаться либо на активную reservation, либо на уже записанный action receipt",
-                    code: "archive_project_fuel_request_missing_reservation",
-                    section: "AfterlifeArchive"));
-            }
-        }
-        catch
-        {
-            // parse issues reported elsewhere
+            issues.Add(new ValidationIssue(
+                AfterlifeArchiveActionState.ProjectFuelRequestPath,
+                IssueSeverity.Error,
+                "pending_archive_project_fuel_request должен ссылаться либо на активную reservation, либо на уже записанный action receipt",
+                code: "archive_project_fuel_request_missing_reservation",
+                section: "AfterlifeArchive"));
         }
     }
 
@@ -3080,77 +3522,147 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(preTurnJson))
             return;
 
-        AfterlifeArchiveActionState.PendingArchiveProjectFuelRequest? request;
-        try
+        var requestState = AfterlifeArchiveActionState.ParseProjectFuelState(preTurnJson);
+        if (requestState.IsMalformed || requestState.Request == null)
         {
-            request = JsonSerializer.Deserialize<AfterlifeArchiveActionState.PendingArchiveProjectFuelRequest>(preTurnJson);
-        }
-        catch
-        {
+            issues.Add(new ValidationIssue(
+                AfterlifeArchiveActionState.ProjectFuelRequestPath,
+                IssueSeverity.Error,
+                "validated snapshot pending_archive_project_fuel_request unreadable или malformed.",
+                code: "archive_project_fuel_request_malformed_validated_snapshot_request",
+                section: "AfterlifeArchive",
+                repairHint: "Сохраняй в validated pending snapshot machine-readable pending_archive_project_fuel_request.json exact client-authored contract."));
             return;
         }
 
+        var request = requestState.Request;
         if (request == null)
             return;
 
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
+        var soulRoot = await TryReadStrictCurrentArchiveOwnerState(
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            "archive_project_fuel_request_missing_current_archive_authority",
+            "AfterlifeArchive",
+            "Исправь current game_state/meta/soul_state.json так, чтобы validator читал canonical afterlifeArchive owner state перед строгой archive project fuel resolution.",
+            issues);
+        if (soulRoot == null)
             return;
 
-        try
+        var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(soulRoot);
+        var receipt = AfterlifeArchiveState.FindActionReceipt(receipts, request.RequestId, request.ArchiveId, request.RequestedMode);
+        if (receipt == null)
         {
-            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
-                return;
+            issues.Add(new ValidationIssue(
+                AfterlifeArchiveActionState.ProjectFuelRequestPath,
+                IssueSeverity.Error,
+                "pending_archive_project_fuel_request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                code: "archive_project_fuel_request_missing_resolution",
+                section: "AfterlifeArchive",
+                repairHint: "Каждый archive project fuel request должен закрываться в ближайшем accepted turn через archiveActionResolutions со status=accepted|rejected|cancelled."));
+            return;
+        }
 
-            AfterlifeArchiveState.NormalizeShape(soulRoot);
-            var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(soulRoot);
-            var receipt = receipts.OfType<JsonObject>()
-                .FirstOrDefault(item => string.Equals(GetNodeString(item["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase));
-            if (receipt == null)
+        var status = GetNodeString(receipt["status"]);
+        var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
+        if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
+        {
+            var journalJson = await _fs.ReadFileAsync(GuardianProjectState.JournalPath);
+            if (!ArchiveProjectFuelReceiptHasMatchingJournalEntry(journalJson, request.RequestId, request.GuardianId, request.TargetProjectId))
             {
                 issues.Add(new ValidationIssue(
                     AfterlifeArchiveActionState.ProjectFuelRequestPath,
                     IssueSeverity.Error,
-                    "pending_archive_project_fuel_request из pre-turn snapshot не был закрыт в текущем accepted turn",
-                    code: "archive_project_fuel_request_missing_resolution",
+                    "Accepted archive project fuel request не привёл к canonical project fuel result",
+                    code: "archive_project_fuel_request_missing_canonical_result",
                     section: "AfterlifeArchive",
-                    repairHint: "Каждый archive project fuel request должен закрываться в ближайшем accepted turn через archiveActionResolutions со status=accepted|rejected|cancelled."));
-                return;
+                    repairHint: "Для accepted archive project fuel materialize-ь matching assisted journal entry и canonical project update по targetProjectId."));
+            }
+        }
+        else if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusRejected, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusCancelled, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!ArchiveEntryIsAvailableAfterRejectedResolution(stored, request.ArchiveId, request.RequestId, AfterlifeArchiveState.ReservationKindProjectFuel))
+            {
+                issues.Add(new ValidationIssue(
+                    AfterlifeArchiveActionState.ProjectFuelRequestPath,
+                    IssueSeverity.Error,
+                    "Rejected/cancelled archive project fuel request должен возвращать запись в Архив без активной reservation",
+                    code: "archive_project_fuel_request_rejected_entry_not_restored",
+                    section: "AfterlifeArchive"));
+            }
+        }
+    }
+
+    private async Task<JsonObject?> TryReadStrictCurrentArchiveOwnerState(
+        string requestPath,
+        string code,
+        string section,
+        string repairHint,
+        List<ValidationIssue> issues)
+    {
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+        {
+            issues.Add(new ValidationIssue(
+                requestPath,
+                IssueSeverity.Error,
+                "Archive request не может быть строго проверен: current soul_state.json unreadable.",
+                code: code,
+                section: section,
+                expected: "readable current soul_state.json with canonical afterlifeArchive owner state",
+                actual: "current soul_state.json missing or unreadable",
+                repairHint: repairHint));
+            return null;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
+            {
+                issues.Add(new ValidationIssue(
+                    requestPath,
+                    IssueSeverity.Error,
+                    "Archive request не может быть строго проверен: current soul_state.json malformed.",
+                    code: code,
+                    section: section,
+                    expected: "canonical soul_state object with current afterlifeArchive owner state",
+                    actual: "current soul_state root is not a JSON object",
+                    repairHint: repairHint));
+                return null;
             }
 
-            var status = GetNodeString(receipt["status"]);
-            var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
-            if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            var failureDescription = string.Empty;
+            if (soulRoot[AfterlifeArchiveState.ContainerProperty] is not JsonObject ||
+                AfterlifeArchiveState.TryDescribeInvalidCanonicalArchiveRoot(soulRoot, out failureDescription))
             {
-                var journalJson = await _fs.ReadFileAsync(GuardianProjectState.JournalPath);
-                if (!ArchiveProjectFuelReceiptHasMatchingJournalEntry(journalJson, request.RequestId, request.ArchiveId, request.GuardianId, request.TargetProjectId))
-                {
-                    issues.Add(new ValidationIssue(
-                        AfterlifeArchiveActionState.ProjectFuelRequestPath,
-                        IssueSeverity.Error,
-                        "Accepted archive project fuel request не привёл к canonical project fuel result",
-                        code: "archive_project_fuel_request_missing_canonical_result",
-                        section: "AfterlifeArchive",
-                        repairHint: "Для accepted archive project fuel materialize-ь matching assisted journal entry и canonical project update по targetProjectId."));
-                }
+                issues.Add(new ValidationIssue(
+                    requestPath,
+                    IssueSeverity.Error,
+                    "Archive request не может быть строго проверен: current afterlifeArchive authority unreadable или malformed.",
+                    code: code,
+                    section: section,
+                    expected: "canonical current afterlifeArchive owner state",
+                    actual: string.IsNullOrWhiteSpace(failureDescription)
+                        ? "afterlifeArchive container missing or malformed"
+                        : failureDescription,
+                    repairHint: repairHint));
+                return null;
             }
-            else if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusRejected, StringComparison.OrdinalIgnoreCase) ||
-                     string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusCancelled, StringComparison.OrdinalIgnoreCase))
-            {
-                if (!ArchiveEntryIsAvailableAfterRejectedResolution(stored, request.ArchiveId, request.RequestId, AfterlifeArchiveState.ReservationKindProjectFuel))
-                {
-                    issues.Add(new ValidationIssue(
-                        AfterlifeArchiveActionState.ProjectFuelRequestPath,
-                        IssueSeverity.Error,
-                        "Rejected/cancelled archive project fuel request должен возвращать запись в Архив без активной reservation",
-                        code: "archive_project_fuel_request_rejected_entry_not_restored",
-                        section: "AfterlifeArchive"));
-                }
-            }
+
+            return soulRoot;
         }
         catch
         {
-            // parse issues reported elsewhere
+            issues.Add(new ValidationIssue(
+                requestPath,
+                IssueSeverity.Error,
+                "Archive request не может быть строго проверен: current soul_state.json malformed.",
+                code: code,
+                section: section,
+                expected: "canonical soul_state object with current afterlifeArchive owner state",
+                actual: "current soul_state unreadable or malformed",
+                repairHint: repairHint));
+            return null;
         }
     }
 
@@ -3160,14 +3672,31 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(json))
             return;
 
-        if (!TryReadLifeTransitionControlFile(json))
-            return;
-
         var preTurnRealm = await TryResolvePreTurnRealmAsync();
-        if (string.IsNullOrWhiteSpace(preTurnRealm))
-            return;
+        var currentRealm = await TryResolveCurrentRealmAsync();
+        var hasCanonicalTriggerLifeEnd = TryReadLifeTransitionControlFile(json) &&
+                                         CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEnd(
+                                             json,
+                                             preTurnRealm,
+                                             currentRealm);
+        var hasRecordLifeCompletion = await HasCurrentTurnRecordLifeCompletionAsync();
 
-        if (IsChaosSeaRealm(preTurnRealm))
+        if (!string.IsNullOrWhiteSpace(preTurnRealm) &&
+            !IsChaosSeaRealm(preTurnRealm) &&
+            IsChaosSeaRealm(currentRealm))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/control/life_transitions.json",
+                IssueSeverity.Error,
+                "TriggerLifeEnd turn не может одновременно переключать currentRealm в afterlife.",
+                code: "life_transition_current_realm_switched_same_turn",
+                section: "Lifecycle",
+                expected: "current realm remains Mortal World on TriggerLifeEnd turn",
+                actual: currentRealm ?? "unknown current realm",
+                repairHint: "Не переключай soul_state.currentRealm в Chaos Sea/Shining Abode на том же accepted turn, где TriggerLifeEnd только запускает lifecycle."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(preTurnRealm) && IsChaosSeaRealm(preTurnRealm))
         {
             issues.Add(new ValidationIssue(
                 "game_state/control/life_transitions.json",
@@ -3178,6 +3707,19 @@ public partial class ValidationService
                 expected: "Mortal World realm",
                 actual: preTurnRealm,
                 repairHint: "Проверяй realm на начало accepted turn. Если pre-turn realm уже Chaos Sea/Shining Abode, убери TriggerLifeEnd; если trigger был легален, не переключай soul_state.currentRealm вручную в том же ходе."));
+        }
+
+        if (hasRecordLifeCompletion && !hasCanonicalTriggerLifeEnd)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "recordLifeCompletion не может появляться без canonical TriggerLifeEnd contract.",
+                code: "life_transition_record_without_trigger_life_end",
+                section: "Lifecycle",
+                expected: "canonical TriggerLifeEnd on a Mortal World turn before recordLifeCompletion",
+                actual: "recordLifeCompletion present without authorized TriggerLifeEnd",
+                repairHint: "Пиши metaStateUpdates.lifeTransitions.recordLifeCompletion только на accepted turn с валидным TriggerLifeEnd из Mortal World без same-turn realm switch."));
         }
     }
 
@@ -3191,8 +3733,19 @@ public partial class ValidationService
             return;
 
         var preTurnRealm = await TryResolvePreTurnRealmAsync();
-        if (!string.IsNullOrWhiteSpace(preTurnRealm) &&
-            !IsExactChaosSeaRealm(preTurnRealm))
+        if (string.IsNullOrWhiteSpace(preTurnRealm))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/control/ascension.json",
+                IssueSeverity.Error,
+                "AscensionTrigger требует validated pre-turn realm и не может fallback-иться к current soul_state.currentRealm.",
+                code: "ascension_invalid_validated_snapshot_realm",
+                section: "Lifecycle",
+                expected: "validated pre-turn realm = Chaos Sea",
+                actual: "validated pre-turn soul_state realm missing or unreadable",
+                repairHint: "Сохраняй game_state/meta/soul_state.json в validated pending turn snapshot и проверяй Ascension только по pre-turn realm, а не по current realm."));
+        }
+        else if (!IsExactChaosSeaRealm(preTurnRealm))
         {
             issues.Add(new ValidationIssue(
                 "game_state/control/ascension.json",
@@ -3243,6 +3796,28 @@ public partial class ValidationService
         catch (JsonException)
         {
             // soul_state.json shape errors are reported elsewhere
+        }
+    }
+
+    private async Task<bool> HasCurrentTurnRecordLifeCompletionAsync()
+    {
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(soulJson);
+            return doc.RootElement.TryGetProperty("metaStateUpdates", out var metaStateUpdates) &&
+                   metaStateUpdates.ValueKind == JsonValueKind.Object &&
+                   metaStateUpdates.TryGetProperty("lifeTransitions", out var lifeTransitions) &&
+                   lifeTransitions.ValueKind == JsonValueKind.Object &&
+                   lifeTransitions.TryGetProperty("recordLifeCompletion", out var recordLifeCompletion) &&
+                   recordLifeCompletion.ValueKind == JsonValueKind.Object;
+        }
+        catch
+        {
+            return false;
         }
     }
 
@@ -3967,6 +4542,197 @@ public partial class ValidationService
             return Array.Empty<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest>();
         }
     }
+
+    private static IReadOnlyList<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest> ReadPendingGuardianAbodeResidentTransferRequests(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return Array.Empty<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest>();
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty(GuardianAbodeResidentRequestState.TransferRequestsProperty, out var requestsNode) ||
+                requestsNode.ValueKind != JsonValueKind.Array)
+            {
+                return Array.Empty<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest>();
+            }
+
+            var result = new List<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest>();
+            foreach (var item in requestsNode.EnumerateArray())
+            {
+                try
+                {
+                    var request = JsonSerializer.Deserialize<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest>(item.GetRawText());
+                    if (request != null)
+                        result.Add(request);
+                }
+                catch
+                {
+                    // ignore malformed item; shape issues are reported elsewhere
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return Array.Empty<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest>();
+        }
+    }
+
+    private static HashSet<string> CollectAcceptedTransferArrivalResidentIds(
+        JsonObject currentResidentsRoot,
+        JsonObject? preTurnResidentsRoot,
+        IReadOnlyList<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest> requests,
+        IReadOnlyDictionary<string, int> currentGuardianPowerById)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (preTurnResidentsRoot == null || requests.Count == 0)
+            return result;
+
+        var receipts = GuardianAbodeResidentState.EnsureTransferReceiptsArray(currentResidentsRoot);
+        var currentResidents = GuardianAbodeResidentState.EnsureEntriesArray(currentResidentsRoot).OfType<JsonObject>().ToList();
+        foreach (var request in requests)
+        {
+            var receipt = GuardianAbodeResidentState.FindTransferReceipt(receipts, request.RequestId);
+            if (receipt == null ||
+                !string.Equals(GetNodeString(receipt["status"]), GuardianAbodeResidentState.TransferStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (!TryResolveEligiblePreTurnTransferResident(preTurnResidentsRoot, request, out var preTurnResident, out _))
+                continue;
+
+            var targetResident = currentResidents.FirstOrDefault(resident =>
+                string.Equals(GetNodeString(resident["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(resident["guardianId"]), request.TargetGuardianId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(resident["abodeId"]), request.TargetAbodeId, StringComparison.OrdinalIgnoreCase) &&
+                ResidentIsPresent(resident));
+            if (ResidentTransferArrivalMatches(targetResident, preTurnResident, request, currentGuardianPowerById))
+                result.Add(request.ResidentId);
+        }
+
+        return result;
+    }
+
+    private static bool TryResolveEligiblePreTurnTransferResident(
+        JsonObject? preTurnResidentsRoot,
+        GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest request,
+        out JsonObject? preTurnResident,
+        out string actual)
+    {
+        preTurnResident = null;
+        if (preTurnResidentsRoot == null)
+        {
+            actual = "validated pre-turn guardian_abode_residents.json is missing or unreadable";
+            return false;
+        }
+
+        var matchedResident = GuardianAbodeResidentState.FindResident(preTurnResidentsRoot, request.ResidentId);
+        if (matchedResident == null)
+        {
+            actual = "resident is missing from validated pre-turn roster";
+            return false;
+        }
+
+        var actualGuardianId = GetNodeString(matchedResident["guardianId"]);
+        var actualAbodeId = GetNodeString(matchedResident["abodeId"]);
+        var isPresent = ResidentIsPresent(matchedResident);
+        if (!string.Equals(actualGuardianId, request.SourceGuardianId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(actualAbodeId, request.SourceAbodeId, StringComparison.OrdinalIgnoreCase) ||
+            !isPresent)
+        {
+            actual = $"resident source state is {actualGuardianId}/{actualAbodeId}, present={isPresent}";
+            return false;
+        }
+
+        var actualMigrationState = GetNodeString(matchedResident["migrationState"]);
+        if (!string.Equals(actualMigrationState, GuardianAbodeResidentState.MigrationStateReadyToTransfer, StringComparison.OrdinalIgnoreCase))
+        {
+            actual = $"resident migrationState is {actualMigrationState}";
+            return false;
+        }
+
+        preTurnResident = matchedResident;
+        actual = $"{actualGuardianId}/{actualAbodeId} ready_to_transfer";
+        return true;
+    }
+
+    private static bool TransferReceiptMatchesMode(
+        JsonObject receipt,
+        GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest request)
+    {
+        var status = GetNodeString(receipt["status"]);
+        var transferMode = GetNodeString(receipt["transferMode"]);
+        if (string.Equals(request.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(status, GuardianAbodeResidentState.TransferStatusDepartedOnly, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(transferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (string.Equals(status, GuardianAbodeResidentState.TransferStatusAccepted, StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(transferMode, GuardianAbodeResidentState.TransferModeAcceptedTransfer, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (string.Equals(status, GuardianAbodeResidentState.TransferStatusRefused, StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(transferMode, GuardianAbodeResidentState.TransferModeRefusedTransfer, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(request.TransferMode, GuardianAbodeResidentState.TransferModeAcceptedTransfer, StringComparison.OrdinalIgnoreCase);
+        }
+
+        return false;
+    }
+
+    private static bool ResidentTransferArrivalMatches(
+        JsonObject? currentTargetResident,
+        JsonObject? preTurnResident,
+        GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest request,
+        IReadOnlyDictionary<string, int> currentGuardianPowerById)
+    {
+        if (currentTargetResident == null || preTurnResident == null)
+            return false;
+
+        var expectedArrival = preTurnResident.DeepClone().AsObject();
+        expectedArrival["guardianId"] = request.TargetGuardianId;
+        expectedArrival["guardianName"] = request.TargetGuardianName;
+        expectedArrival["abodeId"] = request.TargetAbodeId;
+        expectedArrival["abodeName"] = request.TargetAbodeName;
+        var targetAbodePower = currentGuardianPowerById.TryGetValue(request.TargetGuardianId, out var parsedPower)
+            ? parsedPower
+            : (int?)null;
+        var canonicalArrival = GuardianAbodeResidentState.BuildCanonicalTransferArrivalResident(expectedArrival, targetAbodePower);
+
+        return string.Equals(GetNodeString(currentTargetResident["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(currentTargetResident["guardianId"]), request.TargetGuardianId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(currentTargetResident["abodeId"]), request.TargetAbodeId, StringComparison.OrdinalIgnoreCase) &&
+               ResidentIsPresent(currentTargetResident) &&
+               GetNodeInt(currentTargetResident["bondLevel"]) == GetNodeInt(preTurnResident["bondLevel"]) &&
+               string.Equals(GetNodeString(currentTargetResident["bondTier"]), GetNodeString(preTurnResident["bondTier"]), StringComparison.OrdinalIgnoreCase) &&
+               GetNodeInt(currentTargetResident["abodeDevotionLevel"]) == GetNodeInt(canonicalArrival["abodeDevotionLevel"]) &&
+               string.Equals(GetNodeString(currentTargetResident["abodeDevotionTier"]), GetNodeString(canonicalArrival["abodeDevotionTier"]), StringComparison.OrdinalIgnoreCase) &&
+               GetNodeInt(currentTargetResident["restlessness"]) == GetNodeInt(canonicalArrival["restlessness"]) &&
+               string.Equals(GetNodeString(currentTargetResident["migrationState"]), GetNodeString(canonicalArrival["migrationState"]), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string BuildResidentTransferStateSummary(
+        bool sourceResidentPresent,
+        JsonObject? targetResident,
+        string? departureHistoryEntryId,
+        string? arrivalHistoryEntryId)
+    {
+        var targetSummary = targetResident == null
+            ? "target=missing"
+            : $"target={GetNodeString(targetResident["guardianId"])}/{GetNodeString(targetResident["abodeId"])} state={GetNodeString(targetResident["migrationState"])} devotion={GetNodeInt(targetResident["abodeDevotionLevel"])} restlessness={GetNodeInt(targetResident["restlessness"])}";
+        return $"sourcePresent={sourceResidentPresent}; {targetSummary}; departureHistory={departureHistoryEntryId ?? ""}; arrivalHistory={arrivalHistoryEntryId ?? ""}";
+    }
+
+    private static bool ResidentIsPresent(JsonObject resident) =>
+        resident["isPresent"] is not JsonValue isPresentValue ||
+        !isPresentValue.TryGetValue<bool>(out var isPresent) ||
+        isPresent;
 
     private static int CountPresentResidentsForAbode(JsonObject residentsRoot, string guardianId, string abodeId)
     {

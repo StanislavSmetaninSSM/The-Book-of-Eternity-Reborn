@@ -13,31 +13,38 @@ public partial class ValidationService
         var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
         if (!string.IsNullOrWhiteSpace(residentJson))
         {
-            using var residentDoc = JsonDocument.Parse(residentJson);
-            if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
-                residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.EntriesProperty, out var residents) &&
-                residents.ValueKind == JsonValueKind.Array)
+            try
             {
-                foreach (var resident in residents.EnumerateArray())
+                using var residentDoc = JsonDocument.Parse(residentJson);
+                if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                    residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.EntriesProperty, out var residents) &&
+                    residents.ValueKind == JsonValueKind.Array)
                 {
-                    var residentId = GetFirstNonEmptyString(resident, "residentId");
-                    if (!string.IsNullOrWhiteSpace(residentId))
-                        knownResidentIds.Add(residentId);
+                    foreach (var resident in residents.EnumerateArray())
+                    {
+                        var residentId = GetFirstNonEmptyString(resident, "residentId");
+                        if (!string.IsNullOrWhiteSpace(residentId))
+                            knownResidentIds.Add(residentId);
+                    }
+                }
+
+                if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                    residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.ThoughtJournalProperty, out var thoughtJournal) &&
+                    thoughtJournal.ValueKind == JsonValueKind.Array)
+                {
+                    ValidateResidentJournalCrossReferences(thoughtJournal, $"{GuardianAbodeResidentState.StatePath}.{GuardianAbodeResidentState.ThoughtJournalProperty}", issues, knownResidentIds, "resident_thought_unknown_resident_id");
+                }
+
+                if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
+                    residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.InteractionLogProperty, out var interactionLog) &&
+                    interactionLog.ValueKind == JsonValueKind.Array)
+                {
+                    ValidateResidentJournalCrossReferences(interactionLog, $"{GuardianAbodeResidentState.StatePath}.{GuardianAbodeResidentState.InteractionLogProperty}", issues, knownResidentIds, "resident_interaction_log_unknown_resident_id");
                 }
             }
-
-            if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
-                residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.ThoughtJournalProperty, out var thoughtJournal) &&
-                thoughtJournal.ValueKind == JsonValueKind.Array)
+            catch
             {
-                ValidateResidentJournalCrossReferences(thoughtJournal, $"{GuardianAbodeResidentState.StatePath}.{GuardianAbodeResidentState.ThoughtJournalProperty}", issues, knownResidentIds, "resident_thought_unknown_resident_id");
-            }
-
-            if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
-                residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.InteractionLogProperty, out var interactionLog) &&
-                interactionLog.ValueKind == JsonValueKind.Array)
-            {
-                ValidateResidentJournalCrossReferences(interactionLog, $"{GuardianAbodeResidentState.StatePath}.{GuardianAbodeResidentState.InteractionLogProperty}", issues, knownResidentIds, "resident_interaction_log_unknown_resident_id");
+                // Resident state unreadability is surfaced by the AfterlifeResidents owner slice.
             }
         }
 

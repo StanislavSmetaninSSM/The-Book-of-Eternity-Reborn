@@ -58,8 +58,8 @@ public partial class ValidationService
 
     private static readonly HashSet<string> NpcStructuredSingleActorSections = new(StringComparer.OrdinalIgnoreCase)
     {
-        "UpdateNPCs",
-        "UpdateNpcTradeInventoryReceipts",
+        GuardianPolicyContracts.NpcCoreUpdateSectionName,
+        NpcTradeRequestState.UpdateReceiptsProperty,
         "NPCGoalUpdates",
         "NPCQuestUpdates",
         "NPCRelationshipChanges",
@@ -90,7 +90,7 @@ public partial class ValidationService
 
     private static readonly HashSet<string> NpcStructuredSpecialSections = new(StringComparer.OrdinalIgnoreCase)
     {
-        "NPCsRenameData",
+        GuardianPolicyContracts.NpcCoreRenameSectionName,
         "interNPCRelationshipChanges"
     };
 
@@ -253,38 +253,18 @@ public partial class ValidationService
 
     private async Task<string> ResolvePreTurnRealmAsync()
     {
-        return await TryResolvePreTurnRealmAsync() ?? "Chaos Sea";
+        return await TryResolvePreTurnRealmAsync() ?? string.Empty;
     }
 
     private async Task<string?> TryResolvePreTurnRealmAsync()
     {
-        const string snapshotSoulStatePath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
-        var snapshotExists = _fs.FileExists(snapshotSoulStatePath);
-        var snapshotJson = await _fs.ReadFileAsync(snapshotSoulStatePath);
-        if (snapshotExists)
+        var validatedManifest = await LoadValidatedCurrentPendingTurnSnapshotManifestAsync();
+        if (validatedManifest != null)
         {
-            if (string.IsNullOrWhiteSpace(snapshotJson))
-                return null;
-
-            try
-            {
-                using var doc = JsonDocument.Parse(snapshotJson);
-                if (doc.RootElement.TryGetProperty("currentRealm", out var realm) &&
-                    realm.ValueKind == JsonValueKind.String &&
-                    !string.IsNullOrWhiteSpace(realm.GetString()))
-                {
-                    return realm.GetString();
-                }
-            }
-            catch
-            {
-                return null;
-            }
-
-            return null;
+            return await TryReadValidatedPendingTurnSnapshotRealmAsync(validatedManifest);
         }
 
-        return await TryResolveCurrentRealmAsync();
+        return null;
     }
 
     private async Task<int> ReadCurrentIncarnationAsync()
@@ -566,34 +546,12 @@ public partial class ValidationService
 
     private static bool TryReadLifeTransitionControlFile(string json)
     {
-        try
-        {
-            using var doc = JsonDocument.Parse(json);
-            return TryReadLifeTransitionControlPayload(doc.RootElement, out _, out _);
-        }
-        catch
-        {
-            return false;
-        }
+        return CanonicalStateNormalizer.TryReadCanonicalTriggerLifeEnd(json, out _, out _);
     }
 
     private static bool TryReadLifeTransitionControlPayload(JsonElement root, out string reason, out string summary)
     {
-        reason = string.Empty;
-        summary = string.Empty;
-
-        if (root.ValueKind != JsonValueKind.Object)
-            return false;
-
-        var payload = root;
-        if (!payload.TryGetProperty("reason", out var reasonNode) || reasonNode.ValueKind != JsonValueKind.String)
-            return false;
-        if (!payload.TryGetProperty("summary", out var summaryNode) || summaryNode.ValueKind != JsonValueKind.String)
-            return false;
-
-        reason = reasonNode.GetString() ?? string.Empty;
-        summary = summaryNode.GetString() ?? string.Empty;
-        return !string.IsNullOrWhiteSpace(reason) && !string.IsNullOrWhiteSpace(summary);
+        return CanonicalStateNormalizer.TryReadCanonicalTriggerLifeEnd(root, out reason, out summary);
     }
 
     private static bool TryReadIncarnationControlFile(string json)
@@ -735,6 +693,7 @@ public partial class ValidationService
     {
         var result = new StructuredActorExtractionResult();
         await CollectStructuredNpcUpdatesAsync(result.Updates);
+        await CollectStructuredResidentUpdatesAsync(result.Updates);
         CollectStructuredGuardianUpdates(result, guardianPolicyContext);
         return result;
     }
@@ -779,6 +738,50 @@ public partial class ValidationService
                         updates.Add(update);
                 }
             }
+        }
+        catch
+        {
+            // Ignore consistency extraction failures; generic validation will surface malformed JSON separately.
+        }
+    }
+
+    private async Task CollectStructuredResidentUpdatesAsync(List<StructuredActorUpdate> updates)
+    {
+        var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(residentJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(residentJson) is not JsonObject currentRoot)
+                return;
+
+            GuardianAbodeResidentState.NormalizeShape(currentRoot);
+            var aliasLookup = BuildResidentAliasLookup(currentRoot);
+
+            if (currentRoot[GuardianAbodeResidentState.UpdateProperty] is JsonArray residentUpdates)
+            {
+                foreach (var item in residentUpdates.OfType<JsonObject>())
+                {
+                    if (TryCreateResidentStructuredActorUpdate(item, aliasLookup, GuardianAbodeResidentState.UpdateProperty, out var update))
+                        updates.Add(update);
+                }
+            }
+
+            AddResidentJournalStructuredActorUpdates(currentRoot[GuardianAbodeResidentState.UpdateThoughtJournalProperty], aliasLookup, GuardianAbodeResidentState.UpdateThoughtJournalProperty, updates);
+            AddResidentJournalStructuredActorUpdates(currentRoot[GuardianAbodeResidentState.UpdateInteractionLogProperty], aliasLookup, GuardianAbodeResidentState.UpdateInteractionLogProperty, updates);
+            AddResidentJournalStructuredActorUpdates(currentRoot[GuardianAbodeResidentState.UpdateHistoryLogProperty], aliasLookup, GuardianAbodeResidentState.UpdateHistoryLogProperty, updates);
+            AddResidentJournalStructuredActorUpdates(currentRoot[GuardianAbodeResidentState.UpdateInteractionReceiptsProperty], aliasLookup, GuardianAbodeResidentState.UpdateInteractionReceiptsProperty, updates);
+
+            var preTurnResidentJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(GuardianAbodeResidentState.StatePath);
+            if (string.IsNullOrWhiteSpace(preTurnResidentJson))
+                return;
+
+            if (JsonNode.Parse(preTurnResidentJson) is not JsonObject preTurnRoot)
+                return;
+
+            GuardianAbodeResidentState.NormalizeShape(preTurnRoot);
+            CollectResidentCanonicalDiffStructuredActorTouches(preTurnRoot, currentRoot, aliasLookup, updates);
         }
         catch
         {
@@ -871,7 +874,7 @@ public partial class ValidationService
     private static Dictionary<string, string> BuildNpcAliasLookup(JsonElement root)
     {
         var aliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var sectionName in new[] { "NPCsInScene", "UpdateNPCs" })
+        foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
         {
             if (!root.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
                 continue;
@@ -886,6 +889,62 @@ public partial class ValidationService
         }
 
         return aliases;
+    }
+
+    private static Dictionary<string, string> BuildResidentAliasLookup(JsonObject root)
+    {
+        var aliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        if (root[GuardianAbodeResidentState.EntriesProperty] is JsonArray entries)
+        {
+            foreach (var resident in entries.OfType<JsonObject>())
+            {
+                var residentId = GetNodeString(resident["residentId"]);
+                var displayName = GetNodeString(resident["displayName"]);
+                if (!string.IsNullOrWhiteSpace(residentId) && !string.IsNullOrWhiteSpace(displayName))
+                    aliases[residentId] = displayName;
+            }
+        }
+
+        if (root[GuardianAbodeResidentState.UpdateProperty] is JsonArray updateEntries)
+        {
+            foreach (var resident in updateEntries.OfType<JsonObject>())
+            {
+                var residentId = GetNodeString(resident["residentId"]);
+                var displayName = GetNodeString(resident["displayName"]);
+                if (!string.IsNullOrWhiteSpace(residentId) && !string.IsNullOrWhiteSpace(displayName))
+                    aliases[residentId] = displayName;
+            }
+        }
+
+        return aliases;
+    }
+
+    private static Dictionary<string, (JsonElement Npc, string Context)> BuildCanonicalNpcTradeValidationMap(
+        JsonElement root,
+        string contextPrefix)
+    {
+        var map = new Dictionary<string, (JsonElement Npc, string Context)>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+        {
+            if (!root.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
+                continue;
+
+            var index = 0;
+            foreach (var item in arr.EnumerateArray())
+            {
+                var itemContext = $"{contextPrefix}.{sectionName}[{index++}]";
+                if (item.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
+                if (!string.IsNullOrWhiteSpace(npcId))
+                    map[npcId] = (item, itemContext);
+            }
+        }
+
+        return map;
     }
 
     private static Dictionary<string, List<string>> BuildGuardianAliasLookup(JsonElement root)
@@ -1239,6 +1298,108 @@ public partial class ValidationService
         return update.Aliases.Count > 0;
     }
 
+    private static bool TryCreateResidentStructuredActorUpdate(
+        JsonObject item,
+        Dictionary<string, string> aliasLookup,
+        string sectionName,
+        out StructuredActorUpdate update)
+    {
+        update = new StructuredActorUpdate();
+
+        var residentId = GetNodeString(item["residentId"]);
+        var displayName = GetNodeString(item["displayName"]);
+        if (string.IsNullOrWhiteSpace(displayName) &&
+            !string.IsNullOrWhiteSpace(residentId) &&
+            aliasLookup.TryGetValue(residentId, out var mappedName))
+        {
+            displayName = mappedName;
+        }
+
+        if (string.IsNullOrWhiteSpace(displayName) && string.IsNullOrWhiteSpace(residentId))
+            return false;
+
+        update = new StructuredActorUpdate
+        {
+            ActorType = "Resident",
+            FilePath = GuardianAbodeResidentState.StatePath,
+            Section = sectionName,
+            DisplayName = !string.IsNullOrWhiteSpace(displayName) ? displayName! : residentId!,
+            HasResolvedName = !string.IsNullOrWhiteSpace(displayName)
+        };
+
+        if (!string.IsNullOrWhiteSpace(displayName))
+            update.Aliases.Add(displayName);
+        if (!string.IsNullOrWhiteSpace(residentId))
+        {
+            update.Aliases.Add(residentId);
+            if (aliasLookup.TryGetValue(residentId, out var resolvedName))
+                update.Aliases.Add(resolvedName);
+        }
+
+        return update.Aliases.Count > 0;
+    }
+
+    private static void AddResidentJournalStructuredActorUpdates(
+        JsonNode? node,
+        Dictionary<string, string> aliasLookup,
+        string sectionName,
+        List<StructuredActorUpdate> updates)
+    {
+        if (node is not JsonArray entries)
+            return;
+
+        foreach (var item in entries.OfType<JsonObject>())
+        {
+            if (TryCreateResidentStructuredActorUpdate(item, aliasLookup, sectionName, out var update))
+                updates.Add(update);
+        }
+    }
+
+    private static void CollectResidentCanonicalDiffStructuredActorTouches(
+        JsonObject preTurnRoot,
+        JsonObject currentRoot,
+        Dictionary<string, string> aliasLookup,
+        List<StructuredActorUpdate> updates)
+    {
+        var previousFingerprints = BuildResidentEntryFingerprints(preTurnRoot);
+        var currentFingerprints = BuildResidentEntryFingerprints(currentRoot);
+
+        foreach (var pair in currentFingerprints)
+        {
+            if (previousFingerprints.TryGetValue(pair.Key, out var previousFingerprint) &&
+                string.Equals(previousFingerprint, pair.Value, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            var resident = GuardianAbodeResidentState.FindResident(currentRoot, pair.Key);
+            if (resident != null &&
+                TryCreateResidentStructuredActorUpdate(resident, aliasLookup, GuardianAbodeResidentState.EntriesProperty, out var update))
+            {
+                updates.Add(update);
+            }
+        }
+    }
+
+    private static Dictionary<string, string> BuildResidentEntryFingerprints(JsonObject root)
+    {
+        GuardianAbodeResidentState.NormalizeShape(root);
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (root[GuardianAbodeResidentState.EntriesProperty] is not JsonArray entries)
+            return result;
+
+        foreach (var resident in entries.OfType<JsonObject>())
+        {
+            var residentId = GetNodeString(resident["residentId"]);
+            if (string.IsNullOrWhiteSpace(residentId))
+                continue;
+
+            result[residentId] = resident.ToJsonString();
+        }
+
+        return result;
+    }
+
     private bool TryCreateGuardianStructuredActorUpdate(
         JsonElement item,
         Dictionary<string, List<string>> aliasLookup,
@@ -1472,9 +1633,12 @@ public partial class ValidationService
                 update.FilePath,
                 IssueSeverity.Error,
                 $"Структурированное обновление {update.ActorType} '{update.DisplayName}' не покрыто declared relevant actors",
-                code: update.ActorType == "Guardian"
-                    ? "structured_guardian_update_out_of_scope"
-                    : "structured_npc_update_out_of_scope",
+                code: update.ActorType switch
+                {
+                    "Guardian" => "structured_guardian_update_out_of_scope",
+                    "Resident" => "structured_resident_update_out_of_scope",
+                    _ => "structured_npc_update_out_of_scope"
+                },
                 actor: update.DisplayName,
                 section: update.Section,
                 expected: $"'{update.DisplayName}' declared in Relevant actors",
@@ -1659,6 +1823,7 @@ public partial class ValidationService
             var visibleProps = doc.RootElement.EnumerateObject()
                 .Where(prop => !prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
                 .ToList();
+            var hasUnsupportedVisibleTopLevelKeys = visibleProps.Any(prop => !allowedKeys.Contains(prop.Name));
             if (visibleProps.Count > 0 && !visibleProps.Any(prop => allowedKeys.Contains(prop.Name)))
             {
                 issues.Add(new ValidationIssue(
@@ -1689,7 +1854,13 @@ public partial class ValidationService
                 }
             }
 
-            ValidateNpcContract(doc.RootElement, filePath, issues);
+            ValidateNpcContract(
+                doc.RootElement,
+                filePath,
+                issues,
+                skipManifestedCompanionSourceValidation:
+                    filePath.Equals("game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase) &&
+                    hasUnsupportedVisibleTopLevelKeys);
         }
         catch (JsonException ex)
         {
@@ -2044,6 +2215,7 @@ public partial class ValidationService
     private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
     {
         return normalizedPath.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith(QteSceneService.QteNormalizerBackupDirectory + "/", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/validation_repair_request.json", StringComparison.OrdinalIgnoreCase) ||
@@ -2057,6 +2229,7 @@ public partial class ValidationService
                normalizedPath.Equals(GuardianTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(AfterlifeArchiveActionState.ConsultationRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(AfterlifeArchiveActionState.ProjectFuelRequestPath, StringComparison.OrdinalIgnoreCase) ||
@@ -2071,9 +2244,14 @@ public partial class ValidationService
                normalizedPath.Equals("lore/current_world/world_directives.json", StringComparison.OrdinalIgnoreCase);
     }
 
-    private void ValidateNpcContract(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    private void ValidateNpcContract(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        bool skipManifestedCompanionSourceValidation = false)
     {
-        ValidateNpcSceneArray(root, contextPrefix, issues);
+        ValidateNpcSceneArray(root, contextPrefix, issues, skipManifestedCompanionSourceValidation);
+        ValidateNpcTradeReceiptUpdateCommands(root, contextPrefix, issues);
         ValidateNpcRenameData(root, contextPrefix, issues);
         ValidateNpcJournals(root, contextPrefix, issues);
         ValidateItemJournalUpdateCommands(root, contextPrefix, issues);
@@ -2105,7 +2283,11 @@ public partial class ValidationService
         ValidateNpcCustomStateChanges(root, contextPrefix, issues);
     }
 
-    private void ValidateNpcSceneArray(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    private void ValidateNpcSceneArray(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        bool skipManifestedCompanionSourceValidation = false)
     {
         var tradeSignaturesByNpc = new Dictionary<string, (string Context, string? TradeStateSignature, string? TradeInventorySignature, string? BuybackInventorySignature)>(StringComparer.OrdinalIgnoreCase);
         var sameTurnLocationInitialIds = CollectSameTurnLocationInitialIds(root);
@@ -2113,9 +2295,10 @@ public partial class ValidationService
         var currentSceneLocationId = currentSceneAnchor.LocationId;
         var currentSceneInitialId = currentSceneAnchor.InitialId;
         var currentSceneMissingInitialAnchor = IsCurrentSceneNewLocationWithoutInitialIdSync();
-        ValidateCompanionManifestationNpcSources(root, contextPrefix, issues);
+        if (!skipManifestedCompanionSourceValidation)
+            ValidateCompanionManifestationNpcSources(root, contextPrefix, issues);
 
-        foreach (var sectionName in new[] { "NPCsInScene", "UpdateNPCs" })
+        foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
         {
             if (!TryGetArray(root, sectionName, $"{contextPrefix}.{sectionName}", issues, out var arr))
                 continue;
@@ -2309,7 +2492,7 @@ public partial class ValidationService
     private void ValidateCompanionManifestationNpcSources(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         var seenCompanionSourceRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var sectionName in new[] { "NPCsInScene", "UpdateNPCs", "NPCs", "npcs", "npcDataChanges" })
+        foreach (var sectionName in GuardianPolicyContracts.ManifestedCompanionNpcCarrierSections)
         {
             if (!root.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
                 continue;
@@ -3046,6 +3229,318 @@ public partial class ValidationService
         }
     }
 
+    private readonly struct NpcTradeReceiptValidationSnapshot
+    {
+        public NpcTradeReceiptValidationSnapshot(
+            string requestId,
+            string npcId,
+            string tradeCycleId,
+            string merchantProfile,
+            string status,
+            int itemCount,
+            string resolvedAtUtc)
+        {
+            RequestId = requestId;
+            NpcId = npcId;
+            TradeCycleId = tradeCycleId;
+            MerchantProfile = merchantProfile;
+            Status = status;
+            ItemCount = itemCount;
+            ResolvedAtUtc = resolvedAtUtc;
+        }
+
+        public string RequestId { get; }
+        public string NpcId { get; }
+        public string TradeCycleId { get; }
+        public string MerchantProfile { get; }
+        public string Status { get; }
+        public int ItemCount { get; }
+        public string ResolvedAtUtc { get; }
+    }
+
+    private void ValidateNpcTradeReceiptUpdateCommands(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!TryGetArray(root, NpcTradeRequestState.UpdateReceiptsProperty, $"{contextPrefix}.{NpcTradeRequestState.UpdateReceiptsProperty}", issues, out var receiptUpdates))
+            return;
+
+        var effectiveRoot = NpcTradeRequestState.CreateReceiptAppliedValidationView(root);
+        if (effectiveRoot == null)
+            return;
+
+        using var effectiveDoc = JsonDocument.Parse(effectiveRoot.ToJsonString());
+        var npcTradeValidationMap = BuildCanonicalNpcTradeValidationMap(effectiveDoc.RootElement, contextPrefix);
+        var seenRequestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var affectedNpcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        var receiptIndex = 0;
+        foreach (var receipt in receiptUpdates.EnumerateArray())
+        {
+            var receiptContext = $"{contextPrefix}.{NpcTradeRequestState.UpdateReceiptsProperty}[{receiptIndex++}]";
+            if (!RequireObject(receipt, receiptContext, issues))
+                continue;
+
+            var receiptSnapshot = ValidateNpcTradeReceiptSchema(receipt, receiptContext, issues, seenRequestIds);
+
+            if (string.IsNullOrWhiteSpace(receiptSnapshot.RequestId) || string.IsNullOrWhiteSpace(receiptSnapshot.NpcId))
+                continue;
+
+            if (!npcTradeValidationMap.ContainsKey(receiptSnapshot.NpcId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.npcId",
+                    IssueSeverity.Error,
+                    "UpdateNpcTradeInventoryReceipts должен ссылаться на существующего NPC из canonical npc_core state",
+                    code: "npc_trade_receipt_unknown_npc",
+                    section: "tradeInventory",
+                    expected: "existing NPC reference from UpdateNPCs or NPCsInScene",
+                    actual: receiptSnapshot.NpcId,
+                    repairHint: "Закрывай UpdateNpcTradeInventoryReceipts только для NPC из canonical UpdateNPCs/NPCsInScene текущего accepted turn."));
+                continue;
+            }
+
+            affectedNpcIds.Add(receiptSnapshot.NpcId);
+        }
+
+        foreach (var npcId in affectedNpcIds)
+        {
+            if (npcTradeValidationMap.TryGetValue(npcId, out var validationEntry))
+                ValidateNpcTradeReceiptStateConsistency(validationEntry.Npc, validationEntry.Context, issues);
+        }
+    }
+
+    private NpcTradeReceiptValidationSnapshot ValidateNpcTradeReceiptSchema(
+        JsonElement receipt,
+        string receiptContext,
+        List<ValidationIssue> issues,
+        HashSet<string> seenRequestIds)
+    {
+        var requestId = RequireString(receipt, receiptContext, issues, "requestId");
+        var receiptNpcId = RequireString(receipt, receiptContext, issues, "npcId");
+        ValidateOptionalString(receipt, receiptContext, issues, "npcName");
+        var receiptCycleId = RequireString(receipt, receiptContext, issues, "tradeCycleId");
+        var receiptMerchantProfile = RequireString(receipt, receiptContext, issues, "merchantProfile");
+        var receiptStatus = RequireString(receipt, receiptContext, issues, "status");
+        RequireNonNegativeNumberField(receipt, receiptContext, issues, "itemCount");
+        RequirePositiveNumberField(receipt, receiptContext, issues, "resolvedAtTurn");
+        var resolvedAtUtc = RequireString(receipt, receiptContext, issues, "resolvedAtUtc");
+
+        if (!string.IsNullOrWhiteSpace(requestId) && !seenRequestIds.Add(requestId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{receiptContext}.requestId",
+                IssueSeverity.Error,
+                "npc trade receipts содержит duplicate requestId",
+                code: "npc_trade_receipts_duplicate_request_id",
+                section: "tradeInventory",
+                actual: requestId));
+        }
+
+        if (!string.IsNullOrWhiteSpace(receiptStatus) &&
+            !string.Equals(receiptStatus, NpcTradeRequestState.ReceiptStatusReady, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{receiptContext}.status",
+                IssueSeverity.Error,
+                "npc trade receipt.status должен быть ready",
+                code: "npc_trade_receipt_status_invalid",
+                section: "tradeInventory",
+                expected: NpcTradeRequestState.ReceiptStatusReady,
+                actual: receiptStatus));
+        }
+
+        if (!string.IsNullOrWhiteSpace(receiptMerchantProfile) &&
+            !NpcTradeService.IsValidMerchantProfileCode(receiptMerchantProfile))
+        {
+            issues.Add(new ValidationIssue(
+                $"{receiptContext}.merchantProfile",
+                IssueSeverity.Error,
+                "npc trade receipt.merchantProfile должен быть допустимым merchant profile",
+                code: "npc_trade_receipt_profile_invalid",
+                section: "tradeInventory",
+                actual: receiptMerchantProfile));
+        }
+
+        if (!string.IsNullOrWhiteSpace(resolvedAtUtc) &&
+            !DateTimeOffset.TryParse(resolvedAtUtc, out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{receiptContext}.resolvedAtUtc",
+                IssueSeverity.Error,
+                "npc trade receipt.resolvedAtUtc должен быть валидным ISO timestamp",
+                code: "npc_trade_receipt_timestamp_invalid",
+                section: "tradeInventory",
+                actual: resolvedAtUtc));
+        }
+
+        var itemCount = receipt.TryGetProperty("itemCount", out var itemCountNode) &&
+                        itemCountNode.ValueKind == JsonValueKind.Number &&
+                        itemCountNode.TryGetInt32(out var parsedItemCount)
+            ? parsedItemCount
+            : -1;
+
+        return new NpcTradeReceiptValidationSnapshot(
+            requestId,
+            receiptNpcId,
+            receiptCycleId,
+            receiptMerchantProfile,
+            receiptStatus,
+            itemCount,
+            resolvedAtUtc);
+    }
+
+    private NpcTradeReceiptValidationSnapshot ReadNpcTradeReceiptValidationSnapshot(JsonElement receipt)
+    {
+        var itemCount = receipt.TryGetProperty("itemCount", out var itemCountNode) &&
+                        itemCountNode.ValueKind == JsonValueKind.Number &&
+                        itemCountNode.TryGetInt32(out var parsedItemCount)
+            ? parsedItemCount
+            : -1;
+
+        return new NpcTradeReceiptValidationSnapshot(
+            GetFirstNonEmptyString(receipt, "requestId") ?? "",
+            GetFirstNonEmptyString(receipt, "npcId") ?? "",
+            GetFirstNonEmptyString(receipt, "tradeCycleId") ?? "",
+            GetFirstNonEmptyString(receipt, "merchantProfile") ?? "",
+            GetFirstNonEmptyString(receipt, "status") ?? "",
+            itemCount,
+            GetFirstNonEmptyString(receipt, "resolvedAtUtc") ?? "");
+    }
+
+    private void RequirePositiveNumberField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    {
+        if (!root.TryGetProperty(propName, out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{propName}",
+                IssueSeverity.Error,
+                $"Отсутствует обязательное положительное числовое поле: {propName}",
+                code: "missing_required_positive_integer_field",
+                expected: "positive integer",
+                actual: "missing",
+                repairHint: $"Добавь обязательное числовое поле {propName} и сохраняй его как положительное целое число."));
+            return;
+        }
+
+        ValidatePositiveNumberField(root, contextPrefix, issues, propName);
+    }
+
+    private void ValidateNpcTradeReceiptStateConsistency(JsonElement npc, string npcContext, List<ValidationIssue> issues)
+    {
+        if (!npc.TryGetProperty(NpcTradeRequestState.ReceiptsProperty, out var receiptsNode) ||
+            receiptsNode.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var npcId = GetFirstNonEmptyString(npc, "npcId", "NPCId") ?? "";
+        var normalizedMerchantProfile = ResolveNormalizedMerchantProfileForValidation(npc);
+        var hasTradeInventory = npc.TryGetProperty("tradeInventory", out var tradeInventory) && tradeInventory.ValueKind == JsonValueKind.Object;
+        var tradeCycleId = hasTradeInventory ? GetFirstNonEmptyString(tradeInventory, "tradeCycleId") ?? "" : "";
+        var tradeItemCount = -1;
+        var hasTradeInventoryItems = false;
+        if (hasTradeInventory &&
+            tradeInventory.TryGetProperty("items", out var items) &&
+            items.ValueKind == JsonValueKind.Array)
+        {
+            hasTradeInventoryItems = true;
+            tradeItemCount = items.GetArrayLength();
+        }
+
+        var seenRequestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var currentCycleReadyReceipts = 0;
+        var receiptIndex = 0;
+        foreach (var receipt in receiptsNode.EnumerateArray())
+        {
+            var receiptContext = $"{npcContext}.{NpcTradeRequestState.ReceiptsProperty}[{receiptIndex++}]";
+            if (!RequireObject(receipt, receiptContext, issues))
+                continue;
+
+            var receiptSnapshot = ReadNpcTradeReceiptValidationSnapshot(receipt);
+            if (!string.IsNullOrWhiteSpace(receiptSnapshot.RequestId) && !seenRequestIds.Add(receiptSnapshot.RequestId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.requestId",
+                    IssueSeverity.Error,
+                    "npc trade receipts содержит duplicate requestId",
+                    code: "npc_trade_receipts_duplicate_request_id",
+                    section: "tradeInventory",
+                    actual: receiptSnapshot.RequestId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(receiptSnapshot.NpcId) &&
+                !string.Equals(receiptSnapshot.NpcId, npcId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.npcId",
+                    IssueSeverity.Error,
+                    "npc trade receipt.npcId должен совпадать с владельцем receipt",
+                    code: "npc_trade_receipt_npc_mismatch",
+                    section: "tradeInventory",
+                    expected: npcId,
+                    actual: receiptSnapshot.NpcId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(receiptSnapshot.MerchantProfile) &&
+                !string.IsNullOrWhiteSpace(normalizedMerchantProfile) &&
+                !string.Equals(NpcTradeService.ResolveMerchantProfileCode(receiptSnapshot.MerchantProfile), normalizedMerchantProfile, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.merchantProfile",
+                    IssueSeverity.Error,
+                    "npc trade receipt.merchantProfile должен совпадать с merchantProfile НПС",
+                    code: "npc_trade_receipt_profile_mismatch",
+                    section: "tradeInventory",
+                    expected: normalizedMerchantProfile,
+                    actual: receiptSnapshot.MerchantProfile));
+            }
+
+            if (hasTradeInventoryItems &&
+                !string.IsNullOrWhiteSpace(receiptSnapshot.TradeCycleId) &&
+                !string.IsNullOrWhiteSpace(tradeCycleId) &&
+                string.Equals(receiptSnapshot.TradeCycleId, tradeCycleId, StringComparison.OrdinalIgnoreCase))
+            {
+                currentCycleReadyReceipts++;
+
+                if (receiptSnapshot.ItemCount != tradeItemCount)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{receiptContext}.itemCount",
+                        IssueSeverity.Error,
+                        "npc trade receipt.itemCount должен совпадать с количеством tradeInventory.items текущего цикла",
+                        code: "npc_trade_receipt_item_count_mismatch",
+                        section: "tradeInventory",
+                        expected: tradeItemCount.ToString(),
+                        actual: receiptSnapshot.ItemCount < 0 ? "missing" : receiptSnapshot.ItemCount.ToString()));
+                }
+            }
+        }
+
+        if (currentCycleReadyReceipts > 1)
+        {
+            issues.Add(new ValidationIssue(
+                $"{npcContext}.{NpcTradeRequestState.ReceiptsProperty}",
+                IssueSeverity.Error,
+                "Для одного NPC и текущего tradeCycleId допустим только один ready receipt",
+                code: "npc_trade_receipts_duplicate_current_cycle",
+                section: "tradeInventory",
+                actual: currentCycleReadyReceipts.ToString()));
+        }
+    }
+
+    private static string ResolveNormalizedMerchantProfileForValidation(JsonElement npc)
+    {
+        var merchantProfile = "";
+        if (npc.TryGetProperty("tradeState", out var tradeState) && tradeState.ValueKind == JsonValueKind.Object)
+            merchantProfile = GetFirstNonEmptyString(tradeState, "merchantProfile") ?? "";
+
+        return NpcTradeService.ResolveMerchantProfileCode(
+            merchantProfile,
+            GetFirstNonEmptyString(npc, "role"),
+            GetFirstNonEmptyString(npc, "occupation"),
+            GetFirstNonEmptyString(npc, "class"),
+            GetFirstNonEmptyString(npc, "name"));
+    }
+
     private void ValidateNpcTradeState(JsonElement npc, string npcContext, List<ValidationIssue> issues)
     {
         if (npc.TryGetProperty("tradeState", out var tradeState))
@@ -3095,21 +3590,14 @@ public partial class ValidationService
                 actual: "tradeState missing"));
         }
 
-        var merchantProfile = "";
         var hasTradeState = npc.TryGetProperty("tradeState", out tradeState) && tradeState.ValueKind == JsonValueKind.Object;
         var hasCanTradeTrue = false;
         if (hasTradeState)
         {
-            merchantProfile = GetFirstNonEmptyString(tradeState, "merchantProfile") ?? "";
             if (tradeState.TryGetProperty("canTrade", out var canTradeNode) && canTradeNode.ValueKind == JsonValueKind.True)
                 hasCanTradeTrue = true;
         }
-        var normalizedMerchantProfile = NpcTradeService.ResolveMerchantProfileCode(
-            merchantProfile,
-            GetFirstNonEmptyString(npc, "role"),
-            GetFirstNonEmptyString(npc, "occupation"),
-            GetFirstNonEmptyString(npc, "class"),
-            GetFirstNonEmptyString(npc, "name"));
+        var normalizedMerchantProfile = ResolveNormalizedMerchantProfileForValidation(npc);
 
         ValidateNpcBuybackInventory(npc, npcContext, normalizedMerchantProfile, issues);
 
@@ -3216,7 +3704,7 @@ public partial class ValidationService
                 code: "npc_trade_requires_valid_profile",
                 section: "tradeInventory",
                 expected: "valid merchant profile",
-                actual: merchantProfile ?? "missing"));
+                actual: hasTradeState ? GetFirstNonEmptyString(tradeState, "merchantProfile") ?? "missing" : "missing"));
         }
 
         if (!hasCanTradeTrue)
@@ -3359,152 +3847,40 @@ public partial class ValidationService
             }
         }
 
-        if (npc.TryGetProperty(NpcTradeRequestState.ReceiptsProperty, out var receiptsNode))
+        ValidateNpcTradeReceipts(npc, npcContext, issues);
+    }
+
+    private void ValidateNpcTradeReceipts(JsonElement npc, string npcContext, List<ValidationIssue> issues)
+    {
+        if (!npc.TryGetProperty(NpcTradeRequestState.ReceiptsProperty, out var receiptsNode))
+            return;
+
+        if (receiptsNode.ValueKind != JsonValueKind.Array)
         {
-            if (receiptsNode.ValueKind != JsonValueKind.Array)
-            {
-                issues.Add(new ValidationIssue(
-                    $"{npcContext}.{NpcTradeRequestState.ReceiptsProperty}",
-                    IssueSeverity.Error,
-                    "npc tradeInventoryReceipts должен быть массивом canonical receipts",
-                    code: "npc_trade_receipts_invalid_root",
-                    section: "tradeInventory",
-                    expected: "array",
-                    actual: receiptsNode.ValueKind.ToString(),
-                    repairHint: "Храни npc trade ready receipts как массив объектов в npc.tradeInventoryReceipts."));
-            }
-            else
-            {
-                var seenRequestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                var currentCycleReadyReceipts = 0;
-                var receiptIndex = 0;
-                foreach (var receipt in receiptsNode.EnumerateArray())
-                {
-                    var receiptContext = $"{npcContext}.{NpcTradeRequestState.ReceiptsProperty}[{receiptIndex++}]";
-                    if (!RequireObject(receipt, receiptContext, issues))
-                        continue;
-
-                    var requestId = RequireString(receipt, receiptContext, issues, "requestId");
-                    var receiptNpcId = RequireString(receipt, receiptContext, issues, "npcId");
-                    ValidateOptionalString(receipt, receiptContext, issues, "npcName");
-                    var receiptCycleId = RequireString(receipt, receiptContext, issues, "tradeCycleId");
-                    var receiptMerchantProfile = RequireString(receipt, receiptContext, issues, "merchantProfile");
-                    var receiptStatus = RequireString(receipt, receiptContext, issues, "status");
-                    ValidateNonNegativeNumberField(receipt, receiptContext, issues, "itemCount");
-                    ValidatePositiveNumberField(receipt, receiptContext, issues, "resolvedAtTurn");
-                    var resolvedAtUtc = RequireString(receipt, receiptContext, issues, "resolvedAtUtc");
-
-                    if (!string.IsNullOrWhiteSpace(requestId) && !seenRequestIds.Add(requestId))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{receiptContext}.requestId",
-                            IssueSeverity.Error,
-                            "npc tradeInventoryReceipts содержит duplicate requestId",
-                            code: "npc_trade_receipts_duplicate_request_id",
-                            section: "tradeInventory",
-                            actual: requestId));
-                    }
-
-                    var npcId = GetFirstNonEmptyString(npc, "npcId", "NPCId") ?? "";
-                    if (!string.IsNullOrWhiteSpace(receiptNpcId) &&
-                        !string.Equals(receiptNpcId, npcId, StringComparison.OrdinalIgnoreCase))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{receiptContext}.npcId",
-                            IssueSeverity.Error,
-                            "npc trade receipt.npcId должен совпадать с владельцем receipt",
-                            code: "npc_trade_receipt_npc_mismatch",
-                            section: "tradeInventory",
-                            expected: npcId,
-                            actual: receiptNpcId));
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(receiptStatus) &&
-                        !string.Equals(receiptStatus, NpcTradeRequestState.ReceiptStatusReady, StringComparison.OrdinalIgnoreCase))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{receiptContext}.status",
-                            IssueSeverity.Error,
-                            "npc trade receipt.status должен быть ready",
-                            code: "npc_trade_receipt_status_invalid",
-                            section: "tradeInventory",
-                            expected: NpcTradeRequestState.ReceiptStatusReady,
-                            actual: receiptStatus));
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(receiptMerchantProfile) &&
-                        !NpcTradeService.IsValidMerchantProfileCode(receiptMerchantProfile))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{receiptContext}.merchantProfile",
-                            IssueSeverity.Error,
-                            "npc trade receipt.merchantProfile должен быть допустимым merchant profile",
-                            code: "npc_trade_receipt_profile_invalid",
-                            section: "tradeInventory",
-                            actual: receiptMerchantProfile));
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(receiptMerchantProfile) &&
-                        !string.IsNullOrWhiteSpace(normalizedMerchantProfile) &&
-                        !string.Equals(NpcTradeService.ResolveMerchantProfileCode(receiptMerchantProfile), normalizedMerchantProfile, StringComparison.OrdinalIgnoreCase))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{receiptContext}.merchantProfile",
-                            IssueSeverity.Error,
-                            "npc trade receipt.merchantProfile должен совпадать с merchantProfile НПС",
-                            code: "npc_trade_receipt_profile_mismatch",
-                            section: "tradeInventory",
-                            expected: normalizedMerchantProfile,
-                            actual: receiptMerchantProfile));
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(receiptCycleId) &&
-                        !string.IsNullOrWhiteSpace(tradeCycleId) &&
-                        string.Equals(receiptCycleId, tradeCycleId, StringComparison.OrdinalIgnoreCase))
-                    {
-                        currentCycleReadyReceipts++;
-
-                        var itemCount = receipt.TryGetProperty("itemCount", out var itemCountNode) && itemCountNode.ValueKind == JsonValueKind.Number && itemCountNode.TryGetInt32(out var parsedItemCount)
-                            ? parsedItemCount
-                            : -1;
-                        if (itemCount != items.GetArrayLength())
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{receiptContext}.itemCount",
-                                IssueSeverity.Error,
-                                "npc trade receipt.itemCount должен совпадать с количеством tradeInventory.items текущего цикла",
-                                code: "npc_trade_receipt_item_count_mismatch",
-                                section: "tradeInventory",
-                                expected: items.GetArrayLength().ToString(),
-                                actual: itemCount < 0 ? "missing" : itemCount.ToString()));
-                        }
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(resolvedAtUtc) &&
-                        !DateTimeOffset.TryParse(resolvedAtUtc, out _))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{receiptContext}.resolvedAtUtc",
-                            IssueSeverity.Error,
-                            "npc trade receipt.resolvedAtUtc должен быть валидным ISO timestamp",
-                            code: "npc_trade_receipt_timestamp_invalid",
-                            section: "tradeInventory",
-                            actual: resolvedAtUtc));
-                    }
-                }
-
-                if (currentCycleReadyReceipts > 1)
-                {
-                    issues.Add(new ValidationIssue(
-                        $"{npcContext}.{NpcTradeRequestState.ReceiptsProperty}",
-                        IssueSeverity.Error,
-                        "Для одного NPC и текущего tradeCycleId допустим только один ready receipt",
-                        code: "npc_trade_receipts_duplicate_current_cycle",
-                        section: "tradeInventory",
-                        actual: currentCycleReadyReceipts.ToString()));
-                }
-            }
+            issues.Add(new ValidationIssue(
+                $"{npcContext}.{NpcTradeRequestState.ReceiptsProperty}",
+                IssueSeverity.Error,
+                "npc tradeInventoryReceipts должен быть массивом canonical receipts",
+                code: "npc_trade_receipts_invalid_root",
+                section: "tradeInventory",
+                expected: "array",
+                actual: receiptsNode.ValueKind.ToString(),
+                repairHint: "Храни npc trade ready receipts как массив объектов в npc.tradeInventoryReceipts."));
+            return;
         }
+
+        var seenRequestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var receiptIndex = 0;
+        foreach (var receipt in receiptsNode.EnumerateArray())
+        {
+            var receiptContext = $"{npcContext}.{NpcTradeRequestState.ReceiptsProperty}[{receiptIndex++}]";
+            if (!RequireObject(receipt, receiptContext, issues))
+                continue;
+
+            ValidateNpcTradeReceiptSchema(receipt, receiptContext, issues, seenRequestIds);
+        }
+
+        ValidateNpcTradeReceiptStateConsistency(npc, npcContext, issues);
     }
 
     private void ValidateNpcBuybackInventory(JsonElement npc, string npcContext, string? normalizedMerchantProfile, List<ValidationIssue> issues)
@@ -5028,6 +5404,25 @@ public partial class ValidationService
         if (!RequireObject(metaState, context, issues))
             return;
 
+        foreach (var property in metaState.EnumerateObject())
+        {
+            if (property.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (GuardianPolicyContracts.MetaStateVisibleTopLevelCommandKeys.Contains(property.Name))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{context}.{property.Name}",
+                IssueSeverity.Error,
+                "metaStateUpdates содержит unsupported visible key",
+                code: "meta_state_unknown_top_level_update_key",
+                section: "Lifecycle",
+                expected: $"visible keys limited to {string.Join("/", GuardianPolicyContracts.MetaStateVisibleTopLevelCommandKeys.OrderBy(key => key, StringComparer.OrdinalIgnoreCase))}",
+                actual: property.Name,
+                repairHint: "Используй в metaStateUpdates только canonical visible subcommands inkFeatherChanges/enlightenmentProgression/soulRelicOperations/lifeTransitions/memoryLegacyGrant."));
+        }
+
         if (metaState.TryGetProperty("inkFeatherChanges", out var feathers) && !RequireObject(feathers, $"{context}.inkFeatherChanges", issues))
             return;
         if (metaState.TryGetProperty("enlightenmentProgression", out var enlightenment) && !RequireObject(enlightenment, $"{context}.enlightenmentProgression", issues))
@@ -5039,26 +5434,147 @@ public partial class ValidationService
         if (metaState.TryGetProperty("memoryLegacyGrant", out var memoryLegacyGrant) && !RequireObject(memoryLegacyGrant, $"{context}.memoryLegacyGrant", issues))
             return;
 
-        if (metaState.TryGetProperty("lifeTransitions", out var transitionsWithRecordCheck) &&
-            transitionsWithRecordCheck.ValueKind == JsonValueKind.Object &&
-            transitionsWithRecordCheck.TryGetProperty("recordLifeCompletion", out _) &&
-            (!root.TryGetProperty("TriggerLifeEnd", out var triggerLifeEnd) || triggerLifeEnd.ValueKind != JsonValueKind.Object))
-        {
-            issues.Add(new ValidationIssue(
-                $"{context}.lifeTransitions.recordLifeCompletion",
-                IssueSeverity.Error,
-                "recordLifeCompletion допустим только в canonical TriggerLifeEnd turn",
-                code: "life_transition_record_without_trigger_life_end",
-                section: "Lifecycle",
-                expected: "recordLifeCompletion together with TriggerLifeEnd object on a mortal-life end turn",
-                actual: "recordLifeCompletion without TriggerLifeEnd",
-                repairHint: "Используй recordLifeCompletion только на accepted turn, который реально содержит TriggerLifeEnd(reason=Death|Voluntary). Для later Life Evaluation turn не дублируй lifeTransitions record повторно."));
-        }
-
         if (metaState.TryGetProperty("lifeTransitions", out var transitions) && transitions.ValueKind == JsonValueKind.Object)
             ValidateMetaLifeTransitionsObject(transitions, $"{context}.lifeTransitions", issues);
         if (metaState.TryGetProperty("memoryLegacyGrant", out var grant) && grant.ValueKind == JsonValueKind.Object)
             ValidateMemoryLegacyGrantObject(grant, $"{context}.memoryLegacyGrant", issues);
+        if (metaState.TryGetProperty("inkFeatherChanges", out var validatedFeathers) && validatedFeathers.ValueKind == JsonValueKind.Object)
+            ValidateMetaInkFeatherChangesObject(validatedFeathers, $"{context}.inkFeatherChanges", issues);
+        if (metaState.TryGetProperty("enlightenmentProgression", out var progression) && progression.ValueKind == JsonValueKind.Object)
+            ValidateMetaEnlightenmentProgressionObject(progression, $"{context}.enlightenmentProgression", issues);
+        if (metaState.TryGetProperty("soulRelicOperations", out var validatedRelicOps) && validatedRelicOps.ValueKind == JsonValueKind.Object)
+            ValidateMetaSoulRelicOperationsObject(validatedRelicOps, $"{context}.soulRelicOperations", issues);
+    }
+
+    private void ValidateMetaInkFeatherChangesObject(JsonElement feathers, string context, List<ValidationIssue> issues)
+    {
+        foreach (var property in feathers.EnumerateObject())
+        {
+            if (property.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (!string.Equals(property.Name, "add", StringComparison.Ordinal) &&
+                !string.Equals(property.Name, "spend", StringComparison.Ordinal))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.{property.Name}",
+                    IssueSeverity.Error,
+                    "inkFeatherChanges содержит unsupported visible key",
+                    code: "meta_state_unknown_ink_feather_change_key",
+                    section: "Lifecycle",
+                    expected: "visible keys limited to add/spend",
+                    actual: property.Name,
+                    repairHint: "Используй в metaStateUpdates.inkFeatherChanges только integer buckets add и spend."));
+                continue;
+            }
+
+            if (property.Value.ValueKind != JsonValueKind.Number ||
+                !property.Value.TryGetInt32(out var amount) ||
+                amount < 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.{property.Name}",
+                    IssueSeverity.Error,
+                    "inkFeatherChanges bucket должен быть non-negative integer",
+                    code: "meta_state_invalid_ink_feather_change_value",
+                    section: "Lifecycle",
+                    expected: "non-negative integer",
+                    actual: property.Value.ValueKind == JsonValueKind.Number ? property.Value.GetRawText() : property.Value.ValueKind.ToString(),
+                    repairHint: "Передавай inkFeatherChanges.add/spend только как non-negative integer deltas."));
+            }
+        }
+    }
+
+    private void ValidateMetaEnlightenmentProgressionObject(JsonElement progression, string context, List<ValidationIssue> issues)
+    {
+        foreach (var property in progression.EnumerateObject())
+        {
+            if (property.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (!string.Equals(property.Name, "newTier", StringComparison.Ordinal) &&
+                !string.Equals(property.Name, "experience", StringComparison.Ordinal))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.{property.Name}",
+                    IssueSeverity.Error,
+                    "enlightenmentProgression содержит unsupported visible key",
+                    code: "meta_state_unknown_enlightenment_progression_key",
+                    section: "Lifecycle",
+                    expected: "visible keys limited to newTier/experience",
+                    actual: property.Name,
+                    repairHint: "Используй в metaStateUpdates.enlightenmentProgression только canonical keys newTier и experience."));
+                continue;
+            }
+
+            if (property.Value.ValueKind != JsonValueKind.Number ||
+                !property.Value.TryGetInt32(out var amount) ||
+                amount < 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.{property.Name}",
+                    IssueSeverity.Error,
+                    "enlightenmentProgression value должен быть non-negative integer",
+                    code: "meta_state_invalid_enlightenment_progression_value",
+                    section: "Lifecycle",
+                    expected: "non-negative integer",
+                    actual: property.Value.ValueKind == JsonValueKind.Number ? property.Value.GetRawText() : property.Value.ValueKind.ToString(),
+                    repairHint: "Передавай metaStateUpdates.enlightenmentProgression.newTier/experience только как non-negative integer values."));
+            }
+        }
+
+        if (!progression.TryGetProperty("experience", out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.experience",
+                IssueSeverity.Error,
+                "enlightenmentProgression должен содержать experience",
+                code: "meta_state_missing_enlightenment_progression_experience",
+                section: "Lifecycle",
+                expected: "experience non-negative integer",
+                actual: "missing",
+                repairHint: "Сохраняй в metaStateUpdates.enlightenmentProgression canonical experience даже если прирост tier не меняется."));
+        }
+    }
+
+    private void ValidateMetaSoulRelicOperationsObject(JsonElement soulRelicOperations, string context, List<ValidationIssue> issues)
+    {
+        foreach (var property in soulRelicOperations.EnumerateObject())
+        {
+            if (property.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            switch (property.Name)
+            {
+                case "addRelic":
+                case "removeRelic":
+                case "equipRelic":
+                case "unequipRelic":
+                    if (!RequireObject(property.Value, $"{context}.{property.Name}", issues))
+                        continue;
+
+                    RequireString(property.Value, $"{context}.{property.Name}", issues, "relicId");
+                    break;
+                case "updateRelicField":
+                    if (!RequireObject(property.Value, $"{context}.{property.Name}", issues))
+                        continue;
+
+                    RequireString(property.Value, $"{context}.updateRelicField", issues, "relicId");
+                    RequireString(property.Value, $"{context}.updateRelicField", issues, "field");
+                    break;
+                default:
+                    issues.Add(new ValidationIssue(
+                        $"{context}.{property.Name}",
+                        IssueSeverity.Error,
+                        "soulRelicOperations содержит unsupported visible key",
+                        code: "meta_state_unknown_soul_relic_operation_key",
+                        section: "Lifecycle",
+                        expected: "visible keys limited to addRelic/removeRelic/equipRelic/unequipRelic/updateRelicField",
+                        actual: property.Name,
+                        repairHint: "Используй в metaStateUpdates.soulRelicOperations только canonical relic ops."));
+                    break;
+            }
+        }
     }
 
 }

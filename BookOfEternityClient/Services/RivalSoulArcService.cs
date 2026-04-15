@@ -346,7 +346,7 @@ public sealed class RivalSoulArcService
         if (await CountArrayItemsAsync(WorldEventsPath, "worldEventsLog") >= 2)
             return true;
 
-        if (await CountArrayItemsAsync(NpcCorePath, "UpdateNPCs", "npcs", "NPCsInScene") >= 1)
+        if (await CountArrayItemsAsync(NpcCorePath, GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections) >= 1)
             return true;
 
         if (await CountArrayItemsAsync(FactionCorePath, "factionDataChanges", "factions") >= 1)

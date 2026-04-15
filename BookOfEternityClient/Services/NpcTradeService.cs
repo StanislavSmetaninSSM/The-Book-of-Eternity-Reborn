@@ -789,12 +789,8 @@ public sealed partial class NpcTradeService
         return null;
     }
 
-    private static IEnumerable<JsonArray> EnumerateNpcArrays(JsonObject root)
-    {
-        foreach (var key in new[] { "NPCsInScene", "UpdateNPCs" })
-            if (root[key] is JsonArray arr)
-                yield return arr;
-    }
+    private static IEnumerable<JsonArray> EnumerateNpcArrays(JsonObject root) =>
+        GuardianPolicyContracts.EnumerateCanonicalNpcObjectArrays(root);
 
     private static void SyncNpcEntries(JsonObject root, string npcId, JsonObject npc)
     {

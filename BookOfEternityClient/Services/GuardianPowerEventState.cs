@@ -357,14 +357,27 @@ internal static class GuardianPowerEventState
         }
 
         if (manifest == null ||
-            string.IsNullOrWhiteSpace(manifest.ManifestPayloadHash))
+            !PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
+                manifest,
+                await fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath),
+                PendingSnapshotManifestHashJsonOpts,
+                static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+                static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
+                static snapshotManifest => snapshotManifest.SessionId,
+                static snapshotManifest => snapshotManifest.RequestId,
+                static snapshotManifest => snapshotManifest.TurnNumber,
+                static snapshotManifest => snapshotManifest.Files,
+                static snapshotManifest => snapshotManifest.SnapshotFileHashes,
+                static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
+                static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
+                static snapshotManifest => snapshotManifest.SourceLabel,
+                static snapshotManifest => snapshotManifest.RollbackBackups,
+                relativePath => ReadRelativeFileFromWorkspace(fs, relativePath),
+                out _,
+                out _))
         {
             return null;
         }
-
-        var actualManifestHash = ComputeManifestPayloadHash(manifest);
-        if (!string.Equals(actualManifestHash, manifest.ManifestPayloadHash, StringComparison.OrdinalIgnoreCase))
-            return null;
 
         if (!await IsCurrentPendingTurnSnapshotAsync(fs, manifest))
             return null;
@@ -392,6 +405,18 @@ internal static class GuardianPowerEventState
             return null;
 
         return snapshotContent;
+    }
+
+    private static string? ReadRelativeFileFromWorkspace(FileSystemManager fs, string relativePath)
+    {
+        if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
+            return null;
+
+        var fullPath = fs.ResolvePath(relativePath);
+        if (!File.Exists(fullPath))
+            return null;
+
+        return File.ReadAllText(fullPath, Encoding.UTF8);
     }
 
     private static async Task<bool> IsCurrentPendingTurnSnapshotAsync(FileSystemManager fs, PendingTurnSnapshotManifest manifest)
@@ -426,14 +451,7 @@ internal static class GuardianPowerEventState
 
     private static bool DoesPendingTurnContextIdMatch(string manifestId, string contextId)
     {
-        var hasManifestId = !string.IsNullOrWhiteSpace(manifestId);
-        var hasContextId = !string.IsNullOrWhiteSpace(contextId);
-        if (!hasManifestId && !hasContextId)
-            return true;
-        if (!hasManifestId || !hasContextId)
-            return false;
-
-        return string.Equals(manifestId, contextId, StringComparison.OrdinalIgnoreCase);
+        return PendingTurnSnapshotAuthority.DoesPendingTurnContextIdMatch(manifestId, contextId);
     }
 
     private static async Task<PendingTurnRequestContext?> ReadPendingTurnRequestContextFromFileAsync(FileSystemManager fs, string path)
@@ -473,19 +491,18 @@ internal static class GuardianPowerEventState
 
     private static string ComputeManifestPayloadHash(PendingTurnSnapshotManifest manifest)
     {
-        var originalHash = manifest.ManifestPayloadHash;
-        manifest.ManifestPayloadHash = string.Empty;
-        var payload = JsonSerializer.Serialize(manifest, PendingSnapshotManifestHashJsonOpts);
-        manifest.ManifestPayloadHash = originalHash;
-        return ComputeSha256(payload);
+        return PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(
+            manifest,
+            PendingSnapshotManifestHashJsonOpts,
+            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash);
     }
 
     private static string ComputeSha256(string content)
     {
-        using var sha = SHA256.Create();
-        var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(content));
-        return Convert.ToHexString(bytes);
+        return PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
+
 
     private static Dictionary<string, PoliticalProjectAuditBackfill> BuildPoliticalProjectAuditBackfillIndex(params string?[] trackerJsonSources)
     {

@@ -126,7 +126,13 @@ public sealed class AfterlifeArchiveCandidateService
     {
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
         var codexJson = await _fs.ReadFileAsync("lore/codex_entries.json");
-        if (string.IsNullOrWhiteSpace(soulJson) || string.IsNullOrWhiteSpace(codexJson))
+        if (string.IsNullOrWhiteSpace(soulJson))
+        {
+            _logger.LogWarning("Не удалось обновить archive candidate manifest: current soul_state.json отсутствует или пуст.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(codexJson))
         {
             Clear();
             return;
@@ -134,10 +140,39 @@ public sealed class AfterlifeArchiveCandidateService
 
         try
         {
+            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
+            {
+                _logger.LogWarning("Не удалось обновить archive candidate manifest: current soul_state.json unreadable или не object-root.");
+                return;
+            }
+
+            var lifeTransitionsJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
+            var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
+                _fs,
+                lifeTransitionsJson,
+                soulRoot);
+            if (GuardianPolicyContracts.TryDescribeInvalidPolicySensitiveReadableSoulStateRoot(
+                    soulRoot,
+                    hasCanonicalTriggerLifeEnd,
+                    out var invalidSoulFailure))
+            {
+                _logger.LogWarning(
+                    "Не удалось обновить archive candidate manifest: current soul_state unreadable для strict current-owner path ({FailureDescription})",
+                    invalidSoulFailure);
+                return;
+            }
+
             using var soulDoc = JsonDocument.Parse(soulJson);
             using var codexDoc = JsonDocument.Parse(codexJson);
 
-            var sourceLife = ReadSourceLife(soulDoc.RootElement);
+            if (!TryReadSourceLife(soulDoc.RootElement, out var sourceLife, out var sourceLifeFailure))
+            {
+                _logger.LogWarning(
+                    "Не удалось обновить archive candidate manifest: current soul_state не даёт canonical source-life authority ({FailureDescription})",
+                    sourceLifeFailure);
+                return;
+            }
+
             if (sourceLife <= 0)
             {
                 Clear();
@@ -209,6 +244,7 @@ public sealed class AfterlifeArchiveCandidateService
         if (node is not JsonObject root)
             return false;
 
+        GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(root);
         var stored = AfterlifeArchiveState.EnsureStoredArray(root);
         if (stored.OfType<JsonObject>().Any(entry =>
                 string.Equals(entry["sourceEntryId"]?.GetValue<string>(), candidate.SourceEntryId, StringComparison.OrdinalIgnoreCase)))
@@ -240,7 +276,13 @@ public sealed class AfterlifeArchiveCandidateService
         candidate.ArchivedAtUtc = DateTime.UtcNow.ToString("o");
         candidate.SkippedAtUtc = null;
 
-        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", root.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                root,
+                new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.AfterlifeArchive,
+                    affectedArchiveIds: new[] { archiveId })).ToJsonString(JsonOpts));
         await _fs.WriteFileAtomicAsync(ManifestPath, JsonSerializer.Serialize(manifest, JsonOpts));
         return true;
     }
@@ -269,30 +311,49 @@ public sealed class AfterlifeArchiveCandidateService
         string.Equals(status, StatusArchived, StringComparison.OrdinalIgnoreCase) ||
         string.Equals(status, StatusSkipped, StringComparison.OrdinalIgnoreCase);
 
-    private static int ReadSourceLife(JsonElement soulRoot)
+    private static bool TryReadSourceLife(
+        JsonElement soulRoot,
+        out int sourceLife,
+        out string failureDescription)
     {
-        var isAfterlifeRealm =
-            string.Equals(GetString(soulRoot, "currentRealm"), "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(GetString(soulRoot, "currentRealm"), "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(GetString(soulRoot, "currentRealm"), "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(GetString(soulRoot, "currentRealm"), "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
+        sourceLife = 0;
+        failureDescription = string.Empty;
 
-        if (!isAfterlifeRealm)
-            return 0;
+        if (!soulRoot.TryGetProperty("currentRealm", out var currentRealm) ||
+            currentRealm.ValueKind != JsonValueKind.String)
+        {
+            failureDescription = "current soul_state.currentRealm must be a string";
+            return false;
+        }
+
+        if (!IsAfterlifeRealm(currentRealm.GetString()))
+            return true;
 
         if (!soulRoot.TryGetProperty("livesHistory", out var livesHistory) ||
             livesHistory.ValueKind != JsonValueKind.Array ||
             livesHistory.GetArrayLength() == 0)
         {
-            return 0;
+            failureDescription = "afterlife current soul_state must contain non-empty livesHistory array";
+            return false;
         }
 
-        return soulRoot.TryGetProperty("currentIncarnation", out var inc) &&
-               inc.ValueKind == JsonValueKind.Number &&
-               inc.TryGetInt32(out var parsed)
-            ? parsed
-            : 0;
+        if (!soulRoot.TryGetProperty("currentIncarnation", out var inc) ||
+            inc.ValueKind != JsonValueKind.Number ||
+            !inc.TryGetInt32(out sourceLife) ||
+            sourceLife <= 0)
+        {
+            failureDescription = "afterlife current soul_state must contain positive integer currentIncarnation";
+            return false;
+        }
+
+        return true;
     }
+
+    private static bool IsAfterlifeRealm(string? currentRealm) =>
+        string.Equals(currentRealm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(currentRealm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(currentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(currentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
 
     private static IEnumerable<ArchiveCandidate> BuildCandidates(
         JsonElement codexRoot,

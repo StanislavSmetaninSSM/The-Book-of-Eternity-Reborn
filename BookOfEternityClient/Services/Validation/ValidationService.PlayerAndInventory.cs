@@ -169,7 +169,7 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(offerJson))
             return issues;
 
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
+        var manifest = await LoadValidatedCurrentPendingTurnSnapshotManifestAsync();
 
         var qteEnabled = await ReadQteEnabledAsync();
         if (!qteEnabled)
@@ -185,33 +185,40 @@ public partial class ValidationService
             return issues;
         }
 
-        var preTurnRealm = await TryResolvePreTurnRealmAsync();
-        if (!string.IsNullOrWhiteSpace(preTurnRealm) && IsChaosSeaRealm(preTurnRealm))
-        {
-            issues.Add(new ValidationIssue(
-                QteSceneService.QteOfferPath,
-                IssueSeverity.Error,
-                "QTE offer разрешён только в Mortal World",
-                code: "qte_wrong_realm",
-                section: "QTE",
-                expected: "Mortal World",
-                actual: preTurnRealm));
-            return issues;
-        }
-
         if (manifest == null)
         {
             issues.Add(new ValidationIssue(
                 QteSceneService.QteOfferPath,
                 IssueSeverity.Error,
-                "QTE offer требует pending turn manifest обычного игрокского хода",
+                "QTE offer требует current validated pending turn manifest обычного игрокского хода",
                 code: "qte_missing_pending_manifest",
                 section: "QTE",
                 expected: PendingTurnSnapshotManifestPath,
-                actual: "missing"));
+                actual: "missing or invalid validated manifest"));
         }
         else
         {
+            var preTurnRealm = await ReadRequiredValidatedPendingTurnSnapshotRealmAsync(
+                manifest,
+                QteSceneService.QteOfferPath,
+                issues,
+                code: "qte_invalid_validated_snapshot_realm",
+                section: "QTE",
+                message: "QTE offer требует validated pre-turn realm из snapshot soul_state.",
+                repairHint: "QTE offer допустим только при current validated pending turn snapshot с canonical pre-turn soul_state.json.");
+            if (!string.IsNullOrWhiteSpace(preTurnRealm) && IsChaosSeaRealm(preTurnRealm))
+            {
+                issues.Add(new ValidationIssue(
+                    QteSceneService.QteOfferPath,
+                    IssueSeverity.Error,
+                    "QTE offer разрешён только в Mortal World",
+                    code: "qte_wrong_realm",
+                    section: "QTE",
+                    expected: "Mortal World",
+                    actual: preTurnRealm));
+                return issues;
+            }
+
             if (!QteSceneService.IsEligibleOfferSourceLabel(manifest.SourceLabel))
             {
                 issues.Add(new ValidationIssue(
@@ -224,7 +231,12 @@ public partial class ValidationService
                     actual: manifest.SourceLabel ?? "missing"));
             }
 
-            var changedTrackedFiles = await GetChangedTrackedFilesAgainstManifestAsync(manifest);
+            var changedTrackedFiles = await GetChangedTrackedFilesAgainstManifestAsync(
+                manifest,
+                issues,
+                "qte_offer_missing_validated_tracked_baseline",
+                "QTE",
+                "Для QTE-offer validation tracked pre-turn files должны иметь validated snapshot entry/hash; missing baseline недопустим.");
             foreach (var changedFile in changedTrackedFiles
                          .Where(path => !AllowedQteOfferOnlyOutputFiles.Contains(path) &&
                                         !string.Equals(path, InkFeatherActionResultPath, StringComparison.OrdinalIgnoreCase)))
@@ -238,15 +250,26 @@ public partial class ValidationService
                     repairHint: "Убери обычные state changes из этого хода и оставь только QTE offer + UI/output-описание."));
             }
 
-            if (await DidFileChangeAgainstManifestAsync(manifest, InkFeatherActionResultPath))
+            switch (await DescribeTrackedFileChangeAgainstManifestAsync(manifest, InkFeatherActionResultPath))
             {
-                issues.Add(new ValidationIssue(
-                    InkFeatherActionResultPath,
-                    IssueSeverity.Error,
-                    "QTE-offer turn не может одновременно резолвить Ink Feather action или другой отдельный sidecar outcome.",
-                    code: "qte_offer_forbidden_sidecar_output",
-                    section: "QTE",
-                    repairHint: "Раздели QTE offer и обычный outcome на разные GM turns."));
+                case ValidatedTrackedFileChangeStatus.Changed:
+                    issues.Add(new ValidationIssue(
+                        InkFeatherActionResultPath,
+                        IssueSeverity.Error,
+                        "QTE-offer turn не может одновременно резолвить Ink Feather action или другой отдельный sidecar outcome.",
+                        code: "qte_offer_forbidden_sidecar_output",
+                        section: "QTE",
+                        repairHint: "Раздели QTE offer и обычный outcome на разные GM turns."));
+                    break;
+                case ValidatedTrackedFileChangeStatus.MissingValidatedBaseline:
+                    AddMissingValidatedTrackedBaselineIssue(
+                        issues,
+                        InkFeatherActionResultPath,
+                        "qte_offer_missing_validated_tracked_baseline",
+                        "QTE",
+                        "QTE-offer validation не может строго определить, был ли создан Ink Feather sidecar outcome: validated pre-turn baseline missing.",
+                        "Для QTE-offer validation tracked output surfaces должны иметь validated snapshot baseline или отсутствовать как truly new outputs.");
+                    break;
             }
         }
 

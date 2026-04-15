@@ -10,12 +10,24 @@ internal static class GuardianAbodeResidentRequestState
 {
     public const string PendingResidentsRequestPath = "game_state/control/pending_guardian_abode_residents_request.json";
     public const string PendingInteractionsRequestPath = "game_state/control/pending_guardian_abode_resident_interactions.json";
+    public const string PendingTransfersRequestPath = "game_state/control/pending_guardian_abode_resident_transfers.json";
     public const string PendingManifestationRequestPath = "game_state/control/pending_resident_companion_manifestation_request.json";
     public const string ResidentsRequestsProperty = "requests";
     public const string InteractionRequestsProperty = "requests";
+    public const string TransferRequestsProperty = "requests";
     public const string ManifestationRequestsProperty = "requests";
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+    private static readonly string[] ManifestationTouchedRelicFields =
+    {
+        "companionManifestationLastRequestedIncarnation",
+        "companionManifestationStatus",
+        "lastManifestationRequestId",
+        "companionManifestationResolvedRequestId",
+        "companionManifestationResolvedNpcId",
+        "companionManifestationResolvedAtTurn",
+        "companionManifestationResolvedAtUtc"
+    };
 
     public sealed class PendingGuardianAbodeResidentsRequest
     {
@@ -77,6 +89,63 @@ internal static class GuardianAbodeResidentRequestState
         public string CreatedAtUtc { get; set; } = DateTime.UtcNow.ToString("o");
     }
 
+    public sealed class PendingGuardianAbodeResidentTransferRequest
+    {
+        [JsonPropertyName("requestId")]
+        public string RequestId { get; set; } = $"abode_resident_transfer_{Guid.NewGuid():N}";
+
+        [JsonPropertyName("residentId")]
+        public string ResidentId { get; set; } = "";
+
+        [JsonPropertyName("residentName")]
+        public string ResidentName { get; set; } = "";
+
+        [JsonPropertyName("sourceGuardianId")]
+        public string SourceGuardianId { get; set; } = "";
+
+        [JsonPropertyName("sourceGuardianName")]
+        public string SourceGuardianName { get; set; } = "";
+
+        [JsonPropertyName("sourceAbodeId")]
+        public string SourceAbodeId { get; set; } = "";
+
+        [JsonPropertyName("sourceAbodeName")]
+        public string SourceAbodeName { get; set; } = "";
+
+        [JsonPropertyName("targetGuardianId")]
+        public string TargetGuardianId { get; set; } = "";
+
+        [JsonPropertyName("targetGuardianName")]
+        public string TargetGuardianName { get; set; } = "";
+
+        [JsonPropertyName("targetAbodeId")]
+        public string TargetAbodeId { get; set; } = "";
+
+        [JsonPropertyName("targetAbodeName")]
+        public string TargetAbodeName { get; set; } = "";
+
+        [JsonPropertyName("abodeDevotionLevel")]
+        public int AbodeDevotionLevel { get; set; }
+
+        [JsonPropertyName("abodeDevotionTier")]
+        public string AbodeDevotionTier { get; set; } = GuardianAbodeResidentState.AbodeDevotionTierAttached;
+
+        [JsonPropertyName("restlessness")]
+        public int Restlessness { get; set; }
+
+        [JsonPropertyName("migrationState")]
+        public string MigrationState { get; set; } = GuardianAbodeResidentState.MigrationStateReadyToTransfer;
+
+        [JsonPropertyName("transferMode")]
+        public string TransferMode { get; set; } = GuardianAbodeResidentState.TransferModeAcceptedTransfer;
+
+        [JsonPropertyName("createdAtTurn")]
+        public int CreatedAtTurn { get; set; }
+
+        [JsonPropertyName("createdAtUtc")]
+        public string CreatedAtUtc { get; set; } = DateTime.UtcNow.ToString("o");
+    }
+
     public sealed class PendingResidentCompanionManifestationRequest
     {
         [JsonPropertyName("requestId")]
@@ -126,6 +195,24 @@ internal static class GuardianAbodeResidentRequestState
 
         [JsonPropertyName("appearanceMotifs")]
         public List<string> AppearanceMotifs { get; set; } = new();
+
+        [JsonPropertyName("personalityProfile")]
+        public GuardianAbodeResidentState.ResidentPersonalityProfile? PersonalityProfile { get; set; }
+
+        [JsonPropertyName("abodeDisposition")]
+        public GuardianAbodeResidentState.ResidentAbodeDisposition? AbodeDisposition { get; set; }
+
+        [JsonPropertyName("abodeDevotionLevel")]
+        public int? AbodeDevotionLevel { get; set; }
+
+        [JsonPropertyName("abodeDevotionTier")]
+        public string? AbodeDevotionTier { get; set; }
+
+        [JsonPropertyName("restlessness")]
+        public int? Restlessness { get; set; }
+
+        [JsonPropertyName("migrationState")]
+        public string? MigrationState { get; set; }
 
         [JsonPropertyName("createdAtUtc")]
         public string CreatedAtUtc { get; set; } = DateTime.UtcNow.ToString("o");
@@ -231,6 +318,44 @@ internal static class GuardianAbodeResidentRequestState
             }, JsonOpts));
     }
 
+    public static async Task WriteTransferRequestsAsync(
+        FileSystemManager fs,
+        IReadOnlyCollection<PendingGuardianAbodeResidentTransferRequest> requests)
+    {
+        if (requests.Count == 0)
+        {
+            ClearTransferRequests(fs);
+            return;
+        }
+
+        await fs.WriteFileAtomicAsync(
+            PendingTransfersRequestPath,
+            JsonSerializer.Serialize(new Dictionary<string, object?>
+            {
+                [TransferRequestsProperty] = requests
+            }, JsonOpts));
+    }
+
+    public static async Task WriteTransferRequestAsync(FileSystemManager fs, PendingGuardianAbodeResidentTransferRequest request)
+    {
+        var existing = (await ReadTransferRequestsAsync(fs)).ToList();
+        var replaced = false;
+        for (var i = 0; i < existing.Count; i++)
+        {
+            if (!string.Equals(existing[i].ResidentId, request.ResidentId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            existing[i] = request;
+            replaced = true;
+            break;
+        }
+
+        if (!replaced)
+            existing.Add(request);
+
+        await WriteTransferRequestsAsync(fs, existing);
+    }
+
     public static async Task<IReadOnlyList<PendingGuardianAbodeResidentsRequest>> ReadResidentsRequestsAsync(FileSystemManager fs)
     {
         var json = await fs.ReadFileAsync(PendingResidentsRequestPath);
@@ -324,6 +449,14 @@ internal static class GuardianAbodeResidentRequestState
             string.Equals(request.InteractionType, interactionType, StringComparison.OrdinalIgnoreCase));
     }
 
+    public static async Task<PendingGuardianAbodeResidentTransferRequest?> FindPendingTransferAsync(
+        FileSystemManager fs,
+        string residentId)
+    {
+        return (await ReadTransferRequestsAsync(fs)).FirstOrDefault(request =>
+            string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase));
+    }
+
     public static async Task<IReadOnlyList<PendingResidentCompanionManifestationRequest>> ReadManifestationRequestsAsync(FileSystemManager fs)
     {
         var json = await fs.ReadFileAsync(PendingManifestationRequestPath);
@@ -365,9 +498,51 @@ internal static class GuardianAbodeResidentRequestState
         }
     }
 
+    public static async Task<IReadOnlyList<PendingGuardianAbodeResidentTransferRequest>> ReadTransferRequestsAsync(FileSystemManager fs)
+    {
+        var json = await fs.ReadFileAsync(PendingTransfersRequestPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return Array.Empty<PendingGuardianAbodeResidentTransferRequest>();
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                doc.RootElement.TryGetProperty(TransferRequestsProperty, out var requestsNode) &&
+                requestsNode.ValueKind == JsonValueKind.Array)
+            {
+                var result = new List<PendingGuardianAbodeResidentTransferRequest>();
+                foreach (var item in requestsNode.EnumerateArray())
+                {
+                    try
+                    {
+                        var request = JsonSerializer.Deserialize<PendingGuardianAbodeResidentTransferRequest>(item.GetRawText(), JsonOpts);
+                        if (request != null)
+                            result.Add(request);
+                    }
+                    catch
+                    {
+                        // ignore malformed item; EnsureHealthyAsync will clean the file
+                    }
+                }
+
+                return result;
+            }
+
+            var single = JsonSerializer.Deserialize<PendingGuardianAbodeResidentTransferRequest>(json, JsonOpts);
+            return single != null ? new[] { single } : Array.Empty<PendingGuardianAbodeResidentTransferRequest>();
+        }
+        catch
+        {
+            return Array.Empty<PendingGuardianAbodeResidentTransferRequest>();
+        }
+    }
+
     public static void ClearResidentsRequest(FileSystemManager fs) => fs.DeleteFile(PendingResidentsRequestPath);
 
     public static void ClearInteractionRequests(FileSystemManager fs) => fs.DeleteFile(PendingInteractionsRequestPath);
+
+    public static void ClearTransferRequests(FileSystemManager fs) => fs.DeleteFile(PendingTransfersRequestPath);
 
     public static void ClearManifestationRequest(FileSystemManager fs) => fs.DeleteFile(PendingManifestationRequestPath);
 
@@ -376,6 +551,7 @@ internal static class GuardianAbodeResidentRequestState
         if (!IsAfterlifeRealm(currentRealm))
         {
             ClearInteractionRequests(fs);
+            ClearTransferRequests(fs);
             var manifestationRequests = await ReadManifestationRequestsAsync(fs);
             if (manifestationRequests.Count == 0)
                 ClearManifestationRequest(fs);
@@ -386,6 +562,7 @@ internal static class GuardianAbodeResidentRequestState
         {
             await EnsureResidentsRequestHealthyAsync(fs);
             await EnsureInteractionRequestsHealthyAsync(fs);
+            await EnsureTransferRequestsHealthyAsync(fs);
             ClearManifestationRequest(fs);
         }
     }
@@ -419,12 +596,23 @@ internal static class GuardianAbodeResidentRequestState
         if (soulRoot == null)
             return;
 
-        var currentIncarnation = GetNodeInt(soulRoot["currentIncarnation"]);
-        if (currentIncarnation <= 0)
-            return;
+        var lifeTransitionsJson = await fs.ReadFileAsync("game_state/control/life_transitions.json");
+        var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
+            fs,
+            lifeTransitionsJson,
+            soulRoot);
 
-        if (soulRoot["soulRelics"] is not JsonObject soulRelics || soulRelics["equipped"] is not JsonArray equipped)
+        if (!GuardianPolicyContracts.TryReadStrictCurrentManifestationSoulRelicCollections(
+                soulRoot,
+                hasCanonicalTriggerLifeEnd,
+                out var currentIncarnation,
+                out var equipped,
+                out _,
+                out _) ||
+            equipped == null)
+        {
             return;
+        }
 
         var existingRelicIds = existingRequests
             .Where(request => request.TargetIncarnation == currentIncarnation)
@@ -454,7 +642,14 @@ internal static class GuardianAbodeResidentRequestState
         if (requestsToAppend.Count == 0)
             return;
 
-        await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString(JsonOpts));
+        await fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                soulRoot,
+                new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                    unsafeToReplayAddedSoulRelicIds: requestsToAppend.Select(request => request.RelicId),
+                    updatedSoulRelicFieldsById: BuildManifestationRelicFieldUpdates(requestsToAppend.Select(request => request.RelicId)))).ToJsonString(JsonOpts));
         foreach (var request in requestsToAppend)
             existingRequests.Add(request);
         await WriteManifestationRequestsAsync(fs, existingRequests);
@@ -466,7 +661,9 @@ internal static class GuardianAbodeResidentRequestState
         {
             var rosterRequests = await ReadResidentsRequestsAsync(fs);
             var interactionRequests = await ReadInteractionRequestsAsync(fs);
-            if (rosterRequests.Count == 0 && interactionRequests.Count == 0)
+            var transferRequests = await ReadTransferRequestsAsync(fs);
+            var pressuredResidents = await ReadResidentPressureReminderInfosAsync(fs);
+            if (rosterRequests.Count == 0 && interactionRequests.Count == 0 && transferRequests.Count == 0 && pressuredResidents.Count == 0)
                 return null;
 
             var rosterLines = new List<string>();
@@ -477,7 +674,8 @@ internal static class GuardianAbodeResidentRequestState
                     "ABODE RESIDENT ROSTER REQUESTS:",
                     $"There are {rosterRequests.Count} pending entries in pending_guardian_abode_residents_request.json.",
                     "Materialize explicit residents in game_state/meta/guardian_abode_residents.json via UpdateGuardianAbodeResidents and close each request through UpdateGuardianAbodeResidentRosterReceipts.",
-                    "Do not derive residents from guardian domain; author the roster explicitly."
+                    "Do not derive residents from guardian domain; author the roster explicitly.",
+                    "Each resident should include personalityProfile, abodeDisposition, abodeDevotionLevel, abodeDevotionTier, restlessness, and migrationState in addition to the existing resident contract."
                 });
 
                 foreach (var request in rosterRequests.Take(5))
@@ -494,11 +692,58 @@ internal static class GuardianAbodeResidentRequestState
                     "ABODE RESIDENT INTERACTION REQUESTS:",
                     $"There are {interactionRequests.Count} pending entries in pending_guardian_abode_resident_interactions.json.",
                     "For each request, roleplay the scene in accepted turn and close it canonically through guardian_abode_residents.json.interactionReceipts[].",
-                    "Do not ignore resident talk/history requests; close each one with status=accepted|rejected|cancelled."
+                    "Do not ignore resident talk/history requests; close each one with status=accepted|rejected|cancelled.",
+                    "If the scene changes resident attitude toward the Abode, update abodeDevotionLevel/restlessness/migrationState in small canonical steps derived from the outcome, current Abode Power tier, abodeDisposition, and bondLevel, and leave curated resident memory."
                 });
 
                 foreach (var request in interactionRequests.Take(5))
                     rosterLines.Add($"- residentId={request.ResidentId}, interactionType={request.InteractionType}, guardianId={request.GuardianId}, abodeId={request.AbodeId}");
+            }
+
+            if (pressuredResidents.Count > 0)
+            {
+                if (rosterLines.Count > 0)
+                    rosterLines.Add(string.Empty);
+
+                rosterLines.AddRange(new[]
+                {
+                    "ABODE RESIDENT PRESSURE STATES:",
+                    $"There are {pressuredResidents.Count} residents currently in wavering/restless/departure pressure.",
+                    "Surface these states through journals, interaction tone, and resident-facing consequences.",
+                    "Do not reassign or transfer residents automatically; only explicit pending_guardian_abode_resident_transfers.json requests may resolve a transfer."
+                });
+
+                foreach (var resident in pressuredResidents.Take(5))
+                {
+                    var guardianPart = string.IsNullOrWhiteSpace(resident.GuardianName)
+                        ? string.Empty
+                        : $", guardian={resident.GuardianName}";
+                    rosterLines.Add(
+                        $"- resident={resident.DisplayName}{guardianPart}, migrationState={resident.MigrationState}, abodeDevotion={resident.AbodeDevotionLevel}/100, restlessness={resident.Restlessness}/100, pressure=\"{resident.PressureNarrative}\"");
+                }
+            }
+
+            if (transferRequests.Count > 0)
+            {
+                if (rosterLines.Count > 0)
+                    rosterLines.Add(string.Empty);
+
+                rosterLines.AddRange(new[]
+                {
+                    "ABODE RESIDENT TRANSFER REQUESTS:",
+                    $"There are {transferRequests.Count} pending entries in pending_guardian_abode_resident_transfers.json.",
+                    "Resolve each request canonically through guardian_abode_residents.json: accepted transfer moves the same residentId into the target Abode, refused transfer leaves the resident in place, departure_only removes the resident from the source presence without silently teleporting elsewhere.",
+                    "Every transfer resolution must write guardian_abode_residents.json.transferReceipts[] and matching history entries; do not resolve transfer by prose alone."
+                });
+
+                foreach (var request in transferRequests.Take(5))
+                {
+                    var targetPart = string.IsNullOrWhiteSpace(request.TargetGuardianName) && string.IsNullOrWhiteSpace(request.TargetAbodeName)
+                        ? "offscreen departure"
+                        : $"targetGuardian={request.TargetGuardianName} ({request.TargetGuardianId}), targetAbode={request.TargetAbodeName} ({request.TargetAbodeId})";
+                    rosterLines.Add(
+                        $"- resident={request.ResidentName} ({request.ResidentId}), sourceGuardian={request.SourceGuardianName} ({request.SourceGuardianId}), sourceAbode={request.SourceAbodeName} ({request.SourceAbodeId}), mode={request.TransferMode}, migrationState={request.MigrationState}, {targetPart}");
+                }
             }
 
             return string.Join("\n", rosterLines);
@@ -512,14 +757,136 @@ internal static class GuardianAbodeResidentRequestState
         {
             "COMPANION ECHO MANIFESTATION REQUESTS:",
             $"There are {manifestationRequests.Count} pending entries in pending_resident_companion_manifestation_request.json.",
-            "For each request, materialize an early mortal-world encounter or soul-quest path that leads to this companion. When the companion fully manifests, write an ordinary mortal NPC in npc_core.json and set sourceCompanionRelicId/sourceAfterlifeResidentId/sourceSoulImprintId when applicable.",
+            "For each request, materialize an early mortal-world encounter or soul-quest path that leads to this companion. Use captured personalityProfile, abodeDisposition, and devotion snapshot from the request when they are present; when they are absent, fall back to the legacy imprint fields. When the companion fully manifests, write an ordinary mortal NPC in npc_core.json and set sourceCompanionRelicId/sourceAfterlifeResidentId/sourceSoulImprintId when applicable.",
             "This is a guaranteed early encounter path, not an instant teleport-spawn in arbitrary combat."
         };
         foreach (var request in manifestationRequests.Take(5))
-            lines.Add($"- relicId={request.RelicId}, source={request.ManifestationSource}, residentId={request.SourceResidentId}, imprintId={request.SourceImprintId}, targetIncarnation={request.TargetIncarnation}");
+        {
+            var snapshotSummary = DescribeManifestationRequestSnapshot(request);
+            lines.Add($"- relicId={request.RelicId}, source={request.ManifestationSource}, residentId={request.SourceResidentId}, imprintId={request.SourceImprintId}, targetIncarnation={request.TargetIncarnation}{snapshotSummary}");
+        }
 
         return string.Join("\n", lines);
     }
+
+    private sealed class ResidentPressureReminderInfo
+    {
+        public string DisplayName { get; init; } = "";
+        public string GuardianName { get; init; } = "";
+        public string MigrationState { get; init; } = GuardianAbodeResidentState.MigrationStateSettled;
+        public int AbodeDevotionLevel { get; init; }
+        public int Restlessness { get; init; }
+        public string PressureNarrative { get; init; } = "";
+    }
+
+    private static async Task<List<ResidentPressureReminderInfo>> ReadResidentPressureReminderInfosAsync(FileSystemManager fs)
+    {
+        var residentsJson = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(residentsJson))
+            return new List<ResidentPressureReminderInfo>();
+
+        try
+        {
+            if (JsonNode.Parse(residentsJson) is not JsonObject residentsRoot)
+                return new List<ResidentPressureReminderInfo>();
+
+            GuardianAbodeResidentState.NormalizeShape(residentsRoot);
+            var guardianNames = await ReadGuardianNameMapAsync(fs);
+            var result = new List<ResidentPressureReminderInfo>();
+
+            if (residentsRoot[GuardianAbodeResidentState.EntriesProperty] is not JsonArray entries)
+                return result;
+
+            foreach (var resident in entries.OfType<JsonObject>())
+            {
+                GuardianAbodeResidentState.NormalizeResidentObject(resident);
+                if (resident["isPresent"] is JsonValue isPresentValue &&
+                    isPresentValue.TryGetValue<bool>(out var isPresent) &&
+                    !isPresent)
+                {
+                    continue;
+                }
+
+                var migrationState = GetNodeString(resident["migrationState"]) ?? GuardianAbodeResidentState.MigrationStateSettled;
+                if (!IsResidentPressureState(migrationState))
+                    continue;
+
+                var displayName = GetNodeString(resident["displayName"]) ?? GetNodeString(resident["residentId"]) ?? "resident";
+                var guardianId = GetNodeString(resident["guardianId"]) ?? string.Empty;
+                result.Add(new ResidentPressureReminderInfo
+                {
+                    DisplayName = displayName,
+                    GuardianName = guardianNames.TryGetValue(guardianId, out var guardianName) ? guardianName : guardianId,
+                    MigrationState = migrationState,
+                    AbodeDevotionLevel = GetNodeInt(resident["abodeDevotionLevel"]),
+                    Restlessness = GetNodeInt(resident["restlessness"]),
+                    PressureNarrative = GuardianAbodeResidentState.GetMigrationStatePressureNarrative(migrationState)
+                });
+            }
+
+            return result
+                .OrderByDescending(info => GetResidentPressureSeverity(info.MigrationState))
+                .ThenByDescending(info => info.Restlessness)
+                .ThenBy(info => info.DisplayName, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+        catch
+        {
+            return new List<ResidentPressureReminderInfo>();
+        }
+    }
+
+    private static async Task<Dictionary<string, string>> ReadGuardianNameMapAsync(FileSystemManager fs)
+    {
+        var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(guardiansJson))
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        try
+        {
+            if (JsonNode.Parse(guardiansJson) is not JsonObject guardiansRoot)
+                return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (guardiansRoot["guardians"] is JsonArray guardians)
+            {
+                foreach (var guardian in guardians.OfType<JsonObject>())
+                {
+                    var guardianId = GetNodeString(guardian["guardianId"]);
+                    if (string.IsNullOrWhiteSpace(guardianId))
+                        continue;
+
+                    var guardianName = GuardianManifestation.GetDisplayName(guardian);
+                    if (string.IsNullOrWhiteSpace(guardianName))
+                        guardianName = GetNodeString(guardian["canonicalName"]) ?? GetNodeString(guardian["name"]) ?? guardianId;
+
+                    result[guardianId] = guardianName;
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        }
+    }
+
+    private static bool IsResidentPressureState(string migrationState) =>
+        string.Equals(migrationState, GuardianAbodeResidentState.MigrationStateWavering, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(migrationState, GuardianAbodeResidentState.MigrationStateRestless, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(migrationState, GuardianAbodeResidentState.MigrationStateConsideringDeparture, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(migrationState, GuardianAbodeResidentState.MigrationStateReadyToTransfer, StringComparison.OrdinalIgnoreCase);
+
+    private static int GetResidentPressureSeverity(string migrationState) =>
+        (migrationState ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            GuardianAbodeResidentState.MigrationStateReadyToTransfer => 4,
+            GuardianAbodeResidentState.MigrationStateConsideringDeparture => 3,
+            GuardianAbodeResidentState.MigrationStateRestless => 2,
+            GuardianAbodeResidentState.MigrationStateWavering => 1,
+            _ => 0
+        };
 
     private static async Task EnsureResidentsRequestHealthyAsync(FileSystemManager fs)
     {
@@ -592,6 +959,43 @@ internal static class GuardianAbodeResidentRequestState
         }
     }
 
+    private static async Task EnsureTransferRequestsHealthyAsync(FileSystemManager fs)
+    {
+        if (!fs.FileExists(PendingTransfersRequestPath))
+            return;
+
+        var requests = (await ReadTransferRequestsAsync(fs)).ToList();
+        if (requests.Count == 0)
+        {
+            ClearTransferRequests(fs);
+            return;
+        }
+
+        var json = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject root)
+                return;
+
+            GuardianAbodeResidentState.NormalizeShape(root);
+            var receipts = GuardianAbodeResidentState.EnsureTransferReceiptsArray(root);
+            var remaining = requests
+                .Where(request =>
+                    !string.IsNullOrWhiteSpace(request.RequestId) &&
+                    !string.IsNullOrWhiteSpace(request.ResidentId) &&
+                    GuardianAbodeResidentState.FindTransferReceipt(receipts, request.RequestId) == null)
+                .ToList();
+            await WriteTransferRequestsAsync(fs, remaining);
+        }
+        catch
+        {
+            // keep request until resident state is readable again
+        }
+    }
+
     private static async Task EnsureManifestationRequestsHealthyAsync(
         FileSystemManager fs,
         IReadOnlyList<PendingResidentCompanionManifestationRequest> requests,
@@ -612,7 +1016,22 @@ internal static class GuardianAbodeResidentRequestState
             if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
                 return;
 
-            var currentIncarnation = GetNodeInt(soulRoot["currentIncarnation"]);
+            var lifeTransitionsJson = await fs.ReadFileAsync("game_state/control/life_transitions.json");
+            var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
+                fs,
+                lifeTransitionsJson,
+                soulRoot);
+
+            if (!GuardianPolicyContracts.TryReadStrictCurrentManifestationSoulRelicCollections(
+                    soulRoot,
+                    hasCanonicalTriggerLifeEnd,
+                    out var currentIncarnation,
+                    out _,
+                    out _,
+                    out _))
+            {
+                return;
+            }
 
             var validForIncarnation = requests
                 .Where(request =>
@@ -640,19 +1059,44 @@ internal static class GuardianAbodeResidentRequestState
                 var remaining = new List<PendingResidentCompanionManifestationRequest>();
                 var soulChanged = false;
                 var matchedNpcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var resolvedRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 foreach (var request in validForIncarnation)
                 {
                     if (TryFindManifestedNpc(npcDoc.RootElement, validForIncarnation, request, matchedNpcIds, out var manifestedNpc))
                     {
-                        soulChanged |= MarkManifestationResolved(soulRoot, request, manifestedNpc);
-                        continue;
+                        var requestResolved = MarkManifestationResolved(
+                            soulRoot,
+                            request,
+                            manifestedNpc,
+                            hasCanonicalTriggerLifeEnd);
+                        soulChanged |= requestResolved;
+                        if (requestResolved)
+                        {
+                            if (!string.IsNullOrWhiteSpace(request.RelicId))
+                                resolvedRelicIds.Add(request.RelicId);
+
+                            continue;
+                        }
                     }
 
                     remaining.Add(request);
                 }
 
                 if (soulChanged)
-                    await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString(JsonOpts));
+                {
+                    var unsafeToReplayAddedRelicIds = BuildUnsafeReplayAddedRelicIds(
+                        soulRoot,
+                        resolvedRelicIds,
+                        hasCanonicalTriggerLifeEnd);
+                    await fs.WriteFileAtomicAsync(
+                        "game_state/meta/soul_state.json",
+                        GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                            soulRoot,
+                            new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                                GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                                unsafeToReplayAddedSoulRelicIds: unsafeToReplayAddedRelicIds,
+                                updatedSoulRelicFieldsById: BuildManifestationRelicFieldUpdates(resolvedRelicIds))).ToJsonString(JsonOpts));
+                }
 
                 await WriteManifestationRequestsAsync(fs, remaining);
             }
@@ -726,6 +1170,47 @@ internal static class GuardianAbodeResidentRequestState
         return false;
     }
 
+    private static IReadOnlyDictionary<string, IEnumerable<string>> BuildManifestationRelicFieldUpdates(IEnumerable<string> relicIds)
+    {
+        var result = new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase);
+        foreach (var relicId in relicIds.Where(id => !string.IsNullOrWhiteSpace(id)).Distinct(StringComparer.OrdinalIgnoreCase))
+            result[relicId] = ManifestationTouchedRelicFields;
+
+        return result;
+    }
+
+    private static IReadOnlyCollection<string> BuildUnsafeReplayAddedRelicIds(JsonObject soulRoot, IEnumerable<string> relicIds)
+        => BuildUnsafeReplayAddedRelicIds(soulRoot, relicIds, hasCanonicalTriggerLifeEnd: false);
+
+    private static IReadOnlyCollection<string> BuildUnsafeReplayAddedRelicIds(
+        JsonObject soulRoot,
+        IEnumerable<string> relicIds,
+        bool hasCanonicalTriggerLifeEnd)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (!GuardianPolicyContracts.TryReadStrictCurrentSoulRelicCollections(
+                soulRoot,
+                hasCanonicalTriggerLifeEnd,
+                out var equipped,
+                out var stored,
+                out _) ||
+            equipped == null ||
+            stored == null)
+        {
+            return result;
+        }
+
+        foreach (var relicId in relicIds.Where(id => !string.IsNullOrWhiteSpace(id)).Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            var existsInEquipped = FindRelicById(equipped, relicId) != null;
+            var existsInStored = FindRelicById(stored, relicId) != null;
+            if (existsInEquipped || !existsInStored)
+                result.Add(relicId);
+        }
+
+        return result;
+    }
+
     private static bool HasUniqueFallbackIdentity(
         IReadOnlyList<PendingResidentCompanionManifestationRequest> requests,
         PendingResidentCompanionManifestationRequest request)
@@ -770,33 +1255,8 @@ internal static class GuardianAbodeResidentRequestState
         return string.Empty;
     }
 
-    private static IEnumerable<JsonElement> EnumerateNpcObjects(JsonElement root)
-    {
-        if (root.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var npc in root.EnumerateArray())
-            {
-                if (npc.ValueKind == JsonValueKind.Object)
-                    yield return npc;
-            }
-            yield break;
-        }
-
-        if (root.ValueKind != JsonValueKind.Object)
-            yield break;
-
-        foreach (var propertyName in new[] { "UpdateNPCs", "NPCsInScene", "npcs", "npcDataChanges" })
-        {
-            if (!root.TryGetProperty(propertyName, out var array) || array.ValueKind != JsonValueKind.Array)
-                continue;
-
-            foreach (var npc in array.EnumerateArray())
-            {
-                if (npc.ValueKind == JsonValueKind.Object)
-                    yield return npc;
-            }
-        }
-    }
+    private static IEnumerable<JsonElement> EnumerateNpcObjects(JsonElement root) =>
+        GuardianPolicyContracts.EnumerateCanonicalNpcObjects(root);
 
     private static bool IsEligibleCompanionEchoRelic(JsonObject relic, int currentIncarnation, HashSet<string> existingRelicIds)
     {
@@ -839,6 +1299,21 @@ internal static class GuardianAbodeResidentRequestState
             request.CoreTraits = ReadStringList(companionSeed["coreTraits"]);
             request.ArchetypeHints = ReadStringList(companionSeed["archetypeHints"]);
             request.AppearanceMotifs = ReadStringList(companionSeed["appearanceMotifs"]);
+            request.PersonalityProfile = ReadResidentPersonalityProfile(companionSeed["personalityProfile"]);
+            request.AbodeDisposition = ReadResidentAbodeDisposition(companionSeed["abodeDisposition"]);
+            if (TryReadResidentMeter(companionSeed["abodeDevotionLevel"], out var abodeDevotionLevel))
+                request.AbodeDevotionLevel = abodeDevotionLevel;
+
+            var abodeDevotionTier = GetNodeString(companionSeed["abodeDevotionTier"]);
+            if (!string.IsNullOrWhiteSpace(abodeDevotionTier))
+                request.AbodeDevotionTier = abodeDevotionTier;
+
+            if (TryReadResidentMeter(companionSeed["restlessness"], out var restlessness))
+                request.Restlessness = restlessness;
+
+            var migrationState = GetNodeString(companionSeed["migrationState"]);
+            if (!string.IsNullOrWhiteSpace(migrationState))
+                request.MigrationState = migrationState;
             return !string.IsNullOrWhiteSpace(request.SourceResidentId) &&
                    !string.IsNullOrWhiteSpace(request.CompanionNameHint);
         }
@@ -897,12 +1372,27 @@ internal static class GuardianAbodeResidentRequestState
         JsonObject soulRoot,
         PendingResidentCompanionManifestationRequest request,
         JsonElement manifestedNpc)
-    {
-        if (soulRoot["soulRelics"] is not JsonObject soulRelics)
-            return false;
+        => MarkManifestationResolved(soulRoot, request, manifestedNpc, hasCanonicalTriggerLifeEnd: false);
 
-        var relic = FindRelicById(soulRelics["equipped"] as JsonArray, request.RelicId) ??
-                    FindRelicById(soulRelics["stored"] as JsonArray, request.RelicId);
+    private static bool MarkManifestationResolved(
+        JsonObject soulRoot,
+        PendingResidentCompanionManifestationRequest request,
+        JsonElement manifestedNpc,
+        bool hasCanonicalTriggerLifeEnd)
+    {
+        if (!GuardianPolicyContracts.TryReadStrictCurrentSoulRelicCollections(
+                soulRoot,
+                hasCanonicalTriggerLifeEnd,
+                out var equipped,
+                out var stored,
+                out _) ||
+            (equipped == null && stored == null))
+        {
+            return false;
+        }
+
+        var relic = FindRelicById(equipped, request.RelicId) ??
+                    FindRelicById(stored, request.RelicId);
         if (relic == null)
             return false;
 
@@ -994,6 +1484,72 @@ internal static class GuardianAbodeResidentRequestState
     {
         using var doc = JsonDocument.Parse(node.ToJsonString());
         return doc.RootElement.Clone();
+    }
+
+    public static string DescribeManifestationRequestSnapshot(PendingResidentCompanionManifestationRequest request)
+    {
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(request.PersonalityProfile?.Archetype))
+            parts.Add($"архетип={request.PersonalityProfile.Archetype}");
+
+        if (request.AbodeDevotionLevel is int devotionLevel)
+        {
+            var devotionTier = !string.IsNullOrWhiteSpace(request.AbodeDevotionTier)
+                ? request.AbodeDevotionTier!
+                : GuardianAbodeResidentState.ResolveAbodeDevotionTier(devotionLevel);
+            parts.Add($"преданность={GuardianAbodeResidentState.GetAbodeDevotionTierLabel(devotionTier)} {devotionLevel}/100");
+        }
+
+        if (request.Restlessness is int restlessness)
+            parts.Add($"неспокойствие={restlessness}/100");
+
+        if (!string.IsNullOrWhiteSpace(request.MigrationState))
+            parts.Add($"состояние={GuardianAbodeResidentState.GetMigrationStateLabel(request.MigrationState)}");
+
+        return parts.Count == 0 ? string.Empty : $", {string.Join(", ", parts)}";
+    }
+
+    private static GuardianAbodeResidentState.ResidentPersonalityProfile? ReadResidentPersonalityProfile(JsonNode? node)
+    {
+        if (node is not JsonObject personalityProfile)
+            return null;
+
+        try
+        {
+            return JsonSerializer.Deserialize<GuardianAbodeResidentState.ResidentPersonalityProfile>(
+                personalityProfile.ToJsonString(),
+                JsonOpts);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static GuardianAbodeResidentState.ResidentAbodeDisposition? ReadResidentAbodeDisposition(JsonNode? node)
+    {
+        if (node is not JsonObject abodeDisposition)
+            return null;
+
+        try
+        {
+            return JsonSerializer.Deserialize<GuardianAbodeResidentState.ResidentAbodeDisposition>(
+                abodeDisposition.ToJsonString(),
+                JsonOpts);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static bool TryReadResidentMeter(JsonNode? node, out int value)
+    {
+        value = 0;
+        if (node is not JsonValue jsonValue || !jsonValue.TryGetValue<int>(out value))
+            return false;
+
+        return true;
     }
 
     private static List<string> ReadStringList(JsonNode? node)

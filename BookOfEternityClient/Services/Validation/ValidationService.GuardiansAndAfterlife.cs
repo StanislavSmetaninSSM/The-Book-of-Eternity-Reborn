@@ -2103,6 +2103,20 @@ public partial class ValidationService
                 ValidateGuardianAbodeResidentInteractionReceipts(interactionReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.InteractionReceiptsProperty}", issues);
         }
 
+        if (root.TryGetProperty(GuardianAbodeResidentState.UpdateTransferReceiptsProperty, out var updateTransferReceipts))
+        {
+            RequireArrayOfObjects(updateTransferReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateTransferReceiptsProperty}", issues);
+            if (updateTransferReceipts.ValueKind == JsonValueKind.Array)
+                ValidateGuardianAbodeResidentTransferReceipts(updateTransferReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateTransferReceiptsProperty}", issues);
+        }
+
+        if (root.TryGetProperty(GuardianAbodeResidentState.TransferReceiptsProperty, out var transferReceipts))
+        {
+            RequireArrayOfObjects(transferReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.TransferReceiptsProperty}", issues);
+            if (transferReceipts.ValueKind == JsonValueKind.Array)
+                ValidateGuardianAbodeResidentTransferReceipts(transferReceipts, $"{contextPrefix}.{GuardianAbodeResidentState.TransferReceiptsProperty}", issues);
+        }
+
         if (root.TryGetProperty(GuardianAbodeResidentState.UpdateHistoryLogProperty, out var updateHistoryLog))
         {
             RequireArrayOfObjects(updateHistoryLog, $"{contextPrefix}.{GuardianAbodeResidentState.UpdateHistoryLogProperty}", issues);
@@ -2185,6 +2199,52 @@ public partial class ValidationService
         }
     }
 
+    private void ValidatePendingGuardianAbodeResidentTransfersRequestFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(GuardianAbodeResidentRequestState.TransferRequestsProperty, out var requests))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{GuardianAbodeResidentRequestState.TransferRequestsProperty}",
+                IssueSeverity.Error,
+                "pending_guardian_abode_resident_transfers.json должен содержать requests array",
+                code: "pending_abode_resident_transfers_missing_requests",
+                section: "AfterlifeResidents",
+                expected: "requests array",
+                actual: "missing",
+                repairHint: "Сохраняй pending resident transfer requests как object с requests[]."));
+            return;
+        }
+
+        RequireArrayOfObjects(requests, $"{contextPrefix}.{GuardianAbodeResidentRequestState.TransferRequestsProperty}", issues);
+        if (requests.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        var seenResidentIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var request in requests.EnumerateArray())
+        {
+            var requestContext = $"{contextPrefix}.{GuardianAbodeResidentRequestState.TransferRequestsProperty}[{index++}]";
+            if (!RequireObject(request, requestContext, issues))
+                continue;
+
+            ValidatePendingGuardianAbodeResidentTransferRequestObject(request, requestContext, issues);
+
+            var residentId = GetFirstNonEmptyString(request, "residentId");
+            if (!string.IsNullOrWhiteSpace(residentId) && !seenResidentIds.Add(residentId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{requestContext}.residentId",
+                    IssueSeverity.Error,
+                    "pending resident transfer requests не должны дублировать residentId",
+                    code: "pending_abode_resident_transfers_duplicate_resident_id",
+                    section: "AfterlifeResidents",
+                    expected: "unique residentId per pending transfer request",
+                    actual: residentId,
+                    repairHint: "Не создавай несколько transfer requests для одного и того же residentId одновременно."));
+            }
+        }
+    }
+
     private void ValidatePendingResidentCompanionManifestationRequestFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         if (!root.TryGetProperty(GuardianAbodeResidentRequestState.ManifestationRequestsProperty, out var requests))
@@ -2232,6 +2292,7 @@ public partial class ValidationService
                 RequireArrayOfStrings(archetypeHints, $"{requestContext}.archetypeHints", issues);
             if (request.TryGetProperty("appearanceMotifs", out var appearanceMotifs))
                 RequireArrayOfStrings(appearanceMotifs, $"{requestContext}.appearanceMotifs", issues);
+            ValidateResidentCompanionSnapshotFields(request, requestContext, issues);
             ValidateRequiredIsoTimestampField(
                 request,
                 requestContext,
@@ -2470,6 +2531,26 @@ public partial class ValidationService
                 }
             }
         }
+
+        if (resident.TryGetProperty("personalityProfile", out var personalityProfile) &&
+            personalityProfile.ValueKind != JsonValueKind.Null)
+        {
+            ValidateResidentPersonalityProfileObject(personalityProfile, $"{contextPrefix}.personalityProfile", issues);
+        }
+
+        if (resident.TryGetProperty("abodeDisposition", out var abodeDisposition) &&
+            abodeDisposition.ValueKind != JsonValueKind.Null)
+        {
+            ValidateResidentAbodeDispositionObject(abodeDisposition, $"{contextPrefix}.abodeDisposition", issues);
+        }
+
+        var hasAnyAbodeRelationField =
+            resident.TryGetProperty("abodeDevotionLevel", out _) ||
+            resident.TryGetProperty("abodeDevotionTier", out _) ||
+            resident.TryGetProperty("restlessness", out _) ||
+            resident.TryGetProperty("migrationState", out _);
+        if (hasAnyAbodeRelationField)
+            ValidateResidentAbodeRelationFields(resident, contextPrefix, issues);
     }
 
     private void ValidatePendingGuardianAbodeResidentsRequestObject(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -2490,6 +2571,344 @@ public partial class ValidationService
             "pending_abode_residents_request_missing_created_at_utc",
             "pending_abode_residents_request_invalid_created_at_utc",
             "pending_guardian_abode_residents_request.json должен содержать createdAtUtc в ISO 8601 формате.");
+    }
+
+    private void ValidatePendingGuardianAbodeResidentTransferRequestObject(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        RequireString(root, contextPrefix, issues, "requestId");
+        RequireString(root, contextPrefix, issues, "residentId");
+        RequireString(root, contextPrefix, issues, "residentName");
+        RequireString(root, contextPrefix, issues, "sourceGuardianId");
+        ValidateOptionalString(root, contextPrefix, issues, "sourceGuardianName");
+        RequireString(root, contextPrefix, issues, "sourceAbodeId");
+        ValidateOptionalString(root, contextPrefix, issues, "sourceAbodeName");
+        ValidateOptionalString(root, contextPrefix, issues, "targetGuardianId");
+        ValidateOptionalString(root, contextPrefix, issues, "targetGuardianName");
+        ValidateOptionalString(root, contextPrefix, issues, "targetAbodeId");
+        ValidateOptionalString(root, contextPrefix, issues, "targetAbodeName");
+        RequireString(root, contextPrefix, issues, "transferMode");
+        ValidateResidentAbodeRelationFields(root, contextPrefix, issues);
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtTurn", "AfterlifeResidents");
+        ValidateRequiredIsoTimestampField(
+            root,
+            contextPrefix,
+            issues,
+            "createdAtUtc",
+            "AfterlifeResidents",
+            "pending_abode_resident_transfer_missing_created_at_utc",
+            "pending_abode_resident_transfer_invalid_created_at_utc",
+            "pending_guardian_abode_resident_transfers.json должен содержать createdAtUtc в ISO 8601 формате.");
+
+        var transferMode = GetFirstNonEmptyString(root, "transferMode");
+        if (!string.IsNullOrWhiteSpace(transferMode) && !GuardianAbodeResidentState.IsSupportedTransferMode(transferMode))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.transferMode",
+                IssueSeverity.Error,
+                "Resident transfer request использует неподдерживаемый transferMode",
+                code: "pending_abode_resident_transfer_invalid_mode",
+                section: "AfterlifeResidents",
+                expected: "departure_only | accepted_transfer | refused_transfer",
+                actual: transferMode,
+                repairHint: "Используй для resident transfer request только departure_only, accepted_transfer или refused_transfer."));
+        }
+
+        var migrationState = GetFirstNonEmptyString(root, "migrationState");
+        if (!string.IsNullOrWhiteSpace(migrationState) &&
+            !string.Equals(migrationState, GuardianAbodeResidentState.MigrationStateReadyToTransfer, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.migrationState",
+                IssueSeverity.Error,
+                "Resident transfer request допустим только для resident в состоянии ready_to_transfer",
+                code: "pending_abode_resident_transfer_invalid_migration_gate",
+                section: "AfterlifeResidents",
+                expected: GuardianAbodeResidentState.MigrationStateReadyToTransfer,
+                actual: migrationState,
+                repairHint: "Создавай pending resident transfer request только для resident, который уже достиг ready_to_transfer."));
+        }
+
+        var targetGuardianId = GetFirstNonEmptyString(root, "targetGuardianId");
+        var targetAbodeId = GetFirstNonEmptyString(root, "targetAbodeId");
+        var sourceGuardianId = GetFirstNonEmptyString(root, "sourceGuardianId");
+        var sourceAbodeId = GetFirstNonEmptyString(root, "sourceAbodeId");
+        var requiresTarget = !string.Equals(transferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase);
+        if (requiresTarget)
+        {
+            if (string.IsNullOrWhiteSpace(targetGuardianId) || string.IsNullOrWhiteSpace(targetAbodeId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.targetGuardianId",
+                    IssueSeverity.Error,
+                    "accepted/refused resident transfer request должен содержать target guardian/abode",
+                    code: "pending_abode_resident_transfer_missing_target",
+                    section: "AfterlifeResidents",
+                    repairHint: "Для accepted_transfer и refused_transfer сохраняй targetGuardianId и targetAbodeId."));
+            }
+
+            if (!string.IsNullOrWhiteSpace(sourceGuardianId) &&
+                !string.IsNullOrWhiteSpace(targetGuardianId) &&
+                !string.IsNullOrWhiteSpace(sourceAbodeId) &&
+                !string.IsNullOrWhiteSpace(targetAbodeId) &&
+                string.Equals(sourceGuardianId, targetGuardianId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(sourceAbodeId, targetAbodeId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.targetGuardianId",
+                    IssueSeverity.Error,
+                    "Resident transfer request должен указывать Abode, отличную от source",
+                    code: "pending_abode_resident_transfer_target_matches_source",
+                    section: "AfterlifeResidents",
+                    repairHint: "Не используй source guardian/abode как target для меж-Обительного transfer request."));
+            }
+        }
+    }
+
+    private void ValidateResidentPersonalityProfileObject(JsonElement value, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!RequireObject(value, contextPrefix, issues))
+            return;
+
+        RequireString(value, contextPrefix, issues, "archetype");
+        RequireString(value, contextPrefix, issues, "worldview");
+        RequireString(value, contextPrefix, issues, "culturalLayer");
+        if (value.TryGetProperty("coreValues", out var coreValues))
+            RequireArrayOfStrings(coreValues, $"{contextPrefix}.coreValues", issues);
+        else
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.coreValues",
+                IssueSeverity.Error,
+                "Resident personalityProfile должен содержать coreValues array",
+                code: "guardian_abode_resident_missing_core_values",
+                section: "AfterlifeResidents",
+                expected: "coreValues[]",
+                actual: "missing",
+                repairHint: "Сохраняй у resident.personalityProfile непустой coreValues array."));
+
+        if (value.TryGetProperty("personalityTraits", out var personalityTraits))
+        {
+            ValidateArrayItems(personalityTraits, $"{contextPrefix}.personalityTraits", issues, ValidateResidentPersonalityTraitObject);
+        }
+        else
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.personalityTraits",
+                IssueSeverity.Error,
+                "Resident personalityProfile должен содержать personalityTraits array",
+                code: "guardian_abode_resident_missing_personality_traits",
+                section: "AfterlifeResidents",
+                expected: "personalityTraits[]",
+                actual: "missing",
+                repairHint: "Сохраняй у resident.personalityProfile personalityTraits[] с traitName/value/valueDescription."));
+        }
+    }
+
+    private void ValidateResidentPersonalityTraitObject(JsonElement value, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!RequireObject(value, contextPrefix, issues))
+            return;
+
+        RequireString(value, contextPrefix, issues, "traitName");
+        RequireString(value, contextPrefix, issues, "valueDescription");
+        ValidateIntegerField(value, contextPrefix, issues, "value");
+        ValidateOptionalString(value, contextPrefix, issues, "description");
+
+        if (TryReadInt(value, "value", out var traitValue) && (traitValue < 1 || traitValue > 10))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.value",
+                IssueSeverity.Error,
+                "Resident personality trait value должен быть в диапазоне 1..10",
+                code: "guardian_abode_resident_personality_trait_value_out_of_bounds",
+                section: "AfterlifeResidents",
+                expected: "1..10",
+                actual: traitValue.ToString(),
+                repairHint: "Сохраняй resident personalityTraits[].value как integer от 1 до 10."));
+        }
+    }
+
+    private void ValidateResidentAbodeDispositionObject(JsonElement value, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!RequireObject(value, contextPrefix, issues))
+            return;
+
+        var powerSensitivity = RequireString(value, contextPrefix, issues, "powerSensitivity");
+        if (!string.IsNullOrWhiteSpace(powerSensitivity) && !GuardianAbodeResidentState.IsSupportedPowerSensitivity(powerSensitivity))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.powerSensitivity",
+                IssueSeverity.Error,
+                "Resident abodeDisposition.powerSensitivity должен быть canonical enum значением",
+                code: "guardian_abode_resident_invalid_power_sensitivity",
+                section: "AfterlifeResidents",
+                expected: "low | medium | high",
+                actual: powerSensitivity,
+                repairHint: "Используй для abodeDisposition.powerSensitivity только low, medium или high."));
+        }
+
+        var migrationDisposition = RequireString(value, contextPrefix, issues, "migrationDisposition");
+        if (!string.IsNullOrWhiteSpace(migrationDisposition) && !GuardianAbodeResidentState.IsSupportedMigrationDisposition(migrationDisposition))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.migrationDisposition",
+                IssueSeverity.Error,
+                "Resident abodeDisposition.migrationDisposition должен быть canonical enum значением",
+                code: "guardian_abode_resident_invalid_migration_disposition",
+                section: "AfterlifeResidents",
+                expected: "rooted | selective | opportunistic | wandering",
+                actual: migrationDisposition,
+                repairHint: "Используй для abodeDisposition.migrationDisposition только rooted, selective, opportunistic или wandering."));
+        }
+
+        var communalOrientation = RequireString(value, contextPrefix, issues, "communalOrientation");
+        if (!string.IsNullOrWhiteSpace(communalOrientation) && !GuardianAbodeResidentState.IsSupportedCommunalOrientation(communalOrientation))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.communalOrientation",
+                IssueSeverity.Error,
+                "Resident abodeDisposition.communalOrientation должен быть canonical enum значением",
+                code: "guardian_abode_resident_invalid_communal_orientation",
+                section: "AfterlifeResidents",
+                expected: "low | medium | high",
+                actual: communalOrientation,
+                repairHint: "Используй для abodeDisposition.communalOrientation только low, medium или high."));
+        }
+
+        var stabilityNeed = RequireString(value, contextPrefix, issues, "stabilityNeed");
+        if (!string.IsNullOrWhiteSpace(stabilityNeed) && !GuardianAbodeResidentState.IsSupportedStabilityNeed(stabilityNeed))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.stabilityNeed",
+                IssueSeverity.Error,
+                "Resident abodeDisposition.stabilityNeed должен быть canonical enum значением",
+                code: "guardian_abode_resident_invalid_stability_need",
+                section: "AfterlifeResidents",
+                expected: "low | medium | high",
+                actual: stabilityNeed,
+                repairHint: "Используй для abodeDisposition.stabilityNeed только low, medium или high."));
+        }
+    }
+
+    private void ValidateResidentAbodeRelationFields(JsonElement resident, string contextPrefix, List<ValidationIssue> issues)
+    {
+        ValidateIntegerField(resident, contextPrefix, issues, "abodeDevotionLevel");
+        ValidateIntegerField(resident, contextPrefix, issues, "restlessness");
+        RequireString(resident, contextPrefix, issues, "abodeDevotionTier");
+        RequireString(resident, contextPrefix, issues, "migrationState");
+
+        if (TryReadInt(resident, "abodeDevotionLevel", out var abodeDevotionLevel) &&
+            (abodeDevotionLevel < 0 || abodeDevotionLevel > 100))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.abodeDevotionLevel",
+                IssueSeverity.Error,
+                "Resident abodeDevotionLevel должен быть в диапазоне 0..100",
+                code: "guardian_abode_resident_abode_devotion_out_of_bounds",
+                section: "AfterlifeResidents",
+                expected: "0..100",
+                actual: abodeDevotionLevel.ToString(),
+                repairHint: "Сохраняй abodeDevotionLevel как integer от 0 до 100."));
+        }
+
+        if (TryReadInt(resident, "restlessness", out var restlessness) &&
+            (restlessness < 0 || restlessness > 100))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.restlessness",
+                IssueSeverity.Error,
+                "Resident restlessness должен быть в диапазоне 0..100",
+                code: "guardian_abode_resident_restlessness_out_of_bounds",
+                section: "AfterlifeResidents",
+                expected: "0..100",
+                actual: restlessness.ToString(),
+                repairHint: "Сохраняй restlessness как integer от 0 до 100."));
+        }
+
+        var actualTier = GetFirstNonEmptyString(resident, "abodeDevotionTier");
+        if (!string.IsNullOrWhiteSpace(actualTier) && !GuardianAbodeResidentState.IsSupportedAbodeDevotionTier(actualTier))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.abodeDevotionTier",
+                IssueSeverity.Error,
+                "Resident abodeDevotionTier должен быть canonical devotion tier",
+                code: "guardian_abode_resident_invalid_abode_devotion_tier",
+                section: "AfterlifeResidents",
+                expected: "alienated | uncertain | attached | devoted | steadfast",
+                actual: actualTier,
+                repairHint: "Используй для abodeDevotionTier только alienated, uncertain, attached, devoted или steadfast."));
+        }
+        else if (TryReadInt(resident, "abodeDevotionLevel", out var devotionLevel))
+        {
+            var expectedTier = GuardianAbodeResidentState.ResolveAbodeDevotionTier(devotionLevel);
+            if (!string.IsNullOrWhiteSpace(actualTier) &&
+                !string.Equals(actualTier, expectedTier, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.abodeDevotionTier",
+                    IssueSeverity.Error,
+                    "Resident abodeDevotionTier должен совпадать с tier, выведенным из abodeDevotionLevel",
+                    code: "guardian_abode_resident_abode_devotion_tier_mismatch",
+                    section: "AfterlifeResidents",
+                    expected: expectedTier,
+                    actual: actualTier,
+                    repairHint: "Синхронизируй abodeDevotionTier с abodeDevotionLevel по canonical 5-tier mapping."));
+            }
+        }
+
+        var actualMigrationState = GetFirstNonEmptyString(resident, "migrationState");
+        if (!string.IsNullOrWhiteSpace(actualMigrationState) && !GuardianAbodeResidentState.IsSupportedMigrationState(actualMigrationState))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.migrationState",
+                IssueSeverity.Error,
+                "Resident migrationState должен быть canonical migration state",
+                code: "guardian_abode_resident_invalid_migration_state",
+                section: "AfterlifeResidents",
+                expected: "settled | wavering | restless | considering_departure | ready_to_transfer",
+                actual: actualMigrationState,
+                repairHint: "Используй для migrationState только settled, wavering, restless, considering_departure или ready_to_transfer."));
+        }
+        else if (TryReadInt(resident, "abodeDevotionLevel", out var currentDevotionLevel) &&
+                 TryReadInt(resident, "restlessness", out var currentRestlessness))
+        {
+            var expectedMigrationState = GuardianAbodeResidentState.ResolveMigrationState(currentDevotionLevel, currentRestlessness);
+            if (!string.IsNullOrWhiteSpace(actualMigrationState) &&
+                !string.Equals(actualMigrationState, expectedMigrationState, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.migrationState",
+                    IssueSeverity.Error,
+                    "Resident migrationState должен совпадать с state, выведенным из abodeDevotionLevel и restlessness",
+                    code: "guardian_abode_resident_migration_state_mismatch",
+                    section: "AfterlifeResidents",
+                    expected: expectedMigrationState,
+                    actual: actualMigrationState,
+                    repairHint: "Синхронизируй migrationState с canonical resolver, зависящим от abodeDevotionLevel и restlessness."));
+            }
+        }
+    }
+
+    private void ValidateResidentCompanionSnapshotFields(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty("personalityProfile", out var personalityProfile) &&
+            personalityProfile.ValueKind != JsonValueKind.Null)
+        {
+            ValidateResidentPersonalityProfileObject(personalityProfile, $"{contextPrefix}.personalityProfile", issues);
+        }
+
+        if (root.TryGetProperty("abodeDisposition", out var abodeDisposition) &&
+            abodeDisposition.ValueKind != JsonValueKind.Null)
+        {
+            ValidateResidentAbodeDispositionObject(abodeDisposition, $"{contextPrefix}.abodeDisposition", issues);
+        }
+
+        var hasAnyAbodeRelationField =
+            root.TryGetProperty("abodeDevotionLevel", out _) ||
+            root.TryGetProperty("abodeDevotionTier", out _) ||
+            root.TryGetProperty("restlessness", out _) ||
+            root.TryGetProperty("migrationState", out _);
+        if (hasAnyAbodeRelationField)
+            ValidateResidentAbodeRelationFields(root, contextPrefix, issues);
     }
 
     private void ValidatePendingGuardianAbodeResidentInteractionRequestObject(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -2594,6 +3013,68 @@ public partial class ValidationService
                     section: "AfterlifeResidents",
                     expected: "talk_scene | history_revealed | history_refused | history_partial | bond_shift_only",
                     actual: responseMode));
+            }
+        }
+    }
+
+    private void ValidateGuardianAbodeResidentTransferReceipts(JsonElement receipts, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var receiptIndex = 0;
+        foreach (var receipt in receipts.EnumerateArray())
+        {
+            var receiptContext = $"{contextPrefix}[{receiptIndex++}]";
+            if (!RequireObject(receipt, receiptContext, issues))
+                continue;
+
+            RequireString(receipt, receiptContext, issues, "requestId");
+            RequireString(receipt, receiptContext, issues, "residentId");
+            ValidateOptionalString(receipt, receiptContext, issues, "residentName");
+            RequireString(receipt, receiptContext, issues, "sourceGuardianId");
+            ValidateOptionalString(receipt, receiptContext, issues, "sourceGuardianName");
+            RequireString(receipt, receiptContext, issues, "sourceAbodeId");
+            ValidateOptionalString(receipt, receiptContext, issues, "sourceAbodeName");
+            ValidateOptionalString(receipt, receiptContext, issues, "targetGuardianId");
+            ValidateOptionalString(receipt, receiptContext, issues, "targetGuardianName");
+            ValidateOptionalString(receipt, receiptContext, issues, "targetAbodeId");
+            ValidateOptionalString(receipt, receiptContext, issues, "targetAbodeName");
+            var status = RequireString(receipt, receiptContext, issues, "status");
+            var transferMode = RequireString(receipt, receiptContext, issues, "transferMode");
+            ValidateOptionalString(receipt, receiptContext, issues, "departureHistoryEntryId");
+            ValidateOptionalString(receipt, receiptContext, issues, "arrivalHistoryEntryId");
+            ValidateOptionalString(receipt, receiptContext, issues, "reason");
+            ValidateNonNegativeIntegerField(receipt, receiptContext, issues, "resolvedAtTurn", "AfterlifeResidents");
+            ValidateRequiredIsoTimestampField(
+                receipt,
+                receiptContext,
+                issues,
+                "resolvedAtUtc",
+                "AfterlifeResidents",
+                "guardian_abode_resident_transfer_receipt_missing_resolved_at_utc",
+                "guardian_abode_resident_transfer_receipt_invalid_resolved_at_utc",
+                "Resident transfer receipt должен содержать resolvedAtUtc в ISO 8601 формате.");
+
+            if (!string.IsNullOrWhiteSpace(status) && !GuardianAbodeResidentState.IsSupportedTransferStatus(status))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.status",
+                    IssueSeverity.Error,
+                    "Resident transfer receipt использует неподдерживаемый status",
+                    code: "guardian_abode_resident_transfer_receipt_invalid_status",
+                    section: "AfterlifeResidents",
+                    expected: "accepted | refused | departed_only",
+                    actual: status));
+            }
+
+            if (!string.IsNullOrWhiteSpace(transferMode) && !GuardianAbodeResidentState.IsSupportedTransferMode(transferMode))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.transferMode",
+                    IssueSeverity.Error,
+                    "Resident transfer receipt использует неподдерживаемый transferMode",
+                    code: "guardian_abode_resident_transfer_receipt_invalid_mode",
+                    section: "AfterlifeResidents",
+                    expected: "departure_only | accepted_transfer | refused_transfer",
+                    actual: transferMode));
             }
         }
     }

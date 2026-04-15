@@ -518,6 +518,32 @@ public sealed class RivalSoulArcServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildSystemReminderFragmentAsync_AliasOnlyNpcCoreDoesNotCountAsWorldMaturity()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "locationId": "loc_market",
+          "name": "Рынок"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "npcs": [
+            {
+              "npcId": "npc_merchant_01",
+              "name": "Старый Торговец",
+              "currentLocationId": "loc_market"
+            }
+          ]
+        }
+        """);
+
+        var reminder = await _service.BuildSystemReminderFragmentAsync("Mortal World", 8);
+
+        Assert.Null(reminder);
+    }
+
+    [Fact]
     public async Task BuildSystemReminderFragmentAsync_WithActiveSoulQuest_DoesNotAddWorldEventHook()
     {
         await _fs.WriteFileAtomicAsync("lore/current_world/world_setting.json", """

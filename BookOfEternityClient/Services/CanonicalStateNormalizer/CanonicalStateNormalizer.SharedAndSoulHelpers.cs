@@ -6,51 +6,77 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class CanonicalStateNormalizer
 {
-    private static void ApplyMetaStateUpdates(JsonObject root, JsonObject updates)
+    private static void ApplyMetaStateUpdates(
+        JsonObject root,
+        JsonObject updates,
+        bool hasCanonicalTriggerLifeEnd)
     {
-        if (updates["inkFeatherChanges"] is JsonObject feathers)
+        if (GuardianPolicyContracts.TryDescribeInvalidMetaStateUpdates(updates, out var failureDescription))
+            throw new InvalidOperationException(failureDescription);
+
+        if (updates.ContainsKey("inkFeatherChanges"))
         {
+            if (updates["inkFeatherChanges"] is not JsonObject feathers ||
+                !GuardianPolicyContracts.TryReadStrictInkFeatherChanges(feathers, out var featherAdd, out var featherSpend))
+            {
+                throw new InvalidOperationException(GuardianPolicyContracts.InvalidMetaStateInkFeatherChangesMessage);
+            }
+
             NormalizeInkFeathersShape(root);
             var current = root["inkFeathers"]!.AsObject();
             var currentValue = GetNodeInt(current["current"]);
             var totalValue = GetNodeInt(current["total"], currentValue);
-            currentValue += GetNodeInt(feathers["add"]);
-            currentValue -= GetNodeInt(feathers["spend"]);
-            totalValue += Math.Max(0, GetNodeInt(feathers["add"]));
+            currentValue += featherAdd;
+            currentValue -= featherSpend;
+            totalValue += featherAdd;
             current["current"] = Math.Max(0, currentValue);
             current["total"] = Math.Max(totalValue, currentValue);
         }
 
         if (updates["enlightenmentProgression"] is JsonObject progression)
         {
-            var newTier = GetNodeInt(progression["newTier"], -1);
-            var experience = GetNodeInt(progression["experience"]);
+            if (!GuardianPolicyContracts.TryReadStrictMetaEnlightenmentProgression(
+                    progression,
+                    out var newTier,
+                    out var experience))
+            {
+                throw new InvalidOperationException(GuardianPolicyContracts.InvalidMetaStateEnlightenmentProgressionMessage);
+            }
 
             var enlightenment = root["enlightenment"] as JsonObject ?? new JsonObject();
-            if (newTier >= 0)
+            if (newTier.HasValue)
             {
-                enlightenment["level"] = newTier;
+                enlightenment["level"] = newTier.Value;
                 if (string.IsNullOrWhiteSpace(GetNodeString(enlightenment["currentTier"])))
-                    enlightenment["currentTier"] = $"Ур. {newTier}";
+                    enlightenment["currentTier"] = $"Ур. {newTier.Value}";
             }
             enlightenment["experience"] = experience;
             root["enlightenment"] = enlightenment;
 
             var soulProgression = root["soulProgression"] as JsonObject ?? new JsonObject();
-            if (newTier >= 0)
+            if (newTier.HasValue)
             {
-                soulProgression["tier"] = newTier;
+                soulProgression["tier"] = newTier.Value;
                 if (string.IsNullOrWhiteSpace(GetNodeString(soulProgression["tierName"])))
-                    soulProgression["tierName"] = $"Ур. {newTier}";
+                    soulProgression["tierName"] = $"Ур. {newTier.Value}";
             }
             soulProgression["totalExperience"] = experience;
             if (!soulProgression.ContainsKey("experienceInCurrentTier"))
                 soulProgression["experienceInCurrentTier"] = experience;
             root["soulProgression"] = soulProgression;
         }
+        else if (updates.ContainsKey("enlightenmentProgression"))
+        {
+            throw new InvalidOperationException(GuardianPolicyContracts.InvalidMetaStateEnlightenmentProgressionMessage);
+        }
 
         if (updates["soulRelicOperations"] is JsonObject relicOps)
         {
+            if (!GuardianPolicyContracts.HasStrictMetaSoulRelicOperationsShape(relicOps))
+            {
+                throw new InvalidOperationException(GuardianPolicyContracts.InvalidMetaStateSoulRelicOperationsMessage);
+            }
+
             NormalizeSoulRelicsShape(root);
             var soulRelics = root["soulRelics"]!.AsObject();
             var equipped = EnsureArray(soulRelics, "equipped");
@@ -101,10 +127,17 @@ public partial class CanonicalStateNormalizer
                 }
             }
         }
+        else if (updates.ContainsKey("soulRelicOperations"))
+        {
+            throw new InvalidOperationException(GuardianPolicyContracts.InvalidMetaStateSoulRelicOperationsMessage);
+        }
 
         if (updates["lifeTransitions"] is JsonObject lifeTransitions &&
             lifeTransitions["recordLifeCompletion"] is JsonObject lifeRecord)
         {
+            if (!hasCanonicalTriggerLifeEnd)
+                throw new InvalidOperationException(GuardianPolicyContracts.InvalidMetaStateLifeTransitionsTriggerContextMessage);
+
             var livesHistory = EnsureArray(root, "livesHistory");
             AddUniqueNode(livesHistory, lifeRecord);
         }

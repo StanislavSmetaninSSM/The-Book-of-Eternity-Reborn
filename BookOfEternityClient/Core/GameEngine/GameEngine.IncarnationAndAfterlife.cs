@@ -15,6 +15,19 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
+    private Task WriteCanonicalSoulStateAsync(JsonObject root)
+    {
+        return _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(root).ToJsonString(JsonOpts));
+    }
+
+    private Task WriteCanonicalSoulStateAsync(object payload)
+    {
+        var root = JsonSerializer.SerializeToNode(payload, JsonOpts) as JsonObject ?? new JsonObject();
+        return WriteCanonicalSoulStateAsync(root);
+    }
+
     private string BuildLifeSummary(string? playerSummary)
     {
         var state = _stateManager.CurrentState;
@@ -101,8 +114,7 @@ public partial class GameEngine
                     dict[prop.Name] = JsonSerializer.Deserialize<object>(prop.Value.GetRawText());
             }
 
-            await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json",
-                JsonSerializer.Serialize(dict, JsonOpts));
+            await WriteCanonicalSoulStateAsync(dict);
 
             if (string.Equals(newRealm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) &&
                 !string.IsNullOrWhiteSpace(lifeSummaryToAppend))
@@ -149,7 +161,7 @@ public partial class GameEngine
                 {
                     legacy["applicationState"] = "pending";
                     legacy.Remove("applicationAudit");
-                    await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", root!.ToJsonString(JsonOpts));
+                    await WriteCanonicalSoulStateAsync(root!);
                 }
                 else
                 {
@@ -179,7 +191,7 @@ public partial class GameEngine
             if (!string.IsNullOrWhiteSpace(summary))
             {
                 legacy["applicationState"] = "applied-awaiting-turn-accept";
-                await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", root!.ToJsonString(JsonOpts));
+                await WriteCanonicalSoulStateAsync(root!);
             }
 
             _pendingMemoryLegacyAwaitingConsumption = !string.IsNullOrWhiteSpace(summary);
@@ -319,7 +331,7 @@ public partial class GameEngine
             if (audit.Count > 0)
             {
                 legacy["applicationAudit"] = audit;
-                await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", root!.ToJsonString(JsonOpts));
+                await WriteCanonicalSoulStateAsync(root!);
             }
         }
         catch (Exception ex)
@@ -497,7 +509,7 @@ public partial class GameEngine
             }
 
             root["pendingMemoryLegacy"] = null;
-            await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", root.ToJsonString(JsonOpts));
+            await WriteCanonicalSoulStateAsync(root);
             await RefreshRuntimeStateAsync();
         }
         catch (Exception ex)
@@ -608,9 +620,9 @@ public partial class GameEngine
     /// Waits indefinitely — only Escape cancels. No hard timeout.
     /// </summary>
 
-    private async Task ConsumeAfterlifeReturnProtectionIfNeededAsync(PendingTurnSnapshotManifest? manifest)
+    private async Task ConsumeAfterlifeReturnProtectionIfNeededAsync(ValidatedPendingTurnSnapshotContext? snapshotContext)
     {
-        if (!string.Equals(manifest?.SourceLabel, OrdinaryPlayerTurnSourceLabel, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(snapshotContext?.SourceLabel, OrdinaryPlayerTurnSourceLabel, StringComparison.OrdinalIgnoreCase))
             return;
 
         if (!_stateManager.CurrentState.IsInAfterlifeRealm ||

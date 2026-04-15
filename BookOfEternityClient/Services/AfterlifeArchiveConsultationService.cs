@@ -59,7 +59,8 @@ public sealed class AfterlifeArchiveConsultationService
         if (string.IsNullOrWhiteSpace(soulJson))
             return null;
 
-        if (await AfterlifeArchiveActionState.ReadConsultationAsync(_fs) != null)
+        var pendingRequestState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
+        if (pendingRequestState.Exists)
             return null;
 
         JsonObject? soulRoot;
@@ -76,6 +77,7 @@ public sealed class AfterlifeArchiveConsultationService
         if (soulRoot == null)
             return null;
 
+        GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
         AfterlifeArchiveState.NormalizeShape(soulRoot);
         var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
         var archiveEntry = stored.OfType<JsonObject>()
@@ -117,7 +119,14 @@ public sealed class AfterlifeArchiveConsultationService
         }
 
         await AfterlifeArchiveActionState.WriteConsultationAsync(_fs, request);
-        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                soulRoot,
+                new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.AfterlifeArchive,
+                    affectedArchiveIds: new[] { archiveId },
+                    affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts));
 
         var summary = string.Equals(entryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase)
             ? "Запрос на архивную консультацию создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо materialize-ится в rival clue / warning effect."

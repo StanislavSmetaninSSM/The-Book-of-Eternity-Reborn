@@ -183,4 +183,214 @@ public sealed class AfterlifeArchiveStateTests
         var receipt = AfterlifeArchiveState.EnsureActionReceiptsArray(root).OfType<JsonObject>().Single();
         Assert.Equal("rejected", receipt["status"]?.GetValue<string>());
     }
+
+    [Fact]
+    public void ApplyUpdates_MalformedArchiveUpdateItem_FailClosed()
+    {
+        var root = new JsonObject();
+        AfterlifeArchiveState.NormalizeShape(root);
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            AfterlifeArchiveState.ApplyUpdates(root, new JsonArray
+            {
+                new JsonObject
+                {
+                    ["command"] = "unknown",
+                    ["archiveId"] = "archive_001"
+                }
+            }));
+
+        Assert.Contains("afterlifeArchiveUpdates", exception.Message, StringComparison.Ordinal);
+        Assert.Empty(AfterlifeArchiveState.EnsureStoredArray(root));
+    }
+
+    [Fact]
+    public void ApplyUpdates_AddWithoutCanonicalEntryShape_FailClosed()
+    {
+        var root = new JsonObject();
+        AfterlifeArchiveState.NormalizeShape(root);
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            AfterlifeArchiveState.ApplyUpdates(root, new JsonArray
+            {
+                new JsonObject
+                {
+                    ["command"] = "add",
+                    ["entry"] = new JsonObject
+                    {
+                        ["archiveId"] = "archive_001"
+                    }
+                }
+            }));
+
+        Assert.Contains("afterlifeArchiveUpdates", exception.Message, StringComparison.Ordinal);
+        Assert.Empty(AfterlifeArchiveState.EnsureStoredArray(root));
+    }
+
+    [Fact]
+    public void ApplyActionResolutions_MalformedResolutionItem_FailClosed()
+    {
+        var root = new JsonObject();
+        AfterlifeArchiveState.NormalizeShape(root);
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            AfterlifeArchiveState.ApplyActionResolutions(root, new JsonArray
+            {
+                new JsonObject
+                {
+                    ["requestId"] = "req_001",
+                    ["archiveId"] = "archive_001",
+                    ["requestedMode"] = "consultation"
+                }
+            }, currentTurn: 14));
+
+        Assert.Contains("archiveActionResolutions", exception.Message, StringComparison.Ordinal);
+        Assert.Empty(AfterlifeArchiveState.EnsureActionReceiptsArray(root));
+    }
+
+    [Fact]
+    public void ApplyActionResolutions_AcceptedConsultationWithoutOutcome_FailClosed()
+    {
+        var root = new JsonObject();
+        AfterlifeArchiveState.NormalizeShape(root);
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            AfterlifeArchiveState.ApplyActionResolutions(root, new JsonArray
+            {
+                new JsonObject
+                {
+                    ["requestId"] = "req_consult",
+                    ["archiveId"] = "archive_001",
+                    ["requestedMode"] = AfterlifeArchiveActionState.RequestedModeConsultation,
+                    ["status"] = AfterlifeArchiveActionState.ResolutionStatusAccepted
+                }
+            }, currentTurn: 14));
+
+        Assert.Contains("archiveActionResolutions", exception.Message, StringComparison.Ordinal);
+        Assert.Empty(AfterlifeArchiveState.EnsureActionReceiptsArray(root));
+    }
+
+    [Fact]
+    public void ApplyActionResolutions_AcceptedProjectFuelWithoutResultPayload_FailClosed()
+    {
+        var root = new JsonObject();
+        AfterlifeArchiveState.NormalizeShape(root);
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            AfterlifeArchiveState.ApplyActionResolutions(root, new JsonArray
+            {
+                new JsonObject
+                {
+                    ["requestId"] = "req_project",
+                    ["archiveId"] = "archive_002",
+                    ["requestedMode"] = AfterlifeArchiveActionState.RequestedModeProjectFuel,
+                    ["status"] = AfterlifeArchiveActionState.ResolutionStatusAccepted,
+                    ["targetProjectId"] = "project_alpha"
+                }
+            }, currentTurn: 14));
+
+        Assert.Contains("archiveActionResolutions", exception.Message, StringComparison.Ordinal);
+        Assert.Empty(AfterlifeArchiveState.EnsureActionReceiptsArray(root));
+    }
+
+    [Fact]
+    public void ApplyActionResolutions_SameRequestIdDifferentArchiveIdentity_KeepsDistinctReceipts()
+    {
+        var root = new JsonObject();
+
+        AfterlifeArchiveState.NormalizeShape(root);
+        AfterlifeArchiveState.ApplyActionResolutions(root, new JsonArray
+        {
+            new JsonObject
+            {
+                ["requestId"] = "req_shared",
+                ["archiveId"] = "archive_001",
+                ["requestedMode"] = AfterlifeArchiveActionState.RequestedModeConsultation,
+                ["status"] = AfterlifeArchiveActionState.ResolutionStatusAccepted,
+                ["guardianId"] = "guardian_alpha",
+                [AfterlifeArchiveActionState.ConsultationOutcomeGuaranteedArchiveQuestCount] = 1,
+                [AfterlifeArchiveActionState.ConsultationOutcomeQuestHookCount] = 0,
+                [AfterlifeArchiveActionState.ConsultationOutcomeSpecialQuestLineUnlocks] = 0,
+                [AfterlifeArchiveActionState.ConsultationOutcomeVisibleRivalClueBonus] = 0,
+                [AfterlifeArchiveActionState.ConsultationOutcomeArchiveWarningTierBonus] = 0
+            },
+            new JsonObject
+            {
+                ["requestId"] = "req_shared",
+                ["archiveId"] = "archive_002",
+                ["requestedMode"] = AfterlifeArchiveActionState.RequestedModeProjectFuel,
+                ["status"] = AfterlifeArchiveActionState.ResolutionStatusAccepted,
+                ["guardianId"] = "guardian_alpha",
+                ["targetProjectId"] = "project_alpha",
+                ["resultMode"] = AfterlifeArchiveActionState.ProjectFuelResultModeProjectWork,
+                ["resultAmount"] = 2
+            }
+        }, currentTurn: 14);
+
+        var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(root).OfType<JsonObject>().ToList();
+        Assert.Equal(2, receipts.Count);
+        Assert.Contains(receipts, receipt =>
+            AfterlifeArchiveState.ActionReceiptMatchesRequest(
+                receipt,
+                "req_shared",
+                "archive_001",
+                AfterlifeArchiveActionState.RequestedModeConsultation));
+        Assert.Contains(receipts, receipt =>
+            AfterlifeArchiveState.ActionReceiptMatchesRequest(
+                receipt,
+                "req_shared",
+                "archive_002",
+                AfterlifeArchiveActionState.RequestedModeProjectFuel));
+    }
+
+    [Fact]
+    public void ApplyActionResolutions_WhitespaceVariantFullIdentity_UpsertsExistingReceiptInPlace()
+    {
+        var root = new JsonObject
+        {
+            ["afterlifeArchive"] = new JsonObject
+            {
+                ["stored"] = new JsonArray(),
+                ["actionReceipts"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["requestId"] = " req_shared ",
+                        ["archiveId"] = " archive_001 ",
+                        ["requestedMode"] = $" {AfterlifeArchiveActionState.RequestedModeConsultation} ",
+                        ["status"] = AfterlifeArchiveActionState.ResolutionStatusRejected,
+                        ["resolvedAtTurn"] = 12,
+                        ["resolvedAtUtc"] = "2026-03-26T00:00:00Z"
+                    }
+                }
+            }
+        };
+
+        AfterlifeArchiveState.NormalizeShape(root);
+        AfterlifeArchiveState.ApplyActionResolutions(root, new JsonArray
+        {
+            new JsonObject
+            {
+                ["requestId"] = "req_shared",
+                ["archiveId"] = "archive_001",
+                ["requestedMode"] = AfterlifeArchiveActionState.RequestedModeConsultation,
+                ["status"] = AfterlifeArchiveActionState.ResolutionStatusAccepted,
+                ["guardianId"] = "guardian_alpha",
+                [AfterlifeArchiveActionState.ConsultationOutcomeGuaranteedArchiveQuestCount] = 1,
+                [AfterlifeArchiveActionState.ConsultationOutcomeQuestHookCount] = 0,
+                [AfterlifeArchiveActionState.ConsultationOutcomeSpecialQuestLineUnlocks] = 0,
+                [AfterlifeArchiveActionState.ConsultationOutcomeVisibleRivalClueBonus] = 0,
+                [AfterlifeArchiveActionState.ConsultationOutcomeArchiveWarningTierBonus] = 0
+            }
+        }, currentTurn: 14);
+
+        var receipts = AfterlifeArchiveState.EnsureActionReceiptsArray(root).OfType<JsonObject>().ToList();
+        Assert.Single(receipts);
+        Assert.Equal(AfterlifeArchiveActionState.ResolutionStatusAccepted, receipts[0]["status"]?.GetValue<string>());
+        Assert.True(AfterlifeArchiveState.ActionReceiptMatchesRequest(
+            receipts[0],
+            "req_shared",
+            "archive_001",
+            AfterlifeArchiveActionState.RequestedModeConsultation));
+    }
 }

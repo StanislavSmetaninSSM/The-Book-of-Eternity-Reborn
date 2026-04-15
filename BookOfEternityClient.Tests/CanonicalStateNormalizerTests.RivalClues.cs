@@ -104,6 +104,12 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         }
         """);
 
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
         await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
@@ -362,6 +368,150 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.Contains("\"bonusClueConsumed\": true", worldEventsJson, StringComparison.Ordinal);
         Assert.NotNull(arcsJson);
         Assert.Contains("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchMixedBonusClue_TruncatedBeforeClueMarkersStillFailsClosed()
+    {
+        await SeedVisibleBonusClueRivalScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("world_events.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var arcsJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(arcsJson);
+        Assert.DoesNotContain("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
+        Assert.NotNull(worldEventsJson);
+        Assert.Contains("\"eventId\": \"evt_hunter_1\"", worldEventsJson, StringComparison.Ordinal);
+        Assert.DoesNotContain("relatedRivalArcId", worldEventsJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchMixedBonusClue_BareCurrentWorldEventContainerStillFailsClosed()
+    {
+        await SeedVisibleBonusClueRivalScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("world_events.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var arcsJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(arcsJson);
+        Assert.DoesNotContain("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
+        Assert.Equal("""
+        {
+          "worldEventsLog": [
+            {
+        """, worldEventsJson);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchMixedBonusClue_PartialRelevantCurrentWorldEventKeyStillFailsClosed()
+    {
+        await SeedVisibleBonusClueRivalScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "related
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("world_events.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var arcsJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(arcsJson);
+        Assert.DoesNotContain("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
+        Assert.Equal("""
+        {
+          "worldEventsLog": [
+            {
+              "related
+        """, worldEventsJson);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchMixedBonusClue_ExhaustedPublicSignalBudgetMalformedWorldEventsStillFailsClosed()
+    {
+        await SeedVisibleBonusClueRivalScenarioAsync(visibleRivalClueBudget: 1);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("world_events.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var arcsJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(arcsJson);
+        Assert.DoesNotContain("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
+        Assert.NotNull(worldEventsJson);
+        Assert.Contains("\"eventId\": \"evt_hunter_1\"", worldEventsJson, StringComparison.Ordinal);
+        Assert.DoesNotContain("relatedRivalArcId", worldEventsJson, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -631,6 +781,33 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchVisibleBonusClue_MissingCurrentWorldEventsFailsClosed()
+    {
+        await SeedVisibleBonusClueRivalScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World"
+        }
+        """);
+        _fs.DeleteFile("game_state/world/world_events.json");
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("world_events.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var arcsJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(arcsJson);
+        Assert.DoesNotContain("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
+        Assert.False(_fs.FileExists("game_state/world/world_events.json"));
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_LoreResearchVisibleBonusClue_MalformedCurrentRivalSoulArcsFailsClosed()
     {
         await SeedVisibleBonusClueRivalScenarioAsync();
@@ -676,6 +853,146 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchVisibleBonusClue_MixedValidAndUnsupportedCurrentSoulStateFailsClosed()
+    {
+        await SeedVisibleBonusClueRivalScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          },
+          "foo": []
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("soul_state.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("foo", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var arcsJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(arcsJson);
+        Assert.DoesNotContain("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_SponsoredWorldEventsWithoutBonusCluePath_MalformedCurrentSoulStateRemainsPermissive()
+    {
+        await SeedVisibleBonusClueWorldEventScenarioAsync();
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": []
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{");
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
+
+        var arcsJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(arcsJson);
+        Assert.DoesNotContain("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
+        Assert.NotNull(worldEventsJson);
+        Assert.Contains("\"eventId\": \"evt_hunter_1\"", worldEventsJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DormantLoreResearchBudgetWithoutCurrentBonusClueSurface_MalformedCurrentSoulStateRemainsPermissive()
+    {
+        await SeedVisibleBonusClueWorldEventScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{");
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(worldEventsJson);
+        Assert.Contains("\"worldEventsLog\": []", worldEventsJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DormantLoreResearchBudgetWithoutCurrentBonusClueSurface_MixedValidAndUnsupportedCurrentSoulStateRemainsPermissive()
+    {
+        await SeedVisibleBonusClueWorldEventScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          },
+          "foo": []
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(worldEventsJson);
+        Assert.Contains("\"worldEventsLog\": []", worldEventsJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DormantLoreResearchBudgetWithoutCurrentBonusClueSurface_MissingCurrentSoulStateRemainsPermissive()
+    {
+        await SeedVisibleBonusClueWorldEventScenarioAsync();
+        _fs.DeleteFile("game_state/meta/soul_state.json");
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(worldEventsJson);
+        Assert.Contains("\"worldEventsLog\": []", worldEventsJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_LoreResearchWorldEventBonusClue_MalformedCurrentWorldEventsFailsClosed()
     {
         await SeedVisibleBonusClueWorldEventScenarioAsync();
@@ -702,6 +1019,132 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchWorldEventBonusClue_MissingCurrentWorldEventsFailsClosed()
+    {
+        await SeedVisibleBonusClueWorldEventScenarioAsync();
+        _fs.DeleteFile("game_state/world/world_events.json");
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("world_events.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.False(_fs.FileExists("game_state/world/world_events.json"));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchWorldEventBonusClue_TruncatedRelevantCurrentWorldEventsStillFailClosed()
+    {
+        await SeedVisibleBonusClueWorldEventScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+              "relatedRivalArcId": "arc_hunter"
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("world_events.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.Contains("\"relatedRivalArcId\": \"arc_hunter\"", worldEventsJson, StringComparison.Ordinal);
+        Assert.DoesNotContain("bonusClueSourceProjectId", worldEventsJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchWorldEventBonusClue_TruncatedBeforeClueMarkersStillFailClosed()
+    {
+        await SeedVisibleBonusClueWorldEventScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("world_events.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.Contains("\"eventId\": \"evt_hunter_1\"", worldEventsJson, StringComparison.Ordinal);
+        Assert.DoesNotContain("relatedRivalArcId", worldEventsJson, StringComparison.Ordinal);
+        Assert.DoesNotContain("bonusClueSourceProjectId", worldEventsJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchWorldEventBonusClue_BareCurrentWorldEventContainerStillFailClosed()
+    {
+        await SeedVisibleBonusClueWorldEventScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("world_events.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.Equal("""
+        {
+          "worldEventsLog": [
+            {
+        """, worldEventsJson);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchWorldEventBonusClue_PartialRelevantCurrentWorldEventKeyStillFailClosed()
+    {
+        await SeedVisibleBonusClueWorldEventScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "ev
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer));
+
+        Assert.Contains("world_events.json", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 0", trackerJson, StringComparison.Ordinal);
+        Assert.Equal("""
+        {
+          "worldEventsLog": [
+            {
+              "ev
+        """, worldEventsJson);
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_LoreResearchVisibleBonusClue_MalformedIrrelevantCurrentWorldEventsRemainPermissive()
     {
         await SeedVisibleBonusClueRivalScenarioAsync();
@@ -725,6 +1168,60 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.NotNull(arcsJson);
         Assert.Contains("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
         Assert.Equal("{", worldEventsJson);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchVisibleBonusClue_NonTrivialMalformedIrrelevantCurrentWorldEventsRemainPermissive()
+    {
+        await SeedVisibleBonusClueRivalScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", "{\"foo\":");
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var arcsJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 1", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(arcsJson);
+        Assert.Contains("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
+        Assert.Equal("{\"foo\":", worldEventsJson);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_LoreResearchVisibleBonusClue_SchemaShapedMalformedIrrelevantCurrentWorldEventsRemainPermissive()
+    {
+        await SeedVisibleBonusClueRivalScenarioAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {"worldEventsLog":[{"foo":
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
+
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var arcsJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+
+        Assert.NotNull(trackerJson);
+        Assert.Contains("\"visibleRivalClueBudgetSpent\": 1", trackerJson, StringComparison.Ordinal);
+        Assert.NotNull(arcsJson);
+        Assert.Contains("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
+        Assert.Equal("{\"worldEventsLog\":[{\"foo\":", worldEventsJson);
     }
 
     [Fact]
@@ -805,13 +1302,13 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.Contains("\"bonusClueConsumed\": true", arcsJson, StringComparison.Ordinal);
     }
 
-    private async Task SeedVisibleBonusClueRivalScenarioAsync()
+    private async Task SeedVisibleBonusClueRivalScenarioAsync(int visibleRivalClueBudget = 2)
     {
         await _fs.WriteFileAtomicAsync("input/turn_request.json", """
         { "turnNumber": 21 }
         """);
 
-        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, $$"""
         {
           "completedProjects": [
             {
@@ -827,7 +1324,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
                   "bonusLoreUnlocks": 1,
                   "questHookCount": 1,
                   "specialQuestLineUnlocks": 0,
-                  "visibleRivalClueBonus": 2,
+                  "visibleRivalClueBonus": {{visibleRivalClueBudget}},
                   "unlockedLoreFragments": []
                 },
                 "effectState": {
@@ -837,7 +1334,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
                   "questHookTokensSpent": 1,
                   "specialQuestLineTokensGranted": 0,
                   "specialQuestLineTokensSpent": 0,
-                  "visibleRivalClueBudgetGranted": 2,
+                  "visibleRivalClueBudgetGranted": {{visibleRivalClueBudget}},
                   "visibleRivalClueBudgetSpent": 0
                 }
               }
@@ -891,6 +1388,12 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
               "resolution": { "outcome": "ongoing", "notes": "" }
             }
           ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
         }
         """);
     }

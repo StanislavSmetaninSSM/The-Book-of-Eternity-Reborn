@@ -1,6 +1,7 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -629,6 +630,236 @@ public sealed class GuardianTradeServiceTests : IDisposable
         Assert.Equal(13, request!.CreatedAtTurn);
         Assert.Equal("guardian_alpha", request.GuardianId);
         Assert.Equal("return_1", request.ReturnCycleId);
+    }
+
+    [Fact]
+    public async Task SellAsync_StripsConflictingInkFeatherChangesButPreservesUnrelatedPendingMetaWork()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: false);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "inkFeathers": { "current": 100 },
+          "crossIncarnationData": {
+            "legacyThreadId": "thread_alpha"
+          },
+          "metaStateUpdates": {
+            "inkFeatherChanges": {
+              "add": 75,
+              "spend": 3
+            },
+            "soulRelicOperations": {
+              "removeRelic": {
+                "relicId": "relic_sell_001"
+              },
+              "addRelic": {
+                "relicId": "relic_keep"
+              }
+            },
+            "memoryLegacyGrant": {
+              "legacyId": "legacy_alpha",
+              "legacyType": "startingCharacteristicBonus",
+              "sourceLifeHint": "life_001",
+              "characteristic": "strength",
+              "bonus": 2
+            }
+          },
+          "afterlifeArchiveUpdates": [],
+          "archiveActionResolutions": [],
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_sell_001",
+                "name": "Реликвия для продажи",
+                "rarity": "Rare",
+                "description": "Подходит для теста продажи."
+              }
+            ]
+          }
+        }
+        """);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var result = await service.SellAsync("guardian_alpha", "relic_sell_001", currentTurn: 13);
+
+        Assert.True(result.Success);
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.False(soulDoc.RootElement.TryGetProperty("crossIncarnationData", out _));
+        var metaStateUpdates = soulDoc.RootElement.GetProperty("metaStateUpdates");
+        Assert.False(metaStateUpdates.TryGetProperty("inkFeatherChanges", out _));
+        var soulRelicOperations = metaStateUpdates.GetProperty("soulRelicOperations");
+        Assert.False(soulRelicOperations.TryGetProperty("removeRelic", out _));
+        Assert.True(soulRelicOperations.TryGetProperty("addRelic", out var addRelic));
+        Assert.Equal("relic_keep", addRelic.GetProperty("relicId").GetString());
+        Assert.True(metaStateUpdates.TryGetProperty("memoryLegacyGrant", out _));
+        Assert.True(soulDoc.RootElement.TryGetProperty("afterlifeArchiveUpdates", out _));
+        Assert.True(soulDoc.RootElement.TryGetProperty("archiveActionResolutions", out _));
+    }
+
+    [Fact]
+    public async Task SellAsync_MalformedInkFeatherChanges_FailClosedWithoutMaskingPendingCommand()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: false);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "inkFeathers": { "current": 100 },
+          "metaStateUpdates": {
+            "inkFeatherChanges": {
+              "add": "75"
+            }
+          },
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_sell_001",
+                "name": "Реликвия для продажи",
+                "rarity": "Rare",
+                "description": "Подходит для теста продажи."
+              }
+            ]
+          }
+        }
+        """);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.SellAsync("guardian_alpha", "relic_sell_001", currentTurn: 13));
+        Assert.Contains("metaStateUpdates.inkFeatherChanges", exception.Message, StringComparison.Ordinal);
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        var metaStateUpdates = soulDoc.RootElement.GetProperty("metaStateUpdates");
+        Assert.Equal("75", metaStateUpdates.GetProperty("inkFeatherChanges").GetProperty("add").GetString());
+        Assert.Equal("relic_sell_001", soulDoc.RootElement.GetProperty("soulRelics").GetProperty("stored")[0].GetProperty("relicId").GetString());
+    }
+
+    [Fact]
+    public async Task SellAsync_MalformedTopLevelMetaStateUpdates_FailClosedWithoutMaskingPendingCommand()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: false);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "inkFeathers": { "current": 100 },
+          "metaStateUpdates": [],
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_sell_001",
+                "name": "Реликвия для продажи",
+                "rarity": "Rare",
+                "description": "Подходит для теста продажи."
+              }
+            ]
+          }
+        }
+        """);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.SellAsync("guardian_alpha", "relic_sell_001", currentTurn: 13));
+        Assert.Contains("current metaStateUpdates", exception.Message, StringComparison.Ordinal);
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.Equal(JsonValueKind.Array, soulDoc.RootElement.GetProperty("metaStateUpdates").ValueKind);
+        Assert.Equal("relic_sell_001", soulDoc.RootElement.GetProperty("soulRelics").GetProperty("stored")[0].GetProperty("relicId").GetString());
+    }
+
+    [Fact]
+    public async Task SellAsync_MalformedCanonicalInkFeathersRoot_FailClosedWithoutRepairingCurrentState()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: false);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "inkFeathers": {
+            "current": 100,
+            "foo": 99
+          },
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_sell_001",
+                "name": "Реликвия для продажи",
+                "rarity": "Rare",
+                "description": "Подходит для теста продажи."
+              }
+            ]
+          }
+        }
+        """);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.SellAsync("guardian_alpha", "relic_sell_001", currentTurn: 13));
+        Assert.Contains("current inkFeathers", exception.Message, StringComparison.Ordinal);
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.Equal(99, soulDoc.RootElement.GetProperty("inkFeathers").GetProperty("foo").GetInt32());
+        Assert.Equal("relic_sell_001", soulDoc.RootElement.GetProperty("soulRelics").GetProperty("stored")[0].GetProperty("relicId").GetString());
+    }
+
+    [Fact]
+    public async Task BuyBackAsync_StripsConflictingInkFeatherChangesButPreservesUnrelatedPendingMetaWork()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: true);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "inkFeathers": { "current": 100 },
+          "metaStateUpdates": {
+            "inkFeatherChanges": {
+              "add": 5,
+              "spend": 61
+            },
+            "soulRelicOperations": {
+              "addRelic": {
+                "relicId": "relic_buyback_001"
+              },
+              "removeRelic": {
+                "relicId": "relic_keep"
+              }
+            },
+            "memoryLegacyGrant": {
+              "legacyId": "legacy_alpha",
+              "legacyType": "startingCharacteristicBonus",
+              "sourceLifeHint": "life_001",
+              "characteristic": "strength",
+              "bonus": 2
+            }
+          },
+          "afterlifeArchiveUpdates": [],
+          "archiveActionResolutions": [],
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var result = await service.BuyBackAsync("guardian_alpha", "guardian_buyback_001", currentTurn: 13);
+
+        Assert.True(result.Success);
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        var metaStateUpdates = soulDoc.RootElement.GetProperty("metaStateUpdates");
+        Assert.False(metaStateUpdates.TryGetProperty("inkFeatherChanges", out _));
+        var soulRelicOperations = metaStateUpdates.GetProperty("soulRelicOperations");
+        Assert.False(soulRelicOperations.TryGetProperty("addRelic", out _));
+        Assert.True(soulRelicOperations.TryGetProperty("removeRelic", out var removeRelic));
+        Assert.Equal("relic_keep", removeRelic.GetProperty("relicId").GetString());
+        Assert.True(metaStateUpdates.TryGetProperty("memoryLegacyGrant", out _));
     }
 
     private async Task SeedMinimalGuardianTradeStateAsync(bool includeTradeInventory, bool includeTradeReceipt, bool includeBuybackEntry)

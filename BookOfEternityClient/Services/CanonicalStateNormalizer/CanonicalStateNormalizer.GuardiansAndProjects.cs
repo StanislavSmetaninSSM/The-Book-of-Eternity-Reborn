@@ -261,6 +261,13 @@ public partial class CanonicalStateNormalizer
         if (currentNode == null) return;
 
         var previous = await ReadBackupObjectAsync(path, backups);
+        JsonObject? currentTurnResidentsRoot = null;
+        if (currentNode is JsonObject currentTurnResidentObject)
+        {
+            currentTurnResidentsRoot = CloneObject(currentTurnResidentObject);
+            GuardianAbodeResidentState.NormalizeShape(currentTurnResidentsRoot);
+        }
+
         var result = CloneObject(previous ?? new JsonObject());
         var entries = GuardianAbodeResidentState.EnsureEntriesArray(result);
         GuardianAbodeResidentState.EnsureRosterReceiptsArray(result);
@@ -324,6 +331,67 @@ public partial class CanonicalStateNormalizer
             currentInteractionLog.Add(entry);
         GuardianAbodeResidentState.ApplyInteractionLogUpdates(result, currentInteractionLog);
 
+        var previousGuardiansRoot = await ReadBackupObjectAsync("game_state/meta/guardians.json", backups);
+        var previousGuardianPowerById = GuardianAbodeResidentState.CollectGuardianAbodePowerById(previousGuardiansRoot);
+        var guardianPowerById = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        if (await ReadNodeAsync("game_state/meta/guardians.json") is JsonObject guardiansRoot &&
+            guardiansRoot["guardians"] is JsonArray guardians)
+        {
+            foreach (var guardian in guardians.OfType<JsonObject>())
+            {
+                var guardianId = guardian["guardianId"]?.GetValue<string>();
+                if (!string.IsNullOrWhiteSpace(guardianId))
+                    guardianPowerById[guardianId] = AbodePowerRules.GetCurrentPower(guardian);
+            }
+        }
+
+        foreach (var resident in entries.OfType<JsonObject>())
+        {
+            var guardianId = resident["guardianId"]?.GetValue<string>();
+            GuardianAbodeResidentState.NormalizeResidentObject(
+                resident,
+                !string.IsNullOrWhiteSpace(guardianId) && guardianPowerById.TryGetValue(guardianId, out var currentAbodePower)
+                    ? currentAbodePower
+                    : null);
+        }
+
+        var previousSoulQuestJson = backups != null && backups.TryGetValue("game_state/quests/soul_quests.json", out var previousSoulQuestBackupPath)
+            ? await ReadFileIfExistsAsync(previousSoulQuestBackupPath)
+            : null;
+        var currentSoulQuestJson = await _fs.ReadFileAsync("game_state/quests/soul_quests.json");
+        var previousQuestFingerprintsByResident = CollectResidentSoulQuestFingerprints(previousSoulQuestJson);
+        var currentQuestFingerprintsByResident = CollectResidentSoulQuestFingerprints(currentSoulQuestJson);
+
+        if (previous is JsonObject previousResidentsRoot && currentTurnResidentsRoot != null)
+        {
+            GuardianAbodeResidentState.NormalizeShape(previousResidentsRoot);
+            foreach (var resident in entries.OfType<JsonObject>())
+            {
+                var residentId = resident["residentId"]?.GetValue<string>();
+                if (string.IsNullOrWhiteSpace(residentId))
+                    continue;
+
+                var previousResident = GuardianAbodeResidentState.FindResident(previousResidentsRoot, residentId);
+                if (previousResident == null)
+                    continue;
+
+                var driftContext = GuardianAbodeResidentState.BuildCanonicalDriftContext(
+                    previousResidentsRoot,
+                    currentTurnResidentsRoot,
+                    previousResident,
+                    resident,
+                    previousGuardianPowerById,
+                    guardianPowerById,
+                    previousQuestFingerprintsByResident,
+                    currentQuestFingerprintsByResident);
+                if (!driftContext.TouchesResidentTurnSurface)
+                    continue;
+
+                var projection = GuardianAbodeResidentState.ProjectCanonicalAbodeDrift(previousResident, resident, driftContext);
+                GuardianAbodeResidentState.ApplyAbodeDriftProjection(resident, projection);
+            }
+        }
+
         result.Remove(GuardianAbodeResidentState.UpdateProperty);
         result.Remove(GuardianAbodeResidentState.UpdateRosterReceiptsProperty);
         result.Remove(GuardianAbodeResidentState.UpdateInteractionReceiptsProperty);
@@ -331,6 +399,76 @@ public partial class CanonicalStateNormalizer
         result.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
         result.Remove(GuardianAbodeResidentState.UpdateInteractionLogProperty);
         await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+    private static Dictionary<string, Dictionary<string, string>> CollectResidentSoulQuestFingerprints(string? soulQuestJson)
+    {
+        static string GetQuestString(JsonElement quest, string propertyName)
+        {
+            return quest.TryGetProperty(propertyName, out var property) && property.ValueKind == JsonValueKind.String
+                ? property.GetString() ?? string.Empty
+                : string.Empty;
+        }
+
+        var result = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(soulQuestJson))
+            return result;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(soulQuestJson);
+            JsonElement questsArray = default;
+            if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                doc.RootElement.TryGetProperty("quests", out var quests) &&
+                quests.ValueKind == JsonValueKind.Array)
+            {
+                questsArray = quests;
+            }
+            else if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                     doc.RootElement.TryGetProperty("UpdateSoulQuests", out var updates) &&
+                     updates.ValueKind == JsonValueKind.Array)
+            {
+                questsArray = updates;
+            }
+
+            if (questsArray.ValueKind != JsonValueKind.Array)
+                return result;
+
+            foreach (var quest in questsArray.EnumerateArray())
+            {
+                if (quest.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var residentId = GetQuestString(quest, "relatedAfterlifeResidentId");
+                var questId = GetQuestString(quest, "questId");
+                if (string.IsNullOrWhiteSpace(questId))
+                    questId = GetQuestString(quest, "id");
+                if (string.IsNullOrWhiteSpace(residentId) || string.IsNullOrWhiteSpace(questId))
+                    continue;
+
+                if (!result.TryGetValue(residentId, out var residentFingerprints))
+                {
+                    residentFingerprints = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    result[residentId] = residentFingerprints;
+                }
+
+                residentFingerprints[questId] = quest.GetRawText();
+            }
+        }
+        catch
+        {
+            // ignored; generic validation reports malformed quest state elsewhere
+        }
+
+        return result;
+    }
+
+    private static async Task<string?> ReadFileIfExistsAsync(string? absolutePath)
+    {
+        if (string.IsNullOrWhiteSpace(absolutePath) || !File.Exists(absolutePath))
+            return null;
+
+        return await File.ReadAllTextAsync(absolutePath);
     }
 
     private async Task NormalizeCharacterChronicleAsync(IReadOnlyDictionary<string, string>? backups)

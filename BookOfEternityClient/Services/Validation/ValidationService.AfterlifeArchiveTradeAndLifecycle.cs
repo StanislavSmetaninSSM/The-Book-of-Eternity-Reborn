@@ -187,6 +187,7 @@ public partial class ValidationService
             return;
 
         var reservedRequestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var reservedActionIdentityKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var storedArchiveIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         var entryIndex = 0;
@@ -216,6 +217,13 @@ public partial class ValidationService
                         section: "AfterlifeArchive",
                         actual: requestId));
                 }
+
+                var reservationIdentityKey = AfterlifeArchiveState.TryBuildActionIdentityKey(
+                    requestId,
+                    archiveId,
+                    GetFirstNonEmptyString(reservation, "reservationKind"));
+                if (!string.IsNullOrWhiteSpace(reservationIdentityKey))
+                    reservedActionIdentityKeys.Add(reservationIdentityKey);
             }
         }
 
@@ -223,7 +231,7 @@ public partial class ValidationService
         {
             RequireArrayOfObjects(actionReceipts, $"{archiveContext}.actionReceipts", issues);
             if (actionReceipts.ValueKind == JsonValueKind.Array)
-                ValidateAfterlifeArchiveActionReceipts(actionReceipts, $"{archiveContext}.actionReceipts", storedArchiveIds, reservedRequestIds, issues);
+                ValidateAfterlifeArchiveActionReceipts(actionReceipts, $"{archiveContext}.actionReceipts", storedArchiveIds, reservedActionIdentityKeys, issues);
         }
     }
 
@@ -341,10 +349,11 @@ public partial class ValidationService
         JsonElement actionReceipts,
         string context,
         IReadOnlySet<string> storedArchiveIds,
-        IReadOnlySet<string> reservedRequestIds,
+        IReadOnlySet<string> reservedActionIdentityKeys,
         List<ValidationIssue> issues)
     {
         var journalJson = _fs.ReadFileAsync(GuardianProjectState.JournalPath).GetAwaiter().GetResult();
+        var seenReceiptIdentityKeys = new HashSet<string>(StringComparer.Ordinal);
 
         var receiptIndex = 0;
         foreach (var receipt in actionReceipts.EnumerateArray())
@@ -385,6 +394,19 @@ public partial class ValidationService
             if (!string.IsNullOrWhiteSpace(status) && !AfterlifeArchiveActionState.IsSupportedResolutionStatus(status))
                 continue;
 
+            var receiptIdentityKey = AfterlifeArchiveState.TryBuildActionIdentityKey(requestId, archiveId, requestedMode);
+            if (!string.IsNullOrWhiteSpace(receiptIdentityKey) &&
+                !seenReceiptIdentityKeys.Add(receiptIdentityKey))
+            {
+                issues.Add(new ValidationIssue(
+                    receiptContext,
+                    IssueSeverity.Error,
+                    "afterlife archive actionReceipts не должен содержать duplicate full-identity receipt",
+                    code: "afterlife_archive_duplicate_receipt_identity",
+                    section: "AfterlifeArchive",
+                    actual: receiptIdentityKey));
+            }
+
             if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
             {
                 if (!string.IsNullOrWhiteSpace(archiveId) && storedArchiveIds.Contains(archiveId))
@@ -398,7 +420,7 @@ public partial class ValidationService
                         actual: archiveId));
                 }
 
-                if (!string.IsNullOrWhiteSpace(requestId) && reservedRequestIds.Contains(requestId))
+                if (!string.IsNullOrWhiteSpace(receiptIdentityKey) && reservedActionIdentityKeys.Contains(receiptIdentityKey))
                 {
                     issues.Add(new ValidationIssue(
                         $"{receiptContext}.status",
@@ -443,7 +465,7 @@ public partial class ValidationService
                 }
 
                 if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeProjectFuel, StringComparison.OrdinalIgnoreCase) &&
-                    !ArchiveProjectFuelReceiptHasMatchingJournalEntry(journalJson, requestId, archiveId, guardianId, targetProjectId))
+                    !ArchiveProjectFuelReceiptHasMatchingJournalEntry(journalJson, requestId, guardianId, targetProjectId))
                 {
                     issues.Add(new ValidationIssue(
                         receiptContext,
@@ -493,7 +515,7 @@ public partial class ValidationService
                         actual: archiveId));
                 }
 
-                if (!string.IsNullOrWhiteSpace(requestId) && reservedRequestIds.Contains(requestId))
+                if (!string.IsNullOrWhiteSpace(receiptIdentityKey) && reservedActionIdentityKeys.Contains(receiptIdentityKey))
                 {
                     issues.Add(new ValidationIssue(
                         receiptContext,
@@ -524,8 +546,7 @@ public partial class ValidationService
                 !entry.TryGetProperty("project", out var project) ||
                 project.ValueKind != JsonValueKind.Object ||
                 !string.Equals(GetFirstNonEmptyString(project, "projectOrigin"), "archive_consultation", StringComparison.OrdinalIgnoreCase) ||
-                (!string.Equals(GetFirstNonEmptyString(project, "consultationRequestId"), requestId, StringComparison.OrdinalIgnoreCase) &&
-                 !string.Equals(GetFirstNonEmptyString(project, "consultationArchiveId"), archiveId, StringComparison.OrdinalIgnoreCase)))
+                !ConsultationProjectMatchesRequest(project, requestId, archiveId))
             {
                 continue;
             }
@@ -555,8 +576,7 @@ public partial class ValidationService
                 !entry.TryGetProperty("project", out var project) ||
                 project.ValueKind != JsonValueKind.Object ||
                 !string.Equals(GetFirstNonEmptyString(project, "projectOrigin"), "archive_consultation", StringComparison.OrdinalIgnoreCase) ||
-                (!string.Equals(GetFirstNonEmptyString(project, "consultationRequestId"), requestId, StringComparison.OrdinalIgnoreCase) &&
-                 !string.Equals(GetFirstNonEmptyString(project, "consultationArchiveId"), archiveId, StringComparison.OrdinalIgnoreCase)))
+                !ConsultationProjectMatchesRequest(project, requestId, archiveId))
             {
                 continue;
             }
@@ -592,8 +612,7 @@ public partial class ValidationService
                     !entry.TryGetProperty("project", out var project) ||
                     project.ValueKind != JsonValueKind.Object ||
                     !string.Equals(GetFirstNonEmptyString(project, "projectOrigin"), "archive_consultation", StringComparison.OrdinalIgnoreCase) ||
-                    (!string.Equals(GetFirstNonEmptyString(project, "consultationRequestId"), requestId, StringComparison.OrdinalIgnoreCase) &&
-                     !string.Equals(GetFirstNonEmptyString(project, "consultationArchiveId"), archiveId, StringComparison.OrdinalIgnoreCase)))
+                    !ConsultationProjectMatchesRequest(project, requestId, archiveId))
                 {
                     continue;
                 }
@@ -635,8 +654,7 @@ public partial class ValidationService
                     !entry.TryGetProperty("project", out var project) ||
                     project.ValueKind != JsonValueKind.Object ||
                     !string.Equals(GetFirstNonEmptyString(project, "projectOrigin"), "archive_consultation", StringComparison.OrdinalIgnoreCase) ||
-                    (!string.Equals(GetFirstNonEmptyString(project, "consultationRequestId"), requestId, StringComparison.OrdinalIgnoreCase) &&
-                     !string.Equals(GetFirstNonEmptyString(project, "consultationArchiveId"), archiveId, StringComparison.OrdinalIgnoreCase)))
+                    !ConsultationProjectMatchesRequest(project, requestId, archiveId))
                 {
                     continue;
                 }
@@ -701,7 +719,6 @@ public partial class ValidationService
     private static bool ArchiveProjectFuelReceiptHasMatchingJournalEntry(
         string? journalJson,
         string? requestId,
-        string? archiveId,
         string? guardianId,
         string? targetProjectId)
     {
@@ -718,13 +735,25 @@ public partial class ValidationService
                 string.Equals(GetFirstNonEmptyString(entry, "guardianId"), guardianId, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(GetFirstNonEmptyString(entry, "projectId"), targetProjectId, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(GetFirstNonEmptyString(entry, "eventType"), "assisted", StringComparison.OrdinalIgnoreCase) &&
-                (string.Equals(GetFirstNonEmptyString(entry, "archiveFuelRequestId"), requestId, StringComparison.OrdinalIgnoreCase) ||
-                 (!string.IsNullOrWhiteSpace(archiveId) && JournalEntryContainsDetail(entry, archiveId))));
+                string.Equals(GetFirstNonEmptyString(entry, "archiveFuelRequestId"), requestId, StringComparison.OrdinalIgnoreCase));
         }
         catch
         {
             return false;
         }
+    }
+
+    private static bool ConsultationProjectMatchesRequest(
+        JsonElement project,
+        string? requestId,
+        string? archiveId)
+    {
+        if (!string.Equals(GetFirstNonEmptyString(project, "consultationRequestId"), requestId, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var projectArchiveId = GetFirstNonEmptyString(project, "consultationArchiveId");
+        return string.IsNullOrWhiteSpace(projectArchiveId) ||
+               string.Equals(projectArchiveId, archiveId, StringComparison.OrdinalIgnoreCase);
     }
 
 

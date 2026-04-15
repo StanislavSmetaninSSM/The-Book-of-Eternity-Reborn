@@ -77,6 +77,149 @@ public sealed class AfterlifeArchiveConsultationServiceTests : IDisposable
         Assert.Equal(5, requestDoc.RootElement.GetProperty("targetIncarnation").GetInt32());
     }
 
+    [Fact]
+    public async Task CreateRequestAsync_MalformedPendingConsultationFile_BlocksNewRequest()
+    {
+        await SeedSoulStateAsync("archive_lore_001", "lore_fragment", "Rare");
+        await SeedGuardianAsync("guardian_azalia", "Азалия", 120);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            """
+            {
+              "requestId": "consult_req_broken",
+              "guardianId":
+            """
+        );
+
+        var result = await _service.CreateRequestAsync(
+            "guardian_azalia",
+            "Азалия",
+            "archive_lore_001",
+            currentIncarnation: 1,
+            currentRealm: "Chaos Sea",
+            currentTurn: 7);
+
+        Assert.Null(result);
+        Assert.True(_fs.FileExists(AfterlifeArchiveActionState.ConsultationRequestPath));
+    }
+
+    [Fact]
+    public async Task CreateRequestAsync_PreservesUnrelatedMetaStateUpdatesAndOnlyPrunesConflictingArchiveTransientEntries()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "crossIncarnationData": {
+            "legacyThreadId": "thread_alpha"
+          },
+          "metaStateUpdates": {
+            "memoryLegacyGrant": {
+              "legacyId": "legacy_alpha",
+              "legacyType": "startingCharacteristicBonus",
+              "sourceLifeHint": "life_001",
+              "characteristic": "strength",
+              "bonus": 2
+            }
+          },
+          "afterlifeArchiveUpdates": [
+            {
+              "command": "remove",
+              "archiveId": "archive_lore_legacy"
+            },
+            {
+              "command": "remove",
+              "archiveId": "archive_keep"
+            }
+          ],
+          "archiveActionResolutions": [
+            {
+              "requestId": "req_conflict",
+              "archiveId": "archive_lore_legacy",
+              "requestedMode": "consultation",
+              "status": "cancelled"
+            },
+            {
+              "requestId": "req_keep",
+              "archiveId": "archive_keep",
+              "requestedMode": "project_fuel",
+              "status": "rejected"
+            }
+          ],
+          "afterlifeArchive": {
+            "stored": [
+              {
+                "archiveId": "archive_lore_legacy",
+                "entryType": "lore_fragment",
+                "title": "Legacy archive",
+                "summary": "Test legacy writeback path.",
+                "rarity": "Rare",
+                "sourceLife": 1,
+                "sourceKind": "codex",
+                "acquiredAtUtc": "2026-03-26T00:00:00Z"
+              }
+            ]
+          }
+        }
+        """);
+        await SeedGuardianAsync("guardian_azalia", "Азалия", 120);
+
+        var result = await _service.CreateRequestAsync(
+            "guardian_azalia",
+            "Азалия",
+            "archive_lore_legacy",
+            currentIncarnation: 1,
+            currentRealm: "Chaos Sea",
+            currentTurn: 7);
+
+        Assert.NotNull(result);
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.False(soulDoc.RootElement.TryGetProperty("crossIncarnationData", out _));
+        Assert.True(soulDoc.RootElement.TryGetProperty("metaStateUpdates", out var metaStateUpdates));
+        Assert.True(metaStateUpdates.TryGetProperty("memoryLegacyGrant", out _));
+
+        var archiveUpdates = soulDoc.RootElement.GetProperty("afterlifeArchiveUpdates").EnumerateArray().ToList();
+        Assert.Single(archiveUpdates);
+        Assert.Equal("archive_keep", archiveUpdates[0].GetProperty("archiveId").GetString());
+
+        var archiveResolutions = soulDoc.RootElement.GetProperty("archiveActionResolutions").EnumerateArray().ToList();
+        Assert.Single(archiveResolutions);
+        Assert.Equal("req_keep", archiveResolutions[0].GetProperty("requestId").GetString());
+        Assert.Equal("archive_keep", archiveResolutions[0].GetProperty("archiveId").GetString());
+    }
+
+    [Fact]
+    public async Task CreateRequestAsync_MalformedCanonicalAfterlifeArchiveRoot_FailClosedWithoutRepairingCurrentState()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "afterlifeArchive": {
+            "stored": [],
+            "unexpected": true
+          }
+        }
+        """);
+        await SeedGuardianAsync("guardian_azalia", "Азалия", 120);
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.CreateRequestAsync(
+                "guardian_azalia",
+                "Азалия",
+                "archive_lore_001",
+                currentIncarnation: 1,
+                currentRealm: "Chaos Sea",
+                currentTurn: 7));
+
+        Assert.Contains("current afterlifeArchive", exception.Message, StringComparison.Ordinal);
+        Assert.False(_fs.FileExists(AfterlifeArchiveActionState.ConsultationRequestPath));
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.True(soulDoc.RootElement.GetProperty("afterlifeArchive").GetProperty("unexpected").GetBoolean());
+    }
+
     private async Task SeedSoulStateAsync(string archiveId, string entryType, string rarity)
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

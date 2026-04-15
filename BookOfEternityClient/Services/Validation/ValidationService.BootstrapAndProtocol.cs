@@ -129,7 +129,7 @@ public partial class ValidationService
 
     private async Task ValidateLoreBootstrapRequiredFilesAsync(List<ValidationIssue> issues)
     {
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
+        var manifest = await LoadValidatedCurrentPendingTurnSnapshotManifestAsync();
         var readyTurnCompleteExists = _fs.FileExists("ready/turn_complete.json");
         var readyTurnErrorExists = _fs.FileExists("ready/turn_error.json");
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
@@ -140,6 +140,9 @@ public partial class ValidationService
         {
             using var doc = JsonDocument.Parse(soulJson);
             var root = doc.RootElement;
+            if (root.ValueKind != JsonValueKind.Object)
+                return;
+
             if (!root.TryGetProperty("currentRealm", out var realmEl) ||
                 realmEl.ValueKind != JsonValueKind.String ||
                 string.IsNullOrWhiteSpace(realmEl.GetString()))
@@ -260,8 +263,20 @@ public partial class ValidationService
                 {
                     foreach (var bootstrapFile in mortalBootstrapFiles)
                     {
-                        if (await DidFileChangeAgainstManifestAsync(manifest, bootstrapFile))
-                            continue;
+                        switch (await DescribeTrackedFileChangeAgainstManifestAsync(manifest, bootstrapFile))
+                        {
+                            case ValidatedTrackedFileChangeStatus.Changed:
+                                continue;
+                            case ValidatedTrackedFileChangeStatus.MissingValidatedBaseline:
+                                AddMissingValidatedTrackedBaselineIssue(
+                                    issues,
+                                    bootstrapFile,
+                                    "mortal_bootstrap_missing_validated_world_lore_baseline",
+                                    "LoreBootstrap",
+                                    $"Нельзя строго доказать freshness для {bootstrapFile}: validated previous-world lore baseline missing.",
+                                    "Для current_world bootstrap сохраняй validated pre-turn snapshot entry для каждого reused lore/current_world/* файла. Если файл участвует в freshness proof, baseline не может отсутствовать.");
+                                continue;
+                        }
 
                         issues.Add(new ValidationIssue(
                             bootstrapFile,
@@ -288,15 +303,20 @@ public partial class ValidationService
 
     private async Task ValidateLifeEvaluationRewardCycleAsync(List<ValidationIssue> issues)
     {
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
-        if (manifest == null || !LifeEvaluationRewardAnalyzer.IsLifeEvaluationSourceLabel(manifest.SourceLabel))
+        var validatedManifest = await LoadValidatedCurrentPendingTurnSnapshotManifestAsync();
+        if (validatedManifest == null || !LifeEvaluationRewardAnalyzer.IsLifeEvaluationSourceLabel(validatedManifest.SourceLabel))
             return;
 
         const string soulStatePath = "game_state/meta/soul_state.json";
-        var preSoulStateJson = await ReadPreTurnTrackedFileAsync(soulStatePath);
+        var preSoulStateJson = await ReadValidatedPendingTurnSnapshotFileAsync(validatedManifest, soulStatePath);
         var postSoulStateJson = await _fs.ReadFileAsync(soulStatePath);
 
-        if (!LifeEvaluationRewardAnalyzer.TryComputeDelta(preSoulStateJson, postSoulStateJson, out var delta, out var error) ||
+        if (!LifeEvaluationRewardAnalyzer.TryComputeDelta(
+                preSoulStateJson,
+                postSoulStateJson,
+                hasCanonicalTriggerLifeEnd: false,
+                out var delta,
+                out var error) ||
             delta == null)
         {
             issues.Add(new ValidationIssue(
@@ -337,7 +357,7 @@ public partial class ValidationService
         }
 
         const string playerChroniclePath = "lore/chaos_sea/player_chronicle.json";
-        var preChronicleJson = await ReadPreTurnTrackedFileAsync(playerChroniclePath);
+        var preChronicleJson = await ReadValidatedPendingTurnSnapshotFileAsync(validatedManifest, playerChroniclePath);
         var postChronicleJson = await _fs.ReadFileAsync(playerChroniclePath);
         if (!DidChronicleGainMeaningfulSummaryEntry(preChronicleJson, postChronicleJson))
         {
@@ -355,31 +375,46 @@ public partial class ValidationService
 
     private async Task ValidateNoLifeEvaluationRewardsOnTriggerTurnAsync(List<ValidationIssue> issues)
     {
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
-        if (manifest == null || LifeEvaluationRewardAnalyzer.IsLifeEvaluationSourceLabel(manifest.SourceLabel))
+        var validatedManifest = await LoadValidatedCurrentPendingTurnSnapshotManifestAsync();
+        if (validatedManifest == null || LifeEvaluationRewardAnalyzer.IsLifeEvaluationSourceLabel(validatedManifest.SourceLabel))
             return;
 
         const string lifeTransitionsPath = "game_state/control/life_transitions.json";
         var lifeTransitionsJson = await _fs.ReadFileAsync(lifeTransitionsPath);
-        if (string.IsNullOrWhiteSpace(lifeTransitionsJson))
+        var preTurnRealm = validatedManifest != null
+            ? await TryReadValidatedPendingTurnSnapshotRealmAsync(validatedManifest)
+            : null;
+        var currentRealm = await TryResolveCurrentRealmAsync();
+        if (!CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEnd(
+                lifeTransitionsJson,
+                preTurnRealm,
+                currentRealm))
             return;
-
-        try
-        {
-            using var doc = JsonDocument.Parse(lifeTransitionsJson);
-            if (!TryReadLifeTransitionControlPayload(doc.RootElement, out _, out _))
-                return;
-        }
-        catch (JsonException)
-        {
-            return;
-        }
 
         const string soulStatePath = "game_state/meta/soul_state.json";
-        var preSoulStateJson = await ReadPreTurnTrackedFileAsync(soulStatePath);
+        var preSoulStateJson = validatedManifest != null
+            ? await ReadValidatedPendingTurnSnapshotFileAsync(validatedManifest, soulStatePath)
+            : null;
         var postSoulStateJson = await _fs.ReadFileAsync(soulStatePath);
-        if (LifeEvaluationRewardAnalyzer.TryComputeDelta(preSoulStateJson, postSoulStateJson, out var delta, out _) &&
-            delta != null)
+        if (!LifeEvaluationRewardAnalyzer.TryComputeDelta(
+                preSoulStateJson,
+                postSoulStateJson,
+                hasCanonicalTriggerLifeEnd: true,
+                out var delta,
+                out var error) ||
+            delta == null)
+        {
+            issues.Add(new ValidationIssue(
+                soulStatePath,
+                IssueSeverity.Error,
+                $"Не удалось вычислить reward delta для TriggerLifeEnd turn: {error ?? "unknown error"}",
+                code: "life_trigger_turn_reward_delta_unreadable",
+                section: "LifeEvaluation",
+                expected: "валидный pre/post diff по soul_state.json на canonical TriggerLifeEnd turn",
+                actual: error ?? "unknown error",
+                repairHint: "На accepted turn с TriggerLifeEnd сохрани валидный pre-turn snapshot soul_state.json и не ломай текущий canonical soul_state до отдельного Life Evaluation turn."));
+        }
+        else
         {
             if (delta.InkFeathersEarned > 0)
             {
@@ -409,7 +444,9 @@ public partial class ValidationService
         }
 
         const string playerChroniclePath = "lore/chaos_sea/player_chronicle.json";
-        var preChronicleJson = await ReadPreTurnTrackedFileAsync(playerChroniclePath);
+        var preChronicleJson = validatedManifest != null
+            ? await ReadValidatedPendingTurnSnapshotFileAsync(validatedManifest, playerChroniclePath)
+            : null;
         var postChronicleJson = await _fs.ReadFileAsync(playerChroniclePath);
         if (DidChronicleGainEntries(preChronicleJson, postChronicleJson))
         {
@@ -428,7 +465,10 @@ public partial class ValidationService
 
     private async Task ValidateClientOwnedControlFilesAsync(List<ValidationIssue> issues)
     {
+        var manifestExists = _fs.FileExists(PendingTurnSnapshotManifestPath);
         var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
+        var validatedLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var hasPendingSnapshotManifestIssue = false;
         await ValidateValidationRepairReadyAsync(issues);
         await ValidateArchiveCandidateManifestAsync(issues);
         await ValidatePendingAbodeOfferingContextAsync(issues);
@@ -438,6 +478,7 @@ public partial class ValidationService
         await ValidatePendingArchiveProjectFuelRequestContextAsync(issues);
         await ValidatePendingGuardianAbodeResidentsRequestContextAsync(issues);
         await ValidatePendingGuardianAbodeResidentInteractionRequestContextAsync(issues);
+        await ValidatePendingGuardianAbodeResidentTransferRequestContextAsync(issues);
         await ValidatePendingGuardianSocialInteractionRequestContextAsync(issues);
         await ValidatePendingNpcSocialInteractionRequestContextAsync(issues);
         if (_fs.FileExists("ready/turn_complete.json") ||
@@ -450,13 +491,30 @@ public partial class ValidationService
             await ValidatePendingArchiveProjectFuelResolutionAsync(issues);
             await ValidatePendingGuardianAbodeResidentsResolutionAsync(issues);
             await ValidatePendingGuardianAbodeResidentInteractionResolutionAsync(issues);
+            await ValidatePendingGuardianAbodeResidentTransferResolutionAsync(issues);
             await ValidatePendingGuardianSocialInteractionResolutionAsync(issues);
             await ValidatePendingNpcSocialInteractionResolutionAsync(issues);
             await ValidateResidentMechanicalOutcomeMemoryAsync(issues);
         }
 
         if (manifest == null)
+        {
+            if (manifestExists && validatedLookup.Status == ValidatedPendingTurnSnapshotStatus.Unusable)
+            {
+                issues.Add(new ValidationIssue(
+                    PendingTurnSnapshotManifestPath,
+                    IssueSeverity.Error,
+                    "pending_turn_snapshot.json больше не является читаемым client-owned snapshot manifest и не может использоваться как authority surface.",
+                    code: "client_owned_pending_snapshot_manifest_modified",
+                    section: "PendingTurnSnapshot",
+                    expected: "readable validated pending turn snapshot manifest",
+                    actual: "missing or invalid JSON payload",
+                    repairHint: "Не изменяй pending_turn_snapshot.json в GM turn; это client-owned transient control file."));
+                hasPendingSnapshotManifestIssue = true;
+            }
+
             return;
+        }
 
         if (!string.IsNullOrWhiteSpace(manifest.ManifestPayloadHash))
         {
@@ -472,12 +530,33 @@ public partial class ValidationService
                     expected: manifest.ManifestPayloadHash,
                     actual: actualHash,
                     repairHint: "Не изменяй pending_turn_snapshot.json в GM turn; это client-owned transient control file."));
+                hasPendingSnapshotManifestIssue = true;
             }
         }
 
-        foreach (var (originalPath, snapshotPath) in manifest.Files)
+        if (validatedLookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || validatedLookup.Manifest == null)
         {
-            if (!manifest.SnapshotFileHashes.TryGetValue(originalPath, out var expectedHash) || string.IsNullOrWhiteSpace(expectedHash))
+            if (!hasPendingSnapshotManifestIssue)
+            {
+                issues.Add(new ValidationIssue(
+                    PendingTurnSnapshotManifestPath,
+                    IssueSeverity.Error,
+                    "pending_turn_snapshot.json больше не является пригодным validated snapshot manifest и не может использоваться как authority surface.",
+                    code: "client_owned_pending_snapshot_manifest_modified",
+                    section: "PendingTurnSnapshot",
+                    expected: "usable validated pending turn snapshot manifest with readable sourceLabel/files/snapshot hashes",
+                    actual: DescribeValidatedPendingTurnSnapshotStatus(validatedLookup.Status),
+                    repairHint: "Не изменяй pending_turn_snapshot.json в GM turn; это client-owned transient control file."));
+            }
+
+            return;
+        }
+
+        var validatedManifest = validatedLookup.Manifest;
+
+        foreach (var (originalPath, snapshotPath) in validatedManifest.Files)
+        {
+            if (!validatedManifest.SnapshotFileHashes.TryGetValue(originalPath, out var expectedHash) || string.IsNullOrWhiteSpace(expectedHash))
                 continue;
 
             var currentSnapshotContent = await _fs.ReadFileAsync(snapshotPath);
@@ -496,7 +575,7 @@ public partial class ValidationService
             }
         }
 
-        foreach (var (baselinePath, expectedHash) in manifest.ClientOwnedValidationHashes)
+        foreach (var (baselinePath, expectedHash) in validatedManifest.ClientOwnedValidationHashes)
         {
             // validation_repair_request.json and terminal_protocol_failure_request.json are
             // runtime-authored protocol surfaces. They can legitimately change while the client
@@ -522,7 +601,7 @@ public partial class ValidationService
         }
 
         var baselineHistoryPaths = new HashSet<string>(
-            manifest.ClientOwnedValidationHashes.Keys.Where(IsClientOwnedHistoryValidationPath),
+            validatedManifest.ClientOwnedValidationHashes.Keys.Where(IsClientOwnedHistoryValidationPath),
             StringComparer.OrdinalIgnoreCase);
         foreach (var storyPath in EnumerateStoryContinuityFiles())
         {
@@ -551,8 +630,24 @@ public partial class ValidationService
                      GuardianAbodeOfferingState.PendingRequestPath
                  })
         {
-            if (!await DidFileChangeAgainstManifestAsync(manifest, clientOwnedPath))
-                continue;
+            switch (await DescribeTrackedFileChangeAgainstManifestAsync(manifest, clientOwnedPath))
+            {
+                case ValidatedTrackedFileChangeStatus.Unchanged:
+                    continue;
+                case ValidatedTrackedFileChangeStatus.MissingValidatedBaseline:
+                    AddMissingValidatedTrackedBaselineIssue(
+                        issues,
+                        clientOwnedPath,
+                        "client_owned_control_missing_validated_baseline",
+                        clientOwnedPath.Equals(AfterlifeReturnGuardService.GuardPath, StringComparison.OrdinalIgnoreCase)
+                            ? "Lifecycle"
+                            : clientOwnedPath.Equals(AfterlifeArchiveCandidateService.ManifestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "AfterlifeArchive"
+                                : "BootstrapProtocol",
+                        $"{Path.GetFileName(clientOwnedPath)} нельзя проверить строго: validated pre-turn baseline отсутствует.",
+                        "Для client-authored control surfaces сохраняй validated snapshot entry в pending turn snapshot, чтобы GM-side diff checks не опирались на missing baseline.");
+                    continue;
+            }
 
             issues.Add(new ValidationIssue(
                 clientOwnedPath,
@@ -592,6 +687,8 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(readyJson))
             return;
 
+        var requestJson = await _fs.ReadFileAsync(requestPath);
+
         JsonElement readyRoot;
         try
         {
@@ -606,7 +703,7 @@ public partial class ValidationService
                     section: "validation_repair_ready",
                     expected: "JSON object with sessionId/requestId/turnNumber",
                     actual: readyDoc.RootElement.ValueKind.ToString(),
-                    repairHint: "Перезапиши validation_repair_ready.json как valid JSON object и скопируй в него точные sessionId/requestId/turnNumber из validation_repair_request.json."));
+                    repairHint: BuildInvalidRepairReadyRepairHint(requestJson, requireJsonObject: true)));
                 return;
             }
 
@@ -620,11 +717,10 @@ public partial class ValidationService
                 $"validation_repair_ready.json не является валидным JSON: {ex.Message}",
                 code: "invalid_repair_ready_json",
                 section: "validation_repair_ready",
-                repairHint: "Перезапиши validation_repair_ready.json валидным JSON и скопируй в него точные sessionId/requestId/turnNumber из validation_repair_request.json."));
+                repairHint: BuildInvalidRepairReadyRepairHint(requestJson, requireJsonObject: false)));
             return;
         }
 
-        var requestJson = await _fs.ReadFileAsync(requestPath);
         if (string.IsNullOrWhiteSpace(requestJson))
         {
             issues.Add(new ValidationIssue(
@@ -637,53 +733,118 @@ public partial class ValidationService
             return;
         }
 
+        var hasAuthoritativeRepairRequestMetadata = false;
+        string expectedSessionId = string.Empty;
+        string expectedRequestId = string.Empty;
+        int? expectedTurnNumber = null;
         try
         {
             using var requestDoc = JsonDocument.Parse(requestJson);
             if (requestDoc.RootElement.ValueKind != JsonValueKind.Object)
                 return;
 
-            var expectedSessionId = GetFirstNonEmptyString(requestDoc.RootElement, "sessionId") ?? string.Empty;
-            var expectedRequestId = GetFirstNonEmptyString(requestDoc.RootElement, "requestId") ?? string.Empty;
-            var expectedTurnNumber = requestDoc.RootElement.TryGetProperty("turnNumber", out var turnNumberNode) &&
-                                     turnNumberNode.ValueKind == JsonValueKind.Number &&
-                                     turnNumberNode.TryGetInt32(out var parsedTurn)
-                ? parsedTurn
-                : (int?)null;
+            var metadataDiagnosticOnly = requestDoc.RootElement.TryGetProperty("metadataDiagnosticOnly", out var metadataDiagnosticOnlyNode) &&
+                                         metadataDiagnosticOnlyNode.ValueKind is JsonValueKind.True or JsonValueKind.False &&
+                                         metadataDiagnosticOnlyNode.GetBoolean();
 
-            var actualSessionId = GetFirstNonEmptyString(readyRoot, "sessionId") ?? string.Empty;
-            var actualRequestId = GetFirstNonEmptyString(readyRoot, "requestId") ?? string.Empty;
-            var actualTurnNumber = readyRoot.TryGetProperty("turnNumber", out var readyTurnNode) &&
-                                   readyTurnNode.ValueKind == JsonValueKind.Number &&
-                                   readyTurnNode.TryGetInt32(out var parsedReadyTurn)
-                ? parsedReadyTurn
-                : (int?)null;
-
-            if (!string.Equals(expectedSessionId, actualSessionId, StringComparison.Ordinal) ||
-                !string.Equals(expectedRequestId, actualRequestId, StringComparison.Ordinal) ||
-                expectedTurnNumber != actualTurnNumber)
+            if (metadataDiagnosticOnly)
             {
                 issues.Add(new ValidationIssue(
                     readyPath,
                     IssueSeverity.Error,
-                    "validation_repair_ready.json должен копировать точные sessionId/requestId/turnNumber из validation_repair_request.json",
-                    code: "mismatched_repair_ready_context",
+                    "validation_repair_ready.json не может использоваться, пока текущий validation_repair_request.json помечен diagnostic-only metadata",
+                    code: "repair_ready_against_diagnostic_only_request",
                     section: "validation_repair_ready",
-                    expected: $"sessionId={expectedSessionId}, requestId={expectedRequestId}, turnNumber={expectedTurnNumber?.ToString() ?? "missing"}",
-                    actual: $"sessionId={actualSessionId}, requestId={actualRequestId}, turnNumber={actualTurnNumber?.ToString() ?? "missing"}",
-                    repairHint: "Скопируй sessionId/requestId/turnNumber ровно из текущего validation_repair_request.json без переиспользования старого ready signal."));
+                    expected: "Current validation_repair_request.json with authoritative sessionId/requestId/turnNumber",
+                    actual: "Current validation_repair_request.json has metadataDiagnosticOnly=true and only sentinel correlation metadata",
+                    repairHint: "Не создавай validation_repair_ready.json по sentinel metadata из текущего validation_repair_request.json. Сначала восстанови pending snapshot context/authority и дождись самого свежего repair request с authoritative metadata."));
+                return;
             }
+
+            expectedSessionId = GetFirstNonEmptyString(requestDoc.RootElement, "sessionId") ?? string.Empty;
+            expectedRequestId = GetFirstNonEmptyString(requestDoc.RootElement, "requestId") ?? string.Empty;
+            expectedTurnNumber = requestDoc.RootElement.TryGetProperty("turnNumber", out var turnNumberNode) &&
+                                 turnNumberNode.ValueKind == JsonValueKind.Number &&
+                                 turnNumberNode.TryGetInt32(out var parsedTurn)
+                ? parsedTurn
+                : (int?)null;
+            hasAuthoritativeRepairRequestMetadata = true;
         }
         catch
         {
             // ignored; request file shape is client-owned and validated elsewhere in client flow
+        }
+
+        if (!hasAuthoritativeRepairRequestMetadata)
+            return;
+
+        var actualSessionId = GetFirstNonEmptyString(readyRoot, "sessionId") ?? string.Empty;
+        var actualRequestId = GetFirstNonEmptyString(readyRoot, "requestId") ?? string.Empty;
+        var actualTurnNumber = readyRoot.TryGetProperty("turnNumber", out var readyTurnNode) &&
+                               readyTurnNode.ValueKind == JsonValueKind.Number &&
+                               readyTurnNode.TryGetInt32(out var parsedReadyTurn)
+            ? parsedReadyTurn
+            : (int?)null;
+
+        if (!string.Equals(expectedSessionId, actualSessionId, StringComparison.Ordinal) ||
+            !string.Equals(expectedRequestId, actualRequestId, StringComparison.Ordinal) ||
+            expectedTurnNumber != actualTurnNumber)
+        {
+            issues.Add(new ValidationIssue(
+                readyPath,
+                IssueSeverity.Error,
+                "validation_repair_ready.json должен копировать точные sessionId/requestId/turnNumber из validation_repair_request.json",
+                code: "mismatched_repair_ready_context",
+                section: "validation_repair_ready",
+                expected: $"sessionId={expectedSessionId}, requestId={expectedRequestId}, turnNumber={expectedTurnNumber?.ToString() ?? "missing"}",
+                actual: $"sessionId={actualSessionId}, requestId={actualRequestId}, turnNumber={actualTurnNumber?.ToString() ?? "missing"}",
+                repairHint: "Скопируй sessionId/requestId/turnNumber ровно из текущего validation_repair_request.json без переиспользования старого ready signal."));
+        }
+    }
+
+    private static string BuildInvalidRepairReadyRepairHint(string? requestJson, bool requireJsonObject)
+    {
+        var authoritativeMetadataHint = requireJsonObject
+            ? "Перезапиши validation_repair_ready.json как valid JSON object и скопируй в него точные sessionId/requestId/turnNumber из validation_repair_request.json."
+            : "Перезапиши validation_repair_ready.json валидным JSON и скопируй в него точные sessionId/requestId/turnNumber из validation_repair_request.json.";
+        const string diagnosticOnlyMetadataHint = "Не создавай validation_repair_ready.json по sentinel metadata из текущего validation_repair_request.json. Сначала восстанови pending snapshot context/authority и дождись самого свежего repair request с authoritative metadata.";
+
+        if (string.IsNullOrWhiteSpace(requestJson))
+            return authoritativeMetadataHint;
+
+        try
+        {
+            using var requestDoc = JsonDocument.Parse(requestJson);
+            if (requestDoc.RootElement.ValueKind != JsonValueKind.Object)
+                return authoritativeMetadataHint;
+
+            var metadataDiagnosticOnly = requestDoc.RootElement.TryGetProperty("metadataDiagnosticOnly", out var metadataDiagnosticOnlyNode) &&
+                                         metadataDiagnosticOnlyNode.ValueKind is JsonValueKind.True or JsonValueKind.False &&
+                                         metadataDiagnosticOnlyNode.GetBoolean();
+
+            return metadataDiagnosticOnly
+                ? diagnosticOnlyMetadataHint
+                : authoritativeMetadataHint;
+        }
+        catch
+        {
+            return authoritativeMetadataHint;
         }
     }
 
 
     private async Task ValidateRealmSegregationAsync(List<ValidationIssue> issues)
     {
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
+        if (!_fs.FileExists(PendingTurnSnapshotManifestPath))
+            return;
+
+        var manifest = await LoadRequiredValidatedCurrentPendingTurnSnapshotManifestAsync(
+            "game_state/meta/soul_state.json.currentRealm",
+            issues,
+            code: "realm_segregation_missing_validated_snapshot_context",
+            section: "RealmSegregation",
+            message: "Realm Segregation требует current validated pending turn snapshot manifest.",
+            repairHint: "Для accepted-turn realm segregation validation сохраняй untampered current pending turn snapshot manifest и не опирайся на отсутствующий или modified manifest.");
         if (manifest == null)
             return;
 
@@ -693,10 +854,22 @@ public partial class ValidationService
             return;
         }
 
-        var preTurnRealm = await TryResolvePreTurnRealmAsync();
+        var preTurnRealm = await ReadRequiredValidatedPendingTurnSnapshotRealmAsync(
+            manifest,
+            "game_state/meta/soul_state.json.currentRealm",
+            issues,
+            code: "realm_segregation_invalid_validated_snapshot_realm",
+            section: "RealmSegregation",
+            message: "Realm Segregation требует validated pre-turn realm из snapshot soul_state.",
+            repairHint: "Для accepted-turn realm segregation validation сохраняй validated snapshot copy of game_state/meta/soul_state.json с canonical currentRealm.");
         if (string.IsNullOrWhiteSpace(preTurnRealm))
             return;
-        var changedFiles = await GetChangedTrackedFilesAgainstManifestAsync(manifest);
+        var changedFiles = await GetChangedTrackedFilesAgainstManifestAsync(
+            manifest,
+            issues,
+            "realm_segregation_missing_validated_tracked_baseline",
+            "RealmSegregation",
+            "Для realm segregation validation tracked files из validated pre-turn surface должны иметь snapshot entry/hash; missing validated baseline недопустим.");
         if (changedFiles.Count == 0)
             return;
 

@@ -683,6 +683,7 @@ function Process-RepairRequest {
         $turnNumber = if ($repair.turnNumber) { [int]$repair.turnNumber } else { -1 }
         $requestId = if ($repair.requestId) { $repair.requestId } else { "<missing-requestId>" }
         $attempt = if ($repair.revalidationAttempt) { [int]$repair.revalidationAttempt } else { 1 }
+        $hasDiagnosticOnlyMetadata = Test-ProtocolRequestUsesDiagnosticOnlyMetadata -RequestObject $repair
 
         $summary = @()
         if ($repair.summaryGroups) {
@@ -705,7 +706,14 @@ function Process-RepairRequest {
             }
         }
 
-        $message = "Repair rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt). You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json plus TaskGuides/CLI_Step_Main.txt and Examples/E_CLI_Step_Main.txt. Fix the already written files IN PLACE. Do NOT create a new turn. When done, create $GameSessionPath\game_state\control\validation_repair_ready.json with matching sessionId/requestId/turnNumber copied from the CURRENT repair request. If your ready file is malformed or mismatched, the client will reject it and rewrite the repair request again."
+        $message = "Repair rejected turn #$turnNumber (requestId=$requestId, attempt=$attempt). You MUST reread $GameSessionPath\game_state\control\validation_repair_request.json plus TaskGuides/CLI_Step_Main.txt and Examples/E_CLI_Step_Main.txt. Fix the already written files IN PLACE. Do NOT create a new turn."
+        if ($hasDiagnosticOnlyMetadata) {
+            $message += " The current repair request marks sessionId/requestId/turnNumber as diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT copy those sentinel metadata into $GameSessionPath\game_state\control\validation_repair_ready.json. First restore pending snapshot context/authority and then use the freshest client-authored repair request with valid metadata before writing validation_repair_ready.json."
+        }
+        else {
+            $message += " When done, create $GameSessionPath\game_state\control\validation_repair_ready.json with matching sessionId/requestId/turnNumber copied from the CURRENT repair request."
+        }
+        $message += " If your ready file is malformed or mismatched, the client will reject it and rewrite the repair request again."
         if ($summary.Count -gt 0) {
             $message += "`nMain groups:`n" + ($summary -join "`n")
         }
@@ -743,6 +751,17 @@ function Get-LaunchScriptPath {
 
 $script:LaunchScriptPath = Get-LaunchScriptPath
 
+function Test-ProtocolRequestUsesDiagnosticOnlyMetadata {
+    param([object]$RequestObject)
+
+    if ($null -ne $RequestObject.metadataDiagnosticOnly) {
+        return [bool]$RequestObject.metadataDiagnosticOnly
+    }
+
+    # Legacy fallback for requests written before metadataDiagnosticOnly was added.
+    return $RequestObject.gmInstructions -and $RequestObject.gmInstructions.Contains("служат только для диагностики")
+}
+
 function Process-TerminalProtocolFailureRequest {
     param([string]$FailurePath)
 
@@ -756,6 +775,7 @@ function Process-TerminalProtocolFailureRequest {
         $failure = Get-Content -Path $FailurePath -Raw -Encoding UTF8 | ConvertFrom-Json
         $turnNumber = if ($failure.turnNumber) { [int]$failure.turnNumber } else { -1 }
         $requestId = if ($failure.requestId) { $failure.requestId } else { "<missing-requestId>" }
+        $hasDiagnosticOnlyMetadata = Test-ProtocolRequestUsesDiagnosticOnlyMetadata -RequestObject $failure
 
         $summary = @()
         if ($failure.summaryGroups) {
@@ -778,7 +798,13 @@ function Process-TerminalProtocolFailureRequest {
             }
         }
 
-        $message = "Terminal protocol failure for turn #$turnNumber (requestId=$requestId). You MUST reread $GameSessionPath\game_state\control\terminal_protocol_failure_request.json plus TaskGuides/CLI_Step_Main.txt and Examples/E_CLI_Step_Main.txt. This is NOT validation_repair_request.json and NOT a repair loop. The client already closed the current wait cycle. Do NOT create validation_repair_ready.json. Do NOT create a new turn on your own. Fix your terminal-signal discipline for the NEXT correct client request: exactly one terminal signal, exact sessionId/requestId/turnNumber, terminal signal written last, never both turn_complete and turn_error for one request."
+        $message = "Terminal protocol failure for turn #$turnNumber (requestId=$requestId). You MUST reread $GameSessionPath\game_state\control\terminal_protocol_failure_request.json plus TaskGuides/CLI_Step_Main.txt and Examples/E_CLI_Step_Main.txt. This is NOT validation_repair_request.json and NOT a repair loop. The client already closed the current wait cycle. Do NOT create validation_repair_ready.json. Do NOT create a new turn on your own. Fix your terminal-signal discipline for the NEXT correct client request: exactly one terminal signal, terminal signal written last, never both turn_complete and turn_error for one request."
+        if ($hasDiagnosticOnlyMetadata) {
+            $message += " The sessionId/requestId/turnNumber in this terminal protocol failure request are diagnostic-only sentinel values because validated pending snapshot context is unavailable or invalid. Do NOT treat them as authoritative correlation metadata for the next step; restore pending snapshot context/authority first and then wait for the freshest correct client request."
+        }
+        else {
+            $message += " Keep exact sessionId/requestId/turnNumber discipline for the NEXT correct client request."
+        }
         if ($summary.Count -gt 0) {
             $message += "`nMain groups:`n" + ($summary -join "`n")
         }

@@ -254,7 +254,7 @@ public partial class ValidationService
         {
             using var doc = JsonDocument.Parse(json);
             var hasNpcSurface = false;
-            foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
+            foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
             {
                 if (doc.RootElement.TryGetProperty(sectionName, out var sectionArray) &&
                     sectionArray.ValueKind == JsonValueKind.Array &&
@@ -288,7 +288,7 @@ public partial class ValidationService
             if (knownGuardianReferences.Ids.Count == 0 && knownGuardianReferences.Names.Count == 0)
                 return;
 
-            foreach (var sectionName in new[] { "UpdateNPCs", "NPCsInScene" })
+            foreach (var sectionName in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
             {
                 if (!doc.RootElement.TryGetProperty(sectionName, out var arr) || arr.ValueKind != JsonValueKind.Array)
                     continue;
@@ -549,209 +549,228 @@ public partial class ValidationService
         HashSet<string> knownGuardianIds,
         HashSet<string> knownSystemGuardianPresetIds)
     {
-        var json = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
-        if (string.IsNullOrWhiteSpace(json))
-            return;
-
-        JsonDocument rivalDoc;
-        try
+        var rivalState = await TryReadCurrentRivalValidationDocumentAsync();
+        using var rivalDocScope = rivalState.Document;
+        switch (rivalState.Kind)
         {
-            rivalDoc = JsonDocument.Parse(json);
-        }
-        catch
-        {
-            issues.Add(new ValidationIssue(
-                RivalSoulArcService.StatePath,
-                IssueSeverity.Error,
-                "Rival soul arc validation требует readable current rival_soul_arcs.json и не может доказывать bonus clue/cross-reference contracts поверх malformed current rival state.",
-                code: "rival_arc_invalid_current_state",
-                section: "RivalSoulArcs",
-                expected: "readable current rival_soul_arcs.json",
-                actual: "current rival_soul_arcs.json unreadable or malformed",
-                repairHint: "Сделай current rival_soul_arcs.json корректным JSON перед validation rival soul arc contracts и lore-derived bonus clues."));
-            return;
+            case CurrentOwnerStateReadKind.MissingOrWhitespace:
+            case CurrentOwnerStateReadKind.ReadableButNoRelevantCollection:
+                return;
+            case CurrentOwnerStateReadKind.UnreadableJson:
+            case CurrentOwnerStateReadKind.ContractInvalidTopLevel:
+            case CurrentOwnerStateReadKind.NonObjectRoot:
+                AddInvalidCurrentRivalValidationIssue(issues, rivalState.Actual ?? "current rival_soul_arcs.json unreadable or malformed");
+                return;
+            case CurrentOwnerStateReadKind.InvalidCollectionShape:
+                AddInvalidCurrentRivalValidationIssue(issues, rivalState.Actual ?? $"current rival_soul_arcs.json.{rivalState.CollectionName} has invalid shape");
+                return;
+            case CurrentOwnerStateReadKind.ReadableWithArrayCollection:
+                break;
+            default:
+                return;
         }
 
-        using (rivalDoc)
+        if (rivalState.Document is null || rivalState.CollectionName is null)
+            return;
+
+        JsonDocument? worldEventsDoc = null;
+        JsonElement worldEvents = default;
+        string? worldEventCollectionName = null;
+        var relatedWorldEventsByArcId = new Dictionary<string, List<JsonElement>>(StringComparer.OrdinalIgnoreCase);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+        var hasCurrentWorldEventsFile = _fs.FileExists("game_state/world/world_events.json");
+        var knownArcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var knownArcSponsorGuardianIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var visibleBonusClueUsage = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var countedVisibleBonusClueRevealKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var hostileClueContractArcs = new List<(JsonElement Arc, string ArcContext)>();
+        var bonusClueTrackerAuthorityResolutionAttempted = false;
+        var hasBonusClueTrackerAuthority = false;
+        JsonElement bonusClueTrackerAuthorityRoot = default;
+        GuardianProjectTrackerPolicyContext bonusClueTrackerAuthorityContext = default;
+        var bonusClueCurrentIncarnationResolutionAttempted = false;
+        var hasBonusClueCurrentIncarnation = false;
+        var bonusClueCurrentIncarnation = 0;
+        var index = 0;
+        foreach (var arc in rivalState.Collection.EnumerateArray())
         {
-            string collectionName;
-            JsonElement arcs;
-            if (rivalDoc.RootElement.TryGetProperty("arcs", out arcs))
+            var arcContext = $"{RivalSoulArcService.StatePath}.{rivalState.CollectionName}[{index}]";
+            var arcId = GetFirstNonEmptyString(arc, "arcId");
+            if (!string.IsNullOrWhiteSpace(arcId))
+                knownArcIds.Add(arcId);
+            hostileClueContractArcs.Add((arc, arcContext));
+
+            if (arc.ValueKind != JsonValueKind.Object ||
+                !arc.TryGetProperty("sponsorGuardianRef", out var sponsorRef) ||
+                sponsorRef.ValueKind != JsonValueKind.Object)
             {
-                collectionName = "arcs";
-            }
-            else if (rivalDoc.RootElement.TryGetProperty("UpdateRivalSoulArcs", out arcs))
-            {
-                collectionName = "UpdateRivalSoulArcs";
-            }
-            else
-            {
-                return;
-            }
-
-            if (arcs.ValueKind != JsonValueKind.Array)
-                return;
-
-            JsonDocument? worldEventsDoc = null;
-            JsonElement worldEvents = default;
-            string? worldEventCollectionName = null;
-            var relatedWorldEventsByArcId = new Dictionary<string, List<JsonElement>>(StringComparer.OrdinalIgnoreCase);
-            var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
-            var knownArcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var knownArcSponsorGuardianIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var visibleBonusClueUsage = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            var countedVisibleBonusClueRevealKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var hostileClueContractArcs = new List<(JsonElement Arc, string ArcContext)>();
-            var index = 0;
-            foreach (var arc in arcs.EnumerateArray())
-            {
-                var arcContext = $"{RivalSoulArcService.StatePath}.{collectionName}[{index}]";
-                var arcId = GetFirstNonEmptyString(arc, "arcId");
-                if (!string.IsNullOrWhiteSpace(arcId))
-                    knownArcIds.Add(arcId);
-                hostileClueContractArcs.Add((arc, arcContext));
-
-                if (arc.ValueKind != JsonValueKind.Object ||
-                    !arc.TryGetProperty("sponsorGuardianRef", out var sponsorRef) ||
-                    sponsorRef.ValueKind != JsonValueKind.Object)
-                {
-                    index++;
-                    continue;
-                }
-
-                var mode = GetFirstNonEmptyString(sponsorRef, "mode");
-                var sponsorGuardianId = string.Empty;
-                if (string.Equals(mode, "guardianId", StringComparison.OrdinalIgnoreCase))
-                {
-                    sponsorGuardianId = GetFirstNonEmptyString(sponsorRef, "guardianId");
-                    if (!string.IsNullOrWhiteSpace(sponsorGuardianId) && !knownGuardianIds.Contains(sponsorGuardianId))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{arcContext}.sponsorGuardianRef.guardianId",
-                            IssueSeverity.Error,
-                            $"Rival soul arc ссылается на неизвестный guardianId '{sponsorGuardianId}'",
-                            code: "rival_arc_unknown_guardian_id",
-                            section: "RivalSoulArcs",
-                            expected: "existing guardianId from canonical guardians state",
-                            actual: sponsorGuardianId,
-                            repairHint: "Для sponsorGuardianRef.mode=guardianId используй guardianId уже существующего Хранителя из canonical guardians state."));
-                    }
-                    else if (!string.IsNullOrWhiteSpace(arcId) && !string.IsNullOrWhiteSpace(sponsorGuardianId))
-                    {
-                        knownArcSponsorGuardianIds[arcId] = sponsorGuardianId;
-                    }
-                }
-                else if (string.Equals(mode, "eternalPreset", StringComparison.OrdinalIgnoreCase))
-                {
-                    var presetId = GetFirstNonEmptyString(sponsorRef, "presetId");
-                    if (!string.IsNullOrWhiteSpace(presetId) && !knownSystemGuardianPresetIds.Contains(presetId))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{arcContext}.sponsorGuardianRef.presetId",
-                            IssueSeverity.Error,
-                            $"Rival soul arc ссылается на неизвестный Eternal Guardian preset '{presetId}'",
-                            code: "rival_arc_unknown_eternal_guardian_preset",
-                            section: "RivalSoulArcs",
-                            expected: "existing presetId from system_guardians library",
-                            actual: presetId,
-                            repairHint: "Для sponsorGuardianRef.mode=eternalPreset используй реальный presetId из библиотеки извечных хранителей."));
-                    }
-                }
-
-                if (arc.ValueKind == JsonValueKind.Object &&
-                    arc.TryGetProperty("publicSignals", out var publicSignals) &&
-                    publicSignals.ValueKind == JsonValueKind.Array)
-                {
-                    var signalIndex = 0;
-                    foreach (var signal in publicSignals.EnumerateArray())
-                    {
-                        var signalContext = $"{arcContext}.publicSignals[{signalIndex++}]";
-                        var sourceProjectId = GetFirstNonEmptyString(signal, "bonusClueSourceProjectId");
-                        if (string.IsNullOrWhiteSpace(sourceProjectId))
-                            continue;
-
-                        var visibleToPlayer = signal.TryGetProperty("visibleToPlayer", out var visibleNode) &&
-                                              visibleNode.ValueKind == JsonValueKind.True;
-                        if (!string.Equals(mode, "guardianId", StringComparison.OrdinalIgnoreCase) ||
-                            string.IsNullOrWhiteSpace(sponsorGuardianId))
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{signalContext}.bonusClueSourceProjectId",
-                                IssueSeverity.Error,
-                                "Bonus clue от lore_research допустим только для rival arc со sponsorGuardianRef.mode=guardianId",
-                                code: "rival_arc_bonus_clue_requires_guardian_sponsor",
-                                section: "RivalSoulArcs",
-                                repairHint: "Используй bonusClueSourceProjectId только там, где sponsorGuardianRef указывает на materialized guardianId."));
-                            continue;
-                        }
-
-                        if (!visibleToPlayer)
-                            continue;
-
-                        var clueCost = TryReadIntField(signal, "bonusClueCost", out var parsedCost) ? Math.Max(1, parsedCost) : 1;
-                        var revealKey = BuildVisibleBonusClueRevealKey(arcId!, signal, isWorldEvent: false);
-                        if (!countedVisibleBonusClueRevealKeys.Add(revealKey))
-                            continue;
-
-                        var usageKey = $"{sponsorGuardianId}::{sourceProjectId}";
-                        visibleBonusClueUsage[usageKey] = visibleBonusClueUsage.GetValueOrDefault(usageKey) + clueCost;
-                    }
-                }
-
                 index++;
+                continue;
             }
 
-            var requiresCurrentWorldEventsForHostileClueContract = hostileClueContractArcs.Any(context => HostileDirectTargetRivalArcMayNeedWorldEvents(context.Arc));
-            var requiresCurrentWorldEventsForRelatedRivalWorldValidation =
-                CanonicalStateNormalizer.RawJsonMayContainRelatedRivalWorldEvents(worldEventsJson, knownArcIds, requireBonusClueSource: false);
-            var requiresCurrentWorldEventsForBonusClueValidation =
-                CanonicalStateNormalizer.RawJsonMayContainRelatedRivalWorldEvents(worldEventsJson, knownArcSponsorGuardianIds.Keys, requireBonusClueSource: true);
-
-            if (!string.IsNullOrWhiteSpace(worldEventsJson) &&
-                (requiresCurrentWorldEventsForHostileClueContract ||
-                 requiresCurrentWorldEventsForRelatedRivalWorldValidation ||
-                 requiresCurrentWorldEventsForBonusClueValidation))
+            var mode = GetFirstNonEmptyString(sponsorRef, "mode");
+            var sponsorGuardianId = string.Empty;
+            if (string.Equals(mode, "guardianId", StringComparison.OrdinalIgnoreCase))
             {
-                try
-                {
-                    worldEventsDoc = JsonDocument.Parse(worldEventsJson);
-                }
-                catch
+                sponsorGuardianId = GetFirstNonEmptyString(sponsorRef, "guardianId");
+                if (!string.IsNullOrWhiteSpace(sponsorGuardianId) && !knownGuardianIds.Contains(sponsorGuardianId))
                 {
                     issues.Add(new ValidationIssue(
-                        "game_state/world/world_events.json",
+                        $"{arcContext}.sponsorGuardianRef.guardianId",
                         IssueSeverity.Error,
-                        requiresCurrentWorldEventsForBonusClueValidation
-                            ? "Rival/world bonus clue validation требует readable current world_events.json и не может доказывать linked lore clue contracts поверх malformed current world event state."
-                            : "Rival soul arc validation требует readable current world_events.json и не может проверять linked world-event rivalry contracts поверх malformed current world event state.",
-                        code: requiresCurrentWorldEventsForBonusClueValidation
-                            ? "world_event_bonus_clue_invalid_current_state"
-                            : "rival_arc_world_event_invalid_current_state",
+                        $"Rival soul arc ссылается на неизвестный guardianId '{sponsorGuardianId}'",
+                        code: "rival_arc_unknown_guardian_id",
                         section: "RivalSoulArcs",
-                        expected: "readable current world_events.json",
-                        actual: "current world_events.json unreadable or malformed",
-                        repairHint: requiresCurrentWorldEventsForBonusClueValidation
-                            ? "Сделай current world_events.json корректным JSON перед validation linked world-event bonus clue contracts."
-                            : "Сделай current world_events.json корректным JSON перед validation linked rival world-event contracts."));
-                    return;
+                        expected: "existing guardianId from canonical guardians state",
+                        actual: sponsorGuardianId,
+                        repairHint: "Для sponsorGuardianRef.mode=guardianId используй guardianId уже существующего Хранителя из canonical guardians state."));
                 }
+                else if (!string.IsNullOrWhiteSpace(arcId) && !string.IsNullOrWhiteSpace(sponsorGuardianId))
+                {
+                    knownArcSponsorGuardianIds[arcId] = sponsorGuardianId;
+                }
+            }
+            else if (string.Equals(mode, "eternalPreset", StringComparison.OrdinalIgnoreCase))
+            {
+                var presetId = GetFirstNonEmptyString(sponsorRef, "presetId");
+                if (!string.IsNullOrWhiteSpace(presetId) && !knownSystemGuardianPresetIds.Contains(presetId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{arcContext}.sponsorGuardianRef.presetId",
+                        IssueSeverity.Error,
+                        $"Rival soul arc ссылается на неизвестный Eternal Guardian preset '{presetId}'",
+                        code: "rival_arc_unknown_eternal_guardian_preset",
+                        section: "RivalSoulArcs",
+                        expected: "existing presetId from system_guardians library",
+                        actual: presetId,
+                        repairHint: "Для sponsorGuardianRef.mode=eternalPreset используй реальный presetId из библиотеки извечных хранителей."));
+                }
+            }
 
-                if (worldEventsDoc.RootElement.TryGetProperty("worldEventsLog", out worldEvents))
+            if (arc.ValueKind == JsonValueKind.Object &&
+                arc.TryGetProperty("publicSignals", out var publicSignals) &&
+                publicSignals.ValueKind == JsonValueKind.Array)
+            {
+                var signalIndex = 0;
+                foreach (var signal in publicSignals.EnumerateArray())
                 {
-                    worldEventCollectionName = "worldEventsLog";
+                    var signalContext = $"{arcContext}.publicSignals[{signalIndex++}]";
+                    var sourceProjectId = GetFirstNonEmptyString(signal, "bonusClueSourceProjectId");
+                    if (string.IsNullOrWhiteSpace(sourceProjectId))
+                        continue;
+
+                    var visibleToPlayer = signal.TryGetProperty("visibleToPlayer", out var visibleNode) &&
+                                          visibleNode.ValueKind == JsonValueKind.True;
+                    if (!string.Equals(mode, "guardianId", StringComparison.OrdinalIgnoreCase) ||
+                        string.IsNullOrWhiteSpace(sponsorGuardianId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{signalContext}.bonusClueSourceProjectId",
+                            IssueSeverity.Error,
+                            "Bonus clue от lore_research допустим только для rival arc со sponsorGuardianRef.mode=guardianId",
+                            code: "rival_arc_bonus_clue_requires_guardian_sponsor",
+                            section: "RivalSoulArcs",
+                            repairHint: "Используй bonusClueSourceProjectId только там, где sponsorGuardianRef указывает на materialized guardianId."));
+                        continue;
+                    }
+
+                    if (!visibleToPlayer)
+                        continue;
+
+                    var clueCost = TryReadIntField(signal, "bonusClueCost", out var parsedCost) ? Math.Max(1, parsedCost) : 1;
+                    var revealKey = BuildVisibleBonusClueRevealKey(arcId!, signal, isWorldEvent: false);
+                    if (!countedVisibleBonusClueRevealKeys.Add(revealKey))
+                        continue;
+
+                    var usageKey = $"{sponsorGuardianId}::{sourceProjectId}";
+                    visibleBonusClueUsage[usageKey] = visibleBonusClueUsage.GetValueOrDefault(usageKey) + clueCost;
                 }
-                else if (worldEventsDoc.RootElement.ValueKind == JsonValueKind.Array)
+            }
+
+            index++;
+        }
+
+        var requiresCurrentWorldEventsForHostileClueContract = hostileClueContractArcs.Any(context => HostileDirectTargetRivalArcMayNeedWorldEvents(context.Arc));
+        var requiresCurrentWorldEventsForRelatedRivalWorldValidation =
+            !string.IsNullOrWhiteSpace(worldEventsJson) &&
+            worldEventsJson.Contains("\"relatedRivalArcId\"", StringComparison.OrdinalIgnoreCase);
+        var requiresCurrentWorldEventsForBonusClueValidation = false;
+        if (knownArcSponsorGuardianIds.Count > 0 &&
+            JsonNode.Parse(rivalState.Collection.GetRawText()) is JsonArray currentBonusClueArcs)
+            {
+                bonusClueTrackerAuthorityResolutionAttempted = true;
+                if (TryResolveGuardianProjectTrackerValidationRoot(
+                        $"{RivalSoulArcService.StatePath}.{rivalState.CollectionName}",
+                        "Rival arc bonus clue validation требует readable current guardian project tracker authority и не использует isolated pre-turn tracker baseline как authority fallback.",
+                        "rival_arc_bonus_clue_missing_current_tracker_authority",
+                        "RivalSoulArcs",
+                        $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед validating lore_research-derived bonus clues.",
+                        issues,
+                        out bonusClueTrackerAuthorityRoot,
+                        out var trackerContext))
                 {
-                    worldEvents = worldEventsDoc.RootElement;
-                    worldEventCollectionName = "worldEventsLog";
+                    hasBonusClueTrackerAuthority = true;
+                    bonusClueTrackerAuthorityContext = trackerContext;
+
+                    if (TryParseJsonObject(bonusClueTrackerAuthorityRoot) is JsonObject bonusClueTrackerRootObject)
+                    {
+                        var currentBonusClueArcsRoot = new JsonObject { ["arcs"] = currentBonusClueArcs };
+                        var requiresCurrentIncarnationForBonusClueValidation =
+                            CanonicalStateNormalizer.RequiresCurrentIncarnationForVisibleRivalCluePreflight(
+                                currentBonusClueArcsRoot,
+                                bonusClueTrackerRootObject,
+                                hasCurrentWorldEventsFile,
+                                worldEventsJson);
+                        if (requiresCurrentIncarnationForBonusClueValidation)
+                        {
+                            bonusClueCurrentIncarnationResolutionAttempted = true;
+                            hasBonusClueCurrentIncarnation = TryResolveVisibleRivalClueCurrentIncarnation(
+                                trackerContext,
+                                $"{RivalSoulArcService.StatePath}.{rivalState.CollectionName}",
+                                issues,
+                                out bonusClueCurrentIncarnation);
+                            if (hasBonusClueCurrentIncarnation)
+                            {
+                                requiresCurrentWorldEventsForBonusClueValidation =
+                                    CanonicalStateNormalizer.RequiresCurrentWorldEventsForVisibleRivalClueConsumption(
+                                        currentBonusClueArcsRoot,
+                                        bonusClueTrackerRootObject,
+                                        bonusClueCurrentIncarnation,
+                                        worldEventsJson);
+                            }
+                        }
+                    }
                 }
+            }
+
+            var canValidateHostileDirectTargetClueContract = true;
+
+            if (requiresCurrentWorldEventsForHostileClueContract ||
+                requiresCurrentWorldEventsForRelatedRivalWorldValidation ||
+                requiresCurrentWorldEventsForBonusClueValidation)
+            {
+                var (document, collection, parsedWorldEventCollectionName, hasInvalidCurrentState, _) =
+                    await TryReadCurrentWorldEventValidationDocumentAsync(
+                        issues,
+                        requiresCurrentWorldEventsForBonusClueValidation,
+                        requiresCurrentWorldEventsForHostileClueContract || requiresCurrentWorldEventsForRelatedRivalWorldValidation,
+                        treatMissingCurrentStateAsInvalid: true);
+                worldEventsDoc = document;
+                worldEvents = collection;
+                worldEventCollectionName = parsedWorldEventCollectionName;
+
+                if (hasInvalidCurrentState && requiresCurrentWorldEventsForHostileClueContract)
+                    canValidateHostileDirectTargetClueContract = false;
 
                 if (worldEventCollectionName != null && worldEvents.ValueKind == JsonValueKind.Array)
                     relatedWorldEventsByArcId = BuildRelatedWorldEventsByArcId(worldEvents);
             }
 
-            foreach (var (arc, arcContext) in hostileClueContractArcs)
-                ValidateHostileDirectTargetRivalArcClueContract(arc, arcContext, issues, relatedWorldEventsByArcId);
+            if (canValidateHostileDirectTargetClueContract)
+            {
+                foreach (var (arc, arcContext) in hostileClueContractArcs)
+                    ValidateHostileDirectTargetRivalArcClueContract(arc, arcContext, issues, relatedWorldEventsByArcId);
+            }
 
             var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
             var knownGuardianAbodes = BuildGuardianAbodeMap(guardianPolicyContext);
@@ -759,10 +778,11 @@ public partial class ValidationService
             var knownResidentIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var residentLinkedQuestIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var residentGrantedRelicIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
-            if (!string.IsNullOrWhiteSpace(residentJson))
+            var (residentDoc, hasInvalidResidentValidationState, isMissingResidentValidationState) =
+                await TryReadCurrentResidentValidationDocumentAsync(issues);
+            using var residentDocScope = residentDoc;
+            if (residentDoc is not null)
             {
-                using var residentDoc = JsonDocument.Parse(residentJson);
                 foreach (var resident in residentDoc.RootElement.ValueKind == JsonValueKind.Object
                              ? residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.EntriesProperty, out var entries) && entries.ValueKind == JsonValueKind.Array
                                  ? entries.EnumerateArray()
@@ -897,119 +917,68 @@ public partial class ValidationService
                 }
             }
 
+            var manifestedCompanionSourceRelicIds =
+                await CollectManifestedCompanionSourceRelicValidationSurfaceAsync(issues);
+            var hasCurrentReverseSoulRelicResidentValidationDependency =
+                await HasReverseSoulRelicResidentValidationDependencyAsync(includeValidatedPreTurnFallback: false);
+            var hasReverseSoulRelicResidentValidationDependency =
+                await HasReverseSoulRelicResidentValidationDependencyAsync();
+            var (soulQuestDoc, hasInvalidSoulQuestValidationState, isMissingSoulQuestValidationState) =
+                await TryReadCurrentSoulQuestValidationDocumentAsync(issues);
+            using var soulQuestDocScope = soulQuestDoc;
+            var hasNonParticipatingCurrentSoulQuestState =
+                soulQuestDoc is not null &&
+                !TryGetSoulQuestCollection(soulQuestDoc.RootElement, out _);
+            var hasResidentLinkedSoulQuestValidationDependency =
+                residentLinkedQuestIds.Count > 0 ||
+                SoulQuestDocumentHasResidentLinkedValidationSurface(soulQuestDoc);
+            var hasQuestOwnedSoulQuestValidationDependency =
+                await HasQuestOwnedSoulQuestValidationDependencyAsync(soulQuestDoc);
+            if (isMissingResidentValidationState &&
+                (hasCurrentReverseSoulRelicResidentValidationDependency || hasResidentLinkedSoulQuestValidationDependency))
+            {
+                AddMissingCurrentResidentValidationIssue(issues);
+                hasInvalidResidentValidationState = true;
+            }
+
+            if (isMissingSoulQuestValidationState &&
+                (residentLinkedQuestIds.Count > 0 || hasQuestOwnedSoulQuestValidationDependency))
+            {
+                AddMissingCurrentSoulQuestValidationIssue(issues);
+                hasInvalidSoulQuestValidationState = true;
+            }
+            else if (!hasInvalidSoulQuestValidationState &&
+                     hasNonParticipatingCurrentSoulQuestState &&
+                     (residentLinkedQuestIds.Count > 0 || hasQuestOwnedSoulQuestValidationDependency))
+            {
+                AddNonParticipatingCurrentSoulQuestValidationIssue(issues);
+                hasInvalidSoulQuestValidationState = true;
+            }
+
+            var canValidateResidentLinkedCrossReferences =
+                residentDoc is not null && !hasInvalidResidentValidationState;
+            var hasSoulRelicResidentValidationDependency =
+                residentGrantedRelicIds.Count > 0 ||
+                manifestedCompanionSourceRelicIds.Count > 0 ||
+                (canValidateResidentLinkedCrossReferences && hasReverseSoulRelicResidentValidationDependency);
+            var hasReadableSoulRelicValidationState = false;
             var knownSoulRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var relicSourceResidentIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-            if (!string.IsNullOrWhiteSpace(soulStateJson))
+            if (hasSoulRelicResidentValidationDependency)
             {
-                using var soulStateDoc = JsonDocument.Parse(soulStateJson);
-                if (soulStateDoc.RootElement.ValueKind == JsonValueKind.Object &&
-                    soulStateDoc.RootElement.TryGetProperty("soulRelics", out var soulRelics))
-                {
-                    IEnumerable<JsonElement> EnumerateRelics()
-                    {
-                        if (soulRelics.ValueKind == JsonValueKind.Array)
-                        {
-                            foreach (var relic in soulRelics.EnumerateArray())
-                                yield return relic;
-                            yield break;
-                        }
-
-                        if (soulRelics.ValueKind != JsonValueKind.Object)
-                            yield break;
-
-                        foreach (var collectionName in new[] { "equipped", "stored" })
-                        {
-                            if (!soulRelics.TryGetProperty(collectionName, out var collection) || collection.ValueKind != JsonValueKind.Array)
-                                continue;
-
-                            foreach (var relic in collection.EnumerateArray())
-                                yield return relic;
-                        }
-                    }
-
-                    foreach (var relic in EnumerateRelics())
-                    {
-                        if (relic.ValueKind != JsonValueKind.Object)
-                            continue;
-
-                        var relicId = GetFirstNonEmptyString(relic, "relicId", "id");
-                        if (!string.IsNullOrWhiteSpace(relicId))
-                            knownSoulRelicIds.Add(relicId);
-
-                        if (relic.TryGetProperty("companionSeed", out var companionSeed) && companionSeed.ValueKind == JsonValueKind.Object)
-                        {
-                            var sourceResidentId = GetFirstNonEmptyString(companionSeed, "sourceResidentId");
-                            if (!string.IsNullOrWhiteSpace(relicId) && !string.IsNullOrWhiteSpace(sourceResidentId))
-                                relicSourceResidentIds[relicId] = sourceResidentId;
-                        }
-                    }
-                }
+                (hasReadableSoulRelicValidationState, knownSoulRelicIds, relicSourceResidentIds) =
+                    await ReadCurrentSoulRelicResidentValidationStateAsync(issues);
             }
 
-            var npcCoreJson = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
-            if (!string.IsNullOrWhiteSpace(npcCoreJson))
+            if (hasReadableSoulRelicValidationState)
             {
-                using var npcCoreDoc = JsonDocument.Parse(npcCoreJson);
-                var seenRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var npcCollectionName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
-                {
-                    if (!npcCoreDoc.RootElement.TryGetProperty(npcCollectionName, out var npcs) || npcs.ValueKind != JsonValueKind.Array)
-                        continue;
-
-                    var npcIndex = 0;
-                    foreach (var npc in npcs.EnumerateArray())
-                    {
-                        var npcContext = $"game_state/npcs/npc_core.json.{npcCollectionName}[{npcIndex++}]";
-                        var sourceRelicId = GetFirstNonEmptyString(npc, "sourceCompanionRelicId");
-                        var sourceResidentId = GetFirstNonEmptyString(npc, "sourceAfterlifeResidentId");
-                        var sourceImprintId = GetFirstNonEmptyString(npc, "sourceSoulImprintId");
-
-                        if ((!string.IsNullOrWhiteSpace(sourceResidentId) || !string.IsNullOrWhiteSpace(sourceImprintId)) &&
-                            string.IsNullOrWhiteSpace(sourceRelicId))
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{npcContext}.sourceCompanionRelicId",
-                                IssueSeverity.Error,
-                                "Manifested companion NPC должен хранить sourceCompanionRelicId для однозначного closure",
-                                code: "manifested_companion_missing_source_relic_id",
-                                section: "AfterlifeResidents",
-                                repairHint: "Когда companion manifestation fully materializes mortal NPC, всегда записывай sourceCompanionRelicId вместе с sourceAfterlifeResidentId/sourceSoulImprintId."));
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(sourceRelicId) && !seenRelicIds.Add(sourceRelicId))
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{npcContext}.sourceCompanionRelicId",
-                                IssueSeverity.Error,
-                                "Несколько manifested NPC не должны делить один sourceCompanionRelicId",
-                                code: "manifested_companion_duplicate_source_relic_id",
-                                section: "AfterlifeResidents",
-                                expected: "unique sourceCompanionRelicId",
-                                actual: sourceRelicId,
-                                repairHint: "Один companion-carrying relic должен materialize максимум один mortal companion path/NPC."));
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(sourceRelicId) && !knownSoulRelicIds.Contains(sourceRelicId))
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{npcContext}.sourceCompanionRelicId",
-                                IssueSeverity.Error,
-                                $"Manifested companion NPC ссылается на неизвестную soul relic '{sourceRelicId}'",
-                                code: "manifested_companion_unknown_source_relic_id",
-                                section: "AfterlifeResidents",
-                                expected: "existing relicId from soul_state.json",
-                                actual: sourceRelicId,
-                                repairHint: "Для sourceCompanionRelicId используй реальную экипированную или хранимую soul relic из soul_state.json."));
-                        }
-                    }
-                }
+                ValidateManifestedCompanionSourceRelicIds(
+                    manifestedCompanionSourceRelicIds,
+                    knownSoulRelicIds,
+                    issues);
             }
-
-            var soulQuestJson = await _fs.ReadFileAsync("game_state/quests/soul_quests.json");
-            if (!string.IsNullOrWhiteSpace(soulQuestJson))
+            if (soulQuestDoc is not null)
             {
-                using var soulQuestDoc = JsonDocument.Parse(soulQuestJson);
                 var knownSoulQuestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 var questResidentLinks = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 JsonElement quests;
@@ -1050,105 +1019,117 @@ public partial class ValidationService
                                 repairHint: "Для relatedRivalArcId используй существующий arcId из game_state/world/rival_soul_arcs.json."));
                         }
 
-                        var relatedResidentId = GetFirstNonEmptyString(quest, "relatedAfterlifeResidentId");
-                        if (!string.IsNullOrWhiteSpace(relatedResidentId) && !knownResidentIds.Contains(relatedResidentId))
+                        if (canValidateResidentLinkedCrossReferences && !hasInvalidSoulQuestValidationState)
                         {
-                            issues.Add(new ValidationIssue(
-                                $"game_state/quests/soul_quests.json.{questCollectionName}[{questIndex}].relatedAfterlifeResidentId",
-                                IssueSeverity.Error,
-                                $"Soul quest ссылается на неизвестного afterlife resident '{relatedResidentId}'",
-                                code: "soul_quest_unknown_afterlife_resident_id",
-                                section: "SoulQuests",
-                                expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
-                                actual: relatedResidentId,
-                                repairHint: $"Для relatedAfterlifeResidentId используй residentId из {GuardianAbodeResidentState.StatePath}."));
-                        }
-                        else if (!string.IsNullOrWhiteSpace(relatedResidentId) && !string.IsNullOrWhiteSpace(questId))
-                        {
-                            questResidentLinks[relatedResidentId] = questId;
+                            var relatedResidentId = GetFirstNonEmptyString(quest, "relatedAfterlifeResidentId");
+                            if (!string.IsNullOrWhiteSpace(relatedResidentId) && !knownResidentIds.Contains(relatedResidentId))
+                            {
+                                issues.Add(new ValidationIssue(
+                                    $"game_state/quests/soul_quests.json.{questCollectionName}[{questIndex}].relatedAfterlifeResidentId",
+                                    IssueSeverity.Error,
+                                    $"Soul quest ссылается на неизвестного afterlife resident '{relatedResidentId}'",
+                                    code: "soul_quest_unknown_afterlife_resident_id",
+                                    section: "SoulQuests",
+                                    expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                                    actual: relatedResidentId,
+                                    repairHint: $"Для relatedAfterlifeResidentId используй residentId из {GuardianAbodeResidentState.StatePath}."));
+                            }
+                            else if (!string.IsNullOrWhiteSpace(relatedResidentId) && !string.IsNullOrWhiteSpace(questId))
+                            {
+                                questResidentLinks[relatedResidentId] = questId;
+                            }
                         }
 
                         questIndex++;
                     }
 
-                    foreach (var residentQuestLink in residentLinkedQuestIds)
+                    if (canValidateResidentLinkedCrossReferences && !hasInvalidSoulQuestValidationState)
                     {
-                        if (!knownSoulQuestIds.Contains(residentQuestLink.Value))
+                        foreach (var residentQuestLink in residentLinkedQuestIds)
                         {
-                            issues.Add(new ValidationIssue(
-                                $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
-                                IssueSeverity.Error,
-                                $"Afterlife resident ссылается на неизвестный soul quest '{residentQuestLink.Value}'",
-                                code: "guardian_abode_resident_unknown_linked_soul_quest_id",
-                                section: "SoulQuests",
-                                expected: "existing questId from game_state/quests/soul_quests.json",
-                                actual: residentQuestLink.Value,
-                                repairHint: "Если resident хранит linkedSoulQuestId, используй существующий questId из canonical soul_quests state."));
-                            continue;
-                        }
+                            if (!knownSoulQuestIds.Contains(residentQuestLink.Value))
+                            {
+                                issues.Add(new ValidationIssue(
+                                    $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
+                                    IssueSeverity.Error,
+                                    $"Afterlife resident ссылается на неизвестный soul quest '{residentQuestLink.Value}'",
+                                    code: "guardian_abode_resident_unknown_linked_soul_quest_id",
+                                    section: "SoulQuests",
+                                    expected: "existing questId from game_state/quests/soul_quests.json",
+                                    actual: residentQuestLink.Value,
+                                    repairHint: "Если resident хранит linkedSoulQuestId, используй существующий questId из canonical soul_quests state."));
+                                continue;
+                            }
 
-                        if (!questResidentLinks.TryGetValue(residentQuestLink.Key, out var relatedQuestId) ||
-                            !string.Equals(relatedQuestId, residentQuestLink.Value, StringComparison.OrdinalIgnoreCase))
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
-                                IssueSeverity.Error,
-                                "linkedSoulQuestId должен указывать на soul quest, который ссылается обратно на этого resident через relatedAfterlifeResidentId",
-                                code: "guardian_abode_resident_linked_soul_quest_mismatch",
-                                section: "SoulQuests",
-                                expected: $"soul quest with relatedAfterlifeResidentId={residentQuestLink.Key}",
-                                actual: residentQuestLink.Value,
-                                repairHint: "Синхронизируй resident.linkedSoulQuestId и soul quest.relatedAfterlifeResidentId."));                            
+                            if (!questResidentLinks.TryGetValue(residentQuestLink.Key, out var relatedQuestId) ||
+                                !string.Equals(relatedQuestId, residentQuestLink.Value, StringComparison.OrdinalIgnoreCase))
+                            {
+                                issues.Add(new ValidationIssue(
+                                    $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
+                                    IssueSeverity.Error,
+                                    "linkedSoulQuestId должен указывать на soul quest, который ссылается обратно на этого resident через relatedAfterlifeResidentId",
+                                    code: "guardian_abode_resident_linked_soul_quest_mismatch",
+                                    section: "SoulQuests",
+                                    expected: $"soul quest with relatedAfterlifeResidentId={residentQuestLink.Key}",
+                                    actual: residentQuestLink.Value,
+                                    repairHint: "Синхронизируй resident.linkedSoulQuestId и soul quest.relatedAfterlifeResidentId."));
+                            }
                         }
                     }
                 }
             }
 
-            foreach (var residentRelicLink in residentGrantedRelicIds)
+            if (hasReadableSoulRelicValidationState)
             {
-                if (!knownSoulRelicIds.Contains(residentRelicLink.Value))
+                foreach (var residentRelicLink in residentGrantedRelicIds)
                 {
-                    issues.Add(new ValidationIssue(
-                        $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
-                        IssueSeverity.Error,
-                        $"Afterlife resident ссылается на неизвестную soul relic '{residentRelicLink.Value}'",
-                        code: "guardian_abode_resident_unknown_granted_relic_id",
-                        section: "AfterlifeResidents",
-                        expected: "existing relicId from soul_state.json",
-                        actual: residentRelicLink.Value,
-                        repairHint: "Если resident хранит grantedRelicId, соответствующая soul relic должна существовать в soul_state.json."));
-                    continue;
+                    if (!knownSoulRelicIds.Contains(residentRelicLink.Value))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
+                            IssueSeverity.Error,
+                            $"Afterlife resident ссылается на неизвестную soul relic '{residentRelicLink.Value}'",
+                            code: "guardian_abode_resident_unknown_granted_relic_id",
+                            section: "AfterlifeResidents",
+                            expected: "existing relicId from soul_state.json",
+                            actual: residentRelicLink.Value,
+                            repairHint: "Если resident хранит grantedRelicId, соответствующая soul relic должна существовать в soul_state.json."));
+                        continue;
+                    }
+
+                    if (relicSourceResidentIds.TryGetValue(residentRelicLink.Value, out var sourceResidentId) &&
+                        !string.Equals(sourceResidentId, residentRelicLink.Key, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
+                            IssueSeverity.Error,
+                            "grantedRelicId указывает на реликвию, привязанную к другому resident",
+                            code: "guardian_abode_resident_granted_relic_resident_mismatch",
+                            section: "AfterlifeResidents",
+                            expected: residentRelicLink.Key,
+                            actual: sourceResidentId,
+                            repairHint: "Синхронизируй resident.grantedRelicId с sourceResidentId внутри companionSeed реликвии связи."));
+                    }
                 }
 
-                if (relicSourceResidentIds.TryGetValue(residentRelicLink.Value, out var sourceResidentId) &&
-                    !string.Equals(sourceResidentId, residentRelicLink.Key, StringComparison.OrdinalIgnoreCase))
+                if (canValidateResidentLinkedCrossReferences)
                 {
-                    issues.Add(new ValidationIssue(
-                        $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
-                        IssueSeverity.Error,
-                        "grantedRelicId указывает на реликвию, привязанную к другому resident",
-                        code: "guardian_abode_resident_granted_relic_resident_mismatch",
-                        section: "AfterlifeResidents",
-                        expected: residentRelicLink.Key,
-                        actual: sourceResidentId,
-                        repairHint: "Синхронизируй resident.grantedRelicId с sourceResidentId внутри companionSeed реликвии связи."));
+                    foreach (var relicResidentLink in relicSourceResidentIds)
+                    {
+                        if (knownResidentIds.Contains(relicResidentLink.Value))
+                            continue;
+
+                        issues.Add(new ValidationIssue(
+                            $"game_state/meta/soul_state.json.soulRelics[{relicResidentLink.Key}].companionSeed.sourceResidentId",
+                            IssueSeverity.Error,
+                            $"Soul Relic ссылается на неизвестного afterlife resident '{relicResidentLink.Value}'",
+                            code: "companion_echo_unknown_source_resident_id",
+                            section: "AfterlifeResidents",
+                            expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                            actual: relicResidentLink.Value,
+                            repairHint: "Для companionSeed.sourceResidentId используй существующий residentId из guardian_abode_residents.json."));
+                    }
                 }
-            }
-
-            foreach (var relicResidentLink in relicSourceResidentIds)
-            {
-                if (knownResidentIds.Contains(relicResidentLink.Value))
-                    continue;
-
-                issues.Add(new ValidationIssue(
-                    $"game_state/meta/soul_state.json.soulRelics[{relicResidentLink.Key}].companionSeed.sourceResidentId",
-                    IssueSeverity.Error,
-                    $"Soul Relic ссылается на неизвестного afterlife resident '{relicResidentLink.Value}'",
-                    code: "companion_echo_unknown_source_resident_id",
-                    section: "AfterlifeResidents",
-                    expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
-                    actual: relicResidentLink.Value,
-                    repairHint: "Для companionSeed.sourceResidentId используй существующий residentId из guardian_abode_residents.json."));
             }
 
             if (worldEventCollectionName != null && worldEvents.ValueKind == JsonValueKind.Array)
@@ -1163,46 +1144,12 @@ public partial class ValidationService
                         ValidateNonNegativeIntegerField(worldEvent, eventContext, issues, "bonusClueCost", "RivalSoulArcs");
 
                     var relatedArcId = GetFirstNonEmptyString(worldEvent, "relatedRivalArcId");
-                    if (!string.IsNullOrWhiteSpace(relatedArcId) && !knownArcIds.Contains(relatedArcId))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"game_state/world/world_events.json.{worldEventCollectionName}[{eventIndex}].relatedRivalArcId",
-                            IssueSeverity.Error,
-                            $"World event ссылается на неизвестный rival arc '{relatedArcId}'",
-                            code: "world_event_unknown_rival_arc_id",
-                            section: "RivalSoulArcs",
-                            expected: "existing arcId from canonical rival_soul_arcs state",
-                            actual: relatedArcId,
-                            repairHint: "Если world event является сигналом чужой нити судьбы, используй существующий relatedRivalArcId из game_state/world/rival_soul_arcs.json."));
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(relatedArcId))
-                    {
-                        var visibility = GetFirstNonEmptyString(worldEvent, "visibility");
-                        if (string.IsNullOrWhiteSpace(visibility))
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{eventContext}.visibility",
-                                IssueSeverity.Error,
-                                "World event, связанный с rival soul arc, обязан явно указывать visibility",
-                                code: "world_event_rival_arc_missing_visibility",
-                                section: "RivalSoulArcs",
-                                expected: "Public | Regional | Secret | Faction-Internal | player_known",
-                                repairHint: "Для linked rival-thread world event всегда указывай visibility. Используй Public/Regional для обычных новостей, Secret/Faction-Internal для скрытых событий и player_known, если игрок уже добыл эту информацию через игру."));
-                        }
-                        else if (!IsRecognizedRivalWorldEventVisibility(visibility))
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{eventContext}.visibility",
-                                IssueSeverity.Error,
-                                "World event, связанный с rival soul arc, использует неподдерживаемое visibility",
-                                code: "world_event_rival_arc_invalid_visibility",
-                                section: "RivalSoulArcs",
-                                expected: "Public | Regional | Secret | Faction-Internal | player_known",
-                                actual: visibility,
-                                repairHint: "Для linked rival-thread world event используй только Public, Regional, Secret, Faction-Internal или player_known. Если игрок реально узнал о скрытом событии, переведи его в player_known."));
-                        }
-                    }
+                    ValidateWorldEventRivalArcLink(
+                        worldEventCollectionName,
+                        eventIndex,
+                        worldEvent,
+                        knownArcIds,
+                        issues);
 
                     var sourceProjectId = GetFirstNonEmptyString(worldEvent, "bonusClueSourceProjectId");
                     if (!string.IsNullOrWhiteSpace(sourceProjectId))
@@ -1260,87 +1207,115 @@ public partial class ValidationService
 
             if (visibleBonusClueUsage.Count > 0)
             {
-                if (!TryResolveGuardianProjectTrackerValidationRoot(
-                        $"{RivalSoulArcService.StatePath}.{collectionName}",
-                        "Rival arc bonus clue validation требует readable current guardian project tracker authority и не использует isolated pre-turn tracker baseline как authority fallback.",
-                        "rival_arc_bonus_clue_missing_current_tracker_authority",
-                        "RivalSoulArcs",
-                        $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед validating lore_research-derived bonus clues.",
-                        issues,
-                        out var trackerRoot,
-                        out var trackerContext))
+                JsonElement trackerRoot;
+                GuardianProjectTrackerPolicyContext trackerContext;
+                if (hasBonusClueTrackerAuthority)
+                {
+                    trackerRoot = bonusClueTrackerAuthorityRoot;
+                    trackerContext = bonusClueTrackerAuthorityContext;
+                }
+                else if (bonusClueTrackerAuthorityResolutionAttempted)
                 {
                 }
-                else if (!TryResolveVisibleRivalClueCurrentIncarnation(
-                             trackerContext,
-                             $"{RivalSoulArcService.StatePath}.{collectionName}",
+                else if (!TryResolveGuardianProjectTrackerValidationRoot(
+                             $"{RivalSoulArcService.StatePath}.{rivalState.CollectionName}",
+                             "Rival arc bonus clue validation требует readable current guardian project tracker authority и не использует isolated pre-turn tracker baseline как authority fallback.",
+                             "rival_arc_bonus_clue_missing_current_tracker_authority",
+                             "RivalSoulArcs",
+                             $"Исправь current {GuardianProjectState.TrackerPath} и validated tracker baseline так, чтобы validator построил guardian-backed current tracker authority перед validating lore_research-derived bonus clues.",
                              issues,
-                             out var currentIncarnation))
+                             out trackerRoot,
+                             out trackerContext))
                 {
                 }
                 else
                 {
-                    foreach (var usage in visibleBonusClueUsage)
+                    var canValidateVisibleBonusClues = false;
+                    var currentIncarnation = 0;
+                    if (hasBonusClueCurrentIncarnation)
                     {
-                        var parts = usage.Key.Split(new[] { "::" }, 2, StringSplitOptions.None);
-                        if (parts.Length != 2)
-                            continue;
+                        currentIncarnation = bonusClueCurrentIncarnation;
+                        canValidateVisibleBonusClues = true;
+                    }
+                    else if (bonusClueCurrentIncarnationResolutionAttempted)
+                    {
+                    }
+                    else if (!TryResolveVisibleRivalClueCurrentIncarnation(
+                                 trackerContext,
+                                 $"{RivalSoulArcService.StatePath}.{rivalState.CollectionName}",
+                                 issues,
+                                 out currentIncarnation))
+                    {
+                    }
 
-                        var clueBudget = ReadGrantedLoreResearchVisibleClueBudget(trackerRoot, parts[0], parts[1], currentIncarnation);
-                        if (!clueBudget.HasProject)
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{RivalSoulArcService.StatePath}.{collectionName}",
-                                IssueSeverity.Error,
-                                $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но у guardian '{parts[0]}' нет completed lore_research с clue budget",
-                                code: "rival_arc_bonus_clue_unknown_source_project",
-                                section: "RivalSoulArcs",
-                                repairHint: "Для bonusClueSourceProjectId используй completed lore_research projectId того же guardian sponsor-а."));
-                            continue;
-                        }
+                    else
+                    {
+                        canValidateVisibleBonusClues = true;
+                    }
 
-                        if (!clueBudget.IsCurrentLifeApplicable)
+                    if (canValidateVisibleBonusClues)
+                    {
+                        foreach (var usage in visibleBonusClueUsage)
                         {
-                            issues.Add(new ValidationIssue(
-                                $"{RivalSoulArcService.StatePath}.{collectionName}",
-                                IssueSeverity.Error,
-                                $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но его lore_research budget не активен в текущей инкарнации",
-                                code: "rival_arc_bonus_clue_inactive_source_project",
-                                section: "RivalSoulArcs",
-                                repairHint: "Используй lore_research projectId, чей targetIncarnation совпадает с текущей жизнью, либо перенеси bonusClueSourceProjectId на ту инкарнацию, где проект активен."));
-                            continue;
-                        }
+                            var parts = usage.Key.Split(new[] { "::" }, 2, StringSplitOptions.None);
+                            if (parts.Length != 2)
+                                continue;
 
-                        if (clueBudget.GrantedBudget <= 0)
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{RivalSoulArcService.StatePath}.{collectionName}",
-                                IssueSeverity.Error,
-                                $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но у guardian '{parts[0]}' нет completed lore_research с clue budget",
-                                code: "rival_arc_bonus_clue_unknown_source_project",
-                                section: "RivalSoulArcs",
-                                repairHint: "Для bonusClueSourceProjectId используй completed lore_research projectId того же guardian sponsor-а."));
-                            continue;
-                        }
+                            var clueBudget = ReadGrantedLoreResearchVisibleClueBudget(trackerRoot, parts[0], parts[1], currentIncarnation);
+                            if (!clueBudget.HasProject)
+                            {
+                                issues.Add(new ValidationIssue(
+                                    $"{RivalSoulArcService.StatePath}.{rivalState.CollectionName}",
+                                    IssueSeverity.Error,
+                                    $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но у guardian '{parts[0]}' нет completed lore_research с clue budget",
+                                    code: "rival_arc_bonus_clue_unknown_source_project",
+                                    section: "RivalSoulArcs",
+                                    repairHint: "Для bonusClueSourceProjectId используй completed lore_research projectId того же guardian sponsor-а."));
+                                continue;
+                            }
 
-                        if (usage.Value > clueBudget.GrantedBudget)
-                        {
-                            issues.Add(new ValidationIssue(
-                                $"{RivalSoulArcService.StatePath}.{collectionName}",
-                                IssueSeverity.Error,
-                                "Rival arc bonus clue usage превышает granted lore_research visible clue budget",
-                                code: "rival_arc_bonus_clue_budget_exceeded",
-                                section: "RivalSoulArcs",
-                                expected: $"<= {clueBudget.GrantedBudget}",
-                                actual: usage.Value.ToString(),
-                                repairHint: "Не раскрывай через bonusClueSourceProjectId больше player-visible extra clues, чем даёт completed lore_research project."));
+                            if (!clueBudget.IsCurrentLifeApplicable)
+                            {
+                                issues.Add(new ValidationIssue(
+                                    $"{RivalSoulArcService.StatePath}.{rivalState.CollectionName}",
+                                    IssueSeverity.Error,
+                                    $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но его lore_research budget не активен в текущей инкарнации",
+                                    code: "rival_arc_bonus_clue_inactive_source_project",
+                                    section: "RivalSoulArcs",
+                                    repairHint: "Используй lore_research projectId, чей targetIncarnation совпадает с текущей жизнью, либо перенеси bonusClueSourceProjectId на ту инкарнацию, где проект активен."));
+                                continue;
+                            }
+
+                            if (clueBudget.GrantedBudget <= 0)
+                            {
+                                issues.Add(new ValidationIssue(
+                                    $"{RivalSoulArcService.StatePath}.{rivalState.CollectionName}",
+                                    IssueSeverity.Error,
+                                    $"Rival arc signals используют bonus clue sourceProjectId '{parts[1]}', но у guardian '{parts[0]}' нет completed lore_research с clue budget",
+                                    code: "rival_arc_bonus_clue_unknown_source_project",
+                                    section: "RivalSoulArcs",
+                                    repairHint: "Для bonusClueSourceProjectId используй completed lore_research projectId того же guardian sponsor-а."));
+                                continue;
+                            }
+
+                            if (usage.Value > clueBudget.GrantedBudget)
+                            {
+                                issues.Add(new ValidationIssue(
+                                    $"{RivalSoulArcService.StatePath}.{rivalState.CollectionName}",
+                                    IssueSeverity.Error,
+                                    "Rival arc bonus clue usage превышает granted lore_research visible clue budget",
+                                    code: "rival_arc_bonus_clue_budget_exceeded",
+                                    section: "RivalSoulArcs",
+                                    expected: $"<= {clueBudget.GrantedBudget}",
+                                    actual: usage.Value.ToString(),
+                                    repairHint: "Не раскрывай через bonusClueSourceProjectId больше player-visible extra clues, чем даёт completed lore_research project."));
+                            }
                         }
                     }
                 }
             }
 
             worldEventsDoc?.Dispose();
-        }
     }
 
 
@@ -1505,23 +1480,14 @@ public partial class ValidationService
 
     private async Task ValidateResidentCrossReferencesWhenRivalArcPassSkippedAsync(List<ValidationIssue> issues)
     {
-        var rivalJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
-        if (!string.IsNullOrWhiteSpace(rivalJson))
-        {
-            try
-            {
-                using var rivalDoc = JsonDocument.Parse(rivalJson);
-                if ((rivalDoc.RootElement.TryGetProperty("arcs", out var arcs) && arcs.ValueKind == JsonValueKind.Array) ||
-                    (rivalDoc.RootElement.TryGetProperty("UpdateRivalSoulArcs", out var updates) && updates.ValueKind == JsonValueKind.Array))
-                {
-                    return;
-                }
-            }
-            catch
-            {
-                return;
-            }
-        }
+        var rivalState = await TryReadCurrentRivalValidationDocumentAsync();
+        using var rivalDocScope = rivalState.Document;
+        if (rivalState.Kind == CurrentOwnerStateReadKind.ReadableWithArrayCollection)
+            return;
+
+        var canUseSkippedRivalArcReferenceFallback =
+            rivalState.Kind == CurrentOwnerStateReadKind.MissingOrWhitespace ||
+            rivalState.Kind == CurrentOwnerStateReadKind.ReadableButNoRelevantCollection;
 
         var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
         var knownGuardianAbodes = BuildGuardianAbodeMap(guardianPolicyContext);
@@ -1529,10 +1495,11 @@ public partial class ValidationService
         var knownResidentIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var residentLinkedQuestIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var residentGrantedRelicIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
-        if (!string.IsNullOrWhiteSpace(residentJson))
+        var (residentDoc, hasInvalidResidentValidationState, isMissingResidentValidationState) =
+            await TryReadCurrentResidentValidationDocumentAsync(issues);
+        using var residentDocScope = residentDoc;
+        if (residentDoc is not null)
         {
-            using var residentDoc = JsonDocument.Parse(residentJson);
             if (residentDoc.RootElement.ValueKind == JsonValueKind.Object &&
                 residentDoc.RootElement.TryGetProperty(GuardianAbodeResidentState.EntriesProperty, out var entries) &&
                 entries.ValueKind == JsonValueKind.Array)
@@ -1629,60 +1596,68 @@ public partial class ValidationService
             }
         }
 
-        var knownSoulRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var relicSourceResidentIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (!string.IsNullOrWhiteSpace(soulStateJson))
+        var manifestedCompanionSourceRelicIds =
+            await CollectManifestedCompanionSourceRelicValidationSurfaceAsync(issues);
+        var hasCurrentReverseSoulRelicResidentValidationDependency =
+            await HasReverseSoulRelicResidentValidationDependencyAsync(includeValidatedPreTurnFallback: false);
+        var hasReverseSoulRelicResidentValidationDependency =
+            await HasReverseSoulRelicResidentValidationDependencyAsync();
+        var (soulQuestDoc, hasInvalidSoulQuestValidationState, isMissingSoulQuestValidationState) =
+            await TryReadCurrentSoulQuestValidationDocumentAsync(issues);
+        using var soulQuestDocScope = soulQuestDoc;
+        var hasNonParticipatingCurrentSoulQuestState =
+            soulQuestDoc is not null &&
+            !TryGetSoulQuestCollection(soulQuestDoc.RootElement, out _);
+        var hasResidentLinkedSoulQuestValidationDependency =
+            residentLinkedQuestIds.Count > 0 ||
+            SoulQuestDocumentHasResidentLinkedValidationSurface(soulQuestDoc);
+        var skippedRivalKnownArcIds = canUseSkippedRivalArcReferenceFallback
+            ? await ReadKnownRivalArcIdsForSkippedRivalLinkValidationAsync()
+            : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var canValidateSkippedRivalArcLinks = skippedRivalKnownArcIds.Count > 0;
+        var hasQuestOwnedSoulQuestValidationDependency =
+            await HasSkippedRivalSoulQuestValidationDependencyAsync(
+                soulQuestDoc,
+                canValidateSkippedRivalArcLinks);
+        if (isMissingResidentValidationState &&
+            (hasCurrentReverseSoulRelicResidentValidationDependency || hasResidentLinkedSoulQuestValidationDependency))
         {
-            using var soulStateDoc = JsonDocument.Parse(soulStateJson);
-            if (soulStateDoc.RootElement.ValueKind == JsonValueKind.Object &&
-                soulStateDoc.RootElement.TryGetProperty("soulRelics", out var soulRelics))
-            {
-                IEnumerable<JsonElement> EnumerateRelics()
-                {
-                    if (soulRelics.ValueKind == JsonValueKind.Array)
-                    {
-                        foreach (var relic in soulRelics.EnumerateArray())
-                            yield return relic;
-                        yield break;
-                    }
-
-                    if (soulRelics.ValueKind != JsonValueKind.Object)
-                        yield break;
-
-                    foreach (var collectionName in new[] { "equipped", "stored" })
-                    {
-                        if (!soulRelics.TryGetProperty(collectionName, out var collection) || collection.ValueKind != JsonValueKind.Array)
-                            continue;
-
-                        foreach (var relic in collection.EnumerateArray())
-                            yield return relic;
-                    }
-                }
-
-                foreach (var relic in EnumerateRelics())
-                {
-                    if (relic.ValueKind != JsonValueKind.Object)
-                        continue;
-
-                    var relicId = GetFirstNonEmptyString(relic, "relicId", "id");
-                    if (!string.IsNullOrWhiteSpace(relicId))
-                        knownSoulRelicIds.Add(relicId);
-
-                    if (relic.TryGetProperty("companionSeed", out var companionSeed) && companionSeed.ValueKind == JsonValueKind.Object)
-                    {
-                        var sourceResidentId = GetFirstNonEmptyString(companionSeed, "sourceResidentId");
-                        if (!string.IsNullOrWhiteSpace(relicId) && !string.IsNullOrWhiteSpace(sourceResidentId))
-                            relicSourceResidentIds[relicId] = sourceResidentId;
-                    }
-                }
-            }
+            AddMissingCurrentResidentValidationIssue(issues);
+            hasInvalidResidentValidationState = true;
         }
 
-        var soulQuestJson = await _fs.ReadFileAsync("game_state/quests/soul_quests.json");
-        if (!string.IsNullOrWhiteSpace(soulQuestJson))
+        if (isMissingSoulQuestValidationState &&
+            (residentLinkedQuestIds.Count > 0 || hasQuestOwnedSoulQuestValidationDependency))
         {
-            using var soulQuestDoc = JsonDocument.Parse(soulQuestJson);
+            AddMissingCurrentSoulQuestValidationIssue(issues);
+            hasInvalidSoulQuestValidationState = true;
+        }
+        else if (!hasInvalidSoulQuestValidationState &&
+                 hasNonParticipatingCurrentSoulQuestState &&
+                 (residentLinkedQuestIds.Count > 0 || hasQuestOwnedSoulQuestValidationDependency))
+        {
+            AddNonParticipatingCurrentSoulQuestValidationIssue(issues);
+            hasInvalidSoulQuestValidationState = true;
+        }
+
+        var canValidateResidentLinkedCrossReferences =
+            residentDoc is not null && !hasInvalidResidentValidationState;
+        var hasSoulRelicResidentValidationDependency =
+            residentGrantedRelicIds.Count > 0 ||
+            manifestedCompanionSourceRelicIds.Count > 0 ||
+            (canValidateResidentLinkedCrossReferences && hasReverseSoulRelicResidentValidationDependency);
+        var hasReadableSoulRelicValidationState = false;
+        var knownSoulRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var relicSourceResidentIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (hasSoulRelicResidentValidationDependency)
+        {
+            (hasReadableSoulRelicValidationState, knownSoulRelicIds, relicSourceResidentIds) =
+                await ReadCurrentSoulRelicResidentValidationStateAsync(issues);
+        }
+
+        if (soulQuestDoc is not null &&
+            !hasInvalidSoulQuestValidationState)
+        {
             var knownSoulQuestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var questResidentLinks = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             JsonElement quests;
@@ -1709,105 +1684,1300 @@ public partial class ValidationService
                     if (!string.IsNullOrWhiteSpace(questId))
                         knownSoulQuestIds.Add(questId);
 
-                    var relatedResidentId = GetFirstNonEmptyString(quest, "relatedAfterlifeResidentId");
-                    if (!string.IsNullOrWhiteSpace(relatedResidentId) && !knownResidentIds.Contains(relatedResidentId))
+                    var relatedArcId = GetFirstNonEmptyString(quest, "relatedRivalArcId");
+                    if (canValidateSkippedRivalArcLinks &&
+                        !string.IsNullOrWhiteSpace(relatedArcId) &&
+                        !skippedRivalKnownArcIds.Contains(relatedArcId))
                     {
                         issues.Add(new ValidationIssue(
-                            $"game_state/quests/soul_quests.json.{questCollectionName}[{questIndex}].relatedAfterlifeResidentId",
+                            $"game_state/quests/soul_quests.json.{questCollectionName}[{questIndex}].relatedRivalArcId",
                             IssueSeverity.Error,
-                            $"Soul quest ссылается на неизвестного afterlife resident '{relatedResidentId}'",
-                            code: "soul_quest_unknown_afterlife_resident_id",
-                            section: "SoulQuests",
-                            expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
-                            actual: relatedResidentId,
-                            repairHint: $"Для relatedAfterlifeResidentId используй residentId из {GuardianAbodeResidentState.StatePath}."));
+                            $"Soul quest ссылается на неизвестный rival arc '{relatedArcId}'",
+                            code: "soul_quest_unknown_rival_arc_id",
+                            section: "RivalSoulArcs",
+                            expected: "existing arcId from canonical rival_soul_arcs state",
+                            actual: relatedArcId,
+                            repairHint: "Для relatedRivalArcId используй существующий arcId из game_state/world/rival_soul_arcs.json."));
                     }
-                    else if (!string.IsNullOrWhiteSpace(relatedResidentId) && !string.IsNullOrWhiteSpace(questId))
+
+                    if (canValidateResidentLinkedCrossReferences)
                     {
-                        questResidentLinks[relatedResidentId] = questId;
+                        var relatedResidentId = GetFirstNonEmptyString(quest, "relatedAfterlifeResidentId");
+                        if (!string.IsNullOrWhiteSpace(relatedResidentId) && !knownResidentIds.Contains(relatedResidentId))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"game_state/quests/soul_quests.json.{questCollectionName}[{questIndex}].relatedAfterlifeResidentId",
+                                IssueSeverity.Error,
+                                $"Soul quest ссылается на неизвестного afterlife resident '{relatedResidentId}'",
+                                code: "soul_quest_unknown_afterlife_resident_id",
+                                section: "SoulQuests",
+                                expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                                actual: relatedResidentId,
+                                repairHint: $"Для relatedAfterlifeResidentId используй residentId из {GuardianAbodeResidentState.StatePath}."));
+                        }
+                        else if (!string.IsNullOrWhiteSpace(relatedResidentId) && !string.IsNullOrWhiteSpace(questId))
+                        {
+                            questResidentLinks[relatedResidentId] = questId;
+                        }
                     }
 
                     questIndex++;
                 }
 
-                foreach (var residentQuestLink in residentLinkedQuestIds)
+                if (canValidateResidentLinkedCrossReferences)
                 {
-                    if (!knownSoulQuestIds.Contains(residentQuestLink.Value))
+                    foreach (var residentQuestLink in residentLinkedQuestIds)
                     {
-                        issues.Add(new ValidationIssue(
-                            $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
-                            IssueSeverity.Error,
-                            $"Afterlife resident ссылается на неизвестный soul quest '{residentQuestLink.Value}'",
-                            code: "guardian_abode_resident_unknown_linked_soul_quest_id",
-                            section: "SoulQuests",
-                            expected: "existing questId from game_state/quests/soul_quests.json",
-                            actual: residentQuestLink.Value,
-                            repairHint: "Если resident хранит linkedSoulQuestId, используй существующий questId из canonical soul_quests state."));
-                        continue;
-                    }
+                        if (!knownSoulQuestIds.Contains(residentQuestLink.Value))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
+                                IssueSeverity.Error,
+                                $"Afterlife resident ссылается на неизвестный soul quest '{residentQuestLink.Value}'",
+                                code: "guardian_abode_resident_unknown_linked_soul_quest_id",
+                                section: "SoulQuests",
+                                expected: "existing questId from game_state/quests/soul_quests.json",
+                                actual: residentQuestLink.Value,
+                                repairHint: "Если resident хранит linkedSoulQuestId, используй существующий questId из canonical soul_quests state."));
+                            continue;
+                        }
 
-                    if (!questResidentLinks.TryGetValue(residentQuestLink.Key, out var relatedQuestId) ||
-                        !string.Equals(relatedQuestId, residentQuestLink.Value, StringComparison.OrdinalIgnoreCase))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
-                            IssueSeverity.Error,
-                            "linkedSoulQuestId должен указывать на soul quest, который ссылается обратно на этого resident через relatedAfterlifeResidentId",
-                            code: "guardian_abode_resident_linked_soul_quest_mismatch",
-                            section: "SoulQuests",
-                            expected: $"soul quest with relatedAfterlifeResidentId={residentQuestLink.Key}",
-                            actual: residentQuestLink.Value,
-                            repairHint: "Синхронизируй resident.linkedSoulQuestId и soul quest.relatedAfterlifeResidentId."));
+                        if (!questResidentLinks.TryGetValue(residentQuestLink.Key, out var relatedQuestId) ||
+                            !string.Equals(relatedQuestId, residentQuestLink.Value, StringComparison.OrdinalIgnoreCase))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"{GuardianAbodeResidentState.StatePath}.entries[{residentQuestLink.Key}].linkedSoulQuestId",
+                                IssueSeverity.Error,
+                                "linkedSoulQuestId должен указывать на soul quest, который ссылается обратно на этого resident через relatedAfterlifeResidentId",
+                                code: "guardian_abode_resident_linked_soul_quest_mismatch",
+                                section: "SoulQuests",
+                                expected: $"soul quest with relatedAfterlifeResidentId={residentQuestLink.Key}",
+                                actual: residentQuestLink.Value,
+                                repairHint: "Синхронизируй resident.linkedSoulQuestId и soul quest.relatedAfterlifeResidentId."));
+                        }
                     }
                 }
             }
         }
 
-        foreach (var residentRelicLink in residentGrantedRelicIds)
+        if (hasReadableSoulRelicValidationState)
         {
-            if (!knownSoulRelicIds.Contains(residentRelicLink.Value))
+            ValidateManifestedCompanionSourceRelicIds(
+                manifestedCompanionSourceRelicIds,
+                knownSoulRelicIds,
+                issues);
+
+            foreach (var residentRelicLink in residentGrantedRelicIds)
             {
-                issues.Add(new ValidationIssue(
-                    $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
-                    IssueSeverity.Error,
-                    $"Afterlife resident ссылается на неизвестную soul relic '{residentRelicLink.Value}'",
-                    code: "guardian_abode_resident_unknown_granted_relic_id",
-                    section: "AfterlifeResidents",
-                    expected: "existing relicId from soul_state.json",
-                    actual: residentRelicLink.Value,
-                    repairHint: "Если resident хранит grantedRelicId, соответствующая soul relic должна существовать в soul_state.json."));
-                continue;
+                if (!knownSoulRelicIds.Contains(residentRelicLink.Value))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
+                        IssueSeverity.Error,
+                        $"Afterlife resident ссылается на неизвестную soul relic '{residentRelicLink.Value}'",
+                        code: "guardian_abode_resident_unknown_granted_relic_id",
+                        section: "AfterlifeResidents",
+                        expected: "existing relicId from soul_state.json",
+                        actual: residentRelicLink.Value,
+                        repairHint: "Если resident хранит grantedRelicId, соответствующая soul relic должна существовать в soul_state.json."));
+                    continue;
+                }
+
+                if (relicSourceResidentIds.TryGetValue(residentRelicLink.Value, out var sourceResidentId) &&
+                    !string.Equals(sourceResidentId, residentRelicLink.Key, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
+                        IssueSeverity.Error,
+                        "grantedRelicId указывает на реликвию, привязанную к другому resident",
+                        code: "guardian_abode_resident_granted_relic_resident_mismatch",
+                        section: "AfterlifeResidents",
+                        expected: residentRelicLink.Key,
+                        actual: sourceResidentId,
+                        repairHint: "Синхронизируй resident.grantedRelicId с sourceResidentId внутри companionSeed реликвии связи."));
+                }
             }
 
-            if (relicSourceResidentIds.TryGetValue(residentRelicLink.Value, out var sourceResidentId) &&
-                !string.Equals(sourceResidentId, residentRelicLink.Key, StringComparison.OrdinalIgnoreCase))
+            if (canValidateResidentLinkedCrossReferences)
             {
-                issues.Add(new ValidationIssue(
-                    $"{GuardianAbodeResidentState.StatePath}.entries[{residentRelicLink.Key}].grantedRelicId",
-                    IssueSeverity.Error,
-                    "grantedRelicId указывает на реликвию, привязанную к другому resident",
-                    code: "guardian_abode_resident_granted_relic_resident_mismatch",
-                    section: "AfterlifeResidents",
-                    expected: residentRelicLink.Key,
-                    actual: sourceResidentId,
-                    repairHint: "Синхронизируй resident.grantedRelicId с sourceResidentId внутри companionSeed реликвии связи."));
+                foreach (var relicResidentLink in relicSourceResidentIds)
+                {
+                    if (knownResidentIds.Contains(relicResidentLink.Value))
+                        continue;
+
+                    issues.Add(new ValidationIssue(
+                        $"game_state/meta/soul_state.json.soulRelics[{relicResidentLink.Key}].companionSeed.sourceResidentId",
+                        IssueSeverity.Error,
+                        $"Soul Relic ссылается на неизвестного afterlife resident '{relicResidentLink.Value}'",
+                        code: "companion_echo_unknown_source_resident_id",
+                        section: "AfterlifeResidents",
+                        expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
+                        actual: relicResidentLink.Value,
+                        repairHint: "Для companionSeed.sourceResidentId используй существующий residentId из guardian_abode_residents.json."));
+                }
             }
         }
 
-        foreach (var relicResidentLink in relicSourceResidentIds)
+        if (canValidateSkippedRivalArcLinks)
+            await ValidateSkippedRivalWorldEventRelatedRivalArcLinksAsync(issues, skippedRivalKnownArcIds);
+    }
+
+
+    private async Task<(bool HasReadableState, HashSet<string> KnownSoulRelicIds, Dictionary<string, string> RelicSourceResidentIds)>
+        ReadCurrentSoulRelicResidentValidationStateAsync(List<ValidationIssue> issues)
+    {
+        var knownSoulRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var relicSourceResidentIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var soulState = await TryReadCurrentSoulRelicResidentValidationDocumentAsync();
+        switch (soulState.Kind)
         {
-            if (knownResidentIds.Contains(relicResidentLink.Value))
+            case CurrentOwnerStateReadKind.MissingOrWhitespace:
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "Afterlife resident validation требует current soul_state.json и не может проверять resident/relic cross-references без current soul state.",
+                    code: "afterlife_resident_invalid_current_soul_state",
+                    section: "AfterlifeResidents",
+                    expected: "readable current soul_state.json",
+                    actual: "current soul_state.json is missing",
+                    repairHint: "Восстанови current soul_state.json перед validation resident.grantedRelicId, companionSeed и manifested companion cross-references."));
+                return (false, knownSoulRelicIds, relicSourceResidentIds);
+            case CurrentOwnerStateReadKind.UnreadableJson:
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "Afterlife resident validation требует readable current soul_state.json и не может проверять resident/relic cross-references поверх malformed current soul state.",
+                    code: "afterlife_resident_invalid_current_soul_state",
+                    section: "AfterlifeResidents",
+                    expected: "readable current soul_state.json",
+                    actual: soulState.Actual ?? "current soul_state.json unreadable or malformed",
+                    repairHint: "Сделай current soul_state.json корректным JSON перед validation resident.grantedRelicId, companionSeed и manifested companion cross-references."));
+                soulState.Document?.Dispose();
+                return (false, knownSoulRelicIds, relicSourceResidentIds);
+            case CurrentOwnerStateReadKind.NonObjectRoot:
+            case CurrentOwnerStateReadKind.ContractInvalidTopLevel:
+            case CurrentOwnerStateReadKind.InvalidCollectionShape:
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "Afterlife resident validation требует contract-valid current soul_state.json и не может проверять resident/relic cross-references поверх broken current soul state.",
+                    code: "afterlife_resident_invalid_current_soul_state",
+                    section: "AfterlifeResidents",
+                    expected: "readable lifecycle-compatible current soul_state.json with canonical policy-sensitive roots/transients and canonical soulRelics equipped/stored arrays when present",
+                    actual: soulState.Actual ?? "current soul_state.json violates resident/relic validation contract",
+                    repairHint: "Сделай current soul_state.json корректным lifecycle-compatible object-root state. Исправь malformed sibling roots/transients и, если присутствует soulRelics, используй canonical equipped/stored arrays и fully canonical companion/imprint relic payloads перед validation resident.grantedRelicId, companionSeed и manifested companion cross-references."));
+                soulState.Document?.Dispose();
+                return (false, knownSoulRelicIds, relicSourceResidentIds);
+            case CurrentOwnerStateReadKind.ReadableWithArrayCollection:
+            case CurrentOwnerStateReadKind.ReadableButNoRelevantCollection:
+                break;
+            default:
+                soulState.Document?.Dispose();
+                return (false, knownSoulRelicIds, relicSourceResidentIds);
+        }
+
+        using (soulState.Document)
+        {
+            if (soulState.Document is not null)
+            {
+                CollectSoulRelicResidentValidationState(
+                    soulState.Document.RootElement,
+                    knownSoulRelicIds,
+                    relicSourceResidentIds);
+            }
+        }
+
+        return (true, knownSoulRelicIds, relicSourceResidentIds);
+    }
+
+    private async Task<CurrentOwnerStateReadResult> TryReadCurrentSoulRelicResidentValidationDocumentAsync()
+    {
+        var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulStateJson))
+            return new(CurrentOwnerStateReadKind.MissingOrWhitespace, null, null, default, null);
+
+        JsonDocument soulStateDoc;
+        try
+        {
+            soulStateDoc = JsonDocument.Parse(soulStateJson);
+        }
+        catch
+        {
+            return new(CurrentOwnerStateReadKind.UnreadableJson, null, null, default, "current soul_state.json unreadable or malformed");
+        }
+
+        if (soulStateDoc.RootElement.ValueKind != JsonValueKind.Object)
+        {
+            return new(
+                CurrentOwnerStateReadKind.NonObjectRoot,
+                soulStateDoc,
+                null,
+                default,
+                $"current soul_state.json root is {soulStateDoc.RootElement.ValueKind}");
+        }
+
+        JsonObject? soulStateRootNode;
+        try
+        {
+            soulStateRootNode = JsonNode.Parse(soulStateJson) as JsonObject;
+        }
+        catch
+        {
+            soulStateRootNode = null;
+        }
+
+        if (soulStateRootNode == null)
+        {
+            soulStateDoc.Dispose();
+            return new(CurrentOwnerStateReadKind.UnreadableJson, null, null, default, "current soul_state.json unreadable or malformed");
+        }
+
+        var hasCanonicalTriggerLifeEnd = HasLifecycleAuthorizedCurrentTriggerLifeEndSync();
+
+        if (GuardianPolicyContracts.TryDescribeInvalidPolicySensitiveReadableSoulStateRoot(
+                soulStateRootNode,
+                hasCanonicalTriggerLifeEnd,
+                out var invalidSoulStateFailure))
+        {
+            return new(
+                CurrentOwnerStateReadKind.InvalidCollectionShape,
+                soulStateDoc,
+                "soulRelics",
+                default,
+                invalidSoulStateFailure);
+        }
+
+        if (soulStateDoc.RootElement.TryGetProperty("soulRelics", out _))
+            return new(CurrentOwnerStateReadKind.ReadableWithArrayCollection, soulStateDoc, "soulRelics", default, null);
+
+        return new(CurrentOwnerStateReadKind.ReadableButNoRelevantCollection, soulStateDoc, null, default, null);
+    }
+
+    private static readonly HashSet<string> ResidentValidationAllowedTopLevelKeys = new(StringComparer.OrdinalIgnoreCase)
+    {
+        GuardianAbodeResidentState.UpdateProperty,
+        GuardianAbodeResidentState.EntriesProperty,
+        GuardianAbodeResidentState.UpdateRosterReceiptsProperty,
+        GuardianAbodeResidentState.RosterReceiptsProperty,
+        GuardianAbodeResidentState.UpdateInteractionReceiptsProperty,
+        GuardianAbodeResidentState.InteractionReceiptsProperty,
+        GuardianAbodeResidentState.UpdateTransferReceiptsProperty,
+        GuardianAbodeResidentState.TransferReceiptsProperty,
+        GuardianAbodeResidentState.UpdateHistoryLogProperty,
+        GuardianAbodeResidentState.HistoryLogProperty,
+        GuardianAbodeResidentState.UpdateThoughtJournalProperty,
+        GuardianAbodeResidentState.ThoughtJournalProperty,
+        GuardianAbodeResidentState.UpdateInteractionLogProperty,
+        GuardianAbodeResidentState.InteractionLogProperty
+    };
+
+    private static readonly string[] ResidentValidationCollectionNames =
+    {
+        GuardianAbodeResidentState.UpdateProperty,
+        GuardianAbodeResidentState.EntriesProperty,
+        GuardianAbodeResidentState.UpdateRosterReceiptsProperty,
+        GuardianAbodeResidentState.RosterReceiptsProperty,
+        GuardianAbodeResidentState.UpdateInteractionReceiptsProperty,
+        GuardianAbodeResidentState.InteractionReceiptsProperty,
+        GuardianAbodeResidentState.UpdateTransferReceiptsProperty,
+        GuardianAbodeResidentState.TransferReceiptsProperty,
+        GuardianAbodeResidentState.UpdateHistoryLogProperty,
+        GuardianAbodeResidentState.HistoryLogProperty,
+        GuardianAbodeResidentState.UpdateThoughtJournalProperty,
+        GuardianAbodeResidentState.ThoughtJournalProperty,
+        GuardianAbodeResidentState.UpdateInteractionLogProperty,
+        GuardianAbodeResidentState.InteractionLogProperty
+    };
+
+    private static readonly HashSet<string> SoulQuestValidationAllowedTopLevelKeys = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "UpdateSoulQuests",
+        "quests"
+    };
+
+    private static readonly string[] SoulQuestValidationCollectionNames =
+    {
+        "quests",
+        "UpdateSoulQuests"
+    };
+
+    private static readonly HashSet<string> WorldEventValidationAllowedTopLevelKeys = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "worldEventsLog"
+    };
+
+    private static readonly string[] WorldEventValidationCollectionNames =
+    {
+        "worldEventsLog"
+    };
+
+    private static readonly string[] RivalValidationCollectionNames =
+    {
+        "arcs",
+        "UpdateRivalSoulArcs"
+    };
+
+    private static readonly HashSet<string> RivalValidationAllowedTopLevelKeys = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "arcs",
+        "UpdateRivalSoulArcs"
+    };
+
+    private enum CurrentOwnerStateReadKind
+    {
+        MissingOrWhitespace,
+        ReadableWithArrayCollection,
+        ReadableButNoRelevantCollection,
+        UnreadableJson,
+        NonObjectRoot,
+        ContractInvalidTopLevel,
+        InvalidCollectionShape
+    }
+
+    private readonly record struct CurrentOwnerStateReadResult(
+        CurrentOwnerStateReadKind Kind,
+        JsonDocument? Document,
+        string? CollectionName,
+        JsonElement Collection,
+        string? Actual);
+
+    private async Task<CurrentOwnerStateReadResult> TryReadCurrentTopLevelArrayCollectionOwnerStateAsync(
+        string path,
+        HashSet<string> allowedTopLevelKeys,
+        IReadOnlyList<string> preferredCollectionNames,
+        bool allowArrayRoot = false,
+        bool allowReadableButNoRelevantCollection = true)
+    {
+        var currentJson = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(currentJson))
+            return new(CurrentOwnerStateReadKind.MissingOrWhitespace, null, null, default, null);
+
+        JsonDocument currentDoc;
+        try
+        {
+            currentDoc = JsonDocument.Parse(currentJson);
+        }
+        catch
+        {
+            return new(CurrentOwnerStateReadKind.UnreadableJson, null, null, default, $"current {path} unreadable or malformed");
+        }
+
+        if (allowArrayRoot && currentDoc.RootElement.ValueKind == JsonValueKind.Array)
+        {
+            return new(
+                CurrentOwnerStateReadKind.ReadableWithArrayCollection,
+                currentDoc,
+                preferredCollectionNames[0],
+                currentDoc.RootElement,
+                null);
+        }
+
+        if (currentDoc.RootElement.ValueKind != JsonValueKind.Object)
+        {
+            return new(
+                CurrentOwnerStateReadKind.NonObjectRoot,
+                currentDoc,
+                null,
+                default,
+                $"current {path} root is {currentDoc.RootElement.ValueKind}");
+        }
+
+        var visibleProps = currentDoc.RootElement.EnumerateObject()
+            .Where(prop => !prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var unsupportedVisibleProps = visibleProps
+            .Where(prop => !allowedTopLevelKeys.Contains(prop.Name))
+            .Select(prop => prop.Name)
+            .ToList();
+        if (unsupportedVisibleProps.Count > 0)
+        {
+            return new(
+                CurrentOwnerStateReadKind.ContractInvalidTopLevel,
+                currentDoc,
+                null,
+                default,
+                $"unsupported visible top-level keys: {string.Join(", ", unsupportedVisibleProps)}");
+        }
+
+        if (TryGetFirstVisibleAllowedTopLevelKeyWithInvalidArrayShape(
+                currentDoc.RootElement,
+                allowedTopLevelKeys,
+                out var invalidPropName,
+                out var invalidValueKind))
+        {
+            return new(
+                CurrentOwnerStateReadKind.InvalidCollectionShape,
+                currentDoc,
+                invalidPropName,
+                default,
+                $"{invalidPropName} is {invalidValueKind}");
+        }
+
+        foreach (var collectionName in preferredCollectionNames)
+        {
+            if (currentDoc.RootElement.TryGetProperty(collectionName, out var collection) &&
+                collection.ValueKind == JsonValueKind.Array)
+            {
+                return new(
+                    CurrentOwnerStateReadKind.ReadableWithArrayCollection,
+                    currentDoc,
+                    collectionName,
+                    collection,
+                    null);
+            }
+        }
+
+        if (allowReadableButNoRelevantCollection)
+        {
+            return new(
+                CurrentOwnerStateReadKind.ReadableButNoRelevantCollection,
+                currentDoc,
+                null,
+                default,
+                visibleProps.Count == 0
+                    ? null
+                    : $"visible top-level keys: {string.Join(", ", visibleProps.Select(prop => prop.Name))}");
+        }
+
+        return new(
+            CurrentOwnerStateReadKind.ContractInvalidTopLevel,
+            currentDoc,
+            null,
+            default,
+            visibleProps.Count == 0
+                ? "no visible top-level keys"
+                : $"visible top-level keys: {string.Join(", ", visibleProps.Select(prop => prop.Name))}");
+    }
+
+    private async Task<(JsonDocument? Document, bool HasInvalidCurrentState, bool IsMissingCurrentState)> TryReadCurrentResidentValidationDocumentAsync(List<ValidationIssue> issues)
+    {
+        var residentState = await TryReadCurrentTopLevelArrayCollectionOwnerStateAsync(
+            GuardianAbodeResidentState.StatePath,
+            ResidentValidationAllowedTopLevelKeys,
+            ResidentValidationCollectionNames);
+        switch (residentState.Kind)
+        {
+            case CurrentOwnerStateReadKind.MissingOrWhitespace:
+                return (null, false, true);
+            case CurrentOwnerStateReadKind.ReadableWithArrayCollection:
+            case CurrentOwnerStateReadKind.ReadableButNoRelevantCollection:
+                return (residentState.Document, false, false);
+            case CurrentOwnerStateReadKind.UnreadableJson:
+                issues.Add(new ValidationIssue(
+                    GuardianAbodeResidentState.StatePath,
+                    IssueSeverity.Error,
+                    "Afterlife resident validation требует readable current guardian_abode_residents.json и не может проверять resident/relic cross-references поверх malformed current resident state.",
+                    code: "afterlife_resident_invalid_current_resident_state",
+                    section: "AfterlifeResidents",
+                    expected: $"readable current {GuardianAbodeResidentState.StatePath}",
+                    actual: residentState.Actual ?? "current guardian_abode_residents.json unreadable or malformed",
+                    repairHint: "Сделай current guardian_abode_residents.json корректным JSON перед validation resident/receipt/history/relic cross-references."));
+                residentState.Document?.Dispose();
+                return (null, true, false);
+            case CurrentOwnerStateReadKind.InvalidCollectionShape:
+                issues.Add(new ValidationIssue(
+                    GuardianAbodeResidentState.StatePath,
+                    IssueSeverity.Error,
+                    "Afterlife resident validation требует array-shaped canonical resident collections и не может проверять resident/relic cross-references поверх shape-invalid current resident state.",
+                    code: "afterlife_resident_invalid_current_resident_state",
+                    section: "AfterlifeResidents",
+                    expected: $"array-shaped current {GuardianAbodeResidentState.StatePath}.{residentState.CollectionName}",
+                    actual: residentState.Actual ?? "resident collection has invalid shape",
+                    repairHint: "Сохрани canonical resident collections как arrays. Для current guardian_abode_residents.json не используй object/scalar вместо entries, interactionReceipts, historyLog или resident journal arrays."));
+                residentState.Document?.Dispose();
+                return (null, true, false);
+            case CurrentOwnerStateReadKind.ContractInvalidTopLevel:
+                issues.Add(new ValidationIssue(
+                    GuardianAbodeResidentState.StatePath,
+                    IssueSeverity.Error,
+                    "Afterlife resident validation требует current guardian_abode_residents.json с допустимыми top-level resident keys и не может проверять resident/relic cross-references поверх contract-invalid current resident state.",
+                    code: "afterlife_resident_invalid_current_resident_state",
+                    section: "AfterlifeResidents",
+                    expected: $"readable current {GuardianAbodeResidentState.StatePath} object with one of: {string.Join(", ", ResidentValidationAllowedTopLevelKeys.OrderBy(x => x))}",
+                    actual: residentState.Actual ?? "visible top-level keys are not part of resident contract",
+                    repairHint: "Удали посторонние top-level keys и используй canonical resident contract keys вроде entries, interactionReceipts, historyLog или их Update* aliases."));
+                residentState.Document?.Dispose();
+                return (null, true, false);
+            case CurrentOwnerStateReadKind.NonObjectRoot:
+                issues.Add(new ValidationIssue(
+                    GuardianAbodeResidentState.StatePath,
+                    IssueSeverity.Error,
+                    "Afterlife resident validation требует current guardian_abode_residents.json в object-root форме и не может проверять resident/relic cross-references поверх non-object resident state.",
+                    code: "afterlife_resident_invalid_current_resident_state",
+                    section: "AfterlifeResidents",
+                    expected: $"readable current {GuardianAbodeResidentState.StatePath} object",
+                    actual: residentState.Actual ?? "current guardian_abode_residents.json root is not an object",
+                    repairHint: "Сохрани current guardian_abode_residents.json как корректный JSON object перед validation resident/receipt/history/relic cross-references."));
+                residentState.Document?.Dispose();
+                return (null, true, false);
+            default:
+                residentState.Document?.Dispose();
+                return (null, true, false);
+        }
+    }
+
+    private async Task<(JsonDocument? Document, bool HasInvalidCurrentState, bool IsMissingCurrentState)> TryReadCurrentSoulQuestValidationDocumentAsync(List<ValidationIssue> issues)
+    {
+        var soulQuestState = await TryReadCurrentTopLevelArrayCollectionOwnerStateAsync(
+            "game_state/quests/soul_quests.json",
+            SoulQuestValidationAllowedTopLevelKeys,
+            SoulQuestValidationCollectionNames);
+        switch (soulQuestState.Kind)
+        {
+            case CurrentOwnerStateReadKind.MissingOrWhitespace:
+                return (null, false, true);
+            case CurrentOwnerStateReadKind.ReadableWithArrayCollection:
+            case CurrentOwnerStateReadKind.ReadableButNoRelevantCollection:
+                return (soulQuestState.Document, false, false);
+            case CurrentOwnerStateReadKind.UnreadableJson:
+                issues.Add(new ValidationIssue(
+                    "game_state/quests/soul_quests.json",
+                    IssueSeverity.Error,
+                    "Soul quest cross-reference validation требует readable current soul_quests.json и не может проверять resident/arc back-links поверх malformed current soul quest state.",
+                    code: "soul_quest_invalid_current_state",
+                    section: "SoulQuests",
+                    expected: "readable current game_state/quests/soul_quests.json",
+                    actual: soulQuestState.Actual ?? "current soul_quests.json unreadable or malformed",
+                    repairHint: "Сделай current soul_quests.json корректным JSON перед validation relatedRivalArcId, relatedAfterlifeResidentId и linkedSoulQuestId cross-references."));
+                soulQuestState.Document?.Dispose();
+                return (null, true, false);
+            case CurrentOwnerStateReadKind.InvalidCollectionShape:
+                issues.Add(new ValidationIssue(
+                    "game_state/quests/soul_quests.json",
+                    IssueSeverity.Error,
+                    "Soul quest cross-reference validation требует array-shaped canonical soul quest collections и не может проверять resident/arc back-links поверх shape-invalid current soul quest state.",
+                    code: "soul_quest_invalid_current_state",
+                    section: "SoulQuests",
+                    expected: $"array-shaped current game_state/quests/soul_quests.json.{soulQuestState.CollectionName}",
+                    actual: soulQuestState.Actual ?? "soul quest collection has invalid shape",
+                    repairHint: "Сохраняй quests и UpdateSoulQuests как arrays. Не подменяй canonical soul quest collection object/scalar значением."));
+                soulQuestState.Document?.Dispose();
+                return (null, true, false);
+            case CurrentOwnerStateReadKind.ContractInvalidTopLevel:
+                issues.Add(new ValidationIssue(
+                    "game_state/quests/soul_quests.json",
+                    IssueSeverity.Error,
+                    "Soul quest cross-reference validation требует current soul_quests.json с допустимыми top-level quest keys и не может проверять resident/arc back-links поверх contract-invalid current soul quest state.",
+                    code: "soul_quest_invalid_current_state",
+                    section: "SoulQuests",
+                    expected: $"readable current game_state/quests/soul_quests.json object with one of: {string.Join(", ", SoulQuestValidationAllowedTopLevelKeys.OrderBy(x => x))}",
+                    actual: soulQuestState.Actual ?? "visible top-level keys are not part of soul quest contract",
+                    repairHint: "Используй canonical soul quest top-level keys quests или UpdateSoulQuests и убери произвольные aliases."));
+                soulQuestState.Document?.Dispose();
+                return (null, true, false);
+            case CurrentOwnerStateReadKind.NonObjectRoot:
+                issues.Add(new ValidationIssue(
+                    "game_state/quests/soul_quests.json",
+                    IssueSeverity.Error,
+                    "Soul quest cross-reference validation требует current soul_quests.json в object-root форме и не может проверять resident/arc back-links поверх non-object soul quest state.",
+                    code: "soul_quest_invalid_current_state",
+                    section: "SoulQuests",
+                    expected: "readable current game_state/quests/soul_quests.json object",
+                    actual: soulQuestState.Actual ?? "current soul_quests.json root is not an object",
+                    repairHint: "Сохрани current soul_quests.json как корректный JSON object перед validation relatedRivalArcId, relatedAfterlifeResidentId и linkedSoulQuestId cross-references."));
+                soulQuestState.Document?.Dispose();
+                return (null, true, false);
+            default:
+                soulQuestState.Document?.Dispose();
+                return (null, true, false);
+        }
+    }
+
+    private static void AddMissingCurrentResidentValidationIssue(List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            GuardianAbodeResidentState.StatePath,
+            IssueSeverity.Error,
+            "Afterlife resident validation требует current guardian_abode_residents.json и не может проверять resident/relic cross-references без current resident state.",
+            code: "afterlife_resident_invalid_current_resident_state",
+            section: "AfterlifeResidents",
+            expected: $"readable current {GuardianAbodeResidentState.StatePath}",
+            actual: "current guardian_abode_residents.json is missing",
+            repairHint: "Восстанови current guardian_abode_residents.json перед validation resident/receipt/history/relic cross-references."));
+    }
+
+    private static void AddMissingCurrentSoulQuestValidationIssue(List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            "game_state/quests/soul_quests.json",
+            IssueSeverity.Error,
+            "Soul quest cross-reference validation требует current soul_quests.json и не может проверять resident/arc back-links без current soul quest state.",
+            code: "soul_quest_invalid_current_state",
+            section: "SoulQuests",
+            expected: "readable current game_state/quests/soul_quests.json",
+            actual: "current soul_quests.json is missing",
+            repairHint: "Восстанови current soul_quests.json перед validation relatedRivalArcId, relatedAfterlifeResidentId и linkedSoulQuestId cross-references."));
+    }
+
+    private static void AddNonParticipatingCurrentSoulQuestValidationIssue(List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            "game_state/quests/soul_quests.json",
+            IssueSeverity.Error,
+            "Soul quest cross-reference validation требует current soul_quests.json с canonical quests/UpdateSoulQuests collection и не может проверять resident/arc back-links поверх non-participating current quest state.",
+            code: "soul_quest_invalid_current_state",
+            section: "SoulQuests",
+            expected: "current game_state/quests/soul_quests.json with quests or UpdateSoulQuests array",
+            actual: "current soul_quests.json has no canonical quests/UpdateSoulQuests collection",
+            repairHint: "Для authority-relevant soul quest validation передай current soul_quests.json с quests или UpdateSoulQuests array. Не заменяй current quest state пустым object-root without canonical collection."));
+    }
+
+    private async Task<(JsonDocument? Document, JsonElement Collection, string? CollectionName, bool HasInvalidCurrentState, bool IsMissingCurrentState)>
+        TryReadCurrentWorldEventValidationDocumentAsync(
+            List<ValidationIssue> issues,
+            bool requiresBonusClueIssue,
+            bool requiresRivalIssue,
+            bool treatMissingCurrentStateAsInvalid)
+    {
+        var worldEventState = await TryReadCurrentTopLevelArrayCollectionOwnerStateAsync(
+            "game_state/world/world_events.json",
+            WorldEventValidationAllowedTopLevelKeys,
+            WorldEventValidationCollectionNames,
+            allowArrayRoot: true,
+            allowReadableButNoRelevantCollection: true);
+        switch (worldEventState.Kind)
+        {
+            case CurrentOwnerStateReadKind.MissingOrWhitespace:
+                if (treatMissingCurrentStateAsInvalid)
+                {
+                    AddInvalidCurrentWorldEventValidationIssues(
+                        issues,
+                        requiresBonusClueIssue,
+                        requiresRivalIssue,
+                        "current world_events.json missing or empty");
+                    return (null, default, null, requiresBonusClueIssue || requiresRivalIssue, true);
+                }
+
+                return (null, default, null, false, true);
+            case CurrentOwnerStateReadKind.ReadableWithArrayCollection:
+                return (worldEventState.Document, worldEventState.Collection, worldEventState.CollectionName, false, false);
+            case CurrentOwnerStateReadKind.ReadableButNoRelevantCollection:
+                return (worldEventState.Document, default, null, false, false);
+            case CurrentOwnerStateReadKind.UnreadableJson:
+            case CurrentOwnerStateReadKind.NonObjectRoot:
+            case CurrentOwnerStateReadKind.ContractInvalidTopLevel:
+            case CurrentOwnerStateReadKind.InvalidCollectionShape:
+                AddInvalidCurrentWorldEventValidationIssues(
+                    issues,
+                    requiresBonusClueIssue,
+                    requiresRivalIssue,
+                    worldEventState.Actual ?? "current world_events.json is broken");
+                worldEventState.Document?.Dispose();
+                return (null, default, null, requiresBonusClueIssue || requiresRivalIssue, false);
+            default:
+                worldEventState.Document?.Dispose();
+                return (null, default, null, requiresBonusClueIssue || requiresRivalIssue, false);
+        }
+    }
+
+    private static void AddInvalidCurrentWorldEventValidationIssues(
+        List<ValidationIssue> issues,
+        bool requiresBonusClueIssue,
+        bool requiresRivalIssue,
+        string actual)
+    {
+        if (requiresBonusClueIssue)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/world/world_events.json",
+                IssueSeverity.Error,
+                "Rival/world bonus clue validation требует contract-valid current world_events.json и не может доказывать linked lore clue contracts поверх broken current world event state.",
+                code: "world_event_bonus_clue_invalid_current_state",
+                section: "RivalSoulArcs",
+                expected: "readable current world_events.json with worldEventsLog array or array root",
+                actual: actual,
+                repairHint: "Сделай current world_events.json корректным JSON и используй canonical worldEventsLog array перед validation linked world-event bonus clue contracts."));
+        }
+
+        if (requiresRivalIssue)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/world/world_events.json",
+                IssueSeverity.Error,
+                "Rival soul arc validation требует contract-valid current world_events.json и не может проверять linked world-event rivalry contracts поверх broken current world event state.",
+                code: "rival_arc_world_event_invalid_current_state",
+                section: "RivalSoulArcs",
+                expected: "readable current world_events.json with worldEventsLog array or array root",
+                actual: actual,
+                repairHint: "Сделай current world_events.json корректным JSON и используй canonical worldEventsLog array перед validation linked rival world-event contracts."));
+        }
+    }
+
+    private static bool SoulQuestDocumentHasResidentLinkedValidationSurface(JsonDocument? soulQuestDoc)
+    {
+        if (soulQuestDoc is null || soulQuestDoc.RootElement.ValueKind != JsonValueKind.Object)
+            return false;
+
+        if (!TryGetSoulQuestCollection(soulQuestDoc.RootElement, out var quests))
+            return false;
+
+        foreach (var quest in quests.EnumerateArray())
+        {
+            if (!string.IsNullOrWhiteSpace(GetFirstNonEmptyString(quest, "relatedAfterlifeResidentId")))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetSoulQuestCollection(JsonElement root, out JsonElement quests)
+    {
+        if (root.TryGetProperty("quests", out quests) && quests.ValueKind == JsonValueKind.Array)
+            return true;
+
+        if (root.TryGetProperty("UpdateSoulQuests", out quests) && quests.ValueKind == JsonValueKind.Array)
+            return true;
+
+        quests = default;
+        return false;
+    }
+
+    private static bool TryGetWorldEventCollection(JsonElement root, out JsonElement worldEvents, out string? collectionName)
+    {
+        if (root.ValueKind == JsonValueKind.Object &&
+            root.TryGetProperty("worldEventsLog", out worldEvents) &&
+            worldEvents.ValueKind == JsonValueKind.Array)
+        {
+            collectionName = "worldEventsLog";
+            return true;
+        }
+
+        if (root.ValueKind == JsonValueKind.Array)
+        {
+            worldEvents = root;
+            collectionName = "worldEventsLog";
+            return true;
+        }
+
+        worldEvents = default;
+        collectionName = null;
+        return false;
+    }
+
+    private static bool TryGetFirstVisibleAllowedTopLevelKeyWithInvalidArrayShape(
+        JsonElement root,
+        HashSet<string> allowedKeys,
+        out string invalidPropName,
+        out JsonValueKind invalidValueKind)
+    {
+        foreach (var prop in root.EnumerateObject())
+        {
+            if (prop.Name.StartsWith("_", StringComparison.OrdinalIgnoreCase) ||
+                !allowedKeys.Contains(prop.Name))
+            {
+                continue;
+            }
+
+            if (prop.Value.ValueKind == JsonValueKind.Array)
+                continue;
+
+            invalidPropName = prop.Name;
+            invalidValueKind = prop.Value.ValueKind;
+            return true;
+        }
+
+        invalidPropName = string.Empty;
+        invalidValueKind = default;
+        return false;
+    }
+
+    private async Task<bool> HasQuestOwnedSoulQuestValidationDependencyAsync(JsonDocument? soulQuestDoc)
+    {
+        if (SoulQuestDocumentHasQuestOwnedValidationSurface(soulQuestDoc))
+            return true;
+
+        var preTurnSoulQuestJson = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/quests/soul_quests.json");
+        if (string.IsNullOrWhiteSpace(preTurnSoulQuestJson))
+            return false;
+
+        try
+        {
+            using var preTurnSoulQuestDoc = JsonDocument.Parse(preTurnSoulQuestJson);
+            return SoulQuestDocumentHasQuestOwnedValidationSurface(preTurnSoulQuestDoc);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private async Task<bool> HasSkippedRivalSoulQuestValidationDependencyAsync(
+        JsonDocument? soulQuestDoc,
+        bool canValidateRivalArcLinks)
+    {
+        if (SoulQuestDocumentHasQuestOwnedValidationSurface(soulQuestDoc, canValidateRivalArcLinks))
+            return true;
+
+        var preTurnSoulQuestJson = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/quests/soul_quests.json");
+        if (string.IsNullOrWhiteSpace(preTurnSoulQuestJson))
+            return false;
+
+        try
+        {
+            using var preTurnSoulQuestDoc = JsonDocument.Parse(preTurnSoulQuestJson);
+            return SoulQuestDocumentHasQuestOwnedValidationSurface(preTurnSoulQuestDoc, canValidateRivalArcLinks);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private async Task<bool> HasSoulRelicResidentValidationDependencyAsync(
+        bool hasResidentGrantedRelicSurface,
+        bool hasManifestedCompanionSourceRelicSurface)
+    {
+        if (hasResidentGrantedRelicSurface || hasManifestedCompanionSourceRelicSurface)
+            return true;
+
+        return await HasReverseSoulRelicResidentValidationDependencyAsync();
+    }
+
+    private async Task<bool> HasReverseSoulRelicResidentValidationDependencyAsync(bool includeValidatedPreTurnFallback = true)
+    {
+        var currentSoulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (SoulStateMayContainReverseResidentValidationLinks(currentSoulStateJson))
+            return true;
+
+        if (!includeValidatedPreTurnFallback)
+            return false;
+
+        var preTurnSoulStateJson = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json");
+        return SoulStateMayContainReverseResidentValidationLinks(preTurnSoulStateJson);
+    }
+
+    private static bool SoulStateMayContainReverseResidentValidationLinks(string? soulStateJson)
+    {
+        if (string.IsNullOrWhiteSpace(soulStateJson))
+            return false;
+
+        try
+        {
+            using var soulStateDoc = JsonDocument.Parse(soulStateJson);
+            var knownSoulRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var relicSourceResidentIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            CollectSoulRelicResidentValidationState(
+                soulStateDoc.RootElement,
+                knownSoulRelicIds,
+                relicSourceResidentIds);
+            return relicSourceResidentIds.Count > 0;
+        }
+        catch
+        {
+            return RawSoulStateMayContainReverseResidentValidationLinks(soulStateJson);
+        }
+    }
+
+    private static bool RawSoulStateMayContainReverseResidentValidationLinks(string soulStateJson)
+    {
+        var trimmed = soulStateJson.Trim();
+        if (trimmed.Length == 0)
+            return false;
+
+        return (trimmed.Contains("\"soulRelics\"", StringComparison.OrdinalIgnoreCase) &&
+                (trimmed.Contains("\"companionSeed\"", StringComparison.OrdinalIgnoreCase) ||
+                 trimmed.Contains("\"companionS", StringComparison.OrdinalIgnoreCase) ||
+                 trimmed.Contains("\"sourceResidentId\"", StringComparison.OrdinalIgnoreCase) ||
+                 trimmed.Contains("\"sourceRes", StringComparison.OrdinalIgnoreCase))) ||
+               trimmed.Contains("\"sourceResidentId\"", StringComparison.OrdinalIgnoreCase) ||
+               trimmed.Contains("\"sourceRes", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task<HashSet<string>> ReadKnownRivalArcIdsForSkippedRivalLinkValidationAsync()
+    {
+        var preTurnRivalJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(RivalSoulArcService.StatePath);
+        if (string.IsNullOrWhiteSpace(preTurnRivalJson))
+            return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        try
+        {
+            using var preTurnRivalDoc = JsonDocument.Parse(preTurnRivalJson);
+            return CollectKnownRivalArcIds(preTurnRivalDoc.RootElement);
+        }
+        catch
+        {
+            return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        }
+    }
+
+    private static HashSet<string> CollectKnownRivalArcIds(JsonElement root)
+    {
+        var knownArcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (!TryGetRivalArcCollection(root, out var arcs))
+            return knownArcIds;
+
+        foreach (var arc in arcs.EnumerateArray())
+        {
+            var arcId = GetFirstNonEmptyString(arc, "arcId");
+            if (!string.IsNullOrWhiteSpace(arcId))
+                knownArcIds.Add(arcId);
+        }
+
+        return knownArcIds;
+    }
+
+    private static bool TryGetRivalArcCollection(JsonElement root, out JsonElement arcs)
+    {
+        if (root.TryGetProperty("arcs", out arcs) && arcs.ValueKind == JsonValueKind.Array)
+            return true;
+
+        if (root.TryGetProperty("UpdateRivalSoulArcs", out arcs) && arcs.ValueKind == JsonValueKind.Array)
+            return true;
+
+        arcs = default;
+        return false;
+    }
+
+    private Task<CurrentOwnerStateReadResult> TryReadCurrentRivalValidationDocumentAsync()
+    {
+        return TryReadCurrentTopLevelArrayCollectionOwnerStateAsync(
+            RivalSoulArcService.StatePath,
+            RivalValidationAllowedTopLevelKeys,
+            RivalValidationCollectionNames);
+    }
+
+    private static void ValidateWorldEventRelatedRivalArcId(
+        string worldEventCollectionName,
+        int eventIndex,
+        string? relatedArcId,
+        HashSet<string> knownArcIds,
+        List<ValidationIssue> issues)
+    {
+        if (string.IsNullOrWhiteSpace(relatedArcId) || knownArcIds.Contains(relatedArcId))
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"game_state/world/world_events.json.{worldEventCollectionName}[{eventIndex}].relatedRivalArcId",
+            IssueSeverity.Error,
+            $"World event ссылается на неизвестный rival arc '{relatedArcId}'",
+            code: "world_event_unknown_rival_arc_id",
+            section: "RivalSoulArcs",
+            expected: "existing arcId from canonical rival_soul_arcs state",
+            actual: relatedArcId,
+            repairHint: "Если world event является сигналом чужой нити судьбы, используй существующий relatedRivalArcId из game_state/world/rival_soul_arcs.json."));
+    }
+
+    private static void ValidateWorldEventRivalArcLink(
+        string worldEventCollectionName,
+        int eventIndex,
+        JsonElement worldEvent,
+        HashSet<string> knownArcIds,
+        List<ValidationIssue> issues)
+    {
+        var relatedArcId = GetFirstNonEmptyString(worldEvent, "relatedRivalArcId");
+        ValidateWorldEventRelatedRivalArcId(
+            worldEventCollectionName,
+            eventIndex,
+            relatedArcId,
+            knownArcIds,
+            issues);
+
+        if (string.IsNullOrWhiteSpace(relatedArcId))
+            return;
+
+        var eventContext = $"game_state/world/world_events.json.{worldEventCollectionName}[{eventIndex}]";
+        var visibility = GetFirstNonEmptyString(worldEvent, "visibility");
+        if (string.IsNullOrWhiteSpace(visibility))
+        {
+            issues.Add(new ValidationIssue(
+                $"{eventContext}.visibility",
+                IssueSeverity.Error,
+                "World event, связанный с rival soul arc, обязан явно указывать visibility",
+                code: "world_event_rival_arc_missing_visibility",
+                section: "RivalSoulArcs",
+                expected: "Public | Regional | Secret | Faction-Internal | player_known",
+                repairHint: "Для linked rival-thread world event всегда указывай visibility. Используй Public/Regional для обычных новостей, Secret/Faction-Internal для скрытых событий и player_known, если игрок уже добыл эту информацию через игру."));
+            return;
+        }
+
+        if (!IsRecognizedRivalWorldEventVisibility(visibility))
+        {
+            issues.Add(new ValidationIssue(
+                $"{eventContext}.visibility",
+                IssueSeverity.Error,
+                "World event, связанный с rival soul arc, использует неподдерживаемое visibility",
+                code: "world_event_rival_arc_invalid_visibility",
+                section: "RivalSoulArcs",
+                expected: "Public | Regional | Secret | Faction-Internal | player_known",
+                actual: visibility,
+                repairHint: "Для linked rival-thread world event используй только Public, Regional, Secret, Faction-Internal или player_known. Если игрок реально узнал о скрытом событии, переведи его в player_known."));
+        }
+    }
+
+    private async Task ValidateSkippedRivalWorldEventRelatedRivalArcLinksAsync(
+        List<ValidationIssue> issues,
+        HashSet<string> knownArcIds)
+    {
+        if (knownArcIds.Count == 0)
+            return;
+
+        var (worldEventsDoc, worldEvents, worldEventCollectionName, _, _) =
+            await TryReadCurrentWorldEventValidationDocumentAsync(
+                issues,
+                requiresBonusClueIssue: false,
+                requiresRivalIssue: true,
+                treatMissingCurrentStateAsInvalid: false);
+        using (worldEventsDoc)
+        {
+            if (worldEventsDoc is null ||
+                worldEventCollectionName is null ||
+                worldEvents.ValueKind != JsonValueKind.Array)
+            {
+                return;
+            }
+
+            var eventIndex = 0;
+            foreach (var worldEvent in worldEvents.EnumerateArray())
+            {
+                ValidateWorldEventRivalArcLink(
+                    worldEventCollectionName,
+                    eventIndex,
+                    worldEvent,
+                    knownArcIds,
+                    issues);
+                eventIndex++;
+            }
+        }
+    }
+
+    private static void AddInvalidCurrentRivalValidationIssue(List<ValidationIssue> issues, string actual)
+    {
+        issues.Add(new ValidationIssue(
+            RivalSoulArcService.StatePath,
+            IssueSeverity.Error,
+            "Rival soul arc validation требует readable current rival_soul_arcs.json с array-shaped arcs/UpdateRivalSoulArcs и не может доказывать rival-owned cross-reference contracts поверх broken current rival state.",
+            code: "rival_arc_invalid_current_state",
+            section: "RivalSoulArcs",
+            expected: "readable current rival_soul_arcs.json with arcs/UpdateRivalSoulArcs array",
+            actual: actual,
+            repairHint: "Сделай current rival_soul_arcs.json корректным JSON и сохрани arcs/UpdateRivalSoulArcs как массив перед validation rival soul arc contracts и quest/world-event cross-references."));
+    }
+
+    private static bool SoulQuestDocumentHasQuestOwnedValidationSurface(
+        JsonDocument? soulQuestDoc,
+        bool includeRivalArcLinks = true)
+    {
+        if (soulQuestDoc is null || !TryGetSoulQuestCollection(soulQuestDoc.RootElement, out var quests))
+            return false;
+
+        foreach (var quest in quests.EnumerateArray())
+        {
+            if ((includeRivalArcLinks &&
+                 !string.IsNullOrWhiteSpace(GetFirstNonEmptyString(quest, "relatedRivalArcId"))) ||
+                !string.IsNullOrWhiteSpace(GetFirstNonEmptyString(quest, "relatedAfterlifeResidentId")))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private async Task<List<(string Context, string SourceRelicId)>> CollectManifestedCompanionSourceRelicValidationSurfaceAsync(
+        List<ValidationIssue> issues)
+    {
+        var manifestedCompanionSourceRelicIds = new List<(string Context, string SourceRelicId)>();
+        var npcCoreJson = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+        if (string.IsNullOrWhiteSpace(npcCoreJson))
+            return manifestedCompanionSourceRelicIds;
+
+        var npcState = await TryReadCurrentTopLevelArrayCollectionOwnerStateAsync(
+            "game_state/npcs/npc_core.json",
+            GuardianPolicyContracts.NpcCoreLifecycleTopLevelSections,
+            GuardianPolicyContracts.ManifestedCompanionNpcCarrierSections);
+        using var npcDocScope = npcState.Document;
+
+        switch (npcState.Kind)
+        {
+            case CurrentOwnerStateReadKind.MissingOrWhitespace:
+            case CurrentOwnerStateReadKind.ReadableButNoRelevantCollection:
+                return manifestedCompanionSourceRelicIds;
+            case CurrentOwnerStateReadKind.UnreadableJson:
+                if (GuardianPolicyContracts.ProbeManifestedCompanionNpcDependencySurface(npcCoreJson))
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/npcs/npc_core.json",
+                        IssueSeverity.Error,
+                        "Afterlife resident validation требует readable current npc_core.json и не может проверять manifested companion source relic links поверх malformed current NPC state.",
+                        code: "afterlife_resident_invalid_current_npc_state",
+                        section: "AfterlifeResidents",
+                        expected: "readable current npc_core.json",
+                        actual: npcState.Actual ?? "current npc_core.json unreadable or malformed",
+                        repairHint: "Сделай current npc_core.json корректным JSON перед validation manifested companion sourceCompanionRelicId/sourceAfterlifeResidentId cross-references."));
+                }
+
+                return manifestedCompanionSourceRelicIds;
+            case CurrentOwnerStateReadKind.NonObjectRoot:
+                if (GuardianPolicyContracts.ProbeManifestedCompanionNpcDependencySurface(npcCoreJson))
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/npcs/npc_core.json",
+                        IssueSeverity.Error,
+                        "Afterlife resident validation требует readable current npc_core.json и не может проверять manifested companion source relic links поверх non-object current NPC state.",
+                        code: "afterlife_resident_invalid_current_npc_state",
+                        section: "AfterlifeResidents",
+                        expected: "readable current npc_core.json object",
+                        actual: npcState.Actual ?? "current npc_core.json root is not an object",
+                        repairHint: "Сохрани current npc_core.json как корректный JSON object перед validation manifested companion sourceCompanionRelicId/sourceAfterlifeResidentId cross-references."));
+                }
+
+                return manifestedCompanionSourceRelicIds;
+            case CurrentOwnerStateReadKind.ContractInvalidTopLevel:
+                if (GuardianPolicyContracts.ProbeManifestedCompanionNpcDependencySurface(npcCoreJson))
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/npcs/npc_core.json",
+                        IssueSeverity.Error,
+                        "Afterlife resident validation требует current npc_core.json с допустимыми top-level NPC sections и не может проверять manifested companion source relic links поверх contract-invalid current NPC state.",
+                        code: "afterlife_resident_invalid_current_npc_state",
+                        section: "AfterlifeResidents",
+                        expected: $"readable current game_state/npcs/npc_core.json object with one of: {string.Join(", ", GuardianPolicyContracts.NpcCoreLifecycleTopLevelSections.OrderBy(x => x))}",
+                        actual: npcState.Actual ?? "visible top-level keys are not part of NPC companion contract",
+                        repairHint: $"Используй lifecycle-approved npc_core top-level keys {string.Join(", ", GuardianPolicyContracts.NpcCoreLifecycleTopLevelSections.OrderBy(x => x))} и убери неподдерживаемые top-level keys. Companion-carrying NPC objects записывай только в {string.Join("/", GuardianPolicyContracts.ManifestedCompanionNpcCarrierSections)}."));
+                }
+
+                return manifestedCompanionSourceRelicIds;
+            case CurrentOwnerStateReadKind.InvalidCollectionShape:
+                if (GuardianPolicyContracts.ProbeManifestedCompanionNpcDependencySurface(npcCoreJson))
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/npcs/npc_core.json",
+                        IssueSeverity.Error,
+                        "Afterlife resident validation требует array-shaped NPC collections и не может проверять manifested companion source relic links поверх shape-invalid current NPC state.",
+                        code: "afterlife_resident_invalid_current_npc_state",
+                        section: "AfterlifeResidents",
+                        expected: $"array-shaped current game_state/npcs/npc_core.json.{npcState.CollectionName}",
+                        actual: npcState.Actual ?? "NPC collection has invalid shape",
+                        repairHint: $"Сохрани lifecycle-approved npc_core top-level sections как arrays. Companion-carrying NPC objects держи только в {string.Join("/", GuardianPolicyContracts.ManifestedCompanionNpcCarrierSections)}; rename payload и trade receipt updates остаются отдельными lifecycle-approved arrays."));
+                }
+
+                return manifestedCompanionSourceRelicIds;
+            case CurrentOwnerStateReadKind.ReadableWithArrayCollection:
+                break;
+            default:
+                return manifestedCompanionSourceRelicIds;
+        }
+
+        if (npcState.Document is null)
+            return manifestedCompanionSourceRelicIds;
+
+        var seenRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var npcCollectionName in GuardianPolicyContracts.ManifestedCompanionNpcCarrierSections)
+        {
+            if (!npcState.Document.RootElement.TryGetProperty(npcCollectionName, out var npcs) || npcs.ValueKind != JsonValueKind.Array)
+                continue;
+
+            var npcIndex = 0;
+            foreach (var npc in npcs.EnumerateArray())
+            {
+                var npcContext = $"game_state/npcs/npc_core.json.{npcCollectionName}[{npcIndex++}]";
+                var sourceRelicId = GetFirstNonEmptyString(npc, "sourceCompanionRelicId");
+                var sourceResidentId = GetFirstNonEmptyString(npc, "sourceAfterlifeResidentId");
+                var sourceImprintId = GetFirstNonEmptyString(npc, "sourceSoulImprintId");
+
+                if ((!string.IsNullOrWhiteSpace(sourceResidentId) || !string.IsNullOrWhiteSpace(sourceImprintId)) &&
+                    string.IsNullOrWhiteSpace(sourceRelicId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{npcContext}.sourceCompanionRelicId",
+                        IssueSeverity.Error,
+                        "Manifested companion NPC должен хранить sourceCompanionRelicId для однозначного closure",
+                        code: "manifested_companion_missing_source_relic_id",
+                        section: "AfterlifeResidents",
+                        repairHint: "Когда companion manifestation fully materializes mortal NPC, всегда записывай sourceCompanionRelicId вместе с sourceAfterlifeResidentId/sourceSoulImprintId."));
+                }
+
+                if (!string.IsNullOrWhiteSpace(sourceRelicId) && !seenRelicIds.Add(sourceRelicId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{npcContext}.sourceCompanionRelicId",
+                        IssueSeverity.Error,
+                        "Несколько manifested NPC не должны делить один sourceCompanionRelicId",
+                        code: "manifested_companion_duplicate_source_relic_id",
+                        section: "AfterlifeResidents",
+                        expected: "unique sourceCompanionRelicId",
+                        actual: sourceRelicId,
+                        repairHint: "Один companion-carrying relic должен materialize максимум один mortal companion path/NPC."));
+                }
+
+                if (!string.IsNullOrWhiteSpace(sourceRelicId))
+                    manifestedCompanionSourceRelicIds.Add((npcContext, sourceRelicId));
+            }
+        }
+
+        return manifestedCompanionSourceRelicIds;
+    }
+
+    private static void ValidateManifestedCompanionSourceRelicIds(
+        IEnumerable<(string Context, string SourceRelicId)> manifestedCompanionSourceRelicIds,
+        HashSet<string> knownSoulRelicIds,
+        List<ValidationIssue> issues)
+    {
+        foreach (var (npcContext, sourceRelicId) in manifestedCompanionSourceRelicIds)
+        {
+            if (knownSoulRelicIds.Contains(sourceRelicId))
                 continue;
 
             issues.Add(new ValidationIssue(
-                $"game_state/meta/soul_state.json.soulRelics[{relicResidentLink.Key}].companionSeed.sourceResidentId",
+                $"{npcContext}.sourceCompanionRelicId",
                 IssueSeverity.Error,
-                $"Soul Relic ссылается на неизвестного afterlife resident '{relicResidentLink.Value}'",
-                code: "companion_echo_unknown_source_resident_id",
+                $"Manifested companion NPC ссылается на неизвестную soul relic '{sourceRelicId}'",
+                code: "manifested_companion_unknown_source_relic_id",
                 section: "AfterlifeResidents",
-                expected: $"existing residentId from {GuardianAbodeResidentState.StatePath}",
-                actual: relicResidentLink.Value,
-                repairHint: "Для companionSeed.sourceResidentId используй существующий residentId из guardian_abode_residents.json."));
+                expected: "existing relicId from soul_state.json",
+                actual: sourceRelicId,
+                repairHint: "Для sourceCompanionRelicId используй реальную экипированную или хранимую soul relic из soul_state.json."));
+        }
+    }
+
+    private static void CollectSoulRelicResidentValidationState(
+        JsonElement soulStateRoot,
+        HashSet<string> knownSoulRelicIds,
+        Dictionary<string, string> relicSourceResidentIds)
+    {
+        if (soulStateRoot.ValueKind != JsonValueKind.Object ||
+            !soulStateRoot.TryGetProperty("soulRelics", out var soulRelics))
+        {
+            return;
+        }
+
+        IEnumerable<JsonElement> EnumerateRelics()
+        {
+            if (soulRelics.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var relic in soulRelics.EnumerateArray())
+                    yield return relic;
+                yield break;
+            }
+
+            if (soulRelics.ValueKind != JsonValueKind.Object)
+                yield break;
+
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (!soulRelics.TryGetProperty(collectionName, out var collection) || collection.ValueKind != JsonValueKind.Array)
+                    continue;
+
+                foreach (var relic in collection.EnumerateArray())
+                    yield return relic;
+            }
+        }
+
+        foreach (var relic in EnumerateRelics())
+        {
+            if (relic.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var relicId = GetFirstNonEmptyString(relic, "relicId", "id");
+            if (!string.IsNullOrWhiteSpace(relicId))
+                knownSoulRelicIds.Add(relicId);
+
+            if (relic.TryGetProperty("companionSeed", out var companionSeed) && companionSeed.ValueKind == JsonValueKind.Object)
+            {
+                var sourceResidentId = GetFirstNonEmptyString(companionSeed, "sourceResidentId");
+                if (!string.IsNullOrWhiteSpace(relicId) && !string.IsNullOrWhiteSpace(sourceResidentId))
+                    relicSourceResidentIds[relicId] = sourceResidentId;
+            }
         }
     }
 
@@ -1825,6 +2995,7 @@ public partial class ValidationService
         if (CanonicalStateNormalizer.TryResolveGuardianProjectAuthoritySoulContext(
                 currentSoulJson,
                 preTurnSoulJson,
+                ReadCurrentTrackedFileSync("game_state/control/life_transitions.json"),
                 currentTurn,
                 new GuardianProjectSoulContextRequirements(
                     RequiresCurrentIncarnation: true,

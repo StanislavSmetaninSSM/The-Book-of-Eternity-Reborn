@@ -6,6 +6,10 @@
     {
       "source": "shared/guardians.json",
       "target": "game_state/meta/guardians.json"
+    },
+    {
+      "source": "shared/world_events.json",
+      "target": "game_state/world/world_events.json"
     }
   ],
   "broken": [

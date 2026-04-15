@@ -428,19 +428,7 @@ internal static class ActorSocialInteractionRequestState
         if (npcRoot == null || string.IsNullOrWhiteSpace(npcId))
             return false;
 
-        foreach (var propertyName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
-        {
-            if (npcRoot[propertyName] is not JsonArray npcs)
-                continue;
-
-            if (npcs.OfType<JsonObject>().Any(npc =>
-                    string.Equals(GetNodeString(npc["NPCId"]) ?? GetNodeString(npc["npcId"]) ?? GetNodeString(npc["id"]), npcId, StringComparison.OrdinalIgnoreCase)))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return GuardianPolicyContracts.ContainsCanonicalNpcObject(npcRoot, npcId);
     }
 
     private static bool IsAfterlifeRealm(string? currentRealm) =>

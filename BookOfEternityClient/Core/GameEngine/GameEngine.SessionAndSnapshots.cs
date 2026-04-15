@@ -19,9 +19,12 @@ public partial class GameEngine
     {
         GuardianAbodeOfferingState.PendingRequestPath,
         GuardianTradeRequestState.PendingRequestPath,
+        NpcTradeRequestState.PendingRequestPath,
         GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
         GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+        GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
         ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+        ActorSocialInteractionRequestState.PendingNpcRequestPath,
         AfterlifeArchiveActionState.ConsultationRequestPath,
         AfterlifeArchiveActionState.ProjectFuelRequestPath
     };
@@ -144,12 +147,14 @@ public partial class GameEngine
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var clientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync();
-        foreach (var file in CanonicalStateNormalizer.CanonicalAccumulatedFiles)
-        {
-            await SnapshotFileIfPresentAsync(file, files, snapshotHashes);
-        }
+        var rollbackBaselineFiles = rollbackSnapshot?.BaselineFiles is { Count: > 0 }
+            ? new HashSet<string>(rollbackSnapshot.BaselineFiles, StringComparer.OrdinalIgnoreCase)
+            : new HashSet<string>(EnumerateRollbackTrackedFiles(), StringComparer.OrdinalIgnoreCase);
 
         foreach (var file in GuardianPolicySnapshotRequestFiles)
+            rollbackBaselineFiles.Add(file);
+
+        foreach (var file in rollbackBaselineFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
         {
             await SnapshotFileIfPresentAsync(file, files, snapshotHashes);
         }
@@ -168,13 +173,43 @@ public partial class GameEngine
             RollbackBackups = rollbackSnapshot != null
                 ? new Dictionary<string, string>(rollbackSnapshot.BackupFiles, StringComparer.OrdinalIgnoreCase)
                 : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
-            RollbackBaselineFiles = rollbackSnapshot?.BaselineFiles.ToList() ?? new List<string>(),
+            RollbackBaselineFiles = rollbackBaselineFiles
+                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+                .ToList(),
             SourceLabel = sourceLabel
         };
         manifest.ManifestPayloadHash = ComputePendingTurnManifestPayloadHash(manifest);
+        var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
+            manifest,
+            SnapshotHashJsonOpts,
+            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
+            static snapshotManifest => snapshotManifest.SessionId,
+            static snapshotManifest => snapshotManifest.RequestId,
+            static snapshotManifest => snapshotManifest.TurnNumber,
+            static snapshotManifest => snapshotManifest.Files,
+            static snapshotManifest => snapshotManifest.SnapshotFileHashes,
+            static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
+            static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
+            static snapshotManifest => snapshotManifest.SourceLabel,
+            static snapshotManifest => snapshotManifest.RollbackBackups,
+            ReadRelativeFileFromWorkspace);
 
-        await _fs.WriteFileAtomicAsync(PendingTurnSnapshotManifestPath,
-            JsonSerializer.Serialize(manifest, JsonOpts));
+        try
+        {
+            await _fs.WriteFileAtomicAsync(
+                PendingTurnSnapshotManifestPath,
+                JsonSerializer.Serialize(manifest, JsonOpts));
+            await _fs.WriteFileAtomicAsync(PendingTurnSnapshotAuthority.AuthorityPath, authorityJson);
+        }
+        catch
+        {
+            if (_fs.FileExists(PendingTurnSnapshotManifestPath))
+                _fs.DeleteFile(PendingTurnSnapshotManifestPath);
+            if (_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath))
+                _fs.DeleteFile(PendingTurnSnapshotAuthority.AuthorityPath);
+            throw;
+        }
 
         return files;
     }
@@ -215,16 +250,48 @@ public partial class GameEngine
         if (manifest == null)
             return null;
 
-        if (!string.Equals(manifest.SessionId, _gameLoop.SessionId, StringComparison.OrdinalIgnoreCase))
-            return null;
-
         if (manifest.TurnNumber != expectedTurnNumber)
             return null;
 
+        var payload = await LoadValidatedCurrentPendingTurnSnapshotAuthorityPayloadAsync(manifest);
+        if (payload == null)
+            return null;
+
         var canonicalFiles = new HashSet<string>(CanonicalStateNormalizer.CanonicalAccumulatedFiles, StringComparer.OrdinalIgnoreCase);
-        return manifest.Files
-            .Where(kv => canonicalFiles.Contains(kv.Key) && _fs.FileExists(kv.Value))
-            .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase);
+        if (!PendingTurnSnapshotAuthority.HasValidatedSnapshotCoverage(
+                payload,
+                static authorityPayload => authorityPayload.Files,
+                static authorityPayload => authorityPayload.SnapshotFileHashes,
+                canonicalFiles,
+                out _,
+                static authorityPayload => authorityPayload.RollbackBaselineFiles,
+                requireRollbackBaselineRegistration: true))
+        {
+            return null;
+        }
+
+        var snapshot = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var relativePath in canonicalFiles)
+        {
+            if (!payload.Files.TryGetValue(relativePath, out var snapshotPath) ||
+                string.IsNullOrWhiteSpace(snapshotPath) ||
+                !payload.SnapshotFileHashes.TryGetValue(relativePath, out var expectedSnapshotHash) ||
+                string.IsNullOrWhiteSpace(expectedSnapshotHash))
+            {
+                return null;
+            }
+
+            var snapshotContent = await _fs.ReadFileAsync(snapshotPath);
+            if (string.IsNullOrWhiteSpace(snapshotContent) ||
+                !string.Equals(ComputeSha256(snapshotContent), expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            snapshot[relativePath] = snapshotPath;
+        }
+
+        return snapshot.Count == canonicalFiles.Count ? snapshot : null;
     }
 
     private async Task<PendingTurnSnapshotManifest?> LoadPendingTurnSnapshotManifestAsync()
@@ -244,20 +311,110 @@ public partial class GameEngine
         }
     }
 
+    private async Task<PendingTurnSnapshotResolution> ResolveActivePendingTurnSnapshotContextAsync(
+        bool requireCurrentContext = true)
+    {
+        var manifestExists = _fs.FileExists(PendingTurnSnapshotManifestPath);
+        var manifest = await LoadPendingTurnSnapshotManifestAsync();
+        if (manifest == null)
+        {
+            return new PendingTurnSnapshotResolution
+            {
+                Status = manifestExists
+                    ? PendingTurnSnapshotResolutionStatus.Unusable
+                    : PendingTurnSnapshotResolutionStatus.Missing
+            };
+        }
+
+        var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext);
+        return new PendingTurnSnapshotResolution
+        {
+            Status = snapshotContext == null
+                ? PendingTurnSnapshotResolutionStatus.Unusable
+                : PendingTurnSnapshotResolutionStatus.Usable,
+            Manifest = manifest,
+            Context = snapshotContext
+        };
+    }
+
+    private sealed record PendingTurnSnapshotRequestContext(
+        string SessionId,
+        string RequestId,
+        int TurnNumber);
+
+    private async Task<bool> IsCurrentPendingTurnSnapshotAsync(PendingTurnSnapshotManifest manifest)
+    {
+        const string repairRequestPath = "game_state/control/validation_repair_request.json";
+        var repairContext = await ReadPendingTurnSnapshotRequestContextAsync(repairRequestPath);
+        if (DoesPendingTurnRequestContextMatchManifest(manifest, repairContext))
+            return true;
+
+        var turnContext = await ReadPendingTurnSnapshotRequestContextAsync("input/turn_request.json");
+        return DoesPendingTurnRequestContextMatchManifest(manifest, turnContext);
+    }
+
+    private async Task<PendingTurnSnapshotRequestContext?> ReadPendingTurnSnapshotRequestContextAsync(string relativePath)
+    {
+        var json = await _fs.ReadFileAsync(relativePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return null;
+
+            var sessionId = doc.RootElement.TryGetProperty("sessionId", out var sessionIdNode) &&
+                            sessionIdNode.ValueKind == JsonValueKind.String
+                ? sessionIdNode.GetString() ?? string.Empty
+                : string.Empty;
+            var requestId = doc.RootElement.TryGetProperty("requestId", out var requestIdNode) &&
+                            requestIdNode.ValueKind == JsonValueKind.String
+                ? requestIdNode.GetString() ?? string.Empty
+                : string.Empty;
+            var turnNumber = doc.RootElement.TryGetProperty("turnNumber", out var turnNumberNode) &&
+                             turnNumberNode.ValueKind == JsonValueKind.Number &&
+                             turnNumberNode.TryGetInt32(out var parsedTurnNumber)
+                ? parsedTurnNumber
+                : 0;
+
+            return new PendingTurnSnapshotRequestContext(sessionId, requestId, turnNumber);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static bool DoesPendingTurnRequestContextMatchManifest(
+        PendingTurnSnapshotManifest manifest,
+        PendingTurnSnapshotRequestContext? context)
+    {
+        if (context == null)
+            return false;
+
+        if (manifest.TurnNumber != context.TurnNumber)
+            return false;
+
+        if (!PendingTurnSnapshotAuthority.DoesPendingTurnContextIdMatch(manifest.SessionId, context.SessionId))
+            return false;
+
+        return PendingTurnSnapshotAuthority.DoesPendingTurnContextIdMatch(manifest.RequestId, context.RequestId);
+    }
+
     private string ComputePendingTurnManifestPayloadHash(PendingTurnSnapshotManifest manifest)
     {
-        var originalHash = manifest.ManifestPayloadHash;
-        manifest.ManifestPayloadHash = "";
-        var payload = JsonSerializer.Serialize(manifest, SnapshotHashJsonOpts);
-        manifest.ManifestPayloadHash = originalHash;
-        return ComputeSha256(payload);
+        return PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(
+            manifest,
+            SnapshotHashJsonOpts,
+            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash);
     }
 
     private static string ComputeSha256(string content)
     {
-        using var sha = SHA256.Create();
-        var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(content));
-        return Convert.ToHexString(bytes);
+        return PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
 
     private async Task SnapshotFileIfPresentAsync(
@@ -277,28 +434,31 @@ public partial class GameEngine
 
     private async Task CleanupPendingTurnSnapshotAsync()
     {
-        var json = await _fs.ReadFileAsync(PendingTurnSnapshotManifestPath);
-        if (!string.IsNullOrWhiteSpace(json))
+        var manifest = await LoadPendingTurnSnapshotManifestAsync();
+        var payload = await LoadValidatedCurrentPendingTurnSnapshotAuthorityPayloadAsync(
+            manifest,
+            requireCurrentContext: false);
+
+        if (payload != null)
         {
             try
             {
-                var manifest = JsonSerializer.Deserialize<PendingTurnSnapshotManifest>(json, JsonOpts);
-                if (manifest?.Files != null)
+                foreach (var snapshotPath in payload.Files.Values.Distinct(StringComparer.OrdinalIgnoreCase))
                 {
-                    foreach (var snapshotPath in manifest.Files.Values)
-                    {
-                        if (_fs.FileExists(snapshotPath))
-                            _fs.DeleteFile(snapshotPath);
-                    }
+                    if (!IsValidatedPendingSnapshotArtifactPath(snapshotPath))
+                        continue;
+
+                    if (_fs.FileExists(snapshotPath))
+                        _fs.DeleteFile(snapshotPath);
                 }
 
-                if (manifest?.RollbackBackups != null)
+                foreach (var rollbackPath in payload.RollbackBackups.Values.Distinct(StringComparer.OrdinalIgnoreCase))
                 {
-                    foreach (var rollbackPath in manifest.RollbackBackups.Values)
-                    {
-                        if (_fs.FileExists(rollbackPath))
-                            _fs.DeleteFile(rollbackPath);
-                    }
+                    if (!IsValidatedRollbackBackupArtifactPath(rollbackPath))
+                        continue;
+
+                    if (_fs.FileExists(rollbackPath))
+                        _fs.DeleteFile(rollbackPath);
                 }
             }
             catch (Exception ex)
@@ -306,31 +466,141 @@ public partial class GameEngine
                 _logger.LogDebug(ex, "Не удалось очистить pending turn snapshot artifacts.");
             }
         }
+        else
+        {
+            try
+            {
+                var snapshotDirectoryPath = _fs.ResolvePath(PendingTurnSnapshotDirectory);
+                if (Directory.Exists(snapshotDirectoryPath))
+                    Directory.Delete(snapshotDirectoryPath, recursive: true);
+
+                foreach (var rollbackFile in Directory.EnumerateFiles(_fs.GameSessionPath, "*.rollback.*", SearchOption.AllDirectories))
+                {
+                    if (File.Exists(rollbackFile))
+                        File.Delete(rollbackFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Не удалось безопасно очистить fallback pending turn snapshot artifacts.");
+            }
+        }
 
         if (_fs.FileExists(PendingTurnSnapshotManifestPath))
             _fs.DeleteFile(PendingTurnSnapshotManifestPath);
+        if (_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath))
+            _fs.DeleteFile(PendingTurnSnapshotAuthority.AuthorityPath);
     }
 
     private static bool HasRollbackCapability(RollbackSnapshot? snapshot) =>
         snapshot != null && (snapshot.BackupFiles.Count > 0 || snapshot.BaselineFiles.Count > 0);
 
-    private RollbackSnapshot? GetRollbackSnapshot(PendingTurnSnapshotManifest? manifest)
+    private async Task<RollbackSnapshot?> GetValidatedRollbackSnapshotAsync(PendingTurnSnapshotManifest? manifest)
+    {
+        return BuildValidatedRollbackSnapshot(await LoadValidatedPendingTurnSnapshotContextAsync(manifest));
+    }
+
+    private async Task<PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload?> LoadValidatedCurrentPendingTurnSnapshotAuthorityPayloadAsync(
+        PendingTurnSnapshotManifest? manifest,
+        bool requireCurrentContext = true)
+    {
+        return (await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext))?.Payload;
+    }
+
+    private async Task<ValidatedPendingTurnSnapshotContext?> LoadValidatedPendingTurnSnapshotContextAsync(
+        PendingTurnSnapshotManifest? manifest,
+        bool requireCurrentContext = true)
     {
         if (manifest == null)
             return null;
 
+        var authorityJson = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
+        if (!PendingTurnSnapshotAuthority.TryValidateManifestForDestructiveAuthority(
+                manifest,
+                authorityJson,
+                SnapshotHashJsonOpts,
+                static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+                static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
+                static snapshotManifest => snapshotManifest.SessionId,
+                static snapshotManifest => snapshotManifest.RequestId,
+                static snapshotManifest => snapshotManifest.TurnNumber,
+                static snapshotManifest => snapshotManifest.Files,
+                static snapshotManifest => snapshotManifest.SnapshotFileHashes,
+                static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
+                static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
+                static snapshotManifest => snapshotManifest.SourceLabel,
+                static snapshotManifest => snapshotManifest.RollbackBackups,
+                ReadRelativeFileFromWorkspace,
+                out var payload,
+                out _))
+        {
+            return null;
+        }
+
+        if (requireCurrentContext && !await IsCurrentPendingTurnSnapshotAsync(manifest))
+            return null;
+
+        return new ValidatedPendingTurnSnapshotContext
+        {
+            Manifest = manifest,
+            Payload = payload!
+        };
+    }
+
+    private RollbackSnapshot? BuildValidatedRollbackSnapshot(ValidatedPendingTurnSnapshotContext? snapshotContext)
+    {
+        if (snapshotContext == null)
+            return null;
+
+        var payload = snapshotContext.Payload;
         var snapshot = new RollbackSnapshot
         {
-            BackupFiles = manifest.RollbackBackups
+            BackupFiles = payload.RollbackBackups
                 .Where(kv => !string.IsNullOrWhiteSpace(kv.Key) &&
                              !string.IsNullOrWhiteSpace(kv.Value) &&
+                             IsValidatedRollbackBackupArtifactPath(kv.Value) &&
                              _fs.FileExists(kv.Value))
                 .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase),
-            BaselineFiles = new HashSet<string>(manifest.RollbackBaselineFiles ?? Enumerable.Empty<string>(),
+            BackupHashes = payload.RollbackBackupHashes
+                .Where(kv => !string.IsNullOrWhiteSpace(kv.Key) &&
+                             !string.IsNullOrWhiteSpace(kv.Value))
+                .ToDictionary(kv => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase),
+            BaselineFiles = new HashSet<string>(payload.RollbackBaselineFiles,
                 StringComparer.OrdinalIgnoreCase)
         };
 
         return HasRollbackCapability(snapshot) ? snapshot : null;
+    }
+
+    private string? ReadRelativeFileFromWorkspace(string relativePath)
+    {
+        if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
+            return null;
+
+        var fullPath = _fs.ResolvePath(relativePath);
+        if (!File.Exists(fullPath))
+            return null;
+
+        try
+        {
+            return File.ReadAllText(fullPath, Encoding.UTF8);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static bool IsValidatedPendingSnapshotArtifactPath(string relativePath)
+    {
+        return PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath) &&
+               relativePath.StartsWith($"{PendingTurnSnapshotDirectory}/", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsValidatedRollbackBackupArtifactPath(string relativePath)
+    {
+        return PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath) &&
+               relativePath.Contains(".rollback.", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task NormalizePendingRepairArtifactsAsync()
@@ -340,22 +610,30 @@ public partial class GameEngine
         if (!repairRequestExists && !repairReadyExists)
             return;
 
-        var manifest = await LoadPendingTurnSnapshotManifestAsync();
-
-        if (manifest == null)
+        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+        if (pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Missing)
         {
             _logger.LogWarning("Найдены repair-файлы без pending snapshot manifest. Очистка как stale state.");
             await DeleteValidationRepairFilesAsync();
             return;
         }
 
+        if (pendingSnapshot.Status != PendingTurnSnapshotResolutionStatus.Usable || pendingSnapshot.Context == null)
+        {
+            _logger.LogWarning("Найдены repair-файлы с unreadable/invalid validated pending snapshot authority. Очистка как stale state.");
+            await DeleteValidationRepairFilesAsync();
+            return;
+        }
+
+        var snapshotContext = pendingSnapshot.Context;
+
         if (repairReadyExists && !repairRequestExists)
         {
             _logger.LogWarning(
                 "Найден orphaned validation_repair_ready для pending turn(session={Session}, request={Request}, turn={Turn}). Удаление ready-файла без затрагивания основного pending turn state.",
-                manifest.SessionId,
-                manifest.RequestId,
-                manifest.TurnNumber);
+                snapshotContext.SessionId,
+                snapshotContext.RequestId,
+                snapshotContext.TurnNumber);
             await DeleteValidationRepairReadyAsync();
             return;
         }
@@ -366,24 +644,24 @@ public partial class GameEngine
             {
                 _logger.LogWarning(
                     "Найден validation_repair_request без correlated ready/turn_complete.json для pending turn(session={Session}, request={Request}, turn={Turn}). Очистка stale repair artifacts.",
-                    manifest.SessionId,
-                    manifest.RequestId,
-                    manifest.TurnNumber);
+                    snapshotContext.SessionId,
+                    snapshotContext.RequestId,
+                    snapshotContext.TurnNumber);
                 await DeleteValidationRepairFilesAsync();
                 return;
             }
 
             var turnCompleteMetadata = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
             if (turnCompleteMetadata == null ||
-                !string.Equals(turnCompleteMetadata.SessionId, manifest.SessionId, StringComparison.Ordinal) ||
-                !string.Equals(turnCompleteMetadata.RequestId, manifest.RequestId, StringComparison.Ordinal) ||
-                turnCompleteMetadata.TurnNumber != manifest.TurnNumber)
+                !string.Equals(turnCompleteMetadata.SessionId, snapshotContext.SessionId, StringComparison.Ordinal) ||
+                !string.Equals(turnCompleteMetadata.RequestId, snapshotContext.RequestId, StringComparison.Ordinal) ||
+                turnCompleteMetadata.TurnNumber != snapshotContext.TurnNumber)
             {
                 _logger.LogWarning(
                     "Найден validation_repair_request с некоррелированным ready/turn_complete.json. Очистка stale repair artifacts для pending turn(session={Session}, request={Request}, turn={Turn}).",
-                    manifest.SessionId,
-                    manifest.RequestId,
-                    manifest.TurnNumber);
+                    snapshotContext.SessionId,
+                    snapshotContext.RequestId,
+                    snapshotContext.TurnNumber);
                 _fs.DeleteFile("ready/turn_complete.json");
                 await DeleteValidationRepairFilesAsync();
                 return;
@@ -391,9 +669,9 @@ public partial class GameEngine
 
             _logger.LogInformation(
                 "Обнаружен активный repair cycle для pending turn(session={Session}, request={Request}, turn={Turn}). Он будет продолжен через correlated late-response validation.",
-                manifest.SessionId,
-                manifest.RequestId,
-                manifest.TurnNumber);
+                snapshotContext.SessionId,
+                snapshotContext.RequestId,
+                snapshotContext.TurnNumber);
         }
     }
 
@@ -439,21 +717,30 @@ public partial class GameEngine
         await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await _qteSceneService.EnsureRuntimeStateHealthyAsync();
 
-        var manifest = await LoadPendingTurnSnapshotManifestAsync();
+        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
         var hasReadySignals = _fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json");
 
-        if (manifest == null && hasReadySignals)
+        if (pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Missing && hasReadySignals)
         {
             _logger.LogWarning("Найдены ready-сигналы без pending snapshot manifest. Очистка как stale runtime artifacts.");
             ClearReadySignals();
         }
 
-        if (manifest != null)
+        if (pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Unusable && hasReadySignals)
+        {
+            _logger.LogWarning("Найдены ready-сигналы с unreadable/invalid validated pending snapshot authority. Очистка как stale runtime artifacts.");
+            ClearReadySignals();
+        }
+
+        if (pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable)
             return;
 
         if (_fs.FileExists("input/turn_request.json"))
         {
-            _logger.LogWarning("Найден orphaned input/turn_request.json без pending snapshot manifest. Удаление как stale runtime artifact.");
+            _logger.LogWarning(
+                pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Missing
+                    ? "Найден orphaned input/turn_request.json без pending snapshot manifest. Удаление как stale runtime artifact."
+                    : "Найден input/turn_request.json с unreadable/invalid validated pending snapshot authority. Удаление как stale runtime artifact.");
             _fs.DeleteFile("input/turn_request.json");
         }
     }
@@ -563,12 +850,12 @@ public partial class GameEngine
         return true;
     }
 
-    private bool IsMatchingReadySignal(ReadySignalMetadata signal, PendingTurnSnapshotManifest manifest) =>
-        signal.TurnNumber == manifest.TurnNumber &&
+    private bool IsMatchingReadySignal(ReadySignalMetadata signal, ValidatedPendingTurnSnapshotContext snapshotContext) =>
+        signal.TurnNumber == snapshotContext.TurnNumber &&
         !string.IsNullOrWhiteSpace(signal.RequestId) &&
-        string.Equals(signal.RequestId, manifest.RequestId, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(signal.RequestId, snapshotContext.RequestId, StringComparison.OrdinalIgnoreCase) &&
         !string.IsNullOrWhiteSpace(signal.SessionId) &&
-        string.Equals(signal.SessionId, manifest.SessionId, StringComparison.OrdinalIgnoreCase);
+        string.Equals(signal.SessionId, snapshotContext.SessionId, StringComparison.OrdinalIgnoreCase);
 
     private static bool HasValidTerminalSignalContract(string sourceLabel, ReadySignalMetadata signal)
     {
@@ -587,20 +874,20 @@ public partial class GameEngine
     }
 
     private async Task<bool> DiscardMismatchedReadySignalAsync(string sourceLabel, ReadySignalMetadata? signal,
-        PendingTurnSnapshotManifest? manifest, bool preservePendingSnapshot = false)
+        ValidatedPendingTurnSnapshotContext? snapshotContext, bool preservePendingSnapshot = false)
     {
         if (signal == null)
         {
             ClearReadySignals();
             ClearTransientOutputFiles();
-            if (!preservePendingSnapshot && manifest != null)
+            if (!preservePendingSnapshot && snapshotContext != null)
                 await CleanupPendingTurnSnapshotAsync();
 
             AnsiConsole.MarkupLine("[yellow]⚠ Клиент отклонил повреждённый ответ GM и запросил корректную повторную обработку.[/]");
             return true;
         }
 
-        if (manifest == null)
+        if (snapshotContext == null)
         {
             _logger.LogWarning(
                 "Отклонён {SourceLabel}: отсутствует pending snapshot manifest для signal(session={SignalSession}, request={SignalRequest}, turn={SignalTurn})",
@@ -611,14 +898,14 @@ public partial class GameEngine
 
             ClearReadySignals();
             ClearTransientOutputFiles();
-            if (!preservePendingSnapshot && manifest != null)
+            if (!preservePendingSnapshot)
                 await CleanupPendingTurnSnapshotAsync();
 
             AnsiConsole.MarkupLine("[yellow]⚠ Клиент отклонил несогласованный ответ GM и восстановил безопасное ожидание.[/]");
             return true;
         }
 
-        if (IsMatchingReadySignal(signal, manifest))
+        if (IsMatchingReadySignal(signal, snapshotContext))
             return false;
 
         _logger.LogWarning(
@@ -627,9 +914,9 @@ public partial class GameEngine
             signal.SessionId,
             signal.RequestId,
             signal.TurnNumber,
-            manifest.SessionId,
-            manifest.RequestId,
-            manifest.TurnNumber);
+            snapshotContext.SessionId,
+            snapshotContext.RequestId,
+            snapshotContext.TurnNumber);
 
         ClearReadySignals();
         ClearTransientOutputFiles();
@@ -679,6 +966,7 @@ public partial class GameEngine
                 string.Equals(relative, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(relative, "game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(relative, PendingTurnSnapshotManifestPath, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(relative, PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
                 relative.StartsWith($"{PendingTurnSnapshotDirectory}/", StringComparison.OrdinalIgnoreCase) ||
                 relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase))
             {
@@ -737,6 +1025,7 @@ public partial class GameEngine
                     {
                         await _fs.WriteFileAtomicAsync(backupPath, content);
                         snapshot.BackupFiles[file] = backupPath;
+                        snapshot.BackupHashes[file] = ComputeSha256(content);
                     }
                 }
                 catch (Exception ex)
@@ -775,8 +1064,12 @@ public partial class GameEngine
             try
             {
                 var content = await _fs.ReadFileAsync(backup);
-                if (content != null)
+                if (content != null &&
+                    snapshot.BackupHashes.TryGetValue(original, out var expectedHash) &&
+                    string.Equals(ComputeSha256(content), expectedHash, StringComparison.OrdinalIgnoreCase))
+                {
                     await _fs.WriteFileAtomicAsync(original, content);
+                }
             }
             catch (Exception ex)
             {

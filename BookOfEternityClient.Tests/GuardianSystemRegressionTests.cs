@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -104,6 +105,764 @@ public sealed class GuardianSystemRegressionTests : IDisposable
           "notableReturns": []
         }
         """);
+    }
+
+    [Fact]
+    public async Task TriggerLifeEndTurnRewardValidation_ValidRecordLifeCompletionStillRaisesPrematureRewardIssues()
+    {
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_trigger_reward_guard.json",
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Mortal World",
+              "currentIncarnation": 1,
+              "inkFeathers": {
+                "current": 5
+              },
+              "soulRelics": {
+                "equipped": [],
+                "stored": []
+              }
+            }
+            """);
+
+        await WriteRawAsync("game_state/control/life_transitions.json", """
+        {
+          "reason": "Death",
+          "summary": "Смертная жизнь завершена."
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1,
+          "metaStateUpdates": {
+            "lifeTransitions": {
+              "recordLifeCompletion": {
+                "characterFinalState": { "causeOfDeath": "Test" },
+                "majorAchievements": [],
+                "relationshipsFormed": [],
+                "moralChoices": [],
+                "skillsLearned": [],
+                "enlightenmentGained": 0
+              }
+            }
+          },
+          "inkFeathers": {
+            "current": 17
+          },
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "trigger_turn_reward_relic",
+                "name": "Реликвия Слишком Ранней Награды",
+                "rarity": "Epic",
+                "quality": "Pristine"
+              }
+            ]
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "life_trigger_turn_awarded_ink_feathers", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "life_trigger_turn_awarded_soul_relic", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "life_evaluation_reward_delta_unreadable", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TriggerLifeEndTurnRewardValidation_UnreadableDeltaRaisesExplicitIssue()
+    {
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_trigger_unreadable_guard.json",
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Mortal World",
+              "currentIncarnation": 1,
+              "inkFeathers": {
+                "current": 5
+              },
+              "soulRelics": {
+                "equipped": [],
+                "stored": []
+              }
+            }
+            """);
+
+        await WriteRawAsync("game_state/control/life_transitions.json", """
+        {
+          "reason": "Death",
+          "summary": "Смертная жизнь завершена."
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1,
+          "metaStateUpdates": {
+            "lifeTransitions": {
+              "recordLifeCompletion": {
+                "characterFinalState": { "causeOfDeath": "Test" },
+                "majorAchievements": [],
+                "relationshipsFormed": [],
+                "moralChoices": [],
+                "skillsLearned": [],
+                "enlightenmentGained": 0
+              }
+            }
+          },
+          "inkFeathers": {
+            "current": "17"
+          },
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "life_trigger_turn_reward_delta_unreadable", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "life_trigger_turn_awarded_ink_feathers", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "life_trigger_turn_awarded_soul_relic", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task RecordLifeCompletionValidation_SeparateCanonicalControlFileSuppressesMissingTriggerIssue()
+    {
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_record_life_completion_valid_context.json",
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Mortal World",
+              "currentIncarnation": 1
+            }
+            """);
+
+        await WriteRawAsync("game_state/control/life_transitions.json", """
+        {
+          "reason": "Death",
+          "summary": "Смертная жизнь завершена."
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1,
+          "metaStateUpdates": {
+            "lifeTransitions": {
+              "recordLifeCompletion": {
+                "characterFinalState": { "causeOfDeath": "Test" },
+                "majorAchievements": [],
+                "relationshipsFormed": [],
+                "moralChoices": [],
+                "skillsLearned": [],
+                "enlightenmentGained": 0
+              }
+            }
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "life_transition_record_without_trigger_life_end", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task RecordLifeCompletionValidation_MalformedControlFileStillRaisesMissingTriggerIssue()
+    {
+        await WriteRawAsync("game_state/control/life_transitions.json", """
+        {
+          "reason": "Death"
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1,
+          "metaStateUpdates": {
+            "lifeTransitions": {
+              "recordLifeCompletion": {
+                "characterFinalState": { "causeOfDeath": "Test" },
+                "majorAchievements": [],
+                "relationshipsFormed": [],
+                "moralChoices": [],
+                "skillsLearned": [],
+                "enlightenmentGained": 0
+              }
+            }
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "life_transition_record_without_trigger_life_end", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task RecordLifeCompletionValidation_CanonicalTriggerWithAfterlifePreTurnStillRaisesMissingTriggerIssue()
+    {
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_record_life_completion_afterlife.json",
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 1
+            }
+            """);
+
+        await WriteRawAsync("game_state/control/life_transitions.json", """
+        {
+          "reason": "Death",
+          "summary": "Смертная жизнь завершена."
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1,
+          "metaStateUpdates": {
+            "lifeTransitions": {
+              "recordLifeCompletion": {
+                "characterFinalState": { "causeOfDeath": "Test" },
+                "majorAchievements": [],
+                "relationshipsFormed": [],
+                "moralChoices": [],
+                "skillsLearned": [],
+                "enlightenmentGained": 0
+              }
+            }
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "life_transition_invalid_realm", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "life_transition_record_without_trigger_life_end", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TriggerLifeEndValidation_SameTurnCurrentRealmSwitchRaisesExplicitIssue()
+    {
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_trigger_same_turn_realm_switch.json",
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Mortal World",
+              "currentIncarnation": 1
+            }
+            """);
+
+        await WriteRawAsync("game_state/control/life_transitions.json", """
+        {
+          "reason": "Death",
+          "summary": "Смертная жизнь завершена."
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "metaStateUpdates": {
+            "lifeTransitions": {
+              "recordLifeCompletion": {
+                "characterFinalState": { "causeOfDeath": "Test" },
+                "majorAchievements": [],
+                "relationshipsFormed": [],
+                "moralChoices": [],
+                "skillsLearned": [],
+                "enlightenmentGained": 0
+              }
+            }
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "life_transition_current_realm_switched_same_turn", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "life_transition_record_without_trigger_life_end", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "life_trigger_turn_awarded_ink_feathers", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "life_trigger_turn_awarded_soul_relic", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "life_trigger_turn_reward_delta_unreadable", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task LifeEvaluationRewardValidation_InvalidManifestDoesNotTrustRawLifeEvaluationSourceLabel()
+    {
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_life_eval_invalid_manifest.json",
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 1,
+              "inkFeathers": {
+                "current": 5
+              },
+              "soulRelics": {
+                "equipped": [],
+                "stored": []
+              }
+            }
+            """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "inkFeathers": {
+            "current": 5
+          },
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+
+        var manifest = await ReadObjectAsync("game_state/control/pending_turn_snapshot.json");
+        manifest["sourceLabel"] = LifeEvaluationRewardAnalyzer.AutomaticLifeEvaluationSourceLabel;
+        await WriteRawAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString(new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        }));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "life_evaluation_missing_ink_feather_reward", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "life_evaluation_missing_soul_relic_reward", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task AscensionValidation_MissingValidatedSnapshotDoesNotFallbackToCurrentRealm()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "soulProgression": {
+            "progressPercent": 100
+          }
+        }
+        """);
+
+        await WriteRawAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await WriteRawAsync("game_state/control/ascension.json", """
+        {
+          "AscensionTrigger": true,
+          "playerChoice": "Ascension"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "ascension_invalid_validated_snapshot_realm", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "ascension_invalid_realm", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task RealmSegregationValidation_InvalidManifestDoesNotTrustRawSourceLabel()
+    {
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_realm_segregation_source_label.json",
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Mortal World",
+              "currentIncarnation": 1
+            }
+            """);
+
+        var manifest = await ReadObjectAsync("game_state/control/pending_turn_snapshot.json");
+        manifest["sourceLabel"] = LifeEvaluationRewardAnalyzer.AutomaticLifeEvaluationSourceLabel;
+        await WriteRawAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString(new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        }));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "realm_segregation_missing_validated_snapshot_context", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ClientOwnedPendingSnapshotValidation_UnreadableManifestRaisesGenericIntegrityIssue()
+    {
+        await WriteRawAsync("game_state/control/pending_turn_snapshot.json", "{ not valid json");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ClientOwnedPendingSnapshotValidation_HashValidManifestWithoutSnapshotHashesStillRaisesGenericIntegrityIssue()
+    {
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_structural_manifest_guard.json",
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 1
+            }
+            """);
+
+        var manifest = await ReadObjectAsync("game_state/control/pending_turn_snapshot.json");
+        manifest["snapshotFileHashes"] = new JsonObject();
+        manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(manifest);
+        await WriteRawAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            manifest.ToJsonString(new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            }));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ClientOwnedPendingSnapshotValidation_TamperedRollbackBackupInvalidatesValidatedSnapshotAuthority()
+    {
+        const string backupPath = "test_backups/preturn_soul_state_rollback_parity_guard.json";
+
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            backupPath,
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 1
+            }
+            """);
+
+        await WriteRawAsync(
+            backupPath,
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Mortal World",
+              "currentIncarnation": 1
+            }
+            """,
+            syncPendingSnapshotAuthority: false);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task SyncPreTurnQuestBaseline_InvalidManifestDoesNotTrustRawRollbackBackup()
+    {
+        await WritePreTurnTrackedFileAsync(
+            "game_state/quests/regular_quests.json",
+            "test_backups/preturn_regular_quests_sync_invalid_manifest.json",
+            """
+            {
+              "quests": [
+                {
+                  "questId": "quest_from_raw_backup",
+                  "title": "Квест только в raw backup",
+                  "status": "active"
+                }
+              ]
+            }
+            """);
+
+        await WriteRawAsync("game_state/quests/regular_quests.json", """
+        {
+          "UpdateQuests": [
+            {
+              "questId": "quest_from_raw_backup",
+              "status": "completed"
+            }
+          ]
+        }
+        """);
+
+        var manifest = await ReadObjectAsync("game_state/control/pending_turn_snapshot.json");
+        manifest["sourceLabel"] = "tampered sync baseline source";
+        await WriteRawAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString(new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        }));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "quest_update_unknown_existing_quest", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task MortalBootstrapValidation_MissingValidatedWorldLoreBaselineRaisesExplicitIssue()
+    {
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+
+        await WriteRawAsync("lore/current_world/world_setting.json", """
+        {
+          "worldName": "Новый мир",
+          "summary": "Текущее описание мира."
+        }
+        """);
+        await WriteRawAsync("lore/current_world/geography.json", """{ "regions": [] }""");
+        await WriteRawAsync("lore/current_world/history.json", """{ "eras": [] }""");
+        await WriteRawAsync("lore/current_world/cultures.json", """{ "cultures": [] }""");
+        await WriteRawAsync("lore/current_world/threats.json", """{ "threats": [] }""");
+
+        await WritePreTurnTrackedFileAsync(
+            "lore/current_world/world_setting.json",
+            "test_backups/preturn_current_world_world_setting_missing_validated_baseline.json",
+            """
+            {
+              "worldName": "Старый мир",
+              "summary": "Предыдущее описание мира."
+            }
+            """);
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_mortal_bootstrap_soul_state_context.json",
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Mortal World",
+              "currentIncarnation": 1
+            }
+            """);
+
+        var manifest = await ReadObjectAsync("game_state/control/pending_turn_snapshot.json");
+        manifest["sourceLabel"] = "воплощения";
+        await WriteRawAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            manifest.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await RemoveTrackedSnapshotEntryFromCurrentPendingTurnSnapshotAsync("lore/current_world/world_setting.json");
+        await WriteRawAsync("ready/turn_complete.json", """
+        {
+          "sessionId": "test-session",
+          "requestId": "test-request",
+          "turnNumber": 12,
+          "status": "success",
+          "timestamp": "2026-04-14T00:00:00Z",
+          "filesModified": [
+            "lore/current_world/world_setting.json"
+          ]
+        }
+        """, syncPendingSnapshotAuthority: false);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "mortal_bootstrap_missing_validated_world_lore_baseline", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "lore/current_world/world_setting.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task GuardianTradeValidation_OrphanConventionalSnapshotCopyDoesNotCreateStrictEvidence()
+    {
+        await WriteRawAsync(
+            $"game_state/control/pending_turn_snapshot/{GuardianTradeRequestState.PendingRequestPath}",
+            """
+            {
+              "guardianId": "guardian_alpha",
+              "requestedBySoulAtUtc": "2026-04-14T00:00:00Z",
+              "requestedTradeKind": "gift",
+              "requestedTradePayload": {
+                "itemId": "orphan_snapshot_only"
+              }
+            }
+            """,
+            syncPendingSnapshotAuthority: false);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_trade_request_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task MemoryGatesValidation_OrphanRawSnapshotDoesNotTriggerLegacyNotReplaced()
+    {
+        await WriteRawAsync("input/turn_request.json", """
+        {
+          "sessionId": "test-session",
+          "requestId": "test-request",
+          "turnNumber": 12,
+          "playerAction": "[INK_FEATHER_ACTION: MEMORY_GATES] 10 Чернильных Перьев"
+        }
+        """);
+
+        await WriteRawAsync("output/ink_feather_action_result.json", """
+        {
+          "sessionId": "test-session",
+          "requestId": "test-request",
+          "turnNumber": 12,
+          "actionTag": "MEMORY_GATES",
+          "resolutionType": "memoryLegacy",
+          "summary": "Новое наследие выбрано.",
+          "resolved": true,
+          "stateEvidence": {
+            "legacyId": "legacy_current",
+            "legacyType": "startingCharacteristicBonus",
+            "affectedFiles": [
+              "game_state/meta/soul_state.json"
+            ]
+          }
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "pendingMemoryLegacy": {
+            "legacyId": "legacy_current",
+            "legacyType": "startingCharacteristicBonus",
+            "characteristic": "Mind",
+            "bonus": 2,
+            "grantSource": "memoryLegacyGrant",
+            "grantSnapshot": {
+              "legacyId": "legacy_current",
+              "legacyType": "startingCharacteristicBonus",
+              "characteristic": "Mind",
+              "bonus": 2
+            }
+          }
+        }
+        """);
+
+        await WriteRawAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", """
+        {
+          "pendingMemoryLegacy": {
+            "legacyId": "legacy_current",
+            "legacyType": "startingCharacteristicBonus",
+            "characteristic": "Mind",
+            "bonus": 2,
+            "grantSource": "memoryLegacyGrant",
+            "grantSnapshot": {
+              "legacyId": "legacy_current",
+              "legacyType": "startingCharacteristicBonus",
+              "characteristic": "Mind",
+              "bonus": 2
+            }
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "memory_gates_legacy_not_replaced", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -712,6 +1471,12 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         }
         """);
 
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
         await WriteCurrentGuardiansNormalizerBackupAsync("test_backups/preturn_guardians_lore_research_bonus_loop_normalizer_second.json");
         await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
@@ -754,6 +1519,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
     public async Task ValidateGameState_RivalBonusClue_CurrentLifeLoreResearchBudgetRemainsValid()
     {
         await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
 
         var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
         var issues = await validator.ValidateGameStateAsync();
@@ -768,14 +1538,30 @@ public sealed class GuardianSystemRegressionTests : IDisposable
     public async Task ValidateGameState_RivalBonusClue_FutureIncarnationLoreResearchBudgetIsRejected()
     {
         await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 4);
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        Assert.NotNull(trackerJson);
 
-        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateGameStateAsync();
+        using var trackerDoc = JsonDocument.Parse(trackerJson);
+        var lookupMethod = typeof(ValidationService).GetMethod(
+            "ReadGrantedLoreResearchVisibleClueBudget",
+            System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(lookupMethod);
 
-        Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "rival_arc_bonus_clue_inactive_source_project", StringComparison.OrdinalIgnoreCase));
-        Assert.DoesNotContain(issues, issue =>
-            string.Equals(issue.Code, "rival_arc_bonus_clue_budget_exceeded", StringComparison.OrdinalIgnoreCase));
+        var lookupResult = lookupMethod!.Invoke(
+            null,
+            new object?[]
+            {
+                trackerDoc.RootElement.Clone(),
+                "guardian_alpha",
+                "research_major",
+                3
+            });
+        Assert.NotNull(lookupResult);
+
+        var resultType = lookupResult!.GetType();
+        Assert.True((bool)resultType.GetProperty("HasProject")!.GetValue(lookupResult)!);
+        Assert.False((bool)resultType.GetProperty("IsCurrentLifeApplicable")!.GetValue(lookupResult)!);
+        Assert.Equal(0, (int)resultType.GetProperty("GrantedBudget")!.GetValue(lookupResult)!);
     }
 
     [Fact]
@@ -812,6 +1598,248 @@ public sealed class GuardianSystemRegressionTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameState_RivalBonusClue_MissingCurrentWorldEventsProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        _fs.DeleteFile("game_state/world/world_events.json");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_TruncatedRelevantCurrentWorldEventsProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+              "relatedRivalArcId": "arc_hunter"
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_WorldEventOnlyTruncatedBeforeClueMarkersProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteRawAsync(RivalSoulArcService.StatePath, """
+        {
+          "arcs": [
+            {
+              "arcId": "arc_hunter",
+              "scope": "major",
+              "arcType": "hostile_hunt",
+              "status": "rising",
+              "objective": "Find the player",
+              "sponsorGuardianRef": {
+                "mode": "guardianId",
+                "guardianId": "guardian_alpha",
+                "displayName": "Азалия"
+              },
+              "rivalSoul": {
+                "rivalSoulId": "rival_1",
+                "displayNameOrMoniker": "Багровый Охотник",
+                "roleSummary": "Охотник rival-Хранителя",
+                "isKnownToPlayer": true
+              },
+              "playerIntersection": {
+                "targetsPlayerDirectly": true,
+                "stakes": "Опасность для героя",
+                "canBecomeSoulQuest": true,
+                "recommendedCounterQuestTone": "urgent"
+              },
+              "milestones": [
+                { "stage": 1, "title": "Слух", "summary": "О нём говорят", "visibleToPlayer": true }
+              ],
+              "currentStage": 1,
+              "publicSignals": [],
+              "resolution": { "outcome": "ongoing", "notes": "" }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_WorldEventOnlyMissingCurrentWorldEventsProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteRawAsync(RivalSoulArcService.StatePath, """
+        {
+          "arcs": [
+            {
+              "arcId": "arc_hunter",
+              "scope": "major",
+              "arcType": "hostile_hunt",
+              "status": "rising",
+              "objective": "Find the player",
+              "sponsorGuardianRef": {
+                "mode": "guardianId",
+                "guardianId": "guardian_alpha",
+                "displayName": "Азалия"
+              },
+              "rivalSoul": {
+                "rivalSoulId": "rival_1",
+                "displayNameOrMoniker": "Багровый Охотник",
+                "roleSummary": "Охотник rival-Хранителя",
+                "isKnownToPlayer": true
+              },
+              "playerIntersection": {
+                "targetsPlayerDirectly": true,
+                "stakes": "Опасность для героя",
+                "canBecomeSoulQuest": true,
+                "recommendedCounterQuestTone": "urgent"
+              },
+              "milestones": [
+                { "stage": 1, "title": "Слух", "summary": "О нём говорят", "visibleToPlayer": true }
+              ],
+              "currentStage": 1,
+              "publicSignals": [],
+              "resolution": { "outcome": "ongoing", "notes": "" }
+            }
+          ]
+        }
+        """);
+        _fs.DeleteFile("game_state/world/world_events.json");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_WorldEventOnlyBareCurrentWorldEventContainerProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteRawAsync(RivalSoulArcService.StatePath, """
+        {
+          "arcs": [
+            {
+              "arcId": "arc_hunter",
+              "scope": "major",
+              "arcType": "hostile_hunt",
+              "status": "rising",
+              "objective": "Find the player",
+              "sponsorGuardianRef": {
+                "mode": "guardianId",
+                "guardianId": "guardian_alpha",
+                "displayName": "Азалия"
+              },
+              "rivalSoul": {
+                "rivalSoulId": "rival_1",
+                "displayNameOrMoniker": "Багровый Охотник",
+                "roleSummary": "Охотник rival-Хранителя",
+                "isKnownToPlayer": true
+              },
+              "playerIntersection": {
+                "targetsPlayerDirectly": true,
+                "stakes": "Опасность для героя",
+                "canBecomeSoulQuest": true,
+                "recommendedCounterQuestTone": "urgent"
+              },
+              "milestones": [
+                { "stage": 1, "title": "Слух", "summary": "О нём говорят", "visibleToPlayer": true }
+              ],
+              "currentStage": 1,
+              "publicSignals": [],
+              "resolution": { "outcome": "ongoing", "notes": "" }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_WorldEventOnlyPartialRelevantCurrentWorldEventKeyProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteRawAsync(RivalSoulArcService.StatePath, """
+        {
+          "arcs": [
+            {
+              "arcId": "arc_hunter",
+              "scope": "major",
+              "arcType": "hostile_hunt",
+              "status": "rising",
+              "objective": "Find the player",
+              "sponsorGuardianRef": {
+                "mode": "guardianId",
+                "guardianId": "guardian_alpha",
+                "displayName": "Азалия"
+              },
+              "rivalSoul": {
+                "rivalSoulId": "rival_1",
+                "displayNameOrMoniker": "Багровый Охотник",
+                "roleSummary": "Охотник rival-Хранителя",
+                "isKnownToPlayer": true
+              },
+              "playerIntersection": {
+                "targetsPlayerDirectly": true,
+                "stakes": "Опасность для героя",
+                "canBecomeSoulQuest": true,
+                "recommendedCounterQuestTone": "urgent"
+              },
+              "milestones": [
+                { "stage": 1, "title": "Слух", "summary": "О нём говорят", "visibleToPlayer": true }
+              ],
+              "currentStage": 1,
+              "publicSignals": [],
+              "resolution": { "outcome": "ongoing", "notes": "" }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "ev
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameState_RivalBonusClue_MalformedIrrelevantCurrentWorldEventsDoNotProduceIssue()
     {
         await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
@@ -823,6 +1851,1534 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(issue.Code, "rival_arc_world_event_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_NonTrivialMalformedIrrelevantCurrentWorldEventsDoNotProduceIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", "{\"foo\":");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "rival_arc_world_event_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_SchemaShapedMalformedIrrelevantCurrentWorldEventsDoNotProduceIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", "{\"worldEventsLog\":[{\"foo\":");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "rival_arc_world_event_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_MixedPassTruncatedBeforeClueMarkersProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3, visibleRivalClueBudget: 2);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_MixedPassBareCurrentWorldEventContainerProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3, visibleRivalClueBudget: 2);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_MixedPassPartialRelevantCurrentWorldEventKeyProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3, visibleRivalClueBudget: 2);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "related
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_MixedPassExhaustedPublicSignalBudgetMalformedWorldEventsProducesExplicitIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3, visibleRivalClueBudget: 1);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_SponsoredWorldEventsWithoutBonusCluePath_MissingCurrentSoulStateDoesNotProduceIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+
+        const string emptyTrackerJson = """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": []
+        }
+        """;
+        await WriteRawAsync(GuardianProjectState.TrackerPath, emptyTrackerJson);
+        await WritePreTurnTrackedFileAsync(
+            GuardianProjectState.TrackerPath,
+            "test_backups/preturn_tracker_rival_bonus_validation_no_bonus_path.json",
+            emptyTrackerJson);
+        await WriteRawAsync(RivalSoulArcService.StatePath, """
+        {
+          "arcs": [
+            {
+              "arcId": "arc_hunter",
+              "scope": "major",
+              "arcType": "hostile_hunt",
+              "status": "rising",
+              "objective": "Find the player",
+              "sponsorGuardianRef": {
+                "mode": "guardianId",
+                "guardianId": "guardian_alpha",
+                "displayName": "Азалия"
+              },
+              "rivalSoul": {
+                "rivalSoulId": "rival_1",
+                "displayNameOrMoniker": "Багровый Охотник",
+                "roleSummary": "Охотник rival-Хранителя",
+                "isKnownToPlayer": true
+              },
+              "playerIntersection": {
+                "targetsPlayerDirectly": true,
+                "stakes": "Опасность для героя",
+                "canBecomeSoulQuest": true,
+                "recommendedCounterQuestTone": "urgent"
+              },
+              "milestones": [
+                { "stage": 1, "title": "Слух", "summary": "О нём говорят", "visibleToPlayer": true }
+              ],
+              "currentStage": 1,
+              "publicSignals": [],
+              "resolution": { "outcome": "ongoing", "notes": "" }
+            }
+          ]
+        }
+        """);
+        _fs.DeleteFile("game_state/meta/soul_state.json");
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_bonus_clue_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task VisibleRivalCluePreflight_DormantLoreResearchBudgetWithoutCurrentBonusClueSurface_DoesNotRequireCurrentIncarnation()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteDormantRivalBonusClueValidationArcAsync();
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+        var trackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var arcsJson = await _fs.ReadFileAsync(RivalSoulArcService.StatePath);
+        var worldEventsJson = await _fs.ReadFileAsync("game_state/world/world_events.json");
+        Assert.NotNull(trackerJson);
+        Assert.NotNull(arcsJson);
+        var trackerRoot = JsonNode.Parse(trackerJson!)!.AsObject();
+        var arcsRoot = JsonNode.Parse(arcsJson!)!.AsObject();
+
+        Assert.False(CanonicalStateNormalizer.RequiresCurrentIncarnationForVisibleRivalCluePreflight(
+            arcsRoot,
+            trackerRoot,
+            hasCurrentWorldEventsFile: true,
+            worldEventsJson));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_DormantLoreResearchBudgetWithoutCurrentBonusClueSurface_MissingCurrentSoulStateDoesNotProduceIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteDormantRivalBonusClueValidationArcAsync();
+        _fs.DeleteFile("game_state/meta/soul_state.json");
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_bonus_clue_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_RivalBonusClue_DormantLoreResearchBudgetWithoutCurrentBonusClueSurface_MalformedCurrentSoulStateDoesNotProduceIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteDormantRivalBonusClueValidationArcAsync();
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{");
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_bonus_clue_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_ResidentOnlyMalformedCurrentSoulStateDoesNotProduceIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteDormantRivalBonusClueValidationArcAsync();
+        await WriteRawAsync(GuardianAbodeResidentState.StatePath, """
+        {
+          "entries": [
+            {
+              "residentId": "resident_alpha",
+              "guardianId": "guardian_alpha",
+              "abodeId": "abode_alpha",
+              "displayName": "Обычный свидетель"
+            }
+          ],
+          "rosterReceipts": [],
+          "interactionReceipts": [],
+          "historyLog": []
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{");
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_ResidentOnlyMissingCurrentSoulStateDoesNotProduceIssue()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteDormantRivalBonusClueValidationArcAsync();
+        await WriteRawAsync(GuardianAbodeResidentState.StatePath, """
+        {
+          "entries": [
+            {
+              "residentId": "resident_alpha",
+              "guardianId": "guardian_alpha",
+              "abodeId": "abode_alpha",
+              "displayName": "Обычный свидетель"
+            }
+          ],
+          "rosterReceipts": [],
+          "interactionReceipts": [],
+          "historyLog": []
+        }
+        """);
+        _fs.DeleteFile("game_state/meta/soul_state.json");
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MalformedCurrentSoulStateWithGrantedRelicSurfaceReturnsLocalAfterlifeIssue()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Resident cross-ref validation should still stay strict when granted relic links exist.");
+        await WriteSingleAfterlifeResidentAsync("Свидетель реликвии", grantedRelicId: "relic_alpha");
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_ReverseOnlyCanonicalCurrentSoulReportsUnknownSourceResidentId()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Reverse resident-link validation must stay strict even without granted relic surfaces.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_alpha",
+                "name": "Реликвия свидетеля",
+                "rarity": "Rare",
+                "relicType": "companion_echo",
+                "companionSeed": {
+                  "sourceResidentId": "resident_missing",
+                  "sourceGuardianId": "guardian_alpha",
+                  "companionNameHint": "Свидетель",
+                  "originWorldSummary": "Память о старом союзе.",
+                  "futureCompanionPrompt": "Faithful witness"
+                }
+              }
+            ]
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "companion_echo_unknown_source_resident_id", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_CurrentSoulStateWithCrossIncarnationDataStaysReadable()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Lifecycle-compatible crossIncarnationData must not invalidate strict current soul_state resident validation.");
+        await WriteSingleAfterlifeResidentAsync("Свидетель реликвии", grantedRelicId: "relic_alpha");
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "crossIncarnationData": {
+            "legacyThreadId": "thread_alpha"
+          },
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_alpha",
+                "name": "Реликвия свидетеля",
+                "rarity": "Rare"
+              }
+            ]
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_abode_resident_unknown_granted_relic_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MalformedSiblingCurrentSoulRootReturnsLocalAfterlifeIssue()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Malformed sibling canonical roots must make current soul_state unreadable for resident/relic validation.");
+        await WriteSingleAfterlifeResidentAsync("Свидетель реликвии", grantedRelicId: "relic_alpha");
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "inkFeathers": {
+            "current": "5"
+          },
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_alpha",
+                "name": "Реликвия свидетеля",
+                "rarity": "Rare"
+              }
+            ]
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_abode_resident_unknown_granted_relic_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_ReverseOnlyMalformedCurrentSoulStateReturnsLocalAfterlifeIssue()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Malformed current soul state must stay strict on reverse-only resident-link validation.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_afterlife_resident_reverse_only_malformed_current_soul.json",
+            """
+            {
+              "currentIncarnation": 3,
+              "currentRealm": "Mortal World",
+              "soulRelics": [
+                {
+                  "relicId": "relic_alpha",
+                  "companionSeed": {
+                    "sourceResidentId": "resident_alpha"
+                  }
+                }
+              ]
+            }
+            """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_ReverseOnlyMissingCurrentSoulStateReturnsLocalAfterlifeIssue()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Missing current soul state must stay strict on reverse-only resident-link validation.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_afterlife_resident_reverse_only_missing_current_soul.json",
+            """
+            {
+              "currentIncarnation": 3,
+              "currentRealm": "Mortal World",
+              "soulRelics": [
+                {
+                  "relicId": "relic_alpha",
+                  "companionSeed": {
+                    "sourceResidentId": "resident_alpha"
+                  }
+                }
+              ]
+            }
+            """);
+        _fs.DeleteFile("game_state/meta/soul_state.json");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_WhenRivalArcsSkipped_ManifestedCompanionUnknownSourceRelicStillReportsIssue()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Manifested companion source relic lookup must stay strict even when rival arc validation is skipped.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await WriteManifestedCompanionNpcCoreAsync("relic_missing");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "manifested_companion_unknown_source_relic_id", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_WhenRivalArcsSkipped_ManifestedCompanionMalformedCurrentSoulReturnsLocalAfterlifeIssue()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Manifested companion source relic lookup must fail closed on malformed current soul even when rival arcs are absent.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await WriteManifestedCompanionNpcCoreAsync("relic_alpha");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", "{");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_WhenRivalArcsSkipped_ManifestedCompanionMissingCurrentSoulReturnsLocalAfterlifeIssue()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Manifested companion source relic lookup must fail closed on missing current soul even when rival arcs are absent.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await WriteManifestedCompanionNpcCoreAsync("relic_alpha");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        _fs.DeleteFile("game_state/meta/soul_state.json");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MalformedCurrentRivalSoulArcsStillReportsUnknownGrantedRelicId()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Malformed rival arcs must not suppress unrelated granted relic resident validation.");
+        await WriteSingleAfterlifeResidentAsync("Свидетель реликвии", grantedRelicId: "relic_missing");
+        await WriteRawAsync(RivalSoulArcService.StatePath, "{");
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "guardian_abode_resident_unknown_granted_relic_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MalformedCurrentRivalSoulArcsStillReportsUnknownSourceResidentId()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Malformed rival arcs must not suppress reverse resident-link validation.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await WriteRawAsync(RivalSoulArcService.StatePath, "{");
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_alpha",
+                "name": "Реликвия свидетеля",
+                "rarity": "Rare",
+                "relicType": "companion_echo",
+                "companionSeed": {
+                  "sourceResidentId": "resident_missing",
+                  "sourceGuardianId": "guardian_alpha",
+                  "companionNameHint": "Свидетель",
+                  "originWorldSummary": "Память о старом союзе.",
+                  "futureCompanionPrompt": "Faithful witness"
+                }
+              }
+            ]
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "companion_echo_unknown_source_resident_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MalformedCurrentRivalSoulArcsStillReportsManifestedCompanionUnknownSourceRelicId()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Malformed rival arcs must not suppress manifested companion source relic validation.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await WriteManifestedCompanionNpcCoreAsync("relic_missing");
+        await WriteRawAsync(RivalSoulArcService.StatePath, "{");
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "manifested_companion_unknown_source_relic_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MalformedCurrentWorldEventsStillReportsUnknownGrantedRelicId()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteSingleAfterlifeResidentAsync("Свидетель реликвии", grantedRelicId: "relic_missing");
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+              "relatedRivalArcId": "arc_hunter",
+              "bonusClueSourceProjectId": "research_major"
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "guardian_abode_resident_unknown_granted_relic_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MalformedCurrentWorldEvents_DoesNotInvalidateResidentSoulStateProof()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель", grantedRelicId: "relic_alpha");
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": [
+              {
+                "relicId": "relic_alpha",
+                "name": "Реликвия свидетеля",
+                "rarity": "Rare",
+                "relicType": "companion_echo",
+                "companionSeed": {
+                  "sourceResidentId": "resident_missing",
+                  "sourceGuardianId": "guardian_alpha",
+                  "companionNameHint": "Свидетель",
+                  "originWorldSummary": "Память о старом союзе.",
+                  "futureCompanionPrompt": "Faithful witness"
+                }
+              }
+            ]
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "evt_hunter_1",
+              "relatedRivalArcId": "arc_hunter",
+              "bonusClueSourceProjectId": "research_major"
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.FilePath, "game_state/world/world_events.json", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MissingCurrentWorldEventsStillReportsManifestedCompanionUnknownSourceRelicId()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await WriteManifestedCompanionNpcCoreAsync("relic_missing");
+        _fs.DeleteFile("game_state/world/world_events.json");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_bonus_clue_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "manifested_companion_unknown_source_relic_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MalformedCurrentNpcCoreWithUnboundedCarrierDependencyStaysPermissive()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Malformed npc_core with unbounded carrier dependency must stay permissive until a canonical carrier section can be safely bounded.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "NPCsInScene": [
+            {
+              "npcId": "npc_companion_alpha",
+              "sourceAfterlifeResidentId": "resident_alpha",
+              "sourceCompanionRelicId":
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_npc_state", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "npc_contract_invalid_json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MalformedCurrentNpcCoreWithoutManifestedCompanionDependencyDoesNotProduceLocalNpcIssue()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Malformed npc_core without manifested companion source-relic surface must not create false-positive resident issue.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "NPCsInScene": [
+            {
+              "npcId": "npc_ordinary",
+              "foo":
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_npc_state", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "npc_contract_invalid_json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    // Owner-state matrix regressions
+
+    [Theory]
+    [MemberData(nameof(InvalidManifestedCompanionNpcCurrentStateCases))]
+    public async Task ValidateGameState_AfterlifeResidents_CurrentNpcOwnerStateMatrixWithManifestedCompanionDependencyReturnsLocalNpcIssue(CurrentStateCase currentState)
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Manifested companion owner-state matrix must surface local current-NPC issue.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+        await ApplyCurrentStateCaseAsync("game_state/npcs/npc_core.json", currentState);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertContainsIssueCodes(issues, "afterlife_resident_invalid_current_npc_state");
+        AssertDoesNotContainIssueCodes(
+            issues,
+            "manifested_companion_missing_source_relic_id",
+            "manifested_companion_duplicate_source_relic_id",
+            "manifested_companion_unknown_source_relic_id");
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidNonManifestedNpcCurrentStateCases))]
+    public async Task ValidateGameState_AfterlifeResidents_CurrentNpcOwnerStateMatrixWithoutManifestedCompanionDependencyStaysPermissive(CurrentStateCase currentState)
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "NPC owner-state matrix without manifested companion dependency must stay permissive.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+        await ApplyCurrentStateCaseAsync("game_state/npcs/npc_core.json", currentState);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertDoesNotContainIssueCodes(issues, "afterlife_resident_invalid_current_npc_state");
+        AssertDoesNotContainIssueCodes(
+            issues,
+            "manifested_companion_missing_source_relic_id",
+            "manifested_companion_duplicate_source_relic_id",
+            "manifested_companion_unknown_source_relic_id");
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_CurrentNpcRenameDataWithInjectedCompanionFieldsStaysNonParticipating()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "NPCsRenameData must stay lifecycle-valid but non-participating for manifested companion owner validation.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+        await WriteRawAsync("game_state/npcs/npc_core.json", """
+        {
+          "NPCsRenameData": [
+            {
+              "oldName": "Обычный прохожий",
+              "newName": "Переименованный прохожий",
+              "sourceAfterlifeResidentId": "resident_alpha"
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertDoesNotContainIssueCodes(
+            issues,
+            "afterlife_resident_invalid_current_npc_state",
+            "manifested_companion_missing_source_relic_id",
+            "manifested_companion_duplicate_source_relic_id",
+            "manifested_companion_unknown_source_relic_id");
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_CurrentNpcTradeReceiptUpdatesStayLifecycleValidAndNonParticipating()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "UpdateNpcTradeInventoryReceipts must stay lifecycle-valid but non-participating for manifested companion owner validation.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+        await WriteRawAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNpcTradeInventoryReceipts": [
+            {
+              "requestId": "npc_trade_req_002",
+              "npcId": "npc_merchant_001",
+              "npcName": "Марек",
+              "tradeCycleId": "world_trade_0",
+              "merchantProfile": "GeneralGoods",
+              "status": "ready",
+              "itemCount": 7,
+              "resolvedAtTurn": 7,
+              "resolvedAtUtc": "2026-03-28T00:05:00Z"
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertDoesNotContainIssueCodes(
+            issues,
+            "afterlife_resident_invalid_current_npc_state",
+            "npc_contract_missing_allowed_top_level_key",
+            "npc_contract_unknown_top_level_key",
+            "manifested_companion_missing_source_relic_id",
+            "manifested_companion_duplicate_source_relic_id",
+            "manifested_companion_unknown_source_relic_id");
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_ContractInvalidNpcAliasDoesNotEmitManifestedCompanionSemanticNoise()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Lifecycle-invalid npc alias must stop at contract validation without fake manifested companion owner-state semantics.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+        await WriteRawAsync("game_state/npcs/npc_core.json", """
+        {
+          "NPCs": [
+            {
+              "npcId": "npc_companion_alpha",
+              "name": "Эхо спутника",
+              "sourceAfterlifeResidentId": "resident_alpha"
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertContainsIssueCodes(issues, "npc_contract_missing_allowed_top_level_key");
+        AssertDoesNotContainIssueCodes(
+            issues,
+            "afterlife_resident_invalid_current_npc_state",
+            "manifested_companion_missing_source_relic_id",
+            "manifested_companion_duplicate_source_relic_id",
+            "manifested_companion_unknown_source_relic_id");
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidResidentCurrentStateCases))]
+    public async Task ValidateGameState_AfterlifeResidents_CurrentResidentOwnerStateMatrixSuppressesFalseDownstreamDiagnostics(CurrentStateCase currentState)
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await ApplyCurrentStateCaseAsync(GuardianAbodeResidentState.StatePath, currentState);
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": [
+            {
+              "relicId": "relic_alpha",
+              "companionSeed": {
+                "sourceResidentId": "resident_missing"
+              }
+            }
+          ]
+        }
+        """);
+        await WriteRawAsync("game_state/quests/soul_quests.json", """
+        {
+          "quests": [
+            {
+              "questId": "soul_alpha",
+              "relatedAfterlifeResidentId": "resident_missing"
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertContainsIssueCodes(issues, "afterlife_resident_invalid_current_resident_state");
+        AssertDoesNotContainIssueCodes(
+            issues,
+            "companion_echo_unknown_source_resident_id",
+            "soul_quest_unknown_afterlife_resident_id");
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MalformedCurrentResidentStateWhenRivalArcsSkippedReturnsLocalResidentIssue()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Malformed current resident state must return local resident issue instead of aborting when rival arcs are skipped.");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteRawAsync(GuardianAbodeResidentState.StatePath, "{");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_resident_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidSoulQuestCurrentStateCases))]
+    public async Task ValidateGameState_SoulQuests_CurrentOwnerStateMatrixSuppressesFalseResidentQuestDiagnostics(CurrentStateCase currentState)
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Soul-quest owner-state matrix must surface owner issue and not fabricate resident quest back-link diagnostics.");
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель", linkedSoulQuestId: "quest_missing");
+        await ApplyCurrentStateCaseAsync("game_state/quests/soul_quests.json", currentState);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertContainsIssueCodes(issues, "soul_quest_invalid_current_state");
+        AssertDoesNotContainIssueCodes(
+            issues,
+            "guardian_abode_resident_unknown_linked_soul_quest_id",
+            "guardian_abode_resident_linked_soul_quest_mismatch");
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidSoulQuestCurrentStateCases))]
+    public async Task ValidateGameState_SoulQuests_CurrentOwnerStateMatrixOnQuestOwnedRivalArcPathReturnsOwnerIssue(CurrentStateCase currentState)
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WritePreTurnTrackedFileAsync(
+            "game_state/quests/soul_quests.json",
+            "test_backups/preturn_soul_quests_current_owner_state_quest_owned_rival_arc_matrix.json",
+            """
+            {
+              "quests": [
+                {
+                  "questId": "quest_alpha",
+                  "relatedRivalArcId": "arc_hunter"
+                }
+              ]
+            }
+            """);
+        await ApplyCurrentStateCaseAsync("game_state/quests/soul_quests.json", currentState);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertContainsIssueCodes(issues, "soul_quest_invalid_current_state");
+        AssertDoesNotContainIssueCodes(issues, "soul_quest_unknown_rival_arc_id");
+    }
+
+    [Fact]
+    public async Task ValidateGameState_WorldEvents_SkippedRivalFlowAlsoValidatesRivalVisibilityConstraints()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WritePreTurnTrackedFileAsync(
+            RivalSoulArcService.StatePath,
+            "test_backups/preturn_rival_soul_arcs_skipped_world_event_visibility_reference.json",
+            """
+            {
+              "arcs": [
+                {
+                  "arcId": "arc_hunter"
+                }
+              ]
+            }
+            """);
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await WriteRawAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "world_evt_alpha",
+              "title": "Тень чужой нити",
+              "relatedRivalArcId": "arc_hunter"
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "world_event_rival_arc_missing_visibility", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_WorldEvents_BrokenCurrentRivalSoulArcsDoNotUseSkippedWorldEventRivalArcFallback()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WritePreTurnTrackedFileAsync(
+            RivalSoulArcService.StatePath,
+            "test_backups/preturn_rival_soul_arcs_broken_current_skipped_world_event_arc_reference.json",
+            """
+            {
+              "arcs": [
+                {
+                  "arcId": "arc_hunter"
+                }
+              ]
+            }
+            """);
+        await WriteRawAsync(RivalSoulArcService.StatePath, """
+        {
+          "foo": []
+        }
+        """);
+        await WriteRawAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "world_evt_alpha",
+              "title": "Сбой в чужой нити",
+              "relatedRivalArcId": "arc_missing"
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "rival_arc_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "world_event_unknown_rival_arc_id", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "world_event_rival_arc_missing_visibility", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidCurrentWorldEventOwnerStateCases))]
+    public async Task ValidateGameState_RivalSoulArcs_CurrentWorldEventOwnerStateMatrixOnHostileDirectTargetPathReturnsExplicitIssue(CurrentStateCase currentState)
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "World-event owner-state matrix must fail closed on hostile direct-target rivalry contracts.");
+        await WriteRawAsync(RivalSoulArcService.StatePath, """
+        {
+          "arcs": [
+            {
+              "arcId": "arc_hostile_alpha",
+              "scope": "major",
+              "arcType": "hostile_hunt",
+              "status": "intersecting",
+              "objective": "Corner the player",
+              "rivalSoul": {
+                "rivalSoulId": "rival_alpha",
+                "displayNameOrMoniker": "Гончий из тени",
+                "roleSummary": "Прямой охотник",
+                "isKnownToPlayer": true
+              },
+              "playerIntersection": {
+                "targetsPlayerDirectly": true,
+                "stakes": "Немедленная угроза",
+                "canBecomeSoulQuest": true,
+                "recommendedCounterQuestTone": "urgent"
+              },
+              "publicSignals": [
+                {
+                  "signalId": "sig_hostile_alpha",
+                  "source": "Слух",
+                  "description": "Игрок знает только один след",
+                  "visibleToPlayer": true
+                }
+              ],
+              "resolution": { "outcome": "ongoing", "notes": "" }
+            }
+          ]
+        }
+        """);
+        await ApplyCurrentStateCaseAsync("game_state/world/world_events.json", currentState);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertContainsIssueCodes(issues, "rival_arc_world_event_invalid_current_state");
+        AssertDoesNotContainIssueCodes(issues, "rival_arc_hostile_direct_target_needs_two_visible_signals");
+    }
+
+    [Theory]
+    [MemberData(nameof(BrokenPresentCurrentWorldEventOwnerStateCases))]
+    public async Task ValidateGameState_WorldEvents_BrokenCurrentOwnerStateMatrixWhenRivalArcsSkippedReturnsOwnerIssueWithoutFallbackDiagnostics(CurrentStateCase currentState)
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WritePreTurnTrackedFileAsync(
+            RivalSoulArcService.StatePath,
+            "test_backups/preturn_rival_soul_arcs_broken_current_skipped_world_event_owner_matrix.json",
+            """
+            {
+              "arcs": [
+                {
+                  "arcId": "arc_hunter"
+                }
+              ]
+            }
+            """);
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        await ApplyCurrentStateCaseAsync("game_state/world/world_events.json", currentState);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertContainsIssueCodes(issues, "rival_arc_world_event_invalid_current_state");
+        AssertDoesNotContainIssueCodes(
+            issues,
+            "world_event_unknown_rival_arc_id",
+            "world_event_rival_arc_missing_visibility");
+    }
+
+    [Theory]
+    [MemberData(nameof(RivalCurrentStateFallbackMatrixCases))]
+    public async Task ValidateGameState_SoulQuests_CurrentRivalOwnerStateMatrixControlsRivalArcFallback(
+        CurrentStateCase currentState,
+        bool expectOwnerIssue,
+        bool expectUnknownArcIssue)
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WritePreTurnTrackedFileAsync(
+            RivalSoulArcService.StatePath,
+            "test_backups/preturn_rival_soul_arcs_matrix_skipped_soul_quest_arc_reference.json",
+            """
+            {
+              "arcs": [
+                {
+                  "arcId": "arc_hunter"
+                }
+              ]
+            }
+            """);
+        await ApplyCurrentStateCaseAsync(RivalSoulArcService.StatePath, currentState);
+        await WriteRawAsync("game_state/quests/soul_quests.json", """
+        {
+          "quests": [
+            {
+              "questId": "quest_alpha",
+              "relatedRivalArcId": "arc_missing"
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        if (expectOwnerIssue)
+            AssertContainsIssueCodes(issues, "rival_arc_invalid_current_state");
+        else
+            AssertDoesNotContainIssueCodes(issues, "rival_arc_invalid_current_state");
+
+        if (expectUnknownArcIssue)
+            AssertContainsIssueCodes(issues, "soul_quest_unknown_rival_arc_id");
+        else
+            AssertDoesNotContainIssueCodes(issues, "soul_quest_unknown_rival_arc_id");
+    }
+
+    [Theory]
+    [MemberData(nameof(RivalCurrentStateFallbackMatrixCases))]
+    public async Task ValidateGameState_WorldEvents_CurrentRivalOwnerStateMatrixControlsRivalArcFallback(
+        CurrentStateCase currentState,
+        bool expectOwnerIssue,
+        bool expectUnknownArcIssue)
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WritePreTurnTrackedFileAsync(
+            RivalSoulArcService.StatePath,
+            "test_backups/preturn_rival_soul_arcs_matrix_skipped_world_event_arc_reference.json",
+            """
+            {
+              "arcs": [
+                {
+                  "arcId": "arc_hunter"
+                }
+              ]
+            }
+            """);
+        await ApplyCurrentStateCaseAsync(RivalSoulArcService.StatePath, currentState);
+        await WriteRawAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "world_evt_alpha",
+              "title": "Сбой матрицы rival state",
+              "relatedRivalArcId": "arc_missing",
+              "visibility": "Public"
+            }
+          ]
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        if (expectOwnerIssue)
+            AssertContainsIssueCodes(issues, "rival_arc_invalid_current_state");
+        else
+            AssertDoesNotContainIssueCodes(issues, "rival_arc_invalid_current_state");
+
+        if (expectUnknownArcIssue)
+            AssertContainsIssueCodes(issues, "world_event_unknown_rival_arc_id");
+        else
+            AssertDoesNotContainIssueCodes(issues, "world_event_unknown_rival_arc_id");
+    }
+
+    [Theory]
+    [MemberData(nameof(RivalBonusClueCurrentSoulStateMatrixCases))]
+    public async Task ValidateGameState_RivalBonusClue_CurrentSoulStateMatrixOnStrictPath(
+        CurrentStateCase currentState,
+        bool expectOwnerIssue)
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteRawAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+        await ApplyRawCurrentStateCaseAsync("game_state/meta/soul_state.json", currentState);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        if (expectOwnerIssue)
+            AssertContainsIssueCodes(issues, "rival_arc_bonus_clue_invalid_current_soul_state");
+        else
+            AssertDoesNotContainIssueCodes(issues, "rival_arc_bonus_clue_invalid_current_soul_state");
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidRivalBonusClueCurrentSoulStateCases))]
+    public async Task ValidateGameState_RivalBonusClue_CurrentSoulStateMatrixOnDormantPathStaysPermissive(CurrentStateCase currentState)
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteDormantRivalBonusClueValidationArcAsync();
+        await WriteRawAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": []
+        }
+        """);
+        await ApplyRawCurrentStateCaseAsync("game_state/meta/soul_state.json", currentState);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertDoesNotContainIssueCodes(
+            issues,
+            "rival_arc_bonus_clue_invalid_current_soul_state",
+            "world_event_bonus_clue_invalid_current_state",
+            "afterlife_resident_invalid_current_soul_state");
+    }
+
+    [Theory]
+    [MemberData(nameof(ResidentRelicCurrentSoulStateMatrixCases))]
+    public async Task ValidateGameState_AfterlifeResidents_CurrentSoulStateMatrixOnRelicDependentPath(
+        CurrentStateCase currentState,
+        bool expectOwnerIssue)
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Resident/relic soul-state matrix must distinguish broken current soul from readable empty relic state.");
+        await WriteSingleAfterlifeResidentAsync("Свидетель реликвии", grantedRelicId: "relic_alpha");
+        await ApplyRawCurrentStateCaseAsync("game_state/meta/soul_state.json", currentState);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        if (expectOwnerIssue)
+        {
+            AssertContainsIssueCodes(issues, "afterlife_resident_invalid_current_soul_state");
+            AssertDoesNotContainIssueCodes(issues, "guardian_abode_resident_unknown_granted_relic_id");
+            return;
+        }
+
+        AssertDoesNotContainIssueCodes(issues, "afterlife_resident_invalid_current_soul_state");
+        AssertContainsIssueCodes(issues, "guardian_abode_resident_unknown_granted_relic_id");
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidResidentRelicCurrentSoulStateCases))]
+    public async Task ValidateGameState_AfterlifeResidents_CurrentSoulStateMatrixOnResidentOnlyPathStaysPermissive(CurrentStateCase currentState)
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Resident-only path must not over-require current soul_state in owner-state matrix.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await ApplyRawCurrentStateCaseAsync("game_state/meta/soul_state.json", currentState);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        AssertDoesNotContainIssueCodes(issues, "afterlife_resident_invalid_current_soul_state");
+    }
+
+    [Fact]
+    public async Task ValidateGameState_SoulQuests_MissingCurrentSoulQuestsStayPermissiveInSkippedRivalFlowWithoutRivalArcReferenceSet()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WritePreTurnTrackedFileAsync(
+            "game_state/quests/soul_quests.json",
+            "test_backups/preturn_soul_quests_missing_current_skipped_rival_without_arc_reference.json",
+            """
+            {
+              "quests": [
+                {
+                  "questId": "quest_alpha",
+                  "relatedRivalArcId": "arc_hunter"
+                }
+              ]
+            }
+            """);
+        _fs.DeleteFile(RivalSoulArcService.StatePath);
+        _fs.DeleteFile("game_state/quests/soul_quests.json");
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "soul_quest_invalid_current_state", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "soul_quest_unknown_rival_arc_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_MissingCurrentResidentStateDoesNotRequireResidentFileFromPreTurnOnlyReverseSoulEvidence()
+    {
+        await SeedRivalBonusClueValidationScenarioAsync(targetIncarnation: 3);
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_afterlife_resident_missing_current_resident_preturn_only_reverse.json",
+            """
+            {
+              "currentIncarnation": 3,
+              "currentRealm": "Mortal World",
+              "soulRelics": [
+                {
+                  "relicId": "relic_alpha",
+                  "companionSeed": {
+                    "sourceResidentId": "resident_alpha"
+                  }
+                }
+              ]
+            }
+            """);
+        _fs.DeleteFile(GuardianAbodeResidentState.StatePath);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_resident_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_AfterlifeResidents_ReverseOnlyMalformedCurrentSoulStateTruncatedBeforeSourceResidentTokenReturnsLocalAfterlifeIssue()
+    {
+        await WriteAfterlifeResidentGuardianFixtureAsync(
+            "Reverse resident-link validation must stay strict even when malformed soul truncates before sourceResidentId.");
+        await WriteSingleAfterlifeResidentAsync("Обычный свидетель");
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": [
+            {
+              "relicId": "relic_alpha",
+              "companionSeed": {
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_resident_invalid_current_soul_state", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -7745,6 +10301,171 @@ public sealed class GuardianSystemRegressionTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidationRepairReady_DiagnosticOnlyRepairRequestFailsClosedWithDedicatedIssue()
+    {
+        await WriteRawAsync("game_state/control/validation_repair_request.json", """
+        {
+          "sessionId": "",
+          "requestId": "",
+          "turnNumber": 0,
+          "metadataDiagnosticOnly": true,
+          "source": "repair",
+          "detectedAtUtc": "2026-04-15T00:00:00Z",
+          "revalidationAttempt": 1,
+          "gmInstructions": "diagnostic-only metadata",
+          "summaryGroups": [],
+          "errors": []
+        }
+        """);
+        await WriteRawAsync("game_state/control/validation_repair_ready.json", """
+        {
+          "sessionId": "",
+          "requestId": "",
+          "turnNumber": 0,
+          "updatedAtUtc": "2026-04-15T00:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "repair_ready_against_diagnostic_only_request", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "mismatched_repair_ready_context", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidationRepairReady_LegacyRepairRequestWithoutDiagnosticFlagKeepsExactCopyContract()
+    {
+        await WriteRawAsync("game_state/control/validation_repair_request.json", """
+        {
+          "sessionId": "test-session",
+          "requestId": "test-request",
+          "turnNumber": 12,
+          "source": "repair",
+          "detectedAtUtc": "2026-04-15T00:00:00Z",
+          "revalidationAttempt": 1,
+          "gmInstructions": "legacy request without structured degraded flag",
+          "summaryGroups": [],
+          "errors": []
+        }
+        """);
+        await WriteRawAsync("game_state/control/validation_repair_ready.json", """
+        {
+          "sessionId": "stale-session",
+          "requestId": "stale-request",
+          "turnNumber": 99,
+          "updatedAtUtc": "2026-04-15T00:00:00Z"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "mismatched_repair_ready_context", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "repair_ready_against_diagnostic_only_request", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.FilePath, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidationRepairReady_InvalidJsonUsesDegradedHintWhenRepairRequestMetadataIsDiagnosticOnly()
+    {
+        await WriteRawAsync("game_state/control/validation_repair_request.json", """
+        {
+          "sessionId": "",
+          "requestId": "",
+          "turnNumber": 0,
+          "metadataDiagnosticOnly": true,
+          "source": "repair",
+          "detectedAtUtc": "2026-04-15T00:00:00Z",
+          "revalidationAttempt": 1,
+          "gmInstructions": "diagnostic-only metadata",
+          "summaryGroups": [],
+          "errors": []
+        }
+        """);
+        await WriteRawAsync("game_state/control/validation_repair_ready.json", """
+        {
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        var issue = Assert.Single(issues, candidate =>
+            string.Equals(candidate.Code, "invalid_repair_ready_json", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(candidate.FilePath, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("Не создавай validation_repair_ready.json по sentinel metadata", issue.RepairHint ?? string.Empty, StringComparison.Ordinal);
+        Assert.DoesNotContain("скопируй в него точные sessionId/requestId/turnNumber", issue.RepairHint ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ValidationRepairReady_NonObjectJsonUsesDegradedHintWhenRepairRequestMetadataIsDiagnosticOnly()
+    {
+        await WriteRawAsync("game_state/control/validation_repair_request.json", """
+        {
+          "sessionId": "",
+          "requestId": "",
+          "turnNumber": 0,
+          "metadataDiagnosticOnly": true,
+          "source": "repair",
+          "detectedAtUtc": "2026-04-15T00:00:00Z",
+          "revalidationAttempt": 1,
+          "gmInstructions": "diagnostic-only metadata",
+          "summaryGroups": [],
+          "errors": []
+        }
+        """);
+        await WriteRawAsync("game_state/control/validation_repair_ready.json", """
+        []
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        var issue = Assert.Single(issues, candidate =>
+            string.Equals(candidate.Code, "invalid_repair_ready_json", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(candidate.FilePath, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("Не создавай validation_repair_ready.json по sentinel metadata", issue.RepairHint ?? string.Empty, StringComparison.Ordinal);
+        Assert.DoesNotContain("скопируй в него точные sessionId/requestId/turnNumber", issue.RepairHint ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ValidationRepairReady_InvalidJsonLegacyRepairRequestKeepsExactCopyHint()
+    {
+        await WriteRawAsync("game_state/control/validation_repair_request.json", """
+        {
+          "sessionId": "test-session",
+          "requestId": "test-request",
+          "turnNumber": 12,
+          "source": "repair",
+          "detectedAtUtc": "2026-04-15T00:00:00Z",
+          "revalidationAttempt": 1,
+          "gmInstructions": "legacy request without structured degraded flag",
+          "summaryGroups": [],
+          "errors": []
+        }
+        """);
+        await WriteRawAsync("game_state/control/validation_repair_ready.json", """
+        {
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        var issue = Assert.Single(issues, candidate =>
+            string.Equals(candidate.Code, "invalid_repair_ready_json", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(candidate.FilePath, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("скопируй в него точные sessionId/requestId/turnNumber из validation_repair_request.json", issue.RepairHint ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Не создавай validation_repair_ready.json по sentinel metadata", issue.RepairHint ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task GuardianProcessGachaValidation_UsesCurrentCompletedRelicForgingWhenPreTurnTrackerUnavailable()
     {
         await _fs.WriteFileAtomicAsync("input/turn_request.json", """{ "turnNumber": 21 }""");
@@ -10543,7 +13264,9 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var issues = await validator.ValidateGameStateAsync();
 
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "guardian_trade_request_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "guardian_trade_request_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "guardian_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase) ||
+            issue.Message.Contains("Current canonical guardians[] требует readable validated pre-turn guardians baseline", StringComparison.Ordinal));
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
     }
@@ -10622,7 +13345,9 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var issues = await validator.ValidateGameStateAsync();
 
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "guardian_trade_request_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "guardian_trade_request_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "guardian_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase) ||
+            issue.Message.Contains("Current canonical guardians[] требует readable validated pre-turn guardians baseline", StringComparison.Ordinal));
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_trade_request_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase));
     }
@@ -11160,7 +13885,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var issues = await validator.ValidateGameStateAsync();
 
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "abode_offering_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "abode_offering_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "guardian_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "guardian_power_event_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase) ||
+            issue.Message.Contains("Current canonical guardians[] требует readable validated pre-turn guardians baseline", StringComparison.Ordinal) ||
+            issue.Message.Contains("Abode power journal validation требует readable validated pre-turn guardians baseline", StringComparison.Ordinal));
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "abode_offering_missing_matching_power_event", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue =>
@@ -11266,7 +13995,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var issues = await validator.ValidateGameStateAsync();
 
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "abode_offering_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "abode_offering_missing_validated_snapshot_request", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "guardian_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "guardian_power_event_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase) ||
+            issue.Message.Contains("Current canonical guardians[] требует readable validated pre-turn guardians baseline", StringComparison.Ordinal) ||
+            issue.Message.Contains("Abode power journal validation требует readable validated pre-turn guardians baseline", StringComparison.Ordinal));
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "abode_offering_missing_matching_power_event", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue =>
@@ -12114,6 +14847,8 @@ public sealed class GuardianSystemRegressionTests : IDisposable
     [Theory]
     [InlineData("{\"currentRealm\":\"Chaos Sea\"}")]
     [InlineData("{\"currentRealm\":\"Chaos Sea\",\"soulRelics\":{\"stored\":{}}}")]
+    [InlineData("{\"currentRealm\":\"Chaos Sea\",\"soulRelics\":{\"equipped\":[{\"relicId\":\"relic_invalid_current_soul_shape\",\"name\":\"Реликвия invalid current soul shape\",\"rarity\":\"Rare\",\"relicType\":\"companion_echo\",\"companionSeed\":{\"sourceResidentId\":\"resident_alpha_1\"}}],\"stored\":[]}}")]
+    [InlineData("{\"currentRealm\":\"Chaos Sea\",\"inkFeathers\":{\"current\":\"5\"},\"soulRelics\":{\"equipped\":[],\"stored\":[]}}")]
     public async Task AcceptedTurnAbodeOffering_InvalidCurrentSoulProofShapeFailsConsumptionProof(string currentSoulJson)
     {
         await _fs.WriteFileAtomicAsync("input/turn_request.json", """
@@ -13796,7 +16531,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
     }
 
     [Fact]
-    public async Task GuardianResonanceValidation_UsesValidatedSnapshotInsteadOfTamperedRollbackBackup()
+    public async Task GuardianResonanceValidation_TamperedRollbackBackupFailsClosedBeforeDomainSpecificProof()
     {
         await WriteRawAsync("game_state/meta/soul_state.json", """
         {
@@ -13929,6 +16664,9 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var issues = await validator.ValidateGameStateAsync();
 
         Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "client_owned_pending_snapshot_manifest_modified", StringComparison.OrdinalIgnoreCase) ||
+            issue.Message.Contains("readable validated pre-turn guardians baseline", StringComparison.Ordinal));
+        Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "guardian_resonance_wrong_turn_context", StringComparison.OrdinalIgnoreCase));
     }
 
@@ -27032,7 +29770,457 @@ public sealed class GuardianSystemRegressionTests : IDisposable
             string.Equals(issue.Code, "guardian_leaked_into_npc_surface", StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task SeedRivalBonusClueValidationScenarioAsync(int targetIncarnation)
+    // Matrix case sources
+
+    public static IEnumerable<object[]> InvalidResidentCurrentStateCases()
+    {
+        yield return MatrixCase(new CurrentStateCase("missing", DeleteFile: true));
+        yield return MatrixCase(new CurrentStateCase("malformed", "{"));
+        yield return MatrixCase(new CurrentStateCase("non_object_root", "[]"));
+        yield return MatrixCase(new CurrentStateCase("contract_invalid_top_level", """
+        {
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("mixed_valid_and_unsupported_top_level", """
+        {
+          "entries": [],
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("invalid_collection_shape", """
+        {
+          "entries": {}
+        }
+        """));
+    }
+
+    public static IEnumerable<object[]> InvalidSoulQuestCurrentStateCases()
+    {
+        yield return MatrixCase(new CurrentStateCase("missing", DeleteFile: true));
+        yield return MatrixCase(new CurrentStateCase("malformed", "{"));
+        yield return MatrixCase(new CurrentStateCase("non_object_root", "[]"));
+        yield return MatrixCase(new CurrentStateCase("non_participating_empty_object", "{}"));
+        yield return MatrixCase(new CurrentStateCase("contract_invalid_top_level", """
+        {
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("mixed_valid_and_unsupported_top_level", """
+        {
+          "quests": [],
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("invalid_collection_shape", """
+        {
+          "quests": {}
+        }
+        """));
+    }
+
+    public static IEnumerable<object[]> InvalidCurrentWorldEventOwnerStateCases()
+    {
+        yield return MatrixCase(new CurrentStateCase("missing", DeleteFile: true));
+        yield return MatrixCase(new CurrentStateCase("malformed", "{"));
+        yield return MatrixCase(new CurrentStateCase("non_object_root", "\"broken\""));
+        yield return MatrixCase(new CurrentStateCase("contract_invalid_top_level", """
+        {
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("mixed_valid_and_unsupported_top_level", """
+        {
+          "worldEventsLog": [],
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("invalid_collection_shape", """
+        {
+            "worldEventsLog": {}
+        }
+        """));
+    }
+
+    public static IEnumerable<object[]> RivalCurrentStateFallbackMatrixCases()
+    {
+        yield return new object[] { new CurrentStateCase("missing", DeleteFile: true), false, true };
+        yield return new object[] { new CurrentStateCase("non_participating_empty_object", "{}"), false, true };
+        yield return new object[] { new CurrentStateCase("valid_readable", """
+        {
+          "arcs": [
+            {
+              "arcId": "arc_hunter"
+            }
+          ]
+        }
+        """), false, true };
+        yield return new object[] { new CurrentStateCase("malformed", "{"), true, false };
+        yield return new object[] { new CurrentStateCase("non_object_root", "[]"), true, false };
+        yield return new object[] { new CurrentStateCase("contract_invalid_top_level", """
+        {
+          "foo": []
+        }
+        """), true, false };
+        yield return new object[] { new CurrentStateCase("mixed_valid_and_unsupported_top_level", """
+        {
+          "arcs": [],
+          "foo": []
+        }
+        """), true, false };
+        yield return new object[] { new CurrentStateCase("invalid_collection_shape", """
+        {
+          "arcs": {}
+        }
+        """), true, false };
+    }
+
+    public static IEnumerable<object[]> BrokenPresentCurrentWorldEventOwnerStateCases()
+    {
+        yield return MatrixCase(new CurrentStateCase("malformed", "{"));
+        yield return MatrixCase(new CurrentStateCase("non_object_root", "\"broken\""));
+        yield return MatrixCase(new CurrentStateCase("contract_invalid_top_level", """
+        {
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("mixed_valid_and_unsupported_top_level", """
+        {
+          "worldEventsLog": [],
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("invalid_collection_shape", """
+        {
+          "worldEventsLog": {}
+        }
+        """));
+    }
+
+    public static IEnumerable<object[]> InvalidManifestedCompanionNpcCurrentStateCases()
+    {
+        yield return MatrixCase(new CurrentStateCase("malformed_balanced_carrier_with_dependency", """
+        {
+          "NPCsInScene": [
+            {
+              "npcId": "npc_companion_alpha",
+              "sourceAfterlifeResidentId": "resident_alpha",
+              "sourceCompanionRelicId": "relic_missing"
+            }
+          ],
+          "broken":
+        """));
+        yield return MatrixCase(new CurrentStateCase("shape_invalid_collection_with_dependency", """
+        {
+          "NPCsInScene": {
+            "npcId": "npc_companion_alpha",
+            "name": "Эхо спутника",
+            "sourceCompanionRelicId": "relic_missing",
+            "sourceAfterlifeResidentId": "resident_alpha"
+          }
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("contract_invalid_top_level_with_carrier_dependency", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_companion_alpha",
+              "name": "Эхо спутника",
+              "sourceCompanionRelicId": "relic_missing",
+              "sourceAfterlifeResidentId": "resident_alpha"
+            }
+          ],
+          "foo": [
+            {
+              "npcId": "npc_ordinary",
+              "name": "Лишний alias payload"
+            }
+          ]
+        }
+        """));
+    }
+
+    public static IEnumerable<object[]> InvalidNonManifestedNpcCurrentStateCases()
+    {
+        yield return MatrixCase(new CurrentStateCase("malformed_without_dependency", """
+        {
+          "NPCsInScene": [
+            {
+              "npcId": "npc_ordinary",
+              "foo":
+        """));
+        yield return MatrixCase(new CurrentStateCase("malformed_unbounded_carrier_with_dependency_fields", """
+        {
+          "NPCsInScene": [
+            {
+              "npcId": "npc_companion_alpha",
+              "sourceAfterlifeResidentId": "resident_alpha",
+              "sourceCompanionRelicId":
+        """));
+        yield return MatrixCase(new CurrentStateCase("malformed_unbounded_carrier_followed_by_rename_dependency_fields", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_ordinary",
+              "name": "Обычный прохожий"
+            ,
+          "NPCsRenameData": [
+            {
+              "oldName": "Обычный прохожий",
+              "newName": "Переименованный прохожий",
+              "sourceAfterlifeResidentId": "resident_alpha",
+              "sourceCompanionRelicId": "relic_missing"
+            }
+          ]
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("malformed_unbounded_carrier_followed_by_alias_dependency_fields", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_ordinary",
+              "name": "Обычный прохожий"
+            ,
+          "NPCs": [
+            {
+              "npcId": "npc_companion_alpha",
+              "sourceAfterlifeResidentId": "resident_alpha",
+              "sourceCompanionRelicId": "relic_missing"
+            }
+          ]
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("shape_invalid_collection_without_dependency", """
+        {
+            "NPCsInScene": {
+              "npcId": "npc_ordinary",
+              "name": "Обычный прохожий"
+            }
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("contract_invalid_top_level_without_dependency", """
+        {
+          "foo": [
+            {
+              "npcId": "npc_ordinary",
+              "name": "Обычный прохожий"
+            }
+          ]
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("contract_invalid_top_level_with_dependency_only_outside_carrier", """
+        {
+          "foo": [
+            {
+              "npcId": "npc_companion_alpha",
+              "name": "Эхо спутника",
+              "sourceCompanionRelicId": "relic_missing",
+              "sourceAfterlifeResidentId": "resident_alpha"
+            }
+          ]
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("lifecycle_invalid_alias_without_dependency", """
+        {
+          "npcDataChanges": [
+            {
+              "npcId": "npc_ordinary",
+              "name": "Обычный прохожий"
+            }
+          ]
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("lifecycle_invalid_alias_with_dependency_fields", """
+        {
+          "NPCs": [
+            {
+              "npcId": "npc_companion_alpha",
+              "name": "Эхо спутника",
+              "sourceCompanionRelicId": "relic_missing",
+              "sourceAfterlifeResidentId": "resident_alpha"
+            }
+          ]
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("malformed_rename_payload_with_dependency_fields", """
+        {
+          "NPCsRenameData": [
+            {
+              "oldName": "Обычный прохожий",
+              "newName": "Переименованный прохожий",
+              "sourceAfterlifeResidentId": "resident_alpha",
+              "sourceCompanionRelicId":
+        """));
+        yield return MatrixCase(new CurrentStateCase("malformed_carrier_string_literal_source_field_name_only", """
+        {
+          "NPCsInScene": [
+            {
+              "npcId": "npc_ordinary",
+              "name": "Обычный прохожий",
+              "notes": "В тексте упомянут sourceAfterlifeResidentId, но это не object key."
+            }
+          ],
+          "broken":
+        """));
+    }
+
+    public static IEnumerable<object[]> RivalBonusClueCurrentSoulStateMatrixCases()
+    {
+        yield return new object[] { new CurrentStateCase("missing", DeleteFile: true), true };
+        yield return new object[] { new CurrentStateCase("malformed", "{"), true };
+        yield return new object[] { new CurrentStateCase("non_object_root", "[]"), true };
+        yield return new object[] { new CurrentStateCase("contract_invalid_top_level", """
+        {
+          "foo": []
+        }
+        """), true };
+        yield return new object[] { new CurrentStateCase("mixed_valid_and_unsupported_top_level", """
+        {
+          "currentIncarnation": 3,
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          },
+          "foo": []
+        }
+        """), true };
+        yield return new object[] { new CurrentStateCase("invalid_required_field_shape", """
+        {
+          "currentIncarnation": {}
+        }
+        """), true };
+        yield return new object[] { new CurrentStateCase("readable_partial_supported", """
+        {
+          "currentIncarnation": 3
+        }
+        """), false };
+        yield return new object[] { new CurrentStateCase("lifecycle_compatible_cross_incarnation_data", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "crossIncarnationData": {
+            "legacyThreadId": "thread_alpha"
+          }
+        }
+        """), false };
+        yield return new object[] { new CurrentStateCase("valid_readable", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """), false };
+    }
+
+    public static IEnumerable<object[]> InvalidRivalBonusClueCurrentSoulStateCases()
+    {
+        yield return MatrixCase(new CurrentStateCase("missing", DeleteFile: true));
+        yield return MatrixCase(new CurrentStateCase("malformed", "{"));
+        yield return MatrixCase(new CurrentStateCase("non_object_root", "[]"));
+        yield return MatrixCase(new CurrentStateCase("contract_invalid_top_level", """
+        {
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("mixed_valid_and_unsupported_top_level", """
+        {
+          "currentIncarnation": 3,
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          },
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("invalid_required_field_shape", """
+        {
+          "currentIncarnation": {}
+        }
+        """));
+    }
+
+    public static IEnumerable<object[]> ResidentRelicCurrentSoulStateMatrixCases()
+    {
+        yield return new object[] { new CurrentStateCase("missing", DeleteFile: true), true };
+        yield return new object[] { new CurrentStateCase("malformed", "{"), true };
+        yield return new object[] { new CurrentStateCase("non_object_root", "[]"), true };
+        yield return new object[] { new CurrentStateCase("contract_invalid_top_level", """
+        {
+          "foo": []
+        }
+        """), true };
+        yield return new object[] { new CurrentStateCase("mixed_valid_and_unsupported_top_level", """
+        {
+          "currentIncarnation": 3,
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          },
+          "foo": []
+        }
+        """), true };
+        yield return new object[] { new CurrentStateCase("invalid_collection_shape", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": {}
+          }
+        }
+        """), true };
+        yield return new object[] { new CurrentStateCase("readable_partial_supported", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World"
+        }
+        """), false };
+        yield return new object[] { new CurrentStateCase("valid_readable", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """), false };
+    }
+
+    public static IEnumerable<object[]> InvalidResidentRelicCurrentSoulStateCases()
+    {
+        yield return MatrixCase(new CurrentStateCase("missing", DeleteFile: true));
+        yield return MatrixCase(new CurrentStateCase("malformed", "{"));
+        yield return MatrixCase(new CurrentStateCase("non_object_root", "[]"));
+        yield return MatrixCase(new CurrentStateCase("contract_invalid_top_level", """
+        {
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("mixed_valid_and_unsupported_top_level", """
+        {
+          "currentIncarnation": 3,
+          "soulRelics": [],
+          "foo": []
+        }
+        """));
+        yield return MatrixCase(new CurrentStateCase("invalid_collection_shape", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": {}
+          }
+        }
+        """));
+    }
+
+    private async Task SeedRivalBonusClueValidationScenarioAsync(int targetIncarnation, int visibleRivalClueBudget = 1)
     {
         await WriteRawAsync("game_state/meta/guardians.json", """
         {
@@ -27103,7 +30291,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
                   "bonusLoreUnlocks": 1,
                   "questHookCount": 1,
                   "specialQuestLineUnlocks": 0,
-                  "visibleRivalClueBonus": 1,
+                  "visibleRivalClueBonus": {{visibleRivalClueBudget}},
                   "unlockedLoreFragments": []
                 },
                 "effectState": {
@@ -27116,7 +30304,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
                   "guaranteedArchiveQuestConsumed": 0,
                   "specialQuestLineTokensGranted": 0,
                   "specialQuestLineTokensSpent": 0,
-                  "visibleRivalClueBudgetGranted": 1,
+                  "visibleRivalClueBudgetGranted": {{visibleRivalClueBudget}},
                   "visibleRivalClueBudgetSpent": 0,
                   "archiveWarningTierBonusGranted": 0
                 }
@@ -27179,9 +30367,186 @@ public sealed class GuardianSystemRegressionTests : IDisposable
           ]
         }
         """);
+
     }
 
-    private async Task WriteRawAsync(string path, string json)
+    private Task WriteDormantRivalBonusClueValidationArcAsync()
+    {
+        return WriteRawAsync(RivalSoulArcService.StatePath, """
+        {
+          "arcs": [
+            {
+              "arcId": "arc_hunter",
+              "scope": "major",
+              "arcType": "hostile_hunt",
+              "status": "rising",
+              "objective": "Find the player",
+              "sponsorGuardianRef": {
+                "mode": "guardianId",
+                "guardianId": "guardian_alpha",
+                "displayName": "Азалия"
+              },
+              "rivalSoul": {
+                "rivalSoulId": "rival_1",
+                "displayNameOrMoniker": "Багровый Охотник",
+                "roleSummary": "Охотник rival-Хранителя",
+                "isKnownToPlayer": true
+              },
+              "playerIntersection": {
+                "targetsPlayerDirectly": true,
+                "stakes": "Опасность для героя",
+                "canBecomeSoulQuest": true,
+                "recommendedCounterQuestTone": "urgent"
+              },
+              "milestones": [
+                { "stage": 1, "title": "Слух", "summary": "О нём говорят", "visibleToPlayer": true }
+              ],
+              "currentStage": 1,
+              "publicSignals": [],
+              "resolution": { "outcome": "ongoing", "notes": "" }
+            }
+          ]
+        }
+        """);
+    }
+
+    private Task WriteAfterlifeResidentGuardianFixtureAsync(string appearanceDescription)
+    {
+        return WriteRawAsync("game_state/meta/guardians.json", $$"""
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "{{appearanceDescription}}"
+              },
+              "manifestationHistory": [],
+              "domain": "Knowledge",
+              "abode": { "abodeId": "abode_alpha", "title": "Обитель Азалии" },
+              "relationshipData": { "currentReputation": 80, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 35, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+              "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guardian_alpha",
+            "canonicalName": "Азалия",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "{{appearanceDescription}}"
+            },
+            "manifestationHistory": [],
+            "domain": "Knowledge",
+            "abode": { "abodeId": "abode_alpha", "title": "Обитель Азалии" },
+            "relationshipData": { "currentReputation": 80, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 35, "tier": "Хрупкая", "lastUpdatedAt": "2026-03-23T00:00:00Z", "history": [] },
+            "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] }
+          }
+        }
+        """);
+    }
+
+    private Task WriteSingleAfterlifeResidentAsync(string displayName, string? grantedRelicId = null, string? linkedSoulQuestId = null)
+    {
+        var grantedRelicLine = string.IsNullOrWhiteSpace(grantedRelicId)
+            ? string.Empty
+            : $",\n              \"grantedRelicId\": \"{grantedRelicId}\"";
+        var linkedSoulQuestLine = string.IsNullOrWhiteSpace(linkedSoulQuestId)
+            ? string.Empty
+            : $",\n              \"linkedSoulQuestId\": \"{linkedSoulQuestId}\"";
+
+        return WriteRawAsync(GuardianAbodeResidentState.StatePath, $$"""
+        {
+          "entries": [
+            {
+              "residentId": "resident_alpha",
+              "guardianId": "guardian_alpha",
+              "abodeId": "abode_alpha",
+              "displayName": "{{displayName}}"{{grantedRelicLine}}{{linkedSoulQuestLine}}
+            }
+          ],
+          "rosterReceipts": [],
+          "interactionReceipts": [],
+          "historyLog": []
+        }
+        """);
+    }
+
+    private Task WriteManifestedCompanionNpcCoreAsync(
+        string sourceCompanionRelicId,
+        string sourceAfterlifeResidentId = "resident_alpha")
+    {
+        return WriteRawAsync("game_state/npcs/npc_core.json", $$"""
+        {
+          "NPCsInScene": [
+            {
+              "npcId": "npc_companion_alpha",
+              "name": "Эхо спутника",
+              "sourceCompanionRelicId": "{{sourceCompanionRelicId}}",
+              "sourceAfterlifeResidentId": "{{sourceAfterlifeResidentId}}"
+            }
+          ]
+        }
+        """);
+    }
+
+    private static object[] MatrixCase(CurrentStateCase currentState) => new object[] { currentState };
+
+    private async Task ApplyCurrentStateCaseAsync(string path, CurrentStateCase currentState)
+    {
+        if (currentState.DeleteFile)
+        {
+            _fs.DeleteFile(path);
+            return;
+        }
+
+        await WriteRawAsync(path, currentState.Json ?? throw new InvalidOperationException($"Matrix case '{currentState.Name}' requires JSON content."));
+    }
+
+    private async Task ApplyRawCurrentStateCaseAsync(string path, CurrentStateCase currentState)
+    {
+        if (currentState.DeleteFile)
+        {
+            _fs.DeleteFile(path);
+            return;
+        }
+
+        await _fs.WriteFileAtomicAsync(path, currentState.Json ?? throw new InvalidOperationException($"Matrix case '{currentState.Name}' requires JSON content."));
+    }
+
+    private static void AssertContainsIssueCodes(IEnumerable<ValidationIssue> issues, params string[] codes)
+    {
+        var issueList = issues.ToList();
+        foreach (var code in codes)
+        {
+            Assert.Contains(issueList, issue =>
+                string.Equals(issue.Code, code, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
+    private static void AssertDoesNotContainIssueCodes(IEnumerable<ValidationIssue> issues, params string[] codes)
+    {
+        var issueList = issues.ToList();
+        foreach (var code in codes)
+        {
+            Assert.DoesNotContain(issueList, issue =>
+                string.Equals(issue.Code, code, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
+    private async Task WriteRawAsync(string path, string json, bool syncPendingSnapshotAuthority = true)
     {
         if (string.Equals(path, "game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase))
         {
@@ -27199,6 +30564,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         }
 
         await _fs.WriteFileAtomicAsync(path, json);
+        if (syncPendingSnapshotAuthority &&
+            string.Equals(path, "game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase))
+        {
+            await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+        }
     }
 
     private async Task WriteGuardianRawWithoutValidatedSnapshotAsync(string json) =>
@@ -27229,17 +30599,13 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         {
             [trackedPath] = backupPath
         };
+        manifest["rollbackBaselineFiles"] = new JsonArray(trackedPath);
         manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(manifest);
 
         await _fs.WriteFileAtomicAsync(
             "game_state/control/pending_turn_snapshot.json",
-            manifest.ToJsonString(new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            }));
+            JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
     private async Task AddTrackedFileToCurrentPendingTurnSnapshotAsync(string trackedPath, string backupPath, string json)
@@ -27252,25 +30618,24 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var files = manifest["files"] as JsonObject ?? new JsonObject();
         var snapshotHashes = manifest["snapshotFileHashes"] as JsonObject ?? new JsonObject();
         var rollbackBackups = manifest["rollbackBackups"] as JsonObject ?? new JsonObject();
+        var rollbackBaselineFiles = manifest["rollbackBaselineFiles"] as JsonArray ?? new JsonArray();
 
         files[trackedPath] = snapshotPath;
         snapshotHashes[trackedPath] = ComputeSha256(json);
         rollbackBackups[trackedPath] = backupPath;
+        if (!rollbackBaselineFiles.Any(node => string.Equals(node?.GetValue<string>(), trackedPath, StringComparison.OrdinalIgnoreCase)))
+            rollbackBaselineFiles.Add(trackedPath);
 
         manifest["files"] = files;
         manifest["snapshotFileHashes"] = snapshotHashes;
         manifest["rollbackBackups"] = rollbackBackups;
+        manifest["rollbackBaselineFiles"] = rollbackBaselineFiles;
         manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(manifest);
 
         await _fs.WriteFileAtomicAsync(
             "game_state/control/pending_turn_snapshot.json",
-            manifest.ToJsonString(new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            }));
+            JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
     private async Task RemoveTrackedFileFromCurrentPendingTurnSnapshotAsync(string trackedPath)
@@ -27301,16 +30666,19 @@ public sealed class GuardianSystemRegressionTests : IDisposable
             rollbackBackups.Remove(trackedPath);
         }
 
+        if (manifest["rollbackBaselineFiles"] is JsonArray rollbackBaselineFiles)
+        {
+            var existingEntry = rollbackBaselineFiles
+                .FirstOrDefault(node => string.Equals(node?.GetValue<string>(), trackedPath, StringComparison.OrdinalIgnoreCase));
+            if (existingEntry != null)
+                rollbackBaselineFiles.Remove(existingEntry);
+        }
+
         manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(manifest);
         await _fs.WriteFileAtomicAsync(
             "game_state/control/pending_turn_snapshot.json",
-            manifest.ToJsonString(new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            }));
+            JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
     private async Task RemoveTrackedSnapshotEntryFromCurrentPendingTurnSnapshotAsync(string trackedPath)
@@ -27333,13 +30701,8 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(manifest);
         await _fs.WriteFileAtomicAsync(
             "game_state/control/pending_turn_snapshot.json",
-            manifest.ToJsonString(new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            }));
+            JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
     private async Task RemoveRollbackBackupFromCurrentPendingTurnSnapshotAsync(string trackedPath, string backupPath)
@@ -27351,13 +30714,8 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(manifest);
         await _fs.WriteFileAtomicAsync(
             "game_state/control/pending_turn_snapshot.json",
-            manifest.ToJsonString(new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            }));
+            JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
 
         var resolvedBackupPath = _fs.ResolvePath(backupPath);
         if (File.Exists(resolvedBackupPath))
@@ -27436,6 +30794,11 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         EnsureGuardianNavigationState(root);
 
         return root.ToJsonString();
+    }
+
+    public sealed record CurrentStateCase(string Name, string? Json = null, bool DeleteFile = false)
+    {
+        public override string ToString() => Name;
     }
 
     private static void EnsureGuardianRelationshipNetwork(JsonObject root)

@@ -40,7 +40,35 @@ public partial class GameEngine
     private sealed class RollbackSnapshot
     {
         public Dictionary<string, string> BackupFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> BackupHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> BaselineFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    }
+
+    private sealed class ValidatedPendingTurnSnapshotContext
+    {
+        public PendingTurnSnapshotManifest Manifest { get; init; } = new();
+        public PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload Payload { get; init; } = new();
+
+        public string SessionId => Manifest.SessionId;
+        public string RequestId => Manifest.RequestId;
+        public int TurnNumber => Manifest.TurnNumber;
+        public string PlayerAction => Manifest.PlayerAction;
+        public ProgressionControl? ProgressionControl => Manifest.ProgressionControl;
+        public string? SourceLabel => Manifest.SourceLabel;
+    }
+
+    private enum PendingTurnSnapshotResolutionStatus
+    {
+        Missing,
+        Unusable,
+        Usable
+    }
+
+    private sealed class PendingTurnSnapshotResolution
+    {
+        public PendingTurnSnapshotResolutionStatus Status { get; init; }
+        public PendingTurnSnapshotManifest? Manifest { get; init; }
+        public ValidatedPendingTurnSnapshotContext? Context { get; init; }
     }
 
     private sealed class ValidationRepairRequest
@@ -48,6 +76,7 @@ public partial class GameEngine
         public string SessionId { get; set; } = "";
         public string RequestId { get; set; } = "";
         public int TurnNumber { get; set; }
+        public bool MetadataDiagnosticOnly { get; set; }
         public string Source { get; set; } = "";
         public string DetectedAtUtc { get; set; } = "";
         public int RevalidationAttempt { get; set; }
@@ -84,6 +113,7 @@ public partial class GameEngine
         public string SessionId { get; set; } = "";
         public string RequestId { get; set; } = "";
         public int TurnNumber { get; set; }
+        public bool MetadataDiagnosticOnly { get; set; }
         public string Source { get; set; } = "";
         public string DetectedAtUtc { get; set; } = "";
         public string GmInstructions { get; set; } = "";

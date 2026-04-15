@@ -357,6 +357,13 @@ public partial class ExplorerMode
         if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentsReady, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentRelicGranted, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentManifestationReady, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentWavering, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentRestless, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentConsideringDeparture, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTransferPending, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTransferAccepted, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTransferRefused, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTransferDeparted, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentTalkAnswered, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentHistoryRevealed, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentHistoryRefused, StringComparison.OrdinalIgnoreCase))
@@ -716,23 +723,8 @@ public partial class ExplorerMode
         return string.Empty;
     }
 
-    private static IEnumerable<JsonElement> EnumerateNpcObjects(JsonElement root)
-    {
-        if (root.ValueKind != JsonValueKind.Object)
-            yield break;
-
-        foreach (var propertyName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
-        {
-            if (!root.TryGetProperty(propertyName, out var npcs) || npcs.ValueKind != JsonValueKind.Array)
-                continue;
-
-            foreach (var npc in npcs.EnumerateArray())
-            {
-                if (npc.ValueKind == JsonValueKind.Object)
-                    yield return npc;
-            }
-        }
-    }
+    private static IEnumerable<JsonElement> EnumerateNpcObjects(JsonElement root) =>
+        GuardianPolicyContracts.EnumerateCanonicalNpcObjects(root);
 
     private List<string> BuildSoulRelicDetailLines(string name, JsonElement relic, string? status)
     {
@@ -881,6 +873,13 @@ public partial class ExplorerMode
                         lines.Add($"  👣 Проявившийся спутник: [dim]{Markup.Escape(resolvedNpcId)}[/]");
                     break;
             }
+
+            if (relic.TryGetProperty("companionSeed", out var companionSeed) &&
+                companionSeed.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var snapshotLine in BuildCompanionSeedSnapshotLines(companionSeed))
+                    lines.Add(snapshotLine);
+            }
         }
 
         if (!string.IsNullOrEmpty(status))
@@ -936,6 +935,94 @@ public partial class ExplorerMode
         }
 
         return "";
+    }
+
+    private static IEnumerable<string> BuildCompanionSeedSnapshotLines(JsonElement companionSeed)
+    {
+        var lines = new List<string>();
+
+        if (companionSeed.TryGetProperty("personalityProfile", out var personalityProfile) &&
+            personalityProfile.ValueKind == JsonValueKind.Object)
+        {
+            var archetype = GetStr(personalityProfile, "archetype", "");
+            var worldview = GetStr(personalityProfile, "worldview", "");
+            var coreValues = personalityProfile.TryGetProperty("coreValues", out var coreValuesNode) && coreValuesNode.ValueKind == JsonValueKind.Array
+                ? coreValuesNode.EnumerateArray()
+                    .Where(item => item.ValueKind == JsonValueKind.String)
+                    .Select(item => item.GetString())
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Take(3)
+                    .ToArray()
+                : Array.Empty<string>();
+
+            var flavorParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(archetype))
+                flavorParts.Add(archetype);
+            if (!string.IsNullOrWhiteSpace(worldview))
+                flavorParts.Add(worldview);
+            if (coreValues.Length > 0)
+                flavorParts.Add($"ценности: {string.Join(", ", coreValues)}");
+
+            if (flavorParts.Count > 0)
+                lines.Add($"  🎭 Снимок личности: [dim]{Markup.Escape(string.Join(" • ", flavorParts))}[/]");
+        }
+
+        var abodeDevotionLevel = 0;
+        var hasDevotion = companionSeed.TryGetProperty("abodeDevotionLevel", out var abodeDevotionLevelNode) &&
+                          abodeDevotionLevelNode.ValueKind == JsonValueKind.Number &&
+                          abodeDevotionLevelNode.TryGetInt32(out abodeDevotionLevel);
+        var abodeDevotionTier = GetStr(companionSeed, "abodeDevotionTier", "");
+        var restlessness = 0;
+        var hasRestlessness = companionSeed.TryGetProperty("restlessness", out var restlessnessNode) &&
+                              restlessnessNode.ValueKind == JsonValueKind.Number &&
+                              restlessnessNode.TryGetInt32(out restlessness);
+        var migrationState = GetStr(companionSeed, "migrationState", "");
+        if (hasDevotion || hasRestlessness || !string.IsNullOrWhiteSpace(migrationState))
+        {
+            var devotionParts = new List<string>();
+            if (hasDevotion)
+            {
+                var resolvedTier = !string.IsNullOrWhiteSpace(abodeDevotionTier)
+                    ? abodeDevotionTier
+                    : GuardianAbodeResidentState.ResolveAbodeDevotionTier(abodeDevotionLevel);
+                devotionParts.Add($"{GuardianAbodeResidentState.GetAbodeDevotionTierLabel(resolvedTier)} {abodeDevotionLevel}/100");
+            }
+
+            if (hasRestlessness)
+                devotionParts.Add($"неспокойствие {restlessness}/100");
+
+            if (!string.IsNullOrWhiteSpace(migrationState))
+                devotionParts.Add(GuardianAbodeResidentState.GetMigrationStateLabel(migrationState));
+
+            if (devotionParts.Count > 0)
+                lines.Add($"  🫀 Состояние Обители: [dim]{Markup.Escape(string.Join(" • ", devotionParts))}[/]");
+        }
+
+        if (companionSeed.TryGetProperty("abodeDisposition", out var abodeDisposition) &&
+            abodeDisposition.ValueKind == JsonValueKind.Object)
+        {
+            var dispositionParts = new List<string>();
+            var powerSensitivity = GetStr(abodeDisposition, "powerSensitivity", "");
+            if (!string.IsNullOrWhiteSpace(powerSensitivity))
+                dispositionParts.Add(GuardianAbodeResidentState.GetPowerSensitivityLabel(powerSensitivity));
+
+            var migrationDisposition = GetStr(abodeDisposition, "migrationDisposition", "");
+            if (!string.IsNullOrWhiteSpace(migrationDisposition))
+                dispositionParts.Add(GuardianAbodeResidentState.GetMigrationDispositionLabel(migrationDisposition));
+
+            var communalOrientation = GetStr(abodeDisposition, "communalOrientation", "");
+            if (!string.IsNullOrWhiteSpace(communalOrientation))
+                dispositionParts.Add(GuardianAbodeResidentState.GetCommunalOrientationLabel(communalOrientation));
+
+            var stabilityNeed = GetStr(abodeDisposition, "stabilityNeed", "");
+            if (!string.IsNullOrWhiteSpace(stabilityNeed))
+                dispositionParts.Add(GuardianAbodeResidentState.GetStabilityNeedLabel(stabilityNeed));
+
+            if (dispositionParts.Count > 0)
+                lines.Add($"  🧭 Склонности Обители: [dim]{Markup.Escape(string.Join(" • ", dispositionParts))}[/]");
+        }
+
+        return lines;
     }
 
     private static string GuardianTradeDisplayDomain(string domainTag) => domainTag switch

@@ -58,7 +58,8 @@ public sealed class AfterlifeArchiveProjectFuelService
         if (reputation < 50)
             return null;
 
-        if (await AfterlifeArchiveActionState.ReadProjectFuelAsync(_fs) != null)
+        var pendingRequestState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs);
+        if (pendingRequestState.Exists)
             return null;
 
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
@@ -85,6 +86,7 @@ public sealed class AfterlifeArchiveProjectFuelService
         if (soulRoot == null || trackerRoot == null)
             return null;
 
+        GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
         AfterlifeArchiveState.NormalizeShape(soulRoot);
         var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
         var archiveEntry = stored.OfType<JsonObject>()
@@ -138,7 +140,14 @@ public sealed class AfterlifeArchiveProjectFuelService
         }
 
         await AfterlifeArchiveActionState.WriteProjectFuelAsync(_fs, request);
-        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString(JsonOpts));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                soulRoot,
+                new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.AfterlifeArchive,
+                    affectedArchiveIds: new[] { archiveId },
+                    affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts));
 
         var summary = string.Equals(entryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase)
             ? "Запрос на archive project fuel создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо materialize-ится в pressure relief."

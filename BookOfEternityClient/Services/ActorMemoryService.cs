@@ -70,6 +70,7 @@ public sealed class ActorMemoryService
         var abodeId = activeGuardian.TryGetProperty("abode", out var abodeNode) && abodeNode.ValueKind == JsonValueKind.Object
             ? GetString(abodeNode, "abodeId")
             : string.Empty;
+        var abodePower = AbodePowerRules.GetCurrentPower(activeGuardian);
 
         var sb = new StringBuilder();
         sb.AppendLine("ACTOR MEMORY DIGEST:");
@@ -77,7 +78,7 @@ public sealed class ActorMemoryService
 
         await AppendGuardianJournalSectionAsync(sb, guardianId, guardianName);
         await AppendGuardianContinuitySectionAsync(sb, guardianId);
-        await AppendResidentDigestSectionAsync(sb, guardianId, abodeId);
+        await AppendResidentDigestSectionAsync(sb, guardianId, abodeId, abodePower);
 
         return sb.ToString();
     }
@@ -124,14 +125,14 @@ public sealed class ActorMemoryService
         }
     }
 
-    private async Task AppendResidentDigestSectionAsync(StringBuilder sb, string guardianId, string abodeId)
+    private async Task AppendResidentDigestSectionAsync(StringBuilder sb, string guardianId, string abodeId, int currentAbodePower)
     {
         var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
         if (string.IsNullOrWhiteSpace(residentJson))
             return;
 
         using var residentDoc = JsonDocument.Parse(residentJson);
-        var residents = GuardianAbodeResidentState.CollectEntries(residentDoc.RootElement, guardianId, abodeId, presentOnly: true);
+        var residents = GuardianAbodeResidentState.CollectEntries(residentDoc.RootElement, guardianId, abodeId, currentAbodePower, presentOnly: true);
         if (residents.Count == 0)
             return;
 
@@ -147,7 +148,15 @@ public sealed class ActorMemoryService
                      .ThenByDescending(resident => resident.BondLevel)
                      .Take(3))
         {
-            sb.AppendLine($"  • {resident.DisplayName} — bond {resident.BondTier}/{resident.BondLevel}");
+            sb.AppendLine(
+                $"  • {resident.DisplayName} — bond {resident.BondTier}/{resident.BondLevel}; abode {resident.AbodeDevotionTier}/{resident.AbodeDevotionLevel}; {resident.MigrationState}");
+
+            if (!string.IsNullOrWhiteSpace(resident.PersonalityProfile.Archetype))
+            {
+                var values = resident.PersonalityProfile.CoreValues.Take(3).ToList();
+                var valuesText = values.Count > 0 ? $" ({string.Join(", ", values)})" : string.Empty;
+                sb.AppendLine($"    profile: {resident.PersonalityProfile.Archetype}{valuesText}");
+            }
 
             var thoughts = GuardianAbodeResidentState.CollectThoughtJournalEntries(residentDoc.RootElement, resident.ResidentId);
             if (thoughts.Count > 0)
@@ -467,33 +476,18 @@ public sealed class ActorMemoryService
     {
         var result = new List<(string NpcId, string DisplayName)>();
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var hasExplicitSceneSection =
+            root.ValueKind == JsonValueKind.Object &&
+            root.TryGetProperty(GuardianPolicyContracts.NpcCoreSceneSectionName, out _);
 
-        IEnumerable<JsonElement> EnumerateCandidates()
+        foreach (var npc in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(root))
         {
-            if (root.ValueKind != JsonValueKind.Object)
-                yield break;
-
-            foreach (var propName in new[] { "NPCsInScene", "UpdateNPCs", "npcs" })
-            {
-                if (!root.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)
-                    continue;
-
-                foreach (var item in arr.EnumerateArray())
-                {
-                    if (item.ValueKind == JsonValueKind.Object)
-                        yield return item;
-                }
-            }
-        }
-
-        foreach (var npc in EnumerateCandidates())
-        {
-            var npcId = GetString(npc, "NPCId");
-            var name = GetString(npc, "name");
+            var npcId = GetString(npc, "NPCId") ?? GetString(npc, "npcId") ?? GetString(npc, "id");
+            var name = GetString(npc, "name") ?? GetString(npc, "NPCName") ?? GetString(npc, "npcName");
             var locationId = GetString(npc, "currentLocationId");
             var isSceneEntry = string.Equals(locationId, currentLocationId, StringComparison.OrdinalIgnoreCase);
 
-            if (!string.IsNullOrWhiteSpace(currentLocationId) && !isSceneEntry && root.TryGetProperty("NPCsInScene", out _))
+            if (!string.IsNullOrWhiteSpace(currentLocationId) && !isSceneEntry && hasExplicitSceneSection)
                 continue;
 
             var dedupeKey = !string.IsNullOrWhiteSpace(npcId) ? npcId : name;

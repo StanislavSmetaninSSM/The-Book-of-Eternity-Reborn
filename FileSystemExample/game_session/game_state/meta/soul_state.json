@@ -1,22 +1,23 @@
 {
-  "inkFeathers": 0,
-  "enlightenment": 0,
-  "currentTier": "Новичок",
+  "soulName": "Пепельная Искра",
+  "currentRealm": "Mortal World",
   "currentIncarnation": 2,
-  "soulRelics": [],
+  "enlightenment": {
+    "currentTier": "Новичок",
+    "experience": 0,
+    "level": 0
+  },
+  "inkFeathers": {
+    "current": 0,
+    "total": 0
+  },
+  "soulRelics": {
+    "equipped": [],
+    "stored": []
+  },
   "afterlifeArchive": {
     "stored": []
   },
-  "equippedRelics": {
-    "spirit_relic": null,
-    "mind_relic": null,
-    "body_relic": null
-  },
-  "crossIncarnationData": {
-    "totalLives": 2,
-    "questsCompleted": 0,
-    "experienceGained": 0
-  },
-  "pendingMemoryLegacy": null,
-  "lastUpdate": "2026-03-01T09:00:00Z"
+  "livesHistory": [],
+  "pendingMemoryLegacy": null
 }

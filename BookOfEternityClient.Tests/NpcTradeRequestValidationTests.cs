@@ -1,6 +1,8 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
@@ -87,6 +89,158 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
         var issues = await InvokeValidationAsync("ValidatePendingNpcTradeInventoryRequestResolutionAsync");
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "npc_trade_request_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_TopLevelNpcTradeReceiptUpdatesRemainLifecycleValid()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: false, includeTradeReceipt: false);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNpcTradeInventoryReceipts": [
+            {
+              "requestId": "npc_trade_req_002",
+              "npcId": "npc_merchant_001",
+              "npcName": "Марек",
+              "tradeCycleId": "world_trade_0",
+              "merchantProfile": "GeneralGoods",
+              "status": "ready",
+              "itemCount": 7,
+              "resolvedAtTurn": 7,
+              "resolvedAtUtc": "2026-03-28T00:05:00Z"
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.FilePath, "game_state/npcs/npc_core.json", StringComparison.OrdinalIgnoreCase) &&
+            (string.Equals(issue.Code, "npc_contract_missing_allowed_top_level_key", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(issue.Code, "npc_contract_unknown_top_level_key", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_TopLevelNpcTradeReceiptUpdatesMustMatchNestedReceiptSemantics()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: false);
+        await AddTopLevelReceiptUpdatesAsync(new[]
+        {
+            new
+            {
+                requestId = "npc_trade_req_002",
+                npcId = "npc_merchant_001",
+                npcName = "Марек",
+                tradeCycleId = "world_trade_0",
+                merchantProfile = "GeneralGoods",
+                status = "ready",
+                itemCount = 6,
+                resolvedAtTurn = 7,
+                resolvedAtUtc = "2026-03-28T00:05:00Z"
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "npc_trade_receipt_item_count_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_TopLevelNpcTradeReceiptUpdatesRequireFullReceiptSchemaEvenWithoutTradeInventory()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: false, includeTradeReceipt: false);
+        await AddTopLevelReceiptUpdatesAsync(new[]
+        {
+            new
+            {
+                requestId = "npc_trade_req_004",
+                npcId = "npc_merchant_001",
+                tradeCycleId = "world_trade_0"
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => issue.FilePath.EndsWith(".merchantProfile", StringComparison.OrdinalIgnoreCase) &&
+                                         string.Equals(issue.Code, "missing_required_string", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => issue.FilePath.EndsWith(".status", StringComparison.OrdinalIgnoreCase) &&
+                                         string.Equals(issue.Code, "missing_required_string", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => issue.FilePath.EndsWith(".itemCount", StringComparison.OrdinalIgnoreCase) &&
+                                         string.Equals(issue.Code, "missing_required_non_negative_number_field", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => issue.FilePath.EndsWith(".resolvedAtTurn", StringComparison.OrdinalIgnoreCase) &&
+                                         string.Equals(issue.Code, "missing_required_positive_integer_field", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => issue.FilePath.EndsWith(".resolvedAtUtc", StringComparison.OrdinalIgnoreCase) &&
+                                         string.Equals(issue.Code, "missing_required_string", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PreTurnNpcTradeRequestWithTopLevelReceiptUpdate_PassesReceiptResolution()
+    {
+        var request = new
+        {
+            requestId = "npc_trade_req_003",
+            npcId = "npc_merchant_001",
+            npcName = "Марек",
+            merchantProfile = "GeneralGoods",
+            tradeCycleId = "world_trade_0",
+            derivedTradeSlotCount = 7,
+            createdAtTurn = 7,
+            createdAtUtc = "2026-03-28T00:00:00Z",
+            createdAtWorldDate = 100,
+            refreshAfterWorldDate = 43200
+        };
+
+        await SeedBaseStateAsync(includeTradeInventory: true, includeTradeReceipt: false);
+        await AddTopLevelReceiptUpdatesAsync(new[]
+        {
+            new
+            {
+                requestId = request.requestId,
+                npcId = request.npcId,
+                npcName = request.npcName,
+                tradeCycleId = request.tradeCycleId,
+                merchantProfile = request.merchantProfile,
+                status = "ready",
+                itemCount = 7,
+                resolvedAtTurn = 7,
+                resolvedAtUtc = "2026-03-28T00:05:00Z"
+            }
+        });
+        await WriteJsonAsync(NpcTradeRequestState.PendingRequestPath, new { requests = new[] { request } });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new { currentRealm = "Mortal World" });
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_npc_trade_inventory_request_top_level_receipt.json";
+        await WriteJsonAsync(backupPath, new { requests = new[] { request } });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [NpcTradeRequestState.PendingRequestPath] = backupPath
+        });
+
+        var issues = await InvokeValidationAsync("ValidatePendingNpcTradeInventoryRequestResolutionAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "npc_trade_request_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SoulStateCrossIncarnationDataRemainsLifecycleCompatible()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: false, includeTradeReceipt: false);
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 1,
+            crossIncarnationData = new
+            {
+                legacyThreadId = "thread_alpha"
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.FilePath, "game_state/meta/soul_state.json", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Code, "flexible_state_unknown_top_level_key", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -335,6 +489,30 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
 
     private async Task WritePendingTurnSnapshotManifestAsync(Dictionary<string, string> rollbackBackups)
     {
+        var normalizedRollbackBackups = rollbackBackups.ToDictionary(
+            pair => NormalizeRelativePath(pair.Key),
+            pair => NormalizeRelativePath(pair.Value),
+            StringComparer.OrdinalIgnoreCase);
+
+        var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var snapshotFileHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var pair in normalizedRollbackBackups)
+        {
+            var snapshotPath = $"game_state/control/pending_turn_snapshot/{pair.Key}";
+            var snapshotJson = await _fs.ReadFileAsync(snapshotPath);
+            if (string.IsNullOrWhiteSpace(snapshotJson))
+            {
+                snapshotJson = await _fs.ReadFileAsync(pair.Value);
+                if (string.IsNullOrWhiteSpace(snapshotJson))
+                    continue;
+
+                await _fs.WriteFileAtomicAsync(snapshotPath, snapshotJson);
+            }
+
+            files[pair.Key] = snapshotPath;
+            snapshotFileHashes[pair.Key] = ComputeSha256(snapshotJson);
+        }
+
         var manifest = new
         {
             sessionId = "test-session",
@@ -342,16 +520,39 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
             turnNumber = 12,
             requestTimestamp = "2026-03-28T00:00:00Z",
             playerAction = "test",
-            files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
-            snapshotFileHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
+            files,
+            snapshotFileHashes,
             clientOwnedValidationHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
-            rollbackBackups,
-            rollbackBaselineFiles = Array.Empty<string>(),
+            rollbackBackups = normalizedRollbackBackups,
+            rollbackBaselineFiles = normalizedRollbackBackups.Keys.OrderBy(path => path, StringComparer.OrdinalIgnoreCase).ToArray(),
             sourceLabel = "npc-trade-validation-tests",
             manifestPayloadHash = string.Empty
         };
 
-        await WriteJsonAsync("game_state/control/pending_turn_snapshot.json", manifest);
+        var manifestJson = JsonSerializer.Serialize(manifest, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
+        var materializedManifest = JsonNode.Parse(manifestJson)!.AsObject();
+        materializedManifest["manifestPayloadHash"] = ComputeManifestPayloadHash(materializedManifest);
+
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "test-session",
+            requestId = "test-request",
+            turnNumber = 12
+        });
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            materializedManifest.ToJsonString(new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            }));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
     private async Task<List<ValidationIssue>> InvokeValidationAsync(string methodName)
@@ -376,6 +577,26 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
         await _fs.WriteFileAtomicAsync(relativePath, json);
     }
 
+    private async Task AddTopLevelReceiptUpdatesAsync(object payload)
+    {
+        var rootJson = await _fs.ReadFileAsync("game_state/npcs/npc_core.json");
+        Assert.False(string.IsNullOrWhiteSpace(rootJson));
+
+        var root = JsonNode.Parse(rootJson!) as JsonObject;
+        Assert.NotNull(root);
+
+        root![NpcTradeRequestState.UpdateReceiptsProperty] = JsonSerializer.SerializeToNode(payload, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true
+        });
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", root.ToJsonString(new JsonSerializerOptions
+        {
+            WriteIndented = true
+        }));
+    }
+
     private static void CopyDirectory(string sourceDir, string destinationDir)
     {
         Directory.CreateDirectory(destinationDir);
@@ -383,6 +604,26 @@ public sealed class NpcTradeRequestValidationTests : IDisposable
             File.Copy(file, Path.Combine(destinationDir, Path.GetFileName(file)), overwrite: true);
         foreach (var directory in Directory.GetDirectories(sourceDir))
             CopyDirectory(directory, Path.Combine(destinationDir, Path.GetFileName(directory)));
+    }
+
+    private static string NormalizeRelativePath(string path) => path.Replace('\\', '/');
+
+    private static string ComputeManifestPayloadHash(JsonObject manifest)
+    {
+        var clone = manifest.DeepClone().AsObject();
+        clone["manifestPayloadHash"] = string.Empty;
+        return ComputeSha256(clone.ToJsonString(new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        }));
+    }
+
+    private static string ComputeSha256(string content)
+    {
+        using var sha = SHA256.Create();
+        return Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(content)));
     }
 
     public void Dispose()

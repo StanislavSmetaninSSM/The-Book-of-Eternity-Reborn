@@ -71,7 +71,11 @@ public partial class ExplorerMode
             foreach (var request in currentManifestationRequests.Take(3))
             {
                 var displayName = string.IsNullOrWhiteSpace(request.CompanionNameHint) ? request.RelicName : request.CompanionNameHint;
-                lines.Add($"  [dim]{Markup.Escape(displayName)} должно materialize-иться как ранняя встреча или soul-quest path.[/]");
+                var snapshotSummary = GuardianAbodeResidentRequestState.DescribeManifestationRequestSnapshot(request);
+                var detailLine = string.IsNullOrWhiteSpace(snapshotSummary)
+                    ? $"{displayName} должно materialize-иться как ранняя встреча или soul-quest path."
+                    : $"{displayName} должно materialize-иться как ранняя встреча или soul-quest path [{snapshotSummary.TrimStart(',', ' ')}].";
+                lines.Add($"  [dim]{Markup.Escape(detailLine)}[/]");
             }
         }
 
@@ -916,7 +920,8 @@ public partial class ExplorerMode
             return false;
         }
 
-        if (await AfterlifeArchiveActionState.ReadConsultationAsync(_fs) != null)
+        var pendingRequestState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
+        if (pendingRequestState.Exists)
             return false;
 
         var guardians = await ReadGuardiansForArchiveOperationAsync(entry);
@@ -932,7 +937,8 @@ public partial class ExplorerMode
             return false;
         }
 
-        if (await AfterlifeArchiveActionState.ReadProjectFuelAsync(_fs) != null)
+        var pendingRequestState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs);
+        if (pendingRequestState.Exists)
             return false;
 
         var guardians = await ReadGuardiansForArchiveOperationAsync(entry);
@@ -950,9 +956,12 @@ public partial class ExplorerMode
             return false;
         }
 
-        if (await AfterlifeArchiveActionState.ReadConsultationAsync(_fs) != null)
+        var consultationState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
+        if (consultationState.Exists)
         {
-            MarkupLine("[yellow]⚠️ Уже есть незакрытый запрос на архивную консультацию. Дождитесь ответа GM.[/]");
+            MarkupLine(consultationState.IsMalformed
+                ? "[red]❌ pending_archive_consultation_request.json повреждён или неполон. Новый запрос заблокирован, пока pending request не будет исправлен или очищен.[/]"
+                : "[yellow]⚠️ Уже есть незакрытый запрос на архивную консультацию. Дождитесь ответа GM.[/]");
             return false;
         }
 
@@ -1027,9 +1036,12 @@ public partial class ExplorerMode
             return false;
         }
 
-        if (await AfterlifeArchiveActionState.ReadProjectFuelAsync(_fs) != null)
+        var projectFuelState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs);
+        if (projectFuelState.Exists)
         {
-            MarkupLine("[yellow]⚠️ Уже есть незакрытый запрос на archive project fuel. Дождитесь ответа GM.[/]");
+            MarkupLine(projectFuelState.IsMalformed
+                ? "[red]❌ pending_archive_project_fuel_request.json повреждён или неполон. Новый запрос заблокирован, пока pending request не будет исправлен или очищен.[/]"
+                : "[yellow]⚠️ Уже есть незакрытый запрос на archive project fuel. Дождитесь ответа GM.[/]");
             return false;
         }
 

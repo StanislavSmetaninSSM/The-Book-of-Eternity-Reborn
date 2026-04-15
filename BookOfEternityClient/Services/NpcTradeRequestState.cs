@@ -218,6 +218,28 @@ internal static class NpcTradeRequestState
         }
     }
 
+    public static JsonObject? CreateReceiptAppliedValidationView(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            return null;
+
+        var clone = JsonNode.Parse(root.GetRawText()) as JsonObject;
+        return clone == null ? null : CreateReceiptAppliedValidationView(clone);
+    }
+
+    public static JsonObject CreateReceiptAppliedValidationView(JsonObject root)
+    {
+        var clone = root.DeepClone() as JsonObject ?? new JsonObject();
+
+        if (clone[UpdateReceiptsProperty] is JsonArray receiptUpdates)
+            ApplyReceiptUpdates(clone, receiptUpdates);
+
+        foreach (var npc in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(clone))
+            NormalizeNpcTradeReceiptsShape(npc);
+
+        return clone;
+    }
+
     public static bool MatchesCurrentContract(
         PendingNpcTradeInventoryRequest? request,
         string npcId,
@@ -387,26 +409,11 @@ internal static class NpcTradeRequestState
 
     private static JsonObject? FindNpcEntry(JsonObject root, string npcId)
     {
-        foreach (var array in EnumerateNpcArrays(root))
-        {
-            foreach (var item in array.OfType<JsonObject>())
-            {
-                if (string.Equals(GetNodeString(item["npcId"]) ?? GetNodeString(item["NPCId"]), npcId, StringComparison.OrdinalIgnoreCase))
-                    return item;
-            }
-        }
-
-        return null;
+        return GuardianPolicyContracts.FindCanonicalNpcObject(root, npcId);
     }
 
-    private static IEnumerable<JsonArray> EnumerateNpcArrays(JsonObject root)
-    {
-        foreach (var key in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
-        {
-            if (root[key] is JsonArray array)
-                yield return array;
-        }
-    }
+    private static IEnumerable<JsonArray> EnumerateNpcArrays(JsonObject root) =>
+        GuardianPolicyContracts.EnumerateCanonicalNpcObjectArrays(root);
 
     private static bool IsMortalRealm(string? currentRealm)
     {

@@ -24,7 +24,8 @@ public partial class GameEngine
     private async Task<bool> WaitForGmResponse()
     {
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
-        var rollbackSnapshot = GetRollbackSnapshot(manifest);
+        var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
+        var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
@@ -45,7 +46,7 @@ public partial class GameEngine
             return false;
         }
 
-        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(manifest, rollbackSnapshot);
+        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(snapshotContext, rollbackSnapshot);
         if (terminalOutcome.Kind == "failure")
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
@@ -55,12 +56,12 @@ public partial class GameEngine
         if (terminalOutcome.Kind == "success")
         {
             var signal = terminalOutcome.Signal;
-            var expectedTurn = signal?.TurnNumber ?? manifest?.TurnNumber ?? (_gameLoop.TurnNumber + 1);
+            var expectedTurn = signal?.TurnNumber ?? snapshotContext?.TurnNumber ?? (_gameLoop.TurnNumber + 1);
             if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                     "ответа GM",
                     rollbackSnapshot,
                     expectedTurn,
-                    manifest?.ProgressionControl))
+                    snapshotContext?.ProgressionControl))
             {
                 _pendingMemoryLegacyAwaitingConsumption = false;
                 _fs.DeleteFile("ready/turn_complete.json");
@@ -88,7 +89,7 @@ public partial class GameEngine
 
             _pendingMemoryLegacyAwaitingConsumption = false;
 
-            var qteHandling = await HandleAcceptedQteOfferAsync(response, manifest);
+            var qteHandling = await HandleAcceptedQteOfferAsync(response, snapshotContext);
             if (qteHandling.EarlyExit)
             {
                 _fs.DeleteFile("ready/turn_complete.json");
@@ -99,10 +100,10 @@ public partial class GameEngine
             _lastResponse = qteHandling.Response;
             _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
 
-            if (IsIncarnationSourceLabel(manifest?.SourceLabel))
+            if (IsIncarnationSourceLabel(snapshotContext?.SourceLabel))
                 await _worldDirectiveService.MaterializePendingToActiveAsync();
 
-            await ConsumeAfterlifeReturnProtectionIfNeededAsync(manifest);
+            await ConsumeAfterlifeReturnProtectionIfNeededAsync(snapshotContext);
 
             _fs.DeleteFile("ready/turn_complete.json");
             await CleanupPendingTurnSnapshotAsync();
@@ -132,7 +133,8 @@ public partial class GameEngine
     private async Task<bool> WaitForGmResponseRaw()
     {
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
-        var rollbackSnapshot = GetRollbackSnapshot(manifest);
+        var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
+        var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
@@ -152,7 +154,7 @@ public partial class GameEngine
             return false;
         }
 
-        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(manifest, rollbackSnapshot);
+        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(snapshotContext, rollbackSnapshot);
         if (terminalOutcome.Kind == "failure")
             return false;
 
@@ -266,14 +268,15 @@ public partial class GameEngine
             {
             // Pick up late responses (agent finished after cancel/timeout, or response from previous turn)
             var manifest = await LoadPendingTurnSnapshotManifestAsync();
-            var rollbackSnapshot = GetRollbackSnapshot(manifest);
-            if (await ResolveConcurrentActiveTerminalSignalsAsync(manifest, rollbackSnapshot))
+            var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
+            var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
+            if (await ResolveConcurrentActiveTerminalSignalsAsync(snapshotContext, rollbackSnapshot))
                 continue;
 
             if (_fs.FileExists("ready/turn_error.json"))
             {
                 var signal = await ReadReadySignalMetadataAsync("ready/turn_error.json");
-                if (await DiscardMismatchedReadySignalAsync("late turn_error", signal, manifest))
+                if (await DiscardMismatchedReadySignalAsync("late turn_error", signal, snapshotContext))
                     continue;
 
                 var signalTurn = signal?.TurnNumber;
@@ -303,8 +306,8 @@ public partial class GameEngine
         if (_fs.FileExists("ready/turn_complete.json"))
         {
             var signal = await ReadReadySignalMetadataAsync("ready/turn_complete.json");
-            if (await DiscardMismatchedReadySignalAsync("late turn_complete", signal, manifest))
-                continue;
+                if (await DiscardMismatchedReadySignalAsync("late turn_complete", signal, snapshotContext))
+                    continue;
 
                 var signalTurn = signal?.TurnNumber;
                 var expectedTurn = _gameLoop.TurnNumber + 1;
@@ -319,9 +322,9 @@ public partial class GameEngine
 
                 if (await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                         "late response GM",
-                        GetRollbackSnapshot(manifest),
+                        rollbackSnapshot,
                         signalTurn ?? expectedTurn,
-                        manifest?.ProgressionControl))
+                        snapshotContext?.ProgressionControl))
                 {
                     var lateResponse = await BuildGameResponseFromFiles();
                     if (lateResponse == null || string.IsNullOrEmpty(lateResponse.Response))
@@ -335,17 +338,17 @@ public partial class GameEngine
                     if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
                         await FinalizePendingMemoryLegacyConsumptionAsync();
 
-                    var qteHandling = await HandleAcceptedQteOfferAsync(lateResponse, manifest);
+                    var qteHandling = await HandleAcceptedQteOfferAsync(lateResponse, snapshotContext);
                     if (!qteHandling.EarlyExit)
                     {
                         _lastResponse = qteHandling.Response;
                         _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
                     }
 
-                    if (IsIncarnationSourceLabel(manifest?.SourceLabel))
+                    if (IsIncarnationSourceLabel(snapshotContext?.SourceLabel))
                         await _worldDirectiveService.MaterializePendingToActiveAsync();
 
-                    await ConsumeAfterlifeReturnProtectionIfNeededAsync(manifest);
+                    await ConsumeAfterlifeReturnProtectionIfNeededAsync(snapshotContext);
                 }
                 _fs.DeleteFile("ready/turn_complete.json");
                 await CleanupPendingTurnSnapshotAsync();
@@ -578,7 +581,8 @@ public partial class GameEngine
         }
 
         var activeManifest = await LoadPendingTurnSnapshotManifestAsync();
-        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(activeManifest, backedUpFiles);
+        var activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
+        var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(activeSnapshotContext, backedUpFiles);
         if (terminalOutcome.Kind == "failure")
             return;
 
@@ -616,7 +620,6 @@ public partial class GameEngine
 
         // Turn accepted — backup no longer needed
         CleanupBackup(backedUpFiles);
-        await CleanupPendingTurnSnapshotAsync();
         if (clearsSystemGuardianAttraction)
             _systemGuardianLibraryService.ClearAttractionRequest();
         if (clearsPendingAbodeOffering)
@@ -649,12 +652,14 @@ public partial class GameEngine
         await CheckLifeTransitions();
         await CheckAscensionTrigger();
 
-        var qteHandling = await HandleAcceptedQteOfferAsync(response, activeManifest);
+        var qteHandling = await HandleAcceptedQteOfferAsync(response, activeSnapshotContext);
         if (qteHandling.EarlyExit)
             return;
 
         _lastResponse = qteHandling.Response;
         _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
+
+        await CleanupPendingTurnSnapshotAsync();
 
         // Autosave
         if (_stateManager.Settings.AutosaveIntervalTurns > 0 &&
@@ -886,31 +891,8 @@ public partial class GameEngine
 
     private static IEnumerable<JsonElement> EnumerateStoryNpcObjects(JsonElement root)
     {
-        if (root.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var npc in root.EnumerateArray())
-            {
-                if (npc.ValueKind == JsonValueKind.Object)
-                    yield return npc;
-            }
-
-            yield break;
-        }
-
-        if (root.ValueKind != JsonValueKind.Object)
-            yield break;
-
-        foreach (var propertyName in new[] { "UpdateNPCs", "NPCsInScene", "NPCs", "npcs", "npcDataChanges" })
-        {
-            if (!root.TryGetProperty(propertyName, out var npcs) || npcs.ValueKind != JsonValueKind.Array)
-                continue;
-
-            foreach (var npc in npcs.EnumerateArray())
-            {
-                if (npc.ValueKind == JsonValueKind.Object)
-                    yield return npc;
-            }
-        }
+        foreach (var npc in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(root))
+            yield return npc;
     }
 
     private static string? TryGetString(JsonElement root, string propertyName)
@@ -950,7 +932,7 @@ public partial class GameEngine
 
     private async Task<(bool EarlyExit, GameResponse Response)> HandleAcceptedQteOfferAsync(
         GameResponse? response,
-        PendingTurnSnapshotManifest? manifest)
+        ValidatedPendingTurnSnapshotContext? snapshotContext)
     {
         response ??= new GameResponse();
         var offer = await _qteSceneService.TryReadOfferAsync();
@@ -960,12 +942,12 @@ public partial class GameEngine
             return (false, response);
         }
 
-        if (!QteSceneService.IsEligibleOfferSourceLabel(manifest?.SourceLabel))
+        if (!QteSceneService.IsEligibleOfferSourceLabel(snapshotContext?.SourceLabel))
         {
             _logger.LogError(
                 "QTE offer {QteId} получен вне обычного игрокского хода (SourceLabel={SourceLabel}) и будет проигнорирован.",
                 offer.QteId,
-                manifest?.SourceLabel ?? "<missing>");
+                snapshotContext?.SourceLabel ?? "<missing>");
             _qteSceneService.ClearOfferFile();
             return (false, response);
         }
@@ -977,9 +959,9 @@ public partial class GameEngine
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
 
-            var originalAction = manifest?.PlayerAction;
+            var originalAction = snapshotContext?.PlayerAction;
             if (!string.IsNullOrWhiteSpace(originalAction) &&
-                QteSceneService.IsEligibleOfferSourceLabel(manifest?.SourceLabel))
+                QteSceneService.IsEligibleOfferSourceLabel(snapshotContext?.SourceLabel))
             {
                 var declineReminder =
                     $"[QTE_DECLINED:{offer.QteId}] Игрок отклонил QTE-сценарий. Разреши ту же ситуацию обычными игровыми механиками. Повторно предлагать этот qteId запрещено.";
@@ -1153,15 +1135,6 @@ public partial class GameEngine
         var transJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
         if (transJson == null) return;
 
-        var currentRealm = _stateManager.CurrentState.CurrentRealm ?? string.Empty;
-        if (string.Equals(currentRealm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(currentRealm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(currentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(currentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase))
-        {
-            return;
-        }
-
         RollbackSnapshot? rollbackBackups = null;
         var localStateMutated = false;
         var manifestCreated = false;
@@ -1173,8 +1146,31 @@ public partial class GameEngine
             var root = doc.RootElement;
 
             // If TriggerLifeEnd is present, transition back to Chaos Sea
-            if (!TryReadLifeTransitionPayload(root, out var reason, out var summary))
+            if (!CanonicalStateNormalizer.TryReadCanonicalTriggerLifeEnd(root, out var reason, out var summary))
                 return;
+
+            JsonObject? currentSoulStateRoot = null;
+            var currentSoulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            if (!string.IsNullOrWhiteSpace(currentSoulStateJson))
+            {
+                try
+                {
+                    currentSoulStateRoot = JsonNode.Parse(currentSoulStateJson) as JsonObject;
+                }
+                catch
+                {
+                    currentSoulStateRoot = null;
+                }
+            }
+
+            var runtimeTriggerAuthority = await CanonicalStateNormalizer.ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
+                _fs,
+                transJson,
+                currentSoulStateRoot);
+            if (!runtimeTriggerAuthority.IsAuthorized)
+            {
+                throw new TriggerLifeEndRuntimeContextException(runtimeTriggerAuthority.Description);
+            }
 
             rollbackBackups = await CreatePreTurnBackup(DateTime.UtcNow.Ticks.ToString());
 
@@ -1249,9 +1245,10 @@ public partial class GameEngine
             if (await WaitForGmResponseRaw())
             {
                 var manifest = await LoadPendingTurnSnapshotManifestAsync();
+                var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
                 if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                         "оценки жизни",
-                        GetRollbackSnapshot(manifest),
+                        BuildValidatedRollbackSnapshot(snapshotContext),
                         _gameLoop.TurnNumber + 1,
                         evalRequest.ProgressionControl))
                 {
@@ -1277,7 +1274,11 @@ public partial class GameEngine
                         await BuildActiveGuardianStoryEntityRefsAsync()));
 
                 // === PHASE 5: Show reward screen ===
-                await ShowLifeEvaluationRewards(preDeathInkFeathers, preDeathEnlightenment, preDeathSoulStateJson);
+                await ShowLifeEvaluationRewards(
+                    preDeathInkFeathers,
+                    preDeathEnlightenment,
+                    preDeathSoulStateJson,
+                    hasLifecycleAuthorizedTriggerLifeEnd: true);
                 var guardianContext = await _afterlifeReturnGuardService.ReadActiveGuardianContextAsync();
                 await _afterlifeReturnGuardService.ActivatePostLifeReturnAsync(
                     guardianContext.GuardianId,
@@ -1288,6 +1289,15 @@ public partial class GameEngine
                 await CleanupPendingTurnSnapshotAsync();
             }
         }
+        catch (TriggerLifeEndRuntimeContextException ex)
+        {
+            if (!requestDispatched)
+                await CleanupUndispatchedTransitionPrepAsync(rollbackBackups, localStateMutated, manifestCreated);
+
+            HandleInvalidTriggerLifeEndRuntimeFailure(_fs, ex);
+            AnsiConsole.MarkupLine("[red]⚠ Клиент отклонил некорректный TriggerLifeEnd и очистил game_state/control/life_transitions.json.[/]");
+            AnsiConsole.MarkupLine($"[dim]{GameInterface.EscapeMarkup(ex.Message)}[/]");
+        }
         catch (Exception ex)
         {
             if (!requestDispatched)
@@ -1296,10 +1306,60 @@ public partial class GameEngine
         }
     }
 
+    internal static bool TryDescribeInvalidTriggerLifeEndRuntimeContext(
+        string? preTriggerRealm,
+        string? currentRealm,
+        out string failureDescription)
+    {
+        if (!RealmSemantics.IsMortalRealm(preTriggerRealm))
+        {
+            failureDescription = string.IsNullOrWhiteSpace(preTriggerRealm)
+                ? "Canonical TriggerLifeEnd runtime flow requires readable pre-turn mortal realm authority from pending snapshot soul_state."
+                : $"Canonical TriggerLifeEnd runtime flow requires mortal pre-turn realm authority, but pending snapshot soul_state.currentRealm is '{preTriggerRealm}'.";
+            return true;
+        }
+
+        if (RealmSemantics.IsAfterlifeRealm(currentRealm))
+        {
+            failureDescription =
+                $"Canonical TriggerLifeEnd is present, but current soul_state.currentRealm is already '{currentRealm}' before runtime transition flow. Same-turn manual realm switch is invalid.";
+            return true;
+        }
+
+        failureDescription = string.Empty;
+        return false;
+    }
+
+    internal static void HandleInvalidTriggerLifeEndRuntimeFailure(FileSystemManager fs, Exception ex)
+    {
+        AppendErrorLogEntry(fs, ex);
+        if (fs.FileExists("game_state/control/life_transitions.json"))
+            fs.DeleteFile("game_state/control/life_transitions.json");
+    }
+
+    private static bool TryReadStrictSoulStateCurrentRealm(JsonElement soulStateRoot, out string currentRealm)
+    {
+        currentRealm = string.Empty;
+
+        if (soulStateRoot.ValueKind != JsonValueKind.Object ||
+            !soulStateRoot.TryGetProperty("currentRealm", out var currentRealmNode) ||
+            currentRealmNode.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        currentRealm = (currentRealmNode.GetString() ?? string.Empty).Trim();
+        return !string.IsNullOrWhiteSpace(currentRealm);
+    }
+
     /// <summary>
     /// Displays life evaluation rewards — comparing before/after soul state.
     /// </summary>
-    private async Task ShowLifeEvaluationRewards(int preDeathInkFeathers, string preDeathEnlightenment, string? preDeathSoulStateJson)
+    private async Task ShowLifeEvaluationRewards(
+        int preDeathInkFeathers,
+        string preDeathEnlightenment,
+        string? preDeathSoulStateJson,
+        bool hasLifecycleAuthorizedTriggerLifeEnd)
     {
         // Re-read soul state for latest values (GM should have updated it)
         await RefreshRuntimeStateAsync();
@@ -1313,7 +1373,12 @@ public partial class GameEngine
         var relicCount = 0;
         var newRelics = new List<string>();
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (LifeEvaluationRewardAnalyzer.TryComputeDelta(preDeathSoulStateJson, soulJson, out var rewardDelta, out _) &&
+        if (LifeEvaluationRewardAnalyzer.TryComputeDelta(
+                preDeathSoulStateJson,
+                soulJson,
+                hasLifecycleAuthorizedTriggerLifeEnd,
+                out var rewardDelta,
+                out _) &&
             rewardDelta != null)
         {
             feathersEarned = rewardDelta.InkFeathersEarned;
@@ -1323,42 +1388,6 @@ public partial class GameEngine
                     : $"{relic.Name} ({relic.Rarity})")
                 .ToList();
             relicCount = rewardDelta.NewRelics.Count;
-        }
-        else if (soulJson != null)
-        {
-            try
-            {
-                using var soulDoc = JsonDocument.Parse(soulJson);
-                if (soulDoc.RootElement.TryGetProperty("soulRelics", out var relics))
-                {
-                    if (relics.TryGetProperty("stored", out var stored) && stored.ValueKind == JsonValueKind.Array)
-                        relicCount += stored.GetArrayLength();
-                    if (relics.TryGetProperty("equipped", out var equipped) && equipped.ValueKind == JsonValueKind.Array)
-                        relicCount += equipped.GetArrayLength();
-
-                    // Try to find recently acquired relics
-                    foreach (var arr in new[] { "stored", "equipped" })
-                    {
-                        if (relics.TryGetProperty(arr, out var ra) && ra.ValueKind == JsonValueKind.Array)
-                        {
-                            foreach (var relic in ra.EnumerateArray())
-                            {
-                                if (relic.TryGetProperty("acquisitionData", out var acq) &&
-                                    acq.TryGetProperty("acquisitionStory", out _))
-                                {
-                                    var name = relic.TryGetProperty("name", out var n) ? n.GetString() ?? "?" : "?";
-                                    var rarity = relic.TryGetProperty("rarity", out var rar) ? rar.GetString() ?? "" : "";
-                                    newRelics.Add($"{name} ({rarity})");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogDebug(ex, "Не удалось прочитать soulRelics для life evaluation summary.");
-            }
         }
 
         // Build reward panel
@@ -1708,45 +1737,33 @@ public partial class GameEngine
         }
     }
 
-    private static bool TryReadLifeTransitionPayload(JsonElement root, out string reason, out string summary)
-    {
-        reason = "";
-        summary = "";
-
-        var payload = root;
-        if (root.TryGetProperty("TriggerLifeEnd", out var nested) && nested.ValueKind == JsonValueKind.Object)
-            payload = nested;
-
-        if (!payload.TryGetProperty("reason", out var reasonEl) || reasonEl.ValueKind != JsonValueKind.String)
-            return false;
-        if (!payload.TryGetProperty("summary", out var summaryEl) || summaryEl.ValueKind != JsonValueKind.String)
-            return false;
-
-        reason = reasonEl.GetString() ?? "";
-        summary = summaryEl.GetString() ?? "";
-        if (!string.Equals(reason, "Death", StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(reason, "Voluntary", StringComparison.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        return !string.IsNullOrWhiteSpace(summary);
-    }
-
     /// <summary>
      /// Logs an error to game_session/error_log.txt for diagnostics.
      /// </summary>
     private void LogError(Exception ex)
     {
+        AppendErrorLogEntry(_fs, ex);
+    }
+
+    internal static void AppendErrorLogEntry(FileSystemManager fs, Exception ex)
+    {
         try
         {
-            var logPath = Path.Combine(_fs.GameSessionPath, "error_log.txt");
+            var logPath = Path.Combine(fs.GameSessionPath, "error_log.txt");
             var entry = $"[{DateTime.UtcNow:O}] {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}\n\n";
             File.AppendAllText(logPath, entry, System.Text.Encoding.UTF8);
         }
         catch
         {
             // Avoid recursive failures while attempting to record the original exception.
+        }
+    }
+
+    internal sealed class TriggerLifeEndRuntimeContextException : InvalidOperationException
+    {
+        public TriggerLifeEndRuntimeContextException(string message)
+            : base(message)
+        {
         }
     }
 
@@ -2110,6 +2127,8 @@ For EVERY relevant NPC block, the current-location line is mandatory: explicitly
 Missing scope declaration or missing/empty actor reasoning blocks will cause client rejection.
 If you narrate a meaningful NPC reaction or introduce a new named NPC, you MUST also register/update the relevant NPC state. Narrative-only NPCs without state consequences are protocol violations.
 If you emit structured actor updates such as UpdateNPCs, NPCGoalUpdates, NPCActivityUpdates, or UpdateGuardians, those actors MUST appear in Relevant actors and MUST have full reasoning blocks. Scene-local with `Relevant actors: нет` is valid only when no structured actor updates are emitted.
+The same scope discipline applies to afterlife residents when you change them with UpdateGuardianAbodeResidents, residentThoughtJournalUpdates, residentInteractionLogUpdates, or UpdateGuardianAbodeResidentHistoryLog.
+If a turn changes a resident's abode devotion, restlessness, migration state, or other resident-facing social state, that resident MUST appear in Relevant actors and MUST have a reasoning block.
 
 GUARDIAN AGENCY — HARD REQUIREMENT:
 In Chaos Sea, use the same declared-scope model for relevant Guardians.

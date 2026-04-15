@@ -65,6 +65,108 @@ public sealed class AfterlifeArchiveProjectFuelServiceTests : IDisposable
         Assert.Equal("social_project", requestDoc.RootElement.GetProperty("targetProjectId").GetString());
     }
 
+    [Fact]
+    public async Task CreateRequestAsync_MalformedPendingProjectFuelFile_BlocksNewRequest()
+    {
+        await SeedSoulStateAsync("archive_lore_001", "lore_fragment", "Rare");
+        await SeedGuardianAsync("guardian_brann", "Бранн", 120);
+        await SeedActiveProjectAsync("guardian_brann", "forge_project", "Расширение кузни");
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            """
+            {
+              "requestId": "fuel_req_broken",
+              "guardianId":
+            """
+        );
+
+        var result = await _service.CreateRequestAsync("guardian_brann", "Бранн", "archive_lore_001", "Chaos Sea", 12);
+
+        Assert.Null(result);
+        Assert.True(_fs.FileExists(AfterlifeArchiveActionState.ProjectFuelRequestPath));
+    }
+
+    [Fact]
+    public async Task CreateRequestAsync_PreservesUnrelatedMetaStateUpdatesAndOnlyPrunesConflictingArchiveTransientEntries()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 2,
+          "crossIncarnationData": {
+            "legacyThreadId": "thread_alpha"
+          },
+          "metaStateUpdates": {
+            "memoryLegacyGrant": {
+              "legacyId": "legacy_alpha",
+              "legacyType": "startingCharacteristicBonus",
+              "sourceLifeHint": "life_001",
+              "characteristic": "strength",
+              "bonus": 2
+            }
+          },
+          "afterlifeArchiveUpdates": [
+            {
+              "command": "remove",
+              "archiveId": "archive_lore_001"
+            },
+            {
+              "command": "remove",
+              "archiveId": "archive_keep"
+            }
+          ],
+          "archiveActionResolutions": [
+            {
+              "requestId": "req_conflict",
+              "archiveId": "archive_lore_001",
+              "requestedMode": "project_fuel",
+              "status": "cancelled"
+            },
+            {
+              "requestId": "req_keep",
+              "archiveId": "archive_keep",
+              "requestedMode": "consultation",
+              "status": "rejected"
+            }
+          ],
+          "afterlifeArchive": {
+            "stored": [
+              {
+                "archiveId": "archive_lore_001",
+                "entryType": "lore_fragment",
+                "title": "Тестовая архивная запись",
+                "summary": "Тестовая запись для подпитки проекта.",
+                "rarity": "Rare",
+                "sourceLife": 2,
+                "sourceKind": "codex",
+                "acquiredAtUtc": "2026-03-26T00:00:00Z"
+              }
+            ]
+          }
+        }
+        """);
+        await SeedGuardianAsync("guardian_brann", "Бранн", 120);
+        await SeedActiveProjectAsync("guardian_brann", "forge_project", "Расширение кузни");
+
+        var result = await _service.CreateRequestAsync("guardian_brann", "Бранн", "archive_lore_001", "Chaos Sea", 12);
+
+        Assert.NotNull(result);
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        Assert.False(soulDoc.RootElement.TryGetProperty("crossIncarnationData", out _));
+        Assert.True(soulDoc.RootElement.TryGetProperty("metaStateUpdates", out var metaStateUpdates));
+        Assert.True(metaStateUpdates.TryGetProperty("memoryLegacyGrant", out _));
+
+        var archiveUpdates = soulDoc.RootElement.GetProperty("afterlifeArchiveUpdates").EnumerateArray().ToList();
+        Assert.Single(archiveUpdates);
+        Assert.Equal("archive_keep", archiveUpdates[0].GetProperty("archiveId").GetString());
+
+        var archiveResolutions = soulDoc.RootElement.GetProperty("archiveActionResolutions").EnumerateArray().ToList();
+        Assert.Single(archiveResolutions);
+        Assert.Equal("req_keep", archiveResolutions[0].GetProperty("requestId").GetString());
+        Assert.Equal("archive_keep", archiveResolutions[0].GetProperty("archiveId").GetString());
+    }
+
     private async Task SeedSoulStateAsync(string archiveId, string entryType, string rarity)
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

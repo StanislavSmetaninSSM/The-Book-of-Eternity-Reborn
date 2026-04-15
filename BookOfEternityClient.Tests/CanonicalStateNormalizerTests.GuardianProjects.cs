@@ -13,6 +13,166 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class CanonicalStateNormalizerTests : IDisposable
 {
     [Fact]
+    public void TryResolveGuardianProjectAuthoritySoulContext_RecordLifeCompletionWithCanonicalTriggerLifeEnd_IsReadable()
+    {
+        const string soulStateJson = """
+        {
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 3,
+          "metaStateUpdates": {
+            "lifeTransitions": {
+              "recordLifeCompletion": {
+                "characterFinalState": { "causeOfDeath": "Test" },
+                "majorAchievements": [],
+                "relationshipsFormed": [],
+                "moralChoices": [],
+                "skillsLearned": [],
+                "enlightenmentGained": 0
+              }
+            }
+          }
+        }
+        """;
+
+        const string lifeTransitionsJson = """
+        {
+          "reason": "Death",
+          "summary": "Жизнь завершена."
+        }
+        """;
+
+        const string preTurnSoulStateJson = """
+        {
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 3
+        }
+        """;
+
+        var success = CanonicalStateNormalizer.TryResolveGuardianProjectAuthoritySoulContext(
+            soulStateJson,
+            preTurnSoulStateJson,
+            lifeTransitionsJson,
+            currentTurn: 12,
+            new GuardianProjectSoulContextRequirements(
+                RequiresCurrentIncarnation: true,
+                RequiresCurrentRealm: true),
+            out var currentIncarnation,
+            out var currentRealm,
+            out var failureDescription);
+
+        Assert.True(success, failureDescription);
+        Assert.Equal(3, currentIncarnation);
+        Assert.Equal("Mortal World", currentRealm);
+    }
+
+    [Fact]
+    public void TryResolveGuardianProjectAuthoritySoulContext_RecordLifeCompletionWithoutCanonicalTriggerLifeEnd_FailsReadable()
+    {
+        const string soulStateJson = """
+        {
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 3,
+          "metaStateUpdates": {
+            "lifeTransitions": {
+              "recordLifeCompletion": {
+                "characterFinalState": { "causeOfDeath": "Test" },
+                "majorAchievements": [],
+                "relationshipsFormed": [],
+                "moralChoices": [],
+                "skillsLearned": [],
+                "enlightenmentGained": 0
+              }
+            }
+          }
+        }
+        """;
+
+        var success = CanonicalStateNormalizer.TryResolveGuardianProjectAuthoritySoulContext(
+            soulStateJson,
+            null,
+            null,
+            currentTurn: 12,
+            new GuardianProjectSoulContextRequirements(
+                RequiresCurrentIncarnation: true,
+                RequiresCurrentRealm: true),
+            out _,
+            out _,
+            out var failureDescription);
+
+        Assert.False(success);
+        Assert.Contains("recordLifeCompletion", failureDescription, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HasCanonicalTriggerLifeEnd_MissingSummary_ReturnsFalse()
+    {
+        const string lifeTransitionsJson = """
+        {
+          "reason": "Death"
+        }
+        """;
+
+        Assert.False(CanonicalStateNormalizer.HasCanonicalTriggerLifeEnd(lifeTransitionsJson));
+    }
+
+    [Fact]
+    public void HasCanonicalTriggerLifeEnd_NonStringSummary_ReturnsFalse()
+    {
+        const string lifeTransitionsJson = """
+        {
+          "reason": "Death",
+          "summary": 123
+        }
+        """;
+
+        Assert.False(CanonicalStateNormalizer.HasCanonicalTriggerLifeEnd(lifeTransitionsJson));
+    }
+
+    [Fact]
+    public void HasCanonicalTriggerLifeEnd_UnknownVisibleKey_ReturnsFalse()
+    {
+        const string lifeTransitionsJson = """
+        {
+          "reason": "Death",
+          "summary": "Жизнь завершена.",
+          "unexpected": true
+        }
+        """;
+
+        Assert.False(CanonicalStateNormalizer.HasCanonicalTriggerLifeEnd(lifeTransitionsJson));
+    }
+
+    [Fact]
+    public void HasLifecycleAuthorizedTriggerLifeEnd_MortalRealm_ReturnsTrue()
+    {
+        const string lifeTransitionsJson = """
+        {
+          "reason": "Death",
+          "summary": "Жизнь завершена."
+        }
+        """;
+
+        Assert.True(CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEnd(
+            lifeTransitionsJson,
+            "Mortal World"));
+    }
+
+    [Fact]
+    public void HasLifecycleAuthorizedTriggerLifeEnd_AfterlifeRealm_ReturnsFalse()
+    {
+        const string lifeTransitionsJson = """
+        {
+          "reason": "Death",
+          "summary": "Жизнь завершена."
+        }
+        """;
+
+        Assert.False(CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEnd(
+            lifeTransitionsJson,
+            "Chaos Sea"));
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_GuardianProjectCompletion_MaterializesPowerEventsAndJournal()
     {
         await _fs.WriteFileAtomicAsync("input/turn_request.json", """
@@ -116,6 +276,108 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.NotNull(journalJson);
         Assert.Contains("project_completion", journalJson, StringComparison.Ordinal);
         Assert.Contains("rival_strike", journalJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_BackupDerivedCurrentLoreIncarnationWithMalformedCanonicalCurrentSoulState_FailsBeforeEarlierWrites()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "inkFeathers": {
+            "current": 19,
+            "foo": 1
+          }
+        }
+        """);
+
+        const string trackerBackupPath = "test_backups/preturn_tracker_backup_derived_current_lore_malformed_canonical_soul_state.json";
+        const string guardiansBackupPath = "test_backups/preturn_guardians_backup_derived_current_lore_malformed_canonical_soul_state.json";
+        const string soulStateBackupPath = "test_backups/preturn_soul_state_backup_derived_current_lore_malformed_canonical_soul_state.json";
+        var trackerJson = """
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_backup_derived_current_lore_malformed_canonical_soul",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Backup-derived current lore with malformed canonical soul_state",
+                "finalState": "Completed",
+                "projectOutcomeAudit": {
+                  "questHookCount": 1,
+                  "visibleRivalClueBonus": 0
+                },
+                "effectState": {
+                  "targetIncarnation": 3,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 0,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 0,
+                  "visibleRivalClueBudgetSpent": 0
+                }
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(trackerBackupPath, trackerJson);
+        await _fs.WriteFileAtomicAsync(guardiansBackupPath, """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(soulStateBackupPath, """
+        {
+          "currentIncarnation": 2,
+          "currentRealm": "Chaos Sea",
+          "inkFeathers": {
+            "current": 19,
+            "total": 19
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [GuardianProjectState.TrackerPath] = trackerBackupPath,
+                ["game_state/meta/guardians.json"] = guardiansBackupPath,
+                ["game_state/meta/soul_state.json"] = soulStateBackupPath
+            }));
+
+        Assert.Contains("readable current soul_state.json authority surface", exception.Message, StringComparison.OrdinalIgnoreCase);
+        var currentTrackerJson = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        Assert.Equal(trackerJson, currentTrackerJson);
+        Assert.NotNull(soulStateJson);
+        Assert.Contains("\"foo\": 1", soulStateJson, StringComparison.Ordinal);
+        Assert.False(_fs.FileExists("game_state/meta/guardians.json"));
     }
 
     [Fact]
@@ -2215,7 +2477,10 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
-          "inkFeathers": 5
+          "inkFeathers": {
+            "current": 5,
+            "total": 5
+          }
         }
         """);
 
@@ -2289,7 +2554,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.Contains("readable current guardians.json authority surface", exception.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Equal(currentTrackerJson, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
         Assert.Equal("{ malformed guardians", await _fs.ReadFileAsync("game_state/meta/guardians.json"));
-        Assert.Contains("\"inkFeathers\": 5", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
+        Assert.Contains("\"current\": 5", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
     }
 
     [Theory]
@@ -2325,7 +2590,10 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
           "currentIncarnation": 0,
-          "inkFeathers": 7
+          "inkFeathers": {
+            "current": 7,
+            "total": 7
+          }
         }
         """);
 
@@ -2404,7 +2672,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
 
         Assert.Contains("readable current guardians.json authority surface", exception.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Equal(currentTrackerJson, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
-        Assert.Contains("\"inkFeathers\": 7", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
+        Assert.Contains("\"current\": 7", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
     }
 
     [Theory]
@@ -2442,7 +2710,10 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
 
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
-          "inkFeathers": 9
+          "inkFeathers": {
+            "current": 9,
+            "total": 9
+          }
         }
         """);
 
@@ -2532,7 +2803,10 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         {
           "currentIncarnation": 0,
           "currentRealm": "underworld",
-          "inkFeathers": 11
+          "inkFeathers": {
+            "current": 11,
+            "total": 11
+          }
         }
         """);
 
@@ -2615,7 +2889,10 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
-          "inkFeathers": 13
+          "inkFeathers": {
+            "current": 13,
+            "total": 13
+          }
         }
         """);
 
@@ -2702,7 +2979,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.Contains("readable current guardians.json authority surface", exception.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Equal(trackerJson, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
         var soulStateJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        Assert.Contains("\"inkFeathers\": 13", soulStateJson, StringComparison.Ordinal);
+        Assert.Contains("\"current\": 13", soulStateJson, StringComparison.Ordinal);
         Assert.DoesNotContain("\"currentIncarnation\": 3", soulStateJson, StringComparison.Ordinal);
     }
 
@@ -2711,7 +2988,10 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
-          "inkFeathers": 17
+          "inkFeathers": {
+            "current": 17,
+            "total": 17
+          }
         }
         """);
 
@@ -2809,7 +3089,10 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
           "currentIncarnation": 4,
-          "inkFeathers": 23
+          "inkFeathers": {
+            "current": 23,
+            "total": 23
+          }
         }
         """);
 
@@ -2938,6 +3221,210 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.Equal(trackerJson, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
         Assert.Equal("{ malformed soul", await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
         Assert.False(_fs.FileExists("game_state/meta/guardians.json"));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_BackupDerivedCurrentLoreIncarnationWithUnsupportedTopLevelCurrentSoulState_RaisesExplicitSoulStateFailure()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          },
+          "foo": []
+        }
+        """);
+
+        const string trackerBackupPath = "test_backups/preturn_tracker_backup_derived_current_lore_unsupported_key_soul_state.json";
+        const string guardiansBackupPath = "test_backups/preturn_guardians_backup_derived_current_lore_unsupported_key_soul_state.json";
+        const string soulStateBackupPath = "test_backups/preturn_soul_state_backup_derived_current_lore_unsupported_key_soul_state.json";
+        var trackerJson = """
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_backup_derived_current_lore_unsupported_key_soul",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Backup-derived current lore with unsupported current soul_state key",
+                "finalState": "Completed",
+                "projectOutcomeAudit": {
+                  "questHookCount": 1,
+                  "visibleRivalClueBonus": 0
+                },
+                "effectState": {
+                  "targetIncarnation": 3,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 0,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 0,
+                  "visibleRivalClueBudgetSpent": 0
+                }
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(trackerBackupPath, trackerJson);
+        await _fs.WriteFileAtomicAsync(guardiansBackupPath, """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(soulStateBackupPath, """
+        {
+          "currentIncarnation": 2,
+          "currentRealm": "Chaos Sea",
+          "inkFeathers": {
+            "current": 19,
+            "total": 19
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [GuardianProjectState.TrackerPath] = trackerBackupPath,
+                ["game_state/meta/guardians.json"] = guardiansBackupPath,
+                ["game_state/meta/soul_state.json"] = soulStateBackupPath
+            }));
+
+        Assert.Contains("readable current soul_state.json authority surface", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(trackerJson, await _fs.ReadFileAsync(GuardianProjectState.TrackerPath));
+        Assert.Contains("\"foo\": []", await _fs.ReadFileAsync("game_state/meta/soul_state.json"), StringComparison.Ordinal);
+        Assert.False(_fs.FileExists("game_state/meta/guardians.json"));
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_BackupDerivedCurrentLoreIncarnationWithArchiveActionResolutionsCurrentSoulState_RemainsValid()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentIncarnation": 3,
+          "currentRealm": "Mortal World",
+          "archiveActionResolutions": []
+        }
+        """);
+
+        const string trackerBackupPath = "test_backups/preturn_tracker_backup_derived_current_lore_archive_action_resolutions_soul_state.json";
+        const string guardiansBackupPath = "test_backups/preturn_guardians_backup_derived_current_lore_archive_action_resolutions_soul_state.json";
+        const string soulStateBackupPath = "test_backups/preturn_soul_state_backup_derived_current_lore_archive_action_resolutions_soul_state.json";
+        const string guardiansJson = """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "questManagement": {
+                "availableQuests": [],
+                "activeQuests": [],
+                "completedQuests": []
+              },
+              "gachaSystem": {
+                "chargesPerReturn": 0,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """;
+        var trackerJson = """
+        {
+          "activeProjects": [],
+          "completedProjects": [
+            {
+              "guardianId": "guardian_alpha",
+              "project": {
+                "projectId": "proj_backup_derived_current_lore_archive_action_resolutions",
+                "projectType": "lore_research",
+                "projectTier": "minor",
+                "projectMode": "internal",
+                "projectName": "Backup-derived current lore with archiveActionResolutions current soul_state key",
+                "finalState": "Completed",
+                "projectOutcomeAudit": {
+                  "questHookCount": 1,
+                  "visibleRivalClueBonus": 0
+                },
+                "effectState": {
+                  "targetIncarnation": 3,
+                  "questHookTokensGranted": 1,
+                  "questHookTokensSpent": 0,
+                  "guaranteedArchiveQuestGranted": 0,
+                  "guaranteedArchiveQuestConsumed": 0,
+                  "specialQuestLineTokensGranted": 0,
+                  "specialQuestLineTokensSpent": 0,
+                  "visibleRivalClueBudgetGranted": 0,
+                  "visibleRivalClueBudgetSpent": 0
+                }
+              }
+            }
+          ],
+          "temporaryProjectModifiers": []
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(trackerBackupPath, trackerJson);
+        await _fs.WriteFileAtomicAsync(guardiansBackupPath, guardiansJson);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansJson);
+        await _fs.WriteFileAtomicAsync(soulStateBackupPath, """
+        {
+          "currentIncarnation": 2,
+          "currentRealm": "Chaos Sea",
+          "inkFeathers": {
+            "current": 19,
+            "total": 19
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerJson);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianProjectState.TrackerPath] = trackerBackupPath,
+            ["game_state/meta/guardians.json"] = guardiansBackupPath,
+            ["game_state/meta/soul_state.json"] = soulStateBackupPath
+        });
+
+        var normalizedTracker = await _fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        var normalizedSoulState = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        Assert.NotNull(normalizedTracker);
+        Assert.Contains("\"targetIncarnation\": 3", normalizedTracker, StringComparison.Ordinal);
+        Assert.NotNull(normalizedSoulState);
+        Assert.Contains("\"currentIncarnation\": 3", normalizedSoulState, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"archiveActionResolutions\"", normalizedSoulState, StringComparison.Ordinal);
+        Assert.True(_fs.FileExists("game_state/meta/guardians.json"));
     }
 
     [Fact]
@@ -3689,7 +4176,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
             {
                 [GuardianProjectState.TrackerPath] = "test_backups/preturn_guardian_projects_repair_journal.json"
             },
-            ["rollbackBaselineFiles"] = new JsonArray(),
+            ["rollbackBaselineFiles"] = new JsonArray(GuardianProjectState.TrackerPath),
             ["sourceLabel"] = "canonical-state-normalizer-tests",
             ["manifestPayloadHash"] = string.Empty
         };
@@ -3703,6 +4190,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             }));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
 
         await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """
         {
