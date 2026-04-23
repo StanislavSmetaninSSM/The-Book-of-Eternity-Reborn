@@ -294,15 +294,19 @@ public partial class ExplorerMode
             ShiningAbodeState.HallServiceTagDescent,
             ShiningAbodeState.HallServiceTagRelic
         }.Where(tag => !string.Equals(tag, requiredPrimary, StringComparison.OrdinalIgnoreCase)).ToList();
+        var optionLabels = options
+            .Select(tag => (Tag: tag, Label: DescribeShiningHallServiceTag(tag)))
+            .ToList();
+        const string noSecondaryLabel = "без второго тега";
 
         var secondary = Prompt(new SelectionPrompt<string>()
-            .Title($"[bold yellow]Дополнительная служба зала[/]\n[dim]Обязательная основная служба уже зафиксирована: {requiredPrimary}[/]")
+            .Title($"[bold yellow]Дополнительная служба зала[/]\n[dim]Обязательная основная служба уже зафиксирована: {DescribeShiningHallServiceTag(requiredPrimary)}[/]")
             .HighlightStyle(new Style(Color.Gold1))
-            .AddChoices(options.Append("без второго тега")));
+            .AddChoices(optionLabels.Select(option => option.Label).Append(noSecondaryLabel)));
 
         var tags = new List<string> { requiredPrimary };
         if (!secondary.Contains("без", StringComparison.OrdinalIgnoreCase))
-            tags.Add(secondary);
+            tags.Add(optionLabels.First(option => string.Equals(option.Label, secondary, StringComparison.Ordinal)).Tag);
         return tags;
     }
 

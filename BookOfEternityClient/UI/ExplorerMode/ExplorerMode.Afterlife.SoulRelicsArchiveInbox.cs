@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 using BookOfEternityClient.Core;
@@ -413,7 +414,10 @@ public partial class ExplorerMode
         }
 
         if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianQuestAvailable, StringComparison.OrdinalIgnoreCase))
+        {
+            actions.Add("🧵 Открыть квест Хранителя");
             actions.Add("🛡️ Открыть Хранителей");
+        }
 
         if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeCompanionImprintManifestationReady, StringComparison.OrdinalIgnoreCase))
             actions.Add("💎 Открыть реликвии души");
@@ -517,8 +521,13 @@ public partial class ExplorerMode
 
         if (selected.StartsWith("🧵", StringComparison.Ordinal))
         {
-            if (!TryResolveResidentQuestNotificationQuestId(notification, out var questId) ||
-                !await ShowSoulQuestDetailByIdAsync(questId))
+            if (TryResolveGuardianQuestNotificationKey(notification, out var guardianId, out var guardianQuestId))
+            {
+                if (!await ShowGuardianQuestDetailByIdAsync(guardianId, guardianQuestId))
+                    await ShowGuardians();
+            }
+            else if (!TryResolveResidentQuestNotificationQuestId(notification, out var questId) ||
+                     !await ShowSoulQuestDetailByIdAsync(questId))
             {
                 await ShowSoulQuests();
             }
@@ -752,6 +761,28 @@ public partial class ExplorerMode
                     lines.Add($"  Подготовлено слотов: [dim]{itemCount}[/]");
                     return;
                 }
+            }
+
+            if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianQuestAvailable, StringComparison.OrdinalIgnoreCase) &&
+                TryResolveGuardianQuestNotificationKey(notification, out _, out var questId) &&
+                TryFindGuardianQuestById(guardian, questId, out var quest, out var questCollectionLabel))
+            {
+                var questTitle = GetStr(quest, "title", GetStr(quest, "name", questId));
+                lines.Add("");
+                lines.Add("  [bold]Точный квест Хранителя:[/]");
+                lines.Add($"  Название: [white]{Markup.Escape(questTitle)}[/]");
+                lines.Add($"  Раздел: [dim]{Markup.Escape(questCollectionLabel)}[/]");
+                var questStatus = GetStr(quest, "status", "");
+                if (!string.IsNullOrWhiteSpace(questStatus))
+                    lines.Add($"  Статус: [dim]{Markup.Escape(HumanizeProtocolToken(questStatus))}[/]");
+                var questDescription = GetStr(quest, "description", "");
+                if (!string.IsNullOrWhiteSpace(questDescription))
+                    lines.Add($"  Описание: [dim]{Markup.Escape(questDescription)}[/]");
+                var targetWorld = GetStr(quest, "targetWorld", "");
+                if (!string.IsNullOrWhiteSpace(targetWorld))
+                    lines.Add($"  Целевой мир: [dim]{Markup.Escape(targetWorld)}[/]");
+                lines.Add($"  Идентификатор квеста: [dim]{Markup.Escape(questId)}[/]");
+                return;
             }
 
             return;
@@ -1315,8 +1346,26 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(value))
             return string.Empty;
 
-        var normalized = value.Trim().Replace('_', ' ').Replace('-', ' ');
-        return char.ToUpperInvariant(normalized[0]) + normalized[1..];
+        var trimmed = value.Trim();
+        var normalizedKey = trimmed.Replace("-", "_").Trim('_');
+        var knownLabel = normalizedKey.ToLowerInvariant() switch
+        {
+            "echosignature" or "echo_signature" => "Сигнатура эха",
+            "resonanceboost" or "resonance_boost" => "Усиление резонанса",
+            "sourcecompanionrelicid" or "source_companion_relic_id" => "Реликвия-источник спутника",
+            "meetingtag" or "meeting_tag" => "Тема встречи",
+            "routeseedid" or "route_seed_id" => "Семя маршрута",
+            "remaininguses" or "remaining_uses" => "Осталось использований",
+            _ => null
+        };
+        if (!string.IsNullOrWhiteSpace(knownLabel))
+            return knownLabel;
+
+        var words = Regex.Replace(trimmed.Replace('_', ' ').Replace('-', ' '), "([a-zа-яё0-9])([A-ZА-ЯЁ])", "$1 $2");
+        words = Regex.Replace(words, "\\s+", " ").Trim();
+        return string.IsNullOrWhiteSpace(words)
+            ? string.Empty
+            : char.ToUpperInvariant(words[0]) + words[1..].ToLowerInvariant();
     }
 
     /// <summary>
@@ -1485,6 +1534,37 @@ public partial class ExplorerMode
         var tier = GetStr(relic, "tier", "");
         if (!string.IsNullOrEmpty(tier))
             lines.Add($"  🏆 Ранг: [yellow]{Markup.Escape(tier)}[/]");
+
+        var formTag = GetStr(relic, "formTag", "");
+        if (!string.IsNullOrWhiteSpace(formTag))
+            lines.Add($"  🛠 Форма ковки: [cyan]{Markup.Escape(DescribeForgeFormTag(formTag))}[/]");
+
+        if (relic.TryGetProperty("properties", out var forgeProperties) &&
+            forgeProperties.ValueKind == JsonValueKind.Array &&
+            forgeProperties.GetArrayLength() > 0)
+        {
+            lines.Add("");
+            lines.Add("  [bold]🛠 Свойства ковки:[/]");
+            var propertyIndex = 0;
+            foreach (var property in forgeProperties.EnumerateArray())
+            {
+                if (property.ValueKind != JsonValueKind.Object)
+                {
+                    propertyIndex++;
+                    continue;
+                }
+
+                var propertyObject = JsonNode.Parse(property.GetRawText()) as JsonObject;
+                if (propertyObject == null)
+                {
+                    propertyIndex++;
+                    continue;
+                }
+
+                lines.Add($"    • {Markup.Escape(RenderForgePropertyLabel(propertyObject, propertyIndex))}");
+                propertyIndex++;
+            }
+        }
 
         if (relic.TryGetProperty("equipmentData", out var eqd) && eqd.ValueKind == JsonValueKind.Object)
         {
@@ -1812,6 +1892,26 @@ public partial class ExplorerMode
 
         questId = requestId[(separatorIndex + 1)..];
         return !string.IsNullOrWhiteSpace(questId);
+    }
+
+    private static bool TryResolveGuardianQuestNotificationKey(
+        AfterlifeNotificationState.NotificationEntry notification,
+        out string guardianId,
+        out string questId)
+    {
+        guardianId = string.Empty;
+        questId = string.Empty;
+        if (!string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianQuestAvailable, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var requestId = notification.RequestId ?? string.Empty;
+        var separatorIndex = requestId.IndexOf(':');
+        if (separatorIndex <= 0 || separatorIndex >= requestId.Length - 1)
+            return false;
+
+        guardianId = requestId[..separatorIndex];
+        questId = requestId[(separatorIndex + 1)..];
+        return !string.IsNullOrWhiteSpace(guardianId) && !string.IsNullOrWhiteSpace(questId);
     }
 
     private async Task<bool> TryShowLinkedArchiveGuardianAsync(string guardianId)
