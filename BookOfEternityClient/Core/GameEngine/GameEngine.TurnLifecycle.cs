@@ -423,9 +423,7 @@ public partial class GameEngine
             {
                 _lastResponse = resumedQte.Response;
                 _pendingImagePrompt = resumedQte.Response?.ImagePrompt;
-                await ProcessStatsIncreasedAsync();
-                await _charService.ComputeAndWriteAsync();
-                await CheckLevelUpAsync();
+                await ProcessMortalProgressionAfterAcceptedTurnAsync();
                 await CheckLifeTransitions();
                 await CheckAscensionTrigger();
                 continue;
@@ -702,12 +700,7 @@ public partial class GameEngine
             state.CurrentLocation,
             await ExtractStoryEntityRefsAsync(action));
 
-        // Process statsIncreased and recompute modified characteristics
-        await ProcessStatsIncreasedAsync();
-        await _charService.ComputeAndWriteAsync();
-
-        // Check for level-up: if level increased, grant 5 stat points
-        await CheckLevelUpAsync();
+        await ProcessMortalProgressionAfterAcceptedTurnAsync();
 
         // Check for GM-triggered life transitions
         await CheckLifeTransitions();
@@ -1075,12 +1068,20 @@ public partial class GameEngine
         }
 
         var completion = await _qteSceneService.StartAcceptedSceneAsync(offer, _gameLoop.TurnNumber);
-        await ProcessStatsIncreasedAsync();
-        await _charService.ComputeAndWriteAsync();
-        await CheckLevelUpAsync();
+        await ProcessMortalProgressionAfterAcceptedTurnAsync();
         await CheckLifeTransitions();
         await CheckAscensionTrigger();
         return (false, completion.Response);
+    }
+
+    private async Task ProcessMortalProgressionAfterAcceptedTurnAsync()
+    {
+        if (_stateManager.CurrentState.IsInAfterlifeRealm)
+            return;
+
+        await ProcessStatsIncreasedAsync();
+        await _charService.ComputeAndWriteAsync();
+        await CheckLevelUpAsync();
     }
 
     /// <summary>
@@ -1598,7 +1599,7 @@ public partial class GameEngine
                 preparedShiningPackage = await TryReadPreparedShiningPackageAsync();
                 if (preparedShiningPackage == null)
                 {
-                    _logger.LogWarning("Shining pending-bootstrap handoff detected, but preparedIncarnationPackage is unreadable. Deleting stale incarnation trigger.");
+                    _logger.LogWarning("Shining pending-bootstrap handoff detected, but preparedIncarnationPackage is unreadable or invalid. Deleting stale incarnation trigger and preserving the package for repair.");
                     _fs.DeleteFile("game_state/control/incarnation_trigger.json");
                     return;
                 }

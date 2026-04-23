@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using Spectre.Console;
 
@@ -885,6 +886,8 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        WriteJsonAuditPanel("Полный JSON фракции: leadership, projects, bindings", faction, Color.Orange1);
     }
 
     private void ShowShiningCoreReceiptInspectionPanel(ShiningContext context)
@@ -1226,6 +1229,14 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        var pendingAudit = new JsonObject
+        {
+            ["foundingRequests"] = JsonSerializer.SerializeToNode(foundingRequests, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+            ["realignmentRequests"] = JsonSerializer.SerializeToNode(realignmentRequests, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+            ["leadershipRequests"] = JsonSerializer.SerializeToNode(leadershipRequests, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
+        };
+        WriteJsonAuditPanel("Полный JSON pending political contracts", pendingAudit, Color.Orange1);
     }
 
     private void ShowShiningPoliticalResolutionInspectionPanel(ShiningContext context)
@@ -1358,6 +1369,8 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        WriteJsonAuditPanel("Полный JSON political state and receipts", context.Root, Color.Orange1);
     }
 
     private static void AppendShiningResolutionAuditLines(List<string> lines, JsonObject receipt, int indent = 2)

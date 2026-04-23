@@ -845,6 +845,14 @@ public partial class ExplorerMode
         var journalDoc = await _stateManager.LoadGameStateFileAsync(GuardianPowerEventState.JournalPath);
         var returnCycleId = GuardianAbodeOfferingState.BuildReturnCycleId(_stateManager.CurrentState.Incarnation);
         var feathers = await ReadInkFeathersBalance();
+        var pendingOffering = await GuardianAbodeOfferingState.ReadAsync(_fs);
+        if (pendingOffering != null)
+        {
+            WriteJsonAuditPanel(
+                "Текущий pending JSON подношения Обители",
+                JsonSerializer.SerializeToNode(pendingOffering, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                Color.Gold1);
+        }
 
         var choices = guardians
             .Select(guardian =>
@@ -1654,6 +1662,14 @@ public partial class ExplorerMode
 
         Write(panel);
         WriteLine();
+
+        var soulDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
+        if (soulDoc != null)
+            WriteJsonAuditPanel("Полный JSON состояния души перед direct gacha", soulDoc.RootElement, Color.Gold1);
+
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        if (guardiansDoc != null)
+            WriteJsonAuditPanel("Полный JSON guardians gacha systems", guardiansDoc.RootElement, Color.Gold1);
 
         var choice = Prompt(new SelectionPrompt<string>()
             .Title("[bold yellow]Выберите действие:[/]")

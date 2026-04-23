@@ -593,6 +593,11 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel("Полный JSON Хранителя и abodePower", guardian, Color.Gold1);
+        if (journalRoot.HasValue)
+            WriteJsonAuditPanel("Полный JSON журнала силы Обители", journalRoot.Value, Color.Gold1);
+        if (trackerRoot.HasValue)
+            WriteJsonAuditPanel("Полный JSON трекера проектов", trackerRoot.Value, Color.Cyan1);
         WaitForKey();
     }
 
@@ -1743,6 +1748,9 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel("Полный JSON проекта и effectState", entry, Color.Cyan1);
+        if (journalRoot.HasValue)
+            WriteJsonAuditPanel("Полный JSON журнала проектов", journalRoot.Value, Color.Cyan1);
         WaitForKey();
     }
 
@@ -2657,6 +2665,11 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        var rawResident = residentStateRoot == null
+            ? null
+            : GuardianAbodeResidentState.FindResident(residentStateRoot, resident.ResidentId);
+        WriteJsonAuditPanel("Полный JSON резидента Обители", rawResident, Color.Cyan1);
 
         var availableInteractions = resident.AvailableInteractions.Select(value => value.Trim().ToLowerInvariant()).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var useDefaultInteractions = availableInteractions.Count == 0;

@@ -299,7 +299,7 @@ internal static class ShiningTradeRequestState
             var slotId = GetNodeString(item["slotId"]);
             if (string.IsNullOrWhiteSpace(slotId) ||
                 !seenSlotIds.Add(slotId) ||
-                GetNodeInt(item["priceInFeathers"], -1) < 0 ||
+                GetNodeInt(item["priceInFeathers"], -1) <= 0 ||
                 !TryReadBool(item["soldOut"], out _) ||
                 item["relicData"] is not JsonObject relicData)
             {
