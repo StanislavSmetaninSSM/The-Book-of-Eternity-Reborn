@@ -3063,6 +3063,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                     guardianId = "guardian_alpha",
                     canonicalName = "Азалия",
                     currentReputation = 60,
+                    abodePower = new { currentPower = 28 },
                     abode = new
                     {
                         abodeId = "abode_alpha",
@@ -3075,6 +3076,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                     guardianId = "guardian_beta",
                     canonicalName = "Мириэль",
                     currentReputation = 88,
+                    abodePower = new { currentPower = 74 },
                     abode = new
                     {
                         abodeId = "abode_beta",
@@ -3188,6 +3190,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                     guardianId = "guardian_alpha",
                     canonicalName = "Азалия",
                     currentReputation = 60,
+                    abodePower = new { currentPower = 28 },
                     abode = new
                     {
                         abodeId = "abode_alpha",
@@ -3200,6 +3203,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                     guardianId = "guardian_beta",
                     canonicalName = "Мириэль",
                     currentReputation = 88,
+                    abodePower = new { currentPower = 74 },
                     abode = new
                     {
                         abodeId = "abode_beta",
@@ -3359,6 +3363,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                     guardianId = "guardian_alpha",
                     canonicalName = "Азалия",
                     currentReputation = 60,
+                    abodePower = new { currentPower = 28 },
                     abode = new
                     {
                         abodeId = "abode_alpha",
@@ -3371,6 +3376,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
                     guardianId = "guardian_beta",
                     canonicalName = "Мириэль",
                     currentReputation = 88,
+                    abodePower = new { currentPower = 74 },
                     abode = new
                     {
                         abodeId = "abode_beta",
@@ -3418,6 +3424,7 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
         }
         """)!.AsObject();
         var arrivalSeed = preTurnResident.DeepClone().AsObject();
+        GuardianAbodeResidentState.NormalizeResidentObject(arrivalSeed);
         arrivalSeed["guardianId"] = "guardian_beta";
         arrivalSeed["guardianName"] = "Мириэль";
         arrivalSeed["abodeId"] = "abode_beta";

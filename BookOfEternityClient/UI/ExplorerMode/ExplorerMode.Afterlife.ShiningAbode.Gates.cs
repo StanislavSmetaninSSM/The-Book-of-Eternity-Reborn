@@ -417,6 +417,12 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        if (context.Root["gates"] is JsonObject gatesAudit)
+            WriteJsonAuditPanel("Полный canonical JSON Врат", gatesAudit, Color.Gold1);
+
+        if (context.Root["preparedIncarnationPackage"] is JsonObject packageAudit)
+            WriteJsonAuditPanel("Полный frozen JSON preparedIncarnationPackage", packageAudit, Color.Khaki1);
     }
 
     private IEnumerable<string> BuildShiningBlessingCardInspectionLines(JsonObject card, ShiningContext context, bool isSelected)

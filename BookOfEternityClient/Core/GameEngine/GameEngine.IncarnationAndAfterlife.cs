@@ -715,7 +715,17 @@ public partial class GameEngine
         try
         {
             var root = JsonNode.Parse(shiningJson) as JsonObject;
-            return root?["preparedIncarnationPackage"] as JsonObject;
+            if (root?["preparedIncarnationPackage"] is not JsonObject preparedPackage)
+                return null;
+
+            var validationError = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(preparedPackage);
+            if (!string.IsNullOrWhiteSpace(validationError))
+            {
+                _logger.LogWarning("Shining pending-bootstrap handoff blocked by invalid preparedIncarnationPackage: {ValidationError}", validationError);
+                return null;
+            }
+
+            return preparedPackage;
         }
         catch
         {
@@ -889,7 +899,30 @@ public partial class GameEngine
             _stateManager.CurrentState.IsInShiningAbodePendingBootstrap)
             return;
 
+        if (!WasPreTurnAfterlifeRealm(snapshotContext))
+            return;
+
         await _afterlifeReturnGuardService.ConsumeAfterAcceptedAfterlifeTurnAsync(_gameLoop.TurnNumber);
+    }
+
+    private bool WasPreTurnAfterlifeRealm(ValidatedPendingTurnSnapshotContext? snapshotContext)
+    {
+        var preTurnSoulJson = ReadPreTurnSnapshotFile(snapshotContext, "game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(preTurnSoulJson))
+            return false;
+
+        try
+        {
+            if (JsonNode.Parse(preTurnSoulJson) is not JsonObject preTurnSoulRoot)
+                return false;
+
+            var preTurnRealm = preTurnSoulRoot["currentRealm"]?.GetValue<string>();
+            return RealmSemantics.IsAfterlifeRealm(preTurnRealm);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     /// <summary>

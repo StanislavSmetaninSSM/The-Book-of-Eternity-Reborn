@@ -385,6 +385,21 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void ValidatePreparedIncarnationPackageForBootstrap_EmptySelectedCards_FailsClosed()
+    {
+        var package = new JsonObject
+        {
+            ["selectedCardIds"] = new JsonArray("card_a"),
+            ["selectedCards"] = new JsonArray()
+        };
+
+        var result = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(package);
+
+        Assert.NotNull(result);
+        Assert.Contains("preparedIncarnationPackage", result, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void NormalizeStateRoot_HydratesFoundingReceiptSnapshotFromCurrentHallAndFaction()
     {
         var root = JsonNode.Parse("""

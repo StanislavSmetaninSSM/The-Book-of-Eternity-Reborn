@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using Spectre.Console;
 
@@ -251,6 +252,18 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        var requestAudit = new JsonArray();
+        foreach (var request in tradeRequests)
+            requestAudit.Add(JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        if (requestAudit.Count > 0)
+            WriteJsonAuditPanel("Полный JSON pending Shining trade requests", requestAudit, Color.Cyan1);
+
+        if (context.Root["factions"] is JsonArray factionAudit)
+            WriteJsonAuditPanel("Полный JSON сияющих фракций: tradeInventory, receipts, gacha history", factionAudit, Color.Gold1);
+
+        if (context.Root["gachaSystem"] is JsonObject gachaAudit)
+            WriteJsonAuditPanel("Полный JSON Shining gachaSystem", gachaAudit, Color.Gold1);
     }
 
     private static string DescribeShiningTradeSlotLabel(string? slotId)

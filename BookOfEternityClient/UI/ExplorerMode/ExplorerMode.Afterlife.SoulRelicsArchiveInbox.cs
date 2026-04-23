@@ -1389,6 +1389,7 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel("Полный JSON Реликвии Души", relic, Color.Yellow);
 
         // Action menu
         if (isAfterlifeRealm)
@@ -1875,6 +1876,29 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        var soulDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
+        if (soulDoc?.RootElement.ValueKind == JsonValueKind.Object &&
+            soulDoc.RootElement.TryGetProperty("afterlifeArchive", out var archiveRoot) &&
+            archiveRoot.ValueKind == JsonValueKind.Object)
+        {
+            if (archiveRoot.TryGetProperty("stored", out var stored) &&
+                stored.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var rawEntry in stored.EnumerateArray())
+                {
+                    if (rawEntry.ValueKind == JsonValueKind.Object &&
+                        string.Equals(GetStr(rawEntry, "archiveId", ""), archiveId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        WriteJsonAuditPanel("Полный JSON записи Архива души", rawEntry.Clone(), Color.Yellow);
+                        break;
+                    }
+                }
+            }
+
+            WriteJsonAuditPanel("Полный JSON afterlifeArchive: reservations and receipts", archiveRoot.Clone(), Color.Yellow);
+        }
+
         WaitForKey();
         return true;
     }

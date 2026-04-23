@@ -291,6 +291,53 @@ public partial class ValidationService
                 return;
             }
 
+            var preTurnRealm = GetNodeString(preTurnSoulRoot["currentRealm"]);
+            if (!IsExactChaosSeaRealm(preTurnRealm))
+            {
+                issues.Add(new ValidationIssue(
+                    "input/turn_request.json.playerAction",
+                    IssueSeverity.Error,
+                    "Direct Chaos Sea gacha допустим только из точного realm Моря Хаоса.",
+                    code: "direct_chaos_gacha_invalid_realm",
+                    section: "CHAOS_SEA_DIRECT_GACHA",
+                    expected: "Chaos Sea",
+                    actual: preTurnRealm ?? "unknown pre-turn realm",
+                    repairHint: "Не запускай [CHAOS_SEA_DIRECT_GACHA] из Shining Abode, pending-bootstrap или смертного realm."));
+            }
+
+            var costMatch = InkFeatherCostRegex.Match(playerAction);
+            if (!costMatch.Success || !int.TryParse(costMatch.Groups[1].Value, out var costInFeathers) || costInFeathers <= 0)
+            {
+                issues.Add(new ValidationIssue(
+                    "input/turn_request.json.playerAction",
+                    IssueSeverity.Error,
+                    "Direct Chaos Sea gacha должен явно фиксировать положительную стоимость в Чернильных Перьях.",
+                    code: "direct_chaos_gacha_missing_feather_cost",
+                    section: "CHAOS_SEA_DIRECT_GACHA",
+                    expected: "positive feather cost in playerAction",
+                    actual: "missing or non-positive",
+                    repairHint: "Передавай в [CHAOS_SEA_DIRECT_GACHA] точную фразу со списанной стоимостью, например 'тратит 25 Чернильных Перьев'."));
+            }
+
+            var preTurnFeathers = CurrentSoulFeathers(preTurnSoulRoot);
+            var currentFeathers = CurrentSoulFeathers(currentSoulRoot);
+            if (costMatch.Success && int.TryParse(costMatch.Groups[1].Value, out costInFeathers) && costInFeathers > 0)
+            {
+                var expectedFeathers = preTurnFeathers - costInFeathers;
+                if (currentFeathers != expectedFeathers)
+                {
+                    issues.Add(new ValidationIssue(
+                        "game_state/meta/soul_state.json.inkFeathers.current",
+                        IssueSeverity.Error,
+                        "Direct Chaos Sea gacha должен сохранять точный post-spend баланс Чернильных Перьев.",
+                        code: "direct_chaos_gacha_feather_balance_mismatch",
+                        section: "CHAOS_SEA_DIRECT_GACHA",
+                        expected: expectedFeathers.ToString(),
+                        actual: currentFeathers.ToString(),
+                        repairHint: "После direct /gacha оставь баланс равным pre-turn inkFeathers.current минус заявленная стоимость; не возвращай и не списывай Перья повторно."));
+                }
+            }
+
             var preTurnRelicIds = CollectSoulRelicIds(preTurnSoulRoot);
             var currentRelicIds = CollectSoulRelicIds(currentSoulRoot);
             var newRelicIds = currentRelicIds.Except(preTurnRelicIds, StringComparer.OrdinalIgnoreCase).ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -2254,12 +2301,12 @@ public partial class ValidationService
         string repairHint)
     {
         var currentJson = await _fs.ReadFileAsync(relativePath);
-        if (string.IsNullOrWhiteSpace(currentJson))
-            return null;
-
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
         {
+            if (string.IsNullOrWhiteSpace(currentJson))
+                return null;
+
             issues.Add(new ValidationIssue(
                 relativePath,
                 IssueSeverity.Error,
@@ -2275,6 +2322,9 @@ public partial class ValidationService
         var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, relativePath);
         if (!string.IsNullOrWhiteSpace(snapshotJson))
             return snapshotJson;
+
+        if (string.IsNullOrWhiteSpace(currentJson))
+            return null;
 
         issues.Add(new ValidationIssue(
             relativePath,

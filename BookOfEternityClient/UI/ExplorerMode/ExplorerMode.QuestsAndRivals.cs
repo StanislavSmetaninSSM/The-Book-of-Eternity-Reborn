@@ -436,6 +436,9 @@ public partial class ExplorerMode
             Expand = true
         });
 
+        if (isSoul)
+            WriteJsonAuditPanel("Полный canonical JSON квеста души", q, Color.Purple);
+
         if (!string.IsNullOrWhiteSpace(relatedAfterlifeResidentId))
         {
             var action = Prompt(new SelectionPrompt<string>()

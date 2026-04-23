@@ -929,10 +929,21 @@ internal static partial class ShiningAbodeState
         return null;
     }
 
-    public static string? ValidatePreparedIncarnationPackageForBootstrap(JsonObject preparedPackage) =>
-        ValidateRawBlessingIdArray(preparedPackage["selectedCardIds"], "preparedIncarnationPackage.selectedCardIds") ??
-        ValidateRawBlessingCardArray(preparedPackage["selectedCards"], "preparedIncarnationPackage.selectedCards") ??
-        ValidatePreparedPackageCardSnapshot(preparedPackage);
+    public static string? ValidatePreparedIncarnationPackageForBootstrap(JsonObject preparedPackage)
+    {
+        if (preparedPackage["selectedCardIds"] is not JsonArray selectedIds)
+            return "preparedIncarnationPackage.selectedCardIds отсутствует или повреждён и не может authorise actionable Shining bootstrap.";
+
+        if (preparedPackage["selectedCards"] is not JsonArray selectedCards)
+            return "preparedIncarnationPackage.selectedCards отсутствует или повреждён и не может authorise actionable Shining bootstrap.";
+
+        if (selectedIds.Count == 0 || selectedCards.Count == 0)
+            return "preparedIncarnationPackage должен содержать хотя бы одну frozen blessing card для actionable Shining bootstrap.";
+
+        return ValidateRawBlessingIdArray(selectedIds, "preparedIncarnationPackage.selectedCardIds") ??
+               ValidateRawBlessingCardArray(selectedCards, "preparedIncarnationPackage.selectedCards") ??
+               ValidatePreparedPackageCardSnapshot(preparedPackage);
+    }
 
     private static string? ValidateRawBlessingCardArray(JsonNode? node, string path)
     {

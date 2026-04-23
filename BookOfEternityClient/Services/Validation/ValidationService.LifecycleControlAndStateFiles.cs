@@ -797,6 +797,24 @@ public partial class ValidationService
         await ValidateSystemGuardianAttractionContextAsync(issues);
     }
 
+    private static void AddMissingShiningResolutionCurrentFileIssue(
+        List<ValidationIssue> issues,
+        string relativePath,
+        string code,
+        string message,
+        string repairHint)
+    {
+        issues.Add(new ValidationIssue(
+            relativePath,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "ShiningAbode",
+            expected: "current authoritative state file required to resolve pre-turn Shining request",
+            actual: "missing or empty file",
+            repairHint: repairHint));
+    }
+
     private async Task ValidatePendingShiningFoundingResolutionAsync(List<ValidationIssue> issues)
     {
         var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
@@ -827,6 +845,26 @@ public partial class ValidationService
 
         var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(shiningJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                ShiningAbodeState.StatePath,
+                "shining_founding_missing_current_shining_state",
+                "Resolved Shining founding request требует current shining_abode_state.json для строгой проверки результата.",
+                "Не удаляй shining_abode_state.json на accepted turn с pending Shining founding; materialize hall/faction и receipt в current authoritative state.");
+        }
+
+        if (string.IsNullOrWhiteSpace(residentsJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                GuardianAbodeResidentState.StatePath,
+                "shining_founding_missing_current_resident_state",
+                "Resolved Shining founding request требует current guardian_abode_residents.json для строгой проверки residents/halls cross-state.",
+                "Оставь guardian_abode_residents.json доступным на accepted turn с pending Shining founding.");
+        }
+
         if (string.IsNullOrWhiteSpace(shiningJson) || string.IsNullOrWhiteSpace(residentsJson))
             return;
 
@@ -977,6 +1015,36 @@ public partial class ValidationService
         var currentShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         var currentResidentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
         var currentSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(currentShiningJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                ShiningAbodeState.StatePath,
+                "shining_core_action_missing_current_shining_state",
+                "Resolved Shining core action требует current shining_abode_state.json для строгой проверки результата.",
+                "Не удаляй shining_abode_state.json на accepted turn с pending Shining core action; запиши receipt и все state mutations в current authoritative state.");
+        }
+
+        if (string.IsNullOrWhiteSpace(currentResidentsJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                GuardianAbodeResidentState.StatePath,
+                "shining_core_action_missing_current_resident_state",
+                "Resolved Shining core action требует current guardian_abode_residents.json для проверки resident side effects.",
+                "Оставь guardian_abode_residents.json доступным на accepted turn с pending Shining core action.");
+        }
+
+        if (string.IsNullOrWhiteSpace(currentSoulJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                "game_state/meta/soul_state.json",
+                "shining_core_action_missing_current_soul_state",
+                "Resolved Shining core action требует current soul_state.json для проверки Ink Feathers, relics и afterlife data.",
+                "Оставь soul_state.json доступным на accepted turn с pending Shining core action.");
+        }
+
         if (string.IsNullOrWhiteSpace(currentShiningJson) ||
             string.IsNullOrWhiteSpace(currentResidentsJson) ||
             string.IsNullOrWhiteSpace(currentSoulJson))
@@ -1118,6 +1186,26 @@ public partial class ValidationService
 
         var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(shiningJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                ShiningAbodeState.StatePath,
+                "shining_realignment_missing_current_shining_state",
+                "Resolved Shining realignment request требует current shining_abode_state.json для проверки faction receipt.",
+                "Не удаляй shining_abode_state.json на accepted turn с pending Shining realignment; закрой request через factionRealignmentReceipts.");
+        }
+
+        if (string.IsNullOrWhiteSpace(residentsJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                GuardianAbodeResidentState.StatePath,
+                "shining_realignment_missing_current_resident_state",
+                "Resolved Shining realignment request требует current guardian_abode_residents.json для проверки membership/history.",
+                "Оставь guardian_abode_residents.json доступным и обнови resident membership/history на accepted turn с pending Shining realignment.");
+        }
+
         if (string.IsNullOrWhiteSpace(shiningJson) || string.IsNullOrWhiteSpace(residentsJson))
             return;
 
@@ -1295,7 +1383,15 @@ public partial class ValidationService
         var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
         if (string.IsNullOrWhiteSpace(shiningJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                ShiningAbodeState.StatePath,
+                "shining_trade_request_missing_current_shining_state",
+                "Resolved Shining trade inventory request требует current shining_abode_state.json для проверки faction.tradeInventory.",
+                "Не удаляй shining_abode_state.json на accepted turn с pending Shining trade request; materialize tradeInventory и receipt внутри current faction.");
             return;
+        }
 
         try
         {
@@ -1388,6 +1484,26 @@ public partial class ValidationService
 
         var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(shiningJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                ShiningAbodeState.StatePath,
+                "shining_leadership_missing_current_shining_state",
+                "Resolved Shining leadership request требует current shining_abode_state.json для проверки leadership receipt/history.",
+                "Не удаляй shining_abode_state.json на accepted turn с pending Shining leadership transition; обнови faction leadership и receipts.");
+        }
+
+        if (string.IsNullOrWhiteSpace(residentsJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                GuardianAbodeResidentState.StatePath,
+                "shining_leadership_missing_current_resident_state",
+                "Resolved Shining leadership request требует current guardian_abode_residents.json для проверки candidate actor bindings.",
+                "Оставь guardian_abode_residents.json доступным на accepted turn с pending Shining leadership transition.");
+        }
+
         if (string.IsNullOrWhiteSpace(shiningJson) || string.IsNullOrWhiteSpace(residentsJson))
             return;
 

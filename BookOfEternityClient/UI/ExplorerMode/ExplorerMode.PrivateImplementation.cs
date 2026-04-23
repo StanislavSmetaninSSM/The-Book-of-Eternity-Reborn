@@ -149,6 +149,11 @@ public partial class ExplorerMode
             "Сейчас активен handoff к следующей смертной жизни. Обычные действия Моря Хаоса, Хранителей и Сияющей Обители недоступны до завершения bootstrap.");
         return false;
     }
+
+    private static bool IsExactChaosSeaCommand(string command) =>
+        string.Equals(command, "/gacha", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/гача", StringComparison.OrdinalIgnoreCase);
+
     // Commands ONLY available in Mortal Life
     private readonly Dictionary<string, Func<Task>> _mortalOnlyCommands;
     // Commands available in both but behave differently
@@ -207,6 +212,38 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1)
         };
         Write(panel);
+    }
+
+    private void WriteJsonAuditPanel(string title, JsonNode? node, Color? borderColor = null)
+    {
+        if (node == null)
+            return;
+
+        var json = node.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        Write(new Panel(new Text(json))
+        {
+            Header = new PanelHeader($" {Markup.Escape(title)} ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(borderColor ?? Color.Grey),
+            Padding = new Padding(1, 1),
+            Expand = true
+        });
+    }
+
+    private void WriteJsonAuditPanel(string title, JsonElement element, Color? borderColor = null)
+    {
+        if (element.ValueKind is JsonValueKind.Undefined)
+            return;
+
+        var json = JsonSerializer.Serialize(element, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        Write(new Panel(new Text(json))
+        {
+            Header = new PanelHeader($" {Markup.Escape(title)} ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(borderColor ?? Color.Grey),
+            Padding = new Padding(1, 1),
+            Expand = true
+        });
     }
 
     private async Task StartSystemGuardianAttractionAsync()
