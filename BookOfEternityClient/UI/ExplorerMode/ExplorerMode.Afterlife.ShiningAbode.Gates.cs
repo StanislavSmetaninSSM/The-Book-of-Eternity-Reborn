@@ -325,6 +325,16 @@ public partial class ExplorerMode
                 .Select(node => node.GetValue<string>())
                 .ToList() ?? new List<string>();
             var availableCards = (gates["availableBlessingCards"] as JsonArray)?.OfType<JsonObject>().ToList() ?? new List<JsonObject>();
+            var shownCards = shownIds
+                .Select(id => FindBlessingCardInGates(gates, id))
+                .Where(card => card != null)
+                .Cast<JsonObject>()
+                .GroupBy(card => GetNodeString(card["cardId"]) ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .Where(group => !string.IsNullOrWhiteSpace(group.Key))
+                .Select(group => group.First())
+                .ToList();
+            if (shownCards.Count == 0)
+                shownCards = availableCards;
 
             lines.Add($"  • Версия черновика: [white]{GetNodeInt(gates["draftVersion"])}[/]");
             lines.Add($"  • Лимит выбора: [white]{pickCap}[/]");
@@ -344,12 +354,18 @@ public partial class ExplorerMode
             lines.Add($"  • Следующий индекс набора: [white]{GetNodeInt(gates["nextCandidateCursor"])}[/]");
             lines.Add($"  • Состояние черновика: {Markup.Escape(GetNodeBool(gates["isStale"]) ? "устарел" : "актуален")}");
 
-            if (availableCards.Count > 0)
+            if (shownCards.Count > 0)
             {
                 lines.Add("");
-                lines.Add("[bold]Карты текущего набора:[/]");
-                foreach (var card in availableCards)
-                    lines.AddRange(BuildShiningBlessingCardInspectionLines(card, context, selectedIds.Contains(GetNodeString(card["cardId"]))));
+                lines.Add("[bold]Карты, показанные Вратами:[/]");
+                foreach (var card in shownCards)
+                {
+                    var cardId = GetNodeString(card["cardId"]);
+                    var normalizedCardId = cardId ?? string.Empty;
+                    lines.AddRange(BuildShiningBlessingCardInspectionLines(card, context, selectedIds.Contains(normalizedCardId)));
+                    if (!availableCards.Any(available => string.Equals(GetNodeString(available["cardId"]), normalizedCardId, StringComparison.OrdinalIgnoreCase)))
+                        lines.Add("    [dim]Эта карта уже не входит в текущий набор выбора, но остаётся в истории показанных кандидатов Врат.[/]");
+                }
             }
         }
         else
@@ -431,6 +447,25 @@ public partial class ExplorerMode
         }
 
         return lines;
+    }
+
+    private static JsonObject? FindBlessingCardInGates(JsonObject gates, string? cardId)
+    {
+        if (string.IsNullOrWhiteSpace(cardId))
+            return null;
+
+        foreach (var arrayName in new[] { "availableBlessingCards", "allCandidateBlessingCards" })
+        {
+            if (gates[arrayName] is not JsonArray cards)
+                continue;
+
+            var card = cards.OfType<JsonObject>()
+                .FirstOrDefault(entry => string.Equals(GetNodeString(entry["cardId"]), cardId, StringComparison.OrdinalIgnoreCase));
+            if (card != null)
+                return card;
+        }
+
+        return null;
     }
 
     private static IEnumerable<string> FormatShiningJsonNodeForDisplay(JsonNode? node)

@@ -10,7 +10,6 @@ internal static class AfterlifeNotificationState
 {
     public const string NotificationsPath = "game_state/control/afterlife_notifications.json";
     private const string NotificationsProperty = "notifications";
-    private const int MaxRetainedReadNotifications = 100;
 
     public const string StatusUnread = "unread";
     public const string StatusRead = "read";
@@ -201,7 +200,6 @@ internal static class AfterlifeNotificationState
             }
         }
 
-        changed |= TrimReadNotifications(notifications);
         changed |= SanitizeResidentPressureStateMarkers(EnsureResidentPressureStateMarkers(root));
 
         if (changed)
@@ -456,7 +454,7 @@ internal static class AfterlifeNotificationState
                     archiveTitle: null,
                     targetProjectId: null,
                     targetProjectName: null,
-                    summary: "pending_guardian_trade_request.json повреждён. Торговый контракт Хранителя сохранён fail-closed и требует repair/cleanup.",
+                    summary: "Торговый ответ Хранителя нельзя безопасно открыть: данные запроса повреждены. Игра сохранила торговлю закрытой, чтобы не потерять Чернильные Перья и предметы.",
                     createdAtTurn: malformedRequest?.CreatedAtTurn ?? 0,
                     createdAtUtc: DateTime.UtcNow.ToString("o"));
             }
@@ -2672,32 +2670,6 @@ internal static class AfterlifeNotificationState
         await fs.WriteFileAtomicAsync(NotificationsPath, root.ToJsonString(JsonOpts));
     }
 
-    private static bool TrimReadNotifications(JsonArray notifications)
-    {
-        var readNotifications = notifications
-            .Select((node, index) => (node as JsonObject, index))
-            .Where(pair => pair.Item1 != null &&
-                           string.Equals(GetNodeString(pair.Item1["status"]), StatusRead, StringComparison.OrdinalIgnoreCase))
-            .Select(pair => (Notification: pair.Item1!, Index: pair.index))
-            .OrderByDescending(pair => GetNodeInt(pair.Notification["createdAtTurn"], 0))
-            .ThenByDescending(pair => ParseCreatedAt(pair.Notification["createdAtUtc"]))
-            .ToList();
-
-        if (readNotifications.Count <= MaxRetainedReadNotifications)
-            return false;
-
-        var indexesToRemove = readNotifications
-            .Skip(MaxRetainedReadNotifications)
-            .Select(pair => pair.Index)
-            .OrderByDescending(index => index)
-            .ToList();
-
-        foreach (var index in indexesToRemove)
-            notifications.RemoveAt(index);
-
-        return indexesToRemove.Count > 0;
-    }
-
     private static void NormalizeShape(JsonObject root)
     {
         if (root[NotificationsProperty] is not JsonArray)
@@ -3017,11 +2989,4 @@ internal static class AfterlifeNotificationState
         return true;
     }
 
-    private static DateTimeOffset ParseCreatedAt(JsonNode? node)
-    {
-        var text = GetNodeString(node);
-        return DateTimeOffset.TryParse(text, out var parsed)
-            ? parsed
-            : DateTimeOffset.MinValue;
-    }
 }

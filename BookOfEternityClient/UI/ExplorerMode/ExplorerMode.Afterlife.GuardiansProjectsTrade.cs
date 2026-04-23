@@ -2949,6 +2949,78 @@ public partial class ExplorerMode
         return false;
     }
 
+    private async Task<bool> ShowGuardianQuestDetailByIdAsync(string guardianId, string questId)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(questId))
+            return false;
+
+        using var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        if (guardiansDoc?.RootElement.ValueKind != JsonValueKind.Object ||
+            !guardiansDoc.RootElement.TryGetProperty("guardians", out var guardians) ||
+            guardians.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        foreach (var guardian in guardians.EnumerateArray())
+        {
+            if (guardian.ValueKind != JsonValueKind.Object ||
+                !string.Equals(GetStr(guardian, "guardianId", ""), guardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (!TryFindGuardianQuestById(guardian, questId, out var quest, out _))
+                return false;
+
+            await ShowQuestDetailPanel(quest, isSoul: false, isHistory: false);
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryFindGuardianQuestById(
+        JsonElement guardian,
+        string questId,
+        out JsonElement quest,
+        out string collectionLabel)
+    {
+        quest = default;
+        collectionLabel = string.Empty;
+        if (guardian.ValueKind != JsonValueKind.Object ||
+            string.IsNullOrWhiteSpace(questId) ||
+            !guardian.TryGetProperty("questManagement", out var questManagement) ||
+            questManagement.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        foreach (var (propertyName, label) in new[]
+                 {
+                     ("activeQuests", "активные задания"),
+                     ("availableQuests", "доступные задания"),
+                     ("completedQuests", "выполненные задания")
+                 })
+        {
+            if (!questManagement.TryGetProperty(propertyName, out var quests) || quests.ValueKind != JsonValueKind.Array)
+                continue;
+
+            foreach (var candidate in quests.EnumerateArray())
+            {
+                if (candidate.ValueKind == JsonValueKind.Object &&
+                    string.Equals(GetStr(candidate, "questId", ""), questId, StringComparison.OrdinalIgnoreCase))
+                {
+                    quest = candidate;
+                    collectionLabel = label;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private static string ResolveSoulRelicLabel(JsonElement? soulRoot, string relicId)
     {
         if (string.IsNullOrWhiteSpace(relicId))

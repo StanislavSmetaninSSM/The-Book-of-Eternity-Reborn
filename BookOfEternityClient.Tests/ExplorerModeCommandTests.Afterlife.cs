@@ -1390,6 +1390,43 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_ShiningAbode_GatesInspectionShowsRerolledCandidateDetails()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))?.AsObject()
+            ?? throw new InvalidOperationException("Expected seeded shining abode state.");
+        var gates = shiningRoot["gates"]?.AsObject()
+            ?? throw new InvalidOperationException("Expected gates.");
+        var availableCards = gates["availableBlessingCards"]?.AsArray()
+            ?? throw new InvalidOperationException("Expected available cards.");
+        for (var i = availableCards.Count - 1; i >= 0; i--)
+        {
+            if (availableCards[i] is JsonObject card &&
+                string.Equals(card["cardId"]?.GetValue<string>(), "card_route_dawn", StringComparison.OrdinalIgnoreCase))
+            {
+                availableCards.RemoveAt(i);
+            }
+        }
+
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        _console.QueueSelection("Сияющая Обитель", "🔎 Осмотреть набор и пакет");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_gates_rerolled_candidate_details");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Карты, показанные Вратами", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тропа возвращения", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Осталось использований: 1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("уже не входит в текущий набор выбора", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningTradeAndForge_TradeLifecycleInspectionLabelsSameCycleFallbackAsHistorical()
     {
         await SeedShiningInspectionStateAsync();
@@ -1454,6 +1491,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("shining_political_resident_inspection");
         var renderedText = ExtractRenderedText();
         Assert.Contains("Политическое состояние фракции", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Базовая сила", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Любимый архетип проектов", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Покровительствующая семья эффекта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Инвестиций за это Вознесение", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Архетипы проектов, уже учтённые за это Вознесение", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Устав", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Мираэль", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Сэль", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Роль во фракции", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -1467,6 +1510,29 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Тональность: radiant", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Идентификатор проекта: project_social", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Project id", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void TryProcessCommand_ShiningPolitics_FoundingHallServicePromptUsesReadableLabels()
+    {
+        _console.QueueSelection("Дополнительная служба зала", "знание");
+        var method = typeof(ExplorerMode).GetMethod("PromptFoundingHallServiceTags", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.NotNull(method);
+
+        var result = method!.Invoke(_explorer, new object[] { ShiningAbodeState.EffectFamilySocial }) as List<string>;
+
+        Assert.NotNull(result);
+        Assert.Contains(ShiningAbodeState.HallServiceTagSocial, result!);
+        Assert.Contains(ShiningAbodeState.HallServiceTagLore, result!);
+        Assert.Contains(_console.SelectionTitles,
+            title => title.Contains("социальная поддержка", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(_console.SelectionTitles,
+            title => title.Contains("requiredPrimary", StringComparison.OrdinalIgnoreCase) ||
+                     title.Contains("social", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.SelectionChoicesHistory,
+            entry => entry.Choices.Contains("знание", StringComparer.Ordinal));
+        Assert.DoesNotContain(_console.SelectionChoicesHistory,
+            entry => entry.Choices.Contains(ShiningAbodeState.HallServiceTagLore, StringComparer.Ordinal));
     }
 
     [Fact]
@@ -2448,7 +2514,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Устав фракции: Поют утренний свет.", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Описание зала: Поющие своды собирают отзвуки верности.", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("в receipt нет замороженного фрагмента", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Орин признал, что зов Хора Рассвета звучит для него яснее прежней верности.", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Открыта в UTC: 2026-04-19T10:24:00Z", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Причина решения: целевая фракция приняла переход", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("accepted_by_target_faction", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Историческая сводка: Мираэль признана новым голосом Хора Рассвета.", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -2606,6 +2673,67 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         var renderedText = string.Join("\n", detailLines);
         Assert.Contains("Распродано: [dim]1/2[/]", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_AfterlifeInbox_GuardianQuestNotificationShowsExactQuestDetail()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_archive",
+                    canonicalName = "Азалия",
+                    domain = "archive",
+                    questManagement = new
+                    {
+                        activeQuests = new[]
+                        {
+                            new
+                            {
+                                questId = "quest_archive_key",
+                                title = "Ключ архивной комнаты",
+                                description = "Найти ключ в старой памяти.",
+                                status = "in_progress",
+                                targetWorld = "Мир Пепельных Архивов"
+                            }
+                        },
+                        availableQuests = Array.Empty<object>(),
+                        completedQuests = Array.Empty<object>()
+                    }
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+        var detailLines = new List<string>();
+        var method = typeof(ExplorerMode).GetMethod(
+            "AppendExactGuardianNotificationDetailLinesAsync",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.NotNull(method);
+        var task = method!.Invoke(_explorer, new object[]
+        {
+            new AfterlifeNotificationState.NotificationEntry
+            {
+                NotificationId = "guardian_quest_available:guardian_archive:quest_archive_key",
+                NotificationType = AfterlifeNotificationState.TypeGuardianQuestAvailable,
+                RequestId = "guardian_archive:quest_archive_key",
+                GuardianId = "guardian_archive",
+                GuardianName = "Азалия",
+                Status = AfterlifeNotificationState.StatusUnread,
+                Summary = "У Хранителя Азалия появился архивный квест."
+            },
+            detailLines
+        }) as Task;
+        Assert.NotNull(task);
+
+        await task!;
+
+        var renderedText = string.Join("\n", detailLines);
+        Assert.Contains("Точный квест Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ключ архивной комнаты", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Мир Пепельных Архивов", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -3188,6 +3316,23 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                         description = "Реликвия с эффектами проверки.",
                         rarity = "Rare",
                         slot = "mainHand",
+                        formTag = "blade",
+                        properties = new object[]
+                        {
+                            new
+                            {
+                                propertyId = "echoSignature",
+                                name = "Отзвук клинка",
+                                stat = "memory",
+                                band = "rare"
+                            },
+                            new
+                            {
+                                propertyId = "social_focus",
+                                stat = "social",
+                                band = "common"
+                            }
+                        },
                         effects = new
                         {
                             characteristicBonuses = new
@@ -3213,9 +3358,15 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("soul_relics_localized_slot_and_effects");
         var renderedText = ExtractRenderedText();
         Assert.Contains("Основная рука", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Форма ковки", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("клинок", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Свойства ковки", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Отзвук клинка", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("социальное влияние", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Бонус к социальной проверке", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Дополнительные свойства эффекта", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("echoSignature", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сигнатура эха", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("echoSignature", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("actionCheckBonuses", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 

@@ -409,7 +409,10 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
 
         var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
         var notification = Assert.Single(notifications.Where(item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeGuardianTradePendingAttention, StringComparison.OrdinalIgnoreCase)));
-        Assert.Contains("повреждён", notification.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("поврежден", notification.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pending_guardian_trade_request.json", notification.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("repair", notification.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("cleanup", notification.Summary, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -2777,7 +2780,7 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureHealthyAsync_TrimsOldReadNotificationsButKeepsUnread()
+    public async Task EnsureHealthyAsync_PreservesReadNotificationHistory()
     {
         var notifications = Enumerable.Range(0, 105)
             .Select(index => new
@@ -2822,10 +2825,10 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
         await AfterlifeNotificationState.EnsureHealthyAsync(_fs);
 
         var result = await AfterlifeNotificationState.ReadAsync(_fs);
-        Assert.Equal(101, result.Count);
+        Assert.Equal(106, result.Count);
         Assert.Contains(result, entry => string.Equals(entry.NotificationId, "unread_latest", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(result, entry => string.Equals(entry.NotificationId, "read_104", StringComparison.OrdinalIgnoreCase));
-        Assert.DoesNotContain(result, entry => string.Equals(entry.NotificationId, "read_0", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result, entry => string.Equals(entry.NotificationId, "read_0", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

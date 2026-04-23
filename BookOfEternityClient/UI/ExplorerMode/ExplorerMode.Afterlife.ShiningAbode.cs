@@ -549,6 +549,35 @@ public partial class ExplorerMode
             return;
 
         var indentPrefix = new string(' ', indent);
+        var liveHistoryEntry = FindResidentHistoryEntry(residentRoot, historyEntryId);
+        if (liveHistoryEntry != null)
+        {
+            var title = GetNodeString(liveHistoryEntry["title"]);
+            var summary = GetNodeString(liveHistoryEntry["summary"]);
+            var eventType = GetNodeString(liveHistoryEntry["eventType"]);
+            var revealedAtTurn = GetNodeInt(liveHistoryEntry["revealedAtTurn"]);
+            if (revealedAtTurn <= 0)
+                revealedAtTurn = GetNodeInt(liveHistoryEntry["turn"]);
+            var revealedAtUtc = GetNodeString(liveHistoryEntry["revealedAtUtc"]) ?? GetNodeString(liveHistoryEntry["timestamp"]);
+            lines.Add($"{indentPrefix}Историческая запись резидента: [white]{Markup.Escape(string.IsNullOrWhiteSpace(title) ? historyEntryId : title!)}[/]");
+            if (!string.IsNullOrWhiteSpace(summary))
+                lines.Add($"{indentPrefix}Содержание истории: [dim]{Markup.Escape(summary!)}[/]");
+            if (!string.IsNullOrWhiteSpace(eventType))
+                lines.Add($"{indentPrefix}Тип исторической записи: [dim]{Markup.Escape(HumanizeProtocolToken(eventType))}[/]");
+            if (revealedAtTurn > 0)
+                lines.Add($"{indentPrefix}Открыта на ходу: [dim]{revealedAtTurn}[/]");
+            if (!string.IsNullOrWhiteSpace(revealedAtUtc))
+                lines.Add($"{indentPrefix}Открыта в UTC: [dim]{Markup.Escape(revealedAtUtc!)}[/]");
+            var tags = (liveHistoryEntry["tags"] as JsonArray)?
+                .Select(tag => HumanizeProtocolToken(GetNodeString(tag)))
+                .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                .ToList() ?? new List<string>();
+            if (tags.Count > 0)
+                lines.Add($"{indentPrefix}Метки истории: [dim]{Markup.Escape(string.Join(", ", tags))}[/]");
+            lines.Add($"{indentPrefix}Идентификатор исторической записи: [dim]{Markup.Escape(historyEntryId)}[/]");
+            return;
+        }
+
         var stableSummary = GetNodeString(receipt["residentHistorySummary"]);
         var stableTimestamp = GetNodeString(receipt["residentHistoryTimestamp"]);
         var stableEventType = GetNodeString(receipt["residentHistoryEventType"]);
@@ -567,6 +596,24 @@ public partial class ExplorerMode
         }
 
         lines.Add($"{indentPrefix}Историческая запись резидента: [dim]в receipt нет замороженного фрагмента; доступен только идентификатор {Markup.Escape(historyEntryId)}[/]");
+    }
+
+    private static JsonObject? FindResidentHistoryEntry(JsonObject? residentRoot, string? historyEntryId)
+    {
+        if (residentRoot == null || string.IsNullOrWhiteSpace(historyEntryId))
+            return null;
+
+        if (residentRoot["historyLog"] is JsonArray historyLog)
+        {
+            var rootEntry = historyLog.OfType<JsonObject>()
+                .FirstOrDefault(entry => string.Equals(GetNodeString(entry["entryId"]), historyEntryId, StringComparison.OrdinalIgnoreCase));
+            if (rootEntry != null)
+                return rootEntry;
+        }
+
+        return (residentRoot["entries"] as JsonArray)?.OfType<JsonObject>()
+            .SelectMany(entry => (entry["historyLog"] as JsonArray)?.OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>())
+            .FirstOrDefault(entry => string.Equals(GetNodeString(entry["entryId"]), historyEntryId, StringComparison.OrdinalIgnoreCase));
     }
 
     private static string ResolveShiningFactionLabel(JsonObject? shiningRoot, string? factionId)
@@ -726,7 +773,16 @@ public partial class ExplorerMode
             context.GuardiansRoot,
             context.Root);
         var factionStrength = GetNodeInt(faction["factionStrength"]);
+        var baseStrength = GetNodeInt(faction["baseStrength"]);
+        var investCountThisAscension = GetNodeInt(faction["investCountThisAscension"]);
+        var countedArchetypes = (faction["projectArchetypesCountedThisAscension"] as JsonArray)?
+            .Select(item => DescribeShiningProjectArchetype(GetNodeString(item)))
+            .Where(item => !string.IsNullOrWhiteSpace(item))
+            .ToList() ?? new List<string>();
         var originType = DescribeShiningOriginType(GetNodeString(faction["originType"]));
+        var charterSummary = GetNodeString(faction["charter"]?["summary"]);
+        var favoredArchetype = DescribeShiningProjectArchetype(GetNodeString(faction["charter"]?["favoredArchetype"]));
+        var patronEffectFamily = DescribeShiningEffectFamily(GetNodeString(faction["charter"]?["patronEffectFamily"]));
 
         var lines = new List<string>
         {
@@ -735,10 +791,17 @@ public partial class ExplorerMode
             "[bold]Сводка фракции:[/]",
             $"  • Зал: {Markup.Escape(hallName)}",
             $"  • Сила: [white]{factionStrength}[/]",
+            $"  • Базовая сила: [white]{baseStrength}[/]",
             $"  • Происхождение: {Markup.Escape(originType)}",
+            $"  • Любимый архетип проектов: {Markup.Escape(favoredArchetype)}",
+            $"  • Покровительствующая семья эффекта: {Markup.Escape(patronEffectFamily)}",
+            $"  • Инвестиций за это Вознесение: [white]{investCountThisAscension}[/]",
+            $"  • Архетипы проектов, уже учтённые за это Вознесение: {Markup.Escape(countedArchetypes.Count == 0 ? "нет" : string.Join(", ", countedArchetypes))}",
             $"  • Состояние власти: {Markup.Escape(leadershipState)}",
             $"  • Глава: {Markup.Escape(headLabel)}"
         };
+        if (!string.IsNullOrWhiteSpace(charterSummary))
+            lines.Add($"  • Устав: [dim]{Markup.Escape(charterSummary!)}[/]");
 
         var residents = (context.ResidentRoot?["entries"] as JsonArray)?.OfType<JsonObject>()
             .Where(entry =>
