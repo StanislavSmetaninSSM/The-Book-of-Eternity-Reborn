@@ -202,7 +202,9 @@ public sealed class GameEngineSourceGuardTests
 
         Assert.Contains("AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs)", source, StringComparison.Ordinal);
         Assert.Contains("AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs)", source, StringComparison.Ordinal);
-        Assert.Contains("Нельзя войти в новую смертную жизнь, пока остаются незакрытые архивные действия", source, StringComparison.Ordinal);
+        Assert.Contains("Нельзя войти в новую смертную жизнь, пока остаются незакрытые загробные контракты", source, StringComparison.Ordinal);
+        Assert.Contains("GuardianAbodeOfferingState.PendingRequestPath", source, StringComparison.Ordinal);
+        Assert.Contains("GuardianTradeRequestState.ReadStateAsync(_fs)", source, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -496,7 +496,6 @@ public partial class GameEngine
                 _stateManager.CurrentState.IsInChaosSea)
             {
                 await HandleIncarnation();
-                await WaitForGmResponse();
                 continue;
             }
 

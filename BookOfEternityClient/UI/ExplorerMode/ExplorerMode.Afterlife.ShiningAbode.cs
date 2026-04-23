@@ -569,11 +569,25 @@ public partial class ExplorerMode
         var historyEntry = FindResidentHistoryEntry(residentRoot, historyEntryId);
         if (historyEntry != null)
         {
+            var title = GetNodeString(historyEntry["title"]);
             var summary = GetNodeString(historyEntry["summary"]);
+            if (!string.IsNullOrWhiteSpace(title))
+                lines.Add($"{indentPrefix}Историческая запись резидента: [white]{Markup.Escape(title)}[/]");
             if (!string.IsNullOrWhiteSpace(summary))
-                lines.Add($"{indentPrefix}Историческая запись резидента: [dim]{Markup.Escape(summary)}[/]");
+                lines.Add($"{indentPrefix}Краткая сводка: [dim]{Markup.Escape(summary)}[/]");
 
-            var timestamp = GetNodeString(historyEntry["timestamp"]);
+            if (historyEntry["tags"] is JsonArray tags)
+            {
+                var values = tags.OfType<JsonValue>()
+                    .Select(tag => tag.TryGetValue<string>(out var value) ? value : null)
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Select(value => value!)
+                    .ToList();
+                if (values.Count > 0)
+                    lines.Add($"{indentPrefix}Метки: [dim]{Markup.Escape(string.Join(", ", values))}[/]");
+            }
+
+            var timestamp = GetNodeString(historyEntry["revealedAtUtc"]) ?? GetNodeString(historyEntry["timestamp"]);
             if (!string.IsNullOrWhiteSpace(timestamp))
                 lines.Add($"{indentPrefix}Историческая запись UTC: [dim]{Markup.Escape(timestamp)}[/]");
 
@@ -1047,9 +1061,19 @@ public partial class ExplorerMode
                     lines.Add($"  Версия набора Врат: [dim]{request.SourceDraftVersion}[/]");
                 if (request.SelectedCardIds.Count > 0)
                 {
-                    lines.Add("  Выбранные карты:");
-                    foreach (var cardId in request.SelectedCardIds)
-                        lines.Add($"    [dim]• {Markup.Escape(ResolveShiningBlessingCardLabel(context.Root, cardId))} ({Markup.Escape(cardId)})[/]");
+                    var requestSelectedCards = GetConsistentPreparedPackageRequestCards(request);
+                    if (requestSelectedCards.Count > 0)
+                    {
+                        lines.Add("  Выбранные карты:");
+                        foreach (var card in requestSelectedCards)
+                            lines.AddRange(BuildShiningBlessingCardInspectionLines(card, context, isSelected: true));
+                    }
+                    else
+                    {
+                        lines.Add("  Выбранные карты:");
+                        foreach (var cardId in request.SelectedCardIds)
+                            lines.Add($"    [dim]• {Markup.Escape(ResolveShiningBlessingCardLabel(context.Root, cardId))} ({Markup.Escape(cardId)})[/]");
+                    }
                 }
 
                 if (request.ProjectDraft is JsonObject projectDraft)
@@ -1506,6 +1530,28 @@ public partial class ExplorerMode
         var storedIds = selectedCardIds.OfType<JsonValue>()
             .Select(node => node.TryGetValue<string>(out var value) ? value?.Trim() ?? string.Empty : string.Empty)
             .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        var snapshotCards = selectedCards.OfType<JsonObject>().ToList();
+        var snapshotIds = snapshotCards
+            .Select(card => GetNodeString(card["cardId"])?.Trim() ?? string.Empty)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+
+        return storedIds.Count > 0 &&
+               storedIds.Count == snapshotIds.Count &&
+               storedIds.SequenceEqual(snapshotIds, StringComparer.OrdinalIgnoreCase)
+            ? snapshotCards
+            : new List<JsonObject>();
+    }
+
+    private static List<JsonObject> GetConsistentPreparedPackageRequestCards(ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        if (request.SelectedCards is not JsonArray selectedCards || request.SelectedCardIds.Count == 0)
+            return new List<JsonObject>();
+
+        var storedIds = request.SelectedCardIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Select(id => id.Trim())
             .ToList();
         var snapshotCards = selectedCards.OfType<JsonObject>().ToList();
         var snapshotIds = snapshotCards

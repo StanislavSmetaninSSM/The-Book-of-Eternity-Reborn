@@ -5064,6 +5064,7 @@ public partial class ValidationService
             return;
 
         var preTurnRealm = await TryResolvePreTurnRealmAsync();
+        var currentRealm = await TryResolveCurrentRealmAsync();
         if (string.IsNullOrWhiteSpace(preTurnRealm))
         {
             issues.Add(new ValidationIssue(
@@ -5087,6 +5088,21 @@ public partial class ValidationService
                 expected: "Chaos Sea",
                 actual: preTurnRealm,
                 repairHint: "Проверяй realm на начало accepted turn. Если pre-turn realm уже не Chaos Sea, убери ascension.json; если trigger был легален, не переключай soul_state.currentRealm вручную в том же ходе."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(preTurnRealm) &&
+            IsExactChaosSeaRealm(preTurnRealm) &&
+            !IsExactChaosSeaRealm(currentRealm))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/control/ascension.json",
+                IssueSeverity.Error,
+                "AscensionTrigger turn не может заранее переключать currentRealm в другой bucket до клиентского ascension handoff.",
+                code: "ascension_current_realm_switched_same_turn",
+                section: "Lifecycle",
+                expected: "current realm remains Chaos Sea while ascension.json is present",
+                actual: currentRealm ?? "unknown current realm",
+                repairHint: "Не переключай soul_state.currentRealm вручную на accepted turn с AscensionTrigger. Оставь currentRealm в Chaos Sea и дай клиенту завершить handoff по ascension.json."));
         }
 
         var lifeTransitionJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
@@ -5169,6 +5185,8 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(preTurnRealm))
             return;
 
+        var currentRealm = await TryResolveCurrentRealmAsync();
+
         var allowsShiningPendingBootstrap = false;
         if (!IsExactChaosSeaRealm(preTurnRealm) &&
             (string.Equals(preTurnRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
@@ -5209,6 +5227,33 @@ public partial class ValidationService
                 expected: "Chaos Sea or Shining Abode with preparedIncarnationPackage",
                 actual: preTurnRealm,
                 repairHint: "Проверяй realm на начало accepted turn. Разрешены только Chaos Sea и Shining pending-bootstrap handoff с frozen package; другие realms не могут запускать incarnation_trigger.json."));
+        }
+
+        if (IsExactChaosSeaRealm(preTurnRealm) && !IsExactChaosSeaRealm(currentRealm))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/control/incarnation_trigger.json",
+                IssueSeverity.Error,
+                "TriggerIncarnation turn не может заранее переключать currentRealm в mortal realm до клиентского bootstrap handoff.",
+                code: "incarnation_trigger_current_realm_switched_same_turn",
+                section: "Lifecycle",
+                expected: "current realm remains Chaos Sea while incarnation_trigger.json is present",
+                actual: currentRealm ?? "unknown current realm",
+                repairHint: "Не переключай soul_state.currentRealm вручную на accepted turn с TriggerIncarnation. Оставь currentRealm в Chaos Sea и дай клиенту завершить bootstrap handoff по incarnation_trigger.json."));
+        }
+        else if (allowsShiningPendingBootstrap &&
+                 !string.Equals(currentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) &&
+                 !string.Equals(currentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/control/incarnation_trigger.json",
+                IssueSeverity.Error,
+                "TriggerIncarnation из frozen Shining package не может заранее выводить currentRealm из Сияющей Обители до клиентского bootstrap handoff.",
+                code: "incarnation_trigger_shining_handoff_current_realm_switched_same_turn",
+                section: "Lifecycle",
+                expected: "current realm remains Shining Abode while incarnation_trigger.json handoff is active",
+                actual: currentRealm ?? "unknown current realm",
+                repairHint: "На accepted turn с frozen Shining handoff не переключай soul_state.currentRealm вручную. Оставь currentRealm в Сияющей Обители и дай клиенту завершить bootstrap handoff по incarnation_trigger.json."));
         }
 
         if (payload.IsGuardianForced && !IsExactChaosSeaRealm(preTurnRealm))

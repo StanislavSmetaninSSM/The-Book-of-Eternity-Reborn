@@ -400,6 +400,7 @@ public partial class ExplorerMode
         if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeShiningTradeInventoryReady, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeShiningCoreActionResolved, StringComparison.OrdinalIgnoreCase))
         {
+            actions.Add("🧾 Открыть точное решение");
             actions.Add("✨ Открыть Сияющую Обитель");
         }
 
@@ -407,6 +408,7 @@ public partial class ExplorerMode
             string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeShiningFactionRealignmentResolved, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeShiningFactionLeadershipResolved, StringComparison.OrdinalIgnoreCase))
         {
+            actions.Add("🧾 Открыть точное решение");
             actions.Add("🏛 Открыть политику Сияющей Обители");
         }
 
@@ -462,6 +464,12 @@ public partial class ExplorerMode
             .Title("[bold]Действие:[/]")
             .HighlightStyle(new Style(Color.Yellow))
             .AddChoices(actions));
+
+        if (selected.StartsWith("🧾", StringComparison.Ordinal))
+        {
+            await ShowShiningNotificationExactResolutionAsync(notification);
+            return;
+        }
 
         if (selected.StartsWith("🛒", StringComparison.Ordinal))
         {
@@ -526,6 +534,62 @@ public partial class ExplorerMode
 
         if (selected.Contains("Отметить", StringComparison.OrdinalIgnoreCase))
             await AfterlifeNotificationState.MarkReadAsync(_fs, notification.NotificationId);
+    }
+
+    private async Task ShowShiningNotificationExactResolutionAsync(AfterlifeNotificationState.NotificationEntry notification)
+    {
+        if (!IsShiningNotificationType(notification.NotificationType))
+            return;
+
+        var context = await LoadShiningContextAsync();
+        if (context == null)
+        {
+            MarkupLine("[yellow]Точное решение Сияющей Обители сейчас недоступно: состояние не читается.[/]");
+            WaitForKey();
+            return;
+        }
+
+        var lines = new List<string>
+        {
+            $"[bold yellow]🧾 Точное решение: {Markup.Escape(AfterlifeNotificationState.GetTypeLabel(notification.NotificationType))}[/]"
+        };
+
+        if (!string.IsNullOrWhiteSpace(notification.RequestId))
+            lines.Add($"  Идентификатор запроса: [dim]{Markup.Escape(notification.RequestId)}[/]");
+        if (notification.CreatedAtTurn > 0)
+            lines.Add($"  Ход уведомления: [dim]{notification.CreatedAtTurn}[/]");
+        if (!string.IsNullOrWhiteSpace(notification.CreatedAtUtc))
+            lines.Add($"  Получено в UTC: [dim]{Markup.Escape(notification.CreatedAtUtc)}[/]");
+
+        switch (notification.NotificationType)
+        {
+            case AfterlifeNotificationState.TypeShiningTradeInventoryReady:
+                AppendShiningTradeNotificationDetails(context.Root, notification, lines);
+                break;
+            case AfterlifeNotificationState.TypeShiningCoreActionResolved:
+                AppendShiningCoreNotificationDetails(context.Root, notification, lines);
+                break;
+            case AfterlifeNotificationState.TypeShiningFactionFoundingResolved:
+                AppendShiningFoundingNotificationDetails(context.Root, notification, lines);
+                break;
+            case AfterlifeNotificationState.TypeShiningFactionRealignmentResolved:
+                AppendShiningRealignmentNotificationDetails(context.Root, notification, lines);
+                break;
+            case AfterlifeNotificationState.TypeShiningFactionLeadershipResolved:
+                AppendShiningLeadershipNotificationDetails(context.Root, notification, lines);
+                break;
+        }
+
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🧾 Точное решение Сияющей Обители ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+        WaitForKey();
     }
 
     private async Task AppendExactAfterlifeNotificationDetailLinesAsync(AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
