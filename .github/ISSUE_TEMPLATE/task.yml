@@ -1,0 +1,38 @@
+name: Engineering Task
+description: Non-bug implementation task, cleanup, migration, or follow-up work
+title: "[Task] "
+labels:
+  - task
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      placeholder: What needs to be done?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      placeholder: Relevant subsystem, background, related issues, or design constraints
+
+  - type: textarea
+    id: deliverables
+    attributes:
+      label: Deliverables
+      placeholder: |
+        - Code changes
+        - Tests
+        - Docs
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: Definition of Done
+      placeholder: What must be true before this task can be closed?
+    validations:
+      required: true

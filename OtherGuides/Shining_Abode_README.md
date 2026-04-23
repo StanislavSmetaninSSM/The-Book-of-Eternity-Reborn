@@ -61,20 +61,21 @@
 
 ---
 
-## Working Audit Backlog
+## Working Issue Tracking
 
-Для текущей post-implementation доработки есть отдельный рабочий backlog-аудит:
+Операционный tracking для багов, audit findings и implementation tasks теперь ведётся в **GitHub Issues**, а не в markdown backlog-файлах.
 
-- [Chaos_Sea_And_Shining_Audit_Backlog.md](</E:/Games/The%20Book%20of%20Eternity%20Reborn/OtherGuides/Chaos_Sea_And_Shining_Audit_Backlog.md>)
+Source of truth:
 
-Его смысл:
+- GitHub Issues репозитория:
+  - https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues
+- repo-local workflow note:
+  - [.github/ISSUE_TRACKING.md](</E:/Games/The%20Book%20of%20Eternity%20Reborn/.github/ISSUE_TRACKING.md>)
 
-- это не source-of-truth design spec, а **рабочий список подтверждённых проблем и недопоказанных player-facing данных**;
-- в нём фиксируются:
-  - gameplay defects
-  - lifecycle / validation gaps
-  - player-facing data completeness gaps
-- после каждого fix-pass этот backlog надо обновлять, а не переписывать задним числом историю найденных проблем.
+Практический смысл:
+
+- confirmed defects, runtime gaps и completeness issues больше не нужно заносить в ручные backlog/handoff markdown files
+- branch / PR / close flow теперь должен привязываться к issue, а не к отдельному audit-item в тексте
 
 ---
 
