@@ -106,11 +106,33 @@ public sealed class GuardianTradeService
         if (guardian == null)
             return null;
 
+        var preGuardiansJson = root.ToJsonString(JsonOpts);
+        var preTrackerJson = trackerRoot?.ToJsonString(JsonOpts);
         var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(root, guardian, currentIncarnation, currentTurn, trackerRoot);
-        if (changed)
-            await _fs.WriteFileAtomicAsync(GuardiansPath, root.ToJsonString(JsonOpts));
-        if (trackerChanged && trackerRoot != null)
-            await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot.ToJsonString(JsonOpts));
+        if (changed || trackerChanged)
+        {
+            var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
+            {
+                new(GuardiansPath, preGuardiansJson, root.ToJsonString(JsonOpts))
+            };
+            if (trackerChanged && trackerRoot != null)
+            {
+                writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                    GuardianProjectState.TrackerPath,
+                    preTrackerJson,
+                    trackerRoot.ToJsonString(JsonOpts)));
+            }
+
+            if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes.ToArray()))
+            {
+                return view with
+                {
+                    TradeBlocked = true,
+                    BlockReason = "Не удалось безопасно зафиксировать состояние витрины Хранителя и трекера проектов без расхождения. Изменения откатились.",
+                    InventoryReady = false
+                };
+            }
+        }
 
         return view;
     }
@@ -420,12 +442,15 @@ public sealed class GuardianTradeService
             {
                 var requestMatchesCurrentContract = pendingRequest != null &&
                     GuardianTradeRequestState.MatchesCurrentContract(pendingRequest, guardianId, cycleId, reputation, derivedState);
+                var hasForeignLivePendingRequest = pendingRequest != null && !requestMatchesCurrentContract;
                 var hasMatchingReceipt = requestMatchesCurrentContract &&
                     GuardianTradeRequestState.ReceiptMatchesRequestContract(
                         GuardianTradeRequestState.FindMatchingReceipt(guardian, pendingRequest!),
                         pendingRequest!,
                         tradeInventory);
-                var hasCanonicalReadyReceipt = HasCanonicalReadyReceiptForInventory(guardian, tradeInventory);
+                var hasCanonicalReadyReceipt = requestMatchesCurrentContract
+                    ? hasMatchingReceipt
+                    : HasCanonicalReadyReceiptForInventory(guardian, tradeInventory);
                 inventoryReady = hasCanonicalReadyReceipt;
                 if (tradeInventory != null)
                 {
@@ -448,6 +473,26 @@ public sealed class GuardianTradeService
                                 blocked,
                                 blockedReason,
                                 inventoryReady,
+                                inventoryRequestPending,
+                                inventoryRequestCreatedThisCall,
+                                inventoryStatusMessage,
+                                pendingGmAction),
+                            changed,
+                            trackerChanged);
+                    }
+
+                    if (hasForeignLivePendingRequest)
+                    {
+                        inventoryRequestPending = true;
+                        inventoryStatusMessage = "pending_guardian_trade_request.json содержит другой живой торговый контракт. Витрина заблокирована, пока текущий pending request не будет закрыт canonical receipt или исправлен вручную.";
+                        return (
+                            tier,
+                            BuildTradeView(
+                                guardian,
+                                cycleId,
+                                true,
+                                inventoryStatusMessage,
+                                inventoryReady: false,
                                 inventoryRequestPending,
                                 inventoryRequestCreatedThisCall,
                                 inventoryStatusMessage,
@@ -485,7 +530,7 @@ public sealed class GuardianTradeService
                         $"Обязательно закрой текущий контракт через {GuardianTradeRequestState.UpdateReceiptsProperty} в guardians.json вместо повторной генерации новой витрины.";
                 }
 
-                if (pendingRequest != null && (!requestMatchesCurrentContract || hasMatchingReceipt || hasCanonicalReadyReceipt))
+                if (pendingRequest != null && requestMatchesCurrentContract && (hasMatchingReceipt || hasCanonicalReadyReceipt))
                     GuardianTradeRequestState.Clear(_fs);
             }
             else
@@ -516,6 +561,25 @@ public sealed class GuardianTradeService
                     cycleId,
                     reputation,
                     derivedState);
+
+                if (pendingRequest != null && !inventoryRequestPending)
+                {
+                    inventoryStatusMessage = "pending_guardian_trade_request.json содержит другой живой торговый контракт. Новый запрос на подготовку витрины заблокирован, пока текущий pending request не будет закрыт canonical receipt или исправлен вручную.";
+                    return (
+                        tier,
+                        BuildTradeView(
+                            guardian,
+                            cycleId,
+                            true,
+                            inventoryStatusMessage,
+                            inventoryReady,
+                            inventoryRequestPending: true,
+                            inventoryRequestCreatedThisCall,
+                            inventoryStatusMessage,
+                            pendingGmAction),
+                        changed,
+                        trackerChanged);
+                }
 
                 if (!inventoryRequestPending)
                 {
@@ -790,14 +854,17 @@ public sealed class GuardianTradeService
             return false;
         }
 
-        return receipts.OfType<JsonObject>().Any(receipt =>
+        var matchingReceiptCount = receipts.OfType<JsonObject>().Count(receipt =>
             string.Equals(GetNodeString(receipt["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(GetNodeString(receipt["abodeId"]), abodeId, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(GetNodeString(receipt["tradeCycleId"]), tradeCycleId, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(GetNodeString(receipt["status"]), GuardianTradeRequestState.ReceiptStatusReady, StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(GetNodeString(receipt["requestId"])) &&
             GetNodeInt(receipt["itemCount"], -1) == itemCount &&
             GetNodeInt(receipt["resolvedAtTurn"], 0) > 0 &&
             !string.IsNullOrWhiteSpace(GetNodeString(receipt["resolvedAtUtc"])));
+
+        return matchingReceiptCount == 1;
     }
 
     private static bool TradeInventoryMatchesContract(

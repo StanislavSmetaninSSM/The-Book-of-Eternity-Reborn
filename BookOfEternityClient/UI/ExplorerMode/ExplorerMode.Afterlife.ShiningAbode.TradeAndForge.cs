@@ -121,7 +121,7 @@ public partial class ExplorerMode
                 }
                 else if (duplicatePendingRequests)
                 {
-                    lines.Add("  Ожидающий запрос: [red]pending_shining_trade_inventory_requests.json содержит несколько запросов одного цикла[/]");
+                    lines.Add("  Ожидающий запрос: [red]для текущего цикла найдено несколько конкурирующих торговых контрактов[/]");
                 }
                 else
                 {
@@ -136,7 +136,7 @@ public partial class ExplorerMode
                     if (!string.IsNullOrWhiteSpace(GetNodeString(tradeInventory["generatedAtUtc"])))
                         lines.Add($"    Подготовлена в UTC: [dim]{Markup.Escape(GetNodeString(tradeInventory["generatedAtUtc"])!)}[/]");
                     lines.Add($"    Уровень торговли при подготовке: [dim]{GetNodeInt(tradeInventory["generationTradeTier"])}[/]");
-                    lines.Add($"    Потолок редкости при подготовке: [dim]{Markup.Escape(GetNodeString(tradeInventory["generationRarityCeiling"]) ?? "?")}[/]");
+                    lines.Add($"    Потолок редкости при подготовке: [dim]{Markup.Escape(DescribeRarityLabel(GetNodeString(tradeInventory["generationRarityCeiling"]) ?? "?"))}[/]");
                     if (TryGetNodeDouble(tradeInventory["serviceMultiplierSnapshot"], out var serviceSnapshot))
                         lines.Add($"    Коэффициент услуг в момент подготовки: [dim]{serviceSnapshot:0.00}[/]");
                     lines.Add($"    Профиль торговца: [dim]{Markup.Escape(DescribeShiningMerchantProfile(GetNodeString(tradeInventory["merchantProfile"]) ?? ShiningTradeRequestState.MerchantProfileShiningFaction))}[/]");

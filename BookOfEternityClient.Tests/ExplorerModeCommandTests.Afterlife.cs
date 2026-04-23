@@ -914,7 +914,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Связанная запись Архива", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Память о пламени", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Запись Тайны", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Rare", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Редкая", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Историческая архивная запись о пламени.", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Связанный проект", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Свод Искр", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -2448,8 +2448,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Устав фракции: Поют утренний свет.", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Описание зала: Поющие своды собирают отзвуки верности.", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Историческая запись резидента: Орин признал, что зов Хора Рассвета звучит для него яснее прежней верности.", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Идентификатор исторической записи: history_orin_realignment_1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("в receipt нет замороженного фрагмента", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Причина решения: целевая фракция приняла переход", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("accepted_by_target_faction", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Историческая сводка: Мираэль признана новым голосом Хора Рассвета.", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -3215,7 +3214,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Основная рука", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Бонус к социальной проверке", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Дополнительные технические параметры эффекта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Дополнительные свойства эффекта", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("echoSignature", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("actionCheckBonuses", renderedText, StringComparison.OrdinalIgnoreCase);
     }
@@ -5298,6 +5297,206 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Связанный резидент", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Обитатель Обители", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Лиора", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_AfterlifeInbox_ResidentQuestNotificationOpensExactQuestDetail()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/quests/soul_quests.json", new
+        {
+            quests = new[]
+            {
+                new
+                {
+                    questId = "quest_liora",
+                    title = "Просьба Лиоры",
+                    description = "Услышь тихую песнь над лазурным мостом.",
+                    relatedAfterlifeResidentId = "resident_ember_001"
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/control/afterlife_notifications.json", new
+        {
+            notifications = new[]
+            {
+                new
+                {
+                    notificationId = "abode_resident_quest_available:resident_ember_001:quest_liora",
+                    notificationType = "abode_resident_quest_available",
+                    requestId = "resident_ember_001:quest_liora",
+                    status = "unread",
+                    guardianId = "guardian_resident_001",
+                    guardianName = "Азалия",
+                    residentId = "resident_ember_001",
+                    residentName = "Лиора",
+                    archiveId = "",
+                    archiveTitle = "",
+                    targetProjectId = "",
+                    targetProjectName = "",
+                    summary = "Лиора зовёт душу к новому пути.",
+                    createdAtTurn = 24,
+                    createdAtUtc = "2026-04-20T00:24:00Z"
+                }
+            }
+        });
+        _console.QueueSelection("Действие", "🧵 Открыть квест души");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/уведомления_загробья"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_inbox_exact_resident_quest");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Просьба Лиоры", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Квест души", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_AfterlifeInbox_ArchiveProjectNotificationOpensExactProjectDetail()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync(GuardianProjectState.TrackerPath, new
+        {
+            activeProjects = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_trade_001",
+                    project = new
+                    {
+                        projectId = "project_alpha",
+                        projectName = "Башня Наблюдений",
+                        displayName = "Башня Наблюдений",
+                        stage = "active",
+                        summary = "Проект держит путь к Архиву."
+                    }
+                }
+            },
+            completedProjects = Array.Empty<object>()
+        });
+        await WriteJsonAsync("game_state/control/afterlife_notifications.json", new
+        {
+            notifications = new[]
+            {
+                new
+                {
+                    notificationId = "archive_project_fuel_rejected:archive_fuel_req_9",
+                    notificationType = "archive_project_fuel_rejected",
+                    requestId = "archive_fuel_req_9",
+                    status = "unread",
+                    guardianId = "guardian_trade_001",
+                    guardianName = "Азалия",
+                    archiveId = "archive_1",
+                    archiveTitle = "Пепельная хроника",
+                    targetProjectId = "project_alpha",
+                    targetProjectName = "Башня Наблюдений",
+                    summary = "Архивная подпитка проекта была отклонена.",
+                    createdAtTurn = 10,
+                    createdAtUtc = "2026-03-26T00:14:00Z"
+                }
+            }
+        });
+        _console.QueueSelection("Действие", "🔬 Открыть проекты Хранителей");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/уведомления_загробья"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_inbox_exact_project_detail");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Проект Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Башня Наблюдений", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SoulInfo_ManifestationRequestsOpenExactInspection()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Неон-Сити",
+            currentIncarnation = 2,
+            inkFeathers = new { current = 25 },
+            soulRelics = new
+            {
+                stored = new[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_001",
+                        name = "Отзвук 1",
+                        rarity = "Rare"
+                    }
+                },
+                equipped = Array.Empty<object>()
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "manifest_req_1",
+                    relicId = "relic_companion_echo_001",
+                    relicName = "Отзвук 1",
+                    manifestationSource = "resident_relic",
+                    sourceResidentId = "resident_ember_001",
+                    sourceGuardianId = "guardian_resident_001",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 2,
+                    companionNameHint = "Спутник 1",
+                    futureCompanionPrompt = "Появится на раннем этапе новой жизни."
+                }
+            }
+        });
+        _console.QueueSelection("Действие души", "👤 Осмотреть пути воплощения спутников", "← Назад");
+        _console.QueueSelection("Пути воплощения спутников", "👤 Спутник 1", "← Назад");
+        _console.QueueSelection("Действие", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/душа"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("soul_info_manifestation_exact_inspection");
+        Assert.Contains(_console.SelectionChoicesHistory,
+            entry => entry.Title.Contains("Пути воплощения спутников", StringComparison.OrdinalIgnoreCase) &&
+                     entry.Choices.Any(choice => choice.Contains("Спутник 1", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningAbode_ActionsOpenExactPendingNativeFactionDiscoveryInspection()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))?.AsObject()
+            ?? throw new InvalidOperationException("Expected seeded shining abode state.");
+        shiningRoot["pendingNativeFactionDiscovery"] = new JsonObject
+        {
+            ["requestId"] = "discover_native_1",
+            ["createdAtTurn"] = 160,
+            ["createdAtUtc"] = "2026-04-19T11:00:00Z",
+            ["radianceTierAtRequest"] = 2,
+            ["costFeathers"] = 25,
+            ["costLightSparks"] = 20
+        };
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        _console.QueueSelection("Сияющая Обитель", "✨ Основные действия", "← Назад");
+        _console.QueueSelection("Основные действия Сияющей Обители", "🔎 Осмотреть ожидающее открытие нативной фракции", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_pending_native_discovery_inspection");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("discover_native_1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("25 Перьев", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("20 Искр Света", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

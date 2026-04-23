@@ -32,7 +32,7 @@ public sealed class SystemGuardianLibraryService
     private readonly FileSystemManager _fs;
     private readonly ILogger<SystemGuardianLibraryService> _logger;
 
-    private sealed record AttractionRequestReadState(
+    internal sealed record AttractionRequestReadState(
         bool FilePresent,
         bool IsMalformed,
         SystemGuardianAttractionRequest? Request);
@@ -313,6 +313,17 @@ public sealed class SystemGuardianLibraryService
 
     public async Task WriteAttractionRequestAsync(SystemGuardianPresetDescriptor preset)
     {
+        var existingState = await ReadAttractionRequestStateAsync();
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException("system_guardian_attraction.json повреждён и должен быть исправлен или очищен до записи нового attraction request.");
+        if (existingState.Request != null &&
+            (!string.Equals(existingState.Request.TargetPresetId, preset.PresetId, StringComparison.OrdinalIgnoreCase) ||
+             !string.Equals(existingState.Request.TargetPresetVersion, preset.Version, StringComparison.OrdinalIgnoreCase) ||
+             !string.Equals(existingState.Request.SourceLibrary, preset.LibraryKind, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidOperationException("system_guardian_attraction.json уже содержит живой pending attraction contract и не может быть заменён новым выбором без явной canonical closure.");
+        }
+
         var request = BuildAttractionRequest(preset);
         await _fs.WriteFileAtomicAsync(AttractionRequestPath, JsonSerializer.Serialize(request, JsonOpts));
     }
@@ -324,6 +335,9 @@ public sealed class SystemGuardianLibraryService
         var state = await ReadAttractionRequestStateAsync();
         return state.IsMalformed ? null : state.Request;
     }
+
+    internal Task<AttractionRequestReadState> ReadAttractionRequestDisplayStateAsync() =>
+        ReadAttractionRequestStateAsync();
 
     public async Task EnsureAttractionRequestHealthyAsync(string? currentRealm)
     {
@@ -416,7 +430,7 @@ public sealed class SystemGuardianLibraryService
     {
         var json = await _fs.ReadFileAsync(AttractionRequestPath);
         if (string.IsNullOrWhiteSpace(json))
-            return new AttractionRequestReadState(_fs.FileExists(AttractionRequestPath), true, null);
+            return new AttractionRequestReadState(_fs.FileExists(AttractionRequestPath), _fs.FileExists(AttractionRequestPath), null);
 
         try
         {

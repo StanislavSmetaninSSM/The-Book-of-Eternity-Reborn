@@ -162,6 +162,135 @@ public sealed class SaveLoadServiceTests : IDisposable
         Assert.True(_fs.FileExists(AfterlifeArchiveActionState.ConsultationRequestPath));
     }
 
+    [Fact]
+    public async Task LoadGameAsync_RejectsZipSlipEntriesAndPreservesLiveSession()
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        await _fs.WriteFileAtomicAsync(soulStatePath, """
+        {
+          "soulName": "Живая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 7
+        }
+        """);
+
+        var outsidePath = Path.Combine(_rootPath, "outside.txt");
+        var maliciousZip = Path.Combine(_rootPath, "zip_slip.zip");
+        using (var archive = ZipFile.Open(maliciousZip, ZipArchiveMode.Create))
+        {
+            using var entryWriter = new StreamWriter(archive.CreateEntry("../../outside.txt").Open());
+            await entryWriter.WriteAsync("owned");
+        }
+
+        Assert.False(await _service.LoadGameAsync(maliciousZip));
+        Assert.False(File.Exists(outsidePath));
+
+        var soulState = await _fs.ReadFileAsync(soulStatePath);
+        Assert.NotNull(soulState);
+        Assert.Contains("Живая Душа", soulState);
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_CorruptArchiveDoesNotDestroyLiveSession()
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        await _fs.WriteFileAtomicAsync(soulStatePath, """
+        {
+          "soulName": "Неприкосновенная Душа",
+          "currentRealm": "Shining Abode",
+          "currentIncarnation": 2
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("mods/custom_rule.json", """
+        { "enabled": true }
+        """);
+
+        var corruptZip = Path.Combine(_rootPath, "corrupt.zip");
+        await File.WriteAllTextAsync(corruptZip, "this is not a zip archive");
+
+        Assert.False(await _service.LoadGameAsync(corruptZip));
+        Assert.True(_fs.FileExists(soulStatePath));
+        Assert.True(_fs.FileExists("mods/custom_rule.json"));
+
+        var soulState = await _fs.ReadFileAsync(soulStatePath);
+        Assert.NotNull(soulState);
+        Assert.Contains("Неприкосновенная Душа", soulState);
+    }
+
+    [Fact]
+    public async Task SaveGameAsync_ExcludesLifecycleTriggers_AndLoadRemovesLegacyTriggerFiles()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 5
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/control/life_transitions.json", """
+        { "transitions": [{ "transitionId": "life_transition_1" }] }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/control/incarnation_trigger.json", """
+        { "triggeredAtTurn": 10 }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/control/ascension.json", """
+        { "triggeredAtTurn": 11 }
+        """);
+
+        Assert.True(await _service.SaveGameAsync("no_lifecycle_triggers", "save/load lifecycle regression"));
+
+        var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+        using (var archive = ZipFile.OpenRead(savePath))
+        {
+            Assert.Null(archive.GetEntry("game_state/control/life_transitions.json"));
+            Assert.Null(archive.GetEntry("game_state/control/incarnation_trigger.json"));
+            Assert.Null(archive.GetEntry("game_state/control/ascension.json"));
+        }
+
+        var legacyZip = Path.Combine(_rootPath, "legacy_with_triggers.zip");
+        using (var archive = ZipFile.Open(legacyZip, ZipArchiveMode.Create))
+        {
+            var soulEntry = archive.CreateEntry("game_state/meta/soul_state.json");
+            await using (var soulStream = soulEntry.Open())
+            await using (var writer = new StreamWriter(soulStream))
+            {
+                await writer.WriteAsync("""
+                {
+                  "soulName": "Загруженная Душа",
+                  "currentRealm": "Chaos Sea",
+                  "currentIncarnation": 6
+                }
+                """);
+            }
+
+            var transitionsEntry = archive.CreateEntry("game_state/control/life_transitions.json");
+            await using (var transitionStream = transitionsEntry.Open())
+            await using (var writer = new StreamWriter(transitionStream))
+            {
+                await writer.WriteAsync("""{ "transitions": [{ "transitionId": "stale" }] }""");
+            }
+
+            var incarnationEntry = archive.CreateEntry("game_state/control/incarnation_trigger.json");
+            await using (var incarnationStream = incarnationEntry.Open())
+            await using (var writer = new StreamWriter(incarnationStream))
+            {
+                await writer.WriteAsync("""{ "triggeredAtTurn": 42 }""");
+            }
+
+            var ascensionEntry = archive.CreateEntry("game_state/control/ascension.json");
+            await using (var ascensionStream = ascensionEntry.Open())
+            await using (var writer = new StreamWriter(ascensionStream))
+            {
+                await writer.WriteAsync("""{ "triggeredAtTurn": 43 }""");
+            }
+        }
+
+        Assert.True(await _service.LoadGameAsync(legacyZip));
+        Assert.False(_fs.FileExists("game_state/control/life_transitions.json"));
+        Assert.False(_fs.FileExists("game_state/control/incarnation_trigger.json"));
+        Assert.False(_fs.FileExists("game_state/control/ascension.json"));
+    }
+
     public void Dispose()
     {
         try

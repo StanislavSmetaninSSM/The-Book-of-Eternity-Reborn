@@ -494,7 +494,8 @@ public partial class ExplorerMode
 
         if (selected.StartsWith("📚", StringComparison.Ordinal))
         {
-            await ShowAfterlifeArchive();
+            if (!await ShowAfterlifeArchiveEntryDetailByIdAsync(notification.ArchiveId))
+                await ShowAfterlifeArchive();
             return;
         }
 
@@ -516,7 +517,11 @@ public partial class ExplorerMode
 
         if (selected.StartsWith("🧵", StringComparison.Ordinal))
         {
-            await ShowSoulQuests();
+            if (!TryResolveResidentQuestNotificationQuestId(notification, out var questId) ||
+                !await ShowSoulQuestDetailByIdAsync(questId))
+            {
+                await ShowSoulQuests();
+            }
             return;
         }
 
@@ -528,7 +533,8 @@ public partial class ExplorerMode
 
         if (selected.StartsWith("🔬", StringComparison.Ordinal))
         {
-            await ShowGuardianProjects();
+            if (!await TryShowLinkedArchiveProjectAsync(notification.TargetProjectId))
+                await ShowGuardianProjects();
             return;
         }
 
@@ -615,7 +621,7 @@ public partial class ExplorerMode
             if (!string.IsNullOrWhiteSpace(notification.ArchiveEntryType))
                 lines.Add($"  Тип: [dim]{Markup.Escape(AfterlifeArchiveState.GetEntryTypeLabel(notification.ArchiveEntryType))}[/]");
             if (!string.IsNullOrWhiteSpace(notification.ArchiveRarity))
-                lines.Add($"  Редкость: [dim]{Markup.Escape(notification.ArchiveRarity)}[/]");
+                lines.Add($"  Редкость: [dim]{Markup.Escape(DescribeRarityLabel(notification.ArchiveRarity))}[/]");
             if (!string.IsNullOrWhiteSpace(notification.ArchiveSummary))
                 lines.Add($"  Сводка записи: [dim]{Markup.Escape(notification.ArchiveSummary)}[/]");
             return;
@@ -644,7 +650,7 @@ public partial class ExplorerMode
             lines.Add("  [bold]Связанная запись Архива:[/]");
             lines.Add($"  Название: [white]{Markup.Escape(archiveTitle)}[/]");
             lines.Add($"  Тип: [dim]{Markup.Escape(AfterlifeArchiveState.GetEntryTypeLabel(archiveType))}[/]");
-            lines.Add($"  Редкость: [dim]{Markup.Escape(archiveRarity)}[/]");
+            lines.Add($"  Редкость: [dim]{Markup.Escape(DescribeRarityLabel(archiveRarity))}[/]");
             if (!string.IsNullOrWhiteSpace(archiveSummary))
                 lines.Add($"  Сводка записи: [dim]{Markup.Escape(archiveSummary)}[/]");
             return;
@@ -1505,7 +1511,7 @@ public partial class ExplorerMode
                 {
                     var actionLabel = DescribeSoulRelicActionCheckLabel(prop.Name);
                     if (string.IsNullOrWhiteSpace(actionLabel))
-                        lines.Add($"    • [cyan]Бонус к проверке действия:[/] +{prop.Value} [dim](технический ключ {Markup.Escape(prop.Name)})[/]");
+                        lines.Add($"    • [cyan]Бонус к особой проверке действия:[/] +{prop.Value}");
                     else
                         lines.Add($"    • [cyan]{Markup.Escape(actionLabel)}: +{prop.Value}[/]");
                 }
@@ -1524,8 +1530,8 @@ public partial class ExplorerMode
 
             if (technicalEffectProps.Count > 0)
             {
-                lines.Add("    • [dim]У реликвии есть дополнительные нестандартные свойства; подробности приведены ниже.[/]");
-                lines.Add("    [dim]Дополнительные технические параметры эффекта:[/]");
+                lines.Add("    • [dim]У реликвии есть дополнительные свойства, которые усиливают её необычный эффект.[/]");
+                lines.Add("    [dim]Дополнительные свойства эффекта:[/]");
                 lines.AddRange(technicalEffectProps);
             }
         }
@@ -1725,6 +1731,87 @@ public partial class ExplorerMode
         }
 
         return entry.ReservedForProjectId;
+    }
+
+    private async Task<bool> ShowAfterlifeArchiveEntryDetailByIdAsync(string archiveId)
+    {
+        if (string.IsNullOrWhiteSpace(archiveId))
+            return false;
+
+        var entry = (await ReadStoredAfterlifeArchiveEntriesAsync())
+            .FirstOrDefault(item => string.Equals(item.ArchiveId, archiveId, StringComparison.OrdinalIgnoreCase));
+        if (entry == null)
+            return false;
+
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        var trackerDoc = await _stateManager.LoadGameStateFileAsync(GuardianProjectState.TrackerPath);
+        var sourceGuardianLabel = ResolveArchiveGuardianLabel(entry, guardiansDoc?.RootElement);
+        var targetProjectLabel = ResolveArchiveProjectLabel(entry, trackerDoc?.RootElement);
+        var lines = new List<string>
+        {
+            $"[bold yellow]📚 {Markup.Escape(entry.Title)}[/]",
+            "",
+            $"  Тип: [cyan]{Markup.Escape(AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType))}[/]",
+            $"  Редкость: [{GetRarityColor(entry.Rarity)}]{Markup.Escape(DescribeRarityLabel(entry.Rarity))}[/]",
+            $"  Источник жизни: [yellow]{entry.SourceLife}[/]",
+            $"  Источник записи: [dim]{Markup.Escape(AfterlifeArchiveState.GetSourceKindLabel(entry.SourceKind))}[/]"
+        };
+
+        if (!string.IsNullOrWhiteSpace(sourceGuardianLabel))
+            lines.Add($"  Связанный хранитель: [white]{Markup.Escape(sourceGuardianLabel)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.SourceGuardianId))
+            lines.Add($"  [dim]Идентификатор хранителя: {Markup.Escape(entry.SourceGuardianId)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.SourceEntryId))
+            lines.Add($"  Исходная запись Кодекса: [dim]{Markup.Escape(entry.SourceEntryId)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.AcquiredAtUtc))
+            lines.Add($"  Сохранено в Архив: [dim]{Markup.Escape(entry.AcquiredAtUtc)}[/]");
+        if (entry.Tags.Count > 0)
+            lines.Add($"  Метки: [dim]{Markup.Escape(string.Join(", ", entry.Tags))}[/]");
+        if (entry.IsReserved)
+        {
+            lines.Add($"  Резервация: [yellow]{Markup.Escape(AfterlifeArchiveState.GetReservationLabel(entry.ReservationKind))}[/]");
+            if (!string.IsNullOrWhiteSpace(targetProjectLabel))
+                lines.Add($"  Целевой проект: [white]{Markup.Escape(targetProjectLabel)}[/]");
+        }
+        if (!string.IsNullOrWhiteSpace(entry.Summary))
+        {
+            lines.Add("");
+            lines.Add("[bold]Сводка:[/]");
+            lines.Add($"  {Markup.Escape(entry.Summary)}");
+        }
+        if (!string.IsNullOrWhiteSpace(entry.Content))
+        {
+            lines.Add("");
+            lines.Add("[bold]Содержимое:[/]");
+            lines.Add($"  {Markup.Escape(entry.Content)}");
+        }
+
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 📚 Точная архивная запись ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Yellow),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+        WaitForKey();
+        return true;
+    }
+
+    private static bool TryResolveResidentQuestNotificationQuestId(AfterlifeNotificationState.NotificationEntry notification, out string questId)
+    {
+        questId = string.Empty;
+        if (!string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentQuestAvailable, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var requestId = notification.RequestId ?? string.Empty;
+        var separatorIndex = requestId.IndexOf(':');
+        if (separatorIndex < 0 || separatorIndex >= requestId.Length - 1)
+            return false;
+
+        questId = requestId[(separatorIndex + 1)..];
+        return !string.IsNullOrWhiteSpace(questId);
     }
 
     private async Task<bool> TryShowLinkedArchiveGuardianAsync(string guardianId)

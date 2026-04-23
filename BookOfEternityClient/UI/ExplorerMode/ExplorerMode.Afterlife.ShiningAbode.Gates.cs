@@ -361,15 +361,12 @@ public partial class ExplorerMode
         lines.Add("[bold khaki1]Подготовленный пакет новой жизни:[/]");
         if (context.Root["preparedIncarnationPackage"] is JsonObject package)
         {
-            var selectedIds = (package["selectedCardIds"] as JsonArray)?.OfType<JsonValue>()
-                .Where(node => node.TryGetValue<string>(out _))
-                .Select(node => node.GetValue<string>())
-                .ToList() ?? new List<string>();
-            var selectedCards = (package["selectedCards"] as JsonArray)?.OfType<JsonObject>().ToList() ?? new List<JsonObject>();
+            var selectedIds = GetPreparedPackageSelectedCardIds(package);
+            var selectedCards = GetConsistentPreparedPackageCards(package);
             lines.Add($"  • Основан на версии Врат: [white]{GetNodeInt(package["generatedFromDraftVersion"])}[/]");
             lines.Add($"  • Лимит выбора: [white]{pickCap}[/]");
             lines.Add($"  • Размер исходного набора: [white]{draftSize}[/]");
-            lines.Add($"  • Выбрано карт: [white]{selectedCards.Count}[/]");
+            lines.Add($"  • Выбрано карт: [white]{selectedIds.Count}[/]");
             var selectedPackageLabels = selectedIds
                 .Select(id => ResolveShiningBlessingCardLabel(context.Root, id))
                 .Where(label => !string.IsNullOrWhiteSpace(label))
@@ -384,6 +381,10 @@ public partial class ExplorerMode
                 lines.Add("[bold]Карты подготовленного пакета:[/]");
                 foreach (var card in selectedCards)
                     lines.AddRange(BuildShiningBlessingCardInspectionLines(card, context, isSelected: true));
+            }
+            else if (selectedIds.Count > 0)
+            {
+                lines.Add("  • [dim]stored snapshot карт отсутствует или повреждён; доступен только canonical id-набор.[/]");
             }
         }
         else
@@ -525,10 +526,10 @@ public partial class ExplorerMode
                 ? $"глава фракции «{sourceFactionName}»"
                 : $"глава фракции «{sourceFactionName}» — {sourceActorLabel}",
             "project" => string.IsNullOrWhiteSpace(sourceActorLabel)
-                ? $"проект фракции «{sourceFactionName}»"
+                ? $"проект фракции «{sourceFactionName}» [источник сейчас недоступен]"
                 : $"проект «{sourceActorLabel}»",
             "resident_descent" => string.IsNullOrWhiteSpace(sourceActorLabel)
-                ? $"нисхождение резидента фракции «{sourceFactionName}»"
+                ? $"нисхождение резидента фракции «{sourceFactionName}» [источник сейчас недоступен]"
                 : $"нисхождение резидента {sourceActorLabel}",
             _ => string.IsNullOrWhiteSpace(sourceActorLabel) ? sourceFactionName : $"{sourceFactionName} / {sourceActorLabel}"
         };

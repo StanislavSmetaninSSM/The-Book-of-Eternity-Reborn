@@ -1185,17 +1185,7 @@ internal static partial class ShiningAbodeState
         receipt["targetFactionName"] = GetNodeString(receipt["targetFactionName"]) ??
                                        (string.IsNullOrWhiteSpace(targetFactionId) ? string.Empty : targetFactionId);
 
-        var residentHistoryEntryId = GetNodeString(receipt["residentHistoryEntryId"]);
-        if (string.IsNullOrWhiteSpace(residentHistoryEntryId))
-            return;
-
-        var historyEntry = FindResidentHistoryEntry(residentRoot, residentHistoryEntryId);
-        if (historyEntry == null)
-            return;
-
-        receipt["residentHistorySummary"] = GetNodeString(receipt["residentHistorySummary"]) ?? GetNodeString(historyEntry["summary"]) ?? string.Empty;
-        receipt["residentHistoryTimestamp"] = GetNodeString(receipt["residentHistoryTimestamp"]) ?? GetNodeString(historyEntry["timestamp"]) ?? string.Empty;
-        receipt["residentHistoryEventType"] = GetNodeString(receipt["residentHistoryEventType"]) ?? GetNodeString(historyEntry["eventType"]) ?? string.Empty;
+        _ = residentRoot;
     }
 
     private static JsonObject? FindResidentHistoryEntry(JsonObject? residentRoot, string? historyEntryId)

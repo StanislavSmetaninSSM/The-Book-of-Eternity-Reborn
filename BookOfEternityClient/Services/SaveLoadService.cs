@@ -20,6 +20,9 @@ public class SaveLoadService
         "game_state/control/validation_repair_request.json",
         "game_state/control/validation_repair_ready.json",
         "game_state/control/terminal_protocol_failure_request.json",
+        "game_state/control/life_transitions.json",
+        "game_state/control/incarnation_trigger.json",
+        "game_state/control/ascension.json",
         ProgressionScheduleService.ReportPath,
         "game_state/control/gm_cli_window_binding.json",
         "game_state/control/gm_bridge_status.json",
@@ -133,6 +136,8 @@ public class SaveLoadService
 
     public async Task<bool> LoadGameAsync(string saveFilePath)
     {
+        string? stagingRoot = null;
+        string? backupSessionPath = null;
         try
         {
             var fullPath = saveFilePath;
@@ -145,37 +150,66 @@ public class SaveLoadService
                 return false;
             }
 
-            // Clear current state
-            _fs.ClearGameState();
-            ClearAuthoredSourceDirectoriesForLoad();
+            stagingRoot = Path.Combine(_fs.BasePath, $"game_session_load_stage_{Guid.NewGuid():N}");
+            var stagingSessionPath = Path.Combine(stagingRoot, "game_session");
+            Directory.CreateDirectory(stagingSessionPath);
 
-            // Extract archive
-            using var archive = ZipFile.OpenRead(fullPath);
-            foreach (var entry in archive.Entries)
+            using (var archive = ZipFile.OpenRead(fullPath))
             {
-                if (string.IsNullOrEmpty(entry.Name)) continue; // Skip directory entries
+                foreach (var entry in archive.Entries)
+                {
+                    if (string.IsNullOrEmpty(entry.Name))
+                        continue;
 
-                var targetPath = _fs.ResolvePath(entry.FullName);
-                var targetDir = Path.GetDirectoryName(targetPath);
-                if (targetDir != null && !Directory.Exists(targetDir))
-                    Directory.CreateDirectory(targetDir);
+                    if (!TryResolveArchiveEntryTargetPath(stagingSessionPath, entry.FullName, out var targetPath))
+                    {
+                        _logger.LogWarning("Загрузка отклонена: zip entry выходит за пределы sandbox: {Entry}", entry.FullName);
+                        return false;
+                    }
 
-                entry.ExtractToFile(targetPath, overwrite: true);
+                    var targetDir = Path.GetDirectoryName(targetPath);
+                    if (targetDir != null && !Directory.Exists(targetDir))
+                        Directory.CreateDirectory(targetDir);
+
+                    entry.ExtractToFile(targetPath, overwrite: true);
+                }
             }
 
-            foreach (var relativePath in EphemeralControlFiles)
-                _fs.DeleteFile(relativePath);
+            DeleteEphemeralArtifacts(stagingSessionPath);
 
-            foreach (var relativePrefix in EphemeralPathPrefixes)
+            var liveSessionPath = _fs.GameSessionPath;
+            backupSessionPath = Path.Combine(_fs.BasePath, $"game_session_load_backup_{Guid.NewGuid():N}");
+
+            if (Directory.Exists(backupSessionPath))
+                Directory.Delete(backupSessionPath, recursive: true);
+
+            if (Directory.Exists(liveSessionPath))
+                Directory.Move(liveSessionPath, backupSessionPath);
+
+            try
             {
-                var cleanupPath = _fs.ResolvePath(relativePrefix.TrimEnd('/', '\\'));
-                if (Directory.Exists(cleanupPath))
-                    Directory.Delete(cleanupPath, recursive: true);
+                Directory.Move(stagingSessionPath, liveSessionPath);
+                _fs.EnsureDirectoryStructure();
+            }
+            catch
+            {
+                RestoreBackedUpSession(liveSessionPath, backupSessionPath);
+                throw;
             }
 
-            // Refresh state
-            await _stateManager.RefreshGameStateAsync();
-            await _stateManager.LoadSettingsAsync();
+            try
+            {
+                await _stateManager.RefreshGameStateAsync();
+                await _stateManager.LoadSettingsAsync();
+            }
+            catch
+            {
+                RestoreBackedUpSession(liveSessionPath, backupSessionPath);
+                throw;
+            }
+
+            DeleteDirectoryIfExists(backupSessionPath);
+            backupSessionPath = null;
 
             _logger.LogInformation("Игра загружена: {Path}", saveFilePath);
             return true;
@@ -184,6 +218,11 @@ public class SaveLoadService
         {
             _logger.LogError(ex, "Ошибка загрузки: {Path}", saveFilePath);
             return false;
+        }
+        finally
+        {
+            DeleteDirectoryIfExists(stagingRoot);
+            DeleteDirectoryIfExists(backupSessionPath);
         }
     }
 
@@ -256,6 +295,64 @@ public class SaveLoadService
             foreach (var file in Directory.GetFiles(fullDir, "*", SearchOption.AllDirectories))
                 File.Delete(file);
         }
+    }
+
+    private static bool TryResolveArchiveEntryTargetPath(string sessionRoot, string archiveEntryPath, out string targetPath)
+    {
+        targetPath = string.Empty;
+        if (string.IsNullOrWhiteSpace(archiveEntryPath))
+            return false;
+
+        var normalizedRelativePath = archiveEntryPath
+            .Replace('\\', Path.DirectorySeparatorChar)
+            .Replace('/', Path.DirectorySeparatorChar);
+
+        if (Path.IsPathRooted(normalizedRelativePath))
+            return false;
+
+        var rootFullPath = Path.GetFullPath(sessionRoot);
+        var candidateFullPath = Path.GetFullPath(Path.Combine(rootFullPath, normalizedRelativePath));
+        var rootPrefix = rootFullPath.EndsWith(Path.DirectorySeparatorChar)
+            ? rootFullPath
+            : rootFullPath + Path.DirectorySeparatorChar;
+
+        if (!candidateFullPath.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        targetPath = candidateFullPath;
+        return true;
+    }
+
+    private static void DeleteEphemeralArtifacts(string sessionRoot)
+    {
+        foreach (var relativePath in EphemeralControlFiles)
+        {
+            var fullPath = Path.Combine(sessionRoot, relativePath.Replace('/', Path.DirectorySeparatorChar));
+            if (File.Exists(fullPath))
+                File.Delete(fullPath);
+        }
+
+        foreach (var relativePrefix in EphemeralPathPrefixes)
+        {
+            var cleanupPath = Path.Combine(sessionRoot, relativePrefix.TrimEnd('/', '\\').Replace('/', Path.DirectorySeparatorChar));
+            if (Directory.Exists(cleanupPath))
+                Directory.Delete(cleanupPath, recursive: true);
+        }
+    }
+
+    private static void RestoreBackedUpSession(string liveSessionPath, string? backupSessionPath)
+    {
+        if (string.IsNullOrWhiteSpace(backupSessionPath) || !Directory.Exists(backupSessionPath))
+            return;
+
+        DeleteDirectoryIfExists(liveSessionPath);
+        Directory.Move(backupSessionPath, liveSessionPath);
+    }
+
+    private static void DeleteDirectoryIfExists(string? path)
+    {
+        if (!string.IsNullOrWhiteSpace(path) && Directory.Exists(path))
+            Directory.Delete(path, recursive: true);
     }
 
     private Task CleanupOldSaves(string saveDir, int maxSaves)

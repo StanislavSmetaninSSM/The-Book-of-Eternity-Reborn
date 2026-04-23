@@ -136,6 +136,11 @@ public partial class ExplorerMode
                 choices.Add("💎 Реликвии души");
                 choices.Add("🌟 Квесты души");
                 choices.Add("📬 Ответы Хранителей");
+                if (currentManifestationRequests.Count > 0 &&
+                    RealmSemantics.IsMortalRealm(currentRealm))
+                {
+                    choices.Add("👤 Осмотреть пути воплощения спутников");
+                }
             }
             choices.Add("← Назад");
 
@@ -178,6 +183,96 @@ public partial class ExplorerMode
                 await ShowSoulQuests();
             else if (choice.Contains("Ответы", StringComparison.Ordinal))
                 await ShowAfterlifeInbox();
+            else if (choice.Contains("пути воплощения", StringComparison.OrdinalIgnoreCase))
+                await ShowManifestationRequestInspectionAsync(currentManifestationRequests);
+        }
+    }
+
+    private async Task ShowManifestationRequestInspectionAsync(
+        IReadOnlyList<GuardianAbodeResidentRequestState.PendingResidentCompanionManifestationRequest> requests)
+    {
+        if (requests.Count == 0)
+        {
+            MarkupLine("[yellow]Сейчас нет ожидающих manifestation requests текущей инкарнации.[/]");
+            WaitForKey();
+            return;
+        }
+
+        while (true)
+        {
+            var choices = requests
+                .Select(request =>
+                {
+                    var displayName = string.IsNullOrWhiteSpace(request.CompanionNameHint) ? request.RelicName : request.CompanionNameHint;
+                    return $"👤 {Markup.Escape(displayName)} [dim]({Markup.Escape(request.RequestId)})[/]";
+                })
+                .ToList();
+            choices.Add("← Назад");
+
+            Clear();
+            var selected = Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[bold cyan]Пути воплощения спутников[/]")
+                    .HighlightStyle(new Style(Color.Cyan1))
+                    .AddChoices(choices));
+            if (selected.Contains("Назад", StringComparison.Ordinal))
+                return;
+
+            var requestIndex = choices.IndexOf(selected);
+            if (requestIndex < 0 || requestIndex >= requests.Count)
+                return;
+
+            var request = requests[requestIndex];
+            var lines = new List<string>
+            {
+                $"[bold magenta]👤 {Markup.Escape(string.IsNullOrWhiteSpace(request.CompanionNameHint) ? request.RelicName : request.CompanionNameHint)}[/]",
+                "",
+                $"  Идентификатор запроса: [dim]{Markup.Escape(request.RequestId)}[/]",
+                $"  Источник воплощения: [white]{Markup.Escape(request.ManifestationSource)}[/]",
+                $"  Целевая инкарнация: [white]{request.TargetIncarnation}[/]",
+                $"  Реликвия-носитель: [white]{Markup.Escape(request.RelicName)}[/] [dim]({Markup.Escape(request.RelicId)})[/]"
+            };
+            if (!string.IsNullOrWhiteSpace(request.SourceGuardianName) || !string.IsNullOrWhiteSpace(request.SourceGuardianId))
+                lines.Add($"  Источник-Хранитель: [dim]{Markup.Escape(string.IsNullOrWhiteSpace(request.SourceGuardianName) ? request.SourceGuardianId : request.SourceGuardianName)}[/]");
+            if (!string.IsNullOrWhiteSpace(request.SourceResidentId))
+                lines.Add($"  Источник-резидент: [dim]{Markup.Escape(request.SourceResidentId)}[/]");
+            if (!string.IsNullOrWhiteSpace(request.SourceImprintId))
+                lines.Add($"  Источник-слепок: [dim]{Markup.Escape(request.SourceImprintId)}[/]");
+            if (!string.IsNullOrWhiteSpace(request.OriginWorldSummary))
+                lines.Add($"  Мир происхождения: [dim]{Markup.Escape(request.OriginWorldSummary)}[/]");
+            if (!string.IsNullOrWhiteSpace(request.BondReason))
+                lines.Add($"  Связь: [dim]{Markup.Escape(request.BondReason)}[/]");
+            if (!string.IsNullOrWhiteSpace(request.FutureCompanionPrompt))
+                lines.Add($"  Примета будущего спутника: [dim]{Markup.Escape(request.FutureCompanionPrompt)}[/]");
+            if (request.AppearanceMotifs.Count > 0)
+                lines.Add($"  Мотивы облика: [dim]{Markup.Escape(string.Join(", ", request.AppearanceMotifs))}[/]");
+
+            Clear();
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+            {
+                Header = new PanelHeader(" 👤 Точное воплощение ", Justify.Center),
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Magenta1),
+                Padding = new Padding(2, 1),
+                Expand = true
+            });
+
+            var actions = new List<string>();
+            if (!string.IsNullOrWhiteSpace(request.SourceResidentId))
+                actions.Add("👤 Открыть источник-резидента");
+            if (!string.IsNullOrWhiteSpace(request.RelicId))
+                actions.Add("💎 Открыть реликвию-носитель");
+            actions.Add("← Назад");
+
+            var action = Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[bold yellow]Действие[/]")
+                    .HighlightStyle(new Style(Color.Gold1))
+                    .AddChoices(actions));
+            if (action.Contains("резидента", StringComparison.OrdinalIgnoreCase))
+                await ShowGuardianAbodeResidentDetailByIdAsync(request.SourceResidentId);
+            else if (action.Contains("реликвию", StringComparison.OrdinalIgnoreCase))
+                await ShowSoulRelicDetailByIdAsync(request.RelicId);
         }
     }
 

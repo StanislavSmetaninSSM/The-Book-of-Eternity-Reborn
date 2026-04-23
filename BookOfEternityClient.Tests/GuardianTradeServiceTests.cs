@@ -269,7 +269,7 @@ public sealed class GuardianTradeServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureTradeInventoryAsync_RewritesStalePendingRequestWhenDerivedContractChanged()
+    public async Task EnsureTradeInventoryAsync_BlocksForeignLivePendingRequestWhenDerivedContractChanged()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
         {
@@ -338,15 +338,52 @@ public sealed class GuardianTradeServiceTests : IDisposable
         var view = await service.EnsureTradeInventoryAsync("guardian_alpha", 1, currentTurn: 7);
 
         Assert.NotNull(view);
-        Assert.False(view!.InventoryReady);
+        Assert.True(view!.TradeBlocked);
+        Assert.False(view.InventoryReady);
         Assert.True(view.InventoryRequestPending);
-        Assert.True(view.InventoryRequestCreatedThisCall);
+        Assert.False(view.InventoryRequestCreatedThisCall);
+        Assert.Contains("другой живой торговый контракт", view.BlockReason ?? string.Empty, StringComparison.OrdinalIgnoreCase);
 
         var request = await GuardianTradeRequestState.ReadAsync(_fs);
         Assert.NotNull(request);
-        Assert.NotEqual("guardian_trade_old", request!.RequestId);
-        Assert.Equal(4, request.DerivedTradeSlotCount);
-        Assert.Equal("0|0|0", request.ProjectBonusSignature);
+        Assert.Equal("guardian_trade_old", request!.RequestId);
+        Assert.Equal(2, request.DerivedTradeSlotCount);
+        Assert.Equal("9|9|9", request.ProjectBonusSignature);
+    }
+
+    [Fact]
+    public async Task EnsureTradeInventoryAsync_StaleReadyReceiptWithDifferentRequestId_DoesNotUnlockInventoryOrClearPending()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeBuybackEntry: false);
+        await _fs.WriteFileAtomicAsync(
+            GuardianTradeRequestState.PendingRequestPath,
+            """
+            {
+              "requestId": "guardian_trade_current",
+              "guardianId": "guardian_alpha",
+              "guardianName": "Азалия",
+              "abodeId": "abode_alpha",
+              "returnCycleId": "return_1",
+              "currentReputation": 120,
+              "derivedTradeSlotCount": 1,
+              "effectiveRarityCeilingBonusSteps": 0,
+              "projectBonusSignature": "0|0|0",
+              "createdAtTurn": 7,
+              "createdAtUtc": "2026-03-26T00:00:00Z"
+            }
+            """);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var view = await service.EnsureTradeInventoryAsync("guardian_alpha", 1, currentTurn: 7);
+
+        Assert.NotNull(view);
+        Assert.False(view!.InventoryReady);
+        Assert.True(view.InventoryRequestPending);
+        Assert.False(view.InventoryRequestCreatedThisCall);
+
+        var request = await GuardianTradeRequestState.ReadAsync(_fs);
+        Assert.NotNull(request);
+        Assert.Equal("guardian_trade_current", request!.RequestId);
     }
 
     [Fact]

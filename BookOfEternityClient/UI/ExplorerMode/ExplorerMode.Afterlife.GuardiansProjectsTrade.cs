@@ -172,10 +172,14 @@ public partial class ExplorerMode
 
             if (_systemGuardianLibraryService != null)
             {
-                var attraction = await _systemGuardianLibraryService.ReadAttractionRequestAsync();
-                if (attraction != null)
+                var attractionState = await _systemGuardianLibraryService.ReadAttractionRequestDisplayStateAsync();
+                if (attractionState.IsMalformed)
                 {
-                    pendingNotice += $"\n  [magenta1]🧲 Задано притяжение к извечному Хранителю: {Markup.Escape(attraction.TargetPresetDisplayName)}[/]";
+                    pendingNotice += "\n  [red]🧲 Притяжение к извечному Хранителю повреждено: pending contract нужно исправить или очистить вручную.[/]";
+                }
+                else if (attractionState.Request != null)
+                {
+                    pendingNotice += $"\n  [magenta1]🧲 Задано притяжение к извечному Хранителю: {Markup.Escape(attractionState.Request.TargetPresetDisplayName)}[/]";
                 }
             }
 
