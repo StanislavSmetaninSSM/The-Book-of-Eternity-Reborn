@@ -353,6 +353,47 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
+    public async Task EnsureHealthyAsync_PreparedPackageWithoutMatchingClosure_PreservesPendingRequest()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+            await WritePendingRequestsAsync(
+                fs,
+                new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    RequestId = "core_req_unresolved",
+                    ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+                    CreatedAtTurn = 8
+                });
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            shiningRoot["preparedIncarnationPackage"] = new JsonObject
+            {
+                ["selectedCardIds"] = new JsonArray("card_social"),
+                ["selectedCards"] = new JsonArray(CreateCard("card_social", "social", "uncommon")),
+                ["generatedFromDraftVersion"] = 1,
+                ["preparedAtTurn"] = 9,
+                ["preparedAtUtc"] = "2026-04-17T00:10:00Z"
+            };
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            await ShiningCoreActionRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            Assert.True(fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+            var request = Assert.Single(await ShiningCoreActionRequestState.ReadRequestsAsync(fs));
+            Assert.Equal("core_req_unresolved", request.RequestId);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task WriteRequestAsync_MalformedExistingFile_ThrowsAndPreservesCorruption()
     {
         var root = CreateTempRoot();

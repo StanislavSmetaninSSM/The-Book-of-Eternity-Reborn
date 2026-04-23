@@ -57,6 +57,17 @@ internal static class ShiningBlessingEffectState
         JsonObject preparedPackage,
         int currentIncarnation)
     {
+        var packageIssue = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(preparedPackage);
+        if (!string.IsNullOrWhiteSpace(packageIssue))
+        {
+            return new BootstrapMaterializationResult(
+                false,
+                false,
+                null,
+                Array.Empty<string>(),
+                packageIssue);
+        }
+
         var selectedCards = preparedPackage["selectedCards"] as JsonArray;
         if (selectedCards == null || selectedCards.Count == 0)
         {

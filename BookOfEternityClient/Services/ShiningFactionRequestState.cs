@@ -613,12 +613,15 @@ internal static class ShiningFactionRequestState
         if (ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot) != null)
             return;
 
-        if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase) ||
-            shiningRoot["preparedIncarnationPackage"] is JsonObject)
+        if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
         {
             ClearAllRequests(fs);
             return;
         }
+
+        var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
+        if (residentRoot != null)
+            GuardianAbodeResidentState.NormalizeShape(residentRoot);
 
         var foundingState = await ReadRequestsStateAsync(
             fs,
@@ -627,7 +630,7 @@ internal static class ShiningFactionRequestState
         if (!foundingState.IsMalformed && foundingState.Requests.Count > 0)
         {
             var unresolvedFoundings = foundingState.Requests
-                .Where(request => !HasMatchingFoundingClosure(shiningRoot, request))
+                .Where(request => !HasMatchingFoundingClosure(shiningRoot, residentRoot, request))
                 .ToList();
             if (unresolvedFoundings.Count != foundingState.Requests.Count)
                 await PersistRequestsAsync(fs, PendingFoundingsRequestPath, unresolvedFoundings);
@@ -640,7 +643,7 @@ internal static class ShiningFactionRequestState
         if (!realignmentState.IsMalformed && realignmentState.Requests.Count > 0)
         {
             var unresolvedRealignments = realignmentState.Requests
-                .Where(request => !HasMatchingRealignmentClosure(shiningRoot, request))
+                .Where(request => !HasMatchingRealignmentClosure(shiningRoot, residentRoot, request))
                 .ToList();
             if (unresolvedRealignments.Count != realignmentState.Requests.Count)
                 await PersistRequestsAsync(fs, PendingRealignmentsRequestPath, unresolvedRealignments);
@@ -1096,7 +1099,7 @@ internal static class ShiningFactionRequestState
         }, JsonOpts));
     }
 
-    private static bool HasMatchingFoundingClosure(JsonObject shiningRoot, PendingShiningFactionFoundingRequest request)
+    private static bool HasMatchingFoundingClosure(JsonObject shiningRoot, JsonObject? residentRoot, PendingShiningFactionFoundingRequest request)
     {
         var receipt = ShiningAbodeState.FindReceipt(ShiningAbodeState.EnsureFactionFoundingReceiptsArray(shiningRoot), request.RequestId);
         if (receipt == null || !HasCanonicalResolutionMarkers(receipt) || !IsSupportedFoundingStatus(GetNodeString(receipt["status"])))
@@ -1108,21 +1111,74 @@ internal static class ShiningFactionRequestState
             .Select(id => id.Trim())
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        return string.Equals(GetNodeString(receipt["proposedFactionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(receipt["proposedHallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
-               receiptSupporters.SetEquals(requestSupporters);
+        if (!string.Equals(GetNodeString(receipt["proposedFactionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["proposedHallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) ||
+            !receiptSupporters.SetEquals(requestSupporters))
+        {
+            return false;
+        }
+
+        var status = GetNodeString(receipt["status"]);
+        if (!string.Equals(status, RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            return FindHall(shiningRoot, request.ProposedHallId) == null &&
+                   FindFaction(shiningRoot, request.ProposedFactionId) == null;
+
+        var hall = FindHall(shiningRoot, request.ProposedHallId);
+        var faction = FindFaction(shiningRoot, request.ProposedFactionId);
+        if (hall == null || faction == null || !HallMatchesFoundingRequest(hall, request) || !FactionMatchesAcceptedFounding(faction, request))
+            return false;
+
+        if (residentRoot == null)
+            return false;
+
+        return request.SupportingResidentIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .All(supporterId =>
+            {
+                var resident = FindResident(residentRoot, supporterId);
+                return resident != null &&
+                       string.Equals(GetNodeString(resident["shiningFactionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase);
+            });
     }
 
-    private static bool HasMatchingRealignmentClosure(JsonObject shiningRoot, PendingShiningFactionRealignmentRequest request)
+    private static bool HasMatchingRealignmentClosure(JsonObject shiningRoot, JsonObject? residentRoot, PendingShiningFactionRealignmentRequest request)
     {
         var receipt = ShiningAbodeState.FindReceipt(ShiningAbodeState.EnsureFactionRealignmentReceiptsArray(shiningRoot), request.RequestId);
         if (receipt == null || !HasCanonicalResolutionMarkers(receipt) || !IsSupportedRealignmentStatus(GetNodeString(receipt["status"])))
             return false;
 
-        return string.Equals(GetNodeString(receipt["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(receipt["sourceFactionId"]), request.SourceFactionId, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(receipt["targetFactionId"]) ?? string.Empty, request.TargetFactionId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
-               string.Equals(GetNodeString(receipt["realignmentMode"]), request.RealignmentMode, StringComparison.OrdinalIgnoreCase);
+        if (!string.Equals(GetNodeString(receipt["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["sourceFactionId"]), request.SourceFactionId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["targetFactionId"]) ?? string.Empty, request.TargetFactionId ?? string.Empty, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["realignmentMode"]), request.RealignmentMode, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (residentRoot == null)
+            return false;
+
+        var resident = FindResident(residentRoot, request.ResidentId);
+        if (resident == null)
+            return false;
+
+        var status = GetNodeString(receipt["status"]);
+        var residentFactionId = GetNodeString(resident["shiningFactionId"]) ?? string.Empty;
+        if (string.Equals(status, RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+        {
+            var historyEntryId = GetNodeString(receipt["residentHistoryEntryId"]);
+            return !string.IsNullOrWhiteSpace(request.TargetFactionId) &&
+                   FindFaction(shiningRoot, request.TargetFactionId) != null &&
+                   string.Equals(residentFactionId, request.TargetFactionId, StringComparison.OrdinalIgnoreCase) &&
+                   HasResidentHistoryEntry(residentRoot, historyEntryId);
+        }
+
+        if (string.Equals(status, RequestStatusDepartedToNeutral, StringComparison.OrdinalIgnoreCase))
+            return string.IsNullOrWhiteSpace(residentFactionId) &&
+                   HasResidentHistoryEntry(residentRoot, GetNodeString(receipt["residentHistoryEntryId"]));
+
+        return string.Equals(residentFactionId, request.SourceFactionId, StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool HasMatchingLeadershipClosure(JsonObject shiningRoot, PendingShiningFactionLeadershipTransitionRequest request)
@@ -1152,15 +1208,80 @@ internal static class ShiningFactionRequestState
             }
         }
 
-        if (!string.Equals(status, RequestStatusAccepted, StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(status, RequestStatusWithdrawn, StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(status, RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+        {
+            var history = faction["leadershipHistory"] as JsonArray ?? new JsonArray();
+            if (ShiningAbodeState.FindLeadershipHistoryEntry(history, request.RequestId) == null)
+                return false;
+
+            var leadership = faction["leadership"] as JsonObject ?? new JsonObject();
+            if (string.IsNullOrWhiteSpace(request.CandidateHeadActorType) &&
+                string.IsNullOrWhiteSpace(request.CandidateHeadActorId))
+            {
+                return string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase) &&
+                       string.IsNullOrWhiteSpace(GetNodeString(leadership["headActorType"])) &&
+                       string.IsNullOrWhiteSpace(GetNodeString(leadership["headActorId"]));
+            }
+
+            return string.Equals(GetNodeString(leadership["headActorType"]) ?? string.Empty, request.CandidateHeadActorType ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetNodeString(leadership["headActorId"]) ?? string.Empty, request.CandidateHeadActorId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateSecure, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (string.Equals(status, RequestStatusRefused, StringComparison.OrdinalIgnoreCase))
         {
             var history = faction["leadershipHistory"] as JsonArray ?? new JsonArray();
             if (ShiningAbodeState.FindLeadershipHistoryEntry(history, request.RequestId) == null)
                 return false;
         }
 
-        return true;
+        var currentLeadership = faction["leadership"] as JsonObject ?? new JsonObject();
+        return string.Equals(GetNodeString(currentLeadership["headActorType"]) ?? string.Empty, request.IncumbentHeadActorType ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(currentLeadership["headActorId"]) ?? string.Empty, request.IncumbentHeadActorId ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static JsonObject? FindHall(JsonObject? shiningRoot, string hallId)
+    {
+        if (shiningRoot?["halls"] is not JsonArray halls || string.IsNullOrWhiteSpace(hallId))
+            return null;
+
+        return halls.OfType<JsonObject>()
+            .FirstOrDefault(hall => string.Equals(GetNodeString(hall["hallId"]), hallId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool HallMatchesFoundingRequest(JsonObject hall, PendingShiningFactionFoundingRequest request)
+    {
+        return string.Equals(GetNodeString(hall["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(hall["hallName"]), request.ProposedHallName, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(hall["description"]), request.ProposedHallDescription, StringComparison.Ordinal) &&
+               ReadStringSet(hall["serviceTags"]).SetEquals(request.ProposedHallServiceTags
+                   .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                   .Select(tag => tag.Trim()));
+    }
+
+    private static bool FactionMatchesAcceptedFounding(JsonObject faction, PendingShiningFactionFoundingRequest request)
+    {
+        var leadership = faction["leadership"] as JsonObject ?? new JsonObject();
+        return string.Equals(GetNodeString(faction["factionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(faction["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(faction["originType"]), ShiningAbodeState.OriginTypePlayerFounded, StringComparison.OrdinalIgnoreCase) &&
+               GetNodeInt(faction["baseStrength"]) == 35 &&
+               string.Equals(GetNodeString(faction["charter"]?["factionName"]), request.Charter.FactionName, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(faction["charter"]?["favoredArchetype"]), request.Charter.FavoredArchetype, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(faction["charter"]?["patronEffectFamily"]), request.Charter.PatronEffectFamily, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(faction["charter"]?["summary"]), request.Charter.Summary, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(leadership["headActorType"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(leadership["headActorId"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateSecure, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool HasResidentHistoryEntry(JsonObject residentRoot, string? historyEntryId)
+    {
+        if (string.IsNullOrWhiteSpace(historyEntryId))
+            return false;
+
+        var historyLog = GuardianAbodeResidentState.EnsureHistoryLogArray(residentRoot);
+        return GuardianAbodeResidentState.HasHistoryLogEntry(historyLog, historyEntryId);
     }
 
     private static bool HasCanonicalResolutionMarkers(JsonObject receipt) =>

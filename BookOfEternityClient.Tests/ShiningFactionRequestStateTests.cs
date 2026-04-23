@@ -495,10 +495,20 @@ public sealed class ShiningFactionRequestStateTests
                 ["targetFactionId"] = "faction_new",
                 ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
                 ["realignmentMode"] = ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
+                ["residentHistoryEntryId"] = "resident_history_realignment_1",
                 ["resolvedAtTurn"] = 42,
                 ["resolvedAtUtc"] = "2026-04-21T12:05:00Z"
             });
             var oldFaction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
+            var newFaction = shiningRoot["factions"]!.AsArray()[1]!.AsObject();
+            newFaction["originType"] = ShiningAbodeState.OriginTypePlayerFounded;
+            newFaction["baseStrength"] = 35;
+            newFaction["leadership"] = new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["headActorId"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            };
             oldFaction["leadershipReceipts"]!.AsArray().Add(new JsonObject
             {
                 ["requestId"] = "leadership_resolved_1",
@@ -518,7 +528,32 @@ public sealed class ShiningFactionRequestStateTests
                 ["summary"] = "Власть мирно передана.",
                 ["turnNumber"] = 43
             });
+            oldFaction["leadership"] = new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["headActorId"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            };
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            var residentRoot = await ReadJsonAsync(fs, GuardianAbodeResidentState.StatePath) ?? throw new InvalidOperationException("Expected resident state.");
+            foreach (var resident in residentRoot["entries"]!.AsArray().OfType<JsonObject>())
+            {
+                var residentId = resident["residentId"]?.GetValue<string>();
+                if (residentId is "resident_liora" or "resident_mael" or "resident_serit")
+                    resident["shiningFactionId"] = "faction_new";
+            }
+            residentRoot["historyLog"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["entryId"] = "resident_history_realignment_1",
+                    ["residentId"] = "resident_liora",
+                    ["eventType"] = "faction_realignment",
+                    ["turnNumber"] = 42
+                }
+            };
+            await fs.WriteFileAtomicAsync(GuardianAbodeResidentState.StatePath, residentRoot.ToJsonString());
 
             await ShiningFactionRequestState.EnsureHealthyAsync(fs, "Shining Abode");
 

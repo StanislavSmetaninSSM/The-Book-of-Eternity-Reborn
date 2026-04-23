@@ -921,15 +921,18 @@ internal static partial class ShiningAbodeState
 
         if (root["preparedIncarnationPackage"] is JsonObject preparedPackage)
         {
-            var packageIssue = ValidateRawBlessingIdArray(preparedPackage["selectedCardIds"], "preparedIncarnationPackage.selectedCardIds") ??
-                               ValidateRawBlessingCardArray(preparedPackage["selectedCards"], "preparedIncarnationPackage.selectedCards") ??
-                               ValidatePreparedPackageCardSnapshot(preparedPackage);
+            var packageIssue = ValidatePreparedIncarnationPackageForBootstrap(preparedPackage);
             if (!string.IsNullOrWhiteSpace(packageIssue))
                 return packageIssue;
         }
 
         return null;
     }
+
+    public static string? ValidatePreparedIncarnationPackageForBootstrap(JsonObject preparedPackage) =>
+        ValidateRawBlessingIdArray(preparedPackage["selectedCardIds"], "preparedIncarnationPackage.selectedCardIds") ??
+        ValidateRawBlessingCardArray(preparedPackage["selectedCards"], "preparedIncarnationPackage.selectedCards") ??
+        ValidatePreparedPackageCardSnapshot(preparedPackage);
 
     private static string? ValidateRawBlessingCardArray(JsonNode? node, string path)
     {

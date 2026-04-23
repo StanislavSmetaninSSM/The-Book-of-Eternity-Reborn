@@ -265,6 +265,7 @@ public partial class ValidationService
                     else
                     {
                         ValidateMinimalSoulRelicObject(resultNode, $"{itemContext}.result", issueSink, "UpdateGuardians.processGacha");
+                        ValidateGuardianProcessGachaAccounting(root, item, resultNode, itemContext, issueSink);
 
                         var baseRarity = TryReadCurrentTurnGachaBaseRaritySync();
                         var finalRarity = GetFirstNonEmptyString(resultNode, "rarity", "quality");
@@ -396,6 +397,82 @@ public partial class ValidationService
         }
 
         return result;
+    }
+
+    private static void ValidateGuardianProcessGachaAccounting(
+        JsonElement root,
+        JsonElement command,
+        JsonElement result,
+        string itemContext,
+        List<ValidationIssue> issues)
+    {
+        var relicId = GetFirstNonEmptyString(result, "relicId", "id");
+        if (string.IsNullOrWhiteSpace(relicId))
+            return;
+
+        if (!root.TryGetProperty("metaStateUpdates", out var metaStateUpdates) ||
+            metaStateUpdates.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.result.relicId",
+                IssueSeverity.Error,
+                "processGacha должен сопровождаться structured metaStateUpdates для выдачи реликвии и списания перьев.",
+                code: "guardian_process_gacha_missing_meta_accounting",
+                section: "UpdateGuardians.processGacha",
+                expected: "metaStateUpdates.inkFeatherChanges.spend and metaStateUpdates.soulRelicOperations.addRelic",
+                actual: "missing metaStateUpdates",
+                repairHint: "Для guardian-mediated gacha добавь metaStateUpdates.inkFeatherChanges.spend и soulRelicOperations.addRelic с тем же relicId."));
+            return;
+        }
+
+        var hasMatchingAddRelic =
+            metaStateUpdates.TryGetProperty("soulRelicOperations", out var relicOps) &&
+            relicOps.ValueKind == JsonValueKind.Object &&
+            relicOps.TryGetProperty("addRelic", out var addRelic) &&
+            addRelic.ValueKind == JsonValueKind.Object &&
+            string.Equals(GetFirstNonEmptyString(addRelic, "relicId", "id"), relicId, StringComparison.OrdinalIgnoreCase);
+        if (!hasMatchingAddRelic)
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.result.relicId",
+                IssueSeverity.Error,
+                "processGacha.result должен совпадать с metaStateUpdates.soulRelicOperations.addRelic.",
+                code: "guardian_process_gacha_missing_matching_add_relic",
+                section: "UpdateGuardians.processGacha",
+                expected: relicId,
+                actual: metaStateUpdates.TryGetProperty("soulRelicOperations", out var actualRelicOps) &&
+                        actualRelicOps.ValueKind == JsonValueKind.Object &&
+                        actualRelicOps.TryGetProperty("addRelic", out var actualAddRelic) &&
+                        actualAddRelic.ValueKind == JsonValueKind.Object
+                    ? GetFirstNonEmptyString(actualAddRelic, "relicId", "id") ?? "missing_relic_id"
+                    : "missing addRelic",
+                repairHint: "Материализуй result-реликвию через metaStateUpdates.soulRelicOperations.addRelic с тем же relicId."));
+        }
+
+        if (!TryReadInt(command, "inkFeathersSpent", out var spent) || spent <= 0)
+            return;
+
+        var hasMatchingSpend =
+            metaStateUpdates.TryGetProperty("inkFeatherChanges", out var featherChanges) &&
+            featherChanges.ValueKind == JsonValueKind.Object &&
+            TryReadInt(featherChanges, "spend", out var spend) &&
+            spend >= spent;
+        if (!hasMatchingSpend)
+        {
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.inkFeathersSpent",
+                IssueSeverity.Error,
+                "processGacha.inkFeathersSpent должен быть покрыт metaStateUpdates.inkFeatherChanges.spend.",
+                code: "guardian_process_gacha_missing_feather_spend_accounting",
+                section: "UpdateGuardians.processGacha",
+                expected: spent.ToString(),
+                actual: metaStateUpdates.TryGetProperty("inkFeatherChanges", out var actualFeatherChanges) &&
+                        actualFeatherChanges.ValueKind == JsonValueKind.Object &&
+                        TryReadInt(actualFeatherChanges, "spend", out var actualSpend)
+                    ? actualSpend.ToString()
+                    : "missing spend",
+                repairHint: "Списывай Чернильные Перья guardian-mediated gacha через metaStateUpdates.inkFeatherChanges.spend не меньше inkFeathersSpent."));
+        }
     }
 
 

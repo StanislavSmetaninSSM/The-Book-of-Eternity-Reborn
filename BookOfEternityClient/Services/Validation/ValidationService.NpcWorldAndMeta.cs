@@ -377,6 +377,7 @@ public partial class ValidationService
                normalized.Equals("game_state/quests/regular_quests.json", StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals("game_state/quests/quest_history.json", StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals("game_state/quests/plot_outline.json", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("game_state/misc/characteristics.json", StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals("game_state/misc/vehicles.json", StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals("game_state/misc/storage_access.json", StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals("game_state/misc/player_interactions.json", StringComparison.OrdinalIgnoreCase);
@@ -433,6 +434,10 @@ public partial class ValidationService
                      normalized.Equals("game_state/quests/plot_outline.json", StringComparison.OrdinalIgnoreCase))
             {
                 groups.Add("quest state");
+            }
+            else if (normalized.Equals("game_state/misc/characteristics.json", StringComparison.OrdinalIgnoreCase))
+            {
+                groups.Add("mortal characteristics");
             }
             else if (normalized.Equals("game_state/misc/vehicles.json", StringComparison.OrdinalIgnoreCase) ||
                      normalized.Equals("game_state/misc/storage_access.json", StringComparison.OrdinalIgnoreCase) ||
