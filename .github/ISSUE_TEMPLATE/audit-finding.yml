@@ -1,0 +1,79 @@
+name: Audit Finding
+description: Confirmed gameplay, runtime, validation, or completeness issue found during an audit pass
+title: "[Audit] "
+labels:
+  - audit-finding
+  - source: audit
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One clear sentence describing the confirmed defect
+      placeholder: Example: Local Shining buy can leave split state between soul_state.json and shining_abode_state.json after a partial write failure.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: subsystem
+    attributes:
+      label: Subsystem
+      description: Primary affected area
+      options:
+        - Chaos Sea
+        - Shining Abode
+        - Afterlife UI
+        - Runtime
+        - Validation
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the broken behavior and why it matters
+      placeholder: Explain the runtime, state, validation, or player-facing impact.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Files, symbols, commands, screenshots, or observations that confirm the issue
+      placeholder: |
+        - BookOfEternityClient/Services/...
+        - Reproduction steps
+        - Relevant command output
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Required Fix / Expected Behavior
+      description: State the contract that must hold after the fix
+      placeholder: Describe the fail-close, validation, history-fidelity, or UI behavior that should be true.
+    validations:
+      required: true
+
+  - type: textarea
+    id: tests
+    attributes:
+      label: Tests
+      description: Focused and/or full tests that should cover this issue
+      placeholder: List existing or new tests that should verify the fix.
+

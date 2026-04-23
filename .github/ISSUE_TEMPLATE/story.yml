@@ -1,0 +1,39 @@
+name: User Story
+description: Player-facing feature or gameplay improvement
+title: "[Story] "
+labels:
+  - story
+body:
+  - type: textarea
+    id: story
+    attributes:
+      label: User Story
+      description: Use a concise player-centered story format
+      placeholder: As a player, I want ..., so that ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired Outcome
+      description: Describe the target player-facing behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      placeholder: |
+        - ...
+        - ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Constraints / Notes
+      placeholder: Technical constraints, compatibility requirements, migration notes, or out-of-scope items
+

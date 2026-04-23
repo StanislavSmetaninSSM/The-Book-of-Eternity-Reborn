@@ -1,0 +1,60 @@
+name: Bug Report
+description: General defect in gameplay, persistence, validation, or UI
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      placeholder: Short description of the bug
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Open ...
+        2. Run ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Result
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Result
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - High
+        - Medium
+        - Low
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence / Context
+      placeholder: Files, stack traces, screenshots, command output, or suspected code paths
+
+  - type: textarea
+    id: tests
+    attributes:
+      label: Tests
+      placeholder: Existing or missing tests related to the bug
+
