@@ -143,6 +143,7 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "progressionProcessingReport",
+                "sessionId", "requestId", "turnNumber",
                 "worldCyclesProcessed", "factionCyclesProcessed",
                 "chaosSeaCyclesProcessed", "guardianProjectCyclesProcessed",
                 "newLastWorldSimulationTimeInMinutes", "newLastFactionSimulationTimeInMinutes",

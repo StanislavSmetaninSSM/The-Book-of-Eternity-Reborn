@@ -132,6 +132,15 @@ public class ProgressionControl
 
 public class ProgressionProcessingReport
 {
+    [JsonPropertyName("sessionId")]
+    public string SessionId { get; set; } = string.Empty;
+
+    [JsonPropertyName("requestId")]
+    public string RequestId { get; set; } = string.Empty;
+
+    [JsonPropertyName("turnNumber")]
+    public int TurnNumber { get; set; }
+
     [JsonPropertyName("worldCyclesProcessed")]
     public int? WorldCyclesProcessed { get; set; }
 

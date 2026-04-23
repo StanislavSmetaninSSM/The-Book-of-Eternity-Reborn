@@ -113,6 +113,7 @@ internal static class ShiningBlessingEffectState
         if (!RealmSemantics.IsMortalRealm(GetNodeString(soulRoot["currentRealm"])))
             return new RuntimeProcessingResult(true, false, Array.Empty<string>());
 
+        var currentSoulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json") ?? soulRoot.ToJsonString(JsonOpts);
         var summaryLines = new List<string>();
         var soulChanged = false;
         var npcChanged = false;
@@ -123,8 +124,10 @@ internal static class ShiningBlessingEffectState
         var currentShiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
         var currentWorldEventsJson = await fs.ReadFileAsync("game_state/world/world_events.json");
         var currentWorldEventsRoot = ParseJsonNode(currentWorldEventsJson);
-        var currentPlayerStatusRoot = await ReadJsonObjectAsync(fs, "game_state/core/player_status.json");
-        var currentFactionCoreRoot = await ReadJsonObjectAsync(fs, "game_state/factions/faction_core.json");
+        var currentPlayerStatusJson = await fs.ReadFileAsync("game_state/core/player_status.json");
+        var currentPlayerStatusRoot = ParseJsonNode(currentPlayerStatusJson) as JsonObject;
+        var currentFactionCoreJson = await fs.ReadFileAsync("game_state/factions/faction_core.json");
+        var currentFactionCoreRoot = ParseJsonNode(currentFactionCoreJson) as JsonObject;
 
         if (ConsumeForgeEntitlementsFromAcceptedReceipts(
                 soulRoot,
@@ -137,8 +140,10 @@ internal static class ShiningBlessingEffectState
             soulChanged = true;
         }
 
-        var currentNpcRoot = await ReadJsonObjectAsync(fs, "game_state/npcs/npc_core.json");
-        var currentNpcRelationshipsRoot = await ReadJsonObjectAsync(fs, "game_state/npcs/npc_relationships.json");
+        var currentNpcJson = await fs.ReadFileAsync("game_state/npcs/npc_core.json");
+        var currentNpcRoot = ParseJsonNode(currentNpcJson) as JsonObject;
+        var currentNpcRelationshipsJson = await fs.ReadFileAsync("game_state/npcs/npc_relationships.json");
+        var currentNpcRelationshipsRoot = ParseJsonNode(currentNpcRelationshipsJson) as JsonObject;
         var socialRelationCommitObserved = false;
         if (TryApplySocialEffectsFromRelationCommits(
                 effectState,
@@ -210,20 +215,62 @@ internal static class ShiningBlessingEffectState
 
         NormalizeBlessingState(effectState);
         soulRoot[SoulStateProperty] = effectState;
-        await fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts));
+        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(
+                "game_state/meta/soul_state.json",
+                currentSoulJson,
+                GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts))
+        };
 
         if (npcChanged && currentNpcRoot != null)
-            await fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", currentNpcRoot.ToJsonString(JsonOpts));
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                "game_state/npcs/npc_core.json",
+                currentNpcJson,
+                currentNpcRoot.ToJsonString(JsonOpts)));
+        }
+
         if (npcRelationshipsChanged && currentNpcRelationshipsRoot != null)
-            await fs.WriteFileAtomicAsync("game_state/npcs/npc_relationships.json", currentNpcRelationshipsRoot.ToJsonString(JsonOpts));
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                "game_state/npcs/npc_relationships.json",
+                currentNpcRelationshipsJson,
+                currentNpcRelationshipsRoot.ToJsonString(JsonOpts)));
+        }
+
         if (playerStatusChanged && currentPlayerStatusRoot != null)
-            await fs.WriteFileAtomicAsync("game_state/core/player_status.json", currentPlayerStatusRoot.ToJsonString(JsonOpts));
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                "game_state/core/player_status.json",
+                currentPlayerStatusJson,
+                currentPlayerStatusRoot.ToJsonString(JsonOpts)));
+        }
+
         if (worldEventsChanged && currentWorldEventsRoot is JsonNode worldEventsNode)
-            await fs.WriteFileAtomicAsync("game_state/world/world_events.json", worldEventsNode.ToJsonString(JsonOpts));
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                "game_state/world/world_events.json",
+                currentWorldEventsJson,
+                worldEventsNode.ToJsonString(JsonOpts)));
+        }
+
         if (factionChanged && currentFactionCoreRoot != null)
-            await fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", currentFactionCoreRoot.ToJsonString(JsonOpts));
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                "game_state/factions/faction_core.json",
+                currentFactionCoreJson,
+                currentFactionCoreRoot.ToJsonString(JsonOpts)));
+        }
+
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(fs, writes.ToArray()))
+        {
+            return new RuntimeProcessingResult(
+                false,
+                false,
+                Array.Empty<string>(),
+                "Не удалось безопасно зафиксировать runtime-эффекты сияющих благословений без partial multi-file update.");
+        }
 
         return new RuntimeProcessingResult(true, true, summaryLines);
     }

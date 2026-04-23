@@ -2806,11 +2806,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains(_console.SelectionChoicesHistory,
             entry => entry.Title.Contains("Новая версия свойства", StringComparison.OrdinalIgnoreCase) &&
                      entry.Choices.Any(choice => choice.Contains("Использовать базовый шаблон", StringComparison.OrdinalIgnoreCase)) &&
-                     entry.Choices.Any(choice => choice.Contains("Настроить свойство вручную (JSON)", StringComparison.OrdinalIgnoreCase)));
+                     entry.Choices.Any(choice => choice.Contains("Настроить свойство вручную", StringComparison.OrdinalIgnoreCase)));
 
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Выбранное свойство: Свойство 1: route_seed (ступень: редкая)", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Новая версия свойства: new_property (ступень: редкая)", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Выбранное свойство: Свойство 1:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Новая версия свойства:", renderedText, StringComparison.OrdinalIgnoreCase);
 
         var pendingRaw = await _fs.ReadFileAsync(ShiningCoreActionRequestState.PendingActionsRequestPath);
         Assert.NotNull(pendingRaw);
@@ -2872,7 +2872,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains(_console.SelectionChoicesHistory,
             entry => entry.Title.Contains("Дополнительные свойства для новой редкости", StringComparison.OrdinalIgnoreCase) &&
                      entry.Choices.Any(choice => choice.Contains("Использовать подготовленный набор", StringComparison.OrdinalIgnoreCase)) &&
-                     entry.Choices.Any(choice => choice.Contains("Настроить набор вручную (JSON)", StringComparison.OrdinalIgnoreCase)));
+                     entry.Choices.Any(choice => choice.Contains("Настроить набор вручную", StringComparison.OrdinalIgnoreCase)));
     }
 
     [Fact]

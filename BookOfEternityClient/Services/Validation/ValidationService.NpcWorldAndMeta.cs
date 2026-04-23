@@ -5209,6 +5209,9 @@ public partial class ValidationService
         if (!RequireObject(report, contextPrefix, issues))
             return;
 
+        RequireString(report, contextPrefix, issues, "sessionId");
+        RequireString(report, contextPrefix, issues, "requestId");
+        ValidatePositiveIntegerField(report, contextPrefix, issues, "turnNumber");
         ValidateNonNegativeIntegerField(report, contextPrefix, issues, "worldCyclesProcessed", "ProgressionReport");
         ValidateNonNegativeIntegerField(report, contextPrefix, issues, "factionCyclesProcessed", "ProgressionReport");
         ValidateNonNegativeIntegerField(report, contextPrefix, issues, "chaosSeaCyclesProcessed", "ProgressionReport");

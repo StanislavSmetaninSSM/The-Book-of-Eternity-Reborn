@@ -71,6 +71,33 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
     }
 
     [Fact]
+    public async Task GuardianAbodeOffering_WriteAsync_ExistingPendingRequest_ThrowsWithoutOverwrite()
+    {
+        await GuardianAbodeOfferingState.WriteAsync(_fs, new GuardianAbodeOfferingState.PendingAbodeOfferingRequest
+        {
+            GuardianId = "guardian_alpha",
+            GuardianName = "Азалия",
+            OfferingType = GuardianAbodeOfferingState.OfferingTypeInkFeathers,
+            InkFeathersOffered = 50,
+            ReturnCycleId = "return_2"
+        });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => GuardianAbodeOfferingState.WriteAsync(_fs, new GuardianAbodeOfferingState.PendingAbodeOfferingRequest
+        {
+            GuardianId = "guardian_beta",
+            GuardianName = "Варак",
+            OfferingType = GuardianAbodeOfferingState.OfferingTypeInkFeathers,
+            InkFeathersOffered = 100,
+            ReturnCycleId = "return_2"
+        }));
+
+        var pending = await GuardianAbodeOfferingState.ReadAsync(_fs);
+        Assert.NotNull(pending);
+        Assert.Equal("guardian_alpha", pending!.GuardianId);
+        Assert.Equal(50, pending.InkFeathersOffered);
+    }
+
+    [Fact]
     public async Task GuardianTradeRequest_WriteAsync_MalformedExistingFile_ThrowsAndPreservesCorruption()
     {
         await _fs.WriteFileAtomicAsync(GuardianTradeRequestState.PendingRequestPath, "{");

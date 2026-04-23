@@ -412,7 +412,7 @@ public partial class ExplorerMode
         var marker = isSelected ? "[green]✓[/]" : "[dim]•[/]";
         var lines = new List<string>
         {
-            $"{marker} {Markup.Escape(name)} [{rarityColor}]{Markup.Escape(rarity)}[/] [dim]({Markup.Escape(effectFamily)})[/]",
+            $"{marker} {Markup.Escape(name)} [{rarityColor}]{Markup.Escape(DescribeRarityLabel(rarity))}[/] [dim]({Markup.Escape(effectFamily)})[/]",
             $"    Идентификатор карты: [dim]{Markup.Escape(cardId)}[/]",
             $"    Источник: {Markup.Escape(BuildShiningBlessingSourceLabel(card, context))}"
         };

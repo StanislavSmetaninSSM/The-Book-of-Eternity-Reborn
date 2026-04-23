@@ -34,6 +34,11 @@ public class ProgressionScheduleService
         ProgressionFileReadState State,
         bool FilePresent);
 
+    private readonly record struct PendingTurnRequestContext(
+        string SessionId,
+        string RequestId,
+        int TurnNumber);
+
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
         WriteIndented = true,
@@ -211,10 +216,11 @@ public class ProgressionScheduleService
         }
 
         var reportSnapshot = await ReadProcessingReportSnapshotAsync();
+        var currentTurnContext = await ReadCurrentTurnRequestContextAsync();
         var report = reportSnapshot.Report;
         if (IsChaosSea(control.CurrentRealm))
         {
-            ValidateChaosSeaOutcome(control, reportSnapshot, issues);
+            ValidateChaosSeaOutcome(control, reportSnapshot, currentTurnContext, issues);
         }
         else
         {
@@ -225,7 +231,7 @@ public class ProgressionScheduleService
             }
             else
             {
-                ValidateMortalOutcome(control, reportSnapshot, worldTimeResolution.Minutes, issues);
+                ValidateMortalOutcome(control, reportSnapshot, currentTurnContext, worldTimeResolution.Minutes, issues);
             }
         }
 
@@ -243,6 +249,7 @@ public class ProgressionScheduleService
         var schedule = await EnsureInitializedAsync();
         var realmAfterTurn = await ResolveCurrentRealmAsync(string.Empty);
         var reportSnapshot = await ReadProcessingReportSnapshotAsync();
+        var currentTurnContext = await ReadCurrentTurnRequestContextAsync();
         var report = reportSnapshot.Report;
         var reportConsumed = false;
 
@@ -254,7 +261,7 @@ public class ProgressionScheduleService
         else if (IsChaosSea(control.CurrentRealm))
         {
             if (reportSnapshot.State == ProgressionFileReadState.Valid &&
-                HasVerifiedChaosSeaProgressionOutcome(control, report))
+                HasVerifiedChaosSeaProgressionOutcome(control, report, currentTurnContext))
             {
                 schedule.CurrentChaosSeaTurnOrdinal = control.NextChaosSeaTurnOrdinal;
                 schedule.LastChaosSeaSimulationOrdinal = report?.NewLastChaosSeaSimulationOrdinal ?? control.NextChaosSeaTurnOrdinal;
@@ -297,7 +304,8 @@ public class ProgressionScheduleService
 
             schedule.CurrentWorldTimeInMinutes = resultingWorldTime;
 
-            if (reportSnapshot.State == ProgressionFileReadState.Valid)
+            if (reportSnapshot.State == ProgressionFileReadState.Valid &&
+                ProgressionReportMatchesCurrentTurn(report, currentTurnContext))
             {
                 if ((report?.WorldCyclesProcessed ?? 0) > 0)
                 {
@@ -351,6 +359,7 @@ public class ProgressionScheduleService
     private void ValidateMortalOutcome(
         ProgressionControl control,
         ProgressionReportSnapshot reportSnapshot,
+        PendingTurnRequestContext? currentTurnContext,
         int resultingWorldTime,
         List<ValidationIssue> issues)
     {
@@ -377,6 +386,9 @@ public class ProgressionScheduleService
             }
             return;
         }
+
+        if (!ValidateProgressionReportCorrelation(report, currentTurnContext, issues))
+            return;
 
         if ((report.ChaosSeaCyclesProcessed ?? 0) != 0 || (report.GuardianProjectCyclesProcessed ?? 0) != 0)
         {
@@ -536,6 +548,7 @@ public class ProgressionScheduleService
     private void ValidateChaosSeaOutcome(
         ProgressionControl control,
         ProgressionReportSnapshot reportSnapshot,
+        PendingTurnRequestContext? currentTurnContext,
         List<ValidationIssue> issues)
     {
         var report = reportSnapshot.Report;
@@ -561,6 +574,9 @@ public class ProgressionScheduleService
             }
             return;
         }
+
+        if (!ValidateProgressionReportCorrelation(report, currentTurnContext, issues))
+            return;
 
         if ((report.WorldCyclesProcessed ?? 0) != 0 || (report.FactionCyclesProcessed ?? 0) != 0)
         {
@@ -764,6 +780,79 @@ public class ProgressionScheduleService
         return snapshot.Report;
     }
 
+    private async Task<PendingTurnRequestContext?> ReadCurrentTurnRequestContextAsync()
+    {
+        var json = await _fs.ReadFileAsync("input/turn_request.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return null;
+
+            if (!doc.RootElement.TryGetProperty("sessionId", out var sessionIdNode) ||
+                sessionIdNode.ValueKind != JsonValueKind.String ||
+                string.IsNullOrWhiteSpace(sessionIdNode.GetString()) ||
+                !doc.RootElement.TryGetProperty("requestId", out var requestIdNode) ||
+                requestIdNode.ValueKind != JsonValueKind.String ||
+                string.IsNullOrWhiteSpace(requestIdNode.GetString()) ||
+                !doc.RootElement.TryGetProperty("turnNumber", out var turnNumberNode) ||
+                turnNumberNode.ValueKind != JsonValueKind.Number ||
+                !turnNumberNode.TryGetInt32(out var turnNumber) ||
+                turnNumber <= 0)
+            {
+                return null;
+            }
+
+            return new PendingTurnRequestContext(
+                sessionIdNode.GetString() ?? string.Empty,
+                requestIdNode.GetString() ?? string.Empty,
+                turnNumber);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private bool ValidateProgressionReportCorrelation(
+        ProgressionProcessingReport report,
+        PendingTurnRequestContext? currentTurnContext,
+        List<ValidationIssue> issues)
+    {
+        if (currentTurnContext == null)
+        {
+            issues.Add(new ValidationIssue(
+                ReportPath,
+                IssueSeverity.Error,
+                "Не удалось прочитать текущий turn_request для корреляции progression_report.json.",
+                code: "progression_report_missing_turn_context",
+                section: "ProgressionReport",
+                expected: "readable input/turn_request.json with sessionId/requestId/turnNumber",
+                actual: "missing or unreadable input/turn_request.json",
+                repairHint: "Коррелируй progression_report.json с текущим input/turn_request.json и не принимай stale progression proof без turn context."));
+            return false;
+        }
+
+        if (!ProgressionReportMatchesCurrentTurn(report, currentTurnContext))
+        {
+            issues.Add(new ValidationIssue(
+                ReportPath,
+                IssueSeverity.Error,
+                "progression_report.json не совпадает с текущим turn_request и выглядит как stale или чужой progression proof.",
+                code: "progression_report_turn_context_mismatch",
+                section: "ProgressionReport",
+                expected: $"{currentTurnContext.Value.SessionId} / {currentTurnContext.Value.RequestId} / {currentTurnContext.Value.TurnNumber}",
+                actual: $"{report.SessionId} / {report.RequestId} / {report.TurnNumber}",
+                repairHint: "Записывай в progressionProcessingReport exact sessionId, requestId и turnNumber текущего turn_request, чтобы stale report нельзя было переиспользовать."));
+            return false;
+        }
+
+        return true;
+    }
+
     private async Task<string> ResolveCurrentRealmAsync(string fallback = "")
     {
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
@@ -862,9 +951,25 @@ public class ProgressionScheduleService
         string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
 
-    private static bool HasVerifiedChaosSeaProgressionOutcome(ProgressionControl control, ProgressionProcessingReport? report)
+    private static bool ProgressionReportMatchesCurrentTurn(
+        ProgressionProcessingReport? report,
+        PendingTurnRequestContext? currentTurnContext)
     {
-        if (report == null)
+        return report != null &&
+               currentTurnContext != null &&
+               report.TurnNumber == currentTurnContext.Value.TurnNumber &&
+               !string.IsNullOrWhiteSpace(report.SessionId) &&
+               string.Equals(report.SessionId, currentTurnContext.Value.SessionId, StringComparison.OrdinalIgnoreCase) &&
+               !string.IsNullOrWhiteSpace(report.RequestId) &&
+               string.Equals(report.RequestId, currentTurnContext.Value.RequestId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool HasVerifiedChaosSeaProgressionOutcome(
+        ProgressionControl control,
+        ProgressionProcessingReport? report,
+        PendingTurnRequestContext? currentTurnContext)
+    {
+        if (report == null || !ProgressionReportMatchesCurrentTurn(report, currentTurnContext))
             return false;
 
         if ((report.WorldCyclesProcessed ?? 0) != 0 || (report.FactionCyclesProcessed ?? 0) != 0)

@@ -92,6 +92,38 @@ internal static class GuardianAbodeOfferingState
 
     public static async Task WriteAsync(FileSystemManager fs, PendingAbodeOfferingRequest request)
     {
+        var existingJson = await fs.ReadFileAsync(PendingRequestPath);
+        if (fs.FileExists(PendingRequestPath))
+        {
+            if (string.IsNullOrWhiteSpace(existingJson))
+            {
+                throw new InvalidOperationException(
+                    "pending_abode_offering.json повреждён или пуст. Исправьте или очистите pending contract перед созданием нового подношения.");
+            }
+
+            try
+            {
+                var existing = JsonSerializer.Deserialize<PendingAbodeOfferingRequest>(existingJson, JsonOpts);
+                if (existing == null)
+                {
+                    throw new InvalidOperationException(
+                        "pending_abode_offering.json повреждён и не может быть перезаписан новым подношением.");
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch
+            {
+                throw new InvalidOperationException(
+                    "pending_abode_offering.json повреждён и не может быть перезаписан новым подношением.");
+            }
+
+            throw new InvalidOperationException(
+                "Уже существует ожидающее подношение Обители. Дождитесь его закрытия или явно очистите pending contract перед новым подношением.");
+        }
+
         await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(request, JsonOpts));
     }
 

@@ -189,7 +189,7 @@ public partial class ExplorerMode
                 $"[bold yellow]📚 {Markup.Escape(entry.Title)}[/]",
                 "",
                 $"  Тип: [cyan]{Markup.Escape(AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType))}[/]",
-                $"  Редкость: [{GetRarityColor(entry.Rarity)}]{Markup.Escape(entry.Rarity)}[/]",
+                $"  Редкость: [{GetRarityColor(entry.Rarity)}]{Markup.Escape(DescribeRarityLabel(entry.Rarity))}[/]",
                 $"  Источник жизни: [yellow]{entry.SourceLife}[/]",
                 $"  Источник записи: [dim]{Markup.Escape(AfterlifeArchiveState.GetSourceKindLabel(entry.SourceKind))}[/]"
             };
@@ -1027,7 +1027,7 @@ public partial class ExplorerMode
                 $"[bold yellow]🗂 {Markup.Escape(candidate.Title)}[/]",
                 "",
                 $"  Тип архива: [cyan]{Markup.Escape(AfterlifeArchiveState.GetEntryTypeLabel(candidate.ProposedEntryType))}[/]",
-                $"  Редкость: [{GetRarityColor(candidate.Rarity)}]{Markup.Escape(candidate.Rarity)}[/]",
+                $"  Редкость: [{GetRarityColor(candidate.Rarity)}]{Markup.Escape(DescribeRarityLabel(candidate.Rarity))}[/]",
                 $"  Статус: [white]{Markup.Escape(statusLabel)}[/]",
                 $"  Жизнь-источник: [yellow]{candidate.SourceLife}[/]",
                 $"  Источник записи: [dim]{Markup.Escape(AfterlifeArchiveState.GetSourceKindLabel(candidate.SourceKind))}[/]"
@@ -1274,11 +1274,21 @@ public partial class ExplorerMode
         // Action menu
         if (isAfterlifeRealm)
         {
+            var sourceResidentId = relic.TryGetProperty("companionSeed", out var companionSeedNode) && companionSeedNode.ValueKind == JsonValueKind.Object
+                ? GetStr(companionSeedNode, "sourceResidentId", "")
+                : "";
+            var sourceGuardianId = relic.TryGetProperty("companionSeed", out companionSeedNode) && companionSeedNode.ValueKind == JsonValueKind.Object
+                ? GetStr(companionSeedNode, "sourceGuardianId", "")
+                : "";
             var actions = new List<string>();
             if (status == "stored")
                 actions.Add("⚔ Экипировать");
             else
                 actions.Add("📦 Снять (в хранилище)");
+            if (!string.IsNullOrWhiteSpace(sourceResidentId))
+                actions.Add("🏛 Открыть резидента-источник");
+            if (!string.IsNullOrWhiteSpace(sourceGuardianId))
+                actions.Add("🛡 Открыть Хранителя-источник");
             actions.Add("← Назад к списку");
 
             var action = Prompt(new SelectionPrompt<string>()
@@ -1295,6 +1305,16 @@ public partial class ExplorerMode
             {
                 await UnequipSoulRelicLocal(relicId, name);
                 return true;
+            }
+            if (action.StartsWith("🏛", StringComparison.Ordinal))
+            {
+                await ShowGuardianAbodeResidentDetailByIdAsync(sourceResidentId);
+                return false;
+            }
+            if (action.StartsWith("🛡", StringComparison.Ordinal))
+            {
+                if (await TryShowLinkedArchiveGuardianAsync(sourceGuardianId))
+                    return false;
             }
         }
         else
@@ -1386,7 +1406,7 @@ public partial class ExplorerMode
 
         var rarity = GetStr(relic, "quality", GetStr(relic, "rarity", ""));
         if (!string.IsNullOrEmpty(rarity))
-            lines.Add($"  ⭐ Качество: [{GetRarityColor(rarity)}]{Markup.Escape(rarity)}[/]");
+            lines.Add($"  ⭐ Качество: [{GetRarityColor(rarity)}]{Markup.Escape(DescribeRarityLabel(rarity))}[/]");
 
         var category = GetStr(relic, "category", "");
         if (!string.IsNullOrEmpty(category))
@@ -1432,7 +1452,10 @@ public partial class ExplorerMode
             foreach (var prop in effects.EnumerateObject())
             {
                 if (knownEffectProps.Contains(prop.Name)) continue;
-                technicalEffectProps.Add($"      • {Markup.Escape(prop.Name)} = {Markup.Escape(prop.Value.ToString())}");
+                var label = HumanizeProtocolToken(prop.Name);
+                var value = DescribeQuestStructuredValue(prop.Value);
+                if (!string.IsNullOrWhiteSpace(value))
+                    technicalEffectProps.Add($"      • {Markup.Escape(label)}: {Markup.Escape(value)}");
             }
 
             if (technicalEffectProps.Count > 0)
@@ -1453,8 +1476,8 @@ public partial class ExplorerMode
                     lines.Add($"    • [green]{Markup.Escape(b.GetString() ?? "")}[/]");
                 else if (b.ValueKind == JsonValueKind.Object)
                 {
-                    var bName = GetStr(b, "name", GetStr(b, "stat", ""));
-                    var bVal = GetStr(b, "value", GetStr(b, "bonus", ""));
+                    var bName = GetStr(b, "name", HumanizeProtocolToken(GetStr(b, "stat", "")));
+                    var bVal = DescribeQuestStructuredValue(b);
                     if (!string.IsNullOrEmpty(bName))
                         lines.Add($"    • [green]{Markup.Escape(bName)}: {Markup.Escape(bVal)}[/]");
                 }

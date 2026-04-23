@@ -203,6 +203,61 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void ValidateRawOwnerStateForActionableMode_InvalidPoliticalContract_FailsClosed()
+    {
+        var root = JsonNode.Parse("""
+        {
+          "availability": "active",
+          "radiance": { "experience": 120, "tier": 1 },
+          "lightSparks": 40,
+          "halls": [],
+          "factions": [
+            {
+              "factionId": "faction_broken",
+              "originType": "player_founded",
+              "hallId": "hall_broken",
+              "charter": {
+                "factionName": "Сломанная фракция",
+                "favoredArchetype": "accord",
+                "patronEffectFamily": "social",
+                "summary": "Тест."
+              },
+              "leadership": {
+                "headActorType": "guardian",
+                "headActorId": "guardian_old",
+                "leadershipState": "broken_state"
+              },
+              "projects": []
+            }
+          ],
+          "shiningPoliticalActors": [],
+          "pendingNativeFactionDiscovery": null,
+          "gates": {
+            "draftVersion": 1,
+            "hasOpenDraft": false,
+            "isStale": false,
+            "allCandidateBlessingCards": [],
+            "availableBlessingCards": [],
+            "shownBlessingCardIds": [],
+            "selectedBlessingCardIds": []
+          },
+          "preparedIncarnationPackage": null,
+          "gachaSystem": {
+            "chargesPerReturn": 1,
+            "chargesUsedThisReturn": 0,
+            "currentReturnCycleId": "return_1",
+            "gachaHistory": []
+          }
+        }
+        """)!.AsObject();
+
+        var error = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(root);
+
+        Assert.NotNull(error);
+        Assert.Contains("leadershipState", error, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void NormalizeStateRoot_DoesNotRebuildPreparedPackageSelectedCardIds()
     {
         var root = JsonNode.Parse("""

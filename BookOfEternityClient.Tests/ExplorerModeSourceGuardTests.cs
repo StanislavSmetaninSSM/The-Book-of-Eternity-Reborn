@@ -367,8 +367,8 @@ public sealed class ExplorerModeSourceGuardTests
         Assert.DoesNotContain("В soul_state нет доступных Soul Relics", source, StringComparison.Ordinal);
         Assert.DoesNotContain("canonical properties array", source, StringComparison.Ordinal);
         Assert.Contains("Нет доступных перебросов благословением для кузни", source, StringComparison.Ordinal);
-        Assert.Contains("JSON-объектом свойства", source, StringComparison.Ordinal);
-        Assert.Contains("JSON-массивом свойств", source, StringComparison.Ordinal);
+        Assert.Contains("Настроить свойство вручную", source, StringComparison.Ordinal);
+        Assert.Contains("Настроить набор вручную", source, StringComparison.Ordinal);
         Assert.Contains("реликвий души", source, StringComparison.Ordinal);
         Assert.Contains("списка свойств для перековки", source, StringComparison.Ordinal);
     }

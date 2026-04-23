@@ -324,7 +324,7 @@ public partial class ExplorerMode
                 var residentId = GetNodeString(entry["residentId"]) ?? string.Empty;
                 var displayName = GetNodeString(entry["displayName"]) ?? residentId;
                 var factionId = GetNodeString(entry["shiningFactionId"]) ?? "none";
-                var label = $"{displayName} [dim]({factionId} • лояльность {GetNodeInt(entry["factionLoyaltyLevel"])} • брожение {GetNodeInt(entry["factionRestlessness"])})[/]";
+                var label = $"{displayName} [dim](фракция {factionId}, лояльность {GetNodeInt(entry["factionLoyaltyLevel"])}, брожение {GetNodeInt(entry["factionRestlessness"])})[/]";
                 return (Label: label, Entry: entry);
             })
             .ToList();
@@ -358,7 +358,7 @@ public partial class ExplorerMode
             {
                 var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
                 var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
-                var label = $"{factionName} [dim](strength {GetNodeInt(faction["factionStrength"])} • {factionId})[/]";
+                var label = $"{factionName} [dim](сила {GetNodeInt(faction["factionStrength"])})[/]";
                 return (Label: label, Faction: faction);
             })
             .ToList();
@@ -388,7 +388,7 @@ public partial class ExplorerMode
             var available = BuildEligibleSupporterChoices(residentRoot, sameFactionId, selected);
             var summary = selected.Count == 0
                 ? "[dim]Пока сторонники не выбраны.[/]"
-                : $"[dim]Выбрано: {Markup.Escape(string.Join(", ", selected))}[/]";
+                : $"[dim]Выбрано: {Markup.Escape(BuildSelectedSupporterSummary(residentRoot, selected))}[/]";
             var choice = Prompt(new SelectionPrompt<string>()
                 .Title($"{title}\n{summary}")
                 .HighlightStyle(new Style(Color.Gold1))
@@ -417,7 +417,7 @@ public partial class ExplorerMode
                 var residentId = GetNodeString(entry["residentId"]) ?? string.Empty;
                 var displayName = GetNodeString(entry["displayName"]) ?? residentId;
                 var factionId = GetNodeString(entry["shiningFactionId"]) ?? "none";
-                var label = $"{displayName} [dim]({factionId} • {residentId})[/]";
+                var label = $"{displayName} [dim](фракция {factionId})[/]";
                 return (Label: label, ResidentId: residentId);
             })
             .Where(item => !alreadySelected.Any(selected => string.Equals(selected, item.ResidentId, StringComparison.OrdinalIgnoreCase)))
@@ -441,7 +441,7 @@ public partial class ExplorerMode
                 var residentId = GetNodeString(resident["residentId"]) ?? string.Empty;
                 var residentName = GetNodeString(resident["displayName"]) ?? residentId;
                 choices.Add(new ShiningActorChoice(
-                    $"{residentName} [dim](резидент:{residentId})[/]",
+                    $"{residentName} [dim](резидент той же фракции)[/]",
                     ShiningAbodeState.HeadActorTypeResident,
                     residentId));
             }
@@ -456,7 +456,7 @@ public partial class ExplorerMode
             {
                 seenGuardianIds.Add(guardianId);
                 choices.Add(new ShiningActorChoice(
-                    $"{guardianName} [dim](хранитель:{guardianId})[/]",
+                    $"{guardianName} [dim](хранитель)[/]",
                     ShiningAbodeState.HeadActorTypeGuardian,
                     guardianId));
             }
@@ -471,7 +471,7 @@ public partial class ExplorerMode
                 if (string.IsNullOrWhiteSpace(guardianId) || !seenGuardianIds.Add(guardianId))
                     continue;
                 choices.Add(new ShiningActorChoice(
-                    $"{guardianName} [dim](хранитель:{guardianId})[/]",
+                    $"{guardianName} [dim](хранитель)[/]",
                     ShiningAbodeState.HeadActorTypeGuardian,
                     guardianId));
             }
@@ -484,7 +484,7 @@ public partial class ExplorerMode
                 var actorId = GetNodeString(actor["actorId"]) ?? string.Empty;
                 var displayName = GetNodeString(actor["displayName"]) ?? actorId;
                 choices.Add(new ShiningActorChoice(
-                    $"{displayName} [dim](светозарный актор:{actorId})[/]",
+                    $"{displayName} [dim](светозарный актор)[/]",
                     ShiningAbodeState.HeadActorTypeRadiantActor,
                     actorId));
             }
@@ -522,6 +522,25 @@ public partial class ExplorerMode
         }
 
         return builder.ToString().Trim('_');
+    }
+
+    private static string BuildSelectedSupporterSummary(JsonObject? residentRoot, IReadOnlyCollection<string> selectedIds)
+    {
+        if (selectedIds.Count == 0)
+            return string.Empty;
+
+        return string.Join(", ", selectedIds.Select(selectedId =>
+        {
+            if (residentRoot?["entries"] is JsonArray entries)
+            {
+                var resident = entries.OfType<JsonObject>()
+                    .FirstOrDefault(entry => string.Equals(GetNodeString(entry["residentId"]), selectedId, StringComparison.OrdinalIgnoreCase));
+                var displayName = GetNodeString(resident?["displayName"]) ?? selectedId;
+                return displayName;
+            }
+
+            return selectedId;
+        }));
     }
 
     private static string MapPatronFamilyToHallServiceTag(string patronEffectFamily) => patronEffectFamily switch

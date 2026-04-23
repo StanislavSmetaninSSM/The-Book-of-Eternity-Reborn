@@ -249,6 +249,10 @@ internal static partial class ShiningAbodeState
         if (!string.IsNullOrWhiteSpace(blessingCardIssue))
             return blessingCardIssue;
 
+        var politicalIssue = ValidateRawPoliticalContracts(root);
+        if (!string.IsNullOrWhiteSpace(politicalIssue))
+            return politicalIssue;
+
         return null;
     }
 
@@ -994,6 +998,87 @@ internal static partial class ShiningAbodeState
             : "preparedIncarnationPackage содержит mismatched selectedCardIds/selectedCards snapshot и не может authorise actionable Shining mode.";
     }
 
+    private static string? ValidateRawPoliticalContracts(JsonObject root)
+    {
+        if (root["factions"] is not JsonArray factions)
+            return "factions повреждён и не может authorise actionable Shining mode.";
+
+        foreach (var factionNode in factions)
+        {
+            if (factionNode is not JsonObject faction)
+                return "factions содержит повреждённую запись и не может authorise actionable Shining mode.";
+
+            if (!IsSupportedOriginType(GetNodeString(faction["originType"])))
+                return "factions содержит неподдерживаемый originType и не может authorise actionable Shining mode.";
+
+            if (faction["charter"] is not JsonObject charter ||
+                !IsSupportedProjectArchetype(GetNodeString(charter["favoredArchetype"])) ||
+                !IsSupportedEffectFamily(GetNodeString(charter["patronEffectFamily"])))
+            {
+                return "factions содержит повреждённый charter и не может authorise actionable Shining mode.";
+            }
+
+            if (faction["leadership"] is not JsonObject leadership)
+                return "factions содержит повреждённый leadership contract и не может authorise actionable Shining mode.";
+
+            var leadershipState = GetNodeString(leadership["leadershipState"]);
+            if (!IsSupportedLeadershipState(leadershipState))
+                return "factions содержит неподдерживаемый leadershipState и не может authorise actionable Shining mode.";
+
+            if (string.Equals(leadershipState, LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
+            {
+                if (!string.IsNullOrWhiteSpace(GetNodeString(leadership["headActorType"])) ||
+                    !string.IsNullOrWhiteSpace(GetNodeString(leadership["headActorId"])))
+                {
+                    return "vacant leadership не может одновременно содержать head binding в actionable Shining mode.";
+                }
+            }
+            else
+            {
+                if (!IsSupportedHeadActorType(GetNodeString(leadership["headActorType"])) ||
+                    string.IsNullOrWhiteSpace(GetNodeString(leadership["headActorId"])))
+                {
+                    return "factions содержит повреждённый head binding и не может authorise actionable Shining mode.";
+                }
+            }
+
+            if (faction["projects"] is not JsonArray projects)
+                return "factions.projects повреждён и не может authorise actionable Shining mode.";
+
+            foreach (var projectNode in projects)
+            {
+                if (projectNode is not JsonObject project ||
+                    !IsSupportedProjectArchetype(GetNodeString(project["projectArchetype"])) ||
+                    !IsSupportedEffectFamily(GetNodeString(project["outputEffectFamily"])) ||
+                    !IsSupportedProjectStatus(GetNodeString(project["status"])))
+                {
+                    return "factions.projects содержит повреждённый project contract и не может authorise actionable Shining mode.";
+                }
+            }
+        }
+
+        if (root["shiningPoliticalActors"] is not JsonArray actors)
+            return "shiningPoliticalActors повреждён и не может authorise actionable Shining mode.";
+
+        foreach (var actorNode in actors)
+        {
+            if (actorNode is not JsonObject actor)
+                return "shiningPoliticalActors содержит повреждённую запись и не может authorise actionable Shining mode.";
+
+            var actorType = GetNodeString(actor["actorType"]);
+            if (!string.IsNullOrWhiteSpace(actorType) &&
+                !string.Equals(actorType, HeadActorTypeRadiantActor, StringComparison.OrdinalIgnoreCase))
+            {
+                return "shiningPoliticalActors содержит неподдерживаемый actorType и не может authorise actionable Shining mode.";
+            }
+
+            if (!IsSupportedPoliticalStatus(GetNodeString(actor["politicalStatus"])))
+                return "shiningPoliticalActors содержит неподдерживаемый politicalStatus и не может authorise actionable Shining mode.";
+        }
+
+        return null;
+    }
+
     private static void NormalizeOptionalStringProperty(JsonObject obj, string propertyName)
     {
         if (obj[propertyName] is JsonValue value && value.TryGetValue<string>(out var text))
@@ -1090,7 +1175,6 @@ internal static partial class ShiningAbodeState
     private static void TryHydrateRealignmentReceiptSnapshot(JsonObject root, JsonObject? residentRoot, JsonObject receipt)
     {
         _ = root;
-        _ = residentRoot;
         var residentId = GetNodeString(receipt["residentId"]) ?? string.Empty;
         receipt["residentName"] = GetNodeString(receipt["residentName"]) ?? residentId;
 
@@ -1100,6 +1184,37 @@ internal static partial class ShiningAbodeState
         var targetFactionId = GetNodeString(receipt["targetFactionId"]) ?? string.Empty;
         receipt["targetFactionName"] = GetNodeString(receipt["targetFactionName"]) ??
                                        (string.IsNullOrWhiteSpace(targetFactionId) ? string.Empty : targetFactionId);
+
+        var residentHistoryEntryId = GetNodeString(receipt["residentHistoryEntryId"]);
+        if (string.IsNullOrWhiteSpace(residentHistoryEntryId))
+            return;
+
+        var historyEntry = FindResidentHistoryEntry(residentRoot, residentHistoryEntryId);
+        if (historyEntry == null)
+            return;
+
+        receipt["residentHistorySummary"] = GetNodeString(receipt["residentHistorySummary"]) ?? GetNodeString(historyEntry["summary"]) ?? string.Empty;
+        receipt["residentHistoryTimestamp"] = GetNodeString(receipt["residentHistoryTimestamp"]) ?? GetNodeString(historyEntry["timestamp"]) ?? string.Empty;
+        receipt["residentHistoryEventType"] = GetNodeString(receipt["residentHistoryEventType"]) ?? GetNodeString(historyEntry["eventType"]) ?? string.Empty;
+    }
+
+    private static JsonObject? FindResidentHistoryEntry(JsonObject? residentRoot, string? historyEntryId)
+    {
+        if (residentRoot?["entries"] is not JsonArray residents || string.IsNullOrWhiteSpace(historyEntryId))
+            return null;
+
+        foreach (var resident in residents.OfType<JsonObject>())
+        {
+            if (resident["historyLog"] is not JsonArray historyLog)
+                continue;
+
+            var match = historyLog.OfType<JsonObject>()
+                .FirstOrDefault(entry => string.Equals(GetNodeString(entry["entryId"]), historyEntryId, StringComparison.OrdinalIgnoreCase));
+            if (match != null)
+                return match;
+        }
+
+        return null;
     }
 
     private static void HydrateTradeInventoryReceiptSnapshots(JsonObject faction)

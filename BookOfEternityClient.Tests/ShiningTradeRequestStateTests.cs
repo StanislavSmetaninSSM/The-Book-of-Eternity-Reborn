@@ -519,6 +519,37 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task ReadTradeViewAndBuyAsync_InvalidRawOwnerState_FailClosed()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
+            faction["leadership"]!["leadershipState"] = "broken_state";
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            var view = await ShiningTradeService.ReadTradeViewAsync(fs, "faction_old");
+            var buy = await ShiningTradeService.BuyAsync(fs, "faction_old", "slot_1", currentTurn: 11);
+
+            Assert.NotNull(view);
+            Assert.True(view!.TradeBlocked);
+            Assert.Contains("actionable", view.BlockReason ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+            Assert.False(view.InventoryReady);
+            Assert.False(buy.Success);
+            Assert.Contains("actionable", buy.Message, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ValidateRequestAgainstCurrentStateAsync_DormantFaction_Fails()
     {
         var root = CreateTempRoot();

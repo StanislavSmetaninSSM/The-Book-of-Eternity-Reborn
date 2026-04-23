@@ -47,6 +47,32 @@ internal static class ShiningTradeService
         if (shiningRoot == null)
             return null;
 
+        var rawOwnerStateError = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
+        if (rawOwnerStateError != null)
+        {
+            var rawFaction = ShiningAbodeState.FindFaction(shiningRoot, factionId);
+            if (rawFaction == null)
+                return null;
+
+            var rawFactionName = GetNodeString(rawFaction["charter"]?["factionName"]) ?? factionId;
+            var rawFactionStrength = GetNodeInt(rawFaction["factionStrength"], 0);
+            return new ShiningTradeView(
+                factionId,
+                rawFactionName,
+                rawFactionStrength,
+                ShiningAbodeState.GetTradeTier(rawFactionStrength),
+                ShiningAbodeState.GetTradeStockItemCount(rawFaction, residentRoot),
+                ShiningAbodeState.GetTradeRarityCeiling(rawFactionStrength),
+                ShiningAbodeState.GetServiceMultiplier(rawFactionStrength),
+                true,
+                rawOwnerStateError,
+                ShiningAbodeState.GetTradeCycleId(GetNodeInt(soulRoot?["currentIncarnation"], 0)),
+                false,
+                false,
+                rawOwnerStateError,
+                Array.Empty<ShiningTradeOffer>());
+        }
+
         ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
         var faction = ShiningAbodeState.FindFaction(shiningRoot, factionId);
         if (faction == null)
@@ -318,6 +344,10 @@ internal static class ShiningTradeService
         var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
         if (shiningRoot == null || soulRoot == null)
             return new ShiningTradeOperationResult(false, false, "Не удалось прочитать состояние торговли или души.");
+
+        var rawOwnerStateError = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
+        if (rawOwnerStateError != null)
+            return new ShiningTradeOperationResult(false, false, rawOwnerStateError);
 
         ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
         var faction = ShiningAbodeState.FindFaction(shiningRoot, factionId);
