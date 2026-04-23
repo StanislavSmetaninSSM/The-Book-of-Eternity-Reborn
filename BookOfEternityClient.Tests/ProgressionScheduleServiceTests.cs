@@ -403,6 +403,126 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildControlForNextTurnAsync_AfterlifeIgnoresStaleMortalTimeChange()
+    {
+        await _fs.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath, """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentWorldTimeInMinutes": 1000,
+          "lastWorldSimulationTimeInMinutes": 1000,
+          "lastFactionSimulationTimeInMinutes": 1000,
+          "hasAuthoritativeWorldTimeBaseline": true,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "chaosSeaCycleEquivalentHours": 24,
+          "afterlifeCatchupCycleEquivalentMinutes": 1440,
+          "lastAfterlifeCatchupWorldTimeInMinutes": 1000,
+          "hasAfterlifeCatchupWorldTimeBaseline": true,
+          "currentChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "pendingWorldCycles": 0,
+          "pendingFactionCycles": 0,
+          "pendingChaosSeaCycles": 0,
+          "pendingGuardianProjectCycles": 0,
+          "pendingResidentAgencyCycles": 0,
+          "pendingShiningAbodeCycles": 0,
+          "pendingShiningFactionCycles": 0,
+          "pendingShiningTradeCycles": 0,
+          "lastUpdatedUtc": "2026-04-21T00:00:00.0000000Z"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_time.json", """
+        {
+          "timeChange": 1440
+        }
+        """);
+
+        var firstControl = await _service.BuildControlForNextTurnAsync("Chaos Sea");
+        var firstSchedule = await ReadScheduleAsync();
+        var secondControl = await _service.BuildControlForNextTurnAsync("Chaos Sea");
+        var secondSchedule = await ReadScheduleAsync();
+
+        Assert.False(firstControl.AfterlifeCatchupRequired);
+        Assert.False(secondControl.AfterlifeCatchupRequired);
+        Assert.Equal(1000, firstSchedule.CurrentWorldTimeInMinutes);
+        Assert.Equal(1000, secondSchedule.CurrentWorldTimeInMinutes);
+    }
+
+    [Fact]
+    public async Task BuildControlForNextTurnAsync_MalformedShiningStateKeepsOrdinaryShiningProgression()
+    {
+        await _fs.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath, """
+        {
+          "currentRealm": "Shining Abode",
+          "currentWorldTimeInMinutes": 0,
+          "lastWorldSimulationTimeInMinutes": 0,
+          "lastFactionSimulationTimeInMinutes": 0,
+          "hasAuthoritativeWorldTimeBaseline": true,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "chaosSeaCycleEquivalentHours": 24,
+          "afterlifeCatchupCycleEquivalentMinutes": 1440,
+          "lastAfterlifeCatchupWorldTimeInMinutes": 0,
+          "hasAfterlifeCatchupWorldTimeBaseline": true,
+          "currentChaosSeaTurnOrdinal": 8,
+          "lastChaosSeaSimulationOrdinal": 8,
+          "lastGuardianProjectCycleOrdinal": 6,
+          "lastResidentAgencyCycleOrdinal": 5,
+          "lastShiningAbodeCycleOrdinal": 8,
+          "lastShiningFactionCycleOrdinal": 8,
+          "lastShiningTradeCycleOrdinal": 8,
+          "pendingWorldCycles": 0,
+          "pendingFactionCycles": 0,
+          "pendingChaosSeaCycles": 4,
+          "pendingGuardianProjectCycles": 2,
+          "pendingResidentAgencyCycles": 3,
+          "pendingShiningAbodeCycles": 4,
+          "pendingShiningFactionCycles": 5,
+          "pendingShiningTradeCycles": 6,
+          "lastUpdatedUtc": "2026-04-21T00:00:00.0000000Z"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Shining Abode"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, """
+        {
+          "availability": "active",
+          "preparedIncarnationPackage":
+        """);
+
+        var control = await _service.BuildControlForNextTurnAsync();
+        var schedule = await ReadScheduleAsync();
+
+        Assert.Equal(0, control.ChaosSeaCyclesExpectedThisTurn);
+        Assert.Equal(2, control.GuardianProjectCyclesExpectedThisTurn);
+        Assert.Equal(3, control.ResidentAgencyCyclesExpectedThisTurn);
+        Assert.Equal(4, control.ShiningAbodeCyclesExpectedThisTurn);
+        Assert.Equal(5, control.ShiningFactionCyclesExpectedThisTurn);
+        Assert.Equal(6, control.ShiningTradeCyclesExpectedThisTurn);
+        Assert.True(control.MustEvaluateShiningAbodeProgression);
+        Assert.Equal(2, schedule.PendingGuardianProjectCycles);
+        Assert.Equal(3, schedule.PendingResidentAgencyCycles);
+        Assert.Equal(4, schedule.PendingShiningAbodeCycles);
+        Assert.Equal(5, schedule.PendingShiningFactionCycles);
+        Assert.Equal(6, schedule.PendingShiningTradeCycles);
+    }
+
+    [Fact]
     public async Task BuildControlForNextTurnAsync_ShiningPreparedBootstrapSkipsOrdinaryShiningProgression()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """

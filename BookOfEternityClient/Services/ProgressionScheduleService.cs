@@ -148,7 +148,9 @@ public class ProgressionScheduleService
         var afterlifeRealmKind = await ResolveAfterlifeRealmKindAsync(schedule.CurrentRealm);
         if (afterlifeRealmKind != AfterlifeRealmKind.None)
         {
-            var afterlifeWorldTimeResolution = await ResolveWorldTimeFromFileAsync(schedule.CurrentWorldTimeInMinutes);
+            var afterlifeWorldTimeResolution = await ResolveWorldTimeFromFileAsync(
+                schedule.CurrentWorldTimeInMinutes,
+                allowIncrementalTimeChange: false);
             if (!afterlifeWorldTimeResolution.HasUnresolvedAbsoluteOverride)
                 schedule.CurrentWorldTimeInMinutes = afterlifeWorldTimeResolution.Minutes;
 
@@ -1194,7 +1196,9 @@ public class ProgressionScheduleService
         return fallback;
     }
 
-    private async Task<WorldTimeResolutionResult> ResolveWorldTimeFromFileAsync(int fallback)
+    private async Task<WorldTimeResolutionResult> ResolveWorldTimeFromFileAsync(
+        int fallback,
+        bool allowIncrementalTimeChange = true)
     {
         var json = await _fs.ReadFileAsync("game_state/world/world_time.json");
         if (string.IsNullOrWhiteSpace(json))
@@ -1218,7 +1222,7 @@ public class ProgressionScheduleService
                     return new WorldTimeResolutionResult(fallback, true);
             }
 
-            if (TryReadIntLike(root, "timeChange", out var delta))
+            if (allowIncrementalTimeChange && TryReadIntLike(root, "timeChange", out var delta))
                 return new WorldTimeResolutionResult(Math.Max(0, fallback + delta), false);
 
             if (LooksLikeAbsoluteWorldTimeObject(root))
@@ -1303,8 +1307,8 @@ public class ProgressionScheduleService
         }
         catch (Exception ex)
         {
-            _logger.LogDebug(ex, "Не удалось прочитать preparedIncarnationPackage для progression scheduler; Shining progression будет удержана fail-closed.");
-            return true;
+            _logger.LogDebug(ex, "Не удалось прочитать preparedIncarnationPackage для progression scheduler; Shining bootstrap handoff не будет считаться готовым.");
+            return false;
         }
     }
 
