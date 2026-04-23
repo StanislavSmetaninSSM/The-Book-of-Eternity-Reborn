@@ -153,6 +153,7 @@
                - MUST treat `mustEvaluate* = false` as "no mandatory cycle debt for this contour"
                - MUST determine logical consequences of time passage
                - MUST process all cycles mandated by progressionControl for the active realm
+               - MUST treat `afterlifeCatchupRequired=true` as one bounded epoch-summary task, not as permission to simulate every raw elapsed afterlife cycle
                - MUST document reasoning for any progression outcomes
                
             2. **MANDATORY Actor-Scope Declaration and Agency Analysis:**
@@ -166,8 +167,9 @@
             3. **MANDATORY Natural Progression Assessment:**
                - MUST answer: Which due world cycles are being resolved this turn? (document logic)
                - MUST answer: Which due faction cycles are being resolved this turn? (document logic)
-               - MUST answer: Which due Chaos Sea / guardian project cycles are being resolved this turn? (document logic)
-               - MUST answer: Which NPC / world / political consequences result from those cycles? (document changes)
+               - MUST answer: Which due Chaos Sea / guardian / resident / Shining Abode / Shining faction / Shining trade cycles are being resolved this turn? (document logic)
+               - MUST answer: If afterlife catch-up is required, which bounded summary outcomes were produced and which contours they affect?
+               - MUST answer: Which NPC / resident / guardian / world / political consequences result from those cycles? (document changes)
                
             **VALIDATION REQUIREMENT:**
             At minimum, live validation requires a valid scope declaration block and a valid actor reasoning section.
@@ -224,7 +226,7 @@
             [Обоснование любых обновлений фракций/мира/событий]
 
             ## Отчёт scheduler
-            [Какие mandatory cycles обработаны и что будет записано в progressionProcessingReport]
+            [Какие mandatory cycles обработаны, был ли bounded afterlife catch-up, и что будет записано в progressionProcessingReport]
 
             ## Подготовка к обработке хода
             [Переход к стандартной игровой механике]

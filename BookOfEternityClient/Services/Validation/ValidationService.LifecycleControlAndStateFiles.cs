@@ -146,8 +146,13 @@ public partial class ValidationService
                 "sessionId", "requestId", "turnNumber",
                 "worldCyclesProcessed", "factionCyclesProcessed",
                 "chaosSeaCyclesProcessed", "guardianProjectCyclesProcessed",
+                "residentAgencyCyclesProcessed", "shiningAbodeCyclesProcessed",
+                "shiningFactionCyclesProcessed", "shiningTradeCyclesProcessed",
                 "newLastWorldSimulationTimeInMinutes", "newLastFactionSimulationTimeInMinutes",
-                "newLastChaosSeaSimulationOrdinal", "newLastGuardianProjectCycleOrdinal"
+                "newLastChaosSeaSimulationOrdinal", "newLastGuardianProjectCycleOrdinal",
+                "newLastResidentAgencyCycleOrdinal", "newLastShiningAbodeCycleOrdinal",
+                "newLastShiningFactionCycleOrdinal", "newLastShiningTradeCycleOrdinal",
+                "afterlifeCatchupProcessed", "afterlifeCatchupSummaryEventsProcessed"
             }, issues, ValidateProgressionReportStateFile);
         await ValidateFlexibleStateFile(PendingInkActionsPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)

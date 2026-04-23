@@ -5109,9 +5109,20 @@ public partial class ValidationService
         ValidateNonNegativeIntegerField(root, contextPrefix, issues, "currentChaosSeaTurnOrdinal", "ProgressionSchedule");
         ValidateNonNegativeIntegerField(root, contextPrefix, issues, "lastChaosSeaSimulationOrdinal", "ProgressionSchedule");
         ValidateNonNegativeIntegerField(root, contextPrefix, issues, "lastGuardianProjectCycleOrdinal", "ProgressionSchedule");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "lastResidentAgencyCycleOrdinal", "ProgressionSchedule");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "lastShiningAbodeCycleOrdinal", "ProgressionSchedule");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "lastShiningFactionCycleOrdinal", "ProgressionSchedule");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "lastShiningTradeCycleOrdinal", "ProgressionSchedule");
         ValidateNonNegativeIntegerField(root, contextPrefix, issues, "pendingChaosSeaCycles", "ProgressionSchedule");
         ValidateNonNegativeIntegerField(root, contextPrefix, issues, "pendingGuardianProjectCycles", "ProgressionSchedule");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "pendingResidentAgencyCycles", "ProgressionSchedule");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "pendingShiningAbodeCycles", "ProgressionSchedule");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "pendingShiningFactionCycles", "ProgressionSchedule");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "pendingShiningTradeCycles", "ProgressionSchedule");
         ValidatePositiveIntegerField(root, contextPrefix, issues, "chaosSeaCycleEquivalentHours");
+        ValidatePositiveIntegerField(root, contextPrefix, issues, "afterlifeCatchupCycleEquivalentMinutes");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "lastAfterlifeCatchupWorldTimeInMinutes", "ProgressionSchedule");
+        RequireBooleanField(root, contextPrefix, issues, "hasAfterlifeCatchupWorldTimeBaseline");
     }
 
     private void ValidateProgressionReportStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -5221,10 +5232,33 @@ public partial class ValidationService
         ValidateNonNegativeIntegerField(report, contextPrefix, issues, "factionCyclesProcessed", "ProgressionReport");
         ValidateNonNegativeIntegerField(report, contextPrefix, issues, "chaosSeaCyclesProcessed", "ProgressionReport");
         ValidateNonNegativeIntegerField(report, contextPrefix, issues, "guardianProjectCyclesProcessed", "ProgressionReport");
+        ValidateNonNegativeIntegerField(report, contextPrefix, issues, "residentAgencyCyclesProcessed", "ProgressionReport");
+        ValidateNonNegativeIntegerField(report, contextPrefix, issues, "shiningAbodeCyclesProcessed", "ProgressionReport");
+        ValidateNonNegativeIntegerField(report, contextPrefix, issues, "shiningFactionCyclesProcessed", "ProgressionReport");
+        ValidateNonNegativeIntegerField(report, contextPrefix, issues, "shiningTradeCyclesProcessed", "ProgressionReport");
         ValidateNonNegativeIntegerField(report, contextPrefix, issues, "newLastWorldSimulationTimeInMinutes", "ProgressionReport");
         ValidateNonNegativeIntegerField(report, contextPrefix, issues, "newLastFactionSimulationTimeInMinutes", "ProgressionReport");
         ValidateNonNegativeIntegerField(report, contextPrefix, issues, "newLastChaosSeaSimulationOrdinal", "ProgressionReport");
         ValidateNonNegativeIntegerField(report, contextPrefix, issues, "newLastGuardianProjectCycleOrdinal", "ProgressionReport");
+        ValidateNonNegativeIntegerField(report, contextPrefix, issues, "newLastResidentAgencyCycleOrdinal", "ProgressionReport");
+        ValidateNonNegativeIntegerField(report, contextPrefix, issues, "newLastShiningAbodeCycleOrdinal", "ProgressionReport");
+        ValidateNonNegativeIntegerField(report, contextPrefix, issues, "newLastShiningFactionCycleOrdinal", "ProgressionReport");
+        ValidateNonNegativeIntegerField(report, contextPrefix, issues, "newLastShiningTradeCycleOrdinal", "ProgressionReport");
+        if (report.TryGetProperty("afterlifeCatchupProcessed", out var afterlifeCatchupProcessed) &&
+            afterlifeCatchupProcessed.ValueKind != JsonValueKind.True &&
+            afterlifeCatchupProcessed.ValueKind != JsonValueKind.False)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.afterlifeCatchupProcessed",
+                IssueSeverity.Error,
+                "afterlifeCatchupProcessed должен быть boolean",
+                code: "progression_report_afterlife_catchup_processed_not_boolean",
+                section: "ProgressionReport",
+                expected: "boolean",
+                actual: afterlifeCatchupProcessed.ValueKind.ToString(),
+                repairHint: "Сохраняй afterlifeCatchupProcessed как true/false, не строку или число."));
+        }
+        ValidateNonNegativeIntegerField(report, contextPrefix, issues, "afterlifeCatchupSummaryEventsProcessed", "ProgressionReport");
     }
 
     private void ValidateMetaMiscContract(JsonElement root, string contextPrefix, List<ValidationIssue> issues)

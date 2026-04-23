@@ -248,7 +248,9 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 - other Guardian commands follow their documented command-specific fields
 Используй `progressionControl` из `turn_request.json` как обязательный системный scheduler:
 - в `Mortal World` он задаёт жёсткие циклы мира (`240` минут) и фракций (`1440` минут),
-- в `Chaos Sea` и `Shining Abode` он задаёт обязательный hub/guardian cycle для этого хода.
+- в `Chaos Sea` он задаёт bounded cycles для hub-событий Моря Хаоса, проектов Хранителей и agency резидентов,
+- в `Shining Abode` он задаёт bounded cycles для Обители, сияющих фракций, сияющей торговли, проектов Хранителей и agency резидентов,
+- если `afterlifeCatchupRequired = true`, НЕ догоняй raw elapsed cycles по одному; обработай ровно `afterlifeCatchupSummaryEventsRequired` значимых summary outcomes с учётом `afterlifeCatchupPressureTier` и `afterlifeCatchupContours`.
 - `mustEvaluate* = true` означает, что соответствующий progression debt реально существует в этом ходу.
 - `mustEvaluate* = false` означает, что report по этому контуру не обязателен.
 Игнорирование `progressionControl` является нарушением контракта.
