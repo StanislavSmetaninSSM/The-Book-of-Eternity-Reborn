@@ -102,6 +102,103 @@ public sealed class ShiningStateValidationTests
     }
 
     [Fact]
+    public void ValidateShiningAbodeStateFile_ZeroTradePrice_RaisesPositivePriceError()
+    {
+        var root = JsonNode.Parse("""
+        {
+          "availability": "active",
+          "radiance": { "experience": 120, "tier": 1 },
+          "lightSparks": 40,
+          "halls": [],
+          "factions": [
+            {
+              "factionId": "faction_trade",
+              "originType": "native_radiant",
+              "hallId": "hall_trade",
+              "charter": {
+                "factionName": "Торговый Дом",
+                "favoredArchetype": "provision",
+                "patronEffectFamily": "resource",
+                "summary": "Тест"
+              },
+              "leadership": {
+                "headActorType": "radiant_actor",
+                "headActorId": "actor_trade",
+                "leadershipState": "secure"
+              },
+              "baseStrength": 30,
+              "factionStrength": 30,
+              "investCountThisAscension": 0,
+              "projectArchetypesCountedThisAscension": [],
+              "projects": [],
+              "tradeInventory": {
+                "tradeCycleId": "cycle_1",
+                "generatedAtUtc": "2026-04-17T01:00:00Z",
+                "generationTradeTier": 1,
+                "generationRarityCeiling": "common",
+                "serviceMultiplierSnapshot": 1.0,
+                "merchantProfile": "shining_faction",
+                "items": [
+                  {
+                    "slotId": "slot_zero",
+                    "priceInFeathers": 0,
+                    "soldOut": false,
+                    "relicData": {
+                      "relicId": "relic_zero",
+                      "name": "Нулевая реликвия",
+                      "rarity": "Common",
+                      "quality": "Common"
+                    }
+                  }
+                ]
+              },
+              "tradeInventoryReceipts": [],
+              "leadershipReceipts": [],
+              "leadershipHistory": []
+            }
+          ],
+          "shiningPoliticalActors": [],
+          "factionFoundingReceipts": [],
+          "factionRealignmentReceipts": [],
+          "coreActionReceipts": [],
+          "gates": {
+            "draftVersion": 0,
+            "hasOpenDraft": false,
+            "isStale": false,
+            "allCandidateBlessingCards": [],
+            "availableBlessingCards": [],
+            "shownBlessingCardIds": [],
+            "selectedBlessingCardIds": [],
+            "nextCandidateCursor": 0,
+            "rerollsRemaining": 0
+          },
+          "gachaSystem": {
+            "chargesPerReturn": 0,
+            "chargesUsedThisReturn": 0,
+            "currentReturnCycleId": "return_1",
+            "gachaHistory": []
+          }
+        }
+        """)!.AsObject();
+
+        using var document = JsonDocument.Parse(root.ToJsonString());
+        var validator = new ValidationService(
+            new FileSystemManager(Path.GetTempPath(), NullLogger<FileSystemManager>.Instance),
+            NullLogger<ValidationService>.Instance);
+        var issues = new List<ValidationIssue>();
+        var method = typeof(ValidationService).GetMethod(
+            "ValidateShiningAbodeStateFile",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        method!.Invoke(validator, new object[] { document.RootElement, ShiningAbodeState.StatePath, issues });
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "invalid_positive_integer_field", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("priceInFeathers", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void ValidateShiningAbodeStateFile_InvalidPoliticalEnums_RaiseExplicitErrors()
     {
         var root = JsonNode.Parse("""

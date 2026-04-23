@@ -84,6 +84,8 @@ public partial class GameEngine
             await CheckLifeTransitions();
             await CheckAscensionTrigger();
 
+            await ConsumeAfterlifeReturnProtectionIfNeededAsync(snapshotContext);
+
             if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
                 await FinalizePendingMemoryLegacyConsumptionAsync();
 
@@ -104,7 +106,6 @@ public partial class GameEngine
             if (IsIncarnationSourceLabel(snapshotContext?.SourceLabel))
                 await _worldDirectiveService.MaterializePendingToActiveAsync();
 
-            await ConsumeAfterlifeReturnProtectionIfNeededAsync(snapshotContext);
             await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
 
             _fs.DeleteFile("ready/turn_complete.json");
@@ -711,6 +712,8 @@ public partial class GameEngine
         // Check for GM-triggered life transitions
         await CheckLifeTransitions();
         await CheckAscensionTrigger();
+
+        await ConsumeAfterlifeReturnProtectionIfNeededAsync(activeSnapshotContext);
 
         var qteHandling = await HandleAcceptedQteOfferAsync(response, activeSnapshotContext);
         if (qteHandling.EarlyExit)

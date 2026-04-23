@@ -267,8 +267,7 @@ internal static class ShiningCoreActionRequestState
         if (ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot) != null)
             return;
 
-        if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase) ||
-            shiningRoot["preparedIncarnationPackage"] is JsonObject)
+        if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
         {
             ClearRequests(fs);
             return;
@@ -288,7 +287,7 @@ internal static class ShiningCoreActionRequestState
         if (shiningRoot["coreActionReceipts"] is not JsonArray receipts)
             return;
 
-        if (FindCompatibleReceipt(receipts, requests[0]) != null)
+        if (HasMatchingCoreActionClosure(shiningRoot, receipts, requests[0]))
             ClearRequests(fs);
     }
 
@@ -693,6 +692,50 @@ internal static class ShiningCoreActionRequestState
         }
 
         return match;
+    }
+
+    private static bool HasMatchingCoreActionClosure(
+        JsonObject shiningRoot,
+        JsonArray receipts,
+        PendingShiningCoreActionRequest request)
+    {
+        var receipt = FindCompatibleReceipt(receipts, request);
+        if (receipt == null)
+            return false;
+
+        var status = GetNodeString(receipt["status"]);
+        if (!string.Equals(status, RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (request.ActionType.Equals(ActionTypePrepareIncarnationPackage, StringComparison.OrdinalIgnoreCase))
+        {
+            if (shiningRoot["preparedIncarnationPackage"] is not JsonObject preparedPackage)
+                return false;
+
+            if (!string.IsNullOrWhiteSpace(ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(preparedPackage)))
+                return false;
+
+            var selectedPackageCards = (preparedPackage["selectedCardIds"] as JsonArray)?
+                .OfType<JsonValue>()
+                .Select(card => card.TryGetValue<string>(out var id) ? id?.Trim() : null)
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Select(id => id!)
+                .ToList()
+                ?? new List<string>();
+            return selectedPackageCards.SequenceEqual(
+                request.SelectedCardIds.Where(id => !string.IsNullOrWhiteSpace(id)).Select(id => id.Trim()),
+                StringComparer.OrdinalIgnoreCase);
+        }
+
+        if (request.ActionType.Equals(ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
+        {
+            var gachaHistory = shiningRoot["gachaSystem"]?["gachaHistory"] as JsonArray;
+            return gachaHistory?.OfType<JsonObject>().Any(entry =>
+                string.Equals(GetNodeString(entry["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(entry["relicId"]) ?? string.Empty, GetNodeString(receipt["relicId"]) ?? string.Empty, StringComparison.OrdinalIgnoreCase)) == true;
+        }
+
+        return true;
     }
 
     private static bool ReceiptMatchesRequestContract(JsonObject? receipt, PendingShiningCoreActionRequest request)

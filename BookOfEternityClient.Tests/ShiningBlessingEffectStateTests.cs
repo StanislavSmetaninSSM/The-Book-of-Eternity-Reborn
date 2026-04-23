@@ -74,6 +74,42 @@ public sealed class ShiningBlessingEffectStateTests
     }
 
     [Fact]
+    public async Task MaterializeForBootstrapAsync_InvalidPreparedPackage_FailsBeforeWritingEffects()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
+            {
+                ["soulName"] = "Soul",
+                ["currentRealm"] = "Mortal World",
+                ["currentIncarnation"] = 3,
+                ["inkFeathers"] = new JsonObject { ["current"] = 0, ["total"] = 0 },
+                ["soulRelics"] = new JsonObject { ["equipped"] = new JsonArray(), ["stored"] = new JsonArray() }
+            }.ToJsonString());
+
+            var invalidPackage = CreatePreparedPackage();
+            invalidPackage["selectedCardIds"] = new JsonArray("card_memory", "missing_card");
+
+            var result = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, invalidPackage, 3);
+
+            Assert.False(result.Success);
+            Assert.False(result.StateChanged);
+            Assert.Contains("preparedIncarnationPackage", result.ErrorMessage, StringComparison.OrdinalIgnoreCase);
+
+            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            Assert.False(soulRoot.ContainsKey(ShiningBlessingEffectState.SoulStateProperty));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task BuildSystemReminderFragmentAsync_ListsDeferredBlessingEffectsInMortalRealm()
     {
         var root = CreateTempRoot();
@@ -1605,11 +1641,14 @@ public sealed class ShiningBlessingEffectStateTests
         return new JsonObject
         {
             ["cardId"] = cardId,
+            ["dedupeKey"] = $"{family}:{cardId}",
+            ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
+            ["sourceFactionId"] = "faction_dawn",
             ["displayName"] = cardId,
             ["displaySummary"] = family,
-            ["sourceFactionId"] = "faction_dawn",
             ["sourceActorId"] = sourceActorId,
             ["effectFamily"] = family,
+            ["rarity"] = ShiningAbodeState.RarityCommon,
             ["effectPayload"] = payload
         };
     }

@@ -267,6 +267,63 @@ public partial class ValidationService
         };
     }
 
+    private async Task ValidateDirectChaosSeaGachaOutcomeAsync(string playerAction, List<ValidationIssue> issues)
+    {
+        if (!playerAction.Contains("[CHAOS_SEA_DIRECT_GACHA]", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var preTurnSoulJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            issues,
+            code: "direct_chaos_gacha_missing_pre_turn_soul_state",
+            section: "CHAOS_SEA_DIRECT_GACHA",
+            message: "Direct Chaos Sea gacha требует validated pre-turn soul_state snapshot для проверки materialized relic.",
+            repairHint: "Сохраняй validated snapshot copy of game_state/meta/soul_state.json перед direct /gacha accepted turn.");
+        var currentSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(preTurnSoulJson) || string.IsNullOrWhiteSpace(currentSoulJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(preTurnSoulJson) is not JsonObject preTurnSoulRoot ||
+                JsonNode.Parse(currentSoulJson) is not JsonObject currentSoulRoot)
+            {
+                return;
+            }
+
+            var preTurnRelicIds = CollectSoulRelicIds(preTurnSoulRoot);
+            var currentRelicIds = CollectSoulRelicIds(currentSoulRoot);
+            var newRelicIds = currentRelicIds.Except(preTurnRelicIds, StringComparer.OrdinalIgnoreCase).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            if (!preTurnRelicIds.IsSubsetOf(currentRelicIds))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "Direct Chaos Sea gacha не должна удалять уже существующие Soul Relics.",
+                    code: "direct_chaos_gacha_unexpected_existing_relic_removal",
+                    section: "CHAOS_SEA_DIRECT_GACHA",
+                    repairHint: "При direct /gacha только добавляй новую реликвию; не удаляй и не подменяй существующие Soul Relics."));
+            }
+
+            if (newRelicIds.Count != 1)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "Direct Chaos Sea gacha должен materialize-ить ровно одну новую Soul Relic.",
+                    code: "direct_chaos_gacha_missing_new_relic_materialization",
+                    section: "CHAOS_SEA_DIRECT_GACHA",
+                    expected: "exactly one new soul relic",
+                    actual: newRelicIds.Count == 0 ? "no_new_relics" : string.Join(", ", newRelicIds),
+                    repairHint: "Добавь результат direct /gacha в soul_state через metaStateUpdates.soulRelicOperations.addRelic."));
+            }
+        }
+        catch
+        {
+            // JSON shape issues are reported by normal state validation.
+        }
+    }
+
     private async Task<(List<ValidationIssue> Issues, JsonDocument? ReceiptDoc)> ValidateInkFeatherActionReceiptAsync(InkFeatherActionContext context)
     {
         var issues = new List<ValidationIssue>();
@@ -6345,6 +6402,8 @@ public partial class ValidationService
                 return issues;
 
             var playerAction = actionEl.GetString() ?? string.Empty;
+            await ValidateDirectChaosSeaGachaOutcomeAsync(playerAction, issues);
+
             var actionContext = ParseInkFeatherActionContext(requestDoc.RootElement, playerAction);
             if (actionContext == null)
                 return issues;

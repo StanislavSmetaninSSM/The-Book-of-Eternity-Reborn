@@ -1090,7 +1090,7 @@ public partial class ValidationService
                     repairHint: "Материализуй tradeInventory.items с уникальными slotId, чтобы локальная покупка всегда ссылалась ровно на один слот."));
             }
 
-            ValidateNonNegativeIntegerField(item, itemContext, issues, "priceInFeathers", "ShiningAbode");
+            ValidatePositiveIntegerField(item, itemContext, issues, "priceInFeathers");
             RequireBooleanField(item, itemContext, issues, "soldOut");
             if (!item.TryGetProperty("relicData", out var relicData) || !RequireObject(relicData, $"{itemContext}.relicData", issues))
             {
