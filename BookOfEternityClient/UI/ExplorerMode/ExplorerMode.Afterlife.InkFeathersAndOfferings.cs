@@ -136,6 +136,8 @@ public partial class ExplorerMode
                 choices.Add("💎 Реликвии души");
                 choices.Add("🌟 Квесты души");
                 choices.Add("📬 Ответы Хранителей");
+                if (currentManifestationRequests.Count > 0 && RealmSemantics.IsMortalRealm(currentRealm))
+                    choices.Add("👤 Запросы проявления спутников");
             }
             choices.Add("← Назад");
 
@@ -178,6 +180,156 @@ public partial class ExplorerMode
                 await ShowSoulQuests();
             else if (choice.Contains("Ответы", StringComparison.Ordinal))
                 await ShowAfterlifeInbox();
+            else if (choice.Contains("проявления", StringComparison.OrdinalIgnoreCase))
+                await ShowManifestationRequestInspectionAsync();
+        }
+    }
+
+    private async Task ShowManifestationRequestInspectionAsync()
+    {
+        while (true)
+        {
+            var currentIncarnation = _stateManager.CurrentState.Incarnation;
+            var requests = (await GuardianAbodeResidentRequestState.ReadManifestationRequestsAsync(_fs))
+                .Where(request => request.TargetIncarnation == currentIncarnation)
+                .OrderBy(request => request.CreatedAtUtc, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (requests.Count == 0)
+            {
+                ShowEmptyPanel("👤 Запросы проявления спутников", "В этой жизни нет ожидающих запросов проявления.");
+                WaitForKey();
+                return;
+            }
+
+            var options = BuildUniqueChoiceOptions(requests, request =>
+            {
+                var displayName = string.IsNullOrWhiteSpace(request.CompanionNameHint) ? request.RelicName : request.CompanionNameHint;
+                var sourceLabel = !string.IsNullOrWhiteSpace(request.SourceResidentId)
+                    ? $"резидент {request.SourceResidentId}"
+                    : (!string.IsNullOrWhiteSpace(request.SourceGuardianName) ? request.SourceGuardianName : request.SourceGuardianId);
+                return $"{Markup.Escape(displayName)} [dim]({Markup.Escape(string.IsNullOrWhiteSpace(sourceLabel) ? HumanizeProtocolToken(request.ManifestationSource) : sourceLabel)})[/]";
+            });
+            var choices = options.Select(option => option.Label).Append("← Назад").ToList();
+
+            Clear();
+            var summaryLines = new List<string>
+            {
+                $"[bold yellow]👤 Запросы проявления спутников[/] [dim](текущая инкарнация {currentIncarnation})[/]",
+                "",
+                $"  Активных запросов: [white]{requests.Count}[/]"
+            };
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", summaryLines)))
+            {
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Magenta1),
+                Padding = new Padding(2, 1),
+                Expand = true
+            });
+
+            var selected = Prompt(new SelectionPrompt<string>()
+                .Title("[bold]Выберите запрос:[/]")
+                .HighlightStyle(new Style(Color.Magenta1))
+                .AddChoices(choices));
+
+            if (selected.Contains("Назад", StringComparison.Ordinal))
+                return;
+
+            var request = options.FirstOrDefault(option => string.Equals(option.Label, selected, StringComparison.Ordinal)).Value;
+            if (request == null)
+                return;
+
+            await ShowManifestationRequestDetailAsync(request);
+        }
+    }
+
+    private async Task ShowManifestationRequestDetailAsync(GuardianAbodeResidentRequestState.PendingResidentCompanionManifestationRequest request)
+    {
+        var displayName = string.IsNullOrWhiteSpace(request.CompanionNameHint) ? request.RelicName : request.CompanionNameHint;
+        var lines = new List<string>
+        {
+            $"[bold yellow]👤 {Markup.Escape(displayName)}[/]",
+            "",
+            $"  Идентификатор запроса: [dim]{Markup.Escape(request.RequestId)}[/]",
+            $"  Источник проявления: [white]{Markup.Escape(HumanizeProtocolToken(request.ManifestationSource))}[/]",
+            $"  Целевая инкарнация: [white]{request.TargetIncarnation}[/]",
+            $"  Создано UTC: [dim]{Markup.Escape(request.CreatedAtUtc)}[/]"
+        };
+
+        if (!string.IsNullOrWhiteSpace(request.SourceResidentId))
+            lines.Add($"  Резидент-источник: [white]{Markup.Escape(request.SourceResidentId)}[/]");
+        if (!string.IsNullOrWhiteSpace(request.SourceGuardianName) || !string.IsNullOrWhiteSpace(request.SourceGuardianId))
+            lines.Add($"  Хранитель-источник: [white]{Markup.Escape(string.IsNullOrWhiteSpace(request.SourceGuardianName) ? request.SourceGuardianId : request.SourceGuardianName)}[/]");
+        if (!string.IsNullOrWhiteSpace(request.RelicName) || !string.IsNullOrWhiteSpace(request.RelicId))
+            lines.Add($"  Реликвия-источник: [white]{Markup.Escape(string.IsNullOrWhiteSpace(request.RelicName) ? request.RelicId : request.RelicName)}[/]");
+        if (!string.IsNullOrWhiteSpace(request.OriginWorldSummary))
+            lines.Add($"  Мир-исток: [dim]{Markup.Escape(request.OriginWorldSummary)}[/]");
+        if (!string.IsNullOrWhiteSpace(request.FutureCompanionPrompt))
+            lines.Add($"  Образ будущего спутника: [dim]{Markup.Escape(request.FutureCompanionPrompt)}[/]");
+        if (!string.IsNullOrWhiteSpace(request.BondReason))
+            lines.Add($"  Причина связи: [dim]{Markup.Escape(request.BondReason)}[/]");
+        if (request.CoreTraits.Count > 0)
+            lines.Add($"  Черты: [dim]{Markup.Escape(string.Join(", ", request.CoreTraits))}[/]");
+        if (request.ArchetypeHints.Count > 0)
+            lines.Add($"  Архетипы: [dim]{Markup.Escape(string.Join(", ", request.ArchetypeHints))}[/]");
+        if (request.AppearanceMotifs.Count > 0)
+            lines.Add($"  Образы и мотивы: [dim]{Markup.Escape(string.Join(", ", request.AppearanceMotifs))}[/]");
+
+        var snapshotSummary = GuardianAbodeResidentRequestState.DescribeManifestationRequestSnapshot(request);
+        if (!string.IsNullOrWhiteSpace(snapshotSummary))
+            lines.Add($"  Снимок состояния: [dim]{Markup.Escape(snapshotSummary.TrimStart(',', ' '))}[/]");
+
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 👤 Подробности запроса проявления ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Magenta1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+
+        var actions = new List<string>();
+        if (!string.IsNullOrWhiteSpace(request.SourceResidentId))
+            actions.Add("🏛 Открыть резидента-источник");
+        if (!string.IsNullOrWhiteSpace(request.SourceGuardianId))
+            actions.Add("🛡 Открыть Хранителя-источник");
+        if (!string.IsNullOrWhiteSpace(request.RelicId))
+            actions.Add("💎 Открыть реликвию-источник");
+        actions.Add("← Назад");
+
+        var action = Prompt(new SelectionPrompt<string>()
+            .Title("[bold]Действие:[/]")
+            .HighlightStyle(new Style(Color.Magenta1))
+            .AddChoices(actions));
+
+        if (action.StartsWith("🏛", StringComparison.Ordinal))
+        {
+            if (!await ShowGuardianAbodeResidentDetailByIdAsync(request.SourceResidentId))
+            {
+                MarkupLine("[yellow]Не удалось открыть точную карточку резидента-источника.[/]");
+                WaitForKey();
+            }
+            return;
+        }
+
+        if (action.StartsWith("🛡", StringComparison.Ordinal))
+        {
+            if (!await TryShowLinkedArchiveGuardianAsync(request.SourceGuardianId))
+            {
+                MarkupLine("[yellow]Не удалось открыть точную карточку Хранителя-источника.[/]");
+                WaitForKey();
+            }
+            return;
+        }
+
+        if (action.StartsWith("💎", StringComparison.Ordinal))
+        {
+            if (!await ShowSoulRelicDetailByIdAsync(request.RelicId))
+            {
+                MarkupLine("[yellow]Не удалось открыть реликвию-источник.[/]");
+                WaitForKey();
+            }
         }
     }
 

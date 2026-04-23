@@ -2448,7 +2448,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Устав фракции: Поют утренний свет.", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Описание зала: Поющие своды собирают отзвуки верности.", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Историческая запись резидента: Орин признал, что зов Хора Рассвета звучит для него яснее прежней верности.", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Краткая сводка: Орин признал, что зов Хора Рассвета звучит для него яснее прежней верности.", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Идентификатор исторической записи: history_orin_realignment_1", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Причина решения: целевая фракция приняла переход", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("accepted_by_target_faction", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -3215,7 +3215,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Основная рука", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Бонус к социальной проверке", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Дополнительные технические параметры эффекта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Дополнительные свойства эффекта", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("echoSignature", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("actionCheckBonuses", renderedText, StringComparison.OrdinalIgnoreCase);
     }

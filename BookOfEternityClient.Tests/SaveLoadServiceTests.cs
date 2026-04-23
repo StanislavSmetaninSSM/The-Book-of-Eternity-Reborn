@@ -162,6 +162,60 @@ public sealed class SaveLoadServiceTests : IDisposable
         Assert.True(_fs.FileExists(AfterlifeArchiveActionState.ConsultationRequestPath));
     }
 
+    [Fact]
+    public async Task LoadGameAsync_RejectsArchiveEntriesOutsideGameSessionRoot()
+    {
+        const string originalSoulState = """
+        {
+          "soulName": "Безопасная Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 7
+        }
+        """;
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", originalSoulState);
+
+        var savePath = _fs.ResolvePath("saves/manual_saves/malicious_path.zip");
+        var escapedPath = Path.Combine(_rootPath, "escaped.txt");
+        if (File.Exists(escapedPath))
+            File.Delete(escapedPath);
+
+        using (var archive = ZipFile.Open(savePath, ZipArchiveMode.Create))
+        {
+            var validEntry = archive.CreateEntry("game_state/meta/soul_state.json");
+            await using (var validStream = validEntry.Open())
+            await using (var validWriter = new StreamWriter(validStream))
+                await validWriter.WriteAsync("""{ "soulName": "Перезаписанная Душа" }""");
+
+            var invalidEntry = archive.CreateEntry("../escaped.txt");
+            await using var invalidStream = invalidEntry.Open();
+            await using var invalidWriter = new StreamWriter(invalidStream);
+            await invalidWriter.WriteAsync("malicious");
+        }
+
+        Assert.False(await _service.LoadGameAsync(savePath));
+        Assert.False(File.Exists(escapedPath));
+        Assert.Equal(originalSoulState, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task LoadGameAsync_InvalidArchiveLeavesCurrentStateUntouched()
+    {
+        const string originalSoulState = """
+        {
+          "soulName": "Устойчивая Душа",
+          "currentRealm": "Shining Abode",
+          "currentIncarnation": 9
+        }
+        """;
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", originalSoulState);
+
+        var invalidArchivePath = _fs.ResolvePath("saves/manual_saves/not_a_zip.zip");
+        await File.WriteAllTextAsync(invalidArchivePath, "this is not a valid zip archive");
+
+        Assert.False(await _service.LoadGameAsync(invalidArchivePath));
+        Assert.Equal(originalSoulState, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
     public void Dispose()
     {
         try

@@ -51,6 +51,9 @@ public partial class ExplorerMode
                 choices.Add("🔎 Осмотреть набор и пакет");
             }
 
+            if (context.Root["pendingNativeFactionDiscovery"] is JsonObject)
+                choices.Add("🧭 Осмотреть ожидающее открытие нативной фракции");
+
             if ((context.Root["halls"] as JsonArray)?.Count > 0 || (context.Root["shiningPoliticalActors"] as JsonArray)?.Count > 0)
                 choices.Add("🗺 Осмотреть залы и светозарных акторов");
 
@@ -81,6 +84,13 @@ public partial class ExplorerMode
             if (choice.Contains("Осмотреть набор и пакет", StringComparison.OrdinalIgnoreCase))
             {
                 ShowShiningGatesInspectionPanel(context);
+                WaitForKey();
+                continue;
+            }
+
+            if (choice.Contains("ожидающее открытие", StringComparison.OrdinalIgnoreCase))
+            {
+                ShowPendingNativeFactionDiscoveryInspectionPanel(context.Root);
                 WaitForKey();
                 continue;
             }
@@ -386,7 +396,7 @@ public partial class ExplorerMode
 
         if (shiningRoot["preparedIncarnationPackage"] is JsonObject package)
         {
-            blockers.Add($"Пакет новой жизни уже подготовлен: обычные действия остановлены, пока не начнётся следующее воплощение [{(package["selectedCards"] as JsonArray)?.Count ?? 0} карт].");
+            blockers.Add($"Пакет новой жизни уже подготовлен: обычные действия остановлены, пока не начнётся следующее воплощение [{(package["selectedCardIds"] as JsonArray)?.Count ?? 0} карт].");
         }
 
         if (shiningRoot["gates"] is JsonObject gates && GetNodeBool(gates["isStale"]))
@@ -549,15 +559,19 @@ public partial class ExplorerMode
             return;
 
         var indentPrefix = new string(' ', indent);
+        var stableTitle = GetNodeString(receipt["residentHistoryTitle"]);
         var stableSummary = GetNodeString(receipt["residentHistorySummary"]);
         var stableTimestamp = GetNodeString(receipt["residentHistoryTimestamp"]);
         var stableEventType = GetNodeString(receipt["residentHistoryEventType"]);
-        if (!string.IsNullOrWhiteSpace(stableSummary) ||
+        if (!string.IsNullOrWhiteSpace(stableTitle) ||
+            !string.IsNullOrWhiteSpace(stableSummary) ||
             !string.IsNullOrWhiteSpace(stableTimestamp) ||
             !string.IsNullOrWhiteSpace(stableEventType))
         {
+            if (!string.IsNullOrWhiteSpace(stableTitle))
+                lines.Add($"{indentPrefix}Историческая запись резидента: [white]{Markup.Escape(stableTitle)}[/]");
             if (!string.IsNullOrWhiteSpace(stableSummary))
-                lines.Add($"{indentPrefix}Историческая запись резидента: [dim]{Markup.Escape(stableSummary)}[/]");
+                lines.Add($"{indentPrefix}Краткая сводка: [dim]{Markup.Escape(stableSummary)}[/]");
             if (!string.IsNullOrWhiteSpace(stableEventType))
                 lines.Add($"{indentPrefix}Тип исторической записи: [dim]{Markup.Escape(HumanizeProtocolToken(stableEventType))}[/]");
             if (!string.IsNullOrWhiteSpace(stableTimestamp))
@@ -595,7 +609,8 @@ public partial class ExplorerMode
             return;
         }
 
-        lines.Add($"{indentPrefix}Историческая запись резидента: [dim]источник недоступен, идентификатор {Markup.Escape(historyEntryId)}[/]");
+        lines.Add($"{indentPrefix}Историческая запись резидента: [dim]исторический фрагмент сейчас недоступен[/]");
+        lines.Add($"{indentPrefix}Идентификатор исторической записи: [dim]{Markup.Escape(historyEntryId)}[/]");
     }
 
     private static JsonObject? FindResidentHistoryEntry(JsonObject? residentRoot, string? historyEntryId)
@@ -1544,6 +1559,31 @@ public partial class ExplorerMode
             : new List<JsonObject>();
     }
 
+    private static List<JsonObject> GetConsistentPreparedPackageRootCards(JsonObject package)
+    {
+        if (package["selectedCards"] is not JsonArray selectedCards ||
+            package["selectedCardIds"] is not JsonArray selectedCardIds)
+        {
+            return new List<JsonObject>();
+        }
+
+        var storedIds = selectedCardIds.OfType<JsonValue>()
+            .Select(node => node.TryGetValue<string>(out var value) ? value?.Trim() ?? string.Empty : string.Empty)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        var snapshotCards = selectedCards.OfType<JsonObject>().ToList();
+        var snapshotIds = snapshotCards
+            .Select(card => GetNodeString(card["cardId"])?.Trim() ?? string.Empty)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+
+        return storedIds.Count > 0 &&
+               storedIds.Count == snapshotIds.Count &&
+               storedIds.SequenceEqual(snapshotIds, StringComparer.OrdinalIgnoreCase)
+            ? snapshotCards
+            : new List<JsonObject>();
+    }
+
     private static List<JsonObject> GetConsistentPreparedPackageRequestCards(ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
     {
         if (request.SelectedCards is not JsonArray selectedCards || request.SelectedCardIds.Count == 0)
@@ -1622,9 +1662,9 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(cardId))
             return "?";
 
-        if (shiningRoot["preparedIncarnationPackage"]?["selectedCards"] is JsonArray selectedCards)
+        if (shiningRoot["preparedIncarnationPackage"] is JsonObject preparedPackage)
         {
-            var selected = selectedCards.OfType<JsonObject>()
+            var selected = GetConsistentPreparedPackageRootCards(preparedPackage)
                 .FirstOrDefault(card => string.Equals(GetNodeString(card["cardId"]), cardId, StringComparison.OrdinalIgnoreCase));
             if (!string.IsNullOrWhiteSpace(GetNodeString(selected?["displayName"])))
                 return GetNodeString(selected?["displayName"])!;

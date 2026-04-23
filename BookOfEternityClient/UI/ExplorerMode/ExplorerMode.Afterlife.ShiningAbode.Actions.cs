@@ -98,7 +98,7 @@ public partial class ExplorerMode
         {
             lines.Add("");
             lines.Add("[bold orange1]Ожидает решения:[/]");
-            lines.Add($"  • Открытие нативной фракции [dim](уровень сияния при запросе {GetNodeInt(pendingDiscovery["radianceTierAtRequest"])})[/]");
+            lines.Add($"  • Открытие нативной фракции [dim](уровень сияния при запросе {GetNodeInt(pendingDiscovery["radianceTierAtRequest"])}, перья {GetNodeInt(pendingDiscovery["costFeathers"])}, искры {GetNodeInt(pendingDiscovery["costLightSparks"])})[/]");
         }
 
         if (shiningRoot["gates"] is JsonObject gates)
@@ -127,14 +127,14 @@ public partial class ExplorerMode
                 .Where(node => node.TryGetValue<string>(out _))
                 .Select(node => node.GetValue<string>())
                 .ToList() ?? new List<string>();
-            var selectedCards = (package["selectedCards"] as JsonArray)?.OfType<JsonObject>().ToList() ?? new List<JsonObject>();
+            var selectedCards = GetConsistentPreparedPackageRootCards(package);
             var selectedLabels = selectedIds
                 .Select(id => ResolveShiningBlessingCardLabel(shiningRoot, id))
                 .Where(label => !string.IsNullOrWhiteSpace(label))
                 .ToList();
             lines.Add("");
             lines.Add("[bold khaki1]Следующая жизнь:[/]");
-            lines.Add($"  • Подготовлен пакет благословений: {selectedCards.Count} карт(ы)");
+            lines.Add($"  • Подготовлен пакет благословений: {selectedIds.Count} карт(ы)");
             lines.Add($"  • Основан на наборе Врат версии {GetNodeInt(package["generatedFromDraftVersion"])}");
             lines.Add($"  • Лимит выбора: {ShiningAbodeState.GetPickCap(radianceTier)} • расчётный размер набора: {ShiningAbodeState.GetDraftSize(radianceTier)}");
             lines.Add($"  • Зафиксирован на ходу {GetNodeInt(package["preparedAtTurn"])} [dim]({Markup.Escape(GetNodeString(package["preparedAtUtc"]) ?? "UTC не указан")})[/]");
@@ -146,6 +146,10 @@ public partial class ExplorerMode
                 lines.Add("  • Полный зафиксированный набор карт:");
                 foreach (var card in selectedCards)
                     lines.AddRange(BuildShiningBlessingCardInspectionLines(card, summaryContext, isSelected: true));
+            }
+            else if (selectedIds.Count > 0)
+            {
+                lines.Add("  • [dim]Детальный snapshot карт сейчас недоступен или не совпадает с canonical selectedCardIds; authoritative остаётся список зафиксированных карт выше.[/]");
             }
         }
 
@@ -299,17 +303,17 @@ public partial class ExplorerMode
             var choice = Prompt(new SelectionPrompt<string>()
                 .Title("[bold yellow]Основные действия Сияющей Обители[/]")
                 .HighlightStyle(new Style(Color.Gold1))
-                .AddChoices(
-                    "🔍 Запросить открытие нативной фракции",
-                    "📈 Инвестировать во фракцию",
-                    "🧩 Завершить проект",
-                    "🪄 Поддержать проект",
-                    "↩️ Снять поддержку проекта",
-                    "🕯️ Отправить проект в историю",
-                    "← Назад"));
+                .AddChoices(BuildShiningCoreActionChoices(context.Root)));
 
             if (choice.Contains("Назад", StringComparison.Ordinal))
                 return;
+
+            if (choice.Contains("ожидающее открытие", StringComparison.OrdinalIgnoreCase))
+            {
+                ShowPendingNativeFactionDiscoveryInspectionPanel(context.Root);
+                WaitForKey();
+                continue;
+            }
 
             if (choice.Contains("Запросить открытие", StringComparison.Ordinal))
                 await HandleNativeFactionDiscoveryAsync(context.Root, feathers);
@@ -355,6 +359,57 @@ public partial class ExplorerMode
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
         MarkupLine("[green]Создан ожидающий запрос действия Обители: открытие нативной фракции. На принятом ходу нужно материализовать новую фракцию и записать подтверждение.[/]");
         WaitForKey();
+    }
+
+    private static IReadOnlyList<string> BuildShiningCoreActionChoices(JsonObject shiningRoot)
+    {
+        var choices = new List<string>();
+        if (shiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
+            choices.Add("🧭 Осмотреть ожидающее открытие нативной фракции");
+
+        choices.Add("🔍 Запросить открытие нативной фракции");
+        choices.Add("📈 Инвестировать во фракцию");
+        choices.Add("🧩 Завершить проект");
+        choices.Add("🪄 Поддержать проект");
+        choices.Add("↩️ Снять поддержку проекта");
+        choices.Add("🕯️ Отправить проект в историю");
+        choices.Add("← Назад");
+        return choices;
+    }
+
+    private void ShowPendingNativeFactionDiscoveryInspectionPanel(JsonObject shiningRoot)
+    {
+        var lines = new List<string>
+        {
+            "[bold yellow]🧭 Ожидающее открытие нативной фракции[/]"
+        };
+
+        if (shiningRoot["pendingNativeFactionDiscovery"] is not JsonObject pendingDiscovery)
+        {
+            lines.Add("");
+            lines.Add("[dim]Сейчас в Обители нет ожидающего открытия нативной фракции.[/]");
+        }
+        else
+        {
+            lines.Add("");
+            lines.Add($"  Идентификатор запроса: [dim]{Markup.Escape(GetNodeString(pendingDiscovery["requestId"]) ?? "не указан")}[/]");
+            lines.Add($"  Ход создания: [white]{GetNodeInt(pendingDiscovery["createdAtTurn"])}[/]");
+            lines.Add($"  Время создания UTC: [dim]{Markup.Escape(GetNodeString(pendingDiscovery["createdAtUtc"]) ?? "не указано")}[/]");
+            lines.Add($"  Уровень сияния при запросе: [white]{GetNodeInt(pendingDiscovery["radianceTierAtRequest"])}[/]");
+            lines.Add($"  Стоимость в Перьях: [gold1]{GetNodeInt(pendingDiscovery["costFeathers"])}[/]");
+            lines.Add($"  Стоимость в Искрах Света: [gold1]{GetNodeInt(pendingDiscovery["costLightSparks"])}[/]");
+            lines.Add("  [dim]Это live pending contract: открытие должно быть materialized на принятом ходу и закрыто каноническим исходом, а не обычным локальным sync.[/]");
+        }
+
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🧭 Pending Native Faction Discovery ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
     }
 
     private async Task HandleShiningFactionInvestmentAsync(ShiningContext context)

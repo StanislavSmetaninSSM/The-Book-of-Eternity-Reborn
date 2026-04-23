@@ -1193,6 +1193,7 @@ internal static partial class ShiningAbodeState
         if (historyEntry == null)
             return;
 
+        receipt["residentHistoryTitle"] = GetNodeString(receipt["residentHistoryTitle"]) ?? GetNodeString(historyEntry["title"]) ?? string.Empty;
         receipt["residentHistorySummary"] = GetNodeString(receipt["residentHistorySummary"]) ?? GetNodeString(historyEntry["summary"]) ?? string.Empty;
         receipt["residentHistoryTimestamp"] = GetNodeString(receipt["residentHistoryTimestamp"]) ?? GetNodeString(historyEntry["timestamp"]) ?? string.Empty;
         receipt["residentHistoryEventType"] = GetNodeString(receipt["residentHistoryEventType"]) ?? GetNodeString(historyEntry["eventType"]) ?? string.Empty;
