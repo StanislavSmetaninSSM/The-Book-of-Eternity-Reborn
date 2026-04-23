@@ -221,7 +221,16 @@ public partial class ExplorerMode
         if (preset == null)
             return;
 
-        await _systemGuardianLibraryService.WriteAttractionRequestAsync(preset);
+        try
+        {
+            await _systemGuardianLibraryService.WriteAttractionRequestAsync(preset);
+        }
+        catch (InvalidOperationException ex)
+        {
+            MarkupLine($"[red]{Markup.Escape(ex.Message)}[/]");
+            return;
+        }
+
         _pendingGmAction = _systemGuardianLibraryService.BuildAttractionActionText(preset);
         MarkupLine($"[magenta1]🧲 Притяжение к «{Markup.Escape(preset.DisplayName)}» подготовлено. Запрос отправится Мастеру Игры как следующий ход.[/]");
     }

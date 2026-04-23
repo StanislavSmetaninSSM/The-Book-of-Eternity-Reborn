@@ -97,6 +97,26 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.True(_fs.FileExists(SystemGuardianLibraryService.AttractionRequestPath));
     }
 
+    [Fact]
+    public async Task WriteAttractionRequestAsync_ExistingLiveRequest_BlocksReplacement()
+    {
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "РђР·Р°Р»РёСЏ", "Social", "built_in");
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "myriel", "Мириэль", "Lore", "built_in");
+        var azalia = await _service.FindPresetAsync("azalia", includeDossier: true);
+        var myriel = await _service.FindPresetAsync("myriel", includeDossier: true);
+        Assert.NotNull(azalia);
+        Assert.NotNull(myriel);
+
+        await _service.WriteAttractionRequestAsync(azalia!);
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => _service.WriteAttractionRequestAsync(myriel!));
+        Assert.Contains("не может быть заменён", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var request = await _service.ReadAttractionRequestAsync();
+        Assert.NotNull(request);
+        Assert.Equal("azalia", request!.TargetPresetId);
+    }
+
     private static async Task SeedPresetAsync(string rootDir, string presetId, string displayName, string domain, string author)
     {
         var presetDir = Path.Combine(rootDir, presetId);

@@ -131,12 +131,12 @@ internal static class ShiningTradeService
         else if (!tradeBlocked)
         {
             inventoryStatusMessage = requestState.IsMalformed
-                ? "pending_shining_trade_inventory_requests.json повреждён. Новый торговый запрос заблокирован, пока pending contract не будет исправлен или очищен."
+                ? "Ожидающий торговый запрос сияющей фракции повреждён. Новая витрина заблокирована, пока этот контракт не будет исправлен или очищен."
                 : duplicatePendingRequests
-                ? "pending_shining_trade_inventory_requests.json содержит несколько запросов одного цикла. Торговля заблокирована до repair/cleanup."
+                ? "Для этой фракции найдено несколько ожидающих запросов одного цикла. Торговля заблокирована, пока не останется один канонический контракт."
                 : inventoryRequestPending
-                ? "Витрина сияющей фракции уже запрошена и ждёт materialization GM."
-                : "Для этой фракции ещё нет explicit витрины текущего цикла.";
+                ? "Витрина сияющей фракции уже запрошена и ждёт канонического подтверждения."
+                : "Для этой фракции витрина текущего цикла ещё не подготовлена.";
         }
 
         if (inventoryReady &&
@@ -434,11 +434,11 @@ internal static class ShiningTradeService
         }
 
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
-            return "Сияющая торговля доступна только при availability = active.";
+            return "Сияющая торговля доступна только когда Обитель активна.";
         if (shiningRoot["preparedIncarnationPackage"] is JsonObject)
-            return "Сияющая торговля недоступна, пока preparedIncarnationPackage ожидает bootstrap.";
+            return "Сияющая торговля недоступна, пока пакет новой жизни ждёт следующего воплощения.";
         if (tradeTier <= 0)
-            return "У этой фракции dormant trade: explicit витрина текущего цикла недоступна.";
+            return "У этой фракции торговая витрина текущего цикла пока не открывается.";
 
         return null;
     }

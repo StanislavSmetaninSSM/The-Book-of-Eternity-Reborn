@@ -337,7 +337,7 @@ public sealed class ShiningTradeRequestStateTests
 
             Assert.NotNull(view);
             Assert.False(view!.InventoryReady);
-            Assert.Contains("несколько запросов", view.InventoryStatusMessage ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("несколько ожидающих запросов", view.InventoryStatusMessage ?? string.Empty, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {

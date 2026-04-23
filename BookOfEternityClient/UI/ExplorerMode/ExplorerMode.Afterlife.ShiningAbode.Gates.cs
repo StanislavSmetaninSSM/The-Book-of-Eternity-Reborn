@@ -361,11 +361,8 @@ public partial class ExplorerMode
         lines.Add("[bold khaki1]Подготовленный пакет новой жизни:[/]");
         if (context.Root["preparedIncarnationPackage"] is JsonObject package)
         {
-            var selectedIds = (package["selectedCardIds"] as JsonArray)?.OfType<JsonValue>()
-                .Where(node => node.TryGetValue<string>(out _))
-                .Select(node => node.GetValue<string>())
-                .ToList() ?? new List<string>();
-            var selectedCards = GetConsistentPreparedPackageRootCards(package);
+            var selectedIds = GetPreparedPackageSelectedCardIds(package);
+            var selectedCards = GetConsistentPreparedPackageCards(package);
             lines.Add($"  • Основан на версии Врат: [white]{GetNodeInt(package["generatedFromDraftVersion"])}[/]");
             lines.Add($"  • Лимит выбора: [white]{pickCap}[/]");
             lines.Add($"  • Размер исходного набора: [white]{draftSize}[/]");
@@ -387,7 +384,7 @@ public partial class ExplorerMode
             }
             else if (selectedIds.Count > 0)
             {
-                lines.Add("  • [dim]Детальный frozen snapshot карт сейчас недоступен или не совпадает с canonical selectedCardIds; authoritative остаётся список зафиксированных карт выше.[/]");
+                lines.Add("  • [dim]stored snapshot карт отсутствует или повреждён; доступен только canonical id-набор.[/]");
             }
         }
         else
@@ -529,10 +526,10 @@ public partial class ExplorerMode
                 ? $"глава фракции «{sourceFactionName}»"
                 : $"глава фракции «{sourceFactionName}» — {sourceActorLabel}",
             "project" => string.IsNullOrWhiteSpace(sourceActorLabel)
-                ? $"проект фракции «{sourceFactionName}»"
+                ? $"проект фракции «{sourceFactionName}» [источник сейчас недоступен]"
                 : $"проект «{sourceActorLabel}»",
             "resident_descent" => string.IsNullOrWhiteSpace(sourceActorLabel)
-                ? $"нисхождение резидента фракции «{sourceFactionName}»"
+                ? $"нисхождение резидента фракции «{sourceFactionName}» [источник сейчас недоступен]"
                 : $"нисхождение резидента {sourceActorLabel}",
             _ => string.IsNullOrWhiteSpace(sourceActorLabel) ? sourceFactionName : $"{sourceFactionName} / {sourceActorLabel}"
         };
@@ -545,30 +542,12 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(sourceActorId))
             return string.Empty;
 
-        var resolvedLabel = sourceType switch
+        return sourceType switch
         {
             "project" => ResolveShiningBlessingProjectLabel(context.Root, sourceActorId),
             "resident_descent" => ResolveShiningBlessingResidentLabel(context.ResidentRoot, sourceActorId),
-            _ => string.Empty
+            _ => sourceActorId
         };
-
-        if (!string.IsNullOrWhiteSpace(resolvedLabel))
-            return resolvedLabel;
-
-        if (!string.IsNullOrWhiteSpace(GetNodeString(card["sourceActorName"])))
-            return GetNodeString(card["sourceActorName"])!;
-
-        if (string.Equals(sourceType, "project", StringComparison.OrdinalIgnoreCase))
-            return GetNodeString(card["displayName"]) ?? sourceActorId;
-
-        if (string.Equals(sourceType, "resident_descent", StringComparison.OrdinalIgnoreCase))
-        {
-            var displayName = GetNodeString(card["displayName"]) ?? string.Empty;
-            if (displayName.StartsWith("Нисхождение ", StringComparison.OrdinalIgnoreCase))
-                return displayName["Нисхождение ".Length..].Trim();
-        }
-
-        return sourceActorId;
     }
 
     private static string ResolveShiningBlessingProjectLabel(JsonObject shiningRoot, string projectId)
