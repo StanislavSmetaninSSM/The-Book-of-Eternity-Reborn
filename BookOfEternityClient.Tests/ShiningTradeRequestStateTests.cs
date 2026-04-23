@@ -346,6 +346,53 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task EnsureHealthyAsync_DuplicateReadyReceipts_DoNotClearPendingRequest()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+
+            var pendingRequest = new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+            {
+                RequestId = "shining_trade_existing",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TradeCycleId = "shining_return_2",
+                DerivedTradeTier = 2,
+                DerivedTradeSlotCount = 6,
+                DerivedRarityCeiling = "rare",
+                DerivedServiceMultiplier = 1.25,
+                MerchantProfile = ShiningTradeRequestState.MerchantProfileShiningFaction,
+                CreatedAtTurn = 10
+            };
+            await ShiningTradeRequestState.WriteRequestAsync(fs, pendingRequest);
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var receipts = shiningRoot["factions"]!.AsArray()[0]!["tradeInventoryReceipts"]!.AsArray();
+            receipts.Add(receipts[0]!.DeepClone());
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            await ShiningTradeRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            var requests = await ShiningTradeRequestState.ReadRequestsAsync(fs);
+            var remaining = Assert.Single(requests);
+            Assert.Equal("shining_trade_existing", remaining.RequestId);
+
+            var view = await ShiningTradeService.ReadTradeViewAsync(fs, "faction_old");
+            Assert.NotNull(view);
+            Assert.False(view!.InventoryReady);
+            Assert.True(view.InventoryRequestPending);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task BuyAsync_LocalPurchase_KeepsSameCycleInventoryReady()
     {
         var root = CreateTempRoot();

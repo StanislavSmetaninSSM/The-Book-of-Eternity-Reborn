@@ -60,7 +60,7 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task SaveAndLoad_TreatsChaosSeaPendingControlFilesAsEphemeral()
+    public async Task SaveAndLoad_PreservesLivePendingContracts()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
@@ -112,21 +112,54 @@ public sealed class SaveLoadServiceTests : IDisposable
           "lastUpdated": "2026-04-22T00:00:00Z"
         }
         """);
+        await _fs.WriteFileAtomicAsync(ShiningTradeRequestState.PendingRequestsPath, """
+        {
+          "requests": [
+            {
+              "requestId": "shining_trade_req_1",
+              "factionId": "faction_test",
+              "factionName": "Хор Теста",
+              "tradeCycleId": "shining_return_3",
+              "derivedTradeTier": 2,
+              "derivedTradeSlotCount": 6,
+              "derivedRarityCeiling": "rare",
+              "derivedServiceMultiplier": 1.25,
+              "merchantProfile": "shining_faction",
+              "createdAtTurn": 3,
+              "createdAtUtc": "2026-04-22T00:00:00Z"
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(AfterlifeArchiveActionState.ConsultationRequestPath, """
+        {
+          "requestId": "archive_consult_1",
+          "archiveId": "archive_entry_1",
+          "archiveTitle": "Запись Памяти",
+          "requestedMode": "consultation",
+          "createdAtTurn": 3,
+          "createdAtUtc": "2026-04-22T00:00:00Z"
+        }
+        """);
 
         Assert.True(await _service.SaveGameAsync("ephemeral_chaos_pending", "save/load chaos pending regression"));
 
         var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
         using (var archive = ZipFile.OpenRead(savePath))
         {
-            Assert.Null(archive.GetEntry(GuardianAbodeResidentRequestState.PendingResidentsRequestPath));
-            Assert.Null(archive.GetEntry(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
-            Assert.Null(archive.GetEntry(SystemGuardianLibraryService.AttractionRequestPath));
+            Assert.NotNull(archive.GetEntry(GuardianAbodeResidentRequestState.PendingResidentsRequestPath));
+            Assert.NotNull(archive.GetEntry(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
+            Assert.NotNull(archive.GetEntry(SystemGuardianLibraryService.AttractionRequestPath));
+            Assert.NotNull(archive.GetEntry(ShiningTradeRequestState.PendingRequestsPath));
+            Assert.NotNull(archive.GetEntry(AfterlifeArchiveActionState.ConsultationRequestPath));
         }
 
         Assert.True(await _service.LoadGameAsync(savePath));
-        Assert.False(_fs.FileExists(GuardianAbodeResidentRequestState.PendingResidentsRequestPath));
-        Assert.False(_fs.FileExists(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
-        Assert.False(_fs.FileExists(SystemGuardianLibraryService.AttractionRequestPath));
+        Assert.True(_fs.FileExists(GuardianAbodeResidentRequestState.PendingResidentsRequestPath));
+        Assert.True(_fs.FileExists(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
+        Assert.True(_fs.FileExists(SystemGuardianLibraryService.AttractionRequestPath));
+        Assert.True(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        Assert.True(_fs.FileExists(AfterlifeArchiveActionState.ConsultationRequestPath));
     }
 
     public void Dispose()

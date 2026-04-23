@@ -1275,10 +1275,6 @@ public partial class ExplorerMode
 
     private JsonObject? PromptForStructuredForgePropertyAsync(JsonObject template, string title)
     {
-        var propertyId = Ask("[cyan]Технический идентификатор свойства[/]", GetNodeString(template["propertyId"]) ?? "new_property").Trim();
-        if (string.IsNullOrWhiteSpace(propertyId))
-            return null;
-
         var displayName = Ask("[cyan]Игровое название свойства[/]", GetNodeString(template["name"]) ?? "").Trim();
         var statChoices = new Dictionary<string, string>
         {
@@ -1302,17 +1298,16 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(stat) && !string.IsNullOrWhiteSpace(statDefault))
             stat = statDefault;
 
-        var bandValue = Ask("[cyan]Ступень или редкость свойства[/]", GetNodeString(template["band"]) ?? "rare").Trim();
-        if (string.IsNullOrWhiteSpace(bandValue))
-            bandValue = "rare";
+        var propertyId = BuildStructuredForgePropertyId(template, displayName, stat);
+        var bandNode = PromptForStructuredForgeBand(template["band"]);
+        if (bandNode == null)
+            return null;
 
         var description = Ask("[cyan]Краткое описание свойства[/]", GetNodeString(template["description"]) ?? "").Trim();
 
         var property = template.DeepClone().AsObject();
         property["propertyId"] = propertyId;
-        property["band"] = int.TryParse(bandValue, out var numericBand)
-            ? JsonValue.Create(numericBand)
-            : JsonValue.Create(bandValue);
+        property["band"] = bandNode;
 
         if (string.IsNullOrWhiteSpace(displayName))
             property.Remove("name");
@@ -1330,6 +1325,61 @@ public partial class ExplorerMode
             property["description"] = description;
 
         return property;
+    }
+
+    private static string BuildStructuredForgePropertyId(JsonObject template, string displayName, string stat)
+    {
+        var existingId = GetNodeString(template["propertyId"]) ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(existingId) &&
+            !existingId.StartsWith("new_property", StringComparison.OrdinalIgnoreCase))
+        {
+            return existingId;
+        }
+
+        var normalizedName = new string((displayName ?? string.Empty)
+            .Trim()
+            .ToLowerInvariant()
+            .Select(ch => char.IsLetterOrDigit(ch) ? ch : '_')
+            .ToArray())
+            .Trim('_');
+
+        if (!string.IsNullOrWhiteSpace(normalizedName))
+            return $"{(string.IsNullOrWhiteSpace(stat) ? "custom" : stat)}_{normalizedName}";
+
+        return !string.IsNullOrWhiteSpace(existingId)
+            ? existingId
+            : $"{(string.IsNullOrWhiteSpace(stat) ? "custom" : stat)}_property";
+    }
+
+    private JsonNode? PromptForStructuredForgeBand(JsonNode? templateBand)
+    {
+        if (templateBand is JsonValue numericBandValue && numericBandValue.TryGetValue<int>(out var numericBand))
+        {
+            var stepChoices = Enumerable.Range(1, Math.Max(5, numericBand + 2))
+                .Select(value => (Label: $"Ступень {value}", Value: value))
+                .ToList();
+            var selected = Prompt(new SelectionPrompt<string>()
+                .Title("[bold yellow]Ступень свойства[/]")
+                .HighlightStyle(new Style(Color.Gold1))
+                .AddChoices(stepChoices.Select(choice => choice.Label)));
+            return JsonValue.Create(stepChoices.First(choice => choice.Label == selected).Value);
+        }
+
+        var rarityChoices = new[]
+        {
+            ("common", "Обычная"),
+            ("uncommon", "Необычная"),
+            ("rare", "Редкая"),
+            ("epic", "Эпическая"),
+            ("legendary", "Легендарная")
+        };
+        var fallback = (GetNodeString(templateBand) ?? "rare").Trim().ToLowerInvariant();
+        var selectedLabel = Prompt(new SelectionPrompt<string>()
+            .Title("[bold yellow]Редкость свойства[/]")
+            .HighlightStyle(new Style(Color.Gold1))
+            .AddChoices(rarityChoices.Select(choice => choice.Item2)));
+        var selectedBand = rarityChoices.First(choice => choice.Item2 == selectedLabel).Item1;
+        return JsonValue.Create(string.IsNullOrWhiteSpace(selectedBand) ? fallback : selectedBand);
     }
 
     private JsonArray? PromptForStructuredForgePropertiesAsync(JsonArray template, string fallbackBand)

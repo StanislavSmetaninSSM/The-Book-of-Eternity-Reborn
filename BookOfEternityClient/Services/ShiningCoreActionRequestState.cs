@@ -101,6 +101,9 @@ internal static class ShiningCoreActionRequestState
         [JsonPropertyName("selectedCardIds")]
         public List<string> SelectedCardIds { get; set; } = new();
 
+        [JsonPropertyName("selectedCards")]
+        public JsonArray? SelectedCards { get; set; }
+
         [JsonPropertyName("returnCycleId")]
         public string ReturnCycleId { get; set; } = "";
 
@@ -543,6 +546,8 @@ internal static class ShiningCoreActionRequestState
             return Task.FromResult<string?>("prepare_incarnation_package требует минимум одну выбранную карту.");
         if (selectedCardIds.Count != selectedCardIds.Distinct(StringComparer.OrdinalIgnoreCase).Count())
             return Task.FromResult<string?>("prepare_incarnation_package не допускает duplicate selectedCardIds.");
+        if (!SelectedCardSnapshotMatchesIds(request.SelectedCards, selectedCardIds))
+            return Task.FromResult<string?>("prepare_incarnation_package.selectedCards должен быть snapshot-first и совпадать с ordered selectedCardIds.");
 
         var cloneRoot = JsonNode.Parse(shiningRoot.ToJsonString())!.AsObject();
         if (cloneRoot["gates"] is not JsonObject gates)
@@ -722,6 +727,21 @@ internal static class ShiningCoreActionRequestState
                string.Equals(GetNodeString(receipt["targetFormTag"]) ?? string.Empty, request.TargetFormTag ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                receiptPropertyIndex == request.PropertyIndex &&
                selectedReceiptCards.SequenceEqual(selectedRequestCards, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static bool SelectedCardSnapshotMatchesIds(JsonArray? selectedCards, IReadOnlyList<string> selectedCardIds)
+    {
+        if (selectedCards == null || selectedCards.Count == 0)
+            return true;
+
+        var snapshotIds = selectedCards
+            .OfType<JsonObject>()
+            .Select(card => GetNodeString(card["cardId"])?.Trim() ?? string.Empty)
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .ToList();
+
+        return snapshotIds.Count == selectedCardIds.Count &&
+               snapshotIds.SequenceEqual(selectedCardIds, StringComparer.OrdinalIgnoreCase);
     }
 
     private static bool ProjectIdentityMatches(PendingShiningCoreActionRequest request, string? receiptProjectId)

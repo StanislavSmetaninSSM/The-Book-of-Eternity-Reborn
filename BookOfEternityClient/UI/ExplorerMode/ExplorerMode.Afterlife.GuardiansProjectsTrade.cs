@@ -1202,8 +1202,10 @@ public partial class ExplorerMode
                         var rewParts = new List<string>();
                         foreach (var rp in rew.EnumerateObject())
                         {
-                            var val = rp.Value.ValueKind == JsonValueKind.Number ? rp.Value.ToString() : rp.Value.GetRawText();
-                            rewParts.Add($"{rp.Name}: {val}");
+                            var rewardLabel = NpcFieldToRussian(rp.Name);
+                            var rewardValue = DescribeQuestStructuredValue(rp.Value);
+                            if (!string.IsNullOrWhiteSpace(rewardValue))
+                                rewParts.Add($"{rewardLabel}: {rewardValue}");
                         }
                         if (rewParts.Count > 0)
                             lines.Add($"       🎁 Награды: [green]{Markup.Escape(string.Join(", ", rewParts))}[/]");
@@ -2661,6 +2663,10 @@ public partial class ExplorerMode
             actions.Add("📖 Выслушать прошлую историю");
         if (useDefaultInteractions || availableInteractions.Contains("quest"))
             actions.Add("🧵 Помочь с личной просьбой");
+        if (!string.IsNullOrWhiteSpace(resident.LinkedSoulQuestId))
+            actions.Add("📜 Открыть связанный квест души");
+        if (!string.IsNullOrWhiteSpace(resident.GrantedRelicId))
+            actions.Add("💎 Открыть дарованную реликвию");
         if ((useDefaultInteractions || availableInteractions.Contains("reward")) &&
             resident.CanGrantCompanionRelic &&
             string.Equals(resident.BondRewardState, GuardianAbodeResidentState.RewardStateEligible, StringComparison.OrdinalIgnoreCase))
@@ -2681,6 +2687,26 @@ public partial class ExplorerMode
 
         if (action.Contains("← Назад", StringComparison.Ordinal))
             return;
+
+        if (action.StartsWith("📜", StringComparison.Ordinal))
+        {
+            if (!await ShowSoulQuestDetailByIdAsync(resident.LinkedSoulQuestId))
+            {
+                MarkupLine("[yellow]Не удалось открыть точный квест души: активная или историческая запись сейчас недоступна.[/]");
+                WaitForKey();
+            }
+            return;
+        }
+
+        if (action.StartsWith("💎 Открыть", StringComparison.Ordinal))
+        {
+            if (!await ShowSoulRelicDetailByIdAsync(resident.GrantedRelicId))
+            {
+                MarkupLine("[yellow]Не удалось открыть точную реликвию: запись исчезла или soul_state недоступен.[/]");
+                WaitForKey();
+            }
+            return;
+        }
 
         if (action.StartsWith("💎", StringComparison.Ordinal))
         {
@@ -2859,6 +2885,66 @@ public partial class ExplorerMode
         return questId;
     }
 
+    private async Task<bool> ShowSoulQuestDetailByIdAsync(string questId)
+    {
+        if (string.IsNullOrWhiteSpace(questId))
+            return false;
+
+        using var soulDoc = await _stateManager.LoadGameStateFileAsync("game_state/quests/soul_quests.json");
+        if (TryFindQuestById(soulDoc?.RootElement, questId, out var soulQuest))
+        {
+            await ShowQuestDetailPanel(soulQuest, isSoul: true, isHistory: false);
+            return true;
+        }
+
+        using var historyDoc = await _stateManager.LoadGameStateFileAsync("game_state/quests/quest_history.json");
+        if (historyDoc?.RootElement.ValueKind == JsonValueKind.Object &&
+            historyDoc.RootElement.TryGetProperty("questHistory", out var questHistory) &&
+            questHistory.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in questHistory.EnumerateArray())
+            {
+                if (entry.ValueKind != JsonValueKind.Object ||
+                    !string.Equals(GetStr(entry, "questId", ""), questId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                JsonElement? rewardInfo = null;
+                var relatedChains = new List<JsonElement>();
+                if (historyDoc.RootElement.TryGetProperty("questRewards", out var questRewards) &&
+                    questRewards.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var reward in questRewards.EnumerateArray())
+                    {
+                        if (reward.ValueKind == JsonValueKind.Object &&
+                            string.Equals(GetStr(reward, "questId", ""), questId, StringComparison.OrdinalIgnoreCase))
+                        {
+                            rewardInfo = reward;
+                            break;
+                        }
+                    }
+                }
+
+                if (historyDoc.RootElement.TryGetProperty("questChains", out var questChains) &&
+                    questChains.ValueKind == JsonValueKind.Array)
+                {
+                    var questName = GetStr(entry, "questName", GetStr(entry, "title", ""));
+                    foreach (var chain in questChains.EnumerateArray())
+                    {
+                        if (chain.ValueKind == JsonValueKind.Object && HistoryChainMatchesQuest(chain, questId, questName))
+                            relatedChains.Add(chain.Clone());
+                    }
+                }
+
+                await ShowQuestDetailPanel(entry, isSoul: false, isHistory: true, rewardInfo, relatedChains);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static string ResolveSoulRelicLabel(JsonElement? soulRoot, string relicId)
     {
         if (string.IsNullOrWhiteSpace(relicId))
@@ -2888,6 +2974,89 @@ public partial class ExplorerMode
         }
 
         return relicId;
+    }
+
+    private async Task<bool> ShowSoulRelicDetailByIdAsync(string relicId)
+    {
+        if (string.IsNullOrWhiteSpace(relicId))
+            return false;
+
+        using var soulDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
+        if (soulDoc?.RootElement.ValueKind != JsonValueKind.Object)
+            return false;
+
+        if (!TryFindSoulRelicById(soulDoc.RootElement, relicId, out var status, out var relic))
+            return false;
+
+        var relicName = GetStr(relic, "name", relicId);
+        await ShowRelicDetailPanel(relicId, relicName, status, relic, isAfterlifeRealm: true);
+        return true;
+    }
+
+    private static bool TryFindQuestById(JsonElement? root, string questId, out JsonElement quest)
+    {
+        quest = default;
+        if (root == null || root.Value.ValueKind == JsonValueKind.Undefined)
+            return false;
+
+        if (root.Value.ValueKind == JsonValueKind.Object &&
+            root.Value.TryGetProperty("quests", out var quests) &&
+            quests.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in quests.EnumerateArray())
+            {
+                if (entry.ValueKind == JsonValueKind.Object &&
+                    string.Equals(GetStr(entry, "questId", ""), questId, StringComparison.OrdinalIgnoreCase))
+                {
+                    quest = entry;
+                    return true;
+                }
+            }
+        }
+
+        foreach (var property in root.Value.EnumerateObject())
+        {
+            if (property.Value.ValueKind != JsonValueKind.Object ||
+                !string.Equals(GetStr(property.Value, "questId", ""), questId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            quest = property.Value;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryFindSoulRelicById(JsonElement root, string relicId, out string status, out JsonElement relic)
+    {
+        status = string.Empty;
+        relic = default;
+
+        if (!root.TryGetProperty("soulRelics", out var soulRelics) || soulRelics.ValueKind != JsonValueKind.Object)
+            return false;
+
+        foreach (var collectionName in new[] { "equipped", "stored" })
+        {
+            if (!soulRelics.TryGetProperty(collectionName, out var relics) || relics.ValueKind != JsonValueKind.Array)
+                continue;
+
+            foreach (var entry in relics.EnumerateArray())
+            {
+                if (entry.ValueKind != JsonValueKind.Object ||
+                    !string.Equals(GetStr(entry, "relicId", ""), relicId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                status = collectionName;
+                relic = entry;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static void AppendResidentJournalDetailLines(List<string> lines, GuardianAbodeResidentState.JournalEntry entry)

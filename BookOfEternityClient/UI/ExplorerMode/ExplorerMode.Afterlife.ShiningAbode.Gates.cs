@@ -218,6 +218,7 @@ public partial class ExplorerMode
                     ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
                     SourceDraftVersion = GetNodeInt(context.Root["gates"]?["draftVersion"]),
                     SelectedCardIds = selectedIds,
+                    SelectedCards = BuildSelectedBlessingCardSnapshot(context.Root, selectedIds),
                     CreatedAtTurn = _stateManager.CurrentState.TurnNumber + 1
                 };
                 var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
@@ -514,7 +515,9 @@ public partial class ExplorerMode
                                 ResolveShiningFactionLabel(context.Root, GetNodeString(card["sourceFactionId"]));
         var sourceActorName = GetNodeString(card["sourceActorName"]);
         var sourceActorId = GetNodeString(card["sourceActorId"]) ?? string.Empty;
-        var sourceActorLabel = string.IsNullOrWhiteSpace(sourceActorName) ? sourceActorId : sourceActorName;
+        var sourceActorLabel = string.IsNullOrWhiteSpace(sourceActorName)
+            ? ResolveShiningBlessingSourceActorLabel(card, context)
+            : sourceActorName;
 
         return sourceType switch
         {
@@ -525,10 +528,84 @@ public partial class ExplorerMode
                 ? $"проект фракции «{sourceFactionName}»"
                 : $"проект «{sourceActorLabel}»",
             "resident_descent" => string.IsNullOrWhiteSpace(sourceActorLabel)
-                ? $"нисхождение резидента [идентификатор: {sourceActorId}]"
+                ? $"нисхождение резидента фракции «{sourceFactionName}»"
                 : $"нисхождение резидента {sourceActorLabel}",
             _ => string.IsNullOrWhiteSpace(sourceActorLabel) ? sourceFactionName : $"{sourceFactionName} / {sourceActorLabel}"
         };
+    }
+
+    private static string ResolveShiningBlessingSourceActorLabel(JsonObject card, ShiningContext context)
+    {
+        var sourceType = (GetNodeString(card["sourceType"]) ?? string.Empty).Trim().ToLowerInvariant();
+        var sourceActorId = GetNodeString(card["sourceActorId"]) ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(sourceActorId))
+            return string.Empty;
+
+        return sourceType switch
+        {
+            "project" => ResolveShiningBlessingProjectLabel(context.Root, sourceActorId),
+            "resident_descent" => ResolveShiningBlessingResidentLabel(context.ResidentRoot, sourceActorId),
+            _ => sourceActorId
+        };
+    }
+
+    private static string ResolveShiningBlessingProjectLabel(JsonObject shiningRoot, string projectId)
+    {
+        if (string.IsNullOrWhiteSpace(projectId) || shiningRoot["factions"] is not JsonArray factions)
+            return string.Empty;
+
+        foreach (var faction in factions.OfType<JsonObject>())
+        {
+            if (faction["projects"] is not JsonArray projects)
+                continue;
+
+            foreach (var project in projects.OfType<JsonObject>())
+            {
+                if (!string.Equals(GetNodeString(project["projectId"]), projectId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                return GetNodeString(project["displayName"]) ?? projectId;
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private static string ResolveShiningBlessingResidentLabel(JsonObject? residentRoot, string residentId)
+    {
+        if (string.IsNullOrWhiteSpace(residentId) || residentRoot?["entries"] is not JsonArray residents)
+            return string.Empty;
+
+        foreach (var resident in residents.OfType<JsonObject>())
+        {
+            if (!string.Equals(GetNodeString(resident["residentId"]), residentId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            return GetNodeString(resident["displayName"]) ?? residentId;
+        }
+
+        return string.Empty;
+    }
+
+    private static JsonArray BuildSelectedBlessingCardSnapshot(JsonObject shiningRoot, IReadOnlyList<string> selectedIds)
+    {
+        var snapshot = new JsonArray();
+        if (selectedIds.Count == 0 ||
+            shiningRoot["gates"]?["blessingDraft"] is not JsonArray blessingDraft)
+        {
+            return snapshot;
+        }
+
+        foreach (var selectedId in selectedIds)
+        {
+            var card = blessingDraft
+                .OfType<JsonObject>()
+                .FirstOrDefault(item => string.Equals(GetNodeString(item["cardId"]), selectedId, StringComparison.OrdinalIgnoreCase));
+            if (card != null)
+                snapshot.Add(card.DeepClone());
+        }
+
+        return snapshot;
     }
 
     private JsonObject? PromptForProjectDraft(JsonObject shiningRoot, JsonObject faction)
@@ -541,10 +618,7 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(summary))
             return null;
 
-        var toneTags = Ask("[cyan]Тоновые метки через запятую[/]", "radiant")
-            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Where(item => !string.IsNullOrWhiteSpace(item))
-            .ToArray();
+        var toneTags = PromptForProjectToneTags();
         if (toneTags.Length == 0)
             return null;
 
@@ -625,6 +699,42 @@ public partial class ExplorerMode
             ["outputEffectFamily"] = outputFamily,
             ["tier"] = int.Parse(tierValue)
         };
+    }
+
+    private string[] PromptForProjectToneTags()
+    {
+        var toneChoices = new (string Value, string Label)[]
+        {
+            ("radiant", "Сияющий"),
+            ("choral", "Хоровой"),
+            ("solemn", "Торжественный"),
+            ("tender", "Мягкий"),
+            ("martial", "Воинственный"),
+            ("scholarly", "Созерцательный"),
+            ("pilgrim", "Страннический"),
+            ("memorial", "Поминальный")
+        };
+
+        var primaryLabel = Prompt(new SelectionPrompt<string>()
+            .Title("[bold yellow]Главная тональность проекта[/]")
+            .HighlightStyle(new Style(Color.Gold1))
+            .AddChoices(toneChoices.Select(choice => choice.Label)));
+        var primary = toneChoices.First(choice => choice.Label == primaryLabel).Value;
+
+        var secondaryLabel = Prompt(new SelectionPrompt<string>()
+            .Title("[bold yellow]Дополнительная тональность проекта[/]")
+            .HighlightStyle(new Style(Color.Gold1))
+            .AddChoices(toneChoices.Where(choice => !string.Equals(choice.Value, primary, StringComparison.OrdinalIgnoreCase))
+                .Select(choice => choice.Label)
+                .Append("Без второй тональности")));
+
+        var tags = new List<string> { primary };
+        if (!secondaryLabel.Contains("Без", StringComparison.OrdinalIgnoreCase))
+        {
+            tags.Add(toneChoices.First(choice => choice.Label == secondaryLabel).Value);
+        }
+
+        return tags.ToArray();
     }
 
     private (JsonObject? Project, string FactionId, string ProjectId) PromptForProject(JsonObject shiningRoot, string title, bool requireCompleted)

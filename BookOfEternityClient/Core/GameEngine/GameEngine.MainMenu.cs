@@ -862,32 +862,16 @@ public partial class GameEngine
         AnsiConsole.MarkupLine("[dim]Настройте своё будущее воплощение перед входом.[/]");
         AnsiConsole.WriteLine();
 
-        var pendingConsultationState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
-        var pendingProjectFuelState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs);
-        if (pendingConsultationState.Exists || pendingProjectFuelState.Exists)
+        var incarnationBlockers = await CollectIncarnationBlockersAsync();
+        if (incarnationBlockers.Count > 0)
         {
-            var blockers = new List<string>();
-            if (pendingConsultationState.Exists)
-            {
-                blockers.Add(pendingConsultationState.IsMalformed
-                    ? "pending_archive_consultation_request.json повреждён и требует явного исправления."
-                    : "есть незакрытый запрос на архивную консультацию.");
-            }
-
-            if (pendingProjectFuelState.Exists)
-            {
-                blockers.Add(pendingProjectFuelState.IsMalformed
-                    ? "pending_archive_project_fuel_request.json повреждён и требует явного исправления."
-                    : "есть незакрытый запрос на архивную подпитку проекта.");
-            }
-
             AnsiConsole.Write(new Panel(string.Join("\n", new[]
             {
-                "Нельзя войти в новую смертную жизнь, пока остаются незакрытые архивные действия.",
+                "Нельзя войти в новую смертную жизнь, пока остаются незакрытые загробные контракты.",
                 string.Empty,
-                string.Join("\n", blockers.Select(item => $"• {item}")),
+                string.Join("\n", incarnationBlockers.Select(item => $"• {item}")),
                 string.Empty,
-                "Сначала дождитесь явного archiveActionResolutions или почините повреждённый pending contract."
+                "Сначала дождитесь явного закрытия GM или почините повреждённый pending contract."
             }))
             {
                 Header = new PanelHeader(" Врата Души ", Justify.Center),
@@ -944,6 +928,81 @@ public partial class GameEngine
             "После принятого TriggerIncarnation клиент сам выполнит локальный переход и запустит отдельный следующий ход для первого Mortal World bootstrap.";
 
         await ProcessPlayerTurn(action);
+    }
+
+    private async Task<List<string>> CollectIncarnationBlockersAsync()
+    {
+        var blockers = new List<string>();
+
+        var pendingConsultationState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
+        if (pendingConsultationState.Exists)
+        {
+            blockers.Add(pendingConsultationState.IsMalformed
+                ? "pending_archive_consultation_request.json повреждён и требует явного исправления."
+                : "есть незакрытый запрос на архивную консультацию.");
+        }
+
+        var pendingProjectFuelState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs);
+        if (pendingProjectFuelState.Exists)
+        {
+            blockers.Add(pendingProjectFuelState.IsMalformed
+                ? "pending_archive_project_fuel_request.json повреждён и требует явного исправления."
+                : "есть незакрытый запрос на архивную подпитку проекта.");
+        }
+
+        if (_fs.FileExists(GuardianAbodeOfferingState.PendingRequestPath))
+        {
+            blockers.Add(await GuardianAbodeOfferingState.ReadAsync(_fs) == null
+                ? "pending_abode_offering.json повреждён и требует явного исправления."
+                : "есть незакрытое подношение Обители.");
+        }
+
+        var guardianTradeState = await GuardianTradeRequestState.ReadStateAsync(_fs);
+        if (guardianTradeState.Exists)
+        {
+            blockers.Add(guardianTradeState.IsMalformed
+                ? "pending_guardian_trade_request.json повреждён и требует явного исправления."
+                : "есть незакрытый запрос на торговую витрину Хранителя.");
+        }
+
+        var foundationState = await PlayerGuardianFoundationState.ReadStateAsync(_fs);
+        if (foundationState.Exists)
+        {
+            blockers.Add(foundationState.IsMalformed
+                ? "pending_player_guardian_foundation.json повреждён и требует явного исправления."
+                : "есть незакрытый ритуал основания собственного Хранителя.");
+        }
+
+        if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingResidentsRequestPath))
+        {
+            blockers.Add(await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs)
+                ? "pending_guardian_abode_residents_request.json повреждён и требует явного исправления."
+                : "есть незакрытый запрос на обновление состава Обители.");
+        }
+
+        if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath))
+        {
+            blockers.Add(await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs)
+                ? "pending_guardian_abode_resident_interactions.json повреждён и требует явного исправления."
+                : "есть незакрытый запрос общения с резидентом Обители.");
+        }
+
+        if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingTransfersRequestPath))
+        {
+            blockers.Add(await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs)
+                ? "pending_guardian_abode_resident_transfers.json повреждён и требует явного исправления."
+                : "есть незакрытый запрос перехода резидента между Обителями.");
+        }
+
+        var guardianSocialState = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs);
+        if (guardianSocialState.FilePresent)
+        {
+            blockers.Add(guardianSocialState.IsMalformed
+                ? "pending_guardian_social_interactions.json повреждён и требует явного исправления."
+                : "есть незакрытый социальный запрос к Хранителю.");
+        }
+
+        return blockers;
     }
 
     private async Task<SystemGuardianLibraryService.SystemGuardianPresetDescriptor?> PromptSystemGuardianPresetSelectionAsync()

@@ -977,7 +977,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                     ["name"] = "Текущий дозор",
                     ["description"] = "Хранитель уже ведёт эту линию.",
                     ["difficulty"] = "Сложно",
-                    ["status"] = "In Progress"
+                    ["status"] = "In Progress",
+                    ["rewards"] = new JsonObject
+                    {
+                        ["experience"] = 15,
+                        ["items"] = new JsonArray("Архивный знак")
+                    }
                 }
             },
             ["availableQuests"] = new JsonArray
@@ -1016,6 +1021,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Активные задания", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Текущий дозор", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Опыт: 15", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Предметы: Архивный знак", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("experience: 15", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Доступные задания", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Новый зов архива", renderedText, StringComparison.OrdinalIgnoreCase);
     }
@@ -2134,6 +2142,61 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Добавляемые свойства", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("echo_seed", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("\"propertyId\": \"resonance\"", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningAbode_PendingPreparePackageInspectionUsesStoredCardSnapshot()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await WriteJsonAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "core_pending_package_snapshot_1",
+                    actionType = "prepare_incarnation_package",
+                    sourceDraftVersion = 4,
+                    selectedCardIds = new[] { "card_route_dawn" },
+                    selectedCards = new object[]
+                    {
+                        new
+                        {
+                            cardId = "card_route_dawn",
+                            displayName = "Тропа возвращения",
+                            sourceType = "project",
+                            sourceFactionId = "faction_dawn",
+                            sourceFactionName = "Хор Рассвета",
+                            sourceActorId = "project_passage",
+                            sourceActorName = "Тропа возвращения",
+                            effectFamily = "route",
+                            rarity = "rare"
+                        }
+                    },
+                    createdAtTurn = 160,
+                    createdAtUtc = "2026-04-19T11:05:00Z"
+                }
+            }
+        });
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))?.AsObject()
+            ?? throw new InvalidOperationException("Expected seeded shining abode state.");
+        var gates = shiningRoot["gates"]?.AsObject()
+            ?? throw new InvalidOperationException("Expected gates state.");
+        gates["availableBlessingCards"] = new JsonArray();
+        gates["allCandidateBlessingCards"] = new JsonArray();
+        await File.WriteAllTextAsync(shiningStatePath, shiningRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+
+        _console.QueueSelection("Сияющая Обитель", "📝 Осмотреть ожидающие действия Обители", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_pending_package_snapshot_inspection");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Тропа возвращения", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("card_route_dawn)", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -4792,6 +4855,230 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Связанный квест души: Просьба Лиоры (quest_liora)", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Дарованная реликвия: Отзвук Лиоры (relic_echo_liora)", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Guardians_ResidentDetailOpensLinkedSoulQuest()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_resident_001",
+                    canonicalName = "Азалия",
+                    abode = new
+                    {
+                        abodeId = "abode_social_azalia_001",
+                        name = "Лазурная Обитель"
+                    }
+                }
+            },
+            activeGuardian = new
+            {
+                guardianId = "guardian_resident_001",
+                canonicalName = "Азалия",
+                abode = new
+                {
+                    abodeId = "abode_social_azalia_001",
+                    name = "Лазурная Обитель"
+                }
+            },
+            chaosSeaNavigation = new
+            {
+                currentAbodeId = "abode_social_azalia_001"
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new[]
+            {
+                new
+                {
+                    residentId = "resident_ember_001",
+                    displayName = "Лиора",
+                    guardianId = "guardian_resident_001",
+                    abodeId = "abode_social_azalia_001",
+                    residentKind = "wayfaring_soul",
+                    roleLabel = "Певчая",
+                    bondLevel = 72,
+                    bondTier = "trusted",
+                    abodeDevotionLevel = 66,
+                    abodeDevotionTier = "settled",
+                    migrationState = "settled",
+                    restlessness = 12,
+                    historyRevealed = true,
+                    bondRewardState = "granted",
+                    linkedSoulQuestId = "quest_liora",
+                    personalityProfile = new
+                    {
+                        archetype = "Singer",
+                        worldview = "Songs preserve bridges.",
+                        culturalLayer = "Choir",
+                        coreValues = new[] { "верность" },
+                        personalityTraits = Array.Empty<object>()
+                    },
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "high",
+                        migrationDisposition = "selective",
+                        communalOrientation = "medium",
+                        stabilityNeed = "high"
+                    }
+                }
+            },
+            thoughtJournal = Array.Empty<object>(),
+            interactionLog = Array.Empty<object>(),
+            historyLog = Array.Empty<object>(),
+            transferReceipts = Array.Empty<object>(),
+            interactionReceipts = Array.Empty<object>(),
+            rosterReceipts = Array.Empty<object>()
+        });
+        await WriteJsonAsync("game_state/quests/soul_quests.json", new
+        {
+            quests = new[]
+            {
+                new
+                {
+                    questId = "quest_liora",
+                    title = "Просьба Лиоры",
+                    description = "Услышь тихую песнь над лазурным мостом.",
+                    relatedAfterlifeResidentId = "resident_ember_001"
+                }
+            }
+        });
+
+        var detailMethod = typeof(ExplorerMode).GetMethod("ShowGuardianAbodeResidentDetailByIdAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.NotNull(detailMethod);
+        _console.QueueSelection("Действие", "📜 Открыть связанный квест души");
+        await _stateManager.RefreshGameStateAsync();
+
+        var task = detailMethod!.Invoke(_explorer, new object?[] { "resident_ember_001" }) as Task<bool>;
+        Assert.NotNull(task);
+        Assert.True(await task!);
+
+        AssertNoHiddenExplorerErrors("guardian_resident_linked_quest_drilldown");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Просьба Лиоры", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Квест души", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Guardians_ResidentDetailOpensGrantedRelic()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_resident_001",
+                    canonicalName = "Азалия",
+                    abode = new
+                    {
+                        abodeId = "abode_social_azalia_001",
+                        name = "Лазурная Обитель"
+                    }
+                }
+            },
+            activeGuardian = new
+            {
+                guardianId = "guardian_resident_001",
+                canonicalName = "Азалия",
+                abode = new
+                {
+                    abodeId = "abode_social_azalia_001",
+                    name = "Лазурная Обитель"
+                }
+            },
+            chaosSeaNavigation = new
+            {
+                currentAbodeId = "abode_social_azalia_001"
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new[]
+            {
+                new
+                {
+                    residentId = "resident_ember_001",
+                    displayName = "Лиора",
+                    guardianId = "guardian_resident_001",
+                    abodeId = "abode_social_azalia_001",
+                    residentKind = "wayfaring_soul",
+                    roleLabel = "Певчая",
+                    bondLevel = 72,
+                    bondTier = "trusted",
+                    abodeDevotionLevel = 66,
+                    abodeDevotionTier = "settled",
+                    migrationState = "settled",
+                    restlessness = 12,
+                    historyRevealed = true,
+                    bondRewardState = "granted",
+                    grantedRelicId = "relic_echo_liora",
+                    personalityProfile = new
+                    {
+                        archetype = "Singer",
+                        worldview = "Songs preserve bridges.",
+                        culturalLayer = "Choir",
+                        coreValues = new[] { "верность" },
+                        personalityTraits = Array.Empty<object>()
+                    },
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "high",
+                        migrationDisposition = "selective",
+                        communalOrientation = "medium",
+                        stabilityNeed = "high"
+                    }
+                }
+            },
+            thoughtJournal = Array.Empty<object>(),
+            interactionLog = Array.Empty<object>(),
+            historyLog = Array.Empty<object>(),
+            transferReceipts = Array.Empty<object>(),
+            interactionReceipts = Array.Empty<object>(),
+            rosterReceipts = Array.Empty<object>()
+        });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 10, total = 10 },
+            soulRelics = new
+            {
+                stored = new[]
+                {
+                    new
+                    {
+                        relicId = "relic_echo_liora",
+                        name = "Отзвук Лиоры",
+                        rarity = "Rare",
+                        description = "Хранит тихий перелив её голоса."
+                    }
+                },
+                equipped = Array.Empty<object>()
+            }
+        });
+
+        var detailMethod = typeof(ExplorerMode).GetMethod("ShowGuardianAbodeResidentDetailByIdAsync", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.NotNull(detailMethod);
+        _console.QueueSelection("Действие", "💎 Открыть дарованную реликвию");
+        await _stateManager.RefreshGameStateAsync();
+
+        var task = detailMethod!.Invoke(_explorer, new object?[] { "resident_ember_001" }) as Task<bool>;
+        Assert.NotNull(task);
+        Assert.True(await task!);
+
+        AssertNoHiddenExplorerErrors("guardian_resident_granted_relic_drilldown");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Отзвук Лиоры", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Реликвия", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

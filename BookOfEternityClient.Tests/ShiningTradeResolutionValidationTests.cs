@@ -192,6 +192,98 @@ public sealed class ShiningTradeResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningTradeInventoryResolutionAsync_DuplicateMatchingReadyReceipts_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var faction = currentShiningRoot["factions"]!.AsArray()[0]!.AsObject();
+        faction["tradeInventory"] = new JsonObject
+        {
+            ["tradeCycleId"] = "shining_return_2",
+            ["generatedAtUtc"] = "2026-04-17T01:00:00Z",
+            ["generationTradeTier"] = 2,
+            ["generationRarityCeiling"] = "rare",
+            ["serviceMultiplierSnapshot"] = 1.25,
+            ["merchantProfile"] = "shining_faction",
+            ["items"] = new JsonArray
+            {
+                CreateTradeSlot("slot_1", 70, "relic_trade_1", "Rare"),
+                CreateTradeSlot("slot_2", 30, "relic_trade_2", "Common"),
+                CreateTradeSlot("slot_3", 30, "relic_trade_3", "Common"),
+                CreateTradeSlot("slot_4", 30, "relic_trade_4", "Common"),
+                CreateTradeSlot("slot_5", 30, "relic_trade_5", "Common"),
+                CreateTradeSlot("slot_6", 30, "relic_trade_6", "Common")
+            }
+        };
+        faction["tradeInventoryReceipts"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["requestId"] = "shining_trade_req_1",
+                ["factionId"] = "faction_old",
+                ["factionName"] = "Старый Дом",
+                ["tradeCycleId"] = "shining_return_2",
+                ["status"] = "ready",
+                ["itemCount"] = 6,
+                ["soldOutCount"] = 0,
+                ["resolvedAtTurn"] = 14,
+                ["resolvedAtUtc"] = "2026-04-17T01:00:00Z"
+            },
+            new JsonObject
+            {
+                ["requestId"] = "shining_trade_req_1",
+                ["factionId"] = "faction_old",
+                ["factionName"] = "Старый Дом",
+                ["tradeCycleId"] = "shining_return_2",
+                ["status"] = "ready",
+                ["itemCount"] = 6,
+                ["soldOutCount"] = 0,
+                ["resolvedAtTurn"] = 15,
+                ["resolvedAtUtc"] = "2026-04-17T01:01:00Z"
+            }
+        };
+
+        await WriteNodeAsync(ShiningAbodeState.StatePath, currentShiningRoot);
+        await WriteNodeAsync(GuardianAbodeResidentState.StatePath, new JsonObject { ["entries"] = new JsonArray() });
+        await WriteNodeAsync("game_state/meta/guardians.json", new JsonObject
+        {
+            ["guardians"] = new JsonArray(new JsonObject
+            {
+                ["guardianId"] = "guardian_old",
+                ["guardianName"] = "Азалия"
+            })
+        });
+        await WriteNodeAsync("ready/turn_complete.json", new JsonObject { ["accepted"] = true });
+
+        var requestRoot = new JsonObject
+        {
+            [ShiningTradeRequestState.RequestsProperty] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["requestId"] = "shining_trade_req_1",
+                    ["factionId"] = "faction_old",
+                    ["factionName"] = "Старый Дом",
+                    ["tradeCycleId"] = "shining_return_2",
+                    ["derivedTradeTier"] = 2,
+                    ["derivedTradeSlotCount"] = 6,
+                    ["derivedRarityCeiling"] = "rare",
+                    ["derivedServiceMultiplier"] = 1.25,
+                    ["merchantProfile"] = "shining_faction",
+                    ["createdAtTurn"] = 13,
+                    ["createdAtUtc"] = "2026-04-17T00:59:00Z"
+                }
+            }
+        };
+        await WriteNodeAsync(ShiningTradeRequestState.PendingRequestsPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, requestRoot);
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningTradeInventoryResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_trade_request_missing_receipt_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void ValidateShiningTradeInventoryObject_DuplicateSlotIds_Fails()
     {
         var issues = new List<ValidationIssue>();

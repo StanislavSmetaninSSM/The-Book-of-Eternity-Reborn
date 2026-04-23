@@ -936,6 +936,8 @@ public partial class ExplorerMode
         "culturalStance" => "Культурная позиция",
         "worldview" => "Мировоззрение",
         "rarity" => "Редкость",
+        "experience" => "Опыт",
+        "items" => "Предметы",
         "age" => "Возраст",
         "goldAmount" or "money" or "gold" => "Золото",
         "combatStyle" => "Боевой стиль",

@@ -324,7 +324,8 @@ public partial class ExplorerMode
                 var residentId = GetNodeString(entry["residentId"]) ?? string.Empty;
                 var displayName = GetNodeString(entry["displayName"]) ?? residentId;
                 var factionId = GetNodeString(entry["shiningFactionId"]) ?? "none";
-                var label = $"{displayName} [dim](фракция {factionId}, лояльность {GetNodeInt(entry["factionLoyaltyLevel"])}, брожение {GetNodeInt(entry["factionRestlessness"])})[/]";
+                var factionLabel = GetNodeString(entry["shiningFactionName"]) ?? factionId;
+                var label = $"{displayName} [dim](фракция {factionLabel}, лояльность {GetNodeInt(entry["factionLoyaltyLevel"])}, брожение {GetNodeInt(entry["factionRestlessness"])})[/]";
                 return (Label: label, Entry: entry);
             })
             .ToList();
@@ -417,7 +418,8 @@ public partial class ExplorerMode
                 var residentId = GetNodeString(entry["residentId"]) ?? string.Empty;
                 var displayName = GetNodeString(entry["displayName"]) ?? residentId;
                 var factionId = GetNodeString(entry["shiningFactionId"]) ?? "none";
-                var label = $"{displayName} [dim](фракция {factionId})[/]";
+                var factionLabel = GetNodeString(entry["shiningFactionName"]) ?? factionId;
+                var label = $"{displayName} [dim](фракция {factionLabel})[/]";
                 return (Label: label, ResidentId: residentId);
             })
             .Where(item => !alreadySelected.Any(selected => string.Equals(selected, item.ResidentId, StringComparison.OrdinalIgnoreCase)))

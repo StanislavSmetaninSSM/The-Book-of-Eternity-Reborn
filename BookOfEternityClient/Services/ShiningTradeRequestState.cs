@@ -204,8 +204,19 @@ internal static class ShiningTradeRequestState
         if (faction[ReceiptsProperty] is not JsonArray receipts)
             return null;
 
-        return receipts.OfType<JsonObject>().FirstOrDefault(receipt =>
-            ReceiptMatchesRequestContract(receipt, request, faction["tradeInventory"] as JsonObject));
+        JsonObject? match = null;
+        foreach (var receipt in receipts.OfType<JsonObject>())
+        {
+            if (!ReceiptMatchesRequestContract(receipt, request, faction["tradeInventory"] as JsonObject))
+                continue;
+
+            if (match != null)
+                return null;
+
+            match = receipt;
+        }
+
+        return match;
     }
 
     public static bool HasReadyInventoryForCurrentContract(JsonObject faction, PendingShiningTradeInventoryRequest request)
