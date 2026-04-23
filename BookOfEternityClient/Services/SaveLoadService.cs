@@ -14,6 +14,24 @@ namespace BookOfEternityClient.Services;
 /// </summary>
 public class SaveLoadService
 {
+    private static readonly string[] ImportDirectoryRoots =
+    {
+        "game_state",
+        "lore",
+        "mods",
+        "world_profiles",
+        "stories",
+        "images",
+        "output"
+    };
+
+    private static readonly string[] ImportFileRoots =
+    {
+        "config.json"
+    };
+
+    private const string SaveMetadataEntryPath = "save_metadata.json";
+
     private static readonly HashSet<string> EphemeralControlFiles = new(StringComparer.OrdinalIgnoreCase)
     {
         "game_state/control/pending_turn_snapshot.json",
@@ -133,6 +151,7 @@ public class SaveLoadService
 
     public async Task<bool> LoadGameAsync(string saveFilePath)
     {
+        string? stagingRoot = null;
         try
         {
             var fullPath = saveFilePath;
@@ -145,33 +164,12 @@ public class SaveLoadService
                 return false;
             }
 
-            // Clear current state
-            _fs.ClearGameState();
-            ClearAuthoredSourceDirectoriesForLoad();
+            stagingRoot = CreateStagingRoot();
 
-            // Extract archive
             using var archive = ZipFile.OpenRead(fullPath);
-            foreach (var entry in archive.Entries)
-            {
-                if (string.IsNullOrEmpty(entry.Name)) continue; // Skip directory entries
-
-                var targetPath = _fs.ResolvePath(entry.FullName);
-                var targetDir = Path.GetDirectoryName(targetPath);
-                if (targetDir != null && !Directory.Exists(targetDir))
-                    Directory.CreateDirectory(targetDir);
-
-                entry.ExtractToFile(targetPath, overwrite: true);
-            }
-
-            foreach (var relativePath in EphemeralControlFiles)
-                _fs.DeleteFile(relativePath);
-
-            foreach (var relativePrefix in EphemeralPathPrefixes)
-            {
-                var cleanupPath = _fs.ResolvePath(relativePrefix.TrimEnd('/', '\\'));
-                if (Directory.Exists(cleanupPath))
-                    Directory.Delete(cleanupPath, recursive: true);
-            }
+            ExtractArchiveToStaging(archive, stagingRoot);
+            CleanupEphemeralArtifacts(stagingRoot);
+            ApplyStagedImportWithRollback(stagingRoot);
 
             // Refresh state
             await _stateManager.RefreshGameStateAsync();
@@ -184,6 +182,10 @@ public class SaveLoadService
         {
             _logger.LogError(ex, "Ошибка загрузки: {Path}", saveFilePath);
             return false;
+        }
+        finally
+        {
+            TryDeleteDirectory(stagingRoot);
         }
     }
 
@@ -245,16 +247,228 @@ public class SaveLoadService
         return Task.CompletedTask;
     }
 
-    private void ClearAuthoredSourceDirectoriesForLoad()
+    private static bool IsImportEntryPathAllowed(string normalizedPath)
     {
-        foreach (var relativeDir in new[] { "mods", "world_profiles" })
+        if (ImportFileRoots.Any(path => string.Equals(path, normalizedPath, StringComparison.OrdinalIgnoreCase)))
+            return true;
+
+        return ImportDirectoryRoots.Any(path =>
+            normalizedPath.StartsWith(path + "/", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private string CreateStagingRoot()
+    {
+        var stagingRoot = Path.Combine(_fs.BasePath, $"load_staging_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(stagingRoot);
+        return stagingRoot;
+    }
+
+    private string CreateBackupRoot()
+    {
+        var backupRoot = Path.Combine(_fs.BasePath, $"load_backup_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(backupRoot);
+        return backupRoot;
+    }
+
+    private static string NormalizeArchiveEntryPath(string entryPath)
+    {
+        var normalized = (entryPath ?? string.Empty).Replace('\\', '/').Trim();
+        while (normalized.StartsWith("/", StringComparison.Ordinal))
+            normalized = normalized[1..];
+        return normalized;
+    }
+
+    private static string ResolveConstrainedTargetPath(string rootPath, string archiveEntryPath)
+    {
+        var normalizedPath = NormalizeArchiveEntryPath(archiveEntryPath);
+        if (string.IsNullOrWhiteSpace(normalizedPath))
+            throw new InvalidDataException("ZIP entry path must not be empty.");
+        if (Path.IsPathRooted(normalizedPath) ||
+            normalizedPath.StartsWith(".", StringComparison.Ordinal) ||
+            !IsImportEntryPathAllowed(normalizedPath))
         {
-            var fullDir = _fs.ResolvePath(relativeDir);
-            if (!Directory.Exists(fullDir))
+            throw new InvalidDataException($"Архив содержит недопустимый путь: {archiveEntryPath}");
+        }
+
+        var rootFullPath = Path.GetFullPath(rootPath);
+        var resolvedPath = Path.GetFullPath(Path.Combine(rootFullPath, normalizedPath.Replace('/', Path.DirectorySeparatorChar)));
+        var constrainedPrefix = rootFullPath.EndsWith(Path.DirectorySeparatorChar)
+            ? rootFullPath
+            : rootFullPath + Path.DirectorySeparatorChar;
+        if (!resolvedPath.StartsWith(constrainedPrefix, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException($"Архив пытается выйти за пределы целевой директории: {archiveEntryPath}");
+
+        return resolvedPath;
+    }
+
+    private static void ExtractArchiveToStaging(ZipArchive archive, string stagingRoot)
+    {
+        foreach (var entry in archive.Entries)
+        {
+            var normalizedEntryPath = NormalizeArchiveEntryPath(entry.FullName);
+            if (string.IsNullOrWhiteSpace(normalizedEntryPath))
+                continue;
+            if (string.Equals(normalizedEntryPath, SaveMetadataEntryPath, StringComparison.OrdinalIgnoreCase))
                 continue;
 
-            foreach (var file in Directory.GetFiles(fullDir, "*", SearchOption.AllDirectories))
-                File.Delete(file);
+            var targetPath = ResolveConstrainedTargetPath(stagingRoot, normalizedEntryPath);
+            if (string.IsNullOrEmpty(entry.Name))
+            {
+                Directory.CreateDirectory(targetPath);
+                continue;
+            }
+
+            var targetDir = Path.GetDirectoryName(targetPath);
+            if (!string.IsNullOrWhiteSpace(targetDir))
+                Directory.CreateDirectory(targetDir);
+
+            entry.ExtractToFile(targetPath, overwrite: true);
+        }
+    }
+
+    private static void CleanupEphemeralArtifacts(string rootPath)
+    {
+        foreach (var relativePath in EphemeralControlFiles)
+        {
+            var fullPath = Path.Combine(rootPath, relativePath.Replace('/', Path.DirectorySeparatorChar));
+            if (File.Exists(fullPath))
+                File.Delete(fullPath);
+        }
+
+        foreach (var relativePrefix in EphemeralPathPrefixes)
+        {
+            var fullPath = Path.Combine(rootPath, relativePrefix.TrimEnd('/', '\\').Replace('/', Path.DirectorySeparatorChar));
+            if (Directory.Exists(fullPath))
+                Directory.Delete(fullPath, recursive: true);
+        }
+    }
+
+    private void ApplyStagedImportWithRollback(string stagingRoot)
+    {
+        string? backupRoot = null;
+        try
+        {
+            backupRoot = CreateBackupRoot();
+            BackupCurrentImportTargets(backupRoot);
+            ClearImportTargets(_fs.GameSessionPath);
+            CopyImportTargets(stagingRoot, _fs.GameSessionPath);
+            _fs.EnsureDirectoryStructure();
+        }
+        catch
+        {
+            if (!string.IsNullOrWhiteSpace(backupRoot) && Directory.Exists(backupRoot))
+            {
+                ClearImportTargets(_fs.GameSessionPath);
+                CopyImportTargets(backupRoot, _fs.GameSessionPath);
+                _fs.EnsureDirectoryStructure();
+            }
+
+            throw;
+        }
+        finally
+        {
+            TryDeleteDirectory(backupRoot);
+        }
+    }
+
+    private void BackupCurrentImportTargets(string backupRoot)
+    {
+        foreach (var relativeDir in ImportDirectoryRoots)
+        {
+            var sourceDir = Path.Combine(_fs.GameSessionPath, relativeDir.Replace('/', Path.DirectorySeparatorChar));
+            if (!Directory.Exists(sourceDir))
+                continue;
+
+            var destinationDir = Path.Combine(backupRoot, relativeDir.Replace('/', Path.DirectorySeparatorChar));
+            CopyDirectory(sourceDir, destinationDir);
+        }
+
+        foreach (var relativeFile in ImportFileRoots)
+        {
+            var sourceFile = Path.Combine(_fs.GameSessionPath, relativeFile.Replace('/', Path.DirectorySeparatorChar));
+            if (!File.Exists(sourceFile))
+                continue;
+
+            var destinationFile = Path.Combine(backupRoot, relativeFile.Replace('/', Path.DirectorySeparatorChar));
+            var destinationDir = Path.GetDirectoryName(destinationFile);
+            if (!string.IsNullOrWhiteSpace(destinationDir))
+                Directory.CreateDirectory(destinationDir);
+            File.Copy(sourceFile, destinationFile, overwrite: true);
+        }
+    }
+
+    private static void CopyImportTargets(string sourceRoot, string destinationRoot)
+    {
+        foreach (var relativeDir in ImportDirectoryRoots)
+        {
+            var sourceDir = Path.Combine(sourceRoot, relativeDir.Replace('/', Path.DirectorySeparatorChar));
+            if (!Directory.Exists(sourceDir))
+                continue;
+
+            var destinationDir = Path.Combine(destinationRoot, relativeDir.Replace('/', Path.DirectorySeparatorChar));
+            CopyDirectory(sourceDir, destinationDir);
+        }
+
+        foreach (var relativeFile in ImportFileRoots)
+        {
+            var sourceFile = Path.Combine(sourceRoot, relativeFile.Replace('/', Path.DirectorySeparatorChar));
+            if (!File.Exists(sourceFile))
+                continue;
+
+            var destinationFile = Path.Combine(destinationRoot, relativeFile.Replace('/', Path.DirectorySeparatorChar));
+            var destinationDir = Path.GetDirectoryName(destinationFile);
+            if (!string.IsNullOrWhiteSpace(destinationDir))
+                Directory.CreateDirectory(destinationDir);
+            File.Copy(sourceFile, destinationFile, overwrite: true);
+        }
+    }
+
+    private static void ClearImportTargets(string rootPath)
+    {
+        foreach (var relativeDir in ImportDirectoryRoots)
+        {
+            var fullDir = Path.Combine(rootPath, relativeDir.Replace('/', Path.DirectorySeparatorChar));
+            if (Directory.Exists(fullDir))
+                Directory.Delete(fullDir, recursive: true);
+        }
+
+        foreach (var relativeFile in ImportFileRoots)
+        {
+            var fullFile = Path.Combine(rootPath, relativeFile.Replace('/', Path.DirectorySeparatorChar));
+            if (File.Exists(fullFile))
+                File.Delete(fullFile);
+        }
+    }
+
+    private static void CopyDirectory(string sourceDir, string destinationDir)
+    {
+        Directory.CreateDirectory(destinationDir);
+
+        foreach (var file in Directory.GetFiles(sourceDir))
+        {
+            var destinationFile = Path.Combine(destinationDir, Path.GetFileName(file));
+            File.Copy(file, destinationFile, overwrite: true);
+        }
+
+        foreach (var directory in Directory.GetDirectories(sourceDir))
+        {
+            var destinationSubdir = Path.Combine(destinationDir, Path.GetFileName(directory));
+            CopyDirectory(directory, destinationSubdir);
+        }
+    }
+
+    private static void TryDeleteDirectory(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
+            return;
+
+        try
+        {
+            Directory.Delete(path, recursive: true);
+        }
+        catch
+        {
+            // ignored
         }
     }
 

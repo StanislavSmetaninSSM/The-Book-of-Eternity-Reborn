@@ -365,11 +365,11 @@ public partial class ExplorerMode
                 .Where(node => node.TryGetValue<string>(out _))
                 .Select(node => node.GetValue<string>())
                 .ToList() ?? new List<string>();
-            var selectedCards = (package["selectedCards"] as JsonArray)?.OfType<JsonObject>().ToList() ?? new List<JsonObject>();
+            var selectedCards = GetConsistentPreparedPackageRootCards(package);
             lines.Add($"  • Основан на версии Врат: [white]{GetNodeInt(package["generatedFromDraftVersion"])}[/]");
             lines.Add($"  • Лимит выбора: [white]{pickCap}[/]");
             lines.Add($"  • Размер исходного набора: [white]{draftSize}[/]");
-            lines.Add($"  • Выбрано карт: [white]{selectedCards.Count}[/]");
+            lines.Add($"  • Выбрано карт: [white]{selectedIds.Count}[/]");
             var selectedPackageLabels = selectedIds
                 .Select(id => ResolveShiningBlessingCardLabel(context.Root, id))
                 .Where(label => !string.IsNullOrWhiteSpace(label))
@@ -384,6 +384,10 @@ public partial class ExplorerMode
                 lines.Add("[bold]Карты подготовленного пакета:[/]");
                 foreach (var card in selectedCards)
                     lines.AddRange(BuildShiningBlessingCardInspectionLines(card, context, isSelected: true));
+            }
+            else if (selectedIds.Count > 0)
+            {
+                lines.Add("  • [dim]Детальный frozen snapshot карт сейчас недоступен или не совпадает с canonical selectedCardIds; authoritative остаётся список зафиксированных карт выше.[/]");
             }
         }
         else
@@ -541,12 +545,30 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(sourceActorId))
             return string.Empty;
 
-        return sourceType switch
+        var resolvedLabel = sourceType switch
         {
             "project" => ResolveShiningBlessingProjectLabel(context.Root, sourceActorId),
             "resident_descent" => ResolveShiningBlessingResidentLabel(context.ResidentRoot, sourceActorId),
-            _ => sourceActorId
+            _ => string.Empty
         };
+
+        if (!string.IsNullOrWhiteSpace(resolvedLabel))
+            return resolvedLabel;
+
+        if (!string.IsNullOrWhiteSpace(GetNodeString(card["sourceActorName"])))
+            return GetNodeString(card["sourceActorName"])!;
+
+        if (string.Equals(sourceType, "project", StringComparison.OrdinalIgnoreCase))
+            return GetNodeString(card["displayName"]) ?? sourceActorId;
+
+        if (string.Equals(sourceType, "resident_descent", StringComparison.OrdinalIgnoreCase))
+        {
+            var displayName = GetNodeString(card["displayName"]) ?? string.Empty;
+            if (displayName.StartsWith("Нисхождение ", StringComparison.OrdinalIgnoreCase))
+                return displayName["Нисхождение ".Length..].Trim();
+        }
+
+        return sourceActorId;
     }
 
     private static string ResolveShiningBlessingProjectLabel(JsonObject shiningRoot, string projectId)

@@ -516,6 +516,12 @@ public partial class ExplorerMode
 
         if (selected.StartsWith("🧵", StringComparison.Ordinal))
         {
+            if (TryResolveResidentQuestNotificationQuestId(notification, out var questId) &&
+                await ShowSoulQuestDetailByIdAsync(questId))
+            {
+                return;
+            }
+
             await ShowSoulQuests();
             return;
         }
@@ -767,6 +773,13 @@ public partial class ExplorerMode
         if (!string.IsNullOrWhiteSpace(notification.GuardianName))
             lines.Add($"  Хранитель: [white]{Markup.Escape(notification.GuardianName)}[/]");
 
+        if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentQuestAvailable, StringComparison.OrdinalIgnoreCase) &&
+            TryResolveResidentQuestNotificationQuestId(notification, out var questId))
+        {
+            using var soulQuestDoc = await _stateManager.LoadGameStateFileAsync("game_state/quests/soul_quests.json");
+            lines.Add($"  Квест души: [white]{Markup.Escape(ResolveSoulQuestLabel(soulQuestDoc?.RootElement, questId))}[/]");
+        }
+
         using var residentsDoc = await _stateManager.LoadGameStateFileAsync(GuardianAbodeResidentState.StatePath);
         if (residentsDoc?.RootElement.ValueKind != JsonValueKind.Object)
             return;
@@ -794,6 +807,23 @@ public partial class ExplorerMode
         {
             lines.Add($"  Присутствие: [dim]{(isPresent ? "сейчас в Обители" : "уже покинул Обитель")}[/]");
         }
+    }
+
+    private static bool TryResolveResidentQuestNotificationQuestId(AfterlifeNotificationState.NotificationEntry notification, out string questId)
+    {
+        questId = string.Empty;
+        if (!string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentQuestAvailable, StringComparison.OrdinalIgnoreCase) ||
+            string.IsNullOrWhiteSpace(notification.RequestId))
+        {
+            return false;
+        }
+
+        var separatorIndex = notification.RequestId.IndexOf(':');
+        if (separatorIndex < 0 || separatorIndex >= notification.RequestId.Length - 1)
+            return false;
+
+        questId = notification.RequestId[(separatorIndex + 1)..].Trim();
+        return !string.IsNullOrWhiteSpace(questId);
     }
 
     private async Task AppendShiningNotificationDetailLinesAsync(AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
@@ -1505,7 +1535,7 @@ public partial class ExplorerMode
                 {
                     var actionLabel = DescribeSoulRelicActionCheckLabel(prop.Name);
                     if (string.IsNullOrWhiteSpace(actionLabel))
-                        lines.Add($"    • [cyan]Бонус к проверке действия:[/] +{prop.Value} [dim](технический ключ {Markup.Escape(prop.Name)})[/]");
+                        lines.Add($"    • [cyan]Бонус к действию «{Markup.Escape(HumanizeProtocolToken(prop.Name))}»:[/] +{Markup.Escape(prop.Value.ToString())}");
                     else
                         lines.Add($"    • [cyan]{Markup.Escape(actionLabel)}: +{prop.Value}[/]");
                 }
@@ -1524,8 +1554,8 @@ public partial class ExplorerMode
 
             if (technicalEffectProps.Count > 0)
             {
-                lines.Add("    • [dim]У реликвии есть дополнительные нестандартные свойства; подробности приведены ниже.[/]");
-                lines.Add("    [dim]Дополнительные технические параметры эффекта:[/]");
+                lines.Add("    • [dim]У реликвии есть дополнительные свойства эффекта.[/]");
+                lines.Add("    [dim]Дополнительные свойства эффекта:[/]");
                 lines.AddRange(technicalEffectProps);
             }
         }

@@ -101,16 +101,42 @@ public sealed class GuardianTradeService
         if (root == null)
             return null;
         var trackerRoot = await ReadGuardianProjectTrackerRootAsync();
+        var preRefreshGuardiansJson = root.ToJsonString(JsonOpts);
+        var preRefreshTrackerJson = trackerRoot?.ToJsonString(JsonOpts);
 
         var guardian = FindGuardian(root, guardianId);
         if (guardian == null)
             return null;
 
         var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(root, guardian, currentIncarnation, currentTurn, trackerRoot);
-        if (changed)
-            await _fs.WriteFileAtomicAsync(GuardiansPath, root.ToJsonString(JsonOpts));
-        if (trackerChanged && trackerRoot != null)
-            await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot.ToJsonString(JsonOpts));
+        if (changed || trackerChanged)
+        {
+            var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>();
+            if (changed)
+            {
+                writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                    GuardiansPath,
+                    preRefreshGuardiansJson,
+                    root.ToJsonString(JsonOpts)));
+            }
+
+            if (trackerChanged && trackerRoot != null)
+            {
+                writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                    GuardianProjectState.TrackerPath,
+                    preRefreshTrackerJson,
+                    trackerRoot.ToJsonString(JsonOpts)));
+            }
+
+            if (writes.Count > 0 &&
+                !await CoordinatedStateWriteHelper.TryCommitAsync(_fs, writes.ToArray()))
+            {
+                _logger.LogError(
+                    "Не удалось безопасно зафиксировать обновление торговой витрины Хранителя {GuardianId} без рассинхронизации guardians/tracker.",
+                    guardianId);
+                return null;
+            }
+        }
 
         return view;
     }
