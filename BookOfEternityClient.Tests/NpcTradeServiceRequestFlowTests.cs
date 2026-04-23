@@ -220,6 +220,32 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
         Assert.Equal("npc_buyback_001", view.BuybackOffers[0].BuybackEntryId);
     }
 
+    [Fact]
+    public async Task EnsureHealthyAsync_UnresolvedRealm_PreservesPendingNpcTradeRequest()
+    {
+        await SeedBaseStateAsync(includeTradeInventory: false, includeTradeReceipt: false);
+        await NpcTradeRequestState.WriteRequestAsync(_fs, new NpcTradeRequestState.PendingNpcTradeInventoryRequest
+        {
+            RequestId = "npc_trade_req_unresolved",
+            NpcId = "npc_merchant_001",
+            NpcName = "Марек",
+            MerchantProfile = "GeneralGoods",
+            TradeCycleId = "world_trade_0",
+            DerivedTradeSlotCount = 7,
+            CreatedAtTurn = 9,
+            CreatedAtUtc = "2026-03-28T00:00:00Z",
+            CreatedAtWorldDate = 100,
+            RefreshAfterWorldDate = 43200
+        });
+
+        await NpcTradeRequestState.EnsureHealthyAsync(_fs, "");
+
+        var requests = await NpcTradeRequestState.ReadRequestsAsync(_fs);
+        var request = Assert.Single(requests);
+        Assert.Equal("npc_trade_req_unresolved", request.RequestId);
+        Assert.True(_fs.FileExists(NpcTradeRequestState.PendingRequestPath));
+    }
+
     private async Task SeedBaseStateAsync(bool includeTradeInventory, bool includeTradeReceipt, bool includeSellableInventoryItem = false, bool includeBuybackInventory = false)
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """

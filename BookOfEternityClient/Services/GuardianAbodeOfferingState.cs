@@ -118,19 +118,34 @@ internal static class GuardianAbodeOfferingState
         if (!fs.FileExists(PendingRequestPath))
             return;
 
+        if (!RealmSemantics.HasResolvedRealm(currentRealm))
+            return;
+
         if (!IsAfterlifeRealm(currentRealm))
         {
             fs.DeleteFile(PendingRequestPath);
             return;
         }
 
-        var request = await ReadAsync(fs);
+        var json = await fs.ReadFileAsync(PendingRequestPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        PendingAbodeOfferingRequest? request;
+        try
+        {
+            request = JsonSerializer.Deserialize<PendingAbodeOfferingRequest>(json, JsonOpts);
+        }
+        catch
+        {
+            return;
+        }
+
         if (request == null ||
             string.IsNullOrWhiteSpace(request.GuardianId) ||
             string.IsNullOrWhiteSpace(request.GuardianName) ||
             string.IsNullOrWhiteSpace(request.ReturnCycleId))
         {
-            fs.DeleteFile(PendingRequestPath);
             return;
         }
 
@@ -140,8 +155,9 @@ internal static class GuardianAbodeOfferingState
                 request.InkFeathersOffered % 50 != 0 ||
                 request.InkFeathersOffered > 150)
             {
-                fs.DeleteFile(PendingRequestPath);
+                return;
             }
+
             return;
         }
 
@@ -151,8 +167,9 @@ internal static class GuardianAbodeOfferingState
                 string.IsNullOrWhiteSpace(request.RelicName) ||
                 string.IsNullOrWhiteSpace(request.RelicRarity))
             {
-                fs.DeleteFile(PendingRequestPath);
+                return;
             }
+
             return;
         }
 
@@ -167,12 +184,11 @@ internal static class GuardianAbodeOfferingState
                 !AfterlifeArchiveState.IsSupportedArchiveRarity(request.ArchiveRarity) ||
                 !AfterlifeArchiveState.OfferingTypeMatchesEntryType(request.OfferingType, request.ArchiveEntryType))
             {
-                fs.DeleteFile(PendingRequestPath);
+                return;
             }
+
             return;
         }
-
-        fs.DeleteFile(PendingRequestPath);
     }
 
     public static int CountOfferedInkFeathersForReturnCycle(JsonElement journalRoot, string guardianId, string returnCycleId)

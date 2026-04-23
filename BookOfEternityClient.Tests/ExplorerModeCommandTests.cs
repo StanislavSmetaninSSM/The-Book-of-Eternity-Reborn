@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Reflection;
+using System.Collections;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -958,6 +959,23 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                             }
                         }
                         : null,
+                    tradeInventoryReceipts = includeTradeInventory
+                        ? new object[]
+                        {
+                            new
+                            {
+                                requestId = "guardian_trade_req_seeded",
+                                guardianId = "guardian_trade_001",
+                                guardianName = "Азалия",
+                                abodeId = "abode_social_001",
+                                tradeCycleId = "return_1",
+                                status = "ready",
+                                itemCount = 4,
+                                resolvedAtTurn = 12,
+                                resolvedAtUtc = "2026-03-26T00:05:00Z"
+                            }
+                        }
+                        : Array.Empty<object>(),
                     buybackRelics = includeBuybackRelics
                         ? new object[]
                         {
@@ -1103,6 +1121,23 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                         }
                     }
                 },
+                tradeInventoryReceipts = includeTradeInventory
+                    ? new object[]
+                    {
+                        new
+                        {
+                            requestId = "guardian_trade_req_seeded",
+                            guardianId = "guardian_trade_001",
+                            guardianName = "Азалия",
+                            abodeId = "abode_social_001",
+                            tradeCycleId = "return_1",
+                            status = "ready",
+                            itemCount = 4,
+                            resolvedAtTurn = 12,
+                            resolvedAtUtc = "2026-03-26T00:05:00Z"
+                        }
+                    }
+                    : Array.Empty<object>(),
                 buybackRelics = includeBuybackRelics
                     ? new object[]
                     {
@@ -1238,6 +1273,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         return renderable switch
         {
             Panel panel => ExtractPanelText(panel),
+            Tree tree => ExtractTreeText(tree),
+            Grid grid => ExtractGridText(grid),
+            Table table => ExtractTableText(table),
             Markup markup => ExtractMarkupText(markup),
             _ => renderable.ToString() ?? string.Empty
         };
@@ -1246,11 +1284,48 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
     private static string ExtractPanelText(Panel panel)
     {
+        var parts = new List<string>();
+        if (panel.Header is { } header && !string.IsNullOrWhiteSpace(header.Text))
+            parts.Add(header.Text);
+
         var childField = typeof(Panel).GetField("_child", BindingFlags.Instance | BindingFlags.NonPublic);
         if (childField?.GetValue(panel) is IRenderable child)
-            return ExtractRenderableText(child);
+        {
+            var childText = ExtractRenderableText(child);
+            if (!string.IsNullOrWhiteSpace(childText))
+                parts.Add(childText);
+        }
 
-        return string.Empty;
+        return string.Join("\n", parts);
+    }
+
+    private static string ExtractTreeText(Tree tree)
+    {
+        var rootField = typeof(Tree).GetField("_root", BindingFlags.Instance | BindingFlags.NonPublic);
+        if (rootField?.GetValue(tree) is not TreeNode root)
+            return string.Empty;
+
+        var parts = new List<string>();
+        AppendTreeNodeText(parts, root);
+        return string.Join("\n", parts);
+    }
+
+    private static void AppendTreeNodeText(List<string> parts, TreeNode node)
+    {
+        var renderableProperty = node.GetType().GetProperty("Renderable", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (renderableProperty?.GetValue(node) is IRenderable renderable)
+        {
+            var nodeText = ExtractRenderableText(renderable);
+            if (!string.IsNullOrWhiteSpace(nodeText))
+                parts.Add(nodeText);
+        }
+
+        var nodesProperty = node.GetType().GetProperty("Nodes", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (nodesProperty?.GetValue(node) is IEnumerable children)
+        {
+            foreach (var child in children.OfType<TreeNode>())
+                AppendTreeNodeText(parts, child);
+        }
     }
 
 
@@ -1281,6 +1356,57 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         }
 
         return string.Join("\n", lineTexts);
+    }
+
+    private static string ExtractGridText(Grid grid)
+    {
+        var rowTexts = new List<string>();
+        foreach (var row in grid.Rows)
+        {
+            var itemsField = row.GetType().GetField("_items", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (itemsField?.GetValue(row) is not IEnumerable<IRenderable> items)
+                continue;
+
+            foreach (var item in items)
+            {
+                var text = ExtractRenderableText(item);
+                if (!string.IsNullOrWhiteSpace(text))
+                    rowTexts.Add(text);
+            }
+        }
+
+        return string.Join("\n", rowTexts);
+    }
+
+    private static string ExtractTableText(Table table)
+    {
+        var rowTexts = new List<string>();
+
+        if (table.ShowHeaders)
+        {
+            var headerTexts = table.Columns
+                .Select(column => ExtractRenderableText(column.Header))
+                .Where(text => !string.IsNullOrWhiteSpace(text))
+                .ToList();
+            if (headerTexts.Count > 0)
+                rowTexts.Add(string.Join(" | ", headerTexts));
+        }
+
+        foreach (var row in table.Rows)
+        {
+            var cells = new List<string>();
+            for (var index = 0; index < row.Count; index++)
+            {
+                var text = ExtractRenderableText(row[index]);
+                if (!string.IsNullOrWhiteSpace(text))
+                    cells.Add(text);
+            }
+
+            if (cells.Count > 0)
+                rowTexts.Add(string.Join(" | ", cells));
+        }
+
+        return string.Join("\n", rowTexts);
     }
 
 

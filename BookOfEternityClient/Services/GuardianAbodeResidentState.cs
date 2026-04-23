@@ -37,6 +37,9 @@ internal static class GuardianAbodeResidentState
     public const string TransferModeDepartureOnly = "departure_only";
     public const string TransferModeAcceptedTransfer = "accepted_transfer";
     public const string TransferModeRefusedTransfer = "refused_transfer";
+    public const string TransferCompetitionLabelStrongPull = "strong_pull";
+    public const string TransferCompetitionLabelPlausiblePull = "plausible_pull";
+    public const string TransferCompetitionLabelWeakPull = "weak_pull";
 
     public const string ResponseModeTalkScene = "talk_scene";
     public const string ResponseModeHistoryRevealed = "history_revealed";
@@ -111,6 +114,13 @@ internal static class GuardianAbodeResidentState
         RewardStateEligible,
         RewardStateGranted,
         RewardStateConsumed
+    };
+
+    private static readonly HashSet<string> AllowedTransferCompetitionLabels = new(StringComparer.OrdinalIgnoreCase)
+    {
+        TransferCompetitionLabelStrongPull,
+        TransferCompetitionLabelPlausiblePull,
+        TransferCompetitionLabelWeakPull
     };
 
     private static readonly HashSet<string> AllowedAbodeDevotionTiers = new(StringComparer.OrdinalIgnoreCase)
@@ -267,6 +277,20 @@ internal static class GuardianAbodeResidentState
         public string MigrationDisposition { get; init; } = MigrationDispositionSelective;
         public string CommunalOrientation { get; init; } = CommunalOrientationMedium;
         public string StabilityNeed { get; init; } = StabilityNeedMedium;
+    }
+
+    public sealed class ResidentTransferCompetitionCandidate
+    {
+        public string TargetGuardianId { get; init; } = "";
+        public string TargetGuardianName { get; init; } = "";
+        public string TargetAbodeId { get; init; } = "";
+        public string TargetAbodeName { get; init; } = "";
+        public int SourceAbodePower { get; init; }
+        public int TargetAbodePower { get; init; }
+        public int TargetResidentCount { get; init; }
+        public int CompetitionScore { get; init; }
+        public string CompetitionLabel { get; init; } = TransferCompetitionLabelWeakPull;
+        public string CompetitionReason { get; init; } = "";
     }
 
     public sealed class ResidentAbodeDriftContext
@@ -946,6 +970,9 @@ internal static class GuardianAbodeResidentState
     public static bool IsSupportedTransferMode(string? transferMode) =>
         !string.IsNullOrWhiteSpace(transferMode) && AllowedTransferModes.Contains(transferMode.Trim());
 
+    public static bool IsSupportedTransferCompetitionLabel(string? competitionLabel) =>
+        !string.IsNullOrWhiteSpace(competitionLabel) && AllowedTransferCompetitionLabels.Contains(competitionLabel.Trim());
+
     public static bool IsSupportedResponseMode(string? responseMode) =>
         !string.IsNullOrWhiteSpace(responseMode) && AllowedResponseModes.Contains(responseMode.Trim());
 
@@ -1050,6 +1077,14 @@ internal static class GuardianAbodeResidentState
             TransferStatusRefused => "Переход отклонён",
             TransferStatusDepartedOnly => "Резидент покинул Обитель",
             _ => string.Empty
+        };
+
+    public static string GetTransferCompetitionLabelText(string? competitionLabel) =>
+        (competitionLabel ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            TransferCompetitionLabelStrongPull => "сильный зов",
+            TransferCompetitionLabelPlausiblePull => "убедительный зов",
+            _ => "слабый зов"
         };
 
     public static string GetPowerSensitivityLabel(string? powerSensitivity) =>
@@ -1209,6 +1244,13 @@ internal static class GuardianAbodeResidentState
         if (historyEntry["tags"] is not JsonArray tags)
             historyEntry["tags"] = tags = new JsonArray();
         NormalizeStringArray(tags);
+    }
+
+    public static ResidentEntry ReadResidentEntry(JsonObject resident, int? currentAbodePower = null)
+    {
+        var projection = resident.DeepClone().AsObject();
+        NormalizeResidentObject(projection, currentAbodePower);
+        return BuildResidentEntry(projection);
     }
 
     private static ResidentEntry BuildResidentEntry(JsonObject resident)
@@ -1669,6 +1711,82 @@ internal static class GuardianAbodeResidentState
         projection["migrationState"] = ResolveMigrationState(devotionLevel, restlessness);
         projection["isPresent"] = true;
         return projection;
+    }
+
+    public static IReadOnlyList<ResidentTransferCompetitionCandidate> BuildTransferCompetitionCandidates(
+        ResidentEntry resident,
+        JsonObject? guardiansRoot,
+        JsonObject? residentsRoot)
+    {
+        var candidates = new List<ResidentTransferCompetitionCandidate>();
+        if (guardiansRoot?["guardians"] is not JsonArray guardians)
+            return candidates;
+
+        var guardianPowers = CollectGuardianAbodePowerById(guardiansRoot);
+        var sourceAbodePower = guardianPowers.TryGetValue(resident.GuardianId, out var currentPower)
+            ? currentPower
+            : AbodePowerRules.DefaultCurrentPower;
+        var presentCounts = CollectPresentResidentCountsByAbode(residentsRoot);
+
+        foreach (var guardian in guardians.OfType<JsonObject>())
+        {
+            var targetGuardianId = GetNodeString(guardian["guardianId"]);
+            if (string.IsNullOrWhiteSpace(targetGuardianId))
+                continue;
+
+            if (guardian["abode"] is not JsonObject abode)
+                continue;
+
+            var targetAbodeId = GetNodeString(abode["abodeId"]);
+            if (string.IsNullOrWhiteSpace(targetAbodeId))
+                continue;
+
+            if (string.Equals(targetGuardianId, resident.GuardianId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(targetAbodeId, resident.AbodeId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var targetGuardianName = GuardianManifestation.GetDisplayName(guardian);
+            if (string.IsNullOrWhiteSpace(targetGuardianName))
+                targetGuardianName = GetNodeString(guardian["canonicalName"]) ?? GetNodeString(guardian["name"]) ?? targetGuardianId;
+
+            var targetAbodeName = GetNodeString(abode["name"]) ?? targetAbodeId;
+            var targetAbodePower = AbodePowerRules.GetCurrentPower(guardian);
+            presentCounts.TryGetValue($"{targetGuardianId}::{targetAbodeId}", out var targetResidentCount);
+
+            var competitionScore = ScoreTransferCompetition(
+                resident,
+                sourceAbodePower,
+                targetAbodePower,
+                targetResidentCount);
+            candidates.Add(new ResidentTransferCompetitionCandidate
+            {
+                TargetGuardianId = targetGuardianId,
+                TargetGuardianName = targetGuardianName,
+                TargetAbodeId = targetAbodeId,
+                TargetAbodeName = targetAbodeName,
+                SourceAbodePower = sourceAbodePower,
+                TargetAbodePower = targetAbodePower,
+                TargetResidentCount = targetResidentCount,
+                CompetitionScore = competitionScore,
+                CompetitionLabel = ResolveTransferCompetitionLabel(competitionScore),
+                CompetitionReason = BuildTransferCompetitionReason(
+                    resident,
+                    sourceAbodePower,
+                    targetAbodePower,
+                    targetResidentCount,
+                    competitionScore)
+            });
+        }
+
+        return candidates
+            .OrderByDescending(candidate => candidate.CompetitionScore)
+            .ThenByDescending(candidate => candidate.TargetAbodePower)
+            .ThenByDescending(candidate => candidate.TargetResidentCount)
+            .ThenBy(candidate => candidate.TargetGuardianName, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(candidate => candidate.TargetAbodeName, StringComparer.OrdinalIgnoreCase)
+            .ToList();
     }
 
     public static Dictionary<string, int> CollectGuardianAbodePowerById(JsonObject? guardiansRoot)
@@ -2679,6 +2797,175 @@ internal static class GuardianAbodeResidentState
         var abodeDisposition = resident["abodeDisposition"] as JsonObject;
         return NormalizeStabilityNeed(GetNodeString(abodeDisposition?["stabilityNeed"]), StabilityNeedMedium);
     }
+
+    private static Dictionary<string, int> CollectPresentResidentCountsByAbode(JsonObject? residentsRoot)
+    {
+        var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        if (residentsRoot?[EntriesProperty] is not JsonArray entries)
+            return result;
+
+        foreach (var resident in entries.OfType<JsonObject>())
+        {
+            NormalizeResidentObject(resident);
+            if (!GetNodeBool(resident["isPresent"], true))
+                continue;
+
+            var guardianId = GetNodeString(resident["guardianId"]);
+            var abodeId = GetNodeString(resident["abodeId"]);
+            if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(abodeId))
+                continue;
+
+            var key = $"{guardianId}::{abodeId}";
+            result[key] = result.TryGetValue(key, out var currentCount)
+                ? currentCount + 1
+                : 1;
+        }
+
+        return result;
+    }
+
+    private static int ScoreTransferCompetition(
+        ResidentEntry resident,
+        int sourceAbodePower,
+        int targetAbodePower,
+        int targetResidentCount)
+    {
+        var score = 40;
+        score += GetLeavePressureBonus(resident.AbodeDevotionLevel, resident.Restlessness);
+        score += GetPowerCompetitionDelta(targetAbodePower - sourceAbodePower, resident.AbodeDisposition.PowerSensitivity);
+        score += GetStabilityCompetitionBonus(sourceAbodePower, targetAbodePower, resident.AbodeDisposition.StabilityNeed);
+        score += GetCommunityCompetitionBonus(targetResidentCount, resident.AbodeDisposition.CommunalOrientation);
+        score += GetMigrationDispositionCompetitionBonus(resident.AbodeDisposition.MigrationDisposition);
+        score -= GetBondReluctancePenalty(resident.BondLevel);
+        return Math.Clamp(score, 0, 100);
+    }
+
+    private static string ResolveTransferCompetitionLabel(int competitionScore) => Math.Clamp(competitionScore, 0, 100) switch
+    {
+        >= 70 => TransferCompetitionLabelStrongPull,
+        >= 50 => TransferCompetitionLabelPlausiblePull,
+        _ => TransferCompetitionLabelWeakPull
+    };
+
+    private static string BuildTransferCompetitionReason(
+        ResidentEntry resident,
+        int sourceAbodePower,
+        int targetAbodePower,
+        int targetResidentCount,
+        int competitionScore)
+    {
+        var positive = new List<string>();
+        var resistance = new List<string>();
+        var powerDelta = targetAbodePower - sourceAbodePower;
+        if (powerDelta >= 10)
+            positive.Add($"цель заметно сильнее текущей Обители ({targetAbodePower}/100 против {sourceAbodePower}/100)");
+        else if (powerDelta >= 4)
+            positive.Add("новая Обитель выглядит чуть сильнее текущего дома");
+
+        if (GetStabilityCompetitionBonus(sourceAbodePower, targetAbodePower, resident.AbodeDisposition.StabilityNeed) >= 5)
+            positive.Add("она обещает более устойчивый порядок");
+
+        var communityBonus = GetCommunityCompetitionBonus(targetResidentCount, resident.AbodeDisposition.CommunalOrientation);
+        if (communityBonus >= 4)
+            positive.Add(targetResidentCount > 1 ? "там уже есть живая община" : "там уже есть хотя бы один живой узел общины");
+        else if (communityBonus < 0)
+            resistance.Add("пустая Обитель плохо подходит его потребности в общине");
+
+        if (GetMigrationDispositionCompetitionBonus(resident.AbodeDisposition.MigrationDisposition) >= 6)
+            positive.Add("сам характер резидента тянется к перемене");
+
+        if (GetLeavePressureBonus(resident.AbodeDevotionLevel, resident.Restlessness) >= 6)
+            positive.Add("внутреннее давление ухода уже велико");
+
+        if (GetBondReluctancePenalty(resident.BondLevel) >= 4)
+            resistance.Add("связь с нынешним Хранителем всё ещё удерживает");
+
+        if (positive.Count == 0)
+            positive.Add("явного системного притяжения почти нет");
+
+        var summary = char.ToUpperInvariant(positive[0][0]) + positive[0][1..];
+        if (positive.Count > 1)
+            summary += $", {string.Join(", ", positive.Skip(1).Take(1))}";
+
+        if (resistance.Count > 0)
+            return $"{summary}; но {string.Join(" и ", resistance.Take(2))}.";
+
+        return competitionScore >= 50
+            ? $"{summary}."
+            : $"{summary}.";
+    }
+
+    private static int GetLeavePressureBonus(int abodeDevotionLevel, int restlessness) =>
+        Math.Clamp((Math.Clamp(restlessness, 0, 100) - Math.Clamp(abodeDevotionLevel, 0, 100)) / 8, 0, 12);
+
+    private static int GetPowerCompetitionDelta(int powerDelta, string? powerSensitivity)
+    {
+        var divisor = NormalizePowerSensitivity(powerSensitivity, PowerSensitivityMedium) switch
+        {
+            PowerSensitivityHigh => 6,
+            PowerSensitivityLow => 14,
+            _ => 9
+        };
+        return Math.Clamp(powerDelta / divisor, -16, 16);
+    }
+
+    private static int GetStabilityCompetitionBonus(int sourceAbodePower, int targetAbodePower, string? stabilityNeed)
+    {
+        if (sourceAbodePower >= 40 || targetAbodePower < 40)
+            return 0;
+
+        var bonus = NormalizeStabilityNeed(stabilityNeed, StabilityNeedMedium) switch
+        {
+            StabilityNeedHigh => 8,
+            StabilityNeedLow => 2,
+            _ => 5
+        };
+
+        if (targetAbodePower >= 60)
+            bonus += 2;
+
+        return bonus;
+    }
+
+    private static int GetCommunityCompetitionBonus(int targetResidentCount, string? communalOrientation)
+    {
+        return NormalizeCommunalOrientation(communalOrientation, CommunalOrientationMedium) switch
+        {
+            CommunalOrientationHigh => targetResidentCount switch
+            {
+                <= 0 => -6,
+                1 => 4,
+                <= 3 => 7,
+                _ => 8
+            },
+            CommunalOrientationLow => targetResidentCount switch
+            {
+                <= 0 => 0,
+                1 => 1,
+                <= 3 => 2,
+                _ => 3
+            },
+            _ => targetResidentCount switch
+            {
+                <= 0 => -3,
+                1 => 2,
+                <= 3 => 4,
+                _ => 5
+            }
+        };
+    }
+
+    private static int GetMigrationDispositionCompetitionBonus(string? migrationDisposition) =>
+        NormalizeMigrationDisposition(migrationDisposition, MigrationDispositionSelective) switch
+        {
+            MigrationDispositionRooted => -10,
+            MigrationDispositionOpportunistic => 6,
+            MigrationDispositionWandering => 10,
+            _ => 0
+        };
+
+    private static int GetBondReluctancePenalty(int bondLevel) =>
+        Math.Clamp((Math.Clamp(bondLevel, 0, 100) - 30) / 10, 0, 7);
 
     private static int ResolveCurrentAbodePower(int? currentAbodePower) =>
         currentAbodePower.HasValue

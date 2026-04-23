@@ -15,6 +15,8 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
+    private sealed record CoordinatedGameStateWrite(string RelativePath, string? PreviousJson, string NextJson);
+
     private Task WriteCanonicalSoulStateAsync(JsonObject root)
     {
         return _fs.WriteFileAtomicAsync(
@@ -53,10 +55,14 @@ public partial class GameEngine
     /// Updates the soul state realm and optionally appends a life entry to livesHistory.
     /// Eliminates code duplication across HandleEndOfLife, CheckLifeTransitions, HandleIncarnation.
     /// </summary>
-    private async Task UpdateSoulStateRealm(string newRealm, string? lifeSummaryToAppend = null, bool incrementIncarnation = false)
+    private async Task<bool> UpdateSoulStateRealm(string newRealm, string? lifeSummaryToAppend = null, bool incrementIncarnation = false)
     {
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (soulJson == null) return;
+        if (string.IsNullOrWhiteSpace(soulJson))
+        {
+            _logger.LogWarning("Не удалось обновить soul_state.currentRealm до {NewRealm}: soul_state.json отсутствует или unreadable.", newRealm);
+            return false;
+        }
 
         try
         {
@@ -126,10 +132,62 @@ public partial class GameEngine
                 _afterlifeArchiveCandidateService.Clear();
                 await ResetGuardianGachaChargesForNewReturn();
             }
+
+            return true;
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Ошибка обновления soul_state.json");
+            return false;
+        }
+    }
+
+    private async Task<bool> TryCommitCoordinatedGameStateWritesAsync(params CoordinatedGameStateWrite[] writes)
+    {
+        var completedWrites = new List<CoordinatedGameStateWrite>();
+        try
+        {
+            foreach (var write in writes)
+            {
+                await _fs.WriteFileAtomicAsync(write.RelativePath, write.NextJson);
+                completedWrites.Add(write);
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            for (var index = completedWrites.Count - 1; index >= 0; index--)
+            {
+                if (await TryRestoreJsonFileAsync(completedWrites[index].RelativePath, completedWrites[index].PreviousJson))
+                    continue;
+
+                throw new InvalidOperationException(
+                    $"Не удалось безопасно откатить coordinated state write для {completedWrites[index].RelativePath}.",
+                    ex);
+            }
+
+            _logger.LogWarning(ex, "Coordinated state write прерван до завершения всех write-paths. Уже записанные файлы откатились к предыдущим snapshot-версиям.");
+            return false;
+        }
+    }
+
+    private async Task<bool> TryRestoreJsonFileAsync(string relativePath, string? previousJson)
+    {
+        if (previousJson == null)
+        {
+            _fs.DeleteFile(relativePath);
+            return true;
+        }
+
+        try
+        {
+            await _fs.WriteFileAtomicAsync(relativePath, previousJson);
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 
@@ -519,6 +577,208 @@ public partial class GameEngine
         finally
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
+        }
+    }
+
+    private async Task<string?> ConsumePendingShiningMemorySelectionAsync()
+    {
+        var pendingSelection = await ShiningBlessingEffectState.ReadPendingMemorySelectionAsync(_fs);
+        if (pendingSelection == null)
+            return null;
+
+        var candidates = pendingSelection.Candidates;
+        if (candidates.Count == 0)
+        {
+            await ShiningBlessingEffectState.ConsumePendingMemorySelectionAsync(_fs, _gameLoop.TurnNumber, null, 0);
+            return null;
+        }
+
+        var displayCount = Math.Min(candidates.Count, Math.Max(2, 2 + pendingSelection.Options));
+        var rerollsRemaining = pendingSelection.Rerolls;
+        var rerollsSpent = 0;
+        var batchStart = 0;
+
+        while (true)
+        {
+            var shownCandidates = BuildMemorySelectionWindow(candidates, batchStart, displayCount);
+            AnsiConsole.Clear();
+            var lines = new List<string>
+            {
+                "[bold gold1]🧠 Эхо-память Сияющей Обители[/]",
+                $"[dim]Дополнительные варианты: {pendingSelection.Options} • memory rerolls: {rerollsRemaining}[/]",
+                "",
+                "[dim]Выберите один memory echo для старта этой жизни. Это отдельный blessing-step и он не связан с draft Врат.[/]"
+            };
+            for (var index = 0; index < shownCandidates.Count; index++)
+            {
+                var candidate = shownCandidates[index];
+                lines.Add($"  {index + 1}. [white]Инкарнация #{candidate.Incarnation}[/] — {Markup.Escape(TrimMemorySelectionText(candidate.Summary, 120))}");
+            }
+
+            AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+            {
+                Header = new PanelHeader(" Память следующей жизни ", Justify.Center),
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Gold1),
+                Padding = new Padding(1, 1),
+                Expand = true
+            });
+
+            var choiceMap = new Dictionary<string, ShiningBlessingEffectState.MemoryEchoCandidate>(StringComparer.Ordinal);
+            var choices = new List<string>();
+            for (var index = 0; index < shownCandidates.Count; index++)
+            {
+                var candidate = shownCandidates[index];
+                var label = $"{index + 1}. Инкарнация #{candidate.Incarnation} — {TrimMemorySelectionText(candidate.Summary, 70)}";
+                choices.Add(label);
+                choiceMap[label] = candidate;
+            }
+
+            var canReroll = rerollsRemaining > 0 && candidates.Count > shownCandidates.Count;
+            if (canReroll)
+                choices.Add($"🔄 Сменить набор эхо-памяти ({rerollsRemaining})");
+            choices.Add("⏭ Пропустить выбор");
+
+            var choice = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                .Title("[bold yellow]Выберите memory echo[/]")
+                .HighlightStyle(new Style(Color.Gold1))
+                .PageSize(10)
+                .AddChoices(choices));
+
+            if (choiceMap.TryGetValue(choice, out var selectedCandidate))
+            {
+                await ShiningBlessingEffectState.ConsumePendingMemorySelectionAsync(
+                    _fs,
+                    _gameLoop.TurnNumber,
+                    selectedCandidate,
+                    rerollsSpent);
+                await RefreshRuntimeStateAsync();
+                AnsiConsole.MarkupLine($"[gold1]🧠 Эхо-память:[/] {Markup.Escape(selectedCandidate.Summary)}");
+                AnsiConsole.WriteLine();
+                return $"инкарнация #{selectedCandidate.Incarnation}: {selectedCandidate.Summary}";
+            }
+
+            if (canReroll && choice.Contains("Сменить набор", StringComparison.OrdinalIgnoreCase))
+            {
+                rerollsRemaining = Math.Max(0, rerollsRemaining - 1);
+                rerollsSpent += 1;
+                batchStart = (batchStart + shownCandidates.Count) % candidates.Count;
+                continue;
+            }
+
+            await ShiningBlessingEffectState.ConsumePendingMemorySelectionAsync(
+                _fs,
+                _gameLoop.TurnNumber,
+                null,
+                rerollsSpent);
+            await RefreshRuntimeStateAsync();
+            return null;
+        }
+    }
+
+    private static List<ShiningBlessingEffectState.MemoryEchoCandidate> BuildMemorySelectionWindow(
+        IReadOnlyList<ShiningBlessingEffectState.MemoryEchoCandidate> candidates,
+        int batchStart,
+        int displayCount)
+    {
+        var result = new List<ShiningBlessingEffectState.MemoryEchoCandidate>();
+        if (candidates.Count == 0 || displayCount <= 0)
+            return result;
+
+        var seenHints = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        for (var offset = 0; offset < candidates.Count && result.Count < displayCount; offset++)
+        {
+            var candidate = candidates[(batchStart + offset) % candidates.Count];
+            if (!seenHints.Add(candidate.LifeHint))
+                continue;
+
+            result.Add(candidate);
+        }
+
+        return result;
+    }
+
+    private static string TrimMemorySelectionText(string value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length <= maxLength)
+            return value;
+
+        return value[..Math.Max(0, maxLength - 1)] + "…";
+    }
+
+    private async Task<JsonObject?> TryReadPreparedShiningPackageAsync()
+    {
+        var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(shiningJson))
+            return null;
+
+        try
+        {
+            var root = JsonNode.Parse(shiningJson) as JsonObject;
+            return root?["preparedIncarnationPackage"] as JsonObject;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task ApplyPreparedShiningPackageToPendingWorldSetupAsync(JsonObject preparedPackage)
+    {
+        var selectedCards = preparedPackage["selectedCards"] as JsonArray;
+        if (selectedCards == null || selectedCards.Count == 0)
+            return;
+
+        var pendingSetup = await _worldDirectiveService.ReadPendingSetupAsync() ?? new WorldDirectiveService.PendingWorldSetup
+        {
+            Mode = "manual",
+            WorldDirectives = new WorldDirectiveService.WorldDirectives()
+        };
+        if (string.Equals(pendingSetup.Mode, "profile", StringComparison.OrdinalIgnoreCase))
+            pendingSetup.Mode = "mixed";
+
+        const string blessingPrefix = "Shining blessing: ";
+        const string blessingEffectPrefix = "Shining blessing effect:";
+        const string packageNotePrefix = "Frozen Shining package:";
+        pendingSetup.WorldDirectives.PlayerAmendments.RemoveAll(item => item.StartsWith(blessingPrefix, StringComparison.OrdinalIgnoreCase));
+        pendingSetup.WorldDirectives.ContinuityNotes.RemoveAll(item => item.StartsWith(packageNotePrefix, StringComparison.OrdinalIgnoreCase));
+        pendingSetup.WorldDirectives.ContinuityNotes.RemoveAll(item => item.StartsWith(blessingEffectPrefix, StringComparison.OrdinalIgnoreCase));
+
+        foreach (var card in selectedCards.OfType<JsonObject>())
+        {
+            var displayName = card["displayName"]?.GetValue<string>() ?? card["cardId"]?.GetValue<string>() ?? "unknown_card";
+            var displaySummary = card["displaySummary"]?.GetValue<string>() ?? "";
+            pendingSetup.WorldDirectives.PlayerAmendments.Add($"{blessingPrefix}{displayName} — {displaySummary}".TrimEnd(' ', '—'));
+        }
+
+        foreach (var line in ShiningBlessingEffectState.BuildPendingWorldDirectiveLines(preparedPackage))
+            pendingSetup.WorldDirectives.ContinuityNotes.Add(line);
+
+        pendingSetup.WorldDirectives.ContinuityNotes.Add(
+            $"{packageNotePrefix} use exactly these {selectedCards.Count} blessing card(s) as next-life bootstrap input; do not reconstruct them from mutable Shining faction state.");
+
+        await _worldDirectiveService.WritePendingSetupAsync(pendingSetup);
+    }
+
+    private async Task ClearPreparedShiningPackageAfterBootstrapAsync()
+    {
+        var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(shiningJson))
+            return;
+
+        try
+        {
+            var root = JsonNode.Parse(shiningJson) as JsonObject;
+            if (root == null || root["preparedIncarnationPackage"] == null)
+                return;
+
+            root["preparedIncarnationPackage"] = null;
+            await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString(JsonOpts));
+            await RefreshRuntimeStateAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Не удалось очистить preparedIncarnationPackage после успешного mortal bootstrap");
         }
     }
 

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization.Metadata;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging;
 
@@ -49,6 +50,7 @@ public partial class CanonicalStateNormalizer
     {
         "game_state/meta/soul_state.json",
         "game_state/meta/guardians.json",
+        ShiningAbodeState.StatePath,
         GuardianAbodeResidentState.StatePath,
         GuardianProjectState.TrackerPath,
         GuardianPowerEventState.JournalPath,
@@ -96,7 +98,8 @@ public partial class CanonicalStateNormalizer
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
         WriteIndented = true,
-        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver()
     };
 
     private const string GuardiansStatePath = "game_state/meta/guardians.json";
@@ -145,6 +148,7 @@ public partial class CanonicalStateNormalizer
 
         await NormalizeGuardiansAsync(backups);
         await NormalizeGuardianAbodeResidentsAsync(backups);
+        await NormalizeShiningAbodeStateAsync(backups);
         await NormalizeGuardianProjectsAsync(guardianProjectInputs);
         await NormalizeCharacterChronicleAsync(backups);
         await NormalizeAchievementsAsync(backups);

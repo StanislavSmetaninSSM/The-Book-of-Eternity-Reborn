@@ -150,8 +150,8 @@ public sealed class AfterlifeArchiveProjectFuelService
                     affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts));
 
         var summary = string.Equals(entryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase)
-            ? "Запрос на archive project fuel создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо materialize-ится в pressure relief."
-            : "Запрос на archive project fuel создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо materialize-ится в project work boost.";
+            ? "Запрос на подпитку архивной записью создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо превратится в ослабление давления."
+            : "Запрос на подпитку архивной записью создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо превратится в ускорение работы над проектом.";
         var gmAction =
             $"[{AfterlifeArchiveActionState.ProjectFuelActionTag}] Игрок тратит архивную запись «{request.ArchiveTitle}» ({request.ArchiveEntryType}, {request.ArchiveRarity}) на подпитку активного проекта Хранителя {request.GuardianName} ({guardianId}). " +
             $"Обязательно прочитай {AfterlifeArchiveActionState.ProjectFuelRequestPath} как client-authored contract. " +

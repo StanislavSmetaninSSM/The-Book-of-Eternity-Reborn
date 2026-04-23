@@ -1,5 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Security.Cryptography;
+using System.Text;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 using BookOfEternityClient.Core;
@@ -40,6 +42,7 @@ public partial class ExplorerMode
 
     // Set by interactive commands (equip/unequip) to signal an action to send to the GM
     private string? _pendingGmAction;
+    private PendingLocalTurnRollbackSnapshot? _pendingLocalTurnRollbackSnapshot;
     // Set by Reveal Fate so Rewrite Fate becomes available
     private bool _diceRevealed;
 
@@ -56,15 +59,27 @@ public partial class ExplorerMode
         string TimeLabel,
         IReadOnlyList<string> ChangeEffects);
 
+    internal sealed class PendingLocalTurnRollbackSnapshot
+    {
+        public Dictionary<string, string> BackupFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> BackupHashes { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> TrackedFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> BaselineFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
+    }
+
     private sealed record AfterlifeArchiveEntrySummary(
         string ArchiveId,
         string Title,
         string EntryType,
         string Rarity,
         string Summary,
+        string Content,
         int SourceLife,
         string SourceKind,
+        string SourceEntryId,
+        string AcquiredAtUtc,
         string SourceGuardianId,
+        string SourceGuardianName,
         IReadOnlyList<string> Tags,
         bool IsReserved,
         string ReservationKind,
@@ -81,6 +96,7 @@ public partial class ExplorerMode
         string ProposedEntryType,
         string Title,
         string Summary,
+        string Content,
         string Rarity,
         string Status,
         string DiscoveredAt,
@@ -318,6 +334,100 @@ public partial class ExplorerMode
             MarkupLine("[dim]Не удалось открыть папку автоматически. Путь выведен выше.[/]");
             WaitForKey();
         }
+    }
+
+    internal PendingLocalTurnRollbackSnapshot? ConsumePendingLocalTurnRollbackSnapshot()
+    {
+        var snapshot = _pendingLocalTurnRollbackSnapshot;
+        _pendingLocalTurnRollbackSnapshot = null;
+        return snapshot;
+    }
+
+    private async Task EnsurePendingLocalTurnRollbackSnapshotAsync(params string[] trackedFiles)
+    {
+        var normalizedTrackedFiles = trackedFiles
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Select(path => path.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (normalizedTrackedFiles.Count == 0)
+            return;
+
+        _pendingLocalTurnRollbackSnapshot ??= new PendingLocalTurnRollbackSnapshot();
+        foreach (var trackedFile in normalizedTrackedFiles)
+        {
+            if (!_pendingLocalTurnRollbackSnapshot.TrackedFiles.Add(trackedFile))
+                continue;
+
+            if (!_fs.FileExists(trackedFile))
+                continue;
+
+            var backupContent = await _fs.ReadFileAsync(trackedFile);
+            if (backupContent == null)
+                continue;
+
+            var backupPath = $"{trackedFile}.explorer.rollback.{DateTime.UtcNow.Ticks}";
+            await _fs.WriteFileAtomicAsync(backupPath, backupContent);
+            _pendingLocalTurnRollbackSnapshot.BaselineFiles.Add(trackedFile);
+            _pendingLocalTurnRollbackSnapshot.BackupFiles[trackedFile] = backupPath;
+            _pendingLocalTurnRollbackSnapshot.BackupHashes[trackedFile] = ComputeExplorerRollbackHash(backupContent);
+        }
+    }
+
+    private async Task RestorePendingLocalTurnRollbackSnapshotAsync()
+    {
+        var snapshot = _pendingLocalTurnRollbackSnapshot;
+        if (snapshot == null)
+            return;
+
+        foreach (var trackedFile in snapshot.TrackedFiles)
+        {
+            if (snapshot.BaselineFiles.Contains(trackedFile))
+                continue;
+
+            if (_fs.FileExists(trackedFile))
+                _fs.DeleteFile(trackedFile);
+        }
+
+        foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
+        {
+            var backupContent = await _fs.ReadFileAsync(backupPath);
+            if (backupContent == null)
+                continue;
+
+            if (snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) &&
+                !string.Equals(ComputeExplorerRollbackHash(backupContent), expectedHash, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            await _fs.WriteFileAtomicAsync(originalPath, backupContent);
+        }
+
+        await DiscardPendingLocalTurnRollbackSnapshotAsync();
+        await _stateManager.RefreshGameStateAsync();
+    }
+
+    private async Task DiscardPendingLocalTurnRollbackSnapshotAsync()
+    {
+        var snapshot = _pendingLocalTurnRollbackSnapshot;
+        _pendingLocalTurnRollbackSnapshot = null;
+        if (snapshot == null)
+            return;
+
+        foreach (var backupPath in snapshot.BackupFiles.Values.Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            if (_fs.FileExists(backupPath))
+                _fs.DeleteFile(backupPath);
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private static string ComputeExplorerRollbackHash(string content)
+    {
+        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(content));
+        return Convert.ToHexString(bytes);
     }
 
     private async Task ShowScenarioCoreReviewAsync()
@@ -707,13 +817,32 @@ public partial class ExplorerMode
         var summary = GetStr(entry, "summary", GetStr(entry, "description", GetStr(entry, "content", "")));
 
         var prefix = turn > 0 ? $"t{turn}: " : string.Empty;
-        var typePrefix = string.IsNullOrWhiteSpace(eventType) ? string.Empty : $"{eventType}: ";
-
         if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(summary))
-            return $"{prefix}{typePrefix}{title} — {summary}";
+            return $"{prefix}{title} — {summary}";
         if (!string.IsNullOrWhiteSpace(summary))
-            return $"{prefix}{typePrefix}{summary}";
-        return $"{prefix}{typePrefix}{title}";
+            return $"{prefix}{summary}";
+        if (!string.IsNullOrWhiteSpace(title))
+            return $"{prefix}{title}";
+
+        return $"{prefix}{DescribeActorJournalEventType(eventType)}";
+    }
+
+    private static string DescribeActorJournalEventType(string eventType)
+    {
+        return (eventType ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "started" => "Начало",
+            "completed" => "Завершение",
+            "pressured" => "Давление",
+            "talk" or "conversation" => "Разговор",
+            "lesson" => "Наставление",
+            "trade" => "Обмен",
+            "abode_devotion_shift" => "Сдвиг преданности Обители",
+            "succeeded" => "Успех",
+            "relic_grant" => "Дар реликвии",
+            "assisted" => "Помощь",
+            _ => string.Empty
+        };
     }
 
     private static string GetRarityColor(string rarity) => rarity.ToLower() switch
@@ -1140,6 +1269,9 @@ public partial class ExplorerMode
         {
             static string GetLifeScalar(JsonElement lifeEntry, params string[] propertyNames)
             {
+                if (lifeEntry.ValueKind != JsonValueKind.Object)
+                    return "";
+
                 foreach (var propertyName in propertyNames)
                 {
                     if (!lifeEntry.TryGetProperty(propertyName, out var value))
@@ -1160,6 +1292,9 @@ public partial class ExplorerMode
 
             static List<string> ReadLifeStringArray(JsonElement lifeEntry, params string[] propertyNames)
             {
+                if (lifeEntry.ValueKind != JsonValueKind.Object)
+                    return new List<string>();
+
                 foreach (var propertyName in propertyNames)
                 {
                     if (!lifeEntry.TryGetProperty(propertyName, out var value) || value.ValueKind != JsonValueKind.Array)
@@ -1179,29 +1314,128 @@ public partial class ExplorerMode
                 return new List<string>();
             }
 
+            static List<string> ReadLifeObjectArraySummaries(JsonElement lifeEntry, string propertyName)
+            {
+                if (lifeEntry.ValueKind != JsonValueKind.Object)
+                    return new List<string>();
+
+                if (!lifeEntry.TryGetProperty(propertyName, out var value) || value.ValueKind != JsonValueKind.Array)
+                    return new List<string>();
+
+                var result = new List<string>();
+                foreach (var item in value.EnumerateArray())
+                {
+                    if (item.ValueKind == JsonValueKind.String)
+                    {
+                        var raw = item.GetString() ?? string.Empty;
+                        if (!string.IsNullOrWhiteSpace(raw))
+                            result.Add(raw);
+                        continue;
+                    }
+
+                    if (item.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var parts = new List<string>();
+                    var primary = GetStr(item, "name",
+                        GetStr(item, "title",
+                            GetStr(item, "person",
+                                GetStr(item, "partner",
+                                    GetStr(item, "choice",
+                                        GetStr(item, "decision",
+                                            GetStr(item, "label", "")))))));
+                    var secondary = GetStr(item, "relationshipType",
+                        GetStr(item, "relationType",
+                            GetStr(item, "type",
+                                GetStr(item, "alignment",
+                                    GetStr(item, "stance", "")))));
+                    var summary = GetStr(item, "summary",
+                        GetStr(item, "description",
+                            GetStr(item, "consequence",
+                                GetStr(item, "outcome",
+                                    GetStr(item, "bond", "")))));
+
+                    if (!string.IsNullOrWhiteSpace(primary))
+                        parts.Add(primary);
+                    if (!string.IsNullOrWhiteSpace(secondary))
+                        parts.Add(secondary);
+                    if (!string.IsNullOrWhiteSpace(summary))
+                        parts.Add(summary);
+
+                    var rendered = parts.Count > 0
+                        ? string.Join(" — ", parts)
+                        : item.GetRawText();
+                    if (!string.IsNullOrWhiteSpace(rendered))
+                        result.Add(rendered);
+                }
+
+                return result;
+            }
+
             lifeIndex++;
             var incarnation = life.TryGetProperty("incarnation", out var inc) ? inc.ToString() : lifeIndex.ToString();
-            var summary = GetStr(life, "summary", "Нет описания");
+            var lifeRecord = life.TryGetProperty("recordLifeCompletion", out var lifeRecordNode) &&
+                             lifeRecordNode.ValueKind == JsonValueKind.Object
+                ? lifeRecordNode
+                : default;
+            var characterFinalState = lifeRecord.ValueKind == JsonValueKind.Object &&
+                                      lifeRecord.TryGetProperty("characterFinalState", out var finalStateNode) &&
+                                      finalStateNode.ValueKind == JsonValueKind.Object
+                ? finalStateNode
+                : default;
+
+            var summary = GetStr(life, "summary", "");
             var endedAt = GetStr(life, "endedAt", GetStr(life, "completionDate", ""));
             var turnsLived = GetStr(life, "turnsLived", "?");
 
-            var charName = GetStr(life, "characterName", "");
-            var worldName = GetStr(life, "world", GetStr(life, "worldName", ""));
-            var finalLevel = GetStr(life, "finalLevel", "");
+            var charName = GetStr(life, "characterName",
+                GetLifeScalar(characterFinalState, "characterName", "name"));
+            var worldName = GetStr(life, "world",
+                GetStr(life, "worldName",
+                    GetLifeScalar(characterFinalState, "world", "worldName")));
+            var finalLevel = GetStr(life, "finalLevel",
+                GetLifeScalar(characterFinalState, "finalLevel", "level"));
             var questsCompleted = GetStr(life, "questsCompleted", "");
-            var deathReason = GetStr(life, "deathReason", "");
+            var deathReason = GetStr(life, "deathReason",
+                GetLifeScalar(characterFinalState, "deathReason", "causeOfDeath"));
             var worldGenre = GetLifeScalar(life, "worldGenre");
             var totalSoulQuests = GetLifeScalar(life, "totalSoulQuests", "soulQuestsCompleted");
             var feathersEarned = GetLifeScalar(life, "feathersEarned");
             var gmCoefficient = GetLifeScalar(life, "gmCoefficient");
             var enlightenmentTierReached = GetLifeScalar(life, "enlightenmentTierReached");
             var alignmentAtDeath = GetLifeScalar(life, "alignmentAtDeath", "finalAlignment");
+            if (string.IsNullOrWhiteSpace(alignmentAtDeath))
+                alignmentAtDeath = GetLifeScalar(characterFinalState, "alignmentAtDeath", "finalAlignment", "alignment");
             var worldImpactLevel = GetLifeScalar(life, "worldImpactLevel");
             var moralChoicesRecord = GetLifeScalar(life, "moralChoicesRecord");
             var incarnationStartDate = GetLifeScalar(life, "incarnationStartDate", "startedAt");
             var incarnationDuration = GetLifeScalar(life, "incarnationDuration", "duration");
             var notableAchievements = ReadLifeStringArray(life, "notableAchievements");
             var npcSoulImprints = ReadLifeStringArray(life, "npcSoulImprints");
+            var majorAchievements = lifeRecord.ValueKind == JsonValueKind.Object
+                ? ReadLifeStringArray(lifeRecord, "majorAchievements")
+                : new List<string>();
+            var relationshipsFormed = lifeRecord.ValueKind == JsonValueKind.Object
+                ? ReadLifeObjectArraySummaries(lifeRecord, "relationshipsFormed")
+                : new List<string>();
+            var moralChoices = lifeRecord.ValueKind == JsonValueKind.Object
+                ? ReadLifeObjectArraySummaries(lifeRecord, "moralChoices")
+                : new List<string>();
+            var skillsLearned = lifeRecord.ValueKind == JsonValueKind.Object
+                ? ReadLifeStringArray(lifeRecord, "skillsLearned")
+                : new List<string>();
+            var enlightenmentGained = lifeRecord.ValueKind == JsonValueKind.Object
+                ? GetLifeScalar(lifeRecord, "enlightenmentGained")
+                : string.Empty;
+
+            if (string.IsNullOrWhiteSpace(summary))
+            {
+                summary = majorAchievements.Count > 0
+                    ? $"Канонический итог: {majorAchievements[0]}"
+                    : !string.IsNullOrWhiteSpace(deathReason)
+                        ? $"Канонический итог: {deathReason}"
+                        : "Каноническая запись завершённой жизни.";
+            }
 
             var titleParts = new List<string> { $"[bold cyan]Жизнь #{Markup.Escape(incarnation)}[/]" };
             if (!string.IsNullOrEmpty(charName)) titleParts.Add($"[white]{Markup.Escape(charName)}[/]");
@@ -1239,9 +1473,19 @@ public partial class ExplorerMode
 
             if (notableAchievements.Count > 0)
                 lifeNode.AddNode($"[green]⭐ Значимые достижения: {Markup.Escape(string.Join(", ", notableAchievements))}[/]");
+            if (majorAchievements.Count > 0)
+                lifeNode.AddNode($"[green]🏔 Главные свершения: {Markup.Escape(string.Join(", ", majorAchievements))}[/]");
 
             if (!string.IsNullOrWhiteSpace(moralChoicesRecord))
                 lifeNode.AddNode($"[italic]⚖ {Markup.Escape(moralChoicesRecord)}[/]");
+            if (moralChoices.Count > 0)
+                lifeNode.AddNode($"[italic]⚖ Канонические выборы: {Markup.Escape(string.Join(" • ", moralChoices))}[/]");
+            if (relationshipsFormed.Count > 0)
+                lifeNode.AddNode($"[cyan]🤝 Канонические связи: {Markup.Escape(string.Join(" • ", relationshipsFormed))}[/]");
+            if (skillsLearned.Count > 0)
+                lifeNode.AddNode($"[cyan]🛠 Освоенные навыки: {Markup.Escape(string.Join(", ", skillsLearned))}[/]");
+            if (!string.IsNullOrWhiteSpace(enlightenmentGained))
+                lifeNode.AddNode($"[yellow]✨ Просветление за жизнь: {Markup.Escape(enlightenmentGained)}[/]");
 
             if (npcSoulImprints.Count > 0)
                 lifeNode.AddNode($"[mediumpurple2]👤 Слепки души: {Markup.Escape(string.Join(", ", npcSoulImprints))}[/]");

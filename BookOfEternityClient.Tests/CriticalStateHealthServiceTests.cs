@@ -104,6 +104,23 @@ public sealed class CriticalStateHealthServiceTests : IDisposable
         Assert.DoesNotContain(issues, issue => issue.FilePath == "game_state/meta/guardians.json");
     }
 
+    [Fact]
+    public async Task ValidateCriticalCanonicalStateAsync_FlagsFragmentOnlyGuardiansRoot()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "activeGuardian": {
+            "guardianId": "azalia",
+            "name": "Азалия"
+          }
+        }
+        """);
+
+        var issues = await _service.ValidateCriticalCanonicalStateAsync();
+
+        Assert.Contains(issues, issue => issue.Code == "guardians_missing_canonical_surface");
+    }
+
     public void Dispose()
     {
         try

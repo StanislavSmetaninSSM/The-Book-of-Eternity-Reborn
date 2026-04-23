@@ -1369,6 +1369,15 @@ public partial class ExplorerMode
             AppendStatusCustomStatePreview(extraText, customStatesDoc.RootElement);
         }
 
+        var shiningBlessingLines = await ShiningBlessingEffectState.BuildStatusLinesAsync(_fs, _stateManager.CurrentState.TurnNumber);
+        if (shiningBlessingLines.Count > 0)
+        {
+            if (extraText.Count > 0) extraText.Add("");
+            extraText.Add("[bold gold1]✨ Благословения Сияющей Обители[/]");
+            foreach (var line in shiningBlessingLines)
+                extraText.Add($"[gold1]•[/] {Markup.Escape(line)}");
+        }
+
         if (extraText.Count > 0)
         {
             WriteLine();

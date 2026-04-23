@@ -89,7 +89,7 @@ public partial class ExplorerMode
                         s = GetStr(ed, "equipSlot", "");
                     if (string.IsNullOrEmpty(s) && r.Data.TryGetProperty("gameplayStatus", out var gs))
                         s = GetStr(gs, "currentSlot", "");
-                    if (!string.IsNullOrEmpty(s)) slotStr = $" [[{Markup.Escape(s)}]]";
+                    if (!string.IsNullOrEmpty(s)) slotStr = $" [[{Markup.Escape(FormatSoulRelicSlotLabel(s))}]]";
                 }
                 return ($"💎 {Markup.Escape(r.Name)}{slotStr} {statusTag}", r.Id);
             }).ToList());
@@ -167,7 +167,7 @@ public partial class ExplorerMode
             choices.Add("[grey]← Назад[/]");
 
             var selected = Prompt(new SelectionPrompt<string>()
-                .Title("[bold yellow]📚 Архив души[/] [dim](сохранённые afterlife-записи)[/]")
+                .Title("[bold yellow]📚 Архив души[/] [dim](сохранённые загробные записи)[/]")
                 .PageSize(12)
                 .HighlightStyle(new Style(Color.Yellow))
                 .AddChoices(choices));
@@ -180,6 +180,10 @@ public partial class ExplorerMode
                 return;
 
             var entry = entries[index];
+            var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+            var trackerDoc = await _stateManager.LoadGameStateFileAsync(GuardianProjectState.TrackerPath);
+            var sourceGuardianLabel = ResolveArchiveGuardianLabel(entry, guardiansDoc?.RootElement);
+            var targetProjectLabel = ResolveArchiveProjectLabel(entry, trackerDoc?.RootElement);
             var lines = new List<string>
             {
                 $"[bold yellow]📚 {Markup.Escape(entry.Title)}[/]",
@@ -190,8 +194,14 @@ public partial class ExplorerMode
                 $"  Источник записи: [dim]{Markup.Escape(AfterlifeArchiveState.GetSourceKindLabel(entry.SourceKind))}[/]"
             };
 
+            if (!string.IsNullOrWhiteSpace(sourceGuardianLabel))
+                lines.Add($"  Связанный хранитель: [white]{Markup.Escape(sourceGuardianLabel)}[/]");
             if (!string.IsNullOrWhiteSpace(entry.SourceGuardianId))
-                lines.Add($"  Связанный хранитель: [white]{Markup.Escape(entry.SourceGuardianId)}[/]");
+                lines.Add($"  [dim]Идентификатор хранителя: {Markup.Escape(entry.SourceGuardianId)}[/]");
+            if (!string.IsNullOrWhiteSpace(entry.SourceEntryId))
+                lines.Add($"  Исходная запись Кодекса: [dim]{Markup.Escape(entry.SourceEntryId)}[/]");
+            if (!string.IsNullOrWhiteSpace(entry.AcquiredAtUtc))
+                lines.Add($"  Сохранено в Архив: [dim]{Markup.Escape(entry.AcquiredAtUtc)}[/]");
             if (entry.Tags.Count > 0)
                 lines.Add($"  Метки: [dim]{Markup.Escape(string.Join(", ", entry.Tags))}[/]");
             if (entry.IsReserved)
@@ -200,13 +210,16 @@ public partial class ExplorerMode
                     ? entry.ReservedForGuardianName
                     : entry.ReservedForGuardianId;
                 lines.Add($"  Статус: [yellow]зарезервирована[/] для [white]{Markup.Escape(reservedFor)}[/] через [yellow]{Markup.Escape(AfterlifeArchiveState.GetReservationLabel(entry.ReservationKind))}[/]");
-                if (!string.IsNullOrWhiteSpace(entry.ReservedForProjectName) || !string.IsNullOrWhiteSpace(entry.ReservedForProjectId))
-                    lines.Add($"  Целевой проект: [dim]{Markup.Escape(string.IsNullOrWhiteSpace(entry.ReservedForProjectName) ? entry.ReservedForProjectId : entry.ReservedForProjectName)}[/]");
+                if (!string.IsNullOrWhiteSpace(targetProjectLabel))
+                    lines.Add($"  Целевой проект: [white]{Markup.Escape(targetProjectLabel)}[/]");
+                if (!string.IsNullOrWhiteSpace(entry.ReservedForProjectId))
+                    lines.Add($"  [dim]Идентификатор проекта: {Markup.Escape(entry.ReservedForProjectId)}[/]");
             }
-            if (!string.IsNullOrWhiteSpace(entry.Summary))
+            var entryBody = string.IsNullOrWhiteSpace(entry.Content) ? entry.Summary : entry.Content;
+            if (!string.IsNullOrWhiteSpace(entryBody))
             {
                 lines.Add("");
-                lines.Add($"[white]{Markup.Escape(entry.Summary)}[/]");
+                lines.Add($"[white]{Markup.Escape(entryBody)}[/]");
             }
 
             Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -219,6 +232,12 @@ public partial class ExplorerMode
             });
 
             var actions = new List<string>();
+            if (!string.IsNullOrWhiteSpace(entry.SourceEntryId))
+                actions.Add("📖 Открыть исходную запись Кодекса");
+            if (!string.IsNullOrWhiteSpace(entry.SourceGuardianId))
+                actions.Add("🛡 Открыть связанного Хранителя");
+            if (!string.IsNullOrWhiteSpace(entry.ReservedForProjectId))
+                actions.Add("🔬 Открыть целевой проект");
             var consultationAvailable = await CanUseArchiveConsultationAsync(entry);
             if (consultationAvailable)
                 actions.Add("🔮 Консультация с дружественным Хранителем");
@@ -253,6 +272,27 @@ public partial class ExplorerMode
             {
                 var consultationResult = await StartArchiveConsultationAsync(entry);
                 if (consultationResult)
+                {
+                    await _stateManager.RefreshGameStateAsync();
+                    continue;
+                }
+            }
+            else if (action.StartsWith("🛡", StringComparison.Ordinal))
+            {
+                if (await TryShowLinkedArchiveGuardianAsync(entry.SourceGuardianId))
+                {
+                    await _stateManager.RefreshGameStateAsync();
+                    continue;
+                }
+            }
+            else if (action.StartsWith("📖", StringComparison.Ordinal))
+            {
+                if (await TryShowCodexEntryByIdAsync(entry.SourceEntryId))
+                    continue;
+            }
+            else if (action.StartsWith("🔬", StringComparison.Ordinal))
+            {
+                if (await TryShowLinkedArchiveProjectAsync(entry.ReservedForProjectId))
                 {
                     await _stateManager.RefreshGameStateAsync();
                     continue;
@@ -300,7 +340,7 @@ public partial class ExplorerMode
             if (selected.Contains("Отметить всё", StringComparison.OrdinalIgnoreCase))
             {
                 await AfterlifeNotificationState.MarkAllReadAsync(_fs);
-                MarkupLine("[green]✅ Все afterlife-уведомления отмечены как прочитанные.[/]");
+                MarkupLine("[green]✅ Все загробные уведомления отмечены как прочитанные.[/]");
                 continue;
             }
 
@@ -328,8 +368,14 @@ public partial class ExplorerMode
             lines.Add($"  Запись Архива: [white]{Markup.Escape(notification.ArchiveTitle)}[/]");
         if (!string.IsNullOrWhiteSpace(notification.TargetProjectName))
             lines.Add($"  Проект: [white]{Markup.Escape(notification.TargetProjectName)}[/]");
+        if (notification.CreatedAtTurn > 0)
+            lines.Add($"  Ход: [dim]{notification.CreatedAtTurn}[/]");
         if (!string.IsNullOrWhiteSpace(notification.CreatedAtUtc))
             lines.Add($"  Получено: [dim]{Markup.Escape(notification.CreatedAtUtc)}[/]");
+
+        await AppendShiningNotificationDetailLinesAsync(notification, lines);
+        await AppendPlayerGuardianFoundationNotificationDetailLinesAsync(notification, lines);
+        await AppendExactAfterlifeNotificationDetailLinesAsync(notification, lines);
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -346,6 +392,22 @@ public partial class ExplorerMode
             !string.IsNullOrWhiteSpace(notification.GuardianId))
         {
             actions.Add("🛒 Открыть торговлю");
+        }
+
+        if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypePlayerGuardianFoundationResolved, StringComparison.OrdinalIgnoreCase))
+            actions.Add("🛡️ Открыть Хранителей");
+
+        if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeShiningTradeInventoryReady, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeShiningCoreActionResolved, StringComparison.OrdinalIgnoreCase))
+        {
+            actions.Add("✨ Открыть Сияющую Обитель");
+        }
+
+        if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeShiningFactionFoundingResolved, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeShiningFactionRealignmentResolved, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeShiningFactionLeadershipResolved, StringComparison.OrdinalIgnoreCase))
+        {
+            actions.Add("🏛 Открыть политику Сияющей Обители");
         }
 
         if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianQuestAvailable, StringComparison.OrdinalIgnoreCase))
@@ -370,6 +432,9 @@ public partial class ExplorerMode
         {
             actions.Add("🛡️ Открыть Хранителей");
         }
+
+        if (!string.IsNullOrWhiteSpace(notification.ResidentId))
+            actions.Add("👤 Открыть резидента");
 
         if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeAbodeResidentQuestAvailable, StringComparison.OrdinalIgnoreCase))
             actions.Add("🧵 Открыть квесты души");
@@ -400,7 +465,22 @@ public partial class ExplorerMode
 
         if (selected.StartsWith("🛒", StringComparison.Ordinal))
         {
-            await ShowGuardianTradePanel(notification.GuardianId);
+            if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianTradeInventoryReady, StringComparison.OrdinalIgnoreCase))
+                await ShowGuardianTradePanel(notification.GuardianId);
+            else
+                await ShowShiningTradeAndForgeAsync();
+            return;
+        }
+
+        if (selected.StartsWith("✨", StringComparison.Ordinal))
+        {
+            await ShowShiningAbodeOverview();
+            return;
+        }
+
+        if (selected.StartsWith("🏛", StringComparison.Ordinal))
+        {
+            await ShowShiningPoliticsOverview();
             return;
         }
 
@@ -413,6 +493,16 @@ public partial class ExplorerMode
         if (selected.StartsWith("🛡️", StringComparison.Ordinal))
         {
             await ShowGuardians();
+            return;
+        }
+
+        if (selected.StartsWith("👤", StringComparison.Ordinal))
+        {
+            if (!await ShowGuardianAbodeResidentDetailByIdAsync(notification.ResidentId))
+            {
+                MarkupLine("[yellow]Не удалось открыть точную карточку резидента: текущий resident state недоступен или запись исчезла.[/]");
+                WaitForKey();
+            }
             return;
         }
 
@@ -437,6 +527,421 @@ public partial class ExplorerMode
         if (selected.Contains("Отметить", StringComparison.OrdinalIgnoreCase))
             await AfterlifeNotificationState.MarkReadAsync(_fs, notification.NotificationId);
     }
+
+    private async Task AppendExactAfterlifeNotificationDetailLinesAsync(AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        await AppendExactArchiveNotificationDetailLinesAsync(notification, lines);
+        await AppendExactProjectNotificationDetailLinesAsync(notification, lines);
+        await AppendExactGuardianNotificationDetailLinesAsync(notification, lines);
+        await AppendExactResidentNotificationDetailLinesAsync(notification, lines);
+    }
+
+    private async Task AppendExactArchiveNotificationDetailLinesAsync(AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        if (string.IsNullOrWhiteSpace(notification.ArchiveId))
+            return;
+
+        if (!string.IsNullOrWhiteSpace(notification.ArchiveEntryType) ||
+            !string.IsNullOrWhiteSpace(notification.ArchiveRarity) ||
+            !string.IsNullOrWhiteSpace(notification.ArchiveSummary))
+        {
+            lines.Add("");
+            lines.Add("  [bold]Связанная запись Архива:[/]");
+            lines.Add($"  Название: [white]{Markup.Escape(notification.ArchiveTitle ?? notification.ArchiveId)}[/]");
+            if (!string.IsNullOrWhiteSpace(notification.ArchiveEntryType))
+                lines.Add($"  Тип: [dim]{Markup.Escape(AfterlifeArchiveState.GetEntryTypeLabel(notification.ArchiveEntryType))}[/]");
+            if (!string.IsNullOrWhiteSpace(notification.ArchiveRarity))
+                lines.Add($"  Редкость: [dim]{Markup.Escape(notification.ArchiveRarity)}[/]");
+            if (!string.IsNullOrWhiteSpace(notification.ArchiveSummary))
+                lines.Add($"  Сводка записи: [dim]{Markup.Escape(notification.ArchiveSummary)}[/]");
+            return;
+        }
+
+        using var soulDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
+        if (soulDoc?.RootElement.ValueKind != JsonValueKind.Object ||
+            !soulDoc.RootElement.TryGetProperty("afterlifeArchive", out var archiveRoot) ||
+            archiveRoot.ValueKind != JsonValueKind.Object ||
+            !archiveRoot.TryGetProperty("stored", out var storedEntries) ||
+            storedEntries.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        foreach (var entry in storedEntries.EnumerateArray())
+        {
+            if (!string.Equals(GetStr(entry, "archiveId", ""), notification.ArchiveId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var archiveTitle = GetStr(entry, "title", notification.ArchiveTitle ?? notification.ArchiveId);
+            var archiveType = GetStr(entry, "entryType", "?");
+            var archiveRarity = GetStr(entry, "rarity", "?");
+            var archiveSummary = GetStr(entry, "summary", "");
+            lines.Add("");
+            lines.Add("  [bold]Связанная запись Архива:[/]");
+            lines.Add($"  Название: [white]{Markup.Escape(archiveTitle)}[/]");
+            lines.Add($"  Тип: [dim]{Markup.Escape(AfterlifeArchiveState.GetEntryTypeLabel(archiveType))}[/]");
+            lines.Add($"  Редкость: [dim]{Markup.Escape(archiveRarity)}[/]");
+            if (!string.IsNullOrWhiteSpace(archiveSummary))
+                lines.Add($"  Сводка записи: [dim]{Markup.Escape(archiveSummary)}[/]");
+            return;
+        }
+    }
+
+    private async Task AppendExactProjectNotificationDetailLinesAsync(AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        if (string.IsNullOrWhiteSpace(notification.TargetProjectId))
+            return;
+
+        if (!string.IsNullOrWhiteSpace(notification.TargetProjectStateLabel) ||
+            notification.TargetProjectProgressPercent >= 0)
+        {
+            lines.Add("");
+            lines.Add("  [bold]Связанный проект:[/]");
+            lines.Add($"  Проект: [white]{Markup.Escape(notification.TargetProjectName ?? notification.TargetProjectId)}[/]");
+            if (!string.IsNullOrWhiteSpace(notification.GuardianName))
+                lines.Add($"  Хранитель: [white]{Markup.Escape(notification.GuardianName)}[/]");
+            if (!string.IsNullOrWhiteSpace(notification.TargetProjectStateLabel))
+                lines.Add($"  Состояние: [dim]{Markup.Escape(FormatGuardianProjectStateLabel(notification.TargetProjectStateLabel))}[/]");
+            if (notification.TargetProjectProgressPercent >= 0)
+                lines.Add($"  Прогресс: [dim]{notification.TargetProjectProgressPercent}%[/]");
+            return;
+        }
+
+        using var trackerDoc = await _stateManager.LoadGameStateFileAsync(GuardianProjectState.TrackerPath);
+        if (trackerDoc?.RootElement.ValueKind != JsonValueKind.Object)
+            return;
+
+        foreach (var propertyName in new[] { "activeProjects", "completedProjects" })
+        {
+            if (!trackerDoc.RootElement.TryGetProperty(propertyName, out var entries) || entries.ValueKind != JsonValueKind.Array)
+                continue;
+
+            foreach (var entry in entries.EnumerateArray())
+            {
+                if (!entry.TryGetProperty("project", out var project) || project.ValueKind != JsonValueKind.Object)
+                    continue;
+                if (!string.Equals(GetStr(project, "projectId", ""), notification.TargetProjectId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var guardianName = GetStr(entry, "guardianName", notification.GuardianName ?? "");
+                lines.Add("");
+                lines.Add("  [bold]Связанный проект:[/]");
+                var projectName = GetStr(project, "projectName", GetStr(project, "name", notification.TargetProjectName ?? notification.TargetProjectId));
+                lines.Add($"  Проект: [white]{Markup.Escape(projectName)}[/]");
+                if (!string.IsNullOrWhiteSpace(guardianName))
+                    lines.Add($"  Хранитель: [white]{Markup.Escape(guardianName)}[/]");
+                var stateLabel = GetStr(project, "activeState", GetStr(project, "finalState", ""));
+                if (!string.IsNullOrWhiteSpace(stateLabel))
+                    lines.Add($"  Состояние: [dim]{Markup.Escape(FormatGuardianProjectStateLabel(stateLabel))}[/]");
+                var progressPercent = GetInt(project, "progressPercent", -1);
+                if (progressPercent >= 0)
+                    lines.Add($"  Прогресс: [dim]{progressPercent}%[/]");
+                return;
+            }
+        }
+    }
+
+    private async Task AppendExactGuardianNotificationDetailLinesAsync(AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        if (string.IsNullOrWhiteSpace(notification.GuardianId))
+            return;
+
+        using var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        if (guardiansDoc?.RootElement.ValueKind != JsonValueKind.Object ||
+            !guardiansDoc.RootElement.TryGetProperty("guardians", out var guardians) ||
+            guardians.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        foreach (var guardian in guardians.EnumerateArray())
+        {
+            if (!string.Equals(GetStr(guardian, "guardianId", ""), notification.GuardianId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var guardianName = GuardianManifestation.GetDisplayName(guardian) ?? GetStr(guardian, "canonicalName", notification.GuardianName ?? notification.GuardianId);
+            lines.Add("");
+            lines.Add("  [bold]Связанный Хранитель:[/]");
+            lines.Add($"  Имя: [white]{Markup.Escape(guardianName)}[/]");
+            var domain = GetStr(guardian, "domain", "");
+            if (!string.IsNullOrWhiteSpace(domain))
+                lines.Add($"  Домен: [dim]{Markup.Escape(GuardianTradeDisplayDomain(domain))}[/]");
+
+            if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianTradeInventoryReady, StringComparison.OrdinalIgnoreCase) &&
+                guardian.TryGetProperty("tradeInventoryReceipts", out var receipts) &&
+                receipts.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var receipt in receipts.EnumerateArray())
+                {
+                    if (!string.Equals(GetStr(receipt, "requestId", ""), notification.RequestId, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    var tradeCycleId = GetStr(receipt, "tradeCycleId", "?");
+                    var itemCount = GetInt(receipt, "itemCount", 0);
+                    lines.Add($"  Торговый цикл: [dim]{Markup.Escape(tradeCycleId)}[/]");
+                    lines.Add($"  Подготовлено слотов: [dim]{itemCount}[/]");
+                    return;
+                }
+            }
+
+            return;
+        }
+    }
+
+    private async Task AppendExactResidentNotificationDetailLinesAsync(AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        if (string.IsNullOrWhiteSpace(notification.ResidentId))
+            return;
+
+        var stableResidentLabel = string.IsNullOrWhiteSpace(notification.ResidentName)
+            ? notification.ResidentId
+            : $"{notification.ResidentName} ({notification.ResidentId})";
+
+        lines.Add("");
+        lines.Add("  [bold]Связанный резидент:[/]");
+        lines.Add($"  Резидент: [white]{Markup.Escape(stableResidentLabel)}[/]");
+        if (!string.IsNullOrWhiteSpace(notification.GuardianName))
+            lines.Add($"  Хранитель: [white]{Markup.Escape(notification.GuardianName)}[/]");
+
+        using var residentsDoc = await _stateManager.LoadGameStateFileAsync(GuardianAbodeResidentState.StatePath);
+        if (residentsDoc?.RootElement.ValueKind != JsonValueKind.Object)
+            return;
+
+        var residentRoot = JsonNode.Parse(residentsDoc.RootElement.GetRawText()) as JsonObject;
+        var resident = residentRoot == null
+            ? null
+            : GuardianAbodeResidentState.FindResident(residentRoot, notification.ResidentId);
+        if (resident == null)
+            return;
+
+        var displayName = GetNodeString(resident["displayName"]) ??
+                          GetNodeString(resident["residentName"]) ??
+                          notification.ResidentName ??
+                          notification.ResidentId;
+        if (!string.IsNullOrWhiteSpace(displayName) &&
+            !string.Equals(displayName, notification.ResidentName, StringComparison.OrdinalIgnoreCase))
+        {
+            lines.Add($"  Текущее имя: [dim]{Markup.Escape(displayName)}[/]");
+        }
+
+        if (resident.TryGetPropertyValue("isPresent", out var isPresentNode) &&
+            isPresentNode is JsonValue isPresentValue &&
+            isPresentValue.TryGetValue<bool>(out var isPresent))
+        {
+            lines.Add($"  Присутствие: [dim]{(isPresent ? "сейчас в Обители" : "уже покинул Обитель")}[/]");
+        }
+    }
+
+    private async Task AppendShiningNotificationDetailLinesAsync(AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        if (!IsShiningNotificationType(notification.NotificationType))
+            return;
+
+        var context = await LoadShiningContextAsync();
+        if (context == null)
+            return;
+
+        switch (notification.NotificationType)
+        {
+            case AfterlifeNotificationState.TypeShiningTradeInventoryReady:
+                AppendShiningTradeNotificationDetails(context.Root, notification, lines);
+                break;
+            case AfterlifeNotificationState.TypeShiningCoreActionResolved:
+                AppendShiningCoreNotificationDetails(context.Root, notification, lines);
+                break;
+            case AfterlifeNotificationState.TypeShiningFactionFoundingResolved:
+                AppendShiningFoundingNotificationDetails(context.Root, notification, lines);
+                break;
+            case AfterlifeNotificationState.TypeShiningFactionRealignmentResolved:
+                AppendShiningRealignmentNotificationDetails(context.Root, notification, lines);
+                break;
+            case AfterlifeNotificationState.TypeShiningFactionLeadershipResolved:
+                AppendShiningLeadershipNotificationDetails(context.Root, notification, lines);
+                break;
+        }
+    }
+
+    private async Task AppendPlayerGuardianFoundationNotificationDetailLinesAsync(AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        if (!string.Equals(notification.NotificationType, AfterlifeNotificationState.TypePlayerGuardianFoundationResolved, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(guardiansJson) || JsonNode.Parse(guardiansJson) is not JsonObject guardiansRoot)
+            return;
+
+        var historyEntry = PlayerGuardianFoundationState.FindHistoryEntry(guardiansRoot, notification.RequestId);
+        if (historyEntry == null)
+            return;
+        var foundedGuardian = PlayerGuardianFoundationState.FindGuardianById(
+            guardiansRoot,
+            GetNodeString(historyEntry["guardianId"]) ?? notification.GuardianId);
+
+        lines.Add("");
+        lines.Add("  [bold]Что произошло:[/]");
+        lines.Add("  Вознесённая душа учредила собственного Хранителя.");
+        lines.Add("  [bold]Что затронуто:[/]");
+        lines.Add($"  Новый Хранитель: [white]{Markup.Escape(GetNodeString(historyEntry["guardianDisplayName"]) ?? notification.GuardianName ?? notification.GuardianId)}[/]");
+        lines.Add($"  Прежний покровитель: [white]{Markup.Escape(GetNodeString(historyEntry["formerPatronGuardianName"]) ?? GetNodeString(historyEntry["formerPatronGuardianId"]) ?? "?")}[/]");
+        lines.Add("  [bold]Результат:[/]");
+        lines.Add($"  Источник: [dim]{Markup.Escape(DescribeFoundationSource(GetNodeString(historyEntry["foundationSource"]) ?? PlayerGuardianFoundationState.FoundationSourceShiningReturn))}[/]");
+        var resolvedAtTurn = GetNodeInt(historyEntry["resolvedAtTurn"]);
+        if (resolvedAtTurn > 0)
+            lines.Add($"  Решено на ходу: [dim]{resolvedAtTurn}[/]");
+        if (foundedGuardian != null)
+        {
+            var founderBonusCharges = PlayerGuardianFoundationState.GetFounderExtraGachaCharges(foundedGuardian);
+            var founderFeatureTitle = PlayerGuardianFoundationState.GetFounderAbodeFeatureTitle(foundedGuardian);
+            var founderFeatureSummary = PlayerGuardianFoundationState.GetFounderAbodeFeatureSummary(foundedGuardian);
+            if (founderBonusCharges > 0)
+                lines.Add($"  Бонус основания: [dim]+{founderBonusCharges} доп. попытка гачи за возвращение[/]");
+            if (!string.IsNullOrWhiteSpace(founderFeatureTitle))
+                lines.Add($"  Дар основания: [dim]{Markup.Escape(founderFeatureTitle)}[/]");
+            if (!string.IsNullOrWhiteSpace(founderFeatureSummary))
+                lines.Add($"  [dim]{Markup.Escape(founderFeatureSummary)}[/]");
+        }
+        if (!string.IsNullOrWhiteSpace(GetNodeString(historyEntry["formerPatronGuardianName"])))
+            lines.Add("  [dim]Прежний покровитель может получить дальнейшее продолжение от GM через разговоры, квесты и обычные загробные события.[/]");
+        lines.Add("  [bold]Связанный экран:[/] [white]/guardians[/]");
+    }
+
+    private static void AppendShiningTradeNotificationDetails(JsonObject shiningRoot, AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        var match = ShiningAbodeState.EnsureFactionsArray(shiningRoot).OfType<JsonObject>()
+            .SelectMany(faction =>
+            {
+                var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "?";
+                return (faction["tradeInventoryReceipts"] as JsonArray)?.OfType<JsonObject>()
+                    .Select(receipt => (FactionName: factionName, Faction: faction, Receipt: receipt))
+                    ?? Enumerable.Empty<(string FactionName, JsonObject Faction, JsonObject Receipt)>();
+            })
+            .FirstOrDefault(item => string.Equals(GetNodeString(item.Receipt["requestId"]), notification.RequestId, StringComparison.OrdinalIgnoreCase));
+
+        if (match.Receipt == null)
+            return;
+
+        lines.Add("");
+        lines.Add("  [bold]Что произошло:[/]");
+        lines.Add("  Торговая витрина сияющей фракции готова.");
+        lines.Add("  [bold]Что затронуто:[/]");
+        var stableFactionName = GetNodeString(match.Receipt["factionName"]) ?? GetNodeString(match.Receipt["factionId"]) ?? match.FactionName;
+        lines.Add($"  Фракция: [white]{Markup.Escape(stableFactionName)}[/]");
+        lines.Add("  [bold]Результат:[/]");
+        lines.Add($"  Цикл: [dim]{Markup.Escape(GetNodeString(match.Receipt["tradeCycleId"]) ?? "?")}[/]");
+        lines.Add($"  Слотов в витрине: [dim]{GetNodeInt(match.Receipt["itemCount"])}[/]");
+        if (TryReadIntegerNode(match.Receipt["soldOutCount"], out var soldOutCount) && soldOutCount > 0)
+        {
+            var itemCount = Math.Max(GetNodeInt(match.Receipt["itemCount"]), soldOutCount);
+            lines.Add($"  Распродано: [dim]{soldOutCount}/{itemCount}[/]");
+        }
+        lines.Add("  [bold]Связанный экран:[/] [white]/shining_abode[/]");
+    }
+
+    private static void AppendShiningCoreNotificationDetails(JsonObject shiningRoot, AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        var receipt = ShiningAbodeState.EnsureCoreActionReceiptsArray(shiningRoot).OfType<JsonObject>()
+            .FirstOrDefault(item => string.Equals(GetNodeString(item["requestId"]), notification.RequestId, StringComparison.OrdinalIgnoreCase));
+        if (receipt == null)
+            return;
+
+        lines.Add("");
+        lines.Add("  [bold]Что произошло:[/]");
+        lines.Add($"  {Markup.Escape(DescribeShiningCoreActionLabel(GetNodeString(receipt["actionType"])))}.");
+        lines.Add("  [bold]Результат:[/]");
+        lines.Add($"  Статус: [white]{Markup.Escape(DescribeShiningResolutionStatus(GetNodeString(receipt["status"])))}[/]");
+        lines.Add($"  Итог: [dim]{Markup.Escape(BuildShiningCoreReceiptSummary(receipt, shiningRoot))}[/]");
+
+        var resolvedAtTurn = GetNodeInt(receipt["resolvedAtTurn"]);
+        if (resolvedAtTurn > 0)
+            lines.Add($"  Решено на ходу: [dim]{resolvedAtTurn}[/]");
+        lines.Add("  [bold]Связанный экран:[/] [white]/shining_abode[/]");
+    }
+
+    private static void AppendShiningFoundingNotificationDetails(JsonObject shiningRoot, AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        var receipt = ShiningAbodeState.EnsureFactionFoundingReceiptsArray(shiningRoot).OfType<JsonObject>()
+            .FirstOrDefault(item => string.Equals(GetNodeString(item["requestId"]), notification.RequestId, StringComparison.OrdinalIgnoreCase));
+        if (receipt == null)
+            return;
+
+        lines.Add("");
+        lines.Add("  [bold]Что произошло:[/]");
+        lines.Add("  Основание новой сияющей фракции.");
+        lines.Add("  [bold]Что затронуто:[/]");
+        lines.Add($"  Зал: [white]{Markup.Escape(GetNodeString(receipt["hallName"]) ?? GetNodeString(receipt["hallId"]) ?? "?")}[/]");
+        var stableFactionName = GetNodeString(receipt["factionName"]) ??
+                                GetNodeString(receipt["proposedFactionName"]) ??
+                                GetNodeString(receipt["factionId"]) ??
+                                GetNodeString(receipt["proposedFactionId"]) ??
+                                "?";
+        lines.Add($"  Фракция: [white]{Markup.Escape(stableFactionName)}[/]");
+        lines.Add("  [bold]Результат:[/]");
+        lines.Add($"  Сторонников: [dim]{(receipt["supportingResidentIds"] as JsonArray)?.Count ?? 0}[/]");
+        lines.Add($"  Статус: [white]{Markup.Escape(DescribeShiningResolutionStatus(GetNodeString(receipt["status"])))}[/]");
+        lines.Add("  [bold]Связанный экран:[/] [white]/shining_politics[/]");
+    }
+
+    private static void AppendShiningRealignmentNotificationDetails(JsonObject shiningRoot, AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        var receipt = ShiningAbodeState.EnsureFactionRealignmentReceiptsArray(shiningRoot).OfType<JsonObject>()
+            .FirstOrDefault(item => string.Equals(GetNodeString(item["requestId"]), notification.RequestId, StringComparison.OrdinalIgnoreCase));
+        if (receipt == null)
+            return;
+
+        lines.Add("");
+        lines.Add("  [bold]Что произошло:[/]");
+        lines.Add("  Политическая перестройка резидента.");
+        lines.Add("  [bold]Что затронуто:[/]");
+        lines.Add($"  Резидент: [white]{Markup.Escape(GetNodeString(receipt["residentName"]) ?? GetNodeString(receipt["residentId"]) ?? "?")}[/]");
+        var sourceFaction = string.IsNullOrWhiteSpace(GetNodeString(receipt["sourceFactionName"]))
+            ? GetNodeString(receipt["sourceFactionId"]) ?? "?"
+            : GetNodeString(receipt["sourceFactionName"])!;
+        var targetFaction = string.IsNullOrWhiteSpace(GetNodeString(receipt["targetFactionName"]))
+            ? (string.IsNullOrWhiteSpace(GetNodeString(receipt["targetFactionId"]))
+                ? "нейтраль"
+                : GetNodeString(receipt["targetFactionId"]) ?? "нейтраль")
+            : GetNodeString(receipt["targetFactionName"])!;
+        lines.Add($"  Переход: [dim]{Markup.Escape(sourceFaction)} -> {Markup.Escape(targetFaction)}[/]");
+        lines.Add("  [bold]Результат:[/]");
+        lines.Add($"  Режим: [dim]{Markup.Escape(DescribeShiningRealignmentMode(GetNodeString(receipt["realignmentMode"])))}[/]");
+        lines.Add($"  Статус: [white]{Markup.Escape(DescribeShiningResolutionStatus(GetNodeString(receipt["status"])))}[/]");
+        lines.Add("  [bold]Связанный экран:[/] [white]/shining_politics[/]");
+    }
+
+    private static void AppendShiningLeadershipNotificationDetails(JsonObject shiningRoot, AfterlifeNotificationState.NotificationEntry notification, List<string> lines)
+    {
+        var match = ShiningAbodeState.EnsureFactionsArray(shiningRoot).OfType<JsonObject>()
+            .SelectMany(faction =>
+            {
+                var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "?";
+                return (faction["leadershipReceipts"] as JsonArray)?.OfType<JsonObject>()
+                    .Select(receipt => (FactionName: factionName, Receipt: receipt))
+                    ?? Enumerable.Empty<(string FactionName, JsonObject Receipt)>();
+            })
+            .FirstOrDefault(item => string.Equals(GetNodeString(item.Receipt["requestId"]), notification.RequestId, StringComparison.OrdinalIgnoreCase));
+
+        if (match.Receipt == null)
+            return;
+
+        lines.Add("");
+        lines.Add("  [bold]Что произошло:[/]");
+        lines.Add("  Смена главы сияющей фракции.");
+        lines.Add("  [bold]Что затронуто:[/]");
+        var stableFactionName = string.IsNullOrWhiteSpace(GetNodeString(match.Receipt["factionName"])) ? match.FactionName : GetNodeString(match.Receipt["factionName"])!;
+        lines.Add($"  Фракция: [white]{Markup.Escape(stableFactionName)}[/]");
+        lines.Add("  [bold]Результат:[/]");
+        lines.Add($"  Переход: [dim]{Markup.Escape(DescribeShiningLeadershipMode(GetNodeString(match.Receipt["transitionMode"])))}[/]");
+        lines.Add($"  Новый глава: [white]{Markup.Escape(string.IsNullOrWhiteSpace(GetNodeString(match.Receipt["newHeadLabel"])) ? BuildHeadActorLabel(GetNodeString(match.Receipt["newHeadActorType"]), GetNodeString(match.Receipt["newHeadActorId"])) : GetNodeString(match.Receipt["newHeadLabel"])!)}[/]");
+        lines.Add($"  Статус: [white]{Markup.Escape(DescribeShiningResolutionStatus(GetNodeString(match.Receipt["status"])))}[/]");
+        lines.Add("  [bold]Связанный экран:[/] [white]/shining_politics[/]");
+    }
+
+    private static bool IsShiningNotificationType(string? notificationType) =>
+        string.Equals(notificationType, AfterlifeNotificationState.TypeShiningTradeInventoryReady, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, AfterlifeNotificationState.TypeShiningCoreActionResolved, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, AfterlifeNotificationState.TypeShiningFactionFoundingResolved, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, AfterlifeNotificationState.TypeShiningFactionRealignmentResolved, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, AfterlifeNotificationState.TypeShiningFactionLeadershipResolved, StringComparison.OrdinalIgnoreCase);
 
     private async Task ShowAfterlifeArchiveCandidates()
     {
@@ -480,6 +985,7 @@ public partial class ExplorerMode
                     candidate.ProposedEntryType,
                     candidate.Title,
                     candidate.Summary,
+                    candidate.Content,
                     candidate.Rarity,
                     candidate.Status,
                     candidate.DiscoveredAt ?? "",
@@ -529,34 +1035,48 @@ public partial class ExplorerMode
 
             if (!string.IsNullOrWhiteSpace(candidate.DiscoveredAt))
                 lines.Add($"  Обнаружено: [dim]{Markup.Escape(candidate.DiscoveredAt)}[/]");
+            if (!string.IsNullOrWhiteSpace(candidate.SourceEntryId))
+                lines.Add($"  Исходная запись Кодекса: [dim]{Markup.Escape(candidate.SourceEntryId)}[/]");
             if (candidate.Tags.Count > 0)
                 lines.Add($"  Метки: [dim]{Markup.Escape(string.Join(", ", candidate.Tags))}[/]");
 
             lines.Add("");
-            lines.Add($"[white]{Markup.Escape(candidate.Summary)}[/]");
+            var candidateBody = string.IsNullOrWhiteSpace(candidate.Content) ? candidate.Summary : candidate.Content;
+            lines.Add($"[white]{Markup.Escape(candidateBody)}[/]");
 
-            if (!string.Equals(candidate.Status, AfterlifeArchiveCandidateService.StatusPending, StringComparison.OrdinalIgnoreCase))
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
             {
-                Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
-                {
-                    Header = new PanelHeader(" 🗂 Кандидат в Архив ", Justify.Center),
-                    Border = BoxBorder.Double,
-                    BorderStyle = new Style(Color.Yellow),
-                    Padding = new Padding(2, 1),
-                    Expand = true
-                });
-                WaitForKey();
-                continue;
+                Header = new PanelHeader(" 🗂 Кандидат в Архив ", Justify.Center),
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Yellow),
+                Padding = new Padding(2, 1),
+                Expand = true
+            });
+
+            var candidateActions = new List<string>();
+            if (!string.IsNullOrWhiteSpace(candidate.SourceEntryId))
+                candidateActions.Add("📖 Открыть исходную запись Кодекса");
+            if (string.Equals(candidate.Status, AfterlifeArchiveCandidateService.StatusPending, StringComparison.OrdinalIgnoreCase))
+            {
+                candidateActions.Add("💾 Сохранить в Архив");
+                candidateActions.Add("⏭ Пропустить");
             }
+            candidateActions.Add("← Назад");
 
             var action = Prompt(new SelectionPrompt<string>()
-                .Title(string.Join("\n", lines) + "\n\n[bold]Действие:[/]")
+                .Title("[bold]Действие:[/]")
                 .PageSize(6)
                 .HighlightStyle(new Style(Color.Yellow))
-                .AddChoices("💾 Сохранить в Архив", "⏭ Пропустить", "← Назад"));
+                .AddChoices(candidateActions));
 
             if (action == "← Назад")
                 continue;
+
+            if (action.StartsWith("📖", StringComparison.Ordinal))
+            {
+                await TryShowCodexEntryByIdAsync(candidate.SourceEntryId);
+                continue;
+            }
 
             if (action.StartsWith("💾", StringComparison.Ordinal))
             {
@@ -587,6 +1107,70 @@ public partial class ExplorerMode
         }
     }
 
+    private async Task<bool> TryShowCodexEntryByIdAsync(string? sourceEntryId)
+    {
+        if (string.IsNullOrWhiteSpace(sourceEntryId))
+            return false;
+
+        var codexDoc = await _stateManager.LoadGameStateFileAsync("lore/codex_entries.json");
+        if (codexDoc == null)
+        {
+            ShowEmptyPanel("📚 Кодекс", "Записи кодекса недоступны.");
+            WaitForKey();
+            return false;
+        }
+
+        var entry = CollectCodexEntries(codexDoc.RootElement)
+            .FirstOrDefault(item => string.Equals(GetStr(item, "entryId", ""), sourceEntryId, StringComparison.OrdinalIgnoreCase));
+        if (entry.ValueKind != JsonValueKind.Object)
+        {
+            MarkupLine("[yellow]⚠️ Исходная запись Кодекса не найдена в текущем codex_entries.json.[/]");
+            WaitForKey();
+            return false;
+        }
+
+        var title = GetStr(entry, "title", sourceEntryId);
+        var content = GetStr(entry, "content", "");
+        var category = GetStr(entry, "category", "other");
+        var subcategory = GetStr(entry, "subcategory", "");
+        var discoveredAt = GetStr(entry, "discoveredAt", "");
+        var context = GetStr(entry, "discoveryContext", "");
+        var sourceFile = GetStr(entry, "sourceFile", "");
+
+        var lines = new List<string>
+        {
+            $"[bold purple]📚 {Markup.Escape(title)}[/]",
+            "",
+            $"  Идентификатор записи: [dim]{Markup.Escape(sourceEntryId)}[/]"
+        };
+        if (!string.IsNullOrWhiteSpace(category))
+            lines.Add($"  Категория: [white]{Markup.Escape(DescribeCodexCategoryLabel(category))}[/]");
+        if (!string.IsNullOrWhiteSpace(subcategory))
+            lines.Add($"  Подкатегория: [dim]{Markup.Escape(DescribeCodexSubcategoryLabel(subcategory))}[/]");
+        if (!string.IsNullOrWhiteSpace(discoveredAt))
+            lines.Add($"  Обнаружено: [dim]{Markup.Escape(discoveredAt)}[/]");
+        if (!string.IsNullOrWhiteSpace(context))
+            lines.Add($"  Контекст: [dim]{Markup.Escape(context)}[/]");
+        if (!string.IsNullOrWhiteSpace(sourceFile))
+            lines.Add($"  Источник файла: [dim]{Markup.Escape(sourceFile)}[/]");
+        if (!string.IsNullOrWhiteSpace(content))
+        {
+            lines.Add("");
+            lines.Add($"[white]{Markup.Escape(content)}[/]");
+        }
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 📚 Исходная запись Кодекса ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Purple),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+        WaitForKey();
+        return true;
+    }
+
     private static int GetArchiveCandidateStatusOrder(string? status) =>
         (status ?? string.Empty).Trim().ToLowerInvariant() switch
         {
@@ -612,6 +1196,59 @@ public partial class ExplorerMode
             _ => ("ожидает решения", "yellow")
         };
 
+    private static string DescribeCodexCategoryLabel(string? category) =>
+        (category ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "cosmology" => "Космология",
+            "geography" => "География",
+            "history" => "История",
+            "cultures" => "Культуры",
+            "creatures" => "Существа",
+            "characters" => "Персонажи",
+            "artifacts" => "Артефакты",
+            "factions" => "Фракции",
+            "magic" => "Магия",
+            "other" => "Прочее",
+            _ => HumanizeProtocolToken(category)
+        };
+
+    private static string DescribeCodexSubcategoryLabel(string? subcategory) =>
+        (subcategory ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "system_guardian" => "системный хранитель",
+            "domain_truth" => "истина домена",
+            "domain_secret" => "тайна домена",
+            "abode_truth" => "истина обители",
+            "personal_history" => "личная история",
+            "cosmic_secret" => "космическая тайна",
+            "world_lore" => "мировое знание",
+            "other_guardians" => "другие хранители",
+            "soul_mechanics" => "механика души",
+            "domain_mastery" => "власть над доменом",
+            "lost_world" => "потерянный мир",
+            _ => HumanizeProtocolToken(subcategory)
+        };
+
+    private static string DescribeSoulRelicCategoryLabel(string? category) =>
+        (category ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "companion_echo" => "эхо спутника",
+            "memory_legacy" => "наследие памяти",
+            "guardian_mantle" => "мантия хранителя",
+            "route_fragment" => "осколок пути",
+            "archive_resonance" => "архивный отзвук",
+            _ => HumanizeProtocolToken(category)
+        };
+
+    private static string HumanizeProtocolToken(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var normalized = value.Trim().Replace('_', ' ').Replace('-', ' ');
+        return char.ToUpperInvariant(normalized[0]) + normalized[1..];
+    }
+
     /// <summary>
     /// Displays detailed information about a soul relic.
     /// In Chaos Sea: offers equip/unequip actions that modify soul_state.json directly.
@@ -619,7 +1256,9 @@ public partial class ExplorerMode
     /// </summary>
     private async Task<bool> ShowRelicDetailPanel(string relicId, string name, string status, JsonElement relic, bool isAfterlifeRealm)
     {
-        var lines = BuildSoulRelicDetailLines(name, relic, status);
+        var residentDoc = await _stateManager.LoadGameStateFileAsync(GuardianAbodeResidentState.StatePath);
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        var lines = BuildSoulRelicDetailLines(name, relic, status, residentDoc, guardiansDoc);
         await EnrichManifestedCompanionDetailsAsync(lines, relic);
         var slot = ResolveRelicSlot(relic);
 
@@ -726,7 +1365,7 @@ public partial class ExplorerMode
     private static IEnumerable<JsonElement> EnumerateNpcObjects(JsonElement root) =>
         GuardianPolicyContracts.EnumerateCanonicalNpcObjects(root);
 
-    private List<string> BuildSoulRelicDetailLines(string name, JsonElement relic, string? status)
+    private List<string> BuildSoulRelicDetailLines(string name, JsonElement relic, string? status, JsonDocument? residentDoc, JsonDocument? guardiansDoc)
     {
         var lines = new List<string>
         {
@@ -743,7 +1382,7 @@ public partial class ExplorerMode
 
         var slot = ResolveRelicSlot(relic);
         if (!string.IsNullOrEmpty(slot))
-            lines.Add($"  📌 Слот: [cyan]{Markup.Escape(slot)}[/]");
+            lines.Add($"  📌 Слот: [cyan]{Markup.Escape(FormatSoulRelicSlotLabel(slot))}[/]");
 
         var rarity = GetStr(relic, "quality", GetStr(relic, "rarity", ""));
         if (!string.IsNullOrEmpty(rarity))
@@ -751,7 +1390,7 @@ public partial class ExplorerMode
 
         var category = GetStr(relic, "category", "");
         if (!string.IsNullOrEmpty(category))
-            lines.Add($"  📋 Категория: [cyan]{Markup.Escape(category)}[/]");
+            lines.Add($"  📋 Категория: [cyan]{Markup.Escape(DescribeSoulRelicCategoryLabel(category))}[/]");
 
         var tier = GetStr(relic, "tier", "");
         if (!string.IsNullOrEmpty(tier))
@@ -779,17 +1418,28 @@ public partial class ExplorerMode
             if (effects.TryGetProperty("actionCheckBonuses", out var actBon) && actBon.ValueKind == JsonValueKind.Object)
             {
                 foreach (var prop in actBon.EnumerateObject())
-                    lines.Add($"    • [cyan]{Markup.Escape(prop.Name)}: +{prop.Value}[/]");
+                {
+                    var actionLabel = DescribeSoulRelicActionCheckLabel(prop.Name);
+                    if (string.IsNullOrWhiteSpace(actionLabel))
+                        lines.Add($"    • [cyan]Бонус к проверке действия:[/] +{prop.Value} [dim](технический ключ {Markup.Escape(prop.Name)})[/]");
+                    else
+                        lines.Add($"    • [cyan]{Markup.Escape(actionLabel)}: +{prop.Value}[/]");
+                }
             }
 
             var knownEffectProps = new HashSet<string> { "characteristicBonuses", "actionCheckBonuses" };
+            var technicalEffectProps = new List<string>();
             foreach (var prop in effects.EnumerateObject())
             {
                 if (knownEffectProps.Contains(prop.Name)) continue;
-                if (prop.Value.ValueKind == JsonValueKind.String)
-                    lines.Add($"    • [green]{Markup.Escape(prop.Name)}: {Markup.Escape(prop.Value.GetString() ?? "")}[/]");
-                else if (prop.Value.ValueKind is JsonValueKind.Number or JsonValueKind.True or JsonValueKind.False)
-                    lines.Add($"    • [green]{Markup.Escape(prop.Name)}: {prop.Value}[/]");
+                technicalEffectProps.Add($"      • {Markup.Escape(prop.Name)} = {Markup.Escape(prop.Value.ToString())}");
+            }
+
+            if (technicalEffectProps.Count > 0)
+            {
+                lines.Add("    • [dim]У реликвии есть дополнительные нестандартные свойства; подробности приведены ниже.[/]");
+                lines.Add("    [dim]Дополнительные технические параметры эффекта:[/]");
+                lines.AddRange(technicalEffectProps);
             }
         }
 
@@ -877,7 +1527,7 @@ public partial class ExplorerMode
             if (relic.TryGetProperty("companionSeed", out var companionSeed) &&
                 companionSeed.ValueKind == JsonValueKind.Object)
             {
-                foreach (var snapshotLine in BuildCompanionSeedSnapshotLines(companionSeed))
+                foreach (var snapshotLine in BuildCompanionSeedSnapshotLines(companionSeed, residentDoc?.RootElement, guardiansDoc?.RootElement))
                     lines.Add(snapshotLine);
             }
         }
@@ -899,6 +1549,166 @@ public partial class ExplorerMode
         if (string.IsNullOrEmpty(slot) && relic.TryGetProperty("gameplayStatus", out var gpStat))
             slot = GetStr(gpStat, "currentSlot", "");
         return slot;
+    }
+
+    private static string FormatSoulRelicSlotLabel(string? slot)
+    {
+        if (string.IsNullOrWhiteSpace(slot))
+            return string.Empty;
+
+        if (string.Equals(slot, "Default", StringComparison.OrdinalIgnoreCase))
+            return "По умолчанию";
+
+        return SlotLabels.TryGetValue(slot, out var label)
+            ? label
+            : slot;
+    }
+
+    private static string? DescribeSoulRelicActionCheckLabel(string? key) =>
+        (key ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "social" => "Бонус к социальной проверке",
+            "lore" => "Бонус к проверке знания",
+            "memory" => "Бонус к проверке памяти",
+            "route" => "Бонус к проверке пути",
+            "descent" => "Бонус к проверке нисхождения",
+            "survival" => "Бонус к проверке выживания",
+            "resource" => "Бонус к ресурсной проверке",
+            "relic" => "Бонус к реликтовой проверке",
+            "archive" => "Бонус к архивной проверке",
+            "talk" => "Бонус к разговорной проверке",
+            "history" => "Бонус к исторической проверке",
+            "quest" => "Бонус к квестовой проверке",
+            "reward" => "Бонус к проверке награды",
+            _ => null
+        };
+
+    private static string ResolveArchiveGuardianLabel(AfterlifeArchiveEntrySummary entry, JsonElement? guardiansRoot)
+    {
+        if (!string.IsNullOrWhiteSpace(entry.SourceGuardianName))
+            return entry.SourceGuardianName;
+        if (guardiansRoot is { ValueKind: JsonValueKind.Object } root &&
+            root.TryGetProperty("guardians", out var guardians) &&
+            guardians.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var guardian in guardians.EnumerateArray())
+            {
+                if (guardian.ValueKind != JsonValueKind.Object ||
+                    !string.Equals(GetStr(guardian, "guardianId", ""), entry.SourceGuardianId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var name = GuardianManifestation.GetDisplayName(guardian);
+                if (string.IsNullOrWhiteSpace(name))
+                    name = GetStr(guardian, "guardianName", GetStr(guardian, "name", GetStr(guardian, "canonicalName", entry.SourceGuardianId)));
+
+                return name;
+            }
+        }
+
+        return entry.SourceGuardianId;
+    }
+
+    private static string ResolveArchiveProjectLabel(AfterlifeArchiveEntrySummary entry, JsonElement? trackerRoot)
+    {
+        if (!string.IsNullOrWhiteSpace(entry.ReservedForProjectName))
+            return entry.ReservedForProjectName;
+        if (trackerRoot is { ValueKind: JsonValueKind.Object } root)
+        {
+            foreach (var collectionName in new[] { "activeProjects", "completedProjects" })
+            {
+                if (!root.TryGetProperty(collectionName, out var collection) || collection.ValueKind != JsonValueKind.Array)
+                    continue;
+
+                foreach (var item in collection.EnumerateArray())
+                {
+                    if (item.ValueKind != JsonValueKind.Object ||
+                        !item.TryGetProperty("project", out var project) ||
+                        project.ValueKind != JsonValueKind.Object ||
+                        !string.Equals(GetStr(project, "projectId", ""), entry.ReservedForProjectId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    var projectName = GetStr(project, "projectName", GetStr(project, "name", entry.ReservedForProjectId));
+                    return projectName;
+                }
+            }
+        }
+
+        return entry.ReservedForProjectId;
+    }
+
+    private async Task<bool> TryShowLinkedArchiveGuardianAsync(string guardianId)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return false;
+
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        if (guardiansDoc == null || guardiansDoc.RootElement.ValueKind != JsonValueKind.Object)
+            return false;
+
+        var guardians = CollectGuardianDisplayEntries(guardiansDoc.RootElement);
+        var guardian = guardians.FirstOrDefault(item =>
+            string.Equals(GetStr(item, "guardianId", ""), guardianId, StringComparison.OrdinalIgnoreCase));
+        if (guardian.ValueKind != JsonValueKind.Object)
+            return false;
+
+        using var trackerDoc = await _stateManager.LoadGameStateFileAsync(GuardianProjectState.TrackerPath);
+        var currentAbodeId = guardiansDoc.RootElement.TryGetProperty("chaosSeaNavigation", out var navigation) && navigation.ValueKind == JsonValueKind.Object
+            ? GetStr(navigation, "currentAbodeId", "")
+            : string.Empty;
+        var activeGuardianId = guardiansDoc.RootElement.TryGetProperty("activeGuardian", out var activeGuardian) && activeGuardian.ValueKind == JsonValueKind.Object
+            ? GetStr(activeGuardian, "guardianId", "")
+            : string.Empty;
+        await ShowGuardianDetailPanel(guardian, guardians, currentAbodeId, activeGuardianId, trackerDoc?.RootElement);
+        return true;
+    }
+
+    private async Task<bool> TryShowLinkedArchiveProjectAsync(string projectId)
+    {
+        if (string.IsNullOrWhiteSpace(projectId))
+            return false;
+
+        using var trackerDoc = await _stateManager.LoadGameStateFileAsync(GuardianProjectState.TrackerPath);
+        if (trackerDoc == null || trackerDoc.RootElement.ValueKind != JsonValueKind.Object)
+            return false;
+
+        JsonElement? projectEntry = null;
+        foreach (var collectionName in new[] { "activeProjects", "completedProjects" })
+        {
+            if (!trackerDoc.RootElement.TryGetProperty(collectionName, out var collection) || collection.ValueKind != JsonValueKind.Array)
+                continue;
+
+            foreach (var entry in collection.EnumerateArray())
+            {
+                if (entry.ValueKind != JsonValueKind.Object ||
+                    !entry.TryGetProperty("project", out var project) ||
+                    project.ValueKind != JsonValueKind.Object ||
+                    !string.Equals(GetStr(project, "projectId", ""), projectId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                projectEntry = entry;
+                break;
+            }
+
+            if (projectEntry.HasValue)
+                break;
+        }
+
+        if (!projectEntry.HasValue)
+            return false;
+
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        var guardianNames = guardiansDoc != null
+            ? BuildGuardianNameMap(guardiansDoc.RootElement)
+            : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var journalDoc = await _stateManager.LoadGameStateFileAsync(GuardianProjectState.JournalPath);
+        ShowGuardianProjectDetailPanel(projectEntry.Value, guardianNames, journalDoc?.RootElement, trackerDoc.RootElement);
+        return true;
     }
 
     private static string ResolveRelicCompanionNameHint(JsonElement relic)
@@ -937,34 +1747,115 @@ public partial class ExplorerMode
         return "";
     }
 
-    private static IEnumerable<string> BuildCompanionSeedSnapshotLines(JsonElement companionSeed)
+    private static IEnumerable<string> BuildCompanionSeedSnapshotLines(JsonElement companionSeed, JsonElement? residentRoot, JsonElement? guardiansRoot)
     {
         var lines = new List<string>();
+        var originWorldSummary = GetStr(companionSeed, "originWorldSummary", "");
+        if (!string.IsNullOrWhiteSpace(originWorldSummary))
+            lines.Add($"  🌍 Мир происхождения: [dim]{Markup.Escape(originWorldSummary)}[/]");
+
+        var futureCompanionPrompt = GetStr(companionSeed, "futureCompanionPrompt", "");
+        if (!string.IsNullOrWhiteSpace(futureCompanionPrompt))
+            lines.Add($"  🪶 Образ будущего спутника: [dim]{Markup.Escape(futureCompanionPrompt)}[/]");
+
+        var bondReason = GetStr(companionSeed, "bondReason", "");
+        if (!string.IsNullOrWhiteSpace(bondReason))
+            lines.Add($"  🫀 Причина связи: [dim]{Markup.Escape(bondReason)}[/]");
+
+        var sourceResidentId = GetStr(companionSeed, "sourceResidentId", "");
+        if (!string.IsNullOrWhiteSpace(sourceResidentId))
+        {
+            var resolvedResident = ResolveCompanionSeedSourceResidentLabel(residentRoot, sourceResidentId);
+            lines.Add($"  🏛️ Резидент-источник: [dim]{Markup.Escape(resolvedResident)}[/]");
+        }
+
+        var sourceGuardianId = GetStr(companionSeed, "sourceGuardianId", "");
+        if (!string.IsNullOrWhiteSpace(sourceGuardianId))
+        {
+            var resolvedGuardian = ResolveCompanionSeedSourceGuardianLabel(guardiansRoot, sourceGuardianId);
+            lines.Add($"  🛡️ Хранитель-источник: [dim]{Markup.Escape(resolvedGuardian)}[/]");
+        }
+
+        var coreTraits = ReadCanonicalStringArray(companionSeed, "coreTraits");
+        if (coreTraits.Count > 0)
+            lines.Add($"  🧬 Ключевые черты: [dim]{Markup.Escape(string.Join(", ", coreTraits))}[/]");
+
+        var archetypeHints = ReadCanonicalStringArray(companionSeed, "archetypeHints");
+        if (archetypeHints.Count > 0)
+            lines.Add($"  🧭 Архетипические намёки: [dim]{Markup.Escape(string.Join(", ", archetypeHints))}[/]");
+
+        var appearanceMotifs = ReadCanonicalStringArray(companionSeed, "appearanceMotifs");
+        if (appearanceMotifs.Count > 0)
+            lines.Add($"  🎨 Образы и мотивы: [dim]{Markup.Escape(string.Join(", ", appearanceMotifs))}[/]");
 
         if (companionSeed.TryGetProperty("personalityProfile", out var personalityProfile) &&
             personalityProfile.ValueKind == JsonValueKind.Object)
         {
             var archetype = GetStr(personalityProfile, "archetype", "");
             var worldview = GetStr(personalityProfile, "worldview", "");
+            var culturalLayer = GetStr(personalityProfile, "culturalLayer", "");
             var coreValues = personalityProfile.TryGetProperty("coreValues", out var coreValuesNode) && coreValuesNode.ValueKind == JsonValueKind.Array
                 ? coreValuesNode.EnumerateArray()
                     .Where(item => item.ValueKind == JsonValueKind.String)
                     .Select(item => item.GetString())
                     .Where(value => !string.IsNullOrWhiteSpace(value))
-                    .Take(3)
                     .ToArray()
                 : Array.Empty<string>();
+            var personalityTraits = new List<string>();
+            var detailedTraits = new List<string>();
+            if (personalityProfile.TryGetProperty("personalityTraits", out var traitsNode) && traitsNode.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in traitsNode.EnumerateArray())
+                {
+                    if (item.ValueKind == JsonValueKind.String)
+                    {
+                        var trait = item.GetString();
+                        if (!string.IsNullOrWhiteSpace(trait))
+                            personalityTraits.Add(trait!);
+                        continue;
+                    }
+
+                    if (item.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    var traitName = GetStr(item, "traitName", "");
+                    var valueText = item.TryGetProperty("value", out var valueNode) && valueNode.ValueKind == JsonValueKind.Number
+                        ? valueNode.ToString()
+                        : string.Empty;
+                    var valueDescription = GetStr(item, "valueDescription", "");
+                    if (string.IsNullOrWhiteSpace(traitName))
+                        continue;
+
+                    personalityTraits.Add(traitName);
+                    var detail = string.IsNullOrWhiteSpace(valueText)
+                        ? traitName
+                        : $"{traitName} {valueText}/10";
+                    if (!string.IsNullOrWhiteSpace(valueDescription))
+                        detail += $" — {valueDescription}";
+                    detailedTraits.Add(detail);
+                }
+            }
 
             var flavorParts = new List<string>();
             if (!string.IsNullOrWhiteSpace(archetype))
                 flavorParts.Add(archetype);
             if (!string.IsNullOrWhiteSpace(worldview))
                 flavorParts.Add(worldview);
+            if (!string.IsNullOrWhiteSpace(culturalLayer))
+                flavorParts.Add($"культурный слой: {culturalLayer}");
             if (coreValues.Length > 0)
                 flavorParts.Add($"ценности: {string.Join(", ", coreValues)}");
+            if (personalityTraits.Count > 0)
+                flavorParts.Add($"черты: {string.Join(", ", personalityTraits)}");
 
             if (flavorParts.Count > 0)
                 lines.Add($"  🎭 Снимок личности: [dim]{Markup.Escape(string.Join(" • ", flavorParts))}[/]");
+            if (detailedTraits.Count > 0)
+            {
+                lines.Add("  Черты личности:");
+                foreach (var trait in detailedTraits)
+                    lines.Add($"    [dim]• {Markup.Escape(trait)}[/]");
+            }
         }
 
         var abodeDevotionLevel = 0;
@@ -1023,6 +1914,77 @@ public partial class ExplorerMode
         }
 
         return lines;
+    }
+
+    private static string ResolveCompanionSeedSourceResidentLabel(JsonElement? residentRoot, string residentId)
+    {
+        if (residentRoot is not JsonElement residentElement ||
+            residentElement.ValueKind != JsonValueKind.Object ||
+            !residentElement.TryGetProperty("entries", out var entries) ||
+            entries.ValueKind != JsonValueKind.Array)
+        {
+            return residentId;
+        }
+
+        foreach (var resident in entries.EnumerateArray())
+        {
+            if (!string.Equals(GetStr(resident, "residentId", ""), residentId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var residentName = GetStr(resident, "displayName", GetStr(resident, "residentName", residentId));
+            return string.Equals(residentName, residentId, StringComparison.OrdinalIgnoreCase)
+                ? residentId
+                : $"{residentName} ({residentId})";
+        }
+
+        return residentId;
+    }
+
+    private static string ResolveCompanionSeedSourceGuardianLabel(JsonElement? guardiansRoot, string guardianId)
+    {
+        if (guardiansRoot is not JsonElement guardiansElement || guardiansElement.ValueKind != JsonValueKind.Object)
+            return guardianId;
+
+        if (guardiansElement.TryGetProperty("activeGuardian", out var activeGuardian) &&
+            activeGuardian.ValueKind == JsonValueKind.Object &&
+            string.Equals(GetStr(activeGuardian, "guardianId", ""), guardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            var guardianName = GetStr(activeGuardian, "canonicalName",
+                GetStr(activeGuardian, "name", guardianId));
+            return string.Equals(guardianName, guardianId, StringComparison.OrdinalIgnoreCase)
+                ? guardianId
+                : $"{guardianName} ({guardianId})";
+        }
+
+        if (!guardiansElement.TryGetProperty("guardians", out var guardians) || guardians.ValueKind != JsonValueKind.Array)
+            return guardianId;
+
+        foreach (var guardian in guardians.EnumerateArray())
+        {
+            if (!string.Equals(GetStr(guardian, "guardianId", ""), guardianId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var guardianName = GetStr(guardian, "canonicalName",
+                GetStr(guardian, "name", guardianId));
+            return string.Equals(guardianName, guardianId, StringComparison.OrdinalIgnoreCase)
+                ? guardianId
+                : $"{guardianName} ({guardianId})";
+        }
+
+        return guardianId;
+    }
+
+    private static List<string> ReadCanonicalStringArray(JsonElement element, string propertyName)
+    {
+        if (!element.TryGetProperty(propertyName, out var propertyNode) || propertyNode.ValueKind != JsonValueKind.Array)
+            return new List<string>();
+
+        return propertyNode.EnumerateArray()
+            .Where(item => item.ValueKind == JsonValueKind.String)
+            .Select(item => item.GetString())
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Cast<string>()
+            .ToList();
     }
 
     private static string GuardianTradeDisplayDomain(string domainTag) => domainTag switch

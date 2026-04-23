@@ -1,6 +1,7 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -261,6 +262,82 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         Assert.Contains("\"gachaBonusAudit\"", guardiansJson, StringComparison.Ordinal);
         Assert.NotNull(trackerJson);
         Assert.Contains("\"gachaUsesSpent\": 1", trackerJson, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_ProcessGachaClampsChargesUsedPerReturn()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Азалия",
+                "formFlexibility": "selective",
+                "currentPresentationStyle": "feminine",
+                "currentPronouns": "она/её",
+                "appearanceDescription": "Тестовая форма."
+              },
+              "manifestationHistory": [],
+              "relationshipData": { "currentReputation": 0, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 0, "tier": "Угасающая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "gachaSystem": { "chargesPerReturn": 1, "chargesUsedThisReturn": 9, "gachaHistory": [] }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guardian_alpha",
+            "canonicalName": "Азалия",
+            "nameVariants": { "default": "Азалия", "feminine": "Азалия", "masculine": null, "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Азалия",
+              "formFlexibility": "selective",
+              "currentPresentationStyle": "feminine",
+              "currentPronouns": "она/её",
+              "appearanceDescription": "Тестовая форма."
+            },
+            "manifestationHistory": [],
+            "relationshipData": { "currentReputation": 0, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 0, "tier": "Угасающая", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+            "gachaSystem": { "chargesPerReturn": 1, "chargesUsedThisReturn": 9, "gachaHistory": [] }
+          },
+          "UpdateGuardians": [
+            {
+              "command": "processGacha",
+              "guardianId": "guardian_alpha",
+              "inkFeathersSpent": 50,
+              "result": {
+                "relicId": "relic_alpha",
+                "name": "Тестовая реликвия",
+                "rarity": "Epic",
+                "quality": "Epic"
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, """
+        {
+          "activeProjects": [],
+          "completedProjects": [],
+          "temporaryProjectModifiers": []
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
+
+        var guardiansRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/guardians.json")!)!.AsObject();
+        var guardian = guardiansRoot["guardians"]!.AsArray()[0]!.AsObject();
+        var activeGuardian = guardiansRoot["activeGuardian"]!.AsObject();
+        var gachaHistory = guardian["gachaSystem"]?["gachaHistory"]?.AsArray();
+        Assert.Equal(1, guardian["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        Assert.Equal(1, activeGuardian["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        Assert.NotNull(gachaHistory);
+        Assert.Single(gachaHistory!);
     }
 
     [Fact]

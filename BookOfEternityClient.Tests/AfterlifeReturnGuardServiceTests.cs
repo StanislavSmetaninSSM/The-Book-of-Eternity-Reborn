@@ -64,13 +64,17 @@ public sealed class AfterlifeReturnGuardServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureHealthyAsync_RemovesInvalidGuardFile()
+    public async Task EnsureHealthyAsync_PreservesInvalidGuardFileInAfterlife()
     {
         await _fs.WriteFileAtomicAsync(AfterlifeReturnGuardService.GuardPath, "{ not valid json");
 
         await _service.EnsureHealthyAsync("Chaos Sea");
 
-        Assert.False(_fs.FileExists(AfterlifeReturnGuardService.GuardPath));
+        Assert.True(_fs.FileExists(AfterlifeReturnGuardService.GuardPath));
+
+        var reminder = await _service.BuildSystemReminderFragmentAsync("Chaos Sea");
+        Assert.NotNull(reminder);
+        Assert.Contains("malformed or semantically invalid", reminder, StringComparison.Ordinal);
     }
 
     public void Dispose()

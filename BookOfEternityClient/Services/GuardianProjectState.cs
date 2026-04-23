@@ -384,7 +384,7 @@ internal static class GuardianProjectState
 
             var effectState = EnsureRecipeEffectState(project, currentIncarnation, null);
             if (GetNodeInt(effectState["targetIncarnation"]) != currentIncarnation)
-                return false;
+                continue;
 
             if (string.Equals(questOrigin, LoreResearchSpecialLineOrigin, StringComparison.OrdinalIgnoreCase))
             {
@@ -441,7 +441,7 @@ internal static class GuardianProjectState
 
             var effectState = EnsureRecipeEffectState(project, currentIncarnation, null);
             if (GetNodeInt(effectState["targetIncarnation"]) != currentIncarnation)
-                return false;
+                continue;
 
             if (string.Equals(questOrigin, LoreResearchSpecialLineOrigin, StringComparison.OrdinalIgnoreCase))
             {
@@ -846,7 +846,7 @@ internal static class GuardianProjectState
 
             var effectState = EnsureRecipeEffectState(project, currentIncarnation, null);
             if (GetNodeInt(effectState["targetIncarnation"]) != currentIncarnation)
-                return 0;
+                continue;
 
             return GetVisibleRivalClueBudgetRemaining(effectState, project["projectOutcomeAudit"] as JsonObject, GetNodeString(project["projectTier"]));
         }
@@ -893,7 +893,7 @@ internal static class GuardianProjectState
 
             var effectState = EnsureRecipeEffectState(project, currentIncarnation, null);
             if (GetNodeInt(effectState["targetIncarnation"]) != currentIncarnation)
-                return false;
+                continue;
 
             if (GetVisibleRivalClueBudgetRemaining(effectState, project["projectOutcomeAudit"] as JsonObject, GetNodeString(project["projectTier"])) < clueCost)
                 return false;
@@ -925,7 +925,7 @@ internal static class GuardianProjectState
 
             var effectState = EnsureRecipeEffectState(project, currentIncarnation, null);
             if (GetNodeInt(effectState["targetIncarnation"]) != currentIncarnation)
-                return false;
+                continue;
 
             if (GetVisibleRivalClueBudgetRemaining(effectState, project["projectOutcomeAudit"] as JsonObject, GetNodeString(project["projectTier"])) < clueCost)
                 return false;

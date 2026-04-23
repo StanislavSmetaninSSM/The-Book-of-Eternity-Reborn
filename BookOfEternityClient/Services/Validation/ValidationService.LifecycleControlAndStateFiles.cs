@@ -218,13 +218,64 @@ public partial class ValidationService
                 "afterlifeArchiveUpdates",
                 "soulName", "previousSoulNames", "currentRealm", "currentIncarnation", "enlightenment", "soulProgression",
                 "inkFeathers", "soulRelics", "afterlifeArchive", "livesHistory", "crossIncarnationData", "currentTier",
-                "soulImprint", "pendingMemoryLegacy"
+                "soulImprint", "pendingMemoryLegacy", ShiningBlessingEffectState.SoulStateProperty,
+                PlayerGuardianFoundationState.SoulStateGuardianIdProperty,
+                PlayerGuardianFoundationState.SoulStateFoundationStatusProperty
             }, issues, ValidateMetaMiscContract);
         await ValidateFlexibleStateFile("game_state/meta/guardians.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "UpdateGuardians", "guardianPowerEvents", "guardians", "activeGuardian", "chaosSeaNavigation", "pendingGuardianCreation"
+                "UpdateGuardians", "guardianPowerEvents", "guardians", "activeGuardian", "chaosSeaNavigation", "pendingGuardianCreation",
+                PlayerGuardianFoundationState.HistoryProperty
             }, issues, ValidateMetaMiscContract);
+        await ValidateFlexibleStateFile(PlayerGuardianFoundationState.PendingRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "requestId", "mode", "founderSoulName", "previousGuardianId", "previousGuardianName", "sourceShiningAvailability",
+                "proposedDisplayName", "mantleSummary", "mantleCreed", "appearanceMotifs", "dominantAspect", "createdAtTurn", "createdAtUtc"
+            }, issues, ValidatePendingPlayerGuardianFoundationStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(PlayerGuardianFoundationState.PendingRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "requestId", "mode", "founderSoulName", "previousGuardianId", "previousGuardianName", "sourceShiningAvailability",
+                "proposedDisplayName", "mantleSummary", "mantleCreed", "appearanceMotifs", "dominantAspect", "createdAtTurn", "createdAtUtc"
+            }, issues);
+        await ValidateFlexibleStateFile(ShiningAbodeState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors",
+                "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem",
+                "coreActionReceipts",
+                "factionFoundingReceipts", "factionRealignmentReceipts"
+            }, issues, ValidateShiningAbodeStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(ShiningAbodeState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors",
+                "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem",
+                "coreActionReceipts",
+                "factionFoundingReceipts", "factionRealignmentReceipts"
+            }, issues);
+        await ValidateFlexibleStateFile(ShiningCoreActionRequestState.PendingActionsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ShiningCoreActionRequestState.RequestsProperty
+            }, issues, ValidatePendingShiningCoreActionsRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(ShiningCoreActionRequestState.PendingActionsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ShiningCoreActionRequestState.RequestsProperty
+            }, issues);
+        await ValidateFlexibleStateFile(ShiningTradeRequestState.PendingRequestsPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ShiningTradeRequestState.RequestsProperty
+            }, issues, ValidatePendingShiningTradeInventoryRequestsFile);
+        await ValidateStrictTopLevelObjectFileAsync(ShiningTradeRequestState.PendingRequestsPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ShiningTradeRequestState.RequestsProperty
+            }, issues);
         await ValidateFlexibleStateFile(GuardianAbodeResidentState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -386,6 +437,36 @@ public partial class ValidationService
             {
                 "AscensionTrigger", "playerChoice", "_lastUpdated"
             }, issues);
+        await ValidateFlexibleStateFile(ShiningFactionRequestState.PendingFoundingsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ShiningFactionRequestState.RequestsProperty
+            }, issues, ValidatePendingShiningFactionFoundingsRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(ShiningFactionRequestState.PendingFoundingsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ShiningFactionRequestState.RequestsProperty
+            }, issues);
+        await ValidateFlexibleStateFile(ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ShiningFactionRequestState.RequestsProperty
+            }, issues, ValidatePendingShiningFactionRealignmentsRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ShiningFactionRequestState.RequestsProperty
+            }, issues);
+        await ValidateFlexibleStateFile(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ShiningFactionRequestState.RequestsProperty
+            }, issues, ValidatePendingShiningFactionLeadershipTransitionsRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ShiningFactionRequestState.RequestsProperty
+            }, issues);
         await ValidateFlexibleStateFile(NpcTradeRequestState.PendingRequestPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -417,7 +498,8 @@ public partial class ValidationService
                 "sourceGuardianId", "sourceGuardianName", "sourceAbodeId", "sourceAbodeName",
                 "targetGuardianId", "targetGuardianName", "targetAbodeId", "targetAbodeName",
                 "abodeDevotionLevel", "abodeDevotionTier", "restlessness", "migrationState",
-                "transferMode", "createdAtTurn", "createdAtUtc"
+                "transferMode", "selectionMode", "competitionScore", "competitionLabel", "competitionReason",
+                "createdAtTurn", "createdAtUtc"
             }, issues, ValidatePendingGuardianAbodeResidentTransfersRequestFile);
         await ValidateStrictTopLevelObjectFileAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -706,7 +788,734 @@ public partial class ValidationService
         await ValidateLifeTransitionContextAsync(issues);
         await ValidateIncarnationContextAsync(issues);
         await ValidateAscensionContextAsync(issues);
+        await ValidatePendingShiningCoreActionRequestContextAsync(issues);
+        await ValidatePendingShiningTradeInventoryRequestContextAsync(issues);
+        await ValidatePendingShiningFoundingRequestContextAsync(issues);
+        await ValidatePendingShiningRealignmentRequestContextAsync(issues);
+        await ValidatePendingShiningLeadershipTransitionRequestContextAsync(issues);
         await ValidateSystemGuardianAttractionContextAsync(issues);
+    }
+
+    private async Task ValidatePendingShiningFoundingResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            ShiningFactionRequestState.PendingFoundingsRequestPath,
+            issues,
+            code: "shining_founding_missing_validated_snapshot_request",
+            section: "ShiningAbode",
+            message: "pending_shining_faction_foundings.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Shining founding contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_shining_faction_foundings.json в manifest.Files и snapshotFileHashes.");
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = ShiningFactionRequestState.ReadFoundingRequests(preTurnJson);
+        if (requests.Count == 0)
+        {
+            if (HasExplicitEmptyShiningRequestsArray(preTurnJson))
+                return;
+
+            issues.Add(new ValidationIssue(
+                ShiningFactionRequestState.PendingFoundingsRequestPath,
+                IssueSeverity.Error,
+                "validated snapshot pending_shining_faction_foundings.json unreadable или malformed.",
+                code: "shining_founding_malformed_validated_snapshot_request",
+                section: "ShiningAbode",
+                repairHint: "Сохраняй в validated pending snapshot machine-readable pending_shining_faction_foundings.json exact client-authored contract."));
+            return;
+        }
+
+        var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(shiningJson) || string.IsNullOrWhiteSpace(residentsJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(shiningJson) is not JsonObject currentShiningRoot ||
+                JsonNode.Parse(residentsJson) is not JsonObject currentResidentsRoot)
+            {
+                return;
+            }
+
+            var currentGuardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
+            GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
+            ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, currentResidentsRoot, currentGuardiansRoot);
+            var receipts = ShiningAbodeState.EnsureFactionFoundingReceiptsArray(currentShiningRoot);
+
+            foreach (var request in requests)
+            {
+                var receipt = ShiningAbodeState.FindReceipt(receipts, request.RequestId);
+                if (receipt == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingFoundingsRequestPath,
+                        IssueSeverity.Error,
+                        "pending Shining founding request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                        code: "shining_founding_missing_resolution",
+                        section: "ShiningAbode",
+                        repairHint: "Каждый Shining founding request должен закрываться в ближайшем accepted turn через shining_abode_state.json.factionFoundingReceipts[]."));
+                    continue;
+                }
+
+                if (!ShiningFoundingReceiptMatchesRequest(receipt, request, out var receiptActual))
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingFoundingsRequestPath,
+                        IssueSeverity.Error,
+                        "Shining founding receipt не совпадает с client-authored founding contract.",
+                        code: "shining_founding_receipt_mismatch",
+                        section: "ShiningAbode",
+                        expected: $"{request.ProposedFactionId} / {request.ProposedHallId} / {request.Charter.FactionName}",
+                        actual: receiptActual,
+                        repairHint: "Синхронизируй factionFoundingReceipts[] с pending founding request exact ids, hall payload и supporter list."));
+                    continue;
+                }
+
+                var status = GetNodeString(receipt["status"]) ?? string.Empty;
+                var currentFaction = ShiningAbodeState.FindFaction(currentShiningRoot, request.ProposedFactionId);
+                var currentHall = FindShiningHall(currentShiningRoot, request.ProposedHallId);
+                if (string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+                {
+                    var hallActual = currentHall == null ? "hall_missing" : string.Empty;
+                    if (currentHall == null || !ShiningHallMatchesFoundingRequest(currentHall, request, out hallActual))
+                    {
+                        issues.Add(new ValidationIssue(
+                            ShiningFactionRequestState.PendingFoundingsRequestPath,
+                            IssueSeverity.Error,
+                            "Accepted Shining founding не materialize-ил canonical hall exact founding payload.",
+                            code: "shining_founding_missing_hall_materialization",
+                            section: "ShiningAbode",
+                            expected: $"{request.ProposedHallId} / {request.ProposedHallName}",
+                            actual: hallActual,
+                            repairHint: "При accepted founding создавай hall точно из proposedHallId/proposedHallName/proposedHallDescription/proposedHallServiceTags."));
+                    }
+
+                    var factionActual = currentFaction == null ? "faction_missing" : string.Empty;
+                    if (currentFaction == null || !ShiningFactionMatchesAcceptedFounding(currentFaction, request, out factionActual))
+                    {
+                        issues.Add(new ValidationIssue(
+                            ShiningFactionRequestState.PendingFoundingsRequestPath,
+                            IssueSeverity.Error,
+                            "Accepted Shining founding не materialize-ил canonical player_founded faction.",
+                            code: "shining_founding_missing_faction_materialization",
+                            section: "ShiningAbode",
+                            expected: $"{request.ProposedFactionId} / player_founded / player_soul",
+                            actual: factionActual,
+                            repairHint: "При accepted founding materialize-ь faction с originType=player_founded, charter из request и leadership на player_soul."));
+                    }
+
+                    foreach (var supporterId in request.SupportingResidentIds
+                                 .Where(id => !string.IsNullOrWhiteSpace(id))
+                                 .Distinct(StringComparer.OrdinalIgnoreCase))
+                    {
+                        var resident = GuardianAbodeResidentState.FindResident(currentResidentsRoot, supporterId);
+                        if (resident != null &&
+                            string.Equals(GetNodeString(resident["shiningFactionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase))
+                        {
+                            continue;
+                        }
+
+                        issues.Add(new ValidationIssue(
+                            ShiningFactionRequestState.PendingFoundingsRequestPath,
+                            IssueSeverity.Error,
+                            "Accepted Shining founding не перенёс supporter resident в новую фракцию.",
+                            code: "shining_founding_supporter_not_reassigned",
+                            section: "ShiningAbode",
+                            expected: request.ProposedFactionId,
+                            actual: resident == null ? "resident_missing" : (GetNodeString(resident["shiningFactionId"]) ?? "null"),
+                            repairHint: "После accepted founding обнови resident.shiningFactionId для каждого supporter из request."));
+                    }
+                }
+                else if (currentFaction != null || currentHall != null)
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingFoundingsRequestPath,
+                        IssueSeverity.Error,
+                        "Refused/withdrawn Shining founding не должен materialize-ить hall или faction из запроса.",
+                        code: "shining_founding_unexpected_materialization_after_non_accept",
+                        section: "ShiningAbode",
+                        repairHint: "Если founding request завершён не как accepted, не materialize hall/faction из его payload."));
+                }
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+    }
+
+    private async Task ValidatePendingShiningCoreActionResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            ShiningCoreActionRequestState.PendingActionsRequestPath,
+            issues,
+            code: "shining_core_action_missing_validated_snapshot_request",
+            section: "ShiningAbode",
+            message: "pending_shining_abode_actions.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Shining core action contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_shining_abode_actions.json в manifest.Files и snapshotFileHashes.");
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = ShiningCoreActionRequestState.ReadRequests(preTurnJson);
+        if (requests.Count == 0)
+        {
+            if (!HasExplicitEmptyShiningRequestsArray(preTurnJson))
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningCoreActionRequestState.PendingActionsRequestPath,
+                    IssueSeverity.Error,
+                    "validated snapshot pending_shining_abode_actions.json unreadable или malformed.",
+                    code: "shining_core_action_malformed_validated_snapshot_request",
+                    section: "ShiningAbode",
+                    repairHint: "Сохраняй в validated pending snapshot machine-readable pending_shining_abode_actions.json exact client-authored contract."));
+            }
+
+            return;
+        }
+
+        var currentShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var currentResidentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        var currentSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(currentShiningJson) ||
+            string.IsNullOrWhiteSpace(currentResidentsJson) ||
+            string.IsNullOrWhiteSpace(currentSoulJson))
+        {
+            return;
+        }
+
+        var preTurnShiningJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            ShiningAbodeState.StatePath,
+            issues,
+            code: "shining_core_action_missing_pre_turn_shining_state",
+            section: "ShiningAbode",
+            message: "Shining core action resolution требует validated pre-turn shining_abode_state.json.",
+            repairHint: "Сохраняй canonical pre-turn shining_abode_state.json в validated pending snapshot для строгой проверки core action resolution.");
+        var preTurnResidentsJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            GuardianAbodeResidentState.StatePath,
+            issues,
+            code: "shining_core_action_missing_pre_turn_resident_state",
+            section: "ShiningAbode",
+            message: "Shining core action resolution требует validated pre-turn guardian_abode_residents.json.",
+            repairHint: "Сохраняй canonical pre-turn guardian_abode_residents.json в validated pending snapshot для строгой проверки Shining resident deltas.");
+        var preTurnSoulJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            issues,
+            code: "shining_core_action_missing_pre_turn_soul_state",
+            section: "ShiningAbode",
+            message: "Shining core action resolution требует validated pre-turn soul_state.json.",
+            repairHint: "Сохраняй canonical pre-turn soul_state.json в validated pending snapshot для строгой проверки Ink Feather costs and realm handoff.");
+        if (string.IsNullOrWhiteSpace(preTurnShiningJson) ||
+            string.IsNullOrWhiteSpace(preTurnResidentsJson) ||
+            string.IsNullOrWhiteSpace(preTurnSoulJson))
+        {
+            return;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(currentShiningJson) is not JsonObject currentShiningRoot ||
+                JsonNode.Parse(currentResidentsJson) is not JsonObject currentResidentsRoot ||
+                JsonNode.Parse(currentSoulJson) is not JsonObject currentSoulRoot ||
+                JsonNode.Parse(preTurnShiningJson) is not JsonObject preTurnShiningRoot ||
+                JsonNode.Parse(preTurnResidentsJson) is not JsonObject preTurnResidentsRoot ||
+                JsonNode.Parse(preTurnSoulJson) is not JsonObject preTurnSoulRoot)
+            {
+                return;
+            }
+
+            var receipts = ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot);
+            foreach (var request in requests)
+            {
+                var receipt = ShiningAbodeState.FindReceipt(receipts, request.RequestId);
+                if (receipt == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningCoreActionRequestState.PendingActionsRequestPath,
+                        IssueSeverity.Error,
+                        "pending Shining core action request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                        code: "shining_core_action_missing_resolution",
+                        section: "ShiningAbode",
+                        repairHint: "Каждый Shining core action request должен закрываться в ближайшем accepted turn через shining_abode_state.json.coreActionReceipts[]."));
+                    continue;
+                }
+
+                if (!ShiningCoreActionReceiptMatchesRequest(receipt, request, out var receiptActual))
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningCoreActionRequestState.PendingActionsRequestPath,
+                        IssueSeverity.Error,
+                        "Shining core action receipt не совпадает с client-authored core action contract.",
+                        code: "shining_core_action_receipt_mismatch",
+                        section: "ShiningAbode",
+                        expected: $"{request.ActionType} / {request.FactionId} / {request.ProjectId}",
+                        actual: receiptActual,
+                        repairHint: "Синхронизируй coreActionReceipts[] с pending_shining_abode_actions.json exact actionType, target ids и selected cards."));
+                    continue;
+                }
+
+                var status = GetNodeString(receipt["status"]) ?? string.Empty;
+                if (string.Equals(status, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+                {
+                    ValidateAcceptedShiningCoreActionOutcome(
+                        request,
+                        receipt,
+                        preTurnShiningRoot,
+                        preTurnResidentsRoot,
+                        preTurnSoulRoot,
+                        currentShiningRoot,
+                        currentResidentsRoot,
+                        currentSoulRoot,
+                        issues);
+                }
+                else
+                {
+                    ValidateNonAcceptedShiningCoreActionOutcome(
+                        request,
+                        preTurnShiningRoot,
+                        preTurnResidentsRoot,
+                        preTurnSoulRoot,
+                        currentShiningRoot,
+                        currentResidentsRoot,
+                        currentSoulRoot,
+                        issues);
+                }
+            }
+        }
+        catch
+        {
+            // parse issues are reported elsewhere
+        }
+    }
+
+    private async Task ValidatePendingShiningRealignmentResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            issues,
+            code: "shining_realignment_missing_validated_snapshot_request",
+            section: "ShiningAbode",
+            message: "pending_shining_faction_realignments.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Shining realignment contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_shining_faction_realignments.json в manifest.Files и snapshotFileHashes.");
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = ShiningFactionRequestState.ReadRealignmentRequests(preTurnJson);
+        if (requests.Count == 0)
+        {
+            if (HasExplicitEmptyShiningRequestsArray(preTurnJson))
+                return;
+
+            issues.Add(new ValidationIssue(
+                ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                IssueSeverity.Error,
+                "validated snapshot pending_shining_faction_realignments.json unreadable или malformed.",
+                code: "shining_realignment_malformed_validated_snapshot_request",
+                section: "ShiningAbode",
+                repairHint: "Сохраняй в validated pending snapshot machine-readable pending_shining_faction_realignments.json exact client-authored contract."));
+            return;
+        }
+
+        var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(shiningJson) || string.IsNullOrWhiteSpace(residentsJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(shiningJson) is not JsonObject currentShiningRoot ||
+                JsonNode.Parse(residentsJson) is not JsonObject currentResidentsRoot)
+            {
+                return;
+            }
+
+            var currentGuardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
+            GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
+            ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, currentResidentsRoot, currentGuardiansRoot);
+            var receipts = ShiningAbodeState.EnsureFactionRealignmentReceiptsArray(currentShiningRoot);
+            var historyLog = GuardianAbodeResidentState.EnsureHistoryLogArray(currentResidentsRoot);
+
+            foreach (var request in requests)
+            {
+                var receipt = ShiningAbodeState.FindReceipt(receipts, request.RequestId);
+                if (receipt == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                        IssueSeverity.Error,
+                        "pending Shining realignment request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                        code: "shining_realignment_missing_resolution",
+                        section: "ShiningAbode",
+                        repairHint: "Каждый Shining realignment request должен закрываться в ближайшем accepted turn через shining_abode_state.json.factionRealignmentReceipts[]."));
+                    continue;
+                }
+
+                if (!ShiningRealignmentReceiptMatchesRequest(receipt, request, out var receiptActual))
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                        IssueSeverity.Error,
+                        "Shining realignment receipt не совпадает с client-authored realignment contract.",
+                        code: "shining_realignment_receipt_mismatch",
+                        section: "ShiningAbode",
+                        expected: $"{request.ResidentId} / {request.SourceFactionId} / {request.TargetFactionId} / {request.RealignmentMode}",
+                        actual: receiptActual,
+                        repairHint: "Синхронизируй factionRealignmentReceipts[] с pending realignment request exact resident, source/target faction и realignmentMode."));
+                    continue;
+                }
+
+                var status = GetNodeString(receipt["status"]) ?? string.Empty;
+                var resident = GuardianAbodeResidentState.FindResident(currentResidentsRoot, request.ResidentId);
+                if (resident == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                        IssueSeverity.Error,
+                        "Resolved Shining realignment должен ссылаться на существующего resident в current roster.",
+                        code: "shining_realignment_missing_current_resident",
+                        section: "ShiningAbode",
+                        repairHint: "Не удаляй resident из guardian_abode_residents.json при Shining faction realignment; обновляй membership на той же resident identity."));
+                    continue;
+                }
+
+                var residentFactionId = GetNodeString(resident["shiningFactionId"]) ?? string.Empty;
+                if (string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (ShiningAbodeState.FindFaction(currentShiningRoot, request.TargetFactionId) == null)
+                    {
+                        issues.Add(new ValidationIssue(
+                            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                            IssueSeverity.Error,
+                            "Accepted Shining realignment с target faction требует существующую target faction в current state.",
+                            code: "shining_realignment_missing_target_faction",
+                            section: "ShiningAbode",
+                            actual: request.TargetFactionId,
+                            repairHint: "При accepted_transfer resident может перейти только в существующую target faction."));
+                    }
+
+                    if (!string.Equals(residentFactionId, request.TargetFactionId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                            IssueSeverity.Error,
+                            "Accepted Shining realignment не обновил resident.shiningFactionId до target faction.",
+                            code: "shining_realignment_missing_membership_update",
+                            section: "ShiningAbode",
+                            expected: request.TargetFactionId,
+                            actual: residentFactionId));
+                    }
+
+                    var historyEntryId = GetNodeString(receipt["residentHistoryEntryId"]);
+                    if (string.IsNullOrWhiteSpace(historyEntryId) ||
+                        !GuardianAbodeResidentState.HasHistoryLogEntry(historyLog, historyEntryId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                            IssueSeverity.Error,
+                            "Accepted Shining realignment должен оставлять resident history entry.",
+                            code: "shining_realignment_missing_history_entry",
+                            section: "ShiningAbode",
+                            repairHint: "После accepted realignment запиши residentHistoryEntryId в receipt и matching historyLog entry в guardian_abode_residents.json."));
+                    }
+                }
+                else if (string.Equals(status, ShiningFactionRequestState.RequestStatusDepartedToNeutral, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!string.IsNullOrWhiteSpace(residentFactionId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                            IssueSeverity.Error,
+                            "departure_to_neutral должен очистить resident.shiningFactionId.",
+                            code: "shining_realignment_neutral_departure_still_bound",
+                            section: "ShiningAbode",
+                            expected: "empty_or_null",
+                            actual: residentFactionId));
+                    }
+
+                    var historyEntryId = GetNodeString(receipt["residentHistoryEntryId"]);
+                    if (string.IsNullOrWhiteSpace(historyEntryId) ||
+                        !GuardianAbodeResidentState.HasHistoryLogEntry(historyLog, historyEntryId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                            IssueSeverity.Error,
+                            "departure_to_neutral должен оставлять resident history entry.",
+                            code: "shining_realignment_neutral_departure_missing_history",
+                            section: "ShiningAbode",
+                            repairHint: "После departed_to_neutral запиши residentHistoryEntryId в receipt и matching historyLog entry."));
+                    }
+                }
+                else if (!string.Equals(residentFactionId, request.SourceFactionId, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                        IssueSeverity.Error,
+                        "Refused/withdrawn Shining realignment не должен менять resident membership.",
+                        code: "shining_realignment_unexpected_membership_change_after_non_accept",
+                        section: "ShiningAbode",
+                        expected: request.SourceFactionId,
+                        actual: residentFactionId));
+                }
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+    }
+
+    private async Task ValidatePendingShiningTradeInventoryResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            ShiningTradeRequestState.PendingRequestsPath,
+            issues,
+            code: "shining_trade_request_missing_validated_snapshot_request",
+            section: "ShiningAbode",
+            message: "pending_shining_trade_inventory_requests.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Shining trade contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_shining_trade_inventory_requests.json в manifest.Files и snapshotFileHashes.");
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = ShiningTradeRequestState.ReadRequests(preTurnJson);
+        if (requests.Count == 0)
+        {
+            if (HasExplicitEmptyShiningRequestsArray(preTurnJson))
+                return;
+
+            issues.Add(new ValidationIssue(
+                ShiningTradeRequestState.PendingRequestsPath,
+                IssueSeverity.Error,
+                "validated snapshot pending_shining_trade_inventory_requests.json unreadable или malformed.",
+                code: "shining_trade_request_malformed_validated_snapshot_request",
+                section: "ShiningAbode",
+                repairHint: "Сохраняй в validated pending snapshot machine-readable pending_shining_trade_inventory_requests.json exact client-authored contract."));
+            return;
+        }
+
+        var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(shiningJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(shiningJson) is not JsonObject currentShiningRoot)
+                return;
+
+            var currentResidentsRoot = !string.IsNullOrWhiteSpace(residentsJson)
+                ? JsonNode.Parse(residentsJson) as JsonObject
+                : null;
+            var currentGuardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
+            ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, currentResidentsRoot, currentGuardiansRoot);
+
+            foreach (var request in requests)
+            {
+                var faction = ShiningAbodeState.FindFaction(currentShiningRoot, request.FactionId);
+                if (faction == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningTradeRequestState.PendingRequestsPath,
+                        IssueSeverity.Error,
+                        "Resolved Shining trade request требует существующую faction в current state.",
+                        code: "shining_trade_request_missing_current_faction",
+                        section: "ShiningAbode",
+                        actual: request.FactionId,
+                        repairHint: "Materialize explicit Shining tradeInventory только внутри существующей current faction."));
+                    continue;
+                }
+
+                var tradeInventory = faction["tradeInventory"] as JsonObject;
+                if (!ShiningTradeRequestState.InventoryMatchesRequestContract(tradeInventory, request))
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningTradeRequestState.PendingRequestsPath,
+                        IssueSeverity.Error,
+                        "pending_shining_trade_inventory_requests из pre-turn snapshot не привёл к matching faction.tradeInventory",
+                        code: "shining_trade_request_missing_inventory_resolution",
+                        section: "ShiningAbode",
+                        repairHint: "На accepted turn materialize explicit faction.tradeInventory по exact client-authored Shining trade request contract.")); 
+                    continue;
+                }
+
+                if (!ShiningTradeRequestState.ReceiptMatchesRequestContract(
+                        ShiningTradeRequestState.FindMatchingReceipt(faction, request),
+                        request,
+                        tradeInventory))
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningTradeRequestState.PendingRequestsPath,
+                        IssueSeverity.Error,
+                        "pending_shining_trade_inventory_requests из pre-turn snapshot не был закрыт canonical tradeInventory receipt",
+                        code: "shining_trade_request_missing_receipt_resolution",
+                        section: "ShiningAbode",
+                        repairHint: "После materialize explicit faction.tradeInventory обязательно закрой запрос через faction.tradeInventoryReceipts[] и matching requestId/tradeCycleId/itemCount timing."));
+                }
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+    }
+
+    private async Task ValidatePendingShiningLeadershipTransitionResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            issues,
+            code: "shining_leadership_missing_validated_snapshot_request",
+            section: "ShiningAbode",
+            message: "pending_shining_faction_leadership_transitions.json существует в accepted turn, но отсутствует в validated pending turn snapshot. Shining leadership contract нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_shining_faction_leadership_transitions.json в manifest.Files и snapshotFileHashes.");
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        var requests = ShiningFactionRequestState.ReadLeadershipTransitionRequests(preTurnJson);
+        if (requests.Count == 0)
+        {
+            if (HasExplicitEmptyShiningRequestsArray(preTurnJson))
+                return;
+
+            issues.Add(new ValidationIssue(
+                ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                IssueSeverity.Error,
+                "validated snapshot pending_shining_faction_leadership_transitions.json unreadable или malformed.",
+                code: "shining_leadership_malformed_validated_snapshot_request",
+                section: "ShiningAbode",
+                repairHint: "Сохраняй в validated pending snapshot machine-readable pending_shining_faction_leadership_transitions.json exact client-authored contract."));
+            return;
+        }
+
+        var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (string.IsNullOrWhiteSpace(shiningJson) || string.IsNullOrWhiteSpace(residentsJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(shiningJson) is not JsonObject currentShiningRoot ||
+                JsonNode.Parse(residentsJson) is not JsonObject currentResidentsRoot)
+            {
+                return;
+            }
+
+            var currentGuardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
+            GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
+            ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, currentResidentsRoot, currentGuardiansRoot);
+
+            foreach (var request in requests)
+            {
+                var faction = ShiningAbodeState.FindFaction(currentShiningRoot, request.FactionId);
+                if (faction == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                        IssueSeverity.Error,
+                        "Shining leadership resolution требует существующую faction в current state.",
+                        code: "shining_leadership_missing_current_faction",
+                        section: "ShiningAbode",
+                        actual: request.FactionId,
+                        repairHint: "Не удаляй target faction при leadership resolution; обновляй её nested leadership/receipts/history canonically."));
+                    continue;
+                }
+
+                var receipts = faction["leadershipReceipts"] as JsonArray ?? new JsonArray();
+                var history = faction["leadershipHistory"] as JsonArray ?? new JsonArray();
+                var receipt = ShiningAbodeState.FindReceipt(receipts, request.RequestId);
+                if (receipt == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                        IssueSeverity.Error,
+                        "pending Shining leadership request из pre-turn snapshot не был закрыт в текущем accepted turn",
+                        code: "shining_leadership_missing_resolution",
+                        section: "ShiningAbode",
+                        repairHint: "Каждый Shining leadership request должен закрываться в ближайшем accepted turn через faction.leadershipReceipts[]."));
+                    continue;
+                }
+
+                if (!ShiningLeadershipReceiptMatchesRequest(receipt, request, out var receiptActual))
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                        IssueSeverity.Error,
+                        "Shining leadership receipt не совпадает с client-authored leadership contract.",
+                        code: "shining_leadership_receipt_mismatch",
+                        section: "ShiningAbode",
+                        expected: $"{request.FactionId} / {request.TransitionMode} / {request.CandidateHeadActorType}:{request.CandidateHeadActorId}",
+                        actual: receiptActual,
+                        repairHint: "Синхронизируй leadershipReceipts[] с pending leadership request exact mode, incumbent и resolved candidate/vacancy."));
+                    continue;
+                }
+
+                var status = GetNodeString(receipt["status"]) ?? string.Empty;
+                var historyEntry = ShiningAbodeState.FindLeadershipHistoryEntry(history, request.RequestId);
+                if ((string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(status, ShiningFactionRequestState.RequestStatusRefused, StringComparison.OrdinalIgnoreCase)) &&
+                    historyEntry == null)
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                        IssueSeverity.Error,
+                        "Accepted/refused Shining leadership transition должен иметь matching leadershipHistory entry.",
+                        code: "shining_leadership_missing_history",
+                        section: "ShiningAbode",
+                        repairHint: "Для accepted/refused leadership transition добавляй matching leadershipHistory[] entry с тем же requestId."));
+                }
+
+                if (historyEntry != null &&
+                    !ShiningLeadershipHistoryMatchesOutcome(historyEntry, receipt, request, out var historyActual))
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                        IssueSeverity.Error,
+                        "Shining leadership history не совпадает с resolved transition outcome.",
+                        code: "shining_leadership_history_mismatch",
+                        section: "ShiningAbode",
+                        expected: ResolveExpectedLeadershipHistoryEventType(request, status),
+                        actual: historyActual,
+                        repairHint: "Синхронизируй leadershipHistory[] eventType/turnNumber с resolved receipt status и transition mode."));
+                }
+
+                var leadership = faction["leadership"] as JsonObject ?? new JsonObject();
+                if (string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!ShiningLeadershipMatchesAcceptedOutcome(leadership, request, out var leadershipActual))
+                    {
+                        issues.Add(new ValidationIssue(
+                            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                            IssueSeverity.Error,
+                            "Accepted Shining leadership transition не materialize-ил canonical faction.leadership outcome.",
+                            code: "shining_leadership_missing_state_update",
+                            section: "ShiningAbode",
+                            expected: string.IsNullOrWhiteSpace(request.CandidateHeadActorType)
+                                ? "vacant leadership"
+                                : $"{request.CandidateHeadActorType}:{request.CandidateHeadActorId}",
+                            actual: leadershipActual,
+                            repairHint: "После accepted leadership transition обнови faction.leadership exact resolved head или vacancy."));
+                    }
+                }
+                else if (string.Equals(GetNodeString(leadership["headActorType"]), request.IncumbentHeadActorType, StringComparison.OrdinalIgnoreCase) &&
+                         string.Equals(GetNodeString(leadership["headActorId"]), request.IncumbentHeadActorId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                else
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                        IssueSeverity.Error,
+                        "Refused/withdrawn Shining leadership transition не должен менять текущего главу фракции.",
+                        code: "shining_leadership_unexpected_state_change_after_non_accept",
+                        section: "ShiningAbode",
+                        expected: $"{request.IncumbentHeadActorType}:{request.IncumbentHeadActorId}",
+                        actual: $"{GetNodeString(leadership["headActorType"])}:{GetNodeString(leadership["headActorId"])}"));
+                }
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
     }
 
     private void ValidateSystemGuardianAttractionStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -1581,6 +2390,39 @@ public partial class ValidationService
             issues);
     }
 
+    private async Task ValidatePendingPlayerGuardianFoundationContextAsync(List<ValidationIssue> issues)
+    {
+        var json = await _fs.ReadFileAsync(PlayerGuardianFoundationState.PendingRequestPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        PlayerGuardianFoundationState.PendingPlayerGuardianFoundationRequest? request;
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            ValidatePendingPlayerGuardianFoundationStateFile(doc.RootElement, PlayerGuardianFoundationState.PendingRequestPath, issues);
+            request = JsonSerializer.Deserialize<PlayerGuardianFoundationState.PendingPlayerGuardianFoundationRequest>(json);
+        }
+        catch (JsonException ex)
+        {
+            issues.Add(new ValidationIssue(
+                PlayerGuardianFoundationState.PendingRequestPath,
+                IssueSeverity.Error,
+                $"pending_player_guardian_foundation.json не читается как валидный JSON: {ex.Message}",
+                code: "player_guardian_foundation_invalid_json",
+                section: "PlayerGuardianFoundation",
+                repairHint: "Сохраняй pending_player_guardian_foundation.json как корректный client-authored JSON contract."));
+            return;
+        }
+
+        if (request == null)
+            return;
+
+        await ValidatePendingPlayerGuardianFoundationRealmContextAsync(
+            PlayerGuardianFoundationState.PendingRequestPath,
+            issues);
+    }
+
     private async Task ValidatePendingGuardianTradeRequestResolutionAsync(List<ValidationIssue> issues)
     {
         var requestResolution = await ReadValidatedPendingResolutionContractAsync<GuardianTradeRequestState.PendingGuardianTradeRequest>(
@@ -1663,12 +2505,209 @@ public partial class ValidationService
                     "pending_guardian_trade_request из pre-turn snapshot не был закрыт canonical tradeInventory receipt",
                     code: "guardian_trade_request_missing_receipt_resolution",
                     section: "GuardianTrade",
-                    repairHint: $"После materialize explicit guardian.tradeInventory обязательно закрой запрос через {GuardianTradeRequestState.UpdateReceiptsProperty} и запиши matching requestId/tradeCycleId/itemCount timing в guardians[].{GuardianTradeRequestState.ReceiptsProperty}."));
+                repairHint: $"После materialize explicit guardian.tradeInventory обязательно закрой запрос через {GuardianTradeRequestState.UpdateReceiptsProperty} и запиши matching requestId/tradeCycleId/itemCount timing в guardians[].{GuardianTradeRequestState.ReceiptsProperty}."));
             }
         }
         catch
         {
             // parse issues reported elsewhere
+        }
+    }
+
+    private async Task ValidatePendingPlayerGuardianFoundationResolutionAsync(List<ValidationIssue> issues)
+    {
+        var requestResolution = await ReadValidatedPendingResolutionContractAsync<PlayerGuardianFoundationState.PendingPlayerGuardianFoundationRequest>(
+            PlayerGuardianFoundationState.PendingRequestPath,
+            issues,
+            missingCode: "player_guardian_foundation_missing_validated_snapshot_request",
+            invalidCode: "player_guardian_foundation_invalid_validated_snapshot_request",
+            section: "PlayerGuardianFoundation",
+            missingMessage: "Strict validated pending turn snapshot contract для pending_player_guardian_foundation.json недоступен. Foundation branch нельзя проверить строго.",
+            invalidMessage: "validated pending turn snapshot для pending_player_guardian_foundation.json существует, но request contract внутри него unreadable или malformed. Foundation branch нельзя проверить строго.",
+            repairHint: "При создании pending turn snapshot сохраняй pending_player_guardian_foundation.json в manifest.Files и snapshotFileHashes, а snapshot copy должна оставаться валидным JSON contract.",
+            semanticValidator: (root, contextPrefix, validationIssues) => ValidatePendingPlayerGuardianFoundationStateFile(root, contextPrefix, validationIssues));
+        if (requestResolution.Status != PendingResolutionContractStatus.Resolved || requestResolution.Contract == null)
+            return;
+
+        await ValidatePendingPlayerGuardianFoundationRealmContextAsync(PlayerGuardianFoundationState.PendingRequestPath, issues);
+        if (issues.Any(issue => string.Equals(issue.Section, "PlayerGuardianFoundation", StringComparison.OrdinalIgnoreCase)))
+            return;
+
+        var guardianPolicyContext = await ResolveGuardianPolicyContextAsync();
+        if (!guardianPolicyContext.CurrentStateReadable || !guardianPolicyContext.HasCurrentRoot)
+        {
+            issues.Add(new ValidationIssue(
+                PlayerGuardianFoundationState.PendingRequestPath,
+                IssueSeverity.Error,
+                "Foundation branch не может быть строго проверена: current guardians.json unreadable.",
+                code: "player_guardian_foundation_missing_guardian_resolution",
+                section: "PlayerGuardianFoundation",
+                expected: "readable current guardians.json with authority-backed new guardian",
+                actual: "current guardians.json unreadable",
+                repairHint: "Сделай current guardians.json читаемым и materialize-ь нового guardian actor через UpdateGuardians.create."));
+            return;
+        }
+
+        try
+        {
+            if (!TryBuildPlayerFoundedGuardianResolution(guardianPolicyContext, requestResolution.Contract, out var createdGuardian, out var materializedGuardian, out var createdGuardianId, out var actual))
+            {
+                issues.Add(new ValidationIssue(
+                    PlayerGuardianFoundationState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "pending_player_guardian_foundation из pre-turn snapshot не привёл к authority-backed materialization нового guardian actor.",
+                    code: "player_guardian_foundation_missing_guardian_resolution",
+                    section: "PlayerGuardianFoundation",
+                    expected: "authority-backed player-founded guardian with foundationRequestId matching requestId",
+                    actual: actual,
+                    repairHint: "Разрешай foundation branch через UpdateGuardians.create и synchronously materialize нового guardian actor в guardians[]."));
+                return;
+            }
+
+            var currentRoot = guardianPolicyContext.CurrentRoot;
+            var historyEntry = PlayerGuardianFoundationState.FindHistoryEntry(TryParseJsonObject(currentRoot), requestResolution.Contract.RequestId);
+            if (historyEntry == null ||
+                !string.Equals(GetNodeString(historyEntry["guardianId"]), createdGuardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    PlayerGuardianFoundationState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "Foundation request не был закрыт canonical foundation history receipt.",
+                    code: "player_guardian_foundation_missing_history",
+                    section: "PlayerGuardianFoundation",
+                    repairHint: $"После materialization нового guardian actor обязательно append-ь matching receipt в guardians.json.{PlayerGuardianFoundationState.HistoryProperty}."));
+            }
+            else
+            {
+                var formerPatronGuardianId = GetNodeString(historyEntry["formerPatronGuardianId"]);
+                if (!string.Equals(formerPatronGuardianId, requestResolution.Contract.PreviousGuardianId, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{PlayerGuardianFoundationState.PendingRequestPath}.previousGuardianId",
+                        IssueSeverity.Error,
+                        "Foundation history receipt расходится с requested previous guardian identity.",
+                        code: "player_guardian_foundation_previous_guardian_mismatch",
+                        section: "PlayerGuardianFoundation",
+                        expected: requestResolution.Contract.PreviousGuardianId,
+                        actual: formerPatronGuardianId ?? "missing",
+                        repairHint: "Сохрани в foundation receipt того же previousGuardianId, который был зафиксирован клиентом в ritual request."));
+                }
+            }
+
+            if (!TryGetCurrentMaterializedGuardian(guardianPolicyContext, requestResolution.Contract.PreviousGuardianId, out _))
+            {
+                issues.Add(new ValidationIssue(
+                    PlayerGuardianFoundationState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "Прежний guardian пропал из guardians[] после foundation branch.",
+                    code: "player_guardian_foundation_previous_guardian_missing",
+                    section: "PlayerGuardianFoundation",
+                    expected: $"current guardians[] still contains {requestResolution.Contract.PreviousGuardianId}",
+                    actual: $"guardian {requestResolution.Contract.PreviousGuardianId} missing from current guardians[]",
+                    repairHint: "Не удаляй старого patron guardian. Новый guardian должен добавляться рядом, а не заменять прежнюю сущность."));
+            }
+            else if (TryGetCurrentMaterializedGuardian(guardianPolicyContext, requestResolution.Contract.PreviousGuardianId, out var previousGuardian) &&
+                     !string.Equals(
+                         PlayerGuardianFoundationState.TryReadGuardianRoleToPlayer(previousGuardian),
+                         PlayerGuardianFoundationState.GuardianRoleFormerPatron,
+                         StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"game_state/meta/guardians.json.guardians.{requestResolution.Contract.PreviousGuardianId}.relationshipData.{PlayerGuardianFoundationState.GuardianRoleToPlayerProperty}",
+                    IssueSeverity.Error,
+                    "Foundation resolution должна явно оставить прежнему activeGuardian роль former_patron.",
+                    code: "player_guardian_foundation_missing_former_patron_role",
+                    section: "PlayerGuardianFoundation",
+                    expected: PlayerGuardianFoundationState.GuardianRoleFormerPatron,
+                    actual: PlayerGuardianFoundationState.TryReadGuardianRoleToPlayer(previousGuardian) ?? "missing",
+                    repairHint: $"При foundation resolution записывай relationshipData.{PlayerGuardianFoundationState.GuardianRoleToPlayerProperty} = {PlayerGuardianFoundationState.GuardianRoleFormerPatron} для прежнего patron guardian."));
+            }
+
+            if (!guardianPolicyContext.CurrentRoot.TryGetProperty("activeGuardian", out var activeGuardian) ||
+                activeGuardian.ValueKind != JsonValueKind.Object ||
+                !string.Equals(GetFirstNonEmptyString(activeGuardian, "guardianId", "id"), createdGuardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.activeGuardian",
+                    IssueSeverity.Error,
+                    "Player-founded guardian должен стать activeGuardian по умолчанию на turn of foundation resolution.",
+                    code: "player_guardian_foundation_active_guardian_mismatch",
+                    section: "PlayerGuardianFoundation",
+                    expected: createdGuardianId,
+                    actual: guardianPolicyContext.CurrentRoot.TryGetProperty("activeGuardian", out var rawActiveGuardian)
+                        ? GetFirstNonEmptyString(rawActiveGuardian, "guardianId", "id") ?? "missing/empty"
+                        : "missing",
+                    repairHint: "После accepted foundation branch синхронно обновляй activeGuardian на нового player-founded guardian."));
+            }
+
+            var expectedAbodeId = materializedGuardian["abode"] is JsonObject abodeNode
+                ? GetNodeString(abodeNode["abodeId"])
+                : null;
+            var currentAbodeId = guardianPolicyContext.CurrentRoot.TryGetProperty("chaosSeaNavigation", out var navigation) &&
+                                 navigation.ValueKind == JsonValueKind.Object
+                ? GetFirstNonEmptyString(navigation, "currentAbodeId")
+                : null;
+            if (string.IsNullOrWhiteSpace(expectedAbodeId) ||
+                !string.Equals(currentAbodeId, expectedAbodeId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.chaosSeaNavigation.currentAbodeId",
+                    IssueSeverity.Error,
+                    "Foundation resolution должен привязать currentAbodeId к обители нового guardian.",
+                    code: "player_guardian_foundation_current_abode_mismatch",
+                    section: "PlayerGuardianFoundation",
+                    expected: expectedAbodeId ?? "new founded guardian abodeId",
+                    actual: currentAbodeId ?? "missing",
+                    repairHint: "После foundation branch синхронно обновляй chaosSeaNavigation.currentAbodeId на abodeId новой guardian mantle."));
+            }
+
+            var currentSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            if (string.IsNullOrWhiteSpace(currentSoulJson))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "Foundation branch не может быть строго проверена: current soul_state.json unreadable.",
+                    code: "player_guardian_foundation_missing_soul_link",
+                    section: "PlayerGuardianFoundation",
+                    expected: $"readable current soul_state.json with {PlayerGuardianFoundationState.SoulStateGuardianIdProperty}",
+                    actual: "current soul_state.json missing or unreadable",
+                    repairHint: $"После foundation branch записывай soul_state.{PlayerGuardianFoundationState.SoulStateGuardianIdProperty}."));
+                return;
+            }
+
+            using var soulDoc = JsonDocument.Parse(currentSoulJson);
+            var linkedGuardianId = GetFirstNonEmptyString(soulDoc.RootElement, PlayerGuardianFoundationState.SoulStateGuardianIdProperty);
+            if (!string.Equals(linkedGuardianId, createdGuardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"game_state/meta/soul_state.json.{PlayerGuardianFoundationState.SoulStateGuardianIdProperty}",
+                    IssueSeverity.Error,
+                    "Foundation branch должен оставить additive soul link на player-founded guardian.",
+                    code: "player_guardian_foundation_missing_soul_link",
+                    section: "PlayerGuardianFoundation",
+                    expected: createdGuardianId,
+                    actual: linkedGuardianId ?? "missing",
+                    repairHint: $"Запиши soul_state.{PlayerGuardianFoundationState.SoulStateGuardianIdProperty} = {createdGuardianId} при успешном foundation resolution."));
+            }
+
+            var foundationStatus = GetFirstNonEmptyString(soulDoc.RootElement, PlayerGuardianFoundationState.SoulStateFoundationStatusProperty);
+            if (!string.Equals(foundationStatus, PlayerGuardianFoundationState.SoulStateFoundationStatusFounded, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"game_state/meta/soul_state.json.{PlayerGuardianFoundationState.SoulStateFoundationStatusProperty}",
+                    IssueSeverity.Error,
+                    "Foundation resolution должна оставлять soul-side completion marker founded.",
+                    code: "player_guardian_foundation_missing_soul_status",
+                    section: "PlayerGuardianFoundation",
+                    expected: PlayerGuardianFoundationState.SoulStateFoundationStatusFounded,
+                    actual: foundationStatus ?? "missing",
+                    repairHint: $"После successful foundation resolution записывай soul_state.{PlayerGuardianFoundationState.SoulStateFoundationStatusProperty} = {PlayerGuardianFoundationState.SoulStateFoundationStatusFounded}."));
+            }
+        }
+        catch
+        {
+            // detailed parse issues reported elsewhere
         }
     }
 
@@ -1838,6 +2877,29 @@ public partial class ValidationService
                 expected: "Chaos Sea or Shining Abode pre-turn realm",
                 actual: currentRealm,
                 repairHint: "Не создавай и не разрешай pending_guardian_trade_request.json вне afterlife realm."));
+        }
+    }
+
+    private async Task ValidatePendingPlayerGuardianFoundationRealmContextAsync(
+        string requestPath,
+        List<ValidationIssue> issues)
+    {
+        var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            requestPath,
+            issues,
+            code: "player_guardian_foundation_invalid_validated_snapshot_context",
+            section: "PlayerGuardianFoundation");
+        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
+        {
+            issues.Add(new ValidationIssue(
+                requestPath,
+                IssueSeverity.Error,
+                "pending_player_guardian_foundation.json допустим только в Chaos Sea realm",
+                code: "player_guardian_foundation_wrong_realm",
+                section: "PlayerGuardianFoundation",
+                expected: "Chaos Sea pre-turn realm",
+                actual: currentRealm,
+                repairHint: "Не создавай и не разрешай pending_player_guardian_foundation.json вне Моря Хаоса."));
         }
     }
 
@@ -2284,6 +3346,18 @@ public partial class ValidationService
 
     private async Task ValidatePendingGuardianAbodeResidentInteractionRequestContextAsync(List<ValidationIssue> issues)
     {
+        if (await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+                IssueSeverity.Error,
+                "pending_guardian_abode_resident_interactions.json unreadable, malformed или содержит malformed request entry.",
+                code: "abode_resident_interactions_malformed_file",
+                section: "AfterlifeResidents",
+                repairHint: "Сохраняй pending resident interaction bundle как корректный JSON contract без malformed sibling entries; validator не должен терять corruption через partial read." ));
+            return;
+        }
+
         var requests = await GuardianAbodeResidentRequestState.ReadInteractionRequestsAsync(_fs);
         if (requests.Count == 0)
             return;
@@ -2352,6 +3426,18 @@ public partial class ValidationService
 
     private async Task ValidatePendingGuardianAbodeResidentsRequestContextAsync(List<ValidationIssue> issues)
     {
+        if (await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+                IssueSeverity.Error,
+                "pending_guardian_abode_residents_request.json unreadable, malformed или содержит malformed request entry.",
+                code: "abode_resident_roster_malformed_file",
+                section: "AfterlifeResidents",
+                repairHint: "Сохраняй pending resident roster bundle как корректный JSON contract без malformed sibling entries; validation не должна видеть усечённый surviving-набор вместо полной corruption state." ));
+            return;
+        }
+
         var requests = await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs);
         if (requests.Count == 0)
             return;
@@ -2371,6 +3457,7 @@ public partial class ValidationService
                 section: "AfterlifeResidents"));
         }
 
+        var guardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
         foreach (var request in requests)
         {
             if (string.IsNullOrWhiteSpace(request.RequestId) ||
@@ -2383,12 +3470,229 @@ public partial class ValidationService
                     "pending_guardian_abode_residents_request.json должен содержать полный client-authored roster contract",
                     code: "abode_resident_roster_missing_fields",
                 section: "AfterlifeResidents"));
+                continue;
+            }
+
+            if (string.Equals(request.RequestMode, GuardianAbodeResidentRequestState.ResidentsRequestModeFounderAttraction, StringComparison.OrdinalIgnoreCase))
+            {
+                var foundedGuardian = PlayerGuardianFoundationState.FindGuardianById(guardiansRoot, request.GuardianId);
+                if (!PlayerGuardianFoundationState.IsPlayerFoundedGuardian(foundedGuardian))
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+                        IssueSeverity.Error,
+                        "founder_attraction roster request допустим только для founded guardian",
+                        code: "abode_resident_roster_founder_mode_without_founded_guardian",
+                        section: "AfterlifeResidents",
+                        repairHint: "Используй founder_attraction только для guardian с originType=player_founded_ascended_soul."));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.FounderFeatureTitle) ||
+                    string.IsNullOrWhiteSpace(request.FounderFeatureSummary))
+                {
+                    issues.Add(new ValidationIssue(
+                        GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+                        IssueSeverity.Error,
+                        "founder_attraction roster request должен нести founder feature title/summary",
+                        code: "abode_resident_roster_missing_founder_feature_context",
+                        section: "AfterlifeResidents",
+                        repairHint: "Для founder_attraction request сохраняй founderFeatureTitle и founderFeatureSummary из founded guardian abode features."));
+                }
             }
         }
     }
 
+    private void ValidatePendingPlayerGuardianFoundationStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var requestId = RequireString(root, contextPrefix, issues, "requestId");
+        var mode = RequireString(root, contextPrefix, issues, "mode");
+        var founderSoulName = RequireString(root, contextPrefix, issues, "founderSoulName");
+        var previousGuardianId = RequireString(root, contextPrefix, issues, "previousGuardianId");
+        var previousGuardianName = RequireString(root, contextPrefix, issues, "previousGuardianName");
+        var sourceShiningAvailability = RequireString(root, contextPrefix, issues, "sourceShiningAvailability");
+        var proposedDisplayName = RequireString(root, contextPrefix, issues, "proposedDisplayName");
+        var mantleSummary = RequireString(root, contextPrefix, issues, "mantleSummary");
+        var mantleCreed = RequireString(root, contextPrefix, issues, "mantleCreed");
+        ValidateOptionalNullableStringField(root, contextPrefix, issues, "dominantAspect");
+        ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtTurn", "PlayerGuardianFoundation");
+        var createdAtUtc = RequireString(root, contextPrefix, issues, "createdAtUtc");
+
+        if (!string.IsNullOrWhiteSpace(mode) &&
+            !string.Equals(mode, PlayerGuardianFoundationState.RequestMode, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.mode",
+                IssueSeverity.Error,
+                "pending_player_guardian_foundation.json.mode должен быть player_founded_guardian",
+                code: "player_guardian_foundation_invalid_mode",
+                section: "PlayerGuardianFoundation",
+                expected: PlayerGuardianFoundationState.RequestMode,
+                actual: mode));
+        }
+
+        if (!string.IsNullOrWhiteSpace(sourceShiningAvailability) &&
+            !string.Equals(sourceShiningAvailability, ShiningAbodeState.AvailabilitySealedUntilNextAscension, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.sourceShiningAvailability",
+                IssueSeverity.Error,
+                "sourceShiningAvailability должен фиксировать sealed_until_next_ascension",
+                code: "player_guardian_foundation_invalid_shining_availability",
+                section: "PlayerGuardianFoundation",
+                expected: ShiningAbodeState.AvailabilitySealedUntilNextAscension,
+                actual: sourceShiningAvailability));
+        }
+
+        if (!string.IsNullOrWhiteSpace(createdAtUtc) && !DateTimeOffset.TryParse(createdAtUtc, out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.createdAtUtc",
+                IssueSeverity.Error,
+                "pending_player_guardian_foundation.json.createdAtUtc должен быть ISO 8601 timestamp",
+                code: "player_guardian_foundation_invalid_created_at",
+                section: "PlayerGuardianFoundation",
+                expected: "ISO 8601 timestamp",
+                actual: createdAtUtc));
+        }
+
+        if (!root.TryGetProperty("appearanceMotifs", out var appearanceMotifs) ||
+            appearanceMotifs.ValueKind != JsonValueKind.Array ||
+            appearanceMotifs.GetArrayLength() == 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.appearanceMotifs",
+                IssueSeverity.Error,
+                "pending_player_guardian_foundation.json должен содержать непустой appearanceMotifs array",
+                code: "player_guardian_foundation_missing_appearance_motifs",
+                section: "PlayerGuardianFoundation",
+                expected: "non-empty array of strings",
+                actual: root.TryGetProperty("appearanceMotifs", out var actualMotifs) ? actualMotifs.ValueKind.ToString() : "missing"));
+        }
+        else
+        {
+            var motifIndex = 0;
+            foreach (var motif in appearanceMotifs.EnumerateArray())
+            {
+                if (motif.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(motif.GetString()))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{contextPrefix}.appearanceMotifs[{motifIndex}]",
+                        IssueSeverity.Error,
+                        "appearanceMotifs должен содержать только непустые строки",
+                        code: "player_guardian_foundation_invalid_appearance_motif",
+                        section: "PlayerGuardianFoundation"));
+                }
+
+                motifIndex++;
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(requestId) ||
+            string.IsNullOrWhiteSpace(founderSoulName) ||
+            string.IsNullOrWhiteSpace(previousGuardianId) ||
+            string.IsNullOrWhiteSpace(previousGuardianName) ||
+            string.IsNullOrWhiteSpace(proposedDisplayName) ||
+            string.IsNullOrWhiteSpace(mantleSummary) ||
+            string.IsNullOrWhiteSpace(mantleCreed))
+        {
+            issues.Add(new ValidationIssue(
+                contextPrefix,
+                IssueSeverity.Error,
+                "pending_player_guardian_foundation.json должен содержать полный client-authored ritual contract",
+                code: "player_guardian_foundation_missing_fields",
+                section: "PlayerGuardianFoundation"));
+        }
+    }
+
+    private static bool TryBuildPlayerFoundedGuardianResolution(
+        GuardianPolicyContext context,
+        PlayerGuardianFoundationState.PendingPlayerGuardianFoundationRequest request,
+        out JsonObject authorityGuardian,
+        out JsonObject materializedGuardian,
+        out string guardianId,
+        out string actual)
+    {
+        authorityGuardian = null!;
+        materializedGuardian = null!;
+        guardianId = string.Empty;
+        actual = "guardian authority unavailable";
+
+        if (!context.HasStrictCurrentAuthorityRoot)
+        {
+            actual = DescribeCurrentGuardianAuthorityFailure(context);
+            return false;
+        }
+
+        var authorityMatches = new List<JsonObject>();
+        if (context.StrictCurrentAuthorityRoot.TryGetProperty("guardians", out var authorityGuardians) &&
+            authorityGuardians.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in authorityGuardians.EnumerateArray())
+            {
+                if (entry.ValueKind != JsonValueKind.Object ||
+                    !string.Equals(GetFirstNonEmptyString(entry, "foundationRequestId"), request.RequestId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (JsonNode.Parse(entry.GetRawText()) is JsonObject parsed)
+                    authorityMatches.Add(parsed);
+            }
+        }
+
+        if (authorityMatches.Count != 1)
+        {
+            actual = authorityMatches.Count == 0
+                ? "no authority-backed guardian carries foundationRequestId"
+                : "multiple authority-backed guardians carry the same foundationRequestId";
+            return false;
+        }
+
+        authorityGuardian = authorityMatches[0];
+        guardianId = GetNodeString(authorityGuardian["guardianId"]) ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(guardianId))
+        {
+            actual = "authority-backed founded guardian is missing guardianId";
+            return false;
+        }
+
+        if (!TryGetCurrentMaterializedGuardian(context, guardianId, out var materializedGuardianElement) ||
+            JsonNode.Parse(materializedGuardianElement.GetRawText()) is not JsonObject parsedMaterializedGuardian)
+        {
+            actual = $"guardian {guardianId} missing from current guardians[]";
+            return false;
+        }
+
+        materializedGuardian = parsedMaterializedGuardian;
+        if (!JsonNode.DeepEquals(authorityGuardian, materializedGuardian))
+        {
+            actual = $"guardian {guardianId} materialized state diverges from authority-backed create surface";
+            return false;
+        }
+
+        if (!PlayerGuardianFoundationState.TryDescribeFoundedGuardianContractMismatch(materializedGuardian, request, out actual))
+        {
+            actual = $"guardian {guardianId} {actual}";
+            return false;
+        }
+
+        return true;
+    }
+
     private async Task ValidatePendingGuardianAbodeResidentTransferRequestContextAsync(List<ValidationIssue> issues)
     {
+        if (await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                IssueSeverity.Error,
+                "pending_guardian_abode_resident_transfers.json unreadable, malformed или содержит malformed request entry.",
+                code: "abode_resident_transfer_malformed_file",
+                section: "AfterlifeResidents",
+                repairHint: "Сохраняй pending resident transfer bundle как корректный JSON contract без malformed sibling entries; validator не должен silently drop corrupted requests." ));
+            return;
+        }
+
         var requests = await GuardianAbodeResidentRequestState.ReadTransferRequestsAsync(_fs);
         if (requests.Count == 0)
             return;
@@ -2852,7 +4156,20 @@ public partial class ValidationService
 
     private async Task ValidatePendingGuardianSocialInteractionRequestContextAsync(List<ValidationIssue> issues)
     {
-        var requests = await ActorSocialInteractionRequestState.ReadGuardianRequestsAsync(_fs);
+        var requestState = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs);
+        if (requestState.IsMalformed)
+        {
+            issues.Add(new ValidationIssue(
+                ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+                IssueSeverity.Error,
+                "pending_guardian_social_interactions.json unreadable or malformed in current runtime state",
+                code: "guardian_social_interactions_malformed_runtime_state",
+                section: "GuardianSocial",
+                repairHint: "Сохраняй machine-readable pending_guardian_social_interactions.json и не очищай malformed guardian social contract до явной repair/validation обработки."));
+            return;
+        }
+
+        var requests = requestState.Requests;
         if (requests.Count == 0)
             return;
 
@@ -2907,7 +4224,20 @@ public partial class ValidationService
 
     private async Task ValidatePendingNpcSocialInteractionRequestContextAsync(List<ValidationIssue> issues)
     {
-        var requests = await ActorSocialInteractionRequestState.ReadNpcRequestsAsync(_fs);
+        var requestState = await ActorSocialInteractionRequestState.ReadNpcRequestsStateAsync(_fs);
+        if (requestState.IsMalformed)
+        {
+            issues.Add(new ValidationIssue(
+                ActorSocialInteractionRequestState.PendingNpcRequestPath,
+                IssueSeverity.Error,
+                "pending_npc_social_interactions.json unreadable or malformed in current runtime state",
+                code: "npc_social_interactions_malformed_runtime_state",
+                section: "NpcSocial",
+                repairHint: "Сохраняй machine-readable pending_npc_social_interactions.json и не очищай malformed NPC social contract до явной repair/validation обработки."));
+            return;
+        }
+
+        var requests = requestState.Requests;
         if (requests.Count == 0)
             return;
 
@@ -3838,20 +5168,62 @@ public partial class ValidationService
         if (string.IsNullOrWhiteSpace(preTurnRealm))
             return;
 
-        if (!IsExactChaosSeaRealm(preTurnRealm))
+        var allowsShiningPendingBootstrap = false;
+        if (!IsExactChaosSeaRealm(preTurnRealm) &&
+            (string.Equals(preTurnRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(preTurnRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase)))
+        {
+            var preTurnShiningJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+                ShiningAbodeState.StatePath,
+                issues,
+                code: "incarnation_trigger_missing_pre_turn_shining_state",
+                section: "Lifecycle",
+                message: "TriggerIncarnation из Shining pending-bootstrap handoff требует validated pre-turn shining_abode_state.json.",
+                repairHint: "Если TriggerIncarnation должен стартовать из frozen Shining package, сохраняй pre-turn shining_abode_state.json с preparedIncarnationPackage в validated pending snapshot.");
+            if (!string.IsNullOrWhiteSpace(preTurnShiningJson))
+            {
+                try
+                {
+                    if (JsonNode.Parse(preTurnShiningJson) is JsonObject preTurnShiningRoot &&
+                        preTurnShiningRoot["preparedIncarnationPackage"] is JsonObject)
+                    {
+                        allowsShiningPendingBootstrap = true;
+                    }
+                }
+                catch
+                {
+                    // parse issues are reported elsewhere
+                }
+            }
+        }
+
+        if (!IsExactChaosSeaRealm(preTurnRealm) && !allowsShiningPendingBootstrap)
         {
             issues.Add(new ValidationIssue(
                 "game_state/control/incarnation_trigger.json",
                 IssueSeverity.Error,
-                "TriggerIncarnation допустим только в Chaos Sea",
+                "TriggerIncarnation допустим только в Chaos Sea или в Shining pending-bootstrap handoff с frozen package",
                 code: "incarnation_trigger_invalid_realm",
+                section: "Lifecycle",
+                expected: "Chaos Sea or Shining Abode with preparedIncarnationPackage",
+                actual: preTurnRealm,
+                repairHint: "Проверяй realm на начало accepted turn. Разрешены только Chaos Sea и Shining pending-bootstrap handoff с frozen package; другие realms не могут запускать incarnation_trigger.json."));
+        }
+
+        if (payload.IsGuardianForced && !IsExactChaosSeaRealm(preTurnRealm))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/control/incarnation_trigger.json",
+                IssueSeverity.Error,
+                "Guardian-forced TriggerIncarnation допустим только из Chaos Sea, не из Shining pending-bootstrap handoff.",
+                code: "forced_incarnation_invalid_shining_handoff_source",
                 section: "Lifecycle",
                 expected: "Chaos Sea",
                 actual: preTurnRealm,
-                repairHint: "Проверяй realm на начало accepted turn. Если pre-turn realm уже не Chaos Sea, убери incarnation_trigger.json; если trigger был легален, не переводи soul_state.currentRealm в Mortal World вручную в том же ходе."));
+                repairHint: "Не смешивай guardian-forced incarnation с frozen Shining package handoff. Для handoff из Сияющей Обители используй обычный non-forced TriggerIncarnation."));
         }
 
-        if (payload.IsGuardianForced)
+        if (payload.IsGuardianForced && IsExactChaosSeaRealm(preTurnRealm))
             await ValidateForcedGuardianIncarnationContextAsync(payload, issues);
     }
 
@@ -5215,6 +6587,1237 @@ public partial class ValidationService
         catch
         {
             // parse issues reported elsewhere
+        }
+
+        return result;
+    }
+
+    private static bool HasExplicitEmptyShiningRequestsArray(string json)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            return doc.RootElement.ValueKind == JsonValueKind.Object &&
+                   doc.RootElement.TryGetProperty(ShiningFactionRequestState.RequestsProperty, out var requestsNode) &&
+                   requestsNode.ValueKind == JsonValueKind.Array &&
+                   requestsNode.GetArrayLength() == 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static JsonObject? FindShiningHall(JsonObject shiningRoot, string hallId)
+    {
+        return shiningRoot["halls"] is JsonArray halls
+            ? halls.OfType<JsonObject>().FirstOrDefault(hall =>
+                string.Equals(GetNodeString(hall["hallId"]), hallId, StringComparison.OrdinalIgnoreCase))
+            : null;
+    }
+
+    private static bool ShiningFoundingReceiptMatchesRequest(
+        JsonObject receipt,
+        ShiningFactionRequestState.PendingShiningFactionFoundingRequest request,
+        out string actual)
+    {
+        actual =
+            $"{GetNodeString(receipt["proposedFactionId"])} / {GetNodeString(receipt["proposedHallId"])} / {GetNodeString(receipt["status"])}";
+
+        var status = GetNodeString(receipt["status"]);
+        if (!ShiningFactionRequestState.IsSupportedFoundingStatus(status) ||
+            !HasCanonicalShiningPoliticalClosure(receipt))
+            return false;
+
+        var receiptSupporters = ReadStringSet(receipt["supportingResidentIds"]);
+        var requestSupporters = request.SupportingResidentIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Select(id => id.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        return string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["proposedFactionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["proposedHallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["hallName"]), request.ProposedHallName, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(receipt["factionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+               receiptSupporters.SetEquals(requestSupporters);
+    }
+
+    private static bool ShiningHallMatchesFoundingRequest(
+        JsonObject hall,
+        ShiningFactionRequestState.PendingShiningFactionFoundingRequest request,
+        out string actual)
+    {
+        actual =
+            $"{GetNodeString(hall["hallId"])} / {GetNodeString(hall["hallName"])} / {string.Join(",", ReadStringSet(hall["serviceTags"]).OrderBy(value => value, StringComparer.OrdinalIgnoreCase))}";
+
+        return string.Equals(GetNodeString(hall["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(hall["hallName"]), request.ProposedHallName, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(hall["description"]), request.ProposedHallDescription, StringComparison.Ordinal) &&
+               ReadStringSet(hall["serviceTags"]).SetEquals(request.ProposedHallServiceTags.Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()));
+    }
+
+    private static bool ShiningFactionMatchesAcceptedFounding(
+        JsonObject faction,
+        ShiningFactionRequestState.PendingShiningFactionFoundingRequest request,
+        out string actual)
+    {
+        var leadership = faction["leadership"] as JsonObject ?? new JsonObject();
+        actual =
+            $"{GetNodeString(faction["factionId"])} / {GetNodeString(faction["originType"])} / {GetNodeString(leadership["headActorType"])}:{GetNodeString(leadership["headActorId"])} / {GetNodeString(leadership["leadershipState"])}";
+
+        return string.Equals(GetNodeString(faction["factionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(faction["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(faction["originType"]), ShiningAbodeState.OriginTypePlayerFounded, StringComparison.OrdinalIgnoreCase) &&
+               GetNodeInt(faction["baseStrength"]) == 35 &&
+               string.Equals(GetNodeString(faction["charter"]?["factionName"]), request.Charter.FactionName, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(faction["charter"]?["favoredArchetype"]), request.Charter.FavoredArchetype, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(faction["charter"]?["patronEffectFamily"]), request.Charter.PatronEffectFamily, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(faction["charter"]?["summary"]), request.Charter.Summary, StringComparison.Ordinal) &&
+               string.Equals(GetNodeString(leadership["headActorType"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(leadership["headActorId"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateSecure, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool ShiningRealignmentReceiptMatchesRequest(
+        JsonObject receipt,
+        ShiningFactionRequestState.PendingShiningFactionRealignmentRequest request,
+        out string actual)
+    {
+        actual =
+            $"{GetNodeString(receipt["residentId"])} / {GetNodeString(receipt["sourceFactionId"])} / {GetNodeString(receipt["targetFactionId"])} / {GetNodeString(receipt["status"])} / {GetNodeString(receipt["realignmentMode"])}";
+
+        var status = GetNodeString(receipt["status"]);
+        if (!ShiningFactionRequestState.IsSupportedRealignmentStatus(status) ||
+            !HasCanonicalShiningPoliticalClosure(receipt) ||
+            !string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["residentId"]), request.ResidentId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["sourceFactionId"]), request.SourceFactionId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["realignmentMode"]), request.RealignmentMode, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (!string.Equals(GetNodeString(receipt["targetFactionId"]) ?? string.Empty, request.TargetFactionId ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        return (status ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            ShiningFactionRequestState.RequestStatusAccepted => string.Equals(request.RealignmentMode, ShiningFactionRequestState.RealignmentModeAcceptedTransfer, StringComparison.OrdinalIgnoreCase),
+            ShiningFactionRequestState.RequestStatusRefused => string.Equals(request.RealignmentMode, ShiningFactionRequestState.RealignmentModeRefusedTransfer, StringComparison.OrdinalIgnoreCase),
+            ShiningFactionRequestState.RequestStatusDepartedToNeutral => string.Equals(request.RealignmentMode, ShiningFactionRequestState.RealignmentModeDepartureToNeutral, StringComparison.OrdinalIgnoreCase),
+            ShiningFactionRequestState.RequestStatusWithdrawn => true,
+            _ => false
+        };
+    }
+
+    private static bool ShiningLeadershipReceiptMatchesRequest(
+        JsonObject receipt,
+        ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest request,
+        out string actual)
+    {
+        actual =
+            $"{GetNodeString(receipt["transitionMode"])} / {GetNodeString(receipt["previousHeadActorType"])}:{GetNodeString(receipt["previousHeadActorId"])} / {GetNodeString(receipt["newHeadActorType"])}:{GetNodeString(receipt["newHeadActorId"])} / {GetNodeString(receipt["status"])}";
+
+        var status = GetNodeString(receipt["status"]);
+        if (!ShiningFactionRequestState.IsSupportedLeadershipStatus(status) ||
+            !HasCanonicalShiningPoliticalClosure(receipt) ||
+            !string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["transitionMode"]), request.TransitionMode, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["previousHeadActorType"]) ?? string.Empty, request.IncumbentHeadActorType ?? string.Empty, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(receipt["previousHeadActorId"]) ?? string.Empty, request.IncumbentHeadActorId ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (!string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var expectedCandidateType = request.CandidateHeadActorType ?? string.Empty;
+        var expectedCandidateId = request.CandidateHeadActorId ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(expectedCandidateType) && string.IsNullOrWhiteSpace(expectedCandidateId))
+        {
+            return string.IsNullOrWhiteSpace(GetNodeString(receipt["newHeadActorType"])) &&
+                   string.IsNullOrWhiteSpace(GetNodeString(receipt["newHeadActorId"]));
+        }
+
+        return string.Equals(GetNodeString(receipt["newHeadActorType"]) ?? string.Empty, expectedCandidateType, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["newHeadActorId"]) ?? string.Empty, expectedCandidateId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool ShiningLeadershipMatchesAcceptedOutcome(
+        JsonObject leadership,
+        ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest request,
+        out string actual)
+    {
+        actual =
+            $"{GetNodeString(leadership["headActorType"])}:{GetNodeString(leadership["headActorId"])} / {GetNodeString(leadership["leadershipState"])}";
+
+        if (string.IsNullOrWhiteSpace(request.CandidateHeadActorType) && string.IsNullOrWhiteSpace(request.CandidateHeadActorId))
+        {
+            return string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase) &&
+                   string.IsNullOrWhiteSpace(GetNodeString(leadership["headActorType"])) &&
+                   string.IsNullOrWhiteSpace(GetNodeString(leadership["headActorId"]));
+        }
+
+        return string.Equals(GetNodeString(leadership["headActorType"]) ?? string.Empty, request.CandidateHeadActorType ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(leadership["headActorId"]) ?? string.Empty, request.CandidateHeadActorId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateSecure, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool ShiningLeadershipHistoryMatchesOutcome(
+        JsonObject historyEntry,
+        JsonObject receipt,
+        ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest request,
+        out string actual)
+    {
+        actual = $"{GetNodeString(historyEntry["eventType"])} / turn {GetNodeInt(historyEntry["turnNumber"])}";
+        var expectedEventType = ResolveExpectedLeadershipHistoryEventType(request, GetNodeString(receipt["status"]));
+        if (string.IsNullOrWhiteSpace(expectedEventType))
+            return true;
+
+        return string.Equals(GetNodeString(historyEntry["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(historyEntry["eventType"]), expectedEventType, StringComparison.OrdinalIgnoreCase) &&
+               GetNodeInt(historyEntry["turnNumber"]) == GetNodeInt(receipt["resolvedAtTurn"]);
+    }
+
+    private static string ResolveExpectedLeadershipHistoryEventType(
+        ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest request,
+        string? status)
+    {
+        if (string.Equals(status, ShiningFactionRequestState.RequestStatusRefused, StringComparison.OrdinalIgnoreCase))
+            return "refused";
+
+        if (!string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            return string.Empty;
+
+        if (string.Equals(request.TransitionMode, ShiningFactionRequestState.TransitionModeRevolt, StringComparison.OrdinalIgnoreCase))
+            return "revolted";
+        if (string.Equals(request.TransitionMode, ShiningFactionRequestState.TransitionModePeacefulSuccession, StringComparison.OrdinalIgnoreCase))
+            return "succeeded";
+
+        return string.IsNullOrWhiteSpace(request.CandidateHeadActorType) &&
+               string.IsNullOrWhiteSpace(request.CandidateHeadActorId)
+            ? "vacated"
+            : "abdicated";
+    }
+
+    private void ValidateAcceptedShiningCoreActionOutcome(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        JsonObject receipt,
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnResidentsRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject currentShiningRoot,
+        JsonObject currentResidentsRoot,
+        JsonObject currentSoulRoot,
+        List<ValidationIssue> issues)
+    {
+        switch ((request.ActionType ?? string.Empty).Trim().ToLowerInvariant())
+        {
+            case ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction:
+                ValidateAcceptedShiningNativeDiscoveryOutcome(request, receipt, preTurnShiningRoot, preTurnResidentsRoot, preTurnSoulRoot, currentShiningRoot, currentResidentsRoot, currentSoulRoot, issues);
+                return;
+
+            case ShiningCoreActionRequestState.ActionTypeInvestInFaction:
+                ValidateAcceptedProjectedShiningAction(
+                    request,
+                    receipt,
+                    preTurnShiningRoot,
+                    preTurnResidentsRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentSoulRoot,
+                    issues,
+                    mutate: cloneRoot => ShiningAbodeState.TryInvestInFaction(cloneRoot, CloneJsonObject(preTurnResidentsRoot), request.FactionId, out _),
+                    compareShining: expectedRoot => ShiningFactionAndGatesMatch(expectedRoot, currentShiningRoot, request.FactionId, compareGates: true),
+                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                return;
+
+            case ShiningCoreActionRequestState.ActionTypeCompleteProject:
+                ValidateAcceptedProjectedShiningAction(
+                    request,
+                    receipt,
+                    preTurnShiningRoot,
+                    preTurnResidentsRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentSoulRoot,
+                    issues,
+                    mutate: cloneRoot => ShiningAbodeState.TryCompleteProject(
+                        cloneRoot,
+                        CloneJsonObject(preTurnResidentsRoot),
+                        request.FactionId,
+                        request.ProjectDraft?.DeepClone().AsObject() ?? new JsonObject(),
+                        GetNodeInt(receipt["resolvedAtTurn"]),
+                        GetNodeString(receipt["projectId"]),
+                        GetNodeString(receipt["resolvedAtUtc"]),
+                        out _,
+                        out _),
+                    compareShining: expectedRoot => JsonNode.DeepEquals(expectedRoot["radiance"], currentShiningRoot["radiance"]) &&
+                                                  ShiningFactionAndGatesMatch(expectedRoot, currentShiningRoot, request.FactionId, compareGates: true),
+                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                return;
+
+            case ShiningCoreActionRequestState.ActionTypeSupportProject:
+                ValidateAcceptedProjectedShiningAction(
+                    request,
+                    receipt,
+                    preTurnShiningRoot,
+                    preTurnResidentsRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentSoulRoot,
+                    issues,
+                    mutate: cloneRoot => ShiningAbodeState.TrySupportProject(cloneRoot, request.FactionId, request.ProjectId, out _),
+                    compareShining: expectedRoot => ProjectAndGatesMatch(expectedRoot, currentShiningRoot, request.FactionId, request.ProjectId, compareGates: true),
+                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                return;
+
+            case ShiningCoreActionRequestState.ActionTypeUnsupportProject:
+                ValidateAcceptedProjectedShiningAction(
+                    request,
+                    receipt,
+                    preTurnShiningRoot,
+                    preTurnResidentsRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentSoulRoot,
+                    issues,
+                    mutate: cloneRoot => ShiningAbodeState.TryUnsupportProject(cloneRoot, request.FactionId, request.ProjectId, out _),
+                    compareShining: expectedRoot => ProjectAndGatesMatch(expectedRoot, currentShiningRoot, request.FactionId, request.ProjectId, compareGates: true),
+                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                return;
+
+            case ShiningCoreActionRequestState.ActionTypeRetireProject:
+                ValidateAcceptedProjectedShiningAction(
+                    request,
+                    receipt,
+                    preTurnShiningRoot,
+                    preTurnResidentsRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentSoulRoot,
+                    issues,
+                    mutate: cloneRoot => ShiningAbodeState.TryRetireProject(cloneRoot, CloneJsonObject(preTurnResidentsRoot), request.FactionId, request.ProjectId, out _),
+                    compareShining: expectedRoot => ProjectAndGatesMatch(expectedRoot, currentShiningRoot, request.FactionId, request.ProjectId, compareGates: true),
+                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                return;
+
+            case ShiningCoreActionRequestState.ActionTypeOpenGates:
+                ValidateAcceptedProjectedShiningAction(
+                    request,
+                    receipt,
+                    preTurnShiningRoot,
+                    preTurnResidentsRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentSoulRoot,
+                    issues,
+                    mutate: cloneRoot => ShiningAbodeState.TryOpenGates(cloneRoot, CloneJsonObject(preTurnResidentsRoot), out _),
+                    compareShining: expectedRoot => JsonNode.DeepEquals(expectedRoot["gates"], currentShiningRoot["gates"]),
+                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                return;
+
+            case ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage:
+                ValidateAcceptedPrepareIncarnationPackageOutcome(
+                    request,
+                    receipt,
+                    preTurnShiningRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentSoulRoot,
+                    issues);
+                return;
+
+            case ShiningCoreActionRequestState.ActionTypePullRelicGacha:
+                ValidateAcceptedShiningRelicGachaOutcome(
+                    request,
+                    receipt,
+                    preTurnShiningRoot,
+                    preTurnResidentsRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentSoulRoot,
+                    issues);
+                return;
+
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicReshape:
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty:
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand:
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicStabilizeEcho:
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity:
+                ValidateAcceptedProjectedShiningForgeAction(
+                    request,
+                    receipt,
+                    preTurnShiningRoot,
+                    preTurnResidentsRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentSoulRoot,
+                    issues);
+                return;
+        }
+    }
+
+    private void ValidateAcceptedProjectedShiningAction(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        JsonObject receipt,
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnResidentsRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject currentShiningRoot,
+        JsonObject currentSoulRoot,
+        List<ValidationIssue> issues,
+        Func<JsonObject, bool> mutate,
+        Func<JsonObject, bool> compareShining,
+        Func<JsonObject, bool> compareSoul)
+    {
+        var expectedShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var expectedSoulRoot = CloneJsonObject(preTurnSoulRoot);
+
+        if (!mutate(expectedShiningRoot))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Не удалось спроецировать expected Shining core action outcome из pre-turn state.",
+                code: "shining_core_action_projection_failed",
+                section: "ShiningAbode",
+                expected: request.ActionType,
+                actual: request.RequestId,
+                repairHint: "Проверь, что pending core action request не противоречит canonical pre-turn Shining state."));
+            return;
+        }
+
+        ApplyFeatherCostToSoul(expectedSoulRoot, request.QuotedCostFeathers);
+
+        if (!compareShining(expectedShiningRoot))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Current Shining state не совпадает с canonical projected outcome для accepted core action.",
+                code: "shining_core_action_projected_state_mismatch",
+                section: "ShiningAbode",
+                expected: $"{request.ActionType} accepted projected state",
+                actual: $"{GetNodeString(receipt["actionType"])} receipt resolvedAtTurn={GetNodeInt(receipt["resolvedAtTurn"])}",
+                repairHint: "Для accepted core action materialize-ь shining_abode_state.json exactly as canonical helper projection dictates."));
+        }
+
+        if (GetNodeInt(expectedShiningRoot["lightSparks"]) != GetNodeInt(currentShiningRoot["lightSparks"]))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                "Light Sparks delta не совпадает с accepted Shining core action cost.",
+                code: "shining_core_action_light_sparks_cost_mismatch",
+                section: "ShiningAbode",
+                expected: GetNodeInt(expectedShiningRoot["lightSparks"]).ToString(),
+                actual: GetNodeInt(currentShiningRoot["lightSparks"]).ToString(),
+                repairHint: "При accepted Shining core action списывай lightSparks exactly по canonical projected Shining-side cost."));
+        }
+
+        if (!compareSoul(expectedSoulRoot))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Ink Feather delta не совпадает с accepted Shining core action cost.",
+                code: "shining_core_action_feather_cost_mismatch",
+                section: "ShiningAbode",
+                expected: CurrentSoulFeathers(expectedSoulRoot).ToString(),
+                actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
+                repairHint: "При accepted Shining core action списывай Ink Feathers exactly по quotedCostFeathers из client-authored request."));
+        }
+    }
+
+    private void ValidateAcceptedProjectedShiningForgeAction(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        JsonObject receipt,
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnResidentsRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject currentShiningRoot,
+        JsonObject currentSoulRoot,
+        List<ValidationIssue> issues)
+    {
+        var expectedShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var expectedSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        var expectedResidentsRoot = CloneJsonObject(preTurnResidentsRoot);
+
+        if (!ShiningAbodeState.TryApplyForgeAction(
+                expectedShiningRoot,
+                expectedSoulRoot,
+                expectedResidentsRoot,
+                request.ActionType,
+                request.FactionId,
+                request.RelicId,
+                request.TargetFormTag,
+                request.PropertyIndex,
+                request.ReplacementProperty?.DeepClone().AsObject(),
+                request.AddedProperties?.DeepClone().AsArray(),
+                GetNodeInt(receipt["resolvedAtTurn"]),
+                GetNodeString(receipt["resolvedAtUtc"]),
+                out _,
+                out _))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Не удалось спроецировать expected forge outcome из pre-turn Shining и Soul Relic state.",
+                code: "shining_forge_action_projection_failed",
+                section: "ShiningAbode",
+                repairHint: "Accepted forge action должен быть совместим с pre-turn faction, relic и quoted cost contract."));
+            return;
+        }
+
+        var shiningMatches =
+            JsonNode.DeepEquals(expectedShiningRoot["factions"], currentShiningRoot["factions"]) &&
+            JsonNode.DeepEquals(expectedShiningRoot["gates"], currentShiningRoot["gates"]) &&
+            JsonNode.DeepEquals(expectedShiningRoot["radiance"], currentShiningRoot["radiance"]) &&
+            GetNodeInt(expectedShiningRoot["lightSparks"]) == GetNodeInt(currentShiningRoot["lightSparks"]);
+        if (!shiningMatches)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Accepted forge action не materialize-ил canonical Shining-side lightSparks/state outcome.",
+                code: "shining_forge_action_projected_state_mismatch",
+                section: "ShiningAbode",
+                repairHint: "При accepted forge action меняй только canonical Shining resources/state, предсказанные forge helper’ом."));
+        }
+
+        var soulRelicsMatch = JsonNode.DeepEquals(expectedSoulRoot["soulRelics"], currentSoulRoot["soulRelics"]);
+        var featherMatch = CurrentSoulFeathers(expectedSoulRoot) == CurrentSoulFeathers(currentSoulRoot);
+        if (!soulRelicsMatch || !featherMatch)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Accepted forge action не materialize-ил canonical Soul Relic mutation или Ink Feather delta.",
+                code: "shining_forge_action_soul_state_mismatch",
+                section: "ShiningAbode",
+                repairHint: "При accepted forge action обновляй Soul Relic и Ink Feather cost exactly as canonical forge projection dictates."));
+        }
+
+        var expectedEntitlements = expectedSoulRoot[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"];
+        var currentEntitlements = currentSoulRoot[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"];
+        if (!JsonNode.DeepEquals(expectedEntitlements, currentEntitlements))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Accepted forge action не materialize-ил canonical blessing entitlement lifecycle outcome.",
+                code: "shining_forge_action_blessing_entitlement_mismatch",
+                section: "ShiningAbode",
+                expected: DescribeForgeBlessingEntitlements(expectedEntitlements),
+                actual: DescribeForgeBlessingEntitlements(currentEntitlements),
+                repairHint: "При accepted forge action синхронизируй entitlement status, allowances и consumedAt markers с canonical forge projection."));
+        }
+    }
+
+    private static string DescribeForgeBlessingEntitlements(JsonNode? value)
+    {
+        if (value is not JsonObject entitlements)
+            return "missing";
+
+        return string.Join(", ", new[]
+        {
+            $"status={GetNodeString(entitlements["status"]) ?? "missing"}",
+            $"rerolls={GetNodeInt(entitlements["rerolls"])}",
+            $"freeShape={entitlements["freeShape"] is JsonValue freeShapeValue && freeShapeValue.TryGetValue<bool>(out var freeShape) && freeShape}",
+            $"freeRetune={entitlements["freeRetune"] is JsonValue freeRetuneValue && freeRetuneValue.TryGetValue<bool>(out var freeRetune) && freeRetune}",
+            $"rerollsSpent={GetNodeInt(entitlements["rerollsSpent"])}",
+            $"consumedAtTurn={GetNodeInt(entitlements["consumedAtTurn"])}",
+            $"consumedAtUtc={GetNodeString(entitlements["consumedAtUtc"]) ?? "missing"}"
+        });
+    }
+
+    private void ValidateAcceptedPrepareIncarnationPackageOutcome(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        JsonObject receipt,
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject currentShiningRoot,
+        JsonObject currentSoulRoot,
+        List<ValidationIssue> issues)
+    {
+        var expectedShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        if (expectedShiningRoot["gates"] is not JsonObject gates)
+        {
+            return;
+        }
+
+        var selectedCardIds = request.SelectedCardIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Select(id => (JsonNode?)id.Trim())
+            .ToArray();
+        var normalizedSelectedCardIds = selectedCardIds
+            .OfType<JsonValue>()
+            .Select(node => node.TryGetValue<string>(out var value) ? value?.Trim() ?? string.Empty : string.Empty)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        if (normalizedSelectedCardIds.Count != normalizedSelectedCardIds.Distinct(StringComparer.OrdinalIgnoreCase).Count())
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "prepare_incarnation_package не допускает duplicate selectedCardIds ни в pending request, ни в accepted projection",
+                code: "shining_prepare_package_duplicate_selected_card_ids",
+                section: "ShiningAbode",
+                repairHint: "Передавай в selectedCardIds уникальный ordered snapshot без повторов."));
+            return;
+        }
+
+        gates["selectedBlessingCardIds"] = new JsonArray(selectedCardIds);
+
+        if (!ShiningAbodeState.TryPrepareIncarnationPackage(
+                expectedShiningRoot,
+                GetNodeInt(receipt["resolvedAtTurn"]),
+                out _,
+                GetNodeString(receipt["resolvedAtUtc"])))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Не удалось спроецировать expected preparedIncarnationPackage из pre-turn draft.",
+                code: "shining_prepare_package_projection_failed",
+                section: "ShiningAbode",
+                repairHint: "prepare_incarnation_package должен опираться на свежий open draft и selectedCardIds exact из client request."));
+            return;
+        }
+
+        if (!JsonNode.DeepEquals(expectedShiningRoot["preparedIncarnationPackage"], currentShiningRoot["preparedIncarnationPackage"]) ||
+            !JsonNode.DeepEquals(expectedShiningRoot["gates"], currentShiningRoot["gates"]))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Accepted prepare_incarnation_package не materialize-ил canonical frozen package и gates cleanup.",
+                code: "shining_prepare_package_state_mismatch",
+                section: "ShiningAbode",
+                repairHint: "При accepted prepare_incarnation_package записывай preparedIncarnationPackage и очищай gates exactly как canonical helper projection dictates."));
+        }
+
+        var expectedSelectedCards = expectedShiningRoot["preparedIncarnationPackage"]?["selectedCards"];
+        var actualSelectedCards = receipt["selectedCards"];
+        if (!JsonNode.DeepEquals(expectedSelectedCards, actualSelectedCards))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Accepted prepare_incarnation_package receipt не сохраняет stable snapshot выбранных карт.",
+                code: "shining_prepare_package_receipt_snapshot_mismatch",
+                section: "ShiningAbode",
+                expected: expectedSelectedCards?.ToJsonString() ?? "missing",
+                actual: actualSelectedCards?.ToJsonString() ?? "missing",
+                repairHint: "Новый accepted receipt для prepare_incarnation_package должен включать selectedCards exact из canonical frozen package."));
+        }
+
+        if (CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "prepare_incarnation_package не должен сам по себе менять Ink Feathers.",
+                code: "shining_prepare_package_unexpected_feather_delta",
+                section: "ShiningAbode",
+                expected: CurrentSoulFeathers(preTurnSoulRoot).ToString(),
+                actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
+                repairHint: "Не списывай Ink Feathers на accepted prepare_incarnation_package, если client request не содержит feather cost."));
+        }
+    }
+
+    private void ValidateAcceptedShiningRelicGachaOutcome(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        JsonObject receipt,
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnResidentsRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject currentShiningRoot,
+        JsonObject currentSoulRoot,
+        List<ValidationIssue> issues)
+    {
+        var baseRarityFromTurn = TryReadCurrentTurnGachaBaseRaritySync();
+        var receiptBaseRarity = GetNodeString(receipt["baseRarity"]) ?? string.Empty;
+        var receiptFinalRarity = GetNodeString(receipt["finalRarity"]) ?? string.Empty;
+        var relicId = GetNodeString(receipt["relicId"]) ?? string.Empty;
+        var relicName = GetNodeString(receipt["relicName"]) ?? string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(baseRarityFromTurn) &&
+            !string.Equals(baseRarityFromTurn, receiptBaseRarity, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Accepted Shining gacha receipt должен использовать current turn gachaBaseResult.baseRarity как базовый минимум.",
+                code: "shining_gacha_receipt_base_rarity_mismatch",
+                section: "ShiningAbode",
+                expected: baseRarityFromTurn,
+                actual: receiptBaseRarity,
+                repairHint: "Синхронизируй receipt.baseRarity с input/turn_request.json.gachaBaseResult.baseRarity текущего хода."));
+        }
+
+        var baseRank = GetRarityRank(receiptBaseRarity);
+        var finalRank = GetRarityRank(receiptFinalRarity);
+        if (baseRank > 0 && finalRank > 0)
+        {
+            if (finalRank < baseRank)
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningCoreActionRequestState.PendingActionsRequestPath,
+                    IssueSeverity.Error,
+                    "Accepted Shining gacha не может понизить финальную редкость ниже baseRarity.",
+                    code: "shining_gacha_final_rarity_below_base",
+                    section: "ShiningAbode",
+                    expected: $">= {receiptBaseRarity}",
+                    actual: receiptFinalRarity,
+                    repairHint: "Shining banner modifiers могут только повышать или сохранять base rarity."));
+            }
+            else if (finalRank - baseRank > request.ProjectedGachaBonusSteps)
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningCoreActionRequestState.PendingActionsRequestPath,
+                    IssueSeverity.Error,
+                    "Accepted Shining gacha превысила допустимый projected bonus ceiling.",
+                    code: "shining_gacha_bonus_steps_exceeded",
+                    section: "ShiningAbode",
+                    expected: $"+{request.ProjectedGachaBonusSteps} step(s) max",
+                    actual: $"+{finalRank - baseRank} step(s)",
+                    repairHint: "Не поднимай finalRarity выше baseRarity + projectedGachaBonusSteps из client-authored request."));
+            }
+        }
+
+        var preTurnRelicIds = CollectSoulRelicIds(preTurnSoulRoot);
+        var currentRelicIds = CollectSoulRelicIds(currentSoulRoot);
+        var newRelicIds = currentRelicIds.Except(preTurnRelicIds, StringComparer.OrdinalIgnoreCase).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        if (!preTurnRelicIds.IsSubsetOf(currentRelicIds))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Accepted Shining gacha не должна удалять уже существующие Soul Relics.",
+                code: "shining_gacha_unexpected_existing_relic_removal",
+                section: "ShiningAbode",
+                repairHint: "При banner pull только добавляй новую реликвию; не удаляй и не подменяй существующие Soul Relics."));
+        }
+
+        if (string.IsNullOrWhiteSpace(relicId) ||
+            !newRelicIds.SetEquals(new[] { relicId }))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Accepted Shining gacha должен materialize-ить ровно одну новую Soul Relic из receipt.relicId.",
+                code: "shining_gacha_missing_new_relic_materialization",
+                section: "ShiningAbode",
+                expected: string.IsNullOrWhiteSpace(relicId) ? "one new relic id" : relicId,
+                actual: newRelicIds.Count == 0 ? "no_new_relics" : string.Join(", ", newRelicIds),
+                repairHint: "Добавляй в soul_state ровно одну новую Soul Relic и синхронизируй её id с coreAction receipt."));
+        }
+        else if (TryFindSoulRelicNode(currentSoulRoot, relicId, out var currentRelic))
+        {
+            var currentRarity = GetNodeString(currentRelic["quality"]) ?? GetNodeString(currentRelic["rarity"]) ?? string.Empty;
+            if (!string.Equals(currentRarity, receiptFinalRarity, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "Materialized Shining gacha relic должна сохранять finalRarity из receipt.",
+                    code: "shining_gacha_relic_rarity_mismatch",
+                    section: "ShiningAbode",
+                    expected: receiptFinalRarity,
+                    actual: currentRarity,
+                    repairHint: "Сохраняй в result-реликвии итоговую редкость, совпадающую с receipt.finalRarity."));
+            }
+        }
+
+        var expectedShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var expectedSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        var expectedResidentsRoot = CloneJsonObject(preTurnResidentsRoot);
+        if (!ShiningAbodeState.TryApplyRelicGachaAccounting(
+                expectedShiningRoot,
+                expectedSoulRoot,
+                expectedResidentsRoot,
+                request.FactionId,
+                request.RequestId,
+                relicId,
+                relicName,
+                receiptBaseRarity,
+                receiptFinalRarity,
+                GetNodeInt(receipt["resolvedAtTurn"]),
+                GetNodeString(receipt["resolvedAtUtc"]),
+                out _,
+                out _,
+                out var projectionError))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Не удалось спроецировать expected Shining gacha accounting outcome из pre-turn state.",
+                code: "shining_gacha_projection_failed",
+                section: "ShiningAbode",
+                actual: projectionError,
+                repairHint: "Проверь, что pending pull_relic_gacha request совместим с canonical return-cycle, charges и cost contract."));
+            return;
+        }
+
+        if (!JsonNode.DeepEquals(expectedShiningRoot["gachaSystem"], currentShiningRoot["gachaSystem"]))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                "Accepted Shining gacha не materialize-ила canonical gachaSystem accounting/historical outcome.",
+                code: "shining_gacha_system_mismatch",
+                section: "ShiningAbode",
+                repairHint: "Обновляй gachaSystem chargesUsedThisReturn, currentReturnCycleId и gachaHistory exactly по accepted pull receipt."));
+        }
+
+        if (CurrentSoulFeathers(expectedSoulRoot) != CurrentSoulFeathers(currentSoulRoot))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Accepted Shining gacha должна списывать exact Ink Feather cost.",
+                code: "shining_gacha_feather_cost_mismatch",
+                section: "ShiningAbode",
+                expected: CurrentSoulFeathers(expectedSoulRoot).ToString(),
+                actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
+                repairHint: "Списывай Ink Feathers exactly по quotedCostFeathers из pull_relic_gacha request."));
+        }
+    }
+
+    private void ValidateAcceptedShiningNativeDiscoveryOutcome(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        JsonObject receipt,
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnResidentsRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject currentShiningRoot,
+        JsonObject currentResidentsRoot,
+        JsonObject currentSoulRoot,
+        List<ValidationIssue> issues)
+    {
+        var hallId = GetNodeString(receipt["hallId"]) ?? string.Empty;
+        var factionId = GetNodeString(receipt["resolvedFactionId"]) ?? string.Empty;
+        var residentIds = ReadStringSet(receipt["newResidentIds"]);
+        var projectIds = ReadStringSet(receipt["seededProjectIds"]);
+        var currentHall = FindShiningHall(currentShiningRoot, hallId);
+        var currentFaction = ShiningAbodeState.FindFaction(currentShiningRoot, factionId);
+
+        if (string.IsNullOrWhiteSpace(hallId) || currentHall == null)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction не materialize-ил hall, указанный в receipt.",
+                code: "shining_discovery_missing_hall_materialization",
+                section: "ShiningAbode",
+                expected: hallId,
+                actual: currentHall == null ? "hall_missing" : hallId,
+                repairHint: "В discovery receipt указывай hallId materialized нативного зала и создавай сам hall в shining_abode_state.json."));
+        }
+
+        if (string.IsNullOrWhiteSpace(factionId) || currentFaction == null ||
+            !string.Equals(GetNodeString(currentFaction?["originType"]), ShiningAbodeState.OriginTypeNativeRadiant, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(currentFaction?["hallId"]), hallId, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction не materialize-ил canonical native_radiant faction из receipt.",
+                code: "shining_discovery_missing_faction_materialization",
+                section: "ShiningAbode",
+                expected: $"{factionId} / native_radiant / hall {hallId}",
+                actual: currentFaction == null ? "faction_missing" : $"{GetNodeString(currentFaction["factionId"])} / {GetNodeString(currentFaction["originType"])} / hall {GetNodeString(currentFaction["hallId"])}",
+                repairHint: "При accepted discover_native_faction создавай native_radiant faction и связывай её с materialized hallId из receipt."));
+        }
+
+        if (residentIds.Count is < 2 or > 4)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Discovery receipt должен содержать 2..4 newResidentIds.",
+                code: "shining_discovery_invalid_new_resident_count",
+                section: "ShiningAbode",
+                expected: "2..4",
+                actual: residentIds.Count.ToString(),
+                repairHint: "Accepted discover_native_faction должен materialize-ить 2..4 ascended residents и перечислить их ids в receipt."));
+        }
+
+        foreach (var residentId in residentIds)
+        {
+            var previousResident = GuardianAbodeResidentState.FindResident(preTurnResidentsRoot, residentId);
+            var currentResident = GuardianAbodeResidentState.FindResident(currentResidentsRoot, residentId);
+            if (previousResident != null ||
+                currentResident == null ||
+                !string.Equals(GetNodeString(currentResident["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(GetNodeString(currentResident["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    GuardianAbodeResidentState.StatePath,
+                    IssueSeverity.Error,
+                    "Accepted discover_native_faction должен materialize-ить новые ascended residents, привязанные к discovery faction.",
+                    code: "shining_discovery_invalid_new_resident_materialization",
+                    section: "ShiningAbode",
+                    expected: $"{residentId} -> {factionId} (ascended)",
+                    actual: currentResident == null ? "resident_missing" : $"{GetNodeString(currentResident["shiningFactionId"])} / {GetNodeString(currentResident["ascensionState"])}",
+                    repairHint: "Новые discovery residents должны быть новыми ids, ascended и сразу принадлежать materialized native faction."));
+            }
+        }
+
+        if (projectIds.Count != 2)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Discovery receipt должен содержать ровно 2 seededProjectIds.",
+                code: "shining_discovery_invalid_seeded_project_count",
+                section: "ShiningAbode",
+                expected: "2",
+                actual: projectIds.Count.ToString(),
+                repairHint: "Accepted discover_native_faction должен materialize-ить ровно 2 seeded completed projects и перечислить их ids в receipt."));
+        }
+
+        if (currentFaction?["projects"] is JsonArray currentProjects)
+        {
+            foreach (var projectId in projectIds)
+            {
+                var project = currentProjects.OfType<JsonObject>().FirstOrDefault(item =>
+                    string.Equals(GetNodeString(item["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
+                if (project == null ||
+                    !string.Equals(GetNodeString(project["status"]), ShiningAbodeState.ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningCoreActionRequestState.PendingActionsRequestPath,
+                        IssueSeverity.Error,
+                        "Seeded discovery project missing or not completed.",
+                        code: "shining_discovery_missing_seeded_project",
+                        section: "ShiningAbode",
+                        expected: $"{projectId} completed",
+                        actual: project == null ? "missing" : GetNodeString(project["status"]) ?? "unknown",
+                        repairHint: "Accepted discover_native_faction должен создавать seeded completed projects внутри новой native faction."));
+                }
+            }
+        }
+
+        var expectedRadianceExperience = GetNodeInt(preTurnShiningRoot["radiance"]?["experience"]) + 20;
+        if (GetNodeInt(currentShiningRoot["radiance"]?["experience"]) != expectedRadianceExperience)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction должен начислить +20 Radiance XP.",
+                code: "shining_discovery_missing_radiance_reward",
+                section: "ShiningAbode",
+                expected: expectedRadianceExperience.ToString(),
+                actual: GetNodeInt(currentShiningRoot["radiance"]?["experience"]).ToString(),
+                repairHint: "При accepted discover_native_faction увеличивай radiance.experience ровно на 20 и пересчитывай tier canonically."));
+        }
+
+        if (GetNodeInt(currentShiningRoot["lightSparks"]) != GetNodeInt(preTurnShiningRoot["lightSparks"]) - request.QuotedCostLightSparks)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction должен списать exact Light Sparks cost.",
+                code: "shining_discovery_light_sparks_cost_mismatch",
+                section: "ShiningAbode",
+                expected: (GetNodeInt(preTurnShiningRoot["lightSparks"]) - request.QuotedCostLightSparks).ToString(),
+                actual: GetNodeInt(currentShiningRoot["lightSparks"]).ToString(),
+                repairHint: "Списывай lightSparks exactly по quotedCostLightSparks из discovery request."));
+        }
+
+        if (CurrentSoulFeathers(currentSoulRoot) != CurrentSoulFeathers(preTurnSoulRoot) - request.QuotedCostFeathers)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Accepted discover_native_faction должен списать exact Ink Feather cost.",
+                code: "shining_discovery_feather_cost_mismatch",
+                section: "ShiningAbode",
+                expected: (CurrentSoulFeathers(preTurnSoulRoot) - request.QuotedCostFeathers).ToString(),
+                actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
+                repairHint: "Списывай Ink Feathers exactly по quotedCostFeathers из discovery request."));
+        }
+    }
+
+    private void ValidateNonAcceptedShiningCoreActionOutcome(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnResidentsRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject currentShiningRoot,
+        JsonObject currentResidentsRoot,
+        JsonObject currentSoulRoot,
+        List<ValidationIssue> issues)
+    {
+        var stateChanged = false;
+        switch ((request.ActionType ?? string.Empty).Trim().ToLowerInvariant())
+        {
+            case ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction:
+                stateChanged =
+                    GetNodeInt(preTurnShiningRoot["lightSparks"]) != GetNodeInt(currentShiningRoot["lightSparks"]) ||
+                    GetNodeInt(preTurnShiningRoot["radiance"]?["experience"]) != GetNodeInt(currentShiningRoot["radiance"]?["experience"]) ||
+                    CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot) ||
+                    ((preTurnShiningRoot["halls"] as JsonArray)?.Count ?? 0) != ((currentShiningRoot["halls"] as JsonArray)?.Count ?? 0) ||
+                    ((preTurnShiningRoot["factions"] as JsonArray)?.Count ?? 0) != ((currentShiningRoot["factions"] as JsonArray)?.Count ?? 0) ||
+                    ((preTurnResidentsRoot["entries"] as JsonArray)?.Count ?? 0) != ((currentResidentsRoot["entries"] as JsonArray)?.Count ?? 0);
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypeInvestInFaction:
+            case ShiningCoreActionRequestState.ActionTypeCompleteProject:
+            case ShiningCoreActionRequestState.ActionTypeSupportProject:
+            case ShiningCoreActionRequestState.ActionTypeUnsupportProject:
+            case ShiningCoreActionRequestState.ActionTypeRetireProject:
+                stateChanged =
+                    !ShiningFactionAndGatesMatch(preTurnShiningRoot, currentShiningRoot, request.FactionId, compareGates: true) ||
+                    GetNodeInt(preTurnShiningRoot["lightSparks"]) != GetNodeInt(currentShiningRoot["lightSparks"]) ||
+                    CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot) ||
+                    GetNodeInt(preTurnShiningRoot["radiance"]?["experience"]) != GetNodeInt(currentShiningRoot["radiance"]?["experience"]);
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypeOpenGates:
+                stateChanged = !JsonNode.DeepEquals(preTurnShiningRoot["gates"], currentShiningRoot["gates"]) ||
+                               CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot);
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage:
+                stateChanged = !JsonNode.DeepEquals(preTurnShiningRoot["preparedIncarnationPackage"], currentShiningRoot["preparedIncarnationPackage"]) ||
+                               !JsonNode.DeepEquals(preTurnShiningRoot["gates"], currentShiningRoot["gates"]) ||
+                               CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot);
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypePullRelicGacha:
+                stateChanged =
+                    !JsonNode.DeepEquals(preTurnShiningRoot["gachaSystem"], currentShiningRoot["gachaSystem"]) ||
+                    CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot) ||
+                    !JsonNode.DeepEquals(preTurnSoulRoot["soulRelics"], currentSoulRoot["soulRelics"]);
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicReshape:
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty:
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand:
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicStabilizeEcho:
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity:
+                stateChanged =
+                    GetNodeInt(preTurnShiningRoot["lightSparks"]) != GetNodeInt(currentShiningRoot["lightSparks"]) ||
+                    CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot) ||
+                    !JsonNode.DeepEquals(preTurnSoulRoot["soulRelics"], currentSoulRoot["soulRelics"]) ||
+                    !JsonNode.DeepEquals(
+                        preTurnSoulRoot[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"],
+                        currentSoulRoot[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"]);
+                break;
+        }
+
+        if (stateChanged)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Refused/withdrawn Shining core action не должен менять canonical Shining or soul state.",
+                code: "shining_core_action_unexpected_state_change_after_non_accept",
+                section: "ShiningAbode",
+                repairHint: "Если core action завершён не как accepted, не применяй его world-state mutation в shining_abode_state.json или soul_state.json."));
+        }
+    }
+
+    private static bool ShiningCoreActionReceiptMatchesRequest(
+        JsonObject receipt,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        out string actual)
+    {
+        actual =
+            $"{GetNodeString(receipt["actionType"])} / {GetNodeString(receipt["status"])} / {GetNodeString(receipt["factionId"])} / {GetNodeString(receipt["projectId"])}";
+
+        var status = GetNodeString(receipt["status"]);
+        return ShiningCoreActionRequestState.IsSupportedStatus(status) &&
+               GetNodeInt(receipt["resolvedAtTurn"]) > 0 &&
+               !string.IsNullOrWhiteSpace(GetNodeString(receipt["resolvedAtUtc"])) &&
+               string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["actionType"]), request.ActionType, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["factionId"]) ?? string.Empty, request.FactionId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               ShiningCoreActionProjectIdentityMatches(request, GetNodeString(receipt["projectId"])) &&
+               string.Equals(GetNodeString(receipt["relicId"]) ?? string.Empty, request.RelicId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["returnCycleId"]) ?? string.Empty, request.ReturnCycleId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(GetNodeString(receipt["targetFormTag"]) ?? string.Empty, request.TargetFormTag ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               (receipt["propertyIndex"] is JsonValue propertyIndexNode &&
+                propertyIndexNode.TryGetValue<int>(out var propertyIndex)
+                    ? propertyIndex
+                    : -1) == request.PropertyIndex &&
+               ReadOrderedStringList(receipt["selectedCardIds"]).SequenceEqual(
+                   request.SelectedCardIds.Where(id => !string.IsNullOrWhiteSpace(id)).Select(id => id.Trim()),
+                   StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static bool HasCanonicalShiningPoliticalClosure(JsonObject receipt) =>
+        GetNodeInt(receipt["resolvedAtTurn"]) > 0 &&
+        !string.IsNullOrWhiteSpace(GetNodeString(receipt["resolvedAtUtc"]));
+
+    private static bool ShiningCoreActionProjectIdentityMatches(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        string? receiptProjectId)
+    {
+        if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypeCompleteProject, StringComparison.OrdinalIgnoreCase) &&
+            string.IsNullOrWhiteSpace(request.ProjectId))
+        {
+            return !string.IsNullOrWhiteSpace(receiptProjectId);
+        }
+
+        return string.Equals(receiptProjectId ?? string.Empty, request.ProjectId ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool ShiningFactionAndGatesMatch(JsonObject expectedRoot, JsonObject currentRoot, string factionId, bool compareGates)
+    {
+        var expectedFaction = ShiningAbodeState.FindFaction(expectedRoot, factionId);
+        var currentFaction = ShiningAbodeState.FindFaction(currentRoot, factionId);
+        if (!JsonNode.DeepEquals(expectedFaction, currentFaction))
+            return false;
+
+        return !compareGates || JsonNode.DeepEquals(expectedRoot["gates"], currentRoot["gates"]);
+    }
+
+    private static bool ProjectAndGatesMatch(JsonObject expectedRoot, JsonObject currentRoot, string factionId, string projectId, bool compareGates)
+    {
+        var expectedFaction = ShiningAbodeState.FindFaction(expectedRoot, factionId);
+        var currentFaction = ShiningAbodeState.FindFaction(currentRoot, factionId);
+        if (expectedFaction?["projects"] is not JsonArray expectedProjects || currentFaction?["projects"] is not JsonArray currentProjects)
+            return false;
+
+        var expectedProject = expectedProjects.OfType<JsonObject>().FirstOrDefault(project =>
+            string.Equals(GetNodeString(project["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
+        var currentProject = currentProjects.OfType<JsonObject>().FirstOrDefault(project =>
+            string.Equals(GetNodeString(project["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
+        if (!JsonNode.DeepEquals(expectedProject, currentProject))
+            return false;
+
+        return !compareGates || JsonNode.DeepEquals(expectedRoot["gates"], currentRoot["gates"]);
+    }
+
+    private static JsonObject CloneJsonObject(JsonObject source) => JsonNode.Parse(source.ToJsonString())!.AsObject();
+
+    private static int CurrentSoulFeathers(JsonObject soulRoot)
+    {
+        if (soulRoot["inkFeathers"] is JsonObject inkFeathers)
+            return GetNodeInt(inkFeathers["current"]);
+
+        return GetNodeInt(soulRoot["inkFeathers"]);
+    }
+
+    private static HashSet<string> CollectSoulRelicIds(JsonObject soulRoot)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (soulRoot["soulRelics"] is JsonObject soulRelicsObject)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (soulRelicsObject[collectionName] is not JsonArray collection)
+                    continue;
+
+                foreach (var relic in collection.OfType<JsonObject>())
+                {
+                    var relicId = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]);
+                    if (!string.IsNullOrWhiteSpace(relicId))
+                        result.Add(relicId);
+                }
+            }
+        }
+        else if (soulRoot["soulRelics"] is JsonArray flatCollection)
+        {
+            foreach (var relic in flatCollection.OfType<JsonObject>())
+            {
+                var relicId = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]);
+                if (!string.IsNullOrWhiteSpace(relicId))
+                    result.Add(relicId);
+            }
+        }
+
+        return result;
+    }
+
+    private static bool TryFindSoulRelicNode(JsonObject soulRoot, string? relicId, out JsonObject relic)
+    {
+        relic = null!;
+        if (string.IsNullOrWhiteSpace(relicId))
+            return false;
+
+        if (soulRoot["soulRelics"] is JsonObject soulRelicsObject)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (soulRelicsObject[collectionName] is not JsonArray collection)
+                    continue;
+
+                foreach (var candidate in collection.OfType<JsonObject>())
+                {
+                    var candidateId = GetNodeString(candidate["relicId"]) ?? GetNodeString(candidate["id"]);
+                    if (!string.Equals(candidateId, relicId, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    relic = candidate;
+                    return true;
+                }
+            }
+        }
+        else if (soulRoot["soulRelics"] is JsonArray flatCollection)
+        {
+            foreach (var candidate in flatCollection.OfType<JsonObject>())
+            {
+                var candidateId = GetNodeString(candidate["relicId"]) ?? GetNodeString(candidate["id"]);
+                if (!string.Equals(candidateId, relicId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                relic = candidate;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void ApplyFeatherCostToSoul(JsonObject soulRoot, int feathers)
+    {
+        if (feathers <= 0)
+            return;
+
+        var inkFeathers = soulRoot["inkFeathers"] as JsonObject ?? new JsonObject();
+        var current = Math.Max(0, GetNodeInt(inkFeathers["current"]) - feathers);
+        inkFeathers["current"] = current;
+        soulRoot["inkFeathers"] = inkFeathers;
+    }
+
+    private static HashSet<string> ReadStringSet(JsonNode? node)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (node is not JsonArray array)
+            return result;
+
+        foreach (var valueNode in array.OfType<JsonValue>())
+        {
+            if (!valueNode.TryGetValue<string>(out var value) || string.IsNullOrWhiteSpace(value))
+                continue;
+
+            result.Add(value.Trim());
+        }
+
+        return result;
+    }
+
+    private static List<string> ReadOrderedStringList(JsonNode? node)
+    {
+        var result = new List<string>();
+        if (node is not JsonArray array)
+            return result;
+
+        foreach (var valueNode in array.OfType<JsonValue>())
+        {
+            if (!valueNode.TryGetValue<string>(out var value) || string.IsNullOrWhiteSpace(value))
+                continue;
+
+            result.Add(value.Trim());
         }
 
         return result;

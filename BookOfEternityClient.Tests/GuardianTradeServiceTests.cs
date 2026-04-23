@@ -110,7 +110,20 @@ public sealed class GuardianTradeServiceTests : IDisposable
                     }
                   }
                 ]
-              }
+              },
+              "tradeInventoryReceipts": [
+                {
+                  "requestId": "guardian_trade_receipt_1",
+                  "guardianId": "guardian_alpha",
+                  "guardianName": "Азалия",
+                  "abodeId": "abode_alpha",
+                  "tradeCycleId": "return_1",
+                  "status": "ready",
+                  "itemCount": 4,
+                  "resolvedAtTurn": 7,
+                  "resolvedAtUtc": "2026-03-26T00:01:00Z"
+                }
+              ]
             }
           ],
           "activeGuardian": {
@@ -197,7 +210,20 @@ public sealed class GuardianTradeServiceTests : IDisposable
                   }
                 }
               ]
-            }
+            },
+            "tradeInventoryReceipts": [
+              {
+                "requestId": "guardian_trade_receipt_1",
+                "guardianId": "guardian_alpha",
+                "guardianName": "Азалия",
+                "abodeId": "abode_alpha",
+                "tradeCycleId": "return_1",
+                "status": "ready",
+                "itemCount": 4,
+                "resolvedAtTurn": 7,
+                "resolvedAtUtc": "2026-03-26T00:01:00Z"
+              }
+            ]
           },
           "chaosSeaNavigation": {
             "currentAbodeId": "abode_alpha"
@@ -221,6 +247,25 @@ public sealed class GuardianTradeServiceTests : IDisposable
         Assert.False(nextCycleView.InventoryReady);
         Assert.True(nextCycleView.InventoryRequestPending);
         Assert.Empty(nextCycleView.Offers);
+    }
+
+    [Fact]
+    public async Task EnsureTradeInventoryAsync_MaterializedInventoryWithoutReceipt_RemainsPending()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: false, includeBuybackEntry: false);
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var view = await service.EnsureTradeInventoryAsync("guardian_alpha", 1, currentTurn: 7);
+
+        Assert.NotNull(view);
+        Assert.False(view!.InventoryReady);
+        Assert.True(view.InventoryRequestPending);
+        Assert.Empty(view.Offers);
+
+        var pendingRequest = await GuardianTradeRequestState.ReadAsync(_fs);
+        Assert.NotNull(pendingRequest);
+        Assert.Equal("guardian_alpha", pendingRequest!.GuardianId);
+        Assert.Equal("return_1", pendingRequest.ReturnCycleId);
     }
 
     [Fact]

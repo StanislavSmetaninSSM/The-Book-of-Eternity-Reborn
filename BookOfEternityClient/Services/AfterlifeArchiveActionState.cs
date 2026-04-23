@@ -201,13 +201,9 @@ internal static class AfterlifeArchiveActionState
 
     public static async Task EnsureHealthyAsync(FileSystemManager fs, string? currentRealm)
     {
-        if (!IsAfterlifeRealm(currentRealm))
-        {
-            await ReconcileConsultationRequestAsync(fs, allowPendingReservationRelease: true);
-            await ReconcileProjectFuelRequestAsync(fs, allowPendingReservationRelease: true);
-            return;
-        }
-
+        // Archive actions are authoritative pending contracts until they are
+        // closed by matching archiveActionResolutions. Realm changes alone must
+        // not release reservations or clear pending files.
         await ReconcileConsultationRequestAsync(fs, allowPendingReservationRelease: false);
         await ReconcileProjectFuelRequestAsync(fs, allowPendingReservationRelease: false);
     }

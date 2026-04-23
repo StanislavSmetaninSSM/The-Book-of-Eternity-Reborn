@@ -116,6 +116,64 @@ public sealed class ActorSocialInteractionRequestStateTests : IDisposable
         Assert.Contains("npc_merchant_01", reminder, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task EnsureHealthyAsync_MalformedGuardianRequestFile_PreservesCorruptionAndBlocksOverwrite()
+    {
+        await _fs.WriteFileAtomicAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "{");
+
+        await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, "Chaos Sea");
+        var reminder = await ActorSocialInteractionRequestState.BuildSystemReminderFragmentAsync(_fs, "Chaos Sea");
+
+        Assert.True(_fs.FileExists(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
+        Assert.NotNull(reminder);
+        Assert.Contains("CORRUPTION", reminder, StringComparison.OrdinalIgnoreCase);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, new ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest
+            {
+                RequestId = "guardian_req_new",
+                GuardianId = "guardian_azalia",
+                GuardianName = "Азалия",
+                InteractionType = ActorSocialInteractionRequestState.GuardianInteractionTypeTalk,
+                CreatedAtTurn = 13,
+                CreatedAtUtc = "2026-03-27T11:00:00Z"
+            }));
+
+        Assert.Equal("{", await _fs.ReadFileAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_UnresolvedRealm_PreservesGuardianAndNpcRequests()
+    {
+        await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, new ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest
+        {
+            RequestId = "guardian_req_unresolved",
+            GuardianId = "guardian_azalia",
+            GuardianName = "Азалия",
+            InteractionType = ActorSocialInteractionRequestState.GuardianInteractionTypeTalk,
+            CreatedAtTurn = 14,
+            CreatedAtUtc = "2026-03-27T12:00:00Z"
+        });
+        await ActorSocialInteractionRequestState.WriteNpcRequestAsync(_fs, new ActorSocialInteractionRequestState.PendingNpcSocialInteractionRequest
+        {
+            RequestId = "npc_req_unresolved",
+            NpcId = "npc_merchant_01",
+            NpcName = "Старый Торговец",
+            InteractionType = ActorSocialInteractionRequestState.NpcInteractionTypeTalk,
+            CreatedAtTurn = 14,
+            CreatedAtUtc = "2026-03-27T12:00:00Z"
+        });
+
+        await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, "");
+
+        var guardianRequests = await ActorSocialInteractionRequestState.ReadGuardianRequestsAsync(_fs);
+        var npcRequests = await ActorSocialInteractionRequestState.ReadNpcRequestsAsync(_fs);
+        Assert.Single(guardianRequests);
+        Assert.Single(npcRequests);
+        Assert.True(_fs.FileExists(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
+        Assert.True(_fs.FileExists(ActorSocialInteractionRequestState.PendingNpcRequestPath));
+    }
+
     public void Dispose()
     {
         try

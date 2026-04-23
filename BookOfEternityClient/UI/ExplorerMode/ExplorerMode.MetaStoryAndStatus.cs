@@ -183,12 +183,14 @@ public partial class ExplorerMode
             table.AddRow("[yellow]/afterlife_archive[/]", "[yellow]/архив_души[/]", "[yellow]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[yellow]/archive_candidates[/]", "[yellow]/архив_кандидаты[/]", "[yellow]Выбрать, что сохранить в Архив по итогам жизни[/]");
             table.AddRow("[yellow]/afterlife_inbox[/]", "[yellow]/уведомления_загробья[/]", "[yellow]Ответы GM по торговле, Архиву и резидентам Обители[/]");
+            table.AddRow("[yellow]/shining_abode[/]", "[yellow]/сияющая_обитель[/]", "[yellow]Обзор сияния, залов, фракций, Врат и текущего состояния Сияющей Обители[/]");
+            table.AddRow("[yellow]/shining_politics[/]", "[yellow]/сияющая_политика[/]", "[yellow]Фракционная политика Сияющей Обители: власть, основание и переходы между фракциями[/]");
             table.AddRow("[yellow]/soul_quests[/]", "[yellow]/квесты_души[/]", "[yellow]Квесты хранителей[/]");
             table.AddRow("[gold1]/feathers[/]", "[gold1]/перья[/]", "[gold1]🪶 Чернильные перья[/]");
             table.AddRow("[cyan]/world_setup[/]", "[cyan]/настройка_мира[/]", "[cyan]Подготовить следующий смертный мир[/]");
             table.AddRow("[magenta]/guardian_corrections[/]", "[magenta]/коррективы_хранителя[/]", "[magenta]Просмотр корректив текущей смертной жизни[/]");
             table.AddRow("", "", "");
-            table.AddRow("[blue]/return_to_chaos_sea[/]", "[blue]/вернуться_в_море_хаоса[/]", "[blue]Вернуться в Море Хаоса и запечатать Сияющую Обитель без New Game+ reset[/]");
+            table.AddRow("[blue]/return_to_chaos_sea[/]", "[blue]/вернуться_в_море_хаоса[/]", "[blue]Вернуться в Море Хаоса и запечатать Сияющую Обитель без запуска Нового Цикла[/]");
             table.AddRow("[bold gold1]/new_game_plus[/]", "[bold gold1]/новая_игра+[/]", "[bold gold1]Начать Новый Цикл, сохранив Реликвии Души и Хранителей[/]");
             table.AddRow("", "", "");
             table.AddRow("[dim]💡 Это финальная зона свободного ролеплея над Морем Хаоса[/]", "", "");
@@ -206,7 +208,10 @@ public partial class ExplorerMode
             table.AddRow("[blue]/afterlife_archive[/]", "[blue]/архив_души[/]", "[blue]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[blue]/archive_candidates[/]", "[blue]/архив_кандидаты[/]", "[blue]Выбрать записи Кодекса, которые переживут смерть[/]");
             table.AddRow("[blue]/afterlife_inbox[/]", "[blue]/уведомления_загробья[/]", "[blue]Ответы GM по торговле, Архиву и резидентам Обители[/]");
+            table.AddRow("[blue]/shining_abode[/]", "[blue]/сияющая_обитель[/]", "[blue]Обзор сохранённого состояния Сияющей Обители: сияние, фракции и Врата[/]");
+            table.AddRow("[blue]/shining_politics[/]", "[blue]/сияющая_политика[/]", "[blue]Сохранённые решения Сияющей Обители по власти, основанию и переходам между фракциями[/]");
             table.AddRow("[blue]/soul_quests[/]", "[blue]/квесты_души[/]", "[blue]Квесты от хранителей[/]");
+            table.AddRow("[blue]/found_guardian_mantle[/]", "[blue]/учредить_хранителя[/]", "[blue]Поздний ритуал основания собственного Хранителя после возвращения из Сияющей Обители[/]");
             table.AddRow("[gold1]/gacha[/]", "[gold1]/гача[/]", "[gold1]Прямое вытягивание реликвии из Моря Хаоса (без модификаторов Хранителя)[/]");
             table.AddRow("[gold1]/feathers[/]", "[gold1]/перья[/]", "[gold1]🪶 Чернильные перья (способности души)[/]");
             table.AddRow("[cyan]/world_setup[/]", "[cyan]/настройка_мира[/]", "[cyan]Подготовить следующий смертный мир[/]");

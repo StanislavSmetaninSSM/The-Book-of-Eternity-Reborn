@@ -322,7 +322,7 @@ public partial class CanonicalStateNormalizer
                             ["gachaBonusAudit"] = commandNode["gachaBonusAudit"]?.DeepClone()
                         });
                         gacha["chargesPerReturn"] = chargesPerReturn;
-                        gacha["chargesUsedThisReturn"] = normalizedUsedCharges + 1;
+                        gacha["chargesUsedThisReturn"] = Math.Clamp(normalizedUsedCharges + 1, 0, chargesPerReturn);
                         guardian["gachaSystem"] = gacha;
                         SyncActiveGuardian(root, guardianId!, guardian);
                     }

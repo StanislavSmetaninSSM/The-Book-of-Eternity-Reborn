@@ -152,10 +152,212 @@ public partial class ValidationService
                     }
                 }
             }
+
+            await ValidatePlayerFoundedGuardianContinuityAsync(issues, guardianPolicyContext, guardianStateById);
         }
         catch
         {
             // ignored
+        }
+    }
+
+    private async Task ValidatePlayerFoundedGuardianContinuityAsync(
+        List<ValidationIssue> issues,
+        GuardianPolicyContext guardianPolicyContext,
+        IReadOnlyDictionary<string, JsonElement> guardianStateById)
+    {
+        var foundedGuardians = guardianStateById
+            .Where(pair => string.Equals(
+                GetFirstNonEmptyString(pair.Value, "originType"),
+                PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul,
+                StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        if (foundedGuardians.Count > 1)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json.guardians",
+                IssueSeverity.Error,
+                "V1 поддерживает только одного player-founded guardian на save",
+                code: "player_guardian_foundation_multiple_founded_guardians",
+                section: "PlayerGuardianFoundation",
+                expected: "at most one guardian with originType=player_founded_ascended_soul",
+                actual: foundedGuardians.Count.ToString(),
+                repairHint: "Не materialize второй player-founded guardian в том же save. Сохраняй single-use foundation branch."));
+        }
+
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return;
+
+        try
+        {
+            using var soulDoc = JsonDocument.Parse(soulJson);
+            var linkedGuardianId = GetFirstNonEmptyString(soulDoc.RootElement, PlayerGuardianFoundationState.SoulStateGuardianIdProperty);
+            var foundationStatus = GetFirstNonEmptyString(soulDoc.RootElement, PlayerGuardianFoundationState.SoulStateFoundationStatusProperty);
+            if (!string.IsNullOrWhiteSpace(linkedGuardianId))
+            {
+                if (!guardianStateById.TryGetValue(linkedGuardianId, out var linkedGuardian))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"game_state/meta/soul_state.json.{PlayerGuardianFoundationState.SoulStateGuardianIdProperty}",
+                        IssueSeverity.Error,
+                        "playerFoundedGuardianId должен ссылаться на существующего guardian из guardians[]",
+                        code: "player_guardian_foundation_unknown_soul_link_guardian",
+                        section: "PlayerGuardianFoundation",
+                        expected: "guardianId from current guardians[]",
+                        actual: linkedGuardianId,
+                        repairHint: "Синхронизируй soul_state.playerFoundedGuardianId с реально materialized player-founded guardian."));
+                }
+                else if (!string.Equals(
+                             GetFirstNonEmptyString(linkedGuardian, "originType"),
+                             PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul,
+                             StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"game_state/meta/soul_state.json.{PlayerGuardianFoundationState.SoulStateGuardianIdProperty}",
+                        IssueSeverity.Error,
+                        "playerFoundedGuardianId должен ссылаться именно на player-founded guardian",
+                        code: "player_guardian_foundation_soul_link_not_player_founded",
+                        section: "PlayerGuardianFoundation",
+                        expected: PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul,
+                        actual: GetFirstNonEmptyString(linkedGuardian, "originType") ?? "missing"));
+                }
+            }
+
+            if (foundedGuardians.Count == 1)
+            {
+                var foundedGuardianId = foundedGuardians[0].Key;
+                if (!string.Equals(linkedGuardianId, foundedGuardianId, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"game_state/meta/soul_state.json.{PlayerGuardianFoundationState.SoulStateGuardianIdProperty}",
+                        IssueSeverity.Error,
+                        "Player-founded guardian требует matching soul link в soul_state.json",
+                        code: "player_guardian_foundation_missing_soul_link",
+                        section: "PlayerGuardianFoundation",
+                        expected: foundedGuardianId,
+                        actual: linkedGuardianId ?? "missing",
+                        repairHint: $"Сохраняй soul_state.{PlayerGuardianFoundationState.SoulStateGuardianIdProperty} с guardianId основанного Хранителя."));
+                }
+
+                if (!string.Equals(foundationStatus, PlayerGuardianFoundationState.SoulStateFoundationStatusFounded, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"game_state/meta/soul_state.json.{PlayerGuardianFoundationState.SoulStateFoundationStatusProperty}",
+                        IssueSeverity.Error,
+                        "Player-founded guardian требует additive soul-side foundation status founded",
+                        code: "player_guardian_foundation_missing_soul_status",
+                        section: "PlayerGuardianFoundation",
+                        expected: PlayerGuardianFoundationState.SoulStateFoundationStatusFounded,
+                        actual: foundationStatus ?? "missing",
+                        repairHint: $"Сохраняй soul_state.{PlayerGuardianFoundationState.SoulStateFoundationStatusProperty} = {PlayerGuardianFoundationState.SoulStateFoundationStatusFounded} после successful foundation resolution."));
+                }
+            }
+            else if (!string.IsNullOrWhiteSpace(foundationStatus))
+            {
+                issues.Add(new ValidationIssue(
+                    $"game_state/meta/soul_state.json.{PlayerGuardianFoundationState.SoulStateFoundationStatusProperty}",
+                    IssueSeverity.Error,
+                    "playerGuardianFoundationStatus не должен существовать без canonical player-founded guardian",
+                    code: "player_guardian_foundation_orphaned_soul_status",
+                    section: "PlayerGuardianFoundation",
+                    expected: "missing status or a matching founded guardian",
+                    actual: foundationStatus,
+                    repairHint: $"Убирай soul_state.{PlayerGuardianFoundationState.SoulStateFoundationStatusProperty}, если foundation route ещё не materialized canonically."));
+            }
+
+            if (guardianPolicyContext.CurrentRoot.TryGetProperty(PlayerGuardianFoundationState.HistoryProperty, out var history) &&
+                history.ValueKind == JsonValueKind.Array &&
+                foundedGuardians.Count == 1)
+            {
+                var foundedGuardianId = foundedGuardians[0].Key;
+                var matchingHistoryEntries = history.EnumerateArray().Where(entry =>
+                    entry.ValueKind == JsonValueKind.Object &&
+                    string.Equals(GetFirstNonEmptyString(entry, "guardianId"), foundedGuardianId, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (matchingHistoryEntries.Count == 0)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"game_state/meta/guardians.json.{PlayerGuardianFoundationState.HistoryProperty}",
+                        IssueSeverity.Error,
+                        "Player-founded guardian требует matching foundation history receipt",
+                        code: "player_guardian_foundation_missing_history_link",
+                        section: "PlayerGuardianFoundation",
+                        expected: $"history receipt for guardianId {foundedGuardianId}",
+                        actual: "no matching history entry",
+                        repairHint: $"Append-ь matching receipt в guardians.json.{PlayerGuardianFoundationState.HistoryProperty} при materialization player-founded guardian."));
+                }
+                else
+                {
+                    var formerPatronGuardianId = GetFirstNonEmptyString(matchingHistoryEntries[^1], "formerPatronGuardianId") ??
+                                                 GetFirstNonEmptyString(foundedGuardians[0].Value, "formerPatronGuardianId");
+                    var guardiansWithFormerPatronRole = guardianStateById
+                        .Where(pair => string.Equals(
+                            PlayerGuardianFoundationState.TryReadGuardianRoleToPlayer(pair.Value),
+                            PlayerGuardianFoundationState.GuardianRoleFormerPatron,
+                            StringComparison.OrdinalIgnoreCase))
+                        .Select(pair => pair.Key)
+                        .ToList();
+
+                    if (!string.IsNullOrWhiteSpace(formerPatronGuardianId))
+                    {
+                        if (!guardianStateById.TryGetValue(formerPatronGuardianId, out var formerPatronGuardian))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"game_state/meta/guardians.json.{PlayerGuardianFoundationState.HistoryProperty}",
+                                IssueSeverity.Error,
+                                "Foundation history ссылается на несуществующего former patron guardian",
+                                code: "player_guardian_foundation_unknown_former_patron",
+                                section: "PlayerGuardianFoundation",
+                                expected: "existing guardianId in guardians[]",
+                                actual: formerPatronGuardianId));
+                        }
+                        else if (!string.Equals(
+                                     PlayerGuardianFoundationState.TryReadGuardianRoleToPlayer(formerPatronGuardian),
+                                     PlayerGuardianFoundationState.GuardianRoleFormerPatron,
+                                     StringComparison.OrdinalIgnoreCase))
+                        {
+                            issues.Add(new ValidationIssue(
+                                $"game_state/meta/guardians.json.guardians[{formerPatronGuardianId}].relationshipData.{PlayerGuardianFoundationState.GuardianRoleToPlayerProperty}",
+                                IssueSeverity.Error,
+                                "Прежний покровитель должен сохранять canonical role former_patron после foundation branch",
+                                code: "player_guardian_foundation_missing_former_patron_role",
+                                section: "PlayerGuardianFoundation",
+                                expected: PlayerGuardianFoundationState.GuardianRoleFormerPatron,
+                                actual: PlayerGuardianFoundationState.TryReadGuardianRoleToPlayer(formerPatronGuardian) ?? "missing"));
+                        }
+                    }
+
+                    if (guardiansWithFormerPatronRole.Count > 1)
+                    {
+                        issues.Add(new ValidationIssue(
+                            "game_state/meta/guardians.json.guardians",
+                            IssueSeverity.Error,
+                            "V1 foundation branch не должна оставлять больше одного guardian с ролью former_patron",
+                            code: "player_guardian_foundation_multiple_former_patrons",
+                            section: "PlayerGuardianFoundation",
+                            expected: "at most one guardianRoleToPlayer=former_patron",
+                            actual: guardiansWithFormerPatronRole.Count.ToString()));
+                    }
+                    else if (guardiansWithFormerPatronRole.Count == 1 &&
+                             !string.IsNullOrWhiteSpace(formerPatronGuardianId) &&
+                             !string.Equals(guardiansWithFormerPatronRole[0], formerPatronGuardianId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            "game_state/meta/guardians.json.guardians",
+                            IssueSeverity.Error,
+                            "guardianRoleToPlayer=former_patron должен указывать именно на прежнего activeGuardian из foundation history",
+                            code: "player_guardian_foundation_former_patron_role_mismatch",
+                            section: "PlayerGuardianFoundation",
+                            expected: formerPatronGuardianId,
+                            actual: guardiansWithFormerPatronRole[0]));
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // malformed soul state reported elsewhere
         }
     }
 

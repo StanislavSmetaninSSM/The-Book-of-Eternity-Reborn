@@ -423,6 +423,7 @@ internal static class AfterlifeArchiveState
             string.IsNullOrWhiteSpace(acquiredAtUtc) ||
             !DateTimeOffset.TryParse(acquiredAtUtc, out _) ||
             !HasOptionalNullableStringShape(entry["sourceGuardianId"]) ||
+            !HasOptionalNullableStringShape(entry["sourceGuardianName"]) ||
             !HasOptionalNullableStringShape(entry["sourceEntryId"]))
         {
             failureDescription = InvalidAfterlifeArchiveUpdateItemMessage;

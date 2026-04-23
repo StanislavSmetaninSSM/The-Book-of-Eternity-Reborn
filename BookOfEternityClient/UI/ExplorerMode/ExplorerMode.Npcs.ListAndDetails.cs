@@ -732,10 +732,9 @@ private async Task ShowNPCs()
 
         if (npc.TryGetProperty("gachaSystem", out var gs) && gs.ValueKind == JsonValueKind.Object)
         {
-            var guardianPower = AbodePowerRules.GetCurrentPower(npc);
             var chargesPerReturn = gs.TryGetProperty("chargesPerReturn", out var cpr) && cpr.ValueKind == JsonValueKind.Number && cpr.TryGetInt32(out var parsedCharges)
                 ? parsedCharges
-                : GuardianGachaChargeRules.GetChargesPerReturnForReputation(guardianReputation, guardianPower);
+                : GuardianGachaChargeRules.GetChargesPerReturnForGuardian(npc);
             var chargesUsedThisReturn = gs.TryGetProperty("chargesUsedThisReturn", out var cur) && cur.ValueKind == JsonValueKind.Number && cur.TryGetInt32(out var parsedUsed)
                 ? GuardianGachaChargeRules.ClampUsedCharges(parsedUsed, chargesPerReturn)
                 : 0;

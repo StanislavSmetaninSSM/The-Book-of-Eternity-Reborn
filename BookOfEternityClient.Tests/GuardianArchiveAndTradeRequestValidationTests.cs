@@ -2972,6 +2972,86 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_ResidentTransferRequestWithInvalidSelectionMode_Fails()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "resident_transfer_req_invalid_selection",
+                    residentId = "resident_alpha_1",
+                    residentName = "Лиора",
+                    sourceGuardianId = "guardian_alpha",
+                    sourceGuardianName = "Азалия",
+                    sourceAbodeId = "abode_alpha",
+                    sourceAbodeName = "Лазурная Обитель",
+                    targetGuardianId = "guardian_beta",
+                    targetGuardianName = "Мириэль",
+                    targetAbodeId = "abode_beta",
+                    targetAbodeName = "Сад Перекрёстков",
+                    abodeDevotionLevel = 12,
+                    abodeDevotionTier = "alienated",
+                    restlessness = 79,
+                    migrationState = "ready_to_transfer",
+                    transferMode = "accepted_transfer",
+                    selectionMode = "auto_pick",
+                    competitionScore = 76,
+                    competitionLabel = "strong_pull",
+                    competitionReason = "цель сильнее текущей Обители",
+                    createdAtTurn = 12,
+                    createdAtUtc = "2026-04-16T04:12:00Z"
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "pending_abode_resident_transfer_invalid_selection_mode", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DepartureOnlyTransferWithCompetitionMetadata_Fails()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "resident_transfer_req_departure_metadata",
+                    residentId = "resident_alpha_1",
+                    residentName = "Лиора",
+                    sourceGuardianId = "guardian_alpha",
+                    sourceGuardianName = "Азалия",
+                    sourceAbodeId = "abode_alpha",
+                    sourceAbodeName = "Лазурная Обитель",
+                    targetGuardianId = "guardian_beta",
+                    targetGuardianName = "Мириэль",
+                    targetAbodeId = "abode_beta",
+                    targetAbodeName = "Сад Перекрёстков",
+                    abodeDevotionLevel = 12,
+                    abodeDevotionTier = "alienated",
+                    restlessness = 79,
+                    migrationState = "ready_to_transfer",
+                    transferMode = "departure_only",
+                    selectionMode = "competition_recommended",
+                    competitionScore = 71,
+                    competitionLabel = "strong_pull",
+                    competitionReason = "цель сильнее текущей Обители",
+                    createdAtTurn = 12,
+                    createdAtUtc = "2026-04-16T04:12:00Z"
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "pending_abode_resident_transfer_inconsistent_selection_metadata", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_PendingResidentTransferWithoutMatchingReceipt_Fails()
     {
         await WriteJsonAsync("game_state/meta/guardians.json", new

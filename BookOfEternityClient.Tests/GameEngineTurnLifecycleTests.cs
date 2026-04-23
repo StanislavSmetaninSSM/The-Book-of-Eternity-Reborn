@@ -3,10 +3,13 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using System.Reflection;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -208,6 +211,271 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Equal("invalid_manifest", resolution.Code);
     }
 
+    [Fact]
+    public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_PreservesEnlightenmentState()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Испытующая Душа",
+            currentRealm = "Shining Abode",
+            currentIncarnation = 4,
+            inkFeathers = new { current = 7, total = 31 },
+            enlightenment = new
+            {
+                currentTier = "Сияющий Мудрец",
+                experience = 187,
+                level = 6,
+                progressPercent = 73
+            }
+        });
+        await WriteJsonAsync("game_state/meta/shining_abode_state.json", new
+        {
+            availability = "active",
+            radiance = new { experience = 22, tier = 3 },
+            lightSparks = 88,
+            halls = Array.Empty<object>(),
+            factions = Array.Empty<object>(),
+            shiningPoliticalActors = Array.Empty<object>(),
+            preparedIncarnationPackage = (object?)null,
+            gates = new
+            {
+                hasOpenDraft = false,
+                isStale = false,
+                openedThisAscension = false,
+                draftOpenedAtTurn = (int?)null,
+                draftOpenedAtUtc = (string?)null,
+                blessingDraft = Array.Empty<object>(),
+                selectedBlessingCardIds = Array.Empty<string>()
+            }
+        });
+
+        var beforeSoulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+        var expectedEnlightenment = beforeSoulRoot["enlightenment"]!.DeepClone();
+        var engine = CreateGameEngine();
+        var stateManager = GetPrivateField<StateManager>(engine, "_stateManager");
+
+        await stateManager.RefreshGameStateAsync();
+
+        var completed = await InvokePrivateAsync<bool>(engine, "TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync");
+
+        Assert.True(completed);
+
+        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json")!)!.AsObject();
+
+        Assert.Equal("Chaos Sea", soulRoot["currentRealm"]?.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(expectedEnlightenment, soulRoot["enlightenment"]));
+        Assert.Equal(ShiningAbodeState.AvailabilitySealedUntilNextAscension, shiningRoot["availability"]?.GetValue<string>());
+        Assert.Equal("Chaos Sea", stateManager.CurrentState.CurrentRealm);
+        Assert.Equal("Сияющий Мудрец", stateManager.CurrentState.EnlightenmentTier);
+    }
+
+    [Fact]
+    public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_ClearsPendingShiningRequestsAndRefreshesRuntimeState()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Испытующая Душа",
+            currentRealm = "Shining Abode",
+            currentIncarnation = 4,
+            inkFeathers = new { current = 7, total = 31 },
+            enlightenment = new
+            {
+                currentTier = "Сияющий Мудрец",
+                experience = 187,
+                level = 6,
+                progressPercent = 73
+            }
+        });
+        await WriteJsonAsync("game_state/meta/shining_abode_state.json", new
+        {
+            availability = "active",
+            radiance = new { experience = 22, tier = 3 },
+            lightSparks = 88,
+            halls = Array.Empty<object>(),
+            factions = Array.Empty<object>(),
+            shiningPoliticalActors = Array.Empty<object>(),
+            preparedIncarnationPackage = (object?)null,
+            gates = new
+            {
+                hasOpenDraft = false,
+                isStale = false,
+                openedThisAscension = false,
+                draftOpenedAtTurn = (int?)null,
+                draftOpenedAtUtc = (string?)null,
+                blessingDraft = Array.Empty<object>(),
+                selectedBlessingCardIds = Array.Empty<string>()
+            }
+        });
+
+        await ShiningCoreActionRequestState.WriteRequestAsync(_fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+        {
+            RequestId = "core-request-1",
+            ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+            FactionId = "faction-alpha",
+            FactionName = "Фракция Альфа",
+            CreatedAtTurn = 41,
+            CreatedAtUtc = "2026-04-19T00:00:00Z"
+        });
+        await ShiningTradeRequestState.WriteRequestAsync(_fs, new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+        {
+            RequestId = "trade-request-1",
+            FactionId = "faction-alpha",
+            FactionName = "Фракция Альфа",
+            TradeCycleId = "cycle-alpha",
+            DerivedTradeTier = 2,
+            DerivedTradeSlotCount = 3,
+            DerivedRarityCeiling = "legendary",
+            DerivedServiceMultiplier = 1.15,
+            CreatedAtTurn = 41,
+            CreatedAtUtc = "2026-04-19T00:00:00Z"
+        });
+        await ShiningFactionRequestState.WriteFoundingRequestAsync(_fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+        {
+            RequestId = "founding-request-1",
+            ProposedFactionId = "faction-founded",
+            ProposedHallId = "hall-founded",
+            ProposedHallName = "Зал Основания",
+            ProposedHallDescription = "Первый зал новой фракции.",
+            CreatedAtTurn = 41,
+            CreatedAtUtc = "2026-04-19T00:00:00Z"
+        });
+        await ShiningFactionRequestState.WriteRealignmentRequestAsync(_fs, new ShiningFactionRequestState.PendingShiningFactionRealignmentRequest
+        {
+            RequestId = "realignment-request-1",
+            ResidentId = "resident-alpha",
+            ResidentName = "Альфа",
+            SourceFactionId = "faction-alpha",
+            SourceFactionName = "Фракция Альфа",
+            TargetFactionId = "faction-beta",
+            TargetFactionName = "Фракция Бета",
+            CreatedAtTurn = 41,
+            CreatedAtUtc = "2026-04-19T00:00:00Z"
+        });
+        await ShiningFactionRequestState.WriteLeadershipTransitionRequestAsync(_fs, new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+        {
+            RequestId = "leadership-request-1",
+            FactionId = "faction-alpha",
+            FactionName = "Фракция Альфа",
+            IncumbentHeadActorType = ShiningAbodeState.HeadActorTypeGuardian,
+            IncumbentHeadActorId = "guardian-alpha",
+            CandidateHeadActorType = ShiningAbodeState.HeadActorTypePlayerSoul,
+            CandidateHeadActorId = "player",
+            CreatedAtTurn = 41,
+            CreatedAtUtc = "2026-04-19T00:00:00Z"
+        });
+
+        Assert.True(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+        Assert.True(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
+        Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingRealignmentsRequestPath));
+        Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath));
+
+        var engine = CreateGameEngine();
+        var stateManager = GetPrivateField<StateManager>(engine, "_stateManager");
+
+        await stateManager.RefreshGameStateAsync();
+
+        var completed = await InvokePrivateAsync<bool>(engine, "TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync");
+
+        Assert.True(completed);
+        Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+        Assert.False(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        Assert.False(_fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
+        Assert.False(_fs.FileExists(ShiningFactionRequestState.PendingRealignmentsRequestPath));
+        Assert.False(_fs.FileExists(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath));
+
+        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json")!)!.AsObject();
+
+        Assert.Equal("Chaos Sea", soulRoot["currentRealm"]?.GetValue<string>());
+        Assert.Equal(ShiningAbodeState.AvailabilitySealedUntilNextAscension, shiningRoot["availability"]?.GetValue<string>());
+        Assert.Equal("Chaos Sea", stateManager.CurrentState.CurrentRealm);
+        Assert.False(stateManager.CurrentState.IsInShiningAbode);
+    }
+
+    [Fact]
+    public async Task UpdateSoulStateRealm_WriteFailureReturnsFalseAndLeavesSoulStateUnchanged()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Испытующая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 4,
+            inkFeathers = new { current = 7, total = 31 }
+        });
+
+        var engine = CreateGameEngine();
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        using var soulLock = File.Open(
+            _fs.ResolvePath("game_state/meta/soul_state.json"),
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read);
+
+        var updated = await InvokePrivateAsync<bool>(engine, "UpdateSoulStateRealm", "Shining Abode", null, false);
+
+        Assert.False(updated);
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_SoulWriteFailureRestoresShiningStateAndReturnsFalse()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Испытующая Душа",
+            currentRealm = "Shining Abode",
+            currentIncarnation = 4,
+            inkFeathers = new { current = 7, total = 31 },
+            enlightenment = new
+            {
+                currentTier = "Сияющий Мудрец",
+                experience = 187,
+                level = 6,
+                progressPercent = 73
+            }
+        });
+        await WriteJsonAsync("game_state/meta/shining_abode_state.json", new
+        {
+            availability = "active",
+            radiance = new { experience = 22, tier = 3 },
+            lightSparks = 88,
+            halls = Array.Empty<object>(),
+            factions = Array.Empty<object>(),
+            shiningPoliticalActors = Array.Empty<object>(),
+            preparedIncarnationPackage = (object?)null,
+            gates = new
+            {
+                hasOpenDraft = false,
+                isStale = false,
+                openedThisAscension = false,
+                draftOpenedAtTurn = (int?)null,
+                draftOpenedAtUtc = (string?)null,
+                blessingDraft = Array.Empty<object>(),
+                selectedBlessingCardIds = Array.Empty<string>()
+            }
+        });
+
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var beforeShiningJson = await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json");
+        var engine = CreateGameEngine();
+        var stateManager = GetPrivateField<StateManager>(engine, "_stateManager");
+
+        await stateManager.RefreshGameStateAsync();
+        using var soulLock = File.Open(
+            _fs.ResolvePath("game_state/meta/soul_state.json"),
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read);
+
+        var completed = await InvokePrivateAsync<bool>(engine, "TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync");
+
+        Assert.False(completed);
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"));
+    }
+
     private async Task WriteJsonAsync(string relativePath, object payload)
     {
         await _fs.WriteFileAtomicAsync(
@@ -283,6 +551,98 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     {
         using var sha = SHA256.Create();
         return Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(content)));
+    }
+
+    private GameEngine CreateGameEngine()
+    {
+        var settings = new GameSettings();
+        var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
+        var localization = new LocalizationManager { CurrentLanguage = "ru" };
+        var gameLoop = new GameLoop();
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var progressionSchedule = new ProgressionScheduleService(_fs, NullLogger<ProgressionScheduleService>.Instance);
+        var gameInterface = new GameInterface(localization, settings);
+        var clipboardService = new TestClipboardService();
+        var explorer = new ExplorerMode(stateManager, _fs, localization, clipboardService: clipboardService, console: new TestExplorerConsole());
+        var saveLoad = new SaveLoadService(_fs, stateManager, NullLogger<SaveLoadService>.Instance);
+        var imageService = new ImageService(_fs, settings, localization, NullLogger<ImageService>.Instance);
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var characteristicsService = new CharacteristicsService(_fs, stateManager, NullLogger<CharacteristicsService>.Instance);
+        var storyService = new StoryService(_fs, NullLogger<StoryService>.Instance);
+        var actorMemoryService = new ActorMemoryService(_fs, NullLogger<ActorMemoryService>.Instance);
+        var audioService = new AudioService(_fs, settings, NullLogger<AudioService>.Instance);
+        var consoleAppearance = new ConsoleAppearanceService(settings, NullLogger<ConsoleAppearanceService>.Instance);
+        var systemModService = new SystemModService(_fs, settings, NullLogger<SystemModService>.Instance);
+        var systemGuardianLibraryService = new SystemGuardianLibraryService(_fs, NullLogger<SystemGuardianLibraryService>.Instance);
+        var criticalStateHealth = new CriticalStateHealthService(_fs, NullLogger<CriticalStateHealthService>.Instance);
+        var worldDirectiveService = new WorldDirectiveService(_fs, NullLogger<WorldDirectiveService>.Instance);
+        var scenarioCoreService = new ScenarioCoreService(_fs, NullLogger<ScenarioCoreService>.Instance);
+        var afterlifeArchiveCandidateService = new AfterlifeArchiveCandidateService(_fs, NullLogger<AfterlifeArchiveCandidateService>.Instance);
+        var afterlifeReturnGuardService = new AfterlifeReturnGuardService(_fs, NullLogger<AfterlifeReturnGuardService>.Instance);
+        var rivalSoulArcService = new RivalSoulArcService(_fs, NullLogger<RivalSoulArcService>.Instance);
+        var guardianCorrectionService = new GuardianCorrectionService(_fs, scenarioCoreService, NullLogger<GuardianCorrectionService>.Instance);
+        var pendingTurnState = new PendingTurnStateService(_fs, NullLogger<PendingTurnStateService>.Instance);
+        var stateDistributor = new StateDistributor(_fs, NullLogger<StateDistributor>.Instance);
+        var qteSceneService = new QteSceneService(
+            _fs,
+            settings,
+            characteristicsService,
+            imageService,
+            audioService,
+            stateDistributor,
+            validator,
+            normalizer,
+            stateManager,
+            NullLogger<QteSceneService>.Instance);
+
+        return new GameEngine(
+            _fs,
+            stateManager,
+            gameLoop,
+            normalizer,
+            progressionSchedule,
+            gameInterface,
+            explorer,
+            localization,
+            saveLoad,
+            imageService,
+            validator,
+            characteristicsService,
+            storyService,
+            actorMemoryService,
+            audioService,
+            consoleAppearance,
+            systemModService,
+            systemGuardianLibraryService,
+            criticalStateHealth,
+            worldDirectiveService,
+            scenarioCoreService,
+            afterlifeArchiveCandidateService,
+            afterlifeReturnGuardService,
+            rivalSoulArcService,
+            guardianCorrectionService,
+            pendingTurnState,
+            qteSceneService,
+            clipboardService,
+            NullLogger<GameEngine>.Instance);
+    }
+
+    private static T GetPrivateField<T>(object instance, string fieldName) where T : class
+    {
+        var field = instance.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(field);
+        var value = field!.GetValue(instance) as T;
+        Assert.NotNull(value);
+        return value!;
+    }
+
+    private static async Task<T> InvokePrivateAsync<T>(object instance, string methodName, params object?[]? args)
+    {
+        var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = method!.Invoke(instance, args) as Task<T>;
+        Assert.NotNull(task);
+        return await task!;
     }
 
     public void Dispose()

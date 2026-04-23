@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
@@ -175,6 +176,86 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureManifestationRequestForCurrentIncarnationAsync_PruneUsesFreshSurvivingRequestsSet()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 2,
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = "relic_companion_echo_reused",
+                        name = "Эхо Лиоры",
+                        rarity = "Epic",
+                        slot = "Neck",
+                        relicType = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+                        companionSeed = new
+                        {
+                            sourceResidentId = "resident_echo_001",
+                            sourceGuardianId = "guardian_social_001",
+                            sourceAbodeId = "abode_social_001",
+                            companionNameHint = "Лиора",
+                            originWorldSummary = "Бывшая гонец при храме семи дорог.",
+                            futureCompanionPrompt = "Swift wanderer with ember-thread cloak",
+                            bondReason = "Она всегда возвращалась к тем, кого однажды назвала своими.",
+                            coreTraits = new[] { "верность", "смелость" },
+                            archetypeHints = new[] { "courier", "pathfinder" },
+                            appearanceMotifs = new[] { "ember-thread cloak" }
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "old_manifestation_request",
+                    relicId = "relic_companion_echo_reused",
+                    relicName = "Эхо Лиоры",
+                    manifestationSource = "resident_relic",
+                    sourceResidentId = "resident_echo_001",
+                    companionNameHint = "Лиора",
+                    targetIncarnation = 1
+                }
+            }
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
+
+        var requests = await GuardianAbodeResidentRequestState.ReadManifestationRequestsAsync(_fs);
+        var request = Assert.Single(requests);
+        Assert.Equal(2, request.TargetIncarnation);
+        Assert.Equal("relic_companion_echo_reused", request.RelicId);
+        Assert.Equal("resident_echo_001", request.SourceResidentId);
+    }
+
+    [Fact]
+    public void EnsureManifestationRequestForCurrentIncarnationAsync_MustWriteRetryMarkerOnlyAfterSuccessfulBuild()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "GuardianAbodeResidentRequestState.cs"));
+
+        var buildIndex = source.IndexOf("if (!TryBuildManifestationRequest(relic, currentIncarnation, out var request))", StringComparison.Ordinal);
+        var markerIndex = source.IndexOf("relic[\"companionManifestationLastRequestedIncarnation\"] = currentIncarnation;", StringComparison.Ordinal);
+
+        Assert.True(buildIndex >= 0);
+        Assert.True(markerIndex >= 0);
+        Assert.True(buildIndex < markerIndex, "retry marker must be written only after successful manifestation request build");
+    }
+
+    [Fact]
     public async Task BuildSystemReminderFragmentAsync_AfterlifePressureStates_SurfaceLeavePressureWithoutTransferInstruction()
     {
         await WriteJsonAsync("game_state/meta/guardians.json", new
@@ -285,6 +366,10 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
             Restlessness = 84,
             MigrationState = "ready_to_transfer",
             TransferMode = GuardianAbodeResidentState.TransferModeAcceptedTransfer,
+            SelectionMode = GuardianAbodeResidentRequestState.TransferSelectionModeCompetitionRecommended,
+            CompetitionScore = 78,
+            CompetitionLabel = GuardianAbodeResidentState.TransferCompetitionLabelStrongPull,
+            CompetitionReason = "цель заметно сильнее текущей Обители и обещает более устойчивый порядок.",
             CreatedAtTurn = 41,
             CreatedAtUtc = "2026-04-16T04:41:00Z"
         });
@@ -296,6 +381,351 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
         Assert.Contains("resident=Лиора", reminder, StringComparison.Ordinal);
         Assert.Contains("pending_guardian_abode_resident_transfers.json", reminder, StringComparison.Ordinal);
         Assert.Contains("transferReceipts[]", reminder, StringComparison.Ordinal);
+        Assert.Contains("selection=системная рекомендация", reminder, StringComparison.Ordinal);
+        Assert.Contains("competition=сильный зов 78/100", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_ReadyToTransferResident_SurfacesCompetitionTarget()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Лазурная Обитель" },
+                    abodePower = new { currentPower = 18 }
+                },
+                new
+                {
+                    guardianId = "guardian_beta",
+                    canonicalName = "Мириэль",
+                    abode = new { abodeId = "abode_beta", name = "Сад Перекрёстков" },
+                    abodePower = new { currentPower = 78 }
+                }
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_liora",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    roleLabel = "Вестница",
+                    summary = "Слушает нити дорог.",
+                    bondLevel = 44,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "high",
+                        migrationDisposition = "opportunistic",
+                        communalOrientation = "medium",
+                        stabilityNeed = "high"
+                    },
+                    abodeDevotionLevel = 11,
+                    abodeDevotionTier = "alienated",
+                    restlessness = 82,
+                    migrationState = "ready_to_transfer",
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                },
+                new
+                {
+                    residentId = "resident_beta_1",
+                    guardianId = "guardian_beta",
+                    abodeId = "abode_beta",
+                    displayName = "Ирис",
+                    residentKind = "attendant_spirit",
+                    originType = "native_spirit",
+                    roleLabel = "Садовница",
+                    summary = "Удерживает перекрёстки троп.",
+                    bondLevel = 20,
+                    bondTier = "stranger",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Дух сада.",
+                        futureCompanionPrompt = "Garden spirit"
+                    }
+                }
+            }
+        });
+
+        var reminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, "Chaos Sea");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("bestTarget=Мириэль / Сад Перекрёстков", reminder, StringComparison.Ordinal);
+        Assert.Contains("competition=сильный зов", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_PendingTransferRequest_SuppressesConflictingLiveCompetitionTarget()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Лазурная Обитель" },
+                    abodePower = new { currentPower = 18 }
+                },
+                new
+                {
+                    guardianId = "guardian_beta",
+                    canonicalName = "Мириэль",
+                    abode = new { abodeId = "abode_beta", name = "Сад Перекрёстков" },
+                    abodePower = new { currentPower = 78 }
+                },
+                new
+                {
+                    guardianId = "guardian_gamma",
+                    canonicalName = "Севериан",
+                    abode = new { abodeId = "abode_gamma", name = "Тихая Пристань" },
+                    abodePower = new { currentPower = 52 }
+                }
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_liora",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    roleLabel = "Вестница",
+                    summary = "Слушает нити дорог.",
+                    bondLevel = 44,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "high",
+                        migrationDisposition = "opportunistic",
+                        communalOrientation = "medium",
+                        stabilityNeed = "high"
+                    },
+                    abodeDevotionLevel = 11,
+                    abodeDevotionTier = "alienated",
+                    restlessness = 82,
+                    migrationState = "ready_to_transfer",
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                },
+                new
+                {
+                    residentId = "resident_beta_1",
+                    guardianId = "guardian_beta",
+                    abodeId = "abode_beta",
+                    displayName = "Ирис",
+                    residentKind = "attendant_spirit",
+                    originType = "native_spirit",
+                    roleLabel = "Садовница",
+                    summary = "Удерживает перекрёстки троп.",
+                    bondLevel = 20,
+                    bondTier = "stranger",
+                    canGrantCompanionRelic = false,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = false,
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Дух сада.",
+                        futureCompanionPrompt = "Garden spirit"
+                    }
+                }
+            }
+        });
+        await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(_fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest
+        {
+            RequestId = "resident_transfer_req_2",
+            ResidentId = "resident_liora",
+            ResidentName = "Лиора",
+            SourceGuardianId = "guardian_alpha",
+            SourceGuardianName = "Азалия",
+            SourceAbodeId = "abode_alpha",
+            SourceAbodeName = "Лазурная Обитель",
+            TargetGuardianId = "guardian_gamma",
+            TargetGuardianName = "Севериан",
+            TargetAbodeId = "abode_gamma",
+            TargetAbodeName = "Тихая Пристань",
+            AbodeDevotionLevel = 11,
+            AbodeDevotionTier = "alienated",
+            Restlessness = 82,
+            MigrationState = "ready_to_transfer",
+            TransferMode = GuardianAbodeResidentState.TransferModeAcceptedTransfer,
+            SelectionMode = GuardianAbodeResidentRequestState.TransferSelectionModeManualOverride,
+            CompetitionScore = 41,
+            CompetitionLabel = GuardianAbodeResidentState.TransferCompetitionLabelWeakPull,
+            CompetitionReason = "система видит слабый зов, но хранитель и резидент всё равно выбирают эту цель.",
+            CreatedAtTurn = 42,
+            CreatedAtUtc = "2026-04-16T05:42:00Z"
+        });
+
+        var reminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, "Chaos Sea");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("transferRequestPending=explicit transfer request already exists; see transfer request block below", reminder, StringComparison.Ordinal);
+        Assert.DoesNotContain("bestTarget=Мириэль / Сад Перекрёстков", reminder, StringComparison.Ordinal);
+        Assert.Contains("targetGuardian=Севериан (guardian_gamma)", reminder, StringComparison.Ordinal);
+        Assert.Contains("selection=ручной выбор поверх слабого системного зова", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_PressureRedirect_PrioritizesMatchingTransferRequestWithinVisibleWindow()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    abode = new { abodeId = "abode_alpha", name = "Лазурная Обитель" },
+                    abodePower = new { currentPower = 18 }
+                }
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_liora",
+                    guardianId = "guardian_alpha",
+                    abodeId = "abode_alpha",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    originType = "traveler_soul",
+                    roleLabel = "Вестница",
+                    summary = "Слушает нити дорог.",
+                    bondLevel = 44,
+                    bondTier = "trusted",
+                    canGrantCompanionRelic = true,
+                    bondRewardState = "none",
+                    linkedSoulQuestId = "",
+                    grantedRelicId = "",
+                    historyRevealed = true,
+                    isPresent = true,
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "high",
+                        migrationDisposition = "opportunistic",
+                        communalOrientation = "medium",
+                        stabilityNeed = "high"
+                    },
+                    abodeDevotionLevel = 11,
+                    abodeDevotionTier = "alienated",
+                    restlessness = 82,
+                    migrationState = "ready_to_transfer",
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Swift wanderer"
+                    }
+                }
+            }
+        });
+
+        for (var index = 0; index < 5; index++)
+        {
+            await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(_fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest
+            {
+                RequestId = $"resident_transfer_other_{index}",
+                ResidentId = $"resident_other_{index}",
+                ResidentName = $"Другой {index}",
+                SourceGuardianId = "guardian_alpha",
+                SourceGuardianName = "Азалия",
+                SourceAbodeId = "abode_alpha",
+                SourceAbodeName = "Лазурная Обитель",
+                TargetGuardianId = $"guardian_target_{index}",
+                TargetGuardianName = $"Цель {index}",
+                TargetAbodeId = $"abode_target_{index}",
+                TargetAbodeName = $"Приют {index}",
+                AbodeDevotionLevel = 10,
+                AbodeDevotionTier = "alienated",
+                Restlessness = 85,
+                MigrationState = "ready_to_transfer",
+                TransferMode = GuardianAbodeResidentState.TransferModeAcceptedTransfer,
+                CreatedAtTurn = 41 + index,
+                CreatedAtUtc = $"2026-04-16T04:4{index}:00Z"
+            });
+        }
+
+        await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(_fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest
+        {
+            RequestId = "resident_transfer_liora",
+            ResidentId = "resident_liora",
+            ResidentName = "Лиора",
+            SourceGuardianId = "guardian_alpha",
+            SourceGuardianName = "Азалия",
+            SourceAbodeId = "abode_alpha",
+            SourceAbodeName = "Лазурная Обитель",
+            TargetGuardianId = "guardian_gamma",
+            TargetGuardianName = "Севериан",
+            TargetAbodeId = "abode_gamma",
+            TargetAbodeName = "Тихая Пристань",
+            AbodeDevotionLevel = 11,
+            AbodeDevotionTier = "alienated",
+            Restlessness = 82,
+            MigrationState = "ready_to_transfer",
+            TransferMode = GuardianAbodeResidentState.TransferModeAcceptedTransfer,
+            SelectionMode = GuardianAbodeResidentRequestState.TransferSelectionModeManualOverride,
+            CompetitionScore = 41,
+            CompetitionLabel = GuardianAbodeResidentState.TransferCompetitionLabelWeakPull,
+            CompetitionReason = "цель выбрана вручную вопреки слабому системному зову.",
+            CreatedAtTurn = 99,
+            CreatedAtUtc = "2026-04-16T04:59:00Z"
+        });
+
+        var reminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, "Chaos Sea");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("transferRequestPending=explicit transfer request already exists; see transfer request block below", reminder, StringComparison.Ordinal);
+        Assert.Contains("resident=Лиора (resident_liora)", reminder, StringComparison.Ordinal);
+        Assert.Contains("targetGuardian=Севериан (guardian_gamma)", reminder, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1467,6 +1897,32 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
     }
 
     [Fact]
+    public async Task WriteResidentsRequestAsync_FounderAttraction_PreservesFounderContext()
+    {
+        await GuardianAbodeResidentRequestState.WriteResidentsRequestAsync(_fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest
+        {
+            RequestId = "abode_req_founder_1",
+            GuardianId = "guardian_player",
+            GuardianName = "Трон Прилива",
+            AbodeId = "abode_player",
+            AbodeName = "Обитель Прилива",
+            CurrentReputation = 230,
+            RequestMode = GuardianAbodeResidentRequestState.ResidentsRequestModeFounderAttraction,
+            FounderFeatureTitle = "Зов памяти",
+            FounderFeatureSummary = "Новая Обитель притягивает первых резидентов, откликнувшихся на creed.",
+            CreatedAtTurn = 9,
+            CreatedAtUtc = "2026-04-18T00:10:00Z"
+        });
+
+        var requests = await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs);
+
+        var request = Assert.Single(requests);
+        Assert.Equal(GuardianAbodeResidentRequestState.ResidentsRequestModeFounderAttraction, request.RequestMode);
+        Assert.Equal("Зов памяти", request.FounderFeatureTitle);
+        Assert.Contains("притягивает", request.FounderFeatureSummary, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task WriteInteractionRequestAsync_SameResidentAndType_ReplacesExistingRequest()
     {
         await GuardianAbodeResidentRequestState.WriteInteractionRequestAsync(_fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentInteractionRequest
@@ -1501,6 +1957,117 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
         var request = Assert.Single(requests);
         Assert.Equal("resident_talk_req_2", request.RequestId);
         Assert.Equal(GuardianAbodeResidentState.InteractionTypeTalk, request.InteractionType);
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_AfterlifePreservesMalformedResidentsBundle()
+    {
+        await _fs.WriteFileAtomicAsync(
+            GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+            """
+            {
+              "requests": [
+                {
+                  "requestId": "resident_roster_valid",
+                  "guardianId": "guardian_alpha",
+                  "guardianName": "Азалия",
+                  "abodeId": "abode_alpha",
+                  "abodeName": "Сад Нитей",
+                  "createdAtTurn": 7,
+                  "createdAtUtc": "2026-03-27T00:00:00Z"
+                },
+                {
+                  "requestId":
+                }
+              ]
+            }
+            """);
+
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Chaos Sea");
+
+        Assert.True(_fs.FileExists(GuardianAbodeResidentRequestState.PendingResidentsRequestPath));
+        var raw = await _fs.ReadFileAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath);
+        Assert.Contains("\"requestId\":", raw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_NonAfterlife_ClearsPendingResidentsRosterRequest()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "roster_req_wrong_realm",
+                    guardianId = "guardian_social_001",
+                    guardianName = "Азалия",
+                    abodeId = "abode_social_001",
+                    abodeName = "Лазурная Обитель",
+                    createdAtTurn = 12,
+                    createdAtUtc = "2026-04-22T02:00:00Z"
+                }
+            }
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Mortal World");
+
+        Assert.False(_fs.FileExists(GuardianAbodeResidentRequestState.PendingResidentsRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_Afterlife_KeepsRosterRequestWithoutMatchingRosterReceipt()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, new
+        {
+            requests = new object[]
+            {
+                new
+                {
+                    requestId = "roster_req_missing_receipt",
+                    guardianId = "guardian_social_001",
+                    guardianName = "Азалия",
+                    abodeId = "abode_social_001",
+                    abodeName = "Лазурная Обитель",
+                    createdAtTurn = 13,
+                    createdAtUtc = "2026-04-22T02:10:00Z"
+                }
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_echo_001",
+                    guardianId = "guardian_social_001",
+                    abodeId = "abode_social_001",
+                    displayName = "Лиора",
+                    residentKind = "wayfaring_soul",
+                    roleLabel = "Вестница",
+                    bondLevel = 58,
+                    bondTier = "trusted",
+                    abodeDevotionLevel = 63,
+                    abodeDevotionTier = "attached",
+                    restlessness = 14,
+                    migrationState = "settled",
+                    historyRevealed = true
+                }
+            },
+            rosterReceipts = Array.Empty<object>(),
+            interactionReceipts = Array.Empty<object>(),
+            transferReceipts = Array.Empty<object>(),
+            historyLog = Array.Empty<object>(),
+            thoughtJournal = Array.Empty<object>(),
+            interactionLog = Array.Empty<object>()
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Chaos Sea");
+
+        var pendingRaw = await _fs.ReadFileAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("roster_req_missing_receipt", pendingRaw, StringComparison.Ordinal);
     }
 
     private async Task WriteJsonAsync(string relativePath, object payload)

@@ -331,6 +331,9 @@ internal static class NpcTradeRequestState
         if (!fs.FileExists(PendingRequestPath))
             return;
 
+        if (!RealmSemantics.HasResolvedRealm(currentRealm))
+            return;
+
         if (!IsMortalRealm(currentRealm))
         {
             fs.DeleteFile(PendingRequestPath);

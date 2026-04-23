@@ -514,6 +514,7 @@ public partial class ValidationService
     {
         public int? CurrentReputation { get; set; }
         public int CurrentAbodePower { get; set; } = AbodePowerRules.DefaultCurrentPower;
+        public int FounderExtraGachaCharges { get; set; }
         public int ChargesUsedThisReturn { get; set; }
         public HashSet<string> AvailableQuestIds { get; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> ActiveQuestIds { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -710,6 +711,12 @@ public class ValidationIssue
                normalizedPath.Equals(AfterlifeArchiveCandidateService.ManifestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeOfferingState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(PlayerGuardianFoundationState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ShiningCoreActionRequestState.PendingActionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase) ||

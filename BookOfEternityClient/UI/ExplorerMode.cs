@@ -109,10 +109,16 @@ public partial class ExplorerMode
             ["/проекты_хранителей"] = ShowGuardianProjects,
             ["/abodes"] = ShowAbodesNavigation,
             ["/обители"] = ShowAbodesNavigation,
+            ["/shining_abode"] = ShowShiningAbodeOverview,
+            ["/сияющая_обитель"] = ShowShiningAbodeOverview,
+            ["/shining_politics"] = ShowShiningPoliticsOverview,
+            ["/сияющая_политика"] = ShowShiningPoliticsOverview,
             ["/afterlife_inbox"] = ShowAfterlifeInbox,
             ["/уведомления_загробья"] = ShowAfterlifeInbox,
             ["/gacha"] = ShowGachaInfo,
             ["/гача"] = ShowGachaInfo,
+            ["/found_guardian_mantle"] = ShowPlayerGuardianFoundationAsync,
+            ["/учредить_хранителя"] = ShowPlayerGuardianFoundationAsync,
         };
 
         _mortalOnlyCommands = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
@@ -195,6 +201,8 @@ public partial class ExplorerMode
         if (_universalCommands.TryGetValue(cmd, out var handler))
         {
             await SafeExecute(handler, cmd);
+            if (string.IsNullOrEmpty(_pendingGmAction))
+                await DiscardPendingLocalTurnRollbackSnapshotAsync();
             return _pendingGmAction ?? "";
         }
 
@@ -203,6 +211,8 @@ public partial class ExplorerMode
             if (isAfterlife)
             {
                 await SafeExecute(chaosHandler, cmd);
+                if (string.IsNullOrEmpty(_pendingGmAction))
+                    await DiscardPendingLocalTurnRollbackSnapshotAsync();
                 return _pendingGmAction ?? "";
             }
 
@@ -217,6 +227,8 @@ public partial class ExplorerMode
             if (!isAfterlife)
             {
                 await SafeExecute(mortalHandler, cmd);
+                if (string.IsNullOrEmpty(_pendingGmAction))
+                    await DiscardPendingLocalTurnRollbackSnapshotAsync();
                 return _pendingGmAction ?? "";
             }
 

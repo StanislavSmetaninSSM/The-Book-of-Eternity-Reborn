@@ -32,6 +32,11 @@ public sealed class SystemGuardianLibraryService
     private readonly FileSystemManager _fs;
     private readonly ILogger<SystemGuardianLibraryService> _logger;
 
+    private sealed record AttractionRequestReadState(
+        bool FilePresent,
+        bool IsMalformed,
+        SystemGuardianAttractionRequest? Request);
+
     public sealed class GuardianPresetManifest
     {
         [JsonPropertyName("presetId")]
@@ -316,19 +321,8 @@ public sealed class SystemGuardianLibraryService
 
     public async Task<SystemGuardianAttractionRequest?> ReadAttractionRequestAsync()
     {
-        var json = await _fs.ReadFileAsync(AttractionRequestPath);
-        if (string.IsNullOrWhiteSpace(json))
-            return null;
-
-        try
-        {
-            return JsonSerializer.Deserialize<SystemGuardianAttractionRequest>(json, JsonOpts);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Не удалось прочитать system guardian attraction request");
-            return null;
-        }
+        var state = await ReadAttractionRequestStateAsync();
+        return state.IsMalformed ? null : state.Request;
     }
 
     public async Task EnsureAttractionRequestHealthyAsync(string? currentRealm)
@@ -336,36 +330,30 @@ public sealed class SystemGuardianLibraryService
         if (!_fs.FileExists(AttractionRequestPath))
             return;
 
-        var json = await _fs.ReadFileAsync(AttractionRequestPath);
-        if (string.IsNullOrWhiteSpace(json))
-        {
-            _fs.DeleteFile(AttractionRequestPath);
+        var state = await ReadAttractionRequestStateAsync();
+        if (state.IsMalformed)
             return;
-        }
-
-        SystemGuardianAttractionRequest? request;
-        try
-        {
-            request = JsonSerializer.Deserialize<SystemGuardianAttractionRequest>(json, JsonOpts);
-        }
-        catch
-        {
-            _fs.DeleteFile(AttractionRequestPath);
-            return;
-        }
 
         var isAfterlife = string.Equals(currentRealm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
                           string.Equals(currentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
                           string.Equals(currentRealm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
                           string.Equals(currentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
 
-        if (!isAfterlife ||
-            request == null ||
-            !string.Equals(request.Mode, "system_guardian_attraction", StringComparison.OrdinalIgnoreCase) ||
+        if (!isAfterlife)
+        {
+            _fs.DeleteFile(AttractionRequestPath);
+            return;
+        }
+
+        var request = state.Request;
+        if (request == null)
+            return;
+
+        if (!string.Equals(request.Mode, "system_guardian_attraction", StringComparison.OrdinalIgnoreCase) ||
             string.IsNullOrWhiteSpace(request.TargetPresetId) ||
             string.IsNullOrWhiteSpace(request.TargetPresetDisplayName))
         {
-            _fs.DeleteFile(AttractionRequestPath);
+            return;
         }
     }
 
@@ -395,9 +383,16 @@ public sealed class SystemGuardianLibraryService
             parts.Add(IndentMultiline(pendingPreset.RenderedPromptPackage, "    "));
         }
 
-        var attractionRequest = await ReadAttractionRequestAsync();
-        if (attractionRequest != null)
+        var attractionState = await ReadAttractionRequestStateAsync();
+        if (attractionState.IsMalformed)
         {
+            parts.Add("ETERNAL GUARDIAN ATTRACTION CORRUPTION:");
+            parts.Add("  - system_guardian_attraction.json unreadable or structurally invalid.");
+            parts.Add("  - Preserve this deterministic attraction contract until validation/repair resolves it.");
+        }
+        else if (attractionState.Request != null)
+        {
+            var attractionRequest = attractionState.Request;
             parts.Add("ETERNAL GUARDIAN ATTRACTION:");
             parts.Add("  - Player-facing roleplay term: Eternal Guardian. Technical control-file term: system_guardian_attraction.");
             parts.Add("  - The player is deliberately seeking a specific Eternal Guardian.");
@@ -414,6 +409,32 @@ public sealed class SystemGuardianLibraryService
         }
 
         return string.Join(Environment.NewLine, parts.Where(part => !string.IsNullOrWhiteSpace(part)));
+    }
+
+    private async Task<AttractionRequestReadState> ReadAttractionRequestStateAsync()
+    {
+        var json = await _fs.ReadFileAsync(AttractionRequestPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return new AttractionRequestReadState(_fs.FileExists(AttractionRequestPath), true, null);
+
+        try
+        {
+            var request = JsonSerializer.Deserialize<SystemGuardianAttractionRequest>(json, JsonOpts);
+            if (request == null ||
+                !string.Equals(request.Mode, "system_guardian_attraction", StringComparison.OrdinalIgnoreCase) ||
+                string.IsNullOrWhiteSpace(request.TargetPresetId) ||
+                string.IsNullOrWhiteSpace(request.TargetPresetDisplayName))
+            {
+                return new AttractionRequestReadState(true, true, null);
+            }
+
+            return new AttractionRequestReadState(true, false, request);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Не удалось прочитать system guardian attraction request");
+            return new AttractionRequestReadState(true, true, null);
+        }
     }
 
     public string BuildAttractionActionText(SystemGuardianPresetDescriptor preset)

@@ -235,6 +235,91 @@ public sealed class GuardianProjectStateTests
     }
 
     [Fact]
+    public void TryConsumeLoreQuestToken_ListOverload_SkipsStaleIncarnationAndConsumesCurrentHook()
+    {
+        var staleEntry = BuildCompletedLoreResearchEntry(
+            guardianId: "guardian_alpha",
+            projectId: "research_shared",
+            completionTurn: 10,
+            targetIncarnation: 2,
+            questHookTokensGranted: 1);
+        var currentEntry = BuildCompletedLoreResearchEntry(
+            guardianId: "guardian_alpha",
+            projectId: "research_shared",
+            completionTurn: 20,
+            targetIncarnation: 3,
+            questHookTokensGranted: 1);
+        var completedProjects = new[] { staleEntry, currentEntry };
+
+        Assert.True(GuardianProjectState.TryConsumeLoreQuestToken(
+            completedProjects,
+            "guardian_alpha",
+            "research_shared",
+            GuardianProjectState.LoreResearchHookOrigin,
+            3));
+
+        Assert.Equal(0, staleEntry["project"]!["effectState"]!["questHookTokensSpent"]!.GetValue<int>());
+        Assert.Equal(1, currentEntry["project"]!["effectState"]!["questHookTokensSpent"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void TryConsumeLoreQuestToken_ListOverload_SkipsStaleIncarnationAndConsumesGuaranteedArchiveQuest()
+    {
+        var staleEntry = BuildCompletedLoreResearchEntry(
+            guardianId: "guardian_alpha",
+            projectId: "archive_shared",
+            completionTurn: 10,
+            targetIncarnation: 2,
+            guaranteedArchiveQuestGranted: 1,
+            projectOrigin: "archive_consultation");
+        var currentEntry = BuildCompletedLoreResearchEntry(
+            guardianId: "guardian_alpha",
+            projectId: "archive_shared",
+            completionTurn: 20,
+            targetIncarnation: 3,
+            guaranteedArchiveQuestGranted: 1,
+            projectOrigin: "archive_consultation");
+        var completedProjects = new[] { staleEntry, currentEntry };
+
+        Assert.True(GuardianProjectState.TryConsumeLoreQuestToken(
+            completedProjects,
+            "guardian_alpha",
+            "archive_shared",
+            GuardianProjectState.ArchiveConsultationHookOrigin,
+            3));
+
+        Assert.Equal(0, staleEntry["project"]!["effectState"]!["guaranteedArchiveQuestConsumed"]!.GetValue<int>());
+        Assert.Equal(1, currentEntry["project"]!["effectState"]!["guaranteedArchiveQuestConsumed"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void LoreResearchVisibleRivalClueBudget_SkipsStaleIncarnationAndUsesCurrentProject()
+    {
+        var staleEntry = BuildCompletedLoreResearchEntry(
+            guardianId: "guardian_alpha",
+            projectId: "research_shared",
+            completionTurn: 10,
+            targetIncarnation: 2,
+            visibleRivalClueBudgetGranted: 1);
+        var currentEntry = BuildCompletedLoreResearchEntry(
+            guardianId: "guardian_alpha",
+            projectId: "research_shared",
+            completionTurn: 20,
+            targetIncarnation: 3,
+            visibleRivalClueBudgetGranted: 2);
+        var trackerRoot = new JsonObject
+        {
+            ["completedProjects"] = new JsonArray(staleEntry, currentEntry)
+        };
+
+        Assert.Equal(2, GuardianProjectState.GetRemainingVisibleRivalClueBudget(trackerRoot, "guardian_alpha", "research_shared", 3));
+        Assert.True(GuardianProjectState.TryConsumeVisibleRivalClue(trackerRoot, "guardian_alpha", "research_shared", 3, 1));
+        Assert.Equal(1, GuardianProjectState.GetRemainingVisibleRivalClueBudget(trackerRoot, "guardian_alpha", "research_shared", 3));
+        Assert.Equal(0, staleEntry["project"]!["effectState"]!["visibleRivalClueBudgetSpent"]!.GetValue<int>());
+        Assert.Equal(1, currentEntry["project"]!["effectState"]!["visibleRivalClueBudgetSpent"]!.GetValue<int>());
+    }
+
+    [Fact]
     public void EnsureRecipeEffectState_NamedMortalRealm_TargetsCurrentIncarnation()
     {
         var project = JsonNode.Parse("""
@@ -504,5 +589,43 @@ public sealed class GuardianProjectStateTests
         Assert.Equal(1, derived.EffectiveElevatedTradeSlots);
         Assert.Equal(1, derived.ActiveTemporaryModifierCount);
         Assert.Equal("2|1|1", GuardianProjectState.BuildTradeBonusSignature(derived));
+    }
+
+    private static JsonObject BuildCompletedLoreResearchEntry(
+        string guardianId,
+        string projectId,
+        int completionTurn,
+        int targetIncarnation,
+        int questHookTokensGranted = 0,
+        int guaranteedArchiveQuestGranted = 0,
+        int visibleRivalClueBudgetGranted = 0,
+        string? projectOrigin = null)
+    {
+        return new JsonObject
+        {
+            ["guardianId"] = guardianId,
+            ["project"] = new JsonObject
+            {
+                ["projectId"] = projectId,
+                ["projectType"] = "lore_research",
+                ["projectOrigin"] = projectOrigin,
+                ["projectTier"] = "major",
+                ["finalState"] = "Completed",
+                ["completionTurn"] = completionTurn,
+                ["effectState"] = new JsonObject
+                {
+                    ["targetIncarnation"] = targetIncarnation,
+                    ["questHookTokensGranted"] = questHookTokensGranted,
+                    ["questHookTokensSpent"] = 0,
+                    ["guaranteedArchiveQuestGranted"] = guaranteedArchiveQuestGranted,
+                    ["guaranteedArchiveQuestSpawned"] = 0,
+                    ["guaranteedArchiveQuestConsumed"] = 0,
+                    ["specialQuestLineTokensGranted"] = 0,
+                    ["specialQuestLineTokensSpent"] = 0,
+                    ["visibleRivalClueBudgetGranted"] = visibleRivalClueBudgetGranted,
+                    ["visibleRivalClueBudgetSpent"] = 0
+                }
+            }
+        };
     }
 }

@@ -72,6 +72,18 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.Contains("guardian.sourcePreset", reminder, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task EnsureAttractionRequestHealthyAsync_MalformedFile_IsPreservedAndSurfaced()
+    {
+        await _fs.WriteFileAtomicAsync(SystemGuardianLibraryService.AttractionRequestPath, "{ not valid json");
+
+        await _service.EnsureAttractionRequestHealthyAsync("Chaos Sea");
+        var reminder = await _service.BuildReminderFragmentAsync("Chaos Sea");
+
+        Assert.True(_fs.FileExists(SystemGuardianLibraryService.AttractionRequestPath));
+        Assert.Contains("CORRUPTION", reminder, StringComparison.OrdinalIgnoreCase);
+    }
+
     private static async Task SeedPresetAsync(string rootDir, string presetId, string displayName, string domain, string author)
     {
         var presetDir = Path.Combine(rootDir, presetId);

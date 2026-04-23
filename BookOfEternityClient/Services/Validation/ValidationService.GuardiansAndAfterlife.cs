@@ -227,7 +227,11 @@ public partial class ValidationService
                         proposedGuardianState != null &&
                         proposedGuardianState.CurrentReputation.HasValue)
                     {
-                        var chargesPerReturn = GetExpectedGuardianGachaCharges(proposedGuardianState.CurrentReputation.Value, proposedGuardianState.CurrentAbodePower);
+                        var chargesPerReturn =
+                            GuardianGachaChargeRules.GetChargesPerReturnForReputation(
+                                proposedGuardianState.CurrentReputation.Value,
+                                proposedGuardianState.CurrentAbodePower) +
+                            proposedGuardianState.FounderExtraGachaCharges;
                         if (proposedGuardianState.ChargesUsedThisReturn >= chargesPerReturn)
                         {
                             issueSink.Add(new ValidationIssue(
@@ -873,6 +877,82 @@ public partial class ValidationService
             ValidateGuardianRelationshipNetwork(guardiansById, issues);
         }
 
+        if (root.TryGetProperty(PlayerGuardianFoundationState.HistoryProperty, out var foundationHistory))
+        {
+            var historyContext = $"{contextPrefix}.{PlayerGuardianFoundationState.HistoryProperty}";
+            RequireArrayOfObjects(foundationHistory, historyContext, issues);
+            if (foundationHistory.ValueKind == JsonValueKind.Array)
+            {
+                var seenRequestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var historyIndex = 0;
+                foreach (var entry in foundationHistory.EnumerateArray())
+                {
+                    var entryContext = $"{historyContext}[{historyIndex++}]";
+                    if (!RequireObject(entry, entryContext, issues))
+                        continue;
+
+                    var requestId = RequireString(entry, entryContext, issues, "requestId");
+                    var guardianId = RequireString(entry, entryContext, issues, "guardianId");
+                    RequireString(entry, entryContext, issues, "guardianDisplayName");
+                    RequireString(entry, entryContext, issues, "founderSoulName");
+                    RequireString(entry, entryContext, issues, "formerPatronGuardianId");
+                    RequireString(entry, entryContext, issues, "formerPatronGuardianName");
+                    var foundationSource = RequireString(entry, entryContext, issues, "foundationSource");
+                    ValidatePositiveNumberField(entry, entryContext, issues, "resolvedAtTurn");
+                    var resolvedAtUtc = RequireString(entry, entryContext, issues, "resolvedAtUtc");
+
+                    if (!string.IsNullOrWhiteSpace(requestId) && !seenRequestIds.Add(requestId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{entryContext}.requestId",
+                            IssueSeverity.Error,
+                            "playerGuardianFoundationHistory не должен дублировать requestId",
+                            code: "player_guardian_foundation_duplicate_history_request",
+                            section: "PlayerGuardianFoundation",
+                            expected: "unique requestId",
+                            actual: requestId));
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(guardianId) && !guardiansById.ContainsKey(guardianId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{entryContext}.guardianId",
+                            IssueSeverity.Error,
+                            "Foundation history должен ссылаться на существующего guardian из guardians[]",
+                            code: "player_guardian_foundation_history_unknown_guardian",
+                            section: "PlayerGuardianFoundation",
+                            expected: "guardianId from current guardians[]",
+                            actual: guardianId));
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(foundationSource) &&
+                        !string.Equals(foundationSource, PlayerGuardianFoundationState.FoundationSourceShiningReturn, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{entryContext}.foundationSource",
+                            IssueSeverity.Error,
+                            "Foundation history поддерживает только canonical source shining_return",
+                            code: "player_guardian_foundation_history_invalid_source",
+                            section: "PlayerGuardianFoundation",
+                            expected: PlayerGuardianFoundationState.FoundationSourceShiningReturn,
+                            actual: foundationSource));
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(resolvedAtUtc) && !DateTimeOffset.TryParse(resolvedAtUtc, out _))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{entryContext}.resolvedAtUtc",
+                            IssueSeverity.Error,
+                            "playerGuardianFoundationHistory.resolvedAtUtc должен быть ISO 8601 timestamp",
+                            code: "player_guardian_foundation_history_invalid_resolved_at",
+                            section: "PlayerGuardianFoundation",
+                            expected: "ISO 8601 timestamp",
+                            actual: resolvedAtUtc));
+                    }
+                }
+            }
+        }
+
         if (root.TryGetProperty("activeGuardian", out var activeGuardian) && activeGuardian.ValueKind == JsonValueKind.Object)
         {
             const string activeGuardianContextSuffix = ".activeGuardian";
@@ -1141,7 +1221,157 @@ public partial class ValidationService
         ValidateGuardianQuestManagement(guardian, guardianContext, issues);
         ValidateGuardianGachaState(guardian, guardianContext, issues);
         ValidateGuardianTradeState(guardian, guardianContext, issues);
+        ValidatePlayerFoundedGuardianMetadata(guardian, guardianContext, issues);
         ValidateGuardianStoredInnerLifeState(guardian, guardianContext, issues);
+    }
+
+    private void ValidatePlayerFoundedGuardianMetadata(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
+    {
+        if (!guardian.TryGetProperty("originType", out var originTypeNode) || originTypeNode.ValueKind == JsonValueKind.Null)
+            return;
+
+        if (originTypeNode.ValueKind != JsonValueKind.String)
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.originType",
+                IssueSeverity.Error,
+                "guardian.originType должен быть строкой",
+                code: "guardian_invalid_origin_type",
+                section: "Guardians",
+                expected: "string",
+                actual: originTypeNode.ValueKind.ToString()));
+            return;
+        }
+
+        var originType = originTypeNode.GetString() ?? string.Empty;
+        if (!string.Equals(originType, PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        RequireString(guardian, guardianContext, issues, "founderSoulName");
+        var founderLoyaltyTier = RequireString(guardian, guardianContext, issues, "founderLoyaltyTier");
+        var formerPatronGuardianId = RequireString(guardian, guardianContext, issues, "formerPatronGuardianId");
+        var foundationSource = RequireString(guardian, guardianContext, issues, "foundationSource");
+        RequireString(guardian, guardianContext, issues, "foundationRequestId");
+
+        if (!string.IsNullOrWhiteSpace(founderLoyaltyTier) &&
+            !string.Equals(founderLoyaltyTier, PlayerGuardianFoundationState.FounderLoyaltyTierSoulbound, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.founderLoyaltyTier",
+                IssueSeverity.Error,
+                "Player-founded guardian должен использовать canonical founder loyalty tier soulbound",
+                code: "player_guardian_foundation_invalid_loyalty_tier",
+                section: "PlayerGuardianFoundation",
+                expected: PlayerGuardianFoundationState.FounderLoyaltyTierSoulbound,
+                actual: founderLoyaltyTier));
+        }
+
+        if (!string.IsNullOrWhiteSpace(foundationSource) &&
+            !string.Equals(foundationSource, PlayerGuardianFoundationState.FoundationSourceShiningReturn, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.foundationSource",
+                IssueSeverity.Error,
+                "Player-founded guardian должен использовать canonical foundationSource shining_return",
+                code: "player_guardian_foundation_invalid_source",
+                section: "PlayerGuardianFoundation",
+                expected: PlayerGuardianFoundationState.FoundationSourceShiningReturn,
+                actual: foundationSource));
+        }
+
+        if (guardian.TryGetProperty("relationshipData", out var relationshipData) &&
+            relationshipData.ValueKind == JsonValueKind.Object &&
+            relationshipData.TryGetProperty("currentReputation", out var currentReputationNode) &&
+            currentReputationNode.ValueKind == JsonValueKind.Number &&
+            currentReputationNode.TryGetInt32(out var currentReputation) &&
+            !PlayerGuardianFoundationState.IsSoulboundReputationSatisfied(currentReputation))
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.relationshipData.currentReputation",
+                IssueSeverity.Error,
+                "Player-founded guardian с founderLoyaltyTier=soulbound должен оставаться минимум на legendary guardian reputation tier",
+                code: "player_guardian_foundation_loyalty_below_soulbound_floor",
+                section: "PlayerGuardianFoundation",
+                expected: $">= {PlayerGuardianFoundationState.SoulboundLegendaryReputationFloor}",
+                actual: currentReputation.ToString()));
+        }
+
+        var guardianRoleToPlayer = PlayerGuardianFoundationState.TryReadGuardianRoleToPlayer(guardian);
+        if (!string.IsNullOrWhiteSpace(guardianRoleToPlayer) &&
+            string.Equals(guardianRoleToPlayer, PlayerGuardianFoundationState.GuardianRoleFormerPatron, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.relationshipData.{PlayerGuardianFoundationState.GuardianRoleToPlayerProperty}",
+                IssueSeverity.Error,
+                "Player-founded guardian не может одновременно иметь роль former_patron по отношению к игроку",
+                code: "player_guardian_foundation_invalid_guardian_role_to_player",
+                section: "PlayerGuardianFoundation",
+                expected: "missing or non-former_patron role",
+                actual: guardianRoleToPlayer));
+        }
+
+        var guardianId = GetFirstNonEmptyString(guardian, "guardianId", "id");
+        if (!string.IsNullOrWhiteSpace(formerPatronGuardianId) &&
+            !string.IsNullOrWhiteSpace(guardianId) &&
+            string.Equals(formerPatronGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianContext}.formerPatronGuardianId",
+                IssueSeverity.Error,
+                "formerPatronGuardianId не должен совпадать с guardianId нового player-founded guardian",
+                code: "player_guardian_foundation_self_referential_former_patron",
+                section: "PlayerGuardianFoundation"));
+        }
+
+        if (guardian.TryGetProperty(PlayerGuardianFoundationState.FounderBonusesProperty, out var founderBonusesNode) &&
+            founderBonusesNode.ValueKind != JsonValueKind.Null)
+        {
+            if (!RequireObject(founderBonusesNode, $"{guardianContext}.{PlayerGuardianFoundationState.FounderBonusesProperty}", issues))
+                return;
+
+            ValidateNonNegativeIntegerField(
+                founderBonusesNode,
+                $"{guardianContext}.{PlayerGuardianFoundationState.FounderBonusesProperty}",
+                issues,
+                PlayerGuardianFoundationState.FounderBonusExtraGachaChargesProperty,
+                "PlayerGuardianFoundation");
+        }
+
+        if (guardian.TryGetProperty(PlayerGuardianFoundationState.FounderAbodeFeaturesProperty, out var founderAbodeFeaturesNode) &&
+            founderAbodeFeaturesNode.ValueKind != JsonValueKind.Null)
+        {
+            if (!RequireObject(founderAbodeFeaturesNode, $"{guardianContext}.{PlayerGuardianFoundationState.FounderAbodeFeaturesProperty}", issues))
+                return;
+
+            ValidateOptionalString(
+                founderAbodeFeaturesNode,
+                $"{guardianContext}.{PlayerGuardianFoundationState.FounderAbodeFeaturesProperty}",
+                issues,
+                PlayerGuardianFoundationState.FounderAbodeFeatureTitleProperty);
+            ValidateOptionalString(
+                founderAbodeFeaturesNode,
+                $"{guardianContext}.{PlayerGuardianFoundationState.FounderAbodeFeaturesProperty}",
+                issues,
+                PlayerGuardianFoundationState.FounderAbodeFeatureSummaryProperty);
+
+            if (founderAbodeFeaturesNode.TryGetProperty(PlayerGuardianFoundationState.FounderAbodeResidentAttractionModeProperty, out var attractionModeNode) &&
+                attractionModeNode.ValueKind == JsonValueKind.String)
+            {
+                var attractionMode = attractionModeNode.GetString() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(attractionMode) &&
+                    !string.Equals(attractionMode, PlayerGuardianFoundationState.FounderAbodeResidentAttractionModeFounderCall, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{guardianContext}.{PlayerGuardianFoundationState.FounderAbodeFeaturesProperty}.{PlayerGuardianFoundationState.FounderAbodeResidentAttractionModeProperty}",
+                        IssueSeverity.Error,
+                        "Player-founded guardian founderAbodeFeatures.residentAttractionMode должен использовать canonical founder_call",
+                        code: "player_guardian_foundation_invalid_resident_attraction_mode",
+                        section: "PlayerGuardianFoundation",
+                        expected: PlayerGuardianFoundationState.FounderAbodeResidentAttractionModeFounderCall,
+                        actual: attractionMode));
+                }
+            }
+        }
     }
 
     private void ValidateGuardianCanonicalNameIdentity(JsonElement guardian, string guardianContext, List<ValidationIssue> issues)
@@ -1713,6 +1943,25 @@ public partial class ValidationService
                             repairHint: "Сохраняй timestamp в reputationHistory как ISO 8601 строку для воспроизводимой chronology."));
                     }
                 }
+            }
+        }
+
+        if (relationshipData.TryGetProperty(PlayerGuardianFoundationState.GuardianRoleToPlayerProperty, out var guardianRoleToPlayer))
+        {
+            if (guardianRoleToPlayer.ValueKind != JsonValueKind.String ||
+                string.IsNullOrWhiteSpace(guardianRoleToPlayer.GetString()) ||
+                !string.Equals(guardianRoleToPlayer.GetString(), PlayerGuardianFoundationState.GuardianRoleFormerPatron, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{relationshipContext}.{PlayerGuardianFoundationState.GuardianRoleToPlayerProperty}",
+                    IssueSeverity.Error,
+                    "guardianRoleToPlayer поддерживает только canonical значение former_patron в v1 foundation branch",
+                    code: "guardian_relationship_invalid_role_to_player",
+                    section: "PlayerGuardianFoundation",
+                    expected: PlayerGuardianFoundationState.GuardianRoleFormerPatron,
+                    actual: guardianRoleToPlayer.ValueKind == JsonValueKind.String
+                        ? guardianRoleToPlayer.GetString() ?? "empty"
+                        : guardianRoleToPlayer.ValueKind.ToString()));
             }
         }
 
@@ -2561,6 +2810,9 @@ public partial class ValidationService
         RequireString(root, contextPrefix, issues, "abodeId");
         ValidateOptionalString(root, contextPrefix, issues, "abodeName");
         ValidateIntegerField(root, contextPrefix, issues, "currentReputation");
+        ValidateOptionalString(root, contextPrefix, issues, "requestMode");
+        ValidateOptionalString(root, contextPrefix, issues, "founderFeatureTitle");
+        ValidateOptionalString(root, contextPrefix, issues, "founderFeatureSummary");
         ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtTurn", "AfterlifeResidents");
         ValidateRequiredIsoTimestampField(
             root,
@@ -2571,6 +2823,25 @@ public partial class ValidationService
             "pending_abode_residents_request_missing_created_at_utc",
             "pending_abode_residents_request_invalid_created_at_utc",
             "pending_guardian_abode_residents_request.json должен содержать createdAtUtc в ISO 8601 формате.");
+
+        if (root.TryGetProperty("requestMode", out var requestModeNode) &&
+            requestModeNode.ValueKind == JsonValueKind.String)
+        {
+            var requestMode = requestModeNode.GetString() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(requestMode) &&
+                !string.Equals(requestMode, GuardianAbodeResidentRequestState.ResidentsRequestModeStandardRoster, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(requestMode, GuardianAbodeResidentRequestState.ResidentsRequestModeFounderAttraction, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.requestMode",
+                    IssueSeverity.Error,
+                    "pending_guardian_abode_residents_request.json.requestMode должен быть standard_roster или founder_attraction",
+                    code: "pending_abode_residents_request_invalid_mode",
+                    section: "AfterlifeResidents",
+                    expected: $"{GuardianAbodeResidentRequestState.ResidentsRequestModeStandardRoster} | {GuardianAbodeResidentRequestState.ResidentsRequestModeFounderAttraction}",
+                    actual: requestMode));
+            }
+        }
     }
 
     private void ValidatePendingGuardianAbodeResidentTransferRequestObject(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -2587,6 +2858,11 @@ public partial class ValidationService
         ValidateOptionalString(root, contextPrefix, issues, "targetAbodeId");
         ValidateOptionalString(root, contextPrefix, issues, "targetAbodeName");
         RequireString(root, contextPrefix, issues, "transferMode");
+        ValidateOptionalNullableStringField(root, contextPrefix, issues, "selectionMode");
+        ValidateOptionalNullableStringField(root, contextPrefix, issues, "competitionLabel");
+        ValidateOptionalNullableStringField(root, contextPrefix, issues, "competitionReason");
+        if (root.TryGetProperty("competitionScore", out var competitionScoreNode) && competitionScoreNode.ValueKind != JsonValueKind.Null)
+            ValidateIntegerField(root, contextPrefix, issues, "competitionScore");
         ValidateResidentAbodeRelationFields(root, contextPrefix, issues);
         ValidateNonNegativeIntegerField(root, contextPrefix, issues, "createdAtTurn", "AfterlifeResidents");
         ValidateRequiredIsoTimestampField(
@@ -2600,6 +2876,13 @@ public partial class ValidationService
             "pending_guardian_abode_resident_transfers.json должен содержать createdAtUtc в ISO 8601 формате.");
 
         var transferMode = GetFirstNonEmptyString(root, "transferMode");
+        var selectionMode = GetFirstNonEmptyString(root, "selectionMode");
+        var competitionLabel = GetFirstNonEmptyString(root, "competitionLabel");
+        var competitionReason = GetFirstNonEmptyString(root, "competitionReason");
+        var hasCompetitionScore = TryReadInt(root, "competitionScore", out var competitionScore);
+        var hasCompetitionMetadata = hasCompetitionScore ||
+                                     !string.IsNullOrWhiteSpace(competitionLabel) ||
+                                     !string.IsNullOrWhiteSpace(competitionReason);
         if (!string.IsNullOrWhiteSpace(transferMode) && !GuardianAbodeResidentState.IsSupportedTransferMode(transferMode))
         {
             issues.Add(new ValidationIssue(
@@ -2611,6 +2894,45 @@ public partial class ValidationService
                 expected: "departure_only | accepted_transfer | refused_transfer",
                 actual: transferMode,
                 repairHint: "Используй для resident transfer request только departure_only, accepted_transfer или refused_transfer."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(selectionMode) && !GuardianAbodeResidentRequestState.IsSupportedTransferSelectionMode(selectionMode))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.selectionMode",
+                IssueSeverity.Error,
+                "Resident transfer request использует неподдерживаемый selectionMode",
+                code: "pending_abode_resident_transfer_invalid_selection_mode",
+                section: "AfterlifeResidents",
+                expected: "competition_recommended | manual_override | departure_only",
+                actual: selectionMode,
+                repairHint: "Используй для selectionMode только competition_recommended, manual_override или departure_only."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(competitionLabel) && !GuardianAbodeResidentState.IsSupportedTransferCompetitionLabel(competitionLabel))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.competitionLabel",
+                IssueSeverity.Error,
+                "Resident transfer request использует неподдерживаемый competitionLabel",
+                code: "pending_abode_resident_transfer_invalid_competition_label",
+                section: "AfterlifeResidents",
+                expected: "strong_pull | plausible_pull | weak_pull",
+                actual: competitionLabel,
+                repairHint: "Используй для competitionLabel только strong_pull, plausible_pull или weak_pull."));
+        }
+
+        if (hasCompetitionScore && (competitionScore < 0 || competitionScore > 100))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.competitionScore",
+                IssueSeverity.Error,
+                "Resident transfer request должен хранить competitionScore в диапазоне 0..100",
+                code: "pending_abode_resident_transfer_competition_score_out_of_bounds",
+                section: "AfterlifeResidents",
+                expected: "0..100",
+                actual: competitionScore.ToString(),
+                repairHint: "Сохраняй competitionScore как integer от 0 до 100."));   
         }
 
         var migrationState = GetFirstNonEmptyString(root, "migrationState");
@@ -2661,6 +2983,56 @@ public partial class ValidationService
                     section: "AfterlifeResidents",
                     repairHint: "Не используй source guardian/abode как target для меж-Обительного transfer request."));
             }
+
+            if (string.Equals(selectionMode, GuardianAbodeResidentRequestState.TransferSelectionModeDepartureOnly, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.selectionMode",
+                    IssueSeverity.Error,
+                    "Targeted resident transfer request не может маркироваться как departure_only selection",
+                    code: "pending_abode_resident_transfer_inconsistent_selection_metadata",
+                    section: "AfterlifeResidents",
+                    repairHint: "Для target-Abode transfer request используй selectionMode competition_recommended или manual_override, либо не сохраняй metadata в legacy-case."));
+            }
+
+            if (string.IsNullOrWhiteSpace(selectionMode) && hasCompetitionMetadata)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.selectionMode",
+                    IssueSeverity.Error,
+                    "Targeted resident transfer request не должен нести competition metadata без selectionMode",
+                    code: "pending_abode_resident_transfer_inconsistent_selection_metadata",
+                    section: "AfterlifeResidents",
+                    repairHint: "Если сохраняешь competitionScore/competitionLabel/competitionReason, обязательно укажи selectionMode."));
+            }
+
+            if (!string.IsNullOrWhiteSpace(selectionMode) &&
+                !string.Equals(selectionMode, GuardianAbodeResidentRequestState.TransferSelectionModeDepartureOnly, StringComparison.OrdinalIgnoreCase) &&
+                (!hasCompetitionScore || string.IsNullOrWhiteSpace(competitionLabel) || string.IsNullOrWhiteSpace(competitionReason)))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.selectionMode",
+                    IssueSeverity.Error,
+                    "Targeted resident transfer request должен хранить целостную competition metadata contract",
+                    code: "pending_abode_resident_transfer_inconsistent_selection_metadata",
+                    section: "AfterlifeResidents",
+                    repairHint: "Если transfer request использует selectionMode, сохраняй вместе с ним competitionScore, competitionLabel и competitionReason."));
+            }
+        }
+        else if ((!string.IsNullOrWhiteSpace(targetGuardianId) || !string.IsNullOrWhiteSpace(targetAbodeId)) ||
+                 !string.IsNullOrWhiteSpace(competitionLabel) ||
+                 !string.IsNullOrWhiteSpace(competitionReason) ||
+                 hasCompetitionScore ||
+                 (!string.IsNullOrWhiteSpace(selectionMode) &&
+                  !string.Equals(selectionMode, GuardianAbodeResidentRequestState.TransferSelectionModeDepartureOnly, StringComparison.OrdinalIgnoreCase)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.selectionMode",
+                IssueSeverity.Error,
+                "departure_only resident transfer request не должен нести target competition metadata",
+                code: "pending_abode_resident_transfer_inconsistent_selection_metadata",
+                section: "AfterlifeResidents",
+                repairHint: "Для departure_only не сохраняй targetGuardianId/targetAbodeId и competition metadata; допустим только selectionMode=departure_only или отсутствие selection metadata у legacy request."));
         }
     }
 

@@ -21,7 +21,7 @@ public class AggregatedGameState
     public string CharacterRace { get; set; } = string.Empty;
     
     // Soul meta
-    public string CurrentRealm { get; set; } = "Chaos Sea"; // "Chaos Sea", "Shining Abode", or mortal world name
+    public string CurrentRealm { get; set; } = string.Empty; // "Chaos Sea", "Shining Abode", or mortal world name
     public string SoulName { get; set; } = string.Empty;
     public int Incarnation { get; set; } = 1;
     public int InkFeathers { get; set; }
@@ -30,6 +30,13 @@ public class AggregatedGameState
     public string ShiningAbodeAvailability { get; set; } = string.Empty;
     public bool HasPendingShiningAbodeBootstrapPackage { get; set; }
     public bool HasBlockingAfterlifeReturnGuard { get; set; }
+    public int ShiningRadianceExperience { get; set; }
+    public int ShiningRadianceTier { get; set; }
+    public int ShiningLightSparks { get; set; }
+    public int ShiningHallCount { get; set; }
+    public int ShiningFactionCount { get; set; }
+    public bool HasOpenShiningGatesDraft { get; set; }
+    public bool IsShiningGatesDraftStale { get; set; }
     
     // Timestamps
     public DateTime LastUpdated { get; set; }
@@ -38,8 +45,7 @@ public class AggregatedGameState
     /// True when the soul is specifically in the Chaos Sea hub.
     /// </summary>
     public bool IsInChaosSea => string.Equals(CurrentRealm, "Chaos Sea", StringComparison.OrdinalIgnoreCase)
-                                || string.Equals(CurrentRealm, "Море Хаоса", StringComparison.OrdinalIgnoreCase)
-                                || string.IsNullOrEmpty(CurrentRealm);
+                                || string.Equals(CurrentRealm, "Море Хаоса", StringComparison.OrdinalIgnoreCase);
 
     private bool IsShiningAbodeRealmBucket => string.Equals(CurrentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase)
                                               || string.Equals(CurrentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);

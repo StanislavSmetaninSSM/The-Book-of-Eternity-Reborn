@@ -16,6 +16,21 @@ internal static class GuardianTradeRequestState
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
+    internal enum PendingGuardianTradeRequestReadStatus
+    {
+        Missing,
+        Valid,
+        Malformed
+    }
+
+    internal sealed record PendingGuardianTradeRequestReadResult(
+        PendingGuardianTradeRequestReadStatus Status,
+        PendingGuardianTradeRequest? Request)
+    {
+        internal bool Exists => Status != PendingGuardianTradeRequestReadStatus.Missing;
+        internal bool IsMalformed => Status == PendingGuardianTradeRequestReadStatus.Malformed;
+    }
+
     public sealed class PendingGuardianTradeRequest
     {
         [JsonPropertyName("requestId")]
@@ -84,22 +99,41 @@ internal static class GuardianTradeRequestState
 
     public static async Task WriteAsync(FileSystemManager fs, PendingGuardianTradeRequest request)
     {
+        var existingState = await ReadStateAsync(fs);
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException("pending_guardian_trade_request.json повреждён и должен быть исправлен или очищен до записи нового запроса.");
+
         await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(request, JsonOpts));
     }
 
     public static async Task<PendingGuardianTradeRequest?> ReadAsync(FileSystemManager fs)
+        => (await ReadStateAsync(fs)).Request;
+
+    internal static async Task<PendingGuardianTradeRequestReadResult> ReadStateAsync(FileSystemManager fs)
     {
         var json = await fs.ReadFileAsync(PendingRequestPath);
+        return ParseState(json, fs.FileExists(PendingRequestPath));
+    }
+
+    internal static PendingGuardianTradeRequestReadResult ParseState(string? json, bool fileExists)
+    {
         if (string.IsNullOrWhiteSpace(json))
-            return null;
+        {
+            return new PendingGuardianTradeRequestReadResult(
+                fileExists ? PendingGuardianTradeRequestReadStatus.Malformed : PendingGuardianTradeRequestReadStatus.Missing,
+                null);
+        }
 
         try
         {
-            return JsonSerializer.Deserialize<PendingGuardianTradeRequest>(json, JsonOpts);
+            var request = JsonSerializer.Deserialize<PendingGuardianTradeRequest>(json, JsonOpts);
+            return new PendingGuardianTradeRequestReadResult(
+                request == null ? PendingGuardianTradeRequestReadStatus.Malformed : PendingGuardianTradeRequestReadStatus.Valid,
+                request);
         }
         catch
         {
-            return null;
+            return new PendingGuardianTradeRequestReadResult(PendingGuardianTradeRequestReadStatus.Malformed, null);
         }
     }
 
@@ -248,13 +282,29 @@ internal static class GuardianTradeRequestState
         if (!fs.FileExists(PendingRequestPath))
             return;
 
+        if (!RealmSemantics.HasResolvedRealm(currentRealm))
+            return;
+
         if (!IsAfterlifeRealm(currentRealm))
         {
             fs.DeleteFile(PendingRequestPath);
             return;
         }
 
-        var request = await ReadAsync(fs);
+        var json = await fs.ReadFileAsync(PendingRequestPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        PendingGuardianTradeRequest? request;
+        try
+        {
+            request = JsonSerializer.Deserialize<PendingGuardianTradeRequest>(json, JsonOpts);
+        }
+        catch
+        {
+            return;
+        }
+
         if (request == null ||
             string.IsNullOrWhiteSpace(request.RequestId) ||
             string.IsNullOrWhiteSpace(request.GuardianId) ||
@@ -263,7 +313,6 @@ internal static class GuardianTradeRequestState
             string.IsNullOrWhiteSpace(request.ReturnCycleId) ||
             request.DerivedTradeSlotCount <= 0)
         {
-            fs.DeleteFile(PendingRequestPath);
             return;
         }
 

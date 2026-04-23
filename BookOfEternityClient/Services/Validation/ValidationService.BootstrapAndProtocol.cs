@@ -385,11 +385,26 @@ public partial class ValidationService
             ? await TryReadValidatedPendingTurnSnapshotRealmAsync(validatedManifest)
             : null;
         var currentRealm = await TryResolveCurrentRealmAsync();
-        if (!CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEnd(
-                lifeTransitionsJson,
-                preTurnRealm,
-                currentRealm))
+        if (!CanonicalStateNormalizer.TryReadCanonicalTriggerLifeEnd(lifeTransitionsJson, out _, out _))
             return;
+
+        var triggerAuthority = CanonicalStateNormalizer.ResolveLifecycleAuthorizedTriggerLifeEnd(
+            lifeTransitionsJson,
+            preTurnRealm,
+            currentRealm);
+        if (!triggerAuthority.IsAuthorized)
+        {
+            issues.Add(new ValidationIssue(
+                lifeTransitionsPath,
+                IssueSeverity.Error,
+                $"TriggerLifeEnd turn не подтвердил canonical realm authority: {triggerAuthority.Description}",
+                code: "life_trigger_turn_missing_realm_authority",
+                section: "LifeEvaluation",
+                expected: "canonical TriggerLifeEnd with readable mortal pre-turn and current realm authority",
+                actual: $"{triggerAuthority.PreTriggerRealm ?? "missing"} -> {triggerAuthority.CurrentRealm ?? "missing"}",
+                repairHint: "На TriggerLifeEnd turn сохраняй readable currentRealm в pre-turn snapshot и текущем soul_state. Unresolved realm не должен bypass-ить reward-delta validation."));
+            return;
+        }
 
         const string soulStatePath = "game_state/meta/soul_state.json";
         var preSoulStateJson = validatedManifest != null
@@ -473,6 +488,7 @@ public partial class ValidationService
         await ValidateArchiveCandidateManifestAsync(issues);
         await ValidatePendingAbodeOfferingContextAsync(issues);
         await ValidatePendingGuardianTradeRequestContextAsync(issues);
+        await ValidatePendingPlayerGuardianFoundationContextAsync(issues);
         await ValidatePendingNpcTradeInventoryRequestContextAsync(issues);
         await ValidatePendingArchiveConsultationRequestContextAsync(issues);
         await ValidatePendingArchiveProjectFuelRequestContextAsync(issues);
@@ -484,14 +500,20 @@ public partial class ValidationService
         if (_fs.FileExists("ready/turn_complete.json") ||
             _fs.FileExists("ready/turn_error.json"))
         {
+            await ValidatePendingShiningCoreActionResolutionAsync(issues);
+            await ValidatePendingShiningTradeInventoryResolutionAsync(issues);
             await ValidatePendingAbodeOfferingResolutionAsync(issues);
             await ValidatePendingGuardianTradeRequestResolutionAsync(issues);
+            await ValidatePendingPlayerGuardianFoundationResolutionAsync(issues);
             await ValidatePendingNpcTradeInventoryRequestResolutionAsync(issues);
             await ValidatePendingArchiveConsultationResolutionAsync(issues);
             await ValidatePendingArchiveProjectFuelResolutionAsync(issues);
             await ValidatePendingGuardianAbodeResidentsResolutionAsync(issues);
             await ValidatePendingGuardianAbodeResidentInteractionResolutionAsync(issues);
             await ValidatePendingGuardianAbodeResidentTransferResolutionAsync(issues);
+            await ValidatePendingShiningFoundingResolutionAsync(issues);
+            await ValidatePendingShiningRealignmentResolutionAsync(issues);
+            await ValidatePendingShiningLeadershipTransitionResolutionAsync(issues);
             await ValidatePendingGuardianSocialInteractionResolutionAsync(issues);
             await ValidatePendingNpcSocialInteractionResolutionAsync(issues);
             await ValidateResidentMechanicalOutcomeMemoryAsync(issues);
@@ -627,7 +649,12 @@ public partial class ValidationService
                      ScenarioCoreService.ManifestPath,
                      AfterlifeArchiveCandidateService.ManifestPath,
                      GuardianCorrectionService.StatePath,
-                     GuardianAbodeOfferingState.PendingRequestPath
+                     GuardianAbodeOfferingState.PendingRequestPath,
+                     ShiningCoreActionRequestState.PendingActionsRequestPath,
+                     ShiningTradeRequestState.PendingRequestsPath,
+                     ShiningFactionRequestState.PendingFoundingsRequestPath,
+                     ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                     ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath
                  })
         {
             switch (await DescribeTrackedFileChangeAgainstManifestAsync(manifest, clientOwnedPath))
@@ -663,6 +690,16 @@ public partial class ValidationService
                             ? "client_owned_guardian_corrections_modified"
                     : clientOwnedPath.Equals(GuardianAbodeOfferingState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "client_owned_abode_offering_request_modified"
+                    : clientOwnedPath.Equals(ShiningCoreActionRequestState.PendingActionsRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_shining_core_action_request_modified"
+                    : clientOwnedPath.Equals(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_shining_trade_request_modified"
+                    : clientOwnedPath.Equals(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_shining_founding_request_modified"
+                    : clientOwnedPath.Equals(ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_shining_realignment_request_modified"
+                    : clientOwnedPath.Equals(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_shining_leadership_request_modified"
                     : "client_owned_world_setup_state_modified",
                 section: clientOwnedPath.Equals(AfterlifeReturnGuardService.GuardPath, StringComparison.OrdinalIgnoreCase)
                     ? "Lifecycle"
@@ -672,6 +709,12 @@ public partial class ValidationService
                         ? "GuardianCorrections"
                     : clientOwnedPath.Equals(GuardianAbodeOfferingState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "GuardianOfferings"
+                    : clientOwnedPath.Equals(ShiningCoreActionRequestState.PendingActionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "ShiningAbode"
                     : "WorldSetup",
                 repairHint: $"Не записывай {clientOwnedPath} в GM response; этот файл поддерживается клиентом/игроком и должен читаться GM как входной контракт."));
         }

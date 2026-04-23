@@ -20,6 +20,21 @@ internal static class GuardianGachaChargeRules
     public static int GetChargesPerReturnForReputation(int reputation, GuardianProjectState.ResolvedGuardianDerivedState derivedState)
         => GetBaseChargesPerReturnForReputation(reputation) + derivedState.BonusGachaCharges;
 
+    public static int GetChargesPerReturnForGuardian(JsonObject guardian)
+    {
+        var reputation = ResolveGuardianReputation(guardian);
+        AbodePowerRules.EnsureCanonicalState(guardian);
+        return GetChargesPerReturnForReputation(reputation, AbodePowerRules.GetCurrentPower(guardian)) +
+               PlayerGuardianFoundationState.GetFounderExtraGachaCharges(guardian);
+    }
+
+    public static int GetChargesPerReturnForGuardian(JsonElement guardian)
+    {
+        var reputation = ResolveGuardianReputation(guardian);
+        return GetChargesPerReturnForReputation(reputation, AbodePowerRules.GetCurrentPower(guardian)) +
+               PlayerGuardianFoundationState.GetFounderExtraGachaCharges(guardian);
+    }
+
     public static int ClampUsedCharges(int usedCharges, int chargesPerReturn)
         => Math.Clamp(usedCharges, 0, Math.Max(0, chargesPerReturn));
 
@@ -64,9 +79,7 @@ internal static class GuardianGachaChargeRules
 
     public static (int ChargesPerReturn, int ChargesUsedThisReturn) NormalizeGuardianGachaState(JsonObject guardian)
     {
-        var reputation = ResolveGuardianReputation(guardian);
-        AbodePowerRules.EnsureCanonicalState(guardian);
-        var chargesPerReturn = GetChargesPerReturnForReputation(reputation, AbodePowerRules.GetCurrentPower(guardian));
+        var chargesPerReturn = GetChargesPerReturnForGuardian(guardian);
 
         var gachaSystem = guardian["gachaSystem"] as JsonObject ?? new JsonObject();
         if (gachaSystem["gachaHistory"] is not JsonArray)

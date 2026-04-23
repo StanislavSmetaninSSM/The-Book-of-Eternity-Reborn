@@ -77,6 +77,12 @@ public sealed class AfterlifeReturnGuardService
         if (string.IsNullOrWhiteSpace(raw))
             return;
 
+        if (!RealmSemantics.HasResolvedRealm(currentRealm))
+        {
+            _logger.LogWarning("afterlife_return_guard.json найден при unresolved currentRealm. Guard сохраняется fail-closed до восстановления realm authority.");
+            return;
+        }
+
         if (!IsAfterlifeRealm(currentRealm))
         {
             _logger.LogInformation("afterlife_return_guard.json найден вне afterlife realm. Очистка stale guard state.");
@@ -85,11 +91,14 @@ public sealed class AfterlifeReturnGuardService
         }
 
         var semanticState = Classify(raw, out _);
-        if (semanticState is AfterlifeReturnGuardSemanticState.BlockingInvalid or
-            AfterlifeReturnGuardSemanticState.InactiveValid)
+        if (semanticState == AfterlifeReturnGuardSemanticState.InactiveValid)
         {
-            _logger.LogWarning("afterlife_return_guard.json невалиден или неактуален. Очистка client-authored guard state.");
+            _logger.LogInformation("afterlife_return_guard.json больше не активен. Очистка stale guard state.");
             await ClearAsync();
+        }
+        else if (semanticState == AfterlifeReturnGuardSemanticState.BlockingInvalid)
+        {
+            _logger.LogWarning("afterlife_return_guard.json повреждён или семантически невалиден. Guard сохраняется fail-closed и продолжает блокировать защищённый return path.");
         }
     }
 
@@ -108,6 +117,14 @@ public sealed class AfterlifeReturnGuardService
             return null;
 
         var (semanticState, state) = await ReadSemanticStateAsync();
+        if (semanticState == AfterlifeReturnGuardSemanticState.BlockingInvalid)
+        {
+            return "AFTERLIFE RETURN SAFETY: " +
+                   "game_state/control/afterlife_return_guard.json is malformed or semantically invalid. " +
+                   "Treat this as blocking corruption: do NOT write game_state/control/incarnation_trigger.json with source='guardian_forced' " +
+                   "and do NOT re-enter Shining Abode until the guard file is repaired.";
+        }
+
         if (semanticState != AfterlifeReturnGuardSemanticState.ActiveValid || state == null)
             return null;
 

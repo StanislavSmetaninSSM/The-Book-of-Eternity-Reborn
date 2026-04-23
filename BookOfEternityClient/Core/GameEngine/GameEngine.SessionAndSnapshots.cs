@@ -20,6 +20,8 @@ public partial class GameEngine
         GuardianAbodeOfferingState.PendingRequestPath,
         GuardianTradeRequestState.PendingRequestPath,
         NpcTradeRequestState.PendingRequestPath,
+        ShiningCoreActionRequestState.PendingActionsRequestPath,
+        ShiningTradeRequestState.PendingRequestsPath,
         GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
         GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
         GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
@@ -702,6 +704,7 @@ public partial class GameEngine
 
     private async Task NormalizeRuntimeUiArtifactsAsync()
     {
+        await _stateManager.RefreshGameStateAsync();
         await NormalizePendingRepairArtifactsAsync();
         await NormalizePendingTerminalProtocolFailureArtifactsAsync();
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
@@ -710,9 +713,13 @@ public partial class GameEngine
         await _systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync(_stateManager.CurrentState.CurrentRealm);
         await GuardianAbodeOfferingState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await GuardianTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        await PlayerGuardianFoundationState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await NpcTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await AfterlifeArchiveActionState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        await ShiningCoreActionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        await ShiningTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        await ShiningFactionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         await _qteSceneService.EnsureRuntimeStateHealthyAsync();

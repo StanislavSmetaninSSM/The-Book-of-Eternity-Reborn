@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 using BookOfEternityClient.Core;
@@ -10,7 +11,11 @@ using BookOfEternityClient.Services;
 namespace BookOfEternityClient.UI;
 
 public partial class ExplorerMode
-{private static List<string> ReadSoulPreviousNames(JsonElement root, string currentSoulName)
+{
+    private const int GuardianThoughtPreviewCount = 3;
+    private const int GuardianSocialPreviewCount = 5;
+
+    private static List<string> ReadSoulPreviousNames(JsonElement root, string currentSoulName)
     {
         if (!root.TryGetProperty("previousSoulNames", out var previousSoulNames) ||
             previousSoulNames.ValueKind != JsonValueKind.Array)
@@ -69,12 +74,18 @@ public partial class ExplorerMode
             if (root.ValueKind == JsonValueKind.Object &&
                 root.TryGetProperty("activeGuardian", out var activeGuardian) && activeGuardian.ValueKind == JsonValueKind.Object)
                 activeGuardianId = GetStr(activeGuardian, "guardianId", "");
+            var activeGuardianDisplayName = guardians
+                .Where(g => string.Equals(GetStr(g, "guardianId", ""), activeGuardianId, StringComparison.OrdinalIgnoreCase))
+                .Select(GuardianManifestation.GetDisplayName)
+                .FirstOrDefault(name => !string.IsNullOrWhiteSpace(name))
+                ?? string.Empty;
 
             var choices = guardians.Select(g =>
             {
                 var name = GuardianManifestation.GetDisplayName(g);
                 if (string.IsNullOrWhiteSpace(name))
                     name = "?";
+                var isActiveGuardian = string.Equals(GetStr(g, "guardianId", ""), activeGuardianId, StringComparison.OrdinalIgnoreCase);
                 var domain = GetStr(g, "domain", "");
                 int rep = 0;
                 if (g.TryGetProperty("relationshipData", out var rd))
@@ -123,6 +134,7 @@ public partial class ExplorerMode
 
                 return ConsoleLayout.PlainChoiceLabel(
                     $"🛡️ {name}",
+                    isActiveGuardian ? "АКТИВНЫЙ" : "",
                     domainRu,
                     $"♥ {rep}",
                     repTierTag,
@@ -133,6 +145,7 @@ public partial class ExplorerMode
 
             // Navigation options
             choices.Add("🔍 Искать новую обитель (силой мысли)");
+            choices.Add("👑 Учредить собственного Хранителя");
             choices.Add("← Назад");
 
             // Pending guardian creation notice
@@ -164,6 +177,34 @@ public partial class ExplorerMode
                 {
                     pendingNotice += $"\n  [magenta1]🧲 Задано притяжение к извечному Хранителю: {Markup.Escape(attraction.TargetPresetDisplayName)}[/]";
                 }
+            }
+
+            var foundationContext = await PlayerGuardianFoundationState.ReadContextAsync(_fs);
+            if (!string.IsNullOrWhiteSpace(activeGuardianDisplayName))
+                pendingNotice = $"  [green]🧭 Активный Хранитель: {Markup.Escape(activeGuardianDisplayName)}[/]" +
+                    (string.IsNullOrEmpty(pendingNotice) ? "" : $"\n{pendingNotice}");
+            if (foundationContext.PendingRequest != null)
+            {
+                pendingNotice += $"\n  [gold1]👑 Готовится основание собственной мантии: {Markup.Escape(foundationContext.PendingRequest.ProposedDisplayName)}[/]";
+            }
+            else if (!string.IsNullOrWhiteSpace(foundationContext.ExistingFoundedGuardianName))
+            {
+                pendingNotice += $"\n  [gold1]👑 Основанный Хранитель: {Markup.Escape(foundationContext.ExistingFoundedGuardianName)}[/]";
+                if (!string.IsNullOrWhiteSpace(foundationContext.FormerPatronGuardianName))
+                    pendingNotice += $"\n  [dim]Прежний покровитель: {Markup.Escape(foundationContext.FormerPatronGuardianName)}[/]";
+                if (!string.IsNullOrWhiteSpace(foundationContext.ExistingFoundedGuardianAbodeName))
+                    pendingNotice += $"\n  [dim]Текущая Обитель основанной мантии: {Markup.Escape(foundationContext.ExistingFoundedGuardianAbodeName)}[/]";
+                if (foundationContext.ExistingFoundedGuardianExtraGachaChargesPerReturn > 0)
+                    pendingNotice += $"\n  [dim]Бонус основания: +{foundationContext.ExistingFoundedGuardianExtraGachaChargesPerReturn} доп. попытка гачи за возвращение[/]";
+                if (!string.IsNullOrWhiteSpace(foundationContext.ExistingFoundedGuardianFeatureTitle))
+                    pendingNotice += $"\n  [dim]Дар основания: {Markup.Escape(foundationContext.ExistingFoundedGuardianFeatureTitle)}[/]";
+                if (!string.IsNullOrWhiteSpace(foundationContext.FormerPatronGuardianName))
+                    pendingNotice += $"\n  [dim]Продолжение линии прежнего покровителя остаётся за GM и может проявиться в обычных загробных событиях.[/]";
+                pendingNotice += "\n  [dim]Ветка основания завершена и остаётся одноразовой для этого сохранения.[/]";
+            }
+            else if (foundationContext.HasCompletedFoundation)
+            {
+                pendingNotice += "\n  [gold1]👑 Ветка основания завершена: в этом сохранении уже основан собственный Хранитель.[/]";
             }
 
             var unreadTradeNotifications = (await AfterlifeNotificationState.ReadAsync(_fs))
@@ -234,6 +275,14 @@ public partial class ExplorerMode
             if (selected.Contains("Искать новую обитель"))
             {
                 await ShowSearchAbodePrompt();
+                continue;
+            }
+
+            if (selected.Contains("Учредить собственного Хранителя"))
+            {
+                await ShowPlayerGuardianFoundationAsync();
+                if (_pendingGmAction != null)
+                    return;
                 continue;
             }
 
@@ -351,7 +400,7 @@ public partial class ExplorerMode
                 var projectName = GetStr(project, "projectName", GetStr(project, "name", "Проект"));
                 var activeState = GetStr(project, "activeState", "");
                 var finalState = GetStr(project, "finalState", "");
-                var status = string.IsNullOrWhiteSpace(activeState) ? finalState : activeState;
+                var status = FormatGuardianProjectStateLabel(string.IsNullOrWhiteSpace(activeState) ? finalState : activeState);
                 return ConsoleLayout.PlainChoiceLabel(
                     $"🔬 {projectName}",
                     string.IsNullOrWhiteSpace(guardianName) ? guardianId : guardianName,
@@ -450,51 +499,51 @@ public partial class ExplorerMode
         var temporaryModifiers = GuardianProjectState.CollectActiveTemporaryModifiers(trackerRoot ?? default, guardianId);
         var historyEntries = guardian.TryGetProperty("abodePower", out var abodePower) && abodePower.ValueKind == JsonValueKind.Object &&
                              abodePower.TryGetProperty("history", out var history) && history.ValueKind == JsonValueKind.Array
-            ? history.EnumerateArray().Reverse().Take(6).ToList()
+            ? history.EnumerateArray().Reverse().ToList()
             : new List<JsonElement>();
-        var journalEntries = CollectGuardianPowerJournalEntries(journalRoot ?? default, guardianId).Take(8).ToList();
+        var journalEntries = CollectGuardianPowerJournalEntries(journalRoot ?? default, guardianId).ToList();
 
         var lines = new List<string>
         {
             $"[bold gold1]🏛 {Markup.Escape(guardianName)}[/]",
             "",
             $"[bold]Текущее значение:[/] [{derivedState.TierColor}]{currentPower}[/]/100 [dim]({Markup.Escape(derivedState.TierLabel)})[/]",
-            $"[bold]Derived-эффекты:[/] [dim]Торговля {derivedState.TradeSlotCount} • Квесты {derivedState.GuardianQuestCap} • Потолок сложности до {FormatGuardianQuestDifficultyLabel(derivedState.GuardianQuestDifficultyCeiling)} • Бонус-гата +{derivedState.BonusGachaCharges} • Бюджет корректив {derivedState.EffectiveNextLifeCorrectionBudgetPoints}[/]",
-            $"[bold]Нити судьбы:[/] [dim]Clues {derivedState.EffectiveRivalArcDefenseClues} • Clarity {derivedState.RivalArcClarityTier} • Counter-quest {(derivedState.RivalArcCounterQuestAccess ? "да" : "нет")} • Warning tier {derivedState.RivalArcWarningTier}[/]",
-            $"[bold]Hostile cap:[/] [dim]{Markup.Escape(derivedState.RivalArcOffenseCap)}[/]"
+            $"[bold]Что даёт текущая сила:[/] [dim]Торговых мест {derivedState.TradeSlotCount} • Доступных квестов {derivedState.GuardianQuestCap} • Потолок сложности до {FormatGuardianQuestDifficultyLabel(derivedState.GuardianQuestDifficultyCeiling)} • Дополнительных попыток гачи +{derivedState.BonusGachaCharges} • Бюджет корректив {derivedState.EffectiveNextLifeCorrectionBudgetPoints}[/]",
+            $"[bold]Нити судьбы:[/] [dim]Явных следов соперника {derivedState.EffectiveRivalArcDefenseClues} • {Markup.Escape(FormatRivalArcClarityLabel(derivedState.RivalArcClarityTier))} • Контр-квест {(derivedState.RivalArcCounterQuestAccess ? "доступен" : "ещё закрыт")} • {Markup.Escape(FormatRivalArcWarningLabel(derivedState.RivalArcWarningTier))}[/]",
+            $"[bold]Предел враждебного давления:[/] [dim]{Markup.Escape(FormatRivalArcOffenseCapLabel(derivedState.RivalArcOffenseCap))}[/]"
         };
 
         if (derivedState.EffectiveGuardianRarityCeilingBonusSteps > 0 || derivedState.EffectiveUpgradedTradeSlots > 0 || derivedState.EffectiveElevatedTradeSlots > 0)
         {
-            lines.Add($"[bold]Ковка реликтов:[/] [dim]Upgraded slots {derivedState.EffectiveUpgradedTradeSlots} • Elevated slots {derivedState.EffectiveElevatedTradeSlots} • Ceiling +{derivedState.EffectiveGuardianRarityCeilingBonusSteps}[/]");
+            lines.Add($"[bold]Ковка реликтов:[/] [dim]Усиленных торговых мест {derivedState.EffectiveUpgradedTradeSlots} • Возвышенных торговых мест {derivedState.EffectiveElevatedTradeSlots} • Потолок редкости +{derivedState.EffectiveGuardianRarityCeilingBonusSteps}[/]");
         }
 
         if (projectEffects.BonusLoreUnlocks > 0 || projectEffects.QuestHookCount > 0 || projectEffects.GuaranteedArchiveQuestCount > 0 || projectEffects.SpecialQuestLineUnlocks > 0 || projectEffects.VisibleRivalClueBonus > 0 || projectEffects.ArchiveWarningTierBonus > 0)
         {
-            lines.Add($"[bold]Исследование знания:[/] [dim]Фрагменты {projectEffects.BonusLoreUnlocks} • Quest hooks {projectEffects.QuestHookCount} • Archive quests {projectEffects.GuaranteedArchiveQuestCount} • Special lines {projectEffects.SpecialQuestLineUnlocks} • Bonus clues {projectEffects.VisibleRivalClueBonus} • Warning +{projectEffects.ArchiveWarningTierBonus}[/]");
+            lines.Add($"[bold]Исследование знания:[/] [dim]Новых фрагментов {projectEffects.BonusLoreUnlocks} • Квестовых зацепок {projectEffects.QuestHookCount} • Гарантированных архивных квестов {projectEffects.GuaranteedArchiveQuestCount} • Особых сюжетных линий {projectEffects.SpecialQuestLineUnlocks} • Явных следов соперника {projectEffects.VisibleRivalClueBonus} • Уровень предупреждения +{projectEffects.ArchiveWarningTierBonus}[/]");
         }
 
         if (projectEffects.PreparationBudgetPoints > 0 || projectEffects.PreparationClaimPriorityBonus > 0 || projectEffects.HostilePriorityTokensGranted > 0)
         {
-            lines.Add($"[bold]Подготовка души:[/] [dim]Budget +{projectEffects.PreparationBudgetPoints} • Claim priority +{projectEffects.PreparationClaimPriorityBonus} • Hostile tokens {projectEffects.HostilePriorityTokensGranted}[/]");
+            lines.Add($"[bold]Подготовка души:[/] [dim]Очков бюджета подготовки +{projectEffects.PreparationBudgetPoints} • Приоритет выбора +{projectEffects.PreparationClaimPriorityBonus} • Враждебных жетонов приоритета {projectEffects.HostilePriorityTokensGranted}[/]");
         }
 
         if (derivedState.FortificationSafePressureBonus > 0 || derivedState.FortificationDefenseRatingBonus > 0 || temporaryModifiers.Count > 0)
         {
-            lines.Add($"[bold]Политическая защита:[/] [dim]Safe pressure +{derivedState.FortificationSafePressureBonus} • Defense rating +{derivedState.FortificationDefenseRatingBonus} • Temp modifiers {temporaryModifiers.Count}[/]");
+            lines.Add($"[bold]Политическая защита:[/] [dim]Безопасного давления +{derivedState.FortificationSafePressureBonus} • Рейтинг защиты +{derivedState.FortificationDefenseRatingBonus} • Временных усилений {temporaryModifiers.Count}[/]");
         }
 
         if (historyEntries.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Последние изменения в canonical history:[/]");
+            lines.Add("[bold]Последние изменения силы Обители:[/]");
             foreach (var entry in historyEntries)
             {
                 var change = GetInt(entry, "change", 0);
                 var title = GetStr(entry, "reason", GetStr(entry, "reasonType", ""));
                 var timestamp = GetStr(entry, "timestamp", "");
                 var deltaText = change > 0 ? $"[green]+{change}[/]" : $"[red]{change}[/]";
-                var tsText = !string.IsNullOrWhiteSpace(timestamp) && timestamp.Length >= 10 ? $"[dim]{Markup.Escape(timestamp[..10])}[/] " : "";
+                var tsText = !string.IsNullOrWhiteSpace(timestamp) ? $"[dim]{Markup.Escape(timestamp)}[/] " : "";
                 lines.Add($"  • {tsText}{deltaText} {Markup.Escape(title)}");
             }
         }
@@ -552,7 +601,7 @@ public partial class ExplorerMode
         "offering" => "Подношение Обители",
         "resonance" => "Резонанс жизни",
         "correction_spend" => "Трата на коррективы",
-        "rival_strike" => "Удар rival-Хранителя",
+        "rival_strike" => "Удар Хранителя-соперника",
         "rival_defense" => "Защитное действие",
         _ => reasonType
     };
@@ -581,7 +630,7 @@ public partial class ExplorerMode
             var targetGuardianName = guardianNames.TryGetValue(targetGuardianId, out var resolvedTargetName)
                 ? resolvedTargetName
                 : targetGuardianId;
-            lines.Add($"{indent}[bold]Политический удар:[/] [dim]{Markup.Escape(string.IsNullOrWhiteSpace(targetGuardianName) ? "цель не указана" : targetGuardianName)} • Power loss {targetLoss} • Pressure +{pressureDelta} • Stability -{stabilityDamage}[/]");
+            lines.Add($"{indent}[bold]Политический удар:[/] [dim]{Markup.Escape(string.IsNullOrWhiteSpace(targetGuardianName) ? "цель не указана" : targetGuardianName)} • потеря силы {targetLoss} • внешнее давление +{pressureDelta} • устойчивость замысла -{stabilityDamage}[/]");
             return;
         }
 
@@ -590,11 +639,11 @@ public partial class ExplorerMode
             var projectType = GetStr(project, "projectType", "");
             if (string.Equals(projectType, "counter_rival_operation", StringComparison.OrdinalIgnoreCase))
             {
-                lines.Add($"{indent}[bold]Контр-операция:[/] [dim]Pressure relief {GetInt(outcomeAudit, "pressureRelief", 0)} • Stability relief +{GetInt(outcomeAudit, "stabilityRelief", 0)}[/]");
+                lines.Add($"{indent}[bold]Контр-операция:[/] [dim]снятие давления {GetInt(outcomeAudit, "pressureRelief", 0)} • восстановление устойчивости +{GetInt(outcomeAudit, "stabilityRelief", 0)}[/]");
             }
             else if (string.Equals(projectType, "abode_fortification", StringComparison.OrdinalIgnoreCase))
             {
-                lines.Add($"{indent}[bold]Фортификация:[/] [dim]Safe pressure +{GetInt(outcomeAudit, "safePressureBonus", 0)} • Defense rating +{GetInt(outcomeAudit, "defenseRatingBonus", 0)}[/]");
+                lines.Add($"{indent}[bold]Фортификация:[/] [dim]запас безопасного давления +{GetInt(outcomeAudit, "safePressureBonus", 0)} • прочность защиты +{GetInt(outcomeAudit, "defenseRatingBonus", 0)}[/]");
             }
         }
     }
@@ -607,14 +656,20 @@ public partial class ExplorerMode
         lines.Add($"{indent}[bold]Временные модификаторы:[/]");
         foreach (var modifier in modifiers
                      .OrderByDescending(item => item.RemainingApplications)
-                     .ThenBy(item => item.ModifierId, StringComparer.OrdinalIgnoreCase)
-                     .Take(4))
+                     .ThenBy(item => item.ModifierId, StringComparer.OrdinalIgnoreCase))
         {
-            lines.Add($"{indent}  [dim]{Markup.Escape(modifier.ModifierType)} • value {modifier.Value:+#;-#;0} • applications {modifier.RemainingApplications}[/]");
+            lines.Add($"{indent}  [dim]{Markup.Escape(FormatTemporaryModifierTypeLabel(modifier.ModifierType))} • сила эффекта {modifier.Value:+#;-#;0} • осталось срабатываний {modifier.RemainingApplications}[/]");
             if (!string.IsNullOrWhiteSpace(modifier.ModifierId))
-                lines.Add($"{indent}  [dim]modifierId: {Markup.Escape(modifier.ModifierId)}[/]");
+                lines.Add($"{indent}  [dim]Идентификатор модификатора: {Markup.Escape(modifier.ModifierId)}[/]");
         }
     }
+
+    private static string FormatTemporaryModifierTypeLabel(string? modifierType) =>
+        modifierType?.Trim().ToLowerInvariant() switch
+        {
+            "next_internal_project_starting_pressure" => "стартовое давление следующего внутреннего проекта",
+            _ => HumanizeProjectToken(modifierType)
+        };
 
     private static string FormatGuardianQuestDifficultyLabel(string? difficulty) =>
         AbodePowerRules.NormalizeGuardianQuestDifficulty(difficulty) switch
@@ -624,6 +679,115 @@ public partial class ExplorerMode
             "epic" => "Эпической",
             _ => "Нормальной"
         };
+
+    private static string FormatGuardianProjectTypeLabel(string? projectType) =>
+        (projectType ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "abode_expansion" => "Расширение Обители",
+            "abode_fortification" => "Укрепление Обители",
+            "relic_forging" => "Ковка реликтов",
+            "lore_research" => "Исследование знаний",
+            "soul_preparation" => "Подготовка души",
+            "offensive_intrigue" => "Наступательная интрига",
+            "counter_rival_operation" => "Операция против чужого замысла",
+            _ => HumanizeProjectToken(projectType)
+        };
+
+    private static string FormatGuardianProjectModeLabel(string? projectMode) =>
+        (projectMode ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "internal" => "Внутреннее развитие Обители",
+            "external" => "Внешнее воздействие",
+            "support" => "Поддержка союзной линии",
+            "offensive" => "Наступательное давление",
+            "defensive" => "Оборонительное сдерживание",
+            _ => HumanizeProjectToken(projectMode)
+        };
+
+    private static string FormatGuardianProjectTierLabel(string? projectTier) =>
+        (projectTier ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "minor" => "Малый",
+            "major" => "Крупный",
+            "grand" => "Великий",
+            _ => HumanizeProjectToken(projectTier)
+        };
+
+    private static string FormatGuardianProjectStateLabel(string? state) =>
+        (state ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "surveying" => "Осмотр и замер контуров",
+            "binding" => "Закрепление замысла",
+            "forging" => "Ковка результата",
+            "researching" => "Сбор и расшифровка знаний",
+            "preparing" => "Подготовка следующей жизни",
+            "completed" => "Завершён",
+            "abandoned" => "Оставлен",
+            "sabotaged" => "Сорван",
+            "collapsed" => "Рухнул",
+            _ => HumanizeProjectToken(state)
+        };
+
+    private static string FormatProjectPressureLabel(int pressure) =>
+        $"Внешнее давление: {pressure}";
+
+    private static string FormatProjectStabilityLabel(int stability) =>
+        $"Устойчивость замысла: {stability}";
+
+    private static string FormatRivalArcClarityLabel(int clarityTier) => clarityTier switch
+    {
+        <= 0 => "картина ещё смутна",
+        1 => "картина начинает проступать",
+        2 => "картина уже достаточно ясна",
+        _ => "картина читается отчётливо"
+    };
+
+    private static string FormatRivalArcWarningLabel(int warningTier) => warningTier switch
+    {
+        <= 0 => "ранних предупреждений нет",
+        1 => "ранние предупреждения уже возможны",
+        _ => $"уровень предупреждения {warningTier}"
+    };
+
+    private static string FormatRivalArcOffenseCapLabel(string? offenseCap) =>
+        (offenseCap ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "no_formal_hostile_arc_sponsorship" => "Обитель ещё не может поддерживать оформленную враждебную линию",
+            "background_pressure_only" => "Обитель пока может давить лишь фоном и косвенными сигналами",
+            "one_minor_hostile_arc" => "Обитель способна выдержать одну малую враждебную линию",
+            "one_major_or_direct_minor" => "Обитель выдерживает одну крупную или одну прямую малую враждебную линию",
+            "one_major_with_early_signal_privilege" => "Обитель выдерживает одну крупную линию и получает ранний сигнал о чужом ходе",
+            _ => HumanizeProjectToken(offenseCap)
+        };
+
+    private static string FormatProjectJournalDetailLine(string rawDetail)
+    {
+        if (string.IsNullOrWhiteSpace(rawDetail))
+            return rawDetail;
+
+        return rawDetail
+            .Replace("Pressure:", "Внешнее давление:", StringComparison.Ordinal)
+            .Replace("Stability:", "Устойчивость замысла:", StringComparison.Ordinal)
+            .Replace("Work:", "Работа:", StringComparison.Ordinal);
+    }
+
+    private static string HumanizeProjectToken(string? token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+            return "не указано";
+
+        var raw = token.Trim().Replace('_', ' ');
+        var builder = new StringBuilder(raw.Length + 8);
+        for (var i = 0; i < raw.Length; i++)
+        {
+            var ch = raw[i];
+            if (i > 0 && char.IsUpper(ch) && char.IsLetter(raw[i - 1]) && !char.IsWhiteSpace(raw[i - 1]))
+                builder.Append(' ');
+            builder.Append(ch);
+        }
+
+        return builder.ToString();
+    }
 
     private async Task ShowAbodesNavigation()
     {
@@ -722,6 +886,7 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(name))
             name = "Неизвестный";
         var guardianId = GetStr(g, "guardianId", "");
+        var isActiveGuardian = string.Equals(guardianId, activeGuardianId, StringComparison.OrdinalIgnoreCase);
         var guardianThoughtDoc = await _stateManager.LoadGameStateFileAsync(GuardianThoughtJournalState.StatePath);
         var guardianSocialDoc = await _stateManager.LoadGameStateFileAsync(GuardianSocialJournalState.StatePath);
         var guardianThoughtEntries = CollectActorJournalEntryElements(guardianThoughtDoc, GuardianThoughtJournalState.ActorIdProperty, guardianId);
@@ -735,9 +900,12 @@ public partial class ExplorerMode
         var formFlexibility = GuardianManifestation.GetFormFlexibility(g);
         var domain = GetStr(g, "domain", "");
         var content = new Grid().AddColumn(new GridColumn());
-        content.AddRow(new Markup($"[bold cyan]🛡️ {Markup.Escape(name)}[/]"));
+        content.AddRow(new Markup($"[bold cyan]🛡️ {Markup.Escape(name)}[/]" +
+            (isActiveGuardian ? " [green](активный хранитель)[/]" : "")));
 
         var summaryTable = ConsoleLayout.CreateInfoTable();
+        if (isActiveGuardian)
+            summaryTable.AddRow(new Markup("[green]Статус[/]"), new Markup("[green]Текущий активный Хранитель[/]"));
         if (!string.IsNullOrEmpty(domain))
         {
             var domainRu = domain switch
@@ -751,7 +919,7 @@ public partial class ExplorerMode
                 "Knowledge" => "Знания",
                 _ => domain
             };
-            summaryTable.AddRow(new Markup("[yellow]Домен[/]"), new Markup($"[yellow]{Markup.Escape(domainRu)}[/] [dim]({Markup.Escape(domain)})[/]"));
+            summaryTable.AddRow(new Markup("[yellow]Домен[/]"), new Markup($"[yellow]{Markup.Escape(domainRu)}[/]"));
         }
 
         var lines = new List<string>();
@@ -830,6 +998,24 @@ public partial class ExplorerMode
         if (!string.IsNullOrWhiteSpace(formFlexibilityLabel))
             summaryTable.AddRow(new Markup("[dim]Гибкость формы[/]"), new Markup($"[dim]{Markup.Escape(formFlexibilityLabel)}[/]"));
 
+        var isPlayerFoundedGuardian = string.Equals(
+            GetStr(g, "originType", ""),
+            PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul,
+            StringComparison.OrdinalIgnoreCase);
+        var founderSoulName = GetStr(g, "founderSoulName", "");
+        var founderLoyaltyTier = GetStr(g, "founderLoyaltyTier", "");
+        if (isPlayerFoundedGuardian)
+        {
+            summaryTable.AddRow(new Markup("[gold1]Источник[/]"), new Markup("[gold1]Основан из вознесённой души[/]"));
+            if (!string.IsNullOrWhiteSpace(founderSoulName))
+                summaryTable.AddRow(new Markup("[white]Основатель[/]"), new Markup($"[white]{Markup.Escape(founderSoulName)}[/]"));
+            if (!string.IsNullOrWhiteSpace(founderLoyaltyTier))
+                summaryTable.AddRow(new Markup("[gold1]Связь[/]"), new Markup($"[gold1]{Markup.Escape(DescribeFounderLoyaltyTier(founderLoyaltyTier))}[/] [dim](онтологическая преданность)[/]"));
+            var founderExtraGachaCharges = PlayerGuardianFoundationState.GetFounderExtraGachaCharges(g);
+            if (founderExtraGachaCharges > 0)
+                summaryTable.AddRow(new Markup("[gold1]Бонус основания[/]"), new Markup($"[gold1]+{founderExtraGachaCharges}[/] [dim]доп. попытка гачи за возвращение[/]"));
+        }
+
         var derivedState = GuardianProjectState.ResolveGuardianDerivedState(g, guardianProjectTrackerRoot ?? default);
         var abodePowerValue = derivedState.CurrentPower;
         var guardianProjectEffects = derivedState.ProjectEffects;
@@ -845,6 +1031,7 @@ public partial class ExplorerMode
         if (g.TryGetProperty("relationshipData", out var rd) && rd.ValueKind == JsonValueKind.Object)
         {
             rep = GetInt(rd, "currentReputation", 0);
+            var guardianRoleToPlayer = GetStr(rd, PlayerGuardianFoundationState.GuardianRoleToPlayerProperty, "");
             FlushLines();
             content.AddRow(new Markup(""));
             var repTable = ConsoleLayout.CreateBarMetricTable(labelWidth: 16, barWidth: 24, valueWidth: 8);
@@ -857,21 +1044,34 @@ public partial class ExplorerMode
 
             lines.Add("  [dim]Диапазоны репутации:[/]");
             lines.AddRange(ReputationDisplay.BuildLegendLines(ReputationScaleKind.Guardian, "    "));
+            if (isPlayerFoundedGuardian)
+                lines.Add("  [gold1]👑 Неразрывная мантия:[/] [dim]основанная мантия удерживается как минимум на легендарном ранге и пока не использует обычное снижение до более низкого статуса.[/]");
+            if (isPlayerFoundedGuardian)
+            {
+                var founderFeatureTitle = PlayerGuardianFoundationState.GetFounderAbodeFeatureTitle(g);
+                var founderFeatureSummary = PlayerGuardianFoundationState.GetFounderAbodeFeatureSummary(g);
+                if (!string.IsNullOrWhiteSpace(founderFeatureTitle))
+                    lines.Add($"  [gold1]🏛 Дар основания:[/] [white]{Markup.Escape(founderFeatureTitle)}[/]");
+                if (!string.IsNullOrWhiteSpace(founderFeatureSummary))
+                    lines.Add($"    [dim]{Markup.Escape(founderFeatureSummary)}[/]");
+            }
+            if (string.Equals(guardianRoleToPlayer, PlayerGuardianFoundationState.GuardianRoleFormerPatron, StringComparison.OrdinalIgnoreCase))
+                lines.Add("  [gold1]👑 Роль:[/] [dim]прежний покровитель после основания вашей собственной мантии.[/]");
             lines.Add("");
             lines.Add($"  [bold]🏛️ Сила Обители:[/] {ConsoleLayout.CreateBar(Math.Clamp(abodePowerValue * 20 / 100, 0, 20), 20, derivedState.TierColor)} [{derivedState.TierColor}]{abodePowerValue}[/]/100 [dim]({Markup.Escape(derivedState.TierLabel)})[/]");
-            lines.Add($"    [dim]Торговых слотов: {derivedState.TradeSlotCount} • Лимит квестов: {derivedState.GuardianQuestCap} • Потолок сложности: до {FormatGuardianQuestDifficultyLabel(derivedState.GuardianQuestDifficultyCeiling)} • Бонус-гата: +{derivedState.BonusGachaCharges} • Бюджет корректив: {derivedState.EffectiveNextLifeCorrectionBudgetPoints}[/]");
+            lines.Add($"    [dim]Торговых мест: {derivedState.TradeSlotCount} • Доступных квестов: {derivedState.GuardianQuestCap} • Потолок сложности: до {FormatGuardianQuestDifficultyLabel(derivedState.GuardianQuestDifficultyCeiling)} • Дополнительных попыток гачи: +{derivedState.BonusGachaCharges} • Бюджет корректив: {derivedState.EffectiveNextLifeCorrectionBudgetPoints}[/]");
             if (derivedState.EffectiveGuardianRarityCeilingBonusSteps > 0 ||
                 derivedState.EffectiveUpgradedTradeSlots > 0)
             {
-                lines.Add($"    [dim]Ковка: upgraded {derivedState.EffectiveUpgradedTradeSlots} • elevated {derivedState.EffectiveElevatedTradeSlots} • ceiling +{derivedState.EffectiveGuardianRarityCeilingBonusSteps}[/]");
+                lines.Add($"    [dim]Ковка реликтов: усиленных торговых мест {derivedState.EffectiveUpgradedTradeSlots} • возвышенных торговых мест {derivedState.EffectiveElevatedTradeSlots} • потолок редкости +{derivedState.EffectiveGuardianRarityCeilingBonusSteps}[/]");
             }
             if (guardianProjectEffects.BonusLoreUnlocks > 0 || guardianProjectEffects.QuestHookCount > 0 || guardianProjectEffects.GuaranteedArchiveQuestCount > 0 || guardianProjectEffects.SpecialQuestLineUnlocks > 0 || guardianProjectEffects.VisibleRivalClueBonus > 0 || guardianProjectEffects.ArchiveWarningTierBonus > 0)
             {
-                lines.Add($"    [dim]Исследование: фрагменты {guardianProjectEffects.BonusLoreUnlocks} • hooks {guardianProjectEffects.QuestHookCount} • archive quests {guardianProjectEffects.GuaranteedArchiveQuestCount} • special lines {guardianProjectEffects.SpecialQuestLineUnlocks} • clues {guardianProjectEffects.VisibleRivalClueBonus} • warning +{guardianProjectEffects.ArchiveWarningTierBonus}[/]");
+                lines.Add($"    [dim]Исследование знаний: фрагментов {guardianProjectEffects.BonusLoreUnlocks} • квестовых зацепок {guardianProjectEffects.QuestHookCount} • архивных квестов {guardianProjectEffects.GuaranteedArchiveQuestCount} • особых линий {guardianProjectEffects.SpecialQuestLineUnlocks} • явных следов соперника {guardianProjectEffects.VisibleRivalClueBonus} • предупреждение +{guardianProjectEffects.ArchiveWarningTierBonus}[/]");
             }
             if (derivedState.FortificationSafePressureBonus > 0 || derivedState.FortificationDefenseRatingBonus > 0)
             {
-                lines.Add($"    [dim]Политический щит: safe pressure +{derivedState.FortificationSafePressureBonus} • defense rating +{derivedState.FortificationDefenseRatingBonus}[/]");
+                lines.Add($"    [dim]Политический щит: безопасного давления +{derivedState.FortificationSafePressureBonus} • рейтинг защиты +{derivedState.FortificationDefenseRatingBonus}[/]");
             }
             if (derivedState.ActiveTemporaryModifierCount > 0)
                 lines.Add($"    [dim]Активные временные модификаторы: {derivedState.ActiveTemporaryModifierCount}[/]");
@@ -885,12 +1085,12 @@ public partial class ExplorerMode
                 var latestDelta = GetInt(latestPowerChange, "change", 0);
                 var latestReason = GetStr(latestPowerChange, "reason", GetStr(latestPowerChange, "summary", ""));
                 var latestDeltaText = latestDelta > 0 ? $"[green]+{latestDelta}[/]" : latestDelta < 0 ? $"[red]{latestDelta}[/]" : "[dim]±0[/]";
-                lines.Add($"    [dim]Последний power event: {latestDeltaText} {Markup.Escape(latestReason)}[/]");
+                lines.Add($"    [dim]Последнее изменение силы Обители: {latestDeltaText} {Markup.Escape(latestReason)}[/]");
             }
 
             var lastInteraction = GetStr(rd, "lastInteraction", "");
-            if (!string.IsNullOrEmpty(lastInteraction) && lastInteraction.Length >= 10)
-                lines.Add($"  [dim]Последняя встреча: {Markup.Escape(lastInteraction[..10])}[/]");
+            if (!string.IsNullOrEmpty(lastInteraction))
+                lines.Add($"  [dim]Последняя встреча: {Markup.Escape(lastInteraction)}[/]");
 
             if (rd.TryGetProperty("reputationHistory", out var rh) && rh.ValueKind == JsonValueKind.Array)
             {
@@ -902,7 +1102,7 @@ public partial class ExplorerMode
                     var ts = GetStr(entry, "timestamp", "");
                     var changeStr = change > 0 ? $"[green]+{change}[/]" : change < 0 ? $"[red]{change}[/]" : "[dim]±0[/]";
                     var timeStr = "";
-                    if (!string.IsNullOrEmpty(ts) && ts.Length >= 10) timeStr = $"[dim]{Markup.Escape(ts[..10])}[/] ";
+                    if (!string.IsNullOrEmpty(ts)) timeStr = $"[dim]{Markup.Escape(ts)}[/] ";
                     lines.Add($"    {timeStr}{changeStr} {Markup.Escape(reason)}");
                 }
             }
@@ -933,7 +1133,7 @@ public partial class ExplorerMode
                 lines.Add($"    [white]{Markup.Escape(projName)}[/]");
                 if (!string.IsNullOrEmpty(projDesc))
                     lines.Add($"    [dim]{Markup.Escape(projDesc)}[/]");
-                lines.Add($"    [dim]Legacy summary: {projProgress}%[/]");
+                lines.Add($"    [dim]Прогресс по старой записи: {projProgress}%[/]");
             }
         }
 
@@ -944,14 +1144,15 @@ public partial class ExplorerMode
         {
             lines.Add("");
             lines.Add($"  [bold]✅ Завершённые проекты:[/] [dim]({completedTrackerProjects.Count})[/]");
-            foreach (var completedProject in completedTrackerProjects.Take(5))
+            foreach (var completedProject in completedTrackerProjects)
             {
                 var projectName = GetStr(completedProject, "projectName", GetStr(completedProject, "name", "?"));
                 var finalState = GetStr(completedProject, "finalState", "");
+                var finalStateLabel = string.IsNullOrWhiteSpace(finalState) ? "" : FormatGuardianProjectStateLabel(finalState);
                 var completionTurn = GetInt(completedProject, "completionTurn", 0);
                 var outcome = GetStr(completedProject, "outcome", "");
                 var turnTag = completionTurn > 0 ? $" [dim](ход {completionTurn})[/]" : "";
-                lines.Add($"    ✓ [white]{Markup.Escape(projectName)}[/] [dim]{Markup.Escape(finalState)}[/]{turnTag}");
+                lines.Add($"    ✓ [white]{Markup.Escape(projectName)}[/] [dim]{Markup.Escape(finalStateLabel)}[/]{turnTag}");
                 if (!string.IsNullOrWhiteSpace(outcome))
                     lines.Add($"      [dim italic]{Markup.Escape(outcome)}[/]");
                 AppendProjectSystemEffectLines(lines, completedProject, "      ");
@@ -978,11 +1179,11 @@ public partial class ExplorerMode
         // Active quests
         if (g.TryGetProperty("questManagement", out var qm) && qm.ValueKind == JsonValueKind.Object)
         {
-            if ((qm.TryGetProperty("activeQuests", out var aq) || qm.TryGetProperty("availableQuests", out aq)) && aq.ValueKind == JsonValueKind.Array && aq.GetArrayLength() > 0)
+            if (qm.TryGetProperty("activeQuests", out var activeQuests) && activeQuests.ValueKind == JsonValueKind.Array && activeQuests.GetArrayLength() > 0)
             {
                 lines.Add("");
                 lines.Add("  [bold]📜 Активные задания:[/]");
-                foreach (var q in aq.EnumerateArray())
+                foreach (var q in activeQuests.EnumerateArray())
                 {
                     var qName = GetStr(q, "name", "?");
                     var qDesc = GetStr(q, "description", "");
@@ -992,6 +1193,36 @@ public partial class ExplorerMode
                     lines.Add($"    📋 [yellow]{Markup.Escape(qName)}[/]" +
                         (!string.IsNullOrEmpty(qDiff) ? $" [dim]({Markup.Escape(qDiff)})[/]" : "") +
                         (!string.IsNullOrEmpty(qStatus) ? $" [{(qStatus.ToLower().Contains("progress") ? "cyan" : "white")}]{Markup.Escape(qStatus)}[/]" : ""));
+                    if (!string.IsNullOrEmpty(qDesc))
+                        lines.Add($"       [white]{Markup.Escape(qDesc)}[/]");
+                    if (!string.IsNullOrEmpty(qTarget))
+                        lines.Add($"       🌍 Мир: [cyan]{Markup.Escape(qTarget)}[/]");
+                    if (q.TryGetProperty("rewards", out var rew) && rew.ValueKind == JsonValueKind.Object)
+                    {
+                        var rewParts = new List<string>();
+                        foreach (var rp in rew.EnumerateObject())
+                        {
+                            var val = rp.Value.ValueKind == JsonValueKind.Number ? rp.Value.ToString() : rp.Value.GetRawText();
+                            rewParts.Add($"{rp.Name}: {val}");
+                        }
+                        if (rewParts.Count > 0)
+                            lines.Add($"       🎁 Награды: [green]{Markup.Escape(string.Join(", ", rewParts))}[/]");
+                    }
+                }
+            }
+
+            if (qm.TryGetProperty("availableQuests", out var availableQuests) && availableQuests.ValueKind == JsonValueKind.Array && availableQuests.GetArrayLength() > 0)
+            {
+                lines.Add("");
+                lines.Add("  [bold]🧭 Доступные задания:[/]");
+                foreach (var q in availableQuests.EnumerateArray())
+                {
+                    var qName = GetStr(q, "name", "?");
+                    var qDesc = GetStr(q, "description", "");
+                    var qDiff = GetStr(q, "difficulty", "");
+                    var qTarget = GetStr(q, "targetWorld", "");
+                    lines.Add($"    📋 [yellow]{Markup.Escape(qName)}[/]" +
+                        (!string.IsNullOrEmpty(qDiff) ? $" [dim]({Markup.Escape(qDiff)})[/]" : ""));
                     if (!string.IsNullOrEmpty(qDesc))
                         lines.Add($"       [white]{Markup.Escape(qDesc)}[/]");
                     if (!string.IsNullOrEmpty(qTarget))
@@ -1020,7 +1251,7 @@ public partial class ExplorerMode
                     var qResult = GetStr(q, "result", "");
                     var qDate = GetStr(q, "completionDate", "");
                     var resultColor = qResult.ToLower().Contains("success") ? "green" : "white";
-                    var dateStr = !string.IsNullOrEmpty(qDate) && qDate.Length >= 10 ? $" [dim]{Markup.Escape(qDate[..10])}[/]" : "";
+                    var dateStr = !string.IsNullOrEmpty(qDate) ? $" [dim]{Markup.Escape(qDate)}[/]" : "";
                     lines.Add($"    ✓ [dim]{Markup.Escape(qName)}[/] [{resultColor}]{Markup.Escape(qResult)}[/]{dateStr}");
                 }
             }
@@ -1032,11 +1263,12 @@ public partial class ExplorerMode
         lines.Add("  [bold]🎰 Система гача:[/]");
         var chargesPerReturn = hasGachaSystem && gs.TryGetProperty("chargesPerReturn", out var cpr) && cpr.ValueKind == JsonValueKind.Number && cpr.TryGetInt32(out var parsedCharges)
             ? parsedCharges
-            : GuardianGachaChargeRules.GetChargesPerReturnForReputation(rep, derivedState);
+            : GuardianGachaChargeRules.GetChargesPerReturnForGuardian(g);
         var chargesUsedThisReturn = hasGachaSystem && gs.TryGetProperty("chargesUsedThisReturn", out var cur) && cur.ValueKind == JsonValueKind.Number && cur.TryGetInt32(out var parsedUsed)
             ? GuardianGachaChargeRules.ClampUsedCharges(parsedUsed, chargesPerReturn)
             : 0;
         var remainingCharges = Math.Max(0, chargesPerReturn - chargesUsedThisReturn);
+        var founderExtraGachaChargesForReturn = PlayerGuardianFoundationState.GetFounderExtraGachaCharges(g);
 
         if (chargesPerReturn <= 0)
         {
@@ -1045,6 +1277,8 @@ public partial class ExplorerMode
         else
         {
             lines.Add($"    Осталось попыток в этом возвращении: [yellow]{remainingCharges}[/]/[white]{chargesPerReturn}[/]");
+            if (founderExtraGachaChargesForReturn > 0)
+                lines.Add($"    [dim]Бонус основания: +{founderExtraGachaChargesForReturn} доп. попытка за возвращение.[/]");
             if (remainingCharges <= 0)
                 lines.Add("    [yellow]Лимит гачи у этого Хранителя исчерпан до следующего возвращения из смертной жизни.[/]");
         }
@@ -1058,7 +1292,7 @@ public partial class ExplorerMode
                 var cost = GetStr(h, "costInFeathers", GetStr(h, "cost", "?"));
                 var rarity = GetStr(h, "finalRarity", "");
                 var hTs = GetStr(h, "timestamp", "");
-                var timeStr = !string.IsNullOrEmpty(hTs) && hTs.Length >= 10 ? $"[dim]{Markup.Escape(hTs[..10])}[/] " : "";
+                var timeStr = !string.IsNullOrEmpty(hTs) ? $"[dim]{Markup.Escape(hTs)}[/] " : "";
                 var rarityTag = string.IsNullOrWhiteSpace(rarity) ? "" : $" [dim](редкость: {Markup.Escape(rarity)})[/]";
                 lines.Add($"      {timeStr}💎 {Markup.Escape(relicId)} [dim](стоимость: {Markup.Escape(cost)})[/]{rarityTag}");
             }
@@ -1145,7 +1379,7 @@ public partial class ExplorerMode
                 if (!string.IsNullOrEmpty(reason))
                     lines.Add($"      [dim italic]{Markup.Escape(reason)}[/]");
                 if (!string.IsNullOrEmpty(lastChangedAt) && lastChangedAt.Length >= 10)
-                    lines.Add($"      [dim]Обновлено: {Markup.Escape(lastChangedAt[..10])}[/]");
+                    lines.Add($"      [dim]Обновлено: {Markup.Escape(lastChangedAt)}[/]");
             }
         }
 
@@ -1269,16 +1503,18 @@ public partial class ExplorerMode
         if (guardianThoughtEntries.Count > 0)
         {
             lines.Add("");
-            lines.Add("  [bold]🧠 Актуальные мысли Хранителя:[/]");
-            foreach (var entry in guardianThoughtEntries.Take(3))
+            var shownThoughts = Math.Min(GuardianThoughtPreviewCount, guardianThoughtEntries.Count);
+            lines.Add($"  [bold]🧠 Актуальные мысли Хранителя:[/] [dim](показано {shownThoughts} из {guardianThoughtEntries.Count})[/]");
+            foreach (var entry in guardianThoughtEntries.Take(GuardianThoughtPreviewCount))
                 lines.Add($"    • [white]{Markup.Escape(BuildActorJournalLine(entry))}[/]");
         }
 
         if (guardianSocialEntries.Count > 0)
         {
             lines.Add("");
-            lines.Add("  [bold]📚 Краткая память общения:[/]");
-            foreach (var entry in guardianSocialEntries.Take(5))
+            var shownSocial = Math.Min(GuardianSocialPreviewCount, guardianSocialEntries.Count);
+            lines.Add($"  [bold]📚 Краткая память общения:[/] [dim](показано {shownSocial} из {guardianSocialEntries.Count})[/]");
+            foreach (var entry in guardianSocialEntries.Take(GuardianSocialPreviewCount))
                 lines.Add($"    • [white]{Markup.Escape(BuildActorJournalLine(entry))}[/]");
         }
 
@@ -1287,9 +1523,9 @@ public partial class ExplorerMode
             lines.Add("");
             lines.Add("  [bold]⏳ Ожидают ответа GM:[/]");
             if (pendingGuardianTalkRequest != null)
-                lines.Add($"    • Разговор [yellow]ожидает[/] [dim](requestId={Markup.Escape(pendingGuardianTalkRequest.RequestId)})[/]");
+                lines.Add($"    • Разговор [yellow]ожидает[/] [dim](идентификатор запроса: {Markup.Escape(pendingGuardianTalkRequest.RequestId)})[/]");
             if (pendingGuardianLoreRequest != null)
-                lines.Add($"    • Вопрос о знаниях [yellow]ожидает[/] [dim](requestId={Markup.Escape(pendingGuardianLoreRequest.RequestId)})[/]");
+                lines.Add($"    • Вопрос о знаниях [yellow]ожидает[/] [dim](идентификатор запроса: {Markup.Escape(pendingGuardianLoreRequest.RequestId)})[/]");
         }
 
         // Description
@@ -1315,7 +1551,7 @@ public partial class ExplorerMode
                 var changedAt = GetStr(entry, "changedAtUtc", "");
                 var reason = GetStr(entry, "reason", "");
                 var timeTag = !string.IsNullOrWhiteSpace(changedAt) && changedAt.Length >= 10
-                    ? $"[dim]{Markup.Escape(changedAt[..10])}[/] "
+                    ? $"[dim]{Markup.Escape(changedAt)}[/] "
                     : "";
                 var detailParts = new List<string>();
                 if (!string.IsNullOrWhiteSpace(oldStyle))
@@ -1338,7 +1574,6 @@ public partial class ExplorerMode
             lines.Add($"  [dim italic]📖 {Markup.Escape(desc)}[/]");
         }
 
-        var isActiveGuardian = string.Equals(GetStr(g, "guardianId", ""), activeGuardianId, StringComparison.OrdinalIgnoreCase);
         var tradeAvailableHere = GuardianTradeAvailableHere(g, currentAbodeId);
         var tradeBlockedByReputation = rep <= -51;
         lines.Add("");
@@ -1350,20 +1585,20 @@ public partial class ExplorerMode
         else if (tradeBlockedByReputation)
             lines.Add("    [red]Хранитель отказывается торговать из-за вашей репутации.[/]");
         else
-            lines.Add("    [white]Доступна: 4 локальных слота, обновление после нового возвращения из смертной жизни.[/]");
+            lines.Add($"    [white]Доступна: {derivedState.TradeSlotCount} локальных слотов, обновление после нового возвращения из смертной жизни.[/]");
 
         FlushLines();
 
         Write(new Panel(content)
         {
-            Header = new PanelHeader($" 🛡️ {Markup.Escape(name)} ", Justify.Center),
+            Header = new PanelHeader($" 🛡️ {Markup.Escape(name)}{(isActiveGuardian ? " · активный" : "")} ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Cyan1),
             Padding = new Padding(2, 1),
             Expand = true
         });
 
-        await ShowGuardianDetailActions(g, name, currentAbodeId, activeGuardianId);
+        await ShowGuardianDetailActions(g, name, currentAbodeId, activeGuardianId, guardianThoughtEntries, guardianSocialEntries, guardianProjectTrackerRoot);
     }
 
     private void ShowGuardianProjectDetailPanel(
@@ -1388,13 +1623,13 @@ public partial class ExplorerMode
             infoTable.AddRow(new Markup("[white]Хранитель[/]"), new Markup($"[white]{Markup.Escape(guardianName)}[/]"));
         var projectType = GetStr(project, "projectType", "");
         if (!string.IsNullOrWhiteSpace(projectType))
-            infoTable.AddRow(new Markup("[dim]Тип[/]"), new Markup($"[dim]{Markup.Escape(projectType)}[/]"));
+            infoTable.AddRow(new Markup("[dim]Категория проекта[/]"), new Markup($"[dim]{Markup.Escape(FormatGuardianProjectTypeLabel(projectType))}[/]"));
         var projectTier = GetStr(project, "projectTier", "");
         if (!string.IsNullOrWhiteSpace(projectTier))
-            infoTable.AddRow(new Markup("[dim]Тир[/]"), new Markup($"[dim]{Markup.Escape(projectTier)}[/]"));
+            infoTable.AddRow(new Markup("[dim]Масштаб[/]"), new Markup($"[dim]{Markup.Escape(FormatGuardianProjectTierLabel(projectTier))}[/]"));
         var projectMode = GetStr(project, "projectMode", "");
         if (!string.IsNullOrWhiteSpace(projectMode))
-            infoTable.AddRow(new Markup("[dim]Режим[/]"), new Markup($"[dim]{Markup.Escape(projectMode)}[/]"));
+            infoTable.AddRow(new Markup("[dim]Характер проекта[/]"), new Markup($"[dim]{Markup.Escape(FormatGuardianProjectModeLabel(projectMode))}[/]"));
         var targetGuardianId = GetStr(project, "targetGuardianId", "");
         if (!string.IsNullOrWhiteSpace(targetGuardianId))
         {
@@ -1408,7 +1643,7 @@ public partial class ExplorerMode
         var finalState = GetStr(project, "finalState", "");
         var statusLabel = string.IsNullOrWhiteSpace(activeState) ? finalState : activeState;
         if (!string.IsNullOrWhiteSpace(statusLabel))
-            infoTable.AddRow(new Markup("[yellow]Статус[/]"), new Markup($"[yellow]{Markup.Escape(statusLabel)}[/]"));
+            infoTable.AddRow(new Markup("[yellow]Статус[/]"), new Markup($"[yellow]{Markup.Escape(FormatGuardianProjectStateLabel(statusLabel))}[/]"));
 
         if (infoTable.Rows.Count > 0)
             Write(infoTable);
@@ -1422,6 +1657,20 @@ public partial class ExplorerMode
 
         if (!string.IsNullOrWhiteSpace(activeState))
         {
+            var startedTurn = GetInt(project, "startedTurn", 0);
+            var estimatedCompletionTurn = GetInt(project, "estimatedCompletionTurn", 0);
+            if (startedTurn > 0)
+                panelLines.Add($"Ход начала: [white]{startedTurn}[/]");
+            if (estimatedCompletionTurn > 0)
+                panelLines.Add($"Ожидаемый ход завершения: [white]{estimatedCompletionTurn}[/]");
+            if (project.TryGetProperty("playerCanAssist", out var playerCanAssistNode) &&
+                (playerCanAssistNode.ValueKind == JsonValueKind.True || playerCanAssistNode.ValueKind == JsonValueKind.False))
+            {
+                panelLines.Add($"Помощь души: [white]{(playerCanAssistNode.GetBoolean() ? "доступна" : "недоступна")}[/]");
+            }
+            var assistDescription = GetStr(project, "assistDescription", "");
+            if (!string.IsNullOrWhiteSpace(assistDescription))
+                panelLines.Add($"Описание помощи: [dim]{Markup.Escape(assistDescription)}[/]");
             AppendGuardianProjectSummaryLines(panelLines, project, "");
         }
         else
@@ -1429,10 +1678,16 @@ public partial class ExplorerMode
             var outcome = GetStr(project, "outcome", "");
             var completionTurn = GetInt(project, "completionTurn", 0);
             var abodePowerDelta = GetInt(project, "abodePowerDelta", 0);
+            var startedTurn = GetInt(project, "startedTurn", 0);
+            var estimatedCompletionTurn = GetInt(project, "estimatedCompletionTurn", 0);
+            if (startedTurn > 0)
+                panelLines.Add($"Ход начала: [white]{startedTurn}[/]");
+            if (estimatedCompletionTurn > 0)
+                panelLines.Add($"Ожидаемый ход завершения: [white]{estimatedCompletionTurn}[/]");
             if (completionTurn > 0)
                 panelLines.Add($"Ход завершения: [white]{completionTurn}[/]");
             if (!string.IsNullOrWhiteSpace(finalState))
-                panelLines.Add($"Terminal state: [white]{Markup.Escape(finalState)}[/]");
+                panelLines.Add($"Конечное состояние: [white]{Markup.Escape(FormatGuardianProjectStateLabel(finalState))}[/]");
             if (!string.IsNullOrWhiteSpace(outcome))
                 panelLines.Add($"Итог: [dim]{Markup.Escape(outcome)}[/]");
             if (abodePowerDelta != 0)
@@ -1452,7 +1707,7 @@ public partial class ExplorerMode
         {
             panelLines.Add("");
             panelLines.Add("[bold]📜 Журнал проявлений:[/]");
-            foreach (var journalEntry in journalEntries.Take(8))
+            foreach (var journalEntry in journalEntries)
             {
                 var turn = GetInt(journalEntry, "turn", 0);
                 var title = GetStr(journalEntry, "title", "");
@@ -1463,10 +1718,10 @@ public partial class ExplorerMode
                     panelLines.Add($"    [dim]{Markup.Escape(summary)}[/]");
                 if (journalEntry.TryGetProperty("details", out var details) && details.ValueKind == JsonValueKind.Array)
                 {
-                    foreach (var detail in details.EnumerateArray().Take(4))
+                    foreach (var detail in details.EnumerateArray())
                     {
                         if (detail.ValueKind == JsonValueKind.String)
-                            panelLines.Add($"    [dim]- {Markup.Escape(detail.GetString() ?? "")}[/]");
+                            panelLines.Add($"    [dim]- {Markup.Escape(FormatProjectJournalDetailLine(detail.GetString() ?? ""))}[/]");
                     }
                 }
             }
@@ -1654,7 +1909,7 @@ public partial class ExplorerMode
         if (!string.IsNullOrWhiteSpace(projectName))
             lines.Add($"{indent}[white]{Markup.Escape(projectName)}[/]");
         if (!string.IsNullOrWhiteSpace(activeState))
-            lines.Add($"{indent}Статус: [yellow]{Markup.Escape(activeState)}[/]");
+            lines.Add($"{indent}Статус: [yellow]{Markup.Escape(FormatGuardianProjectStateLabel(activeState))}[/]");
         if (totalWork > 0)
         {
             var normalized = Math.Clamp(workDone * 18 / Math.Max(1, totalWork), 0, 18);
@@ -1662,7 +1917,7 @@ public partial class ExplorerMode
         }
         if (totalStages > 0)
             lines.Add($"{indent}Стадия: [white]{currentStage}[/]/[dim]{totalStages}[/]");
-        lines.Add($"{indent}Pressure: [orange1]{pressure}[/]  •  Stability: [green]{stability}[/]");
+        lines.Add($"{indent}[dim]{Markup.Escape(FormatProjectPressureLabel(pressure))}[/]  •  [dim]{Markup.Escape(FormatProjectStabilityLabel(stability))}[/]");
     }
 
     private static void AppendProjectSystemEffectLines(List<string> lines, JsonElement project, string indent)
@@ -1691,7 +1946,7 @@ public partial class ExplorerMode
                 var tradeSpent = GetInt(effectState, "tradeRefreshUsesSpent", 0);
                 var gachaGranted = GetInt(effectState, "gachaUsesGranted", 0);
                 var gachaSpent = GetInt(effectState, "gachaUsesSpent", 0);
-                lines.Add($"{indent}[bold]Временный эффект:[/] [dim]Trade refresh {Math.Max(0, tradeGranted - tradeSpent)}/{tradeGranted} • Gacha use {Math.Max(0, gachaGranted - gachaSpent)}/{gachaGranted}[/]");
+                lines.Add($"{indent}[bold]Временный эффект:[/] [dim]Дополнительных обновлений витрины {Math.Max(0, tradeGranted - tradeSpent)}/{tradeGranted} • Дополнительных попыток гачи {Math.Max(0, gachaGranted - gachaSpent)}/{gachaGranted}[/]");
                 break;
             }
             case "lore_research":
@@ -1706,8 +1961,8 @@ public partial class ExplorerMode
                 var clueSpent = GetInt(effectState, "visibleRivalClueBudgetSpent", 0);
                 var warningBonus = GetInt(effectState, "archiveWarningTierBonusGranted", 0);
                 var targetIncarnation = GetInt(effectState, "targetIncarnation", 0);
-                var targetText = targetIncarnation > 0 ? $" • Target life #{targetIncarnation}" : "";
-                lines.Add($"{indent}[bold]Остаток эффекта:[/] [dim]Hooks {Math.Max(0, hookGranted - hookSpent)}/{hookGranted} • Archive quests {Math.Max(0, archiveQuestGranted - archiveQuestConsumed)}/{archiveQuestGranted} • Special {Math.Max(0, specialGranted - specialSpent)}/{specialGranted} • Clues {Math.Max(0, clueGranted - clueSpent)}/{clueGranted} • Warning +{warningBonus}{targetText}[/]");
+                var targetText = targetIncarnation > 0 ? $" • Для жизни #{targetIncarnation}" : "";
+                lines.Add($"{indent}[bold]Остаток эффекта:[/] [dim]Квестовых зацепок {Math.Max(0, hookGranted - hookSpent)}/{hookGranted} • Архивных квестов {Math.Max(0, archiveQuestGranted - archiveQuestConsumed)}/{archiveQuestGranted} • Особых сюжетных линий {Math.Max(0, specialGranted - specialSpent)}/{specialGranted} • Явных следов соперника {Math.Max(0, clueGranted - clueSpent)}/{clueGranted} • Предупреждение +{warningBonus}{targetText}[/]");
                 break;
             }
             case "soul_preparation":
@@ -1718,10 +1973,95 @@ public partial class ExplorerMode
                 var hostileSpent = GetInt(effectState, "hostilePriorityTokensSpent", 0);
                 var consumed = effectState.TryGetProperty("consumedAtLifeStart", out var consumedNode) && consumedNode.ValueKind == JsonValueKind.True;
                 var targetIncarnation = GetInt(effectState, "targetIncarnation", 0);
-                var targetText = targetIncarnation > 0 ? $" • Target life #{targetIncarnation}" : "";
-                lines.Add($"{indent}[bold]Остаток эффекта:[/] [dim]Prep budget {Math.Max(0, prepGranted - prepSpent)}/{prepGranted} • Hostile tokens {Math.Max(0, hostileGranted - hostileSpent)}/{hostileGranted} • Consumed {(consumed ? "yes" : "no")}{targetText}[/]");
+                var targetText = targetIncarnation > 0 ? $" • Для жизни #{targetIncarnation}" : "";
+                lines.Add($"{indent}[bold]Остаток эффекта:[/] [dim]Очков бюджета подготовки {Math.Max(0, prepGranted - prepSpent)}/{prepGranted} • Враждебных жетонов приоритета {Math.Max(0, hostileGranted - hostileSpent)}/{hostileGranted} • Израсходовано {(consumed ? "да" : "нет")}{targetText}[/]");
                 break;
             }
+        }
+    }
+
+    private void ShowGuardianJournalDetailPanel(
+        string guardianName,
+        IReadOnlyList<JsonElement> guardianThoughtEntries,
+        IReadOnlyList<JsonElement> guardianSocialEntries)
+    {
+        var lines = new List<string>
+        {
+            $"[bold cyan]📚 Полный журнал Хранителя «{Markup.Escape(guardianName)}»[/]"
+        };
+
+        if (guardianThoughtEntries.Count > 0)
+        {
+            lines.Add("");
+            lines.Add($"[bold]🧠 Все актуальные мысли:[/] [dim]({guardianThoughtEntries.Count} записей)[/]");
+            foreach (var entry in guardianThoughtEntries)
+                AppendGuardianJournalDetailEntryLines(lines, entry);
+        }
+
+        if (guardianSocialEntries.Count > 0)
+        {
+            lines.Add("");
+            lines.Add($"[bold]📚 Вся память общения:[/] [dim]({guardianSocialEntries.Count} записей)[/]");
+            foreach (var entry in guardianSocialEntries)
+                AppendGuardianJournalDetailEntryLines(lines, entry);
+        }
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" Журнал Хранителя ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Cyan1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+    }
+
+    private static void AppendGuardianJournalDetailEntryLines(List<string> lines, JsonElement entry)
+    {
+        lines.Add($"  • [white]{Markup.Escape(BuildActorJournalLine(entry))}[/]");
+
+        var timestamp = GetStr(entry, "timestamp", "");
+        if (!string.IsNullOrWhiteSpace(timestamp))
+            lines.Add($"    [dim]Время: {Markup.Escape(timestamp)}[/]");
+
+        var requestId = GetStr(entry, "requestId", "");
+        if (!string.IsNullOrWhiteSpace(requestId))
+            lines.Add($"    [dim]Идентификатор запроса: {Markup.Escape(requestId)}[/]");
+
+        var interactionType = GetStr(entry, "interactionType", "");
+        if (!string.IsNullOrWhiteSpace(interactionType))
+            lines.Add($"    [dim]Тип взаимодействия: {Markup.Escape(DescribeGuardianInteractionType(interactionType))}[/]");
+
+        var status = GetStr(entry, "status", "");
+        if (!string.IsNullOrWhiteSpace(status))
+            lines.Add($"    [dim]Статус: {Markup.Escape(DescribeGuardianJournalStatus(status))}[/]");
+
+        var responseMode = GetStr(entry, "responseMode", "");
+        if (!string.IsNullOrWhiteSpace(responseMode))
+            lines.Add($"    [dim]Режим ответа: {Markup.Escape(DescribeGuardianResponseMode(responseMode))}[/]");
+
+        var consequence = GetStr(entry, "consequence", "");
+        if (!string.IsNullOrWhiteSpace(consequence))
+            lines.Add($"    [dim]Последствие: {Markup.Escape(consequence)}[/]");
+
+        var attitude = GetStr(entry, "attitude", "");
+        if (!string.IsNullOrWhiteSpace(attitude))
+            lines.Add($"    [dim]Отношение: {Markup.Escape(attitude)}[/]");
+
+        var intent = GetStr(entry, "intent", "");
+        if (!string.IsNullOrWhiteSpace(intent))
+            lines.Add($"    [dim]Намерение: {Markup.Escape(intent)}[/]");
+
+        if (entry.TryGetProperty("tags", out var tagsNode) && tagsNode.ValueKind == JsonValueKind.Array)
+        {
+            var tags = tagsNode.EnumerateArray()
+                .Where(item => item.ValueKind == JsonValueKind.String)
+                .Select(item => item.GetString())
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .Cast<string>()
+                .ToList();
+            if (tags.Count > 0)
+                lines.Add($"    [dim]Метки: {Markup.Escape(string.Join(", ", tags))}[/]");
         }
     }
 
@@ -1738,7 +2078,14 @@ public partial class ExplorerMode
                string.Equals(abodeId, currentAbodeId, StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task ShowGuardianDetailActions(JsonElement guardian, string guardianName, string currentAbodeId, string activeGuardianId)
+    private async Task ShowGuardianDetailActions(
+        JsonElement guardian,
+        string guardianName,
+        string currentAbodeId,
+        string activeGuardianId,
+        IReadOnlyList<JsonElement> guardianThoughtEntries,
+        IReadOnlyList<JsonElement> guardianSocialEntries,
+        JsonElement? guardianProjectTrackerRoot)
     {
         var imagePrompt = GetStr(guardian, "image_prompt", "");
         var guardianId = GetStr(guardian, "guardianId", "");
@@ -1756,10 +2103,15 @@ public partial class ExplorerMode
         var socialAvailable = GuardianTradeAvailableHere(guardian, currentAbodeId) &&
                               string.Equals(guardianId, activeGuardianId, StringComparison.OrdinalIgnoreCase) &&
                               !string.IsNullOrWhiteSpace(guardianId);
+        var hasGuardianJournalEntries = guardianThoughtEntries.Count > 0 || guardianSocialEntries.Count > 0;
+        var trackerRoot = guardianProjectTrackerRoot ?? default;
+        var hasGuardianProjects = !string.IsNullOrWhiteSpace(guardianId) &&
+                                  (TryGetActiveGuardianProject(trackerRoot, guardianId, out _) ||
+                                   CollectCompletedGuardianProjects(trackerRoot, guardianId).Count > 0);
 
         var hasImageSupport = _imageService != null && !string.IsNullOrWhiteSpace(imagePrompt);
         var hasAbodeImageSupport = _imageService != null && !string.IsNullOrWhiteSpace(abodeImagePrompt);
-        if (!tradeAvailable && !socialAvailable && !hasImageSupport && !hasAbodeImageSupport)
+        if (!tradeAvailable && !socialAvailable && !hasImageSupport && !hasAbodeImageSupport && !hasGuardianJournalEntries && !hasGuardianProjects)
         {
             WaitForKey();
             return;
@@ -1784,6 +2136,10 @@ public partial class ExplorerMode
                 actions.Add("🛒 Торговать");
             if (GuardianTradeAvailableHere(guardian, currentAbodeId))
                 actions.Add("🏛 Обитатели Обители");
+            if (hasGuardianProjects)
+                actions.Add("🔬 Открыть проекты Хранителя");
+            if (guardianThoughtEntries.Count > 0 || guardianSocialEntries.Count > 0)
+                actions.Add("📚 Показать весь журнал Хранителя");
 
             if (hasImageSupport)
             {
@@ -1829,8 +2185,8 @@ public partial class ExplorerMode
                 await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, request);
                 _pendingGmAction =
                     $"[GUARDIAN_SOCIAL_TALK_REQUEST] Игрок обращается к Хранителю '{guardianName}' (guardianId={guardianId}, requestId={request.RequestId}) с обычным разговором. " +
-                    "В accepted turn отыграй сцену и обязательно закрой запрос через guardianSocialJournalUpdates entry с requestId, guardianId, interactionType=talk, status=accepted|rejected|cancelled, optional responseMode, title, summary, turn и timestamp. " +
-                    "guardianThoughtJournalUpdates остаётся рекомендуемым, но matching guardianSocialJournalUpdates entry обязателен.";
+                    "В следующем подтверждённом ходе отыграй сцену и обязательно закрой этот разговор записью в журнале общения Хранителя с requestId, guardianId, interactionType=talk, status=accepted|rejected|cancelled, optional responseMode, title, summary, turn и timestamp. " +
+                    "Журнал мыслей Хранителя остаётся рекомендуемым дополнением, но запись о закрытии разговора обязательна.";
                 MarkupLine("[cyan]Разговор с Хранителем отправлен GM.[/]");
                 return;
             }
@@ -1853,8 +2209,8 @@ public partial class ExplorerMode
                 await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, request);
                 _pendingGmAction =
                     $"[GUARDIAN_SOCIAL_LORE_REQUEST] Игрок просит Хранителя '{guardianName}' (guardianId={guardianId}, requestId={request.RequestId}) поделиться знанием или лором. " +
-                    "В accepted turn отыграй сцену и обязательно закрой запрос через guardianSocialJournalUpdates entry с requestId, guardianId, interactionType=lore, status=accepted|rejected|cancelled, optional responseMode=lore_revealed|lore_refused|warning|refusal, title, summary, turn и timestamp. " +
-                    "Если знание реально раскрыто, при необходимости добавь guardianThoughtJournalUpdates и любые canonical lore/quest outcomes отдельно от самого social closure.";
+                    "В следующем подтверждённом ходе отыграй сцену и обязательно закрой этот запрос записью в журнале общения Хранителя с requestId, guardianId, interactionType=lore, status=accepted|rejected|cancelled, optional responseMode=lore_revealed|lore_refused|warning|refusal, title, summary, turn и timestamp. " +
+                    "Если знание действительно раскрыто, при необходимости добавь журнал мыслей Хранителя и связанные игровые последствия отдельно от самой записи о закрытии запроса.";
                 MarkupLine("[cyan]Вопрос о знании отправлен GM.[/]");
                 return;
             }
@@ -1870,6 +2226,19 @@ public partial class ExplorerMode
             {
                 await ShowGuardianAbodeResidentsPanel(guardian);
                 return;
+            }
+
+            if (action.Contains("Открыть проекты Хранителя", StringComparison.OrdinalIgnoreCase))
+            {
+                await ShowGuardianProjectsForGuardianAsync(guardianId, guardianName, trackerRoot);
+                continue;
+            }
+
+            if (action.Contains("Показать весь журнал Хранителя", StringComparison.OrdinalIgnoreCase))
+            {
+                ShowGuardianJournalDetailPanel(guardianName, guardianThoughtEntries, guardianSocialEntries);
+                WaitForKey();
+                continue;
             }
 
             if (action.Contains("обители", StringComparison.OrdinalIgnoreCase))
@@ -1903,13 +2272,71 @@ public partial class ExplorerMode
         }
     }
 
+    private async Task ShowGuardianProjectsForGuardianAsync(string guardianId, string guardianName, JsonElement trackerRoot)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId) || trackerRoot.ValueKind != JsonValueKind.Object)
+        {
+            ShowEmptyPanel("Проекты Хранителя", "У этого Хранителя пока нет доступных проектов.");
+            return;
+        }
+
+        var entries = CollectGuardianProjectEntries(trackerRoot, "activeProjects")
+            .Concat(CollectGuardianProjectEntries(trackerRoot, "completedProjects"))
+            .Where(entry => string.Equals(GetStr(entry, "guardianId", ""), guardianId, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (entries.Count == 0)
+        {
+            ShowEmptyPanel("Проекты Хранителя", "У этого Хранителя пока нет доступных проектов.");
+            return;
+        }
+
+        var journalDoc = await _stateManager.LoadGameStateFileAsync(GuardianProjectState.JournalPath);
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        var guardianNames = guardiansDoc != null
+            ? BuildGuardianNameMap(guardiansDoc.RootElement)
+            : new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        guardianNames[guardianId] = guardianName;
+
+        while (true)
+        {
+            var choices = entries.Select(entry =>
+            {
+                var project = entry.GetProperty("project");
+                var projectName = GetStr(project, "projectName", GetStr(project, "name", "Проект"));
+                var activeState = GetStr(project, "activeState", "");
+                var finalState = GetStr(project, "finalState", "");
+                var status = FormatGuardianProjectStateLabel(string.IsNullOrWhiteSpace(activeState) ? finalState : activeState);
+                return ConsoleLayout.PlainChoiceLabel(
+                    $"🔬 {projectName}",
+                    guardianName,
+                    string.IsNullOrWhiteSpace(status) ? "" : status);
+            }).ToList();
+            choices.Add("← Назад");
+
+            var selected = Prompt(new SelectionPrompt<string>()
+                .Title($"[bold cyan]🔬 Проекты Хранителя {Markup.Escape(guardianName)}[/]")
+                .PageSize(12)
+                .HighlightStyle(new Style(Color.Cyan1))
+                .AddChoices(choices));
+
+            if (selected == "← Назад")
+                return;
+
+            var selectedIndex = choices.IndexOf(selected);
+            if (selectedIndex < 0 || selectedIndex >= entries.Count)
+                return;
+
+            ShowGuardianProjectDetailPanel(entries[selectedIndex], guardianNames, journalDoc?.RootElement, trackerRoot);
+        }
+    }
+
     private async Task ShowGuardianAbodeResidentsPanel(JsonElement guardian)
     {
         var guardianId = GetStr(guardian, "guardianId", "");
         var guardianName = GuardianManifestation.GetDisplayName(guardian);
         if (guardian.TryGetProperty("abode", out var abode) is false || abode.ValueKind != JsonValueKind.Object)
         {
-            ShowEmptyPanel("Обитатели Обители", "У этого Хранителя нет materialized Обители.");
+            ShowEmptyPanel("Обитатели Обители", "У этого Хранителя ещё нет материализованной Обители.");
             return;
         }
 
@@ -1918,7 +2345,7 @@ public partial class ExplorerMode
         var currentAbodePower = AbodePowerRules.GetCurrentPower(guardian);
         if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(abodeId))
         {
-            ShowEmptyPanel("Обитатели Обители", "Обитель ещё не materialized достаточно явно для resident roster.");
+            ShowEmptyPanel("Обитатели Обители", "Обитель ещё не проявлена достаточно явно, чтобы открыть состав обитателей.");
             return;
         }
 
@@ -1926,11 +2353,21 @@ public partial class ExplorerMode
         {
             var residentsDoc = await _stateManager.LoadGameStateFileAsync(GuardianAbodeResidentState.StatePath);
             var residents = residentsDoc != null
-                ? GuardianAbodeResidentState.CollectEntries(residentsDoc.RootElement, guardianId, abodeId, currentAbodePower)
+                ? GuardianAbodeResidentState.CollectEntries(residentsDoc.RootElement, guardianId, abodeId, currentAbodePower, presentOnly: false)
                 : new List<GuardianAbodeResidentState.ResidentEntry>();
+            var isFoundedGuardian = PlayerGuardianFoundationState.IsPlayerFoundedGuardian(guardian);
+            var founderFeatureTitle = PlayerGuardianFoundationState.GetFounderAbodeFeatureTitle(guardian);
+            var founderFeatureSummary = PlayerGuardianFoundationState.GetFounderAbodeFeatureSummary(guardian);
 
             if (residents.Count == 0)
             {
+                if (await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs))
+                {
+                    ShowEmptyPanel("Обитатели Обители", "pending_guardian_abode_residents_request.json повреждён. Новый запрос состава заблокирован, пока pending bundle не будет исправлен или очищен.");
+                    WaitForKey();
+                    return;
+                }
+
                 var pendingRequests = await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs);
                 var matchesCurrentRequest = pendingRequests.Any(pendingRequest =>
                     string.Equals(pendingRequest.GuardianId, guardianId, StringComparison.OrdinalIgnoreCase) &&
@@ -1948,25 +2385,34 @@ public partial class ExplorerMode
                         AbodeId = abodeId,
                         AbodeName = abodeName,
                         CurrentReputation = reputation,
+                        RequestMode = isFoundedGuardian
+                            ? GuardianAbodeResidentRequestState.ResidentsRequestModeFounderAttraction
+                            : GuardianAbodeResidentRequestState.ResidentsRequestModeStandardRoster,
+                        FounderFeatureTitle = isFoundedGuardian ? founderFeatureTitle : null,
+                        FounderFeatureSummary = isFoundedGuardian ? founderFeatureSummary : null,
                         CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
                     };
                     await GuardianAbodeResidentRequestState.WriteResidentsRequestAsync(_fs, request);
-                    _pendingGmAction =
-                        $"[ABODE_RESIDENT_ROSTER_REQUEST] Игрок открыл roster Обители Хранителя '{guardianName}' (guardianId={guardianId}, abodeId={abodeId}, abodeName={abodeName}). " +
-                        "В accepted turn materialize explicit residents через UpdateGuardianAbodeResidents в guardian_abode_residents.json и закрой request через UpdateGuardianAbodeResidentRosterReceipts. " +
-                        "Не выводи roster из домена Хранителя. Авторски создай 2-4 afterlife residents с residentId, residentKind, roleLabel, bondLevel, bondTier, canGrantCompanionRelic, bondRewardState, personalityProfile, abodeDisposition, abodeDevotionLevel, abodeDevotionTier, restlessness, migrationState и mortalWorldImprint. " +
-                        "abodeDevotionTier и migrationState должны быть canonical derived values, а не свободным prose.";
+                    _pendingGmAction = GuardianAbodeResidentRequestState.BuildResidentsRosterPendingGmActionText(request);
                 }
 
                 var pendingLines = new List<string>
                 {
                     $"[bold cyan]🏛 {Markup.Escape(abodeName)}[/]",
                     "",
-                    "В глубине Обители начинают проступать иные сущности.",
-                    "Roster обитателей запрошен у GM.",
-                    "",
-                    "[dim]Откройте панель позже, когда explicit resident state будет materialized.[/]"
+                    isFoundedGuardian
+                        ? "Новая Обитель основанной мантии начинает притягивать первые чужие отклики."
+                        : "В глубине Обители начинают проступать иные сущности.",
+                    "Состав обитателей запрошен у GM."
                 };
+                if (isFoundedGuardian && !string.IsNullOrWhiteSpace(founderFeatureTitle))
+                    pendingLines.Add($"[bold]Дар основания:[/] [white]{Markup.Escape(founderFeatureTitle)}[/]");
+                if (isFoundedGuardian && !string.IsNullOrWhiteSpace(founderFeatureSummary))
+                    pendingLines.Add($"[dim]{Markup.Escape(founderFeatureSummary)}[/]");
+                if (isFoundedGuardian)
+                    pendingLines.Add("[dim]Старые обитатели прежнего покровителя не переносятся автоматически; новая мантия собирает собственный первый состав.[/]");
+                pendingLines.Add("");
+                pendingLines.Add("[dim]Откройте панель позже, когда явное состояние обитателей будет материализовано.[/]");
 
                 Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", pendingLines)))
                 {
@@ -1997,10 +2443,11 @@ public partial class ExplorerMode
                     GuardianAbodeResidentState.AbodeDevotionTierUncertain => "yellow",
                     _ => "grey"
                 };
+                var presenceTag = resident.IsPresent ? string.Empty : " [grey](покинул Обитель)[/]";
                 return (
                     $"👤 {Markup.Escape(resident.DisplayName)} [dim]({Markup.Escape(GuardianAbodeResidentState.GetResidentKindLabel(resident.ResidentKind))})[/] " +
                     $"[{bondColor}]{Markup.Escape(GuardianAbodeResidentState.GetBondTierLabel(resident.BondTier))}[/] [dim]{resident.BondLevel}/100[/] " +
-                    $"[dim]•[/] [{devotionColor}]{Markup.Escape(GuardianAbodeResidentState.GetAbodeDevotionTierLabel(resident.AbodeDevotionTier))}[/]",
+                    $"[dim]•[/] [{devotionColor}]{Markup.Escape(GuardianAbodeResidentState.GetAbodeDevotionTierLabel(resident.AbodeDevotionTier))}[/]{presenceTag}",
                     resident.ResidentId);
             }).ToList());
             choices.Add("[grey]← Назад[/]");
@@ -2032,6 +2479,9 @@ public partial class ExplorerMode
         GuardianAbodeResidentState.ResidentEntry resident)
     {
         var residentStateDoc = await _stateManager.LoadGameStateFileAsync(GuardianAbodeResidentState.StatePath);
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        var soulDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
+        var soulQuestDoc = await _stateManager.LoadGameStateFileAsync("game_state/quests/soul_quests.json");
         var thoughtJournalEntries = residentStateDoc != null
             ? GuardianAbodeResidentState.CollectThoughtJournalEntries(residentStateDoc.RootElement, resident.ResidentId)
             : new List<GuardianAbodeResidentState.JournalEntry>();
@@ -2052,6 +2502,14 @@ public partial class ExplorerMode
         var pendingHistoryRequest = pendingInteractionRequests.FirstOrDefault(request =>
             string.Equals(request.ResidentId, resident.ResidentId, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(request.InteractionType, GuardianAbodeResidentState.InteractionTypeHistory, StringComparison.OrdinalIgnoreCase));
+        var residentStateRoot = residentStateDoc != null
+            ? JsonNode.Parse(residentStateDoc.RootElement.GetRawText()) as JsonObject
+            : null;
+        var guardiansRoot = guardiansDoc != null
+            ? JsonNode.Parse(guardiansDoc.RootElement.GetRawText()) as JsonObject
+            : null;
+        var competitionCandidates = GuardianAbodeResidentState.BuildTransferCompetitionCandidates(resident, guardiansRoot, residentStateRoot);
+        var bestCompetitionCandidate = competitionCandidates.FirstOrDefault();
 
         var lines = new List<string>
         {
@@ -2061,13 +2519,35 @@ public partial class ExplorerMode
             $"  Роль: [dim]{Markup.Escape(resident.RoleLabel)}[/]",
             $"  Связь: [white]{Markup.Escape(GuardianAbodeResidentState.GetBondTierLabel(resident.BondTier))}[/] [dim]({resident.BondLevel}/100)[/]",
             $"  Преданность Обители: [white]{Markup.Escape(GuardianAbodeResidentState.GetAbodeDevotionTierLabel(resident.AbodeDevotionTier))}[/] [dim]({resident.AbodeDevotionLevel}/100)[/]",
-            $"  Внутреннее состояние: [white]{Markup.Escape(GuardianAbodeResidentState.GetMigrationStateLabel(resident.MigrationState))}[/] [dim](restlessness {resident.Restlessness}/100)[/]",
+            $"  Внутреннее состояние: [white]{Markup.Escape(GuardianAbodeResidentState.GetMigrationStateLabel(resident.MigrationState))}[/] [dim](неспокойствие {resident.Restlessness}/100)[/]",
+            $"  Присутствие: {(resident.IsPresent ? "[green]сейчас в Обители[/]" : "[yellow]уже покинул Обитель[/]")}",
             $"  История: {(resident.HistoryRevealed ? "[green]раскрыта[/]" : "[dim]ещё не раскрыта[/]")}",
             $"  Награда связи: [dim]{Markup.Escape(GuardianAbodeResidentState.GetRewardStateLabel(resident.BondRewardState))}[/]"
         };
         var pressureNarrative = GuardianAbodeResidentState.GetMigrationStatePressureNarrative(resident.MigrationState);
         if (!string.IsNullOrWhiteSpace(pressureNarrative))
             lines.Add($"  Давление ухода: [yellow]{Markup.Escape(pressureNarrative)}[/]");
+        if (pendingTransferRequest == null &&
+            string.Equals(resident.MigrationState, GuardianAbodeResidentState.MigrationStateReadyToTransfer, StringComparison.OrdinalIgnoreCase))
+        {
+            if (bestCompetitionCandidate == null)
+            {
+                lines.Add("  Новая Обитель: [dim]убедительной проявленной цели пока нет; основной выход сейчас — уход без новой Обители[/]");
+            }
+            else
+            {
+                var competitionText = $"{GuardianAbodeResidentState.GetTransferCompetitionLabelText(bestCompetitionCandidate.CompetitionLabel)} {bestCompetitionCandidate.CompetitionScore}/100";
+                if (string.Equals(bestCompetitionCandidate.CompetitionLabel, GuardianAbodeResidentState.TransferCompetitionLabelWeakPull, StringComparison.OrdinalIgnoreCase))
+                {
+                    lines.Add($"  Возможная новая Обитель: [dim]убедительной цели пока нет; самый сильный видимый зов: {Markup.Escape(bestCompetitionCandidate.TargetGuardianName)} / {Markup.Escape(bestCompetitionCandidate.TargetAbodeName)} ({Markup.Escape(competitionText)})[/]");
+                }
+                else
+                {
+                    lines.Add($"  Возможная новая Обитель: [white]{Markup.Escape(bestCompetitionCandidate.TargetGuardianName)} / {Markup.Escape(bestCompetitionCandidate.TargetAbodeName)}[/] [dim]({Markup.Escape(competitionText)})[/]");
+                    lines.Add($"  Причина зова: [dim]{Markup.Escape(bestCompetitionCandidate.CompetitionReason)}[/]");
+                }
+            }
+        }
 
         if (!string.IsNullOrWhiteSpace(resident.Summary))
         {
@@ -2077,12 +2557,16 @@ public partial class ExplorerMode
 
         if (!string.IsNullOrWhiteSpace(resident.OriginWorldSummary))
             lines.Add($"  Мир-исток: [dim]{Markup.Escape(resident.OriginWorldSummary)}[/]");
+        if (!string.IsNullOrWhiteSpace(resident.FutureCompanionPrompt))
+            lines.Add($"  Образ будущего спутника: [dim]{Markup.Escape(resident.FutureCompanionPrompt)}[/]");
         if (!string.IsNullOrWhiteSpace(resident.BondReason))
             lines.Add($"  Причина связи: [dim]{Markup.Escape(resident.BondReason)}[/]");
         if (resident.CoreTraits.Count > 0)
             lines.Add($"  Черты: [dim]{Markup.Escape(string.Join(", ", resident.CoreTraits))}[/]");
         if (resident.ArchetypeHints.Count > 0)
             lines.Add($"  Архетипы: [dim]{Markup.Escape(string.Join(", ", resident.ArchetypeHints))}[/]");
+        if (resident.AppearanceMotifs.Count > 0)
+            lines.Add($"  Образы и мотивы: [dim]{Markup.Escape(string.Join(", ", resident.AppearanceMotifs))}[/]");
         if (!string.IsNullOrWhiteSpace(resident.PersonalityProfile.Archetype))
             lines.Add($"  Личность: [white]{Markup.Escape(resident.PersonalityProfile.Archetype)}[/]");
         if (!string.IsNullOrWhiteSpace(resident.PersonalityProfile.Worldview))
@@ -2094,20 +2578,27 @@ public partial class ExplorerMode
         if (resident.PersonalityProfile.PersonalityTraits.Count > 0)
         {
             lines.Add("  Черты личности:");
-            foreach (var trait in resident.PersonalityProfile.PersonalityTraits.Take(4))
+            foreach (var trait in resident.PersonalityProfile.PersonalityTraits)
                 lines.Add($"    [dim]• {Markup.Escape(trait.TraitName)} {trait.Value}/10 — {Markup.Escape(trait.ValueDescription)}[/]");
         }
         lines.Add($"  Склад Обители: [dim]{Markup.Escape(GuardianAbodeResidentState.GetPowerSensitivityLabel(resident.AbodeDisposition.PowerSensitivity))}; {Markup.Escape(GuardianAbodeResidentState.GetMigrationDispositionLabel(resident.AbodeDisposition.MigrationDisposition))}; {Markup.Escape(GuardianAbodeResidentState.GetCommunalOrientationLabel(resident.AbodeDisposition.CommunalOrientation))}; {Markup.Escape(GuardianAbodeResidentState.GetStabilityNeedLabel(resident.AbodeDisposition.StabilityNeed))}[/]");
         if (!string.IsNullOrWhiteSpace(resident.LinkedSoulQuestId))
-            lines.Add($"  Связанный квест души: [yellow]{Markup.Escape(resident.LinkedSoulQuestId)}[/]");
+        {
+            var linkedQuestLabel = ResolveSoulQuestLabel(soulQuestDoc?.RootElement, resident.LinkedSoulQuestId);
+            lines.Add($"  Связанный квест души: [yellow]{Markup.Escape(linkedQuestLabel)}[/]");
+        }
         if (!string.IsNullOrWhiteSpace(resident.GrantedRelicId))
-            lines.Add($"  Дарованная реликвия: [green]{Markup.Escape(resident.GrantedRelicId)}[/]");
+        {
+            var grantedRelicLabel = ResolveSoulRelicLabel(soulDoc?.RootElement, resident.GrantedRelicId);
+            lines.Add($"  Дарованная реликвия: [green]{Markup.Escape(grantedRelicLabel)}[/]");
+        }
         if (pendingTransferRequest != null)
         {
             var targetLabel = string.Equals(pendingTransferRequest.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase)
-                ? "offscreen departure"
+                ? "уход без новой Обители"
                 : $"{pendingTransferRequest.TargetGuardianName} / {pendingTransferRequest.TargetAbodeName}";
-            lines.Add($"  Переход: [yellow]ожидает решения GM[/] [dim](mode={Markup.Escape(pendingTransferRequest.TransferMode)}, target={Markup.Escape(targetLabel)}, requestId={Markup.Escape(pendingTransferRequest.RequestId)})[/]");
+            var competitionSummary = BuildResidentTransferCompetitionSummary(pendingTransferRequest);
+            lines.Add($"  Переход: [yellow]ожидает решения GM[/] [dim](режим: {Markup.Escape(DescribeResidentTransferMode(pendingTransferRequest.TransferMode))}, цель: {Markup.Escape(targetLabel)}, идентификатор запроса: {Markup.Escape(pendingTransferRequest.RequestId)}{(string.IsNullOrWhiteSpace(competitionSummary) ? string.Empty : $", {Markup.Escape(competitionSummary)}")})[/]");
         }
         else if (transferReceiptEntries.Count > 0)
         {
@@ -2115,47 +2606,39 @@ public partial class ExplorerMode
             var targetLabel = string.Equals(latestTransfer.Status, GuardianAbodeResidentState.TransferStatusAccepted, StringComparison.OrdinalIgnoreCase)
                 ? $"{latestTransfer.TargetGuardianName} / {latestTransfer.TargetAbodeName}"
                 : latestTransfer.SourceAbodeName;
-            lines.Add($"  Последний переход: [dim]{Markup.Escape(GuardianAbodeResidentState.GetTransferStatusLabel(latestTransfer.Status))}[/] [dim]({Markup.Escape(targetLabel)}, turn {latestTransfer.ResolvedAtTurn})[/]");
+            lines.Add($"  Последний переход: [dim]{Markup.Escape(GuardianAbodeResidentState.GetTransferStatusLabel(latestTransfer.Status))}[/] [dim]({Markup.Escape(targetLabel)}, ход {latestTransfer.ResolvedAtTurn})[/]");
         }
         if (pendingTalkRequest != null)
-            lines.Add($"  Разговор: [yellow]ожидает ответа GM[/] [dim](requestId={Markup.Escape(pendingTalkRequest.RequestId)})[/]");
+            lines.Add($"  Разговор: [yellow]ожидает ответа GM[/] [dim](идентификатор запроса: {Markup.Escape(pendingTalkRequest.RequestId)})[/]");
         if (pendingHistoryRequest != null)
-            lines.Add($"  История: [yellow]ожидает ответа GM[/] [dim](requestId={Markup.Escape(pendingHistoryRequest.RequestId)})[/]");
+            lines.Add($"  История: [yellow]ожидает ответа GM[/] [dim](идентификатор запроса: {Markup.Escape(pendingHistoryRequest.RequestId)})[/]");
         if (thoughtJournalEntries.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Актуальные мысли:[/]");
-            foreach (var thoughtEntry in thoughtJournalEntries.Take(3))
-            {
-                var line = string.IsNullOrWhiteSpace(thoughtEntry.Title)
-                    ? thoughtEntry.Summary
-                    : $"{thoughtEntry.Title} — {thoughtEntry.Summary}";
-                lines.Add($"  • [white]{Markup.Escape(line)}[/]");
-            }
+            lines.Add($"[bold]Актуальные мысли:[/] [dim]({thoughtJournalEntries.Count} записей)[/]");
+            foreach (var thoughtEntry in thoughtJournalEntries)
+                AppendResidentJournalDetailLines(lines, thoughtEntry);
         }
         if (interactionLogEntries.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Краткая память общения:[/]");
-            foreach (var interactionEntry in interactionLogEntries.Take(5))
-            {
-                var line = string.IsNullOrWhiteSpace(interactionEntry.Title)
-                    ? interactionEntry.Summary
-                    : $"{interactionEntry.Title} — {interactionEntry.Summary}";
-                lines.Add($"  • [white]{Markup.Escape(line)}[/]");
-            }
+            lines.Add($"[bold]Краткая память общения:[/] [dim]({interactionLogEntries.Count} записей)[/]");
+            foreach (var interactionEntry in interactionLogEntries)
+                AppendResidentJournalDetailLines(lines, interactionEntry);
         }
         if (historyLogEntries.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Раскрытые фрагменты прошлого:[/]");
-            foreach (var historyEntry in historyLogEntries.Take(5))
-            {
-                var title = string.IsNullOrWhiteSpace(historyEntry.Title) ? historyEntry.EntryId : historyEntry.Title;
-                lines.Add($"  • [white]{Markup.Escape(title)}[/]");
-                if (!string.IsNullOrWhiteSpace(historyEntry.Summary))
-                    lines.Add($"    [dim]{Markup.Escape(historyEntry.Summary)}[/]");
-            }
+            lines.Add($"[bold]Раскрытые фрагменты прошлого:[/] [dim]({historyLogEntries.Count} записей)[/]");
+            foreach (var historyEntry in historyLogEntries)
+                AppendResidentHistoryDetailLines(lines, historyEntry);
+        }
+        if (transferReceiptEntries.Count > 0)
+        {
+            lines.Add("");
+            lines.Add($"[bold]Полная история переходов:[/] [dim]({transferReceiptEntries.Count} записей)[/]");
+            foreach (var transferEntry in transferReceiptEntries)
+                AppendResidentTransferReceiptLines(lines, transferEntry);
         }
 
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -2201,7 +2684,7 @@ public partial class ExplorerMode
         {
             _pendingGmAction =
                 $"[ABODE_RESIDENT_RELIC_GRANT] Игрок принимает реликвию связи от afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, abodeId={abodeId}, abodeName={abodeName}). " +
-                "В accepted turn выдай новую Soul Relic через metaStateUpdates.soulRelicOperations.addRelic. " +
+                "В следующем подтверждённом ходе выдай новую Реликвию Души через metaStateUpdates.soulRelicOperations.addRelic. " +
                 $"Реликвия должна иметь relicType={GuardianAbodeResidentState.RelicTypeCompanionEcho}, sourceResidentId={resident.ResidentId}, sourceGuardianId={guardianId}, sourceGuardianName={guardianName}, rarity не ниже Rare и complete companionSeed с companionNameHint, originWorldSummary, futureCompanionPrompt, bondReason, coreTraits, archetypeHints, appearanceMotifs, rich personalityProfile, abodeDisposition, abodeDevotionLevel/abodeDevotionTier и restlessness/migrationState. " +
                 $"Также обнови resident state через UpdateGuardianAbodeResidents так, чтобы bondRewardState стал '{GuardianAbodeResidentState.RewardStateGranted}', а grantedRelicId указывал на выданную реликвию. " +
                 "Если вручение заметно меняет отношение резидента к Обители, обнови также abodeDevotionLevel/restlessness/migrationState в bounded canonical steps, выведенных из outcome, текущей силы Обители, abodeDisposition и bondLevel. " +
@@ -2213,17 +2696,23 @@ public partial class ExplorerMode
         if (action.StartsWith("🧵", StringComparison.Ordinal))
         {
             _pendingGmAction =
-                $"[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, abodeId={abodeId}). " +
-                "В accepted turn roleplay the request and materialize/advance an ordinary soul quest via UpdateSoulQuests. " +
-                $"Soul quest должен иметь guardianId={guardianId}, relatedAfterlifeResidentId={resident.ResidentId} и player-facing title/description. " +
-                "При необходимости также обнови resident bondLevel/bondTier, linkedSoulQuestId и abodeDevotionLevel/restlessness/migrationState через UpdateGuardianAbodeResidents; resident abode state меняй только в small canonical steps, выведенных из quest outcome, текущей силы Обители, abodeDisposition и bondLevel. " +
-                "Оставь residentInteractionLogUpdates с коротким summary просьбы/прогресса, чтобы у ГМа была curated память этого шага.";
+                $"[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, abodeId={abodeId}). " +
+                "В принятом ходе отыграй просьбу и явно создай или продвинь обычный квест души через UpdateSoulQuests. " +
+                $"Квест души должен иметь guardianId={guardianId}, relatedAfterlifeResidentId={resident.ResidentId} и понятные игроку title/description. " +
+                "При необходимости также обнови resident bondLevel/bondTier, linkedSoulQuestId и abodeDevotionLevel/restlessness/migrationState через UpdateGuardianAbodeResidents; состояние обитателя в Обители меняй только небольшими каноническими шагами, выведенными из исхода квеста, текущей силы Обители, abodeDisposition и bondLevel. " +
+                "Оставь residentInteractionLogUpdates с короткой сводкой просьбы и прогресса, чтобы у ГМа оставалась связная память этого шага.";
             MarkupLine("[cyan]Личная просьба обитателя отправлена GM.[/]");
             return;
         }
 
         if (action.StartsWith("📖", StringComparison.Ordinal))
         {
+            if (await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs))
+            {
+                MarkupLine("[red]pending_guardian_abode_resident_interactions.json повреждён. Новый запрос на раскрытие истории заблокирован, пока pending bundle не будет исправлен или очищен.[/]");
+                return;
+            }
+
             if (pendingHistoryRequest != null)
             {
                 MarkupLine("[yellow]Уже есть незакрытый запрос на раскрытие истории. Дождитесь ответа GM.[/]");
@@ -2244,7 +2733,7 @@ public partial class ExplorerMode
             await GuardianAbodeResidentRequestState.WriteInteractionRequestAsync(_fs, request);
             _pendingGmAction =
                 $"[ABODE_RESIDENT_HISTORY_REQUEST] Игрок просит afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, requestId={request.RequestId}) раскрыть прошлую историю. " +
-                "В accepted turn обязательно закрой запрос через UpdateGuardianAbodeResidentInteractionReceipts со status=accepted|rejected|cancelled. " +
+                "В следующем подтверждённом ходе обязательно закрой этот запрос через UpdateGuardianAbodeResidentInteractionReceipts со status=accepted|rejected|cancelled. " +
                 "Если история действительно раскрыта, либо установи historyRevealed=true, либо добавь запись через UpdateGuardianAbodeResidentHistoryLog, либо обнови mortalWorldImprint. " +
                 "После accepted ответа обязательно добавь residentThoughtJournalUpdates и/или residentInteractionLogUpdates с краткой памятью результата сцены. " +
                 "Если сцена заметно меняет отношение резидента к Обители, обнови abodeDevotionLevel/restlessness/migrationState через UpdateGuardianAbodeResidents только в bounded canonical steps, выведенных из responseMode/outcome, текущей силы Обители, abodeDisposition и bondLevel. " +
@@ -2263,6 +2752,12 @@ public partial class ExplorerMode
 
         if (action.StartsWith("💬", StringComparison.Ordinal))
         {
+            if (await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs))
+            {
+                MarkupLine("[red]pending_guardian_abode_resident_interactions.json повреждён. Новый разговорный запрос заблокирован, пока pending bundle не будет исправлен или очищен.[/]");
+                return;
+            }
+
             if (pendingTalkRequest != null)
             {
                 MarkupLine("[yellow]Уже есть незакрытый разговор с этим резидентом. Дождитесь ответа GM.[/]");
@@ -2283,7 +2778,7 @@ public partial class ExplorerMode
             await GuardianAbodeResidentRequestState.WriteInteractionRequestAsync(_fs, request);
             _pendingGmAction =
                 $"[ABODE_RESIDENT_TALK] Игрок разговаривает с afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, abodeId={abodeId}, abodeName={abodeName}, requestId={request.RequestId}). " +
-                "В accepted turn отыграй сцену и обязательно закрой запрос через UpdateGuardianAbodeResidentInteractionReceipts со status=accepted|rejected|cancelled. " +
+                "В следующем подтверждённом ходе отыграй сцену и обязательно закрой этот разговор через UpdateGuardianAbodeResidentInteractionReceipts со status=accepted|rejected|cancelled. " +
                 "После accepted ответа обязательно оставь residentThoughtJournalUpdates и/или residentInteractionLogUpdates с краткой памятью результата сцены. " +
                 "Если были meaningful state changes, обнови resident state через UpdateGuardianAbodeResidents; abodeDevotionLevel/restlessness/migrationState меняй только в bounded canonical steps, выведенных из responseMode/outcome, текущей силы Обители, abodeDisposition и bondLevel.";
             MarkupLine("[cyan]Разговор с обитателем Обители отправлен GM.[/]");
@@ -2291,6 +2786,231 @@ public partial class ExplorerMode
         }
 
         return;
+    }
+
+    private async Task<bool> ShowGuardianAbodeResidentDetailByIdAsync(string residentId)
+    {
+        if (string.IsNullOrWhiteSpace(residentId))
+            return false;
+
+        var residentStateDoc = await _stateManager.LoadGameStateFileAsync(GuardianAbodeResidentState.StatePath);
+        if (residentStateDoc?.RootElement.ValueKind != JsonValueKind.Object)
+            return false;
+
+        var residentRoot = JsonNode.Parse(residentStateDoc.RootElement.GetRawText()) as JsonObject;
+        if (residentRoot == null)
+            return false;
+
+        var residentNode = GuardianAbodeResidentState.FindResident(residentRoot, residentId);
+        if (residentNode == null)
+            return false;
+
+        JsonObject? guardiansRoot = null;
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        if (guardiansDoc?.RootElement.ValueKind == JsonValueKind.Object)
+            guardiansRoot = JsonNode.Parse(guardiansDoc.RootElement.GetRawText()) as JsonObject;
+
+        var guardianId = GetNodeString(residentNode["guardianId"]) ?? string.Empty;
+        var guardian = ResolveGuardianObject(guardiansRoot, guardianId);
+        var currentAbodePower = guardian == null ? (int?)null : AbodePowerRules.GetCurrentPower(guardian);
+        var resident = GuardianAbodeResidentState.ReadResidentEntry(residentNode, currentAbodePower);
+        var guardianName = GuardianManifestation.GetDisplayName(guardian) ??
+                           GetNodeString(guardian?["canonicalName"]) ??
+                           guardianId;
+        var abodeName = GetNodeString(guardian?["abode"]?["name"]) ?? resident.AbodeId;
+
+        await ShowGuardianAbodeResidentDetailAsync(
+            resident.GuardianId,
+            guardianName,
+            resident.AbodeId,
+            abodeName,
+            resident);
+        return true;
+    }
+
+    private static string ResolveSoulQuestLabel(JsonElement? soulQuestRoot, string questId)
+    {
+        if (string.IsNullOrWhiteSpace(questId))
+            return string.Empty;
+
+        if (soulQuestRoot is { ValueKind: JsonValueKind.Object } root)
+        {
+            foreach (var collectionName in new[] { "quests", "UpdateSoulQuests" })
+            {
+                if (!root.TryGetProperty(collectionName, out var quests) || quests.ValueKind != JsonValueKind.Array)
+                    continue;
+
+                foreach (var quest in quests.EnumerateArray())
+                {
+                    if (quest.ValueKind != JsonValueKind.Object ||
+                        !string.Equals(GetStr(quest, "questId", ""), questId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    var title = GetStr(quest, "title", "");
+                    return string.IsNullOrWhiteSpace(title) ? questId : $"{title} ({questId})";
+                }
+            }
+        }
+
+        return questId;
+    }
+
+    private static string ResolveSoulRelicLabel(JsonElement? soulRoot, string relicId)
+    {
+        if (string.IsNullOrWhiteSpace(relicId))
+            return string.Empty;
+
+        if (soulRoot is { ValueKind: JsonValueKind.Object } root &&
+            root.TryGetProperty("soulRelics", out var soulRelics) &&
+            soulRelics.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (!soulRelics.TryGetProperty(collectionName, out var relics) || relics.ValueKind != JsonValueKind.Array)
+                    continue;
+
+                foreach (var relic in relics.EnumerateArray())
+                {
+                    if (relic.ValueKind != JsonValueKind.Object ||
+                        !string.Equals(GetStr(relic, "relicId", ""), relicId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    var name = GetStr(relic, "name", relicId);
+                    return string.Equals(name, relicId, StringComparison.OrdinalIgnoreCase) ? relicId : $"{name} ({relicId})";
+                }
+            }
+        }
+
+        return relicId;
+    }
+
+    private static void AppendResidentJournalDetailLines(List<string> lines, GuardianAbodeResidentState.JournalEntry entry)
+    {
+        var line = string.IsNullOrWhiteSpace(entry.Title)
+            ? entry.Summary
+            : $"{entry.Title} — {entry.Summary}";
+        lines.Add($"  • [white]{Markup.Escape(line)}[/]");
+        var eventTypeLabel = DescribeActorJournalEventType(entry.EventType);
+        if (!string.IsNullOrWhiteSpace(eventTypeLabel))
+            lines.Add($"    [dim]Событие: {Markup.Escape(eventTypeLabel)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.Consequence))
+            lines.Add($"    [dim]Последствие: {Markup.Escape(entry.Consequence)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.Attitude))
+            lines.Add($"    [dim]Отношение: {Markup.Escape(entry.Attitude)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.Intent))
+            lines.Add($"    [dim]Намерение: {Markup.Escape(entry.Intent)}[/]");
+        if (entry.Tags.Count > 0)
+            lines.Add($"    [dim]Метки: {Markup.Escape(string.Join(", ", entry.Tags))}[/]");
+        if (entry.Turn > 0)
+            lines.Add($"    [dim]Ход: {entry.Turn}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.Timestamp))
+            lines.Add($"    [dim]Время: {Markup.Escape(entry.Timestamp)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.EntryId))
+            lines.Add($"    [dim]Идентификатор записи: {Markup.Escape(entry.EntryId)}[/]");
+    }
+
+    private static void AppendResidentHistoryDetailLines(List<string> lines, GuardianAbodeResidentState.HistoryLogEntry entry)
+    {
+        var title = string.IsNullOrWhiteSpace(entry.Title) ? entry.EntryId : entry.Title;
+        lines.Add($"  • [white]{Markup.Escape(title)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.Summary))
+            lines.Add($"    [dim]{Markup.Escape(entry.Summary)}[/]");
+        if (entry.Tags.Count > 0)
+            lines.Add($"    [dim]Метки: {Markup.Escape(string.Join(", ", entry.Tags))}[/]");
+        if (entry.RevealedAtTurn > 0)
+            lines.Add($"    [dim]Раскрыто на ходу: {entry.RevealedAtTurn}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.RevealedAtUtc))
+            lines.Add($"    [dim]Раскрыто в UTC: {Markup.Escape(entry.RevealedAtUtc)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.EntryId))
+            lines.Add($"    [dim]Идентификатор записи: {Markup.Escape(entry.EntryId)}[/]");
+    }
+
+    private static void AppendResidentTransferReceiptLines(List<string> lines, GuardianAbodeResidentState.TransferReceiptEntry entry)
+    {
+        var targetLabel = string.Equals(entry.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase)
+            ? "внеэкранный уход"
+            : $"{entry.TargetGuardianName} / {entry.TargetAbodeName}";
+        lines.Add($"  • [white]{Markup.Escape(GuardianAbodeResidentState.GetTransferStatusLabel(entry.Status))}[/] — {Markup.Escape(targetLabel)}");
+        lines.Add($"    [dim]Режим: {Markup.Escape(DescribeResidentTransferMode(entry.TransferMode))}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.SourceGuardianName) || !string.IsNullOrWhiteSpace(entry.SourceAbodeName))
+            lines.Add($"    [dim]Источник: {Markup.Escape(entry.SourceGuardianName)} / {Markup.Escape(entry.SourceAbodeName)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.Reason))
+            lines.Add($"    [dim]Причина: {Markup.Escape(entry.Reason)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.DepartureHistoryEntryId))
+            lines.Add($"    [dim]Идентификатор записи ухода: {Markup.Escape(entry.DepartureHistoryEntryId)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.ArrivalHistoryEntryId))
+            lines.Add($"    [dim]Идентификатор записи прибытия: {Markup.Escape(entry.ArrivalHistoryEntryId)}[/]");
+        if (entry.ResolvedAtTurn > 0)
+            lines.Add($"    [dim]Решено на ходу: {entry.ResolvedAtTurn}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.ResolvedAtUtc))
+            lines.Add($"    [dim]Решено в UTC: {Markup.Escape(entry.ResolvedAtUtc)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.RequestId))
+            lines.Add($"    [dim]Идентификатор запроса: {Markup.Escape(entry.RequestId)}[/]");
+    }
+
+    private static string DescribeGuardianInteractionType(string? interactionType) =>
+        (interactionType ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "talk" => "разговор",
+            "lore" => "вопрос о знании",
+            "history" => "раскрытие истории",
+            _ => interactionType ?? string.Empty
+        };
+
+    private static string DescribeGuardianJournalStatus(string? status) =>
+        (status ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "accepted" => "принято",
+            "rejected" => "отклонено",
+            "cancelled" => "отменено",
+            _ => status ?? string.Empty
+        };
+
+    private static string DescribeGuardianResponseMode(string? responseMode) =>
+        (responseMode ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "talk_scene" => "сцена разговора",
+            "conversation" => "беседа",
+            "lore_revealed" => "знание раскрыто",
+            "lore_refused" => "в знании отказано",
+            "warning" => "предупреждение",
+            "refusal" => "отказ",
+            "trust_shift" => "сдвиг доверия",
+            "attitude_shift" => "сдвиг отношения",
+            "history_revealed" => "история раскрыта",
+            "history_refused" => "история скрыта",
+            "history_partial" => "история раскрыта частично",
+            "bond_shift_only" => "только сдвиг связи",
+            _ => responseMode ?? string.Empty
+        };
+
+    private static string DescribeResidentTransferMode(string? transferMode) =>
+        (transferMode ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "departure_only" => "уход без новой Обители",
+            "accepted_transfer" => "переход в другую Обитель",
+            "refused_transfer" => "переход отклонён",
+            _ => transferMode ?? string.Empty
+        };
+
+    private static string BuildResidentTransferCompetitionSummary(GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest request)
+    {
+        var parts = new List<string>();
+        var selectionLabel = GuardianAbodeResidentRequestState.GetTransferSelectionModeLabel(request.SelectionMode);
+        if (!string.IsNullOrWhiteSpace(selectionLabel))
+            parts.Add($"выбор: {selectionLabel}");
+
+        if (request.CompetitionScore.HasValue && !string.IsNullOrWhiteSpace(request.CompetitionLabel))
+            parts.Add($"системная оценка: {GuardianAbodeResidentState.GetTransferCompetitionLabelText(request.CompetitionLabel)} {request.CompetitionScore.Value}/100");
+
+        if (!string.IsNullOrWhiteSpace(request.CompetitionReason))
+            parts.Add($"причина: {request.CompetitionReason}");
+
+        return string.Join(", ", parts);
     }
 
     private async Task<bool> StartResidentTransferRequestAsync(
@@ -2301,58 +3021,69 @@ public partial class ExplorerMode
         string sourceAbodeName)
     {
         var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
-        var choices = new List<(string Label, string TransferMode, string TargetGuardianId, string TargetGuardianName, string TargetAbodeId, string TargetAbodeName)>();
+        var residentStateDoc = await _stateManager.LoadGameStateFileAsync(GuardianAbodeResidentState.StatePath);
+        var guardiansRoot = guardiansDoc != null
+            ? JsonNode.Parse(guardiansDoc.RootElement.GetRawText()) as JsonObject
+            : null;
+        var residentStateRoot = residentStateDoc != null
+            ? JsonNode.Parse(residentStateDoc.RootElement.GetRawText()) as JsonObject
+            : null;
+        var candidates = GuardianAbodeResidentState.BuildTransferCompetitionCandidates(resident, guardiansRoot, residentStateRoot).ToList();
+        var strongestCandidate = candidates.FirstOrDefault();
+        var hasConvincingCandidate = candidates.Any(candidate => candidate.CompetitionScore >= 50);
+        var choices = new List<(string Label, string TransferMode, string TargetGuardianId, string TargetGuardianName, string TargetAbodeId, string TargetAbodeName, string SelectionMode, int? CompetitionScore, string? CompetitionLabel, string? CompetitionReason)>();
 
-        if (guardiansDoc != null &&
-            guardiansDoc.RootElement.TryGetProperty("guardians", out var guardians) &&
-            guardians.ValueKind == JsonValueKind.Array)
+        foreach (var candidate in candidates)
         {
-            foreach (var guardian in guardians.EnumerateArray())
+            var prefix = candidate.CompetitionScore switch
             {
-                var guardianId = GetStr(guardian, "guardianId", "");
-                if (string.IsNullOrWhiteSpace(guardianId))
-                    continue;
-
-                var guardianName = GuardianManifestation.GetDisplayName(guardian);
-                if (guardian.TryGetProperty("abode", out var abode) is false || abode.ValueKind != JsonValueKind.Object)
-                    continue;
-
-                var abodeId = GetStr(abode, "abodeId", "");
-                var abodeName = GetStr(abode, "name", "Обитель");
-                if (string.IsNullOrWhiteSpace(abodeId))
-                    continue;
-
-                if (string.Equals(guardianId, sourceGuardianId, StringComparison.OrdinalIgnoreCase) &&
-                    string.Equals(abodeId, sourceAbodeId, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                choices.Add((
-                    $"🏛 {guardianName} — {abodeName}",
-                    GuardianAbodeResidentState.TransferModeAcceptedTransfer,
-                    guardianId,
-                    guardianName,
-                    abodeId,
-                    abodeName));
-            }
+                >= 70 => "⭐ Рекомендовано",
+                >= 50 => "✨ Подходит",
+                _ => "▫ Слабое притяжение"
+            };
+            var competitionText = $"{GuardianAbodeResidentState.GetTransferCompetitionLabelText(candidate.CompetitionLabel)} {candidate.CompetitionScore}/100";
+            choices.Add((
+                $"{prefix}: {candidate.TargetGuardianName} — {candidate.TargetAbodeName} [{competitionText}]",
+                GuardianAbodeResidentState.TransferModeAcceptedTransfer,
+                candidate.TargetGuardianId,
+                candidate.TargetGuardianName,
+                candidate.TargetAbodeId,
+                candidate.TargetAbodeName,
+                candidate.CompetitionScore >= 50
+                    ? GuardianAbodeResidentRequestState.TransferSelectionModeCompetitionRecommended
+                    : GuardianAbodeResidentRequestState.TransferSelectionModeManualOverride,
+                candidate.CompetitionScore,
+                candidate.CompetitionLabel,
+                candidate.CompetitionReason));
         }
 
-        choices = choices
-            .OrderBy(choice => choice.TargetGuardianName, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(choice => choice.TargetAbodeName, StringComparer.OrdinalIgnoreCase)
-            .ToList();
         choices.Add((
             "🌫 Отпустить без новой Обители",
             GuardianAbodeResidentState.TransferModeDepartureOnly,
             "",
             "",
             "",
-            ""));
+            "",
+            GuardianAbodeResidentRequestState.TransferSelectionModeDepartureOnly,
+            null,
+            null,
+            null));
 
         if (choices.Count == 1)
         {
-            MarkupLine("[yellow]Нет другой materialized Обители для целевого перехода. Доступен только offscreen departure.[/]");
+            MarkupLine("[yellow]Нет другой проявленной Обители для целевого перехода. Доступен только уход без новой Обители.[/]");
+        }
+        else if (strongestCandidate != null)
+        {
+            var competitionText = $"{GuardianAbodeResidentState.GetTransferCompetitionLabelText(strongestCandidate.CompetitionLabel)} {strongestCandidate.CompetitionScore}/100";
+            if (hasConvincingCandidate)
+            {
+                MarkupLine($"[cyan]Лучший системный зов: {Markup.Escape(strongestCandidate.TargetGuardianName)} — {Markup.Escape(strongestCandidate.TargetAbodeName)} ({Markup.Escape(competitionText)}). {Markup.Escape(strongestCandidate.CompetitionReason)}[/]");
+            }
+            else
+            {
+                MarkupLine($"[yellow]Система пока не видит убедительной новой Обители. Самое сильное притяжение остаётся слабым: {Markup.Escape(strongestCandidate.TargetGuardianName)} — {Markup.Escape(strongestCandidate.TargetAbodeName)} ({Markup.Escape(competitionText)}). Offscreen departure остаётся основным путём.[/]");
+            }
         }
 
         var labels = choices.Select(choice => choice.Label).Append("← Назад").ToList();
@@ -2369,6 +3100,12 @@ public partial class ExplorerMode
             return false;
 
         var choice = choices[choiceIndex];
+        if (await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs))
+        {
+            MarkupLine("[red]pending_guardian_abode_resident_transfers.json повреждён. Новый запрос на переход заблокирован, пока pending bundle не будет исправлен или очищен.[/]");
+            return false;
+        }
+
         var request = new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest
         {
             ResidentId = resident.ResidentId,
@@ -2386,6 +3123,10 @@ public partial class ExplorerMode
             Restlessness = resident.Restlessness,
             MigrationState = resident.MigrationState,
             TransferMode = choice.TransferMode,
+            SelectionMode = choice.SelectionMode,
+            CompetitionScore = choice.CompetitionScore,
+            CompetitionLabel = choice.CompetitionLabel,
+            CompetitionReason = choice.CompetitionReason,
             CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
         };
 
@@ -2394,20 +3135,22 @@ public partial class ExplorerMode
         if (string.Equals(choice.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase))
         {
             _pendingGmAction =
-                $"[ABODE_RESIDENT_TRANSFER_REQUEST] Игрок разрешает afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, sourceGuardianId={sourceGuardianId}, sourceAbodeId={sourceAbodeId}, requestId={request.RequestId}) покинуть текущую Обитель без новой materialized цели. " +
-                "В accepted turn закрой запрос через UpdateGuardianAbodeResidentTransferReceipts с transferMode=departure_only и status=departed_only. " +
-                "Resident должен перестать быть present в текущем resident roster, а guardian_abode_residents.json.historyLog должен получить departure entry. " +
-                "Не materialize нового guardian/abode назначения прозой и не оставляй request без canonical receipt.";
+                $"[ABODE_RESIDENT_TRANSFER_REQUEST] Игрок разрешает обитателю загробья '{resident.DisplayName}' (residentId={resident.ResidentId}, sourceGuardianId={sourceGuardianId}, sourceAbodeId={sourceAbodeId}, requestId={request.RequestId}) покинуть текущую Обитель без новой явно оформленной цели. " +
+                "В принятом ходе закрой запрос через UpdateGuardianAbodeResidentTransferReceipts с transferMode=departure_only и status=departed_only. " +
+                "Обитатель должен перестать быть present в текущем resident roster, а guardian_abode_residents.json.historyLog должен получить departure entry. " +
+                "Не оформляй новое назначение хранителя или Обители одной только прозой и не оставляй request без canonical receipt.";
             MarkupLine("[cyan]Запрос на уход резидента без новой Обители отправлен GM.[/]");
         }
         else
         {
+            var competitionNarrative = GuardianAbodeResidentRequestState.BuildTransferCompetitionNarrative(request);
             _pendingGmAction =
                 $"[ABODE_RESIDENT_TRANSFER_REQUEST] Игрок разрешает afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, sourceGuardianId={sourceGuardianId}, sourceAbodeId={sourceAbodeId}, requestId={request.RequestId}) попытаться перейти в Обитель '{choice.TargetAbodeName}' Хранителя {choice.TargetGuardianName} (targetGuardianId={choice.TargetGuardianId}, targetAbodeId={choice.TargetAbodeId}). " +
-                "В accepted turn закрой запрос через UpdateGuardianAbodeResidentTransferReceipts. " +
+                (string.IsNullOrWhiteSpace(competitionNarrative) ? string.Empty : $"Выбор цели: {competitionNarrative} ") +
+                "В следующем подтверждённом ходе закрой этот запрос через UpdateGuardianAbodeResidentTransferReceipts. " +
                 $"Если переход принят, resident должен сохранить тот же residentId, перейти в target guardian/abode через UpdateGuardianAbodeResidents, получить canonical arrival abode state для новой Обители и оставить departure+arrival history entries. " +
                 "Если переход отвергнут, resident остаётся в source guardian/abode, а receipt должен иметь status=refused и refusal history entry. " +
-                "Не разрешай transfer только prose-описанием и не оставляй resident одновременно в source и target Abodes.";
+                "Competition recommendation advisory only; не разрешай transfer только prose-описанием и не оставляй resident одновременно в source и target Abodes.";
             MarkupLine("[cyan]Запрос на переход резидента в другую Обитель отправлен GM.[/]");
         }
 
@@ -2475,7 +3218,7 @@ public partial class ExplorerMode
             if (!view.InventoryReady && !string.IsNullOrWhiteSpace(view.InventoryStatusMessage))
                 headerLines.Add($"[yellow]⏳ {Markup.Escape(view.InventoryStatusMessage)}[/]");
             if (!view.InventoryReady && view.InventoryRequestPending)
-                headerLines.Add("[dim]Покупка реликвий откроется после ответа GM и materialization витрины.[/]");
+                headerLines.Add("[dim]Покупка реликвий откроется после ответа GM и подтверждения витрины.[/]");
 
             Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", headerLines)))
             {
@@ -2618,7 +3361,7 @@ public partial class ExplorerMode
     private GuardianTradeBuyDecision ShowGuardianTradeBuyPreview(Services.GuardianTradeService.GuardianTradeOffer offer, int currentFeathers, bool canBuy)
     {
         using var relicDoc = JsonDocument.Parse(offer.RelicData.ToJsonString());
-        var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null);
+        var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null, residentDoc: null, guardiansDoc: null);
         lines.Insert(1, $"  💰 Цена: [yellow]{offer.PriceInFeathers} 🪶[/]");
         lines.Insert(2, $"  🛍️ Источник витрины: [cyan]{Markup.Escape(GuardianTradeDisplayDomain(offer.DomainTag))}[/]");
         lines.Insert(3, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
@@ -2793,7 +3536,7 @@ public partial class ExplorerMode
     private bool ShowGuardianTradeBuybackPreview(Services.GuardianTradeService.GuardianBuybackOffer offer, int currentFeathers, bool canBuyBack)
     {
         using var relicDoc = JsonDocument.Parse(offer.RelicData.ToJsonString());
-        var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null);
+        var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null, residentDoc: null, guardiansDoc: null);
         lines.Insert(1, $"  🔁 Цена обратного выкупа: [yellow]{offer.PriceInFeathers} 🪶[/]");
         lines.Insert(2, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
         lines.Insert(3, $"  💸 Продана ранее за: [grey]{offer.SoldForPrice} 🪶[/]");
@@ -2824,5 +3567,12 @@ public partial class ExplorerMode
 
         return action.Contains("Выкупить", StringComparison.OrdinalIgnoreCase);
     }
+
+    private static string DescribeFounderLoyaltyTier(string? founderLoyaltyTier) =>
+        (founderLoyaltyTier ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            PlayerGuardianFoundationState.FounderLoyaltyTierSoulbound => "неразрывная верность",
+            _ => founderLoyaltyTier ?? string.Empty
+        };
 }
 

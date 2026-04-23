@@ -2227,6 +2227,11 @@ public partial class ValidationService
                normalizedPath.Equals(AfterlifeArchiveCandidateService.ManifestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeOfferingState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ShiningCoreActionRequestState.PendingActionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase) ||
@@ -5219,6 +5224,8 @@ public partial class ValidationService
         ValidateMetaStateUpdates(root, contextPrefix, issues);
         ValidateAfterlifeArchiveData(root, contextPrefix, issues);
         ValidatePendingMemoryLegacy(root, contextPrefix, issues);
+        ValidatePendingShiningBlessingEffects(root, contextPrefix, issues);
+        ValidatePlayerGuardianFoundationSoulStateFields(root, contextPrefix, issues);
         ValidateGuardianCommands(root, contextPrefix, issues);
         ValidateGuardianStateData(root, contextPrefix, issues);
         ValidateGuardianPowerEventData(root, contextPrefix, issues);
@@ -5235,6 +5242,42 @@ public partial class ValidationService
         ValidateDialogueOptionsData(root, contextPrefix, issues);
         ValidateMultipliersData(root, contextPrefix, issues);
         ValidateOptionalString(root, contextPrefix, issues, "image_prompt");
+    }
+
+    private void ValidatePlayerGuardianFoundationSoulStateFields(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(PlayerGuardianFoundationState.SoulStateGuardianIdProperty, out var foundedGuardianId))
+        {
+            if (foundedGuardianId.ValueKind != JsonValueKind.String ||
+                string.IsNullOrWhiteSpace(foundedGuardianId.GetString()))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.{PlayerGuardianFoundationState.SoulStateGuardianIdProperty}",
+                    IssueSeverity.Error,
+                    "playerFoundedGuardianId должен быть непустой строкой",
+                    code: "player_guardian_foundation_invalid_soul_link",
+                    section: "PlayerGuardianFoundation",
+                    expected: "non-empty guardianId string",
+                    actual: foundedGuardianId.ValueKind.ToString()));
+            }
+        }
+
+        if (root.TryGetProperty(PlayerGuardianFoundationState.SoulStateFoundationStatusProperty, out var foundationStatus))
+        {
+            if (foundationStatus.ValueKind != JsonValueKind.String ||
+                string.IsNullOrWhiteSpace(foundationStatus.GetString()) ||
+                !string.Equals(foundationStatus.GetString(), PlayerGuardianFoundationState.SoulStateFoundationStatusFounded, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.{PlayerGuardianFoundationState.SoulStateFoundationStatusProperty}",
+                    IssueSeverity.Error,
+                    "playerGuardianFoundationStatus поддерживает только canonical значение founded",
+                    code: "player_guardian_foundation_invalid_soul_status",
+                    section: "PlayerGuardianFoundation",
+                    expected: PlayerGuardianFoundationState.SoulStateFoundationStatusFounded,
+                    actual: foundationStatus.ValueKind == JsonValueKind.String ? foundationStatus.GetString() ?? "empty" : foundationStatus.ValueKind.ToString()));
+            }
+        }
     }
 
     private void ValidateDialogueOptionsData(JsonElement root, string contextPrefix, List<ValidationIssue> issues)

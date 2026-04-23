@@ -53,7 +53,7 @@ public partial class ExplorerMode
             if (!view.InventoryReady && !string.IsNullOrWhiteSpace(view.InventoryStatusMessage))
                 headerLines.Add($"[yellow]⏳ {Markup.Escape(view.InventoryStatusMessage)}[/]");
             if (!view.InventoryReady && view.InventoryRequestPending)
-                headerLines.Add("[dim]Покупка товаров откроется после ответа GM и materialization витрины.[/]");
+                headerLines.Add("[dim]Покупка товаров откроется после ответа GM и подтверждения витрины.[/]");
 
             Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", headerLines)))
             {

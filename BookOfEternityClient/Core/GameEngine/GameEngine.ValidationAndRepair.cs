@@ -17,6 +17,8 @@ public partial class GameEngine
 {
     private async Task EnsureClientOwnedSystemFilesHealthyAsync()
     {
+        await _stateManager.RefreshGameStateAsync();
+
         if (await _systemModService.WriteManifestForGmAsync())
             await _stateManager.SaveSettingsAsync();
 

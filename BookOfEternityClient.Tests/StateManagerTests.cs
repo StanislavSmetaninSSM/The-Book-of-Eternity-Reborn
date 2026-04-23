@@ -75,6 +75,46 @@ public sealed class StateManagerTests
         }
     }
 
+    [Fact]
+    public async Task RefreshGameStateAsync_MissingCurrentRealm_DoesNotReusePreviousChaosSeaRealm()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var manager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+            {
+              "soulName": "Тестовая душа",
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 7
+            }
+            """);
+
+            await manager.RefreshGameStateAsync();
+            Assert.Equal("Chaos Sea", manager.CurrentState.CurrentRealm);
+            Assert.True(manager.CurrentState.IsInChaosSea);
+
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+            {
+              "soulName": "Тестовая душа",
+              "currentIncarnation": 7
+            }
+            """);
+
+            await manager.RefreshGameStateAsync();
+
+            Assert.Equal(string.Empty, manager.CurrentState.CurrentRealm);
+            Assert.False(manager.CurrentState.IsInChaosSea);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static string CreateTempRoot()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-state-manager-" + Guid.NewGuid().ToString("N"));

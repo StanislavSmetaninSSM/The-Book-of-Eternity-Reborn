@@ -16,7 +16,9 @@ internal static class AfterlifeNotificationState
     public const string StatusRead = "read";
 
     public const string TypeGuardianTradeInventoryReady = "guardian_trade_inventory_ready";
+    public const string TypeGuardianTradePendingAttention = "guardian_trade_pending_attention";
     public const string TypeGuardianQuestAvailable = "guardian_quest_available";
+    public const string TypePlayerGuardianFoundationResolved = "player_guardian_foundation_resolved";
     public const string TypeAbodeResidentsReady = "abode_residents_ready";
     public const string TypeAbodeResidentQuestAvailable = "abode_resident_quest_available";
     public const string TypeAbodeResidentRelicGranted = "abode_resident_relic_granted";
@@ -40,6 +42,11 @@ internal static class AfterlifeNotificationState
     public const string TypeArchiveProjectFuelRejected = "archive_project_fuel_rejected";
     public const string TypeArchiveProjectFuelCancelled = "archive_project_fuel_cancelled";
     public const string TypeArchiveProjectFuelPendingAttention = "archive_project_fuel_pending_attention";
+    public const string TypeShiningTradeInventoryReady = "shining_trade_inventory_ready";
+    public const string TypeShiningCoreActionResolved = "shining_core_action_resolved";
+    public const string TypeShiningFactionFoundingResolved = "shining_faction_founding_resolved";
+    public const string TypeShiningFactionRealignmentResolved = "shining_faction_realignment_resolved";
+    public const string TypeShiningFactionLeadershipResolved = "shining_faction_leadership_resolved";
     private const string ResidentPressureStateMarkersProperty = "residentPressureStateMarkers";
 
     private static readonly HashSet<string> AllowedStatuses = new(StringComparer.OrdinalIgnoreCase)
@@ -51,7 +58,9 @@ internal static class AfterlifeNotificationState
     private static readonly HashSet<string> AllowedTypes = new(StringComparer.OrdinalIgnoreCase)
     {
         TypeGuardianTradeInventoryReady,
+        TypeGuardianTradePendingAttention,
         TypeGuardianQuestAvailable,
+        TypePlayerGuardianFoundationResolved,
         TypeAbodeResidentsReady,
         TypeAbodeResidentQuestAvailable,
         TypeAbodeResidentRelicGranted,
@@ -74,7 +83,12 @@ internal static class AfterlifeNotificationState
         TypeArchiveProjectFuelAccepted,
         TypeArchiveProjectFuelRejected,
         TypeArchiveProjectFuelCancelled,
-        TypeArchiveProjectFuelPendingAttention
+        TypeArchiveProjectFuelPendingAttention,
+        TypeShiningTradeInventoryReady,
+        TypeShiningCoreActionResolved,
+        TypeShiningFactionFoundingResolved,
+        TypeShiningFactionRealignmentResolved,
+        TypeShiningFactionLeadershipResolved
     };
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
@@ -99,17 +113,38 @@ internal static class AfterlifeNotificationState
         [JsonPropertyName("guardianName")]
         public string GuardianName { get; set; } = "";
 
+        [JsonPropertyName("residentId")]
+        public string ResidentId { get; set; } = "";
+
+        [JsonPropertyName("residentName")]
+        public string ResidentName { get; set; } = "";
+
         [JsonPropertyName("archiveId")]
         public string ArchiveId { get; set; } = "";
 
         [JsonPropertyName("archiveTitle")]
         public string ArchiveTitle { get; set; } = "";
 
+        [JsonPropertyName("archiveEntryType")]
+        public string ArchiveEntryType { get; set; } = "";
+
+        [JsonPropertyName("archiveRarity")]
+        public string ArchiveRarity { get; set; } = "";
+
+        [JsonPropertyName("archiveSummary")]
+        public string ArchiveSummary { get; set; } = "";
+
         [JsonPropertyName("targetProjectId")]
         public string TargetProjectId { get; set; } = "";
 
         [JsonPropertyName("targetProjectName")]
         public string TargetProjectName { get; set; } = "";
+
+        [JsonPropertyName("targetProjectStateLabel")]
+        public string TargetProjectStateLabel { get; set; } = "";
+
+        [JsonPropertyName("targetProjectProgressPercent")]
+        public int TargetProjectProgressPercent { get; set; } = -1;
 
         [JsonPropertyName("summary")]
         public string Summary { get; set; } = "";
@@ -182,6 +217,7 @@ internal static class AfterlifeNotificationState
 
         changed |= await SyncTradeReadyNotificationAsync(fs, notifications);
         changed |= await SyncGuardianQuestNotificationsAsync(fs, notifications);
+        changed |= await SyncPlayerGuardianFoundationNotificationsAsync(fs, notifications);
         changed |= await SyncAbodeResidentsReadyNotificationsAsync(fs, notifications);
         changed |= await SyncAbodeResidentQuestNotificationsAsync(fs, notifications);
         changed |= await SyncAbodeResidentRelicNotificationsAsync(fs, notifications);
@@ -192,6 +228,8 @@ internal static class AfterlifeNotificationState
         changed |= await SyncAbodeResidentPressureNotificationsAsync(fs, root, notifications);
         changed |= await SyncArchiveConsultationNotificationsAsync(fs, notifications);
         changed |= await SyncArchiveProjectFuelNotificationsAsync(fs, notifications);
+        changed |= await SyncShiningTradeNotificationsAsync(fs, notifications);
+        changed |= await SyncShiningResolutionNotificationsAsync(fs, notifications);
 
         if (changed || fs.FileExists(NotificationsPath))
             await WriteRootAsync(fs, root);
@@ -222,10 +260,17 @@ internal static class AfterlifeNotificationState
                 Status = status ?? StatusUnread,
                 GuardianId = GetNodeString(node["guardianId"]) ?? "",
                 GuardianName = GetNodeString(node["guardianName"]) ?? "",
+                ResidentId = GetNodeString(node["residentId"]) ?? "",
+                ResidentName = GetNodeString(node["residentName"]) ?? "",
                 ArchiveId = GetNodeString(node["archiveId"]) ?? "",
                 ArchiveTitle = GetNodeString(node["archiveTitle"]) ?? "",
+                ArchiveEntryType = GetNodeString(node["archiveEntryType"]) ?? "",
+                ArchiveRarity = GetNodeString(node["archiveRarity"]) ?? "",
+                ArchiveSummary = GetNodeString(node["archiveSummary"]) ?? "",
                 TargetProjectId = GetNodeString(node["targetProjectId"]) ?? "",
                 TargetProjectName = GetNodeString(node["targetProjectName"]) ?? "",
+                TargetProjectStateLabel = GetNodeString(node["targetProjectStateLabel"]) ?? "",
+                TargetProjectProgressPercent = GetNodeInt(node["targetProjectProgressPercent"], -1),
                 Summary = GetNodeString(node["summary"]) ?? "",
                 CreatedAtTurn = GetNodeInt(node["createdAtTurn"], 0),
                 CreatedAtUtc = GetNodeString(node["createdAtUtc"]) ?? ""
@@ -292,7 +337,9 @@ internal static class AfterlifeNotificationState
         (notificationType ?? string.Empty).Trim().ToLowerInvariant() switch
         {
             TypeGuardianTradeInventoryReady => "Витрина готова",
+            TypeGuardianTradePendingAttention => "Торговый запрос требует внимания",
             TypeGuardianQuestAvailable => "Новый квест Хранителя",
+            TypePlayerGuardianFoundationResolved => "Основан собственный Хранитель",
             TypeAbodeResidentsReady => "Обитатели проявились",
             TypeAbodeResidentQuestAvailable => "Просьба резидента стала квестом",
             TypeAbodeResidentRelicGranted => "Дарована реликвия связи",
@@ -316,6 +363,11 @@ internal static class AfterlifeNotificationState
             TypeArchiveProjectFuelRejected => "Подпитка проекта отклонена",
             TypeArchiveProjectFuelCancelled => "Подпитка проекта отменена",
             TypeArchiveProjectFuelPendingAttention => "Подпитка проекта требует внимания",
+            TypeShiningTradeInventoryReady => "Сияющая витрина готова",
+            TypeShiningCoreActionResolved => "Действие Сияющей Обители решено",
+            TypeShiningFactionFoundingResolved => "Основание сияющей фракции решено",
+            TypeShiningFactionRealignmentResolved => "Перестройка фракции решена",
+            TypeShiningFactionLeadershipResolved => "Смена главы решена",
             _ => "Уведомление"
         };
 
@@ -389,7 +441,27 @@ internal static class AfterlifeNotificationState
                 }
             }
 
-            var request = await GuardianTradeRequestState.ReadAsync(fs);
+            var requestState = await GuardianTradeRequestState.ReadStateAsync(fs);
+            if (requestState.IsMalformed)
+            {
+                var malformedRequest = requestState.Request;
+                return UpsertNotification(
+                    notifications,
+                    BuildNotificationId(TypeGuardianTradePendingAttention, malformedRequest?.RequestId ?? GuardianTradeRequestState.PendingRequestPath),
+                    TypeGuardianTradePendingAttention,
+                    malformedRequest?.RequestId ?? GuardianTradeRequestState.PendingRequestPath,
+                    malformedRequest?.GuardianId,
+                    malformedRequest?.GuardianName,
+                    archiveId: null,
+                    archiveTitle: null,
+                    targetProjectId: null,
+                    targetProjectName: null,
+                    summary: "pending_guardian_trade_request.json повреждён. Торговый контракт Хранителя сохранён fail-closed и требует repair/cleanup.",
+                    createdAtTurn: malformedRequest?.CreatedAtTurn ?? 0,
+                    createdAtUtc: DateTime.UtcNow.ToString("o"));
+            }
+
+            var request = requestState.Request;
             if (request == null)
                 return changed;
 
@@ -397,7 +469,7 @@ internal static class AfterlifeNotificationState
                 .FirstOrDefault(item => string.Equals(GetNodeString(item["guardianId"]), request.GuardianId, StringComparison.OrdinalIgnoreCase));
             if (compatibilityGuardian?["tradeInventory"] is not JsonObject compatibilityTradeInventory ||
                 !GuardianTradeRequestState.InventoryMatchesRequestContract(compatibilityTradeInventory, request) ||
-                GuardianTradeRequestState.ReceiptMatchesRequestContract(
+                !GuardianTradeRequestState.ReceiptMatchesRequestContract(
                     GuardianTradeRequestState.FindMatchingReceipt(compatibilityGuardian, request),
                     request,
                     compatibilityTradeInventory))
@@ -481,6 +553,58 @@ internal static class AfterlifeNotificationState
         }
     }
 
+    private static async Task<bool> SyncPlayerGuardianFoundationNotificationsAsync(FileSystemManager fs, JsonArray notifications)
+    {
+        var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(guardiansJson))
+            return false;
+
+        try
+        {
+            if (JsonNode.Parse(guardiansJson) is not JsonObject guardiansRoot ||
+                guardiansRoot[PlayerGuardianFoundationState.HistoryProperty] is not JsonArray history)
+            {
+                return false;
+            }
+
+            var changed = false;
+            foreach (var entry in history.OfType<JsonObject>())
+            {
+                var requestId = GetNodeString(entry["requestId"]);
+                var guardianId = GetNodeString(entry["guardianId"]);
+                var guardianName = GetNodeString(entry["guardianDisplayName"]) ?? guardianId ?? "Новый Хранитель";
+                var formerPatronName = GetNodeString(entry["formerPatronGuardianName"]);
+                if (string.IsNullOrWhiteSpace(requestId) || string.IsNullOrWhiteSpace(guardianId))
+                    continue;
+
+                var summary = !string.IsNullOrWhiteSpace(formerPatronName)
+                    ? $"Основан собственный Хранитель {guardianName}. Он стал новым activeGuardian вместо покровителя {formerPatronName}; прежний patron может откликнуться в обычных afterlife событиях."
+                    : $"Основан собственный Хранитель {guardianName}. Он стал новым activeGuardian.";
+
+                changed |= UpsertNotification(
+                    notifications,
+                    BuildNotificationId(TypePlayerGuardianFoundationResolved, requestId),
+                    TypePlayerGuardianFoundationResolved,
+                    requestId,
+                    guardianId,
+                    guardianName,
+                    archiveId: null,
+                    archiveTitle: null,
+                    targetProjectId: null,
+                    targetProjectName: null,
+                    summary: summary,
+                    createdAtTurn: GetNodeInt(entry["resolvedAtTurn"], 0),
+                    createdAtUtc: GetNodeString(entry["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
+            }
+
+            return changed;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private static async Task<bool> SyncArchiveConsultationNotificationsAsync(FileSystemManager fs, JsonArray notifications)
     {
         var requestState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(fs);
@@ -511,7 +635,9 @@ internal static class AfterlifeNotificationState
                     AfterlifeArchiveActionState.ConsultationRequestPath,
                     "архивную консультацию"),
                 createdAtTurn: malformedRequest?.CreatedAtTurn ?? 0,
-                createdAtUtc: malformedRequest?.CreatedAtUtc ?? DateTime.UtcNow.ToString("o"));
+                createdAtUtc: malformedRequest?.CreatedAtUtc ?? DateTime.UtcNow.ToString("o"),
+                archiveEntryType: malformedRequest?.ArchiveEntryType,
+                archiveRarity: malformedRequest?.ArchiveRarity);
         }
 
         var request = requestState.Request;
@@ -534,6 +660,12 @@ internal static class AfterlifeNotificationState
         if (string.IsNullOrWhiteSpace(notificationType))
             return false;
 
+        var archiveSnapshot = await ReadArchiveNotificationSnapshotAsync(
+            fs,
+            request.ArchiveId,
+            request.ArchiveEntryType,
+            request.ArchiveRarity);
+
         var summary = notificationType switch
         {
             TypeArchiveConsultationAccepted => await BuildConsultationAcceptedSummaryAsync(fs, request, receipt),
@@ -555,7 +687,10 @@ internal static class AfterlifeNotificationState
             targetProjectName: null,
             summary,
             createdAtTurn: GetNodeInt(receipt["resolvedAtTurn"], request.CreatedAtTurn),
-            createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
+            createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"),
+            archiveEntryType: archiveSnapshot.EntryType,
+            archiveRarity: archiveSnapshot.Rarity,
+            archiveSummary: archiveSnapshot.Summary);
     }
 
     private static async Task<bool> SyncAbodeResidentsReadyNotificationsAsync(FileSystemManager fs, JsonArray notifications)
@@ -726,6 +861,8 @@ internal static class AfterlifeNotificationState
                     archiveTitle: null,
                     targetProjectId: null,
                     targetProjectName: null,
+                    residentId: residentId,
+                    residentName: resident.DisplayName,
                     summary: $"Просьба резидента «{resident.DisplayName}» стала квестом души «{questTitle}».",
                     createdAtTurn: createdAtTurn,
                     createdAtUtc: createdAtUtc);
@@ -787,6 +924,8 @@ internal static class AfterlifeNotificationState
                     archiveTitle: null,
                     targetProjectId: null,
                     targetProjectName: null,
+                    residentId: resident.ResidentId,
+                    residentName: resident.DisplayName,
                     summary: $"Резидент Обители «{resident.DisplayName}» даровал реликвию связи «{relic.RelicName}».",
                     createdAtTurn: timing.CreatedAtTurn,
                     createdAtUtc: timing.CreatedAtUtc);
@@ -865,6 +1004,8 @@ internal static class AfterlifeNotificationState
                     archiveTitle: null,
                     targetProjectId: null,
                     targetProjectName: null,
+                    residentId: resident.ResidentId,
+                    residentName: resident.DisplayName,
                     summary: summary,
                     createdAtTurn: relic.CompanionManifestationResolvedAtTurn,
                     createdAtUtc: !string.IsNullOrWhiteSpace(relic.CompanionManifestationResolvedAtUtc)
@@ -1029,6 +1170,8 @@ internal static class AfterlifeNotificationState
                     archiveTitle: null,
                     targetProjectId: null,
                     targetProjectName: null,
+                    residentId: residentId,
+                    residentName: residentName,
                     summary: summary,
                     createdAtTurn: GetNodeInt(receipt["resolvedAtTurn"], 0),
                     createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
@@ -1065,6 +1208,8 @@ internal static class AfterlifeNotificationState
                 archiveTitle: null,
                 targetProjectId: null,
                 targetProjectName: null,
+                residentId: request.ResidentId,
+                residentName: request.ResidentName,
                 summary: BuildResidentTransferPendingSummary(request),
                 createdAtTurn: request.CreatedAtTurn,
                 createdAtUtc: request.CreatedAtUtc);
@@ -1104,6 +1249,8 @@ internal static class AfterlifeNotificationState
                     archiveTitle: null,
                     targetProjectId: null,
                     targetProjectName: null,
+                    residentId: GetNodeString(receipt["residentId"]),
+                    residentName: GetNodeString(receipt["residentName"]),
                     summary: BuildResidentTransferReceiptSummary(receipt),
                     createdAtTurn: GetNodeInt(receipt["resolvedAtTurn"], 0),
                     createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
@@ -1179,6 +1326,8 @@ internal static class AfterlifeNotificationState
                         archiveTitle: null,
                         targetProjectId: null,
                         targetProjectName: null,
+                        residentId: resident.ResidentId,
+                        residentName: resident.DisplayName,
                         summary: summary,
                         createdAtTurn: createdAtTurn,
                         createdAtUtc: createdAtUtc);
@@ -1236,7 +1385,9 @@ internal static class AfterlifeNotificationState
                     AfterlifeArchiveActionState.ProjectFuelRequestPath,
                     "архивную подпитку проекта"),
                 createdAtTurn: malformedRequest?.CreatedAtTurn ?? 0,
-                createdAtUtc: malformedRequest?.CreatedAtUtc ?? DateTime.UtcNow.ToString("o"));
+                createdAtUtc: malformedRequest?.CreatedAtUtc ?? DateTime.UtcNow.ToString("o"),
+                archiveEntryType: malformedRequest?.ArchiveEntryType,
+                archiveRarity: malformedRequest?.ArchiveRarity);
         }
 
         var request = requestState.Request;
@@ -1258,6 +1409,13 @@ internal static class AfterlifeNotificationState
 
         if (string.IsNullOrWhiteSpace(notificationType))
             return false;
+
+        var archiveSnapshot = await ReadArchiveNotificationSnapshotAsync(
+            fs,
+            request.ArchiveId,
+            request.ArchiveEntryType,
+            request.ArchiveRarity);
+        var projectSnapshot = await ReadProjectNotificationSnapshotAsync(fs, request.TargetProjectId);
 
         var projectName = string.IsNullOrWhiteSpace(request.TargetProjectName) ? request.TargetProjectId : request.TargetProjectName;
         var summary = notificationType switch
@@ -1281,8 +1439,423 @@ internal static class AfterlifeNotificationState
             request.TargetProjectName,
             summary,
             createdAtTurn: GetNodeInt(receipt["resolvedAtTurn"], request.CreatedAtTurn),
-            createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
+            createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"),
+            archiveEntryType: archiveSnapshot.EntryType,
+            archiveRarity: archiveSnapshot.Rarity,
+            archiveSummary: archiveSnapshot.Summary,
+            targetProjectStateLabel: projectSnapshot.StateLabel,
+            targetProjectProgressPercent: projectSnapshot.ProgressPercent);
     }
+
+    private static async Task<bool> SyncShiningTradeNotificationsAsync(FileSystemManager fs, JsonArray notifications)
+    {
+        var shiningJson = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var residentsJson = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(shiningJson))
+            return false;
+
+        try
+        {
+            if (JsonNode.Parse(shiningJson) is not JsonObject shiningRoot)
+                return false;
+
+            var residentsRoot = !string.IsNullOrWhiteSpace(residentsJson) ? JsonNode.Parse(residentsJson) as JsonObject : null;
+            var guardiansRoot = !string.IsNullOrWhiteSpace(guardiansJson) ? JsonNode.Parse(guardiansJson) as JsonObject : null;
+            ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentsRoot, guardiansRoot);
+
+            var changed = false;
+            foreach (var faction in ShiningAbodeState.EnsureFactionsArray(shiningRoot).OfType<JsonObject>())
+            {
+                var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "фракция";
+                var tradeInventory = faction["tradeInventory"] as JsonObject;
+                var receipts = ShiningTradeRequestState.EnsureTradeInventoryReceiptsArray(faction);
+                foreach (var receipt in receipts.OfType<JsonObject>())
+                {
+                    if (!string.Equals(GetNodeString(receipt["status"]), ShiningTradeRequestState.ReceiptStatusReady, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    var requestId = GetNodeString(receipt["requestId"]);
+                    if (string.IsNullOrWhiteSpace(requestId) ||
+                        GetNodeInt(receipt["itemCount"], -1) != ShiningTradeRequestState.GetTradeInventoryItemCount(tradeInventory))
+                    {
+                        continue;
+                    }
+
+                    var itemCount = GetNodeInt(receipt["itemCount"], 0);
+                    var stableFactionName = GetNodeString(receipt["factionName"]) ?? factionName;
+                    changed |= UpsertNotification(
+                        notifications,
+                        BuildNotificationId(TypeShiningTradeInventoryReady, requestId),
+                        TypeShiningTradeInventoryReady,
+                        requestId,
+                        guardianId: null,
+                        guardianName: null,
+                        archiveId: null,
+                        archiveTitle: null,
+                        targetProjectId: null,
+                        targetProjectName: null,
+                        summary: itemCount > 0
+                            ? $"Сияющая витрина фракции «{stableFactionName}» готова: слотов {itemCount}."
+                            : $"Сияющая витрина фракции «{stableFactionName}» готова.",
+                        createdAtTurn: GetNodeInt(receipt["resolvedAtTurn"], 0),
+                        createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
+                }
+            }
+
+            return changed;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static async Task<bool> SyncShiningResolutionNotificationsAsync(FileSystemManager fs, JsonArray notifications)
+    {
+        var shiningJson = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var residentsJson = await fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(shiningJson))
+            return false;
+
+        try
+        {
+            if (JsonNode.Parse(shiningJson) is not JsonObject shiningRoot)
+                return false;
+
+            var residentsRoot = !string.IsNullOrWhiteSpace(residentsJson) ? JsonNode.Parse(residentsJson) as JsonObject : null;
+            var guardiansRoot = !string.IsNullOrWhiteSpace(guardiansJson) ? JsonNode.Parse(guardiansJson) as JsonObject : null;
+            ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentsRoot, guardiansRoot);
+            var changed = false;
+
+            foreach (var receipt in ShiningAbodeState.EnsureCoreActionReceiptsArray(shiningRoot).OfType<JsonObject>())
+            {
+                var requestId = GetNodeString(receipt["requestId"]);
+                if (string.IsNullOrWhiteSpace(requestId))
+                    continue;
+
+                changed |= UpsertNotification(
+                    notifications,
+                    BuildNotificationId(TypeShiningCoreActionResolved, requestId),
+                    TypeShiningCoreActionResolved,
+                    requestId,
+                    guardianId: null,
+                    guardianName: null,
+                    archiveId: null,
+                    archiveTitle: null,
+                    targetProjectId: GetNodeString(receipt["projectId"]),
+                    targetProjectName: null,
+                    summary: BuildShiningCoreReceiptSummary(receipt, shiningRoot),
+                    createdAtTurn: GetNodeInt(receipt["resolvedAtTurn"], 0),
+                    createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
+            }
+
+            foreach (var receipt in ShiningAbodeState.EnsureFactionFoundingReceiptsArray(shiningRoot).OfType<JsonObject>())
+            {
+                var requestId = GetNodeString(receipt["requestId"]);
+                if (string.IsNullOrWhiteSpace(requestId))
+                    continue;
+
+                changed |= UpsertNotification(
+                    notifications,
+                    BuildNotificationId(TypeShiningFactionFoundingResolved, requestId),
+                    TypeShiningFactionFoundingResolved,
+                    requestId,
+                    guardianId: null,
+                    guardianName: null,
+                    archiveId: null,
+                    archiveTitle: null,
+                    targetProjectId: null,
+                    targetProjectName: null,
+                    summary: BuildShiningFoundingReceiptSummary(receipt),
+                    createdAtTurn: GetNodeInt(receipt["resolvedAtTurn"], 0),
+                    createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
+            }
+
+            foreach (var receipt in ShiningAbodeState.EnsureFactionRealignmentReceiptsArray(shiningRoot).OfType<JsonObject>())
+            {
+                var requestId = GetNodeString(receipt["requestId"]);
+                if (string.IsNullOrWhiteSpace(requestId))
+                    continue;
+
+                changed |= UpsertNotification(
+                    notifications,
+                    BuildNotificationId(TypeShiningFactionRealignmentResolved, requestId),
+                    TypeShiningFactionRealignmentResolved,
+                    requestId,
+                    guardianId: null,
+                    guardianName: null,
+                    archiveId: null,
+                    archiveTitle: null,
+                    targetProjectId: null,
+                    targetProjectName: null,
+                    summary: BuildShiningRealignmentReceiptSummary(receipt),
+                    createdAtTurn: GetNodeInt(receipt["resolvedAtTurn"], 0),
+                    createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
+            }
+
+            foreach (var faction in ShiningAbodeState.EnsureFactionsArray(shiningRoot).OfType<JsonObject>())
+            {
+                var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "фракция";
+                if (faction["leadershipReceipts"] is not JsonArray leadershipReceipts)
+                    continue;
+
+                foreach (var receipt in leadershipReceipts.OfType<JsonObject>())
+                {
+                    var requestId = GetNodeString(receipt["requestId"]);
+                    if (string.IsNullOrWhiteSpace(requestId))
+                        continue;
+
+                    changed |= UpsertNotification(
+                        notifications,
+                        BuildNotificationId(TypeShiningFactionLeadershipResolved, requestId),
+                        TypeShiningFactionLeadershipResolved,
+                        requestId,
+                        guardianId: null,
+                        guardianName: null,
+                        archiveId: null,
+                        archiveTitle: null,
+                        targetProjectId: null,
+                        targetProjectName: null,
+                        summary: BuildShiningLeadershipReceiptSummary(factionName, receipt),
+                        createdAtTurn: GetNodeInt(receipt["resolvedAtTurn"], 0),
+                        createdAtUtc: GetNodeString(receipt["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o"));
+                }
+            }
+
+            return changed;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static string BuildShiningCoreReceiptSummary(JsonObject receipt, JsonObject shiningRoot)
+    {
+        _ = shiningRoot;
+        var actionType = GetNodeString(receipt["actionType"]) ?? "action";
+        var status = DescribeShiningResolutionStatus(GetNodeString(receipt["status"]));
+        var actionLabel = DescribeShiningCoreActionLabel(actionType);
+        var factionLabel = GetNodeString(receipt["factionName"]) ??
+                           GetNodeString(receipt["factionId"]) ??
+                           GetNodeString(receipt["resolvedFactionId"]) ??
+                           "?";
+        var projectLabel = GetNodeString(receipt["projectName"]) ?? GetNodeString(receipt["projectId"]) ?? "project";
+        var hallLabel = GetNodeString(receipt["hallName"]) ?? GetNodeString(receipt["hallId"]) ?? "?";
+        return actionType switch
+        {
+            ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction =>
+                $"{actionLabel} — {status}. Зал «{hallLabel}», фракция «{factionLabel}», резидентов {(receipt["newResidentIds"] as JsonArray)?.Count ?? 0}, стартовых проектов {(receipt["seededProjectIds"] as JsonArray)?.Count ?? 0}.",
+            ShiningCoreActionRequestState.ActionTypeInvestInFaction =>
+                $"{actionLabel} — {status}. Усилена фракция «{factionLabel}».",
+            ShiningCoreActionRequestState.ActionTypeCompleteProject =>
+                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}».",
+            ShiningCoreActionRequestState.ActionTypeSupportProject =>
+                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}».",
+            ShiningCoreActionRequestState.ActionTypeUnsupportProject =>
+                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}».",
+            ShiningCoreActionRequestState.ActionTypeRetireProject =>
+                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}».",
+            ShiningCoreActionRequestState.ActionTypeOpenGates =>
+                $"{actionLabel} — {status}. Новый набор благословений готов [версия {GetNodeInt(receipt["generatedDraftVersion"], 0)}].",
+            ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage =>
+                $"{actionLabel} — {status}. Для следующей жизни зафиксировано {((receipt["selectedCardIds"] as JsonArray)?.Count ?? 0)} карт(ы).",
+            ShiningCoreActionRequestState.ActionTypePullRelicGacha =>
+                $"{actionLabel} — {status}. Баннер «{factionLabel}», редкость {DescribeShiningRarity(GetNodeString(receipt["baseRarity"]))} -> {DescribeShiningRarity(GetNodeString(receipt["finalRarity"]))}, реликвия «{GetNodeString(receipt["relicName"]) ?? GetNodeString(receipt["relicId"]) ?? "реликвия"}».",
+            _ when ShiningAbodeState.IsForgeActionType(actionType) =>
+                $"{actionLabel} — {status}. {(GetNodeString(receipt["relicName"]) ?? GetNodeString(receipt["relicId"]) ?? "реликвия")}{BuildShiningForgeReceiptSuffix(receipt)}.",
+            _ => $"{actionLabel} — {status}."
+        };
+    }
+
+    private static string BuildShiningFoundingReceiptSummary(JsonObject receipt)
+    {
+        var hallName = GetNodeString(receipt["hallName"]) ?? GetNodeString(receipt["hallId"]) ?? "зал";
+        var factionName = GetNodeString(receipt["factionName"]) ?? GetNodeString(receipt["factionId"]) ?? GetNodeString(receipt["proposedFactionId"]) ?? "фракция";
+        var status = DescribeShiningResolutionStatus(GetNodeString(receipt["status"]));
+        var supporterCount = (receipt["supportingResidentIds"] as JsonArray)?.Count ?? 0;
+        return $"Основание фракции — {status}. Зал «{hallName}», фракция «{factionName}», сторонников {supporterCount}.";
+    }
+
+    private static string BuildShiningRealignmentReceiptSummary(JsonObject receipt)
+    {
+        var residentName = GetNodeString(receipt["residentName"]) ?? GetNodeString(receipt["residentId"]) ?? "резидент";
+        var sourceFaction = string.IsNullOrWhiteSpace(GetNodeString(receipt["sourceFactionName"]))
+            ? GetNodeString(receipt["sourceFactionId"]) ?? "?"
+            : GetNodeString(receipt["sourceFactionName"])!;
+        var targetFaction = string.IsNullOrWhiteSpace(GetNodeString(receipt["targetFactionName"]))
+            ? (string.IsNullOrWhiteSpace(GetNodeString(receipt["targetFactionId"]))
+                ? "нейтраль"
+                : GetNodeString(receipt["targetFactionId"]) ?? "нейтраль")
+            : GetNodeString(receipt["targetFactionName"])!;
+        var mode = DescribeShiningRealignmentMode(GetNodeString(receipt["realignmentMode"]));
+        var status = DescribeShiningResolutionStatus(GetNodeString(receipt["status"]));
+        return $"Перестройка резидента — {status}. {residentName}: {sourceFaction} -> {targetFaction}, режим {mode}.";
+    }
+
+    private static string BuildShiningLeadershipReceiptSummary(string factionName, JsonObject receipt)
+    {
+        var stableFactionName = GetNodeString(receipt["factionName"]) ?? GetNodeString(receipt["factionId"]) ?? factionName;
+        var transitionMode = DescribeShiningLeadershipMode(GetNodeString(receipt["transitionMode"]));
+        var status = DescribeShiningResolutionStatus(GetNodeString(receipt["status"]));
+        var newHead = string.IsNullOrWhiteSpace(GetNodeString(receipt["newHeadLabel"]))
+            ? BuildHeadActorLabel(GetNodeString(receipt["newHeadActorType"]), GetNodeString(receipt["newHeadActorId"]))
+            : GetNodeString(receipt["newHeadLabel"])!;
+        return $"Смена главы — {status}. {stableFactionName}, {transitionMode}, новый глава: {newHead}.";
+    }
+
+    private static string BuildShiningForgeReceiptSuffix(JsonObject receipt)
+    {
+        var targetFormTag = GetNodeString(receipt["targetFormTag"]);
+        if (!string.IsNullOrWhiteSpace(targetFormTag))
+            return $" => {DescribeShiningForgeFormTag(targetFormTag)}";
+
+        var propertyIndex = GetNodeInt(receipt["propertyIndex"], -1);
+        return propertyIndex >= 0 ? $" [свойство {propertyIndex + 1}]" : string.Empty;
+    }
+
+    private static string DescribeShiningRarity(string? rarity) =>
+        (rarity ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "common" => "обычная",
+            "uncommon" => "необычная",
+            "rare" => "редкая",
+            "epic" => "эпическая",
+            "legendary" => "легендарная",
+            _ => string.IsNullOrWhiteSpace(rarity) ? "неизвестная" : rarity!
+        };
+
+    private static string DescribeShiningForgeFormTag(string? formTag)
+    {
+        if (string.IsNullOrWhiteSpace(formTag))
+            return "неопределённая форма";
+
+        return (formTag ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "glass_path" => "стекло пути",
+            "solar_crown" => "солнечный венец",
+            "lance" => "копьё",
+            _ => (formTag ?? string.Empty).Replace('_', ' ').Replace('-', ' ').Trim()
+        };
+    }
+
+    private static string ResolveShiningFactionLabel(JsonObject shiningRoot, string? factionId)
+    {
+        if (string.IsNullOrWhiteSpace(factionId))
+            return "?";
+
+        var faction = ShiningAbodeState.EnsureFactionsArray(shiningRoot).OfType<JsonObject>()
+            .FirstOrDefault(item => string.Equals(GetNodeString(item["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
+        return faction == null ? factionId : (GetNodeString(faction["charter"]?["factionName"]) ?? factionId);
+    }
+
+    private static string ResolveShiningHallLabel(JsonObject shiningRoot, string? hallId)
+    {
+        if (string.IsNullOrWhiteSpace(hallId))
+            return "?";
+
+        var hall = ShiningAbodeState.EnsureHallsArray(shiningRoot).OfType<JsonObject>()
+            .FirstOrDefault(item => string.Equals(GetNodeString(item["hallId"]), hallId, StringComparison.OrdinalIgnoreCase));
+        return hall == null ? hallId : (GetNodeString(hall["hallName"]) ?? hallId);
+    }
+
+    private static string ResolveShiningProjectLabel(JsonObject shiningRoot, string? factionId, string? projectId)
+    {
+        if (string.IsNullOrWhiteSpace(projectId))
+            return "project";
+
+        var factionCandidates = ShiningAbodeState.EnsureFactionsArray(shiningRoot).OfType<JsonObject>().ToList();
+        if (!string.IsNullOrWhiteSpace(factionId))
+        {
+            factionCandidates = factionCandidates
+                .OrderByDescending(item => string.Equals(GetNodeString(item["factionId"]), factionId, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        foreach (var faction in factionCandidates)
+        {
+            var project = (faction["projects"] as JsonArray)?.OfType<JsonObject>()
+                .FirstOrDefault(item => string.Equals(GetNodeString(item["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
+            if (project == null)
+                continue;
+
+            var projectName = GetNodeString(project["displayName"]) ?? projectId;
+            var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]);
+            return string.IsNullOrWhiteSpace(factionName) ? projectName : $"«{projectName}» ({factionName})";
+        }
+
+        return projectId;
+    }
+
+    private static string BuildHeadActorLabel(string? headActorType, string? headActorId)
+    {
+        if (string.IsNullOrWhiteSpace(headActorType) ||
+            string.Equals(headActorType, "vacant", StringComparison.OrdinalIgnoreCase) ||
+            string.IsNullOrWhiteSpace(headActorId) ||
+            string.Equals(headActorId, "vacant", StringComparison.OrdinalIgnoreCase))
+        {
+            return "вакантно";
+        }
+
+        return headActorType switch
+        {
+            "resident" => $"резидент {headActorId}",
+            "guardian" => $"хранитель {headActorId}",
+            "player_soul" => "душа игрока",
+            _ => $"{headActorType}:{headActorId}"
+        };
+    }
+
+    private static string DescribeShiningResolutionStatus(string? status) =>
+        (status ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "accepted" => "принято",
+            "ready" => "готово",
+            "rejected" => "отклонено",
+            "refused" => "отклонено",
+            "cancelled" => "отменено",
+            _ => status ?? "?"
+        };
+
+    private static string DescribeShiningCoreActionLabel(string? actionType) =>
+        (actionType ?? string.Empty).Trim() switch
+        {
+            ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction => "Открытие нативной фракции",
+            ShiningCoreActionRequestState.ActionTypeInvestInFaction => "Инвестиция во фракцию",
+            ShiningCoreActionRequestState.ActionTypeCompleteProject => "Завершение проекта",
+            ShiningCoreActionRequestState.ActionTypeSupportProject => "Поддержка проекта",
+            ShiningCoreActionRequestState.ActionTypeUnsupportProject => "Снятие поддержки проекта",
+            ShiningCoreActionRequestState.ActionTypeRetireProject => "Отправка проекта в историю",
+            ShiningCoreActionRequestState.ActionTypeOpenGates => "Открытие Врат",
+            ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage => "Подготовка новой жизни",
+            ShiningCoreActionRequestState.ActionTypePullRelicGacha => "Сияющая гача реликвии",
+            ShiningCoreActionRequestState.ActionTypeForgeRelicReshape => "Перековка формы реликвии",
+            ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty => "Перенастройка свойства реликвии",
+            ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand => "Усиление свойства реликвии",
+            ShiningCoreActionRequestState.ActionTypeForgeRelicStabilizeEcho => "Стабилизация эха реликвии",
+            ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity => "Возвышение редкости реликвии",
+            _ => actionType ?? "действие"
+        };
+
+    private static string DescribeShiningRealignmentMode(string? mode) =>
+        (mode ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "accepted_transfer" => "согласованный переход",
+            "refused_transfer" => "отклонённый переход",
+            "departure_only" => "уход в нейтраль",
+            _ => mode ?? "?"
+        };
+
+    private static string DescribeShiningLeadershipMode(string? mode) =>
+        (mode ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "peaceful_succession" => "мирная преемственность",
+            "abdication" => "отречение",
+            "revolt" => "мятеж",
+            _ => mode ?? "?"
+        };
 
     private static bool UpsertNotification(
         JsonArray notifications,
@@ -1297,7 +1870,14 @@ internal static class AfterlifeNotificationState
         string? targetProjectName,
         string summary,
         int createdAtTurn,
-        string createdAtUtc)
+        string createdAtUtc,
+        string? archiveEntryType = null,
+        string? archiveRarity = null,
+        string? archiveSummary = null,
+        string? targetProjectStateLabel = null,
+        int? targetProjectProgressPercent = null,
+        string? residentId = null,
+        string? residentName = null)
     {
         if (string.IsNullOrWhiteSpace(notificationId) ||
             string.IsNullOrWhiteSpace(requestId) ||
@@ -1317,11 +1897,22 @@ internal static class AfterlifeNotificationState
             changed |= SetIfDifferent(existing, "requestId", requestId);
             changed |= SetIfDifferent(existing, "guardianId", guardianId ?? string.Empty);
             changed |= SetIfDifferent(existing, "guardianName", guardianName ?? string.Empty);
+            changed |= SetIfDifferent(existing, "residentId", residentId ?? string.Empty);
+            changed |= SetSnapshotStringIfMissing(existing, "residentName", residentName);
             changed |= SetIfDifferent(existing, "archiveId", archiveId ?? string.Empty);
             changed |= SetIfDifferent(existing, "archiveTitle", archiveTitle ?? string.Empty);
+            changed |= SetSnapshotStringIfMissing(existing, "archiveEntryType", archiveEntryType);
+            changed |= SetSnapshotStringIfMissing(existing, "archiveRarity", archiveRarity);
+            changed |= SetSnapshotStringIfMissing(existing, "archiveSummary", archiveSummary);
             changed |= SetIfDifferent(existing, "targetProjectId", targetProjectId ?? string.Empty);
             changed |= SetIfDifferent(existing, "targetProjectName", targetProjectName ?? string.Empty);
-            changed |= SetIfDifferent(existing, "summary", summary);
+            changed |= SetSnapshotStringIfMissing(existing, "targetProjectStateLabel", targetProjectStateLabel);
+            changed |= SetSnapshotIntIfMissing(existing, "targetProjectProgressPercent", targetProjectProgressPercent);
+            if (!(ShouldPreserveStoredSummary(notificationType) &&
+                  !string.IsNullOrWhiteSpace(GetNodeString(existing["summary"]))))
+            {
+                changed |= SetIfDifferent(existing, "summary", summary);
+            }
             return changed;
         }
 
@@ -1333,14 +1924,45 @@ internal static class AfterlifeNotificationState
             ["status"] = StatusUnread,
             ["guardianId"] = guardianId ?? string.Empty,
             ["guardianName"] = guardianName ?? string.Empty,
+            ["residentId"] = residentId ?? string.Empty,
+            ["residentName"] = residentName ?? string.Empty,
             ["archiveId"] = archiveId ?? string.Empty,
             ["archiveTitle"] = archiveTitle ?? string.Empty,
+            ["archiveEntryType"] = archiveEntryType ?? string.Empty,
+            ["archiveRarity"] = archiveRarity ?? string.Empty,
+            ["archiveSummary"] = archiveSummary ?? string.Empty,
             ["targetProjectId"] = targetProjectId ?? string.Empty,
             ["targetProjectName"] = targetProjectName ?? string.Empty,
+            ["targetProjectStateLabel"] = targetProjectStateLabel ?? string.Empty,
+            ["targetProjectProgressPercent"] = targetProjectProgressPercent ?? -1,
             ["summary"] = summary,
             ["createdAtTurn"] = Math.Max(0, createdAtTurn),
             ["createdAtUtc"] = createdAtUtc
         });
+        return true;
+    }
+
+    private static bool SetSnapshotStringIfMissing(JsonObject target, string propertyName, string? value)
+    {
+        var currentValue = GetNodeString(target[propertyName]) ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(currentValue))
+            return false;
+
+        var normalizedValue = value ?? string.Empty;
+        if (string.Equals(currentValue, normalizedValue, StringComparison.Ordinal))
+            return false;
+
+        target[propertyName] = normalizedValue;
+        return true;
+    }
+
+    private static bool SetSnapshotIntIfMissing(JsonObject target, string propertyName, int? value)
+    {
+        var currentValue = GetNodeInt(target[propertyName], -1);
+        if (currentValue >= 0 || value is not >= 0)
+            return false;
+
+        target[propertyName] = value.Value;
         return true;
     }
 
@@ -1354,6 +1976,13 @@ internal static class AfterlifeNotificationState
 
     private static string BuildNotificationId(string notificationType, string requestId) =>
         $"{notificationType}:{requestId}";
+
+    private static bool ShouldPreserveStoredSummary(string notificationType) =>
+        string.Equals(notificationType, TypeShiningTradeInventoryReady, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, TypeShiningCoreActionResolved, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, TypeShiningFactionFoundingResolved, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, TypeShiningFactionRealignmentResolved, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(notificationType, TypeShiningFactionLeadershipResolved, StringComparison.OrdinalIgnoreCase);
 
     private static bool SyncGuardianQuestNotificationsFromArray(
         JsonArray notifications,
@@ -1512,6 +2141,95 @@ internal static class AfterlifeNotificationState
         {
             return $"Хранитель {request.GuardianName} обработал архивную подпитку проекта «{projectName}».";
         }
+    }
+
+    private readonly record struct ArchiveNotificationSnapshot(
+        string EntryType,
+        string Rarity,
+        string Summary);
+
+    private readonly record struct ProjectNotificationSnapshot(
+        string StateLabel,
+        int ProgressPercent);
+
+    private static async Task<ArchiveNotificationSnapshot> ReadArchiveNotificationSnapshotAsync(
+        FileSystemManager fs,
+        string archiveId,
+        string? fallbackEntryType,
+        string? fallbackRarity)
+    {
+        var entryType = fallbackEntryType ?? string.Empty;
+        var rarity = fallbackRarity ?? string.Empty;
+        var summary = string.Empty;
+
+        var soulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return new ArchiveNotificationSnapshot(entryType, rarity, summary);
+
+        try
+        {
+            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot ||
+                soulRoot["afterlifeArchive"] is not JsonObject archiveRoot ||
+                archiveRoot["stored"] is not JsonArray storedEntries)
+            {
+                return new ArchiveNotificationSnapshot(entryType, rarity, summary);
+            }
+
+            var entry = storedEntries.OfType<JsonObject>()
+                .FirstOrDefault(item => string.Equals(GetNodeString(item["archiveId"]), archiveId, StringComparison.OrdinalIgnoreCase));
+            if (entry == null)
+                return new ArchiveNotificationSnapshot(entryType, rarity, summary);
+
+            entryType = GetNodeString(entry["entryType"]) ?? entryType;
+            rarity = GetNodeString(entry["rarity"]) ?? rarity;
+            summary = GetNodeString(entry["summary"]) ?? summary;
+            return new ArchiveNotificationSnapshot(entryType, rarity, summary);
+        }
+        catch
+        {
+            return new ArchiveNotificationSnapshot(entryType, rarity, summary);
+        }
+    }
+
+    private static async Task<ProjectNotificationSnapshot> ReadProjectNotificationSnapshotAsync(FileSystemManager fs, string projectId)
+    {
+        if (string.IsNullOrWhiteSpace(projectId))
+            return new ProjectNotificationSnapshot(string.Empty, -1);
+
+        var trackerJson = await fs.ReadFileAsync(GuardianProjectState.TrackerPath);
+        if (string.IsNullOrWhiteSpace(trackerJson))
+            return new ProjectNotificationSnapshot(string.Empty, -1);
+
+        try
+        {
+            if (JsonNode.Parse(trackerJson) is not JsonObject trackerRoot)
+                return new ProjectNotificationSnapshot(string.Empty, -1);
+
+            foreach (var propertyName in new[] { "activeProjects", "completedProjects" })
+            {
+                if (trackerRoot[propertyName] is not JsonArray entries)
+                    continue;
+
+                foreach (var entry in entries.OfType<JsonObject>())
+                {
+                    if (entry["project"] is not JsonObject project ||
+                        !string.Equals(GetNodeString(project["projectId"]), projectId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    var stateLabel = GetNodeString(project["activeState"]) ?? GetNodeString(project["finalState"]) ?? string.Empty;
+                    var progressPercent = GetNodeInt(project["progressPercent"], -1);
+                    return new ProjectNotificationSnapshot(stateLabel, progressPercent);
+                }
+            }
+        }
+        catch
+        {
+            // fall through to legacy-empty snapshot
+        }
+
+        return new ProjectNotificationSnapshot(string.Empty, -1);
     }
 
     private static string BuildConsultationOutcomeLabel(JsonObject? audit)
@@ -2037,7 +2755,8 @@ internal static class AfterlifeNotificationState
 
         var targetAbodeName = string.IsNullOrWhiteSpace(request.TargetAbodeName) ? request.TargetAbodeId : request.TargetAbodeName;
         var targetGuardianName = string.IsNullOrWhiteSpace(request.TargetGuardianName) ? request.TargetGuardianId : request.TargetGuardianName;
-        return $"Резидент «{request.ResidentName}» может перейти в Обитель «{targetAbodeName}» Хранителя {targetGuardianName}. Решение ждёт канонического закрытия.";
+        var competitionNarrative = GuardianAbodeResidentRequestState.BuildTransferCompetitionNarrative(request);
+        return $"Резидент «{request.ResidentName}» может перейти в Обитель «{targetAbodeName}» Хранителя {targetGuardianName}. Решение ждёт канонического закрытия.{competitionNarrative}";
     }
 
     private static string BuildResidentTransferReceiptSummary(JsonObject receipt)

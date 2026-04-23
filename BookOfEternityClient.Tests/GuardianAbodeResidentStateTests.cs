@@ -309,4 +309,133 @@ public sealed class GuardianAbodeResidentStateTests
             arrivalResident["migrationState"]?.GetValue<string>());
         Assert.NotEqual(GuardianAbodeResidentState.MigrationStateReadyToTransfer, arrivalResident["migrationState"]?.GetValue<string>());
     }
+
+    [Fact]
+    public void BuildTransferCompetitionCandidates_HighSensitivityResidentPrefersStrongerAbode()
+    {
+        var resident = new GuardianAbodeResidentState.ResidentEntry
+        {
+            ResidentId = "resident_liora",
+            GuardianId = "guardian_alpha",
+            AbodeId = "abode_alpha",
+            DisplayName = "Лиора",
+            BondLevel = 42,
+            AbodeDevotionLevel = 12,
+            Restlessness = 82,
+            MigrationState = GuardianAbodeResidentState.MigrationStateReadyToTransfer,
+            AbodeDisposition = new GuardianAbodeResidentState.ResidentAbodeDisposition
+            {
+                PowerSensitivity = GuardianAbodeResidentState.PowerSensitivityHigh,
+                MigrationDisposition = GuardianAbodeResidentState.MigrationDispositionOpportunistic,
+                CommunalOrientation = GuardianAbodeResidentState.CommunalOrientationMedium,
+                StabilityNeed = GuardianAbodeResidentState.StabilityNeedHigh
+            }
+        };
+
+        var guardiansRoot = JsonNode.Parse("""
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "abode": { "abodeId": "abode_alpha", "name": "Лазурная Обитель" },
+              "abodePower": { "currentPower": 24 }
+            },
+            {
+              "guardianId": "guardian_beta",
+              "canonicalName": "Мириэль",
+              "abode": { "abodeId": "abode_beta", "name": "Сад Перекрёстков" },
+              "abodePower": { "currentPower": 82 }
+            },
+            {
+              "guardianId": "guardian_gamma",
+              "canonicalName": "Талмор",
+              "abode": { "abodeId": "abode_gamma", "name": "Тихая Башня" },
+              "abodePower": { "currentPower": 48 }
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var residentsRoot = JsonNode.Parse("""
+        {
+          "entries": [
+            { "residentId": "resident_beta_1", "guardianId": "guardian_beta", "abodeId": "abode_beta", "displayName": "Ирис", "residentKind": "attendant_spirit", "originType": "native_spirit", "bondLevel": 20, "bondTier": "stranger", "bondRewardState": "none", "canGrantCompanionRelic": false, "historyRevealed": false, "isPresent": true, "mortalWorldImprint": { "originWorldSummary": "spirit", "futureCompanionPrompt": "spirit" } },
+            { "residentId": "resident_gamma_1", "guardianId": "guardian_gamma", "abodeId": "abode_gamma", "displayName": "Корд", "residentKind": "attendant_spirit", "originType": "native_spirit", "bondLevel": 20, "bondTier": "stranger", "bondRewardState": "none", "canGrantCompanionRelic": false, "historyRevealed": false, "isPresent": true, "mortalWorldImprint": { "originWorldSummary": "spirit", "futureCompanionPrompt": "spirit" } }
+          ]
+        }
+        """)!.AsObject();
+
+        var candidates = GuardianAbodeResidentState.BuildTransferCompetitionCandidates(resident, guardiansRoot, residentsRoot);
+
+        Assert.Equal(2, candidates.Count);
+        Assert.Equal("guardian_beta", candidates[0].TargetGuardianId);
+        Assert.True(candidates[0].CompetitionScore > candidates[1].CompetitionScore);
+        Assert.Equal(GuardianAbodeResidentState.TransferCompetitionLabelStrongPull, candidates[0].CompetitionLabel);
+    }
+
+    [Fact]
+    public void BuildTransferCompetitionCandidates_CommunalResidentPrefersInhabitedAbode()
+    {
+        var resident = new GuardianAbodeResidentState.ResidentEntry
+        {
+            ResidentId = "resident_liora",
+            GuardianId = "guardian_alpha",
+            AbodeId = "abode_alpha",
+            DisplayName = "Лиора",
+            BondLevel = 38,
+            AbodeDevotionLevel = 14,
+            Restlessness = 77,
+            MigrationState = GuardianAbodeResidentState.MigrationStateReadyToTransfer,
+            AbodeDisposition = new GuardianAbodeResidentState.ResidentAbodeDisposition
+            {
+                PowerSensitivity = GuardianAbodeResidentState.PowerSensitivityMedium,
+                MigrationDisposition = GuardianAbodeResidentState.MigrationDispositionSelective,
+                CommunalOrientation = GuardianAbodeResidentState.CommunalOrientationHigh,
+                StabilityNeed = GuardianAbodeResidentState.StabilityNeedMedium
+            }
+        };
+
+        var guardiansRoot = JsonNode.Parse("""
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_alpha",
+              "canonicalName": "Азалия",
+              "abode": { "abodeId": "abode_alpha", "name": "Лазурная Обитель" },
+              "abodePower": { "currentPower": 46 }
+            },
+            {
+              "guardianId": "guardian_beta",
+              "canonicalName": "Мириэль",
+              "abode": { "abodeId": "abode_beta", "name": "Сад Перекрёстков" },
+              "abodePower": { "currentPower": 55 }
+            },
+            {
+              "guardianId": "guardian_gamma",
+              "canonicalName": "Талмор",
+              "abode": { "abodeId": "abode_gamma", "name": "Тихая Башня" },
+              "abodePower": { "currentPower": 55 }
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var residentsRoot = JsonNode.Parse("""
+        {
+          "entries": [
+            { "residentId": "resident_gamma_1", "guardianId": "guardian_gamma", "abodeId": "abode_gamma", "displayName": "Корд", "residentKind": "attendant_spirit", "originType": "native_spirit", "bondLevel": 20, "bondTier": "stranger", "bondRewardState": "none", "canGrantCompanionRelic": false, "historyRevealed": false, "isPresent": true, "mortalWorldImprint": { "originWorldSummary": "spirit", "futureCompanionPrompt": "spirit" } },
+            { "residentId": "resident_gamma_2", "guardianId": "guardian_gamma", "abodeId": "abode_gamma", "displayName": "Рисс", "residentKind": "attendant_spirit", "originType": "native_spirit", "bondLevel": 20, "bondTier": "stranger", "bondRewardState": "none", "canGrantCompanionRelic": false, "historyRevealed": false, "isPresent": true, "mortalWorldImprint": { "originWorldSummary": "spirit", "futureCompanionPrompt": "spirit" } },
+            { "residentId": "resident_gamma_3", "guardianId": "guardian_gamma", "abodeId": "abode_gamma", "displayName": "Тэсс", "residentKind": "attendant_spirit", "originType": "native_spirit", "bondLevel": 20, "bondTier": "stranger", "bondRewardState": "none", "canGrantCompanionRelic": false, "historyRevealed": false, "isPresent": true, "mortalWorldImprint": { "originWorldSummary": "spirit", "futureCompanionPrompt": "spirit" } }
+          ]
+        }
+        """)!.AsObject();
+
+        var candidates = GuardianAbodeResidentState.BuildTransferCompetitionCandidates(resident, guardiansRoot, residentsRoot);
+
+        Assert.Equal(2, candidates.Count);
+        Assert.Equal("guardian_gamma", candidates[0].TargetGuardianId);
+        Assert.True(candidates[0].CompetitionScore > candidates[1].CompetitionScore);
+        Assert.True(candidates[0].TargetResidentCount > candidates[1].TargetResidentCount);
+    }
 }

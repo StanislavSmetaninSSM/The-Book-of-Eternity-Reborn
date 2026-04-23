@@ -1165,6 +1165,701 @@ public partial class ValidationService
         }
     }
 
+    private void ValidatePendingShiningBlessingEffects(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(ShiningBlessingEffectState.SoulStateProperty, out var blessingEffects))
+            return;
+
+        var context = $"{contextPrefix}.{ShiningBlessingEffectState.SoulStateProperty}";
+        if (blessingEffects.ValueKind == JsonValueKind.Null)
+            return;
+        if (!RequireObject(blessingEffects, context, issues))
+            return;
+
+        RequireString(blessingEffects, context, issues, "applicationState");
+        var materializedAtUtc = RequireString(blessingEffects, context, issues, "materializedAtUtc");
+        ValidateNonNegativeIntegerField(blessingEffects, context, issues, "sourcePackagePreparedAtTurn", "ShiningBlessings");
+        ValidateNonNegativeIntegerField(blessingEffects, context, issues, "currentIncarnation", "ShiningBlessings");
+        ValidateNonNegativeIntegerField(blessingEffects, context, issues, "sourceCardCount", "ShiningBlessings");
+        if (!TryGetArray(blessingEffects, "sourceCardIds", $"{context}.sourceCardIds", issues, out var sourceCardIds))
+            return;
+        RequireArrayOfStrings(sourceCardIds, $"{context}.sourceCardIds", issues);
+        if (!string.IsNullOrWhiteSpace(materializedAtUtc) && !DateTimeOffset.TryParse(materializedAtUtc, out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.materializedAtUtc",
+                IssueSeverity.Error,
+                "pendingShiningBlessingEffects.materializedAtUtc должен быть ISO 8601 timestamp",
+                code: "pending_shining_blessings_invalid_materialized_at_utc",
+                section: "ShiningBlessings",
+                expected: "ISO 8601 timestamp",
+                actual: materializedAtUtc));
+        }
+
+        var sourceCardIdSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (sourceCardIds.ValueKind == JsonValueKind.Array)
+        {
+            if (sourceCardIds.GetArrayLength() == 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.sourceCardIds",
+                    IssueSeverity.Error,
+                    "pendingShiningBlessingEffects должен ссылаться хотя бы на одну source card",
+                    code: "pending_shining_blessings_empty_source_card_ids",
+                    section: "ShiningBlessings",
+                    expected: "non-empty sourceCardIds array",
+                    actual: "empty array"));
+            }
+
+            var index = 0;
+            foreach (var sourceCardIdEl in sourceCardIds.EnumerateArray())
+            {
+                var sourceCardId = sourceCardIdEl.ValueKind == JsonValueKind.String ? sourceCardIdEl.GetString() ?? string.Empty : string.Empty;
+                if (string.IsNullOrWhiteSpace(sourceCardId))
+                {
+                    index++;
+                    continue;
+                }
+
+                if (!sourceCardIdSet.Add(sourceCardId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}.sourceCardIds[{index}]",
+                        IssueSeverity.Error,
+                        "pendingShiningBlessingEffects.sourceCardIds не должен содержать дубликаты",
+                        code: "pending_shining_blessings_duplicate_source_card_id",
+                        section: "ShiningBlessings",
+                        actual: sourceCardId));
+                }
+
+                index++;
+            }
+
+            var sourceCardCount = GetIntOrDefault(blessingEffects, "sourceCardCount");
+            if (sourceCardCount != sourceCardIds.GetArrayLength())
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.sourceCardCount",
+                    IssueSeverity.Error,
+                    "sourceCardCount должен совпадать с количеством sourceCardIds",
+                    code: "pending_shining_blessings_source_card_count_mismatch",
+                    section: "ShiningBlessings",
+                    expected: sourceCardIds.GetArrayLength().ToString(),
+                    actual: sourceCardCount.ToString()));
+            }
+        }
+
+        var applicationState = GetFirstNonEmptyString(blessingEffects, "applicationState") ?? string.Empty;
+        if (!string.Equals(applicationState, ShiningBlessingEffectState.ApplicationStateActive, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.applicationState",
+                IssueSeverity.Error,
+                "pendingShiningBlessingEffects.applicationState должен быть active",
+                code: "pending_shining_blessings_invalid_application_state",
+                section: "ShiningBlessings",
+                expected: ShiningBlessingEffectState.ApplicationStateActive,
+                actual: string.IsNullOrWhiteSpace(applicationState) ? "missing" : applicationState,
+                repairHint: "Сохраняй active canonical blessing state до тех пор, пока остаются хотя бы audit или pending effect blocks."));
+        }
+
+        if (blessingEffects.TryGetProperty("memorySelection", out var memorySelection) && memorySelection.ValueKind != JsonValueKind.Null)
+            ValidateShiningBlessingMemorySelection(memorySelection, $"{context}.memorySelection", issues, sourceCardIdSet);
+        if (blessingEffects.TryGetProperty("resourceGrant", out var resourceGrant) && resourceGrant.ValueKind != JsonValueKind.Null)
+            ValidateShiningBlessingResourceGrant(resourceGrant, $"{context}.resourceGrant", issues, sourceCardIdSet);
+        if (blessingEffects.TryGetProperty("relicRefinementEntitlements", out var relicEntitlements) && relicEntitlements.ValueKind != JsonValueKind.Null)
+            ValidateShiningBlessingRelicEntitlements(relicEntitlements, $"{context}.relicRefinementEntitlements", issues, sourceCardIdSet);
+
+        ValidateShiningBlessingEffectArray(
+            blessingEffects,
+            "pendingSocialEffects",
+            $"{context}.pendingSocialEffects",
+            issues,
+            sourceCardIdSet,
+            new[] { "effectId", "sourceCardId", "delta", "status" },
+            ShiningBlessingEffectState.SocialStatusPendingFirstRelationCommit,
+            allowExpiredStatus: false);
+        ValidateShiningBlessingEffectArray(
+            blessingEffects,
+            "pendingRouteEffects",
+            $"{context}.pendingRouteEffects",
+            issues,
+            sourceCardIdSet,
+            new[] { "effectId", "sourceCardId", "routeOptions", "latestTurn", "status" },
+            ShiningBlessingEffectState.RouteStatusPendingEarlyRouteSeed,
+            allowExpiredStatus: true);
+        ValidateShiningBlessingEffectArray(
+            blessingEffects,
+            "pendingLoreEffects",
+            $"{context}.pendingLoreEffects",
+            issues,
+            sourceCardIdSet,
+            new[] { "effectId", "sourceCardId", "clueCount", "latestTurn", "status" },
+            ShiningBlessingEffectState.LoreStatusPendingLoreInsertion,
+            allowExpiredStatus: true);
+        ValidateShiningBlessingEffectArray(
+            blessingEffects,
+            "pendingSurvivalEffects",
+            $"{context}.pendingSurvivalEffects",
+            issues,
+            sourceCardIdSet,
+            new[] { "effectId", "sourceCardId", "downgrade", "recovery", "status" },
+            ShiningBlessingEffectState.SurvivalStatusPendingFirstRuinousFailure,
+            allowExpiredStatus: false);
+        ValidateShiningBlessingEffectArray(
+            blessingEffects,
+            "pendingDescentEffects",
+            $"{context}.pendingDescentEffects",
+            issues,
+            sourceCardIdSet,
+            new[] { "effectId", "sourceCardId", "sourceActorId", "latestTurn", "quality", "status" },
+            ShiningBlessingEffectState.DescentStatusPendingResidentDescent,
+            allowExpiredStatus: true);
+    }
+
+    private void ValidateShiningBlessingMemorySelection(JsonElement value, string context, List<ValidationIssue> issues, IReadOnlySet<string> allowedSourceCardIds)
+    {
+        if (!RequireObject(value, context, issues))
+            return;
+
+        ValidateNonNegativeIntegerField(value, context, issues, "options", "ShiningBlessings");
+        ValidateNonNegativeIntegerField(value, context, issues, "rerolls", "ShiningBlessings");
+        RequireString(value, context, issues, "status");
+        if (TryGetArray(value, "sourceCardIds", $"{context}.sourceCardIds", issues, out var sourceCardIds))
+        {
+            RequireArrayOfStrings(sourceCardIds, $"{context}.sourceCardIds", issues);
+            ValidateSourceCardSubset(sourceCardIds, $"{context}.sourceCardIds", issues, allowedSourceCardIds);
+        }
+
+        var status = GetFirstNonEmptyString(value, "status") ?? string.Empty;
+        if (!string.Equals(status, ShiningBlessingEffectState.MemoryStatusPendingPreTurnOneSelection, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(status, ShiningBlessingEffectState.GenericStatusConsumed, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.status",
+                IssueSeverity.Error,
+                "memorySelection.status должен быть pending_pre_turn_one_selection или consumed",
+                code: "pending_shining_blessings_invalid_memory_status",
+                section: "ShiningBlessings",
+                expected: $"{ShiningBlessingEffectState.MemoryStatusPendingPreTurnOneSelection} | {ShiningBlessingEffectState.GenericStatusConsumed}",
+                actual: string.IsNullOrWhiteSpace(status) ? "missing" : status));
+        }
+
+        if (string.Equals(status, ShiningBlessingEffectState.GenericStatusConsumed, StringComparison.OrdinalIgnoreCase))
+        {
+            ValidateNonNegativeIntegerField(value, context, issues, "consumedAtTurn", "ShiningBlessings");
+            RequireString(value, context, issues, "consumedAtUtc");
+            ValidateNonNegativeIntegerField(value, context, issues, "rerollsSpent", "ShiningBlessings");
+
+            var rerollsSpent = GetIntOrDefault(value, "rerollsSpent");
+            var rerollsGranted = GetIntOrDefault(value, "rerolls");
+            if (rerollsSpent > rerollsGranted)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.rerollsSpent",
+                    IssueSeverity.Error,
+                    "memorySelection.rerollsSpent не может превышать выданные rerolls",
+                    code: "pending_shining_blessings_memory_rerolls_spent_exceeds_grant",
+                    section: "ShiningBlessings",
+                    expected: $"<= {rerollsGranted}",
+                    actual: rerollsSpent.ToString()));
+            }
+
+            var hasSelectedIncarnation = TryReadInt(value, "selectedLifeIncarnation", out _);
+            var hasSelectedHint = !string.IsNullOrWhiteSpace(GetFirstNonEmptyString(value, "selectedLifeHint"));
+            var hasSelectedSummary = !string.IsNullOrWhiteSpace(GetFirstNonEmptyString(value, "selectedLifeSummary"));
+            if ((hasSelectedIncarnation || hasSelectedHint || hasSelectedSummary) &&
+                (!hasSelectedIncarnation || !hasSelectedSummary))
+            {
+                issues.Add(new ValidationIssue(
+                    context,
+                    IssueSeverity.Error,
+                    "consumed memorySelection с выбранным echo должен хранить и selectedLifeIncarnation, и selectedLifeSummary",
+                    code: "pending_shining_blessings_memory_selected_echo_incomplete",
+                    section: "ShiningBlessings",
+                    repairHint: "Если blessing memory step действительно выбрал echo, запиши selectedLifeIncarnation вместе с selectedLifeSummary и optional selectedLifeHint."));
+            }
+        }
+
+        if (GetIntOrDefault(value, "options") <= 0 && GetIntOrDefault(value, "rerolls") <= 0)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "memorySelection должен давать хотя бы один дополнительный выбор или reroll",
+                code: "pending_shining_blessings_empty_memory_selection",
+                section: "ShiningBlessings",
+                expected: "options > 0 or rerolls > 0",
+                actual: $"options={GetIntOrDefault(value, "options")}, rerolls={GetIntOrDefault(value, "rerolls")}"));
+        }
+    }
+
+    private void ValidateShiningBlessingResourceGrant(JsonElement value, string context, List<ValidationIssue> issues, IReadOnlySet<string> allowedSourceCardIds)
+    {
+        if (!RequireObject(value, context, issues))
+            return;
+
+        ValidateNonNegativeIntegerField(value, context, issues, "money", "ShiningBlessings");
+        ValidateNonNegativeIntegerField(value, context, issues, "common", "ShiningBlessings");
+        ValidateNonNegativeIntegerField(value, context, issues, "uncommon", "ShiningBlessings");
+        RequireString(value, context, issues, "status");
+        var appliedAtUtc = RequireString(value, context, issues, "appliedAtUtc");
+        if (TryGetArray(value, "sourceCardIds", $"{context}.sourceCardIds", issues, out var sourceCardIds))
+        {
+            RequireArrayOfStrings(sourceCardIds, $"{context}.sourceCardIds", issues);
+            ValidateSourceCardSubset(sourceCardIds, $"{context}.sourceCardIds", issues, allowedSourceCardIds);
+        }
+
+        var status = GetFirstNonEmptyString(value, "status") ?? string.Empty;
+        if (!string.Equals(status, ShiningBlessingEffectState.ResourceStatusAppliedAtBootstrap, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.status",
+                IssueSeverity.Error,
+                "resourceGrant.status должен быть applied_at_bootstrap",
+                code: "pending_shining_blessings_invalid_resource_status",
+                section: "ShiningBlessings",
+                expected: ShiningBlessingEffectState.ResourceStatusAppliedAtBootstrap,
+                actual: string.IsNullOrWhiteSpace(status) ? "missing" : status));
+        }
+
+        if (!string.IsNullOrWhiteSpace(appliedAtUtc) && !DateTimeOffset.TryParse(appliedAtUtc, out _))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.appliedAtUtc",
+                IssueSeverity.Error,
+                "resourceGrant.appliedAtUtc должен быть ISO 8601 timestamp",
+                code: "pending_shining_blessings_invalid_resource_applied_at_utc",
+                section: "ShiningBlessings",
+                expected: "ISO 8601 timestamp",
+                actual: appliedAtUtc));
+        }
+
+        if (GetIntOrDefault(value, "money") <= 0 &&
+            GetIntOrDefault(value, "common") <= 0 &&
+            GetIntOrDefault(value, "uncommon") <= 0)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "resourceGrant должен выдавать хотя бы один реальный стартовый ресурс",
+                code: "pending_shining_blessings_empty_resource_grant",
+                section: "ShiningBlessings",
+                expected: "money > 0 or common > 0 or uncommon > 0",
+                actual: "all grants are zero"));
+        }
+    }
+
+    private void ValidateShiningBlessingRelicEntitlements(JsonElement value, string context, List<ValidationIssue> issues, IReadOnlySet<string> allowedSourceCardIds)
+    {
+        if (!RequireObject(value, context, issues))
+            return;
+
+        ValidateNonNegativeIntegerField(value, context, issues, "rerolls", "ShiningBlessings");
+        RequireBooleanField(value, context, issues, "freeShape");
+        RequireBooleanField(value, context, issues, "freeRetune");
+        RequireString(value, context, issues, "status");
+        if (TryGetArray(value, "sourceCardIds", $"{context}.sourceCardIds", issues, out var sourceCardIds))
+        {
+            RequireArrayOfStrings(sourceCardIds, $"{context}.sourceCardIds", issues);
+            ValidateSourceCardSubset(sourceCardIds, $"{context}.sourceCardIds", issues, allowedSourceCardIds);
+        }
+        if (value.TryGetProperty("rerollsSpent", out _))
+            ValidateNonNegativeIntegerField(value, context, issues, "rerollsSpent", "ShiningBlessings");
+
+        var status = GetFirstNonEmptyString(value, "status") ?? string.Empty;
+        if (!string.Equals(status, ShiningBlessingEffectState.RelicStatusPendingEntitlement, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(status, ShiningBlessingEffectState.GenericStatusConsumed, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.status",
+                IssueSeverity.Error,
+                "relicRefinementEntitlements.status должен быть pending_relic_entitlement или consumed",
+                code: "pending_shining_blessings_invalid_relic_status",
+                section: "ShiningBlessings",
+                expected: $"{ShiningBlessingEffectState.RelicStatusPendingEntitlement} | {ShiningBlessingEffectState.GenericStatusConsumed}",
+                actual: string.IsNullOrWhiteSpace(status) ? "missing" : status));
+        }
+
+        if (string.Equals(status, ShiningBlessingEffectState.GenericStatusConsumed, StringComparison.OrdinalIgnoreCase))
+        {
+            ValidateNonNegativeIntegerField(value, context, issues, "consumedAtTurn", "ShiningBlessings");
+            RequireString(value, context, issues, "consumedAtUtc");
+        }
+
+        var rerolls = GetIntOrDefault(value, "rerolls");
+        var freeShape = value.TryGetProperty("freeShape", out var freeShapeValue) && freeShapeValue.ValueKind == JsonValueKind.True;
+        var freeRetune = value.TryGetProperty("freeRetune", out var freeRetuneValue) && freeRetuneValue.ValueKind == JsonValueKind.True;
+        if (string.Equals(status, ShiningBlessingEffectState.RelicStatusPendingEntitlement, StringComparison.OrdinalIgnoreCase) &&
+            rerolls <= 0 && !freeShape && !freeRetune)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "pending relic entitlements должны содержать хотя бы один неистраченный allowance",
+                code: "pending_shining_blessings_empty_relic_entitlement",
+                section: "ShiningBlessings",
+                expected: "rerolls > 0 or freeShape=true or freeRetune=true",
+                actual: $"rerolls={rerolls}, freeShape={freeShape}, freeRetune={freeRetune}"));
+        }
+
+        if (string.Equals(status, ShiningBlessingEffectState.GenericStatusConsumed, StringComparison.OrdinalIgnoreCase) &&
+            (rerolls > 0 || freeShape || freeRetune))
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "consumed relic entitlements не должны сохранять неистраченные allowance",
+                code: "pending_shining_blessings_relic_entitlement_not_fully_consumed",
+                section: "ShiningBlessings",
+                expected: "rerolls = 0 and freeShape = false and freeRetune = false",
+                actual: $"rerolls={rerolls}, freeShape={freeShape}, freeRetune={freeRetune}"));
+        }
+    }
+
+    private void ValidateShiningBlessingEffectArray(
+        JsonElement root,
+        string propertyName,
+        string context,
+        List<ValidationIssue> issues,
+        IReadOnlySet<string> allowedSourceCardIds,
+        IReadOnlyCollection<string> requiredProperties,
+        string expectedStatus,
+        bool allowExpiredStatus)
+    {
+        if (!root.TryGetProperty(propertyName, out var value) || value.ValueKind == JsonValueKind.Null)
+            return;
+
+        RequireArrayOfObjects(value, context, issues);
+        if (value.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        foreach (var item in value.EnumerateArray())
+        {
+            var itemContext = $"{context}[{index++}]";
+            if (!RequireObject(item, itemContext, issues))
+                continue;
+
+            var missingFields = GetMissingRequiredNonEmptyStringProperties(item, requiredProperties.Where(field =>
+                !string.Equals(field, "delta", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(field, "routeOptions", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(field, "latestTurn", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(field, "clueCount", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(field, "downgrade", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(field, "recovery", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(field, "quality", StringComparison.OrdinalIgnoreCase)).ToArray());
+
+            foreach (var field in requiredProperties)
+            {
+                if (string.Equals(field, "delta", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(field, "routeOptions", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(field, "latestTurn", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(field, "clueCount", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(field, "downgrade", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(field, "recovery", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(field, "quality", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!item.TryGetProperty(field, out _))
+                        missingFields.Add(field);
+                }
+            }
+
+            if (missingFields.Count > 0)
+            {
+                issues.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    $"{propertyName} effect не содержит обязательные поля",
+                    code: "pending_shining_blessings_effect_missing_fields",
+                    section: "ShiningBlessings",
+                    expected: string.Join(", ", requiredProperties),
+                    actual: string.Join(", ", missingFields)));
+                continue;
+            }
+
+            ValidateOptionalString(item, itemContext, issues, "displayName");
+            ValidateOptionalString(item, itemContext, issues, "displaySummary");
+            ValidateOptionalString(item, itemContext, issues, "sourceFactionId");
+            ValidateOptionalString(item, itemContext, issues, "sourceActorId");
+            var sourceCardId = GetFirstNonEmptyString(item, "sourceCardId") ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(sourceCardId) && !allowedSourceCardIds.Contains(sourceCardId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.sourceCardId",
+                    IssueSeverity.Error,
+                    $"{propertyName}.sourceCardId должен ссылаться на один из sourceCardIds blessing state",
+                    code: "pending_shining_blessings_effect_source_card_unknown",
+                    section: "ShiningBlessings",
+                    actual: sourceCardId));
+            }
+
+            foreach (var field in requiredProperties)
+            {
+                if (!item.TryGetProperty(field, out _))
+                    continue;
+
+                if (!string.Equals(field, "effectId", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(field, "sourceCardId", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(field, "sourceActorId", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(field, "status", StringComparison.OrdinalIgnoreCase))
+                {
+                    ValidateNonNegativeIntegerField(item, itemContext, issues, field, "ShiningBlessings");
+                }
+            }
+
+            var status = GetFirstNonEmptyString(item, "status") ?? string.Empty;
+            var isPending = string.Equals(status, expectedStatus, StringComparison.OrdinalIgnoreCase);
+            var isConsumed = string.Equals(status, ShiningBlessingEffectState.GenericStatusConsumed, StringComparison.OrdinalIgnoreCase);
+            var isExpired = string.Equals(status, ShiningBlessingEffectState.GenericStatusExpired, StringComparison.OrdinalIgnoreCase);
+            if (!isPending && !isConsumed && !(allowExpiredStatus && isExpired))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.status",
+                    IssueSeverity.Error,
+                    $"{propertyName}.status должен быть canonical blessing lifecycle status",
+                    code: "pending_shining_blessings_invalid_effect_status",
+                    section: "ShiningBlessings",
+                    expected: allowExpiredStatus
+                        ? $"{expectedStatus} | {ShiningBlessingEffectState.GenericStatusConsumed} | {ShiningBlessingEffectState.GenericStatusExpired}"
+                        : $"{expectedStatus} | {ShiningBlessingEffectState.GenericStatusConsumed}",
+                    actual: string.IsNullOrWhiteSpace(status) ? "missing" : status));
+            }
+
+            if (isConsumed)
+            {
+                ValidateNonNegativeIntegerField(item, itemContext, issues, "consumedAtTurn", "ShiningBlessings");
+                RequireString(item, itemContext, issues, "consumedAtUtc");
+            }
+
+            if (allowExpiredStatus && isExpired)
+            {
+                ValidateNonNegativeIntegerField(item, itemContext, issues, "expiredAtTurn", "ShiningBlessings");
+                RequireString(item, itemContext, issues, "expiredAtUtc");
+            }
+
+            ValidateShiningBlessingEffectPayload(propertyName, item, itemContext, issues, isPending, isConsumed, allowExpiredStatus && isExpired);
+        }
+    }
+
+    private void ValidateShiningBlessingEffectPayload(
+        string propertyName,
+        JsonElement item,
+        string context,
+        List<ValidationIssue> issues,
+        bool isPending,
+        bool isConsumed,
+        bool isExpired)
+    {
+        switch (propertyName)
+        {
+            case "pendingSocialEffects":
+                if (GetIntOrDefault(item, "delta") <= 0)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}.delta",
+                        IssueSeverity.Error,
+                        "social blessing delta должен быть > 0",
+                        code: "pending_shining_blessings_social_delta_non_positive",
+                        section: "ShiningBlessings",
+                        expected: "> 0",
+                        actual: GetIntOrDefault(item, "delta").ToString()));
+                }
+
+                if (isConsumed)
+                {
+                    var consumedNpcId = GetFirstNonEmptyString(item, "consumedTargetNpcId");
+                    var consumedFactionId = GetFirstNonEmptyString(item, "consumedTargetFactionId");
+                    if (string.IsNullOrWhiteSpace(consumedNpcId) && string.IsNullOrWhiteSpace(consumedFactionId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            context,
+                            IssueSeverity.Error,
+                            "consumed social blessing должен указывать NPC или faction target",
+                            code: "pending_shining_blessings_social_missing_consumed_target",
+                            section: "ShiningBlessings",
+                            expected: "consumedTargetNpcId or consumedTargetFactionId",
+                            actual: "missing"));
+                    }
+                }
+
+                break;
+
+            case "pendingRouteEffects":
+                ValidatePositiveIntegerField(item, context, issues, "routeOptions");
+                ValidatePositiveIntegerField(item, context, issues, "latestTurn");
+                if (isConsumed)
+                {
+                    RequireStringArrayProperty(item, context, issues, "consumedEventIds");
+                    RequireStringArrayProperty(item, context, issues, "consumedRouteSeedIds");
+                }
+
+                if (isExpired && GetIntOrDefault(item, "latestTurn") <= 0)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}.latestTurn",
+                        IssueSeverity.Error,
+                        "expired route blessing должен иметь положительный latestTurn",
+                        code: "pending_shining_blessings_route_expired_without_deadline",
+                        section: "ShiningBlessings",
+                        expected: "> 0",
+                        actual: GetIntOrDefault(item, "latestTurn").ToString()));
+                }
+
+                break;
+
+            case "pendingLoreEffects":
+                ValidatePositiveIntegerField(item, context, issues, "clueCount");
+                ValidatePositiveIntegerField(item, context, issues, "latestTurn");
+                if (isConsumed)
+                {
+                    RequireStringArrayProperty(item, context, issues, "consumedEventIds");
+                    RequireStringArrayProperty(item, context, issues, "consumedAnchorIds");
+                }
+
+                if (isExpired && GetIntOrDefault(item, "latestTurn") <= 0)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}.latestTurn",
+                        IssueSeverity.Error,
+                        "expired lore blessing должен иметь положительный latestTurn",
+                        code: "pending_shining_blessings_lore_expired_without_deadline",
+                        section: "ShiningBlessings",
+                        expected: "> 0",
+                        actual: GetIntOrDefault(item, "latestTurn").ToString()));
+                }
+
+                break;
+
+            case "pendingSurvivalEffects":
+                ValidatePositiveIntegerField(item, context, issues, "downgrade");
+                if (isConsumed)
+                {
+                    RequireString(item, context, issues, "consumedEventId");
+                }
+
+                break;
+
+            case "pendingDescentEffects":
+                ValidatePositiveIntegerField(item, context, issues, "latestTurn");
+                ValidatePositiveIntegerField(item, context, issues, "quality");
+                ValidateOptionalString(item, context, issues, "primedRelicId");
+                if (!string.IsNullOrWhiteSpace(GetFirstNonEmptyString(item, "primedRelicId")))
+                {
+                    ValidateNonNegativeIntegerField(item, context, issues, "primedAtTurn", "ShiningBlessings");
+                    RequireString(item, context, issues, "primedAtUtc");
+                }
+
+                if (isConsumed)
+                {
+                    RequireString(item, context, issues, "consumedNpcId");
+                }
+
+                if (isExpired && GetIntOrDefault(item, "latestTurn") <= 0)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}.latestTurn",
+                        IssueSeverity.Error,
+                        "expired descent blessing должен иметь положительный latestTurn",
+                        code: "pending_shining_blessings_descent_expired_without_deadline",
+                        section: "ShiningBlessings",
+                        expected: "> 0",
+                        actual: GetIntOrDefault(item, "latestTurn").ToString()));
+                }
+
+                break;
+        }
+    }
+
+    private void RequireStringArrayProperty(JsonElement item, string context, List<ValidationIssue> issues, string propertyName)
+    {
+        if (!item.TryGetProperty(propertyName, out var propertyValue))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{propertyName}",
+                IssueSeverity.Error,
+                $"{propertyName} обязателен для consumed blessing outcome",
+                code: "pending_shining_blessings_missing_consumed_array",
+                section: "ShiningBlessings",
+                expected: "non-empty string array",
+                actual: "missing"));
+            return;
+        }
+
+        if (TryGetArray(item, propertyName, $"{context}.{propertyName}", issues, out var array))
+        {
+            RequireArrayOfStrings(array, $"{context}.{propertyName}", issues);
+            if (array.ValueKind == JsonValueKind.Array && array.GetArrayLength() == 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.{propertyName}",
+                    IssueSeverity.Error,
+                    $"{propertyName} не должен быть пустым для consumed blessing outcome",
+                    code: "pending_shining_blessings_empty_consumed_array",
+                    section: "ShiningBlessings",
+                    expected: "non-empty string array",
+                    actual: "empty array"));
+            }
+
+            ValidateUniqueStringArray(array, $"{context}.{propertyName}", issues);
+        }
+    }
+
+    private void ValidateSourceCardSubset(JsonElement array, string context, List<ValidationIssue> issues, IReadOnlySet<string> allowedSourceCardIds)
+    {
+        if (array.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        foreach (var item in array.EnumerateArray())
+        {
+            if (item.ValueKind == JsonValueKind.String)
+            {
+                var sourceCardId = item.GetString() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(sourceCardId) && !allowedSourceCardIds.Contains(sourceCardId))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}[{index}]",
+                        IssueSeverity.Error,
+                        "blessing block sourceCardIds должен быть подмножеством root sourceCardIds",
+                        code: "pending_shining_blessings_unknown_source_card_id",
+                        section: "ShiningBlessings",
+                        actual: sourceCardId));
+                }
+            }
+
+            index++;
+        }
+    }
+
+    private void ValidateUniqueStringArray(JsonElement array, string context, List<ValidationIssue> issues)
+    {
+        if (array.ValueKind != JsonValueKind.Array)
+            return;
+
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var item in array.EnumerateArray())
+        {
+            if (item.ValueKind == JsonValueKind.String)
+            {
+                var value = item.GetString() ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(value) && !seen.Add(value))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}[{index}]",
+                        IssueSeverity.Error,
+                        "consumed blessing arrays не должны содержать дубликаты",
+                        code: "pending_shining_blessings_duplicate_consumed_array_item",
+                        section: "ShiningBlessings",
+                        actual: value));
+                }
+            }
+
+            index++;
+        }
+    }
+
 
     private void ValidateMetaLifeTransitionsObject(JsonElement lifeTransitions, string context, List<ValidationIssue> issues)
     {

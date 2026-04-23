@@ -375,39 +375,104 @@ public sealed class GuardianTradeService
         if (!blocked)
         {
             var tradeInventory = guardian["tradeInventory"] as JsonObject;
+            var pendingRequestState = await GuardianTradeRequestState.ReadStateAsync(_fs);
+            var pendingRequest = pendingRequestState.Request;
             if (TradeInventoryMatchesContract(tradeInventory, cycleId, derivedState))
             {
-                inventoryReady = true;
-                var request = await GuardianTradeRequestState.ReadAsync(_fs);
-                var requestMatchesCurrentContract = request != null &&
-                    GuardianTradeRequestState.MatchesCurrentContract(request, guardianId, cycleId, reputation, derivedState);
+                var requestMatchesCurrentContract = pendingRequest != null &&
+                    GuardianTradeRequestState.MatchesCurrentContract(pendingRequest, guardianId, cycleId, reputation, derivedState);
                 var hasMatchingReceipt = requestMatchesCurrentContract &&
                     GuardianTradeRequestState.ReceiptMatchesRequestContract(
-                        GuardianTradeRequestState.FindMatchingReceipt(guardian, request!),
-                        request!,
+                        GuardianTradeRequestState.FindMatchingReceipt(guardian, pendingRequest!),
+                        pendingRequest!,
                         tradeInventory);
+                var hasCanonicalReadyReceipt = HasCanonicalReadyReceiptForInventory(guardian, tradeInventory);
+                inventoryReady = hasCanonicalReadyReceipt;
                 if (tradeInventory != null)
                 {
                     changed = RepriceTradeInventory(tradeInventory, tier);
-                    var currentSignature = GetNodeString(tradeInventory["projectBonusSignature"]) ?? "0|0|0";
-                    if (!string.Equals(currentSignature, "0|0|0", StringComparison.OrdinalIgnoreCase) &&
-                        string.Equals(currentSignature, GuardianProjectState.BuildTradeBonusSignature(derivedState), StringComparison.OrdinalIgnoreCase))
-                    {
-                        trackerChanged = GuardianProjectState.TryConsumeRelicForgingTradeRefresh(trackerRoot, guardianId) || trackerChanged;
-                    }
-
                     if (changed)
                         SyncActiveGuardian(root, guardianId, guardian);
                 }
 
-                if (request != null && (!requestMatchesCurrentContract || hasMatchingReceipt))
+                if (!hasCanonicalReadyReceipt)
+                {
+                    if (pendingRequestState.IsMalformed)
+                    {
+                        inventoryRequestPending = true;
+                        inventoryStatusMessage = "pending_guardian_trade_request.json повреждён. Новый запрос и каноническое закрытие торговли заблокированы, пока pending contract не будет исправлен или очищен.";
+                        return (
+                            tier,
+                            BuildTradeView(
+                                guardian,
+                                cycleId,
+                                blocked,
+                                blockedReason,
+                                inventoryReady,
+                                inventoryRequestPending,
+                                inventoryRequestCreatedThisCall,
+                                inventoryStatusMessage,
+                                pendingGmAction),
+                            changed,
+                            trackerChanged);
+                    }
+
+                    inventoryRequestPending = requestMatchesCurrentContract;
+                    if (!inventoryRequestPending)
+                    {
+                        var abodeId = guardian["abode"] is JsonObject abode ? GetNodeString(abode["abodeId"]) ?? "" : "";
+                        pendingRequest = new GuardianTradeRequestState.PendingGuardianTradeRequest
+                        {
+                            GuardianId = guardianId,
+                            GuardianName = guardianName,
+                            AbodeId = abodeId,
+                            ReturnCycleId = cycleId,
+                            CurrentReputation = reputation,
+                            DerivedTradeSlotCount = derivedState.TradeSlotCount,
+                            EffectiveRarityCeilingBonusSteps = derivedState.EffectiveGuardianRarityCeilingBonusSteps,
+                            ProjectBonusSignature = GuardianProjectState.BuildTradeBonusSignature(derivedState),
+                            CreatedAtTurn = Math.Max(0, currentTurn)
+                        };
+                        await GuardianTradeRequestState.WriteAsync(_fs, pendingRequest);
+                        inventoryRequestPending = true;
+                        inventoryRequestCreatedThisCall = true;
+                    }
+
+                    inventoryStatusMessage = inventoryRequestCreatedThisCall
+                        ? "Витрина Хранителя уже проявлена, но ещё не подтверждена каноническим итогом. Запрос на закрытие ассортимента отправлен GM."
+                        : "Витрина Хранителя ожидает канонического подтверждения. Повторите после ответа GM.";
+                    pendingGmAction ??=
+                        $"[{GuardianTradeRequestState.ActionTag}] У Хранителя {guardianName} ({guardianId}) уже materialized витрина текущего return cycle, но отсутствует canonical ready receipt. " +
+                        $"Обязательно закрой текущий контракт через {GuardianTradeRequestState.UpdateReceiptsProperty} в guardians.json вместо повторной генерации новой витрины.";
+                }
+
+                if (pendingRequest != null && (!requestMatchesCurrentContract || hasMatchingReceipt || hasCanonicalReadyReceipt))
                     GuardianTradeRequestState.Clear(_fs);
             }
             else
             {
-                var request = await GuardianTradeRequestState.ReadAsync(_fs);
+                if (pendingRequestState.IsMalformed)
+                {
+                    inventoryRequestPending = true;
+                    inventoryStatusMessage = "pending_guardian_trade_request.json повреждён. Новый торговый запрос заблокирован, пока pending contract не будет исправлен или очищен.";
+                    return (
+                        tier,
+                        BuildTradeView(
+                            guardian,
+                            cycleId,
+                            blocked,
+                            blockedReason,
+                            inventoryReady,
+                            inventoryRequestPending,
+                            inventoryRequestCreatedThisCall,
+                            inventoryStatusMessage,
+                            pendingGmAction),
+                        changed,
+                        trackerChanged);
+                }
+
                 inventoryRequestPending = GuardianTradeRequestState.MatchesCurrentContract(
-                    request,
+                    pendingRequest,
                     guardianId,
                     cycleId,
                     reputation,
@@ -416,7 +481,7 @@ public sealed class GuardianTradeService
                 if (!inventoryRequestPending)
                 {
                     var abodeId = guardian["abode"] is JsonObject abode ? GetNodeString(abode["abodeId"]) ?? "" : "";
-                    request = new GuardianTradeRequestState.PendingGuardianTradeRequest
+                    pendingRequest = new GuardianTradeRequestState.PendingGuardianTradeRequest
                     {
                         GuardianId = guardianId,
                         GuardianName = guardianName,
@@ -428,7 +493,7 @@ public sealed class GuardianTradeService
                         ProjectBonusSignature = GuardianProjectState.BuildTradeBonusSignature(derivedState),
                         CreatedAtTurn = Math.Max(0, currentTurn)
                     };
-                    await GuardianTradeRequestState.WriteAsync(_fs, request);
+                    await GuardianTradeRequestState.WriteAsync(_fs, pendingRequest);
                     inventoryRequestPending = true;
                     inventoryRequestCreatedThisCall = true;
                     pendingGmAction =
@@ -669,6 +734,32 @@ public sealed class GuardianTradeService
     }
 
     private static string GetTradeCycleId(int currentIncarnation) => $"return_{Math.Max(0, currentIncarnation)}";
+
+    private static bool HasCanonicalReadyReceiptForInventory(JsonObject guardian, JsonObject? tradeInventory)
+    {
+        if (tradeInventory == null || guardian[GuardianTradeRequestState.ReceiptsProperty] is not JsonArray receipts)
+            return false;
+
+        var guardianId = GetNodeString(guardian["guardianId"]);
+        var abodeId = guardian["abode"] is JsonObject abode ? GetNodeString(abode["abodeId"]) : null;
+        var tradeCycleId = GetNodeString(tradeInventory["tradeCycleId"]);
+        var itemCount = GuardianTradeRequestState.GetTradeInventoryItemCount(tradeInventory);
+        if (string.IsNullOrWhiteSpace(guardianId) ||
+            string.IsNullOrWhiteSpace(abodeId) ||
+            string.IsNullOrWhiteSpace(tradeCycleId))
+        {
+            return false;
+        }
+
+        return receipts.OfType<JsonObject>().Any(receipt =>
+            string.Equals(GetNodeString(receipt["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(GetNodeString(receipt["abodeId"]), abodeId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(GetNodeString(receipt["tradeCycleId"]), tradeCycleId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(GetNodeString(receipt["status"]), GuardianTradeRequestState.ReceiptStatusReady, StringComparison.OrdinalIgnoreCase) &&
+            GetNodeInt(receipt["itemCount"], -1) == itemCount &&
+            GetNodeInt(receipt["resolvedAtTurn"], 0) > 0 &&
+            !string.IsNullOrWhiteSpace(GetNodeString(receipt["resolvedAtUtc"])));
+    }
 
     private static bool TradeInventoryMatchesContract(
         JsonObject? tradeInventory,

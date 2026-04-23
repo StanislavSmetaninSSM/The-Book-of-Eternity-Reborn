@@ -232,6 +232,14 @@ public partial class ExplorerMode
         if (!string.IsNullOrEmpty(questGiver))
             lines.Add($"  👤 Квестодатель: [cyan]{Markup.Escape(questGiver)}[/]");
 
+        var relatedAfterlifeResidentId = GetStr(q, "relatedAfterlifeResidentId", "");
+        if (!string.IsNullOrWhiteSpace(relatedAfterlifeResidentId))
+        {
+            using var residentsDoc = await _stateManager.LoadGameStateFileAsync(GuardianAbodeResidentState.StatePath);
+            var relatedResidentLabel = ResolveAfterlifeResidentLabel(residentsDoc?.RootElement, relatedAfterlifeResidentId);
+            lines.Add($"  🕊 Связанный резидент загробья: [cyan]{Markup.Escape(relatedResidentLabel)}[/]");
+        }
+
         var status = GetStr(q, "status", "Active");
         var statusColor = status.ToLower() switch
         {
@@ -425,6 +433,33 @@ public partial class ExplorerMode
             return true;
 
         return false;
+    }
+
+    private static string ResolveAfterlifeResidentLabel(JsonElement? residentRoot, string residentId)
+    {
+        if (string.IsNullOrWhiteSpace(residentId))
+            return string.Empty;
+
+        if (residentRoot is { ValueKind: JsonValueKind.Object } root &&
+            root.TryGetProperty("entries", out var entries) &&
+            entries.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var resident in entries.EnumerateArray())
+            {
+                if (resident.ValueKind != JsonValueKind.Object ||
+                    !string.Equals(GetStr(resident, "residentId", ""), residentId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var displayName = GetStr(resident, "displayName", GetStr(resident, "residentName", residentId));
+                return string.Equals(displayName, residentId, StringComparison.OrdinalIgnoreCase)
+                    ? residentId
+                    : $"{displayName} ({residentId})";
+            }
+        }
+
+        return residentId;
     }
 
     private static bool HasRelatedRivalArc(JsonElement item) =>

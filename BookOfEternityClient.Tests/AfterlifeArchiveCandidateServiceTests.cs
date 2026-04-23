@@ -143,6 +143,44 @@ public sealed class AfterlifeArchiveCandidateServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task RefreshFromCurrentStateAsync_PreservesFullCandidateContentAlongsideSummary()
+    {
+        var longContent = new string('А', 260);
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тест",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            livesHistory = new[] { new { incarnation = 1 } },
+            afterlifeArchive = new { stored = Array.Empty<object>() }
+        });
+        await WriteRawJsonAsync("lore/codex_entries.json", $$"""
+        {
+          "entries": [
+            {
+              "entryId": "codex_long_001",
+              "title": "Длинная запись",
+              "category": "history",
+              "content": "{{longContent}}",
+              "discoveredAt": "2026-03-24T00:00:00Z",
+              "incarnation": 1
+            }
+          ],
+          "totalEntries": 1,
+          "categories": { "history": 1 }
+        }
+        """);
+
+        await _service.RefreshFromCurrentStateAsync();
+        var manifest = await _service.ReadAsync();
+
+        var candidate = Assert.Single(manifest!.Candidates);
+        Assert.True(candidate.Summary.Length < candidate.Content.Length);
+        Assert.EndsWith("...", candidate.Summary, StringComparison.Ordinal);
+        Assert.Equal(longContent, candidate.Content);
+    }
+
+    [Fact]
     public async Task ArchiveCandidateAsync_AppendsEntryToAfterlifeArchiveAndMarksCandidateArchived()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

@@ -862,6 +862,44 @@ public partial class GameEngine
         AnsiConsole.MarkupLine("[dim]Настройте своё будущее воплощение перед входом.[/]");
         AnsiConsole.WriteLine();
 
+        var pendingConsultationState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
+        var pendingProjectFuelState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs);
+        if (pendingConsultationState.Exists || pendingProjectFuelState.Exists)
+        {
+            var blockers = new List<string>();
+            if (pendingConsultationState.Exists)
+            {
+                blockers.Add(pendingConsultationState.IsMalformed
+                    ? "pending_archive_consultation_request.json повреждён и требует явного исправления."
+                    : "есть незакрытый запрос на архивную консультацию.");
+            }
+
+            if (pendingProjectFuelState.Exists)
+            {
+                blockers.Add(pendingProjectFuelState.IsMalformed
+                    ? "pending_archive_project_fuel_request.json повреждён и требует явного исправления."
+                    : "есть незакрытый запрос на архивную подпитку проекта.");
+            }
+
+            AnsiConsole.Write(new Panel(string.Join("\n", new[]
+            {
+                "Нельзя войти в новую смертную жизнь, пока остаются незакрытые архивные действия.",
+                string.Empty,
+                string.Join("\n", blockers.Select(item => $"• {item}")),
+                string.Empty,
+                "Сначала дождитесь явного archiveActionResolutions или почините повреждённый pending contract."
+            }))
+            {
+                Header = new PanelHeader(" Врата Души ", Justify.Center),
+                Border = BoxBorder.Double,
+                BorderStyle = new Style(Color.Red),
+                Padding = new Padding(2, 1),
+                Expand = true
+            });
+            _ = Console.ReadKey(true);
+            return;
+        }
+
         // Character description
         AnsiConsole.MarkupLine("[cyan]Опишите персонажа в смертной жизни:[/]");
         AnsiConsole.MarkupLine("[dim](Раса, класс, внешность, предыстория... или оставьте пустым)[/]");
@@ -1052,6 +1090,7 @@ public partial class GameEngine
         if (!_stateManager.CurrentState.IsInChaosSea)
             return;
 
+        var previousShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         var shiningRoot = await TryReadShiningAbodeStateRootAsync();
         if (shiningRoot == null)
             return;
@@ -1082,73 +1121,155 @@ public partial class GameEngine
             return;
         }
 
-        shiningRoot["availability"] = "active";
-        await WriteJsonObjectAsync("game_state/meta/shining_abode_state.json", shiningRoot);
+        var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        JsonObject? residentRoot = null;
+        if (!string.IsNullOrWhiteSpace(residentJson))
+        {
+            try
+            {
+                residentRoot = JsonNode.Parse(residentJson) as JsonObject;
+            }
+            catch
+            {
+                residentRoot = null;
+            }
+        }
 
-        await UpdateSoulStateRealm("Shining Abode");
+        JsonObject? guardiansRoot = null;
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (!string.IsNullOrWhiteSpace(guardiansJson))
+        {
+            try
+            {
+                guardiansRoot = JsonNode.Parse(guardiansJson) as JsonObject;
+            }
+            catch
+            {
+                guardiansRoot = null;
+            }
+        }
+
+        var normalizedRoot = ShiningAbodeState.ReenterOrdinaryActiveState(shiningRoot, residentRoot, guardiansRoot);
+        var previousSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(previousSoulJson))
+        {
+            AnsiConsole.MarkupLine("[red]Не удалось подтвердить текущий realm души. Возврат в Сияющую Обитель отменён.[/]");
+            return;
+        }
+
+        JsonObject soulRoot;
+        try
+        {
+            soulRoot = JsonNode.Parse(previousSoulJson) as JsonObject
+                ?? throw new InvalidOperationException("soul_state.json должен быть object root.");
+        }
+        catch
+        {
+            AnsiConsole.MarkupLine("[red]soul_state.json повреждён и не позволяет безопасно вернуть душу в Сияющую Обитель.[/]");
+            return;
+        }
+
+        soulRoot["currentRealm"] = "Shining Abode";
+        var nextSoulJson = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts);
+        try
+        {
+            if (!await TryCommitCoordinatedGameStateWritesAsync(
+                    new CoordinatedGameStateWrite(ShiningAbodeState.StatePath, previousShiningJson, normalizedRoot.ToJsonString(JsonOpts)),
+                    new CoordinatedGameStateWrite("game_state/meta/soul_state.json", previousSoulJson, nextSoulJson)))
+            {
+                AnsiConsole.MarkupLine("[red]Не удалось безопасно зафиксировать возвращение в Сияющую Обитель. Состояние откатилось к предыдущей версии.[/]");
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            LogError(ex);
+            AnsiConsole.MarkupLine("[red]Не удалось безопасно зафиксировать возвращение в Сияющую Обитель.[/]");
+            return;
+        }
+
+        var returnSyncSummary = await SyncShiningReturnCycleLocalStateAsync();
         await RefreshRuntimeStateAsync();
         GameInterface.RenderShiningAbodeReturnTransition();
         AnsiConsole.MarkupLine("[yellow]✨ Вы возвращаетесь в активную Сияющую Обитель.[/]");
+        if (!string.IsNullOrWhiteSpace(returnSyncSummary))
+            AnsiConsole.MarkupLine($"[dim]{GameInterface.EscapeMarkup(returnSyncSummary)}[/]");
     }
 
-    private async Task HandleReturnToChaosSeaFromShiningAbode()
+    private async Task<bool> TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync()
     {
         if (!_stateManager.CurrentState.IsInShiningAbode)
-            return;
+            return false;
 
         var shiningRoot = await TryReadShiningAbodeStateRootAsync();
         if (shiningRoot == null)
-            return;
+            return false;
 
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), "active", StringComparison.OrdinalIgnoreCase))
         {
             AnsiConsole.MarkupLine("[yellow]Сияющая Обитель уже запечатана или недоступна для обычного выхода.[/]");
-            return;
+            return false;
         }
 
         if (shiningRoot["preparedIncarnationPackage"] != null)
         {
             AnsiConsole.MarkupLine("[yellow]Нельзя покинуть Сияющую Обитель, пока frozen package ожидает bootstrap.[/]");
-            return;
+            return false;
         }
 
-        var gates = shiningRoot["gates"] as JsonObject;
-        if (gates != null)
+        var previousShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var previousSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(previousSoulJson))
         {
-            gates["hasOpenDraft"] = false;
-            gates["isStale"] = false;
-            gates["allCandidateBlessingCards"] = new JsonArray();
-            gates["availableBlessingCards"] = new JsonArray();
-            gates["shownBlessingCardIds"] = new JsonArray();
-            gates["selectedBlessingCardIds"] = new JsonArray();
-            gates["nextCandidateCursor"] = 0;
-            gates["rerollsRemaining"] = 0;
+            AnsiConsole.MarkupLine("[red]Не удалось подтвердить текущий realm души. Возврат в Море Хаоса отменён.[/]");
+            return false;
         }
 
-        shiningRoot["availability"] = "sealed_until_next_ascension";
-        shiningRoot["preparedIncarnationPackage"] = null;
-        shiningRoot["pendingNativeFactionDiscovery"] = null;
-        await WriteJsonObjectAsync("game_state/meta/shining_abode_state.json", shiningRoot);
+        JsonObject soulRoot;
+        try
+        {
+            soulRoot = JsonNode.Parse(previousSoulJson) as JsonObject
+                ?? throw new InvalidOperationException("soul_state.json должен быть object root.");
+        }
+        catch
+        {
+            AnsiConsole.MarkupLine("[red]soul_state.json повреждён и не позволяет безопасно запечатать Сияющую Обитель.[/]");
+            return false;
+        }
 
-        var soulRoot = await TryReadSoulStateRootAsync();
-        if (soulRoot != null)
+        ShiningAbodeState.SealForChaosSeaReturn(shiningRoot);
+        soulRoot["currentRealm"] = "Chaos Sea";
+        var nextSoulJson = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts);
+        try
         {
-            soulRoot["currentRealm"] = "Chaos Sea";
-            var enlightenment = soulRoot["enlightenment"] as JsonObject ?? new JsonObject();
-            enlightenment["currentTier"] = "Новичок";
-            enlightenment["experience"] = 0;
-            enlightenment["level"] = 0;
-            if (enlightenment.ContainsKey("progressPercent"))
-                enlightenment["progressPercent"] = 0;
-            soulRoot["enlightenment"] = enlightenment;
-            await WriteCanonicalSoulStateAsync(soulRoot);
+            if (!await TryCommitCoordinatedGameStateWritesAsync(
+                    new CoordinatedGameStateWrite(ShiningAbodeState.StatePath, previousShiningJson, shiningRoot.ToJsonString(JsonOpts)),
+                    new CoordinatedGameStateWrite("game_state/meta/soul_state.json", previousSoulJson, nextSoulJson)))
+            {
+                AnsiConsole.MarkupLine("[red]Не удалось безопасно зафиксировать возвращение в Море Хаоса. Состояние откатилось к предыдущей версии.[/]");
+                return false;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            await UpdateSoulStateRealm("Chaos Sea");
+            LogError(ex);
+            AnsiConsole.MarkupLine("[red]Не удалось безопасно зафиксировать возвращение в Море Хаоса.[/]");
+            return false;
         }
+
+        ShiningCoreActionRequestState.ClearRequests(_fs);
+        ShiningTradeRequestState.ClearRequests(_fs);
+        ShiningFactionRequestState.ClearAllRequests(_fs);
 
         await RefreshRuntimeStateAsync();
+        return true;
+    }
+
+    private async Task HandleReturnToChaosSeaFromShiningAbode()
+    {
+        if (!await TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync())
+            return;
+
         GameInterface.RenderRealmTransition(true);
         AnsiConsole.MarkupLine("[blue]🌊 Сияющая Обитель запечатана. Вы возвращаетесь в Море Хаоса.[/]");
     }
@@ -1162,89 +1283,180 @@ public partial class GameEngine
         if (!confirm)
             return;
 
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
-        var achievementsJson = await _fs.ReadFileAsync("game_state/meta/achievements.json");
-        var codexJson = await _fs.ReadFileAsync("lore/codex_entries.json");
-        var chronicleJson = await _fs.ReadFileAsync("lore/chaos_sea/player_chronicle.json");
-        var cosmologyJson = await _fs.ReadFileAsync("lore/chaos_sea/cosmology.json");
-        var soulLoreJson = await _fs.ReadFileAsync("lore/chaos_sea/soul_system_lore.json");
-        var guardiansLoreJson = await _fs.ReadFileAsync("lore/chaos_sea/guardians_lore.json");
-
-        var soulName = _stateManager.CurrentState.SoulName;
-        object previousSoulNames = Array.Empty<string>();
-        object soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() };
-        object afterlifeArchive = new { stored = Array.Empty<object>() };
-        object livesHistory = Array.Empty<object>();
-        object? soulImprint = null;
-
-        if (!string.IsNullOrWhiteSpace(soulJson))
+        try
         {
-            using var doc = JsonDocument.Parse(soulJson);
-            var root = doc.RootElement;
-            if (root.TryGetProperty("soulName", out var sn) && sn.ValueKind == JsonValueKind.String)
-                soulName = sn.GetString() ?? soulName;
-            if (root.TryGetProperty("previousSoulNames", out var prevSoulNames))
-                previousSoulNames = JsonSerializer.Deserialize<object>(prevSoulNames.GetRawText()) ?? previousSoulNames;
-            if (root.TryGetProperty("soulRelics", out var relics))
-                soulRelics = JsonSerializer.Deserialize<object>(relics.GetRawText()) ?? soulRelics;
-            if (root.TryGetProperty("afterlifeArchive", out var archive))
-                afterlifeArchive = JsonSerializer.Deserialize<object>(archive.GetRawText()) ?? afterlifeArchive;
-            if (root.TryGetProperty("livesHistory", out var history))
-                livesHistory = JsonSerializer.Deserialize<object>(history.GetRawText()) ?? livesHistory;
-            if (root.TryGetProperty("soulImprint", out var imprint))
-                soulImprint = JsonSerializer.Deserialize<object>(imprint.GetRawText());
+            if (!await ExecuteNewGamePlusResetAsync())
+            {
+                AnsiConsole.MarkupLine("[red]Не удалось безопасно начать Новый Цикл. Исходное состояние восстановлено.[/]");
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            LogError(ex);
+            AnsiConsole.MarkupLine("[red]Не удалось безопасно завершить подготовку Нового Цикла.[/]");
+            return;
         }
 
-        _fs.ClearGameState();
-
-        var newSessionId = Guid.NewGuid().ToString();
-        var resetSoulState = new Dictionary<string, object?>
-        {
-            ["soulName"] = soulName,
-            ["previousSoulNames"] = previousSoulNames,
-            ["currentRealm"] = "Chaos Sea",
-            ["currentIncarnation"] = 0,
-            ["enlightenment"] = new { currentTier = "Новичок", experience = 0, level = 0 },
-            ["inkFeathers"] = new { current = 0, total = 0 },
-            ["soulRelics"] = soulRelics,
-            ["afterlifeArchive"] = afterlifeArchive,
-            ["livesHistory"] = livesHistory,
-            ["pendingMemoryLegacy"] = null
-        };
-        if (soulImprint != null)
-            resetSoulState["soulImprint"] = soulImprint;
-
-        await WriteCanonicalSoulStateAsync(resetSoulState);
-        _afterlifeArchiveCandidateService.Clear();
-        if (!string.IsNullOrWhiteSpace(guardiansJson))
-            await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansJson);
-        if (!string.IsNullOrWhiteSpace(achievementsJson))
-            await _fs.WriteFileAtomicAsync("game_state/meta/achievements.json", achievementsJson);
-        if (!string.IsNullOrWhiteSpace(codexJson))
-            await _fs.WriteFileAtomicAsync("lore/codex_entries.json", codexJson);
-        if (!string.IsNullOrWhiteSpace(chronicleJson))
-            await _fs.WriteFileAtomicAsync("lore/chaos_sea/player_chronicle.json", chronicleJson);
-        if (!string.IsNullOrWhiteSpace(cosmologyJson))
-            await _fs.WriteFileAtomicAsync("lore/chaos_sea/cosmology.json", cosmologyJson);
-        if (!string.IsNullOrWhiteSpace(soulLoreJson))
-            await _fs.WriteFileAtomicAsync("lore/chaos_sea/soul_system_lore.json", soulLoreJson);
-        if (!string.IsNullOrWhiteSpace(guardiansLoreJson))
-            await _fs.WriteFileAtomicAsync("lore/chaos_sea/guardians_lore.json", guardiansLoreJson);
-
-        var chatLog = new
-        {
-            sessionId = newSessionId,
-            startedAt = DateTime.UtcNow.ToString("o"),
-            turns = Array.Empty<object>()
-        };
-        await _fs.WriteFileAtomicAsync("game_state/history/chat_log.json", JsonSerializer.Serialize(chatLog, JsonOpts));
-
-        _gameLoop.SetSession(newSessionId, 0);
-        await _storyService.AppendMarkerAsync("Chaos Sea", 0, "NEW_GAME_PLUS", "Начат Новый Цикл после Вознесения. Просветление сброшено, Реликвии Души и Хранители сохранены.");
-        await RefreshRuntimeStateAsync();
         GameInterface.RenderRealmTransition(true);
         AnsiConsole.MarkupLine("[yellow]✨ Новый Цикл начался. Вы снова в Море Хаоса.[/]");
+    }
+
+    private async Task<bool> ExecuteNewGamePlusResetAsync()
+    {
+        var backupPath = CreateGameSessionSafetyBackup("new-game-plus");
+        try
+        {
+            var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+            var achievementsJson = await _fs.ReadFileAsync("game_state/meta/achievements.json");
+            var codexJson = await _fs.ReadFileAsync("lore/codex_entries.json");
+            var chronicleJson = await _fs.ReadFileAsync("lore/chaos_sea/player_chronicle.json");
+            var cosmologyJson = await _fs.ReadFileAsync("lore/chaos_sea/cosmology.json");
+            var soulLoreJson = await _fs.ReadFileAsync("lore/chaos_sea/soul_system_lore.json");
+            var guardiansLoreJson = await _fs.ReadFileAsync("lore/chaos_sea/guardians_lore.json");
+
+            var soulName = _stateManager.CurrentState.SoulName;
+            object previousSoulNames = Array.Empty<string>();
+            object soulRelics = new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() };
+            object afterlifeArchive = new { stored = Array.Empty<object>() };
+            object livesHistory = Array.Empty<object>();
+            object? soulImprint = null;
+
+            if (!string.IsNullOrWhiteSpace(soulJson))
+            {
+                using var doc = JsonDocument.Parse(soulJson);
+                var root = doc.RootElement;
+                if (root.TryGetProperty("soulName", out var sn) && sn.ValueKind == JsonValueKind.String)
+                    soulName = sn.GetString() ?? soulName;
+                if (root.TryGetProperty("previousSoulNames", out var prevSoulNames))
+                    previousSoulNames = JsonSerializer.Deserialize<object>(prevSoulNames.GetRawText()) ?? previousSoulNames;
+                if (root.TryGetProperty("soulRelics", out var relics))
+                    soulRelics = JsonSerializer.Deserialize<object>(relics.GetRawText()) ?? soulRelics;
+                if (root.TryGetProperty("afterlifeArchive", out var archive))
+                    afterlifeArchive = JsonSerializer.Deserialize<object>(archive.GetRawText()) ?? afterlifeArchive;
+                if (root.TryGetProperty("livesHistory", out var history))
+                    livesHistory = JsonSerializer.Deserialize<object>(history.GetRawText()) ?? livesHistory;
+                if (root.TryGetProperty("soulImprint", out var imprint))
+                    soulImprint = JsonSerializer.Deserialize<object>(imprint.GetRawText());
+            }
+
+            _fs.ClearGameState();
+
+            var newSessionId = Guid.NewGuid().ToString();
+            var resetSoulState = new Dictionary<string, object?>
+            {
+                ["soulName"] = soulName,
+                ["previousSoulNames"] = previousSoulNames,
+                ["currentRealm"] = "Chaos Sea",
+                ["currentIncarnation"] = 0,
+                ["enlightenment"] = new { currentTier = "Новичок", experience = 0, level = 0 },
+                ["inkFeathers"] = new { current = 0, total = 0 },
+                ["soulRelics"] = soulRelics,
+                ["afterlifeArchive"] = afterlifeArchive,
+                ["livesHistory"] = livesHistory,
+                ["pendingMemoryLegacy"] = null
+            };
+            if (soulImprint != null)
+                resetSoulState["soulImprint"] = soulImprint;
+
+            await WriteCanonicalSoulStateAsync(resetSoulState);
+            _afterlifeArchiveCandidateService.Clear();
+            if (!string.IsNullOrWhiteSpace(guardiansJson))
+                await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansJson);
+            if (!string.IsNullOrWhiteSpace(achievementsJson))
+                await _fs.WriteFileAtomicAsync("game_state/meta/achievements.json", achievementsJson);
+            if (!string.IsNullOrWhiteSpace(codexJson))
+                await _fs.WriteFileAtomicAsync("lore/codex_entries.json", codexJson);
+            if (!string.IsNullOrWhiteSpace(chronicleJson))
+                await _fs.WriteFileAtomicAsync("lore/chaos_sea/player_chronicle.json", chronicleJson);
+            if (!string.IsNullOrWhiteSpace(cosmologyJson))
+                await _fs.WriteFileAtomicAsync("lore/chaos_sea/cosmology.json", cosmologyJson);
+            if (!string.IsNullOrWhiteSpace(soulLoreJson))
+                await _fs.WriteFileAtomicAsync("lore/chaos_sea/soul_system_lore.json", soulLoreJson);
+            if (!string.IsNullOrWhiteSpace(guardiansLoreJson))
+                await _fs.WriteFileAtomicAsync("lore/chaos_sea/guardians_lore.json", guardiansLoreJson);
+
+            var chatLog = new
+            {
+                sessionId = newSessionId,
+                startedAt = DateTime.UtcNow.ToString("o"),
+                turns = Array.Empty<object>()
+            };
+            await _fs.WriteFileAtomicAsync("game_state/history/chat_log.json", JsonSerializer.Serialize(chatLog, JsonOpts));
+
+            _gameLoop.SetSession(newSessionId, 0);
+            await _storyService.AppendMarkerAsync("Chaos Sea", 0, "NEW_GAME_PLUS", "Начат Новый Цикл после Вознесения. Просветление сброшено, Реликвии Души и Хранители сохранены.");
+            await RefreshRuntimeStateAsync();
+            CleanupGameSessionSafetyBackup(backupPath);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            LogError(ex);
+            try
+            {
+                RestoreGameSessionSafetyBackup(backupPath);
+                await RefreshRuntimeStateAsync();
+                return false;
+            }
+            catch (Exception restoreEx)
+            {
+                throw new InvalidOperationException("Не удалось восстановить исходное game_session после сбоя New Game Plus.", restoreEx);
+            }
+            finally
+            {
+                CleanupGameSessionSafetyBackup(backupPath);
+            }
+        }
+    }
+
+    private string CreateGameSessionSafetyBackup(string operationTag)
+    {
+        var backupRoot = Path.Combine(
+            Path.GetTempPath(),
+            $"boe-game-session-backup-{operationTag}-{Guid.NewGuid():N}");
+        CopyDirectoryRecursive(_fs.GameSessionPath, backupRoot);
+        return backupRoot;
+    }
+
+    private void RestoreGameSessionSafetyBackup(string backupRoot)
+    {
+        var targetRoot = _fs.GameSessionPath;
+        if (Directory.Exists(targetRoot))
+            Directory.Delete(targetRoot, recursive: true);
+
+        CopyDirectoryRecursive(backupRoot, targetRoot);
+    }
+
+    private static void CleanupGameSessionSafetyBackup(string backupRoot)
+    {
+        try
+        {
+            if (Directory.Exists(backupRoot))
+                Directory.Delete(backupRoot, recursive: true);
+        }
+        catch
+        {
+            // best-effort cleanup
+        }
+    }
+
+    private static void CopyDirectoryRecursive(string sourceDir, string destinationDir)
+    {
+        Directory.CreateDirectory(destinationDir);
+
+        foreach (var file in Directory.GetFiles(sourceDir, "*", SearchOption.TopDirectoryOnly))
+        {
+            var destinationFile = Path.Combine(destinationDir, Path.GetFileName(file));
+            File.Copy(file, destinationFile, overwrite: true);
+        }
+
+        foreach (var directory in Directory.GetDirectories(sourceDir, "*", SearchOption.TopDirectoryOnly))
+        {
+            var destinationChild = Path.Combine(destinationDir, Path.GetFileName(directory));
+            CopyDirectoryRecursive(directory, destinationChild);
+        }
     }
 
     private async Task<JsonObject?> TryReadShiningAbodeStateRootAsync()
@@ -1288,12 +1500,81 @@ public partial class GameEngine
         await _fs.WriteFileAtomicAsync(path, root.ToJsonString(JsonOpts));
     }
 
+    private async Task<string?> SyncShiningReturnCycleLocalStateAsync()
+    {
+        var shiningRoot = await TryReadShiningAbodeStateRootAsync();
+        var soulRoot = await TryReadSoulStateRootAsync();
+        if (shiningRoot == null || soulRoot == null)
+            return null;
+
+        JsonObject? residentRoot = null;
+        var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        if (!string.IsNullOrWhiteSpace(residentJson))
+        {
+            try
+            {
+                residentRoot = JsonNode.Parse(residentJson) as JsonObject;
+            }
+            catch
+            {
+                residentRoot = null;
+            }
+        }
+
+        JsonObject? guardiansRoot = null;
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (!string.IsNullOrWhiteSpace(guardiansJson))
+        {
+            try
+            {
+                guardiansRoot = JsonNode.Parse(guardiansJson) as JsonObject;
+            }
+            catch
+            {
+                guardiansRoot = null;
+            }
+        }
+
+        if (ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot) != null)
+            return null;
+
+        var preNormalizationShiningRoot = shiningRoot.DeepClone() as JsonObject;
+        ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
+        var stateChanged = preNormalizationShiningRoot != null && !JsonNode.DeepEquals(preNormalizationShiningRoot, shiningRoot);
+        var cycleChanged = false;
+        stateChanged |= ShiningAbodeState.SyncShiningReturnCycle(
+            shiningRoot,
+            Math.Max(0, ReadIntNode(soulRoot["currentIncarnation"])),
+            out cycleChanged);
+
+        if (stateChanged)
+            await WriteJsonObjectAsync(ShiningAbodeState.StatePath, shiningRoot);
+
+        var autoRefresh = await ShiningTradeService.SyncAutoRefreshRequestsForCurrentCycleAsync(
+            _fs,
+            Math.Max(1, _gameLoop.TurnNumber + 1));
+        var parts = new List<string>();
+        if (cycleChanged)
+            parts.Add($"Синхронизирован сияющий return-cycle {ShiningAbodeState.ResolveShiningReturnCycleId(shiningRoot, soulRoot)}: попытки banner-gacha сброшены.");
+        if (autoRefresh.CreatedRequestCount > 0)
+            parts.Add($"Автоматически запрошено сияющих витрин: {autoRefresh.CreatedRequestCount}.");
+        return parts.Count == 0 ? null : string.Join(" ", parts);
+    }
+
     private static string GetNodeString(JsonNode? node)
     {
         if (node is JsonValue value && value.TryGetValue<string>(out var text))
             return text ?? "";
 
         return "";
+    }
+
+    private static int ReadIntNode(JsonNode? node)
+    {
+        if (node is JsonValue value && value.TryGetValue<int>(out var intValue))
+            return intValue;
+
+        return 0;
     }
 
     /// <summary>

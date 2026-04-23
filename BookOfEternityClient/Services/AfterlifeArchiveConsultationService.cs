@@ -129,8 +129,8 @@ public sealed class AfterlifeArchiveConsultationService
                     affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts));
 
         var summary = string.Equals(entryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase)
-            ? "Запрос на архивную консультацию создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо materialize-ится в rival clue / warning effect."
-            : "Запрос на архивную консультацию создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо materialize-ится в guaranteed archive quest / lore-derived preparation.";
+            ? "Запрос на архивную консультацию создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо превратится в заметную подсказку о нити соперника или предупреждение."
+            : "Запрос на архивную консультацию создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо превратится в гарантированный архивный квест или подготовку знания.";
         var gmAction =
             $"[{AfterlifeArchiveActionState.ConsultationActionTag}] Игрок тратит архивную запись «{request.ArchiveTitle}» ({request.ArchiveEntryType}, {request.ArchiveRarity}) на консультацию у Хранителя {request.GuardianName} ({guardianId}). " +
             $"Обязательно прочитай {AfterlifeArchiveActionState.ConsultationRequestPath} как client-authored contract. " +

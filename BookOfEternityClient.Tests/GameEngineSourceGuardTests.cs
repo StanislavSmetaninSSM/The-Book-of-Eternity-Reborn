@@ -80,6 +80,42 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void RealmSensitiveStartupCleanup_MustRefreshPersistedStateBeforeHygiene()
+    {
+        var sessionSnapshotSource = ReadGameEnginePartialSource("GameEngine.SessionAndSnapshots.cs");
+        var validationSource = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+
+        Assert.Contains("await _stateManager.RefreshGameStateAsync();", sessionSnapshotSource, StringComparison.Ordinal);
+        Assert.Contains("await _stateManager.RefreshGameStateAsync();", validationSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RealmTransitions_MustUseCoordinatedWritesAndAbortWithoutSoulRealmAuthority()
+    {
+        var incarnationSource = ReadGameEnginePartialSource("GameEngine.IncarnationAndAfterlife.cs");
+        var mainMenuSource = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+        var turnLifecycleSource = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+
+        Assert.Contains("private async Task<bool> UpdateSoulStateRealm", incarnationSource, StringComparison.Ordinal);
+        Assert.Contains("TryCommitCoordinatedGameStateWritesAsync(", incarnationSource, StringComparison.Ordinal);
+        Assert.Contains("TryCommitCoordinatedGameStateWritesAsync(", mainMenuSource, StringComparison.Ordinal);
+        Assert.Contains("TryCommitCoordinatedGameStateWritesAsync(", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("await UpdateSoulStateRealm(\"Shining Abode\");", mainMenuSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("await UpdateSoulStateRealm(\"Shining Abode\");", turnLifecycleSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NewGamePlus_MustBackupAndRestoreGameSessionBeforeDestructiveReset()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+
+        Assert.Contains("CreateGameSessionSafetyBackup(\"new-game-plus\")", source, StringComparison.Ordinal);
+        Assert.Contains("RestoreGameSessionSafetyBackup(backupPath)", source, StringComparison.Ordinal);
+        Assert.Contains("CleanupGameSessionSafetyBackup(backupPath)", source, StringComparison.Ordinal);
+        Assert.Contains("_fs.ClearGameState();", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ContinueFlow_MustNotDeleteAcceptedTurnOutputFilesJustBecauseThereIsNoPendingManifest()
     {
         var source = ReadGameEngineSource();
@@ -148,6 +184,25 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn", source, StringComparison.Ordinal);
         Assert.Contains("Do NOT immediately kick the soul back into a new life on that protected return turn", source, StringComparison.Ordinal);
         Assert.Contains("source = guardian_forced", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RuntimePrompt_MustRequireSoldOutSnapshotInShiningTradeReceipts()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.Contains("soldOutCount", source, StringComparison.Ordinal);
+        Assert.Contains("faction.tradeInventoryReceipts[]", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void IncarnationFlow_MustBlockOnPendingArchiveActionsBeforeLeavingAfterlife()
+    {
+        var source = ReadGameEngineSource();
+
+        Assert.Contains("AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs)", source, StringComparison.Ordinal);
+        Assert.Contains("AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs)", source, StringComparison.Ordinal);
+        Assert.Contains("Нельзя войти в новую смертную жизнь, пока остаются незакрытые архивные действия", source, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -311,6 +366,46 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();", source, StringComparison.Ordinal);
         Assert.Contains("pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable || hasPendingTerminalSignal", source, StringComparison.Ordinal);
         Assert.DoesNotContain("pendingManifest != null || _fs.FileExists(\"ready/turn_complete.json\")", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void OrdinaryReturnToChaosSea_MustNotResetEnlightenment()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+
+        Assert.Contains("soulRoot[\"currentRealm\"] = \"Chaos Sea\";", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("var enlightenment = soulRoot[\"enlightenment\"] as JsonObject ?? new JsonObject();", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("enlightenment[\"currentTier\"] = \"Новичок\";", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("enlightenment[\"experience\"] = 0;", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("enlightenment[\"level\"] = 0;", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("enlightenment[\"progressPercent\"] = 0;", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void OrdinaryReturnToChaosSea_MustPurgePendingShiningRequests()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+
+        Assert.Contains("ShiningCoreActionRequestState.ClearRequests(_fs);", source, StringComparison.Ordinal);
+        Assert.Contains("ShiningTradeRequestState.ClearRequests(_fs);", source, StringComparison.Ordinal);
+        Assert.Contains("ShiningFactionRequestState.ClearAllRequests(_fs);", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RuntimeUiArtifactNormalizer_MustEnsureShiningFactionRequestsHealthy()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.SessionAndSnapshots.cs");
+
+        Assert.Contains("await ShiningFactionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShiningReturnCycleSync_MustPersistNormalizationChangesEvenWithoutCycleBump()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+
+        Assert.Contains("var preNormalizationShiningRoot = shiningRoot.DeepClone() as JsonObject;", source, StringComparison.Ordinal);
+        Assert.Contains("var stateChanged = preNormalizationShiningRoot != null && !JsonNode.DeepEquals(preNormalizationShiningRoot, shiningRoot);", source, StringComparison.Ordinal);
     }
 
     [Fact]

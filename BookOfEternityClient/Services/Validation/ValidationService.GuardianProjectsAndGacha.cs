@@ -42,6 +42,7 @@ public partial class ValidationService
         {
             CurrentReputation = source.CurrentReputation,
             CurrentAbodePower = source.CurrentAbodePower,
+            FounderExtraGachaCharges = source.FounderExtraGachaCharges,
             ChargesUsedThisReturn = source.ChargesUsedThisReturn
         };
         clone.AvailableQuestIds.UnionWith(source.AvailableQuestIds);
@@ -89,6 +90,7 @@ public partial class ValidationService
         {
             CurrentReputation = currentReputation,
             CurrentAbodePower = AbodePowerRules.GetCurrentPower(guardian),
+            FounderExtraGachaCharges = PlayerGuardianFoundationState.GetFounderExtraGachaCharges(guardian),
             ChargesUsedThisReturn = chargesUsedThisReturn
         };
         state.AvailableQuestIds.UnionWith(availableQuestIds);
@@ -5330,18 +5332,18 @@ public partial class ValidationService
             chargesPerReturnNode.ValueKind == JsonValueKind.Number &&
             chargesPerReturnNode.TryGetInt32(out var chargesPerReturn))
         {
-            var expectedCharges = GetExpectedGuardianGachaCharges(parsedReputation, AbodePowerRules.GetCurrentPower(guardian));
+            var expectedCharges = GetExpectedGuardianGachaCharges(guardian, parsedReputation);
             if (chargesPerReturn != expectedCharges)
             {
                 issues.Add(new ValidationIssue(
                     $"{gachaContext}.chargesPerReturn",
                     IssueSeverity.Error,
-                    "Guardian gachaSystem.chargesPerReturn должен совпадать с reputation tier + abode power bonus",
+                    "Guardian gachaSystem.chargesPerReturn должен совпадать с reputation tier + abode power bonus + optional founder bonus",
                     code: "guardian_gacha_charges_tier_mismatch",
                     section: "Guardians",
                     expected: expectedCharges.ToString(),
                     actual: chargesPerReturn.ToString(),
-                    repairHint: "Синхронизируй chargesPerReturn с guardian reputation tier и bonusGachaCharges от текущей силы Обители."));
+                    repairHint: "Синхронизируй chargesPerReturn с guardian reputation tier, bonusGachaCharges от текущей силы Обители и founder-origin bonus, если guardian основан из вознесённой души."));
             }
         }
 
@@ -5361,8 +5363,9 @@ public partial class ValidationService
     }
 
 
-    private static int GetExpectedGuardianGachaCharges(int currentReputation, int currentPower)
-        => GuardianGachaChargeRules.GetChargesPerReturnForReputation(currentReputation, currentPower);
+    private static int GetExpectedGuardianGachaCharges(JsonElement guardian, int currentReputation)
+        => GuardianGachaChargeRules.GetChargesPerReturnForReputation(currentReputation, AbodePowerRules.GetCurrentPower(guardian)) +
+           PlayerGuardianFoundationState.GetFounderExtraGachaCharges(guardian);
 
 
     private void CompareGuardianGachaState(JsonElement activeGuardian, string activeGuardianContext,

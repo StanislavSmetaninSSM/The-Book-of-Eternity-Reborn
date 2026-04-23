@@ -38,6 +38,28 @@ public sealed class AbodePowerRulesTests
     }
 
     [Fact]
+    public void FoundedGuardianGachaCharges_IncludeFounderBonus()
+    {
+        var guardian = new JsonObject
+        {
+            ["guardianId"] = "guardian_player",
+            ["originType"] = PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul,
+            ["relationshipData"] = new JsonObject
+            {
+                ["currentReputation"] = 80
+            },
+            ["abodePower"] = new JsonObject
+            {
+                ["currentPower"] = 35
+            }
+        };
+
+        var charges = GuardianGachaChargeRules.GetChargesPerReturnForGuardian(guardian);
+
+        Assert.Equal(3, charges);
+    }
+
+    [Fact]
     public void EnsureCanonicalState_FillsDefaultAbodePowerShape()
     {
         var guardian = new JsonObject

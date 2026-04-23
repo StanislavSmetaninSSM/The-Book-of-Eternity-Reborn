@@ -67,10 +67,7 @@ public class StateManager
     /// </summary>
     public async Task RefreshGameStateAsync()
     {
-        var state = new AggregatedGameState
-        {
-            CurrentRealm = CurrentState.CurrentRealm
-        };
+        var state = new AggregatedGameState();
 
         // Core: Player status
         await TryLoadJson("game_state/core/player_status.json", (doc) =>
@@ -129,7 +126,7 @@ public class StateManager
         {
             var root = doc.RootElement;
             state.SoulName = GetString(root, "soulName", "");
-            state.CurrentRealm = GetString(root, "currentRealm", state.CurrentRealm);
+            state.CurrentRealm = GetString(root, "currentRealm", "");
             if (root.TryGetProperty("currentIncarnation", out var inc))
                 state.Incarnation = inc.GetInt32();
             if (root.TryGetProperty("inkFeathers", out var feathers) &&
@@ -145,6 +142,50 @@ public class StateManager
         {
             var root = doc.RootElement;
             state.ShiningAbodeAvailability = GetString(root, "availability", "");
+            if (root.TryGetProperty("radiance", out var radiance) &&
+                radiance.ValueKind == JsonValueKind.Object)
+            {
+                if (radiance.TryGetProperty("experience", out var experience) &&
+                    experience.ValueKind == JsonValueKind.Number &&
+                    experience.TryGetInt32(out var parsedExperience))
+                {
+                    state.ShiningRadianceExperience = parsedExperience;
+                }
+
+                if (radiance.TryGetProperty("tier", out var tier) &&
+                    tier.ValueKind == JsonValueKind.Number &&
+                    tier.TryGetInt32(out var parsedTier))
+                {
+                    state.ShiningRadianceTier = parsedTier;
+                }
+            }
+
+            if (root.TryGetProperty("lightSparks", out var lightSparks) &&
+                lightSparks.ValueKind == JsonValueKind.Number &&
+                lightSparks.TryGetInt32(out var parsedLightSparks))
+            {
+                state.ShiningLightSparks = parsedLightSparks;
+            }
+
+            if (root.TryGetProperty("halls", out var halls) && halls.ValueKind == JsonValueKind.Array)
+                state.ShiningHallCount = halls.GetArrayLength();
+            if (root.TryGetProperty("factions", out var factions) && factions.ValueKind == JsonValueKind.Array)
+                state.ShiningFactionCount = factions.GetArrayLength();
+            if (root.TryGetProperty("gates", out var gates) && gates.ValueKind == JsonValueKind.Object)
+            {
+                if (gates.TryGetProperty("hasOpenDraft", out var hasOpenDraft) &&
+                    (hasOpenDraft.ValueKind == JsonValueKind.True || hasOpenDraft.ValueKind == JsonValueKind.False))
+                {
+                    state.HasOpenShiningGatesDraft = hasOpenDraft.GetBoolean();
+                }
+
+                if (gates.TryGetProperty("isStale", out var isStale) &&
+                    (isStale.ValueKind == JsonValueKind.True || isStale.ValueKind == JsonValueKind.False))
+                {
+                    state.IsShiningGatesDraftStale = isStale.GetBoolean();
+                }
+            }
+
             if (root.TryGetProperty("preparedIncarnationPackage", out var pkg))
                 state.HasPendingShiningAbodeBootstrapPackage = pkg.ValueKind != JsonValueKind.Null;
         });

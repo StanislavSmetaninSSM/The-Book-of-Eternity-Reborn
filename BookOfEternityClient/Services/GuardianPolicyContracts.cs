@@ -53,7 +53,8 @@ internal static class GuardianPolicyContracts
         LivesHistory = 1 << 3,
         PendingMemoryLegacy = 1 << 4,
         Enlightenment = 1 << 5,
-        SoulProgression = 1 << 6
+        SoulProgression = 1 << 6,
+        PendingShiningBlessingEffects = 1 << 7
     }
 
     internal sealed class SoulStatePatchConflictContext
@@ -131,7 +132,10 @@ internal static class GuardianPolicyContracts
         "afterlifeArchive",
         "livesHistory",
         "soulImprint",
-        "pendingMemoryLegacy"
+        "pendingMemoryLegacy",
+        ShiningBlessingEffectState.SoulStateProperty,
+        PlayerGuardianFoundationState.SoulStateGuardianIdProperty,
+        PlayerGuardianFoundationState.SoulStateFoundationStatusProperty
     };
 
     internal static readonly HashSet<string> SoulStatePatchWriteTopLevelKeys =
@@ -150,7 +154,10 @@ internal static class GuardianPolicyContracts
         "afterlifeArchive",
         "livesHistory",
         "soulImprint",
-        "pendingMemoryLegacy"
+        "pendingMemoryLegacy",
+        ShiningBlessingEffectState.SoulStateProperty,
+        PlayerGuardianFoundationState.SoulStateGuardianIdProperty,
+        PlayerGuardianFoundationState.SoulStateFoundationStatusProperty
     };
 
     internal static readonly HashSet<string> SoulStateLifecycleTopLevelKeys =

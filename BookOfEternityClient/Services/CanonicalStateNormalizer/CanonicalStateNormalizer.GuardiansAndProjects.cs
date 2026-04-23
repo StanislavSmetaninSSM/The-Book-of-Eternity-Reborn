@@ -334,15 +334,28 @@ public partial class CanonicalStateNormalizer
         var previousGuardiansRoot = await ReadBackupObjectAsync("game_state/meta/guardians.json", backups);
         var previousGuardianPowerById = GuardianAbodeResidentState.CollectGuardianAbodePowerById(previousGuardiansRoot);
         var guardianPowerById = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        if (await ReadNodeAsync("game_state/meta/guardians.json") is JsonObject guardiansRoot &&
-            guardiansRoot["guardians"] is JsonArray guardians)
+        JsonObject? currentGuardiansRoot = null;
+        if (await ReadNodeAsync("game_state/meta/guardians.json") is JsonObject guardiansRoot)
         {
-            foreach (var guardian in guardians.OfType<JsonObject>())
+            currentGuardiansRoot = CloneObject(guardiansRoot);
+            if (currentGuardiansRoot["guardians"] is JsonArray guardians)
             {
-                var guardianId = guardian["guardianId"]?.GetValue<string>();
-                if (!string.IsNullOrWhiteSpace(guardianId))
-                    guardianPowerById[guardianId] = AbodePowerRules.GetCurrentPower(guardian);
+                foreach (var guardian in guardians.OfType<JsonObject>())
+                {
+                    var guardianId = guardian["guardianId"]?.GetValue<string>();
+                    if (!string.IsNullOrWhiteSpace(guardianId))
+                        guardianPowerById[guardianId] = AbodePowerRules.GetCurrentPower(guardian);
+                }
             }
+        }
+
+        JsonObject? shiningRoot = null;
+        if (await ReadNodeAsync(ShiningAbodeState.StatePath) is JsonObject currentShiningRoot)
+        {
+            shiningRoot = CloneObject(currentShiningRoot);
+            // Materialize active-guardian faction context before resident-side Shining normalization
+            // so ascended residents do not lose affiliation when the faction exists only via guardian projection.
+            ShiningAbodeState.NormalizeStateRoot(shiningRoot, result, currentGuardiansRoot);
         }
 
         foreach (var resident in entries.OfType<JsonObject>())
@@ -353,6 +366,7 @@ public partial class CanonicalStateNormalizer
                 !string.IsNullOrWhiteSpace(guardianId) && guardianPowerById.TryGetValue(guardianId, out var currentAbodePower)
                     ? currentAbodePower
                     : null);
+            ShiningAbodeState.NormalizeResidentShiningFields(resident, shiningRoot);
         }
 
         var previousSoulQuestJson = backups != null && backups.TryGetValue("game_state/quests/soul_quests.json", out var previousSoulQuestBackupPath)
@@ -389,6 +403,7 @@ public partial class CanonicalStateNormalizer
 
                 var projection = GuardianAbodeResidentState.ProjectCanonicalAbodeDrift(previousResident, resident, driftContext);
                 GuardianAbodeResidentState.ApplyAbodeDriftProjection(resident, projection);
+                ShiningAbodeState.NormalizeResidentShiningFields(resident, shiningRoot);
             }
         }
 

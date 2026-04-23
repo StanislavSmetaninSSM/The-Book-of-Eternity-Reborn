@@ -254,22 +254,28 @@ public sealed class CriticalStateHealthService
     private static bool HasValidGuardianSurface(JsonElement root, bool requireCanonicalShape, bool allowGuardiansCommandSurface)
     {
         var hasGuardians = root.TryGetProperty("guardians", out var guardians) && guardians.ValueKind == JsonValueKind.Array;
-        var hasActiveGuardian = root.TryGetProperty("activeGuardian", out var activeGuardian) &&
-                               (activeGuardian.ValueKind == JsonValueKind.Object || activeGuardian.ValueKind == JsonValueKind.Null);
-        var hasPendingGuardianCreation = root.TryGetProperty("pendingGuardianCreation", out var pendingGuardianCreation) &&
-                                        (pendingGuardianCreation.ValueKind == JsonValueKind.Object || pendingGuardianCreation.ValueKind == JsonValueKind.Null);
-        var hasChaosSeaNavigation = root.TryGetProperty("chaosSeaNavigation", out var chaosSeaNavigation) &&
-                                    (chaosSeaNavigation.ValueKind == JsonValueKind.Object || chaosSeaNavigation.ValueKind == JsonValueKind.Null);
+        var hasValidOptionalSections =
+            HasOptionalObjectOrNull(root, "activeGuardian") &&
+            HasOptionalObjectOrNull(root, "pendingGuardianCreation") &&
+            HasOptionalObjectOrNull(root, "chaosSeaNavigation");
 
         if (requireCanonicalShape)
-            return hasGuardians || hasActiveGuardian || hasPendingGuardianCreation || hasChaosSeaNavigation;
+            return hasGuardians && hasValidOptionalSections;
 
-        if (hasGuardians || hasActiveGuardian || hasPendingGuardianCreation || hasChaosSeaNavigation)
+        if (hasGuardians && hasValidOptionalSections)
             return true;
 
         return allowGuardiansCommandSurface &&
                root.TryGetProperty("UpdateGuardians", out var updates) &&
                updates.ValueKind == JsonValueKind.Array;
+    }
+
+    private static bool HasOptionalObjectOrNull(JsonElement root, string propertyName)
+    {
+        if (!root.TryGetProperty(propertyName, out var property))
+            return true;
+
+        return property.ValueKind is JsonValueKind.Object or JsonValueKind.Null;
     }
 
     private static bool ContainsSuspiciousPowerShellObjectShape(JsonElement root)

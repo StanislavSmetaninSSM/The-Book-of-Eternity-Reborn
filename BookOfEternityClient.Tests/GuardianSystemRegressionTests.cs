@@ -437,6 +437,67 @@ public sealed class GuardianSystemRegressionTests : IDisposable
     }
 
     [Fact]
+    public async Task TriggerLifeEndTurnRewardValidation_UnresolvedCurrentRealmRaisesExplicitAuthorityIssue()
+    {
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_trigger_missing_current_realm.json",
+            """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Mortal World",
+              "currentIncarnation": 1,
+              "inkFeathers": {
+                "current": 5
+              },
+              "soulRelics": {
+                "equipped": [],
+                "stored": []
+              }
+            }
+            """);
+
+        await WriteRawAsync("game_state/control/life_transitions.json", """
+        {
+          "reason": "Death",
+          "summary": "Смертная жизнь завершена."
+        }
+        """);
+
+        await WriteRawAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentIncarnation": 1,
+          "metaStateUpdates": {
+            "lifeTransitions": {
+              "recordLifeCompletion": {
+                "characterFinalState": { "causeOfDeath": "Test" },
+                "majorAchievements": [],
+                "relationshipsFormed": [],
+                "moralChoices": [],
+                "skillsLearned": [],
+                "enlightenmentGained": 0
+              }
+            }
+          },
+          "inkFeathers": {
+            "current": 5
+          },
+          "soulRelics": {
+            "equipped": [],
+            "stored": []
+          }
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "life_trigger_turn_missing_realm_authority", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task LifeEvaluationRewardValidation_InvalidManifestDoesNotTrustRawLifeEvaluationSourceLabel()
     {
         await WritePreTurnTrackedFileAsync(

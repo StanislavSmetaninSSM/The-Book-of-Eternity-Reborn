@@ -30,6 +30,11 @@ internal static class ActorSocialInteractionRequestState
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
+    internal sealed record RequestReadState<T>(
+        bool FilePresent,
+        bool IsMalformed,
+        IReadOnlyList<T> Requests) where T : class;
+
     public sealed class PendingGuardianSocialInteractionRequest
     {
         [JsonPropertyName("requestId")]
@@ -95,6 +100,10 @@ internal static class ActorSocialInteractionRequestState
 
     public static async Task WriteGuardianRequestsAsync(FileSystemManager fs, IReadOnlyCollection<PendingGuardianSocialInteractionRequest> requests)
     {
+        var existingState = await ReadGuardianRequestsStateAsync(fs);
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException("pending_guardian_social_interactions.json повреждён и должен быть исправлен или очищен до записи нового guardian social request.");
+
         if (requests.Count == 0)
         {
             ClearGuardianRequests(fs);
@@ -108,7 +117,11 @@ internal static class ActorSocialInteractionRequestState
 
     public static async Task WriteGuardianRequestAsync(FileSystemManager fs, PendingGuardianSocialInteractionRequest request)
     {
-        var existing = (await ReadGuardianRequestsAsync(fs)).ToList();
+        var existingState = await ReadGuardianRequestsStateAsync(fs);
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException("pending_guardian_social_interactions.json повреждён и должен быть исправлен или очищен до записи нового guardian social request.");
+
+        var existing = existingState.Requests.ToList();
         var replaced = false;
         for (var i = 0; i < existing.Count; i++)
         {
@@ -131,6 +144,10 @@ internal static class ActorSocialInteractionRequestState
 
     public static async Task WriteNpcRequestsAsync(FileSystemManager fs, IReadOnlyCollection<PendingNpcSocialInteractionRequest> requests)
     {
+        var existingState = await ReadNpcRequestsStateAsync(fs);
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException("pending_npc_social_interactions.json повреждён и должен быть исправлен или очищен до записи нового NPC social request.");
+
         if (requests.Count == 0)
         {
             ClearNpcRequests(fs);
@@ -144,7 +161,11 @@ internal static class ActorSocialInteractionRequestState
 
     public static async Task WriteNpcRequestAsync(FileSystemManager fs, PendingNpcSocialInteractionRequest request)
     {
-        var existing = (await ReadNpcRequestsAsync(fs)).ToList();
+        var existingState = await ReadNpcRequestsStateAsync(fs);
+        if (existingState.IsMalformed)
+            throw new InvalidOperationException("pending_npc_social_interactions.json повреждён и должен быть исправлен или очищен до записи нового NPC social request.");
+
+        var existing = existingState.Requests.ToList();
         var replaced = false;
         for (var i = 0; i < existing.Count; i++)
         {
@@ -166,10 +187,16 @@ internal static class ActorSocialInteractionRequestState
     }
 
     public static async Task<IReadOnlyList<PendingGuardianSocialInteractionRequest>> ReadGuardianRequestsAsync(FileSystemManager fs) =>
-        await ReadRequestsAsync(fs, PendingGuardianRequestPath, static json => JsonSerializer.Deserialize<PendingGuardianSocialInteractionRequest>(json, JsonOpts));
+        (await ReadGuardianRequestsStateAsync(fs)).Requests;
 
     public static async Task<IReadOnlyList<PendingNpcSocialInteractionRequest>> ReadNpcRequestsAsync(FileSystemManager fs) =>
-        await ReadRequestsAsync(fs, PendingNpcRequestPath, static json => JsonSerializer.Deserialize<PendingNpcSocialInteractionRequest>(json, JsonOpts));
+        (await ReadNpcRequestsStateAsync(fs)).Requests;
+
+    internal static async Task<RequestReadState<PendingGuardianSocialInteractionRequest>> ReadGuardianRequestsStateAsync(FileSystemManager fs) =>
+        await ReadRequestsStateAsync(fs, PendingGuardianRequestPath, static json => JsonSerializer.Deserialize<PendingGuardianSocialInteractionRequest>(json, JsonOpts));
+
+    internal static async Task<RequestReadState<PendingNpcSocialInteractionRequest>> ReadNpcRequestsStateAsync(FileSystemManager fs) =>
+        await ReadRequestsStateAsync(fs, PendingNpcRequestPath, static json => JsonSerializer.Deserialize<PendingNpcSocialInteractionRequest>(json, JsonOpts));
 
     public static async Task<PendingGuardianSocialInteractionRequest?> FindPendingGuardianRequestAsync(FileSystemManager fs, string guardianId, string interactionType)
     {
@@ -191,29 +218,49 @@ internal static class ActorSocialInteractionRequestState
 
     public static async Task EnsureHealthyAsync(FileSystemManager fs, string? currentRealm)
     {
+        var guardianState = await ReadGuardianRequestsStateAsync(fs);
+        var npcState = await ReadNpcRequestsStateAsync(fs);
+
+        if (!RealmSemantics.HasResolvedRealm(currentRealm))
+            return;
+
         if (IsAfterlifeRealm(currentRealm))
         {
-            await EnsureGuardianRequestsHealthyAsync(fs);
-            ClearNpcRequests(fs);
+            if (!guardianState.IsMalformed)
+                await EnsureGuardianRequestsHealthyAsync(fs, guardianState);
+            if (!npcState.IsMalformed)
+                ClearNpcRequests(fs);
             return;
         }
 
         if (IsMortalRealm(currentRealm))
         {
-            ClearGuardianRequests(fs);
-            await EnsureNpcRequestsHealthyAsync(fs);
+            if (!guardianState.IsMalformed)
+                ClearGuardianRequests(fs);
+            if (!npcState.IsMalformed)
+                await EnsureNpcRequestsHealthyAsync(fs, npcState);
             return;
         }
 
-        ClearGuardianRequests(fs);
-        ClearNpcRequests(fs);
+        if (!guardianState.IsMalformed)
+            ClearGuardianRequests(fs);
+        if (!npcState.IsMalformed)
+            ClearNpcRequests(fs);
     }
 
     public static async Task<string?> BuildSystemReminderFragmentAsync(FileSystemManager fs, string? currentRealm)
     {
         if (IsAfterlifeRealm(currentRealm))
         {
-            var guardianRequests = await ReadGuardianRequestsAsync(fs);
+            var guardianState = await ReadGuardianRequestsStateAsync(fs);
+            if (guardianState.IsMalformed)
+            {
+                return "GUARDIAN SOCIAL REQUEST CORRUPTION:\n" +
+                       "pending_guardian_social_interactions.json unreadable or malformed.\n" +
+                       "Preserve the pending guardian-social contract until validation/repair resolves it.";
+            }
+
+            var guardianRequests = guardianState.Requests;
             if (guardianRequests.Count == 0)
                 return null;
 
@@ -234,7 +281,15 @@ internal static class ActorSocialInteractionRequestState
         if (!IsMortalRealm(currentRealm))
             return null;
 
-        var npcRequests = await ReadNpcRequestsAsync(fs);
+        var npcState = await ReadNpcRequestsStateAsync(fs);
+        if (npcState.IsMalformed)
+        {
+            return "NPC SOCIAL REQUEST CORRUPTION:\n" +
+                   "pending_npc_social_interactions.json unreadable or malformed.\n" +
+                   "Preserve the pending NPC-social contract until validation/repair resolves it.";
+        }
+
+        var npcRequests = npcState.Requests;
         if (npcRequests.Count == 0)
             return null;
 
@@ -258,14 +313,22 @@ internal static class ActorSocialInteractionRequestState
     public static JsonObject? FindNpcResolutionEntry(JsonObject? journalRoot, string npcId, string requestId) =>
         ActorJournalState.FindResolutionEntry(journalRoot, NpcInteractionJournalState.ActorIdProperty, npcId, requestId);
 
-    private static async Task<IReadOnlyList<T>> ReadRequestsAsync<T>(
+    private static async Task<RequestReadState<T>> ReadRequestsStateAsync<T>(
         FileSystemManager fs,
         string path,
         Func<string, T?> singleDeserializer) where T : class
     {
         var json = await fs.ReadFileAsync(path);
+        return AnalyzeRequests(json, fs.FileExists(path), singleDeserializer);
+    }
+
+    private static RequestReadState<T> AnalyzeRequests<T>(
+        string? json,
+        bool filePresent,
+        Func<string, T?> singleDeserializer) where T : class
+    {
         if (string.IsNullOrWhiteSpace(json))
-            return Array.Empty<T>();
+            return new RequestReadState<T>(filePresent, filePresent, Array.Empty<T>());
 
         try
         {
@@ -277,36 +340,38 @@ internal static class ActorSocialInteractionRequestState
                 var result = new List<T>();
                 foreach (var item in requestsNode.EnumerateArray())
                 {
-                    try
-                    {
-                        var request = singleDeserializer(item.GetRawText());
-                        if (request != null)
-                            result.Add(request);
-                    }
-                    catch
-                    {
-                        // keep file readable; validator/health pass will clean malformed entries
-                    }
+                    var request = singleDeserializer(item.GetRawText());
+                    if (request == null)
+                        return new RequestReadState<T>(filePresent, true, Array.Empty<T>());
+
+                    result.Add(request);
                 }
 
-                return result;
+                return new RequestReadState<T>(filePresent, false, result);
             }
 
             var single = singleDeserializer(json);
-            return single != null ? new[] { single } : Array.Empty<T>();
+            return single != null
+                ? new RequestReadState<T>(filePresent, false, new[] { single })
+                : new RequestReadState<T>(filePresent, true, Array.Empty<T>());
         }
         catch
         {
-            return Array.Empty<T>();
+            return new RequestReadState<T>(filePresent, true, Array.Empty<T>());
         }
     }
 
-    private static async Task EnsureGuardianRequestsHealthyAsync(FileSystemManager fs)
+    private static async Task EnsureGuardianRequestsHealthyAsync(
+        FileSystemManager fs,
+        RequestReadState<PendingGuardianSocialInteractionRequest> requestState)
     {
         if (!fs.FileExists(PendingGuardianRequestPath))
             return;
 
-        var requests = (await ReadGuardianRequestsAsync(fs)).ToList();
+        if (requestState.IsMalformed)
+            return;
+
+        var requests = requestState.Requests.ToList();
         if (requests.Count == 0)
         {
             ClearGuardianRequests(fs);
@@ -354,12 +419,17 @@ internal static class ActorSocialInteractionRequestState
         await WriteGuardianRequestsAsync(fs, remaining);
     }
 
-    private static async Task EnsureNpcRequestsHealthyAsync(FileSystemManager fs)
+    private static async Task EnsureNpcRequestsHealthyAsync(
+        FileSystemManager fs,
+        RequestReadState<PendingNpcSocialInteractionRequest> requestState)
     {
         if (!fs.FileExists(PendingNpcRequestPath))
             return;
 
-        var requests = (await ReadNpcRequestsAsync(fs)).ToList();
+        if (requestState.IsMalformed)
+            return;
+
+        var requests = requestState.Requests.ToList();
         if (requests.Count == 0)
         {
             ClearNpcRequests(fs);

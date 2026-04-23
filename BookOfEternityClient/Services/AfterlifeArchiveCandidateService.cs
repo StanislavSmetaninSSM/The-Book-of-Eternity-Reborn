@@ -86,6 +86,9 @@ public sealed class AfterlifeArchiveCandidateService
         [JsonPropertyName("summary")]
         public string Summary { get; set; } = "";
 
+        [JsonPropertyName("content")]
+        public string Content { get; set; } = "";
+
         [JsonPropertyName("rarity")]
         public string Rarity { get; set; } = "Uncommon";
 
@@ -263,6 +266,7 @@ public sealed class AfterlifeArchiveCandidateService
             ["entryType"] = candidate.ProposedEntryType,
             ["title"] = candidate.Title,
             ["summary"] = candidate.Summary,
+            ["content"] = candidate.Content,
             ["rarity"] = candidate.Rarity,
             ["sourceLife"] = candidate.SourceLife,
             ["acquiredAtUtc"] = DateTime.UtcNow.ToString("o"),
@@ -386,6 +390,7 @@ public sealed class AfterlifeArchiveCandidateService
             var candidateId = $"archive_candidate_{sourceEntryId}";
 
             existingStatuses.TryGetValue(candidateId, out var existing);
+            var content = GetString(entry, "content") ?? existing?.Content ?? string.Empty;
             yield return new ArchiveCandidate
             {
                 CandidateId = candidateId,
@@ -396,7 +401,8 @@ public sealed class AfterlifeArchiveCandidateService
                 SourceLife = sourceLife,
                 ProposedEntryType = proposedType,
                 Title = GetString(entry, "title") ?? sourceEntryId,
-                Summary = BuildSummary(GetString(entry, "content")),
+                Summary = BuildSummary(content),
+                Content = content,
                 Rarity = rarity,
                 Status = existing?.Status is { Length: > 0 } existingStatus && IsSupportedStatus(existingStatus)
                     ? existingStatus

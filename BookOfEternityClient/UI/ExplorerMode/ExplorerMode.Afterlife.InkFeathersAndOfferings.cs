@@ -25,7 +25,8 @@ public partial class ExplorerMode
         var soulName = GetStr(root, "soulName", "Безымянная душа");
         var currentRealm = GetStr(root, "currentRealm", _stateManager.CurrentState.CurrentRealm);
         var currentIncarnation = GetInt(root, "currentIncarnation", 0);
-        var feathers = await ReadInkFeathersBalance();
+        var currentFeathers = ReadInkFeathersCurrent(root);
+        var totalFeathers = ReadInkFeathersTotal(root);
         var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
         var unread = notifications
             .Where(notification => string.Equals(notification.Status, AfterlifeNotificationState.StatusUnread, StringComparison.OrdinalIgnoreCase))
@@ -38,18 +39,50 @@ public partial class ExplorerMode
             $"[bold white]{Markup.Escape(soulName)}[/]",
             $"  🌌 Текущая фаза: [cyan]{Markup.Escape(currentRealm)}[/]",
             $"  🔄 Инкарнация: [yellow]{currentIncarnation}[/]",
-            $"  🪶 Чернильные Перья: [gold1]{feathers}[/]"
+            $"  🪶 Чернильные Перья сейчас: [gold1]{currentFeathers}[/]",
+            $"  🧾 Всего получено Чернильных Перьев: [gold1]{totalFeathers}[/]"
         };
 
+        lines.Add("");
+        lines.Add("[bold mediumpurple1]✨ Просветление[/]");
         if (root.TryGetProperty("enlightenment", out var enlightenmentNode) && enlightenmentNode.ValueKind == JsonValueKind.Object)
         {
             var tier = GetStr(enlightenmentNode, "currentTier", GetStr(enlightenmentNode, "level", ""));
             var experience = GetInt(enlightenmentNode, "experience", -1);
+            var level = GetInt(enlightenmentNode, "level", -1);
+            var progressPercent = GetInt(enlightenmentNode, "progressPercent", -1);
             if (!string.IsNullOrWhiteSpace(tier))
-                lines.Add($"  ✨ Просветление: [mediumpurple1]{Markup.Escape(tier)}[/]");
+                lines.Add($"  ✨ Текущий тир: [mediumpurple1]{Markup.Escape(tier)}[/]");
+            if (level >= 0)
+                lines.Add($"  🧭 Уровень: [mediumpurple1]{level}[/]");
             if (experience >= 0)
                 lines.Add($"  📈 Опыт просветления: [mediumpurple1]{experience}[/]");
+            if (progressPercent >= 0)
+                lines.Add($"  📊 Прогресс до следующего тира: [mediumpurple1]{progressPercent}%[/]");
         }
+        else if (root.TryGetProperty("enlightenment", out var numericEnlightenmentNode) &&
+                 numericEnlightenmentNode.ValueKind == JsonValueKind.Number)
+        {
+            lines.Add($"  ✨ Числовое значение просветления: [mediumpurple1]{numericEnlightenmentNode}[/]");
+        }
+        else
+        {
+            lines.Add("  [dim]Данные о просветлении пока отсутствуют.[/]");
+        }
+
+        lines.Add("");
+        lines.Add("[bold cyan]🪞 История души[/]");
+        var previousSoulNames = ReadSoulPreviousNames(root, soulName);
+        if (previousSoulNames.Count > 0)
+        {
+            lines.Add($"  🏷️ Прежние имена: [white]{Markup.Escape(string.Join(", ", previousSoulNames))}[/]");
+        }
+        else
+        {
+            lines.Add("  [dim]Прежние имена души ещё не зафиксированы.[/]");
+        }
+
+        AppendPendingMemoryLegacyOverview(lines, root);
 
         if (unread.Count > 0)
         {
@@ -68,13 +101,13 @@ public partial class ExplorerMode
         {
             lines.Add("");
             lines.Add($"[bold magenta]👤 Эхо спутников ищет путь в эту жизнь: {currentManifestationRequests.Count}[/]");
-            foreach (var request in currentManifestationRequests.Take(3))
+            foreach (var request in currentManifestationRequests)
             {
                 var displayName = string.IsNullOrWhiteSpace(request.CompanionNameHint) ? request.RelicName : request.CompanionNameHint;
                 var snapshotSummary = GuardianAbodeResidentRequestState.DescribeManifestationRequestSnapshot(request);
                 var detailLine = string.IsNullOrWhiteSpace(snapshotSummary)
-                    ? $"{displayName} должно materialize-иться как ранняя встреча или soul-quest path."
-                    : $"{displayName} должно materialize-иться как ранняя встреча или soul-quest path [{snapshotSummary.TrimStart(',', ' ')}].";
+                    ? $"{displayName} должно проявиться как ранняя встреча или путь личного квеста души."
+                    : $"{displayName} должно проявиться как ранняя встреча или путь личного квеста души [{snapshotSummary.TrimStart(',', ' ')}].";
                 lines.Add($"  [dim]{Markup.Escape(detailLine)}[/]");
             }
         }
@@ -145,6 +178,175 @@ public partial class ExplorerMode
                 await ShowAfterlifeInbox();
         }
     }
+
+    private static int ReadInkFeathersCurrent(JsonElement root)
+    {
+        if (!root.TryGetProperty("inkFeathers", out var feathersNode))
+            return 0;
+
+        if (feathersNode.ValueKind == JsonValueKind.Number && feathersNode.TryGetInt32(out var numericCurrent))
+            return numericCurrent;
+
+        if (feathersNode.ValueKind == JsonValueKind.Object &&
+            feathersNode.TryGetProperty("current", out var currentNode) &&
+            currentNode.ValueKind == JsonValueKind.Number &&
+            currentNode.TryGetInt32(out var objectCurrent))
+        {
+            return objectCurrent;
+        }
+
+        return 0;
+    }
+
+    private static int ReadInkFeathersTotal(JsonElement root)
+    {
+        if (!root.TryGetProperty("inkFeathers", out var feathersNode))
+            return 0;
+
+        if (feathersNode.ValueKind == JsonValueKind.Number && feathersNode.TryGetInt32(out var numericTotal))
+            return numericTotal;
+
+        if (feathersNode.ValueKind == JsonValueKind.Object &&
+            feathersNode.TryGetProperty("total", out var totalNode) &&
+            totalNode.ValueKind == JsonValueKind.Number &&
+            totalNode.TryGetInt32(out var objectTotal))
+        {
+            return objectTotal;
+        }
+
+        return ReadInkFeathersCurrent(root);
+    }
+
+    private static void AppendPendingMemoryLegacyOverview(List<string> lines, JsonElement root)
+    {
+        lines.Add("");
+        lines.Add("[bold magenta]🧠 Наследие памяти для следующей жизни[/]");
+        if (!root.TryGetProperty("pendingMemoryLegacy", out var pendingMemoryLegacy) ||
+            pendingMemoryLegacy.ValueKind != JsonValueKind.Object)
+        {
+            lines.Add("  [dim]Активное наследие памяти сейчас отсутствует.[/]");
+            return;
+        }
+
+        AddSoulInfoDetailLine(lines, "ID наследия", GetStr(pendingMemoryLegacy, "legacyId", ""));
+        AddSoulInfoDetailLine(lines, "Тип наследия", DescribePendingMemoryLegacyType(GetStr(pendingMemoryLegacy, "legacyType", "")));
+        AddSoulInfoDetailLine(lines, "Источник дара", DescribePendingMemoryLegacyGrantSource(GetStr(pendingMemoryLegacy, "grantSource", "")));
+        AddSoulInfoDetailLine(lines, "Состояние применения", DescribePendingMemoryLegacyApplicationState(GetStr(pendingMemoryLegacy, "applicationState", "")));
+        AddSoulInfoDetailLine(lines, "Подсказка об исходной жизни", GetStr(pendingMemoryLegacy, "sourceLifeHint", ""));
+        AddSoulInfoDetailLine(lines, "Выдано", GetStr(pendingMemoryLegacy, "grantedAtUtc", ""));
+        AddSoulInfoDetailLine(lines, "Характеристика", GetStr(pendingMemoryLegacy, "characteristic", ""));
+        AddSoulInfoDetailLine(lines, "Навык", GetStr(pendingMemoryLegacy, "skillName", ""));
+        AddSoulInfoDetailLine(lines, "Бонус игроку", GetStr(pendingMemoryLegacy, "playerStatBonus", ""));
+
+        if (pendingMemoryLegacy.TryGetProperty("bonus", out var bonusNode) &&
+            bonusNode.ValueKind == JsonValueKind.Number &&
+            bonusNode.TryGetInt32(out var bonus))
+        {
+            lines.Add($"  ➕ Размер бонуса: [white]{bonus}[/]");
+        }
+
+        if (pendingMemoryLegacy.TryGetProperty("grantSnapshot", out var grantSnapshot) &&
+            grantSnapshot.ValueKind == JsonValueKind.Object)
+        {
+            lines.Add("  [bold]Снимок дара:[/]");
+            foreach (var snapshotLine in BuildElementInspectionLines(grantSnapshot, "    "))
+                lines.Add(snapshotLine);
+        }
+        else
+        {
+            lines.Add("  [dim]Снимок дара пока отсутствует.[/]");
+        }
+    }
+
+    private static void AddSoulInfoDetailLine(List<string> lines, string label, string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        lines.Add($"  • {Markup.Escape(label)}: [white]{Markup.Escape(value)}[/]");
+    }
+
+    private static IEnumerable<string> BuildElementInspectionLines(JsonElement element, string indent)
+    {
+        if (element.ValueKind != JsonValueKind.Object)
+            yield break;
+
+        foreach (var property in element.EnumerateObject())
+        {
+            var label = ResolveSoulInspectionLabel(property.Name);
+            var value = DescribeSoulInspectionValue(property.Name, property.Value);
+            if (string.IsNullOrWhiteSpace(value))
+                continue;
+
+            yield return $"{indent}• {Markup.Escape(label)}: [dim]{Markup.Escape(value)}[/]";
+        }
+    }
+
+    private static string ResolveSoulInspectionLabel(string propertyName) => propertyName switch
+    {
+        "legacyId" => "ID наследия",
+        "legacyType" => "Тип наследия",
+        "sourceLifeHint" => "Подсказка об исходной жизни",
+        "grantSource" => "Источник дара",
+        "applicationState" => "Состояние применения",
+        "grantedAtUtc" => "Выдано",
+        "characteristic" => "Характеристика",
+        "bonus" => "Размер бонуса",
+        "skillName" => "Навык",
+        "playerStatBonus" => "Бонус игроку",
+        "structuredBonuses" => "Структурированные бонусы",
+        "summary" => "Сводка",
+        _ => propertyName
+    };
+
+    private static string DescribeSoulInspectionValue(string propertyName, JsonElement element) => element.ValueKind switch
+    {
+        JsonValueKind.String => DescribeSoulInspectionStringValue(propertyName, element.GetString() ?? string.Empty),
+        JsonValueKind.Number => element.ToString(),
+        JsonValueKind.True => "да",
+        JsonValueKind.False => "нет",
+        JsonValueKind.Null => string.Empty,
+        JsonValueKind.Array => string.Join(", ", element.EnumerateArray()
+            .Select(item => DescribeSoulInspectionValue(propertyName, item))
+            .Where(value => !string.IsNullOrWhiteSpace(value))),
+        JsonValueKind.Object => string.Join("; ", element.EnumerateObject()
+            .Select(property => $"{ResolveSoulInspectionLabel(property.Name)} — {DescribeSoulInspectionValue(property.Name, property.Value)}")
+            .Where(value => !string.IsNullOrWhiteSpace(value))),
+        _ => element.ToString()
+    };
+
+    private static string DescribeSoulInspectionStringValue(string propertyName, string value) => propertyName switch
+    {
+        "legacyType" => DescribePendingMemoryLegacyType(value),
+        "grantSource" => DescribePendingMemoryLegacyGrantSource(value),
+        "applicationState" => DescribePendingMemoryLegacyApplicationState(value),
+        _ => value
+    };
+
+    private static string DescribePendingMemoryLegacyType(string? legacyType) =>
+        (legacyType ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "stat_bonus" => "усиление характеристики",
+            "skill_knowledge" => "наследие знания",
+            _ => legacyType ?? string.Empty
+        };
+
+    private static string DescribePendingMemoryLegacyGrantSource(string? grantSource) =>
+        (grantSource ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "memory_gates" => "Врата Памяти",
+            "archive" => "Архив души",
+            _ => grantSource ?? string.Empty
+        };
+
+    private static string DescribePendingMemoryLegacyApplicationState(string? applicationState) =>
+        (applicationState ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "pending" => "ожидает следующей жизни",
+            "applied" => "уже перенесено в новую жизнь",
+            "consumed" => "наследие уже исчерпано",
+            _ => applicationState ?? string.Empty
+        };
 
     private async Task ShowInkFeathersMenu()
     {
@@ -472,8 +674,10 @@ public partial class ExplorerMode
             .AddChoices("✅ Да, потратить", "❌ Отмена"));
         if (confirm.Contains("Отмена")) return;
 
+        await EnsurePendingLocalTurnRollbackSnapshotAsync("game_state/meta/soul_state.json");
         if (!await DeductInkFeathers(cost))
         {
+            await DiscardPendingLocalTurnRollbackSnapshotAsync();
             MarkupLine("[red]❌ Не удалось списать перья.[/]");
             WaitForKey();
             return;
@@ -504,8 +708,10 @@ public partial class ExplorerMode
             .AddChoices("✅ Да, предложить", "❌ Отмена"));
         if (confirm.Contains("Отмена")) return;
 
+        await EnsurePendingLocalTurnRollbackSnapshotAsync("game_state/meta/soul_state.json");
         if (!await DeductInkFeathers(inputCost))
         {
+            await DiscardPendingLocalTurnRollbackSnapshotAsync();
             MarkupLine("[red]❌ Не удалось списать перья.[/]");
             WaitForKey();
             return;
@@ -646,13 +852,25 @@ public partial class ExplorerMode
                 ReturnCycleId = returnCycleId
             };
 
-            await GuardianAbodeOfferingState.WriteAsync(_fs, relicRequest);
-            if (!await RemoveStoredSoulRelicForOfferingLocal(relic.RelicId, relic.Name))
+            await EnsurePendingLocalTurnRollbackSnapshotAsync(
+                "game_state/meta/soul_state.json",
+                GuardianAbodeOfferingState.PendingRequestPath);
+
+            try
             {
-                GuardianAbodeOfferingState.Clear(_fs);
-                MarkupLine("[red]❌ Не удалось изъять реликвию из хранилища души.[/]");
-                WaitForKey();
-                return;
+                await GuardianAbodeOfferingState.WriteAsync(_fs, relicRequest);
+                if (!await RemoveStoredSoulRelicForOfferingLocal(relic.RelicId, relic.Name))
+                {
+                    await RestorePendingLocalTurnRollbackSnapshotAsync();
+                    MarkupLine("[red]❌ Не удалось изъять реликвию из хранилища души.[/]");
+                    WaitForKey();
+                    return;
+                }
+            }
+            catch
+            {
+                await RestorePendingLocalTurnRollbackSnapshotAsync();
+                throw;
             }
 
             MarkupLine($"[green]✅ Реликвия «{Markup.Escape(relic.Name)}» подготовлена как подношение Обители.[/]");
@@ -722,13 +940,25 @@ public partial class ExplorerMode
                 ReturnCycleId = returnCycleId
             };
 
-            await GuardianAbodeOfferingState.WriteAsync(_fs, archiveRequest);
-            if (!await RemoveAfterlifeArchiveEntryForOfferingLocal(archiveEntry.ArchiveId, archiveEntry.Title))
+            await EnsurePendingLocalTurnRollbackSnapshotAsync(
+                "game_state/meta/soul_state.json",
+                GuardianAbodeOfferingState.PendingRequestPath);
+
+            try
             {
-                GuardianAbodeOfferingState.Clear(_fs);
-                MarkupLine("[red]❌ Не удалось изъять запись из Архива души.[/]");
-                WaitForKey();
-                return;
+                await GuardianAbodeOfferingState.WriteAsync(_fs, archiveRequest);
+                if (!await RemoveAfterlifeArchiveEntryForOfferingLocal(archiveEntry.ArchiveId, archiveEntry.Title))
+                {
+                    await RestorePendingLocalTurnRollbackSnapshotAsync();
+                    MarkupLine("[red]❌ Не удалось изъять запись из Архива души.[/]");
+                    WaitForKey();
+                    return;
+                }
+            }
+            catch
+            {
+                await RestorePendingLocalTurnRollbackSnapshotAsync();
+                throw;
             }
 
             MarkupLine($"[green]✅ Запись «{Markup.Escape(archiveEntry.Title)}» подготовлена как подношение Обители.[/]");
@@ -782,13 +1012,25 @@ public partial class ExplorerMode
             ReturnCycleId = returnCycleId
         };
 
-        await GuardianAbodeOfferingState.WriteAsync(_fs, request);
-        if (!await DeductInkFeathers(inputCost))
+        await EnsurePendingLocalTurnRollbackSnapshotAsync(
+            "game_state/meta/soul_state.json",
+            GuardianAbodeOfferingState.PendingRequestPath);
+
+        try
         {
-            GuardianAbodeOfferingState.Clear(_fs);
-            MarkupLine("[red]❌ Не удалось списать перья.[/]");
-            WaitForKey();
-            return;
+            await GuardianAbodeOfferingState.WriteAsync(_fs, request);
+            if (!await DeductInkFeathers(inputCost))
+            {
+                await RestorePendingLocalTurnRollbackSnapshotAsync();
+                MarkupLine("[red]❌ Не удалось списать перья.[/]");
+                WaitForKey();
+                return;
+            }
+        }
+        catch
+        {
+            await RestorePendingLocalTurnRollbackSnapshotAsync();
+            throw;
         }
 
         MarkupLine($"[green]✅ Списано {inputCost} 🪶. Подношение Обители подготовлено для Мастера Игры.[/]");
@@ -859,9 +1101,13 @@ public partial class ExplorerMode
             var entryType = GetStr(entry, "entryType", "");
             var rarity = GetStr(entry, "rarity", "Common");
             var summary = GetStr(entry, "summary", "");
+            var content = GetStr(entry, "content", "");
             var sourceLife = GetInt(entry, "sourceLife", 0);
             var sourceKind = GetStr(entry, "sourceKind", AfterlifeArchiveState.SourceKindSystem);
+            var sourceEntryId = GetStr(entry, "sourceEntryId", "");
+            var acquiredAtUtc = GetStr(entry, "acquiredAtUtc", "");
             var sourceGuardianId = GetStr(entry, "sourceGuardianId", "");
+            var sourceGuardianName = GetStr(entry, "sourceGuardianName", "");
             var tags = entry.TryGetProperty("tags", out var tagsNode) && tagsNode.ValueKind == JsonValueKind.Array
                 ? tagsNode.EnumerateArray()
                     .Where(tag => tag.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(tag.GetString()))
@@ -894,9 +1140,13 @@ public partial class ExplorerMode
                     entryType,
                     rarity,
                     summary,
+                    content,
                     sourceLife,
                     sourceKind,
+                    sourceEntryId,
+                    acquiredAtUtc,
                     sourceGuardianId,
+                    sourceGuardianName,
                     tags,
                     isReserved,
                     reservationKind,
@@ -960,7 +1210,7 @@ public partial class ExplorerMode
         if (consultationState.Exists)
         {
             MarkupLine(consultationState.IsMalformed
-                ? "[red]❌ pending_archive_consultation_request.json повреждён или неполон. Новый запрос заблокирован, пока pending request не будет исправлен или очищен.[/]"
+                ? "[red]❌ Файл запроса архивной консультации повреждён или неполон. Новый запрос заблокирован, пока эта запись не будет исправлена или очищена.[/]"
                 : "[yellow]⚠️ Уже есть незакрытый запрос на архивную консультацию. Дождитесь ответа GM.[/]");
             return false;
         }
@@ -975,11 +1225,11 @@ public partial class ExplorerMode
         var guardianChoices = guardians
             .Select(choice => ConsoleLayout.PlainChoiceLabel(
                 $"🛡️ {choice.GuardianName}",
-                $"репутация {choice.Reputation} • домен {choice.Domain}",
-                "Результат будет materialize-ён GM по whitelist consultation outcomes",
+                $"репутация {choice.Reputation} • {GuardianTradeDisplayDomain(choice.Domain)}",
+                "Результат будет явно оформлен GM по разрешённым исходам консультации",
                 string.Equals(entry.EntryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase)
-                    ? "возможны visible rival clue / warning outcomes"
-                    : "возможны guaranteed archive quest / lore preparation outcomes"))
+                    ? "возможны заметные подсказки о нити соперника или предупреждения"
+                    : "возможны гарантированный архивный квест или подготовка знания"))
             .ToList();
         guardianChoices.Add("← Назад");
 
@@ -999,7 +1249,7 @@ public partial class ExplorerMode
         var guardian = guardians[index];
         var confirm = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]Провести архивную консультацию у {Markup.Escape(guardian.GuardianName)}?[/]\n" +
-                   "[dim]Запись будет зарезервирована в Архиве души до ответа GM. При accepted result она будет потрачена; при rejected/cancelled вернётся в доступное состояние.[/]")
+                   "[dim]Запись будет зарезервирована в Архиве души до ответа GM. При положительном ответе она будет потрачена; при отказе или отмене снова станет доступной.[/]")
             .AddChoices("✅ Да, провести консультацию", "❌ Отмена"));
 
         if (confirm.Contains("Отмена", StringComparison.Ordinal))
@@ -1040,8 +1290,8 @@ public partial class ExplorerMode
         if (projectFuelState.Exists)
         {
             MarkupLine(projectFuelState.IsMalformed
-                ? "[red]❌ pending_archive_project_fuel_request.json повреждён или неполон. Новый запрос заблокирован, пока pending request не будет исправлен или очищен.[/]"
-                : "[yellow]⚠️ Уже есть незакрытый запрос на archive project fuel. Дождитесь ответа GM.[/]");
+                ? "[red]❌ Файл ожидающего запроса на архивную подпитку проекта повреждён или неполон. Новый запрос заблокирован, пока состояние не будет исправлено или очищено.[/]"
+                : "[yellow]⚠️ Уже есть незакрытый запрос на архивную подпитку проекта. Дождитесь ответа GM.[/]");
             return false;
         }
 
@@ -1057,11 +1307,11 @@ public partial class ExplorerMode
         var guardianChoices = guardians
             .Select(choice => ConsoleLayout.PlainChoiceLabel(
                 $"⚙️ {choice.GuardianName}",
-                $"репутация {choice.Reputation} • домен {choice.Domain}",
-                $"targetProjectId={choice.TargetProjectId}",
+                $"репутация {choice.Reputation} • {GuardianTradeDisplayDomain(choice.Domain)}",
+                $"целевой проект: {choice.TargetProjectName}",
                 string.Equals(entry.EntryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase)
-                    ? "GM materialize-ит pressure relief"
-                    : "GM materialize-ит project work boost"))
+                    ? "GM явно оформит ослабление давления на проект"
+                    : "GM явно оформит ускорение работы над проектом"))
             .ToList();
         guardianChoices.Add("← Назад");
 
@@ -1081,7 +1331,7 @@ public partial class ExplorerMode
         var guardian = guardians[index];
         var confirm = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]Вложить запись в проект {Markup.Escape(guardian.GuardianName)}?[/]\n" +
-                   "[dim]Запись будет зарезервирована в Архиве души до ответа GM. При accepted result она будет потрачена; при rejected/cancelled вернётся в доступное состояние.[/]")
+                   "[dim]Запись будет зарезервирована в Архиве души до ответа GM. При положительном ответе она будет потрачена; при отказе или отмене снова станет доступной.[/]")
             .AddChoices("✅ Да, вложить", "❌ Отмена"));
 
         if (confirm.Contains("Отмена", StringComparison.Ordinal))
@@ -1343,8 +1593,10 @@ public partial class ExplorerMode
         if (confirm.Contains("Отмена"))
             return;
 
+        await EnsurePendingLocalTurnRollbackSnapshotAsync("game_state/meta/soul_state.json");
         if (!await DeductInkFeathers(inputCost))
         {
+            await DiscardPendingLocalTurnRollbackSnapshotAsync();
             MarkupLine("[red]❌ Не удалось списать перья.[/]");
             WaitForKey();
             return;
@@ -1356,7 +1608,7 @@ public partial class ExplorerMode
         _pendingGmAction =
             $"[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит {inputCost} Чернильных Перьев. " +
             "Это НЕ гача через текущего Хранителя: не применять репутацию Хранителя, его скидки, штрафы, социальные факторы, улучшенные или ухудшенные шансы. " +
-            "Результат должен быть нейтральным и опираться на turn_request.gachaBaseResult.baseRarity без дополнительных модификаторов. " +
+            "Результат должен быть нейтральным и опираться на базовую редкость призыва, уже переданную в текущем запросе хода, без дополнительных модификаторов. " +
             "Реликвию нужно добавить напрямую в soul state игрока через metaStateUpdates.soulRelicOperations.addRelic. Перья уже списаны клиентом.";
     }
 

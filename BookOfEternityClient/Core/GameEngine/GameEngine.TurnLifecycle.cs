@@ -92,6 +92,7 @@ public partial class GameEngine
             var qteHandling = await HandleAcceptedQteOfferAsync(response, snapshotContext);
             if (qteHandling.EarlyExit)
             {
+                await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
                 _fs.DeleteFile("ready/turn_complete.json");
                 await CleanupPendingTurnSnapshotAsync();
                 return true;
@@ -104,6 +105,7 @@ public partial class GameEngine
                 await _worldDirectiveService.MaterializePendingToActiveAsync();
 
             await ConsumeAfterlifeReturnProtectionIfNeededAsync(snapshotContext);
+            await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
 
             _fs.DeleteFile("ready/turn_complete.json");
             await CleanupPendingTurnSnapshotAsync();
@@ -177,6 +179,55 @@ public partial class GameEngine
         _audioService.PlayCue(AudioCue.TurnReady);
 
         return true;
+    }
+
+    private async Task ApplyPendingShiningBlessingRuntimeEffectsAsync(ValidatedPendingTurnSnapshotContext? snapshotContext)
+    {
+        try
+        {
+            var result = await ShiningBlessingEffectState.ApplyAcceptedTurnRuntimeEffectsAsync(
+                _fs,
+                _gameLoop.TurnNumber,
+                ReadPreTurnSnapshotFile(snapshotContext, ShiningAbodeState.StatePath),
+                ReadPreTurnSnapshotFile(snapshotContext, "game_state/npcs/npc_core.json"),
+                ReadPreTurnSnapshotFile(snapshotContext, "game_state/world/world_events.json"),
+                ReadPreTurnSnapshotFile(snapshotContext, "game_state/npcs/npc_relationships.json"),
+                ReadPreTurnSnapshotFile(snapshotContext, "game_state/core/player_status.json"),
+                ReadPreTurnSnapshotFile(snapshotContext, "game_state/factions/faction_core.json"));
+            if (!result.Success)
+            {
+                _logger.LogWarning("Не удалось обработать pendingShiningBlessingEffects после accepted turn: {ErrorMessage}", result.ErrorMessage);
+                return;
+            }
+
+            if (!result.StateChanged)
+                return;
+
+            await RefreshRuntimeStateAsync();
+            if (result.SummaryLines.Count > 0)
+            {
+                AnsiConsole.MarkupLine("[gold1]✨ Shining blessing runtime effects:[/]");
+                foreach (var line in result.SummaryLines)
+                    AnsiConsole.MarkupLine($"  [gold1]•[/] {Markup.Escape(line)}");
+                AnsiConsole.WriteLine();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Не удалось применить mortal-life consumers для pendingShiningBlessingEffects");
+        }
+    }
+
+    private string? ReadPreTurnSnapshotFile(ValidatedPendingTurnSnapshotContext? snapshotContext, string relativePath)
+    {
+        if (snapshotContext?.Payload?.Files == null ||
+            !snapshotContext.Payload.Files.TryGetValue(relativePath, out var snapshotPath) ||
+            string.IsNullOrWhiteSpace(snapshotPath))
+        {
+            return null;
+        }
+
+        return ReadRelativeFileFromWorkspace(snapshotPath);
     }
 
     private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()
@@ -344,11 +395,16 @@ public partial class GameEngine
                         _lastResponse = qteHandling.Response;
                         _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
                     }
+                    else
+                    {
+                        await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
+                    }
 
                     if (IsIncarnationSourceLabel(snapshotContext?.SourceLabel))
                         await _worldDirectiveService.MaterializePendingToActiveAsync();
 
                     await ConsumeAfterlifeReturnProtectionIfNeededAsync(snapshotContext);
+                    await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
                 }
                 _fs.DeleteFile("ready/turn_complete.json");
                 await CleanupPendingTurnSnapshotAsync();
@@ -512,10 +568,12 @@ public partial class GameEngine
     {
         var clearsSystemGuardianAttraction = action.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:", StringComparison.OrdinalIgnoreCase);
         var clearsPendingAbodeOffering = action.Contains($"[INK_FEATHER_ACTION: {GuardianAbodeOfferingState.ActionTag}]", StringComparison.OrdinalIgnoreCase);
+        var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
 
         // Create backup of game state files before sending turn (for escape-rollback)
         var backupId = DateTime.UtcNow.Ticks.ToString();
         var backedUpFiles = await CreatePreTurnBackup(backupId);
+        OverlayExplorerLocalRollbackSnapshot(backedUpFiles, stagedExplorerRollback);
 
         // Write turn request
         var request = new TurnRequest
@@ -670,6 +728,46 @@ public partial class GameEngine
 
         // Cleanup ready signal
         _fs.DeleteFile("ready/turn_complete.json");
+    }
+
+    private void OverlayExplorerLocalRollbackSnapshot(
+        RollbackSnapshot targetSnapshot,
+        ExplorerMode.PendingLocalTurnRollbackSnapshot? stagedSnapshot)
+    {
+        if (stagedSnapshot == null)
+            return;
+
+        foreach (var trackedFile in stagedSnapshot.TrackedFiles)
+        {
+            if (stagedSnapshot.BaselineFiles.Contains(trackedFile))
+            {
+                targetSnapshot.BaselineFiles.Add(trackedFile);
+                continue;
+            }
+
+            targetSnapshot.BaselineFiles.Remove(trackedFile);
+            if (targetSnapshot.BackupFiles.TryGetValue(trackedFile, out var staleBackupPath))
+            {
+                if (_fs.FileExists(staleBackupPath))
+                    _fs.DeleteFile(staleBackupPath);
+                targetSnapshot.BackupFiles.Remove(trackedFile);
+                targetSnapshot.BackupHashes.Remove(trackedFile);
+            }
+        }
+
+        foreach (var (originalPath, explorerBackupPath) in stagedSnapshot.BackupFiles)
+        {
+            if (targetSnapshot.BackupFiles.TryGetValue(originalPath, out var staleBackupPath) &&
+                !string.Equals(staleBackupPath, explorerBackupPath, StringComparison.OrdinalIgnoreCase) &&
+                _fs.FileExists(staleBackupPath))
+            {
+                _fs.DeleteFile(staleBackupPath);
+            }
+
+            targetSnapshot.BackupFiles[originalPath] = explorerBackupPath;
+            if (stagedSnapshot.BackupHashes.TryGetValue(originalPath, out var explorerBackupHash))
+                targetSnapshot.BackupHashes[originalPath] = explorerBackupHash;
+        }
     }
 
     private async Task<IReadOnlyCollection<StoryEntityRef>?> ExtractStoryEntityRefsAsync(
@@ -1206,7 +1304,8 @@ public partial class GameEngine
                 lifecycleMarker, $"Конец смертной жизни. Причина: {reason}. {summary}");
 
             // === PHASE 3: Update realm and send life evaluation to GM ===
-            await UpdateSoulStateRealm("Chaos Sea", lifeSummary);
+            if (!await UpdateSoulStateRealm("Chaos Sea", lifeSummary))
+                throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для перехода в Море Хаоса после завершения смертной жизни.");
             _fs.ClearCurrentWorldLore();
 
             // Clean up transition signal BEFORE sending turn (avoid re-trigger)
@@ -1468,7 +1567,8 @@ public partial class GameEngine
     {
         var triggerJson = await _fs.ReadFileAsync("game_state/control/incarnation_trigger.json");
         if (triggerJson == null) return;
-        if (!_stateManager.CurrentState.IsInChaosSea) 
+        var isShiningBootstrapHandoff = _stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
+        if (!_stateManager.CurrentState.IsInChaosSea && !isShiningBootstrapHandoff)
         {
             _fs.DeleteFile("game_state/control/incarnation_trigger.json");
             return;
@@ -1487,8 +1587,22 @@ public partial class GameEngine
                 return;
             }
 
+            JsonObject? preparedShiningPackage = null;
+            if (isShiningBootstrapHandoff)
+            {
+                preparedShiningPackage = await TryReadPreparedShiningPackageAsync();
+                if (preparedShiningPackage == null)
+                {
+                    _logger.LogWarning("Shining pending-bootstrap handoff detected, but preparedIncarnationPackage is unreadable. Deleting stale incarnation trigger.");
+                    _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+                    return;
+                }
+            }
+
             var rawReturnGuard = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
-            if (payload.IsGuardianForced && !string.IsNullOrWhiteSpace(rawReturnGuard))
+            if (!isShiningBootstrapHandoff &&
+                payload.IsGuardianForced &&
+                !string.IsNullOrWhiteSpace(rawReturnGuard))
             {
                 var guardSemanticState = AfterlifeReturnGuardService.Classify(rawReturnGuard, out var activeReturnGuard);
                 if (guardSemanticState == AfterlifeReturnGuardSemanticState.BlockingInvalid)
@@ -1548,7 +1662,9 @@ public partial class GameEngine
             {
                 payload.IsGuardianForced
                     ? "Враждебный Хранитель насильно отправляет душу через Врата Души в тяжёлую смертную жизнь."
-                    : "Хранитель направляет душу через Врата Души в мир смертных."
+                    : isShiningBootstrapHandoff
+                        ? "Сияющая Обитель передаёт frozen blessing package в mortal bootstrap следующей жизни."
+                        : "Хранитель направляет душу через Врата Души в мир смертных."
             };
             if (payload.IsGuardianForced)
             {
@@ -1568,15 +1684,30 @@ public partial class GameEngine
             if (!string.IsNullOrWhiteSpace(circumstances))
                 parts.Add($"Обстоятельства: {circumstances}.");
 
+            if (preparedShiningPackage?["selectedCards"] is JsonArray selectedCards && selectedCards.Count > 0)
+            {
+                parts.Add($"Frozen Shining package несёт {selectedCards.Count} blessing card(s) в следующий mortal bootstrap.");
+                foreach (var card in selectedCards.OfType<JsonObject>().Take(4))
+                {
+                    var displayName = GetNodeString(card["displayName"]);
+                    var displaySummary = GetNodeString(card["displaySummary"]);
+                    if (!string.IsNullOrWhiteSpace(displayName) || !string.IsNullOrWhiteSpace(displaySummary))
+                        parts.Add($"Shining blessing: {displayName} — {displaySummary}".TrimEnd(' ', '—'));
+                }
+            }
+
             rollbackBackups = await CreatePreTurnBackup(DateTime.UtcNow.Ticks.ToString());
 
             // Each incarnation must create a fresh mortal-world lore set.
             _fs.ClearCurrentWorldLore();
             await _afterlifeReturnGuardService.ClearAsync();
+            if (preparedShiningPackage != null)
+                await ApplyPreparedShiningPackageToPendingWorldSetupAsync(preparedShiningPackage);
 
             // Update soul state: switch realm to Mortal World and increment incarnation
             localStateMutated = true;
-            await UpdateSoulStateRealm("Mortal World", incrementIncarnation: true);
+            if (!await UpdateSoulStateRealm("Mortal World", incrementIncarnation: true))
+                throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для начала новой смертной жизни.");
             await _rivalSoulArcService.ResetForNewLifeAsync();
             await _guardianCorrectionService.ApplyForNewLifeAsync(_stateManager.CurrentState.Incarnation + 1);
             await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
@@ -1610,6 +1741,28 @@ public partial class GameEngine
             await _fs.WriteFileAtomicAsync("game_state/inventory/items.json",
                 JsonSerializer.Serialize(inventory, JsonOpts));
 
+            if (preparedShiningPackage != null)
+            {
+                var blessingResult = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
+                    _fs,
+                    preparedShiningPackage,
+                    _stateManager.CurrentState.Incarnation + 1);
+                if (!blessingResult.Success)
+                {
+                    _logger.LogWarning("Не удалось materialize pendingShiningBlessingEffects during bootstrap: {ErrorMessage}", blessingResult.ErrorMessage);
+                }
+                else if (blessingResult.SummaryLines.Count > 0)
+                {
+                    foreach (var line in blessingResult.SummaryLines)
+                        parts.Add($"Blessing effect: {line}");
+
+                    AnsiConsole.MarkupLine("[gold1]✨ Благословения Сияющей Обители активированы:[/]");
+                    foreach (var line in blessingResult.SummaryLines)
+                        AnsiConsole.MarkupLine($"  [gold1]•[/] {Markup.Escape(line)}");
+                    AnsiConsole.WriteLine();
+                }
+            }
+
             // Mark new incarnation in story
             await _storyService.AppendMarkerAsync(
                 "Chaos Sea", 0,
@@ -1625,6 +1778,9 @@ public partial class GameEngine
                 AnsiConsole.WriteLine();
                 parts.Add($"Активировано Наследие Памяти: {memoryLegacySummary}.");
             }
+            var shiningMemorySelectionSummary = await ConsumePendingShiningMemorySelectionAsync();
+            if (!string.IsNullOrWhiteSpace(shiningMemorySelectionSummary))
+                parts.Add($"Выбрана эхо-память Сияющей Обители: {shiningMemorySelectionSummary}.");
             await ShowStatDistribution("Новая инкарнация — распределите начальные очки характеристик");
             await CapturePendingMemoryLegacyApplicationAuditAsync();
 
@@ -1658,6 +1814,8 @@ public partial class GameEngine
             {
                 await RefreshRuntimeStateAsync();
                 await _worldDirectiveService.MaterializePendingToActiveAsync(worldDesc, circumstances);
+                if (preparedShiningPackage != null)
+                    await ClearPreparedShiningPackageAfterBootstrapAsync();
             }
         }
         catch (Exception ex)
@@ -1707,7 +1865,75 @@ public partial class GameEngine
                 return;
             }
 
-            await UpdateSoulStateRealm("Shining Abode");
+            JsonObject? existingShiningRoot = null;
+            var existingShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            if (!string.IsNullOrWhiteSpace(existingShiningJson))
+            {
+                try
+                {
+                    existingShiningRoot = JsonNode.Parse(existingShiningJson) as JsonObject;
+                }
+                catch
+                {
+                    existingShiningRoot = null;
+                }
+            }
+
+            JsonObject? residentRoot = null;
+            var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+            if (!string.IsNullOrWhiteSpace(residentJson))
+            {
+                try
+                {
+                    residentRoot = JsonNode.Parse(residentJson) as JsonObject;
+                }
+                catch
+                {
+                    residentRoot = null;
+                }
+            }
+
+            JsonObject? guardiansRoot = null;
+            var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+            if (!string.IsNullOrWhiteSpace(guardiansJson))
+            {
+                try
+                {
+                    guardiansRoot = JsonNode.Parse(guardiansJson) as JsonObject;
+                }
+                catch
+                {
+                    guardiansRoot = null;
+                }
+            }
+
+            var previousShiningJson = existingShiningJson;
+            var previousSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            if (string.IsNullOrWhiteSpace(previousSoulJson))
+                throw new InvalidOperationException("Не удалось прочитать soul_state.json для безопасного вознесения в Сияющую Обитель.");
+
+            JsonObject soulRoot;
+            try
+            {
+                soulRoot = JsonNode.Parse(previousSoulJson) as JsonObject
+                    ?? throw new InvalidOperationException("soul_state.json должен быть object root для ascension flow.");
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("soul_state.json повреждён и не позволяет безопасно завершить ascension flow.", ex);
+            }
+
+            var activatedShiningRoot = ShiningAbodeState.ActivateForAscension(existingShiningRoot, residentRoot, guardiansRoot);
+            soulRoot["currentRealm"] = "Shining Abode";
+            var nextSoulJson = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts);
+            if (!await TryCommitCoordinatedGameStateWritesAsync(
+                    new CoordinatedGameStateWrite(ShiningAbodeState.StatePath, previousShiningJson, activatedShiningRoot.ToJsonString(JsonOpts)),
+                    new CoordinatedGameStateWrite("game_state/meta/soul_state.json", previousSoulJson, nextSoulJson)))
+            {
+                throw new InvalidOperationException("Не удалось безопасно зафиксировать ascension handoff между shining_abode_state.json и soul_state.json.");
+            }
+
+            await SyncShiningReturnCycleLocalStateAsync();
             await _storyService.AppendMarkerAsync(
                 "Shining Abode",
                 _stateManager.CurrentState.Incarnation,
@@ -2221,11 +2447,33 @@ Do NOT derive trade stock from guardian.domain in the client or assume the clien
 Answer the request by writing an explicit guardian.tradeInventory into guardians.json / activeGuardian mirror with matching tradeCycleId and a valid items array.
 Close the request canonically through UpdateGuardianTradeInventoryReceipts in guardians.json with matching requestId, tradeCycleId, itemCount, resolvedAtTurn, and resolvedAtUtc.
 
+PLAYER-FOUNDED GUARDIAN FOUNDATION:
+If game_state/control/pending_player_guardian_foundation.json exists, treat it as a client-authored late-game Chaos Sea ritual to found a new guardian mantle after Shining return.
+The player remains player_soul. Do NOT rewrite soul_state or narration as if the soul directly became an ordinary guardian actor.
+Resolve the ritual by:
+  - creating a NEW guardian through UpdateGuardians.create with full canonical guardian shape,
+  - setting originType=player_founded_ascended_soul,
+  - setting founderLoyaltyTier=soulbound,
+  - setting foundationSource=shining_return and foundationRequestId,
+  - keeping the previous guardian in guardians[],
+  - making the new guardian the current activeGuardian,
+  - binding chaosSeaNavigation.currentAbodeId to the new guardian abode,
+  - writing soul_state.playerFoundedGuardianId,
+  - appending guardians.json.playerGuardianFoundationHistory[] receipt.
+In v1 this route is single-use per save. Do NOT create a second player-founded guardian if one already exists.
+
 LOCAL NPC TRADE REQUESTS:
 If game_state/control/pending_npc_trade_inventory_requests.json exists, treat it as a client-authored request to materialize explicit npc.tradeInventory for the current world-time trade cycle.
 Do NOT generate or infer NPC stock on the client.
 Answer each request by writing explicit npc.tradeInventory into npc_core.json with matching tradeCycleId, refreshAfterWorldDate, and a valid items array.
 Close each request canonically through UpdateNpcTradeInventoryReceipts in npc_core.json with matching requestId, npcId, tradeCycleId, merchantProfile, itemCount, resolvedAtTurn, and resolvedAtUtc.
+
+LOCAL SHINING TRADE REQUESTS:
+If game_state/control/pending_shining_trade_inventory_requests.json exists, treat it as a client-authored request to materialize explicit shining faction tradeInventory for the current return cycle.
+These requests may be created automatically by the client when the Soul returns to the active Shining Abode after a new mortal life.
+Do NOT infer or generate Shining stock on the client.
+Answer each request by writing explicit faction.tradeInventory into shining_abode_state.json with matching tradeCycleId, generationTradeTier, generationRarityCeiling, serviceMultiplierSnapshot and a valid items array.
+Close each request canonically through faction.tradeInventoryReceipts[] with matching requestId, factionId, tradeCycleId, itemCount, soldOutCount, resolvedAtTurn and resolvedAtUtc.
 
 RIVAL SOUL ARCS — MORTAL WORLD ONLY:
 Use UpdateRivalSoulArcs to track parallel destiny lines for OTHER souls in the current mortal life.
@@ -2308,6 +2556,17 @@ Completed recipe-driven guardian projects may be TEMPORARY:
 Direct /gacha remains neutral and does NOT consume Guardian charges.
 You MUST NOT downgrade or ignore the client-computed baseRarity. Log the full calculation in gm_thoughts_markdown.
 
+SHINING RELIC GACHA:
+If game_state/control/pending_shining_abode_actions.json exists with actionType=pull_relic_gacha, treat it as a faction-banner relic pull inside the active Shining Abode.
+Use turn_request.gachaBaseResult.baseRarity as the MINIMUM rarity floor for the pull.
+Shining banner modifiers may only increase or preserve that base rarity; they must not downgrade it.
+The client-authored request includes projectedGachaBonusSteps and returnCycleId. Do NOT exceed that projected bonus ceiling.
+Resolve the pull by:
+  - adding exactly one Soul Relic result to soul state,
+  - updating shining_abode_state.json.gachaSystem.chargesUsedThisReturn and gachaHistory[],
+  - writing a matching coreActionReceipts[] entry with requestId, actionType=pull_relic_gacha, factionId, returnCycleId, relicId, relicName, baseRarity, finalRarity, resolvedAtTurn and resolvedAtUtc.
+Shining relic gacha consumes the quoted Ink Feather cost from the request and does NOT use Light Sparks.
+
 " + _storyService.BuildStoryContext();
     }
 
@@ -2335,6 +2594,9 @@ You MUST NOT downgrade or ignore the client-computed baseRarity. Log the full ca
         var afterlifeGuardReminder = await _afterlifeReturnGuardService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
         if (!string.IsNullOrWhiteSpace(afterlifeGuardReminder))
             parts.Add(afterlifeGuardReminder);
+        var playerGuardianFoundationReminder = await PlayerGuardianFoundationState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(playerGuardianFoundationReminder))
+            parts.Add(playerGuardianFoundationReminder);
         var rivalArcReminder = await _rivalSoulArcService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);
         if (!string.IsNullOrWhiteSpace(rivalArcReminder))
             parts.Add(rivalArcReminder);
@@ -2347,12 +2609,24 @@ You MUST NOT downgrade or ignore the client-computed baseRarity. Log the full ca
         var actorSocialReminder = await ActorSocialInteractionRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         if (!string.IsNullOrWhiteSpace(actorSocialReminder))
             parts.Add(actorSocialReminder);
+        var shiningBlessingReminder = await ShiningBlessingEffectState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);
+        if (!string.IsNullOrWhiteSpace(shiningBlessingReminder))
+            parts.Add(shiningBlessingReminder);
         var npcTradeReminder = await NpcTradeRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         if (!string.IsNullOrWhiteSpace(npcTradeReminder))
             parts.Add(npcTradeReminder);
         var abodeResidentReminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         if (!string.IsNullOrWhiteSpace(abodeResidentReminder))
             parts.Add(abodeResidentReminder);
+        var shiningCoreReminder = await ShiningCoreActionRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(shiningCoreReminder))
+            parts.Add(shiningCoreReminder);
+        var shiningTradeReminder = await ShiningTradeRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(shiningTradeReminder))
+            parts.Add(shiningTradeReminder);
+        var shiningPoliticsReminder = await ShiningFactionRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(shiningPoliticsReminder))
+            parts.Add(shiningPoliticsReminder);
         var systemGuardianReminder = await _systemGuardianLibraryService.BuildReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);
         if (!string.IsNullOrWhiteSpace(systemGuardianReminder))
             parts.Add(systemGuardianReminder);

@@ -303,6 +303,30 @@ public sealed class ValidationSourceGuardTests
     }
 
     [Fact]
+    public void ResidentTransferCompetitionMetadata_MustBeValidatedAndAllowedByLifecycle()
+    {
+        var lifecyclePath = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.LifecycleControlAndStateFiles.cs");
+        var guardiansPath = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.GuardiansAndAfterlife.cs");
+        var lifecycleSource = File.ReadAllText(lifecyclePath);
+        var guardiansSource = File.ReadAllText(guardiansPath);
+
+        Assert.Contains("\"selectionMode\", \"competitionScore\", \"competitionLabel\", \"competitionReason\"", lifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("pending_abode_resident_transfer_invalid_selection_mode", guardiansSource, StringComparison.Ordinal);
+        Assert.Contains("pending_abode_resident_transfer_invalid_competition_label", guardiansSource, StringComparison.Ordinal);
+        Assert.Contains("pending_abode_resident_transfer_inconsistent_selection_metadata", guardiansSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void CompanionSeedValidation_MustHonorResidentPersonalityAndAbodeSnapshotFields()
     {
         var path = Path.Combine(
@@ -332,5 +356,21 @@ public sealed class ValidationSourceGuardTests
         Assert.Contains("ValidateResidentCompanionSnapshotFields(request, requestContext, issues);", source, StringComparison.Ordinal);
         Assert.Contains("ValidateResidentPersonalityProfileObject(personalityProfile", source, StringComparison.Ordinal);
         Assert.Contains("ValidateResidentAbodeDispositionObject(abodeDisposition", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShiningPendingRequestValidation_MustAcceptRussianRealmAlias()
+    {
+        var path = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.ShiningAbode.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.Contains("IsSupportedShiningRealm", source, StringComparison.Ordinal);
+        Assert.Contains("Сияющая Обитель", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("if (!string.Equals(currentRealm, \"Shining Abode\", StringComparison.OrdinalIgnoreCase) ||", source, StringComparison.Ordinal);
     }
 }

@@ -21,7 +21,7 @@ public sealed class AfterlifeArchiveActionStateTests : IDisposable
     }
 
     [Fact]
-    public async Task EnsureHealthyAsync_OutsideAfterlife_ReleasesReservationViaSharedPatchWritePolicy()
+    public async Task EnsureHealthyAsync_OutsideAfterlife_UnresolvedRequestRetainsReservationAndPendingFile()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
         {
@@ -117,26 +117,14 @@ public sealed class AfterlifeArchiveActionStateTests : IDisposable
 
         await AfterlifeArchiveActionState.EnsureHealthyAsync(_fs, "Mortal World");
 
-        Assert.False(_fs.FileExists(AfterlifeArchiveActionState.ConsultationRequestPath));
+        Assert.True(_fs.FileExists(AfterlifeArchiveActionState.ConsultationRequestPath));
 
         using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
-        Assert.False(soulDoc.RootElement.TryGetProperty("crossIncarnationData", out _));
-        Assert.True(soulDoc.RootElement.TryGetProperty("metaStateUpdates", out var metaStateUpdates));
-        Assert.True(metaStateUpdates.TryGetProperty("memoryLegacyGrant", out _));
-
-        var archiveUpdates = soulDoc.RootElement.GetProperty("afterlifeArchiveUpdates").EnumerateArray().ToList();
-        Assert.Single(archiveUpdates);
-        Assert.Equal("archive_keep", archiveUpdates[0].GetProperty("archiveId").GetString());
-
-        var archiveResolutions = soulDoc.RootElement.GetProperty("archiveActionResolutions").EnumerateArray().ToList();
-        Assert.Single(archiveResolutions);
-        Assert.Equal("req_keep", archiveResolutions[0].GetProperty("requestId").GetString());
-        Assert.Equal("archive_keep", archiveResolutions[0].GetProperty("archiveId").GetString());
-
         var storedEntries = soulDoc.RootElement.GetProperty("afterlifeArchive").GetProperty("stored").EnumerateArray().ToList();
         Assert.Equal(2, storedEntries.Count);
         var releasedEntry = storedEntries.Single(entry => entry.GetProperty("archiveId").GetString() == "archive_consult");
-        Assert.False(releasedEntry.TryGetProperty("reservation", out _));
+        Assert.True(releasedEntry.TryGetProperty("reservation", out var reservation));
+        Assert.Equal("consult_req_001", reservation.GetProperty("requestId").GetString());
     }
 
     [Fact]
