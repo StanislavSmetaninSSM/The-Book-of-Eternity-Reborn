@@ -84,6 +84,19 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.Contains("CORRUPTION", reminder, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task EnsureAttractionRequestHealthyAsync_UnresolvedRealm_PreservesPendingAttraction()
+    {
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");
+        var preset = await _service.FindPresetAsync("azalia", includeDossier: true);
+        Assert.NotNull(preset);
+        await _service.WriteAttractionRequestAsync(preset!);
+
+        await _service.EnsureAttractionRequestHealthyAsync("");
+
+        Assert.True(_fs.FileExists(SystemGuardianLibraryService.AttractionRequestPath));
+    }
+
     private static async Task SeedPresetAsync(string rootDir, string presetId, string displayName, string domain, string author)
     {
         var presetDir = Path.Combine(rootDir, presetId);

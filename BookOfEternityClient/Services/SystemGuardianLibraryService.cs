@@ -330,16 +330,17 @@ public sealed class SystemGuardianLibraryService
         if (!_fs.FileExists(AttractionRequestPath))
             return;
 
+        if (!RealmSemantics.HasResolvedRealm(currentRealm))
+        {
+            _logger.LogWarning("system_guardian_attraction.json найден при unresolved currentRealm. Pending attraction сохраняется fail-closed до восстановления realm authority.");
+            return;
+        }
+
         var state = await ReadAttractionRequestStateAsync();
         if (state.IsMalformed)
             return;
 
-        var isAfterlife = string.Equals(currentRealm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
-                          string.Equals(currentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
-                          string.Equals(currentRealm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
-                          string.Equals(currentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
-
-        if (!isAfterlife)
+        if (!RealmSemantics.IsAfterlifeRealm(currentRealm))
         {
             _fs.DeleteFile(AttractionRequestPath);
             return;

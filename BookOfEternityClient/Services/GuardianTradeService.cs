@@ -166,6 +166,10 @@ public sealed class GuardianTradeService
         if (guardiansRoot == null || soulRoot == null)
             return new GuardianTradeOperationResult(false, false, "Не удалось прочитать состояние торговли или души.");
 
+        var preBuyGuardiansJson = guardiansRoot.ToJsonString(JsonOpts);
+        var preBuySoulJson = soulRoot.ToJsonString(JsonOpts);
+        var preBuyTrackerJson = trackerRoot?.ToJsonString(JsonOpts);
+
         var guardian = FindGuardian(guardiansRoot, guardianId);
         if (guardian == null)
             return new GuardianTradeOperationResult(false, false, "Хранитель не найден.");
@@ -207,17 +211,32 @@ public sealed class GuardianTradeService
         slot["soldOut"] = true;
         SyncActiveGuardian(guardiansRoot, guardianId, guardian);
 
-        await _fs.WriteFileAtomicAsync(
-            SoulStatePath,
-            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
-                soulRoot,
-                new GuardianPolicyContracts.SoulStatePatchConflictContext(
-                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
-                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
-                    upsertedSoulRelicIds: new[] { GetNodeString(relicData["relicId"]) ?? string.Empty })).ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(GuardiansPath, guardiansRoot.ToJsonString(JsonOpts));
+        var postBuySoulJson = GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+            soulRoot,
+            new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
+                GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                upsertedSoulRelicIds: new[] { GetNodeString(relicData["relicId"]) ?? string.Empty })).ToJsonString(JsonOpts);
+        var coordinatedWrites = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(SoulStatePath, preBuySoulJson, postBuySoulJson),
+            new(GuardiansPath, preBuyGuardiansJson, guardiansRoot.ToJsonString(JsonOpts))
+        };
         if ((changed || trackerChanged) && trackerRoot != null)
-            await _fs.WriteFileAtomicAsync(GuardianProjectState.TrackerPath, trackerRoot!.ToJsonString(JsonOpts));
+        {
+            coordinatedWrites.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                GuardianProjectState.TrackerPath,
+                preBuyTrackerJson,
+                trackerRoot.ToJsonString(JsonOpts)));
+        }
+
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, coordinatedWrites.ToArray()))
+        {
+            return new GuardianTradeOperationResult(
+                false,
+                false,
+                "Не удалось безопасно зафиксировать покупку без расхождения между состоянием души, Хранителя и трекера проектов. Изменения откатились к исходной версии.");
+        }
 
         var relicName = GetNodeString(relicData["name"]) ?? "Реликвия";
         return new GuardianTradeOperationResult(true, true, $"Куплена реликвия «{relicName}» за {price} 🪶.");
@@ -232,6 +251,9 @@ public sealed class GuardianTradeService
         var soulRoot = await ReadSoulStateRootAsync();
         if (guardiansRoot == null || soulRoot == null)
             return new GuardianTradeOperationResult(false, false, "Не удалось прочитать состояние торговли или души.");
+
+        var preSellGuardiansJson = guardiansRoot.ToJsonString(JsonOpts);
+        var preSellSoulJson = soulRoot.ToJsonString(JsonOpts);
 
         var guardian = FindGuardian(guardiansRoot, guardianId);
         if (guardian == null)
@@ -267,15 +289,22 @@ public sealed class GuardianTradeService
             Math.Max(0, currentTurn)));
         SyncActiveGuardian(guardiansRoot, guardianId, guardian);
 
-        await _fs.WriteFileAtomicAsync(
-            SoulStatePath,
-            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
-                soulRoot,
-                new GuardianPolicyContracts.SoulStatePatchConflictContext(
-                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
-                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
-                    removedSoulRelicIds: new[] { relicId })).ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(GuardiansPath, guardiansRoot.ToJsonString(JsonOpts));
+        var postSellSoulJson = GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+            soulRoot,
+            new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
+                GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                removedSoulRelicIds: new[] { relicId })).ToJsonString(JsonOpts);
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                new CoordinatedStateWriteHelper.PlannedWrite(SoulStatePath, preSellSoulJson, postSellSoulJson),
+                new CoordinatedStateWriteHelper.PlannedWrite(GuardiansPath, preSellGuardiansJson, guardiansRoot.ToJsonString(JsonOpts))))
+        {
+            return new GuardianTradeOperationResult(
+                false,
+                false,
+                "Не удалось безопасно зафиксировать продажу без расхождения между состоянием души и Хранителя. Изменения откатились к исходной версии.");
+        }
 
         var relicName = GetNodeString(relic["name"]) ?? "Реликвия";
         return new GuardianTradeOperationResult(true, true, $"Продана реликвия «{relicName}» за {price} 🪶.");
@@ -290,6 +319,9 @@ public sealed class GuardianTradeService
         var soulRoot = await ReadSoulStateRootAsync();
         if (guardiansRoot == null || soulRoot == null)
             return new GuardianTradeOperationResult(false, false, "Не удалось прочитать состояние торговли или души.");
+
+        var preBuybackGuardiansJson = guardiansRoot.ToJsonString(JsonOpts);
+        var preBuybackSoulJson = soulRoot.ToJsonString(JsonOpts);
 
         var guardian = FindGuardian(guardiansRoot, guardianId);
         if (guardian == null)
@@ -333,15 +365,22 @@ public sealed class GuardianTradeService
         buybackEntry["reboughtAtUtc"] = DateTimeOffset.UtcNow.ToString("O");
         SyncActiveGuardian(guardiansRoot, guardianId, guardian);
 
-        await _fs.WriteFileAtomicAsync(
-            SoulStatePath,
-            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
-                soulRoot,
-                new GuardianPolicyContracts.SoulStatePatchConflictContext(
-                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
-                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
-                    upsertedSoulRelicIds: new[] { GetNodeString(relicData["relicId"]) ?? string.Empty })).ToJsonString(JsonOpts));
-        await _fs.WriteFileAtomicAsync(GuardiansPath, guardiansRoot.ToJsonString(JsonOpts));
+        var postBuybackSoulJson = GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+            soulRoot,
+            new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
+                GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                upsertedSoulRelicIds: new[] { GetNodeString(relicData["relicId"]) ?? string.Empty })).ToJsonString(JsonOpts);
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                new CoordinatedStateWriteHelper.PlannedWrite(SoulStatePath, preBuybackSoulJson, postBuybackSoulJson),
+                new CoordinatedStateWriteHelper.PlannedWrite(GuardiansPath, preBuybackGuardiansJson, guardiansRoot.ToJsonString(JsonOpts))))
+        {
+            return new GuardianTradeOperationResult(
+                false,
+                false,
+                "Не удалось безопасно зафиксировать обратный выкуп без расхождения между состоянием души и Хранителя. Изменения откатились к исходной версии.");
+        }
 
         var relicName = GetNodeString(relicData["name"]) ?? "Реликвия";
         return new GuardianTradeOperationResult(true, true, $"Выкуплена обратно реликвия «{relicName}» за {price} 🪶.");

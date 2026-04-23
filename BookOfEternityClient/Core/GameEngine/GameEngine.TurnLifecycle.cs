@@ -185,15 +185,18 @@ public partial class GameEngine
     {
         try
         {
+            var refreshedManifest = await LoadPendingTurnSnapshotManifestAsync();
+            var refreshedSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(refreshedManifest)
+                                          ?? snapshotContext;
             var result = await ShiningBlessingEffectState.ApplyAcceptedTurnRuntimeEffectsAsync(
                 _fs,
                 _gameLoop.TurnNumber,
-                ReadPreTurnSnapshotFile(snapshotContext, ShiningAbodeState.StatePath),
-                ReadPreTurnSnapshotFile(snapshotContext, "game_state/npcs/npc_core.json"),
-                ReadPreTurnSnapshotFile(snapshotContext, "game_state/world/world_events.json"),
-                ReadPreTurnSnapshotFile(snapshotContext, "game_state/npcs/npc_relationships.json"),
-                ReadPreTurnSnapshotFile(snapshotContext, "game_state/core/player_status.json"),
-                ReadPreTurnSnapshotFile(snapshotContext, "game_state/factions/faction_core.json"));
+                ReadPreTurnSnapshotFile(refreshedSnapshotContext, ShiningAbodeState.StatePath),
+                ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/npcs/npc_core.json"),
+                ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/world/world_events.json"),
+                ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/npcs/npc_relationships.json"),
+                ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/core/player_status.json"),
+                ReadPreTurnSnapshotFile(refreshedSnapshotContext, "game_state/factions/faction_core.json"));
             if (!result.Success)
             {
                 _logger.LogWarning("Не удалось обработать pendingShiningBlessingEffects после accepted turn: {ErrorMessage}", result.ErrorMessage);

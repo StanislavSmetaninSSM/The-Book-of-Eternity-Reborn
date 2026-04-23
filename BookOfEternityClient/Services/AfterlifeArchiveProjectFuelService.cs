@@ -86,6 +86,9 @@ public sealed class AfterlifeArchiveProjectFuelService
         if (soulRoot == null || trackerRoot == null)
             return null;
 
+        var preProjectFuelRequestJson = await _fs.ReadFileAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath);
+        var preSoulJson = soulJson;
+
         GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
         AfterlifeArchiveState.NormalizeShape(soulRoot);
         var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
@@ -139,15 +142,27 @@ public sealed class AfterlifeArchiveProjectFuelService
             return null;
         }
 
-        await AfterlifeArchiveActionState.WriteProjectFuelAsync(_fs, request);
-        await _fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
-                soulRoot,
-                new GuardianPolicyContracts.SoulStatePatchConflictContext(
-                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.AfterlifeArchive,
-                    affectedArchiveIds: new[] { archiveId },
-                    affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts));
+        var postProjectFuelRequestJson = JsonSerializer.Serialize(request, JsonOpts);
+        var postSoulJson = GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+            soulRoot,
+            new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                GuardianPolicyContracts.SoulStatePatchTouchedDomains.AfterlifeArchive,
+                affectedArchiveIds: new[] { archiveId },
+                affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts);
+
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    AfterlifeArchiveActionState.ProjectFuelRequestPath,
+                    preProjectFuelRequestJson,
+                    postProjectFuelRequestJson),
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    "game_state/meta/soul_state.json",
+                    preSoulJson,
+                    postSoulJson)))
+        {
+            return null;
+        }
 
         var summary = string.Equals(entryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase)
             ? "Запрос на подпитку архивной записью создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо превратится в ослабление давления."

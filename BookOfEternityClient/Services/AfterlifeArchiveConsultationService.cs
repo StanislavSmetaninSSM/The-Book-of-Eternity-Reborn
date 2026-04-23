@@ -77,6 +77,9 @@ public sealed class AfterlifeArchiveConsultationService
         if (soulRoot == null)
             return null;
 
+        var preConsultationRequestJson = await _fs.ReadFileAsync(AfterlifeArchiveActionState.ConsultationRequestPath);
+        var preSoulJson = soulJson;
+
         GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
         AfterlifeArchiveState.NormalizeShape(soulRoot);
         var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
@@ -118,15 +121,27 @@ public sealed class AfterlifeArchiveConsultationService
             return null;
         }
 
-        await AfterlifeArchiveActionState.WriteConsultationAsync(_fs, request);
-        await _fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
-                soulRoot,
-                new GuardianPolicyContracts.SoulStatePatchConflictContext(
-                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.AfterlifeArchive,
-                    affectedArchiveIds: new[] { archiveId },
-                    affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts));
+        var postConsultationRequestJson = JsonSerializer.Serialize(request, JsonOpts);
+        var postSoulJson = GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+            soulRoot,
+            new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                GuardianPolicyContracts.SoulStatePatchTouchedDomains.AfterlifeArchive,
+                affectedArchiveIds: new[] { archiveId },
+                affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts);
+
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    AfterlifeArchiveActionState.ConsultationRequestPath,
+                    preConsultationRequestJson,
+                    postConsultationRequestJson),
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    "game_state/meta/soul_state.json",
+                    preSoulJson,
+                    postSoulJson)))
+        {
+            return null;
+        }
 
         var summary = string.Equals(entryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase)
             ? "Запрос на архивную консультацию создан. Запись зарезервирована до ответа GM; затем она либо вернётся в Архив, либо превратится в заметную подсказку о нити соперника или предупреждение."

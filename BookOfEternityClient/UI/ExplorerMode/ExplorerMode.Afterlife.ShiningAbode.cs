@@ -549,6 +549,23 @@ public partial class ExplorerMode
             return;
 
         var indentPrefix = new string(' ', indent);
+        var stableSummary = GetNodeString(receipt["residentHistorySummary"]);
+        var stableTimestamp = GetNodeString(receipt["residentHistoryTimestamp"]);
+        var stableEventType = GetNodeString(receipt["residentHistoryEventType"]);
+        if (!string.IsNullOrWhiteSpace(stableSummary) ||
+            !string.IsNullOrWhiteSpace(stableTimestamp) ||
+            !string.IsNullOrWhiteSpace(stableEventType))
+        {
+            if (!string.IsNullOrWhiteSpace(stableSummary))
+                lines.Add($"{indentPrefix}Историческая запись резидента: [dim]{Markup.Escape(stableSummary)}[/]");
+            if (!string.IsNullOrWhiteSpace(stableEventType))
+                lines.Add($"{indentPrefix}Тип исторической записи: [dim]{Markup.Escape(HumanizeProtocolToken(stableEventType))}[/]");
+            if (!string.IsNullOrWhiteSpace(stableTimestamp))
+                lines.Add($"{indentPrefix}Историческая запись UTC: [dim]{Markup.Escape(stableTimestamp)}[/]");
+            lines.Add($"{indentPrefix}Идентификатор исторической записи: [dim]{Markup.Escape(historyEntryId)}[/]");
+            return;
+        }
+
         var historyEntry = FindResidentHistoryEntry(residentRoot, historyEntryId);
         if (historyEntry != null)
         {

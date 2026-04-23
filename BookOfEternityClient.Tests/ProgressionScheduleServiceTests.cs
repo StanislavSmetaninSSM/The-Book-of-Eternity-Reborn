@@ -70,11 +70,15 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
           "currentRealm": "Chaos Sea"
         }
         """);
+        await WriteTurnRequestContextAsync("session_progression", "req_progression_valid", 1);
 
         var control = await _service.BuildControlForNextTurnAsync();
         await _fs.WriteFileAtomicAsync(ProgressionScheduleService.ReportPath, """
         {
           "progressionProcessingReport": {
+            "sessionId": "session_progression",
+            "requestId": "req_progression_valid",
+            "turnNumber": 1,
             "worldCyclesProcessed": 0,
             "factionCyclesProcessed": 0,
             "chaosSeaCyclesProcessed": 1,
@@ -318,6 +322,46 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
         Assert.Equal(1, control.GuardianProjectCyclesExpectedThisTurn);
     }
 
+    [Fact]
+    public async Task ApplyAcceptedTurnOutcomeAsync_StaleChaosProgressionReport_DoesNotAdvanceOrdinals()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea"
+        }
+        """);
+        await WriteTurnRequestContextAsync("session_progression", "req_progression_current", 3);
+
+        var control = await _service.BuildControlForNextTurnAsync();
+        await _fs.WriteFileAtomicAsync(ProgressionScheduleService.ReportPath, """
+        {
+          "progressionProcessingReport": {
+            "sessionId": "session_progression",
+            "requestId": "req_progression_stale",
+            "turnNumber": 2,
+            "worldCyclesProcessed": 0,
+            "factionCyclesProcessed": 0,
+            "chaosSeaCyclesProcessed": 1,
+            "guardianProjectCyclesProcessed": 1,
+            "newLastChaosSeaSimulationOrdinal": 1,
+            "newLastGuardianProjectCycleOrdinal": 1
+          }
+        }
+        """);
+
+        var issues = await _service.ValidateAcceptedTurnOutcomeAsync(control);
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "progression_report_turn_context_mismatch", StringComparison.OrdinalIgnoreCase));
+
+        await _service.ApplyAcceptedTurnOutcomeAsync(control);
+
+        var schedule = await ReadScheduleAsync();
+        Assert.Equal(0, schedule.CurrentChaosSeaTurnOrdinal);
+        Assert.Equal(1, schedule.PendingChaosSeaCycles);
+        Assert.Equal(1, schedule.PendingGuardianProjectCycles);
+        Assert.True(_fs.FileExists(ProgressionScheduleService.ReportPath));
+    }
+
     private async Task<ProgressionScheduleState> ReadScheduleAsync()
     {
         var json = await _fs.ReadFileAsync(ProgressionScheduleService.SchedulePath);
@@ -330,6 +374,20 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
 
         Assert.NotNull(schedule);
         return schedule!;
+    }
+
+    private Task WriteTurnRequestContextAsync(string sessionId, string requestId, int turnNumber)
+    {
+        return _fs.WriteFileAtomicAsync("input/turn_request.json", $$"""
+        {
+          "sessionId": "{{sessionId}}",
+          "requestId": "{{requestId}}",
+          "turnNumber": {{turnNumber}},
+          "playerAction": "test progression",
+          "timestamp": "2026-04-23T00:00:00.0000000Z",
+          "gameMode": "normal"
+        }
+        """);
     }
 
     public void Dispose()

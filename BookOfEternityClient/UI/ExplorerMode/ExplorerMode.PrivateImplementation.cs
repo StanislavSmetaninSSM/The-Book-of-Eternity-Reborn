@@ -869,6 +869,20 @@ public partial class ExplorerMode
         _ => 1
     };
 
+    private static string DescribeRarityLabel(string? rarity) =>
+        (rarity ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "common" => "обычная",
+            "good" => "хорошая",
+            "uncommon" => "необычная",
+            "rare" => "редкая",
+            "epic" => "эпическая",
+            "legendary" => "легендарная",
+            "unique" => "уникальная",
+            "обычный" or "хороший" or "необычный" or "редкий" or "эпический" or "легендарный" or "уникальный" => rarity ?? string.Empty,
+            _ => string.IsNullOrWhiteSpace(rarity) ? string.Empty : rarity!
+        };
+
     private static string Truncate(string text, int maxLen) =>
         text.Length <= maxLen ? text : text[..(maxLen - 3)] + "...";
 

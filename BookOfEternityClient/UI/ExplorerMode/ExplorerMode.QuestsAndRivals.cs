@@ -326,8 +326,14 @@ public partial class ExplorerMode
             {
                 foreach (var item in items.EnumerateArray())
                 {
-                    var itemStr = item.ValueKind == JsonValueKind.String ? item.GetString() ?? "?" : item.GetRawText();
-                    lines.Add($"    📦 {Markup.Escape(itemStr)}");
+                    if (item.ValueKind == JsonValueKind.String)
+                    {
+                        lines.Add($"    📦 {Markup.Escape(item.GetString() ?? "?")}");
+                        continue;
+                    }
+
+                    lines.Add("    📦 Составная награда:");
+                    RenderReadableJsonValue(lines, "награда", item, "      ");
                 }
             }
             var other = GetStr(rewards, "other", "");
@@ -349,9 +355,17 @@ public partial class ExplorerMode
             var logEntries = new List<string>();
             foreach (var entry in detailsLog.EnumerateArray())
             {
-                var entryStr = entry.ValueKind == JsonValueKind.String ? entry.GetString() ?? "" : entry.GetRawText();
-                if (!string.IsNullOrEmpty(entryStr))
-                    logEntries.Add(entryStr);
+                if (entry.ValueKind == JsonValueKind.String)
+                {
+                    var logLine = entry.GetString() ?? "";
+                    if (!string.IsNullOrEmpty(logLine))
+                        logEntries.Add(logLine);
+                    continue;
+                }
+
+                var structuredLogLine = DescribeQuestStructuredValue(entry);
+                if (!string.IsNullOrEmpty(structuredLogLine))
+                    logEntries.Add(structuredLogLine);
             }
             if (logEntries.Count > 0)
             {
@@ -396,16 +410,19 @@ public partial class ExplorerMode
             foreach (var chain in relatedChains)
             {
                 var chainId = GetStr(chain, "chainId", "chain");
+                var chainTitle = GetStr(chain, "title", GetStr(chain, "displayName", "Связанная цепочка"));
                 var currentQuest = GetStr(chain, "currentQuest", "");
                 var progress = GetStr(chain, "progress", "");
                 var unlocked = chain.TryGetProperty("unlocked", out var unlockedEl) && unlockedEl.ValueKind == JsonValueKind.True;
                 var unlockedLabel = unlocked ? "[green]разблокирована[/]" : "[dim]скрыта[/]";
-                var chainLine = $"    🔗 [white]{Markup.Escape(chainId)}[/] — {unlockedLabel}";
-                if (!string.IsNullOrEmpty(currentQuest))
-                    chainLine += $" [dim](текущий квест: {Markup.Escape(currentQuest)})[/]";
+                var chainLine = $"    🔗 [white]{Markup.Escape(chainTitle)}[/] — {unlockedLabel}";
                 if (!string.IsNullOrEmpty(progress))
                     chainLine += $" [dim]• {Markup.Escape(progress)}[/]";
                 lines.Add(chainLine);
+                if (!string.IsNullOrEmpty(currentQuest))
+                    lines.Add($"      [dim]Текущий узел: {Markup.Escape(currentQuest)}[/]");
+                if (!string.IsNullOrEmpty(chainId) && !string.Equals(chainId, chainTitle, StringComparison.OrdinalIgnoreCase))
+                    lines.Add($"      [dim]Идентификатор цепочки: {Markup.Escape(chainId)}[/]");
             }
         }
 
@@ -418,6 +435,20 @@ public partial class ExplorerMode
             Padding = new Padding(1, 1),
             Expand = true
         });
+
+        if (!string.IsNullOrWhiteSpace(relatedAfterlifeResidentId))
+        {
+            var action = Prompt(new SelectionPrompt<string>()
+                .Title("[bold]Действие:[/]")
+                .HighlightStyle(new Style(Color.Cyan1))
+                .AddChoices("🕊 Открыть связанного резидента загробья", "↩ К изображению и выходу"));
+            if (action.StartsWith("🕊", StringComparison.Ordinal))
+            {
+                await ShowGuardianAbodeResidentDetailByIdAsync(relatedAfterlifeResidentId);
+                return;
+            }
+        }
+
         await WaitForKeyWithImage("quest", name, GetStr(q, "image_prompt", ""), GetStr(q, "questId", name));
     }
 
@@ -460,6 +491,24 @@ public partial class ExplorerMode
         }
 
         return residentId;
+    }
+
+    private static string DescribeQuestStructuredValue(JsonElement element)
+    {
+        return element.ValueKind switch
+        {
+            JsonValueKind.Object => string.Join("; ", element.EnumerateObject()
+                .Select(property => $"{NpcFieldToRussian(property.Name)} — {DescribeQuestStructuredValue(property.Value)}")
+                .Where(value => !string.IsNullOrWhiteSpace(value))),
+            JsonValueKind.Array => string.Join(", ", element.EnumerateArray()
+                .Select(DescribeQuestStructuredValue)
+                .Where(value => !string.IsNullOrWhiteSpace(value))),
+            JsonValueKind.String => element.GetString() ?? string.Empty,
+            JsonValueKind.Number => element.ToString(),
+            JsonValueKind.True => "да",
+            JsonValueKind.False => "нет",
+            _ => string.Empty
+        };
     }
 
     private static bool HasRelatedRivalArc(JsonElement item) =>

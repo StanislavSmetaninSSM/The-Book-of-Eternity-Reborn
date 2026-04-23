@@ -90,6 +90,8 @@ public partial class ExplorerMode
             lines.Add($"[bold yellow]📬 Непрочитанные ответы Хранителей: {unread.Count}[/]");
             foreach (var notification in unread.Take(3))
                 lines.Add($"  • {Markup.Escape(notification.Summary)}");
+            if (unread.Count > 3)
+                lines.Add($"  • [dim]…и ещё {unread.Count - 3}. Откройте «Ответы Хранителей», чтобы увидеть все записи полностью.[/]");
         }
 
         var manifestationRequests = await GuardianAbodeResidentRequestState.ReadManifestationRequestsAsync(_fs);
@@ -577,7 +579,7 @@ public partial class ExplorerMode
             "",
             FormatDiceDisplay(dice),
             "",
-            $"[bold]🎰 Гача-база:[/] [{rarityColor}]{Markup.Escape(gacha.BaseRarity ?? "Common")}[/] (счёт: {gacha.BaseScore})",
+            $"[bold]🎰 Гача-база:[/] [{rarityColor}]{Markup.Escape(DescribeRarityLabel(gacha.BaseRarity ?? "Common"))}[/] (счёт: {gacha.BaseScore})",
             "[dim]Гача-база вычислена отдельно от этих кубиков и не сдвигает ваш dice pool.[/]",
             "",
             $"[dim]Списано: {cost} 🪶[/]"
@@ -641,11 +643,11 @@ public partial class ExplorerMode
         {
             "[bold]🎲 Старые кости:[/]",
             FormatDiceDisplay(oldDice),
-            $"  Гача: [{oldRarityColor}]{Markup.Escape(oldGacha.BaseRarity ?? "Common")}[/] ({oldGacha.BaseScore})",
+            $"  Гача: [{oldRarityColor}]{Markup.Escape(DescribeRarityLabel(oldGacha.BaseRarity ?? "Common"))}[/] ({oldGacha.BaseScore})",
             "",
             "[bold]🎲 Новые кости:[/]",
             FormatDiceDisplay(newDice),
-            $"  Гача: [{newRarityColor}]{Markup.Escape(newGacha.BaseRarity ?? "Common")}[/] ({newGacha.BaseScore})",
+            $"  Гача: [{newRarityColor}]{Markup.Escape(DescribeRarityLabel(newGacha.BaseRarity ?? "Common"))}[/] ({newGacha.BaseScore})",
             "",
             "[dim]Новый фиксированный набор сохранится до вашего следующего обычного хода.[/]",
             "",

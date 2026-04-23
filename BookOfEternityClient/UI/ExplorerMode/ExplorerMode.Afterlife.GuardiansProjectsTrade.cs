@@ -1232,8 +1232,10 @@ public partial class ExplorerMode
                         var rewParts = new List<string>();
                         foreach (var rp in rew.EnumerateObject())
                         {
-                            var val = rp.Value.ValueKind == JsonValueKind.Number ? rp.Value.ToString() : rp.Value.GetRawText();
-                            rewParts.Add($"{rp.Name}: {val}");
+                            var rewardLabel = NpcFieldToRussian(rp.Name);
+                            var rewardValue = DescribeQuestStructuredValue(rp.Value);
+                            if (!string.IsNullOrWhiteSpace(rewardValue))
+                                rewParts.Add($"{rewardLabel}: {rewardValue}");
                         }
                         if (rewParts.Count > 0)
                             lines.Add($"       🎁 Награды: [green]{Markup.Escape(string.Join(", ", rewParts))}[/]");

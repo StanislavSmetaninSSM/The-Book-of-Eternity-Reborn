@@ -634,6 +634,9 @@ internal static class GuardianAbodeResidentRequestState
         if (soulRoot == null)
             return;
 
+        var preManifestationRequestJson = await fs.ReadFileAsync(PendingManifestationRequestPath);
+        var preSoulJson = soulJson;
+
         var lifeTransitionsJson = await fs.ReadFileAsync("game_state/control/life_transitions.json");
         var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
             fs,
@@ -680,17 +683,29 @@ internal static class GuardianAbodeResidentRequestState
         if (requestsToAppend.Count == 0)
             return;
 
-        await fs.WriteFileAtomicAsync(
-            "game_state/meta/soul_state.json",
-            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
-                soulRoot,
-                new GuardianPolicyContracts.SoulStatePatchConflictContext(
-                    GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
-                    unsafeToReplayAddedSoulRelicIds: requestsToAppend.Select(request => request.RelicId),
-                    updatedSoulRelicFieldsById: BuildManifestationRelicFieldUpdates(requestsToAppend.Select(request => request.RelicId)))).ToJsonString(JsonOpts));
         foreach (var request in requestsToAppend)
             existingRequests.Add(request);
-        await WriteManifestationRequestsAsync(fs, existingRequests);
+
+        var postSoulJson = GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+            soulRoot,
+            new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                unsafeToReplayAddedSoulRelicIds: requestsToAppend.Select(request => request.RelicId),
+                updatedSoulRelicFieldsById: BuildManifestationRelicFieldUpdates(requestsToAppend.Select(request => request.RelicId)))).ToJsonString(JsonOpts);
+        var postManifestationRequestJson = existingRequests.Count == 0
+            ? null
+            : JsonSerializer.Serialize(new Dictionary<string, object?>
+            {
+                [ManifestationRequestsProperty] = existingRequests
+            }, JsonOpts);
+
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                fs,
+                new CoordinatedStateWriteHelper.PlannedWrite("game_state/meta/soul_state.json", preSoulJson, postSoulJson),
+                new CoordinatedStateWriteHelper.PlannedWrite(PendingManifestationRequestPath, preManifestationRequestJson, postManifestationRequestJson)))
+        {
+            return;
+        }
     }
 
     private const int ReminderEntryLimit = 5;
@@ -1314,17 +1329,34 @@ internal static class GuardianAbodeResidentRequestState
                         soulRoot,
                         resolvedRelicIds,
                         hasCanonicalTriggerLifeEnd);
-                    await fs.WriteFileAtomicAsync(
-                        "game_state/meta/soul_state.json",
-                        GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
-                            soulRoot,
-                            new GuardianPolicyContracts.SoulStatePatchConflictContext(
-                                GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
-                                unsafeToReplayAddedSoulRelicIds: unsafeToReplayAddedRelicIds,
-                                updatedSoulRelicFieldsById: BuildManifestationRelicFieldUpdates(resolvedRelicIds))).ToJsonString(JsonOpts));
                 }
+                var preManifestationJson = await fs.ReadFileAsync(PendingManifestationRequestPath);
+                var preSoulJson = soulJson;
+                var postSoulJson = soulChanged
+                    ? GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                        soulRoot,
+                        new GuardianPolicyContracts.SoulStatePatchConflictContext(
+                            GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+                            unsafeToReplayAddedSoulRelicIds: BuildUnsafeReplayAddedRelicIds(
+                                soulRoot,
+                                resolvedRelicIds,
+                                hasCanonicalTriggerLifeEnd),
+                            updatedSoulRelicFieldsById: BuildManifestationRelicFieldUpdates(resolvedRelicIds))).ToJsonString(JsonOpts)
+                    : preSoulJson;
+                var postManifestationJson = remaining.Count == 0
+                    ? null
+                    : JsonSerializer.Serialize(new Dictionary<string, object?>
+                    {
+                        [ManifestationRequestsProperty] = remaining
+                    }, JsonOpts);
 
-                await WriteManifestationRequestsAsync(fs, remaining);
+                if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                        fs,
+                        new CoordinatedStateWriteHelper.PlannedWrite("game_state/meta/soul_state.json", preSoulJson, postSoulJson),
+                        new CoordinatedStateWriteHelper.PlannedWrite(PendingManifestationRequestPath, preManifestationJson, postManifestationJson)))
+                {
+                    return;
+                }
             }
             catch
             {

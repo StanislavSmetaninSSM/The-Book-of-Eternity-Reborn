@@ -1033,7 +1033,7 @@ public partial class ExplorerMode
                 .HighlightStyle(new Style(Color.Gold1))
                 .AddChoices(
                     $"✅ Использовать базовый шаблон: {templateLabel}",
-                    "✍ Настроить свойство вручную (JSON)",
+                    "✍ Настроить свойство вручную",
                     "← Отмена"));
 
             if (choice.Contains("Использовать базовый шаблон", StringComparison.OrdinalIgnoreCase))
@@ -1042,15 +1042,7 @@ public partial class ExplorerMode
             if (choice.Contains("Отмена", StringComparison.OrdinalIgnoreCase))
                 return null;
 
-            var replacementJson = PromptLargeTextBlock("JSON-описание нового свойства", template.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
-            if (!TryParseJsonObjectInput(replacementJson, out var manualReplacement))
-            {
-                MarkupLine("[yellow]Новое свойство должно быть валидным JSON-объектом свойства.[/]");
-                WaitForKey();
-                return null;
-            }
-
-            return manualReplacement;
+            return PromptForStructuredForgePropertyAsync(template, "Новое свойство");
         }
 
         var suggestionIndex = 0;
@@ -1062,7 +1054,7 @@ public partial class ExplorerMode
             var actions = new List<string>
             {
                 $"✅ Использовать предложенный вариант: {suggestionLabel}",
-                "✍ Отредактировать вручную (JSON)",
+                "✍ Настроить вручную",
                 "← Отмена"
             };
             if (rerollsRemaining > 0 && suggestions.Count > 1)
@@ -1075,18 +1067,8 @@ public partial class ExplorerMode
 
             if (choice.Contains("Использовать предложенный вариант", StringComparison.OrdinalIgnoreCase))
                 return suggestion.DeepClone().AsObject();
-            if (choice.Contains("Отредактировать вручную", StringComparison.OrdinalIgnoreCase))
-            {
-                var replacementJson = PromptLargeTextBlock("JSON-описание нового свойства", suggestion.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
-                if (!TryParseJsonObjectInput(replacementJson, out var manualReplacement))
-                {
-                    MarkupLine("[yellow]Новое свойство должно быть валидным JSON-объектом свойства.[/]");
-                    WaitForKey();
-                    continue;
-                }
-
-                return manualReplacement;
-            }
+            if (choice.Contains("Настроить вручную", StringComparison.OrdinalIgnoreCase))
+                return PromptForStructuredForgePropertyAsync(suggestion, "Новое свойство");
 
             if (choice.Contains("Перебросить", StringComparison.OrdinalIgnoreCase))
             {
@@ -1122,8 +1104,8 @@ public partial class ExplorerMode
             ? $"✅ Использовать предложенные свойства: {templatePreview}"
             : $"✅ Использовать подготовленный набор: {templatePreview}";
         var manualEditLabel = suggestions.Count >= missingPropertyCount
-            ? "✍ Ввести вручную (JSON)"
-            : "✍ Настроить набор вручную (JSON)";
+            ? "✍ Настроить вручную"
+            : "✍ Настроить набор вручную";
         var choice = Prompt(new SelectionPrompt<string>()
             .Title("[bold yellow]Дополнительные свойства для новой редкости[/]")
             .HighlightStyle(new Style(Color.Gold1))
@@ -1138,15 +1120,7 @@ public partial class ExplorerMode
         if (choice.Contains("Отмена", StringComparison.OrdinalIgnoreCase))
             return null;
 
-        var addedJson = PromptLargeTextBlock("JSON-массив дополнительных свойств", template.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
-        if (!TryParseJsonArrayInput(addedJson, out var addedProperties))
-        {
-            MarkupLine("[yellow]Дополнительные свойства должны быть валидным JSON-массивом свойств.[/]");
-            WaitForKey();
-            return null;
-        }
-
-        return addedProperties;
+        return PromptForStructuredForgePropertiesAsync(template, nextRarity);
     }
 
     private (string RelicId, string RelicName, JsonObject Relic)? PromptForSoulRelic(JsonObject soulRoot, string title)
@@ -1249,9 +1223,9 @@ public partial class ExplorerMode
 
     private static string RenderForgePropertyLabel(JsonObject property, int? propertyIndex = null)
     {
-        var propertyName = GetNodeString(property["propertyId"]) ??
-                           GetNodeString(property["name"]) ??
-                           GetNodeString(property["stat"]) ??
+        var propertyName = GetNodeString(property["name"]) ??
+                           DescribeShiningForgeStat(GetNodeString(property["stat"])) ??
+                           HumanizeProtocolToken(GetNodeString(property["propertyId"])) ??
                            "свойство";
         var prefix = propertyIndex.HasValue ? $"Свойство {propertyIndex.Value + 1}: " : string.Empty;
         return $"{prefix}{propertyName} (ступень: {DescribeForgeBand(property["band"])})";
@@ -1296,7 +1270,89 @@ public partial class ExplorerMode
         if (labels.Count == 0)
             return "без дополнительных свойств";
 
-        return TruncateForUi(string.Join("; ", labels), 160);
+        return string.Join("; ", labels);
+    }
+
+    private JsonObject? PromptForStructuredForgePropertyAsync(JsonObject template, string title)
+    {
+        var propertyId = Ask("[cyan]Технический идентификатор свойства[/]", GetNodeString(template["propertyId"]) ?? "new_property").Trim();
+        if (string.IsNullOrWhiteSpace(propertyId))
+            return null;
+
+        var displayName = Ask("[cyan]Игровое название свойства[/]", GetNodeString(template["name"]) ?? "").Trim();
+        var statChoices = new Dictionary<string, string>
+        {
+            ["social"] = "Социальное влияние",
+            ["resource"] = "Ресурсы",
+            ["memory"] = "Память",
+            ["route"] = "Путь",
+            ["lore"] = "Знание",
+            ["relic"] = "Реликвия",
+            ["survival"] = "Выживание",
+            ["descent"] = "Нисхождение"
+        };
+        var statDefault = GetNodeString(template["stat"]) ?? "";
+        var statChoice = Prompt(new SelectionPrompt<string>()
+            .Title($"[bold yellow]{Markup.Escape(title)}: характеристика[/]")
+            .HighlightStyle(new Style(Color.Gold1))
+            .AddChoices(statChoices.Values.Append("Без привязки")));
+        var stat = statChoice == "Без привязки"
+            ? string.Empty
+            : statChoices.First(choice => choice.Value == statChoice).Key;
+        if (string.IsNullOrWhiteSpace(stat) && !string.IsNullOrWhiteSpace(statDefault))
+            stat = statDefault;
+
+        var bandValue = Ask("[cyan]Ступень или редкость свойства[/]", GetNodeString(template["band"]) ?? "rare").Trim();
+        if (string.IsNullOrWhiteSpace(bandValue))
+            bandValue = "rare";
+
+        var description = Ask("[cyan]Краткое описание свойства[/]", GetNodeString(template["description"]) ?? "").Trim();
+
+        var property = template.DeepClone().AsObject();
+        property["propertyId"] = propertyId;
+        property["band"] = int.TryParse(bandValue, out var numericBand)
+            ? JsonValue.Create(numericBand)
+            : JsonValue.Create(bandValue);
+
+        if (string.IsNullOrWhiteSpace(displayName))
+            property.Remove("name");
+        else
+            property["name"] = displayName;
+
+        if (string.IsNullOrWhiteSpace(stat))
+            property.Remove("stat");
+        else
+            property["stat"] = stat;
+
+        if (string.IsNullOrWhiteSpace(description))
+            property.Remove("description");
+        else
+            property["description"] = description;
+
+        return property;
+    }
+
+    private JsonArray? PromptForStructuredForgePropertiesAsync(JsonArray template, string fallbackBand)
+    {
+        var result = new JsonArray();
+        var templates = template.OfType<JsonObject>().ToList();
+        if (templates.Count == 0)
+            return result;
+
+        for (var index = 0; index < templates.Count; index++)
+        {
+            var propertyTemplate = templates[index].DeepClone().AsObject();
+            if (propertyTemplate["band"] == null && !string.IsNullOrWhiteSpace(fallbackBand))
+                propertyTemplate["band"] = fallbackBand;
+
+            var property = PromptForStructuredForgePropertyAsync(propertyTemplate, $"Дополнительное свойство {index + 1}");
+            if (property == null)
+                return null;
+
+            result.Add(property);
+        }
+
+        return result;
     }
 
     private static bool TryGetForgeProperty(JsonObject relic, int propertyIndex, out JsonObject property)
