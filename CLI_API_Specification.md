@@ -374,7 +374,7 @@ CLI Agent automatically loads current game state from:
   
   // LIFE CONTROL
   "TriggerLifeEnd": "object with mandatory reason and summary (Mortal World only; reason must be Death|Voluntary; triggers a separate Life Evaluation request after the turn is accepted)",
-  "TriggerIncarnation": "object with mandatory worldDescription, characterDescription, circumstances (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that consumes a preparedIncarnationPackage; GM sends player to Mortal World)",
+  "TriggerIncarnation": "object with mandatory worldDescription, characterDescription, circumstances (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that preserves the existing preparedIncarnationPackage for later runtime bootstrap consumption; GM sends player to Mortal World)",
   "AscensionTrigger": "boolean (real Chaos Sea-only ascension transition; valid only if Enlightenment is 100% and playerChoice=Ascension; must not be combined with TriggerLifeEnd)",
   "playerChoice": "string (required only with AscensionTrigger; must equal Ascension)"
 }
@@ -671,7 +671,7 @@ Quest state contract notes:
 
 #### **GAME FLOW CONTROL**
 - `game_state/control/life_transitions.json` ← `TriggerLifeEnd` (Mortal World only; `reason` must be `Death` or `Voluntary`)
-- `game_state/control/incarnation_trigger.json` ← `TriggerIncarnation` (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that consumes `preparedIncarnationPackage`; GM sends player to Mortal World: `{ "worldDescription": "...", "characterDescription": "...", "circumstances": "..." }`)
+- `game_state/control/incarnation_trigger.json` ← `TriggerIncarnation` (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that preserves `preparedIncarnationPackage` for later runtime bootstrap consumption; GM sends player to Mortal World: `{ "worldDescription": "...", "characterDescription": "...", "circumstances": "..." }`)
 - `game_state/control/incarnation_world_setup.json` ← client-authored pending world setup chosen before incarnation; GM must read it when authoring `TriggerIncarnation` and the first Mortal World bootstrap
 - `game_state/control/ascension.json` ← `AscensionTrigger`, `playerChoice` (real Chaos Sea-only ascension transition; only when Enlightenment is max and `playerChoice=Ascension`; never combine with `TriggerLifeEnd`)
 - `game_state/control/validation_repair_request.json` ← client-written contract repair request when a GM turn is rejected after validation
@@ -708,7 +708,9 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 
 ### Lifecycle Control Realm Rules
 - `TriggerLifeEnd` is Mortal World only; it starts the later Life Evaluation lifecycle and must not be emitted from Chaos Sea or Shining Abode.
-- `TriggerIncarnation` is valid from ordinary Chaos Sea, or from `Shining Abode pending-bootstrap handoff mode` when it consumes the existing `preparedIncarnationPackage`; it must not be mixed with ordinary Shining living-world progression.
+- `TriggerIncarnation` is valid from ordinary Chaos Sea, or from `Shining Abode pending-bootstrap handoff mode` when an existing `preparedIncarnationPackage` is present and preserved for later runtime bootstrap consumption; it must not be mixed with ordinary Shining living-world progression.
+- In `Shining Abode pending-bootstrap handoff mode`, GM must not remove, clear, rename, or mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage` in the accepted `TriggerIncarnation` turn. Preserve the package exactly as provided; the client runtime reads it after accepting the trigger, materializes the frozen blessing/world setup, and clears it only after successful Mortal World bootstrap.
+- If the Shining handoff package is missing or malformed, do not "repair" it by deleting or nulling the package. Preserve the current state and use the normal validation repair/error path so the bootstrap contract can be fixed without losing the prepared package.
 - `AscensionTrigger` is valid only in Chaos Sea, only with maximum Enlightenment and explicit `playerChoice=Ascension`, and must never be mixed with `TriggerLifeEnd`.
 
 ### Afterlife Realm Model
