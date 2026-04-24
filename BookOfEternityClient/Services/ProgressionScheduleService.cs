@@ -1005,6 +1005,7 @@ public class ProgressionScheduleService
         if (!HasResolvedRealm(resolvedRealm))
             throw BuildUnresolvedRealmException();
 
+        var previousCurrentWorldTimeInMinutes = schedule.CurrentWorldTimeInMinutes;
         schedule.CurrentRealm = resolvedRealm ?? string.Empty;
         if (HasResolvedRealm(schedule.CurrentRealm) && !IsAfterlifeRealm(schedule.CurrentRealm))
         {
@@ -1028,7 +1029,7 @@ public class ProgressionScheduleService
         schedule.LastShiningTradeCycleOrdinal = Math.Max(0, schedule.LastShiningTradeCycleOrdinal);
         if (!schedule.HasAfterlifeCatchupWorldTimeBaseline)
         {
-            schedule.LastAfterlifeCatchupWorldTimeInMinutes = schedule.CurrentWorldTimeInMinutes;
+            schedule.LastAfterlifeCatchupWorldTimeInMinutes = Math.Max(0, previousCurrentWorldTimeInMinutes);
             schedule.HasAfterlifeCatchupWorldTimeBaseline = true;
         }
         else

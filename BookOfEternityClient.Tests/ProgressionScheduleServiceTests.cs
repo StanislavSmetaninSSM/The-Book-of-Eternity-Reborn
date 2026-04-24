@@ -656,6 +656,65 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildControlForNextTurnAsync_LegacyMortalSchedulePreservesElapsedTimeForFirstAfterlifeCatchup()
+    {
+        await _fs.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath, """
+        {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 0,
+          "lastWorldSimulationTimeInMinutes": 0,
+          "lastFactionSimulationTimeInMinutes": 0,
+          "hasAuthoritativeWorldTimeBaseline": true,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "chaosSeaCycleEquivalentHours": 24,
+          "afterlifeCatchupCycleEquivalentMinutes": 1440,
+          "currentChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "pendingWorldCycles": 0,
+          "pendingFactionCycles": 0,
+          "pendingChaosSeaCycles": 0,
+          "pendingGuardianProjectCycles": 0,
+          "pendingResidentAgencyCycles": 0,
+          "pendingShiningAbodeCycles": 0,
+          "pendingShiningFactionCycles": 0,
+          "pendingShiningTradeCycles": 0,
+          "lastUpdatedUtc": "2026-04-21T00:00:00.0000000Z"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_time.json", """
+        {
+          "currentTimeInMinutes": 100000
+        }
+        """);
+
+        var control = await _service.BuildControlForNextTurnAsync("Chaos Sea");
+
+        Assert.True(control.AfterlifeCatchupRequired);
+        Assert.Equal(69, control.AfterlifeCatchupElapsedCycles);
+        Assert.Equal("epochal", control.AfterlifeCatchupPressureTier);
+        Assert.Equal(5, control.AfterlifeCatchupSummaryEventsRequired);
+        Assert.Contains("chaos_sea", control.AfterlifeCatchupContours);
+        Assert.Contains("guardian_projects", control.AfterlifeCatchupContours);
+        Assert.Contains("residents", control.AfterlifeCatchupContours);
+
+        var schedule = await ReadScheduleAsync();
+        Assert.Equal(0, schedule.LastAfterlifeCatchupWorldTimeInMinutes);
+        Assert.True(schedule.HasAfterlifeCatchupWorldTimeBaseline);
+    }
+
+    [Fact]
     public async Task AfterlifeCatchup_LongMortalAbsenceCollapsesIntoSingleBoundedProofAndDoesNotRepeat()
     {
         await _fs.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath, """
