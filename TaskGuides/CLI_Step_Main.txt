@@ -310,7 +310,50 @@
             - Optional but supported: create lore/current_world/npcs_lore.json when this life needs persistent NPC backstory/world-lore support
             - Add loreCodexUpdates for starting world knowledge
             - Previous-incarnation lore/current_world/* files are stale and must not be reused as the new life's bootstrap
-            
+
+            **Afterlife Turn Master Procedure (Chaos Sea / Shining Abode):**
+            - Use this procedure for every accepted turn while `soul_state.json.currentRealm` is `Chaos Sea` or `Shining Abode`; do not treat afterlife as a simple dialogue scene
+            - Step 1, realm gate: read `game_state/meta/soul_state.json.currentRealm` and classify the mode as ordinary Chaos Sea, ordinary active Shining Abode, or Shining Abode pending-bootstrap handoff
+            - Step 2, lifecycle guards: read relevant control/state markers before narration: `afterlife_return_guard.json`, `ascension.json`, `incarnation_trigger.json`, and `shining_abode_state.json.preparedIncarnationPackage`
+            - If pending-bootstrap handoff is active, suppress ordinary Shining living-world progression and process only the frozen next-life bootstrap package
+            - If ascension, incarnation, return, or life evaluation is active, keep that lifecycle separate; never combine `TriggerLifeEnd`, `AscensionTrigger`, New Game+, and Shining bootstrap in one logical outcome
+            - Step 3, scheduler first: read `input/turn_request.json.progressionControl` before choosing the scene resolution, relevant actors, or response tone
+            - Treat every `mustEvaluate* = true` as mandatory work for this turn, even if the player action is conversational
+            - Treat `afterlifeCatchupRequired = true` as a bounded epoch-summary obligation; summarize the accumulated absence into the requested number of major outcomes instead of simulating every raw missed cycle
+            - Step 4, state loading: read `soul_state.json`, `guardians.json`, `guardian_projects.json`, and `guardian_abode_residents.json`
+            - In Shining Abode, or when Shining catch-up contours are listed, also read `shining_abode_state.json` and evaluate halls, gates, radiance, Light Sparks, factions, leadership, trade, public mood, and prepared incarnation state
+            - Step 5, pending contracts: inspect control files before deciding that the turn is stable or purely narrative
+            - Guardian trade contracts: `pending_guardian_trade_request.json` must close through Guardian trade inventory plus `UpdateGuardianTradeInventoryReceipts`
+            - Resident roster contracts: `pending_guardian_abode_residents_request.json` must close through explicit `UpdateGuardianAbodeResidents` plus roster receipts
+            - Resident social contracts: `pending_guardian_abode_resident_interactions.json` must close through interaction receipts, and accepted results need resident memory/history/state aftermath
+            - Archive contracts: pending archive action files must close through `archiveActionResolutions`, not by inventing mortal inventory or manual notifications
+            - Companion manifestation contracts: `pending_resident_companion_manifestation_request.json` must process all equipped companion-carrying relic requests, not just one
+            - Shining core contracts: `pending_shining_abode_actions.json` must close through canonical `shining_abode_state` mutation plus `coreActionReceipts[]`
+            - Shining faction founding contracts: `pending_shining_faction_foundings.json` must close through `factionFoundingReceipts[]`
+            - Shining faction realignment contracts: `pending_shining_faction_realignments.json` must close through `factionRealignmentReceipts[]`
+            - Shining leadership contracts: `pending_shining_faction_leadership_transitions.json` must close through faction `leadershipReceipts[]` and leadership history
+            - Shining trade contracts: `pending_shining_trade_inventory_requests.json` must close through faction `tradeInventory` plus `tradeInventoryReceipts[]`
+            - Step 6, actor scope: list every Guardian, resident, Shining faction, hall, gate, head actor, or institution whose state, memory, project, leadership, trade, or public position may change
+            - If a plausible afterlife actor is not processed, explicitly mark it outside scope and explain why it remains stable this turn
+            - Step 7, living-world cycles: resolve due contours in bounded form using only afterlife surfaces
+            - Chaos Sea cycles may alter hub omens, soul-current pressure, Guardian political consequences, abode power context, or Soul/Guardian state
+            - Guardian project cycles may advance, stall, complete, create pressure, relieve pressure, or produce project journals and abode power consequences
+            - Resident agency cycles may change resident thoughts, memories, history, faction alignment, linked Soul Quests, reward state, relic grants, or interaction logs
+            - Shining Abode cycles may change civic order, radiance pressure, gate state, ritual readiness, public mood, hall tension, Light Spark context, or consequences of Shining projects
+            - Shining faction cycles may change faction strength, leadership, loyalty, resident alignment, claims, projects, unrest, alliances, or rival pressure inside the Shining Abode
+            - Shining trade cycles may change availability, rarity ceilings, sold-out state, merchant profile, trade inventory, trade receipts, or derivable afterlife inbox events
+            - Step 8, player action: process the direct player action only after lifecycle, scheduler, state, pending contracts, and actor scope are known
+            - Guardian conversation or quest: use Guardian state, Guardian journals, Guardian social memory, Guardian quests, and Guardian power/project surfaces
+            - Guardian-mediated gacha: respect per-return charge limits, reputation tiers, base rarity, bonus audit, and relic-forging project consumption
+            - Ink Feather action: use only allowed afterlife Ink Feather exceptions and write the specific canonical result surface
+            - Resident interaction: close explicit requests when present, update resident thought/social/history memory when accepted, and write resident-linked quests or relics when produced
+            - Shining action: mutate `shining_abode_state.json` and matching receipt arrays; do not route Shining politics through mortal `factionDataChanges`
+            - Ascension/incarnation choice: write the lifecycle trigger only when the player explicitly chooses it and all prerequisites are satisfied
+            - Step 9, canonical output: write only legal afterlife surfaces: `metaStateUpdates`, Guardian updates/journals/projects/power events, resident updates/journals/receipts/history, Shining state/receipts, Soul quests, archive resolutions, lore/chronicle updates, and `progressionProcessingReport`
+            - Step 10, forbidden mortal channels: do not use `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, `worldEventsLog`, `factionDataChanges`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`, combat data, mortal inventory, money, health, poise, energy, skills, or XP to satisfy afterlife meaning
+            - Step 11, scheduler report: when any due cycle or catch-up exists, write exact processed counts and exact `newLast*Ordinal` values for every processed afterlife contour
+            - Step 12, final audit: before ready signal, verify realm segregation, lifecycle exclusivity, pending contract closure, actor-scope coverage, legal output surfaces, no manual afterlife notifications, and explicit reasoning for every stable/no-mutation contour
+
             **Life Evaluation (Completed Mortal Life):**
             - Trigger: Player dies or voluntarily ends mortal life and returns to the Chaos Sea
             - Process: Apply Block_31.txt Soul System calculations

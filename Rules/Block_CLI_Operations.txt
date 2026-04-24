@@ -811,7 +811,8 @@
                     - Active system mods may modify parameters but not core formulas unless the mod explicitly redefines them
 
                     **6. JSON Command Structure:**
-                    - metaStateUpdates, UpdateGuardians, UpdateNPCs all work identically
+                    - metaStateUpdates and ordinary response commands remain compatible with the distributed CLI files
+                    - In afterlife realms, use Guardian, Soul, resident, Guardian-project, and Shining-specific surfaces from CLI.3/CLI.10; `UpdateNPCs` remains a Mortal World NPC surface and must not be used for Guardians or afterlife residents
                     - Atomic command processing preserved
                     - Same field validation and VALUE_SOURCE/MEANING documentation
                     - Additional lore updates may be triggered by commands
