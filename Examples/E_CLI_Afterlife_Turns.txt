@@ -326,11 +326,27 @@ Input fragments:
     "factions": [
       {
         "factionId": "shine_faction_glass_light_001",
-        "name": "Орден Стеклянного Света",
-        "strength": 42,
-        "restlessness": 18,
-        "tradeTier": "radiant",
-        "tradeInventoryReceipts": []
+        "originType": "native_radiant",
+        "hallId": "hall_glass_light_001",
+        "charter": {
+          "factionName": "Орден Стеклянного Света",
+          "favoredArchetype": "passage",
+          "patronEffectFamily": "route",
+          "summary": "Сияющая фракция, которая удерживает безопасные маршруты через рассветные врата и делает торговлю частью публичного порядка."
+        },
+        "leadership": {
+          "leadershipState": "secure",
+          "headActorType": "player_soul",
+          "headActorId": "player_soul"
+        },
+        "baseStrength": 82,
+        "factionStrength": 82,
+        "investCountThisAscension": 0,
+        "projectArchetypesCountedThisAscension": [],
+        "projects": [],
+        "tradeInventoryReceipts": [],
+        "leadershipReceipts": [],
+        "leadershipHistory": []
       }
     ],
     "coreActionReceipts": []
@@ -511,10 +527,24 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
   "factions": [
     {
       "factionId": "shine_faction_glass_light_001",
-      "name": "Орден Стеклянного Света",
-      "strength": 48,
-      "restlessness": 12,
-      "tradeTier": "radiant",
+      "originType": "native_radiant",
+      "hallId": "hall_glass_light_001",
+      "charter": {
+        "factionName": "Орден Стеклянного Света",
+        "favoredArchetype": "passage",
+        "patronEffectFamily": "route",
+        "summary": "Сияющая фракция, которая удерживает безопасные маршруты через рассветные врата и делает торговлю частью публичного порядка."
+      },
+      "leadership": {
+        "leadershipState": "secure",
+        "headActorType": "player_soul",
+        "headActorId": "player_soul"
+      },
+      "baseStrength": 88,
+      "factionStrength": 88,
+      "investCountThisAscension": 0,
+      "projectArchetypesCountedThisAscension": [],
+      "projects": [],
       "tradeInventory": {
         "tradeCycleId": "shine_trade_cycle_9",
         "generatedAtUtc": "2026-04-24T08:55:00Z",
@@ -549,7 +579,9 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
           "resolvedAtTurn": 305,
           "resolvedAtUtc": "2026-04-24T08:55:00Z"
         }
-      ]
+      ],
+      "leadershipReceipts": [],
+      "leadershipHistory": []
     }
   ],
   "coreActionReceipts": [
@@ -811,8 +843,7 @@ Correct response/control fragment:
     "worldDescription": "Мир поздней бронзы, где города-государства спорят с духами рек.",
     "characterDescription": "Ребёнок писца, родившийся с памятью о стеклянном рассвете.",
     "circumstances": "Семья служит храмовому архиву на границе войны и дипломатии.",
-    "source": "shining_prepared_package",
-    "preparedIncarnationPackageId": "prepared_incarnation_44"
+    "source": "shining_prepared_package"
   }
 }
 ```
