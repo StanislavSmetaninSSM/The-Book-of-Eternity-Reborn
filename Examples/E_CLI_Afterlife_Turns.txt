@@ -100,7 +100,7 @@ Input fragments:
       "afterlifeCatchupContours": [
         "chaos_sea",
         "guardian_projects",
-        "resident_agency"
+        "residents"
       ]
     }
   },
@@ -758,8 +758,9 @@ Correct response/report fragment:
       "linkedSoulQuestId": "",
       "historyRevealed": false,
       "grantedRelicId": "",
+      "ascensionState": "ascended",
       "shiningFactionId": "shine_faction_glass_light_001",
-      "shiningAlignment": "supporter",
+      "residentRole": "descent_support",
       "lastUpdatedTurn": 305
     }
   ],
