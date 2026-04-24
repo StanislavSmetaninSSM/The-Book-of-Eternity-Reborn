@@ -923,7 +923,7 @@
     Natural Progression and Living World Logic
    </title>
    <description>
-    System-enforced cycle scheduling for world, faction, and Chaos Sea progression in CLI mode.
+    System-enforced cycle scheduling for world, faction, Chaos Sea, and Shining Abode progression in CLI mode.
    </description>
    <content type="rule_text">
     <![CDATA[
@@ -944,20 +944,40 @@
                     - The GM MUST read `input/turn_request.json.progressionControl` before any world assessment
                     - `mustEvaluate* = true` means this turn has mandatory progression debt for that contour
                     - `mustEvaluate* = false` means no mandatory processing debt exists for that contour this turn
-                    
-                    **2. NPC-Driven World Evolution:**
+
+                    **2. Afterlife Living-World Playbook:**
+                    Afterlife realms are timeless, but they are not static. Their living world is driven by accepted afterlife turns and bounded catch-up, not by Mortal World minutes.
+
+                    | Contour | What GM simulates | Legal output surfaces | Required report fields |
+                    |---|---|---|---|
+                    | `Chaos Sea` hub | Sea-wide omens, metaphysical pressure, soul currents, public consequences of Guardian politics, changes visible from the hub | `response`, `gm_thoughts_markdown`, Guardian/Abode/Soul-specific state when a concrete system changes | `chaosSeaCyclesProcessed`, `newLastChaosSeaSimulationOrdinal` |
+                    | Guardian projects | Project progress/completion, Guardian musings, lore discoveries, rivalry/social consequences, abode power events | `guardianProjectUpdates`, `completeGuardianProjects`, `guardianThoughtJournalUpdates`, `guardianSocialJournalUpdates`, `guardianPowerEvents`, `UpdateGuardians` when documented by Block 32 | `guardianProjectCyclesProcessed`, `newLastGuardianProjectCycleOrdinal` |
+                    | Resident agency | Resident choices, conversations, history, requests, resident-linked Soul Quests, resident-origin relic grants | `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`, `UpdateGuardianAbodeResidentHistoryLog`, `UpdateGuardianAbodeResidentInteractionReceipts`, `UpdateSoulQuests`, resident/relic-specific afterlife surfaces | `residentAgencyCyclesProcessed`, `newLastResidentAgencyCycleOrdinal` |
+                    | Shining Abode | Public mood, ascended social order, ritual/civic changes, abode-level crises/opportunities | Shining/afterlife state surfaces and Guardian/Soul surfaces; never Mortal World location/weather/time fields | `shiningAbodeCyclesProcessed`, `newLastShiningAbodeCycleOrdinal` |
+                    | Shining factions | Strategic movement of Shining-specific factions/institutions | Shining-specific state/surfaces only; never Mortal World `factionDataChanges` or `factionProjectUpdates` | `shiningFactionCyclesProcessed`, `newLastShiningFactionCycleOrdinal` |
+                    | Shining trade | Trade availability, Guardian/Soul Relic economy, receipts, sell-side/buyback consequences | Guardian trade inventory, trade receipts, afterlife notification derivation surfaces; do not hand-author client-owned notifications | `shiningTradeCyclesProcessed`, `newLastShiningTradeCycleOrdinal` |
+
+                    Rules for all afterlife contours:
+                    - Do not use Mortal World channels (`worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`) to satisfy afterlife debt.
+                    - If a contour is due, produce concrete fictional consequences or explicitly justify why the due cycle only confirms stability, then still acknowledge the processed cycle in `progressionProcessingReport`.
+                    - Actor scope must include every Guardian or resident changed through structured outputs.
+                    - If `afterlifeCatchupRequired=true`, produce exactly `afterlifeCatchupSummaryEventsRequired` bounded summary outcomes, covering the listed `afterlifeCatchupContours`; do not process raw elapsed cycles one by one.
+                    - Each `newLast*Ordinal` advances only its own contour. Do not copy the largest pending backlog into unrelated contour markers.
+                    - In `Shining Abode pending-bootstrap handoff mode`, ordinary Shining living-world progression is suppressed; process only the bootstrap lifecycle package.
+
+                    **3. Mortal-World NPC-Driven World Evolution:**
                     - Every important NPC has personal goals and plans (Rules/Block_19.E.txt)
                     - Due cycles must advance these plans logically
                     - NPC decisions drive faction changes, not abstract economic cycles
                     - Individual character arcs create world events
                     
-                    **3. Context-Sensitive Outcomes Inside Fixed Cycles:**
+                    **4. Context-Sensitive Outcomes Inside Fixed Cycles:**
                     - Faction projects advance based on story logic INSIDE the due strategic cycles
                     - World events emerge from ongoing conflicts and character actions INSIDE the due world cycles
                     - Economic changes reflect recent political/military developments
                     - Natural disasters and opportunities arise organically, but only when the scheduler says progression must be processed
                     
-                    **4. MANDATORY Structured Thinking in gm_thoughts_markdown:**
+                    **5. MANDATORY Structured Thinking in gm_thoughts_markdown:**
                     
                     **CRITICAL REQUIREMENT:** Every CLI turn MUST include the currently enforced scope-based reasoning contract.
                     
@@ -991,13 +1011,14 @@
                     
                     `progressionProcessingReport` itself remains a structured state/report object, not a mandatory standalone markdown heading.
                     
-                    **5. Integration with Existing Rules:**
-                    - All Block_19.txt (NPC) rules remain fully active
-                    - All Block_21.txt (Faction) mechanics still apply
-                    - All Block_20.txt (Location) systems continue working
+                    **6. Integration with Existing Rules:**
+                    - In Mortal World, all Block_19.txt (NPC) rules remain fully active
+                    - In Mortal World, all Block_21.txt (Faction) mechanics still apply
+                    - In Mortal World, all Block_20.txt (Location) systems continue working
+                    - In afterlife realms, regular NPC/faction/location systems remain disabled; use Guardian, Abode, Soul, resident, and Shining-specific rules instead
                     - Scheduler enforcement replaces the old "GM may remember" model, but not the underlying simulation logic
                     
-                    **6. Practical Implementation:**
+                    **7. Practical Implementation:**
                     - During WORLD_ASSESSMENT phase: read progressionControl + evaluate time/context
                     - During PROCESSING phase: apply standard rules with due-cycle updates
                     - During OUTPUT_DISTRIBUTION: write all changes to appropriate files plus progressionProcessingReport

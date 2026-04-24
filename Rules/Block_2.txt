@@ -88,7 +88,8 @@
                 currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
 
                 AFTERLIFE REALMS ONLY (Chaos Sea / Shining Abode):
-                UpdateGuardians, Guardian reputation/project/musings/lore unlock commands, Abode navigation, Soul Relic Gacha operations.
+                UpdateGuardians, Guardian reputation/project/musings/lore unlock commands, Abode navigation, Soul Relic Gacha operations,
+                afterlife resident surfaces, Shining-specific living-world surfaces, and progressionProcessingReport for scheduler debt.
 
                 CHAOS-SEA INK FEATHER EXCEPTIONS (EXPLICIT WHITELIST):
                 Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint.
@@ -96,7 +97,8 @@
 
                 FORBIDDEN IN CHAOS SEA:
                 experience, level ups, stat gains/losses, energy loss, normal inventory management, regular NPC mechanics,
-                mortal quests, faction/world progression, combat, weather, time progression, mortal location tracking.
+                mortal quests, Mortal World faction/world progression, combat, weather, time progression, mortal location tracking.
+                This does not forbid afterlife living-world progression mandated by progressionControl; handle it through afterlife-specific outputs.
 
                 FORBIDDEN IN MORTAL WORLD:
                 Guardian presence as active entities, Guardian reputation changes, Gacha pulls, Abode navigation,
@@ -632,7 +634,7 @@
                 Scheduler timestamps are stored by the client in game_state/control/progression_schedule.json.",
 
                 "progressionProcessingReport": "(object or null)
-                A mandatory scheduler acknowledgement object whenever progressionControl indicates that one or more cycles must be processed this turn.
+                A mandatory scheduler acknowledgement object whenever progressionControl indicates that one or more cycles must be processed this turn, or whenever afterlifeCatchupRequired=true.
                 This command is distributed to game_state/control/progression_report.json and consumed by the client to advance the canonical progression scheduler.
                 Structure: {
                     'worldCyclesProcessed': '(integer, optional)',
@@ -653,7 +655,8 @@
                     'newLastShiningTradeCycleOrdinal': '(integer, optional)',
                     'afterlifeCatchupProcessed': '(boolean, optional)',
                     'afterlifeCatchupSummaryEventsProcessed': '(integer, optional)'
-                }.",
+                }.
+                When afterlife contours are due, processed counts must match the corresponding expected counts from progressionControl, and each newLast*Ordinal must advance only that same contour. If afterlifeCatchupRequired=true, afterlifeCatchupProcessed must be true and afterlifeCatchupSummaryEventsProcessed must equal afterlifeCatchupSummaryEventsRequired.",
 
                 "image_prompt": "(string) 
                 Main scene image prompt (max 150 chars, English, character not visible).",

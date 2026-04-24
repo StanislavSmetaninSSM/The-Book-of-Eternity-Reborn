@@ -42,12 +42,12 @@
             1. Read `game_state/meta/soul_state.json` and determine `currentRealm`.
             2. Expose and reason about this value as `Context.worldState.currentRealm`.
             3. Select ONE processing profile:
-               - `ChaosSeaProfile`
+               - `AfterlifeProfile` (`Chaos Sea` or `Shining Abode`)
                - `MortalWorldProfile`
 
-            **ChaosSeaProfile:**
-               - Allowed: Guardians, Abodes, Soul Relics, Chaos-Sea Ink Feather whitelist actions, Gacha, Soul-system/meta progression
-               - Forbidden: combat, experience, leveling, stat gains/losses, regular NPC mechanics, mortal quests, normal inventory management, factions, weather, world time, mortal location system
+            **AfterlifeProfile (`Chaos Sea` / `Shining Abode`):**
+               - Allowed: Guardians, Abodes, Soul Relics, Chaos-Sea Ink Feather whitelist actions, Gacha, Soul-system/meta progression, afterlife living-world scheduler, `progressionProcessingReport`
+               - Forbidden: combat, experience, leveling, stat gains/losses, regular NPC mechanics, mortal quests, normal inventory management, Mortal World factions, weather, world time, mortal location system
                - Chaos-Sea Ink Feather whitelist: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint
                - `Sell Relic` is a separate guardian trade interaction and is NOT an Ink Feather action
                - Local guardian trade (`Buy / Sell` Soul Relics) is client-side, but canonically belongs to the current active Guardian's abode
@@ -170,6 +170,18 @@
                - MUST answer: Which due Chaos Sea / guardian / resident / Shining Abode / Shining faction / Shining trade cycles are being resolved this turn? (document logic)
                - MUST answer: If afterlife catch-up is required, which bounded summary outcomes were produced and which contours they affect?
                - MUST answer: Which NPC / resident / guardian / world / political consequences result from those cycles? (document changes)
+
+            4. **MANDATORY Afterlife Living-World Checklist when currentRealm is `Chaos Sea` or `Shining Abode`:**
+               - If `mustEvaluateChaosSeaProgression=true`, resolve Chaos Sea hub pressure, omens, soul-current changes, or Guardian-political consequences through afterlife-specific state only
+               - If `mustEvaluateGuardianProjectProgression=true`, advance or complete Guardian projects and document affected Guardians in actor scope
+               - If `mustEvaluateResidentAgencyProgression=true`, let authored residents act: thoughts, interaction/history logs, resident-linked Soul Quests, relic grants, or other documented resident results
+               - If `mustEvaluateShiningAbodeProgression=true`, update the Shining Abode's public/civic/metaphysical state without using Mortal World location/time/weather fields
+               - If `mustEvaluateShiningFactionProgression=true`, advance Shining-specific institutions/factions without using Mortal World `factionDataChanges`
+               - If `mustEvaluateShiningTradeProgression=true`, update Shining/Guardian trade availability, receipts, or related afterlife trade consequences
+               - If `afterlifeCatchupRequired=true`, produce exactly `afterlifeCatchupSummaryEventsRequired` summary outcomes and explicitly name the affected `afterlifeCatchupContours`
+               - MUST NOT satisfy afterlife progression with `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `setWorldTime`, or `weatherChange`
+               - MUST write `progressionProcessingReport` with exact processed counts and per-contour `newLast*Ordinal` values
+               - MUST keep Shining bootstrap handoff separate: if `preparedIncarnationPackage` is active, process bootstrap only and do not run ordinary Shining living-world cycles
                
             **VALIDATION REQUIREMENT:**
             At minimum, live validation requires a valid scope declaration block and a valid actor reasoning section.

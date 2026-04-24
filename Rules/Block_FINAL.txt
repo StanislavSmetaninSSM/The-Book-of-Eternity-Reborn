@@ -194,11 +194,13 @@
                     ✗ 'currentLocationData' → REMOVE (use Abode navigation, not location system)
                     ✗ 'moneyChange' → REMOVE (no money in Chaos Sea)
                     ✗ 'UpdateInventory' with non-Soul-Relic items → REMOVE
-                    ✗ 'worldEventsLog' → REMOVE (no world events in Chaos Sea)
-                    ✗ 'factionDataChanges' → REMOVE (no factions in Chaos Sea)
+                    ✗ 'worldEventsLog' → REMOVE (no Mortal World events in afterlife realms)
+                    ✗ 'factionDataChanges' → REMOVE (no Mortal World factions in afterlife realms)
                     ✗ 'timeChange' or 'setWorldTime' → REMOVE
                     ✗ 'weatherChange' → REMOVE
                     ✗ Any reference to "level up", "gained experience", "lost energy", "spent stamina", "found gold", "quest completed", "weather changed" in 'response' narrative → REWRITE
+
+                    Afterlife living-world progression is NOT a violation when it is handled through afterlife-specific surfaces. If `progressionControl` requires Chaos Sea, Guardian project, resident agency, Shining Abode, Shining faction, Shining trade, or afterlife catch-up processing, keep the valid Guardian/Abode/Soul/resident/Shining outputs and keep `progressionProcessingReport` with exact processed counts and per-contour `newLast*Ordinal` values.
 
                     The following Chaos-Sea Ink Feather actions are EXPLICITLY ALLOWED and must NOT be treated as violations:
                     ✓ Donate to Guardian
