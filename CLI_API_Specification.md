@@ -605,15 +605,31 @@ Quest state contract notes:
 - If a new same-turn faction is authored only with `initialId`/`initialFactionId`, the client normalizes that temporary tag into the stored `factionId` inside canonical faction files for that accepted turn. Subsequent turns must target the faction by `factionId`.
 
 #### **META-GAME SYSTEM**
-- `game_state/meta/soul_state.json` ← `metaStateUpdates`, `afterlifeArchiveUpdates`
-- `game_state/meta/guardians.json` ← `UpdateGuardians`, `guardianPowerEvents`
-- `game_state/meta/guardian_abode_residents.json` ← `UpdateGuardianAbodeResidents`
+- `game_state/meta/soul_state.json` ← `metaStateUpdates`, `afterlifeArchiveUpdates`, `archiveActionResolutions`
+- `game_state/meta/guardians.json` ← `UpdateGuardians`, `guardianPowerEvents`, `UpdateGuardianTradeInventoryReceipts`
+- `game_state/meta/guardian_abode_residents.json` ← `UpdateGuardianAbodeResidents`, `UpdateGuardianAbodeResidentRosterReceipts`, `UpdateGuardianAbodeResidentInteractionReceipts`, `UpdateGuardianAbodeResidentHistoryLog`, `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`
 - `game_state/meta/guardian_projects.json` ← `startGuardianProjects`, `guardianProjectUpdates`, `completeGuardianProjects`
 - `game_state/meta/guardian_project_journal.json` ← client-generated readable guardian project chronology
 - `game_state/meta/abode_power_journal.json` ← client-generated readable guardian power chronology
+- `game_state/meta/guardian_thought_journal.json` ← `guardianThoughtJournalUpdates`
+- `game_state/meta/guardian_social_journal.json` ← `guardianSocialJournalUpdates`
+- `game_state/meta/shining_abode_state.json` ← canonical Shining Abode state, Shining factions, halls, gates, radiance, Light Sparks, Shining trade inventories, Shining receipts, prepared incarnation package
 - `game_state/meta/player_behavior.json` ← `playerBehaviorAssessment`, `historyManipulationCoefficient`
 - `game_state/meta/character_chronicle.json` ← `characterChronicleUpdates`
 - `game_state/meta/achievements.json` ← `achievementUnlocks`
+
+#### **AFTERLIFE CONTROL / REQUEST FILES**
+- `game_state/control/pending_guardian_trade_request.json` ← client-authored Guardian trade inventory request; close with `UpdateGuardianTradeInventoryReceipts`.
+- `game_state/control/pending_guardian_abode_residents_request.json` ← client-authored resident roster requests; close with `UpdateGuardianAbodeResidentRosterReceipts`.
+- `game_state/control/pending_guardian_abode_resident_interactions.json` ← client-authored resident talk/history requests; close with `UpdateGuardianAbodeResidentInteractionReceipts` plus resident logs/history when accepted.
+- `game_state/control/pending_resident_companion_manifestation_request.json` ← client-authored next-life companion manifestation requests.
+- `game_state/control/pending_archive_consultation_request.json` and `pending_archive_project_fuel_request.json` ← close with `archiveActionResolutions`.
+- `game_state/control/pending_shining_abode_actions.json` ← client-authored Shining core actions; close through `shining_abode_state.coreActionReceipts[]`.
+- `game_state/control/pending_shining_faction_foundings.json` ← close through `shining_abode_state.factionFoundingReceipts[]`.
+- `game_state/control/pending_shining_faction_realignments.json` ← close through `shining_abode_state.factionRealignmentReceipts[]`.
+- `game_state/control/pending_shining_faction_leadership_transitions.json` ← close through faction `leadershipReceipts[]` and leadership history.
+- `game_state/control/pending_shining_trade_inventory_requests.json` ← close through faction `tradeInventory` plus `tradeInventoryReceipts[]`.
+- `game_state/control/afterlife_notifications.json` is client-owned; GM must not author inbox entries manually.
 
 #### **LORE CODEX (GM writes directly to lore/ files)**
 - `lore/chaos_sea/cosmology.json` — Core universe structure, planes of existence
