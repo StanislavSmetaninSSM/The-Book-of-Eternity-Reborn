@@ -195,11 +195,11 @@ Correct response/state fragment:
   "UpdateGuardianAbodeResidentHistoryLog": [
     {
       "residentId": "res_azalia_liora_001",
-      "historyEntryId": "hist_liora_212_previous_life",
-      "turn": 212,
+      "entryId": "hist_liora_212_previous_life",
       "title": "Отказ от лёгкой победы",
       "summary": "В прошлой жизни душа отказалась от победы, которая требовала предательства свободного пленника.",
-      "source": "resident_history_request"
+      "revealedAtTurn": 212,
+      "revealedAtUtc": "2026-04-24T08:40:00Z"
     }
   ],
   "UpdateGuardianAbodeResidentInteractionReceipts": [
@@ -217,7 +217,7 @@ Correct response/state fragment:
     "chaosSeaCyclesProcessed": 1,
     "guardianProjectCyclesProcessed": 2,
     "residentAgencyCyclesProcessed": 1,
-    "newLastChaosSeaCycleOrdinal": 31,
+    "newLastChaosSeaSimulationOrdinal": 31,
     "newLastGuardianProjectCycleOrdinal": 19,
     "newLastResidentAgencyCycleOrdinal": 12,
     "afterlifeCatchupProcessed": true,
@@ -343,7 +343,7 @@ Input fragments:
         "requestId": "shine_trade_glass_305",
         "factionId": "shine_faction_glass_light_001",
         "tradeCycleId": "shine_trade_cycle_9",
-        "generationRarityCeiling": "Epic"
+        "generationRarityCeiling": "radiant"
       }
     ]
   }
@@ -431,16 +431,23 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
       "tradeTier": "radiant",
       "tradeInventory": {
         "tradeCycleId": "shine_trade_cycle_9",
-        "generationRarityCeiling": "Epic",
-        "merchantProfile": "ShiningRelics",
+        "generatedAtUtc": "2026-04-24T08:55:00Z",
+        "generationTradeTier": 3,
+        "generationRarityCeiling": "radiant",
+        "serviceMultiplierSnapshot": 1.0,
+        "merchantProfile": "shining_faction",
         "items": [
           {
             "slotId": "shine_trade_glass_305_1",
-            "relicId": "relic_glass_dawn_lantern_001",
-            "name": "Фонарь Стеклянного Рассвета",
-            "rarity": "Epic",
-            "priceLightSparks": 6,
-            "soldOut": false
+            "priceInFeathers": 18,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_glass_dawn_lantern_001",
+              "name": "Фонарь Стеклянного Рассвета",
+              "rarity": "Epic",
+              "relicType": "radiant_memory",
+              "description": "Сияющий фонарь, который удерживает ясность маршрута у открытых Врат Рассвета."
+            }
           }
         ]
       },
@@ -510,13 +517,26 @@ Correct response/report fragment:
       "guardianId": "guard_knowledge_elian_001",
       "abodeId": "abode_elian_gatehouse_001",
       "displayName": "Мира",
+      "residentKind": "wayfaring_soul",
+      "originType": "traveler_soul",
+      "roleLabel": "свидетельница рассветных врат",
+      "summary": "Мира поддерживает осторожное открытие Врат Рассвета и помогает резидентам не терять личную волю в сияющем порядке.",
       "bondLevel": 42,
-      "bondTier": "trusted",
+      "bondTier": "familiar",
+      "canGrantCompanionRelic": false,
       "bondRewardState": "none",
-      "mortalWorldImprint": null,
-      "linkedSoulQuestId": null,
+      "isPresent": true,
+      "mortalWorldImprint": {
+        "originWorldSummary": "Память о смертном городе, где стеклянные маяки вели караваны через рассветный туман.",
+        "futureCompanionPrompt": "",
+        "bondReason": "Мира доверяет Элиану, потому что его проект удерживает переходы безопасными для слабых душ.",
+        "coreTraits": ["осторожная", "наблюдательная", "верная обещаниям"],
+        "archetypeHints": ["keeper_of_thresholds"],
+        "appearanceMotifs": ["стеклянная пыль", "бледное золото", "узор рассветных ворот"]
+      },
+      "linkedSoulQuestId": "",
       "historyRevealed": false,
-      "grantedRelicId": null,
+      "grantedRelicId": "",
       "shiningFactionId": "shine_faction_glass_light_001",
       "shiningAlignment": "supporter",
       "lastUpdatedTurn": 305
@@ -661,12 +681,11 @@ Correct response/control fragment:
 
 Correct Shining state result:
 
-This is a fragment. Preserve the rest of `shining_abode_state.json`; only consume/clear the prepared package and record the handoff marker.
+This is a fragment. Preserve the rest of `shining_abode_state.json`; only consume/clear the prepared package. Do not add unsupported handoff marker fields.
 
 ```json
 {
-  "preparedIncarnationPackage": null,
-  "lastPreparedIncarnationPackageConsumedAtTurn": 340
+  "preparedIncarnationPackage": null
 }
 ```
 
