@@ -84,16 +84,16 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 | Значение | Режим | Активные системы | ЗАПРЕЩЁННЫЕ системы |
 |----------|-------|-------------------|---------------------|
-| `"Shining Abode"` + `preparedIncarnationPackage != null` | pending-bootstrap handoff | только mortal bootstrap lifecycle и consume/clear frozen package | обычные Guardian / Abode interactions, Chaos-Sea-only afterlife interactions, Mortal World turn systems |
+| `"Shining Abode"` + `preparedIncarnationPackage != null` | pending-bootstrap handoff | только mortal bootstrap lifecycle; GM сохраняет frozen package без изменений для последующего runtime consumption | обычные Guardian / Abode interactions, ordinary afterlife interactions, Mortal World turn systems |
 | `"Chaos Sea"` / `null` / пусто | Посмертие | Хранители, Обители, Реликвии Души, Чернильные Перья, Гача, afterlife living-world scheduler | Бой, опыт, уровни, навыки, НПС, квесты, деньги, инвентарь, погода |
 | `"Shining Abode"` | Посмертие | Свободный ролеплей с Хранителями, Реликвии Души, afterlife meta systems, Shining living-world scheduler | Mortal-world combat/NPC/faction/location mechanics |
-| `"Mortal World"` / иное | Смертный мир | Бой, навыки, НПС, квесты, фракции, инвентарь, погода, время, whitelist-действия Чернильных Перьев | Хранители, Обители, Гача, Chaos-Sea-only трата Чернильных Перьев |
+| `"Mortal World"` / иное | Смертный мир | Бой, навыки, НПС, квесты, фракции, инвентарь, погода, время, whitelist-действия Чернильных Перьев | Хранители, Обители, Гача, afterlife-only трата Чернильных Перьев |
 
 **JSON gate после Realm Check:**
-- В `Shining Abode pending-bootstrap handoff mode` разрешены только lifecycle/bootstrap mutations, которые materialize-ят следующую смертную жизнь и consume/clear `preparedIncarnationPackage`.
+- В `Shining Abode pending-bootstrap handoff mode` разрешены только lifecycle/bootstrap mutations для запуска следующей смертной жизни. GM НЕ ДОЛЖЕН remove, clear, rename или mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage`; frozen package сохраняется exactly as provided, а client runtime читает и очищает его только после successful Mortal World bootstrap.
 - В `Chaos Sea` и `Shining Abode` запрещены: `experienceGained`, `statsIncreased`, `statsDecreased`, `currentPoiseChange`, `currentEnergyChange`, `currentHealthChange`, `moneyChange`, `activeSkillChanges`, `passiveSkillChanges`, `skillMasteryChanges`, `UpdateInventory`, `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, `worldEventsLog`, `factionDataChanges`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`, `enemiesData`, `alliesData`, `combat_log_markdown`.
 - Этот запрет относится к смертным world/faction/location/NPC channels. Он не отменяет afterlife living-world scheduler: если `progressionControl.mustEvaluate* = true`, ГМ обязан обработать afterlife-контуры через Guardian/Abode/Soul/Shining-specific surfaces и `progressionProcessingReport`.
-- В `Mortal World` запрещены: `UpdateGuardians`, Guardian-specific reputation/project/musings/lore commands, Abode navigation data, Soul Relic Gacha processing, Chaos-Sea-only spending of Ink Feathers.
+- В `Mortal World` запрещены: `UpdateGuardians`, Guardian-specific reputation/project/musings/lore commands, Abode navigation data, Soul Relic Gacha processing, afterlife-only spending of Ink Feathers.
 - В `Mortal World` разрешены только explicit Ink Feather exceptions: `Reveal Fate`, `Rewrite Fate`, `Sacrifice to Chaos`, `Absorb Feathers`, `Learn Skill`, `Fate Shield`, `Seal in Ink`.
 - В `Chaos Sea` и `Shining Abode` разрешены только explicit afterlife Ink Feather exceptions: `Donate to Guardian`, `Cultivate Enlightenment`, `Guardian Favor`, `Memory Gates`, `Soul Imprint`.
 - Эти два Ink Feather whitelist-а взаимоисключающие.
@@ -141,7 +141,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 2. **Lifecycle guards:** проверь `afterlife_return_guard.json`, `ascension.json`, `incarnation_trigger.json`, `preparedIncarnationPackage`; не смешивай return, ascension, incarnation и bootstrap.
 3. **Scheduler first:** прочитай `turn_request.json.progressionControl` до выбора сцены, due actors и ответа игроку.
 4. **State loading:** прочитай `soul_state.json`, `guardians.json`, `guardian_projects.json`, `guardian_abode_residents.json`; для Shining — обязательно `shining_abode_state.json`.
-5. **Pending contracts:** проверь pending files в `game_state/control/`: Guardian trade, resident roster/interactions, archive actions, resident companion manifestation, Shining core actions, Shining founding/realignment/leadership/trade.
+5. **Pending contracts:** проверь pending files в `game_state/control/`: Guardian trade, resident roster/interactions, archive actions, Shining core actions, Shining founding/realignment/leadership/trade. `pending_resident_companion_manifestation_request.json` is MortalWorldProfile-only; in `Chaos Sea` / `Shining Abode` do not materialize mortal NPCs or encounters from it, and treat its presence as stale/repair-only context.
 6. **Actor scope:** объяви relevant actors/institutions: изменяемые Guardians, residents, Shining factions/halls/head actors; объясни outside scope.
 7. **Living-world debt:** обработай все due contours из `progressionControl`; catch-up сначала сверни в bounded summary outcomes.
 8. **Player action:** только после этого обрабатывай прямое действие игрока: Guardian conversation, gacha, Ink Feather action, resident interaction, Shining action, ascension/incarnation choice, archive action, trade request.

@@ -91,25 +91,25 @@
                 UpdateGuardians, Guardian reputation/project/musings/lore unlock commands, Abode navigation, Soul Relic Gacha operations,
                 afterlife resident surfaces, Shining-specific living-world surfaces, and progressionProcessingReport for scheduler debt.
 
-                CHAOS-SEA INK FEATHER EXCEPTIONS (EXPLICIT WHITELIST):
+                AFTERLIFE INK FEATHER EXCEPTIONS (CHAOS SEA / SHINING ABODE EXPLICIT WHITELIST):
                 Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint.
-                These are the ONLY legal spending-based Ink Feather actions in Chaos Sea.
+                These are the ONLY legal spending-based Ink Feather actions in afterlife realms (Chaos Sea / Shining Abode).
 
-                FORBIDDEN IN CHAOS SEA:
+                FORBIDDEN IN AFTERLIFE REALMS (CHAOS SEA / SHINING ABODE):
                 experience, level ups, stat gains/losses, energy loss, normal inventory management, regular NPC mechanics,
                 mortal quests, Mortal World faction/world progression, combat, weather, time progression, mortal location tracking.
                 This does not forbid afterlife living-world progression mandated by progressionControl; handle it through afterlife-specific outputs.
 
                 FORBIDDEN IN MORTAL WORLD:
                 Guardian presence as active entities, Guardian reputation changes, Gacha pulls, Abode navigation,
-                Chaos-Sea-only Ink Feather spending.
+                afterlife-only Ink Feather spending.
 
                 MORTAL-WORLD INK FEATHER EXCEPTIONS (EXPLICIT WHITELIST):
                 Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink.
                 These are the ONLY legal spending-based Ink Feather actions in Mortal World.
                 They may legitimately produce mortal-world outputs such as experience, skills, buffs, item upgrades,
                 or world events, but they do NOT grant access to Guardians, Abodes, or Gacha.
-                Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive.
+                Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
                  
                 "currentPoiseChange": "(integer) Change in player's poise this turn. MORTAL WORLD ONLY.",
                 

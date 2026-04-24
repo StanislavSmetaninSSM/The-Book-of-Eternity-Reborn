@@ -770,7 +770,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
   mortal quests, Mortal World faction/world progression, weather, time progression, mortal location tracking.
 
 ### Forbidden In Mortal World
-- Guardian presence as active entities, Guardian reputation changes, Abode navigation, Gacha, afterlife/Chaos-Sea-only Ink Feather spending.
+- Guardian presence as active entities, Guardian reputation changes, Abode navigation, Gacha, afterlife-only Ink Feather spending.
 
 ### Mortal-World Ink Feather Exceptions
 The following spending-based Ink Feather actions are explicitly allowed in `Mortal World`:
@@ -796,7 +796,7 @@ The following spending-based Ink Feather actions are explicitly allowed in after
 - `Soul Imprint`
 
 These exceptions do NOT unlock Mortal-World-only mechanics such as combat, XP leveling, regular inventory changes, or regular NPC quest/world systems.
-The Mortal-World and afterlife/Chaos-Sea Ink Feather whitelists are mutually exclusive.
+The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
 - `Sell Relic` is a separate guardian trade interaction and is NOT part of the Ink Feather action contract.
 - Local guardian trade panel (`Buy / Sell` Soul Relics with the current active Guardian) is handled entirely on the client side.
 - It does NOT create `turn_request.json`, does NOT require `ink_feather_action_result.json`, and is separate from roleplay trade through the GM.

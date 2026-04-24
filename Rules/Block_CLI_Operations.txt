@@ -277,7 +277,7 @@
                     - UpdateGuardianTradeInventoryReceipts closes Guardian trade requests inside game_state/meta/guardians.json
                     - game_state/control/pending_guardian_abode_residents_request.json ← client-authored resident roster requests
                     - game_state/control/pending_guardian_abode_resident_interactions.json ← client-authored resident talk/history requests
-                    - game_state/control/pending_resident_companion_manifestation_request.json ← client-authored next-life companion manifestation requests
+                    - game_state/control/pending_resident_companion_manifestation_request.json ← MortalWorldProfile-only next-life companion manifestation requests; in Chaos Sea / Shining Abode treat as stale/repair-only context and do not materialize mortal NPCs or encounters
                     - game_state/control/pending_archive_consultation_request.json ← client-authored archive consultation request
                     - game_state/control/pending_archive_project_fuel_request.json ← client-authored archive project fuel request
                     - game_state/control/pending_shining_abode_actions.json ← client-authored Shining core actions; close through shining_abode_state.coreActionReceipts[]
@@ -409,10 +409,10 @@
                     IF REALM = "Mortal World":
                     - DO NOT write guardian-only or gacha-only structures
                     - DO NOT write Abode navigation data
-                    - DO NOT write afterlife/Chaos-Sea-only spending operations
+                    - DO NOT write afterlife-only spending operations
                     - Mortal-World Ink Feather whitelist actions are allowed:
                       Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink
-                    - Afterlife/Chaos-Sea Ink Feather whitelist actions remain forbidden here
+                    - Afterlife Ink Feather whitelist actions remain forbidden here
 
                     ]]>
    </content>
@@ -1282,10 +1282,10 @@
        Effect: Reroll the pre-generated dice for the current turn.
        This is a client/GMs shared fate-rewrite action and does not grant access to Chaos Sea systems.
     
-    AFTERLIFE (CHAOS SEA) ACTIONS:
+    AFTERLIFE (CHAOS SEA / SHINING ABODE) ACTIONS:
 
-    Spending Ink Feathers in Chaos Sea is FORBIDDEN by default, except for the explicit whitelist below.
-    Mortal-World Ink Feather actions MUST NOT be used in Chaos Sea.
+    Spending Ink Feathers in afterlife realms is FORBIDDEN by default, except for the explicit whitelist below.
+    Mortal-World Ink Feather actions MUST NOT be used in Chaos Sea or Shining Abode.
     
     1. [INK_FEATHER_ACTION: DONATE_TO_GUARDIAN]
        Effect: Increase reputation with current guardian by 15-25 points (proportional to cost).
@@ -1333,7 +1333,7 @@
     - Always log the Ink Feather action processing in gm_thoughts_markdown.
     - The narrative should emphasize the mystical nature of Ink Feathers — they are crystallized
       memories of past lives, not just currency.
-    - Mortal-World and afterlife/Chaos-Sea Ink Feather whitelists are mutually exclusive.
+    - Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
     - Read `Examples/E_CLI_Ink_Feather_Actions.txt` for the exact valid/invalid structured examples of each GM-side Ink Feather action.
     - Local guardian trade (buy/sell relics in the Guardian UI) is a separate client-side panel, is NOT an Ink Feather action, and does NOT create turn_request.json.
     
