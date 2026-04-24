@@ -402,17 +402,17 @@
                     - DO NOT write Mortal World faction files under game_state/factions/
                     - DO NOT write weather/time files
                     - DO NOT write mortal quest updates
-                    - DO NOT write regular NPC updates for Guardians
-                    - DO NOT write regular inventory updates except systems explicitly allowed for Soul Relics
+                    - DO NOT write regular NPC updates for Guardians or afterlife residents
+                    - DO NOT write regular inventory updates; Soul Relics use Soul/meta surfaces, not ordinary inventory files
                     - DO write afterlife-specific Guardian / resident / Shining state when progressionControl or pending afterlife requests require it
 
                     IF REALM = "Mortal World":
                     - DO NOT write guardian-only or gacha-only structures
                     - DO NOT write Abode navigation data
-                    - DO NOT write Chaos-Sea-only spending operations
+                    - DO NOT write afterlife/Chaos-Sea-only spending operations
                     - Mortal-World Ink Feather whitelist actions are allowed:
                       Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink
-                    - Chaos-Sea Ink Feather whitelist actions remain forbidden here
+                    - Afterlife/Chaos-Sea Ink Feather whitelist actions remain forbidden here
 
                     ]]>
    </content>
@@ -1332,7 +1332,7 @@
     - Always log the Ink Feather action processing in gm_thoughts_markdown.
     - The narrative should emphasize the mystical nature of Ink Feathers — they are crystallized
       memories of past lives, not just currency.
-    - Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive.
+    - Mortal-World and afterlife/Chaos-Sea Ink Feather whitelists are mutually exclusive.
     - Read `Examples/E_CLI_Ink_Feather_Actions.txt` for the exact valid/invalid structured examples of each GM-side Ink Feather action.
     - Local guardian trade (buy/sell relics in the Guardian UI) is a separate client-side panel, is NOT an Ink Feather action, and does NOT create turn_request.json.
     

@@ -176,7 +176,7 @@
 
             18.  REALM SEGREGATION AUDIT (CRITICAL — Ref: ABSOLUTE LAW 3):
                 -   This is your FINAL and most important mechanical integrity check.
-                -   Determine the current realm from 'worldState.currentRealm'.
+                -   Determine the current realm from `game_state/meta/soul_state.json.currentRealm`; the runtime may also expose the same value as `Context.worldState.currentRealm` / `worldState.currentRealm`.
 
                 -   IF REALM = "Chaos Sea" OR "Shining Abode":
                     Scan your ENTIRE JSON output for ANY of the following FORBIDDEN keys/values:
@@ -186,14 +186,14 @@
                     ✗ 'activeSkillChanges' with new skills → REMOVE THEM
                     ✗ 'passiveSkillChanges' with new skills → REMOVE THEM
                     ✗ 'skillMasteryChanges' → REMOVE IT
-                    ✗ 'enemiesData' or 'alliesData' → REMOVE THEM (no combat in Chaos Sea)
+                    ✗ 'enemiesData' or 'alliesData' → REMOVE THEM (no combat in afterlife realms)
                     ✗ 'combatLogMarkdown' → REMOVE IT
-                    ✗ 'UpdateNPCs' containing Guardian data → MOVE to Guardian-specific commands
+                    ✗ 'UpdateNPCs' containing Guardian or afterlife-resident data → MOVE to Guardian/resident-specific afterlife surfaces
                     ✗ 'NPCsInScene' → REMOVE IT
-                    ✗ 'UpdateQuests' with mortal quests → REMOVE (use Guardian quest system)
-                    ✗ 'currentLocationData' → REMOVE (use Abode navigation, not location system)
-                    ✗ 'moneyChange' → REMOVE (no money in Chaos Sea)
-                    ✗ 'UpdateInventory' with non-Soul-Relic items → REMOVE
+                    ✗ 'UpdateQuests' with mortal quests → REMOVE (Guardian quests use Guardian state; resident-linked Soul Quests use `UpdateSoulQuests` with afterlife links)
+                    ✗ 'currentLocationData' → REMOVE (use Abode/Shining navigation surfaces, not the Mortal World location system)
+                    ✗ 'moneyChange' → REMOVE (no mortal money in afterlife realms)
+                    ✗ 'UpdateInventory' → REMOVE (ordinary inventory is disabled; Soul Relics use `metaStateUpdates.soulRelicOperations`, not inventory)
                     ✗ 'worldEventsLog' → REMOVE (no Mortal World events in afterlife realms)
                     ✗ 'factionDataChanges' → REMOVE (no Mortal World factions in afterlife realms)
                     ✗ 'timeChange' or 'setWorldTime' → REMOVE
@@ -202,7 +202,7 @@
 
                     Afterlife living-world progression is NOT a violation when it is handled through afterlife-specific surfaces. If `progressionControl` requires Chaos Sea, Guardian project, resident agency, Shining Abode, Shining faction, Shining trade, or afterlife catch-up processing, keep the valid Guardian/Abode/Soul/resident/Shining outputs and keep `progressionProcessingReport` with exact processed counts and per-contour `newLast*Ordinal` values.
 
-                    The following Chaos-Sea Ink Feather actions are EXPLICITLY ALLOWED and must NOT be treated as violations:
+                    The following afterlife Ink Feather actions are EXPLICITLY ALLOWED in Chaos Sea / Shining Abode and must NOT be treated as violations:
                     ✓ Donate to Guardian
                     ✓ Cultivate Enlightenment
                     ✓ Guardian Favor
@@ -223,7 +223,7 @@
                     Scan your ENTIRE JSON output for ANY of the following FORBIDDEN keys/values:
                     ✗ Guardian-specific commands (guardian reputation changes, gacha pulls) → REMOVE
                     ✗ Abode navigation data → REMOVE
-                    ✗ Chaos-Sea-only Ink Feather spending → REMOVE
+                    ✗ afterlife/Chaos-Sea-only Ink Feather spending → REMOVE
                     ✗ Life Evaluation data (unless death/transition is happening THIS turn) → REMOVE
                     ✗ References to Guardians in 'response' narrative as present entities → REWRITE
                     ✗ 'UpdateNPCs' entries where an NPC is actually a Guardian → REMOVE
@@ -244,10 +244,10 @@
                     This is the equivalent of a game-breaking bug.
 
             19. GUARDIAN INNER LIFE AUDIT (Block 32_ext2):
-                IF REALM = "Chaos Sea" AND discovered Guardians exist:
+                IF REALM is "Chaos Sea" or "Shining Abode", and discovered Guardians exist:
                 - Check whether the turn actually changed any Guardian inner-life state before emitting related commands
                 - Add "addMusings" only when the turn meaningfully produced new Guardian reflection
-                - Update "currentProject" only when project progress/state actually changed this turn
+                - Update Guardian project surfaces/current project markers only when project progress/state actually changed this turn
                 - Include "unlockLore" only when a real reputation-tier threshold was crossed this turn
                 - Set or change mood only when recent events materially justify a mood update
                 - Musings topic and mood must match Guardian personality (archetype, speechPattern)

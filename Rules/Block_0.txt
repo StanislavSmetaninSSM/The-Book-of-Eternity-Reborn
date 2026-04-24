@@ -205,7 +205,7 @@
                         - Abode navigation (Block 32 ext) — Abodes DO NOT EXIST in mortal worlds
                         - Guardian-mediated Soul Relic Gacha — IMPOSSIBLE without Guardians
                         - Direct Chaos Sea pull via /gacha remains a Chaos-Sea-only exception and does NOT exist in mortal world
-                        - Chaos-Sea-only Ink Feather spending — meta-currency tied to Guardians/Abodes/Gacha, NOT usable in mortal world
+                        - Afterlife/Chaos-Sea-only Ink Feather spending — meta-currency tied to Guardians/Abodes/Gacha, NOT usable in mortal world
                         - Life Evaluation — only triggered at DEATH or voluntary transition
                         - Soul Quest completion rewards — processed only during Life Evaluation
 
@@ -214,7 +214,7 @@
                         - Guardian-specific reputation or musings/project/lore unlock commands
                         - Guardian gacha processing commands
                         - Abode navigation data
-                        - Chaos-Sea-only Ink Feather spending (Guardian gifts, Gacha, Abode/Guardian services)
+                        - Afterlife/Chaos-Sea-only Ink Feather spending (Guardian gifts, Gacha, Abode/Guardian services)
 
                         ⚠️ SPECIAL IN MORTAL WORLD:
                         - Soul Relics — EQUIPPED relics provide passive bonuses, but NO new relics can be acquired
@@ -228,7 +228,7 @@
                 </Rule>
 
                 <Rule id="LAW.3.3">
-                    <Title>CHAOS SEA (AFTERLIFE): Active Systems</Title>
+                    <Title>AFTERLIFE REALMS: Active Systems (Chaos Sea and Shining Abode)</Title>
                     <Content type="rule_text">
                         <![CDATA[
 
@@ -238,7 +238,7 @@
                         - Guardian system (Block 32) — Guardian interactions, reputation, quests
                         - Abode navigation (Block 32 ext) — travel between Guardian Abodes
                         - Soul Relic management (Block 31) — equipping, viewing, Gacha pulls
-                        - Ink Feather economy — spending ONLY through the explicit Chaos-Sea Ink Feather whitelist
+                        - Ink Feather economy — spending ONLY through the explicit afterlife/Chaos-Sea Ink Feather whitelist
                         - Soul System (Block 31) — full meta-progression
                         - Life Evaluation processing — when arriving from mortal death
                         - Incarnation selection — choosing next mortal world
@@ -246,27 +246,28 @@
                         - Basic narrative interaction — dialogue, exploration of the current afterlife environment
                         - Afterlife living-world scheduler — mandatory `progressionControl` contours for Chaos Sea, Guardians, residents, Shining Abode, Shining factions, and Shining trade
                         - `progressionProcessingReport` — mandatory scheduler acknowledgement whenever afterlife cycles are due
+                        - Shining Abode civic systems — when currentRealm is "Shining Abode", process halls, gates, radiance, Light Sparks, Shining factions, leadership, trade, public mood, and resident alignment through Shining-specific state only
 
-                        - Chaos-Sea Ink Feather whitelist:
+                        - Afterlife / Chaos-Sea Ink Feather whitelist:
                           Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint
 
-                        ❌ COMPLETELY DISABLED IN CHAOS SEA:
-                        - Combat system (Block 6) — NO COMBAT in Chaos Sea. Period.
+                        ❌ COMPLETELY DISABLED IN AFTERLIFE REALMS:
+                        - Combat system (Block 6) — NO COMBAT in afterlife realms. Period.
                         - Experience/leveling (Block 5 leveling) — NO LEVEL UPS. The soul does not "level up".
                         - Stat increases (statsIncreased/statsDecreased) — characteristics are FROZEN
-                        - Skill learning/mastery — NO new skills in Chaos Sea
+                        - Skill learning/mastery — NO new mortal skills in afterlife realms
                         - Regular NPC system (Block 19 UpdateNPCs) — Guardians are NOT regular NPCs.
-                          Do NOT use UpdateNPCs for Guardians. Use Guardian-specific commands from Block 32.
-                        - Regular quests (Block 18 UpdateQuests) — NO mortal quests in Chaos Sea.
-                          Guardian quests use the Guardian quest system (Block 32), NOT UpdateQuests.
-                        - Inventory changes — NO item drops, NO equipment changes (except Soul Relic equip/unequip)
-                        - Money/economy — NO money in Chaos Sea. Ink Feathers are the only currency.
+                          Do NOT use UpdateNPCs for Guardians or afterlife residents. Use Guardian/resident-specific afterlife surfaces.
+                        - Regular quests (Block 18 UpdateQuests) — NO mortal quests in afterlife realms.
+                          Guardian quests use the Guardian system; resident-linked Soul Quests use `UpdateSoulQuests` with afterlife links.
+                        - Inventory changes — NO mortal item drops and NO ordinary equipment changes; Soul Relics use Soul/meta surfaces, not ordinary inventory
+                        - Money/economy — NO mortal money in afterlife realms. Use Ink Feathers, Light Sparks, Guardian trade, or Shining trade only where their afterlife rules explicitly allow it.
                         - Mortal World progression — NO mortal faction projects, NO mortal world events, NO mortal threats
-                        - Weather/time mechanics — Chaos Sea is timeless
-                        - Location system (currentLocationData) — Abodes replace locations.
-                          Do NOT generate currentLocationData for Chaos Sea. Use Abode navigation.
+                        - Weather/time mechanics — afterlife progression uses `progressionControl`, not `timeChange`, `setWorldTime`, or `weatherChange`
+                        - Location system (currentLocationData) — Abodes, Shining halls, and Shining gates replace Mortal World locations.
+                          Do NOT generate currentLocationData for afterlife realms. Use Abode/Shining navigation state.
 
-                        JSON RESPONSE GATE — FORBIDDEN IN CHAOS SEA:
+                        JSON RESPONSE GATE — FORBIDDEN IN AFTERLIFE REALMS:
                         - experienceGained
                         - statsIncreased, statsDecreased, setCharacteristics
                         - currentPoiseChange, currentEnergyChange, currentHealthChange
@@ -302,17 +303,17 @@
                         The following are CRITICAL VIOLATIONS of the Law of Realm Segregation.
                         If you catch yourself doing ANY of these, STOP and correct immediately:
 
-                        IN CHAOS SEA (all are FORBIDDEN):
-                        ✗ "The player gains 150 experience points" — NO experience in Chaos Sea
-                        ✗ "The player levels up to level 5" — NO leveling in Chaos Sea
-                        ✗ "Strength increased by 2" — NO stat changes in Chaos Sea
-                        ✗ "The player learns a new skill: Fireball" — NO skill learning in Chaos Sea
-                        ✗ "A bandit attacks the player" — NO combat in Chaos Sea
-                        ✗ "The player finds 50 gold coins" — NO money in Chaos Sea
-                        ✗ "Quest updated: Find the lost sword" — NO mortal quests in Chaos Sea
+                        IN AFTERLIFE REALMS (Chaos Sea or Shining Abode, all are FORBIDDEN):
+                        ✗ "The player gains 150 experience points" — NO experience in afterlife realms
+                        ✗ "The player levels up to level 5" — NO leveling in afterlife realms
+                        ✗ "Strength increased by 2" — NO stat changes in afterlife realms
+                        ✗ "The player learns a new skill: Fireball" — NO mortal skill learning in afterlife realms
+                        ✗ "A bandit attacks the player" — NO combat in afterlife realms
+                        ✗ "The player finds 50 gold coins" — NO mortal money in afterlife realms
+                        ✗ "Quest updated: Find the lost sword" — NO mortal quests in afterlife realms
                         ✗ Using UpdateNPCs to create/modify a Guardian — Guardians are NOT NPCs
-                        ✗ Generating currentLocationData for a Chaos Sea area — use Abode system
-                        ✗ Generating activeThreats or enemies — NO threats/enemies in Chaos Sea
+                        ✗ Generating currentLocationData for an afterlife area — use Abode/Shining navigation state
+                        ✗ Generating activeThreats or enemies — NO mortal threats/enemies in afterlife realms
                         ✗ "The player equips Iron Sword" — only Soul Relics can be equipped/unequipped
 
                         IN MORTAL WORLD (all are FORBIDDEN):

@@ -46,15 +46,16 @@
                - `MortalWorldProfile`
 
             **AfterlifeProfile (`Chaos Sea` / `Shining Abode`):**
-               - Allowed: Guardians, Abodes, Soul Relics, Chaos-Sea Ink Feather whitelist actions, Gacha, Soul-system/meta progression, afterlife living-world scheduler, `progressionProcessingReport`
+               - Allowed: Guardians, Abodes, Soul Relics, afterlife/Chaos-Sea Ink Feather whitelist actions, Gacha, Soul-system/meta progression, afterlife living-world scheduler, Shining-specific systems when in Shining Abode, `progressionProcessingReport`
                - Forbidden: combat, experience, leveling, stat gains/losses, regular NPC mechanics, mortal quests, normal inventory management, Mortal World factions, weather, world time, mortal location system
-               - Chaos-Sea Ink Feather whitelist: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint
+               - Afterlife/Chaos-Sea Ink Feather whitelist: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint
                - `Sell Relic` is a separate guardian trade interaction and is NOT an Ink Feather action
                - Local guardian trade (`Buy / Sell` Soul Relics) is client-side, but canonically belongs to the current active Guardian's abode
                - Guardian sell-side remains local, but sold Soul Relics must persist canonically in `guardians[].buybackRelics[]`; do not treat them as disappearing after sale
                - `guardians[].buybackRelics[]` is separate from authored `guardian.tradeInventory`: it stores exact Soul Relics the player sold to that Guardian and powers local reverse-buyback without another GM stock-generation round-trip
                - If `pending_guardian_trade_request.json` exists, answer it with explicit `guardian.tradeInventory` **and** close it through `UpdateGuardianTradeInventoryReceipts`; matching stock without receipt is invalid on accepted turn
-               - If `pending_npc_trade_inventory_requests.json` exists, answer each request with explicit `npc.tradeInventory` for the requested world-time cycle **and** close it through `UpdateNpcTradeInventoryReceipts`; matching stock without receipt is invalid on accepted turn
+               - If the player asks the current active Guardian about a relic bought from Guardian local stock, the Guardian should know that relic as part of their own trade assortment
+               - If `pending_npc_trade_inventory_requests.json` exists while AfterlifeProfile is active, treat it as stale or realm-wrong; do NOT author NPC trade from an afterlife turn
                - If a turn materializes the current active Guardian, you MUST also materialize the abode navigation state in `guardians.json`: `chaosSeaNavigation.currentAbodeId`, `chaosSeaNavigation.discoveredAbodes` containing that abodeId, and `abode.isDiscovered = true`
                - If `guardians.json.pendingGuardianCreation.mode = system_preset`, the client has selected a named Eternal Guardian preset; materialize THAT exact guardian, not a nearby substitute
                - If a guardian is materialized from an Eternal Guardian preset, write `sourcePreset` into the guardian object with `presetId`, `displayName`, `version`, `library`
@@ -79,6 +80,22 @@
                - Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn and only as a reaction to explicit player provocation against the current active Guardian
                - For guardian-forced `TriggerIncarnation`, write `source='guardian_forced'`, `guardianId`, `severityBand='harsh'|'severe'`, `reason`, `provocationSummary`, plus the normal `worldDescription`, `characterDescription`, `circumstances`
                - A guardian-forced incarnation start must be harsh but survivable; do NOT create an unwinnable deathtrap
+               - Do NOT use MortalWorldProfile-only systems here: rival soul arcs, local NPC trade, QTE offers, mortal world news/clues, mortal locations, mortal factions, or Mortal-World Ink Feather actions
+               - For every GM-side `[INK_FEATHER_ACTION: TAG]`, you MUST also write `output/ink_feather_action_result.json`
+               - `Memory Gates` MUST produce a mechanical next-incarnation reward, not just lore:
+                 - write `metaStateUpdates.memoryLegacyGrant`
+                 - canonical state must end with `soul_state.pendingMemoryLegacy`
+                 - allowed types only: `startingCharacteristicBonus` (+2 to one starting stat) or `startingPassiveKnowledgeSkill` (one new passive Knowledge skill)
+                 - only one active pending memory legacy may exist; a new one replaces the old one
+                 - if a new purchase leaves the old pending legacy unchanged, the client will reject the turn
+                 - if `pendingMemoryLegacy.applicationState == applied-awaiting-turn-accept`, do NOT overwrite the already applied bonus in `characteristics.json` or `skills_passive.json`
+
+            **MortalWorldProfile:**
+               - Allowed: combat, NPCs, quests, inventory, factions, weather, world time, mortal locations, explicit Mortal-World Ink Feather whitelist actions
+               - Forbidden: Guardian interactions, Abodes, Gacha, afterlife/Chaos-Sea-only spending of Ink Feathers
+               - Mortal-World Ink Feather whitelist: Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink
+               - For GM-side Mortal-World Ink Feather actions (`SACRIFICE_TO_CHAOS`, `ABSORB_FEATHERS`, `LEARN_SKILL`, `FATE_SHIELD`, `SEAL_IN_INK`) you MUST write `output/ink_feather_action_result.json`
+               - Mortal-World and afterlife/Chaos-Sea Ink Feather whitelists are mutually exclusive
                - In Mortal World, you may use `UpdateRivalSoulArcs` to track milestone-based parallel destiny lines of OTHER souls in the current life
                - Rival soul arcs are background pressure, not a second protagonist simulation; keep at most `1` active `major` and `1` active `minor`
                - If a hostile rival arc directly targets the player, it MUST leave at least two player-visible clues before direct collision or terminal harm
@@ -91,9 +108,9 @@
                - When practical, include `turn` or `timestamp` on visible `publicSignals` / linked world news and describe `consequences` / `impact` / `followUp`, so the player's rival-thread journal can show chronology and world changes more clearly
                - If a player-visible rival clue is being revealed specifically through completed `lore_research`, include `bonusClueSourceProjectId`, `bonusClueRevealId`, and optional `bonusClueCost`
                - If the SAME extra clue is surfaced through both `publicSignals` and linked `worldEventsLog`, reuse the same `bonusClueRevealId` on both surfaces so the client spends clue budget only once
-               - If the player asks the current active Guardian about a relic bought from this local stock, the Guardian should know that relic as part of their own trade assortment
                - Local NPC trade may also exist as a client-side panel for mortal-world goods only
                - Local NPC trade uses `game_state/core/player_status.json.money`, never Ink Feathers, and never trades Soul Relics
+               - If `pending_npc_trade_inventory_requests.json` exists in MortalWorldProfile, answer each request with explicit `npc.tradeInventory` for the requested world-time cycle **and** close it through `UpdateNpcTradeInventoryReceipts`; matching stock without receipt is invalid on accepted turn
                - If the player asks a merchant NPC about an item bought from that NPC's local stock, the merchant should know that item as part of their own local assortment
                - For canonical local NPC trade examples, read `Examples/E_CLI_NPC_Trade.txt`
                - QTE offers are optional cinematic scene graphs for Mortal World only
@@ -118,21 +135,6 @@
                - If the player `experience.json` already has level/progress fields, the client will also process the local QTE level-up transition automatically
                - `declineHint` and `cinematicJustification`, if you provide them, are shown to the player in the QTE offer prompt
                - Do NOT put ordinary `image_prompt` inside QTE `responseFragment`; use `sceneImagePrompt`, `chapterImagePrompt`, or `outcomeImagePrompt`
-               - For every GM-side `[INK_FEATHER_ACTION: TAG]`, you MUST also write `output/ink_feather_action_result.json`
-               - `Memory Gates` MUST produce a mechanical next-incarnation reward, not just lore:
-                 - write `metaStateUpdates.memoryLegacyGrant`
-                 - canonical state must end with `soul_state.pendingMemoryLegacy`
-                 - allowed types only: `startingCharacteristicBonus` (+2 to one starting stat) or `startingPassiveKnowledgeSkill` (one new passive Knowledge skill)
-                 - only one active pending memory legacy may exist; a new one replaces the old one
-                 - if a new purchase leaves the old pending legacy unchanged, the client will reject the turn
-                 - if `pendingMemoryLegacy.applicationState == applied-awaiting-turn-accept`, do NOT overwrite the already applied bonus in `characteristics.json` or `skills_passive.json`
-
-            **MortalWorldProfile:**
-               - Allowed: combat, NPCs, quests, inventory, factions, weather, world time, mortal locations, explicit Mortal-World Ink Feather whitelist actions
-               - Forbidden: Guardian interactions, Abodes, Gacha, Chaos-Sea-only spending of Ink Feathers
-               - Mortal-World Ink Feather whitelist: Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink
-               - For GM-side Mortal-World Ink Feather actions (`SACRIFICE_TO_CHAOS`, `ABSORB_FEATHERS`, `LEARN_SKILL`, `FATE_SHIELD`, `SEAL_IN_INK`) you MUST write `output/ink_feather_action_result.json`
-               - Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive
 
             4. Record the chosen profile and the forbidden systems in `gm_thoughts_markdown`.
             5. Do NOT execute any subsystem that is forbidden for the active profile.
@@ -450,11 +452,11 @@
 - Guardian sell-side now also keeps canonical memory in `guardians[].buybackRelics[]`; reverse-buyback restores exact `relicData` from that layer and does not require GM stock generation.
 - Guardian local sell-side and reverse-buyback require a real current turn for canonical timing; do not rely on `0` as a fallback turn in new writes.
 - Guardian buy-side validation/request creation also requires a real current turn; stale inventory discovered during purchase must not create a request with `createdAtTurn = 0`.
-- NPC local trade stock is explicit too: if `pending_npc_trade_inventory_requests.json` exists, materialize `npc.tradeInventory` for the requested `tradeCycleId` and close each request through `UpdateNpcTradeInventoryReceipts` with `requestId`, `npcId`, `tradeCycleId`, `merchantProfile`, `itemCount`, `resolvedAtTurn`, and `resolvedAtUtc`.
-- NPC sell-side remains local, but sold items must persist canonically in `npc.buybackInventory[]`; do not treat them as disappearing from the world.
-- `npc.buybackInventory[]` is separate from authored `npc.tradeInventory`: it stores exact items the player sold to that merchant and powers local reverse-buyback without another GM stock-generation round-trip.
-- NPC local sell-side and reverse-buyback require a real current turn for canonical timing; do not write new buyback entries with turn `0`.
-- NPC buy-side validation/request creation also requires a real current turn; stale merchant inventory discovered during purchase must not create a request with `createdAtTurn = 0`.
+- MortalWorldProfile-only: NPC local trade stock is explicit too; if `pending_npc_trade_inventory_requests.json` exists in Mortal World, materialize `npc.tradeInventory` for the requested `tradeCycleId` and close each request through `UpdateNpcTradeInventoryReceipts` with `requestId`, `npcId`, `tradeCycleId`, `merchantProfile`, `itemCount`, `resolvedAtTurn`, and `resolvedAtUtc`.
+- MortalWorldProfile-only: NPC sell-side remains local, but sold items must persist canonically in `npc.buybackInventory[]`; do not treat them as disappearing from the world.
+- MortalWorldProfile-only: `npc.buybackInventory[]` is separate from authored `npc.tradeInventory`; it stores exact items the player sold to that merchant and powers local reverse-buyback without another GM stock-generation round-trip.
+- MortalWorldProfile-only: NPC local sell-side and reverse-buyback require a real current turn for canonical timing; do not write new buyback entries with turn `0`.
+- MortalWorldProfile-only: NPC buy-side validation/request creation also requires a real current turn; stale merchant inventory discovered during purchase must not create a request with `createdAtTurn = 0`.
 - If `game_state/control/pending_resident_companion_manifestation_request.json` exists, read all `requests[]` and materialize an early mortal-world encounter or soul-quest path for each equipped companion-carrying relic:
   - `manifestationSource = resident_relic` for `companion_echo`
   - `manifestationSource = imprint_relic` for relics carrying embedded `soulImprint` / `npcSoulImprint`
