@@ -249,7 +249,8 @@ public class ProgressionScheduleService
             schedule.PendingShiningFactionCycles,
             schedule.PendingShiningTradeCycles
         }.Max();
-        var nextAfterlifeOrdinal = schedule.CurrentChaosSeaTurnOrdinal + afterlifeCyclesExpected;
+        var currentAfterlifeOrdinal = schedule.CurrentChaosSeaTurnOrdinal;
+        var nextAfterlifeOrdinal = currentAfterlifeOrdinal + afterlifeCyclesExpected;
 
         return new ProgressionControl
         {
@@ -267,16 +268,16 @@ public class ProgressionScheduleService
             NextChaosSeaTurnOrdinal = nextAfterlifeOrdinal,
             LastChaosSeaSimulationOrdinal = schedule.LastChaosSeaSimulationOrdinal,
             LastGuardianProjectCycleOrdinal = schedule.LastGuardianProjectCycleOrdinal,
-            NextGuardianProjectCycleOrdinal = schedule.PendingGuardianProjectCycles > 0 ? nextAfterlifeOrdinal : schedule.LastGuardianProjectCycleOrdinal,
+            NextGuardianProjectCycleOrdinal = ResolveExpectedAfterlifeContourOrdinal(currentAfterlifeOrdinal, schedule.PendingGuardianProjectCycles, schedule.LastGuardianProjectCycleOrdinal),
             LastResidentAgencyCycleOrdinal = schedule.LastResidentAgencyCycleOrdinal,
             LastShiningAbodeCycleOrdinal = schedule.LastShiningAbodeCycleOrdinal,
             LastShiningFactionCycleOrdinal = schedule.LastShiningFactionCycleOrdinal,
             LastShiningTradeCycleOrdinal = schedule.LastShiningTradeCycleOrdinal,
             ChaosSeaCycleEquivalentHours = schedule.ChaosSeaCycleEquivalentHours,
-            NextResidentAgencyCycleOrdinal = schedule.PendingResidentAgencyCycles > 0 ? nextAfterlifeOrdinal : schedule.LastResidentAgencyCycleOrdinal,
-            NextShiningAbodeCycleOrdinal = schedule.PendingShiningAbodeCycles > 0 ? nextAfterlifeOrdinal : schedule.LastShiningAbodeCycleOrdinal,
-            NextShiningFactionCycleOrdinal = schedule.PendingShiningFactionCycles > 0 ? nextAfterlifeOrdinal : schedule.LastShiningFactionCycleOrdinal,
-            NextShiningTradeCycleOrdinal = schedule.PendingShiningTradeCycles > 0 ? nextAfterlifeOrdinal : schedule.LastShiningTradeCycleOrdinal,
+            NextResidentAgencyCycleOrdinal = ResolveExpectedAfterlifeContourOrdinal(currentAfterlifeOrdinal, schedule.PendingResidentAgencyCycles, schedule.LastResidentAgencyCycleOrdinal),
+            NextShiningAbodeCycleOrdinal = ResolveExpectedAfterlifeContourOrdinal(currentAfterlifeOrdinal, schedule.PendingShiningAbodeCycles, schedule.LastShiningAbodeCycleOrdinal),
+            NextShiningFactionCycleOrdinal = ResolveExpectedAfterlifeContourOrdinal(currentAfterlifeOrdinal, schedule.PendingShiningFactionCycles, schedule.LastShiningFactionCycleOrdinal),
+            NextShiningTradeCycleOrdinal = ResolveExpectedAfterlifeContourOrdinal(currentAfterlifeOrdinal, schedule.PendingShiningTradeCycles, schedule.LastShiningTradeCycleOrdinal),
             ChaosSeaCyclesExpectedThisTurn = schedule.PendingChaosSeaCycles,
             GuardianProjectCyclesExpectedThisTurn = schedule.PendingGuardianProjectCycles,
             ResidentAgencyCyclesExpectedThisTurn = schedule.PendingResidentAgencyCycles,
@@ -295,6 +296,53 @@ public class ProgressionScheduleService
             AfterlifeCatchupSummaryEventsRequired = catchup.SummaryEventsRequired,
             AfterlifeCatchupContours = catchup.Contours
         };
+    }
+
+    private static int ResolveExpectedAfterlifeContourOrdinal(
+        int currentAfterlifeOrdinal,
+        int cyclesExpected,
+        int lastContourOrdinal)
+    {
+        var safeCyclesExpected = Math.Max(0, cyclesExpected);
+        return safeCyclesExpected > 0
+            ? Math.Max(0, currentAfterlifeOrdinal) + safeCyclesExpected
+            : Math.Max(0, lastContourOrdinal);
+    }
+
+    private static int ResolveExpectedAfterlifeContourOrdinal(
+        ProgressionControl control,
+        int cyclesExpected,
+        int lastContourOrdinal,
+        int legacyOrdinal)
+    {
+        var expectedOrdinal = ResolveExpectedAfterlifeContourOrdinal(
+            control.CurrentChaosSeaTurnOrdinal,
+            cyclesExpected,
+            lastContourOrdinal);
+        var safeCyclesExpected = Math.Max(0, cyclesExpected);
+        if (safeCyclesExpected > 0 &&
+            control.CurrentChaosSeaTurnOrdinal <= 0 &&
+            lastContourOrdinal <= 0 &&
+            safeCyclesExpected >= ResolveMaxAfterlifeCyclesExpected(control) &&
+            legacyOrdinal > expectedOrdinal)
+        {
+            return legacyOrdinal;
+        }
+
+        return expectedOrdinal;
+    }
+
+    private static int ResolveMaxAfterlifeCyclesExpected(ProgressionControl control)
+    {
+        return new[]
+        {
+            control.ChaosSeaCyclesExpectedThisTurn,
+            control.GuardianProjectCyclesExpectedThisTurn,
+            control.ResidentAgencyCyclesExpectedThisTurn,
+            control.ShiningAbodeCyclesExpectedThisTurn,
+            control.ShiningFactionCyclesExpectedThisTurn,
+            control.ShiningTradeCyclesExpectedThisTurn
+        }.Max();
     }
 
     private static void ClearAfterlifePendingCycles(ProgressionScheduleState schedule)
@@ -341,17 +389,17 @@ public class ProgressionScheduleService
             control.NextChaosSeaTurnOrdinal);
 
         if ((report?.ChaosSeaCyclesProcessed ?? 0) > 0)
-            schedule.LastChaosSeaSimulationOrdinal = report?.NewLastChaosSeaSimulationOrdinal ?? control.NextChaosSeaTurnOrdinal;
+            schedule.LastChaosSeaSimulationOrdinal = report?.NewLastChaosSeaSimulationOrdinal ?? ResolveExpectedChaosSeaSimulationOrdinal(control);
         if ((report?.GuardianProjectCyclesProcessed ?? 0) > 0)
             schedule.LastGuardianProjectCycleOrdinal = report?.NewLastGuardianProjectCycleOrdinal ?? ResolveExpectedGuardianProjectCycleOrdinal(control);
         if ((report?.ResidentAgencyCyclesProcessed ?? 0) > 0)
-            schedule.LastResidentAgencyCycleOrdinal = report?.NewLastResidentAgencyCycleOrdinal ?? control.NextResidentAgencyCycleOrdinal;
+            schedule.LastResidentAgencyCycleOrdinal = report?.NewLastResidentAgencyCycleOrdinal ?? ResolveExpectedResidentAgencyCycleOrdinal(control);
         if ((report?.ShiningAbodeCyclesProcessed ?? 0) > 0)
-            schedule.LastShiningAbodeCycleOrdinal = report?.NewLastShiningAbodeCycleOrdinal ?? control.NextShiningAbodeCycleOrdinal;
+            schedule.LastShiningAbodeCycleOrdinal = report?.NewLastShiningAbodeCycleOrdinal ?? ResolveExpectedShiningAbodeCycleOrdinal(control);
         if ((report?.ShiningFactionCyclesProcessed ?? 0) > 0)
-            schedule.LastShiningFactionCycleOrdinal = report?.NewLastShiningFactionCycleOrdinal ?? control.NextShiningFactionCycleOrdinal;
+            schedule.LastShiningFactionCycleOrdinal = report?.NewLastShiningFactionCycleOrdinal ?? ResolveExpectedShiningFactionCycleOrdinal(control);
         if ((report?.ShiningTradeCyclesProcessed ?? 0) > 0)
-            schedule.LastShiningTradeCycleOrdinal = report?.NewLastShiningTradeCycleOrdinal ?? control.NextShiningTradeCycleOrdinal;
+            schedule.LastShiningTradeCycleOrdinal = report?.NewLastShiningTradeCycleOrdinal ?? ResolveExpectedShiningTradeCycleOrdinal(control);
 
         if (control.AfterlifeCatchupRequired && report?.AfterlifeCatchupProcessed == true)
         {
@@ -845,12 +893,12 @@ public class ProgressionScheduleService
         ValidateExpectedProcessedCount(issues, "shiningFactionCyclesProcessed", report.ShiningFactionCyclesProcessed, control.ShiningFactionCyclesExpectedThisTurn, "progression_report_missing_shining_faction_cycles_processed", "progression_report_shining_faction_cycles_processed_mismatch");
         ValidateExpectedProcessedCount(issues, "shiningTradeCyclesProcessed", report.ShiningTradeCyclesProcessed, control.ShiningTradeCyclesExpectedThisTurn, "progression_report_missing_shining_trade_cycles_processed", "progression_report_shining_trade_cycles_processed_mismatch");
 
-        ValidateExpectedOrdinal(issues, "newLastChaosSeaSimulationOrdinal", report.NewLastChaosSeaSimulationOrdinal, control.ChaosSeaCyclesExpectedThisTurn, control.NextChaosSeaTurnOrdinal, "progression_report_missing_new_last_chaos_ordinal", "progression_report_new_last_chaos_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastChaosSeaSimulationOrdinal", report.NewLastChaosSeaSimulationOrdinal, control.ChaosSeaCyclesExpectedThisTurn, ResolveExpectedChaosSeaSimulationOrdinal(control), "progression_report_missing_new_last_chaos_ordinal", "progression_report_new_last_chaos_ordinal_mismatch");
         ValidateExpectedOrdinal(issues, "newLastGuardianProjectCycleOrdinal", report.NewLastGuardianProjectCycleOrdinal, control.GuardianProjectCyclesExpectedThisTurn, ResolveExpectedGuardianProjectCycleOrdinal(control), "progression_report_missing_new_last_guardian_ordinal", "progression_report_new_last_guardian_ordinal_mismatch");
-        ValidateExpectedOrdinal(issues, "newLastResidentAgencyCycleOrdinal", report.NewLastResidentAgencyCycleOrdinal, control.ResidentAgencyCyclesExpectedThisTurn, control.NextResidentAgencyCycleOrdinal, "progression_report_missing_new_last_resident_agency_ordinal", "progression_report_new_last_resident_agency_ordinal_mismatch");
-        ValidateExpectedOrdinal(issues, "newLastShiningAbodeCycleOrdinal", report.NewLastShiningAbodeCycleOrdinal, control.ShiningAbodeCyclesExpectedThisTurn, control.NextShiningAbodeCycleOrdinal, "progression_report_missing_new_last_shining_abode_ordinal", "progression_report_new_last_shining_abode_ordinal_mismatch");
-        ValidateExpectedOrdinal(issues, "newLastShiningFactionCycleOrdinal", report.NewLastShiningFactionCycleOrdinal, control.ShiningFactionCyclesExpectedThisTurn, control.NextShiningFactionCycleOrdinal, "progression_report_missing_new_last_shining_faction_ordinal", "progression_report_new_last_shining_faction_ordinal_mismatch");
-        ValidateExpectedOrdinal(issues, "newLastShiningTradeCycleOrdinal", report.NewLastShiningTradeCycleOrdinal, control.ShiningTradeCyclesExpectedThisTurn, control.NextShiningTradeCycleOrdinal, "progression_report_missing_new_last_shining_trade_ordinal", "progression_report_new_last_shining_trade_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastResidentAgencyCycleOrdinal", report.NewLastResidentAgencyCycleOrdinal, control.ResidentAgencyCyclesExpectedThisTurn, ResolveExpectedResidentAgencyCycleOrdinal(control), "progression_report_missing_new_last_resident_agency_ordinal", "progression_report_new_last_resident_agency_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastShiningAbodeCycleOrdinal", report.NewLastShiningAbodeCycleOrdinal, control.ShiningAbodeCyclesExpectedThisTurn, ResolveExpectedShiningAbodeCycleOrdinal(control), "progression_report_missing_new_last_shining_abode_ordinal", "progression_report_new_last_shining_abode_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastShiningFactionCycleOrdinal", report.NewLastShiningFactionCycleOrdinal, control.ShiningFactionCyclesExpectedThisTurn, ResolveExpectedShiningFactionCycleOrdinal(control), "progression_report_missing_new_last_shining_faction_ordinal", "progression_report_new_last_shining_faction_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastShiningTradeCycleOrdinal", report.NewLastShiningTradeCycleOrdinal, control.ShiningTradeCyclesExpectedThisTurn, ResolveExpectedShiningTradeCycleOrdinal(control), "progression_report_missing_new_last_shining_trade_ordinal", "progression_report_new_last_shining_trade_ordinal_mismatch");
 
         ValidateAfterlifeCatchupProof(control, report, issues);
     }
@@ -866,9 +914,58 @@ public class ProgressionScheduleService
 
     private static int ResolveExpectedGuardianProjectCycleOrdinal(ProgressionControl control)
     {
-        return control.NextGuardianProjectCycleOrdinal > 0
-            ? control.NextGuardianProjectCycleOrdinal
-            : control.NextChaosSeaTurnOrdinal;
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.GuardianProjectCyclesExpectedThisTurn,
+            control.LastGuardianProjectCycleOrdinal,
+            control.NextGuardianProjectCycleOrdinal > 0
+                ? control.NextGuardianProjectCycleOrdinal
+                : control.NextChaosSeaTurnOrdinal);
+    }
+
+    private static int ResolveExpectedChaosSeaSimulationOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.ChaosSeaCyclesExpectedThisTurn,
+            control.LastChaosSeaSimulationOrdinal,
+            control.NextChaosSeaTurnOrdinal);
+    }
+
+    private static int ResolveExpectedResidentAgencyCycleOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.ResidentAgencyCyclesExpectedThisTurn,
+            control.LastResidentAgencyCycleOrdinal,
+            control.NextResidentAgencyCycleOrdinal);
+    }
+
+    private static int ResolveExpectedShiningAbodeCycleOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.ShiningAbodeCyclesExpectedThisTurn,
+            control.LastShiningAbodeCycleOrdinal,
+            control.NextShiningAbodeCycleOrdinal);
+    }
+
+    private static int ResolveExpectedShiningFactionCycleOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.ShiningFactionCyclesExpectedThisTurn,
+            control.LastShiningFactionCycleOrdinal,
+            control.NextShiningFactionCycleOrdinal);
+    }
+
+    private static int ResolveExpectedShiningTradeCycleOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.ShiningTradeCyclesExpectedThisTurn,
+            control.LastShiningTradeCycleOrdinal,
+            control.NextShiningTradeCycleOrdinal);
     }
 
     private static void ValidateExpectedProcessedCount(
@@ -1383,7 +1480,7 @@ public class ProgressionScheduleService
             return false;
 
         if (control.ChaosSeaCyclesExpectedThisTurn > 0 &&
-            report.NewLastChaosSeaSimulationOrdinal != control.NextChaosSeaTurnOrdinal)
+            report.NewLastChaosSeaSimulationOrdinal != ResolveExpectedChaosSeaSimulationOrdinal(control))
         {
             return false;
         }
@@ -1395,25 +1492,25 @@ public class ProgressionScheduleService
         }
 
         if (control.ResidentAgencyCyclesExpectedThisTurn > 0 &&
-            report.NewLastResidentAgencyCycleOrdinal != control.NextResidentAgencyCycleOrdinal)
+            report.NewLastResidentAgencyCycleOrdinal != ResolveExpectedResidentAgencyCycleOrdinal(control))
         {
             return false;
         }
 
         if (control.ShiningAbodeCyclesExpectedThisTurn > 0 &&
-            report.NewLastShiningAbodeCycleOrdinal != control.NextShiningAbodeCycleOrdinal)
+            report.NewLastShiningAbodeCycleOrdinal != ResolveExpectedShiningAbodeCycleOrdinal(control))
         {
             return false;
         }
 
         if (control.ShiningFactionCyclesExpectedThisTurn > 0 &&
-            report.NewLastShiningFactionCycleOrdinal != control.NextShiningFactionCycleOrdinal)
+            report.NewLastShiningFactionCycleOrdinal != ResolveExpectedShiningFactionCycleOrdinal(control))
         {
             return false;
         }
 
         if (control.ShiningTradeCyclesExpectedThisTurn > 0 &&
-            report.NewLastShiningTradeCycleOrdinal != control.NextShiningTradeCycleOrdinal)
+            report.NewLastShiningTradeCycleOrdinal != ResolveExpectedShiningTradeCycleOrdinal(control))
         {
             return false;
         }
