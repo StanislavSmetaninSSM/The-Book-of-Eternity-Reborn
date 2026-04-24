@@ -2330,7 +2330,9 @@ QUEST UPDATE PROTOCOL — HARD REQUIREMENT:
 PROGRESSION CONTROL — CLIENT-AUTHORITATIVE SCHEDULER:
 This request contains a 'progressionControl' object. Treat it as authoritative system control, not optional advice.
   - In Mortal World, it defines the baseline world time and mandatory 240-minute world cycles / 1440-minute faction cycles.
-  - In Chaos Sea or Shining Abode, it defines the mandatory hub / guardian-project-cycle processing for this turn.
+  - In Chaos Sea, it defines mandatory bounded hub / guardian-project / resident-agency cycles for this turn.
+  - In Shining Abode, it defines mandatory bounded Shining Abode / Shining faction / Shining trade / guardian-project / resident-agency cycles for this turn.
+  - If afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired bounded summary outcomes. Do NOT simulate every raw elapsed afterlife cycle.
   - If a mustEvaluate* flag is true, that contour MUST be processed this turn.
   - If a mustEvaluate* flag is false, there is no mandatory progression debt for that contour this turn.
 You MUST evaluate and process all required cycles for the active realm.

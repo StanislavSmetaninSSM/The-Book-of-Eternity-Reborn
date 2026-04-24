@@ -937,7 +937,10 @@
                     **1. Fixed Scheduler Protocol:**
                     - `Mortal World`: world / NPC / threat / natural simulation uses fixed 240-minute cycles
                     - `Mortal World`: faction strategic simulation uses fixed 1440-minute cycles
-                    - `Chaos Sea` / `Shining Abode`: use the client-provided hub / guardian-project cycle scheduler from `progressionControl`
+                    - `Chaos Sea`: use the client-provided hub / guardian-project / resident-agency scheduler from `progressionControl`
+                    - `Shining Abode`: use the client-provided Shining Abode / Shining faction / Shining trade / guardian-project / resident-agency scheduler from `progressionControl`
+                    - Afterlife catch-up is non-accumulating: if `afterlifeCatchupRequired=true`, process only the bounded summary event count requested by `afterlifeCatchupSummaryEventsRequired`
+                    - Do NOT process hundreds of raw elapsed afterlife cycles one by one; raw elapsed cycles only determine `afterlifeCatchupPressureTier`
                     - The GM MUST read `input/turn_request.json.progressionControl` before any world assessment
                     - `mustEvaluate* = true` means this turn has mandatory progression debt for that contour
                     - `mustEvaluate* = false` means no mandatory processing debt exists for that contour this turn
@@ -981,6 +984,10 @@
                     - which cycles were processed,
                     - why they were processed,
                     - what concrete progression consequences followed.
+                    If afterlife catch-up is required, also document:
+                    - the pressure tier,
+                    - the affected contours,
+                    - the bounded summary outcomes, matching `afterlifeCatchupSummaryEventsRequired`.
                     
                     `progressionProcessingReport` itself remains a structured state/report object, not a mandatory standalone markdown heading.
                     

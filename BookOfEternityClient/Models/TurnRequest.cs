@@ -114,8 +114,35 @@ public class ProgressionControl
     [JsonPropertyName("lastGuardianProjectCycleOrdinal")]
     public int LastGuardianProjectCycleOrdinal { get; set; }
 
+    [JsonPropertyName("nextGuardianProjectCycleOrdinal")]
+    public int NextGuardianProjectCycleOrdinal { get; set; }
+
+    [JsonPropertyName("lastResidentAgencyCycleOrdinal")]
+    public int LastResidentAgencyCycleOrdinal { get; set; }
+
+    [JsonPropertyName("lastShiningAbodeCycleOrdinal")]
+    public int LastShiningAbodeCycleOrdinal { get; set; }
+
+    [JsonPropertyName("lastShiningFactionCycleOrdinal")]
+    public int LastShiningFactionCycleOrdinal { get; set; }
+
+    [JsonPropertyName("lastShiningTradeCycleOrdinal")]
+    public int LastShiningTradeCycleOrdinal { get; set; }
+
     [JsonPropertyName("chaosSeaCycleEquivalentHours")]
     public int ChaosSeaCycleEquivalentHours { get; set; } = 24;
+
+    [JsonPropertyName("nextResidentAgencyCycleOrdinal")]
+    public int NextResidentAgencyCycleOrdinal { get; set; }
+
+    [JsonPropertyName("nextShiningAbodeCycleOrdinal")]
+    public int NextShiningAbodeCycleOrdinal { get; set; }
+
+    [JsonPropertyName("nextShiningFactionCycleOrdinal")]
+    public int NextShiningFactionCycleOrdinal { get; set; }
+
+    [JsonPropertyName("nextShiningTradeCycleOrdinal")]
+    public int NextShiningTradeCycleOrdinal { get; set; }
 
     [JsonPropertyName("chaosSeaCyclesExpectedThisTurn")]
     public int ChaosSeaCyclesExpectedThisTurn { get; set; }
@@ -123,11 +150,50 @@ public class ProgressionControl
     [JsonPropertyName("guardianProjectCyclesExpectedThisTurn")]
     public int GuardianProjectCyclesExpectedThisTurn { get; set; }
 
+    [JsonPropertyName("residentAgencyCyclesExpectedThisTurn")]
+    public int ResidentAgencyCyclesExpectedThisTurn { get; set; }
+
+    [JsonPropertyName("shiningAbodeCyclesExpectedThisTurn")]
+    public int ShiningAbodeCyclesExpectedThisTurn { get; set; }
+
+    [JsonPropertyName("shiningFactionCyclesExpectedThisTurn")]
+    public int ShiningFactionCyclesExpectedThisTurn { get; set; }
+
+    [JsonPropertyName("shiningTradeCyclesExpectedThisTurn")]
+    public int ShiningTradeCyclesExpectedThisTurn { get; set; }
+
     [JsonPropertyName("mustEvaluateChaosSeaProgression")]
     public bool MustEvaluateChaosSeaProgression { get; set; }
 
     [JsonPropertyName("mustEvaluateGuardianProjectProgression")]
     public bool MustEvaluateGuardianProjectProgression { get; set; }
+
+    [JsonPropertyName("mustEvaluateResidentAgencyProgression")]
+    public bool MustEvaluateResidentAgencyProgression { get; set; }
+
+    [JsonPropertyName("mustEvaluateShiningAbodeProgression")]
+    public bool MustEvaluateShiningAbodeProgression { get; set; }
+
+    [JsonPropertyName("mustEvaluateShiningFactionProgression")]
+    public bool MustEvaluateShiningFactionProgression { get; set; }
+
+    [JsonPropertyName("mustEvaluateShiningTradeProgression")]
+    public bool MustEvaluateShiningTradeProgression { get; set; }
+
+    [JsonPropertyName("afterlifeCatchupRequired")]
+    public bool AfterlifeCatchupRequired { get; set; }
+
+    [JsonPropertyName("afterlifeCatchupElapsedCycles")]
+    public int AfterlifeCatchupElapsedCycles { get; set; }
+
+    [JsonPropertyName("afterlifeCatchupPressureTier")]
+    public string AfterlifeCatchupPressureTier { get; set; } = "none";
+
+    [JsonPropertyName("afterlifeCatchupSummaryEventsRequired")]
+    public int AfterlifeCatchupSummaryEventsRequired { get; set; }
+
+    [JsonPropertyName("afterlifeCatchupContours")]
+    public string[] AfterlifeCatchupContours { get; set; } = Array.Empty<string>();
 }
 
 public class ProgressionProcessingReport
@@ -153,6 +219,18 @@ public class ProgressionProcessingReport
     [JsonPropertyName("guardianProjectCyclesProcessed")]
     public int? GuardianProjectCyclesProcessed { get; set; }
 
+    [JsonPropertyName("residentAgencyCyclesProcessed")]
+    public int? ResidentAgencyCyclesProcessed { get; set; }
+
+    [JsonPropertyName("shiningAbodeCyclesProcessed")]
+    public int? ShiningAbodeCyclesProcessed { get; set; }
+
+    [JsonPropertyName("shiningFactionCyclesProcessed")]
+    public int? ShiningFactionCyclesProcessed { get; set; }
+
+    [JsonPropertyName("shiningTradeCyclesProcessed")]
+    public int? ShiningTradeCyclesProcessed { get; set; }
+
     [JsonPropertyName("newLastWorldSimulationTimeInMinutes")]
     public int? NewLastWorldSimulationTimeInMinutes { get; set; }
 
@@ -164,4 +242,22 @@ public class ProgressionProcessingReport
 
     [JsonPropertyName("newLastGuardianProjectCycleOrdinal")]
     public int? NewLastGuardianProjectCycleOrdinal { get; set; }
+
+    [JsonPropertyName("newLastResidentAgencyCycleOrdinal")]
+    public int? NewLastResidentAgencyCycleOrdinal { get; set; }
+
+    [JsonPropertyName("newLastShiningAbodeCycleOrdinal")]
+    public int? NewLastShiningAbodeCycleOrdinal { get; set; }
+
+    [JsonPropertyName("newLastShiningFactionCycleOrdinal")]
+    public int? NewLastShiningFactionCycleOrdinal { get; set; }
+
+    [JsonPropertyName("newLastShiningTradeCycleOrdinal")]
+    public int? NewLastShiningTradeCycleOrdinal { get; set; }
+
+    [JsonPropertyName("afterlifeCatchupProcessed")]
+    public bool? AfterlifeCatchupProcessed { get; set; }
+
+    [JsonPropertyName("afterlifeCatchupSummaryEventsProcessed")]
+    public int? AfterlifeCatchupSummaryEventsProcessed { get; set; }
 }

@@ -165,7 +165,7 @@ CLI Agent automatically loads current game state from:
   "weatherChange": "object with tendency and description",
   "updateWorldProgressionTracker": "array of world_progression_objects",
   "updateFactionProgressionTracker": "array of faction_progression_objects",
-  "progressionProcessingReport": "object with processed cycle counts and new last-* markers",
+  "progressionProcessingReport": "object with bounded processed cycle counts, optional afterlife catch-up proof, and new last-* markers",
   
   // QUEST SYSTEM
   "UpdateQuests": "array of quest_command_objects",

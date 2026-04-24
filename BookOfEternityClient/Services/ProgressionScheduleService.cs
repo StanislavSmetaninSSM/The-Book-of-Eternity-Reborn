@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,11 @@ public class ProgressionScheduleService
 {
     public const string SchedulePath = "game_state/control/progression_schedule.json";
     public const string ReportPath = "game_state/control/progression_report.json";
+    private const int DefaultWorldCycleMinutes = 240;
+    private const int DefaultFactionCycleMinutes = 1440;
+    private const int DefaultChaosSeaCycleEquivalentHours = 24;
+    private const int DefaultAfterlifeCatchupCycleEquivalentMinutes = 1440;
+    private const int MaxAfterlifeCatchupSummaryEvents = 5;
 
     private readonly FileSystemManager _fs;
     private readonly ILogger<ProgressionScheduleService> _logger;
@@ -22,6 +28,14 @@ public class ProgressionScheduleService
         Missing,
         Valid,
         Malformed
+    }
+
+    private enum AfterlifeRealmKind
+    {
+        None,
+        ChaosSea,
+        ShiningAbode,
+        ShiningBootstrapHandoff
     }
 
     private readonly record struct ProgressionScheduleSnapshot(
@@ -38,6 +52,13 @@ public class ProgressionScheduleService
         string SessionId,
         string RequestId,
         int TurnNumber);
+
+    private readonly record struct AfterlifeCatchupContext(
+        bool Required,
+        int ElapsedCycles,
+        string PressureTier,
+        int SummaryEventsRequired,
+        string[] Contours);
 
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
@@ -88,16 +109,27 @@ public class ProgressionScheduleService
             LastWorldSimulationTimeInMinutes = currentWorldTime,
             LastFactionSimulationTimeInMinutes = currentWorldTime,
             HasAuthoritativeWorldTimeBaseline = !worldTimeResolution.HasUnresolvedAbsoluteOverride,
-            WorldCycleMinutes = 240,
-            FactionCycleMinutes = 1440,
-            ChaosSeaCycleEquivalentHours = 24,
+            WorldCycleMinutes = DefaultWorldCycleMinutes,
+            FactionCycleMinutes = DefaultFactionCycleMinutes,
+            ChaosSeaCycleEquivalentHours = DefaultChaosSeaCycleEquivalentHours,
+            AfterlifeCatchupCycleEquivalentMinutes = DefaultAfterlifeCatchupCycleEquivalentMinutes,
+            HasAfterlifeCatchupWorldTimeBaseline = true,
+            LastAfterlifeCatchupWorldTimeInMinutes = currentWorldTime,
             CurrentChaosSeaTurnOrdinal = 0,
             LastChaosSeaSimulationOrdinal = 0,
             LastGuardianProjectCycleOrdinal = 0,
+            LastResidentAgencyCycleOrdinal = 0,
+            LastShiningAbodeCycleOrdinal = 0,
+            LastShiningFactionCycleOrdinal = 0,
+            LastShiningTradeCycleOrdinal = 0,
             PendingWorldCycles = 0,
             PendingFactionCycles = 0,
             PendingChaosSeaCycles = 0,
             PendingGuardianProjectCycles = 0,
+            PendingResidentAgencyCycles = 0,
+            PendingShiningAbodeCycles = 0,
+            PendingShiningFactionCycles = 0,
+            PendingShiningTradeCycles = 0,
             LastUpdatedUtc = DateTime.UtcNow.ToString("o")
         };
 
@@ -113,37 +145,49 @@ public class ProgressionScheduleService
         if (!HasResolvedRealm(schedule.CurrentRealm))
             throw BuildUnresolvedRealmException();
 
-        if (IsChaosSea(schedule.CurrentRealm))
+        var afterlifeRealmKind = await ResolveAfterlifeRealmKindAsync(schedule.CurrentRealm);
+        if (afterlifeRealmKind != AfterlifeRealmKind.None)
         {
+            var afterlifeWorldTimeResolution = await ResolveWorldTimeFromFileAsync(
+                schedule.CurrentWorldTimeInMinutes,
+                allowIncrementalTimeChange: false);
+            if (!afterlifeWorldTimeResolution.HasUnresolvedAbsoluteOverride)
+                schedule.CurrentWorldTimeInMinutes = afterlifeWorldTimeResolution.Minutes;
+
             schedule.PendingWorldCycles = 0;
             schedule.PendingFactionCycles = 0;
-            schedule.PendingChaosSeaCycles = Math.Max(1, schedule.PendingChaosSeaCycles);
-            schedule.PendingGuardianProjectCycles = Math.Max(1, schedule.PendingGuardianProjectCycles);
+            if (afterlifeRealmKind == AfterlifeRealmKind.ShiningBootstrapHandoff)
+            {
+                ClearAfterlifePendingCycles(schedule);
+            }
+            else if (afterlifeRealmKind == AfterlifeRealmKind.ChaosSea)
+            {
+                schedule.PendingChaosSeaCycles = Math.Max(1, schedule.PendingChaosSeaCycles);
+                schedule.PendingGuardianProjectCycles = Math.Max(1, schedule.PendingGuardianProjectCycles);
+                schedule.PendingResidentAgencyCycles = Math.Max(1, schedule.PendingResidentAgencyCycles);
+                schedule.PendingShiningAbodeCycles = 0;
+                schedule.PendingShiningFactionCycles = 0;
+                schedule.PendingShiningTradeCycles = 0;
+            }
+            else
+            {
+                schedule.PendingChaosSeaCycles = 0;
+                schedule.PendingGuardianProjectCycles = Math.Max(1, schedule.PendingGuardianProjectCycles);
+                schedule.PendingResidentAgencyCycles = Math.Max(1, schedule.PendingResidentAgencyCycles);
+                schedule.PendingShiningAbodeCycles = Math.Max(1, schedule.PendingShiningAbodeCycles);
+                schedule.PendingShiningFactionCycles = Math.Max(1, schedule.PendingShiningFactionCycles);
+                schedule.PendingShiningTradeCycles = Math.Max(1, schedule.PendingShiningTradeCycles);
+            }
+
+            var includeShiningContoursInMortalCatchup = await HasActiveShiningAbodeWithoutPreparedPackageAsync();
+            var catchup = BuildAfterlifeCatchupContext(
+                schedule,
+                afterlifeRealmKind,
+                includeShiningContoursInMortalCatchup);
             schedule.LastUpdatedUtc = DateTime.UtcNow.ToString("o");
             await WriteScheduleAsync(schedule);
 
-            return new ProgressionControl
-            {
-                CurrentRealm = schedule.CurrentRealm,
-                CurrentWorldTimeInMinutes = schedule.CurrentWorldTimeInMinutes,
-                LastWorldSimulationTimeInMinutes = schedule.LastWorldSimulationTimeInMinutes,
-                LastFactionSimulationTimeInMinutes = schedule.LastFactionSimulationTimeInMinutes,
-                WorldCycleMinutes = schedule.WorldCycleMinutes,
-                FactionCycleMinutes = schedule.FactionCycleMinutes,
-                WorldCyclesAlreadyPendingBeforeTurn = 0,
-                FactionCyclesAlreadyPendingBeforeTurn = 0,
-                MustEvaluateWorldProgression = false,
-                MustEvaluateFactionProgression = false,
-                CurrentChaosSeaTurnOrdinal = schedule.CurrentChaosSeaTurnOrdinal,
-                NextChaosSeaTurnOrdinal = schedule.CurrentChaosSeaTurnOrdinal + 1,
-                LastChaosSeaSimulationOrdinal = schedule.LastChaosSeaSimulationOrdinal,
-                LastGuardianProjectCycleOrdinal = schedule.LastGuardianProjectCycleOrdinal,
-                ChaosSeaCycleEquivalentHours = schedule.ChaosSeaCycleEquivalentHours,
-                ChaosSeaCyclesExpectedThisTurn = schedule.PendingChaosSeaCycles,
-                GuardianProjectCyclesExpectedThisTurn = schedule.PendingGuardianProjectCycles,
-                MustEvaluateChaosSeaProgression = schedule.PendingChaosSeaCycles > 0,
-                MustEvaluateGuardianProjectProgression = schedule.PendingGuardianProjectCycles > 0
-            };
+            return BuildProgressionControl(schedule, worldCycles: 0, factionCycles: 0, catchup);
         }
 
         var worldTimeResolution = await ResolveWorldTimeFromFileAsync(schedule.CurrentWorldTimeInMinutes);
@@ -176,8 +220,37 @@ public class ProgressionScheduleService
         }
         schedule.PendingChaosSeaCycles = 0;
         schedule.PendingGuardianProjectCycles = 0;
+        schedule.PendingResidentAgencyCycles = 0;
+        schedule.PendingShiningAbodeCycles = 0;
+        schedule.PendingShiningFactionCycles = 0;
+        schedule.PendingShiningTradeCycles = 0;
         schedule.LastUpdatedUtc = DateTime.UtcNow.ToString("o");
         await WriteScheduleAsync(schedule);
+
+        return BuildProgressionControl(
+            schedule,
+            schedule.PendingWorldCycles,
+            schedule.PendingFactionCycles,
+            new AfterlifeCatchupContext(false, 0, "none", 0, Array.Empty<string>()));
+    }
+
+    private static ProgressionControl BuildProgressionControl(
+        ProgressionScheduleState schedule,
+        int worldCycles,
+        int factionCycles,
+        AfterlifeCatchupContext catchup)
+    {
+        var afterlifeCyclesExpected = new[]
+        {
+            schedule.PendingChaosSeaCycles,
+            schedule.PendingGuardianProjectCycles,
+            schedule.PendingResidentAgencyCycles,
+            schedule.PendingShiningAbodeCycles,
+            schedule.PendingShiningFactionCycles,
+            schedule.PendingShiningTradeCycles
+        }.Max();
+        var currentAfterlifeOrdinal = schedule.CurrentChaosSeaTurnOrdinal;
+        var nextAfterlifeOrdinal = currentAfterlifeOrdinal + afterlifeCyclesExpected;
 
         return new ProgressionControl
         {
@@ -187,20 +260,251 @@ public class ProgressionScheduleService
             LastFactionSimulationTimeInMinutes = schedule.LastFactionSimulationTimeInMinutes,
             WorldCycleMinutes = schedule.WorldCycleMinutes,
             FactionCycleMinutes = schedule.FactionCycleMinutes,
-            WorldCyclesAlreadyPendingBeforeTurn = schedule.PendingWorldCycles,
-            FactionCyclesAlreadyPendingBeforeTurn = schedule.PendingFactionCycles,
-            MustEvaluateWorldProgression = schedule.PendingWorldCycles > 0,
-            MustEvaluateFactionProgression = schedule.PendingFactionCycles > 0,
+            WorldCyclesAlreadyPendingBeforeTurn = worldCycles,
+            FactionCyclesAlreadyPendingBeforeTurn = factionCycles,
+            MustEvaluateWorldProgression = worldCycles > 0,
+            MustEvaluateFactionProgression = factionCycles > 0,
             CurrentChaosSeaTurnOrdinal = schedule.CurrentChaosSeaTurnOrdinal,
-            NextChaosSeaTurnOrdinal = schedule.CurrentChaosSeaTurnOrdinal,
+            NextChaosSeaTurnOrdinal = nextAfterlifeOrdinal,
             LastChaosSeaSimulationOrdinal = schedule.LastChaosSeaSimulationOrdinal,
             LastGuardianProjectCycleOrdinal = schedule.LastGuardianProjectCycleOrdinal,
+            NextGuardianProjectCycleOrdinal = ResolveExpectedAfterlifeContourOrdinal(currentAfterlifeOrdinal, schedule.PendingGuardianProjectCycles, schedule.LastGuardianProjectCycleOrdinal),
+            LastResidentAgencyCycleOrdinal = schedule.LastResidentAgencyCycleOrdinal,
+            LastShiningAbodeCycleOrdinal = schedule.LastShiningAbodeCycleOrdinal,
+            LastShiningFactionCycleOrdinal = schedule.LastShiningFactionCycleOrdinal,
+            LastShiningTradeCycleOrdinal = schedule.LastShiningTradeCycleOrdinal,
             ChaosSeaCycleEquivalentHours = schedule.ChaosSeaCycleEquivalentHours,
-            ChaosSeaCyclesExpectedThisTurn = 0,
-            GuardianProjectCyclesExpectedThisTurn = 0,
-            MustEvaluateChaosSeaProgression = false,
-            MustEvaluateGuardianProjectProgression = false
+            NextResidentAgencyCycleOrdinal = ResolveExpectedAfterlifeContourOrdinal(currentAfterlifeOrdinal, schedule.PendingResidentAgencyCycles, schedule.LastResidentAgencyCycleOrdinal),
+            NextShiningAbodeCycleOrdinal = ResolveExpectedAfterlifeContourOrdinal(currentAfterlifeOrdinal, schedule.PendingShiningAbodeCycles, schedule.LastShiningAbodeCycleOrdinal),
+            NextShiningFactionCycleOrdinal = ResolveExpectedAfterlifeContourOrdinal(currentAfterlifeOrdinal, schedule.PendingShiningFactionCycles, schedule.LastShiningFactionCycleOrdinal),
+            NextShiningTradeCycleOrdinal = ResolveExpectedAfterlifeContourOrdinal(currentAfterlifeOrdinal, schedule.PendingShiningTradeCycles, schedule.LastShiningTradeCycleOrdinal),
+            ChaosSeaCyclesExpectedThisTurn = schedule.PendingChaosSeaCycles,
+            GuardianProjectCyclesExpectedThisTurn = schedule.PendingGuardianProjectCycles,
+            ResidentAgencyCyclesExpectedThisTurn = schedule.PendingResidentAgencyCycles,
+            ShiningAbodeCyclesExpectedThisTurn = schedule.PendingShiningAbodeCycles,
+            ShiningFactionCyclesExpectedThisTurn = schedule.PendingShiningFactionCycles,
+            ShiningTradeCyclesExpectedThisTurn = schedule.PendingShiningTradeCycles,
+            MustEvaluateChaosSeaProgression = schedule.PendingChaosSeaCycles > 0,
+            MustEvaluateGuardianProjectProgression = schedule.PendingGuardianProjectCycles > 0,
+            MustEvaluateResidentAgencyProgression = schedule.PendingResidentAgencyCycles > 0,
+            MustEvaluateShiningAbodeProgression = schedule.PendingShiningAbodeCycles > 0,
+            MustEvaluateShiningFactionProgression = schedule.PendingShiningFactionCycles > 0,
+            MustEvaluateShiningTradeProgression = schedule.PendingShiningTradeCycles > 0,
+            AfterlifeCatchupRequired = catchup.Required,
+            AfterlifeCatchupElapsedCycles = catchup.ElapsedCycles,
+            AfterlifeCatchupPressureTier = catchup.PressureTier,
+            AfterlifeCatchupSummaryEventsRequired = catchup.SummaryEventsRequired,
+            AfterlifeCatchupContours = catchup.Contours
         };
+    }
+
+    private static int ResolveExpectedAfterlifeContourOrdinal(
+        int currentAfterlifeOrdinal,
+        int cyclesExpected,
+        int lastContourOrdinal)
+    {
+        var safeCyclesExpected = Math.Max(0, cyclesExpected);
+        return safeCyclesExpected > 0
+            ? Math.Max(0, currentAfterlifeOrdinal) + safeCyclesExpected
+            : Math.Max(0, lastContourOrdinal);
+    }
+
+    private static int ResolveExpectedAfterlifeContourOrdinal(
+        ProgressionControl control,
+        int cyclesExpected,
+        int lastContourOrdinal,
+        int legacyOrdinal)
+    {
+        var expectedOrdinal = ResolveExpectedAfterlifeContourOrdinal(
+            control.CurrentChaosSeaTurnOrdinal,
+            cyclesExpected,
+            lastContourOrdinal);
+        var safeCyclesExpected = Math.Max(0, cyclesExpected);
+        if (safeCyclesExpected > 0 &&
+            control.CurrentChaosSeaTurnOrdinal <= 0 &&
+            lastContourOrdinal <= 0 &&
+            safeCyclesExpected >= ResolveMaxAfterlifeCyclesExpected(control) &&
+            legacyOrdinal > expectedOrdinal)
+        {
+            return legacyOrdinal;
+        }
+
+        return expectedOrdinal;
+    }
+
+    private static int ResolveMaxAfterlifeCyclesExpected(ProgressionControl control)
+    {
+        return new[]
+        {
+            control.ChaosSeaCyclesExpectedThisTurn,
+            control.GuardianProjectCyclesExpectedThisTurn,
+            control.ResidentAgencyCyclesExpectedThisTurn,
+            control.ShiningAbodeCyclesExpectedThisTurn,
+            control.ShiningFactionCyclesExpectedThisTurn,
+            control.ShiningTradeCyclesExpectedThisTurn
+        }.Max();
+    }
+
+    private static void ClearAfterlifePendingCycles(ProgressionScheduleState schedule)
+    {
+        schedule.PendingChaosSeaCycles = 0;
+        schedule.PendingGuardianProjectCycles = 0;
+        schedule.PendingResidentAgencyCycles = 0;
+        schedule.PendingShiningAbodeCycles = 0;
+        schedule.PendingShiningFactionCycles = 0;
+        schedule.PendingShiningTradeCycles = 0;
+    }
+
+    private static void PreserveAfterlifePendingCycles(
+        ProgressionScheduleState schedule,
+        ProgressionControl control)
+    {
+        schedule.PendingChaosSeaCycles = Math.Max(
+            schedule.PendingChaosSeaCycles,
+            Math.Max(0, control.ChaosSeaCyclesExpectedThisTurn));
+        schedule.PendingGuardianProjectCycles = Math.Max(
+            schedule.PendingGuardianProjectCycles,
+            Math.Max(0, control.GuardianProjectCyclesExpectedThisTurn));
+        schedule.PendingResidentAgencyCycles = Math.Max(
+            schedule.PendingResidentAgencyCycles,
+            Math.Max(0, control.ResidentAgencyCyclesExpectedThisTurn));
+        schedule.PendingShiningAbodeCycles = Math.Max(
+            schedule.PendingShiningAbodeCycles,
+            Math.Max(0, control.ShiningAbodeCyclesExpectedThisTurn));
+        schedule.PendingShiningFactionCycles = Math.Max(
+            schedule.PendingShiningFactionCycles,
+            Math.Max(0, control.ShiningFactionCyclesExpectedThisTurn));
+        schedule.PendingShiningTradeCycles = Math.Max(
+            schedule.PendingShiningTradeCycles,
+            Math.Max(0, control.ShiningTradeCyclesExpectedThisTurn));
+    }
+
+    private static void ApplyVerifiedAfterlifeProgression(
+        ProgressionScheduleState schedule,
+        ProgressionControl control,
+        ProgressionProcessingReport? report)
+    {
+        schedule.CurrentChaosSeaTurnOrdinal = Math.Max(
+            schedule.CurrentChaosSeaTurnOrdinal,
+            control.NextChaosSeaTurnOrdinal);
+
+        if ((report?.ChaosSeaCyclesProcessed ?? 0) > 0)
+            schedule.LastChaosSeaSimulationOrdinal = report?.NewLastChaosSeaSimulationOrdinal ?? ResolveExpectedChaosSeaSimulationOrdinal(control);
+        if ((report?.GuardianProjectCyclesProcessed ?? 0) > 0)
+            schedule.LastGuardianProjectCycleOrdinal = report?.NewLastGuardianProjectCycleOrdinal ?? ResolveExpectedGuardianProjectCycleOrdinal(control);
+        if ((report?.ResidentAgencyCyclesProcessed ?? 0) > 0)
+            schedule.LastResidentAgencyCycleOrdinal = report?.NewLastResidentAgencyCycleOrdinal ?? ResolveExpectedResidentAgencyCycleOrdinal(control);
+        if ((report?.ShiningAbodeCyclesProcessed ?? 0) > 0)
+            schedule.LastShiningAbodeCycleOrdinal = report?.NewLastShiningAbodeCycleOrdinal ?? ResolveExpectedShiningAbodeCycleOrdinal(control);
+        if ((report?.ShiningFactionCyclesProcessed ?? 0) > 0)
+            schedule.LastShiningFactionCycleOrdinal = report?.NewLastShiningFactionCycleOrdinal ?? ResolveExpectedShiningFactionCycleOrdinal(control);
+        if ((report?.ShiningTradeCyclesProcessed ?? 0) > 0)
+            schedule.LastShiningTradeCycleOrdinal = report?.NewLastShiningTradeCycleOrdinal ?? ResolveExpectedShiningTradeCycleOrdinal(control);
+
+        if (control.AfterlifeCatchupRequired && report?.AfterlifeCatchupProcessed == true)
+        {
+            schedule.LastAfterlifeCatchupWorldTimeInMinutes = Math.Max(
+                schedule.LastAfterlifeCatchupWorldTimeInMinutes,
+                control.CurrentWorldTimeInMinutes);
+            schedule.HasAfterlifeCatchupWorldTimeBaseline = true;
+            ApplyCatchupContourMarkers(schedule, control);
+        }
+    }
+
+    private static void ApplyCatchupContourMarkers(
+        ProgressionScheduleState schedule,
+        ProgressionControl control)
+    {
+        var contours = new HashSet<string>(control.AfterlifeCatchupContours ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase);
+        var catchupOrdinal = Math.Max(schedule.CurrentChaosSeaTurnOrdinal, control.NextChaosSeaTurnOrdinal);
+
+        if (contours.Contains("chaos_sea"))
+            schedule.LastChaosSeaSimulationOrdinal = Math.Max(schedule.LastChaosSeaSimulationOrdinal, catchupOrdinal);
+        if (contours.Contains("guardian_projects"))
+            schedule.LastGuardianProjectCycleOrdinal = Math.Max(schedule.LastGuardianProjectCycleOrdinal, catchupOrdinal);
+        if (contours.Contains("residents"))
+            schedule.LastResidentAgencyCycleOrdinal = Math.Max(schedule.LastResidentAgencyCycleOrdinal, catchupOrdinal);
+        if (contours.Contains("shining_abode"))
+            schedule.LastShiningAbodeCycleOrdinal = Math.Max(schedule.LastShiningAbodeCycleOrdinal, catchupOrdinal);
+        if (contours.Contains("shining_factions"))
+            schedule.LastShiningFactionCycleOrdinal = Math.Max(schedule.LastShiningFactionCycleOrdinal, catchupOrdinal);
+        if (contours.Contains("shining_trade"))
+            schedule.LastShiningTradeCycleOrdinal = Math.Max(schedule.LastShiningTradeCycleOrdinal, catchupOrdinal);
+    }
+
+    private static AfterlifeCatchupContext BuildAfterlifeCatchupContext(
+        ProgressionScheduleState schedule,
+        AfterlifeRealmKind realmKind,
+        bool includeShiningContoursInMortalCatchup)
+    {
+        if (realmKind == AfterlifeRealmKind.None || realmKind == AfterlifeRealmKind.ShiningBootstrapHandoff)
+            return new AfterlifeCatchupContext(false, 0, "none", 0, Array.Empty<string>());
+
+        var mortalElapsedCycles = schedule.HasAfterlifeCatchupWorldTimeBaseline
+            ? ComputeElapsedCycles(
+                schedule.CurrentWorldTimeInMinutes,
+                schedule.LastAfterlifeCatchupWorldTimeInMinutes,
+                schedule.AfterlifeCatchupCycleEquivalentMinutes)
+            : 0;
+
+        var realmAbsenceCycles = realmKind switch
+        {
+            AfterlifeRealmKind.ChaosSea => Math.Max(0, schedule.CurrentChaosSeaTurnOrdinal - schedule.LastChaosSeaSimulationOrdinal),
+            AfterlifeRealmKind.ShiningAbode => Math.Max(0, schedule.CurrentChaosSeaTurnOrdinal - schedule.LastShiningAbodeCycleOrdinal),
+            _ => 0
+        };
+        var elapsedCycles = Math.Max(mortalElapsedCycles, realmAbsenceCycles);
+        if (elapsedCycles <= 0)
+            return new AfterlifeCatchupContext(false, 0, "none", 0, Array.Empty<string>());
+
+        var tier = ResolveAfterlifeCatchupPressureTier(elapsedCycles);
+        return new AfterlifeCatchupContext(
+            true,
+            elapsedCycles,
+            tier,
+            ResolveAfterlifeCatchupSummaryEvents(tier),
+            BuildAfterlifeCatchupContours(realmKind, includeShiningContoursInMortalCatchup && mortalElapsedCycles > 0));
+    }
+
+    private static string ResolveAfterlifeCatchupPressureTier(int elapsedCycles)
+    {
+        if (elapsedCycles >= 61)
+            return "epochal";
+        if (elapsedCycles >= 15)
+            return "severe";
+        if (elapsedCycles >= 4)
+            return "major";
+        return "minor";
+    }
+
+    private static int ResolveAfterlifeCatchupSummaryEvents(string tier) =>
+        tier switch
+        {
+            "epochal" => MaxAfterlifeCatchupSummaryEvents,
+            "severe" => 3,
+            "major" => 2,
+            "minor" => 1,
+            _ => 0
+        };
+
+    private static string[] BuildAfterlifeCatchupContours(AfterlifeRealmKind realmKind, bool includeAllActiveAfterlifeContours)
+    {
+        if (includeAllActiveAfterlifeContours)
+        {
+            return new[]
+            {
+                "chaos_sea",
+                "guardian_projects",
+                "residents",
+                "shining_abode",
+                "shining_factions",
+                "shining_trade"
+            };
+        }
+
+        return realmKind == AfterlifeRealmKind.ShiningAbode
+            ? new[] { "shining_abode", "shining_factions", "shining_trade", "guardian_projects", "residents" }
+            : new[] { "chaos_sea", "guardian_projects", "residents" };
     }
 
     public async Task<List<ValidationIssue>> ValidateAcceptedTurnOutcomeAsync(ProgressionControl? control)
@@ -217,10 +521,9 @@ public class ProgressionScheduleService
 
         var reportSnapshot = await ReadProcessingReportSnapshotAsync();
         var currentTurnContext = await ReadCurrentTurnRequestContextAsync();
-        var report = reportSnapshot.Report;
-        if (IsChaosSea(control.CurrentRealm))
+        if (IsAfterlifeRealm(control.CurrentRealm))
         {
-            ValidateChaosSeaOutcome(control, reportSnapshot, currentTurnContext, issues);
+            ValidateAfterlifeOutcome(control, reportSnapshot, currentTurnContext, issues);
         }
         else
         {
@@ -258,35 +561,27 @@ public class ProgressionScheduleService
             _logger.LogWarning(
                 "Accepted turn outcome arrived with unresolved currentRealm in progression control. Preserving progression ledger fail-closed.");
         }
-        else if (IsChaosSea(control.CurrentRealm))
+        else if (IsAfterlifeRealm(control.CurrentRealm))
         {
             if (reportSnapshot.State == ProgressionFileReadState.Valid &&
-                HasVerifiedChaosSeaProgressionOutcome(control, report, currentTurnContext))
+                HasVerifiedAfterlifeProgressionOutcome(control, report, currentTurnContext))
             {
-                schedule.CurrentChaosSeaTurnOrdinal = control.NextChaosSeaTurnOrdinal;
-                schedule.LastChaosSeaSimulationOrdinal = report?.NewLastChaosSeaSimulationOrdinal ?? control.NextChaosSeaTurnOrdinal;
-                schedule.LastGuardianProjectCycleOrdinal = report?.NewLastGuardianProjectCycleOrdinal ?? control.NextChaosSeaTurnOrdinal;
+                ApplyVerifiedAfterlifeProgression(schedule, control, report);
                 schedule.PendingWorldCycles = 0;
                 schedule.PendingFactionCycles = 0;
-                schedule.PendingChaosSeaCycles = 0;
-                schedule.PendingGuardianProjectCycles = 0;
+                ClearAfterlifePendingCycles(schedule);
                 reportConsumed = true;
             }
             else
             {
                 _logger.LogWarning(
-                    "Chaos Sea accepted turn completed without a valid progression_report.json outcome. Keeping CurrentChaosSeaTurnOrdinal={CurrentOrdinal}, LastChaosSeaSimulationOrdinal={ChaosOrdinal}, LastGuardianProjectCycleOrdinal={GuardianOrdinal}.",
+                    "Afterlife accepted turn completed without a valid progression_report.json outcome. Keeping CurrentChaosSeaTurnOrdinal={CurrentOrdinal}, LastChaosSeaSimulationOrdinal={ChaosOrdinal}, LastGuardianProjectCycleOrdinal={GuardianOrdinal}.",
                     schedule.CurrentChaosSeaTurnOrdinal,
                     schedule.LastChaosSeaSimulationOrdinal,
                     schedule.LastGuardianProjectCycleOrdinal);
                 schedule.PendingWorldCycles = 0;
                 schedule.PendingFactionCycles = 0;
-                schedule.PendingChaosSeaCycles = Math.Max(
-                    schedule.PendingChaosSeaCycles,
-                    Math.Max(0, control.ChaosSeaCyclesExpectedThisTurn));
-                schedule.PendingGuardianProjectCycles = Math.Max(
-                    schedule.PendingGuardianProjectCycles,
-                    Math.Max(0, control.GuardianProjectCyclesExpectedThisTurn));
+                PreserveAfterlifePendingCycles(schedule, control);
             }
         }
         else
@@ -323,8 +618,7 @@ public class ProgressionScheduleService
 
                 schedule.PendingWorldCycles = 0;
                 schedule.PendingFactionCycles = 0;
-                schedule.PendingChaosSeaCycles = 0;
-                schedule.PendingGuardianProjectCycles = 0;
+                ClearAfterlifePendingCycles(schedule);
                 reportConsumed = true;
             }
             else
@@ -335,8 +629,7 @@ public class ProgressionScheduleService
                 schedule.PendingFactionCycles = Math.Max(
                     schedule.PendingFactionCycles,
                     Math.Max(0, control.FactionCyclesAlreadyPendingBeforeTurn));
-                schedule.PendingChaosSeaCycles = 0;
-                schedule.PendingGuardianProjectCycles = 0;
+                ClearAfterlifePendingCycles(schedule);
             }
         }
 
@@ -390,13 +683,20 @@ public class ProgressionScheduleService
         if (!ValidateProgressionReportCorrelation(report, currentTurnContext, issues))
             return;
 
-        if ((report.ChaosSeaCyclesProcessed ?? 0) != 0 || (report.GuardianProjectCyclesProcessed ?? 0) != 0)
+        var afterlifeProcessedCount =
+            (report.ChaosSeaCyclesProcessed ?? 0) +
+            (report.GuardianProjectCyclesProcessed ?? 0) +
+            (report.ResidentAgencyCyclesProcessed ?? 0) +
+            (report.ShiningAbodeCyclesProcessed ?? 0) +
+            (report.ShiningFactionCyclesProcessed ?? 0) +
+            (report.ShiningTradeCyclesProcessed ?? 0);
+        if (afterlifeProcessedCount != 0 || report.AfterlifeCatchupProcessed == true)
         {
             issues.Add(BuildForbiddenProgressionFieldIssue(
                 "progression_report_forbidden_afterlife_fields_in_mortal",
-                "chaosSeaCyclesProcessed / guardianProjectCyclesProcessed",
-                "0 for both afterlife-only fields",
-                $"{report.ChaosSeaCyclesProcessed ?? 0} / {report.GuardianProjectCyclesProcessed ?? 0}",
+                "afterlife processed counts / afterlifeCatchupProcessed",
+                "0/false for all afterlife-only fields",
+                $"{afterlifeProcessedCount} / {report.AfterlifeCatchupProcessed == true}",
                 "В Mortal World не указывай afterlife progression fields. Оставь только world/faction processed counts и их new last-* markers."));
         }
 
@@ -545,32 +845,30 @@ public class ProgressionScheduleService
             repairHint: repairHint);
     }
 
-    private void ValidateChaosSeaOutcome(
+    private void ValidateAfterlifeOutcome(
         ProgressionControl control,
         ProgressionReportSnapshot reportSnapshot,
         PendingTurnRequestContext? currentTurnContext,
         List<ValidationIssue> issues)
     {
         var report = reportSnapshot.Report;
-        var expectedChaosCycles = control.ChaosSeaCyclesExpectedThisTurn;
-        var expectedGuardianCycles = control.GuardianProjectCyclesExpectedThisTurn;
+        var reportRequired = AfterlifeReportRequired(control);
 
         if (report == null)
         {
-            if ((expectedChaosCycles > 0 || expectedGuardianCycles > 0) &&
-                reportSnapshot.State == ProgressionFileReadState.Malformed)
+            if (reportRequired && reportSnapshot.State == ProgressionFileReadState.Malformed)
             {
                 issues.Add(BuildMalformedProgressionReportIssue(
                     "progression_report_malformed_for_required_chaos_progression",
-                    "chaos sea / guardian progression was expected for this afterlife turn",
-                    "Перезапиши progression_report.json валидным JSON object с progressionProcessingReport и точными chaosSea/guardian processed counts и new last-* ordinals."));
+                    "afterlife progression or catch-up was expected for this afterlife turn",
+                    "Перезапиши progression_report.json валидным JSON object с progressionProcessingReport, точными processed counts, catch-up proof и new last-* ordinals."));
             }
-            else if (expectedChaosCycles > 0 || expectedGuardianCycles > 0)
+            else if (reportRequired)
             {
                 issues.Add(BuildMissingProgressionReportIssue(
                     "progression_report_missing_for_required_chaos_progression",
-                    "chaos sea / guardian progression was expected for this afterlife turn",
-                    "Создай progressionProcessingReport в game_state/control/progression_report.json и укажи точные processed cycle counts и новые last-* ordinals для этого afterlife turn."));
+                    "afterlife progression or catch-up was expected for this afterlife turn",
+                    "Создай progressionProcessingReport в game_state/control/progression_report.json и укажи bounded processed cycle counts, catch-up proof и новые last-* ordinals для этого afterlife turn."));
             }
             return;
         }
@@ -585,109 +883,218 @@ public class ProgressionScheduleService
                 "worldCyclesProcessed / factionCyclesProcessed",
                 "0 for both mortal-only fields",
                 $"{report.WorldCyclesProcessed ?? 0} / {report.FactionCyclesProcessed ?? 0}",
-                "В afterlife realm не указывай mortal progression fields. Оставь только chaosSea/guardian processed counts и их new last-* ordinals."));
+                "В afterlife realm не указывай mortal progression fields. Оставь только afterlife processed counts, catch-up proof и их new last-* ordinals."));
         }
 
-        if ((report.ChaosSeaCyclesProcessed ?? 0) != expectedChaosCycles)
+        ValidateExpectedProcessedCount(issues, "chaosSeaCyclesProcessed", report.ChaosSeaCyclesProcessed, control.ChaosSeaCyclesExpectedThisTurn, "progression_report_missing_chaos_cycles_processed", "progression_report_chaos_cycles_processed_mismatch");
+        ValidateExpectedProcessedCount(issues, "guardianProjectCyclesProcessed", report.GuardianProjectCyclesProcessed, control.GuardianProjectCyclesExpectedThisTurn, "progression_report_missing_guardian_cycles_processed", "progression_report_guardian_cycles_processed_mismatch");
+        ValidateExpectedProcessedCount(issues, "residentAgencyCyclesProcessed", report.ResidentAgencyCyclesProcessed, control.ResidentAgencyCyclesExpectedThisTurn, "progression_report_missing_resident_agency_cycles_processed", "progression_report_resident_agency_cycles_processed_mismatch");
+        ValidateExpectedProcessedCount(issues, "shiningAbodeCyclesProcessed", report.ShiningAbodeCyclesProcessed, control.ShiningAbodeCyclesExpectedThisTurn, "progression_report_missing_shining_abode_cycles_processed", "progression_report_shining_abode_cycles_processed_mismatch");
+        ValidateExpectedProcessedCount(issues, "shiningFactionCyclesProcessed", report.ShiningFactionCyclesProcessed, control.ShiningFactionCyclesExpectedThisTurn, "progression_report_missing_shining_faction_cycles_processed", "progression_report_shining_faction_cycles_processed_mismatch");
+        ValidateExpectedProcessedCount(issues, "shiningTradeCyclesProcessed", report.ShiningTradeCyclesProcessed, control.ShiningTradeCyclesExpectedThisTurn, "progression_report_missing_shining_trade_cycles_processed", "progression_report_shining_trade_cycles_processed_mismatch");
+
+        ValidateExpectedOrdinal(issues, "newLastChaosSeaSimulationOrdinal", report.NewLastChaosSeaSimulationOrdinal, control.ChaosSeaCyclesExpectedThisTurn, ResolveExpectedChaosSeaSimulationOrdinal(control), "progression_report_missing_new_last_chaos_ordinal", "progression_report_new_last_chaos_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastGuardianProjectCycleOrdinal", report.NewLastGuardianProjectCycleOrdinal, control.GuardianProjectCyclesExpectedThisTurn, ResolveExpectedGuardianProjectCycleOrdinal(control), "progression_report_missing_new_last_guardian_ordinal", "progression_report_new_last_guardian_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastResidentAgencyCycleOrdinal", report.NewLastResidentAgencyCycleOrdinal, control.ResidentAgencyCyclesExpectedThisTurn, ResolveExpectedResidentAgencyCycleOrdinal(control), "progression_report_missing_new_last_resident_agency_ordinal", "progression_report_new_last_resident_agency_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastShiningAbodeCycleOrdinal", report.NewLastShiningAbodeCycleOrdinal, control.ShiningAbodeCyclesExpectedThisTurn, ResolveExpectedShiningAbodeCycleOrdinal(control), "progression_report_missing_new_last_shining_abode_ordinal", "progression_report_new_last_shining_abode_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastShiningFactionCycleOrdinal", report.NewLastShiningFactionCycleOrdinal, control.ShiningFactionCyclesExpectedThisTurn, ResolveExpectedShiningFactionCycleOrdinal(control), "progression_report_missing_new_last_shining_faction_ordinal", "progression_report_new_last_shining_faction_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastShiningTradeCycleOrdinal", report.NewLastShiningTradeCycleOrdinal, control.ShiningTradeCyclesExpectedThisTurn, ResolveExpectedShiningTradeCycleOrdinal(control), "progression_report_missing_new_last_shining_trade_ordinal", "progression_report_new_last_shining_trade_ordinal_mismatch");
+
+        ValidateAfterlifeCatchupProof(control, report, issues);
+    }
+
+    private static bool AfterlifeReportRequired(ProgressionControl control) =>
+        control.ChaosSeaCyclesExpectedThisTurn > 0 ||
+        control.GuardianProjectCyclesExpectedThisTurn > 0 ||
+        control.ResidentAgencyCyclesExpectedThisTurn > 0 ||
+        control.ShiningAbodeCyclesExpectedThisTurn > 0 ||
+        control.ShiningFactionCyclesExpectedThisTurn > 0 ||
+        control.ShiningTradeCyclesExpectedThisTurn > 0 ||
+        control.AfterlifeCatchupRequired;
+
+    private static int ResolveExpectedGuardianProjectCycleOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.GuardianProjectCyclesExpectedThisTurn,
+            control.LastGuardianProjectCycleOrdinal,
+            control.NextGuardianProjectCycleOrdinal > 0
+                ? control.NextGuardianProjectCycleOrdinal
+                : control.NextChaosSeaTurnOrdinal);
+    }
+
+    private static int ResolveExpectedChaosSeaSimulationOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.ChaosSeaCyclesExpectedThisTurn,
+            control.LastChaosSeaSimulationOrdinal,
+            control.NextChaosSeaTurnOrdinal);
+    }
+
+    private static int ResolveExpectedResidentAgencyCycleOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.ResidentAgencyCyclesExpectedThisTurn,
+            control.LastResidentAgencyCycleOrdinal,
+            control.NextResidentAgencyCycleOrdinal);
+    }
+
+    private static int ResolveExpectedShiningAbodeCycleOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.ShiningAbodeCyclesExpectedThisTurn,
+            control.LastShiningAbodeCycleOrdinal,
+            control.NextShiningAbodeCycleOrdinal);
+    }
+
+    private static int ResolveExpectedShiningFactionCycleOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.ShiningFactionCyclesExpectedThisTurn,
+            control.LastShiningFactionCycleOrdinal,
+            control.NextShiningFactionCycleOrdinal);
+    }
+
+    private static int ResolveExpectedShiningTradeCycleOrdinal(ProgressionControl control)
+    {
+        return ResolveExpectedAfterlifeContourOrdinal(
+            control,
+            control.ShiningTradeCyclesExpectedThisTurn,
+            control.LastShiningTradeCycleOrdinal,
+            control.NextShiningTradeCycleOrdinal);
+    }
+
+    private static void ValidateExpectedProcessedCount(
+        List<ValidationIssue> issues,
+        string fieldName,
+        int? actualValue,
+        int expectedValue,
+        string missingCode,
+        string mismatchCode)
+    {
+        if ((actualValue ?? 0) == expectedValue)
+            return;
+
+        if (actualValue == null)
         {
-            if (report.ChaosSeaCyclesProcessed == null)
-            {
-                issues.Add(new ValidationIssue(ReportPath, IssueSeverity.Error,
-                    "progressionProcessingReport не содержит обязательное поле chaosSeaCyclesProcessed",
-                    code: "progression_report_missing_chaos_cycles_processed",
-                    section: "ProgressionReport",
-                    expected: expectedChaosCycles.ToString(),
-                    actual: "missing",
-                    repairHint: "Добавь chaosSeaCyclesProcessed в progressionProcessingReport и укажи фактически обработанное число afterlife cycles для текущего afterlife realm в этом ходу."));
-            }
-            else
-            {
-                issues.Add(BuildProgressionMismatchIssue(
-                    "progression_report_chaos_cycles_processed_mismatch",
-                    "chaosSeaCyclesProcessed",
-                    expectedChaosCycles,
-                    report.ChaosSeaCyclesProcessed ?? 0,
-                    "Исправь chaosSeaCyclesProcessed в progressionProcessingReport, чтобы он отражал точное число afterlife cycles, которые клиент ожидал для текущего afterlife realm в этом ходу."));
-            }
+            issues.Add(new ValidationIssue(ReportPath, IssueSeverity.Error,
+                $"progressionProcessingReport не содержит обязательное поле {fieldName}",
+                code: missingCode,
+                section: "ProgressionReport",
+                expected: expectedValue.ToString(),
+                actual: "missing",
+                repairHint: $"Добавь {fieldName} в progressionProcessingReport и укажи bounded число cycles, которое клиент запросил для этого хода."));
+            return;
         }
 
-        if ((report.GuardianProjectCyclesProcessed ?? 0) != expectedGuardianCycles)
+        issues.Add(BuildProgressionMismatchIssue(
+            mismatchCode,
+            fieldName,
+            expectedValue,
+            actualValue ?? 0,
+            $"Исправь {fieldName}: валидатор принимает только bounded count из progressionControl, а не raw elapsed backlog."));
+    }
+
+    private static void ValidateExpectedOrdinal(
+        List<ValidationIssue> issues,
+        string fieldName,
+        int? actualValue,
+        int expectedCycles,
+        int expectedOrdinal,
+        string missingCode,
+        string mismatchCode)
+    {
+        if (expectedCycles <= 0 || actualValue == expectedOrdinal)
+            return;
+
+        if (actualValue == null)
         {
-            if (report.GuardianProjectCyclesProcessed == null)
-            {
-                issues.Add(new ValidationIssue(ReportPath, IssueSeverity.Error,
-                    "progressionProcessingReport не содержит обязательное поле guardianProjectCyclesProcessed",
-                    code: "progression_report_missing_guardian_cycles_processed",
-                    section: "ProgressionReport",
-                    expected: expectedGuardianCycles.ToString(),
-                    actual: "missing",
-                    repairHint: "Добавь guardianProjectCyclesProcessed в progressionProcessingReport и укажи фактически обработанное число guardian project cycles для этого хода."));
-            }
-            else
-            {
-                issues.Add(BuildProgressionMismatchIssue(
-                    "progression_report_guardian_cycles_processed_mismatch",
-                    "guardianProjectCyclesProcessed",
-                    expectedGuardianCycles,
-                    report.GuardianProjectCyclesProcessed ?? 0,
-                    "Исправь guardianProjectCyclesProcessed в progressionProcessingReport, чтобы он отражал точное число guardian project cycles, которые клиент ожидал для этого хода."));
-            }
+            issues.Add(new ValidationIssue(ReportPath, IssueSeverity.Error,
+                $"progressionProcessingReport не содержит обязательное поле {fieldName}",
+                code: missingCode,
+                section: "ProgressionReport",
+                expected: expectedOrdinal.ToString(),
+                actual: "missing",
+                repairHint: $"Если соответствующий afterlife contour обработан, укажи {fieldName} с новым authoritative ordinal marker из progressionControl."));
+            return;
         }
 
-        if (expectedChaosCycles > 0 && report.NewLastChaosSeaSimulationOrdinal != control.NextChaosSeaTurnOrdinal)
+        issues.Add(BuildProgressionMismatchIssue(
+            mismatchCode,
+            fieldName,
+            expectedOrdinal,
+            actualValue ?? 0,
+            $"Исправь {fieldName}, чтобы он закрывал bounded cycle/catch-up через authoritative ordinal marker из progressionControl."));
+    }
+
+    private static void ValidateAfterlifeCatchupProof(
+        ProgressionControl control,
+        ProgressionProcessingReport report,
+        List<ValidationIssue> issues)
+    {
+        if (!control.AfterlifeCatchupRequired)
         {
-            if (report.NewLastChaosSeaSimulationOrdinal == null)
+            if (report.AfterlifeCatchupProcessed == true)
             {
                 issues.Add(new ValidationIssue(ReportPath, IssueSeverity.Error,
-                    "progressionProcessingReport не содержит обязательное поле newLastChaosSeaSimulationOrdinal",
-                    code: "progression_report_missing_new_last_chaos_ordinal",
+                    "progressionProcessingReport содержит afterlifeCatchupProcessed=true без запрошенного catch-up.",
+                    code: "progression_report_unexpected_afterlife_catchup",
                     section: "ProgressionReport",
-                    expected: control.NextChaosSeaTurnOrdinal.ToString(),
-                    actual: "missing",
-                    repairHint: "Если afterlife cycles обработаны, укажи newLastChaosSeaSimulationOrdinal с новым authoritative ordinal marker для текущего afterlife realm."));
+                    expected: "afterlifeCatchupProcessed omitted or false when afterlifeCatchupRequired=false",
+                    actual: "afterlifeCatchupProcessed=true",
+                    repairHint: "Не закрывай catch-up, которого нет в progressionControl. Для обычных afterlife cycles достаточно processed counts и new last-* ordinals."));
             }
-            else
-            {
-                issues.Add(BuildProgressionMismatchIssue(
-                    "progression_report_new_last_chaos_ordinal_mismatch",
-                    "newLastChaosSeaSimulationOrdinal",
-                    control.NextChaosSeaTurnOrdinal,
-                    report.NewLastChaosSeaSimulationOrdinal ?? 0,
-                    "Исправь newLastChaosSeaSimulationOrdinal, чтобы он указывал новый authoritative afterlife ordinal marker после обработанных afterlife cycles в текущем afterlife realm."));
-            }
+            return;
         }
 
-        if (expectedGuardianCycles > 0 && report.NewLastGuardianProjectCycleOrdinal != control.NextChaosSeaTurnOrdinal)
+        if (report.AfterlifeCatchupProcessed != true)
         {
-            if (report.NewLastGuardianProjectCycleOrdinal == null)
+            issues.Add(new ValidationIssue(ReportPath, IssueSeverity.Error,
+                "progressionProcessingReport не подтверждает обязательный bounded afterlife catch-up.",
+                code: "progression_report_missing_afterlife_catchup_processed",
+                section: "ProgressionReport",
+                expected: "afterlifeCatchupProcessed=true",
+                actual: report.AfterlifeCatchupProcessed?.ToString() ?? "missing",
+                repairHint: "Если progressionControl.afterlifeCatchupRequired=true, обработай bounded summary catch-up и укажи afterlifeCatchupProcessed=true."));
+        }
+
+        if ((report.AfterlifeCatchupSummaryEventsProcessed ?? 0) != control.AfterlifeCatchupSummaryEventsRequired)
+        {
+            if (report.AfterlifeCatchupSummaryEventsProcessed == null)
             {
                 issues.Add(new ValidationIssue(ReportPath, IssueSeverity.Error,
-                    "progressionProcessingReport не содержит обязательное поле newLastGuardianProjectCycleOrdinal",
-                    code: "progression_report_missing_new_last_guardian_ordinal",
+                    "progressionProcessingReport не содержит afterlifeCatchupSummaryEventsProcessed для обязательного catch-up.",
+                    code: "progression_report_missing_afterlife_catchup_summary_events",
                     section: "ProgressionReport",
-                    expected: control.NextChaosSeaTurnOrdinal.ToString(),
+                    expected: control.AfterlifeCatchupSummaryEventsRequired.ToString(),
                     actual: "missing",
-                    repairHint: "Если guardian project cycles обработаны, укажи newLastGuardianProjectCycleOrdinal с новым authoritative ordinal marker."));
+                    repairHint: "Укажи, сколько bounded summary outcomes ГМ реально обработал для catch-up; значение должно совпадать с progressionControl.afterlifeCatchupSummaryEventsRequired."));
+                return;
             }
-            else
-            {
-                issues.Add(BuildProgressionMismatchIssue(
-                    "progression_report_new_last_guardian_ordinal_mismatch",
-                    "newLastGuardianProjectCycleOrdinal",
-                    control.NextChaosSeaTurnOrdinal,
-                    report.NewLastGuardianProjectCycleOrdinal ?? 0,
-                    "Исправь newLastGuardianProjectCycleOrdinal, чтобы он указывал новый authoritative guardian-project ordinal marker после обработанных guardian cycles."));
-            }
+
+            issues.Add(BuildProgressionMismatchIssue(
+                "progression_report_afterlife_catchup_summary_events_mismatch",
+                "afterlifeCatchupSummaryEventsProcessed",
+                control.AfterlifeCatchupSummaryEventsRequired,
+                report.AfterlifeCatchupSummaryEventsProcessed ?? 0,
+                "Не пытайся догонять raw elapsed backlog. Обработай ровно bounded summary count из progressionControl."));
         }
     }
 
     private async Task<ProgressionScheduleState> SanitizeScheduleAsync(ProgressionScheduleState schedule, string? activeTurnRealm = null)
     {
-        schedule.WorldCycleMinutes = schedule.WorldCycleMinutes > 0 ? schedule.WorldCycleMinutes : 240;
-        schedule.FactionCycleMinutes = schedule.FactionCycleMinutes > 0 ? schedule.FactionCycleMinutes : 1440;
+        schedule.WorldCycleMinutes = schedule.WorldCycleMinutes > 0 ? schedule.WorldCycleMinutes : DefaultWorldCycleMinutes;
+        schedule.FactionCycleMinutes = schedule.FactionCycleMinutes > 0 ? schedule.FactionCycleMinutes : DefaultFactionCycleMinutes;
         schedule.ChaosSeaCycleEquivalentHours = schedule.ChaosSeaCycleEquivalentHours > 0
             ? schedule.ChaosSeaCycleEquivalentHours
-            : 24;
+            : DefaultChaosSeaCycleEquivalentHours;
+        schedule.AfterlifeCatchupCycleEquivalentMinutes = schedule.AfterlifeCatchupCycleEquivalentMinutes > 0
+            ? schedule.AfterlifeCatchupCycleEquivalentMinutes
+            : DefaultAfterlifeCatchupCycleEquivalentMinutes;
 
         var resolvedRealm = activeTurnRealm;
         if (!HasResolvedRealm(resolvedRealm))
@@ -695,8 +1102,9 @@ public class ProgressionScheduleService
         if (!HasResolvedRealm(resolvedRealm))
             throw BuildUnresolvedRealmException();
 
-        schedule.CurrentRealm = resolvedRealm;
-        if (HasResolvedRealm(schedule.CurrentRealm) && !IsChaosSea(schedule.CurrentRealm))
+        var previousCurrentWorldTimeInMinutes = schedule.CurrentWorldTimeInMinutes;
+        schedule.CurrentRealm = resolvedRealm ?? string.Empty;
+        if (HasResolvedRealm(schedule.CurrentRealm) && !IsAfterlifeRealm(schedule.CurrentRealm))
         {
             schedule.CurrentWorldTimeInMinutes = (await ResolveWorldTimeFromFileAsync(schedule.CurrentWorldTimeInMinutes)).Minutes;
         }
@@ -705,6 +1113,26 @@ public class ProgressionScheduleService
         schedule.PendingFactionCycles = Math.Max(0, schedule.PendingFactionCycles);
         schedule.PendingChaosSeaCycles = Math.Max(0, schedule.PendingChaosSeaCycles);
         schedule.PendingGuardianProjectCycles = Math.Max(0, schedule.PendingGuardianProjectCycles);
+        schedule.PendingResidentAgencyCycles = Math.Max(0, schedule.PendingResidentAgencyCycles);
+        schedule.PendingShiningAbodeCycles = Math.Max(0, schedule.PendingShiningAbodeCycles);
+        schedule.PendingShiningFactionCycles = Math.Max(0, schedule.PendingShiningFactionCycles);
+        schedule.PendingShiningTradeCycles = Math.Max(0, schedule.PendingShiningTradeCycles);
+        schedule.CurrentChaosSeaTurnOrdinal = Math.Max(0, schedule.CurrentChaosSeaTurnOrdinal);
+        schedule.LastChaosSeaSimulationOrdinal = Math.Max(0, schedule.LastChaosSeaSimulationOrdinal);
+        schedule.LastGuardianProjectCycleOrdinal = Math.Max(0, schedule.LastGuardianProjectCycleOrdinal);
+        schedule.LastResidentAgencyCycleOrdinal = Math.Max(0, schedule.LastResidentAgencyCycleOrdinal);
+        schedule.LastShiningAbodeCycleOrdinal = Math.Max(0, schedule.LastShiningAbodeCycleOrdinal);
+        schedule.LastShiningFactionCycleOrdinal = Math.Max(0, schedule.LastShiningFactionCycleOrdinal);
+        schedule.LastShiningTradeCycleOrdinal = Math.Max(0, schedule.LastShiningTradeCycleOrdinal);
+        if (!schedule.HasAfterlifeCatchupWorldTimeBaseline)
+        {
+            schedule.LastAfterlifeCatchupWorldTimeInMinutes = Math.Max(0, previousCurrentWorldTimeInMinutes);
+            schedule.HasAfterlifeCatchupWorldTimeBaseline = true;
+        }
+        else
+        {
+            schedule.LastAfterlifeCatchupWorldTimeInMinutes = Math.Max(0, schedule.LastAfterlifeCatchupWorldTimeInMinutes);
+        }
         schedule.LastUpdatedUtc ??= DateTime.UtcNow.ToString("o");
         return schedule;
     }
@@ -873,7 +1301,9 @@ public class ProgressionScheduleService
         return fallback;
     }
 
-    private async Task<WorldTimeResolutionResult> ResolveWorldTimeFromFileAsync(int fallback)
+    private async Task<WorldTimeResolutionResult> ResolveWorldTimeFromFileAsync(
+        int fallback,
+        bool allowIncrementalTimeChange = true)
     {
         var json = await _fs.ReadFileAsync("game_state/world/world_time.json");
         if (string.IsNullOrWhiteSpace(json))
@@ -897,7 +1327,7 @@ public class ProgressionScheduleService
                     return new WorldTimeResolutionResult(fallback, true);
             }
 
-            if (TryReadIntLike(root, "timeChange", out var delta))
+            if (allowIncrementalTimeChange && TryReadIntLike(root, "timeChange", out var delta))
                 return new WorldTimeResolutionResult(Math.Max(0, fallback + delta), false);
 
             if (LooksLikeAbsoluteWorldTimeObject(root))
@@ -945,11 +1375,67 @@ public class ProgressionScheduleService
     private static bool HasResolvedRealm(string? realm) =>
         !string.IsNullOrWhiteSpace(realm);
 
-    private static bool IsChaosSea(string? realm) =>
+    private static bool IsAfterlifeRealm(string? realm) =>
+        IsChaosSeaRealm(realm) || IsShiningAbodeRealm(realm);
+
+    private static bool IsChaosSeaRealm(string? realm) =>
         string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsShiningAbodeRealm(string? realm) =>
         string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
+
+    private async Task<AfterlifeRealmKind> ResolveAfterlifeRealmKindAsync(string? realm)
+    {
+        if (IsChaosSeaRealm(realm))
+            return AfterlifeRealmKind.ChaosSea;
+
+        if (!IsShiningAbodeRealm(realm))
+            return AfterlifeRealmKind.None;
+
+        return await HasPreparedShiningBootstrapPackageAsync()
+            ? AfterlifeRealmKind.ShiningBootstrapHandoff
+            : AfterlifeRealmKind.ShiningAbode;
+    }
+
+    private async Task<bool> HasPreparedShiningBootstrapPackageAsync()
+    {
+        var json = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        try
+        {
+            var root = JsonNode.Parse(json) as JsonObject;
+            return root?["preparedIncarnationPackage"] is JsonObject;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось прочитать preparedIncarnationPackage для progression scheduler; Shining bootstrap handoff не будет считаться готовым.");
+            return false;
+        }
+    }
+
+    private async Task<bool> HasActiveShiningAbodeWithoutPreparedPackageAsync()
+    {
+        var json = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        try
+        {
+            var root = JsonNode.Parse(json) as JsonObject;
+            var availability = root?["availability"]?.GetValue<string>();
+            return string.Equals(availability, ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase) &&
+                   root?["preparedIncarnationPackage"] is not JsonObject;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось прочитать active Shining Abode state для afterlife catch-up contours.");
+            return false;
+        }
+    }
 
     private static bool ProgressionReportMatchesCurrentTurn(
         ProgressionProcessingReport? report,
@@ -964,7 +1450,7 @@ public class ProgressionScheduleService
                string.Equals(report.RequestId, currentTurnContext.Value.RequestId, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool HasVerifiedChaosSeaProgressionOutcome(
+    private static bool HasVerifiedAfterlifeProgressionOutcome(
         ProgressionControl control,
         ProgressionProcessingReport? report,
         PendingTurnRequestContext? currentTurnContext)
@@ -981,14 +1467,62 @@ public class ProgressionScheduleService
         if ((report.GuardianProjectCyclesProcessed ?? 0) != Math.Max(0, control.GuardianProjectCyclesExpectedThisTurn))
             return false;
 
+        if ((report.ResidentAgencyCyclesProcessed ?? 0) != Math.Max(0, control.ResidentAgencyCyclesExpectedThisTurn))
+            return false;
+
+        if ((report.ShiningAbodeCyclesProcessed ?? 0) != Math.Max(0, control.ShiningAbodeCyclesExpectedThisTurn))
+            return false;
+
+        if ((report.ShiningFactionCyclesProcessed ?? 0) != Math.Max(0, control.ShiningFactionCyclesExpectedThisTurn))
+            return false;
+
+        if ((report.ShiningTradeCyclesProcessed ?? 0) != Math.Max(0, control.ShiningTradeCyclesExpectedThisTurn))
+            return false;
+
         if (control.ChaosSeaCyclesExpectedThisTurn > 0 &&
-            report.NewLastChaosSeaSimulationOrdinal != control.NextChaosSeaTurnOrdinal)
+            report.NewLastChaosSeaSimulationOrdinal != ResolveExpectedChaosSeaSimulationOrdinal(control))
         {
             return false;
         }
 
         if (control.GuardianProjectCyclesExpectedThisTurn > 0 &&
-            report.NewLastGuardianProjectCycleOrdinal != control.NextChaosSeaTurnOrdinal)
+            report.NewLastGuardianProjectCycleOrdinal != ResolveExpectedGuardianProjectCycleOrdinal(control))
+        {
+            return false;
+        }
+
+        if (control.ResidentAgencyCyclesExpectedThisTurn > 0 &&
+            report.NewLastResidentAgencyCycleOrdinal != ResolveExpectedResidentAgencyCycleOrdinal(control))
+        {
+            return false;
+        }
+
+        if (control.ShiningAbodeCyclesExpectedThisTurn > 0 &&
+            report.NewLastShiningAbodeCycleOrdinal != ResolveExpectedShiningAbodeCycleOrdinal(control))
+        {
+            return false;
+        }
+
+        if (control.ShiningFactionCyclesExpectedThisTurn > 0 &&
+            report.NewLastShiningFactionCycleOrdinal != ResolveExpectedShiningFactionCycleOrdinal(control))
+        {
+            return false;
+        }
+
+        if (control.ShiningTradeCyclesExpectedThisTurn > 0 &&
+            report.NewLastShiningTradeCycleOrdinal != ResolveExpectedShiningTradeCycleOrdinal(control))
+        {
+            return false;
+        }
+
+        if (control.AfterlifeCatchupRequired)
+        {
+            if (report.AfterlifeCatchupProcessed != true)
+                return false;
+            if ((report.AfterlifeCatchupSummaryEventsProcessed ?? 0) != control.AfterlifeCatchupSummaryEventsRequired)
+                return false;
+        }
+        else if (report.AfterlifeCatchupProcessed == true)
         {
             return false;
         }
@@ -1040,9 +1574,20 @@ public class ProgressionScheduleService
                left.CurrentChaosSeaTurnOrdinal == right.CurrentChaosSeaTurnOrdinal &&
                left.LastChaosSeaSimulationOrdinal == right.LastChaosSeaSimulationOrdinal &&
                left.LastGuardianProjectCycleOrdinal == right.LastGuardianProjectCycleOrdinal &&
+               left.LastResidentAgencyCycleOrdinal == right.LastResidentAgencyCycleOrdinal &&
+               left.LastShiningAbodeCycleOrdinal == right.LastShiningAbodeCycleOrdinal &&
+               left.LastShiningFactionCycleOrdinal == right.LastShiningFactionCycleOrdinal &&
+               left.LastShiningTradeCycleOrdinal == right.LastShiningTradeCycleOrdinal &&
                left.PendingChaosSeaCycles == right.PendingChaosSeaCycles &&
                left.PendingGuardianProjectCycles == right.PendingGuardianProjectCycles &&
-               left.ChaosSeaCycleEquivalentHours == right.ChaosSeaCycleEquivalentHours;
+               left.PendingResidentAgencyCycles == right.PendingResidentAgencyCycles &&
+               left.PendingShiningAbodeCycles == right.PendingShiningAbodeCycles &&
+               left.PendingShiningFactionCycles == right.PendingShiningFactionCycles &&
+               left.PendingShiningTradeCycles == right.PendingShiningTradeCycles &&
+               left.ChaosSeaCycleEquivalentHours == right.ChaosSeaCycleEquivalentHours &&
+               left.AfterlifeCatchupCycleEquivalentMinutes == right.AfterlifeCatchupCycleEquivalentMinutes &&
+               left.LastAfterlifeCatchupWorldTimeInMinutes == right.LastAfterlifeCatchupWorldTimeInMinutes &&
+               left.HasAfterlifeCatchupWorldTimeBaseline == right.HasAfterlifeCatchupWorldTimeBaseline;
     }
 }
 
@@ -1062,8 +1607,19 @@ public class ProgressionScheduleState
     public int CurrentChaosSeaTurnOrdinal { get; set; }
     public int LastChaosSeaSimulationOrdinal { get; set; }
     public int LastGuardianProjectCycleOrdinal { get; set; }
+    public int LastResidentAgencyCycleOrdinal { get; set; }
+    public int LastShiningAbodeCycleOrdinal { get; set; }
+    public int LastShiningFactionCycleOrdinal { get; set; }
+    public int LastShiningTradeCycleOrdinal { get; set; }
     public int PendingChaosSeaCycles { get; set; }
     public int PendingGuardianProjectCycles { get; set; }
+    public int PendingResidentAgencyCycles { get; set; }
+    public int PendingShiningAbodeCycles { get; set; }
+    public int PendingShiningFactionCycles { get; set; }
+    public int PendingShiningTradeCycles { get; set; }
     public int ChaosSeaCycleEquivalentHours { get; set; } = 24;
+    public int AfterlifeCatchupCycleEquivalentMinutes { get; set; } = 1440;
+    public int LastAfterlifeCatchupWorldTimeInMinutes { get; set; }
+    public bool HasAfterlifeCatchupWorldTimeBaseline { get; set; }
     public string? LastUpdatedUtc { get; set; }
 }

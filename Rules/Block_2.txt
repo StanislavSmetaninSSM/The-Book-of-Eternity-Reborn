@@ -639,10 +639,20 @@
                     'factionCyclesProcessed': '(integer, optional)',
                     'chaosSeaCyclesProcessed': '(integer, optional)',
                     'guardianProjectCyclesProcessed': '(integer, optional)',
+                    'residentAgencyCyclesProcessed': '(integer, optional)',
+                    'shiningAbodeCyclesProcessed': '(integer, optional)',
+                    'shiningFactionCyclesProcessed': '(integer, optional)',
+                    'shiningTradeCyclesProcessed': '(integer, optional)',
                     'newLastWorldSimulationTimeInMinutes': '(integer, optional)',
                     'newLastFactionSimulationTimeInMinutes': '(integer, optional)',
                     'newLastChaosSeaSimulationOrdinal': '(integer, optional)',
-                    'newLastGuardianProjectCycleOrdinal': '(integer, optional)'
+                    'newLastGuardianProjectCycleOrdinal': '(integer, optional)',
+                    'newLastResidentAgencyCycleOrdinal': '(integer, optional)',
+                    'newLastShiningAbodeCycleOrdinal': '(integer, optional)',
+                    'newLastShiningFactionCycleOrdinal': '(integer, optional)',
+                    'newLastShiningTradeCycleOrdinal': '(integer, optional)',
+                    'afterlifeCatchupProcessed': '(boolean, optional)',
+                    'afterlifeCatchupSummaryEventsProcessed': '(integer, optional)'
                 }.",
 
                 "image_prompt": "(string) 
