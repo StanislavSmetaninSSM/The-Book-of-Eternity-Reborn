@@ -66,11 +66,33 @@
     "nextChaosSeaTurnOrdinal": "integer",
     "lastChaosSeaSimulationOrdinal": "integer",
     "lastGuardianProjectCycleOrdinal": "integer",
+    "nextGuardianProjectCycleOrdinal": "integer",
+    "lastResidentAgencyCycleOrdinal": "integer",
+    "lastShiningAbodeCycleOrdinal": "integer",
+    "lastShiningFactionCycleOrdinal": "integer",
+    "lastShiningTradeCycleOrdinal": "integer",
     "chaosSeaCycleEquivalentHours": "integer (24)",
+    "nextResidentAgencyCycleOrdinal": "integer",
+    "nextShiningAbodeCycleOrdinal": "integer",
+    "nextShiningFactionCycleOrdinal": "integer",
+    "nextShiningTradeCycleOrdinal": "integer",
     "chaosSeaCyclesExpectedThisTurn": "integer",
     "guardianProjectCyclesExpectedThisTurn": "integer",
+    "residentAgencyCyclesExpectedThisTurn": "integer",
+    "shiningAbodeCyclesExpectedThisTurn": "integer",
+    "shiningFactionCyclesExpectedThisTurn": "integer",
+    "shiningTradeCyclesExpectedThisTurn": "integer",
     "mustEvaluateChaosSeaProgression": "boolean (true iff chaosSeaCyclesExpectedThisTurn > 0)",
-    "mustEvaluateGuardianProjectProgression": "boolean (true iff guardianProjectCyclesExpectedThisTurn > 0)"
+    "mustEvaluateGuardianProjectProgression": "boolean (true iff guardianProjectCyclesExpectedThisTurn > 0)",
+    "mustEvaluateResidentAgencyProgression": "boolean (true iff residentAgencyCyclesExpectedThisTurn > 0)",
+    "mustEvaluateShiningAbodeProgression": "boolean (true iff shiningAbodeCyclesExpectedThisTurn > 0)",
+    "mustEvaluateShiningFactionProgression": "boolean (true iff shiningFactionCyclesExpectedThisTurn > 0)",
+    "mustEvaluateShiningTradeProgression": "boolean (true iff shiningTradeCyclesExpectedThisTurn > 0)",
+    "afterlifeCatchupRequired": "boolean",
+    "afterlifeCatchupElapsedCycles": "integer",
+    "afterlifeCatchupPressureTier": "string (none|minor|major|severe|epochal)",
+    "afterlifeCatchupSummaryEventsRequired": "integer",
+    "afterlifeCatchupContours": "array of strings naming affected afterlife contours"
   },
   "additionalContext": {
     "urgency": "string (low|medium|high)",
@@ -78,6 +100,94 @@
   }
 }
 ```
+
+### `progressionControl` Afterlife Scheduler Fields
+
+The GM must treat every `mustEvaluate* = true` field as mandatory processing debt for this turn. The client decides when cycles are due; the GM decides the concrete fictional consequences and reports exactly what was processed.
+
+| Field family | Meaning for GM |
+|---|---|
+| `chaosSeaCyclesExpectedThisTurn` / `mustEvaluateChaosSeaProgression` | Mandatory Chaos Sea hub progression: sea-wide omens, metaphysical pressure, guardian politics visible from the hub, and other Chaos-Sea-only living-world changes. |
+| `guardianProjectCyclesExpectedThisTurn` / `mustEvaluateGuardianProjectProgression` | Mandatory Guardian project progression. Advance or resolve Guardian projects, musings, lore discoveries, rivalries, or abode power events only through Guardian/afterlife surfaces. |
+| `residentAgencyCyclesExpectedThisTurn` / `mustEvaluateResidentAgencyProgression` | Mandatory agency for authored afterlife residents in Guardian Abodes: their choices, conversations, requests, memory/history changes, resident-linked Soul Quests, or relic grants. |
+| `shiningAbodeCyclesExpectedThisTurn` / `mustEvaluateShiningAbodeProgression` | Mandatory Shining Abode state progression: public mood, order, crises, ascended social changes, and abode-level consequences. |
+| `shiningFactionCyclesExpectedThisTurn` / `mustEvaluateShiningFactionProgression` | Mandatory Shining faction progression using Shining-specific state, not Mortal World `factionDataChanges`. |
+| `shiningTradeCyclesExpectedThisTurn` / `mustEvaluateShiningTradeProgression` | Mandatory Shining trade/economy progression using Shining/Guardian trade surfaces, receipts, and afterlife notifications derivation rules. |
+| `next*Ordinal` / `last*Ordinal` | Per-contour scheduler markers. Do not invent ordinals; report the new last marker matching the processed count for that exact contour. |
+| `afterlifeCatchup*` | Bounded catch-up summary. Do not simulate all raw elapsed cycles; produce exactly `afterlifeCatchupSummaryEventsRequired` meaningful summary outcomes affecting `afterlifeCatchupContours`. |
+
+### Afterlife Living-World Operational Contract
+
+Afterlife realms use the same "living world" principle as Mortal World progression: off-screen actors continue to act. The difference is that afterlife progression must stay inside afterlife state and commands.
+
+The GM must read these state groups before resolving afterlife scheduler debt:
+- `game_state/meta/soul_state.json`: current realm, Soul Relics, Enlightenment, Ink Feathers, afterlife archive, current incarnation metadata.
+- `game_state/meta/guardians.json`: Guardian identity, reputation, mood, musings, trade inventory, relationships, buyback relics.
+- `game_state/meta/guardian_projects.json`: active/completed Guardian projects and project pressure.
+- `game_state/meta/guardian_abode_residents.json`: authored residents, resident memory, history, rewards, linked Soul Quests, Shining alignment fields.
+- `game_state/meta/shining_abode_state.json`: Shining availability, Light Sparks, Radiance, halls, gates, factions, projects, trade inventories, receipts, prepared incarnation package.
+- `game_state/control/pending_*afterlife*` and `game_state/control/pending_shining_*` files: client-authored contracts that must be resolved canonically when present.
+
+Legal afterlife progression surfaces include:
+- `UpdateGuardians`
+- `guardianThoughtJournalUpdates`
+- `guardianSocialJournalUpdates`
+- `startGuardianProjects`
+- `guardianProjectUpdates`
+- `completeGuardianProjects`
+- `guardianPowerEvents`
+- `UpdateGuardianTradeInventoryReceipts`
+- `UpdateGuardianAbodeResidents`
+- `UpdateGuardianAbodeResidentRosterReceipts`
+- `UpdateGuardianAbodeResidentInteractionReceipts`
+- `UpdateGuardianAbodeResidentHistoryLog`
+- `residentThoughtJournalUpdates`
+- `residentInteractionLogUpdates`
+- `UpdateSoulQuests` with `relatedAfterlifeResidentId`
+- `metaStateUpdates` for canonical Soul/Ink/Soul Relic effects
+- `afterlifeArchiveUpdates` and `archiveActionResolutions`
+- canonical `shining_abode_state.json` mutation plus Shining receipt arrays when resolving Shining contracts
+- `progressionProcessingReport`
+
+Forbidden substitutions for afterlife scheduler debt:
+- Do not use `worldEventsLog` for Chaos Sea or Shining Abode events.
+- Do not use `factionDataChanges`, `factionProjectUpdates`, `completeFactionProjects`, or `factionChronicleUpdates` for Shining factions.
+- Do not use `UpdateNPCs`, `NPCsInScene`, `NPCGoalUpdates`, or `NPCActivityUpdates` for Guardians or afterlife residents.
+- Do not use `currentLocationData`, `worldMapUpdates`, `timeChange`, `setWorldTime`, or `weatherChange` for afterlife movement, time, or environment.
+- Do not hand-author `afterlife_notifications.json`; the client derives notifications from canonical receipts and result surfaces.
+
+Required `gm_thoughts_markdown` coverage when afterlife debt is due:
+- List every due afterlife contour and its expected count.
+- Explain which state files were checked.
+- Declare all changed Guardians, residents, and Shining institutions as relevant actors.
+- Explain outside-scope Guardians/residents/institutions when they could plausibly matter but are not processed.
+- Summarize each processed contour's consequence, including stability/no-mutation decisions.
+- If catch-up is required, list `afterlifeCatchupPressureTier`, `afterlifeCatchupContours`, and each bounded summary outcome.
+
+Example afterlife report with mixed backlog:
+
+```json
+{
+  "sessionId": "session-id-from-request",
+  "requestId": "request-id-from-request",
+  "turnNumber": 42,
+  "chaosSeaCyclesProcessed": 0,
+  "guardianProjectCyclesProcessed": 2,
+  "residentAgencyCyclesProcessed": 3,
+  "shiningAbodeCyclesProcessed": 4,
+  "shiningFactionCyclesProcessed": 5,
+  "shiningTradeCyclesProcessed": 6,
+  "newLastGuardianProjectCycleOrdinal": 10,
+  "newLastResidentAgencyCycleOrdinal": 11,
+  "newLastShiningAbodeCycleOrdinal": 12,
+  "newLastShiningFactionCycleOrdinal": 13,
+  "newLastShiningTradeCycleOrdinal": 14,
+  "afterlifeCatchupProcessed": true,
+  "afterlifeCatchupSummaryEventsProcessed": 3
+}
+```
+
+The example intentionally uses different `newLast*Ordinal` values. Each contour advances by its own expected count, never by the maximum backlog of another contour.
 
 ### Legacy Note: `input/player_command.json`
 Historical drafts mentioned a separate `input/player_command.json` surface for save/load/debug/end_life.
@@ -269,6 +379,38 @@ CLI Agent automatically loads current game state from:
   "playerChoice": "string (required only with AscensionTrigger; must equal Ascension)"
 }
 ```
+
+### `progressionProcessingReport`
+
+When any `progressionControl.mustEvaluate*` flag is true, or when `afterlifeCatchupRequired = true`, the response must include `progressionProcessingReport`. The report is distributed to `game_state/control/progression_report.json` and consumed by the client scheduler.
+
+```json
+{
+  "sessionId": "string (copy from turn_request.json)",
+  "requestId": "string (copy from turn_request.json)",
+  "turnNumber": "integer (copy from turn_request.json)",
+  "worldCyclesProcessed": "integer, optional; Mortal World only",
+  "factionCyclesProcessed": "integer, optional; Mortal World only",
+  "chaosSeaCyclesProcessed": "integer, optional",
+  "guardianProjectCyclesProcessed": "integer, optional",
+  "residentAgencyCyclesProcessed": "integer, optional",
+  "shiningAbodeCyclesProcessed": "integer, optional",
+  "shiningFactionCyclesProcessed": "integer, optional",
+  "shiningTradeCyclesProcessed": "integer, optional",
+  "newLastWorldSimulationTimeInMinutes": "integer, optional; Mortal World only",
+  "newLastFactionSimulationTimeInMinutes": "integer, optional; Mortal World only",
+  "newLastChaosSeaSimulationOrdinal": "integer, optional",
+  "newLastGuardianProjectCycleOrdinal": "integer, optional",
+  "newLastResidentAgencyCycleOrdinal": "integer, optional",
+  "newLastShiningAbodeCycleOrdinal": "integer, optional",
+  "newLastShiningFactionCycleOrdinal": "integer, optional",
+  "newLastShiningTradeCycleOrdinal": "integer, optional",
+  "afterlifeCatchupProcessed": "boolean, optional",
+  "afterlifeCatchupSummaryEventsProcessed": "integer, optional"
+}
+```
+
+For afterlife turns, processed counts must match the due contour counts. Each `newLast*Ordinal` must advance only its own contour; do not use the maximum pending backlog for all contours. If `afterlifeCatchupRequired = true`, set `afterlifeCatchupProcessed = true` and set `afterlifeCatchupSummaryEventsProcessed` to exactly `afterlifeCatchupSummaryEventsRequired`.
 
 ---
 
@@ -463,15 +605,31 @@ Quest state contract notes:
 - If a new same-turn faction is authored only with `initialId`/`initialFactionId`, the client normalizes that temporary tag into the stored `factionId` inside canonical faction files for that accepted turn. Subsequent turns must target the faction by `factionId`.
 
 #### **META-GAME SYSTEM**
-- `game_state/meta/soul_state.json` ← `metaStateUpdates`, `afterlifeArchiveUpdates`
-- `game_state/meta/guardians.json` ← `UpdateGuardians`, `guardianPowerEvents`
-- `game_state/meta/guardian_abode_residents.json` ← `UpdateGuardianAbodeResidents`
+- `game_state/meta/soul_state.json` ← `metaStateUpdates`, `afterlifeArchiveUpdates`, `archiveActionResolutions`
+- `game_state/meta/guardians.json` ← `UpdateGuardians`, `guardianPowerEvents`, `UpdateGuardianTradeInventoryReceipts`
+- `game_state/meta/guardian_abode_residents.json` ← `UpdateGuardianAbodeResidents`, `UpdateGuardianAbodeResidentRosterReceipts`, `UpdateGuardianAbodeResidentInteractionReceipts`, `UpdateGuardianAbodeResidentHistoryLog`, `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`
 - `game_state/meta/guardian_projects.json` ← `startGuardianProjects`, `guardianProjectUpdates`, `completeGuardianProjects`
 - `game_state/meta/guardian_project_journal.json` ← client-generated readable guardian project chronology
 - `game_state/meta/abode_power_journal.json` ← client-generated readable guardian power chronology
+- `game_state/meta/guardian_thought_journal.json` ← `guardianThoughtJournalUpdates`
+- `game_state/meta/guardian_social_journal.json` ← `guardianSocialJournalUpdates`
+- `game_state/meta/shining_abode_state.json` ← canonical Shining Abode state, Shining factions, halls, gates, radiance, Light Sparks, Shining trade inventories, Shining receipts, prepared incarnation package
 - `game_state/meta/player_behavior.json` ← `playerBehaviorAssessment`, `historyManipulationCoefficient`
 - `game_state/meta/character_chronicle.json` ← `characterChronicleUpdates`
 - `game_state/meta/achievements.json` ← `achievementUnlocks`
+
+#### **AFTERLIFE CONTROL / REQUEST FILES**
+- `game_state/control/pending_guardian_trade_request.json` ← client-authored Guardian trade inventory request; close with `UpdateGuardianTradeInventoryReceipts`.
+- `game_state/control/pending_guardian_abode_residents_request.json` ← client-authored resident roster requests; close with `UpdateGuardianAbodeResidentRosterReceipts`.
+- `game_state/control/pending_guardian_abode_resident_interactions.json` ← client-authored resident talk/history requests; close with `UpdateGuardianAbodeResidentInteractionReceipts` plus resident logs/history when accepted.
+- `game_state/control/pending_resident_companion_manifestation_request.json` ← client-authored next-life companion manifestation requests.
+- `game_state/control/pending_archive_consultation_request.json` and `pending_archive_project_fuel_request.json` ← close with `archiveActionResolutions`.
+- `game_state/control/pending_shining_abode_actions.json` ← client-authored Shining core actions; close through `shining_abode_state.coreActionReceipts[]`.
+- `game_state/control/pending_shining_faction_foundings.json` ← close through `shining_abode_state.factionFoundingReceipts[]`.
+- `game_state/control/pending_shining_faction_realignments.json` ← close through `shining_abode_state.factionRealignmentReceipts[]`.
+- `game_state/control/pending_shining_faction_leadership_transitions.json` ← close through faction `leadershipReceipts[]` and leadership history.
+- `game_state/control/pending_shining_trade_inventory_requests.json` ← close through faction `tradeInventory` plus `tradeInventoryReceipts[]`.
+- `game_state/control/afterlife_notifications.json` is client-owned; GM must not author inbox entries manually.
 
 #### **LORE CODEX (GM writes directly to lore/ files)**
 - `lore/chaos_sea/cosmology.json` — Core universe structure, planes of existence
@@ -553,6 +711,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 ### Afterlife Realm Model
 - `Chaos Sea` and `Shining Abode` are both afterlife realms for validator/runtime purposes.
 - Both afterlife realms use guardian/soul/meta systems and forbid mortal-world combat/NPC/faction/location mechanics.
+- Both afterlife realms still have a living-world scheduler through `progressionControl`. This is afterlife-specific progression, not Mortal World `worldEventsLog` / `factionDataChanges` progression.
 - `Shining Abode` is the ascended endgame free-roleplay zone above the Chaos Sea and still uses afterlife guardian/soul/meta systems instead of Mortal World systems.
 - `AscensionTrigger` is valid only in Chaos Sea, only with maximum Enlightenment and explicit `playerChoice=Ascension`, and must never be mixed with `TriggerLifeEnd`.
 
@@ -594,6 +753,8 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 ### Afterlife Realm Only
 - `UpdateGuardians`
 - Guardian reputation / project / musings / lore unlock commands
+- Guardian project, resident agency, Shining Abode, Shining faction, and Shining trade progression when mandated by `progressionControl`
+- `progressionProcessingReport` for afterlife scheduler debt and bounded catch-up acknowledgement
 - Soul Relic Gacha processing
 - Direct Chaos Sea gacha via `/gacha` remains a Chaos-Sea-specific exception and does not use current Guardian modifiers
 - Abode navigation data
@@ -601,7 +762,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 
 ### Forbidden In Chaos Sea
 - Combat, experience, leveling, stat gains/losses, regular inventory management, regular NPC mechanics,
-  mortal quests, faction/world progression, weather, time progression, mortal location tracking.
+  mortal quests, Mortal World faction/world progression, weather, time progression, mortal location tracking.
 
 ### Forbidden In Mortal World
 - Guardian presence as active entities, Guardian reputation changes, Abode navigation, Gacha, Chaos-Sea-only Ink Feather spending.

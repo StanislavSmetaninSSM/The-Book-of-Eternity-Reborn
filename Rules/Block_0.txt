@@ -244,6 +244,8 @@
                         - Incarnation selection — choosing next mortal world
                         - Lore/Codex — afterlife lore, cosmology
                         - Basic narrative interaction — dialogue, exploration of the current afterlife environment
+                        - Afterlife living-world scheduler — mandatory `progressionControl` contours for Chaos Sea, Guardians, residents, Shining Abode, Shining factions, and Shining trade
+                        - `progressionProcessingReport` — mandatory scheduler acknowledgement whenever afterlife cycles are due
 
                         - Chaos-Sea Ink Feather whitelist:
                           Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint
@@ -259,7 +261,7 @@
                           Guardian quests use the Guardian quest system (Block 32), NOT UpdateQuests.
                         - Inventory changes — NO item drops, NO equipment changes (except Soul Relic equip/unequip)
                         - Money/economy — NO money in Chaos Sea. Ink Feathers are the only currency.
-                        - World progression — NO faction projects, NO world events, NO threats
+                        - Mortal World progression — NO mortal faction projects, NO mortal world events, NO mortal threats
                         - Weather/time mechanics — Chaos Sea is timeless
                         - Location system (currentLocationData) — Abodes replace locations.
                           Do NOT generate currentLocationData for Chaos Sea. Use Abode navigation.
@@ -275,6 +277,8 @@
                         - currentLocationData, worldEventsLog, worldMapUpdates, worldStateFlags
                         - timeChange, setWorldTime, weatherChange
                         - enemiesData, alliesData, combat_log_markdown
+
+                        These JSON gate bans apply to Mortal World channels. They do NOT remove the obligation to process afterlife living-world debt when `progressionControl.mustEvaluate* = true`. Use Guardian, Abode, Soul, resident, Shining-specific outputs and `progressionProcessingReport` instead of Mortal World world/faction/location/NPC outputs.
 
                         ⚠️ CRITICAL GUARDIAN DISTINCTION:
                         Guardians are METAPHYSICAL ENTITIES, not regular NPCs.

@@ -84,13 +84,14 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 | Значение | Режим | Активные системы | ЗАПРЕЩЁННЫЕ системы |
 |----------|-------|-------------------|---------------------|
 | `"Shining Abode"` + `preparedIncarnationPackage != null` | pending-bootstrap handoff | только mortal bootstrap lifecycle и consume/clear frozen package | обычные Guardian / Abode interactions, Chaos-Sea-only afterlife interactions, Mortal World turn systems |
-| `"Chaos Sea"` / `null` / пусто | Посмертие | Хранители, Обители, Реликвии Души, Чернильные Перья, Гача | Бой, опыт, уровни, навыки, НПС, квесты, деньги, инвентарь, погода |
-| `"Shining Abode"` | Посмертие | Свободный ролеплей с Хранителями, Реликвии Души, afterlife meta systems | Mortal-world combat/NPC/faction/location mechanics |
+| `"Chaos Sea"` / `null` / пусто | Посмертие | Хранители, Обители, Реликвии Души, Чернильные Перья, Гача, afterlife living-world scheduler | Бой, опыт, уровни, навыки, НПС, квесты, деньги, инвентарь, погода |
+| `"Shining Abode"` | Посмертие | Свободный ролеплей с Хранителями, Реликвии Души, afterlife meta systems, Shining living-world scheduler | Mortal-world combat/NPC/faction/location mechanics |
 | `"Mortal World"` / иное | Смертный мир | Бой, навыки, НПС, квесты, фракции, инвентарь, погода, время, whitelist-действия Чернильных Перьев | Хранители, Обители, Гача, Chaos-Sea-only трата Чернильных Перьев |
 
 **JSON gate после Realm Check:**
 - В `Shining Abode pending-bootstrap handoff mode` разрешены только lifecycle/bootstrap mutations, которые materialize-ят следующую смертную жизнь и consume/clear `preparedIncarnationPackage`.
 - В `Chaos Sea` и `Shining Abode` запрещены: `experienceGained`, `statsIncreased`, `statsDecreased`, `currentPoiseChange`, `currentEnergyChange`, `currentHealthChange`, `moneyChange`, `activeSkillChanges`, `passiveSkillChanges`, `skillMasteryChanges`, `UpdateInventory`, `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, `worldEventsLog`, `factionDataChanges`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`, `enemiesData`, `alliesData`, `combat_log_markdown`.
+- Этот запрет относится к смертным world/faction/location/NPC channels. Он не отменяет afterlife living-world scheduler: если `progressionControl.mustEvaluate* = true`, ГМ обязан обработать afterlife-контуры через Guardian/Abode/Soul/Shining-specific surfaces и `progressionProcessingReport`.
 - В `Mortal World` запрещены: `UpdateGuardians`, Guardian-specific reputation/project/musings/lore commands, Abode navigation data, Soul Relic Gacha processing, Chaos-Sea-only spending of Ink Feathers.
 - В `Mortal World` разрешены только explicit Ink Feather exceptions: `Reveal Fate`, `Rewrite Fate`, `Sacrifice to Chaos`, `Absorb Feathers`, `Learn Skill`, `Fate Shield`, `Seal in Ink`.
 - В `Chaos Sea` и `Shining Abode` разрешены только explicit afterlife Ink Feather exceptions: `Donate to Guardian`, `Cultivate Enlightenment`, `Guardian Favor`, `Memory Gates`, `Soul Imprint`.
@@ -203,15 +204,67 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 #### В Море Хаоса:
 
-**1. Состояние Хранителей** — только для тех Хранителей, чьё состояние реально меняется в этом ходу:
-- Обновить настроение (mood) если это требует сам ход
-- Продвинуть текущий проект (progressPercent) только если этот ход действительно двигает guardian project
-- Добавить musings только если ход реально оставляет новый guardian thought / reflection
-- Проверить, нужно ли разблокировать фрагменты знаний (loreFragments)
+**0. Обязательный порядок afterlife living-world оценки:**
+- Сначала прочитай `progressionControl`, затем `soul_state.json`, `guardians.json`, `guardian_projects.json`, `guardian_abode_residents.json` и relevant pending afterlife request files.
+- Составь список due-контуров: Chaos Sea hub, Guardian projects, resident agency, Shining Abode, Shining factions, Shining trade, catch-up.
+- Если `afterlifeCatchupRequired=true`, сначала сверни долг в bounded summary outcomes, затем обработай обычные due cycles этого хода.
+- В `gm_thoughts_markdown` явно запиши, какие контуры due, какие акторы выбраны relevant, какие акторы оставлены outside scope и почему.
 
-**2. Оценка обстановки в Обители:**
-- Что изменилось с последнего визита?
-- Какие проекты Хранителя завершились?
+**1. Scheduler-долг Моря Хаоса** — прочитай `progressionControl` до обработки действия игрока:
+- `mustEvaluateChaosSeaProgression` → обработай hub-события Моря Хаоса: метафизическое давление, омуты душ, космические приметы, изменения обстановки между Обителями, последствия прошлых решений Души.
+- `mustEvaluateGuardianProjectProgression` → обработай проекты Хранителей: `guardianProjectUpdates`, `completeGuardianProjects`, musings, lore unlocks, abode power events, репутационные/политические последствия между Хранителями.
+- `mustEvaluateResidentAgencyProgression` → обработай резидентов Обителей: `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`, `UpdateGuardianAbodeResidentHistoryLog`, resident-linked `UpdateSoulQuests`, resident relic grants или другие documented resident surfaces.
+- `afterlifeCatchupRequired` → не симулируй все raw elapsed cycles. Создай ровно `afterlifeCatchupSummaryEventsRequired` крупных summary outcomes с учетом `afterlifeCatchupPressureTier` и `afterlifeCatchupContours`.
+
+**1.A. Как выбирать последствия Моря Хаоса:**
+- Hub cycle должен ответить, что изменилось в самом Море: течение душ, тишина/шторм, видимые последствия проектов, слухи между Обителями, давление будущих воплощений, реакция на последние действия Души.
+- Guardian project cycle должен опираться на уже существующие проекты, цели и отношения Хранителей; не придумывай проектный прогресс без связи с текущим canonical state.
+- Resident agency cycle должен дать резидентам волю: они могут ждать, спорить, менять отношение, просить о помощи, раскрывать историю, готовить награду, инициировать soul quest или менять связь с Обителью.
+- Если контур стабилен, это тоже результат: зафиксируй, почему за этот цикл не было state mutation, и всё равно отчитай processed count.
+
+**2. Actor reasoning Моря Хаоса** — relevant actors должны покрывать всех, кого меняешь структурно:
+- Хранители, чьи проекты, настроение, отношения, musings, lore или trade state меняются.
+- Резиденты, чьи мысли, история, interaction receipts, quests или rewards меняются.
+- Если ход только scene-local и нет structured actor updates, это можно явно указать в scope.
+
+**3. Запрещенные mortal-world подмены:**
+- Не используй `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `weatherChange` для afterlife progression.
+- Afterlife living world должен проявляться через Guardian/Abode/Soul/Resident/Shining-specific поля и `progressionProcessingReport`.
+
+#### В Сияющей Обители:
+
+**1. Scheduler-долг Сияющей Обители** — это активный afterlife living world, а не статичная сцена:
+- `mustEvaluateShiningAbodeProgression` → обработай состояние Обители: общественное настроение, кризисы, ритуалы, сияющие институты, последствия присутствия Души и Хранителей.
+- `mustEvaluateShiningFactionProgression` → обработай сияющие фракции через Shining-specific state/surfaces, не через Mortal World `factionDataChanges`.
+- `mustEvaluateShiningTradeProgression` → обработай сияющую торговлю, trade inventories/receipts, доступность предложений и derivable afterlife notifications.
+- `mustEvaluateGuardianProjectProgression` → Хранители продолжают действовать в Сияющей Обители; их проекты и отношения не заморожены.
+- `mustEvaluateResidentAgencyProgression` → резиденты Обителей продолжают принимать решения, отвечать, менять историю и создавать resident-linked последствия.
+- `afterlifeCatchupRequired` → оформи bounded epoch-summary, а не пошаговую симуляцию тысяч циклов.
+
+**1.A. Что именно проверять в `shining_abode_state.json`:**
+- `availability` — обычная активная Обитель или sealed/pending режим.
+- `lightSparks` и `radiance` — не как смертные ресурсы, а как состояние сияющей инфраструктуры и доступных действий.
+- `halls` — какие залы реально существуют, какие услуги они дают и кто с ними связан.
+- `factions` — сила, проекты, лидерство, лояльность, restlessness, completed projects, trade tier.
+- `gates` — готовность к следующей смертной жизни и stale/open draft state.
+- `coreActionReceipts`, `factionFoundingReceipts`, `factionRealignmentReceipts`, `leadershipReceipts`, `tradeInventoryReceipts` — закрытие pending contracts и история решений.
+
+**1.B. Как выбирать последствия Сияющей Обители:**
+- Shining Abode cycle отвечает за общую жизнь Обители: напряжение между залами, публичные ритуалы, реакцию radiant actors, последствия completed projects, состояние gates и civic order.
+- Shining faction cycle отвечает за институции: founding, realignment, leadership, faction strength, resident loyalty, claims, support and project consequences.
+- Shining trade cycle отвечает за explicit authored economy: trade inventory, sold-out state, rarity ceiling, merchant profile, receipts. Не пиши `afterlife_notifications.json` руками.
+- Guardian/resident cycles в Сияющей Обители продолжают работать: Хранители и резиденты не замораживаются после Вознесения.
+
+**2. Bootstrap handoff exception:**
+- Если `currentRealm = "Shining Abode"` и `preparedIncarnationPackage != null`, это pending-bootstrap handoff mode. В этом режиме не запускай обычную Shining progression; обрабатывай только lifecycle/bootstrap mutations для следующей смертной жизни.
+- В обычной активной `Shining Abode` scheduler-долг обязателен так же, как в `Chaos Sea`.
+
+**3. Report contract:**
+- Для каждого due-контура заполни matching processed count в `progressionProcessingReport`.
+- Для каждого due afterlife-контура заполни соответствующий `newLast*Ordinal`.
+- Не переносишь максимальный backlog одного контура на другие; каждый contour закрывается своим own processed count.
+- Если `afterlifeCatchupRequired=true`, укажи `afterlifeCatchupProcessed=true` и exact `afterlifeCatchupSummaryEventsProcessed`.
+- `afterlifeCatchupPressureTier` бывает `none`, `minor`, `major`, `severe`, `epochal`; это масштаб summary, а не число циклов для пошаговой симуляции.
 
 ---
 
