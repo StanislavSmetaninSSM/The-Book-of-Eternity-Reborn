@@ -100,6 +100,109 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnOutcomeAsync_LegacyGuardianOrdinalFallsBackToChaosOrdinal()
+    {
+        await WriteTurnRequestContextAsync("session_legacy", "req_legacy", 7);
+        var control = new ProgressionControl
+        {
+            CurrentRealm = "Chaos Sea",
+            NextChaosSeaTurnOrdinal = 7,
+            NextGuardianProjectCycleOrdinal = 0,
+            ChaosSeaCyclesExpectedThisTurn = 1,
+            GuardianProjectCyclesExpectedThisTurn = 1
+        };
+
+        await _fs.WriteFileAtomicAsync(ProgressionScheduleService.ReportPath, """
+        {
+          "progressionProcessingReport": {
+            "sessionId": "session_legacy",
+            "requestId": "req_legacy",
+            "turnNumber": 7,
+            "worldCyclesProcessed": 0,
+            "factionCyclesProcessed": 0,
+            "chaosSeaCyclesProcessed": 1,
+            "guardianProjectCyclesProcessed": 1,
+            "newLastChaosSeaSimulationOrdinal": 7,
+            "newLastGuardianProjectCycleOrdinal": 7
+          }
+        }
+        """);
+
+        var issues = await _service.ValidateAcceptedTurnOutcomeAsync(control);
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "progression_report_new_last_guardian_ordinal_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+    }
+
+    [Fact]
+    public async Task ApplyAcceptedTurnOutcomeAsync_LegacyGuardianOrdinalFallback_AdvancesGuardianOrdinal()
+    {
+        await _fs.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath, """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentWorldTimeInMinutes": 0,
+          "lastWorldSimulationTimeInMinutes": 0,
+          "lastFactionSimulationTimeInMinutes": 0,
+          "hasAuthoritativeWorldTimeBaseline": true,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "chaosSeaCycleEquivalentHours": 24,
+          "currentChaosSeaTurnOrdinal": 6,
+          "lastChaosSeaSimulationOrdinal": 6,
+          "lastGuardianProjectCycleOrdinal": 6,
+          "pendingWorldCycles": 0,
+          "pendingFactionCycles": 0,
+          "pendingChaosSeaCycles": 1,
+          "pendingGuardianProjectCycles": 1,
+          "lastUpdatedUtc": "2026-04-21T00:00:00.0000000Z"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea"
+        }
+        """);
+        await WriteTurnRequestContextAsync("session_legacy", "req_legacy_apply", 8);
+
+        var control = new ProgressionControl
+        {
+            CurrentRealm = "Chaos Sea",
+            CurrentChaosSeaTurnOrdinal = 6,
+            NextChaosSeaTurnOrdinal = 7,
+            LastChaosSeaSimulationOrdinal = 6,
+            LastGuardianProjectCycleOrdinal = 6,
+            NextGuardianProjectCycleOrdinal = 0,
+            ChaosSeaCyclesExpectedThisTurn = 1,
+            GuardianProjectCyclesExpectedThisTurn = 1
+        };
+        await _fs.WriteFileAtomicAsync(ProgressionScheduleService.ReportPath, """
+        {
+          "progressionProcessingReport": {
+            "sessionId": "session_legacy",
+            "requestId": "req_legacy_apply",
+            "turnNumber": 8,
+            "worldCyclesProcessed": 0,
+            "factionCyclesProcessed": 0,
+            "chaosSeaCyclesProcessed": 1,
+            "guardianProjectCyclesProcessed": 1,
+            "newLastChaosSeaSimulationOrdinal": 7,
+            "newLastGuardianProjectCycleOrdinal": 7
+          }
+        }
+        """);
+
+        await _service.ApplyAcceptedTurnOutcomeAsync(control);
+
+        var schedule = await ReadScheduleAsync();
+        Assert.Equal(7, schedule.CurrentChaosSeaTurnOrdinal);
+        Assert.Equal(7, schedule.LastChaosSeaSimulationOrdinal);
+        Assert.Equal(7, schedule.LastGuardianProjectCycleOrdinal);
+        Assert.Equal(0, schedule.PendingGuardianProjectCycles);
+        Assert.False(_fs.FileExists(ProgressionScheduleService.ReportPath));
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnOutcomeAsync_MalformedChaosProgressionReport_FailsClosed()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """

@@ -343,7 +343,7 @@ public class ProgressionScheduleService
         if ((report?.ChaosSeaCyclesProcessed ?? 0) > 0)
             schedule.LastChaosSeaSimulationOrdinal = report?.NewLastChaosSeaSimulationOrdinal ?? control.NextChaosSeaTurnOrdinal;
         if ((report?.GuardianProjectCyclesProcessed ?? 0) > 0)
-            schedule.LastGuardianProjectCycleOrdinal = report?.NewLastGuardianProjectCycleOrdinal ?? control.NextGuardianProjectCycleOrdinal;
+            schedule.LastGuardianProjectCycleOrdinal = report?.NewLastGuardianProjectCycleOrdinal ?? ResolveExpectedGuardianProjectCycleOrdinal(control);
         if ((report?.ResidentAgencyCyclesProcessed ?? 0) > 0)
             schedule.LastResidentAgencyCycleOrdinal = report?.NewLastResidentAgencyCycleOrdinal ?? control.NextResidentAgencyCycleOrdinal;
         if ((report?.ShiningAbodeCyclesProcessed ?? 0) > 0)
@@ -846,7 +846,7 @@ public class ProgressionScheduleService
         ValidateExpectedProcessedCount(issues, "shiningTradeCyclesProcessed", report.ShiningTradeCyclesProcessed, control.ShiningTradeCyclesExpectedThisTurn, "progression_report_missing_shining_trade_cycles_processed", "progression_report_shining_trade_cycles_processed_mismatch");
 
         ValidateExpectedOrdinal(issues, "newLastChaosSeaSimulationOrdinal", report.NewLastChaosSeaSimulationOrdinal, control.ChaosSeaCyclesExpectedThisTurn, control.NextChaosSeaTurnOrdinal, "progression_report_missing_new_last_chaos_ordinal", "progression_report_new_last_chaos_ordinal_mismatch");
-        ValidateExpectedOrdinal(issues, "newLastGuardianProjectCycleOrdinal", report.NewLastGuardianProjectCycleOrdinal, control.GuardianProjectCyclesExpectedThisTurn, control.NextGuardianProjectCycleOrdinal, "progression_report_missing_new_last_guardian_ordinal", "progression_report_new_last_guardian_ordinal_mismatch");
+        ValidateExpectedOrdinal(issues, "newLastGuardianProjectCycleOrdinal", report.NewLastGuardianProjectCycleOrdinal, control.GuardianProjectCyclesExpectedThisTurn, ResolveExpectedGuardianProjectCycleOrdinal(control), "progression_report_missing_new_last_guardian_ordinal", "progression_report_new_last_guardian_ordinal_mismatch");
         ValidateExpectedOrdinal(issues, "newLastResidentAgencyCycleOrdinal", report.NewLastResidentAgencyCycleOrdinal, control.ResidentAgencyCyclesExpectedThisTurn, control.NextResidentAgencyCycleOrdinal, "progression_report_missing_new_last_resident_agency_ordinal", "progression_report_new_last_resident_agency_ordinal_mismatch");
         ValidateExpectedOrdinal(issues, "newLastShiningAbodeCycleOrdinal", report.NewLastShiningAbodeCycleOrdinal, control.ShiningAbodeCyclesExpectedThisTurn, control.NextShiningAbodeCycleOrdinal, "progression_report_missing_new_last_shining_abode_ordinal", "progression_report_new_last_shining_abode_ordinal_mismatch");
         ValidateExpectedOrdinal(issues, "newLastShiningFactionCycleOrdinal", report.NewLastShiningFactionCycleOrdinal, control.ShiningFactionCyclesExpectedThisTurn, control.NextShiningFactionCycleOrdinal, "progression_report_missing_new_last_shining_faction_ordinal", "progression_report_new_last_shining_faction_ordinal_mismatch");
@@ -863,6 +863,13 @@ public class ProgressionScheduleService
         control.ShiningFactionCyclesExpectedThisTurn > 0 ||
         control.ShiningTradeCyclesExpectedThisTurn > 0 ||
         control.AfterlifeCatchupRequired;
+
+    private static int ResolveExpectedGuardianProjectCycleOrdinal(ProgressionControl control)
+    {
+        return control.NextGuardianProjectCycleOrdinal > 0
+            ? control.NextGuardianProjectCycleOrdinal
+            : control.NextChaosSeaTurnOrdinal;
+    }
 
     private static void ValidateExpectedProcessedCount(
         List<ValidationIssue> issues,
@@ -1381,7 +1388,7 @@ public class ProgressionScheduleService
         }
 
         if (control.GuardianProjectCyclesExpectedThisTurn > 0 &&
-            report.NewLastGuardianProjectCycleOrdinal != control.NextGuardianProjectCycleOrdinal)
+            report.NewLastGuardianProjectCycleOrdinal != ResolveExpectedGuardianProjectCycleOrdinal(control))
         {
             return false;
         }
