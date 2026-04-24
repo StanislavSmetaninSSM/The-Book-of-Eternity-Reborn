@@ -330,7 +330,6 @@
             - Resident roster contracts: `pending_guardian_abode_residents_request.json` must close through explicit `UpdateGuardianAbodeResidents` plus roster receipts
             - Resident social contracts: `pending_guardian_abode_resident_interactions.json` must close through interaction receipts, and accepted results need resident memory/history/state aftermath
             - Archive contracts: pending archive action files must close through `archiveActionResolutions`, not by inventing mortal inventory or manual notifications
-            - Companion manifestation contracts: `pending_resident_companion_manifestation_request.json` must process all equipped companion-carrying relic requests, not just one
             - Shining core contracts: `pending_shining_abode_actions.json` must close through canonical `shining_abode_state` mutation plus `coreActionReceipts[]`
             - Shining faction founding contracts: `pending_shining_faction_foundings.json` must close through `factionFoundingReceipts[]`
             - Shining faction realignment contracts: `pending_shining_faction_realignments.json` must close through `factionRealignmentReceipts[]`
@@ -458,7 +457,7 @@
 - MortalWorldProfile-only: `npc.buybackInventory[]` is separate from authored `npc.tradeInventory`; it stores exact items the player sold to that merchant and powers local reverse-buyback without another GM stock-generation round-trip.
 - MortalWorldProfile-only: NPC local sell-side and reverse-buyback require a real current turn for canonical timing; do not write new buyback entries with turn `0`.
 - MortalWorldProfile-only: NPC buy-side validation/request creation also requires a real current turn; stale merchant inventory discovered during purchase must not create a request with `createdAtTurn = 0`.
-- If `game_state/control/pending_resident_companion_manifestation_request.json` exists, read all `requests[]` and materialize an early mortal-world encounter or soul-quest path for each equipped companion-carrying relic:
+- MortalWorldProfile-only: if `game_state/control/pending_resident_companion_manifestation_request.json` exists, read all `requests[]` and materialize an early mortal-world encounter or soul-quest path for each equipped companion-carrying relic:
   - `manifestationSource = resident_relic` for `companion_echo`
   - `manifestationSource = imprint_relic` for relics carrying embedded `soulImprint` / `npcSoulImprint`
   When the companion fully manifests, write an ordinary mortal NPC and set `sourceCompanionRelicId`, plus `sourceAfterlifeResidentId` or `sourceSoulImprintId` when applicable.

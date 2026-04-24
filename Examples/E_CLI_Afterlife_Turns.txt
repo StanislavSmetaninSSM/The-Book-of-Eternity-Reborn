@@ -162,7 +162,7 @@ Correct GM reasoning:
 - Stable contours: Shining contours are not active because currentRealm is Chaos Sea and no Shining catch-up contour is listed.
 
 ## Отчёт scheduler
-- progressionProcessingReport will close Chaos Sea ordinal 31, Guardian project ordinals 18..19, Resident agency ordinal 12.
+- progressionProcessingReport will close Chaos Sea ordinal 31, Guardian project final marker 18, Resident agency ordinal 12.
 - afterlifeCatchupProcessed=true and summary events processed=2.
 ```
 
@@ -245,7 +245,7 @@ Correct response/state fragment:
     "guardianProjectCyclesProcessed": 2,
     "residentAgencyCyclesProcessed": 1,
     "newLastChaosSeaSimulationOrdinal": 31,
-    "newLastGuardianProjectCycleOrdinal": 19,
+    "newLastGuardianProjectCycleOrdinal": 18,
     "newLastResidentAgencyCycleOrdinal": 12,
     "afterlifeCatchupProcessed": true,
     "afterlifeCatchupSummaryEventsProcessed": 2
@@ -304,7 +304,8 @@ Input fragments:
 {
   "soul_state.json": {
     "currentRealm": "Shining Abode",
-    "enlightenment": 100
+    "enlightenment": 100,
+    "currentIncarnation": 9
   },
   "shining_abode_state.json": {
     "availability": "active",
@@ -399,11 +400,11 @@ Input fragments:
         "requestId": "shine_trade_glass_305",
         "factionId": "shine_faction_glass_light_001",
         "factionName": "Орден Стеклянного Света",
-        "tradeCycleId": "shine_trade_cycle_9",
+        "tradeCycleId": "shining_return_9",
         "derivedTradeTier": 3,
-        "derivedTradeSlotCount": 1,
+        "derivedTradeSlotCount": 8,
         "derivedRarityCeiling": "radiant",
-        "derivedServiceMultiplier": 1.0,
+        "derivedServiceMultiplier": 1.5,
         "merchantProfile": "shining_faction",
         "createdAtTurn": 305,
         "createdAtUtc": "2026-04-24T08:55:00Z"
@@ -460,7 +461,7 @@ Correct GM reasoning:
 
 ## Отчёт scheduler
 - Shining Abode ordinal 22 processed.
-- Shining faction ordinals 40..41 processed.
+- Shining faction final marker 40 processed.
 - Shining trade ordinal 9 processed.
 - Guardian project ordinal 20 processed.
 - Resident agency ordinal 13 processed.
@@ -485,44 +486,48 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
     "isStale": false,
     "allCandidateBlessingCards": [
       {
-        "cardId": "card_glass_dawn_route_305",
-        "dedupeKey": "project:gproj_elian_gate_stability_001:route:glass_dawn",
-        "sourceType": "project",
+        "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+        "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+        "sourceType": "head",
         "sourceFactionId": "shine_faction_glass_light_001",
         "sourceFactionName": "Орден Стеклянного Света",
-        "sourceActorId": "gproj_elian_gate_stability_001",
+        "sourceActorId": "player_soul",
+        "sourceActorName": "player_soul",
         "effectFamily": "route",
-        "rarity": "radiant",
-        "displayName": "Стеклянный рассветный маршрут",
-        "displaySummary": "Открывает ранний безопасный route option через память о Вратах Рассвета.",
+        "rarity": "rare",
+        "displayName": "Дар фракции «Орден Стеклянного Света»",
+        "displaySummary": "Откроет 1 ранних route option к 6 ходу.",
         "effectPayload": {
           "type": "seed_early_routes",
-          "routeOptions": 2,
+          "routeOptions": 1,
           "latestTurn": 6
-        }
+        },
+        "_effectiveStrength": 82
       }
     ],
     "availableBlessingCards": [
       {
-        "cardId": "card_glass_dawn_route_305",
-        "dedupeKey": "project:gproj_elian_gate_stability_001:route:glass_dawn",
-        "sourceType": "project",
+        "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+        "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+        "sourceType": "head",
         "sourceFactionId": "shine_faction_glass_light_001",
         "sourceFactionName": "Орден Стеклянного Света",
-        "sourceActorId": "gproj_elian_gate_stability_001",
+        "sourceActorId": "player_soul",
+        "sourceActorName": "player_soul",
         "effectFamily": "route",
-        "rarity": "radiant",
-        "displayName": "Стеклянный рассветный маршрут",
-        "displaySummary": "Открывает ранний безопасный route option через память о Вратах Рассвета.",
+        "rarity": "rare",
+        "displayName": "Дар фракции «Орден Стеклянного Света»",
+        "displaySummary": "Откроет 1 ранних route option к 6 ходу.",
         "effectPayload": {
           "type": "seed_early_routes",
-          "routeOptions": 2,
+          "routeOptions": 1,
           "latestTurn": 6
-        }
+        },
+        "_effectiveStrength": 82
       }
     ],
     "shownBlessingCardIds": [
-      "card_glass_dawn_route_305"
+      "card:shine_faction_glass_light_001:head:player_soul:route:rare"
     ],
     "selectedBlessingCardIds": [],
     "nextCandidateCursor": 1,
@@ -550,11 +555,11 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
       "projectArchetypesCountedThisAscension": [],
       "projects": [],
       "tradeInventory": {
-        "tradeCycleId": "shine_trade_cycle_9",
+        "tradeCycleId": "shining_return_9",
         "generatedAtUtc": "2026-04-24T08:55:00Z",
         "generationTradeTier": 3,
         "generationRarityCeiling": "radiant",
-        "serviceMultiplierSnapshot": 1.0,
+        "serviceMultiplierSnapshot": 1.5,
         "merchantProfile": "shining_faction",
         "items": [
           {
@@ -568,6 +573,90 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
               "relicType": "radiant_memory",
               "description": "Сияющий фонарь, который удерживает ясность маршрута у открытых Врат Рассвета."
             }
+          },
+          {
+            "slotId": "shine_trade_glass_305_2",
+            "priceInFeathers": 22,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_glass_route_compass_001",
+              "name": "Компас Стеклянного Пути",
+              "rarity": "Rare",
+              "relicType": "radiant_route",
+              "description": "Компас отмечает устойчивые переходы, которые открылись после работы Врат Рассвета."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_3",
+            "priceInFeathers": 27,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_dawn_oath_prism_001",
+              "name": "Призма Рассветной Клятвы",
+              "rarity": "Epic",
+              "relicType": "radiant_oath",
+              "description": "Призма закрепляет обещание фракции поддерживать ранний путь будущей жизни."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_4",
+            "priceInFeathers": 15,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_ordered_light_thread_001",
+              "name": "Нить Упорядоченного Света",
+              "rarity": "Uncommon",
+              "relicType": "radiant_focus",
+              "description": "Тонкая световая нить помогает удерживать выбранный порядок действий в сияющем зале."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_5",
+            "priceInFeathers": 31,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_clear_gate_seal_001",
+              "name": "Печать Ясных Врат",
+              "rarity": "Legendary",
+              "relicType": "radiant_gate",
+              "description": "Печать хранит редкий фрагмент сияющего права прохода через стабильные врата."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_6",
+            "priceInFeathers": 12,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_liturgical_glass_chip_001",
+              "name": "Осколок Литургического Стекла",
+              "rarity": "Common",
+              "relicType": "radiant_material",
+              "description": "Малый сияющий материал, пригодный для будущей настройки реликвий."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_7",
+            "priceInFeathers": 24,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_discipline_chime_001",
+              "name": "Колокол Дисциплины Света",
+              "rarity": "Rare",
+              "relicType": "radiant_signal",
+              "description": "Колокол собирает внимание союзников вокруг ясного публичного ритуала."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_305_8",
+            "priceInFeathers": 29,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_morning_archive_lens_001",
+              "name": "Линза Утреннего Архива",
+              "rarity": "Epic",
+              "relicType": "radiant_lore",
+              "description": "Линза помогает увидеть, какие сведения лучше перенести в следующую жизнь."
+            }
           }
         ]
       },
@@ -576,9 +665,9 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
           "requestId": "shine_trade_glass_305",
           "factionId": "shine_faction_glass_light_001",
           "factionName": "Орден Стеклянного Света",
-          "tradeCycleId": "shine_trade_cycle_9",
+          "tradeCycleId": "shining_return_9",
           "status": "ready",
-          "itemCount": 1,
+          "itemCount": 8,
           "soldOutCount": 0,
           "resolvedAtTurn": 305,
           "resolvedAtUtc": "2026-04-24T08:55:00Z"
@@ -684,7 +773,7 @@ Correct response/report fragment:
     "guardianProjectCyclesProcessed": 1,
     "residentAgencyCyclesProcessed": 1,
     "newLastShiningAbodeCycleOrdinal": 22,
-    "newLastShiningFactionCycleOrdinal": 41,
+    "newLastShiningFactionCycleOrdinal": 40,
     "newLastShiningTradeCycleOrdinal": 9,
     "newLastGuardianProjectCycleOrdinal": 20,
     "newLastResidentAgencyCycleOrdinal": 13,
