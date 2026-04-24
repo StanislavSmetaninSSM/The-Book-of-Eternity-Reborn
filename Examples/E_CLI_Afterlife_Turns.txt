@@ -110,8 +110,14 @@ Input fragments:
         "requestId": "resident_history_212_liora",
         "residentId": "res_azalia_liora_001",
         "guardianId": "guard_social_azalia_001",
+        "guardianName": "Азалия",
+        "abodeId": "abode_azalia_memory_silk_001",
+        "abodeName": "Обитель Шёлковой Памяти",
+        "residentName": "Лиора",
         "interactionType": "history",
-        "topic": "memory_of_previous_life"
+        "topic": "memory_of_previous_life",
+        "createdAtTurn": 212,
+        "createdAtUtc": "2026-04-24T08:35:00Z"
       }
     ]
   }
@@ -222,7 +228,9 @@ Correct response/state fragment:
       "requestId": "resident_history_212_liora",
       "residentId": "res_azalia_liora_001",
       "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
       "interactionType": "history",
+      "historyEntryId": "hist_liora_212_previous_life",
       "status": "accepted",
       "resolvedAtTurn": 212,
       "resolvedAtUtc": "2026-04-24T08:40:00Z"
@@ -616,7 +624,7 @@ Correct response/report fragment:
       "isPresent": true,
       "mortalWorldImprint": {
         "originWorldSummary": "Память о смертном городе, где стеклянные маяки вели караваны через рассветный туман.",
-        "futureCompanionPrompt": "",
+        "futureCompanionPrompt": "Если Мира когда-нибудь станет companion echo, она проявится как осторожная проводница у сияющих порогов: помогает герою проверять цену безопасного пути и не отдавать волю чужому порядку.",
         "bondReason": "Мира доверяет Элиану, потому что его проект удерживает переходы безопасными для слабых душ.",
         "coreTraits": ["осторожная", "наблюдательная", "верная обещаниям"],
         "archetypeHints": ["keeper_of_thresholds"],
