@@ -172,6 +172,9 @@
                - MUST answer: Which NPC / resident / guardian / world / political consequences result from those cycles? (document changes)
 
             4. **MANDATORY Afterlife Living-World Checklist when currentRealm is `Chaos Sea` or `Shining Abode`:**
+               - MUST read `game_state/meta/soul_state.json`, `game_state/meta/guardians.json`, `game_state/meta/guardian_projects.json`, and `game_state/meta/guardian_abode_residents.json`
+               - MUST read `game_state/meta/shining_abode_state.json` when currentRealm is `Shining Abode` or Shining catch-up contours are listed
+               - MUST inspect pending afterlife request files before deciding that "nothing happens"
                - If `mustEvaluateChaosSeaProgression=true`, resolve Chaos Sea hub pressure, omens, soul-current changes, or Guardian-political consequences through afterlife-specific state only
                - If `mustEvaluateGuardianProjectProgression=true`, advance or complete Guardian projects and document affected Guardians in actor scope
                - If `mustEvaluateResidentAgencyProgression=true`, let authored residents act: thoughts, interaction/history logs, resident-linked Soul Quests, relic grants, or other documented resident results
@@ -182,6 +185,16 @@
                - MUST NOT satisfy afterlife progression with `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `setWorldTime`, or `weatherChange`
                - MUST write `progressionProcessingReport` with exact processed counts and per-contour `newLast*Ordinal` values
                - MUST keep Shining bootstrap handoff separate: if `preparedIncarnationPackage` is active, process bootstrap only and do not run ordinary Shining living-world cycles
+
+            5. **MANDATORY Afterlife Decision Questions:**
+               - Chaos Sea: What did the Sea itself do while the player focused elsewhere?
+               - Guardians: Which Guardian goals/projects advanced, stalled, completed, or changed pressure?
+               - Residents: Which residents had enough motive/opportunity to act, remember, request, withdraw, help, or realign?
+               - Shining Abode: Which halls, gates, radiance pressure, civic order, or public rituals changed?
+               - Shining factions: Which faction strength, leadership, loyalty, restlessness, project, or resident alignment changed?
+               - Shining trade: Which inventories, receipts, availability, rarity ceiling, sold-out state, or merchant profile changed?
+               - Catch-up: Which few epoch-summary outcomes represent the whole accumulated absence without simulating every raw cycle?
+               - Stability: If a due contour creates no state mutation, why is stability the correct concrete outcome this cycle?
                
             **VALIDATION REQUIREMENT:**
             At minimum, live validation requires a valid scope declaration block and a valid actor reasoning section.
@@ -236,6 +249,9 @@
             
             ## Логика прогрессии
             [Обоснование любых обновлений фракций/мира/событий]
+
+            ## Afterlife Living World / Живой мир Посмертия
+            [Если realm = Chaos Sea / Shining Abode: due contours, checked state files, selected Guardians/residents/Shining institutions, bounded catch-up outcomes, legal afterlife surfaces used, and explicit reason for any stable/no-mutation contour]
 
             ## Отчёт scheduler
             [Какие mandatory cycles обработаны, был ли bounded afterlife catch-up, и что будет записано в progressionProcessingReport]

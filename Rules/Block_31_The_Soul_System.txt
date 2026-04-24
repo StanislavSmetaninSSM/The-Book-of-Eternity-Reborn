@@ -22,7 +22,10 @@
              When currentRealm = "Chaos Sea" OR "Shining Abode", ALL mortal-world systems are DISABLED:
              NO combat, NO experience/leveling, NO stat increases, NO skill learning,
              NO regular NPCs (Guardians are NOT NPCs), NO mortal quests, NO money,
-             NO world events, NO factions, NO currentLocationData.
+             NO Mortal World worldEventsLog, NO Mortal World factions, NO currentLocationData.
+             This does NOT disable afterlife living-world scheduler contours from progressionControl:
+             Chaos Sea hub, Guardian projects, resident agency, Shining Abode state, Shining factions,
+             Shining trade, and bounded afterlife catch-up remain mandatory when due.
              See ABSOLUTE LAW 3 in Block_0 for the complete list.
              VIOLATION OF THIS LAW IS A CRITICAL FAILURE.
 

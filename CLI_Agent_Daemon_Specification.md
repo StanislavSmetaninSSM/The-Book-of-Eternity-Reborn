@@ -204,11 +204,23 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 #### В Море Хаоса:
 
+**0. Обязательный порядок afterlife living-world оценки:**
+- Сначала прочитай `progressionControl`, затем `soul_state.json`, `guardians.json`, `guardian_projects.json`, `guardian_abode_residents.json` и relevant pending afterlife request files.
+- Составь список due-контуров: Chaos Sea hub, Guardian projects, resident agency, Shining Abode, Shining factions, Shining trade, catch-up.
+- Если `afterlifeCatchupRequired=true`, сначала сверни долг в bounded summary outcomes, затем обработай обычные due cycles этого хода.
+- В `gm_thoughts_markdown` явно запиши, какие контуры due, какие акторы выбраны relevant, какие акторы оставлены outside scope и почему.
+
 **1. Scheduler-долг Моря Хаоса** — прочитай `progressionControl` до обработки действия игрока:
 - `mustEvaluateChaosSeaProgression` → обработай hub-события Моря Хаоса: метафизическое давление, омуты душ, космические приметы, изменения обстановки между Обителями, последствия прошлых решений Души.
 - `mustEvaluateGuardianProjectProgression` → обработай проекты Хранителей: `guardianProjectUpdates`, `completeGuardianProjects`, musings, lore unlocks, abode power events, репутационные/политические последствия между Хранителями.
 - `mustEvaluateResidentAgencyProgression` → обработай резидентов Обителей: `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`, `UpdateGuardianAbodeResidentHistoryLog`, resident-linked `UpdateSoulQuests`, resident relic grants или другие documented resident surfaces.
 - `afterlifeCatchupRequired` → не симулируй все raw elapsed cycles. Создай ровно `afterlifeCatchupSummaryEventsRequired` крупных summary outcomes с учетом `afterlifeCatchupPressureTier` и `afterlifeCatchupContours`.
+
+**1.A. Как выбирать последствия Моря Хаоса:**
+- Hub cycle должен ответить, что изменилось в самом Море: течение душ, тишина/шторм, видимые последствия проектов, слухи между Обителями, давление будущих воплощений, реакция на последние действия Души.
+- Guardian project cycle должен опираться на уже существующие проекты, цели и отношения Хранителей; не придумывай проектный прогресс без связи с текущим canonical state.
+- Resident agency cycle должен дать резидентам волю: они могут ждать, спорить, менять отношение, просить о помощи, раскрывать историю, готовить награду, инициировать soul quest или менять связь с Обителью.
+- Если контур стабилен, это тоже результат: зафиксируй, почему за этот цикл не было state mutation, и всё равно отчитай processed count.
 
 **2. Actor reasoning Моря Хаоса** — relevant actors должны покрывать всех, кого меняешь структурно:
 - Хранители, чьи проекты, настроение, отношения, musings, lore или trade state меняются.
@@ -229,6 +241,20 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 - `mustEvaluateResidentAgencyProgression` → резиденты Обителей продолжают принимать решения, отвечать, менять историю и создавать resident-linked последствия.
 - `afterlifeCatchupRequired` → оформи bounded epoch-summary, а не пошаговую симуляцию тысяч циклов.
 
+**1.A. Что именно проверять в `shining_abode_state.json`:**
+- `availability` — обычная активная Обитель или sealed/pending режим.
+- `lightSparks` и `radiance` — не как смертные ресурсы, а как состояние сияющей инфраструктуры и доступных действий.
+- `halls` — какие залы реально существуют, какие услуги они дают и кто с ними связан.
+- `factions` — сила, проекты, лидерство, лояльность, restlessness, completed projects, trade tier.
+- `gates` — готовность к следующей смертной жизни и stale/open draft state.
+- `coreActionReceipts`, `factionFoundingReceipts`, `factionRealignmentReceipts`, `leadershipReceipts`, `tradeInventoryReceipts` — закрытие pending contracts и история решений.
+
+**1.B. Как выбирать последствия Сияющей Обители:**
+- Shining Abode cycle отвечает за общую жизнь Обители: напряжение между залами, публичные ритуалы, реакцию radiant actors, последствия completed projects, состояние gates и civic order.
+- Shining faction cycle отвечает за институции: founding, realignment, leadership, faction strength, resident loyalty, claims, support and project consequences.
+- Shining trade cycle отвечает за explicit authored economy: trade inventory, sold-out state, rarity ceiling, merchant profile, receipts. Не пиши `afterlife_notifications.json` руками.
+- Guardian/resident cycles в Сияющей Обители продолжают работать: Хранители и резиденты не замораживаются после Вознесения.
+
 **2. Bootstrap handoff exception:**
 - Если `currentRealm = "Shining Abode"` и `preparedIncarnationPackage != null`, это pending-bootstrap handoff mode. В этом режиме не запускай обычную Shining progression; обрабатывай только lifecycle/bootstrap mutations для следующей смертной жизни.
 - В обычной активной `Shining Abode` scheduler-долг обязателен так же, как в `Chaos Sea`.
@@ -237,6 +263,8 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 - Для каждого due-контура заполни matching processed count в `progressionProcessingReport`.
 - Для каждого due afterlife-контура заполни соответствующий `newLast*Ordinal`.
 - Не переносишь максимальный backlog одного контура на другие; каждый contour закрывается своим own processed count.
+- Если `afterlifeCatchupRequired=true`, укажи `afterlifeCatchupProcessed=true` и exact `afterlifeCatchupSummaryEventsProcessed`.
+- `afterlifeCatchupPressureTier` бывает `none`, `minor`, `major`, `severe`, `epochal`; это масштаб summary, а не число циклов для пошаговой симуляции.
 
 ---
 

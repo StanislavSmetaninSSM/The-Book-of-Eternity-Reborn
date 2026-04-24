@@ -116,6 +116,79 @@ The GM must treat every `mustEvaluate* = true` field as mandatory processing deb
 | `next*Ordinal` / `last*Ordinal` | Per-contour scheduler markers. Do not invent ordinals; report the new last marker matching the processed count for that exact contour. |
 | `afterlifeCatchup*` | Bounded catch-up summary. Do not simulate all raw elapsed cycles; produce exactly `afterlifeCatchupSummaryEventsRequired` meaningful summary outcomes affecting `afterlifeCatchupContours`. |
 
+### Afterlife Living-World Operational Contract
+
+Afterlife realms use the same "living world" principle as Mortal World progression: off-screen actors continue to act. The difference is that afterlife progression must stay inside afterlife state and commands.
+
+The GM must read these state groups before resolving afterlife scheduler debt:
+- `game_state/meta/soul_state.json`: current realm, Soul Relics, Enlightenment, Ink Feathers, afterlife archive, current incarnation metadata.
+- `game_state/meta/guardians.json`: Guardian identity, reputation, mood, musings, trade inventory, relationships, buyback relics.
+- `game_state/meta/guardian_projects.json`: active/completed Guardian projects and project pressure.
+- `game_state/meta/guardian_abode_residents.json`: authored residents, resident memory, history, rewards, linked Soul Quests, Shining alignment fields.
+- `game_state/meta/shining_abode_state.json`: Shining availability, Light Sparks, Radiance, halls, gates, factions, projects, trade inventories, receipts, prepared incarnation package.
+- `game_state/control/pending_*afterlife*` and `game_state/control/pending_shining_*` files: client-authored contracts that must be resolved canonically when present.
+
+Legal afterlife progression surfaces include:
+- `UpdateGuardians`
+- `guardianThoughtJournalUpdates`
+- `guardianSocialJournalUpdates`
+- `startGuardianProjects`
+- `guardianProjectUpdates`
+- `completeGuardianProjects`
+- `guardianPowerEvents`
+- `UpdateGuardianTradeInventoryReceipts`
+- `UpdateGuardianAbodeResidents`
+- `UpdateGuardianAbodeResidentRosterReceipts`
+- `UpdateGuardianAbodeResidentInteractionReceipts`
+- `UpdateGuardianAbodeResidentHistoryLog`
+- `residentThoughtJournalUpdates`
+- `residentInteractionLogUpdates`
+- `UpdateSoulQuests` with `relatedAfterlifeResidentId`
+- `metaStateUpdates` for canonical Soul/Ink/Soul Relic effects
+- `afterlifeArchiveUpdates` and `archiveActionResolutions`
+- canonical `shining_abode_state.json` mutation plus Shining receipt arrays when resolving Shining contracts
+- `progressionProcessingReport`
+
+Forbidden substitutions for afterlife scheduler debt:
+- Do not use `worldEventsLog` for Chaos Sea or Shining Abode events.
+- Do not use `factionDataChanges`, `factionProjectUpdates`, `completeFactionProjects`, or `factionChronicleUpdates` for Shining factions.
+- Do not use `UpdateNPCs`, `NPCsInScene`, `NPCGoalUpdates`, or `NPCActivityUpdates` for Guardians or afterlife residents.
+- Do not use `currentLocationData`, `worldMapUpdates`, `timeChange`, `setWorldTime`, or `weatherChange` for afterlife movement, time, or environment.
+- Do not hand-author `afterlife_notifications.json`; the client derives notifications from canonical receipts and result surfaces.
+
+Required `gm_thoughts_markdown` coverage when afterlife debt is due:
+- List every due afterlife contour and its expected count.
+- Explain which state files were checked.
+- Declare all changed Guardians, residents, and Shining institutions as relevant actors.
+- Explain outside-scope Guardians/residents/institutions when they could plausibly matter but are not processed.
+- Summarize each processed contour's consequence, including stability/no-mutation decisions.
+- If catch-up is required, list `afterlifeCatchupPressureTier`, `afterlifeCatchupContours`, and each bounded summary outcome.
+
+Example afterlife report with mixed backlog:
+
+```json
+{
+  "sessionId": "session-id-from-request",
+  "requestId": "request-id-from-request",
+  "turnNumber": 42,
+  "chaosSeaCyclesProcessed": 0,
+  "guardianProjectCyclesProcessed": 2,
+  "residentAgencyCyclesProcessed": 3,
+  "shiningAbodeCyclesProcessed": 4,
+  "shiningFactionCyclesProcessed": 5,
+  "shiningTradeCyclesProcessed": 6,
+  "newLastGuardianProjectCycleOrdinal": 10,
+  "newLastResidentAgencyCycleOrdinal": 11,
+  "newLastShiningAbodeCycleOrdinal": 12,
+  "newLastShiningFactionCycleOrdinal": 13,
+  "newLastShiningTradeCycleOrdinal": 14,
+  "afterlifeCatchupProcessed": true,
+  "afterlifeCatchupSummaryEventsProcessed": 3
+}
+```
+
+The example intentionally uses different `newLast*Ordinal` values. Each contour advances by its own expected count, never by the maximum backlog of another contour.
+
 ### Legacy Note: `input/player_command.json`
 Historical drafts mentioned a separate `input/player_command.json` surface for save/load/debug/end_life.
 That file is not part of the current GM daemon contract.
