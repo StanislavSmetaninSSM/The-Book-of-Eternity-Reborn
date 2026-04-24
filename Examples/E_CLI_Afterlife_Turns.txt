@@ -54,6 +54,7 @@ Every accepted afterlife turn must follow this order:
 
 9. Report:
    - If any afterlife cycle is due, write `progressionProcessingReport` with exact processed counts and exact per-contour `newLast*Ordinal`.
+   - Copy `sessionId`, `requestId`, and `turnNumber` from the current `input/turn_request.json`; do not invent new correlation values.
 
 10. Final audit:
    - Remove stale Mortal World outputs.
@@ -79,6 +80,8 @@ Input fragments:
     "inkFeathers": 118
   },
   "turn_request.json": {
+    "sessionId": "afterlife_session_chaos_212",
+    "requestId": "afterlife_turn_chaos_212",
     "turnNumber": 212,
     "playerAction": "Я иду в Обитель Азалии и спрашиваю Лиору, что она помнит о моей прошлой жизни.",
     "progressionControl": {
@@ -177,17 +180,21 @@ Correct response/state fragment:
   ],
   "residentThoughtJournalUpdates": [
     {
+      "entryId": "thought_liora_212_memory_boundary",
       "residentId": "res_azalia_liora_001",
       "guardianId": "guard_social_azalia_001",
       "turn": 212,
+      "timestamp": "2026-04-24T08:40:00Z",
       "title": "Память, которую можно выдержать",
       "summary": "Лиора решила раскрыть только тот фрагмент прошлого, который поможет душе, но не сломает её текущую волю."
     }
   ],
   "residentInteractionLogUpdates": [
     {
+      "entryId": "interaction_liora_212_previous_life",
       "residentId": "res_azalia_liora_001",
       "turn": 212,
+      "timestamp": "2026-04-24T08:40:00Z",
       "title": "Разговор о прошлой жизни",
       "summary": "Душа спросила Лиору о прошлом; Лиора раскрыла один фрагмент памяти и обозначила границу дальнейшего разговора."
     }
@@ -214,6 +221,9 @@ Correct response/state fragment:
     }
   ],
   "progressionProcessingReport": {
+    "sessionId": "afterlife_session_chaos_212",
+    "requestId": "afterlife_turn_chaos_212",
+    "turnNumber": 212,
     "chaosSeaCyclesProcessed": 1,
     "guardianProjectCyclesProcessed": 2,
     "residentAgencyCyclesProcessed": 1,
@@ -306,6 +316,8 @@ Input fragments:
     "coreActionReceipts": []
   },
   "turn_request.json": {
+    "sessionId": "afterlife_session_shining_305",
+    "requestId": "afterlife_turn_shining_305",
     "turnNumber": 305,
     "playerAction": "Откройте Врата Рассвета и пусть Орден Стеклянного Света подготовит торговую витрину.",
     "progressionControl": {
@@ -505,8 +517,10 @@ Correct response/report fragment:
   ],
   "residentThoughtJournalUpdates": [
     {
+      "entryId": "thought_mira_305_glass_order",
       "residentId": "res_mira_001",
       "turn": 305,
+      "timestamp": "2026-04-24T08:55:00Z",
       "title": "Стеклянный порядок",
       "summary": "Мира решила поддержать Орден Стеклянного Света, потому что открытие Врат выглядело безопасным и полезным для жителей."
     }
@@ -543,6 +557,9 @@ Correct response/report fragment:
     }
   ],
   "progressionProcessingReport": {
+    "sessionId": "afterlife_session_shining_305",
+    "requestId": "afterlife_turn_shining_305",
+    "turnNumber": 305,
     "shiningAbodeCyclesProcessed": 1,
     "shiningFactionCyclesProcessed": 2,
     "shiningTradeCyclesProcessed": 1,
@@ -603,7 +620,7 @@ Scenario:
 - `currentRealm = "Shining Abode"`.
 - `shining_abode_state.json.preparedIncarnationPackage` is not null.
 - The player has already chosen a prepared next-life package.
-- The current accepted turn must create `TriggerIncarnation` and consume/clear the frozen package.
+- The current accepted turn must create `TriggerIncarnation` while preserving the frozen package for the client transition code to consume after successful mortal bootstrap.
 - Ordinary Shining living-world progression must NOT run in this handoff turn.
 
 Input fragment:
@@ -650,7 +667,7 @@ Correct GM decision:
 - preparedIncarnationPackage is present.
 - Mode: Shining Abode pending-bootstrap handoff.
 - Ordinary Shining living-world progression is suppressed; the expected ordinary Shining cycle counts are zero in this handoff request.
-- This turn only materializes the frozen next-life package and clears/consumes the package.
+- This turn only emits `TriggerIncarnation` from the frozen next-life package. The GM must preserve the package; the client transition code consumes and clears it only after successful mortal bootstrap.
 
 ## Охват NPC-анализа
 - Режим: Scene-local
@@ -679,19 +696,16 @@ Correct response/control fragment:
 }
 ```
 
-Correct Shining state result:
+Correct Shining state handling:
 
-This is a fragment. Preserve the rest of `shining_abode_state.json`; only consume/clear the prepared package. Do not add unsupported handoff marker fields.
+Do not write a `shining_abode_state.json` mutation for `preparedIncarnationPackage` in this handoff turn. Preserve the existing package object exactly as it was in input; the runtime reads it after accepting `TriggerIncarnation`, materializes the frozen blessing/world setup, and clears it after successful mortal bootstrap. Do not add unsupported handoff marker fields.
 
-```json
-{
-  "preparedIncarnationPackage": null
-}
-```
+There is no required Shining state output fragment for this handoff unless another already-valid state field must be preserved unchanged by the normal save pipeline.
 
 Do NOT write in this handoff example:
 
 ```text
+preparedIncarnationPackage: null
 progressionProcessingReport for ordinary Shining cycles
 shining_abode_state faction/radiance/trade progression unrelated to the package
 guardianProjectUpdates
