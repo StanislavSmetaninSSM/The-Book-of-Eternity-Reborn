@@ -1142,6 +1142,7 @@
                     - If `afterlifeCatchupRequired=true`, produce exactly `afterlifeCatchupSummaryEventsRequired` bounded summary outcomes, covering the listed `afterlifeCatchupContours`; do not process raw elapsed cycles one by one.
                     - Each `newLast*Ordinal` advances only its own contour. Do not copy the largest pending backlog into unrelated contour markers.
                     - In `Shining Abode pending-bootstrap handoff mode`, ordinary Shining living-world progression is suppressed; process only the bootstrap lifecycle package.
+                    - For concrete worked examples of Chaos Sea catch-up, ordinary active Shining Abode, and Shining pending-bootstrap handoff, read `Examples/E_CLI_Afterlife_Turns.txt`.
 
                     **3. Mortal-World NPC-Driven World Evolution:**
                     - Every important NPC has personal goals and plans (Rules/Block_19.E.txt)

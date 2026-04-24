@@ -1836,7 +1836,8 @@ See `Examples/CLI_Example_Soul_System.md` for complete Soul Relic distribution e
 1. **TaskGuides/CLI_Step_Main.txt** - Main workflow instructions
 2. **Rules/Block_CLI_Operations.txt** - Detailed file operations protocol  
 3. **Examples/CLI_Translation_Guide.md** - How to handle API examples
-4. **This API Spec** - Complete data structure reference
+4. **Examples/E_CLI_Afterlife_Turns.txt** - Worked Chaos Sea / Shining Abode examples
+5. **This API Spec** - Complete data structure reference
 
 ### Critical Success Factors
 1. ✅ **Read ALL game rules** (Rules/Block_*.txt) before processing

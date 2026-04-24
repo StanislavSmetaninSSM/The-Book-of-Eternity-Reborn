@@ -1,0 +1,744 @@
+CLI AFTERLIFE TURN EXAMPLES — CHAOS SEA AND SHINING ABODE
+
+This file supplements:
+- CLI_Agent_Daemon_Specification.md
+- TaskGuides/CLI_Step_Main.txt
+- Rules/Block_0.txt
+- Rules/Block_CLI_Operations.txt
+- CLI_API_Specification.md
+
+Read this file whenever `game_state/meta/soul_state.json.currentRealm` is `Chaos Sea`, `Море Хаоса`, `Shining Abode`, or `Сияющая Обитель`.
+
+The examples are intentionally operational. They show what the GM must decide, what must be written, and what must NOT be written. They are not a replacement for the full schemas.
+
+==================================================
+GLOBAL AFTERLIFE TURN RULE
+==================================================
+
+Every accepted afterlife turn must follow this order:
+
+1. Realm gate:
+   - Read `game_state/meta/soul_state.json.currentRealm`.
+   - Decide whether this is ordinary Chaos Sea, ordinary active Shining Abode, or Shining Abode pending-bootstrap handoff.
+
+2. Lifecycle guards:
+   - Check `afterlife_return_guard.json`, `ascension.json`, `incarnation_trigger.json`, and `shining_abode_state.json.preparedIncarnationPackage`.
+   - Do not mix return, life evaluation, ascension, incarnation, and Shining bootstrap logic.
+
+3. Scheduler first:
+   - Read `input/turn_request.json.progressionControl` before resolving the player action.
+   - Every `mustEvaluate* = true` is mandatory.
+   - `afterlifeCatchupRequired = true` is one bounded summary obligation, not thousands of raw cycles.
+
+4. State loading:
+   - Read `soul_state.json`.
+   - Read `guardians.json`.
+   - Read `guardian_projects.json`.
+   - Read `guardian_abode_residents.json`.
+   - In Shining Abode, also read `shining_abode_state.json`.
+
+5. Pending contracts:
+   - Read pending afterlife request files in `game_state/control/`.
+   - Close every present pending contract through its canonical receipt/state surface.
+
+6. Actor scope:
+   - Declare every changed Guardian, resident, Shining faction, hall, gate, or institution as relevant.
+   - Explain why plausible non-processed actors are outside scope.
+
+7. Living-world debt:
+   - Process due contours through Guardian/Soul/resident/Shining surfaces.
+   - Do not use Mortal World NPC/faction/location/time/weather/combat/inventory channels.
+
+8. Direct player action:
+   - Process the player action only after the above context is known.
+
+9. Report:
+   - If any afterlife cycle is due, write `progressionProcessingReport` with exact processed counts and exact per-contour `newLast*Ordinal`.
+
+10. Final audit:
+   - Remove stale Mortal World outputs.
+   - Do not author `afterlife_notifications.json`; the client derives it from canonical receipts/state.
+
+==================================================
+1. VALID — CHAOS SEA WITH CATCH-UP, GUARDIAN PROJECT, RESIDENT REQUEST
+==================================================
+
+Scenario:
+- The soul has returned to the Chaos Sea after a long mortal life.
+- The player says: "Я иду в Обитель Азалии и спрашиваю Лиору, что она помнит о моей прошлой жизни."
+- The scheduler says that Chaos Sea hub, Guardian projects, resident agency, and bounded catch-up are due.
+- A resident history request is pending.
+
+Input fragments:
+
+```json
+{
+  "soul_state.json": {
+    "currentRealm": "Chaos Sea",
+    "enlightenment": 47,
+    "inkFeathers": 118
+  },
+  "turn_request.json": {
+    "turnNumber": 212,
+    "playerAction": "Я иду в Обитель Азалии и спрашиваю Лиору, что она помнит о моей прошлой жизни.",
+    "progressionControl": {
+      "mustEvaluateChaosSeaProgression": true,
+      "chaosSeaCyclesExpectedThisTurn": 1,
+      "nextChaosSeaCycleOrdinal": 31,
+      "mustEvaluateGuardianProjectProgression": true,
+      "guardianProjectCyclesExpectedThisTurn": 2,
+      "nextGuardianProjectCycleOrdinal": 18,
+      "mustEvaluateResidentAgencyProgression": true,
+      "residentAgencyCyclesExpectedThisTurn": 1,
+      "nextResidentAgencyCycleOrdinal": 12,
+      "afterlifeCatchupRequired": true,
+      "afterlifeCatchupSummaryEventsRequired": 2,
+      "afterlifeCatchupPressureTier": "major",
+      "afterlifeCatchupContours": [
+        "chaos_sea",
+        "guardian_projects",
+        "resident_agency"
+      ]
+    }
+  },
+  "pending_guardian_abode_resident_interactions.json": {
+    "requests": [
+      {
+        "requestId": "resident_history_212_liora",
+        "residentId": "res_azalia_liora_001",
+        "guardianId": "guard_social_azalia_001",
+        "interactionType": "history",
+        "topic": "memory_of_previous_life"
+      }
+    ]
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Оценка времени и мира
+- Realm: Chaos Sea.
+- Lifecycle guards: no active ascension, no incarnation trigger, no Shining bootstrap package.
+- progressionControl read before resolving the player action.
+- Due contours: Chaos Sea hub x1, Guardian projects x2, resident agency x1.
+- Catch-up: required, pressure tier major, summary outcomes required: 2.
+
+## Охват NPC-анализа
+- Режим: Mixed
+- Релевантные акторы: Азалия, Лиора, Море Хаоса как hub-среда
+- Почему они релевантны: Азалия владеет текущей Обителью и её проект продвигается; Лиора имеет pending history request; Море Хаоса имеет due hub/catch-up contour.
+- Акторы вне охвата: остальные Хранители, прочие резиденты Обители Азалии
+- Почему они вне охвата: их проекты и pending requests не затронуты этим ходом, и catch-up summary не требует их индивидуальных state mutations.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: Душа вернулась после долгой смертной жизни и пришла к её резиденту.
+- Внутренние мысли: Азалия видит, что Лиора готова раскрыть часть прошлого, но не хочет ломать память души слишком резко.
+- Решение: Она позволяет разговор, усиливает защитный шелк Обители и продвигает проект мягкого раскрытия воспоминаний.
+
+### Лиора
+- Ситуация: Душа прямо спрашивает о её памяти прошлой жизни.
+- Внутренние мысли: Лиора боится снова стать лишь тенью чужого прошлого, но хочет быть полезной.
+- Решение: Она раскрывает один фрагмент истории и оставляет понятный след в резидентской памяти.
+
+## Afterlife Living World / Живой мир Посмертия
+- Catch-up outcome 1: за время отсутствия души в Море Хаоса усилились тихие течения воспоминаний; это отражается в hub-summary и не требует mortal worldEventsLog.
+- Catch-up outcome 2: проект Азалии продвинулся, но не завершился; резиденты стали осторожнее относиться к резкому раскрытию прошлых жизней.
+- Chaos Sea hub cycle processed: 1.
+- Guardian project cycles processed: 2.
+- Resident agency cycle processed: 1.
+- Stable contours: Shining contours are not active because currentRealm is Chaos Sea and no Shining catch-up contour is listed.
+
+## Отчёт scheduler
+- progressionProcessingReport will close Chaos Sea ordinal 31, Guardian project ordinals 18..19, Resident agency ordinal 12.
+- afterlifeCatchupProcessed=true and summary events processed=2.
+```
+
+Correct response/state fragment:
+
+```json
+{
+  "response": "Обитель Азалии встречает тебя шелестом тонких серебряных нитей. Лиора долго молчит, затем признаёт: в одной из твоих прошлых жизней она видела тебя не героем, а человеком, который однажды отказался от лёгкой победы ради чужой свободы. Азалия не вмешивается, но её шелк вокруг зала становится плотнее, чтобы память не разорвала душу слишком резко.",
+  "gm_thoughts_markdown": "<see reasoning above>",
+  "guardianProjectUpdates": [
+    {
+      "projectId": "gproj_azalia_memory_silk_001",
+      "guardianId": "guard_social_azalia_001",
+      "progressDelta": 18,
+      "newProgressPercent": 64,
+      "status": "active",
+      "assistAudit": {
+        "reason": "major catch-up plus current resident-history scene",
+        "cyclesProcessed": 2
+      }
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "turn": 212,
+      "title": "Память, которую можно выдержать",
+      "summary": "Лиора решила раскрыть только тот фрагмент прошлого, который поможет душе, но не сломает её текущую волю."
+    }
+  ],
+  "residentInteractionLogUpdates": [
+    {
+      "residentId": "res_azalia_liora_001",
+      "turn": 212,
+      "title": "Разговор о прошлой жизни",
+      "summary": "Душа спросила Лиору о прошлом; Лиора раскрыла один фрагмент памяти и обозначила границу дальнейшего разговора."
+    }
+  ],
+  "UpdateGuardianAbodeResidentHistoryLog": [
+    {
+      "residentId": "res_azalia_liora_001",
+      "historyEntryId": "hist_liora_212_previous_life",
+      "turn": 212,
+      "title": "Отказ от лёгкой победы",
+      "summary": "В прошлой жизни душа отказалась от победы, которая требовала предательства свободного пленника.",
+      "source": "resident_history_request"
+    }
+  ],
+  "UpdateGuardianAbodeResidentInteractionReceipts": [
+    {
+      "requestId": "resident_history_212_liora",
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "interactionType": "history",
+      "status": "accepted",
+      "resolvedAtTurn": 212,
+      "resolvedAtUtc": "2026-04-24T08:40:00Z"
+    }
+  ],
+  "progressionProcessingReport": {
+    "chaosSeaCyclesProcessed": 1,
+    "guardianProjectCyclesProcessed": 2,
+    "residentAgencyCyclesProcessed": 1,
+    "newLastChaosSeaCycleOrdinal": 31,
+    "newLastGuardianProjectCycleOrdinal": 19,
+    "newLastResidentAgencyCycleOrdinal": 12,
+    "afterlifeCatchupProcessed": true,
+    "afterlifeCatchupSummaryEventsProcessed": 2
+  }
+}
+```
+
+Required CLI distribution:
+
+```text
+output/narrative_response.json
+output/debug_logs.json
+game_state/meta/guardian_projects.json
+game_state/meta/guardian_abode_residents.json
+game_state/control/progression_report.json
+ready/turn_complete.json
+```
+
+Forbidden in this example:
+
+```text
+worldEventsLog
+factionDataChanges
+UpdateNPCs
+NPCsInScene
+UpdateQuests for mortal quests
+currentLocationData
+timeChange
+weatherChange
+UpdateInventory
+afterlife_notifications.json manual writes
+```
+
+Why this is valid:
+- The player action is a resident conversation, but scheduler debt is still processed first.
+- Catch-up is summarized into exactly two outcomes.
+- Resident history request is closed through an interaction receipt.
+- The resident receives memory/history state, not NPC state.
+- The Guardian project advances through project surfaces, not `UpdateGuardians.updateProject`.
+- The report uses per-contour ordinals: Guardian project advances by 2, not by the max backlog of another contour.
+
+==================================================
+2. VALID — ACTIVE SHINING ABODE WITH CORE ACTION, FACTION, TRADE, RESIDENT AGENCY
+==================================================
+
+Scenario:
+- The soul is in the active Shining Abode.
+- The player says: "Откройте Врата Рассвета и пусть Орден Стеклянного Света подготовит торговую витрину."
+- There is no `preparedIncarnationPackage`, so this is ordinary active Shining Abode, not bootstrap handoff.
+- Shining Abode, Shining faction, Shining trade, Guardian project, and resident agency cycles are due.
+- A Shining core action request and a Shining trade inventory request are pending.
+
+Input fragments:
+
+```json
+{
+  "soul_state.json": {
+    "currentRealm": "Shining Abode",
+    "enlightenment": 100
+  },
+  "shining_abode_state.json": {
+    "availability": "active",
+    "preparedIncarnationPackage": null,
+    "radiance": {
+      "tier": 3,
+      "pressure": "bright"
+    },
+    "gates": {
+      "dawn_gate": {
+        "gateId": "dawn_gate",
+        "displayName": "Врата Рассвета",
+        "state": "sealed"
+      }
+    },
+    "factions": [
+      {
+        "factionId": "shine_faction_glass_light_001",
+        "name": "Орден Стеклянного Света",
+        "strength": 42,
+        "restlessness": 18,
+        "tradeTier": "radiant",
+        "tradeInventoryReceipts": []
+      }
+    ],
+    "coreActionReceipts": []
+  },
+  "turn_request.json": {
+    "turnNumber": 305,
+    "playerAction": "Откройте Врата Рассвета и пусть Орден Стеклянного Света подготовит торговую витрину.",
+    "progressionControl": {
+      "mustEvaluateShiningAbodeProgression": true,
+      "shiningAbodeCyclesExpectedThisTurn": 1,
+      "nextShiningAbodeCycleOrdinal": 22,
+      "mustEvaluateShiningFactionProgression": true,
+      "shiningFactionCyclesExpectedThisTurn": 2,
+      "nextShiningFactionCycleOrdinal": 40,
+      "mustEvaluateShiningTradeProgression": true,
+      "shiningTradeCyclesExpectedThisTurn": 1,
+      "nextShiningTradeCycleOrdinal": 9,
+      "mustEvaluateGuardianProjectProgression": true,
+      "guardianProjectCyclesExpectedThisTurn": 1,
+      "nextGuardianProjectCycleOrdinal": 20,
+      "mustEvaluateResidentAgencyProgression": true,
+      "residentAgencyCyclesExpectedThisTurn": 1,
+      "nextResidentAgencyCycleOrdinal": 13,
+      "afterlifeCatchupRequired": false
+    }
+  },
+  "pending_shining_abode_actions.json": {
+    "requests": [
+      {
+        "requestId": "shine_core_open_gate_305",
+        "actionType": "open_gates",
+        "factionId": "shine_faction_glass_light_001",
+        "sourceDraftVersion": 4
+      }
+    ]
+  },
+  "pending_shining_trade_inventory_requests.json": {
+    "requests": [
+      {
+        "requestId": "shine_trade_glass_305",
+        "factionId": "shine_faction_glass_light_001",
+        "tradeCycleId": "shine_trade_cycle_9",
+        "generationRarityCeiling": "Epic"
+      }
+    ]
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Оценка времени и мира
+- Realm: Shining Abode.
+- `preparedIncarnationPackage`: null. This is ordinary active Shining Abode, not pending-bootstrap handoff.
+- progressionControl read before narrative resolution.
+- Due contours: Shining Abode x1, Shining faction x2, Shining trade x1, Guardian project x1, resident agency x1.
+- Catch-up: not required.
+
+## Охват NPC-анализа
+- Режим: Mixed
+- Релевантные акторы: Орден Стеклянного Света, Врата Рассвета, резидент Мира, Хранитель Элиан
+- Почему они релевантны: Орден закрывает Shining trade request и получает faction progression; Врата Рассвета закрывают Shining core action; Мира меняет resident alignment; Элиан имеет due guardian project cycle.
+- Акторы вне охвата: другие сияющие фракции, закрытые залы, прочие Хранители
+- Почему они вне охвата: у них нет pending contracts, и два Shining faction cycles применены к текущей активной фракции, чьё действие запросил игрок.
+
+## Reasoning / Размышления NPC / Guardian Thoughts
+### Орден Стеклянного Света
+- Ситуация: Душа просит открыть Врата и подготовить витрину через Орден.
+- Внутренние мысли: Орден хочет показать пользу, но опасается слишком быстрого расширения влияния.
+- Решение: Орден принимает поручение, усиливает дисциплину и открывает ограниченную торговую витрину.
+
+### Врата Рассвета
+- Ситуация: Врата были sealed, но получили accepted core action request.
+- Решение: Врата переходят в open/stabilized state без использования Mortal World location fields.
+
+### Мира
+- Ситуация: Резидентка видит рост Ордена и выбирает поддержать их публичный ритуал.
+- Решение: Её Shining alignment moves toward the Glass Light faction and is logged as resident agency.
+
+### Элиан
+- Ситуация: Проект Хранителя связан с устойчивостью сияющих переходов.
+- Решение: Проект получает один cycle progress because the gate action reinforces his domain.
+
+## Afterlife Living World / Живой мир Посмертия
+- Shining Abode cycle: public order brightens, dawn_gate opens with controlled pressure.
+- Shining faction cycles: the Glass Light faction gains strength and lower restlessness through visible service.
+- Shining trade cycle: the faction materializes explicit tradeInventory and closes the pending trade request.
+- Guardian project cycle: one project advances.
+- Resident agency cycle: Mira changes alignment/memory.
+
+## Отчёт scheduler
+- Shining Abode ordinal 22 processed.
+- Shining faction ordinals 40..41 processed.
+- Shining trade ordinal 9 processed.
+- Guardian project ordinal 20 processed.
+- Resident agency ordinal 13 processed.
+```
+
+Correct Shining state fragment to write into `game_state/meta/shining_abode_state.json`:
+
+This is a fragment. Preserve all existing Shining root fields, halls, factions, projects, receipts, and history entries that are not shown here.
+
+```json
+{
+  "availability": "active",
+  "preparedIncarnationPackage": null,
+  "radiance": {
+    "tier": 3,
+    "pressure": "bright",
+    "publicMood": "disciplined_hope"
+  },
+  "gates": {
+    "dawn_gate": {
+      "gateId": "dawn_gate",
+      "displayName": "Врата Рассвета",
+      "state": "open",
+      "stability": 74,
+      "lastChangedTurn": 305
+    }
+  },
+  "factions": [
+    {
+      "factionId": "shine_faction_glass_light_001",
+      "name": "Орден Стеклянного Света",
+      "strength": 48,
+      "restlessness": 12,
+      "tradeTier": "radiant",
+      "tradeInventory": {
+        "tradeCycleId": "shine_trade_cycle_9",
+        "generationRarityCeiling": "Epic",
+        "merchantProfile": "ShiningRelics",
+        "items": [
+          {
+            "slotId": "shine_trade_glass_305_1",
+            "relicId": "relic_glass_dawn_lantern_001",
+            "name": "Фонарь Стеклянного Рассвета",
+            "rarity": "Epic",
+            "priceLightSparks": 6,
+            "soldOut": false
+          }
+        ]
+      },
+      "tradeInventoryReceipts": [
+        {
+          "requestId": "shine_trade_glass_305",
+          "factionId": "shine_faction_glass_light_001",
+          "factionName": "Орден Стеклянного Света",
+          "tradeCycleId": "shine_trade_cycle_9",
+          "status": "ready",
+          "itemCount": 1,
+          "soldOutCount": 0,
+          "resolvedAtTurn": 305,
+          "resolvedAtUtc": "2026-04-24T08:55:00Z"
+        }
+      ]
+    }
+  ],
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_core_open_gate_305",
+      "actionType": "open_gates",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 4,
+      "resolvedAtTurn": 305,
+      "resolvedAtUtc": "2026-04-24T08:55:00Z",
+      "reason": "The requested faction stabilized the dawn gate through a public ritual."
+    }
+  ]
+}
+```
+
+Correct response/report fragment:
+
+```json
+{
+  "response": "Сияющая Обитель отвечает не громом, а стройным переливом стеклянного света. Врата Рассвета раскрываются медленно, слой за слоем, пока Орден Стеклянного Света выстраивает вокруг них круг дисциплины. На новой витрине появляется первый сияющий реликтовый предмет, и жители Обители видят: это не просто торговля, а публичное обещание порядка.",
+  "gm_thoughts_markdown": "<see reasoning above>",
+  "guardianProjectUpdates": [
+    {
+      "projectId": "gproj_elian_gate_stability_001",
+      "guardianId": "guard_knowledge_elian_001",
+      "progressDelta": 9,
+      "newProgressPercent": 51,
+      "status": "active",
+      "assistAudit": {
+        "reason": "Shining gate opening reinforces the guardian project domain",
+        "cyclesProcessed": 1
+      }
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "residentId": "res_mira_001",
+      "turn": 305,
+      "title": "Стеклянный порядок",
+      "summary": "Мира решила поддержать Орден Стеклянного Света, потому что открытие Врат выглядело безопасным и полезным для жителей."
+    }
+  ],
+  "UpdateGuardianAbodeResidents": [
+    {
+      "residentId": "res_mira_001",
+      "guardianId": "guard_knowledge_elian_001",
+      "abodeId": "abode_elian_gatehouse_001",
+      "displayName": "Мира",
+      "bondLevel": 42,
+      "bondTier": "trusted",
+      "bondRewardState": "none",
+      "mortalWorldImprint": null,
+      "linkedSoulQuestId": null,
+      "historyRevealed": false,
+      "grantedRelicId": null,
+      "shiningFactionId": "shine_faction_glass_light_001",
+      "shiningAlignment": "supporter",
+      "lastUpdatedTurn": 305
+    }
+  ],
+  "progressionProcessingReport": {
+    "shiningAbodeCyclesProcessed": 1,
+    "shiningFactionCyclesProcessed": 2,
+    "shiningTradeCyclesProcessed": 1,
+    "guardianProjectCyclesProcessed": 1,
+    "residentAgencyCyclesProcessed": 1,
+    "newLastShiningAbodeCycleOrdinal": 22,
+    "newLastShiningFactionCycleOrdinal": 41,
+    "newLastShiningTradeCycleOrdinal": 9,
+    "newLastGuardianProjectCycleOrdinal": 20,
+    "newLastResidentAgencyCycleOrdinal": 13,
+    "afterlifeCatchupProcessed": false,
+    "afterlifeCatchupSummaryEventsProcessed": 0
+  }
+}
+```
+
+Required CLI distribution:
+
+```text
+output/narrative_response.json
+output/debug_logs.json
+game_state/meta/shining_abode_state.json
+game_state/meta/guardian_projects.json
+game_state/meta/guardian_abode_residents.json
+game_state/control/progression_report.json
+ready/turn_complete.json
+```
+
+Forbidden in this example:
+
+```text
+factionDataChanges
+factionProjectUpdates
+completeFactionProjects
+worldEventsLog
+currentLocationData
+timeChange
+weatherChange
+UpdateNPCs
+NPCsInScene
+UpdateInventory
+afterlife_notifications.json manual writes
+```
+
+Why this is valid:
+- The Shining state file is the canonical place for halls, gates, radiance, factions, and trade receipts.
+- The pending core action is closed through `coreActionReceipts[]`.
+- The pending trade request is closed through faction `tradeInventory` plus faction `tradeInventoryReceipts[]`.
+- Shining faction progress is not written through Mortal World faction fields.
+- The resident is handled through resident afterlife state, not NPC state.
+- The scheduler report advances each contour by its own expected count.
+
+==================================================
+3. VALID — SHINING ABODE PENDING-BOOTSTRAP HANDOFF
+==================================================
+
+Scenario:
+- `currentRealm = "Shining Abode"`.
+- `shining_abode_state.json.preparedIncarnationPackage` is not null.
+- The player has already chosen a prepared next-life package.
+- The current accepted turn must create `TriggerIncarnation` and consume/clear the frozen package.
+- Ordinary Shining living-world progression must NOT run in this handoff turn.
+
+Input fragment:
+
+```json
+{
+  "soul_state.json": {
+    "currentRealm": "Shining Abode"
+  },
+  "shining_abode_state.json": {
+    "availability": "active",
+    "preparedIncarnationPackage": {
+      "packageId": "prepared_incarnation_44",
+      "worldDescription": "Мир поздней бронзы, где города-государства спорят с духами рек.",
+      "characterDescription": "Ребёнок писца, родившийся с памятью о стеклянном рассвете.",
+      "circumstances": "Семья служит храмовому архиву на границе войны и дипломатии.",
+      "selectedCardIds": [
+        "card_dawn_memory",
+        "card_river_names"
+      ]
+    }
+  },
+  "turn_request.json": {
+    "turnNumber": 340,
+    "playerAction": "Я принимаю подготовленное воплощение.",
+    "progressionControl": {
+      "mustEvaluateShiningAbodeProgression": false,
+      "shiningAbodeCyclesExpectedThisTurn": 0,
+      "mustEvaluateShiningFactionProgression": false,
+      "shiningFactionCyclesExpectedThisTurn": 0,
+      "mustEvaluateShiningTradeProgression": false,
+      "shiningTradeCyclesExpectedThisTurn": 0,
+      "afterlifeCatchupRequired": false
+    }
+  }
+}
+```
+
+Correct GM decision:
+
+```markdown
+## Оценка времени и мира
+- Realm: Shining Abode.
+- preparedIncarnationPackage is present.
+- Mode: Shining Abode pending-bootstrap handoff.
+- Ordinary Shining living-world progression is suppressed; the expected ordinary Shining cycle counts are zero in this handoff request.
+- This turn only materializes the frozen next-life package and clears/consumes the package.
+
+## Охват NPC-анализа
+- Режим: Scene-local
+- Релевантные акторы: нет
+- Почему они релевантны: Ход является lifecycle/bootstrap handoff and does not mutate Guardian/resident/faction agency.
+- Акторы вне охвата: сияющие фракции, Хранители, резиденты
+- Почему они вне охвата: pending-bootstrap handoff explicitly suppresses ordinary Shining progression.
+
+## Reasoning / Размышления NPC / Guardian Thoughts
+- No actor reasoning block is required because no structured actor updates are emitted.
+```
+
+Correct response/control fragment:
+
+```json
+{
+  "response": "Сияющая Обитель не требует новых решений. Она только удерживает уже выбранный узор, пока душа проходит сквозь подготовленные врата. Стеклянный рассвет сжимается в точку памяти, и впереди раскрывается смертный мир храмовых архивов и речных духов.",
+  "gm_thoughts_markdown": "<see reasoning above>",
+  "TriggerIncarnation": {
+    "worldDescription": "Мир поздней бронзы, где города-государства спорят с духами рек.",
+    "characterDescription": "Ребёнок писца, родившийся с памятью о стеклянном рассвете.",
+    "circumstances": "Семья служит храмовому архиву на границе войны и дипломатии.",
+    "source": "shining_prepared_package",
+    "preparedIncarnationPackageId": "prepared_incarnation_44"
+  }
+}
+```
+
+Correct Shining state result:
+
+This is a fragment. Preserve the rest of `shining_abode_state.json`; only consume/clear the prepared package and record the handoff marker.
+
+```json
+{
+  "preparedIncarnationPackage": null,
+  "lastPreparedIncarnationPackageConsumedAtTurn": 340
+}
+```
+
+Do NOT write in this handoff example:
+
+```text
+progressionProcessingReport for ordinary Shining cycles
+shining_abode_state faction/radiance/trade progression unrelated to the package
+guardianProjectUpdates
+residentThoughtJournalUpdates
+factionDataChanges
+worldEventsLog
+currentLocationData
+timeChange
+weatherChange
+UpdateNPCs
+```
+
+Why this is valid:
+- `preparedIncarnationPackage != null` changes the mode.
+- The scheduler's ordinary Shining debt is not processed because the turn is a lifecycle handoff, not an ordinary active Shining Abode turn.
+- The GM does not invent new Shining events while bootstrapping the next mortal life.
+
+==================================================
+COMMON INVALID PATTERNS
+==================================================
+
+Invalid afterlife response:
+
+```json
+{
+  "worldEventsLog": [
+    {
+      "title": "В Море Хаоса начался шторм"
+    }
+  ],
+  "factionDataChanges": [
+    {
+      "factionId": "shine_faction_glass_light_001",
+      "strengthChange": 5
+    }
+  ],
+  "UpdateNPCs": [
+    {
+      "NPCId": "res_azalia_liora_001",
+      "name": "Лиора"
+    }
+  ],
+  "currentLocationData": {
+    "locationName": "Сияющая площадь"
+  },
+  "timeChange": {
+    "minutes": 60
+  }
+}
+```
+
+Why invalid:
+- `worldEventsLog` is Mortal World world progression.
+- `factionDataChanges` is Mortal World faction progression.
+- `UpdateNPCs` is for regular mortal NPCs, not Guardians or afterlife residents.
+- `currentLocationData` is Mortal World location state; afterlife uses Abodes and Shining state.
+- `timeChange` is Mortal World time; afterlife scheduler uses `progressionControl` and `progressionProcessingReport`.
+
+Correct replacement:
+
+```text
+Chaos Sea event -> Guardian/Soul/resident state + progressionProcessingReport
+Guardian project -> guardianProjectUpdates / completeGuardianProjects
+Resident agency -> residentThoughtJournalUpdates / residentInteractionLogUpdates / UpdateGuardianAbodeResidents
+Shining civic change -> game_state/meta/shining_abode_state.json
+Shining faction change -> Shining faction state inside shining_abode_state.json
+Shining trade -> faction.tradeInventory + faction.tradeInventoryReceipts[]
+Player-facing notification -> derive from canonical state/receipts; do not author afterlife_notifications.json manually
+```
