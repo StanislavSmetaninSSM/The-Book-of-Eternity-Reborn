@@ -87,7 +87,7 @@ Input fragments:
     "progressionControl": {
       "mustEvaluateChaosSeaProgression": true,
       "chaosSeaCyclesExpectedThisTurn": 1,
-      "nextChaosSeaCycleOrdinal": 31,
+      "nextChaosSeaTurnOrdinal": 31,
       "mustEvaluateGuardianProjectProgression": true,
       "guardianProjectCyclesExpectedThisTurn": 2,
       "nextGuardianProjectCycleOrdinal": 18,
@@ -169,10 +169,18 @@ Correct response/state fragment:
     {
       "projectId": "gproj_azalia_memory_silk_001",
       "guardianId": "guard_social_azalia_001",
-      "progressDelta": 18,
-      "newProgressPercent": 64,
-      "status": "active",
+      "activeState": "active",
+      "workDone": 64,
+      "currentStage": 3,
+      "pressure": 2,
+      "stability": 74,
       "assistAudit": {
+        "DomainRelevance": 2,
+        "RiskOrCost": 2,
+        "ScarcityOrUniqueness": 1,
+        "DirectProjectImpact": 2,
+        "assistScore": 7,
+        "classification": "major breakthrough",
         "reason": "major catch-up plus current resident-history scene",
         "cyclesProcessed": 2
       }
@@ -297,11 +305,15 @@ Input fragments:
       "pressure": "bright"
     },
     "gates": {
-      "dawn_gate": {
-        "gateId": "dawn_gate",
-        "displayName": "Врата Рассвета",
-        "state": "sealed"
-      }
+      "draftVersion": 4,
+      "hasOpenDraft": false,
+      "isStale": false,
+      "allCandidateBlessingCards": [],
+      "availableBlessingCards": [],
+      "shownBlessingCardIds": [],
+      "selectedBlessingCardIds": [],
+      "nextCandidateCursor": 0,
+      "rerollsRemaining": 0
     },
     "factions": [
       {
@@ -345,7 +357,14 @@ Input fragments:
         "requestId": "shine_core_open_gate_305",
         "actionType": "open_gates",
         "factionId": "shine_faction_glass_light_001",
-        "sourceDraftVersion": 4
+        "factionName": "Орден Стеклянного Света",
+        "radianceTierAtRequest": 3,
+        "quotedCostFeathers": 0,
+        "quotedCostLightSparks": 0,
+        "sourceDraftVersion": 4,
+        "selectedCardIds": [],
+        "createdAtTurn": 305,
+        "createdAtUtc": "2026-04-24T08:55:00Z"
       }
     ]
   },
@@ -354,8 +373,15 @@ Input fragments:
       {
         "requestId": "shine_trade_glass_305",
         "factionId": "shine_faction_glass_light_001",
+        "factionName": "Орден Стеклянного Света",
         "tradeCycleId": "shine_trade_cycle_9",
-        "generationRarityCeiling": "radiant"
+        "derivedTradeTier": 3,
+        "derivedTradeSlotCount": 1,
+        "derivedRarityCeiling": "radiant",
+        "derivedServiceMultiplier": 1.0,
+        "merchantProfile": "shining_faction",
+        "createdAtTurn": 305,
+        "createdAtUtc": "2026-04-24T08:55:00Z"
       }
     ]
   }
@@ -386,8 +412,8 @@ Correct GM reasoning:
 - Решение: Орден принимает поручение, усиливает дисциплину и открывает ограниченную торговую витрину.
 
 ### Врата Рассвета
-- Ситуация: Врата были sealed, но получили accepted core action request.
-- Решение: Врата переходят в open/stabilized state без использования Mortal World location fields.
+- Ситуация: canonical gates draft был закрыт, но получил accepted `open_gates` core action request.
+- Решение: `gates` обновляется как blessing-card draft container: новый `draftVersion`, `hasOpenDraft=true`, списки candidate/available cards и пустой `selectedBlessingCardIds[]`.
 
 ### Мира
 - Ситуация: Резидентка видит рост Ордена и выбирает поддержать их публичный ритуал.
@@ -398,7 +424,7 @@ Correct GM reasoning:
 - Решение: Проект получает один cycle progress because the gate action reinforces his domain.
 
 ## Afterlife Living World / Живой мир Посмертия
-- Shining Abode cycle: public order brightens, dawn_gate opens with controlled pressure.
+- Shining Abode cycle: public order brightens, the canonical gates draft opens with controlled pressure.
 - Shining faction cycles: the Glass Light faction gains strength and lower restlessness through visible service.
 - Shining trade cycle: the faction materializes explicit tradeInventory and closes the pending trade request.
 - Guardian project cycle: one project advances.
@@ -426,13 +452,53 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
     "publicMood": "disciplined_hope"
   },
   "gates": {
-    "dawn_gate": {
-      "gateId": "dawn_gate",
-      "displayName": "Врата Рассвета",
-      "state": "open",
-      "stability": 74,
-      "lastChangedTurn": 305
-    }
+    "draftVersion": 5,
+    "hasOpenDraft": true,
+    "isStale": false,
+    "allCandidateBlessingCards": [
+      {
+        "cardId": "card_glass_dawn_route_305",
+        "dedupeKey": "project:gproj_elian_gate_stability_001:route:glass_dawn",
+        "sourceType": "project",
+        "sourceFactionId": "shine_faction_glass_light_001",
+        "sourceFactionName": "Орден Стеклянного Света",
+        "sourceActorId": "gproj_elian_gate_stability_001",
+        "effectFamily": "route",
+        "rarity": "radiant",
+        "displayName": "Стеклянный рассветный маршрут",
+        "displaySummary": "Открывает ранний безопасный route option через память о Вратах Рассвета.",
+        "effectPayload": {
+          "type": "seed_early_routes",
+          "routeOptions": 2,
+          "latestTurn": 6
+        }
+      }
+    ],
+    "availableBlessingCards": [
+      {
+        "cardId": "card_glass_dawn_route_305",
+        "dedupeKey": "project:gproj_elian_gate_stability_001:route:glass_dawn",
+        "sourceType": "project",
+        "sourceFactionId": "shine_faction_glass_light_001",
+        "sourceFactionName": "Орден Стеклянного Света",
+        "sourceActorId": "gproj_elian_gate_stability_001",
+        "effectFamily": "route",
+        "rarity": "radiant",
+        "displayName": "Стеклянный рассветный маршрут",
+        "displaySummary": "Открывает ранний безопасный route option через память о Вратах Рассвета.",
+        "effectPayload": {
+          "type": "seed_early_routes",
+          "routeOptions": 2,
+          "latestTurn": 6
+        }
+      }
+    ],
+    "shownBlessingCardIds": [
+      "card_glass_dawn_route_305"
+    ],
+    "selectedBlessingCardIds": [],
+    "nextCandidateCursor": 1,
+    "rerollsRemaining": 0
   },
   "factions": [
     {
@@ -487,7 +553,7 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
       "selectedCardIds": [],
       "newResidentIds": [],
       "seededProjectIds": [],
-      "generatedDraftVersion": 4,
+      "generatedDraftVersion": 5,
       "resolvedAtTurn": 305,
       "resolvedAtUtc": "2026-04-24T08:55:00Z",
       "reason": "The requested faction stabilized the dawn gate through a public ritual."
@@ -506,10 +572,18 @@ Correct response/report fragment:
     {
       "projectId": "gproj_elian_gate_stability_001",
       "guardianId": "guard_knowledge_elian_001",
-      "progressDelta": 9,
-      "newProgressPercent": 51,
-      "status": "active",
+      "activeState": "active",
+      "workDone": 51,
+      "currentStage": 2,
+      "pressure": 1,
+      "stability": 68,
       "assistAudit": {
+        "DomainRelevance": 2,
+        "RiskOrCost": 1,
+        "ScarcityOrUniqueness": 0,
+        "DirectProjectImpact": 2,
+        "assistScore": 5,
+        "classification": "meaningful assist",
         "reason": "Shining gate opening reinforces the guardian project domain",
         "cyclesProcessed": 1
       }
@@ -637,9 +711,48 @@ Input fragment:
       "worldDescription": "Мир поздней бронзы, где города-государства спорят с духами рек.",
       "characterDescription": "Ребёнок писца, родившийся с памятью о стеклянном рассвете.",
       "circumstances": "Семья служит храмовому архиву на границе войны и дипломатии.",
+      "generatedFromDraftVersion": 4,
+      "preparedAtTurn": 339,
+      "preparedAtUtc": "2026-04-24T09:10:00Z",
       "selectedCardIds": [
         "card_dawn_memory",
         "card_river_names"
+      ],
+      "selectedCards": [
+        {
+          "cardId": "card_dawn_memory",
+          "dedupeKey": "project:gproj_elian_gate_stability_001:memory:dawn",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "sourceActorId": "gproj_elian_gate_stability_001",
+          "effectFamily": "memory",
+          "rarity": "rare",
+          "displayName": "Память стеклянного рассвета",
+          "displaySummary": "Следующая жизнь начнётся с дополнительным выбором устойчивой памяти.",
+          "effectPayload": {
+            "type": "expand_memory_selection",
+            "options": 2,
+            "rerolls": 1
+          }
+        },
+        {
+          "cardId": "card_river_names",
+          "dedupeKey": "project:gproj_elian_gate_stability_001:lore:river_names",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "sourceActorId": "gproj_elian_gate_stability_001",
+          "effectFamily": "lore",
+          "rarity": "uncommon",
+          "displayName": "Имена речных духов",
+          "displaySummary": "К ранним ходам смертной жизни проявится lore clue о договорах городов и рек.",
+          "effectPayload": {
+            "type": "insert_lore_clues",
+            "clueCount": 1,
+            "latestTurn": 10
+          }
+        }
       ]
     }
   },
