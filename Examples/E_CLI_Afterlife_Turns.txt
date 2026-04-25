@@ -3539,7 +3539,7 @@ Input summary:
         "projectDisplayName": "Стеклянный проход",
         "radianceTierAtRequest": 2,
         "quotedCostFeathers": 0,
-        "quotedCostLightSparks": 2,
+        "quotedCostLightSparks": 0,
         "sourceDraftVersion": 0,
         "selectedCardIds": [],
         "returnCycleId": "",
@@ -3875,7 +3875,7 @@ Correct active Shining `prepare_incarnation_package` closure shape:
         ],
         "newResidentIds": [],
         "seededProjectIds": [],
-        "generatedDraftVersion": 0,
+        "generatedDraftVersion": 7,
         "resolvedAtTurn": 411,
         "resolvedAtUtc": "2026-04-24T16:20:00Z",
         "reason": "selected blessing cards frozen into the next-life package"
