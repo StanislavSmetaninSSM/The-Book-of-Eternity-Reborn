@@ -277,7 +277,7 @@
                     - UpdateGuardianTradeInventoryReceipts closes Guardian trade requests inside game_state/meta/guardians.json
                     - game_state/control/pending_guardian_abode_residents_request.json ← client-authored resident roster requests
                     - game_state/control/pending_guardian_abode_resident_interactions.json ← client-authored resident talk/history requests
-                    - game_state/control/pending_resident_companion_manifestation_request.json ← client-authored next-life companion manifestation requests
+                    - game_state/control/pending_resident_companion_manifestation_request.json ← MortalWorldProfile-only next-life companion manifestation requests; in Chaos Sea / Shining Abode treat as stale/repair-only context and do not materialize mortal NPCs or encounters
                     - game_state/control/pending_archive_consultation_request.json ← client-authored archive consultation request
                     - game_state/control/pending_archive_project_fuel_request.json ← client-authored archive project fuel request
                     - game_state/control/pending_shining_abode_actions.json ← client-authored Shining core actions; close through shining_abode_state.coreActionReceipts[]
@@ -402,17 +402,17 @@
                     - DO NOT write Mortal World faction files under game_state/factions/
                     - DO NOT write weather/time files
                     - DO NOT write mortal quest updates
-                    - DO NOT write regular NPC updates for Guardians
-                    - DO NOT write regular inventory updates except systems explicitly allowed for Soul Relics
+                    - DO NOT write regular NPC updates for Guardians or afterlife residents
+                    - DO NOT write regular inventory updates; Soul Relics use Soul/meta surfaces, not ordinary inventory files
                     - DO write afterlife-specific Guardian / resident / Shining state when progressionControl or pending afterlife requests require it
 
                     IF REALM = "Mortal World":
                     - DO NOT write guardian-only or gacha-only structures
                     - DO NOT write Abode navigation data
-                    - DO NOT write Chaos-Sea-only spending operations
+                    - DO NOT write afterlife-only spending operations
                     - Mortal-World Ink Feather whitelist actions are allowed:
                       Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink
-                    - Chaos-Sea Ink Feather whitelist actions remain forbidden here
+                    - Afterlife Ink Feather whitelist actions remain forbidden here
 
                     ]]>
    </content>
@@ -811,7 +811,8 @@
                     - Active system mods may modify parameters but not core formulas unless the mod explicitly redefines them
 
                     **6. JSON Command Structure:**
-                    - metaStateUpdates, UpdateGuardians, UpdateNPCs all work identically
+                    - metaStateUpdates and ordinary response commands remain compatible with the distributed CLI files
+                    - In afterlife realms, use Guardian, Soul, resident, Guardian-project, and Shining-specific surfaces from CLI.3/CLI.10; `UpdateNPCs` remains a Mortal World NPC surface and must not be used for Guardians or afterlife residents
                     - Atomic command processing preserved
                     - Same field validation and VALUE_SOURCE/MEANING documentation
                     - Additional lore updates may be triggered by commands
@@ -1141,6 +1142,7 @@
                     - If `afterlifeCatchupRequired=true`, produce exactly `afterlifeCatchupSummaryEventsRequired` bounded summary outcomes, covering the listed `afterlifeCatchupContours`; do not process raw elapsed cycles one by one.
                     - Each `newLast*Ordinal` advances only its own contour. Do not copy the largest pending backlog into unrelated contour markers.
                     - In `Shining Abode pending-bootstrap handoff mode`, ordinary Shining living-world progression is suppressed; process only the bootstrap lifecycle package.
+                    - For concrete worked examples of Chaos Sea catch-up, ordinary active Shining Abode, and Shining pending-bootstrap handoff, read `Examples/E_CLI_Afterlife_Turns.txt`.
 
                     **3. Mortal-World NPC-Driven World Evolution:**
                     - Every important NPC has personal goals and plans (Rules/Block_19.E.txt)
@@ -1280,10 +1282,10 @@
        Effect: Reroll the pre-generated dice for the current turn.
        This is a client/GMs shared fate-rewrite action and does not grant access to Chaos Sea systems.
     
-    AFTERLIFE (CHAOS SEA) ACTIONS:
+    AFTERLIFE (CHAOS SEA / SHINING ABODE) ACTIONS:
 
-    Spending Ink Feathers in Chaos Sea is FORBIDDEN by default, except for the explicit whitelist below.
-    Mortal-World Ink Feather actions MUST NOT be used in Chaos Sea.
+    Spending Ink Feathers in afterlife realms is FORBIDDEN by default, except for the explicit whitelist below.
+    Mortal-World Ink Feather actions MUST NOT be used in Chaos Sea or Shining Abode.
     
     1. [INK_FEATHER_ACTION: DONATE_TO_GUARDIAN]
        Effect: Increase reputation with current guardian by 15-25 points (proportional to cost).
@@ -1331,7 +1333,7 @@
     - Always log the Ink Feather action processing in gm_thoughts_markdown.
     - The narrative should emphasize the mystical nature of Ink Feathers — they are crystallized
       memories of past lives, not just currency.
-    - Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive.
+    - Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
     - Read `Examples/E_CLI_Ink_Feather_Actions.txt` for the exact valid/invalid structured examples of each GM-side Ink Feather action.
     - Local guardian trade (buy/sell relics in the Guardian UI) is a separate client-side panel, is NOT an Ink Feather action, and does NOT create turn_request.json.
     

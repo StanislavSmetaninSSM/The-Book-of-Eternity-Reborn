@@ -374,7 +374,7 @@ CLI Agent automatically loads current game state from:
   
   // LIFE CONTROL
   "TriggerLifeEnd": "object with mandatory reason and summary (Mortal World only; reason must be Death|Voluntary; triggers a separate Life Evaluation request after the turn is accepted)",
-  "TriggerIncarnation": "object with mandatory worldDescription, characterDescription, circumstances (Chaos Sea-only lifecycle control; GM sends player to Mortal World)",
+  "TriggerIncarnation": "object with mandatory worldDescription, characterDescription, circumstances (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that preserves the existing preparedIncarnationPackage for later runtime bootstrap consumption; GM sends player to Mortal World)",
   "AscensionTrigger": "boolean (real Chaos Sea-only ascension transition; valid only if Enlightenment is 100% and playerChoice=Ascension; must not be combined with TriggerLifeEnd)",
   "playerChoice": "string (required only with AscensionTrigger; must equal Ascension)"
 }
@@ -671,7 +671,7 @@ Quest state contract notes:
 
 #### **GAME FLOW CONTROL**
 - `game_state/control/life_transitions.json` ← `TriggerLifeEnd` (Mortal World only; `reason` must be `Death` or `Voluntary`)
-- `game_state/control/incarnation_trigger.json` ← `TriggerIncarnation` (Chaos Sea-only lifecycle control; GM sends player to Mortal World: `{ "worldDescription": "...", "characterDescription": "...", "circumstances": "..." }`)
+- `game_state/control/incarnation_trigger.json` ← `TriggerIncarnation` (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that preserves `preparedIncarnationPackage` for later runtime bootstrap consumption; GM sends player to Mortal World: `{ "worldDescription": "...", "characterDescription": "...", "circumstances": "..." }`)
 - `game_state/control/incarnation_world_setup.json` ← client-authored pending world setup chosen before incarnation; GM must read it when authoring `TriggerIncarnation` and the first Mortal World bootstrap
 - `game_state/control/ascension.json` ← `AscensionTrigger`, `playerChoice` (real Chaos Sea-only ascension transition; only when Enlightenment is max and `playerChoice=Ascension`; never combine with `TriggerLifeEnd`)
 - `game_state/control/validation_repair_request.json` ← client-written contract repair request when a GM turn is rejected after validation
@@ -700,20 +700,25 @@ Before populating any mechanical field, the agent must determine the active real
 
 The client validator hard-rejects accepted turns that mutate realm-forbidden state files for the active realm.
 
-### Allowed In Both Realms
+### Always Safe Narrative/UI Fields
 - `response`
 - `gm_thoughts_markdown`
 - `dialogueOptions`
 - `image_prompt`
-- `TriggerLifeEnd` (only when a real transition is occurring)
-- `TriggerIncarnation` (only when a real transition is occurring)
+
+### Lifecycle Control Realm Rules
+- `TriggerLifeEnd` is Mortal World only; it starts the later Life Evaluation lifecycle and must not be emitted from Chaos Sea or Shining Abode.
+- `TriggerIncarnation` is valid from ordinary Chaos Sea, or from `Shining Abode pending-bootstrap handoff mode` when an existing `preparedIncarnationPackage` is present and preserved for later runtime bootstrap consumption; it must not be mixed with ordinary Shining living-world progression.
+- In `Shining Abode pending-bootstrap handoff mode`, GM must not remove, clear, rename, or mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage` in the accepted `TriggerIncarnation` turn. Preserve the package exactly as provided; the client runtime reads it after accepting the trigger, materializes the frozen blessing/world setup, and clears it only after successful Mortal World bootstrap.
+- If the Shining handoff package is missing or malformed, do not "repair" it by deleting or nulling the package. Preserve the current state and use the normal validation repair/error path so the bootstrap contract can be fixed without losing the prepared package.
+- `AscensionTrigger` is valid only in Chaos Sea, only with maximum Enlightenment and explicit `playerChoice=Ascension`, and must never be mixed with `TriggerLifeEnd`.
 
 ### Afterlife Realm Model
 - `Chaos Sea` and `Shining Abode` are both afterlife realms for validator/runtime purposes.
 - Both afterlife realms use guardian/soul/meta systems and forbid mortal-world combat/NPC/faction/location mechanics.
 - Both afterlife realms still have a living-world scheduler through `progressionControl`. This is afterlife-specific progression, not Mortal World `worldEventsLog` / `factionDataChanges` progression.
 - `Shining Abode` is the ascended endgame free-roleplay zone above the Chaos Sea and still uses afterlife guardian/soul/meta systems instead of Mortal World systems.
-- `AscensionTrigger` is valid only in Chaos Sea, only with maximum Enlightenment and explicit `playerChoice=Ascension`, and must never be mixed with `TriggerLifeEnd`.
+- `Shining Abode pending-bootstrap handoff mode` is not an ordinary active Shining turn; process only lifecycle/bootstrap mutation and suppress ordinary Guardian/Shining scheduler progression for that handoff.
 
 ### Contract Repair Handshake
 - `validation_repair_request.json` is authoritative when the client rejects an already written GM turn after validation.
@@ -760,12 +765,12 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - Abode navigation data
 - Explicit afterlife Ink Feather whitelist actions may also legally produce guardian/meta/soul outputs.
 
-### Forbidden In Chaos Sea
+### Forbidden In Afterlife Realms
 - Combat, experience, leveling, stat gains/losses, regular inventory management, regular NPC mechanics,
   mortal quests, Mortal World faction/world progression, weather, time progression, mortal location tracking.
 
 ### Forbidden In Mortal World
-- Guardian presence as active entities, Guardian reputation changes, Abode navigation, Gacha, Chaos-Sea-only Ink Feather spending.
+- Guardian presence as active entities, Guardian reputation changes, Abode navigation, Gacha, afterlife-only Ink Feather spending.
 
 ### Mortal-World Ink Feather Exceptions
 The following spending-based Ink Feather actions are explicitly allowed in `Mortal World`:
@@ -782,8 +787,8 @@ These exceptions do NOT unlock Guardians, Abodes, Guardian reputation changes, o
 - `Learn Skill` is valid only if it creates a NEW skill object in the appropriate player skill file for this turn.
 - `Fate Shield` is valid only if it creates a NEW `Щит Судьбы` effect instance for this turn.
 
-### Chaos-Sea Ink Feather Exceptions
-The following spending-based Ink Feather actions are explicitly allowed in `Chaos Sea`:
+### Afterlife / Chaos-Sea Ink Feather Exceptions
+The following spending-based Ink Feather actions are explicitly allowed in afterlife realms (`Chaos Sea` and `Shining Abode`) when their specific action prerequisites are satisfied:
 - `Donate to Guardian`
 - `Cultivate Enlightenment`
 - `Guardian Favor`
@@ -791,7 +796,7 @@ The following spending-based Ink Feather actions are explicitly allowed in `Chao
 - `Soul Imprint`
 
 These exceptions do NOT unlock Mortal-World-only mechanics such as combat, XP leveling, regular inventory changes, or regular NPC quest/world systems.
-The Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive.
+The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
 - `Sell Relic` is a separate guardian trade interaction and is NOT part of the Ink Feather action contract.
 - Local guardian trade panel (`Buy / Sell` Soul Relics with the current active Guardian) is handled entirely on the client side.
 - It does NOT create `turn_request.json`, does NOT require `ink_feather_action_result.json`, and is separate from roleplay trade through the GM.
@@ -1833,7 +1838,8 @@ See `Examples/CLI_Example_Soul_System.md` for complete Soul Relic distribution e
 1. **TaskGuides/CLI_Step_Main.txt** - Main workflow instructions
 2. **Rules/Block_CLI_Operations.txt** - Detailed file operations protocol  
 3. **Examples/CLI_Translation_Guide.md** - How to handle API examples
-4. **This API Spec** - Complete data structure reference
+4. **Examples/E_CLI_Afterlife_Turns.txt** - Worked Chaos Sea / Shining Abode examples
+5. **This API Spec** - Complete data structure reference
 
 ### Critical Success Factors
 1. ✅ **Read ALL game rules** (Rules/Block_*.txt) before processing

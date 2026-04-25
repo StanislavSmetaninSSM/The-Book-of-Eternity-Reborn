@@ -39,6 +39,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 5. **TaskGuides/CLI_Step_Main.txt** — основной рабочий процесс
 6. **Examples/E_CLI_Step_Main.txt** — ОБЯЗАТЕЛЬНЫЕ примеры валидного NPC scope, reasoning blocks, contract repair loop и terminal protocol failures; читать перед каждым ходом и перечитывать перед каждым repair cycle и terminal protocol failure
 7. **Examples/E_CLI_Ink_Feather_Actions.txt** — ОБЯЗАТЕЛЬНЫЕ structured examples для всех GM-side Ink Feather actions; читать перед любым ходом с `[INK_FEATHER_ACTION: TAG]`
+8. **Examples/E_CLI_Afterlife_Turns.txt** — ОБЯЗАТЕЛЬНЫЕ worked examples для ходов в `Chaos Sea` / `Shining Abode`; читать перед каждым afterlife-ходом
 
 Остальные блоки правил (`Rules/Block_*.txt`) загружай по мере необходимости в зависимости от типа действия игрока.
 
@@ -83,16 +84,16 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 | Значение | Режим | Активные системы | ЗАПРЕЩЁННЫЕ системы |
 |----------|-------|-------------------|---------------------|
-| `"Shining Abode"` + `preparedIncarnationPackage != null` | pending-bootstrap handoff | только mortal bootstrap lifecycle и consume/clear frozen package | обычные Guardian / Abode interactions, Chaos-Sea-only afterlife interactions, Mortal World turn systems |
+| `"Shining Abode"` + `preparedIncarnationPackage != null` | pending-bootstrap handoff | только mortal bootstrap lifecycle; GM сохраняет frozen package без изменений для последующего runtime consumption | обычные Guardian / Abode interactions, ordinary afterlife interactions, Mortal World turn systems |
 | `"Chaos Sea"` / `null` / пусто | Посмертие | Хранители, Обители, Реликвии Души, Чернильные Перья, Гача, afterlife living-world scheduler | Бой, опыт, уровни, навыки, НПС, квесты, деньги, инвентарь, погода |
 | `"Shining Abode"` | Посмертие | Свободный ролеплей с Хранителями, Реликвии Души, afterlife meta systems, Shining living-world scheduler | Mortal-world combat/NPC/faction/location mechanics |
-| `"Mortal World"` / иное | Смертный мир | Бой, навыки, НПС, квесты, фракции, инвентарь, погода, время, whitelist-действия Чернильных Перьев | Хранители, Обители, Гача, Chaos-Sea-only трата Чернильных Перьев |
+| `"Mortal World"` / иное | Смертный мир | Бой, навыки, НПС, квесты, фракции, инвентарь, погода, время, whitelist-действия Чернильных Перьев | Хранители, Обители, Гача, afterlife-only трата Чернильных Перьев |
 
 **JSON gate после Realm Check:**
-- В `Shining Abode pending-bootstrap handoff mode` разрешены только lifecycle/bootstrap mutations, которые materialize-ят следующую смертную жизнь и consume/clear `preparedIncarnationPackage`.
+- В `Shining Abode pending-bootstrap handoff mode` разрешены только lifecycle/bootstrap mutations для запуска следующей смертной жизни. GM НЕ ДОЛЖЕН remove, clear, rename или mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage`; frozen package сохраняется exactly as provided, а client runtime читает и очищает его только после successful Mortal World bootstrap.
 - В `Chaos Sea` и `Shining Abode` запрещены: `experienceGained`, `statsIncreased`, `statsDecreased`, `currentPoiseChange`, `currentEnergyChange`, `currentHealthChange`, `moneyChange`, `activeSkillChanges`, `passiveSkillChanges`, `skillMasteryChanges`, `UpdateInventory`, `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, `worldEventsLog`, `factionDataChanges`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`, `enemiesData`, `alliesData`, `combat_log_markdown`.
 - Этот запрет относится к смертным world/faction/location/NPC channels. Он не отменяет afterlife living-world scheduler: если `progressionControl.mustEvaluate* = true`, ГМ обязан обработать afterlife-контуры через Guardian/Abode/Soul/Shining-specific surfaces и `progressionProcessingReport`.
-- В `Mortal World` запрещены: `UpdateGuardians`, Guardian-specific reputation/project/musings/lore commands, Abode navigation data, Soul Relic Gacha processing, Chaos-Sea-only spending of Ink Feathers.
+- В `Mortal World` запрещены: `UpdateGuardians`, Guardian-specific reputation/project/musings/lore commands, Abode navigation data, Soul Relic Gacha processing, afterlife-only spending of Ink Feathers.
 - В `Mortal World` разрешены только explicit Ink Feather exceptions: `Reveal Fate`, `Rewrite Fate`, `Sacrifice to Chaos`, `Absorb Feathers`, `Learn Skill`, `Fate Shield`, `Seal in Ink`.
 - В `Chaos Sea` и `Shining Abode` разрешены только explicit afterlife Ink Feather exceptions: `Donate to Guardian`, `Cultivate Enlightenment`, `Guardian Favor`, `Memory Gates`, `Soul Imprint`.
 - Эти два Ink Feather whitelist-а взаимоисключающие.
@@ -131,6 +132,25 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
   - examples: `Examples/E_CLI_NPC_Trade.txt`
 
 Если forbidden key появился в промежуточном черновике ответа, он ДОЛЖЕН быть удалён до финальной записи файлов.
+
+## Полная процедура afterlife-хода для ГМа
+
+В `Chaos Sea` и `Shining Abode` не обрабатывай ход как обычную сцену с диалогом. Каждый afterlife-ход проходит полный порядок:
+
+1. **Realm gate:** прочитай `soul_state.json.currentRealm` и определи режим: ordinary `Chaos Sea`, ordinary active `Shining Abode`, или `Shining Abode pending-bootstrap handoff`.
+2. **Lifecycle guards:** проверь `afterlife_return_guard.json`, `ascension.json`, `incarnation_trigger.json`, `preparedIncarnationPackage`; не смешивай return, ascension, incarnation и bootstrap.
+3. **Scheduler first:** прочитай `turn_request.json.progressionControl` до выбора сцены, due actors и ответа игроку.
+4. **State loading:** прочитай `soul_state.json`, `guardians.json`, `guardian_projects.json`, `guardian_abode_residents.json`; для Shining — обязательно `shining_abode_state.json`.
+5. **Pending contracts:** проверь pending files в `game_state/control/`: Guardian trade, resident roster/interactions, archive actions, Shining core actions, Shining founding/realignment/leadership/trade. `pending_resident_companion_manifestation_request.json` is MortalWorldProfile-only; in `Chaos Sea` / `Shining Abode` do not materialize mortal NPCs or encounters from it, and treat its presence as stale/repair-only context.
+6. **Actor scope:** объяви relevant actors/institutions: изменяемые Guardians, residents, Shining factions/halls/head actors; объясни outside scope.
+7. **Living-world debt:** обработай все due contours из `progressionControl`; catch-up сначала сверни в bounded summary outcomes.
+8. **Player action:** только после этого обрабатывай прямое действие игрока: Guardian conversation, gacha, Ink Feather action, resident interaction, Shining action, ascension/incarnation choice, archive action, trade request.
+9. **Canonical outputs:** пиши только afterlife-specific surfaces: Guardian/Soul/resident/Shining fields, receipts, journals, `progressionProcessingReport`.
+10. **No mortal channels:** не закрывай afterlife смысл через `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `weatherChange`, combat or inventory.
+11. **Report:** если есть due cycles или catch-up, `progressionProcessingReport` обязателен и должен точно совпасть с expected counts/ordinals.
+12. **Final audit:** перед ready-сигналом проверь realm segregation, actor scope coverage, pending contract closure, afterlife notification ownership, and no stale mortal outputs.
+
+Если какой-то шаг “ничего не меняет”, это всё равно решение ГМа: запиши в `gm_thoughts_markdown`, почему стабильность является правильным исходом.
 
 **Хранители — НЕ НПС.** Для них используй `UpdateGuardians` (Block 32), а не `UpdateNPCs` (Block 19).
 
@@ -560,8 +580,12 @@ $guardian | ConvertTo-Json -Depth 100 | Set-Content "game_state/meta/guardians.j
 | Квесты | Block 18, 18.A, 22 | UpdateQuests, UpdateSoulQuests, plotOutline | game_state/quests/ |
 | Мир | Block 20, 21, 21.5, 27 | currentLocationData, worldMapUpdates, ... | game_state/world/ |
 | Фракции | Block 21 | factionDataChanges, ... (8 полей) | game_state/factions/ (6 файлов) |
-| Хранители | Block 32, ext, ext2 | UpdateGuardians (create, updateReputation, completeQuest, processGacha, addMusings, updateProject, unlockLore, setMood) | game_state/meta/guardians.json |
-| Душа | Block 31 | metaStateUpdates | game_state/meta/soul_state.json |
+| Хранители | Block 32, ext, ext2 | UpdateGuardians, guardianThoughtJournalUpdates, guardianSocialJournalUpdates, guardianPowerEvents, Guardian trade receipts | game_state/meta/guardians.json, game_state/meta/guardian_thought_journal.json, game_state/meta/guardian_social_journal.json |
+| Проекты Хранителей | Block 32 + CLI_API_Spec | startGuardianProjects, guardianProjectUpdates, completeGuardianProjects | game_state/meta/guardian_projects.json, game_state/meta/guardian_project_journal.json, game_state/meta/abode_power_journal.json |
+| Резиденты Обителей | Block 32 ext + CLI_API_Spec | UpdateGuardianAbodeResidents, residentThoughtJournalUpdates, residentInteractionLogUpdates, resident receipts/history | game_state/meta/guardian_abode_residents.json |
+| Сияющая Обитель | CLI_API_Spec + CLI.10 | Shining state/receipts, pending_shining_* closure, Shining trade inventory/receipts | game_state/meta/shining_abode_state.json, game_state/control/pending_shining_*.json |
+| Scheduler Посмертия | Block_CLI_Operations CLI.10 | progressionControl, progressionProcessingReport | input/turn_request.json, game_state/control/progression_report.json |
+| Душа | Block 31 | metaStateUpdates, afterlifeArchiveUpdates, archiveActionResolutions | game_state/meta/soul_state.json |
 | Достижения | CLI_API_Spec | achievementUnlocks | game_state/meta/achievements.json |
 | Лор-Кодекс | CLI_API_Spec | loreCodexUpdates | lore/codex_entries.json |
 | Транспорт | — | UpdateVehicles | game_state/misc/vehicles.json |
