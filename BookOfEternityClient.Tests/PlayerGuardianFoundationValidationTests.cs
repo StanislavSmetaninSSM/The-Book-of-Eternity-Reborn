@@ -42,6 +42,12 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
         await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", preTurnSoul);
         await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/guardians.json", preTurnGuardians);
         await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}", new { entries = Array.Empty<object>() });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}", new
+        {
+            activeProjects = Array.Empty<object>(),
+            completedProjects = Array.Empty<object>(),
+            temporaryProjectModifiers = Array.Empty<object>()
+        });
         const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_player_guardian_foundation.json";
         await WriteJsonAsync(backupPath, request);
         await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -82,6 +88,29 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
         var issues = await _validator.ValidateGameStateAsync();
 
         Assert.Contains(issues, issue => string.Equals(issue.Code, "player_guardian_foundation_loyalty_below_soulbound_floor", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FoundationRootSurfacesMatchGuardianAuthority()
+    {
+        await WriteSuccessfulFoundationResolutionAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "guardian_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase));
+        Assert.True(
+            !issues.Any(issue => string.Equals(issue.Code, "player_guardian_foundation_missing_guardian_resolution", StringComparison.OrdinalIgnoreCase)),
+            string.Join(Environment.NewLine, issues.Select(issue => $"{issue.Code}: {issue.Message} actual={issue.Actual}")));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FoundationNewGuardianWithoutCreateSurface_Fails()
+    {
+        await WriteSuccessfulFoundationResolutionAsync(includeCreateCommand: false);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_materialized_without_create_surface", StringComparison.OrdinalIgnoreCase));
     }
 
     private static JsonObject CreateFoundationRequest() => new()
@@ -475,6 +504,7 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
     private async Task WriteSuccessfulFoundationResolutionAsync(
         bool includeSoulStatus = true,
         bool includeFormerPatronRole = true,
+        bool includeCreateCommand = true,
         int foundedGuardianReputation = PlayerGuardianFoundationState.SoulboundCanonicalStartingReputation)
     {
         var request = CreateFoundationRequest();
@@ -508,6 +538,27 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
             currentReputation: foundedGuardianReputation);
 
         var currentGuardians = CreateGuardiansRoot(new[] { oldGuardian, foundedGuardian }, "guardian_player", "abode_player");
+        if (includeCreateCommand)
+        {
+            var createData =
+                currentGuardians["guardians"] is JsonArray currentGuardianArray
+                    ? currentGuardianArray
+                        .OfType<JsonObject>()
+                        .First(guardian => string.Equals(
+                            guardian["guardianId"]?.GetValue<string>(),
+                            "guardian_player",
+                            StringComparison.OrdinalIgnoreCase))
+                        .DeepClone()
+                    : foundedGuardian.DeepClone();
+            currentGuardians["UpdateGuardians"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["command"] = "create",
+                    ["data"] = createData
+                }
+            };
+        }
         currentGuardians[PlayerGuardianFoundationState.HistoryProperty] = new JsonArray
         {
             JsonSerializer.SerializeToNode(PlayerGuardianFoundationState.BuildCanonicalHistoryEntry(

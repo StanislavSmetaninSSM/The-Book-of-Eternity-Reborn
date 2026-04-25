@@ -3739,14 +3739,20 @@ public partial class ValidationService
         guardianId = string.Empty;
         actual = "guardian authority unavailable";
 
-        if (!context.HasStrictCurrentAuthorityRoot)
+        var hasStrictCurrentAuthorityRoot =
+            context.HasStrictCurrentAuthorityRoot &&
+            context.StrictCurrentAuthorityRoot.ValueKind == JsonValueKind.Object;
+        var currentAuthorityRoot = hasStrictCurrentAuthorityRoot
+            ? context.StrictCurrentAuthorityRoot
+            : context.CurrentAuthorityRoot;
+        if (currentAuthorityRoot.ValueKind != JsonValueKind.Object)
         {
             actual = DescribeCurrentGuardianAuthorityFailure(context);
             return false;
         }
 
         var authorityMatches = new List<JsonObject>();
-        if (context.StrictCurrentAuthorityRoot.TryGetProperty("guardians", out var authorityGuardians) &&
+        if (currentAuthorityRoot.TryGetProperty("guardians", out var authorityGuardians) &&
             authorityGuardians.ValueKind == JsonValueKind.Array)
         {
             foreach (var entry in authorityGuardians.EnumerateArray())
@@ -3785,8 +3791,12 @@ public partial class ValidationService
             return false;
         }
 
+        AbodePowerRules.EnsureCanonicalState(parsedMaterializedGuardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaState(parsedMaterializedGuardian);
+        GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(parsedMaterializedGuardian);
         materializedGuardian = parsedMaterializedGuardian;
-        if (!JsonNode.DeepEquals(authorityGuardian, materializedGuardian))
+        if (hasStrictCurrentAuthorityRoot &&
+            !JsonNode.DeepEquals(authorityGuardian, materializedGuardian))
         {
             actual = $"guardian {guardianId} materialized state diverges from authority-backed create surface";
             return false;
