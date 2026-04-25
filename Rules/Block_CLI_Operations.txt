@@ -273,6 +273,7 @@
                     - game_state/meta/character_chronicle.json ← characterChronicleUpdates
 
                     **AFTERLIFE CONTROL / REQUEST FILES:**
+                    - game_state/control/pending_abode_offering.json ← client-authored Abode offering request; GM reads it as input only and resolves through guardianPowerEvents.reasonType=offering. Only offeringType=ink_feathers also writes output/ink_feather_action_result.json; soul_relic/archive_lore_fragment/archive_secret_record are plain [ABODE_OFFERING] contracts with no Ink Feather receipt
                     - game_state/control/pending_guardian_trade_request.json ← client-authored Guardian trade inventory request
                     - UpdateGuardianTradeInventoryReceipts closes Guardian trade requests inside game_state/meta/guardians.json
                     - game_state/control/pending_guardian_abode_residents_request.json ← client-authored resident roster requests
@@ -1327,6 +1328,14 @@
        - description/summary
        - preserved core traits or personality traits
        This is one of the most expensive and impactful Ink Feather actions.
+
+    6. [INK_FEATHER_ACTION: ABODE_OFFERING]
+       Effect: Resolve a client-authored ink-feather offering from pending_abode_offering.json for a specific Guardian's Abode.
+       This is afterlife-only and must not be treated as ordinary Guardian Favor or local trade.
+       Read game_state/control/pending_abode_offering.json as an input contract, do not edit it in GM output.
+       This Ink Feather action is valid only when pending_abode_offering.json.offeringType = ink_feathers.
+       Materialize the result through guardianPowerEvents with reasonType = offering and write output/ink_feather_action_result.json with actionTag = ABODE_OFFERING.
+       If offeringType is soul_relic, archive_lore_fragment, or archive_secret_record, this is not an Ink Feather action: resolve plain [ABODE_OFFERING] through guardianPowerEvents only and do not write output/ink_feather_action_result.json.
     
     CRITICAL RULES:
     - The client has ALREADY deducted feathers. Do NOT deduct again.

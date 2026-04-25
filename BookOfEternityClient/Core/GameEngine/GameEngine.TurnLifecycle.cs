@@ -2267,7 +2267,7 @@ IF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_a
 ELSE IF REALM = Chaos Sea:
   FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
   ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, guardian/abode afterlife interactions, Life Evaluation, Incarnation setup.
-  AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint.
+  AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers.
   Sell Relic is a separate guardian trade interaction, not an Ink Feather action.
   If game_state/meta/shining_abode_state.json.availability = active and afterlife_return_guard is absent, or semantic-valid (`reason=post_life_return`) and inactive, the player MAY use the client-owned local command /reenter_shining_abode to re-enter the already-active Shining Abode. A malformed guard or a parsed guard with the wrong reason still blocks re-entry until client normalization clears it. This is an ordinary return route, not Ascension, and not a GM-authored turn.
   LIFE EVALUATION REWARD GUARANTEE:
@@ -2279,7 +2279,7 @@ ELSE IF REALM = Chaos Sea:
 ELSE IF REALM = Shining Abode:
   FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
   ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, Abode/Guardian interactions, Life Evaluation, Incarnation setup.
-  AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint.
+  AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers.
   Shining Abode is the ascended endgame free-roleplay zone above the Chaos Sea. It still uses afterlife/guardian systems, not Mortal World systems.
   The player may use the client-owned local command /return_to_chaos_sea to return to Chaos Sea and seal the Shining Abode without triggering destructive New Game+ reset.
   Optional New Game+ from Shining Abode is the separate destructive global reset path: it returns to Chaos Sea with Enlightenment and Ink Feathers reset while Soul Relics and Guardians are preserved.
@@ -2446,6 +2446,8 @@ Whitelisted offering types may include:
   - soul_relic
   - archive_lore_fragment
   - archive_secret_record
+Only ink_feathers is also [INK_FEATHER_ACTION: ABODE_OFFERING] and requires output/ink_feather_action_result.json.
+For soul_relic, archive_lore_fragment, or archive_secret_record, resolve plain [ABODE_OFFERING] through guardianPowerEvents only; do not write output/ink_feather_action_result.json or costInFeathers.
 Use afterlifeArchiveUpdates only for exceptional/system archive rewards.
 Ordinary codex-derived archive intake is client-driven through archive_candidate_manifest.json and soul_state.afterlifeArchive.stored; do not improvise it from mortal inventory/items.json.
 Do NOT mutate guardian.abodePower.currentPower directly for an offering without the matching power event.

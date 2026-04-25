@@ -92,7 +92,7 @@
                 afterlife resident surfaces, Shining-specific living-world surfaces, and progressionProcessingReport for scheduler debt.
 
                 AFTERLIFE INK FEATHER EXCEPTIONS (CHAOS SEA / SHINING ABODE EXPLICIT WHITELIST):
-                Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint.
+                Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers.
                 These are the ONLY legal spending-based Ink Feather actions in afterlife realms (Chaos Sea / Shining Abode).
 
                 FORBIDDEN IN AFTERLIFE REALMS (CHAOS SEA / SHINING ABODE):

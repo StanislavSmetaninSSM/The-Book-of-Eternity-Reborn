@@ -12,6 +12,22 @@ Read this file whenever `game_state/meta/soul_state.json.currentRealm` is `Chaos
 The examples are intentionally operational. They show what the GM must decide, what must be written, and what must NOT be written. They are not a replacement for the full schemas.
 
 ==================================================
+EXAMPLE INDEX
+==================================================
+
+Use this index before resolving an afterlife turn:
+
+- Scheduler / catch-up / resident history in Chaos Sea: see example 1.
+- Active Shining core action + faction/trade/resident living world: see example 2.
+- Shining pending-bootstrap `TriggerIncarnation`: see example 3.
+- `pending_guardian_trade_request.json`: see example 4.
+- `pending_archive_consultation_request.json` / `pending_archive_project_fuel_request.json`: see example 5.
+- Ordinary Chaos Sea `TriggerIncarnation`: see example 6.
+- Direct Chaos Sea `/gacha` and guardian-mediated gacha: see example 7.
+- `[INK_FEATHER_ACTION: ABODE_OFFERING]` for `offeringType = ink_feathers` only: see example 8 and `Examples/E_CLI_Ink_Feather_Actions.txt`.
+- Shining faction founding / realignment / leadership pending files: see example 9.
+
+==================================================
 GLOBAL AFTERLIFE TURN RULE
 ==================================================
 
@@ -968,6 +984,829 @@ Why this is valid:
 - `preparedIncarnationPackage != null` changes the mode.
 - The scheduler's ordinary Shining debt is not processed because the turn is a lifecycle handoff, not an ordinary active Shining Abode turn.
 - The GM does not invent new Shining events while bootstrapping the next mortal life.
+
+==================================================
+4. VALID — CHAOS SEA GUARDIAN TRADE REQUEST
+==================================================
+
+Scenario:
+- Realm is `Chaos Sea`.
+- The player tries to open the current Guardian's trade panel, but the client found missing/stale authored stock.
+- `game_state/control/pending_guardian_trade_request.json` is present.
+- There is no scheduler debt in this small example. If scheduler debt is also due, process it first and add `progressionProcessingReport` as in example 1.
+
+Input fragment:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "afterlife_session_trade_240",
+    "requestId": "afterlife_turn_trade_240",
+    "turnNumber": 240,
+    "playerAction": "Я прошу Азалию открыть витрину Обители.",
+    "progressionControl": {
+      "mustEvaluateChaosSeaProgression": false,
+      "mustEvaluateGuardianProjectProgression": false,
+      "mustEvaluateResidentAgencyProgression": false,
+      "afterlifeCatchupRequired": false
+    }
+  },
+  "pending_guardian_trade_request.json": {
+    "requestId": "guardian_trade_azalia_return_5",
+    "guardianId": "guard_social_azalia_001",
+    "guardianName": "Азалия",
+    "abodeId": "abode_azalia_memory_silk_001",
+    "returnCycleId": "return_5",
+    "currentReputation": 65,
+    "derivedTradeSlotCount": 2,
+    "effectiveRarityCeilingBonusSteps": 0,
+    "projectBonusSignature": "0|0|0",
+    "createdAtUtc": "2026-04-24T09:00:00Z",
+    "createdAtTurn": 240
+  }
+}
+```
+
+Correct GM procedure:
+- Read the pending request exactly; do not change `requestId`, `guardianId`, `abodeId`, `returnCycleId`, slot count, or project bonus signature.
+- Materialize `guardian.tradeInventory` for the same Guardian in `game_state/meta/guardians.json`; do not put trade stock into a commandless `UpdateGuardians` entry.
+- `tradeInventory.tradeCycleId` must equal `returnCycleId`.
+- `generationReputationTier` and `pricingReputationTier` must be derived from `currentReputation`; here `65` means `Friendly`.
+- `items.length` must equal `derivedTradeSlotCount`.
+- Close through `UpdateGuardianTradeInventoryReceipts`; matching stock without a ready receipt is invalid.
+- Do not write `afterlife_notifications.json`; the client derives the ready inbox event.
+- The fragment below shows the canonical persisted Guardian state patch; preserve all other fields on the existing Guardian object.
+
+Correct response/state fragment:
+
+```json
+{
+  "response": "Азалия проводит ладонью по шёлковым полкам, и две реликвии проявляются в мягком серебряном свете. Витрина Обители готова; теперь душа может осмотреть товары через интерфейс торговли Хранителя.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Релевантные акторы: Азалия\n- Почему они релевантны: pending Guardian trade request требует её authored tradeInventory и ready receipt.\n- Акторы вне охвата: остальные Хранители, резиденты Обители\n- Почему они вне охвата: этот request затрагивает только витрину Азалии и не меняет их structured state.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Клиент запросил явную витрину для return_5.\n- Мысли: Азалия выбирает безопасный Friendly-tier ассортимент, соответствующий текущей репутации и лимиту слотов.\n- Действия: Азалия подготавливает ровно два слота Friendly-tier и закрывает pending request canonical receipt.",
+  "game_state/meta/guardians.json patch": {
+    "guardians[] match guardianId=guard_social_azalia_001": {
+      "guardianId": "guard_social_azalia_001",
+      "tradeInventory": {
+        "tradeCycleId": "return_5",
+        "generatedAtUtc": "2026-04-24T09:05:00Z",
+        "generationReputationTier": "Friendly",
+        "pricingReputationTier": "Friendly",
+        "upgradedTradeSlots": 0,
+        "elevatedTradeSlots": 0,
+        "effectiveRarityCeilingBonusSteps": 0,
+        "projectBonusSignature": "0|0|0",
+        "items": [
+          {
+            "slotId": "azalia_return_5_slot_1",
+            "domainTag": "memory",
+            "priceInFeathers": 30,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "soul_relic_azalia_silk_knot_001",
+              "name": "Шёлковый Узел Памяти",
+              "rarity": "Common",
+              "description": "Малая реликвия памяти, удерживающая один спокойный фрагмент прошлой жизни."
+            }
+          },
+          {
+            "slotId": "azalia_return_5_slot_2",
+            "domainTag": "social",
+            "priceInFeathers": 70,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "soul_relic_azalia_threaded_vow_001",
+              "name": "Нить Сохранённой Клятвы",
+              "rarity": "Uncommon",
+              "description": "Реликвия, укрепляющая память о важном обещании между жизнями."
+            }
+          }
+        ]
+      },
+      "tradeInventoryReceipts": [
+        {
+          "requestId": "guardian_trade_azalia_return_5",
+          "guardianId": "guard_social_azalia_001",
+          "guardianName": "Азалия",
+          "abodeId": "abode_azalia_memory_silk_001",
+          "tradeCycleId": "return_5",
+          "status": "ready",
+          "itemCount": 2,
+          "resolvedAtTurn": 240,
+          "resolvedAtUtc": "2026-04-24T09:05:00Z"
+        }
+      ]
+    }
+  }
+}
+```
+
+Forbidden in this example:
+- `UpdateInventory` for Soul Relics.
+- `afterlife_notifications.json` manual writes.
+- `pending_guardian_trade_request.json` mutation in GM output.
+- `tradeInventory.items.length` different from `derivedTradeSlotCount`.
+- ready receipt with a different `requestId`, `abodeId`, or `tradeCycleId`.
+
+==================================================
+5. VALID — CHAOS SEA ARCHIVE CONSULTATION AND PROJECT FUEL REQUESTS
+==================================================
+
+Scenario:
+- Realm is `Chaos Sea`.
+- The player uses reserved afterlife archive entries.
+- Archive action pending files are request contracts; they close through `archiveActionResolutions` in `soul_state.json`.
+- This section shows two compatible accepted resolutions. The consultation is resolved by Azalia through a same-turn completed `lore_research` project; the project-fuel request targets a different Guardian's already-active project to avoid the one-active-project-per-Guardian limit.
+
+Input fragments:
+
+```json
+{
+  "pending_archive_consultation_request.json": {
+    "requestId": "archive_consult_azalia_241",
+    "guardianId": "guard_social_azalia_001",
+    "guardianName": "Азалия",
+    "archiveId": "archive_life_7_broken_oath",
+    "archiveTitle": "Клятва, нарушенная у северных ворот",
+    "archiveEntryType": "lore_fragment",
+    "archiveRarity": "Rare",
+    "archiveSourceKind": "codex",
+    "targetIncarnation": 8,
+    "createdAtTurn": 241,
+    "createdAtUtc": "2026-04-24T09:20:00Z",
+    "requestedMode": "consultation"
+  },
+  "pending_archive_project_fuel_request.json": {
+    "requestId": "archive_fuel_velian_242",
+    "guardianId": "guard_craft_velian_001",
+    "guardianName": "Велиан",
+    "archiveId": "archive_life_5_mirror_forge",
+    "archiveTitle": "Зеркальная кузница шестой жизни",
+    "archiveEntryType": "secret_record",
+    "archiveRarity": "Epic",
+    "archiveSourceKind": "codex",
+    "targetProjectId": "gproj_velian_mirror_forge_001",
+    "targetProjectName": "Зеркальная кузница откликов",
+    "createdAtTurn": 242,
+    "createdAtUtc": "2026-04-24T09:22:00Z",
+    "requestedMode": "project_fuel"
+  }
+}
+```
+
+Correct GM procedure:
+- For consultation, return `archiveActionResolutions` with exact `requestId`, `archiveId`, `requestedMode = consultation`, `status`, `guardianId`, and at least one machine-readable outcome field.
+- Accepted consultation must also create a completed `lore_research` Guardian project with `projectOrigin = archive_consultation`, `consultationRequestId`, `consultationArchiveId`, and `projectOutcomeAudit` matching the resolution fields.
+- For project fuel, return `archiveActionResolutions` with exact `requestId`, `archiveId`, `requestedMode = project_fuel`, `targetProjectId`, `status`, `resultMode`, and `resultAmount > 0`.
+- For project fuel, `archiveEntryType = lore_fragment` may resolve only as `resultMode = project_work`; `archiveEntryType = secret_record` may resolve only as `resultMode = pressure_relief`.
+- Accepted archive entries are consumed/resolved by canonical archive state; rejected/cancelled entries return to availability.
+- If project fuel is accepted, also reflect the exact effect in Guardian project state/journal. `pressure_relief` reduces pressure or improves stability; it does not advance `workDone`/`currentStage`.
+- Do not invent mortal quests, mortal inventory, or manual inbox notifications.
+
+Correct response surface:
+
+```json
+{
+  "response": "Азалия раскрывает архивную нить северных ворот и завершает короткую консультацию как отдельное исследование Обители. Велиан принимает секретную запись о зеркальной кузнице как способ снять давление с уже идущего проекта, не ускоряя саму работу.",
+  "archiveActionResolutions": [
+    {
+      "requestId": "archive_consult_azalia_241",
+      "archiveId": "archive_life_7_broken_oath",
+      "requestedMode": "consultation",
+      "status": "accepted",
+      "guardianId": "guard_social_azalia_001",
+      "guardianName": "Азалия",
+      "guaranteedArchiveQuestCount": 1,
+      "questHookCount": 1,
+      "specialQuestLineUnlocks": 0,
+      "visibleRivalClueBonus": 0,
+      "archiveWarningTierBonus": 0,
+      "reason": "The reserved archive entry can become a bounded next-life clue without creating a mortal quest during afterlife.",
+      "resolvedAtUtc": "2026-04-24T09:25:00Z"
+    },
+    {
+      "requestId": "archive_fuel_velian_242",
+      "archiveId": "archive_life_5_mirror_forge",
+      "requestedMode": "project_fuel",
+      "status": "accepted",
+      "guardianId": "guard_craft_velian_001",
+      "guardianName": "Велиан",
+      "targetProjectId": "gproj_velian_mirror_forge_001",
+      "resultMode": "pressure_relief",
+      "resultAmount": 4,
+      "reason": "The secret record can only reduce project pressure or stabilize risk; it does not directly advance work.",
+      "resolvedAtUtc": "2026-04-24T09:25:00Z"
+    }
+  ],
+  "startGuardianProjects": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "project": {
+        "projectId": "archive_consult_project_azalia_241",
+        "projectType": "lore_research",
+        "projectOrigin": "archive_consultation",
+        "projectTier": "minor",
+        "projectMode": "supportive",
+        "projectName": "Архивная консультация: Клятва у северных ворот",
+        "activeState": "Азалия разворачивает архивную нить в применимый знак для будущей жизни.",
+        "totalWork": 1,
+        "workDone": 1,
+        "totalStages": 1,
+        "currentStage": 1,
+        "pressure": 0,
+        "stability": 100,
+        "startedTurn": 241,
+        "consultationRequestId": "archive_consult_azalia_241",
+        "consultationArchiveId": "archive_life_7_broken_oath"
+      }
+    }
+  ],
+  "completeGuardianProjects": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "projectId": "archive_consult_project_azalia_241",
+      "finalState": "Completed",
+      "outcome": "Азалия превратила архивную консультацию в гарантированную будущую зацепку.",
+      "abodePowerDelta": 0,
+      "projectOutcomeAudit": {
+        "bonusLoreUnlocks": 0,
+        "questHookCount": 1,
+        "guaranteedArchiveQuestCount": 1,
+        "specialQuestLineUnlocks": 0,
+        "visibleRivalClueBonus": 0,
+        "archiveWarningTierBonus": 0,
+        "unlockedLoreFragments": []
+      }
+    }
+  ],
+  "guardianProjectUpdates": [
+    {
+      "projectId": "gproj_velian_mirror_forge_001",
+      "guardianId": "guard_craft_velian_001",
+      "activeState": "active",
+      "pressure": 2,
+      "stability": 82,
+      "assistAudit": {
+        "auditKind": "defense",
+        "DomainRelevance": 2,
+        "RiskOrCost": 1,
+        "ScarcityOrUniqueness": 2,
+        "DirectProjectImpact": 2,
+        "assistScore": 7,
+        "classification": "major defensive breakthrough",
+        "reason": "accepted secret_record archive project fuel archive_fuel_velian_242 as pressure_relief",
+        "archiveFuelRequestId": "archive_fuel_velian_242"
+      }
+    }
+  ]
+}
+```
+
+Canonical state after normalization must retain matching archive action receipts. Patch fragment, not a replacement for the whole file:
+
+```json
+{
+  "afterlifeArchive": {
+    "actionReceipts": [
+      {
+        "requestId": "archive_consult_azalia_241",
+        "archiveId": "archive_life_7_broken_oath",
+        "requestedMode": "consultation",
+        "status": "accepted",
+        "guardianId": "guard_social_azalia_001",
+        "guardianName": "Азалия",
+        "guaranteedArchiveQuestCount": 1,
+        "questHookCount": 1,
+        "specialQuestLineUnlocks": 0,
+        "visibleRivalClueBonus": 0,
+        "archiveWarningTierBonus": 0,
+        "resolvedAtTurn": 242,
+        "resolvedAtUtc": "2026-04-24T09:25:00Z"
+      },
+      {
+        "requestId": "archive_fuel_velian_242",
+        "archiveId": "archive_life_5_mirror_forge",
+        "requestedMode": "project_fuel",
+        "status": "accepted",
+        "guardianId": "guard_craft_velian_001",
+        "guardianName": "Велиан",
+        "targetProjectId": "gproj_velian_mirror_forge_001",
+        "resultMode": "pressure_relief",
+        "resultAmount": 4,
+        "resolvedAtTurn": 242,
+        "resolvedAtUtc": "2026-04-24T09:25:00Z"
+      }
+    ]
+  }
+}
+```
+
+==================================================
+6. VALID — ORDINARY CHAOS SEA TRIGGERINCARNATION
+==================================================
+
+Scenario:
+- Realm is ordinary `Chaos Sea`.
+- No Shining `preparedIncarnationPackage` is present.
+- The player explicitly chooses the next mortal life.
+- This is not Life Evaluation and not Shining pending-bootstrap handoff.
+
+Correct response/control fragment:
+
+```json
+{
+  "response": "Море Хаоса раскрывает новую смертную нить. Хранители не спорят с выбором души: впереди мир заснеженных перевалов, караванных обетов и древних горных архивов.",
+  "TriggerIncarnation": {
+    "worldDescription": "Горный мир позднего средневековья, где караванные города держатся на клятвах, архивных печатях и договорах с духами перевалов.",
+    "characterDescription": "Ребёнок хранителя перевального архива, родившийся в семье, которая помнит долги караванов.",
+    "circumstances": "Первая зима жизни начинается во время спора между городскими старейшинами и духом закрытого перевала."
+  }
+}
+```
+
+Do not write in ordinary Chaos Sea `TriggerIncarnation`:
+- `TriggerLifeEnd`.
+- Life Evaluation rewards.
+- `preparedIncarnationPackage` mutations.
+- Shining faction/radiance/trade progression.
+- Mortal World `currentLocationData`, `worldEventsLog`, `UpdateNPCs`, `UpdateQuests`, or weather/time outputs.
+
+Guardian-forced incarnation is a different flow. It is legal only on an ordinary player-driven Chaos Sea turn as a reaction to explicit provocation against the current active Guardian, and then it must include the extra guardian-forced fields described in `TaskGuides/CLI_Step_Main.txt`.
+
+==================================================
+7. VALID — DIRECT CHAOS SEA GACHA VS GUARDIAN-MEDIATED GACHA
+==================================================
+
+Direct Chaos Sea `/gacha`:
+- Does not use `UpdateGuardians.processGacha`.
+- Does not consume Guardian per-return charges.
+- The client already spent the Ink Feathers before the GM turn; preserve the post-spend balance and do not write `metaStateUpdates.inkFeatherChanges.spend`.
+- Must materialize exactly one new Soul Relic in Soul/meta state.
+- Final rarity must not be below `turn_request.json.gachaBaseResult.baseRarity`.
+
+Correct direct `/gacha` response fragment:
+
+```json
+{
+  "metaStateUpdates": {
+    "soulRelicOperations": {
+      "addRelic": {
+        "relicId": "soul_relic_direct_chaos_glass_eye_001",
+        "name": "Стеклянный Глаз Течения",
+        "rarity": "Rare",
+        "description": "Реликвия Моря Хаоса, показывающая один скрытый поворот судьбы до начала следующей жизни."
+      }
+    }
+  },
+  "response": "Море Хаоса принимает уже списанную плату. Из пены выходит стеклянный глаз, внутри которого медленно вращается будущий перевал."
+}
+```
+
+Guardian-mediated gacha:
+- Uses `UpdateGuardians.processGacha`.
+- Requires remaining Guardian gacha charges for the current return.
+- Must also write matching `metaStateUpdates.inkFeatherChanges.spend` and `metaStateUpdates.soulRelicOperations.addRelic`.
+- If rarity is upgraded above the client base, include `gachaBonusAudit`. It is safe to include the audit with zero bonus steps even when rarity is unchanged.
+- The accepted Guardian state must increment `gachaSystem.chargesUsedThisReturn` and append a `gachaHistory[]` entry.
+
+Correct guardian-mediated response fragment:
+
+```json
+{
+  "UpdateGuardians": [
+    {
+      "command": "processGacha",
+      "guardianId": "guard_social_azalia_001",
+      "inkFeathersSpent": 120,
+      "result": {
+        "relicId": "soul_relic_azalia_lantern_thread_001",
+        "name": "Фонарь Шёлковой Нити",
+        "rarity": "Uncommon",
+        "description": "Реликвия Азалии, позволяющая мягче вспомнить одну связь между жизнями."
+      },
+      "gachaBonusAudit": {
+        "baseRarity": "Uncommon",
+        "finalRarity": "Uncommon",
+        "abodePowerBonusSteps": 0,
+        "relicForgingBonusSteps": 0
+      }
+    }
+  ],
+  "metaStateUpdates": {
+    "inkFeatherChanges": {
+      "spend": 120
+    },
+    "soulRelicOperations": {
+      "addRelic": {
+        "relicId": "soul_relic_azalia_lantern_thread_001",
+        "name": "Фонарь Шёлковой Нити",
+        "rarity": "Uncommon",
+        "description": "Реликвия Азалии, позволяющая мягче вспомнить одну связь между жизнями."
+      }
+    }
+  },
+  "response": "Азалия берёт Перья и вплетает их в тонкую нить. На конце нити загорается маленький фонарь, не яркий, но устойчивый."
+}
+```
+
+Canonical Guardian state impact, shown as a patch fragment:
+
+```json
+{
+  "guardianId": "guard_social_azalia_001",
+  "gachaSystem": {
+    "chargesPerReturn": 2,
+    "chargesUsedThisReturn": 1,
+    "gachaHistory": [
+      {
+        "timestamp": "2026-04-24T09:40:00Z",
+        "costInFeathers": 120,
+        "relicId": "soul_relic_azalia_lantern_thread_001",
+        "finalRarity": "Uncommon"
+      }
+    ]
+  }
+}
+```
+
+==================================================
+8. VALID — AFTERLIFE ABODE OFFERING
+==================================================
+
+Scenario:
+- Realm is `Chaos Sea` or `Shining Abode`.
+- Player action contains `[INK_FEATHER_ACTION: ABODE_OFFERING]`.
+- `game_state/control/pending_abode_offering.json` exists and targets a specific Guardian and return cycle.
+- This example is only for `offeringType = ink_feathers`; non-feather offerings use plain `[ABODE_OFFERING]`.
+- The GM must also read `Examples/E_CLI_Ink_Feather_Actions.txt`, section `VALID — ABODE_OFFERING`.
+
+Input fragment:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "afterlife_session_offering_250",
+    "requestId": "afterlife_turn_offering_250",
+    "turnNumber": 250,
+    "playerAction": "[INK_FEATHER_ACTION: ABODE_OFFERING] Я отдаю 100 Чернильных Перьев Обители Азалии."
+  },
+  "pending_abode_offering.json": {
+    "guardianId": "guard_social_azalia_001",
+    "guardianName": "Азалия",
+    "offeringType": "ink_feathers",
+    "inkFeathersOffered": 100,
+    "returnCycleId": "return_5",
+    "createdAtUtc": "2026-04-24T09:50:00Z"
+  }
+}
+```
+
+Correct response/output fragment:
+
+```json
+{
+  "guardianPowerEvents": [
+    {
+      "eventId": "abode_offering_azalia_return_5",
+      "guardianId": "guard_social_azalia_001",
+      "delta": 2,
+      "reasonType": "offering",
+      "sourceSurface": "guardianAbodeOffering",
+      "sourceId": "return_5",
+      "title": "Подношение усилило Обитель",
+      "summary": "Душа отдала 100 Чернильных Перьев Обители Азалии.",
+      "audit": {
+        "offeringType": "ink_feathers",
+        "inkFeathersOffered": 100,
+        "returnCycleId": "return_5",
+        "capRemainingBefore": 150,
+        "baseDelta": 2,
+        "finalDelta": 2
+      }
+    }
+  ],
+  "response": "Перья растворяются в шёлковых стенах Обители. На мгновение вся память Азалии становится плотнее, и её залы получают новый слой защиты."
+}
+```
+
+Required `output/ink_feather_action_result.json` because this pending offering has `offeringType = ink_feathers`.
+The receipt keeps `actionTag = ABODE_OFFERING`; the matching `guardianPowerEvents[].sourceSurface` remains the canonical `guardianAbodeOffering`.
+
+```json
+{
+  "sessionId": "afterlife_session_offering_250",
+  "requestId": "afterlife_turn_offering_250",
+  "turnNumber": 250,
+  "actionTag": "ABODE_OFFERING",
+  "resolved": true,
+  "costInFeathers": 100,
+  "resolutionType": "abodeOffering",
+  "summary": "The Abode absorbs the offering and gains power.",
+  "stateEvidence": {
+    "affectedFiles": [
+      "game_state/meta/guardians.json",
+      "game_state/meta/abode_power_journal.json"
+    ],
+    "guardianId": "guard_social_azalia_001",
+    "powerGain": 2,
+    "returnCycleId": "return_5",
+    "powerEventId": "abode_offering_azalia_return_5",
+    "reasonType": "offering"
+  }
+}
+```
+
+Forbidden:
+- Treating `ABODE_OFFERING` as `GUARDIAN_FAVOR`.
+- Ignoring `pending_abode_offering.json`.
+- Using another Guardian or another return cycle.
+- Writing only narrative without `guardianPowerEvents.reasonType = offering`.
+- Writing `output/ink_feather_action_result.json` for non-feather offerings such as `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`.
+
+==================================================
+9. VALID — SHINING FACTION FOUNDING, REALIGNMENT, LEADERSHIP
+==================================================
+
+This section contains three independent Shining political pending-contract examples. Each example is a patch fragment; preserve all other required roots of `shining_abode_state.json` and `guardian_abode_residents.json`.
+
+9A. Founding a new Shining faction:
+
+Input fragment:
+
+```json
+{
+  "pending_shining_faction_foundings.json": {
+    "requests": [
+      {
+        "requestId": "shining_found_dawn_chorus_301",
+        "proposedFactionId": "faction_dawn_chorus",
+        "proposedHallId": "hall_dawn_chorus",
+        "proposedHallName": "Зал Рассветного Хора",
+        "proposedHallDescription": "Сияющий зал, где резиденты договариваются о мягком сопровождении будущих жизней.",
+        "proposedHallServiceTags": [
+          "social",
+          "memory"
+        ],
+        "charter": {
+          "factionName": "Рассветный Хор",
+          "favoredArchetype": "accord",
+          "patronEffectFamily": "social",
+          "summary": "Фракция поддерживает согласие между резидентами, Хранителями и будущими воплощениями."
+        },
+        "supportingResidentIds": [
+          "res_mira_001",
+          "res_liora_001",
+          "res_tavian_001"
+        ],
+        "createdAtTurn": 301,
+        "createdAtUtc": "2026-04-24T10:10:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct Shining state patch:
+
+```json
+{
+  "halls": [
+    {
+      "hallId": "hall_dawn_chorus",
+      "hallName": "Зал Рассветного Хора",
+      "description": "Сияющий зал, где резиденты договариваются о мягком сопровождении будущих жизней.",
+      "serviceTags": [
+        "social",
+        "memory"
+      ]
+    }
+  ],
+  "factions": [
+    {
+      "factionId": "faction_dawn_chorus",
+      "originType": "player_founded",
+      "hallId": "hall_dawn_chorus",
+      "charter": {
+        "factionName": "Рассветный Хор",
+        "favoredArchetype": "accord",
+        "patronEffectFamily": "social",
+        "summary": "Фракция поддерживает согласие между резидентами, Хранителями и будущими воплощениями."
+      },
+      "leadership": {
+        "headActorType": "player_soul",
+        "headActorId": "player_soul",
+        "leadershipState": "secure"
+      },
+      "baseStrength": 35,
+      "factionStrength": 35,
+      "investCountThisAscension": 0,
+      "projectArchetypesCountedThisAscension": [],
+      "projects": [],
+      "leadershipReceipts": [],
+      "leadershipHistory": []
+    }
+  ],
+  "factionFoundingReceipts": [
+    {
+      "requestId": "shining_found_dawn_chorus_301",
+      "proposedFactionId": "faction_dawn_chorus",
+      "proposedHallId": "hall_dawn_chorus",
+      "hallName": "Зал Рассветного Хора",
+      "factionId": "faction_dawn_chorus",
+      "hallId": "hall_dawn_chorus",
+      "status": "accepted",
+      "supportingResidentIds": [
+        "res_mira_001",
+        "res_liora_001",
+        "res_tavian_001"
+      ],
+      "resolvedAtTurn": 301,
+      "resolvedAtUtc": "2026-04-24T10:12:00Z",
+      "reason": "player founded a social-memory Shining faction"
+    }
+  ]
+}
+```
+
+Correct resident patch for every supporter:
+
+```json
+[
+  {
+    "residentId": "res_mira_001",
+    "ascensionState": "ascended",
+    "shiningFactionId": "faction_dawn_chorus"
+  },
+  {
+    "residentId": "res_liora_001",
+    "ascensionState": "ascended",
+    "shiningFactionId": "faction_dawn_chorus"
+  },
+  {
+    "residentId": "res_tavian_001",
+    "ascensionState": "ascended",
+    "shiningFactionId": "faction_dawn_chorus"
+  }
+]
+```
+
+9B. Accepted resident realignment:
+
+Input fragment:
+
+```json
+{
+  "pending_shining_faction_realignments.json": {
+    "requests": [
+      {
+        "requestId": "shining_realign_mira_302",
+        "residentId": "res_mira_001",
+        "residentName": "Мира",
+        "sourceFactionId": "faction_old_mirror",
+        "sourceFactionName": "Старое Зеркало",
+        "targetFactionId": "faction_dawn_chorus",
+        "targetFactionName": "Рассветный Хор",
+        "realignmentMode": "accepted_transfer",
+        "factionLoyaltyLevel": 12,
+        "factionLoyaltyTier": "alienated",
+        "factionRestlessness": 74,
+        "factionRealignmentState": "ready_to_realign",
+        "createdAtTurn": 302,
+        "createdAtUtc": "2026-04-24T10:20:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct Shining state patch:
+
+```json
+{
+  "factionRealignmentReceipts": [
+    {
+      "requestId": "shining_realign_mira_302",
+      "residentId": "res_mira_001",
+      "residentName": "Мира",
+      "sourceFactionId": "faction_old_mirror",
+      "sourceFactionName": "Старое Зеркало",
+      "targetFactionId": "faction_dawn_chorus",
+      "targetFactionName": "Рассветный Хор",
+      "status": "accepted",
+      "realignmentMode": "accepted_transfer",
+      "residentHistoryEntryId": "hist_mira_realign_302",
+      "resolvedAtTurn": 302,
+      "resolvedAtUtc": "2026-04-24T10:24:00Z",
+      "reason": "resident accepted transfer to the player-founded faction"
+    }
+  ]
+}
+```
+
+Correct `guardian_abode_residents.json` patch:
+
+```json
+{
+  "entries": [
+    {
+      "residentId": "res_mira_001",
+      "ascensionState": "ascended",
+      "shiningFactionId": "faction_dawn_chorus",
+      "factionLoyaltyLevel": 70,
+      "factionLoyaltyTier": "devoted",
+      "factionRestlessness": 20,
+      "factionRealignmentState": "settled"
+    }
+  ],
+  "historyLog": [
+    {
+      "entryId": "hist_mira_realign_302",
+      "residentId": "res_mira_001",
+      "title": "Переход в Рассветный Хор",
+      "summary": "Мира приняла переход из Старого Зеркала в Рассветный Хор и закрепила новую сияющую принадлежность.",
+      "revealedAtTurn": 302,
+      "revealedAtUtc": "2026-04-24T10:24:00Z"
+    }
+  ]
+}
+```
+
+For `departure_to_neutral`, use `status = departed_to_neutral`, clear `resident.shiningFactionId`, and still write matching `residentHistoryEntryId` plus history log. For `refused_transfer`, keep the resident in `sourceFactionId`.
+
+9C. Accepted leadership transition:
+
+Input fragment:
+
+```json
+{
+  "pending_shining_faction_leadership_transitions.json": {
+    "requests": [
+      {
+        "requestId": "shining_leadership_dawn_303",
+        "factionId": "faction_dawn_chorus",
+        "factionName": "Рассветный Хор",
+        "transitionMode": "peaceful_succession",
+        "incumbentHeadActorType": "guardian",
+        "incumbentHeadActorId": "guard_social_azalia_001",
+        "candidateHeadActorType": "player_soul",
+        "candidateHeadActorId": "player_soul",
+        "supportingResidentIds": [
+          "res_mira_001",
+          "res_liora_001"
+        ],
+        "createdAtTurn": 303,
+        "createdAtUtc": "2026-04-24T10:30:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct faction patch:
+
+```json
+{
+  "factionId": "faction_dawn_chorus",
+  "leadership": {
+    "headActorType": "player_soul",
+    "headActorId": "player_soul",
+    "leadershipState": "secure"
+  },
+  "leadershipReceipts": [
+    {
+      "requestId": "shining_leadership_dawn_303",
+      "factionName": "Рассветный Хор",
+      "transitionMode": "peaceful_succession",
+      "previousHeadActorType": "guardian",
+      "previousHeadActorId": "guard_social_azalia_001",
+      "previousHeadLabel": "Азалия",
+      "newHeadActorType": "player_soul",
+      "newHeadActorId": "player_soul",
+      "newHeadLabel": "Душа игрока",
+      "status": "accepted",
+      "resolvedAtTurn": 303,
+      "resolvedAtUtc": "2026-04-24T10:34:00Z",
+      "reason": "peaceful succession recognized by the faction"
+    }
+  ],
+  "leadershipHistory": [
+    {
+      "eventId": "leadership_evt_dawn_303",
+      "requestId": "shining_leadership_dawn_303",
+      "eventType": "succeeded",
+      "summary": "Рассветный Хор мирно признал душу игрока главой фракции.",
+      "turnNumber": 303,
+      "occurredAtUtc": "2026-04-24T10:34:00Z"
+    }
+  ]
+}
+```
+
+Forbidden Shining political shortcuts:
+- `factionDataChanges`.
+- ad-hoc `strength`, `tradeTier`, or `shiningAlignment` instead of canonical Shining fields.
+- founding receipt without exact proposed ids/hall payload/supporter list.
+- realignment accepted without resident membership update and resident history log.
+- leadership accepted/refused without matching `leadershipHistory[]` when required.
 
 ==================================================
 COMMON INVALID PATTERNS

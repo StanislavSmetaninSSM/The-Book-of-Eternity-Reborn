@@ -619,10 +619,11 @@ Quest state contract notes:
 - `game_state/meta/achievements.json` ← `achievementUnlocks`
 
 #### **AFTERLIFE CONTROL / REQUEST FILES**
+- `game_state/control/pending_abode_offering.json` ← client-authored Abode offering request; GM reads it as input only and always resolves through `guardianPowerEvents.reasonType = offering`. Only `offeringType = ink_feathers` is also `[INK_FEATHER_ACTION: ABODE_OFFERING]` and requires `output/ink_feather_action_result.json`; `soul_relic`, `archive_lore_fragment`, and `archive_secret_record` use plain `[ABODE_OFFERING]` and must not write an Ink Feather receipt.
 - `game_state/control/pending_guardian_trade_request.json` ← client-authored Guardian trade inventory request; close with `UpdateGuardianTradeInventoryReceipts`.
 - `game_state/control/pending_guardian_abode_residents_request.json` ← client-authored resident roster requests; close with `UpdateGuardianAbodeResidentRosterReceipts`.
 - `game_state/control/pending_guardian_abode_resident_interactions.json` ← client-authored resident talk/history requests; close with `UpdateGuardianAbodeResidentInteractionReceipts` plus resident logs/history when accepted.
-- `game_state/control/pending_resident_companion_manifestation_request.json` ← client-authored next-life companion manifestation requests.
+- `game_state/control/pending_resident_companion_manifestation_request.json` ← MortalWorldProfile-only next-life companion manifestation requests. In `Chaos Sea` / `Shining Abode`, treat this file as stale/repair-only context and do not materialize mortal NPCs or encounters from it.
 - `game_state/control/pending_archive_consultation_request.json` and `pending_archive_project_fuel_request.json` ← close with `archiveActionResolutions`.
 - `game_state/control/pending_shining_abode_actions.json` ← client-authored Shining core actions; close through `shining_abode_state.coreActionReceipts[]`.
 - `game_state/control/pending_shining_faction_foundings.json` ← close through `shining_abode_state.factionFoundingReceipts[]`.
@@ -787,16 +788,19 @@ These exceptions do NOT unlock Guardians, Abodes, Guardian reputation changes, o
 - `Learn Skill` is valid only if it creates a NEW skill object in the appropriate player skill file for this turn.
 - `Fate Shield` is valid only if it creates a NEW `Щит Судьбы` effect instance for this turn.
 
-### Afterlife / Chaos-Sea Ink Feather Exceptions
+### Afterlife Ink Feather Exceptions
 The following spending-based Ink Feather actions are explicitly allowed in afterlife realms (`Chaos Sea` and `Shining Abode`) when their specific action prerequisites are satisfied:
 - `Donate to Guardian`
 - `Cultivate Enlightenment`
 - `Guardian Favor`
 - `Memory Gates`
 - `Soul Imprint`
+- `ABODE_OFFERING` only when `game_state/control/pending_abode_offering.json.offeringType = ink_feathers`
 
 These exceptions do NOT unlock Mortal-World-only mechanics such as combat, XP leveling, regular inventory changes, or regular NPC quest/world systems.
 The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
+- Ink Feather `ABODE_OFFERING` is valid only with the matching client-authored `game_state/control/pending_abode_offering.json` where `offeringType = ink_feathers`; GM reads that file as input, resolves through `guardianPowerEvents` with `reasonType = offering`, and writes `output/ink_feather_action_result.json` with `actionTag = ABODE_OFFERING`.
+- If `pending_abode_offering.json.offeringType` is `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`, process it as plain `[ABODE_OFFERING]`: resolve through `guardianPowerEvents.reasonType = offering` only, do not invent `costInFeathers`, and do not write `output/ink_feather_action_result.json`.
 - `Sell Relic` is a separate guardian trade interaction and is NOT part of the Ink Feather action contract.
 - Local guardian trade panel (`Buy / Sell` Soul Relics with the current active Guardian) is handled entirely on the client side.
 - It does NOT create `turn_request.json`, does NOT require `ink_feather_action_result.json`, and is separate from roleplay trade through the GM.
@@ -1660,7 +1664,7 @@ Canonical Abode Power changes must flow through `guardianPowerEvents` or be clie
 - `UpdateNpcTradeInventoryReceipts` ← GM-authored receipt surface written into `game_state/npcs/npc_core.json`; each receipt closes one pending NPC trade inventory request with `status = ready`
 - `game_state/control/pending_guardian_abode_residents_request.json` ← client-authored requests to materialize explicit afterlife residents for one or more Guardian Abodes, stored as `requests[]`
 - `game_state/control/pending_guardian_abode_resident_interactions.json` ← client-authored talk/history requests for afterlife residents, stored as `requests[]`
-- `game_state/control/pending_resident_companion_manifestation_request.json` ← client-authored next-life manifestation requests for equipped `companion_echo` Soul Relics and for equipped Soul Relics that carry embedded `soulImprint` / `npcSoulImprint`, stored as `requests[]`
+- `game_state/control/pending_resident_companion_manifestation_request.json` ← MortalWorldProfile-only next-life manifestation requests for equipped `companion_echo` Soul Relics and for equipped Soul Relics that carry embedded `soulImprint` / `npcSoulImprint`, stored as `requests[]`; do not process this file as an afterlife turn contract in `Chaos Sea` / `Shining Abode`
 - `game_state/control/pending_archive_consultation_request.json` ← client-authored request over a reserved archive entry for consultation
 - `game_state/control/pending_archive_project_fuel_request.json` ← client-authored request over a reserved archive entry for project fuel
 - `game_state/control/afterlife_notifications.json` ← client-owned inbox of guardian-system events: GM responses for guardian trade readiness, archive action outcomes, new guardian quests materialized from canonical quest origins, and mechanical resident events (roster ready / resident-linked soul quest / relic grant)
@@ -1708,6 +1712,7 @@ Canonical Abode Power changes must flow through `guardianPowerEvents` or be clie
   - NPCs -> `npcInteractionJournalUpdates`
 - Journal closure entries must carry `requestId`, actor id, `interactionType`, `status = accepted | rejected | cancelled`, optional `responseMode`, plus the ordinary `title/summary/turn/timestamp`.
 - Freeform guardian/NPC scenes that do not use these explicit request surfaces still remain advisory-memory only.
+- The next-life companion manifestation bullets below apply to `MortalWorldProfile` bootstrap / early Mortal World turns only. In `Chaos Sea` or `Shining Abode`, `pending_resident_companion_manifestation_request.json` is stale/repair-only context and must not create mortal NPC output.
 - A resident who can be carried into a future life should grant a Soul Relic with `relicType = companion_echo` and a complete `companionSeed`.
 - If a resident has already granted a companion-carrying relic, preserve `grantedRelicId` in resident state so the reward is cross-linked to the actual Soul Relic.
 - Independently of that, any Soul Relic that carries an embedded `soulImprint` / `npcSoulImprint` is also eligible for next-life companion manifestation through the same pending request layer.

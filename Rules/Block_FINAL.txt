@@ -208,6 +208,7 @@
                     ✓ Guardian Favor
                     ✓ Memory Gates
                     ✓ Soul Imprint
+                    ✓ ABODE_OFFERING (offeringType = ink_feathers only)
                     Sell Relic is a separate guardian trade interaction and is NOT an Ink Feather action.
 
                     The following Mortal-World Ink Feather actions are FORBIDDEN in afterlife realms:
@@ -237,7 +238,7 @@
                     ✓ Learn Skill
                     ✓ Fate Shield
                     ✓ Seal in Ink
-                    ✗ Donate to Guardian / Cultivate Enlightenment / Guardian Favor / Memory Gates / Soul Imprint → still FORBIDDEN
+                    ✗ Donate to Guardian / Cultivate Enlightenment / Guardian Favor / Memory Gates / Soul Imprint / ABODE_OFFERING with offeringType = ink_feathers → still FORBIDDEN
 
                 -   If you find ANY violation, you MUST correct it IMMEDIATELY before finalizing.
                     A single realm-crossing violation means the ENTIRE response is mechanically invalid.
