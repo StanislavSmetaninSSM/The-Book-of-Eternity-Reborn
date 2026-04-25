@@ -3332,7 +3332,7 @@ Input summary:
     "sessionId": "afterlife_session_combo_401",
     "requestId": "afterlife_turn_combo_401",
     "turnNumber": 401,
-    "playerAction": "[INK_FEATHER_ACTION: ABODE_OFFERING] Я отдаю 80 Чернильных Перьев Обители Азалии.",
+    "playerAction": "[INK_FEATHER_ACTION: ABODE_OFFERING] Я отдаю 100 Чернильных Перьев Обители Азалии.",
     "progressionControl": {
       "chaosSeaCyclesExpectedThisTurn": 1,
       "guardianProjectCyclesExpectedThisTurn": 1,
@@ -3351,7 +3351,7 @@ Input summary:
     "guardianName": "Азалия",
     "abodeId": "abode_azalia_memory_silk_001",
     "offeringType": "ink_feathers",
-    "inkFeathersOffered": 80,
+    "inkFeathersOffered": 100,
     "returnCycleId": "return_8",
     "createdAtUtc": "2026-04-24T15:00:00Z"
   }
@@ -3434,12 +3434,12 @@ Correct response/state fragment:
       "sourceSurface": "guardianAbodeOffering",
       "sourceId": "return_8",
       "title": "Подношение укрепило шёлковую память",
-      "summary": "Душа отдала 80 Чернильных Перьев Обители Азалии; сила Обители выросла в пределах offering cap.",
+      "summary": "Душа отдала 100 Чернильных Перьев Обители Азалии; сила Обители выросла в пределах offering cap.",
       "audit": {
         "offeringType": "ink_feathers",
-        "inkFeathersOffered": 80,
+        "inkFeathersOffered": 100,
         "returnCycleId": "return_8",
-        "capRemainingBefore": 120,
+        "capRemainingBefore": 150,
         "baseDelta": 2,
         "finalDelta": 2
       }
@@ -3470,17 +3470,18 @@ Required `output/ink_feather_action_result.json`:
   "turnNumber": 401,
   "actionTag": "ABODE_OFFERING",
   "resolved": true,
-  "costInFeathers": 80,
+  "costInFeathers": 100,
   "resolutionType": "abodeOffering",
   "summary": "The Abode absorbs the offering and gains power.",
   "stateEvidence": {
     "guardianId": "guard_social_azalia_001",
     "abodeId": "abode_azalia_memory_silk_001",
     "returnCycleId": "return_8",
-    "guardianPowerEventId": "abode_offering_azalia_return_8",
+    "powerEventId": "abode_offering_azalia_return_8",
+    "powerGain": 2,
     "affectedFiles": [
       "game_state/meta/guardians.json",
-      "game_state/control/progression_report.json"
+      "game_state/meta/abode_power_journal.json"
     ]
   }
 }
@@ -3811,10 +3812,6 @@ Correct active Shining `prepare_incarnation_package` closure shape:
 {
   "game_state/meta/shining_abode_state.json patch": {
     "preparedIncarnationPackage": {
-      "packageId": "prepared_incarnation_shining_411",
-      "createdAtTurn": 411,
-      "createdAtUtc": "2026-04-24T16:20:00Z",
-      "sourceDraftVersion": 7,
       "selectedCardIds": [
         "card:shine_faction_glass_light_001:head:player_soul:route:rare"
       ],
@@ -3835,10 +3832,12 @@ Correct active Shining `prepare_incarnation_package` closure shape:
             "type": "seed_early_routes",
             "routeOptions": 1,
             "latestTurn": 6
-          },
-          "_effectiveStrength": 82
+          }
         }
-      ]
+      ],
+      "generatedFromDraftVersion": 7,
+      "preparedAtTurn": 411,
+      "preparedAtUtc": "2026-04-24T16:20:00Z"
     },
     "coreActionReceipts": [
       {
@@ -3871,8 +3870,7 @@ Correct active Shining `prepare_incarnation_package` closure shape:
               "type": "seed_early_routes",
               "routeOptions": 1,
               "latestTurn": 6
-            },
-            "_effectiveStrength": 82
+            }
           }
         ],
         "newResidentIds": [],
