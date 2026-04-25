@@ -1157,15 +1157,16 @@ Correct GM procedure:
 - For consultation, return `archiveActionResolutions` with exact `requestId`, `archiveId`, `requestedMode = consultation`, `status`, `guardianId`, and at least one machine-readable outcome field.
 - Accepted consultation must also create a completed `lore_research` Guardian project with `projectOrigin = archive_consultation`, `consultationRequestId`, `consultationArchiveId`, and `projectOutcomeAudit` matching the resolution fields.
 - For project fuel, return `archiveActionResolutions` with exact `requestId`, `archiveId`, `requestedMode = project_fuel`, `targetProjectId`, `status`, `resultMode`, and `resultAmount > 0`.
+- For project fuel, `archiveEntryType = lore_fragment` may resolve only as `resultMode = project_work`; `archiveEntryType = secret_record` may resolve only as `resultMode = pressure_relief`.
 - Accepted archive entries are consumed/resolved by canonical archive state; rejected/cancelled entries return to availability.
-- If project fuel is accepted, also reflect the effect in Guardian project state/journal. The archive resolution alone is not a visible project change.
+- If project fuel is accepted, also reflect the exact effect in Guardian project state/journal. `pressure_relief` reduces pressure or improves stability; it does not advance `workDone`/`currentStage`.
 - Do not invent mortal quests, mortal inventory, or manual inbox notifications.
 
 Correct response surface:
 
 ```json
 {
-  "response": "Азалия раскрывает архивную нить северных ворот и завершает короткую консультацию как отдельное исследование Обители. Велиан принимает запись о зеркальной кузнице как топливо для уже идущего проекта и укрепляет его работу.",
+  "response": "Азалия раскрывает архивную нить северных ворот и завершает короткую консультацию как отдельное исследование Обители. Велиан принимает секретную запись о зеркальной кузнице как способ снять давление с уже идущего проекта, не ускоряя саму работу.",
   "archiveActionResolutions": [
     {
       "requestId": "archive_consult_azalia_241",
@@ -1190,9 +1191,9 @@ Correct response surface:
       "guardianId": "guard_craft_velian_001",
       "guardianName": "Велиан",
       "targetProjectId": "gproj_velian_mirror_forge_001",
-      "resultMode": "project_work",
-      "resultAmount": 2,
-      "reason": "The secret record directly advances the current Guardian project.",
+      "resultMode": "pressure_relief",
+      "resultAmount": 4,
+      "reason": "The secret record can only reduce project pressure or stabilize risk; it does not directly advance work.",
       "resolvedAtUtc": "2026-04-24T09:25:00Z"
     }
   ],
@@ -1242,18 +1243,17 @@ Correct response surface:
       "projectId": "gproj_velian_mirror_forge_001",
       "guardianId": "guard_craft_velian_001",
       "activeState": "active",
-      "workDone": 66,
-      "currentStage": 3,
       "pressure": 2,
-      "stability": 76,
+      "stability": 82,
       "assistAudit": {
+        "auditKind": "defense",
         "DomainRelevance": 2,
         "RiskOrCost": 1,
         "ScarcityOrUniqueness": 2,
         "DirectProjectImpact": 2,
         "assistScore": 7,
-        "classification": "major breakthrough",
-        "reason": "accepted archive project fuel archive_fuel_velian_242",
+        "classification": "major defensive breakthrough",
+        "reason": "accepted secret_record archive project fuel archive_fuel_velian_242 as pressure_relief",
         "archiveFuelRequestId": "archive_fuel_velian_242"
       }
     }
@@ -1290,8 +1290,8 @@ Canonical state after normalization must retain matching archive action receipts
         "guardianId": "guard_craft_velian_001",
         "guardianName": "Велиан",
         "targetProjectId": "gproj_velian_mirror_forge_001",
-        "resultMode": "project_work",
-        "resultAmount": 2,
+        "resultMode": "pressure_relief",
+        "resultAmount": 4,
         "resolvedAtTurn": 242,
         "resolvedAtUtc": "2026-04-24T09:25:00Z"
       }
@@ -1339,7 +1339,8 @@ Guardian-forced incarnation is a different flow. It is legal only on an ordinary
 Direct Chaos Sea `/gacha`:
 - Does not use `UpdateGuardians.processGacha`.
 - Does not consume Guardian per-return charges.
-- Must spend Ink Feathers and materialize exactly one new Soul Relic in Soul/meta state.
+- The client already spent the Ink Feathers before the GM turn; preserve the post-spend balance and do not write `metaStateUpdates.inkFeatherChanges.spend`.
+- Must materialize exactly one new Soul Relic in Soul/meta state.
 - Final rarity must not be below `turn_request.json.gachaBaseResult.baseRarity`.
 
 Correct direct `/gacha` response fragment:
@@ -1347,9 +1348,6 @@ Correct direct `/gacha` response fragment:
 ```json
 {
   "metaStateUpdates": {
-    "inkFeatherChanges": {
-      "spend": 100
-    },
     "soulRelicOperations": {
       "addRelic": {
         "relicId": "soul_relic_direct_chaos_glass_eye_001",
@@ -1359,7 +1357,7 @@ Correct direct `/gacha` response fragment:
       }
     }
   },
-  "response": "Ты бросаешь Чернильные Перья прямо в течение Моря Хаоса. Из пены выходит стеклянный глаз, внутри которого медленно вращается будущий перевал."
+  "response": "Море Хаоса принимает уже списанную плату. Из пены выходит стеклянный глаз, внутри которого медленно вращается будущий перевал."
 }
 ```
 
