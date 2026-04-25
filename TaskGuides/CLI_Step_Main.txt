@@ -13,7 +13,7 @@
                - input/turn_request.json (player's action, turn metadata, pre-generated dice)
                - Examples/E_CLI_Step_Main.txt (MUST-read examples for NPC scope, reasoning blocks, repair loop, and terminal protocol failures)
                - Examples/E_CLI_Ink_Feather_Actions.txt (MUST-read whenever the turn uses any GM-side INK_FEATHER_ACTION)
-               - Examples/E_CLI_Afterlife_Turns.txt (MUST-read whenever currentRealm is `Chaos Sea` or `Shining Abode`; use examples 14-15 for Shining core actions and freeform Guardian commands)
+               - Examples/E_CLI_Afterlife_Turns.txt (MUST-read whenever currentRealm is `Chaos Sea` or `Shining Abode`; use examples 14-18 for Shining core actions, freeform Guardian commands, and combined scheduler + pending-contract turns)
                - When writing JSON/state files from PowerShell, use explicit UTF-8 and data objects only (`[ordered]@{}` / `@()`), never script blocks (`{}`)
                
             2. **Read Current Game State:**
@@ -323,6 +323,7 @@
             - Step 3, scheduler first: read `input/turn_request.json.progressionControl` before choosing the scene resolution, relevant actors, or response tone
             - Treat every `mustEvaluate* = true` as mandatory work for this turn, even if the player action is conversational
             - Treat `afterlifeCatchupRequired = true` as a bounded epoch-summary obligation; summarize the accumulated absence into the requested number of major outcomes instead of simulating every raw missed cycle
+            - If scheduler debt, pending files, and a direct player action occur in the same afterlife turn, do not split them into separate imagined turns; use `Examples/E_CLI_Afterlife_Turns.txt` examples 16-18 as the combined-turn model
             - Step 4, state loading: read `soul_state.json`, `guardians.json`, `guardian_projects.json`, and `guardian_abode_residents.json`
             - In Shining Abode, or when Shining catch-up contours are listed, also read `shining_abode_state.json` and evaluate halls, gates, radiance, Light Sparks, factions, leadership, trade, public mood, and prepared incarnation state
             - Step 5, pending contracts: inspect control files before deciding that the turn is stable or purely narrative
@@ -429,7 +430,7 @@
 - If `game_state/control/pending_guardian_abode_resident_interactions.json` exists, read all `requests[]` and close each resident `talk` / `history` request in the same accepted turn through `UpdateGuardianAbodeResidentInteractionReceipts`.
 - If `game_state/control/pending_guardian_abode_resident_transfers.json` exists, read all `requests[]` and close each transfer in the same accepted turn through `UpdateGuardianAbodeResidentTransferReceipts`; accepted transfer moves the same `residentId` to the target Abode, refused transfer keeps the resident in source, and departure-only removes source presence without inventing a target.
 - If `game_state/control/pending_player_guardian_foundation.json` exists, read the ritual contract before narration; create a new Guardian actor through `UpdateGuardians.create`, keep the previous Guardian as `former_patron`, set the new mantle as `activeGuardian`, update `chaosSeaNavigation.currentAbodeId`, write `soul_state.playerFoundedGuardianId`, write `soul_state.playerGuardianFoundationStatus=founded`, and append `playerGuardianFoundationHistory`.
-- For concrete valid shapes, use `Examples/E_CLI_Afterlife_Turns.txt` examples 10-15 before producing the accepted turn.
+- For concrete valid shapes, use `Examples/E_CLI_Afterlife_Turns.txt` examples 10-18 before producing the accepted turn; examples 16-18 show combined scheduler + pending-contract + player-action handling.
 - Ordinary resident conversations still remain soft roleplay, but they can no longer be ignored:
   - `talk` may resolve with accepted/rejected/cancelled and does not require a mechanical effect
   - `history` may resolve with accepted/rejected/cancelled, but an accepted result must leave canonical aftermath: `historyRevealed=true`, and/or `UpdateGuardianAbodeResidentHistoryLog`, and/or updated `mortalWorldImprint`

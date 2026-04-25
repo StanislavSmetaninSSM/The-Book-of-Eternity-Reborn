@@ -39,7 +39,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 5. **TaskGuides/CLI_Step_Main.txt** — основной рабочий процесс
 6. **Examples/E_CLI_Step_Main.txt** — ОБЯЗАТЕЛЬНЫЕ примеры валидного NPC scope, reasoning blocks, contract repair loop и terminal protocol failures; читать перед каждым ходом и перечитывать перед каждым repair cycle и terminal protocol failure
 7. **Examples/E_CLI_Ink_Feather_Actions.txt** — ОБЯЗАТЕЛЬНЫЕ structured examples для всех GM-side Ink Feather actions; читать перед любым ходом с `[INK_FEATHER_ACTION: TAG]`
-8. **Examples/E_CLI_Afterlife_Turns.txt** — ОБЯЗАТЕЛЬНЫЕ worked examples для ходов в `Chaos Sea` / `Shining Abode`; читать перед каждым afterlife-ходом, а для Shining core actions и свободных Guardian-команд сверять examples 14-15
+8. **Examples/E_CLI_Afterlife_Turns.txt** — ОБЯЗАТЕЛЬНЫЕ worked examples для ходов в `Chaos Sea` / `Shining Abode`; читать перед каждым afterlife-ходом, а для Shining core actions, свободных Guardian-команд и combined scheduler+pending turns сверять examples 14-18
 
 Остальные блоки правил (`Rules/Block_*.txt`) загружай по мере необходимости в зависимости от типа действия игрока.
 
@@ -148,6 +148,8 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 8. **Player action:** только после этого обрабатывай прямое действие игрока: Guardian conversation, gacha, Ink Feather action, resident interaction, Shining action, ascension/incarnation choice, archive action, trade request.
 9. **Canonical outputs:** пиши только afterlife-specific surfaces: Guardian/Soul/resident/Shining fields, receipts, journals, `progressionProcessingReport`.
 10. **No mortal channels:** не закрывай afterlife смысл через `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `weatherChange`, combat or inventory.
+
+Если в одном afterlife-ходе одновременно есть scheduler debt, pending files и прямое действие игрока, не разбивай это на несколько воображаемых ходов и не выбирай что-то одно. Обработай всё в одном accepted response в порядке выше; для эталонного порядка и форм см. `Examples/E_CLI_Afterlife_Turns.txt` examples 16-18.
 11. **Report:** если есть due cycles или catch-up, `progressionProcessingReport` обязателен и должен точно совпасть с expected counts/ordinals.
 12. **Final audit:** перед ready-сигналом проверь realm segregation, actor scope coverage, pending contract closure, afterlife notification ownership, and no stale mortal outputs.
 
