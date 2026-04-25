@@ -2,7 +2,9 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -10,6 +12,32 @@ namespace BookOfEternityClient.Tests;
 
 public class GuardianPolicyContractDescriptorTests
 {
+    [Fact]
+    public void AfterlifeGuardianContractSurfaces_AreSerializableAndMapped()
+    {
+        var expectedMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["guardians"] = "game_state/meta/guardians.json",
+            ["activeGuardian"] = "game_state/meta/guardians.json",
+            ["chaosSeaNavigation"] = "game_state/meta/guardians.json",
+            ["playerGuardianFoundationHistory"] = "game_state/meta/guardians.json",
+            ["UpdateGuardianAbodeResidentTransferReceipts"] = "game_state/meta/guardian_abode_residents.json"
+        };
+
+        var responseFields = typeof(GameResponse)
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Select(property => property.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name)
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var (field, path) in expectedMappings)
+        {
+            Assert.Contains(field, responseFields);
+            Assert.True(FileMapping.FieldToFile.TryGetValue(field, out var mappedPath), $"Missing FileMapping for {field}.");
+            Assert.Equal(path, mappedPath);
+        }
+    }
+
     [Fact]
     public void SoulStateDescriptor_ExposesCanonicalWritePatchLifecycleAndStrictAuthorityTopLevelKeys()
     {

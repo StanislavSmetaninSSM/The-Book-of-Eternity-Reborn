@@ -378,6 +378,18 @@ public class GameResponse
     [JsonPropertyName("UpdateGuardianTradeInventoryReceipts")]
     public JsonElement[]? UpdateGuardianTradeInventoryReceipts { get; set; }
 
+    [JsonPropertyName("guardians")]
+    public JsonElement[]? Guardians { get; set; }
+
+    [JsonPropertyName("activeGuardian")]
+    public JsonElement? ActiveGuardian { get; set; }
+
+    [JsonPropertyName("chaosSeaNavigation")]
+    public JsonElement? ChaosSeaNavigation { get; set; }
+
+    [JsonPropertyName("playerGuardianFoundationHistory")]
+    public JsonElement[]? PlayerGuardianFoundationHistory { get; set; }
+
     [JsonPropertyName("UpdateGuardianAbodeResidents")]
     public JsonElement[]? UpdateGuardianAbodeResidents { get; set; }
 
@@ -386,6 +398,9 @@ public class GameResponse
 
     [JsonPropertyName("UpdateGuardianAbodeResidentInteractionReceipts")]
     public JsonElement[]? UpdateGuardianAbodeResidentInteractionReceipts { get; set; }
+
+    [JsonPropertyName("UpdateGuardianAbodeResidentTransferReceipts")]
+    public JsonElement[]? UpdateGuardianAbodeResidentTransferReceipts { get; set; }
 
     [JsonPropertyName("UpdateGuardianAbodeResidentHistoryLog")]
     public JsonElement[]? UpdateGuardianAbodeResidentHistoryLog { get; set; }

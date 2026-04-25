@@ -26,6 +26,10 @@ Use this index before resolving an afterlife turn:
 - Direct Chaos Sea `/gacha` and guardian-mediated gacha: see example 7.
 - `[INK_FEATHER_ACTION: ABODE_OFFERING]` for `offeringType = ink_feathers` only: see example 8 and `Examples/E_CLI_Ink_Feather_Actions.txt`.
 - Shining faction founding / realignment / leadership pending files: see example 9.
+- `pending_guardian_abode_residents_request.json`: see example 10.
+- `pending_guardian_abode_resident_transfers.json`: see example 11.
+- `pending_guardian_social_interactions.json`: see example 12.
+- `pending_player_guardian_foundation.json`: see example 13.
 
 ==================================================
 GLOBAL AFTERLIFE TURN RULE
@@ -1807,6 +1811,1001 @@ Forbidden Shining political shortcuts:
 - founding receipt without exact proposed ids/hall payload/supporter list.
 - realignment accepted without resident membership update and resident history log.
 - leadership accepted/refused without matching `leadershipHistory[]` when required.
+
+==================================================
+10. VALID — GUARDIAN ABODE RESIDENT ROSTER REQUEST
+==================================================
+
+This request is not ambient flavor. It is a client-authored contract asking the GM to create explicit residents for a Guardian's Abode. The answer must materialize resident objects and close the request with a roster receipt.
+
+Input fragment:
+
+```json
+{
+  "pending_guardian_abode_residents_request.json": {
+    "requests": [
+      {
+        "requestId": "abode_roster_azalia_314",
+        "guardianId": "guard_social_azalia_001",
+        "guardianName": "Азалия",
+        "abodeId": "abode_azalia_memory_silk_001",
+        "abodeName": "Обитель Шёлковой Памяти",
+        "currentReputation": 146,
+        "requestMode": "standard_roster",
+        "createdAtTurn": 314,
+        "createdAtUtc": "2026-04-24T11:00:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Оценка времени и мира
+- Realm: Chaos Sea.
+- pending_guardian_abode_residents_request.json exists and must close this accepted turn.
+- The request asks for explicit Abode residents; they cannot be inferred from Azalia's domain or narrated without state.
+
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Азалия, Марин, Эйва
+- Почему они релевантны: Азалия владеет Обителью; Марин и Эйва are newly materialized residents whose state and memory are written.
+- Акторы вне охвата: остальные Хранители, Mortal World NPCs
+- Почему они вне охвата: this roster contract touches only Azalia's Abode and afterlife resident state.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: Обитель получила явный roster request and must stop being an empty implied location.
+- Внутренние мысли: Азалия wants residents who reinforce memory, care, and careful disclosure.
+- Действия: She opens two stable social roles in the Abode and accepts responsibility for them.
+
+### Марин
+- Ситуация: Марин becomes an attendant spirit in the silk-memory halls.
+- Внутренние мысли: He is cautious but already oriented toward service and calm routine.
+- Действия: He begins maintaining memory curtains and becomes available for talk/history hooks.
+
+### Эйва
+- Ситуация: Эйва arrives as a wayfaring soul who is not fully settled yet.
+- Внутренние мысли: She wants shelter but still listens for roads beyond the Abode.
+- Действия: She joins the roster with wavering migration state, not as a permanent fixture.
+```
+
+Correct response/state fragment:
+
+```json
+{
+  "UpdateGuardianAbodeResidents": [
+    {
+      "residentId": "res_azalia_marin_314",
+      "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "displayName": "Марин",
+      "residentKind": "attendant_spirit",
+      "originType": "native_spirit",
+      "roleLabel": "Смотритель шёлковых занавесей",
+      "summary": "Тихий служащий дух, который упорядочивает залы памяти и встречает растерянные души.",
+      "bondLevel": 18,
+      "bondTier": "stranger",
+      "canGrantCompanionRelic": false,
+      "bondRewardState": "none",
+      "historyRevealed": false,
+      "isPresent": true,
+      "mortalWorldImprint": {
+        "originWorldSummary": "Родился из забытых домашних ритуалов мира, где память хранили в тканях.",
+        "futureCompanionPrompt": "If later carried into a mortal life, appear as a quiet helper who notices hidden domestic memories.",
+        "bondReason": "Марин чувствует родство с бережным отношением души к прошлым жизням.",
+        "coreTraits": [
+          "careful",
+          "loyal",
+          "ritual"
+        ],
+        "archetypeHints": [
+          "attendant",
+          "memory_keeper"
+        ],
+        "appearanceMotifs": [
+          "серебряная игла",
+          "шёлковая маска"
+        ]
+      },
+      "availableInteractions": [
+        "talk",
+        "history"
+      ],
+      "personalityProfile": {
+        "archetype": "Quiet Attendant",
+        "worldview": "Память нужно распутывать без насилия.",
+        "culturalLayer": "Домашние культы памяти",
+        "coreValues": [
+          "service",
+          "patience",
+          "shelter"
+        ],
+        "personalityTraits": [
+          {
+            "traitName": "loyalty",
+            "value": 5,
+            "valueDescription": "Tends to stay faithful once trust is earned."
+          },
+          {
+            "traitName": "restlessness",
+            "value": 2,
+            "valueDescription": "Rarely feels the urge to drift away."
+          }
+        ]
+      },
+      "abodeDisposition": {
+        "powerSensitivity": "medium",
+        "migrationDisposition": "rooted",
+        "communalOrientation": "high",
+        "stabilityNeed": "high"
+      },
+      "abodeDevotionLevel": 72,
+      "abodeDevotionTier": "devoted",
+      "restlessness": 16,
+      "migrationState": "settled"
+    },
+    {
+      "residentId": "res_azalia_eiva_314",
+      "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "displayName": "Эйва",
+      "residentKind": "wayfaring_soul",
+      "originType": "traveler_soul",
+      "roleLabel": "Гостья у северной галереи",
+      "summary": "Странствующая душа, которая задержалась у Азалии ради мягкого восстановления памяти.",
+      "bondLevel": 34,
+      "bondTier": "familiar",
+      "canGrantCompanionRelic": true,
+      "bondRewardState": "none",
+      "historyRevealed": false,
+      "isPresent": true,
+      "mortalWorldImprint": {
+        "originWorldSummary": "Последняя жизнь Эйвы оборвалась в дороге между городами, и её память держится за образ недостроенного пути.",
+        "futureCompanionPrompt": "If granted as a companion echo, appear as a road-wise friend who recognizes when the player is about to repeat an old mistake.",
+        "bondReason": "Эйва уважает души, которые не прячутся от незавершённых дорог.",
+        "coreTraits": [
+          "wanderer",
+          "honest",
+          "restless"
+        ],
+        "archetypeHints": [
+          "wayfarer",
+          "witness"
+        ],
+        "appearanceMotifs": [
+          "пыльная лента",
+          "фонарь на ремне"
+        ]
+      },
+      "availableInteractions": [
+        "talk",
+        "history",
+        "quest"
+      ],
+      "personalityProfile": {
+        "archetype": "Restless Witness",
+        "worldview": "Ни одна дорога не заканчивается там, где тело упало.",
+        "culturalLayer": "Пограничные караваны",
+        "coreValues": [
+          "motion",
+          "truth",
+          "unfinished_promises"
+        ],
+        "personalityTraits": [
+          {
+            "traitName": "loyalty",
+            "value": 4,
+            "valueDescription": "Keeps some distance even from meaningful ties."
+          },
+          {
+            "traitName": "restlessness",
+            "value": 7,
+            "valueDescription": "Can remain in place, but not without doubts."
+          }
+        ]
+      },
+      "abodeDisposition": {
+        "powerSensitivity": "medium",
+        "migrationDisposition": "wandering",
+        "communalOrientation": "low",
+        "stabilityNeed": "low"
+      },
+      "abodeDevotionLevel": 55,
+      "abodeDevotionTier": "attached",
+      "restlessness": 32,
+      "migrationState": "wavering"
+    }
+  ],
+  "UpdateGuardianAbodeResidentRosterReceipts": [
+    {
+      "requestId": "abode_roster_azalia_314",
+      "guardianId": "guard_social_azalia_001",
+      "guardianName": "Азалия",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "abodeName": "Обитель Шёлковой Памяти",
+      "rosterCount": 2,
+      "resolvedAtTurn": 314,
+      "resolvedAtUtc": "2026-04-24T11:06:00Z"
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "entryId": "resident_thought_marin_314_arrival",
+      "residentId": "res_azalia_marin_314",
+      "title": "Первый обход занавесей",
+      "summary": "Марин осторожно принимает роль смотрителя и ожидает, что душа будет спрашивать о памяти бережно.",
+      "eventType": "roster_materialized",
+      "consequence": "resident becomes available in Azalia's Abode",
+      "attitude": "cautious_service",
+      "intent": "maintain the memory halls",
+      "tags": [
+        "roster",
+        "azalia_abode"
+      ],
+      "turn": 314,
+      "timestamp": "2026-04-24T11:06:00Z"
+    }
+  ]
+}
+```
+
+Invalid roster shortcuts:
+- Only saying "there are many spirits here" without `UpdateGuardianAbodeResidents`.
+- Writing `UpdateNPCs` for residents.
+- Receipt without matching `requestId`.
+- Resident object without `mortalWorldImprint.futureCompanionPrompt`, `isPresent`, `residentKind`, `originType`, `bondTier`, or canonical abode devotion fields.
+
+==================================================
+11. VALID — GUARDIAN ABODE RESIDENT TRANSFER REQUEST
+==================================================
+
+Transfer requests are strict because they move an existing resident between afterlife Abodes or remove them from the current Abode. The validator compares the request against the pre-turn resident snapshot, so the GM must not invent a different resident or resolve the transfer by prose.
+
+Input fragment:
+
+```json
+{
+  "pending_guardian_abode_resident_transfers.json": {
+    "requests": [
+      {
+        "requestId": "resident_transfer_sael_315",
+        "residentId": "res_azalia_sael_001",
+        "residentName": "Саэль",
+        "sourceGuardianId": "guard_social_azalia_001",
+        "sourceGuardianName": "Азалия",
+        "sourceAbodeId": "abode_azalia_memory_silk_001",
+        "sourceAbodeName": "Обитель Шёлковой Памяти",
+        "targetGuardianId": "guard_light_ilarion_002",
+        "targetGuardianName": "Иларий",
+        "targetAbodeId": "abode_ilarion_clear_dawn_002",
+        "targetAbodeName": "Обитель Ясного Рассвета",
+        "abodeDevotionLevel": 12,
+        "abodeDevotionTier": "alienated",
+        "restlessness": 82,
+        "migrationState": "ready_to_transfer",
+        "transferMode": "accepted_transfer",
+        "createdAtTurn": 315,
+        "createdAtUtc": "2026-04-24T11:20:00Z"
+      }
+    ]
+  }
+}
+```
+
+Relevant pre-turn resident snapshot:
+
+```json
+{
+  "guardian_abode_residents.json": {
+    "entries": [
+      {
+        "residentId": "res_azalia_sael_001",
+        "guardianId": "guard_social_azalia_001",
+        "abodeId": "abode_azalia_memory_silk_001",
+        "displayName": "Саэль",
+        "residentKind": "wayfaring_soul",
+        "originType": "traveler_soul",
+        "roleLabel": "Слушатель дальних дверей",
+        "summary": "Душа, которая больше не может оставаться в мягкой памяти Азалии и тянется к ясному рассвету.",
+        "bondLevel": 65,
+        "bondTier": "trusted",
+        "canGrantCompanionRelic": false,
+        "bondRewardState": "none",
+        "historyRevealed": true,
+        "isPresent": true,
+        "mortalWorldImprint": {
+          "originWorldSummary": "Саэль погиб, защищая рассветный храм от забвения.",
+          "futureCompanionPrompt": "If carried forward, appear as a lucid witness who resists false comfort.",
+          "bondReason": "Trust was earned through repeated honest conversations.",
+          "coreTraits": [
+            "loyal",
+            "truth",
+            "dawn"
+          ],
+          "archetypeHints": [
+            "witness",
+            "pilgrim"
+          ],
+          "appearanceMotifs": [
+            "белая повязка",
+            "рассветный отблеск"
+          ]
+        },
+        "availableInteractions": [
+          "talk",
+          "history"
+        ],
+        "personalityProfile": {
+          "archetype": "Lucid Pilgrim",
+          "worldview": "Мягкая ложь хуже трудной ясности.",
+          "culturalLayer": "Храмовые дороги рассвета",
+          "coreValues": [
+            "truth",
+            "duty",
+            "clarity"
+          ],
+          "personalityTraits": [
+            {
+              "traitName": "loyalty",
+              "value": 8,
+              "valueDescription": "Clings fiercely to chosen bonds and duties."
+            },
+            {
+              "traitName": "restlessness",
+              "value": 8,
+              "valueDescription": "Feels a constant pull toward motion or change."
+            }
+          ]
+        },
+        "abodeDisposition": {
+          "powerSensitivity": "high",
+          "migrationDisposition": "rooted",
+          "communalOrientation": "high",
+          "stabilityNeed": "high"
+        },
+        "abodeDevotionLevel": 12,
+        "abodeDevotionTier": "alienated",
+        "restlessness": 82,
+        "migrationState": "ready_to_transfer"
+      }
+    ]
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Оценка времени и мира
+- Realm: Chaos Sea.
+- pending_guardian_abode_resident_transfers.json exists and must close this accepted turn.
+- Саэль is present in the source Abode and already has migrationState=ready_to_transfer.
+
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Азалия, Иларий, Саэль
+- Почему они релевантны: Азалия loses a resident, Иларий receives him, and Саэль is the moving resident.
+- Акторы вне охвата: прочие резиденты обеих Обителей
+- Почему они вне охвата: the transfer contract names only Саэль and does not mutate the rest of either roster.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: Саэль has outgrown the soft memory hall.
+- Внутренние мысли: Азалия feels loss but recognizes that keeping him would turn shelter into a cage.
+- Действия: She releases him and records the departure.
+
+### Иларий
+- Ситуация: A trusted but restless soul asks to enter the clear dawn Abode.
+- Внутренние мысли: Иларий accepts because Саэль seeks clarity rather than escape.
+- Действия: He receives Саэль and anchors him in a new stable place.
+
+### Саэль
+- Ситуация: The transfer request is his explicit movement from source to target.
+- Внутренние мысли: Саэль is sad but certain.
+- Действия: He departs Azalia's Abode and arrives under Ilarion's guardianship.
+```
+
+Correct accepted-transfer state fragment:
+
+```json
+{
+  "UpdateGuardianAbodeResidents": [
+    {
+      "residentId": "res_azalia_sael_001",
+      "guardianId": "guard_light_ilarion_002",
+      "abodeId": "abode_ilarion_clear_dawn_002",
+      "displayName": "Саэль",
+      "residentKind": "wayfaring_soul",
+      "originType": "traveler_soul",
+      "roleLabel": "Слушатель дальних дверей",
+      "summary": "Душа, которая перешла из мягкой памяти Азалии в ясный рассвет Илария.",
+      "bondLevel": 65,
+      "bondTier": "trusted",
+      "canGrantCompanionRelic": false,
+      "bondRewardState": "none",
+      "historyRevealed": true,
+      "isPresent": true,
+      "mortalWorldImprint": {
+        "originWorldSummary": "Саэль погиб, защищая рассветный храм от забвения.",
+        "futureCompanionPrompt": "If carried forward, appear as a lucid witness who resists false comfort.",
+        "bondReason": "Trust was earned through repeated honest conversations.",
+        "coreTraits": [
+          "loyal",
+          "truth",
+          "dawn"
+        ],
+        "archetypeHints": [
+          "witness",
+          "pilgrim"
+        ],
+        "appearanceMotifs": [
+          "белая повязка",
+          "рассветный отблеск"
+        ]
+      },
+      "availableInteractions": [
+        "talk",
+        "history"
+      ],
+      "personalityProfile": {
+        "archetype": "Lucid Pilgrim",
+        "worldview": "Мягкая ложь хуже трудной ясности.",
+        "culturalLayer": "Храмовые дороги рассвета",
+        "coreValues": [
+          "truth",
+          "duty",
+          "clarity"
+        ],
+        "personalityTraits": [
+          {
+            "traitName": "loyalty",
+            "value": 8,
+            "valueDescription": "Clings fiercely to chosen bonds and duties."
+          },
+          {
+            "traitName": "restlessness",
+            "value": 2,
+            "valueDescription": "Rarely feels the urge to drift away."
+          }
+        ]
+      },
+      "abodeDisposition": {
+        "powerSensitivity": "high",
+        "migrationDisposition": "rooted",
+        "communalOrientation": "high",
+        "stabilityNeed": "high"
+      },
+      "abodeDevotionLevel": 89,
+      "abodeDevotionTier": "steadfast",
+      "restlessness": 0,
+      "migrationState": "settled"
+    }
+  ],
+  "UpdateGuardianAbodeResidentTransferReceipts": [
+    {
+      "requestId": "resident_transfer_sael_315",
+      "residentId": "res_azalia_sael_001",
+      "residentName": "Саэль",
+      "sourceGuardianId": "guard_social_azalia_001",
+      "sourceGuardianName": "Азалия",
+      "sourceAbodeId": "abode_azalia_memory_silk_001",
+      "sourceAbodeName": "Обитель Шёлковой Памяти",
+      "targetGuardianId": "guard_light_ilarion_002",
+      "targetGuardianName": "Иларий",
+      "targetAbodeId": "abode_ilarion_clear_dawn_002",
+      "targetAbodeName": "Обитель Ясного Рассвета",
+      "status": "accepted",
+      "transferMode": "accepted_transfer",
+      "departureHistoryEntryId": "hist_sael_depart_315",
+      "arrivalHistoryEntryId": "hist_sael_arrive_315",
+      "reason": "resident accepted transfer to an Abode better aligned with his need for clarity",
+      "resolvedAtTurn": 315,
+      "resolvedAtUtc": "2026-04-24T11:27:00Z"
+    }
+  ],
+  "UpdateGuardianAbodeResidentHistoryLog": [
+    {
+      "entryId": "hist_sael_depart_315",
+      "residentId": "res_azalia_sael_001",
+      "title": "Уход из шёлковой памяти",
+      "summary": "Саэль покинул Обитель Азалии без изгнания: мягкая память больше не могла удерживать его честно.",
+      "tags": [
+        "transfer",
+        "departure"
+      ],
+      "revealedAtTurn": 315,
+      "revealedAtUtc": "2026-04-24T11:27:00Z"
+    },
+    {
+      "entryId": "hist_sael_arrive_315",
+      "residentId": "res_azalia_sael_001",
+      "title": "Прибытие к ясному рассвету",
+      "summary": "Иларий принял Саэля в Обитель Ясного Рассвета, где его тоска по правде стала устойчивой службой.",
+      "tags": [
+        "transfer",
+        "arrival"
+      ],
+      "revealedAtTurn": 315,
+      "revealedAtUtc": "2026-04-24T11:27:00Z"
+    }
+  ]
+}
+```
+
+Other transfer modes:
+- `refused_transfer`: keep the resident present in the source Abode, do not create a target arrival, write `status = refused`, `transferMode = refused_transfer`, one refusal/departure history entry, and a matching `departureHistoryEntryId`.
+- `departure_only`: remove the resident from source presence or set the same resident `isPresent = false`, do not write target guardian/abode fields, write `status = departed_only`, `transferMode = departure_only`, one departure history entry, and a matching `departureHistoryEntryId`.
+- For every mode, use the same `requestId` and `residentId` from the pending contract. Never create a new resident identity to represent the transfer.
+
+Invalid transfer shortcuts:
+- Receipt without history references.
+- `accepted_transfer` that leaves the resident present in the source Abode.
+- `departure_only` with target guardian/abode or competition metadata.
+- `refused_transfer` that materializes a target arrival anyway.
+- Using Shining faction realignment receipts for Guardian Abode resident transfer. These are separate systems.
+
+==================================================
+12. VALID — GUARDIAN SOCIAL INTERACTION REQUEST
+==================================================
+
+Guardian social requests are stricter than ordinary freeform Guardian scenes. If `pending_guardian_social_interactions.json` exists, every request must close through `guardianSocialJournalUpdates` with matching closure metadata.
+
+Input fragment:
+
+```json
+{
+  "pending_guardian_social_interactions.json": {
+    "requests": [
+      {
+        "requestId": "guardian_social_azalia_lore_316",
+        "guardianId": "guard_social_azalia_001",
+        "guardianName": "Азалия",
+        "interactionType": "lore",
+        "createdAtTurn": 316,
+        "createdAtUtc": "2026-04-24T11:40:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Оценка времени и мира
+- Realm: Chaos Sea.
+- pending_guardian_social_interactions.json exists; this is a strict closure request, not optional memory flavor.
+- interactionType=lore, so accepted closure should use a lore responseMode or a canonical refusal if Azalia refuses.
+
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Азалия
+- Почему они релевантны: the request names Azalia and the output writes guardianSocialJournalUpdates for her.
+- Акторы вне охвата: other Guardians, residents, Shining factions
+- Почему они вне охвата: no state or journal entry for them is changed.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: The soul asks for lore from Azalia.
+- Внутренние мысли: She can reveal one safe fragment without exposing the deeper forbidden layer.
+- Действия: She accepts the request, gives a bounded lore answer, and records the social memory entry.
+```
+
+Correct response/state fragment:
+
+```json
+{
+  "guardianSocialJournalUpdates": [
+    {
+      "entryId": "guardian_social_entry_azalia_lore_316",
+      "guardianId": "guard_social_azalia_001",
+      "requestId": "guardian_social_azalia_lore_316",
+      "interactionType": "lore",
+      "status": "accepted",
+      "responseMode": "lore_revealed",
+      "title": "Азалия раскрыла шёлковую клятву",
+      "summary": "Азалия объяснила, что её Обитель связывает память не запретом, а бережным темпом раскрытия.",
+      "eventType": "lore",
+      "consequence": "soul gains a safer interpretation of Azalia's domain",
+      "attitude": "guarded_trust",
+      "intent": "reveal one safe layer and withhold dangerous details",
+      "tags": [
+        "guardian_social",
+        "lore"
+      ],
+      "turn": 316,
+      "timestamp": "2026-04-24T11:44:00Z"
+    }
+  ],
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_lore_316",
+      "guardianId": "guard_social_azalia_001",
+      "title": "Граница безопасного раскрытия",
+      "summary": "Азалия решила, что душа заслужила один слой истины, но ещё не готова к запретному ядру её памяти.",
+      "eventType": "inner_stance",
+      "consequence": "future lore requests can build on this boundary",
+      "attitude": "careful",
+      "intent": "protect the soul from violent memory recovery",
+      "tags": [
+        "thought",
+        "lore_boundary"
+      ],
+      "turn": 316,
+      "timestamp": "2026-04-24T11:44:00Z"
+    }
+  ]
+}
+```
+
+Invalid guardian social shortcuts:
+- Missing `requestId`, `guardianId`, `interactionType`, or `status` in the journal entry.
+- `interactionType` other than `talk` or `lore`.
+- `responseMode` outside `talk_scene`, `lore_revealed`, `lore_refused`, `warning`, `refusal`, `trust_shift`, `attitude_shift`.
+- Writing only `guardianThoughtJournalUpdates`; the strict closure must be in `guardianSocialJournalUpdates`.
+
+==================================================
+13. VALID — PLAYER-FOUNDED GUARDIAN FOUNDATION
+==================================================
+
+`pending_player_guardian_foundation.json` is a late Chaos Sea ritual after Shining return. The player remains `player_soul`; the GM creates a new Guardian mantle as a separate guardian actor. This is not ascension, not New Game+, and not rewriting the soul into an NPC.
+
+Input fragment:
+
+```json
+{
+  "pending_player_guardian_foundation.json": {
+    "requestId": "foundation_tide_memory_317",
+    "mode": "player_founded_guardian",
+    "founderSoulName": "Станислав",
+    "previousGuardianId": "guard_social_azalia_001",
+    "previousGuardianName": "Азалия",
+    "sourceShiningAvailability": "returned_from_shining_abode",
+    "proposedDisplayName": "Мантия Прилива Памяти",
+    "mantleSummary": "Новая Хранительская мантия, основанная душой игрока после возвращения из Сияющей Обители.",
+    "mantleCreed": "Память должна вести к новой жизни, а не удерживать её в клетке.",
+    "appearanceMotifs": [
+      "чернильные перья",
+      "серебряный прилив",
+      "порог рассвета"
+    ],
+    "dominantAspect": "memory",
+    "createdAtTurn": 317,
+    "createdAtUtc": "2026-04-24T12:00:00Z"
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Оценка времени и мира
+- Realm: Chaos Sea.
+- pending_player_guardian_foundation.json exists and is valid only in Chaos Sea.
+- This turn creates a new Guardian actor; it does not delete Azalia, does not move the player out of player_soul identity, and does not trigger incarnation.
+
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Азалия, Мантия Прилива Памяти
+- Почему они релевантны: Azalia becomes former_patron; the new mantle is created, becomes activeGuardian, and receives a new Abode.
+- Акторы вне охвата: other Guardians, Shining factions, Mortal World NPCs
+- Почему они вне охвата: the foundation contract names only the previous patron and the new player-founded mantle.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: The soul no longer needs Azalia as active patron, but she must remain in guardians[].
+- Внутренние мысли: Azalia accepts becoming former_patron rather than being erased or demoted into an NPC.
+- Действия: She steps aside and remains a narrative relationship hook.
+
+### Мантия Прилива Памяти
+- Ситуация: The player's ascended return creates a new Guardian mantle.
+- Внутренние мысли: The mantle is loyal to the founding soul but distinct from the soul's player identity.
+- Действия: It materializes as a new guardian actor, opens its Abode, and becomes activeGuardian.
+```
+
+Correct response/state fragment:
+
+```json
+{
+  "guardians": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "canonicalName": "Азалия",
+      "nameVariants": {
+        "default": "Азалия",
+        "feminine": "Азалия",
+        "masculine": "Азалий",
+        "neutral": "Азалия"
+      },
+      "manifestation": {
+        "currentDisplayName": "Азалия",
+        "formFlexibility": "selective",
+        "currentPresentationStyle": "feminine",
+        "currentPronouns": "она/её",
+        "appearanceDescription": "Женственная фигура в шёлковых слоях памяти, стоящая у тихого порога Обители."
+      },
+      "manifestationHistory": [],
+      "domain": "Memory",
+      "abode": {
+        "abodeId": "abode_azalia_memory_silk_001",
+        "name": "Обитель Шёлковой Памяти",
+        "description": "Залы мягкого раскрытия воспоминаний, где прошлые жизни не разрывают душу рывком.",
+        "isDiscovered": true
+      },
+      "personalityProfile": {
+        "archetype": "Careful Memory Keeper",
+        "speechPattern": "Soft and deliberate",
+        "coreValues": [
+          "memory",
+          "care",
+          "consent"
+        ]
+      },
+      "relationshipData": {
+        "currentReputation": 146,
+        "reputationHistory": [],
+        "lastInteraction": null,
+        "guardianRoleToPlayer": "former_patron"
+      },
+      "abodePower": {
+        "currentPower": 75,
+        "tier": "Могущественная",
+        "lastUpdatedAt": "2026-04-24T12:08:00Z",
+        "history": []
+      },
+      "guardianRelationships": [],
+      "questManagement": {
+        "availableQuests": [],
+        "activeQuests": [],
+        "completedQuests": []
+      },
+      "gachaSystem": {
+        "chargesPerReturn": 1,
+        "chargesUsedThisReturn": 0,
+        "gachaHistory": []
+      },
+      "mood": {
+        "current": "bittersweet",
+        "intensity": 62,
+        "reason": "Азалия стала former_patron after the player founded a new mantle.",
+        "since": 317
+      },
+      "loreFragments": [
+        {
+          "fragmentId": "lore_guard_social_azalia_001_origin",
+          "title": "До шелка",
+          "content": null,
+          "category": "personal_history",
+          "requiredReputation": 0
+        },
+        {
+          "fragmentId": "lore_guard_social_azalia_001_domain",
+          "title": "Шелк памяти",
+          "content": null,
+          "category": "domain_mastery",
+          "requiredReputation": 50
+        },
+        {
+          "fragmentId": "lore_guard_social_azalia_001_lost_world",
+          "title": "Мир мягких архивов",
+          "content": null,
+          "category": "lost_world",
+          "requiredReputation": 50
+        },
+        {
+          "fragmentId": "lore_guard_social_azalia_001_allies",
+          "title": "Другие Хранители",
+          "content": null,
+          "category": "other_guardians",
+          "requiredReputation": 130
+        },
+        {
+          "fragmentId": "lore_guard_social_azalia_001_soul",
+          "title": "Память и душа",
+          "content": null,
+          "category": "soul_mechanics",
+          "requiredReputation": 130
+        },
+        {
+          "fragmentId": "lore_guard_social_azalia_001_secret",
+          "title": "Запретная складка",
+          "content": null,
+          "category": "cosmic_secret",
+          "requiredReputation": 230
+        },
+        {
+          "fragmentId": "lore_guard_social_azalia_001_vow",
+          "title": "Клятва бережного раскрытия",
+          "content": null,
+          "category": "personal_history",
+          "requiredReputation": 230
+        }
+      ],
+      "musings": []
+    }
+  ],
+  "UpdateGuardians": [
+    {
+      "command": "create",
+      "data": {
+        "guardianId": "guard_player_tide_memory_317",
+        "name": "Мантия Прилива Памяти",
+        "canonicalName": "Мантия Прилива Памяти",
+        "domain": "Memory",
+        "originType": "player_founded_ascended_soul",
+        "founderSoulName": "Станислав",
+        "founderLoyaltyTier": "soulbound",
+        "formerPatronGuardianId": "guard_social_azalia_001",
+        "foundationSource": "shining_return",
+        "foundationRequestId": "foundation_tide_memory_317",
+        "image_prompt": "Ascended memory guardian mantle rising from silver tide and ink feathers, luminous threshold, cosmic afterlife sea",
+        "nameVariants": {
+          "default": "Мантия Прилива Памяти",
+          "feminine": "Мантия Прилива Памяти",
+          "masculine": "Мантия Прилива Памяти",
+          "neutral": "Мантия Прилива Памяти"
+        },
+        "manifestation": {
+          "currentDisplayName": "Мантия Прилива Памяти",
+          "formFlexibility": "selective",
+          "currentPresentationStyle": "neutral",
+          "currentPronouns": "они/их",
+          "appearanceDescription": "Силуэт из серебряного прилива, чернильных перьев и рассветного света."
+        },
+        "manifestationHistory": [],
+        "abode": {
+          "abodeId": "abode_player_tide_memory_317",
+          "name": "Порог Прилива Памяти",
+          "description": "Обитель на границе Моря Хаоса, где память будущих жизней собирается в спокойный прилив.",
+          "image_prompt": "Silver tide threshold in cosmic afterlife sea, ink feather arches, quiet luminous halls",
+          "isDiscovered": true
+        },
+        "personalityProfile": {
+          "archetype": "Founded Mantle",
+          "speechPattern": "Calm and reflective",
+          "coreValues": [
+            "memory",
+            "return",
+            "choice"
+          ]
+        },
+        "relationshipData": {
+          "currentReputation": 300,
+          "reputationHistory": [],
+          "lastInteraction": null
+        },
+        "abodePower": {
+          "currentPower": 75,
+          "tier": "Могущественная",
+          "lastUpdatedAt": "2026-04-24T12:08:00Z",
+          "history": []
+        },
+        "questManagement": {
+          "availableQuests": [],
+          "activeQuests": [],
+          "completedQuests": []
+        },
+        "gachaSystem": {
+          "chargesPerReturn": 1,
+          "chargesUsedThisReturn": 0,
+          "gachaHistory": []
+        },
+        "founderBonuses": {
+          "extraGachaChargesPerReturn": 1
+        },
+        "founderAbodeFeatures": {
+          "residentAttractionMode": "founder_call",
+          "featureTitle": "Зов основанной мантии",
+          "featureSummary": "Новая Обитель притягивает первых резидентов без автоматического переноса старого roster."
+        },
+        "guardianRelationships": [],
+        "loreFragments": [
+          {
+            "fragmentId": "lore_guard_player_tide_memory_317_origin",
+            "title": "Основание мантии",
+            "content": null,
+            "category": "personal_history",
+            "requiredReputation": 0
+          },
+          {
+            "fragmentId": "lore_guard_player_tide_memory_317_domain",
+            "title": "Память как прилив",
+            "content": null,
+            "category": "domain_mastery",
+            "requiredReputation": 50
+          },
+          {
+            "fragmentId": "lore_guard_player_tide_memory_317_shining",
+            "title": "След Сияющей Обители",
+            "content": null,
+            "category": "lost_world",
+            "requiredReputation": 50
+          },
+          {
+            "fragmentId": "lore_guard_player_tide_memory_317_azalia",
+            "title": "Азалия как бывший покровитель",
+            "content": null,
+            "category": "other_guardians",
+            "requiredReputation": 130
+          },
+          {
+            "fragmentId": "lore_guard_player_tide_memory_317_soul",
+            "title": "Душа и мантия",
+            "content": null,
+            "category": "soul_mechanics",
+            "requiredReputation": 130
+          },
+          {
+            "fragmentId": "lore_guard_player_tide_memory_317_secret",
+            "title": "Предел памяти",
+            "content": null,
+            "category": "cosmic_secret",
+            "requiredReputation": 230
+          },
+          {
+            "fragmentId": "lore_guard_player_tide_memory_317_vow",
+            "title": "Клятва прилива",
+            "content": null,
+            "category": "personal_history",
+            "requiredReputation": 230
+          }
+        ],
+        "mood": {
+          "current": "solemn",
+          "intensity": 70,
+          "reason": "Новая мантия только что учреждена душой игрока.",
+          "since": 317
+        },
+        "musings": []
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_player_tide_memory_317"
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": "abode_player_tide_memory_317",
+    "discoveredAbodes": [
+      "abode_azalia_memory_silk_001",
+      "abode_player_tide_memory_317"
+    ]
+  },
+  "playerGuardianFoundationHistory": [
+    {
+      "requestId": "foundation_tide_memory_317",
+      "guardianId": "guard_player_tide_memory_317",
+      "guardianDisplayName": "Мантия Прилива Памяти",
+      "founderSoulName": "Станислав",
+      "formerPatronGuardianId": "guard_social_azalia_001",
+      "formerPatronGuardianName": "Азалия",
+      "foundationSource": "shining_return",
+      "resolvedAtTurn": 317,
+      "resolvedAtUtc": "2026-04-24T12:08:00Z"
+    }
+  ],
+  "metaStateUpdates": {
+    "playerFoundedGuardianId": "guard_player_tide_memory_317",
+    "playerGuardianFoundationStatus": "founded"
+  }
+}
+```
+
+Required final-state facts:
+- Keep the previous Guardian in `guardians[]`; do not delete Azalia.
+- Mark the previous Guardian's `relationshipData.guardianRoleToPlayer = former_patron`.
+- If the GM authors a `guardians` canonical array directly, it must contain full Guardian objects copied from state plus intended changes, not partial patch objects.
+- The new player-founded Guardian must carry `originType = player_founded_ascended_soul`, `founderSoulName`, `founderLoyaltyTier = soulbound`, `foundationSource = shining_return`, `foundationRequestId`, `founderBonuses.extraGachaChargesPerReturn = 1`, and `founderAbodeFeatures.residentAttractionMode = founder_call`.
+
+Invalid foundation shortcuts:
+- Rewriting `soul_state.soulName` into a Guardian actor.
+- Deleting or replacing the previous active Guardian.
+- Creating the new mantle without `UpdateGuardians.create`.
+- Forgetting `playerGuardianFoundationHistory`.
+- Forgetting `soul_state.playerFoundedGuardianId` or `playerGuardianFoundationStatus = founded`.
+- Automatically moving old Abode residents into the new founded Abode.
 
 ==================================================
 COMMON INVALID PATTERNS
