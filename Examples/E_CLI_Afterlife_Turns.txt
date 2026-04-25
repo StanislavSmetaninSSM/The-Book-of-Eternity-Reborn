@@ -1029,21 +1029,22 @@ Input fragment:
 
 Correct GM procedure:
 - Read the pending request exactly; do not change `requestId`, `guardianId`, `abodeId`, `returnCycleId`, slot count, or project bonus signature.
-- Materialize `guardian.tradeInventory` for the same Guardian.
+- Materialize `guardian.tradeInventory` for the same Guardian in `game_state/meta/guardians.json`; do not put trade stock into a commandless `UpdateGuardians` entry.
 - `tradeInventory.tradeCycleId` must equal `returnCycleId`.
 - `generationReputationTier` and `pricingReputationTier` must be derived from `currentReputation`; here `65` means `Friendly`.
 - `items.length` must equal `derivedTradeSlotCount`.
 - Close through `UpdateGuardianTradeInventoryReceipts`; matching stock without a ready receipt is invalid.
 - Do not write `afterlife_notifications.json`; the client derives the ready inbox event.
+- The fragment below shows the canonical persisted Guardian state patch; preserve all other fields on the existing Guardian object.
 
 Correct response/state fragment:
 
 ```json
 {
   "response": "Азалия проводит ладонью по шёлковым полкам, и две реликвии проявляются в мягком серебряном свете. Витрина Обители готова; теперь душа может осмотреть товары через интерфейс торговли Хранителя.",
-  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Релевантные акторы: Азалия\n- Почему релевантна: pending Guardian trade request требует её authored tradeInventory и ready receipt.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Клиент запросил явную витрину для return_5.\n- Действия: Азалия подготавливает ровно два слота Friendly-tier и закрывает pending request canonical receipt.",
-  "UpdateGuardians": [
-    {
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Релевантные акторы: Азалия\n- Почему они релевантны: pending Guardian trade request требует её authored tradeInventory и ready receipt.\n- Акторы вне охвата: остальные Хранители, резиденты Обители\n- Почему они вне охвата: этот request затрагивает только витрину Азалии и не меняет их structured state.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Клиент запросил явную витрину для return_5.\n- Мысли: Азалия выбирает безопасный Friendly-tier ассортимент, соответствующий текущей репутации и лимиту слотов.\n- Действия: Азалия подготавливает ровно два слота Friendly-tier и закрывает pending request canonical receipt.",
+  "game_state/meta/guardians.json patch": {
+    "guardians[] match guardianId=guard_social_azalia_001": {
       "guardianId": "guard_social_azalia_001",
       "tradeInventory": {
         "tradeCycleId": "return_5",
@@ -1080,22 +1081,22 @@ Correct response/state fragment:
             }
           }
         ]
-      }
+      },
+      "tradeInventoryReceipts": [
+        {
+          "requestId": "guardian_trade_azalia_return_5",
+          "guardianId": "guard_social_azalia_001",
+          "guardianName": "Азалия",
+          "abodeId": "abode_azalia_memory_silk_001",
+          "tradeCycleId": "return_5",
+          "status": "ready",
+          "itemCount": 2,
+          "resolvedAtTurn": 240,
+          "resolvedAtUtc": "2026-04-24T09:05:00Z"
+        }
+      ]
     }
-  ],
-  "UpdateGuardianTradeInventoryReceipts": [
-    {
-      "requestId": "guardian_trade_azalia_return_5",
-      "guardianId": "guard_social_azalia_001",
-      "guardianName": "Азалия",
-      "abodeId": "abode_azalia_memory_silk_001",
-      "tradeCycleId": "return_5",
-      "status": "ready",
-      "itemCount": 2,
-      "resolvedAtTurn": 240,
-      "resolvedAtUtc": "2026-04-24T09:05:00Z"
-    }
-  ]
+  }
 }
 ```
 
@@ -1471,7 +1472,7 @@ Correct response/output fragment:
       "guardianId": "guard_social_azalia_001",
       "delta": 2,
       "reasonType": "offering",
-      "sourceSurface": "INK_FEATHER_ACTION.ABODE_OFFERING",
+      "sourceSurface": "guardianAbodeOffering",
       "sourceId": "return_5",
       "title": "Подношение усилило Обитель",
       "summary": "Душа отдала 100 Чернильных Перьев Обители Азалии.",
@@ -1489,7 +1490,8 @@ Correct response/output fragment:
 }
 ```
 
-Required `output/ink_feather_action_result.json` because this pending offering has `offeringType = ink_feathers`:
+Required `output/ink_feather_action_result.json` because this pending offering has `offeringType = ink_feathers`.
+The receipt keeps `actionTag = ABODE_OFFERING`; the matching `guardianPowerEvents[].sourceSurface` remains the canonical `guardianAbodeOffering`.
 
 ```json
 {

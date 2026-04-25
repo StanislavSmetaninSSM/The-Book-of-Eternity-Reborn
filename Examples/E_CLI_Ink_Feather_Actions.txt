@@ -324,6 +324,7 @@ The client writes `game_state/control/pending_abode_offering.json`; GM must read
 This example applies only when `pending_abode_offering.json.offeringType = ink_feathers`.
 If `offeringType` is `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`, close plain `[ABODE_OFFERING]` through `guardianPowerEvents.reasonType = offering` and do not write `output/ink_feather_action_result.json`.
 The power increase must be materialized through `guardianPowerEvents` with `reasonType = offering`.
+The Ink Feather receipt uses `actionTag = ABODE_OFFERING`, but the Guardian power event uses canonical `sourceSurface = guardianAbodeOffering`.
 
 Valid minimal receipt:
 
@@ -360,7 +361,7 @@ Matching power event:
       "guardianId": "guardian_azalia",
       "delta": 2,
       "reasonType": "offering",
-      "sourceSurface": "INK_FEATHER_ACTION.ABODE_OFFERING",
+      "sourceSurface": "guardianAbodeOffering",
       "sourceId": "return_3",
       "title": "Подношение усилило Обитель",
       "summary": "The Soul offered 100 Ink Feathers to the Abode.",
