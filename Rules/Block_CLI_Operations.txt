@@ -261,11 +261,11 @@
 
                     **META-GAME SYSTEM:**
                     - game_state/meta/soul_state.json ← metaStateUpdates, afterlifeArchiveUpdates, archiveActionResolutions
-                    - game_state/meta/guardians.json ← UpdateGuardians
+                    - game_state/meta/guardians.json ← UpdateGuardians, guardianPowerEvents, UpdateGuardianTradeInventoryReceipts, guardians, activeGuardian, chaosSeaNavigation, playerGuardianFoundationHistory
                     - game_state/meta/guardian_projects.json ← startGuardianProjects, guardianProjectUpdates, completeGuardianProjects
                     - game_state/meta/guardian_project_journal.json ← client-derived/readable Guardian project chronology
                     - game_state/meta/abode_power_journal.json ← guardianPowerEvents / client-materialized Abode Power history
-                    - game_state/meta/guardian_abode_residents.json ← UpdateGuardianAbodeResidents, UpdateGuardianAbodeResidentRosterReceipts, UpdateGuardianAbodeResidentInteractionReceipts, UpdateGuardianAbodeResidentHistoryLog, residentThoughtJournalUpdates, residentInteractionLogUpdates
+                    - game_state/meta/guardian_abode_residents.json ← UpdateGuardianAbodeResidents, UpdateGuardianAbodeResidentRosterReceipts, UpdateGuardianAbodeResidentInteractionReceipts, UpdateGuardianAbodeResidentTransferReceipts, UpdateGuardianAbodeResidentHistoryLog, residentThoughtJournalUpdates, residentInteractionLogUpdates
                     - game_state/meta/guardian_thought_journal.json ← guardianThoughtJournalUpdates
                     - game_state/meta/guardian_social_journal.json ← guardianSocialJournalUpdates
                     - game_state/meta/shining_abode_state.json ← canonical Shining Abode state, Shining factions, halls, gates, radiance, Light Sparks, Shining trade inventories, Shining receipts, prepared incarnation package
@@ -278,6 +278,9 @@
                     - UpdateGuardianTradeInventoryReceipts closes Guardian trade requests inside game_state/meta/guardians.json
                     - game_state/control/pending_guardian_abode_residents_request.json ← client-authored resident roster requests
                     - game_state/control/pending_guardian_abode_resident_interactions.json ← client-authored resident talk/history requests
+                    - game_state/control/pending_guardian_abode_resident_transfers.json ← client-authored resident transfer requests; close through UpdateGuardianAbodeResidentTransferReceipts plus resident source/target state and history
+                    - game_state/control/pending_guardian_social_interactions.json ← client-authored Guardian talk/lore requests; close through guardianSocialJournalUpdates
+                    - game_state/control/pending_player_guardian_foundation.json ← Chaos Sea-only player-founded Guardian ritual; close through UpdateGuardians.create, former_patron preservation, activeGuardian/navigation, soul foundation markers, and playerGuardianFoundationHistory
                     - game_state/control/pending_resident_companion_manifestation_request.json ← MortalWorldProfile-only next-life companion manifestation requests; in Chaos Sea / Shining Abode treat as stale/repair-only context and do not materialize mortal NPCs or encounters
                     - game_state/control/pending_archive_consultation_request.json ← client-authored archive consultation request
                     - game_state/control/pending_archive_project_fuel_request.json ← client-authored archive project fuel request

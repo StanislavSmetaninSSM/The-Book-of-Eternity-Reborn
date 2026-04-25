@@ -134,6 +134,8 @@ public partial class CanonicalStateNormalizer
         if (pendingPowerEvents.Count > 0)
             GuardianPowerEventState.ApplyEvents(result, pendingPowerEvents, currentTurn, powerJournalEntries);
 
+        ApplyCurrentGuardianRootAuthoritySurfaces(result, currentRoot, authorizedCreateGuardiansById);
+
         if (result["guardians"] is JsonArray guardians)
         {
             foreach (var guardian in guardians.OfType<JsonObject>())
@@ -146,30 +148,160 @@ public partial class CanonicalStateNormalizer
             GuardianRelationshipRules.EnsureCanonicalNetwork(guardians);
         }
 
-        if (result["activeGuardian"] is JsonObject resultActiveGuardian &&
-            result["guardians"] is JsonArray resultGuardians &&
-            resultGuardians.OfType<JsonObject>().FirstOrDefault(item =>
-                string.Equals(GetNodeString(item["guardianId"]), GetNodeString(resultActiveGuardian["guardianId"]), StringComparison.OrdinalIgnoreCase)) is JsonObject syncedResultGuardian)
-        {
-            result["activeGuardian"] = syncedResultGuardian.DeepClone();
-        }
-        else if (currentRoot?["activeGuardian"] is JsonObject currentActiveGuardian &&
-                 result["guardians"] is JsonArray currentAuthorityGuardians &&
-                 currentAuthorityGuardians.OfType<JsonObject>().FirstOrDefault(item =>
-                     string.Equals(GetNodeString(item["guardianId"]), GetNodeString(currentActiveGuardian["guardianId"]), StringComparison.OrdinalIgnoreCase)) is JsonObject syncedCurrentGuardian)
-        {
-            result["activeGuardian"] = syncedCurrentGuardian.DeepClone();
-        }
-        else
-        {
-            result.Remove("activeGuardian");
-        }
+        SyncGuardianAuthorityActiveGuardian(result, currentRoot, authorizedCreateGuardiansById);
 
         result.Remove("UpdateGuardians");
         result.Remove(GuardianTradeRequestState.UpdateReceiptsProperty);
         result.Remove("guardianPowerEvents");
 
         return result;
+    }
+
+    private static void ApplyCurrentGuardianRootAuthoritySurfaces(
+        JsonObject result,
+        JsonObject? currentRoot,
+        IReadOnlyDictionary<string, JsonObject>? authorizedCreateGuardiansById)
+    {
+        if (currentRoot == null)
+            return;
+
+        ApplyFoundationFormerPatronRootAuthoritySurface(result, currentRoot, authorizedCreateGuardiansById);
+
+        if (currentRoot["chaosSeaNavigation"] is JsonObject navigation)
+            result["chaosSeaNavigation"] = navigation.DeepClone();
+
+        if (currentRoot[PlayerGuardianFoundationState.HistoryProperty] is JsonArray foundationHistory)
+            result[PlayerGuardianFoundationState.HistoryProperty] = foundationHistory.DeepClone();
+    }
+
+    private static void ApplyFoundationFormerPatronRootAuthoritySurface(
+        JsonObject result,
+        JsonObject currentRoot,
+        IReadOnlyDictionary<string, JsonObject>? authorizedCreateGuardiansById)
+    {
+        if (result["guardians"] is not JsonArray authorityGuardians ||
+            currentRoot["guardians"] is not JsonArray currentGuardians ||
+            currentRoot[PlayerGuardianFoundationState.HistoryProperty] is not JsonArray foundationHistory ||
+            authorizedCreateGuardiansById is not { Count: > 0 })
+        {
+            return;
+        }
+
+        var formerPatronGuardianIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var historyEntry in foundationHistory.OfType<JsonObject>())
+        {
+            if (!IsAuthorizedFoundationCreateHistoryEntry(historyEntry, authorizedCreateGuardiansById))
+                continue;
+
+            var formerPatronGuardianId = GetNodeString(historyEntry["formerPatronGuardianId"]);
+            if (!string.IsNullOrWhiteSpace(formerPatronGuardianId))
+                formerPatronGuardianIds.Add(formerPatronGuardianId);
+        }
+
+        if (formerPatronGuardianIds.Count == 0)
+            return;
+
+        foreach (var currentGuardian in currentGuardians.OfType<JsonObject>())
+        {
+            var guardianId = GetNodeString(currentGuardian["guardianId"]);
+            if (string.IsNullOrWhiteSpace(guardianId) ||
+                !formerPatronGuardianIds.Contains(guardianId) ||
+                !string.Equals(
+                    PlayerGuardianFoundationState.TryReadGuardianRoleToPlayer(currentGuardian),
+                    PlayerGuardianFoundationState.GuardianRoleFormerPatron,
+                    StringComparison.OrdinalIgnoreCase) ||
+                FindGuardian(authorityGuardians, guardianId) is not JsonObject authorityGuardian)
+            {
+                continue;
+            }
+
+            PlayerGuardianFoundationState.ApplyCanonicalFormerPatronSemantics(authorityGuardian);
+        }
+    }
+
+    private static bool IsAuthorizedFoundationCreateHistoryEntry(
+        JsonObject historyEntry,
+        IReadOnlyDictionary<string, JsonObject> authorizedCreateGuardiansById)
+    {
+        var guardianId = GetNodeString(historyEntry["guardianId"]);
+        if (string.IsNullOrWhiteSpace(guardianId) ||
+            !authorizedCreateGuardiansById.TryGetValue(guardianId!, out var createdGuardian))
+        {
+            return false;
+        }
+
+        if (!string.Equals(
+                GetNodeString(createdGuardian["originType"]),
+                PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var requestId = GetNodeString(historyEntry["requestId"]);
+        if (!string.IsNullOrWhiteSpace(requestId) &&
+            !string.Equals(
+                GetNodeString(createdGuardian["foundationRequestId"]),
+                requestId,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var formerPatronGuardianId = GetNodeString(historyEntry["formerPatronGuardianId"]);
+        return string.IsNullOrWhiteSpace(formerPatronGuardianId) ||
+               string.Equals(
+                   GetNodeString(createdGuardian["formerPatronGuardianId"]),
+                   formerPatronGuardianId,
+                   StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void SyncGuardianAuthorityActiveGuardian(
+        JsonObject result,
+        JsonObject? currentRoot,
+        IReadOnlyDictionary<string, JsonObject>? authorizedCreateGuardiansById)
+    {
+        if (result["guardians"] is not JsonArray guardians)
+        {
+            result.Remove("activeGuardian");
+            return;
+        }
+
+        if (currentRoot?["activeGuardian"] is JsonObject currentActiveGuardian)
+        {
+            var currentActiveGuardianId = GetNodeString(currentActiveGuardian["guardianId"]);
+            if (!string.IsNullOrWhiteSpace(currentActiveGuardianId) &&
+                authorizedCreateGuardiansById?.ContainsKey(currentActiveGuardianId) == true &&
+                FindGuardian(guardians, currentActiveGuardianId) is JsonObject syncedCurrentGuardian)
+            {
+                result["activeGuardian"] = syncedCurrentGuardian.DeepClone();
+                return;
+            }
+        }
+
+        if (result["activeGuardian"] is JsonObject resultActiveGuardian)
+        {
+            var resultActiveGuardianId = GetNodeString(resultActiveGuardian["guardianId"]);
+            if (!string.IsNullOrWhiteSpace(resultActiveGuardianId) &&
+                FindGuardian(guardians, resultActiveGuardianId) is JsonObject syncedResultGuardian)
+            {
+                result["activeGuardian"] = syncedResultGuardian.DeepClone();
+                return;
+            }
+        }
+
+        if (currentRoot?["activeGuardian"] is JsonObject fallbackCurrentActiveGuardian)
+        {
+            var currentActiveGuardianId = GetNodeString(fallbackCurrentActiveGuardian["guardianId"]);
+            if (!string.IsNullOrWhiteSpace(currentActiveGuardianId) &&
+                FindGuardian(guardians, currentActiveGuardianId) is JsonObject syncedCurrentGuardian)
+            {
+                result["activeGuardian"] = syncedCurrentGuardian.DeepClone();
+                return;
+            }
+        }
+
+        result.Remove("activeGuardian");
     }
 
     private async Task NormalizeGuardiansAsync(IReadOnlyDictionary<string, string>? backups)
@@ -301,6 +433,16 @@ public partial class CanonicalStateNormalizer
             currentInteractionReceipts.Add(receipt);
         GuardianAbodeResidentState.ApplyInteractionReceiptUpdates(result, currentInteractionReceipts);
 
+        var previousTransferReceipts = new JsonArray();
+        foreach (var receipt in CollectGuardianAbodeResidentTransferReceipts(previous))
+            previousTransferReceipts.Add(receipt);
+        GuardianAbodeResidentState.ApplyTransferReceiptUpdates(result, previousTransferReceipts);
+
+        var currentTransferReceipts = new JsonArray();
+        foreach (var receipt in CollectGuardianAbodeResidentTransferReceipts(currentNode))
+            currentTransferReceipts.Add(receipt);
+        GuardianAbodeResidentState.ApplyTransferReceiptUpdates(result, currentTransferReceipts);
+
         var previousHistoryLog = new JsonArray();
         foreach (var historyEntry in CollectGuardianAbodeResidentHistoryLogEntries(previous))
             previousHistoryLog.Add(historyEntry);
@@ -410,6 +552,7 @@ public partial class CanonicalStateNormalizer
         result.Remove(GuardianAbodeResidentState.UpdateProperty);
         result.Remove(GuardianAbodeResidentState.UpdateRosterReceiptsProperty);
         result.Remove(GuardianAbodeResidentState.UpdateInteractionReceiptsProperty);
+        result.Remove(GuardianAbodeResidentState.UpdateTransferReceiptsProperty);
         result.Remove(GuardianAbodeResidentState.UpdateHistoryLogProperty);
         result.Remove(GuardianAbodeResidentState.UpdateThoughtJournalProperty);
         result.Remove(GuardianAbodeResidentState.UpdateInteractionLogProperty);

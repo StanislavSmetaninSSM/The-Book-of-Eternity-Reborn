@@ -334,9 +334,14 @@ CLI Agent automatically loads current game state from:
   // META-GAME SYSTEM  
   "metaStateUpdates": "object with soul progression changes",
   "UpdateGuardians": "array of guardian_command_objects (see Guardian Commands below)",
+  "guardians": "array of canonical guardian_objects when a contract explicitly requires full guardian-state authority",
+  "activeGuardian": "canonical active guardian object or id-bearing object for guardian-state synchronization",
+  "chaosSeaNavigation": "object with currentAbodeId and discoveredAbodes for afterlife navigation",
+  "playerGuardianFoundationHistory": "array of player-founded guardian foundation receipt objects",
   "UpdateGuardianAbodeResidents": "array of guardian_abode_resident_objects",
   "UpdateGuardianAbodeResidentRosterReceipts": "array of guardian_abode_resident_roster_receipt_objects",
   "UpdateGuardianAbodeResidentInteractionReceipts": "array of guardian_abode_resident_interaction_receipt_objects",
+  "UpdateGuardianAbodeResidentTransferReceipts": "array of guardian_abode_resident_transfer_receipt_objects",
   "UpdateGuardianAbodeResidentHistoryLog": "array of guardian_abode_resident_history_log_objects",
   "guardianThoughtJournalUpdates": "array of guardian_thought_journal_objects",
   "guardianSocialJournalUpdates": "array of guardian_social_journal_objects",
@@ -606,8 +611,8 @@ Quest state contract notes:
 
 #### **META-GAME SYSTEM**
 - `game_state/meta/soul_state.json` ← `metaStateUpdates`, `afterlifeArchiveUpdates`, `archiveActionResolutions`
-- `game_state/meta/guardians.json` ← `UpdateGuardians`, `guardianPowerEvents`, `UpdateGuardianTradeInventoryReceipts`
-- `game_state/meta/guardian_abode_residents.json` ← `UpdateGuardianAbodeResidents`, `UpdateGuardianAbodeResidentRosterReceipts`, `UpdateGuardianAbodeResidentInteractionReceipts`, `UpdateGuardianAbodeResidentHistoryLog`, `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`
+- `game_state/meta/guardians.json` ← `UpdateGuardians`, `guardianPowerEvents`, `UpdateGuardianTradeInventoryReceipts`, and explicit canonical roots `guardians`, `activeGuardian`, `chaosSeaNavigation`, `playerGuardianFoundationHistory` when required by afterlife contract resolution
+- `game_state/meta/guardian_abode_residents.json` ← `UpdateGuardianAbodeResidents`, `UpdateGuardianAbodeResidentRosterReceipts`, `UpdateGuardianAbodeResidentInteractionReceipts`, `UpdateGuardianAbodeResidentTransferReceipts`, `UpdateGuardianAbodeResidentHistoryLog`, `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`
 - `game_state/meta/guardian_projects.json` ← `startGuardianProjects`, `guardianProjectUpdates`, `completeGuardianProjects`
 - `game_state/meta/guardian_project_journal.json` ← client-generated readable guardian project chronology
 - `game_state/meta/abode_power_journal.json` ← client-generated readable guardian power chronology
@@ -623,6 +628,9 @@ Quest state contract notes:
 - `game_state/control/pending_guardian_trade_request.json` ← client-authored Guardian trade inventory request; close with `UpdateGuardianTradeInventoryReceipts`.
 - `game_state/control/pending_guardian_abode_residents_request.json` ← client-authored resident roster requests; close with `UpdateGuardianAbodeResidentRosterReceipts`.
 - `game_state/control/pending_guardian_abode_resident_interactions.json` ← client-authored resident talk/history requests; close with `UpdateGuardianAbodeResidentInteractionReceipts` plus resident logs/history when accepted.
+- `game_state/control/pending_guardian_abode_resident_transfers.json` ← client-authored Guardian Abode resident transfer requests; close with `UpdateGuardianAbodeResidentTransferReceipts`, matching history entries, and canonical resident source/target state.
+- `game_state/control/pending_guardian_social_interactions.json` ← client-authored Guardian talk/lore social requests; close with `guardianSocialJournalUpdates` carrying matching `requestId`, `guardianId`, `interactionType`, and `status`.
+- `game_state/control/pending_player_guardian_foundation.json` ← Chaos Sea-only player-founded Guardian ritual; close with `UpdateGuardians.create`, former-patron preservation, `activeGuardian`, `chaosSeaNavigation.currentAbodeId`, `soul_state.playerFoundedGuardianId`, `soul_state.playerGuardianFoundationStatus=founded`, and `playerGuardianFoundationHistory`.
 - `game_state/control/pending_resident_companion_manifestation_request.json` ← MortalWorldProfile-only next-life companion manifestation requests. In `Chaos Sea` / `Shining Abode`, treat this file as stale/repair-only context and do not materialize mortal NPCs or encounters from it.
 - `game_state/control/pending_archive_consultation_request.json` and `pending_archive_project_fuel_request.json` ← close with `archiveActionResolutions`.
 - `game_state/control/pending_shining_abode_actions.json` ← client-authored Shining core actions; close through `shining_abode_state.coreActionReceipts[]`.
@@ -1679,6 +1687,7 @@ Canonical Abode Power changes must flow through `guardianPowerEvents` or be clie
 - `guardian_abode_residents.json` may also carry:
   - `rosterReceipts[]` from `UpdateGuardianAbodeResidentRosterReceipts`
   - `interactionReceipts[]` from `UpdateGuardianAbodeResidentInteractionReceipts`
+  - `transferReceipts[]` from `UpdateGuardianAbodeResidentTransferReceipts`
   - `historyLog[]` from `UpdateGuardianAbodeResidentHistoryLog`
   - `thoughtJournal[]` from `residentThoughtJournalUpdates`
   - `interactionLog[]` from `residentInteractionLogUpdates`

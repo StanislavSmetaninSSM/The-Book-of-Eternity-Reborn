@@ -1102,6 +1102,24 @@ public partial class CanonicalStateNormalizer
             yield return CloneObject(obj);
     }
 
+    private static IEnumerable<JsonObject> CollectGuardianAbodeResidentTransferReceipts(JsonNode? root)
+    {
+        if (root is not JsonObject obj)
+            yield break;
+
+        foreach (var propName in new[] { GuardianAbodeResidentState.TransferReceiptsProperty, GuardianAbodeResidentState.UpdateTransferReceiptsProperty })
+        {
+            if (obj[propName] is not JsonArray arr)
+                continue;
+
+            foreach (var item in arr.OfType<JsonObject>())
+                yield return CloneObject(item);
+        }
+
+        if (obj.ContainsKey("requestId") && obj.ContainsKey("residentId") && obj.ContainsKey("sourceGuardianId") && obj.ContainsKey("targetGuardianId"))
+            yield return CloneObject(obj);
+    }
+
     private static IEnumerable<JsonObject> CollectGuardianAbodeResidentHistoryLogEntries(JsonNode? root)
     {
         if (root is not JsonObject obj)

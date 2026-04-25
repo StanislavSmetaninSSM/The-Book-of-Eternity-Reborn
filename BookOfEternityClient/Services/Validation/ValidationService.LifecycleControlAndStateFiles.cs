@@ -3739,14 +3739,20 @@ public partial class ValidationService
         guardianId = string.Empty;
         actual = "guardian authority unavailable";
 
-        if (!context.HasStrictCurrentAuthorityRoot)
+        var hasStrictCurrentAuthorityRoot =
+            context.HasStrictCurrentAuthorityRoot &&
+            context.StrictCurrentAuthorityRoot.ValueKind == JsonValueKind.Object;
+        var currentAuthorityRoot = hasStrictCurrentAuthorityRoot
+            ? context.StrictCurrentAuthorityRoot
+            : context.CurrentAuthorityRoot;
+        if (currentAuthorityRoot.ValueKind != JsonValueKind.Object)
         {
             actual = DescribeCurrentGuardianAuthorityFailure(context);
             return false;
         }
 
         var authorityMatches = new List<JsonObject>();
-        if (context.StrictCurrentAuthorityRoot.TryGetProperty("guardians", out var authorityGuardians) &&
+        if (currentAuthorityRoot.TryGetProperty("guardians", out var authorityGuardians) &&
             authorityGuardians.ValueKind == JsonValueKind.Array)
         {
             foreach (var entry in authorityGuardians.EnumerateArray())
@@ -3785,8 +3791,12 @@ public partial class ValidationService
             return false;
         }
 
+        AbodePowerRules.EnsureCanonicalState(parsedMaterializedGuardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaState(parsedMaterializedGuardian);
+        GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(parsedMaterializedGuardian);
         materializedGuardian = parsedMaterializedGuardian;
-        if (!JsonNode.DeepEquals(authorityGuardian, materializedGuardian))
+        if (TryBuildAuthorizedFoundationCreateGuardian(context, guardianId, out var authorizedCreateGuardian) &&
+            !JsonNode.DeepEquals(authorizedCreateGuardian, materializedGuardian))
         {
             actual = $"guardian {guardianId} materialized state diverges from authority-backed create surface";
             return false;
@@ -3798,6 +3808,27 @@ public partial class ValidationService
             return false;
         }
 
+        return true;
+    }
+
+    private static bool TryBuildAuthorizedFoundationCreateGuardian(
+        GuardianPolicyContext context,
+        string guardianId,
+        out JsonObject guardian)
+    {
+        guardian = null!;
+        if (string.IsNullOrWhiteSpace(guardianId) ||
+            !context.AuthorizedSameTurnCreateGuardiansById.TryGetValue(guardianId, out var createGuardianElement) ||
+            createGuardianElement.ValueKind != JsonValueKind.Object ||
+            JsonNode.Parse(createGuardianElement.GetRawText()) is not JsonObject parsedGuardian)
+        {
+            return false;
+        }
+
+        AbodePowerRules.EnsureCanonicalState(parsedGuardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaState(parsedGuardian);
+        GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(parsedGuardian);
+        guardian = parsedGuardian;
         return true;
     }
 
