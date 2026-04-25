@@ -162,7 +162,7 @@
 *   **Block_31_The_Soul_System.txt** - **Система Души (Soul System)**
     *Протокол мета-прогрессии: смерть персонажа, Life Evaluation (оценка жизни), расчет Чернильных Перьев (Ink Feathers), управление Реликвиями Души (Soul Relics) и уровнями Просветления. Chaos Sea / переходы между жизнями. В обоих realms траты перьев идут только через explicit realm-specific whitelists, которые взаимоисключающие.*
 *   **Block_32_Guardians.txt** - **Система Хранителей (Guardians) — Ядро**
-    *Определение Хранителей Моря Хаоса. JSON-схема объекта Guardian. Репутация (-100..+300, 6 тиров). Поведенческие протоколы по тирам. Гача-система Реликвий Души (анти-чит протокол). Команды UpdateGuardians (create, updateReputation, completeQuest, processGacha). Chaos Sea ONLY.*
+    *Определение Хранителей как afterlife-сущностей: центр системы в Море Хаоса, присутствие и влияние сохраняются в Сияющей Обители. JSON-схема объекта Guardian. Репутация (-100..+300, 6 тиров). Поведенческие протоколы по тирам. Гача-система Реликвий Души (анти-чит протокол). Команды UpdateGuardians (create, updateReputation, completeQuest, processGacha, addMusings, unlockLore, setMood) разрешены только в afterlife realms, не в смертных мирах.*
 *   **Block_32_extension.txt** - **Расширение Хранителей — Обители, Ребаланс, Соперничество**
     *Система Обителей (Abodes) и навигация по Морю Хаоса. Ребаланс репутации (diminishing returns, tier gates, quest requirements 3/7/12). Межхранительская динамика (socialProfile, jealousyFactor, attitudes). Квесты соперничества (саботаж, лояльность, конкуренция, торговля информацией).*
 *   **Block_32_extension_2.txt** - **Внутренняя жизнь Хранителей — Размышления, Проекты, Знания, Настроение**
