@@ -224,7 +224,7 @@
                     Scan your ENTIRE JSON output for ANY of the following FORBIDDEN keys/values:
                     ✗ Guardian-specific commands (guardian reputation changes, gacha pulls) → REMOVE
                     ✗ Abode navigation data → REMOVE
-                    ✗ afterlife/Chaos-Sea-only Ink Feather spending → REMOVE
+                    ✗ afterlife-only Ink Feather spending → REMOVE
                     ✗ Life Evaluation data (unless death/transition is happening THIS turn) → REMOVE
                     ✗ References to Guardians in 'response' narrative as present entities → REWRITE
                     ✗ 'UpdateNPCs' entries where an NPC is actually a Guardian → REMOVE

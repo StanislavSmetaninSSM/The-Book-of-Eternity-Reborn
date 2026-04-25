@@ -30,6 +30,8 @@ Use this index before resolving an afterlife turn:
 - `pending_guardian_abode_resident_transfers.json`: see example 11.
 - `pending_guardian_social_interactions.json`: see example 12.
 - `pending_player_guardian_foundation.json`: see example 13.
+- All `pending_shining_abode_actions.json.actionType` variants: see example 14.
+- Freeform afterlife `UpdateGuardians` commands outside strict pending files: see example 15.
 
 ==================================================
 GLOBAL AFTERLIFE TURN RULE
@@ -2806,6 +2808,494 @@ Invalid foundation shortcuts:
 - Forgetting `playerGuardianFoundationHistory`.
 - Forgetting `soul_state.playerFoundedGuardianId` or `playerGuardianFoundationStatus = founded`.
 - Automatically moving old Abode residents into the new founded Abode.
+
+==================================================
+14. VALID — SHINING CORE ACTION CONTRACTS
+==================================================
+
+`pending_shining_abode_actions.json` is the canonical client-authored contract for active Shining Abode actions. It is not optional flavor. If the file exists, the GM must close exactly the pending request through `game_state/meta/shining_abode_state.json.coreActionReceipts[]` and the exact state mutation required by that `actionType`.
+
+Supported `actionType` values:
+
+```text
+discover_native_faction
+invest_in_faction
+complete_project
+support_project
+unsupport_project
+retire_project
+open_gates
+prepare_incarnation_package
+pull_relic_gacha
+forge_relic.reshape
+forge_relic.retune_property
+forge_relic.strengthen_band
+forge_relic.stabilize_echo
+forge_relic.uplift_rarity
+```
+
+Common accepted receipt fields for every Shining core action:
+
+```json
+{
+  "requestId": "exact requestId from pending_shining_abode_actions.json",
+  "actionType": "exact actionType from request",
+  "status": "accepted",
+  "factionId": "same factionId as request, or empty string when request has none",
+  "projectId": "same projectId as request; for complete_project this may be the newly created projectId",
+  "relicId": "same relicId as request, or empty string",
+  "returnCycleId": "same returnCycleId as request, or empty string",
+  "targetFormTag": "same targetFormTag as request, or empty string",
+  "propertyIndex": -1,
+  "selectedCardIds": [],
+  "newResidentIds": [],
+  "seededProjectIds": [],
+  "generatedDraftVersion": 0,
+  "resolvedAtTurn": 321,
+  "resolvedAtUtc": "2026-04-24T13:00:00Z",
+  "reason": "short machine-readable reason"
+}
+```
+
+Important receipt rules:
+- Always keep `requestId`, `actionType`, target ids, `selectedCardIds`, `returnCycleId`, `targetFormTag`, and `propertyIndex` synchronized with the pending request.
+- Always include `selectedCardIds`, `newResidentIds`, and `seededProjectIds`; use empty arrays when the action does not use them.
+- Always include positive `resolvedAtTurn` and non-empty ISO `resolvedAtUtc`.
+- `status = refused` or `withdrawn` closes the request but must not apply the accepted state mutation.
+
+14A. Discovery and faction/project actions:
+
+```json
+{
+  "pending_shining_abode_actions.json": {
+    "requests": [
+      {
+        "requestId": "shine_discover_native_321",
+        "actionType": "discover_native_faction",
+        "radianceTierAtRequest": 2,
+        "quotedCostFeathers": 25,
+        "quotedCostLightSparks": 20,
+        "sourceDraftVersion": 0,
+        "selectedCardIds": [],
+        "createdAtTurn": 321,
+        "createdAtUtc": "2026-04-24T13:00:00Z"
+      }
+    ]
+  }
+}
+```
+
+Accepted `discover_native_faction` must:
+- spend exactly `quotedCostFeathers` from `soul_state.json.inkFeathers`;
+- spend exactly `quotedCostLightSparks` from `shining_abode_state.json.lightSparks`;
+- add exactly `+20` Radiance XP and recalculate Radiance tier canonically;
+- materialize one new hall in `halls[]`;
+- materialize one new faction with `originType = native_radiant` and `hallId` matching the receipt;
+- materialize `2..4` new ascended residents in `guardian_abode_residents.json`;
+- create exactly `2` seeded completed projects inside the new faction;
+- write a receipt whose `hallId`, `resolvedFactionId`, `newResidentIds[]`, and `seededProjectIds[]` point to those materialized objects.
+
+Correct `discover_native_faction` receipt fragment:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_discover_native_321",
+      "actionType": "discover_native_faction",
+      "status": "accepted",
+      "factionId": "",
+      "projectId": "",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "hallId": "hall_silver_choir_321",
+      "resolvedFactionId": "shine_faction_silver_choir_321",
+      "selectedCardIds": [],
+      "newResidentIds": [
+        "res_silver_choir_321_a",
+        "res_silver_choir_321_b"
+      ],
+      "seededProjectIds": [
+        "shine_project_silver_choir_memory_321",
+        "shine_project_silver_choir_passage_321"
+      ],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 321,
+      "resolvedAtUtc": "2026-04-24T13:04:00Z",
+      "reason": "native radiant faction discovered and materialized"
+    }
+  ]
+}
+```
+
+For these action types, accepted state must equal the canonical helper projection from pre-turn state:
+
+```text
+invest_in_faction
+  Request requires: factionId, quotedCostFeathers = 10, quotedCostLightSparks = 5.
+  State result: spend exact costs, increment faction.investCountThisAscension, recompute factionStrength, mark open gates stale if needed.
+  Receipt target: factionId only; projectId/relicId/returnCycleId empty.
+
+complete_project
+  Request requires: factionId, projectDraft, quoted costs from the canonical quote.
+  State result: spend exact costs, append one completed project generated from projectDraft, possibly add Radiance XP for a newly counted archetype, recompute factionStrength, mark gates stale.
+  Receipt target: factionId and non-empty projectId of the completed project.
+
+support_project
+  Request requires: factionId and projectId of an existing completed project.
+  State result: set project.isSupported = true and mark gates stale; do not invent a new project.
+  Receipt target: same factionId and projectId.
+
+unsupport_project
+  Request requires: factionId and projectId.
+  State result: set project.isSupported = false and mark gates stale.
+  Receipt target: same factionId and projectId.
+
+retire_project
+  Request requires: factionId and projectId of an existing completed project.
+  State result: set project.status = retired, set project.isSupported = false, recompute factionStrength, mark gates stale.
+  Receipt target: same factionId and projectId.
+
+open_gates
+  Request does not require a faction.
+  State result: rebuild gates draft from current Shining factions, supported projects, residents, and radiance; write gates.hasOpenDraft = true and gates.isStale = false.
+  Receipt target: empty ids, generatedDraftVersion = the resulting gates.draftVersion.
+```
+
+Correct `support_project` receipt fragment:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_support_project_322",
+      "actionType": "support_project",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "shine_project_glass_passage_010",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 322,
+      "resolvedAtUtc": "2026-04-24T13:12:00Z",
+      "reason": "completed passage project is now supported"
+    }
+  ]
+}
+```
+
+14B. Preparing the frozen next-life package:
+
+`prepare_incarnation_package` is not the same turn as Shining pending-bootstrap handoff. This action freezes selected blessing cards into `preparedIncarnationPackage`. The later `TriggerIncarnation` handoff preserves that package for runtime consumption.
+
+Accepted `prepare_incarnation_package` must:
+- require a fresh open gates draft;
+- use `sourceDraftVersion` matching current `gates.draftVersion`;
+- use non-empty unique `selectedCardIds`;
+- if `selectedCards` exists in the request, keep it in the same order as `selectedCardIds`;
+- write `preparedIncarnationPackage` with `selectedCardIds[]` and full `selectedCards[]`;
+- reset/clean gates exactly as the canonical Shining helper does;
+- not spend Ink Feathers by itself;
+- include `selectedCards[]` in the receipt as the exact frozen package snapshot.
+
+Correct receipt fragment:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_prepare_package_323",
+      "actionType": "prepare_incarnation_package",
+      "status": "accepted",
+      "factionId": "",
+      "projectId": "",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [
+        "card:shine_faction_glass_light_001:head:player_soul:route:rare"
+      ],
+      "selectedCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+          "sourceType": "head",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceActorId": "player_soul",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "sourceActorName": "player_soul",
+          "effectFamily": "route",
+          "rarity": "rare",
+          "displayName": "Дар фракции «Орден Стеклянного Света»",
+          "displaySummary": "Откроет 1 ранний route option к 6 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 6
+          }
+        }
+      ],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 7,
+      "resolvedAtTurn": 323,
+      "resolvedAtUtc": "2026-04-24T13:20:00Z",
+      "reason": "selected blessing cards frozen for next incarnation"
+    }
+  ]
+}
+```
+
+14C. Shining banner gacha:
+
+`pull_relic_gacha` is a Shining faction-banner pull, not direct Chaos Sea `/gacha` and not Guardian-mediated `UpdateGuardians.processGacha`.
+
+Accepted `pull_relic_gacha` must:
+- use `turn_request.json.gachaBaseResult.baseRarity` as the minimum `baseRarity`;
+- keep `finalRarity >= baseRarity`;
+- never exceed `request.projectedGachaBonusSteps`;
+- add exactly one new Soul Relic to `soul_state.json`;
+- spend exact `quotedCostFeathers` and no Light Sparks unless the request says otherwise;
+- update `shining_abode_state.json.gachaSystem.chargesUsedThisReturn`, `currentReturnCycleId`, and `gachaHistory[]`;
+- write a receipt with `returnCycleId`, `relicId`, `relicName`, `baseRarity`, and `finalRarity`.
+
+Correct receipt fragment:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_pull_glass_324",
+      "actionType": "pull_relic_gacha",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_shining_glass_oath_324",
+      "relicName": "Стеклянная Клятва Рассвета",
+      "returnCycleId": "shining_return_9",
+      "baseRarity": "Rare",
+      "finalRarity": "Epic",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 324,
+      "resolvedAtUtc": "2026-04-24T13:30:00Z",
+      "reason": "Shining faction banner pull resolved within projected bonus ceiling"
+    }
+  ]
+}
+```
+
+14D. Shining forge actions:
+
+All forge actions require ordinary active Shining Abode, a valid `factionId`, a real Soul Relic `relicId`, enough Ink Feathers and Light Sparks, and at least one supported completed `refinement` project in that faction. Accepted forge output must update both `shining_abode_state.json.lightSparks` and the exact Soul Relic in `soul_state.json`.
+
+Forge action matrix:
+
+```text
+forge_relic.reshape
+  Requires: relic.formTag exists, targetFormTag is non-empty and different.
+  State result: relic.formTag becomes targetFormTag.
+  Receipt identity: factionId, relicId, targetFormTag.
+
+forge_relic.retune_property
+  Requires: propertyIndex and replacementProperty with the same canonical band as the old property.
+  State result: relic.properties[propertyIndex] becomes replacementProperty.
+  Receipt identity: factionId, relicId, propertyIndex.
+
+forge_relic.strengthen_band
+  Requires: propertyIndex pointing to a property with upgradeable band.
+  State result: relic.properties[propertyIndex].band upgrades by one canonical step.
+  Receipt identity: factionId, relicId, propertyIndex.
+
+forge_relic.stabilize_echo
+  Requires: companion_echo relic or relic with companionSeed / companionManifestationQualityBonus.
+  State result: relic.companionManifestationQualityBonus increases by canonical service multiplier.
+  Receipt identity: factionId, relicId.
+
+forge_relic.uplift_rarity
+  Requires: canonical rarity below legendary and enough addedProperties if the next rarity requires more properties.
+  State result: relic rarity upgrades one step; missing minimum properties are appended from addedProperties.
+  Receipt identity: factionId, relicId.
+```
+
+Correct `forge_relic.retune_property` receipt fragment:
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_forge_retune_325",
+      "actionType": "forge_relic.retune_property",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_mirror_lens_001",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": 1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 325,
+      "resolvedAtUtc": "2026-04-24T13:40:00Z",
+      "reason": "property at index 1 retuned within the same band"
+    }
+  ]
+}
+```
+
+Invalid Shining core-action shortcuts:
+- Closing `pending_shining_abode_actions.json` only in prose.
+- Writing `factionDataChanges` or `factionProjectUpdates` for Shining faction/project actions.
+- Omitting empty receipt arrays such as `selectedCardIds`, `newResidentIds`, or `seededProjectIds`.
+- Accepted receipt with target ids that do not exactly match the pending request.
+- `prepare_incarnation_package` receipt without `selectedCards[]` snapshot.
+- `pull_relic_gacha` using `UpdateGuardians.processGacha` or direct `/gacha` rules.
+- Forge action that changes a copied relic fragment instead of the canonical Soul Relic in `soul_state.json`.
+
+==================================================
+15. VALID — FREEFORM AFTERLIFE GUARDIAN COMMANDS
+==================================================
+
+The examples above focus on strict pending contracts. Ordinary afterlife roleplay with a Guardian may still use supported `UpdateGuardians` commands when the fiction justifies a concrete Guardian state change. Guardians are still not NPCs, and these commands are not Shining faction actions.
+
+Supported non-create commands:
+
+```text
+updateReputation
+completeQuest
+processGacha
+addMusings
+unlockLore
+setMood
+```
+
+Correct reasoning for a freeform Guardian scene:
+
+```markdown
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Азалия
+- Почему они релевантны: player asked Azalia for guidance and the response changes her reputation, mood, musing, and one lore fragment.
+- Акторы вне охвата: other Guardians, residents, Shining factions
+- Почему они вне охвата: the scene does not change their projects, relationships, resident state, or Shining institutions.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: Душа признала прежнюю ошибку и попросила бережный способ помнить прошлую жизнь.
+- Внутренние мысли: Азалия видит реальное изменение отношения, но не хочет превращать доверие в мгновенную награду.
+- Действия: Она повышает доверие, фиксирует настроение, добавляет краткую мысль и открывает уже заслуженный lore fragment.
+```
+
+Correct `UpdateGuardians` fragment:
+
+```json
+{
+  "UpdateGuardians": [
+    {
+      "command": "updateReputation",
+      "guardianId": "guard_social_azalia_001",
+      "reputationChange": 8,
+      "reason": "The soul accepted responsibility and asked for memory guidance without demanding a reward."
+    },
+    {
+      "command": "setMood",
+      "guardianId": "guard_social_azalia_001",
+      "mood": {
+        "current": "contemplative",
+        "intensity": 58,
+        "reason": "Азалия увидела осторожное взросление души.",
+        "since": 326
+      }
+    },
+    {
+      "command": "addMusings",
+      "guardianId": "guard_social_azalia_001",
+      "musings": [
+        {
+          "turn": 326,
+          "topic": "soul_assessment",
+          "mood": "hopeful",
+          "text": "Душа впервые попросила память не как оружие, а как способ не повторить ту же боль."
+        }
+      ]
+    },
+    {
+      "command": "unlockLore",
+      "guardianId": "guard_social_azalia_001",
+      "loreFragment": {
+        "fragmentId": "lore_guard_social_azalia_001_domain",
+        "category": "domain_mastery",
+        "title": "Шелк памяти",
+        "content": "Память Азалии не вытаскивает прошлое силой: она расправляет его слоями, пока душа сама не выдержит форму воспоминания.",
+        "requiredReputation": 50
+      }
+    }
+  ],
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_326_memory_guidance",
+      "guardianId": "guard_social_azalia_001",
+      "title": "Осторожная просьба",
+      "summary": "Азалия решила, что душа заслужила мягкое раскрытие одного слоя её домена.",
+      "turn": 326,
+      "timestamp": "2026-04-24T13:50:00Z"
+    }
+  ]
+}
+```
+
+Correct `completeQuest` fragment:
+
+```json
+{
+  "UpdateGuardians": [
+    {
+      "command": "completeQuest",
+      "guardianId": "guard_social_azalia_001",
+      "questId": "gquest_azalia_memory_vow_002",
+      "outcome": "success",
+      "questPowerAudit": {
+        "questDifficultyTier": "easy",
+        "outcome": "success",
+        "baseDelta": 2,
+        "supportsCurrentProject": false,
+        "defendsAgainstRivalPressure": false,
+        "bonusDelta": 0,
+        "finalDelta": 2
+      }
+    }
+  ]
+}
+```
+
+Rules for these commands:
+- `updateReputation` uses top-level `reputationChange` and `reason`, not nested `data`.
+- `completeQuest` can target only an existing Guardian quest id in that Guardian's canonical quest state.
+- `completeQuest` always carries deterministic `questPowerAudit` with `questDifficultyTier`, `outcome`, `baseDelta`, `bonusDelta`, and `finalDelta`; do not write raw `guardianPowerEvents.reasonType = guardian_quest`.
+- `processGacha` is only Guardian-mediated gacha; direct Chaos Sea `/gacha` must not use it.
+- `addMusings`, `unlockLore`, and `setMood` use top-level `musings[]`, `loreFragment`, and `mood`.
+- Every Guardian changed by `UpdateGuardians` must appear in `gm_thoughts_markdown` relevant actors with a matching reasoning block.
+
+Invalid Guardian command shortcuts:
+- `UpdateNPCs` for Guardian mood, speech, or reputation.
+- `UpdateGuardians.updateProject`; use `startGuardianProjects`, `guardianProjectUpdates`, and `completeGuardianProjects`.
+- `processGacha` when the Guardian has no remaining charge this return.
+- `unlockLore` with arbitrary text instead of a full `loreFragment` object.
+- `setMood` without `current`, `intensity`, `reason`, and `since`.
 
 ==================================================
 COMMON INVALID PATTERNS

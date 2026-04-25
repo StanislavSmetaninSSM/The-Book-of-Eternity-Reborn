@@ -914,7 +914,7 @@
                   // addMusings uses top-level musings[],
                   // unlockLore uses top-level loreFragment, setMood uses top-level mood
                 }
-                Commands are processed sequentially in array order. CHAOS SEA ONLY.",
+                Commands are processed sequentially in array order. AFTERLIFE ONLY: valid in Chaos Sea and Shining Abode when the turn legitimately changes Guardian state. Guardians must never be emitted in Mortal World turns.",
 
                 "startGuardianProjects / guardianProjectUpdates / completeGuardianProjects": "(array or null)
                 Dedicated top-level guardian project tracker surfaces. Use them instead of legacy UpdateGuardians.updateProject.

@@ -13,7 +13,7 @@
                - input/turn_request.json (player's action, turn metadata, pre-generated dice)
                - Examples/E_CLI_Step_Main.txt (MUST-read examples for NPC scope, reasoning blocks, repair loop, and terminal protocol failures)
                - Examples/E_CLI_Ink_Feather_Actions.txt (MUST-read whenever the turn uses any GM-side INK_FEATHER_ACTION)
-               - Examples/E_CLI_Afterlife_Turns.txt (MUST-read whenever currentRealm is `Chaos Sea` or `Shining Abode`)
+               - Examples/E_CLI_Afterlife_Turns.txt (MUST-read whenever currentRealm is `Chaos Sea` or `Shining Abode`; use examples 14-15 for Shining core actions and freeform Guardian commands)
                - When writing JSON/state files from PowerShell, use explicit UTF-8 and data objects only (`[ordered]@{}` / `@()`), never script blocks (`{}`)
                
             2. **Read Current Game State:**
@@ -279,7 +279,7 @@
             1. **Analyze Player Action:** Follow Block_12.txt (Action Check System)
             2. **Calculate Results:** Apply Block_15.txt (Combat), Block_16.txt (Magic), etc.
             3. **Update NPCs:** Process Block_19.txt and its NPC subblocks
-            4. **Update Guardians:** Process Block_32.txt when in Chaos Sea
+            4. **Update Guardians:** Process Block_32.txt in afterlife realms (`Chaos Sea` or `Shining Abode`) when the turn changes Guardian state
             5. **Progress Quests:** Apply quest rules exactly as defined in Rules
             6. **Handle Special Cases:** Soul system, lore, control triggers
             7. **Update Lore Codex:** If player discovered new knowledge — add loreCodexUpdates entries
@@ -335,7 +335,7 @@
             - Guardian social contracts: `pending_guardian_social_interactions.json` must close through `guardianSocialJournalUpdates` with exact request closure metadata
             - Player-founded Guardian contracts: `pending_player_guardian_foundation.json` is Chaos Sea only and must close through `UpdateGuardians.create`, active Guardian/navigation updates, soul foundation markers, and `playerGuardianFoundationHistory`
             - Archive contracts: pending archive action files must close through `archiveActionResolutions`, not by inventing mortal inventory or manual notifications
-            - Shining core contracts: `pending_shining_abode_actions.json` must close through canonical `shining_abode_state` mutation plus `coreActionReceipts[]`
+            - Shining core contracts: `pending_shining_abode_actions.json` must close through canonical `shining_abode_state` mutation plus `coreActionReceipts[]`; supported action types are `discover_native_faction`, `invest_in_faction`, `complete_project`, `support_project`, `unsupport_project`, `retire_project`, `open_gates`, `prepare_incarnation_package`, `pull_relic_gacha`, and `forge_relic.*`
             - Shining faction founding contracts: `pending_shining_faction_foundings.json` must close through `factionFoundingReceipts[]`
             - Shining faction realignment contracts: `pending_shining_faction_realignments.json` must close through `factionRealignmentReceipts[]`
             - Shining leadership contracts: `pending_shining_faction_leadership_transitions.json` must close through faction `leadershipReceipts[]` and leadership history
@@ -429,7 +429,7 @@
 - If `game_state/control/pending_guardian_abode_resident_interactions.json` exists, read all `requests[]` and close each resident `talk` / `history` request in the same accepted turn through `UpdateGuardianAbodeResidentInteractionReceipts`.
 - If `game_state/control/pending_guardian_abode_resident_transfers.json` exists, read all `requests[]` and close each transfer in the same accepted turn through `UpdateGuardianAbodeResidentTransferReceipts`; accepted transfer moves the same `residentId` to the target Abode, refused transfer keeps the resident in source, and departure-only removes source presence without inventing a target.
 - If `game_state/control/pending_player_guardian_foundation.json` exists, read the ritual contract before narration; create a new Guardian actor through `UpdateGuardians.create`, keep the previous Guardian as `former_patron`, set the new mantle as `activeGuardian`, update `chaosSeaNavigation.currentAbodeId`, write `soul_state.playerFoundedGuardianId`, write `soul_state.playerGuardianFoundationStatus=founded`, and append `playerGuardianFoundationHistory`.
-- For concrete valid shapes, use `Examples/E_CLI_Afterlife_Turns.txt` examples 10-13 before producing the accepted turn.
+- For concrete valid shapes, use `Examples/E_CLI_Afterlife_Turns.txt` examples 10-15 before producing the accepted turn.
 - Ordinary resident conversations still remain soft roleplay, but they can no longer be ignored:
   - `talk` may resolve with accepted/rejected/cancelled and does not require a mechanical effect
   - `history` may resolve with accepted/rejected/cancelled, but an accepted result must leave canonical aftermath: `historyRevealed=true`, and/or `UpdateGuardianAbodeResidentHistoryLog`, and/or updated `mortalWorldImprint`
