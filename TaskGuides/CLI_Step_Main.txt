@@ -279,7 +279,7 @@
             1. **Analyze Player Action:** Follow Block_12.txt (Action Check System)
             2. **Calculate Results:** Apply Block_15.txt (Combat), Block_16.txt (Magic), etc.
             3. **Update NPCs:** Process Block_19.txt and its NPC subblocks
-            4. **Update Guardians:** Process Block_32.txt when in Chaos Sea
+            4. **Update Guardians:** Process Block_32.txt in afterlife realms (`Chaos Sea` or `Shining Abode`) when the turn changes Guardian state
             5. **Progress Quests:** Apply quest rules exactly as defined in Rules
             6. **Handle Special Cases:** Soul system, lore, control triggers
             7. **Update Lore Codex:** If player discovered new knowledge — add loreCodexUpdates entries
