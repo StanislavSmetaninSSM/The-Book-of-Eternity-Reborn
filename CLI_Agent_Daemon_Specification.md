@@ -95,7 +95,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 - Этот запрет относится к смертным world/faction/location/NPC channels. Он не отменяет afterlife living-world scheduler: если `progressionControl.mustEvaluate* = true`, ГМ обязан обработать afterlife-контуры через Guardian/Abode/Soul/Shining-specific surfaces и `progressionProcessingReport`.
 - В `Mortal World` запрещены: `UpdateGuardians`, Guardian-specific reputation/project/musings/lore commands, Abode navigation data, Soul Relic Gacha processing, afterlife-only spending of Ink Feathers.
 - В `Mortal World` разрешены только explicit Ink Feather exceptions: `Reveal Fate`, `Rewrite Fate`, `Sacrifice to Chaos`, `Absorb Feathers`, `Learn Skill`, `Fate Shield`, `Seal in Ink`.
-- В `Chaos Sea` и `Shining Abode` разрешены только explicit afterlife Ink Feather exceptions: `Donate to Guardian`, `Cultivate Enlightenment`, `Guardian Favor`, `Memory Gates`, `Soul Imprint`.
+- В `Chaos Sea` и `Shining Abode` разрешены только explicit afterlife Ink Feather exceptions: `Donate to Guardian`, `Cultivate Enlightenment`, `Guardian Favor`, `Memory Gates`, `Soul Imprint`, `ABODE_OFFERING`.
 - Эти два Ink Feather whitelist-а взаимоисключающие.
 - Для любого GM-side `[INK_FEATHER_ACTION: TAG]` GM ОБЯЗАН записать `output/ink_feather_action_result.json` с exact `sessionId/requestId/turnNumber`, `actionTag`, `resolved = true`, `costInFeathers`, `resolutionType`, `summary`, `stateEvidence`.
 - `stateEvidence` MUST include `affectedFiles` and action-specific proof of реального stateful результата. Narrative alone is not sufficient.
@@ -141,7 +141,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 2. **Lifecycle guards:** проверь `afterlife_return_guard.json`, `ascension.json`, `incarnation_trigger.json`, `preparedIncarnationPackage`; не смешивай return, ascension, incarnation и bootstrap.
 3. **Scheduler first:** прочитай `turn_request.json.progressionControl` до выбора сцены, due actors и ответа игроку.
 4. **State loading:** прочитай `soul_state.json`, `guardians.json`, `guardian_projects.json`, `guardian_abode_residents.json`; для Shining — обязательно `shining_abode_state.json`.
-5. **Pending contracts:** проверь pending files в `game_state/control/`: Guardian trade, resident roster/interactions, archive actions, Shining core actions, Shining founding/realignment/leadership/trade. `pending_resident_companion_manifestation_request.json` is MortalWorldProfile-only; in `Chaos Sea` / `Shining Abode` do not materialize mortal NPCs or encounters from it, and treat its presence as stale/repair-only context.
+5. **Pending contracts:** проверь pending files в `game_state/control/`: Abode offering, Guardian trade, resident roster/interactions, archive actions, Shining core actions, Shining founding/realignment/leadership/trade. `pending_resident_companion_manifestation_request.json` is MortalWorldProfile-only; in `Chaos Sea` / `Shining Abode` do not materialize mortal NPCs or encounters from it, and treat its presence as stale/repair-only context.
 6. **Actor scope:** объяви relevant actors/institutions: изменяемые Guardians, residents, Shining factions/halls/head actors; объясни outside scope.
 7. **Living-world debt:** обработай все due contours из `progressionControl`; catch-up сначала сверни в bounded summary outcomes.
 8. **Player action:** только после этого обрабатывай прямое действие игрока: Guardian conversation, gacha, Ink Feather action, resident interaction, Shining action, ascension/incarnation choice, archive action, trade request.
