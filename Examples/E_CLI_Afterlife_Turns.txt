@@ -6,10 +6,11 @@ This file supplements:
 - Rules/Block_0.txt
 - Rules/Block_CLI_Operations.txt
 - CLI_API_Specification.md
+- OtherGuides/Afterlife_Contract_Matrix.md
 
 Read this file whenever `game_state/meta/soul_state.json.currentRealm` is `Chaos Sea`, `Море Хаоса`, `Shining Abode`, or `Сияющая Обитель`.
 
-The examples are intentionally operational. They show what the GM must decide, what must be written, and what must NOT be written. They are not a replacement for the full schemas.
+Before using an example, first select the matching rows in `OtherGuides/Afterlife_Contract_Matrix.md`. The matrix tells the GM which scheduler contour, pending file, direct action, canonical output surface, receipt/report, and forbidden substitution apply. These examples then show worked accepted-turn patterns. They are not a replacement for the full schemas.
 
 ==================================================
 EXAMPLE INDEX
@@ -17,6 +18,7 @@ EXAMPLE INDEX
 
 Use this index before resolving an afterlife turn:
 
+- Contract routing for all rows below: read `OtherGuides/Afterlife_Contract_Matrix.md` first.
 - Scheduler / catch-up / resident history in Chaos Sea: see example 1.
 - Active Shining core action + faction/trade/resident living world: see example 2.
 - Shining pending-bootstrap `TriggerIncarnation`: see example 3.

@@ -120,6 +120,8 @@ The GM must treat every `mustEvaluate* = true` field as mandatory processing deb
 
 Afterlife realms use the same "living world" principle as Mortal World progression: off-screen actors continue to act. The difference is that afterlife progression must stay inside afterlife state and commands.
 
+For every `Chaos Sea` / `Shining Abode` turn, the GM must use `OtherGuides/Afterlife_Contract_Matrix.md` as the operational contract map before writing files. The matrix lists each scheduler contour, pending request file, direct afterlife action, canonical state surface, required receipt/report, and forbidden Mortal World substitution.
+
 The GM must read these state groups before resolving afterlife scheduler debt:
 - `game_state/meta/soul_state.json`: current realm, Soul Relics, Enlightenment, Ink Feathers, afterlife archive, current incarnation metadata.
 - `game_state/meta/guardians.json`: Guardian identity, reputation, mood, musings, trade inventory, relationships, buyback relics.
@@ -633,7 +635,7 @@ Quest state contract notes:
 - `game_state/control/pending_player_guardian_foundation.json` ← Chaos Sea-only player-founded Guardian ritual; close with `UpdateGuardians.create`, former-patron preservation, `activeGuardian`, `chaosSeaNavigation.currentAbodeId`, `soul_state.playerFoundedGuardianId`, `soul_state.playerGuardianFoundationStatus=founded`, and `playerGuardianFoundationHistory`.
 - `game_state/control/pending_resident_companion_manifestation_request.json` ← MortalWorldProfile-only next-life companion manifestation requests. In `Chaos Sea` / `Shining Abode`, treat this file as stale/repair-only context and do not materialize mortal NPCs or encounters from it.
 - `game_state/control/pending_archive_consultation_request.json` and `pending_archive_project_fuel_request.json` ← close with `archiveActionResolutions`.
-- `game_state/control/pending_shining_abode_actions.json` ← client-authored Shining core actions; close through canonical `shining_abode_state.json` mutation plus `shining_abode_state.coreActionReceipts[]`. Supported `actionType` values are `discover_native_faction`, `invest_in_faction`, `complete_project`, `support_project`, `unsupport_project`, `retire_project`, `open_gates`, `prepare_incarnation_package`, `pull_relic_gacha`, `forge_relic.reshape`, `forge_relic.retune_property`, `forge_relic.strengthen_band`, `forge_relic.stabilize_echo`, and `forge_relic.uplift_rarity`; use `Examples/E_CLI_Afterlife_Turns.txt` example 14 for accepted receipt/state patterns.
+- `game_state/control/pending_shining_abode_actions.json` ← client-authored Shining core actions; close through canonical `shining_abode_state.json` mutation plus `shining_abode_state.coreActionReceipts[]`. Supported `actionType` values are `discover_native_faction`, `invest_in_faction`, `complete_project`, `support_project`, `unsupport_project`, `retire_project`, `open_gates`, `prepare_incarnation_package`, `pull_relic_gacha`, `forge_relic.reshape`, `forge_relic.retune_property`, `forge_relic.strengthen_band`, `forge_relic.stabilize_echo`, and `forge_relic.uplift_rarity`; use `OtherGuides/Afterlife_Contract_Matrix.md` plus `Examples/E_CLI_Afterlife_Turns.txt` example 14 for accepted receipt/state patterns.
 - `game_state/control/pending_shining_faction_foundings.json` ← close through `shining_abode_state.factionFoundingReceipts[]`.
 - `game_state/control/pending_shining_faction_realignments.json` ← close through `shining_abode_state.factionRealignmentReceipts[]`.
 - `game_state/control/pending_shining_faction_leadership_transitions.json` ← close through faction `leadershipReceipts[]` and leadership history.
@@ -1852,8 +1854,9 @@ See `Examples/CLI_Example_Soul_System.md` for complete Soul Relic distribution e
 1. **TaskGuides/CLI_Step_Main.txt** - Main workflow instructions
 2. **Rules/Block_CLI_Operations.txt** - Detailed file operations protocol  
 3. **Examples/CLI_Translation_Guide.md** - How to handle API examples
-4. **Examples/E_CLI_Afterlife_Turns.txt** - Worked Chaos Sea / Shining Abode examples, including Shining core actions and freeform Guardian command examples
-5. **This API Spec** - Complete data structure reference
+4. **OtherGuides/Afterlife_Contract_Matrix.md** - Mandatory Chaos Sea / Shining Abode contract map: scheduler contours, pending files, legal surfaces, receipts, reports, and forbidden substitutions
+5. **Examples/E_CLI_Afterlife_Turns.txt** - Worked Chaos Sea / Shining Abode examples, including Shining core actions and freeform Guardian command examples
+6. **This API Spec** - Complete data structure reference
 
 ### Critical Success Factors
 1. ✅ **Read ALL game rules** (Rules/Block_*.txt) before processing

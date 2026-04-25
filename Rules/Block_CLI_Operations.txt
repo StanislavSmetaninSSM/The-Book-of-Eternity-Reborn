@@ -284,7 +284,7 @@
                     - game_state/control/pending_resident_companion_manifestation_request.json ← MortalWorldProfile-only next-life companion manifestation requests; in Chaos Sea / Shining Abode treat as stale/repair-only context and do not materialize mortal NPCs or encounters
                     - game_state/control/pending_archive_consultation_request.json ← client-authored archive consultation request
                     - game_state/control/pending_archive_project_fuel_request.json ← client-authored archive project fuel request
-                    - game_state/control/pending_shining_abode_actions.json ← client-authored Shining core actions; close through canonical shining_abode_state mutation + shining_abode_state.coreActionReceipts[]; supported actionType values are discover_native_faction, invest_in_faction, complete_project, support_project, unsupport_project, retire_project, open_gates, prepare_incarnation_package, pull_relic_gacha, and forge_relic.* (see Examples/E_CLI_Afterlife_Turns.txt example 14)
+                    - game_state/control/pending_shining_abode_actions.json ← client-authored Shining core actions; close through canonical shining_abode_state mutation + shining_abode_state.coreActionReceipts[]; supported actionType values are discover_native_faction, invest_in_faction, complete_project, support_project, unsupport_project, retire_project, open_gates, prepare_incarnation_package, pull_relic_gacha, and forge_relic.* (see OtherGuides/Afterlife_Contract_Matrix.md and Examples/E_CLI_Afterlife_Turns.txt example 14)
                     - game_state/control/pending_shining_faction_foundings.json ← client-authored Shining founding requests; close through shining_abode_state.factionFoundingReceipts[]
                     - game_state/control/pending_shining_faction_realignments.json ← client-authored Shining realignment requests; close through shining_abode_state.factionRealignmentReceipts[]
                     - game_state/control/pending_shining_faction_leadership_transitions.json ← client-authored Shining leadership transition requests; close through faction leadershipReceipts[] and leadership history
@@ -975,6 +975,7 @@
 
                     **2. Afterlife Living-World Playbook:**
                     Afterlife realms are timeless, but they are not static. Their living world is driven by accepted afterlife turns and bounded catch-up, not by Mortal World minutes.
+                    Before writing any afterlife state, select every active row in `OtherGuides/Afterlife_Contract_Matrix.md`. The matrix is the operational bridge between scheduler debt, pending files, canonical state surfaces, receipts, and forbidden Mortal World substitutions.
 
                     **2.1 What "living world" means in afterlife**
                     Afterlife living-world progression is the same design idea as Mortal World progression: important actors continue to pursue goals even when the player is not directly asking about them. The difference is the allowed substrate:
@@ -996,13 +997,13 @@
                        - `game_state/meta/guardian_abode_residents.json`
                        - `game_state/meta/shining_abode_state.json` when Shining Abode exists or Shining catch-up contours are listed
                        - pending afterlife request files in `game_state/control/`
-                    4. Build the due contour list from `mustEvaluate*` flags and `afterlifeCatchupContours`.
+                    4. Build the due contour list from `mustEvaluate*` flags and `afterlifeCatchupContours`, then match it to the scheduler rows in `OtherGuides/Afterlife_Contract_Matrix.md`.
                     5. Declare actor scope before narration:
                        - Guardians with changed projects, mood, musings, trade, politics, or relationship state
                        - residents with changed thoughts, history, faction alignment, quest/reward state, or interaction receipts
                        - Shining factions/institutions whose leadership, projects, trade, loyalty, gates, or public position changes
                     6. Resolve bounded catch-up first as high-level historical pressure, then resolve ordinary due cycles for the current turn.
-                    7. Write concrete consequences through legal afterlife surfaces.
+                    7. Write concrete consequences through legal afterlife surfaces from the matrix.
                     8. Write exact `progressionProcessingReport`.
 
                     | Contour | What GM simulates | Legal output surfaces | Required report fields |
@@ -1146,7 +1147,7 @@
                     - If `afterlifeCatchupRequired=true`, produce exactly `afterlifeCatchupSummaryEventsRequired` bounded summary outcomes, covering the listed `afterlifeCatchupContours`; do not process raw elapsed cycles one by one.
                     - Each `newLast*Ordinal` advances only its own contour. Do not copy the largest pending backlog into unrelated contour markers.
                     - In `Shining Abode pending-bootstrap handoff mode`, ordinary Shining living-world progression is suppressed; process only the bootstrap lifecycle package.
-                    - For concrete worked examples of Chaos Sea catch-up, ordinary active Shining Abode, and Shining pending-bootstrap handoff, read `Examples/E_CLI_Afterlife_Turns.txt`.
+                    - For exact contract routing, read `OtherGuides/Afterlife_Contract_Matrix.md`; for concrete worked examples of Chaos Sea catch-up, ordinary active Shining Abode, and Shining pending-bootstrap handoff, read `Examples/E_CLI_Afterlife_Turns.txt`.
 
                     **3. Mortal-World NPC-Driven World Evolution:**
                     - Every important NPC has personal goals and plans (Rules/Block_19.E.txt)
