@@ -134,7 +134,7 @@ public partial class CanonicalStateNormalizer
         if (pendingPowerEvents.Count > 0)
             GuardianPowerEventState.ApplyEvents(result, pendingPowerEvents, currentTurn, powerJournalEntries);
 
-        ApplyCurrentGuardianRootAuthoritySurfaces(result, currentRoot);
+        ApplyCurrentGuardianRootAuthoritySurfaces(result, currentRoot, authorizedCreateGuardiansById);
 
         if (result["guardians"] is JsonArray guardians)
         {
@@ -159,12 +159,13 @@ public partial class CanonicalStateNormalizer
 
     private static void ApplyCurrentGuardianRootAuthoritySurfaces(
         JsonObject result,
-        JsonObject? currentRoot)
+        JsonObject? currentRoot,
+        IReadOnlyDictionary<string, JsonObject>? authorizedCreateGuardiansById)
     {
         if (currentRoot == null)
             return;
 
-        ApplyFoundationFormerPatronRootAuthoritySurface(result, currentRoot);
+        ApplyFoundationFormerPatronRootAuthoritySurface(result, currentRoot, authorizedCreateGuardiansById);
 
         if (currentRoot["chaosSeaNavigation"] is JsonObject navigation)
             result["chaosSeaNavigation"] = navigation.DeepClone();
@@ -173,11 +174,15 @@ public partial class CanonicalStateNormalizer
             result[PlayerGuardianFoundationState.HistoryProperty] = foundationHistory.DeepClone();
     }
 
-    private static void ApplyFoundationFormerPatronRootAuthoritySurface(JsonObject result, JsonObject currentRoot)
+    private static void ApplyFoundationFormerPatronRootAuthoritySurface(
+        JsonObject result,
+        JsonObject currentRoot,
+        IReadOnlyDictionary<string, JsonObject>? authorizedCreateGuardiansById)
     {
         if (result["guardians"] is not JsonArray authorityGuardians ||
             currentRoot["guardians"] is not JsonArray currentGuardians ||
-            currentRoot[PlayerGuardianFoundationState.HistoryProperty] is not JsonArray foundationHistory)
+            currentRoot[PlayerGuardianFoundationState.HistoryProperty] is not JsonArray foundationHistory ||
+            authorizedCreateGuardiansById is not { Count: > 0 })
         {
             return;
         }
@@ -185,6 +190,9 @@ public partial class CanonicalStateNormalizer
         var formerPatronGuardianIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var historyEntry in foundationHistory.OfType<JsonObject>())
         {
+            if (!IsAuthorizedFoundationCreateHistoryEntry(historyEntry, authorizedCreateGuardiansById))
+                continue;
+
             var formerPatronGuardianId = GetNodeString(historyEntry["formerPatronGuardianId"]);
             if (!string.IsNullOrWhiteSpace(formerPatronGuardianId))
                 formerPatronGuardianIds.Add(formerPatronGuardianId);
@@ -209,6 +217,43 @@ public partial class CanonicalStateNormalizer
 
             PlayerGuardianFoundationState.ApplyCanonicalFormerPatronSemantics(authorityGuardian);
         }
+    }
+
+    private static bool IsAuthorizedFoundationCreateHistoryEntry(
+        JsonObject historyEntry,
+        IReadOnlyDictionary<string, JsonObject> authorizedCreateGuardiansById)
+    {
+        var guardianId = GetNodeString(historyEntry["guardianId"]);
+        if (string.IsNullOrWhiteSpace(guardianId) ||
+            !authorizedCreateGuardiansById.TryGetValue(guardianId!, out var createdGuardian))
+        {
+            return false;
+        }
+
+        if (!string.Equals(
+                GetNodeString(createdGuardian["originType"]),
+                PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var requestId = GetNodeString(historyEntry["requestId"]);
+        if (!string.IsNullOrWhiteSpace(requestId) &&
+            !string.Equals(
+                GetNodeString(createdGuardian["foundationRequestId"]),
+                requestId,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var formerPatronGuardianId = GetNodeString(historyEntry["formerPatronGuardianId"]);
+        return string.IsNullOrWhiteSpace(formerPatronGuardianId) ||
+               string.Equals(
+                   GetNodeString(createdGuardian["formerPatronGuardianId"]),
+                   formerPatronGuardianId,
+                   StringComparison.OrdinalIgnoreCase);
     }
 
     private static void SyncGuardianAuthorityActiveGuardian(

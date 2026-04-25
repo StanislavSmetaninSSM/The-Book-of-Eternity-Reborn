@@ -3795,8 +3795,8 @@ public partial class ValidationService
         GuardianGachaChargeRules.NormalizeGuardianGachaState(parsedMaterializedGuardian);
         GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(parsedMaterializedGuardian);
         materializedGuardian = parsedMaterializedGuardian;
-        if (hasStrictCurrentAuthorityRoot &&
-            !JsonNode.DeepEquals(authorityGuardian, materializedGuardian))
+        if (TryBuildAuthorizedFoundationCreateGuardian(context, guardianId, out var authorizedCreateGuardian) &&
+            !JsonNode.DeepEquals(authorizedCreateGuardian, materializedGuardian))
         {
             actual = $"guardian {guardianId} materialized state diverges from authority-backed create surface";
             return false;
@@ -3808,6 +3808,27 @@ public partial class ValidationService
             return false;
         }
 
+        return true;
+    }
+
+    private static bool TryBuildAuthorizedFoundationCreateGuardian(
+        GuardianPolicyContext context,
+        string guardianId,
+        out JsonObject guardian)
+    {
+        guardian = null!;
+        if (string.IsNullOrWhiteSpace(guardianId) ||
+            !context.AuthorizedSameTurnCreateGuardiansById.TryGetValue(guardianId, out var createGuardianElement) ||
+            createGuardianElement.ValueKind != JsonValueKind.Object ||
+            JsonNode.Parse(createGuardianElement.GetRawText()) is not JsonObject parsedGuardian)
+        {
+            return false;
+        }
+
+        AbodePowerRules.EnsureCanonicalState(parsedGuardian);
+        GuardianGachaChargeRules.NormalizeGuardianGachaState(parsedGuardian);
+        GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(parsedGuardian);
+        guardian = parsedGuardian;
         return true;
     }
 
