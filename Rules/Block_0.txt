@@ -249,7 +249,7 @@
                         - Shining Abode civic systems — when currentRealm is "Shining Abode", process halls, gates, radiance, Light Sparks, Shining factions, leadership, trade, public mood, and resident alignment through Shining-specific state only
 
                         - Afterlife / Chaos-Sea / Shining-Abode Ink Feather whitelist:
-                          Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING
+                          Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers
 
                         ❌ COMPLETELY DISABLED IN AFTERLIFE REALMS:
                         - Combat system (Block 6) — NO COMBAT in afterlife realms. Period.

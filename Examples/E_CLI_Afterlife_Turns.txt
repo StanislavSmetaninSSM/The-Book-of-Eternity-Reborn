@@ -24,7 +24,7 @@ Use this index before resolving an afterlife turn:
 - `pending_archive_consultation_request.json` / `pending_archive_project_fuel_request.json`: see example 5.
 - Ordinary Chaos Sea `TriggerIncarnation`: see example 6.
 - Direct Chaos Sea `/gacha` and guardian-mediated gacha: see example 7.
-- `[INK_FEATHER_ACTION: ABODE_OFFERING]`: see example 8 and `Examples/E_CLI_Ink_Feather_Actions.txt`.
+- `[INK_FEATHER_ACTION: ABODE_OFFERING]` for `offeringType = ink_feathers` only: see example 8 and `Examples/E_CLI_Ink_Feather_Actions.txt`.
 - Shining faction founding / realignment / leadership pending files: see example 9.
 
 ==================================================
@@ -1437,6 +1437,7 @@ Scenario:
 - Realm is `Chaos Sea` or `Shining Abode`.
 - Player action contains `[INK_FEATHER_ACTION: ABODE_OFFERING]`.
 - `game_state/control/pending_abode_offering.json` exists and targets a specific Guardian and return cycle.
+- This example is only for `offeringType = ink_feathers`; non-feather offerings use plain `[ABODE_OFFERING]`.
 - The GM must also read `Examples/E_CLI_Ink_Feather_Actions.txt`, section `VALID — ABODE_OFFERING`.
 
 Input fragment:
@@ -1488,7 +1489,7 @@ Correct response/output fragment:
 }
 ```
 
-Required `output/ink_feather_action_result.json`:
+Required `output/ink_feather_action_result.json` because this pending offering has `offeringType = ink_feathers`:
 
 ```json
 {
@@ -1519,6 +1520,7 @@ Forbidden:
 - Ignoring `pending_abode_offering.json`.
 - Using another Guardian or another return cycle.
 - Writing only narrative without `guardianPowerEvents.reasonType = offering`.
+- Writing `output/ink_feather_action_result.json` for non-feather offerings such as `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`.
 
 ==================================================
 9. VALID — SHINING FACTION FOUNDING, REALIGNMENT, LEADERSHIP

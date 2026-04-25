@@ -619,7 +619,7 @@ Quest state contract notes:
 - `game_state/meta/achievements.json` ← `achievementUnlocks`
 
 #### **AFTERLIFE CONTROL / REQUEST FILES**
-- `game_state/control/pending_abode_offering.json` ← client-authored Abode offering request; GM reads it as input only and resolves through `guardianPowerEvents.reasonType = offering` plus `output/ink_feather_action_result.json`.
+- `game_state/control/pending_abode_offering.json` ← client-authored Abode offering request; GM reads it as input only and always resolves through `guardianPowerEvents.reasonType = offering`. Only `offeringType = ink_feathers` is also `[INK_FEATHER_ACTION: ABODE_OFFERING]` and requires `output/ink_feather_action_result.json`; `soul_relic`, `archive_lore_fragment`, and `archive_secret_record` use plain `[ABODE_OFFERING]` and must not write an Ink Feather receipt.
 - `game_state/control/pending_guardian_trade_request.json` ← client-authored Guardian trade inventory request; close with `UpdateGuardianTradeInventoryReceipts`.
 - `game_state/control/pending_guardian_abode_residents_request.json` ← client-authored resident roster requests; close with `UpdateGuardianAbodeResidentRosterReceipts`.
 - `game_state/control/pending_guardian_abode_resident_interactions.json` ← client-authored resident talk/history requests; close with `UpdateGuardianAbodeResidentInteractionReceipts` plus resident logs/history when accepted.
@@ -795,11 +795,12 @@ The following spending-based Ink Feather actions are explicitly allowed in after
 - `Guardian Favor`
 - `Memory Gates`
 - `Soul Imprint`
-- `ABODE_OFFERING`
+- `ABODE_OFFERING` only when `game_state/control/pending_abode_offering.json.offeringType = ink_feathers`
 
 These exceptions do NOT unlock Mortal-World-only mechanics such as combat, XP leveling, regular inventory changes, or regular NPC quest/world systems.
 The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
-- `ABODE_OFFERING` is valid only with the matching client-authored `game_state/control/pending_abode_offering.json`; GM reads that file as input, resolves through `guardianPowerEvents` with `reasonType = offering`, and writes `output/ink_feather_action_result.json` with `actionTag = ABODE_OFFERING`.
+- Ink Feather `ABODE_OFFERING` is valid only with the matching client-authored `game_state/control/pending_abode_offering.json` where `offeringType = ink_feathers`; GM reads that file as input, resolves through `guardianPowerEvents` with `reasonType = offering`, and writes `output/ink_feather_action_result.json` with `actionTag = ABODE_OFFERING`.
+- If `pending_abode_offering.json.offeringType` is `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`, process it as plain `[ABODE_OFFERING]`: resolve through `guardianPowerEvents.reasonType = offering` only, do not invent `costInFeathers`, and do not write `output/ink_feather_action_result.json`.
 - `Sell Relic` is a separate guardian trade interaction and is NOT part of the Ink Feather action contract.
 - Local guardian trade panel (`Buy / Sell` Soul Relics with the current active Guardian) is handled entirely on the client side.
 - It does NOT create `turn_request.json`, does NOT require `ink_feather_action_result.json`, and is separate from roleplay trade through the GM.

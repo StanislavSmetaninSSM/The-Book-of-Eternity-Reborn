@@ -95,7 +95,8 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 - Этот запрет относится к смертным world/faction/location/NPC channels. Он не отменяет afterlife living-world scheduler: если `progressionControl.mustEvaluate* = true`, ГМ обязан обработать afterlife-контуры через Guardian/Abode/Soul/Shining-specific surfaces и `progressionProcessingReport`.
 - В `Mortal World` запрещены: `UpdateGuardians`, Guardian-specific reputation/project/musings/lore commands, Abode navigation data, Soul Relic Gacha processing, afterlife-only spending of Ink Feathers.
 - В `Mortal World` разрешены только explicit Ink Feather exceptions: `Reveal Fate`, `Rewrite Fate`, `Sacrifice to Chaos`, `Absorb Feathers`, `Learn Skill`, `Fate Shield`, `Seal in Ink`.
-- В `Chaos Sea` и `Shining Abode` разрешены только explicit afterlife Ink Feather exceptions: `Donate to Guardian`, `Cultivate Enlightenment`, `Guardian Favor`, `Memory Gates`, `Soul Imprint`, `ABODE_OFFERING`.
+- В `Chaos Sea` и `Shining Abode` разрешены только explicit afterlife Ink Feather exceptions: `Donate to Guardian`, `Cultivate Enlightenment`, `Guardian Favor`, `Memory Gates`, `Soul Imprint`, `ABODE_OFFERING` only when `pending_abode_offering.json.offeringType = ink_feathers`.
+- Non-feather Abode offerings (`soul_relic`, `archive_lore_fragment`, `archive_secret_record`) are plain `[ABODE_OFFERING]` contracts: close them through `guardianPowerEvents.reasonType = offering`, do not write `output/ink_feather_action_result.json`.
 - Эти два Ink Feather whitelist-а взаимоисключающие.
 - Для любого GM-side `[INK_FEATHER_ACTION: TAG]` GM ОБЯЗАН записать `output/ink_feather_action_result.json` с exact `sessionId/requestId/turnNumber`, `actionTag`, `resolved = true`, `costInFeathers`, `resolutionType`, `summary`, `stateEvidence`.
 - `stateEvidence` MUST include `affectedFiles` and action-specific proof of реального stateful результата. Narrative alone is not sufficient.
