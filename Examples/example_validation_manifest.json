@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "syntaxExemptions": [
+    {
+      "file": "E_Block_10.txt",
+      "line": 181,
+      "reason": "Legacy educational block contains multiple standalone JSON objects in one snippet."
+    },
+    {
+      "file": "E_Block_10.txt",
+      "line": 461,
+      "reason": "Legacy educational block lists alternative property fragments, not one JSON document."
+    },
+    {
+      "file": "E_Block_10.txt",
+      "line": 578,
+      "reason": "Legacy educational block contains several separate examples in one snippet."
+    },
+    {
+      "file": "E_Block_10.txt",
+      "line": 999,
+      "reason": "Legacy educational block lists alternative item slot fragments, not one JSON document."
+    },
+    {
+      "file": "E_Block_19.A.txt",
+      "line": 100,
+      "reason": "Legacy invalid-pattern block uses ellipsis and partial fragments."
+    },
+    {
+      "file": "E_Block_19.A.txt",
+      "line": 131,
+      "reason": "Legacy educational block uses ellipsis and partial fragments."
+    },
+    {
+      "file": "E_Block_19.A.txt",
+      "line": 157,
+      "reason": "Legacy invalid-pattern block uses ellipsis and partial fragments."
+    },
+    {
+      "file": "E_Block_19.A.txt",
+      "line": 210,
+      "reason": "Legacy invalid-pattern block uses ellipsis and partial fragments."
+    },
+    {
+      "file": "E_Block_19.txt",
+      "line": 158,
+      "reason": "Legacy prose/content field fragment is not intended as a standalone JSON document."
+    },
+    {
+      "file": "E_Block_19.txt",
+      "line": 460,
+      "reason": "Legacy prose/content field fragment is not intended as a standalone JSON document."
+    },
+    {
+      "file": "E_Block_19.txt",
+      "line": 475,
+      "reason": "Legacy prose/content field fragment is not intended as a standalone JSON document."
+    },
+    {
+      "file": "E_Block_19.txt",
+      "line": 502,
+      "reason": "Legacy prose/content field fragment is not intended as a standalone JSON document."
+    },
+    {
+      "file": "E_Block_19.txt",
+      "line": 517,
+      "reason": "Legacy prose/content field fragment is not intended as a standalone JSON document."
+    },
+    {
+      "file": "E_Block_2.txt",
+      "line": 17,
+      "reason": "Legacy invalid quoting example intentionally demonstrates broken JSON string escaping."
+    },
+    {
+      "file": "E_Block_20.txt",
+      "line": 369,
+      "reason": "Legacy educational block uses comments and placeholder fragments."
+    },
+    {
+      "file": "E_Block_20.txt",
+      "line": 395,
+      "reason": "Legacy educational block uses comments and placeholder fragments."
+    },
+    {
+      "file": "E_Block_5.txt",
+      "line": 2593,
+      "reason": "Legacy NPC creation fragment uses ellipsis and is not a standalone JSON document."
+    },
+    {
+      "file": "E_Block_5.txt",
+      "line": 2611,
+      "reason": "Legacy NPC update fragment uses ellipsis and is not a standalone JSON document."
+    }
+  ],
+  "shapeExemptions": [
+    {
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "line": 3839,
+      "requiredText": [
+        "game_state/meta/shining_abode_state.json patch"
+      ],
+      "reason": "This block is explicitly documented as a state-patch view, not a real GameResponse payload."
+    }
+  ],
+  "runtimeScenarios": [
+    {
+      "id": "cli_translation_simple_player_status_response",
+      "file": "CLI_Translation_Guide.md",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "Вы чувствуете магию перчаток",
+        "\"playerStatus\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/core/player_status.json"
+      ]
+    },
+    {
+      "id": "soul_system_trigger_life_end_response",
+      "file": "CLI_Example_Soul_System.md",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "Алдрик опускает меч",
+        "\"TriggerLifeEnd\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/soul_state.json",
+        "game_state/control/life_transitions.json"
+      ]
+    },
+    {
+      "id": "afterlife_shining_pending_bootstrap_trigger_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "Сияющая Обитель удерживает уже выбранный узор",
+        "\"source\": \"shining_prepared_package\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/control/incarnation_trigger.json"
+      ]
+    }
+  ]
+}
