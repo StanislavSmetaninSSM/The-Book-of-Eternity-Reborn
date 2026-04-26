@@ -16,6 +16,17 @@ The GM does not need to read client code. Use this matrix to decide which afterl
 - Do not write `game_state/control/afterlife_notifications.json`; the client derives notifications from canonical state and receipts.
 - Do not satisfy afterlife meaning through Mortal World channels: `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, `worldEventsLog`, `factionDataChanges`, `factionProjectUpdates`, `completeFactionProjects`, `factionChronicleUpdates`, `currentLocationData`, `worldMapUpdates`, `timeChange`, `setWorldTime`, `weatherChange`, combat fields, XP, skills, money, health, poise, or regular inventory.
 
+## GM Decision Loop
+
+Use this loop for every `Chaos Sea` / `Shining Abode` turn before writing files:
+
+1. Classify the realm mode. If this is Shining pending-bootstrap handoff, stop ordinary afterlife processing and preserve `preparedIncarnationPackage`.
+2. Read `progressionControl` and list every due contour, expected count, catch-up pressure tier, and catch-up contour.
+3. Read all afterlife pending files. Each present pending file activates one row in this matrix and must close through the exact state surface and receipt listed here.
+4. Resolve in order: bounded catch-up summary outcomes first, ordinary due cycles second, pending contracts and direct player action third.
+5. Write only afterlife state surfaces plus exact receipts/reports. If a due contour produces no state mutation, record the reason in `gm_thoughts_markdown` and still report the processed cycle.
+6. Audit the response for forbidden Mortal World substitutions, missing actor scope, missing receipts, stale gates, and package mutation before terminal completion.
+
 ## Realm Mode Matrix
 
 | Mode | When active | What GM may process | What GM must suppress |
@@ -39,6 +50,16 @@ Each due contour is mandatory. If the correct outcome is stability/no mutation, 
 | Bounded afterlife catch-up | `afterlifeCatchupRequired=true` | All state for contours listed in `afterlifeCatchupContours[]` | Exactly `afterlifeCatchupSummaryEventsRequired` high-level summary outcomes across listed contours | `afterlifeCatchupProcessed=true`, `afterlifeCatchupSummaryEventsProcessed` equal to required count, plus per-contour fields for processed contours | 1, 2 |
 
 Scheduler report rule: each `newLast*Ordinal` belongs only to its own contour. Do not advance Guardian, resident, Shining faction, or trade markers by the largest backlog from another contour.
+
+## Living-World Outcome Selection
+
+- Chaos Sea hub cycles answer what the Sea itself did while the player focused elsewhere: soul-current pressure, Abode omens, Guardian politics, relic/archive currents, or metaphysical hazards. If nothing changes, explain the stable equilibrium and still process the contour.
+- Guardian project cycles answer which Guardian plan advanced, stalled, stabilized, created pressure, relieved pressure, or produced a musing/lore/power consequence. Use project surfaces and Guardian journals, not NPC activity.
+- Resident agency cycles answer which resident thought, remembered, requested, withdrew, helped, realigned, transferred, unlocked history, linked a Soul Quest, or granted a relic. Residents are authored afterlife actors and must not freeze between player visits.
+- Shining Abode cycles answer which hall, gate draft, public ritual, Radiance pressure, Light Spark context, civic order, or Abode-wide tension changed. If a Shining mutation invalidates gate inputs, mark open gates stale.
+- Shining faction cycles answer which institution changed strength, support, leadership, claims, loyalty, resident alignment, unrest, alliance, or project pressure. Use Shining faction state, not Mortal faction files.
+- Shining trade cycles answer which faction trade inventory, rarity ceiling, service multiplier, sold-out state, or availability changed. Use Shining trade receipts and canonical inventories.
+- Catch-up cycles are never simulated one by one. Produce exactly the requested number of summary outcomes and map each summary to the affected `afterlifeCatchupContours`.
 
 ## Pending Contract Matrix
 
@@ -67,22 +88,22 @@ All rows below use `pending_shining_abode_actions.json` as input and close throu
 
 If a Shining core action mutates the faction/project inputs used by the blessing-card gates draft (`invest_in_faction`, `complete_project`, `support_project`, `unsupport_project`, or `retire_project`) and the pre-turn state has `gates.hasOpenDraft = true`, preserve the canonical `gates` object and set `gates.isStale = true`. A stale draft cannot be used for `prepare_incarnation_package`; the player must regenerate it through `open_gates`.
 
-| `actionType` | GM state responsibility | Required caution |
-|---|---|---|
-| `discover_native_faction` | Materialize the discovered Shining faction/institution and receipt | The discovered faction must be Shining state, not Mortal World faction state |
-| `invest_in_faction` | Apply faction strength/support effects and receipt | Costs/effects must match the client-authored pending request; if gates are open, mark `gates.isStale = true` |
-| `complete_project` | Move the Shining project to completed/result state and receipt | Project-sourced effects must come from a project actually present in pre-turn Shining state; if gates are open, mark `gates.isStale = true` |
-| `support_project` | Toggle support state and receipt | Support/unsupport toggles have quoted Light Sparks cost `0`; do not spend Light Sparks; if gates are open, mark `gates.isStale = true` |
-| `unsupport_project` | Toggle support off and receipt | Same zero-cost rule as `support_project`; if gates are open, mark `gates.isStale = true` |
-| `retire_project` | Move eligible project out of active rotation and receipt | Do not delete unrelated project history; if gates are open, mark `gates.isStale = true` |
-| `open_gates` | Update the canonical Shining gates blessing-card draft container and receipt | `gates` is not a custom gate registry; use the canonical draft state such as draft version/open/stale/card selection fields |
-| `prepare_incarnation_package` | Persist `preparedIncarnationPackage` and receipt with frozen selected card snapshot | Package uses `selectedCardIds`, `selectedCards`, `generatedFromDraftVersion`, `preparedAtTurn`, `preparedAtUtc`; do not use `packageId`, `createdAt*`, or `sourceDraftVersion` |
-| `pull_relic_gacha` | Add/result a Shining relic pull through Shining state and receipt | This is not direct Chaos Sea `/gacha` and not Guardian-mediated `UpdateGuardians.processGacha` |
-| `forge_relic.reshape` | Apply supported forge reshape result and receipt | Keep target relic and property identity aligned with request |
-| `forge_relic.retune_property` | Apply property retune and receipt | Keep target property index/id aligned with request |
-| `forge_relic.strengthen_band` | Apply strength band increase and receipt | Do not exceed the request-authorized outcome |
-| `forge_relic.stabilize_echo` | Apply echo stabilization and receipt | Do not invent unrelated relic effects |
-| `forge_relic.uplift_rarity` | Apply rarity uplift and receipt | Resulting rarity must be supported by Shining forge contract |
+| `actionType` | GM state responsibility | Receipt must identify | Required caution |
+|---|---|---|---|
+| `discover_native_faction` | Materialize a hall, native Shining faction, 2..4 ascended residents, 2 seeded completed projects, Radiance XP, exact costs | `hallId`, `resolvedFactionId`, `newResidentIds[]`, `seededProjectIds[]` | The discovered faction must be Shining state, not Mortal World faction state |
+| `invest_in_faction` | Spend exact costs, increment faction investment, recompute strength, mark gates stale when open | `factionId` | Costs/effects must match the client-authored pending request |
+| `complete_project` | Spend exact costs, append one completed project from request draft, update Radiance/faction strength, mark gates stale when open | `factionId`, completed `projectId` | Project result must come from request `projectDraft`; do not invent unrelated projects |
+| `support_project` | Set an existing completed project supported and mark gates stale when open | `factionId`, `projectId` | Support has quoted Light Sparks cost `0`; do not spend Light Sparks |
+| `unsupport_project` | Set an existing supported project unsupported and mark gates stale when open | `factionId`, `projectId` | Same zero-cost rule as `support_project` |
+| `retire_project` | Mark eligible completed project retired, clear support, recompute strength, mark gates stale when open | `factionId`, `projectId` | Do not delete unrelated project history |
+| `open_gates` | Rebuild canonical blessing-card draft from current Shining state | `generatedDraftVersion` | `gates` is not a custom registry; use draft/open/stale/card-selection fields |
+| `prepare_incarnation_package` | Persist frozen package and clean gates as canonical helper projects | `selectedCardIds[]`, `selectedCards[]`, `generatedDraftVersion` | Do not trigger incarnation in the same turn; package uses `generatedFromDraftVersion`, `preparedAtTurn`, `preparedAtUtc` |
+| `pull_relic_gacha` | Spend exact feathers, add one Soul Relic, update Shining gacha charges/history | `factionId`, `returnCycleId`, `relicId`, `relicName`, `baseRarity`, `finalRarity` | This is not direct Chaos Sea `/gacha` and not Guardian-mediated `UpdateGuardians.processGacha` |
+| `forge_relic.reshape` | Spend exact forge costs and change the canonical Soul Relic form tag | `factionId`, `relicId`, `targetFormTag` | Keep target relic identity aligned with request |
+| `forge_relic.retune_property` | Spend exact forge costs and replace one canonical relic property | `factionId`, `relicId`, `propertyIndex` | Replacement property must be request-compatible |
+| `forge_relic.strengthen_band` | Spend exact forge costs and upgrade one property band by the allowed step | `factionId`, `relicId`, `propertyIndex` | Do not exceed request-authorized outcome |
+| `forge_relic.stabilize_echo` | Spend exact forge costs and improve companion echo/manifestation quality on the target relic | `factionId`, `relicId` | Do not invent unrelated relic effects |
+| `forge_relic.uplift_rarity` | Spend exact forge costs, uplift rarity, append required added properties if needed | `factionId`, `relicId` | Resulting rarity and added properties must match Shining forge contract |
 
 ## Lifecycle And Direct Action Matrix
 
@@ -129,3 +150,4 @@ If a Shining core action mutates the faction/project inputs used by the blessing
 | Combined Chaos Sea scheduler + offering + action | 16 |
 | Combined active Shining scheduler + core action + trade | 17 |
 | Prepare package now, bootstrap later | 18 |
+| Ordinary Chaos Sea living world without pending files | 19 |

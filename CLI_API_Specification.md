@@ -120,7 +120,7 @@ The GM must treat every `mustEvaluate* = true` field as mandatory processing deb
 
 Afterlife realms use the same "living world" principle as Mortal World progression: off-screen actors continue to act. The difference is that afterlife progression must stay inside afterlife state and commands.
 
-For every `Chaos Sea` / `Shining Abode` turn, the GM must use `OtherGuides/Afterlife_Contract_Matrix.md` as the operational contract map before writing files. The matrix lists each scheduler contour, pending request file, direct afterlife action, canonical state surface, required receipt/report, and forbidden Mortal World substitution.
+For every `Chaos Sea` / `Shining Abode` turn, the GM must use `OtherGuides/Afterlife_Contract_Matrix.md` as the operational contract map before writing files. The matrix lists the decision loop, each scheduler contour, pending request file, direct afterlife action, canonical state surface, required receipt/report, living-world outcome selection, and forbidden Mortal World substitution.
 
 The GM must read these state groups before resolving afterlife scheduler debt:
 - `game_state/meta/soul_state.json`: current realm, Soul Relics, Enlightenment, Ink Feathers, afterlife archive, current incarnation metadata.
