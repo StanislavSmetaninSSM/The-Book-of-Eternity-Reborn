@@ -136,8 +136,171 @@
         "Сияющая Обитель удерживает уже выбранный узор",
         "\"source\": \"shining_prepared_package\""
       ],
+      "preStateFiles": [
+        {
+          "path": "game_state/meta/shining_abode_state.json",
+          "content": {
+            "preparedIncarnationPackage": {
+              "selectedCardIds": [
+                "card:shine_faction_glass_light_001:head:player_soul:route:rare"
+              ],
+              "selectedCards": [
+                {
+                  "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+                  "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+                  "sourceType": "head",
+                  "sourceFactionId": "shine_faction_glass_light_001",
+                  "sourceFactionName": "Орден Стеклянного Света",
+                  "sourceActorId": "player_soul",
+                  "sourceActorName": "player_soul",
+                  "effectFamily": "route",
+                  "rarity": "rare",
+                  "displayName": "Дар фракции «Орден Стеклянного Света»",
+                  "displaySummary": "Откроет 1 ранний route option к 6 ходу.",
+                  "effectPayload": {
+                    "type": "seed_early_routes",
+                    "routeOptions": 1,
+                    "latestTurn": 6
+                  }
+                }
+              ],
+              "generatedFromDraftVersion": 7,
+              "preparedAtTurn": 411,
+              "preparedAtUtc": "2026-04-24T16:20:00Z"
+            },
+            "coreActionReceipts": [],
+            "gates": {
+              "draftVersion": 7,
+              "hasOpenDraft": false,
+              "isStale": false,
+              "availableBlessingCards": [],
+              "selectedBlessingCardIds": []
+            }
+          }
+        }
+      ],
       "expectedModifiedFiles": [
         "game_state/control/incarnation_trigger.json"
+      ],
+      "expectedFilesAbsent": [
+        "game_state/control/progression_report.json"
+      ],
+      "expectedFilesUnchanged": [
+        "game_state/meta/shining_abode_state.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/control/incarnation_trigger.json",
+          "requiredText": [
+            "\"source\": \"shining_prepared_package\""
+          ]
+        }
+      ],
+      "expectedFileDoesNotContain": [
+        {
+          "path": "game_state/control/incarnation_trigger.json",
+          "forbiddenText": [
+            "preparedIncarnationPackage",
+            "preparedIncarnationPackageId"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_abode_offering_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "\"guardianPowerEvents\"",
+        "abode_offering_azalia_return_5"
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardians.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardians.json",
+          "requiredText": [
+            "\"reasonType\": \"offering\"",
+            "\"sourceSurface\": \"guardianAbodeOffering\"",
+            "\"delta\": 2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_combined_chaos_scheduler_offering_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "afterlife_session_combo_401",
+        "\"guardianProjectUpdates\"",
+        "\"newLastChaosSeaSimulationOrdinal\": 44"
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardian_projects.json",
+        "game_state/meta/guardian_abode_residents.json",
+        "game_state/meta/guardians.json",
+        "game_state/control/progression_report.json"
+      ],
+      "expectedFilesUnchanged": [
+        "game_state/world/world_time.json",
+        "game_state/world/current_location.json",
+        "game_state/world/world_events.json",
+        "game_state/npcs/npc_core.json",
+        "game_state/factions/faction_core.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/control/progression_report.json",
+          "requiredText": [
+            "\"sessionId\": \"afterlife_session_combo_401\"",
+            "\"newLastChaosSeaSimulationOrdinal\": 44",
+            "\"newLastGuardianProjectCycleOrdinal\": 25",
+            "\"newLastResidentAgencyCycleOrdinal\": 19"
+          ]
+        },
+        {
+          "path": "game_state/meta/guardians.json",
+          "requiredText": [
+            "\"sourceSurface\": \"guardianAbodeOffering\"",
+            "\"returnCycleId\": \"return_8\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_ordinary_chaos_living_world_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "session_afterlife_019",
+        "\"guardianThoughtJournalUpdates\"",
+        "\"newLastChaosSeaSimulationOrdinal\": 38"
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardian_thought_journal.json",
+        "game_state/meta/guardian_projects.json",
+        "game_state/meta/guardian_abode_residents.json",
+        "game_state/control/progression_report.json"
+      ],
+      "expectedFilesUnchanged": [
+        "game_state/world/world_time.json",
+        "game_state/world/current_location.json",
+        "game_state/world/world_events.json",
+        "game_state/npcs/npc_core.json",
+        "game_state/factions/faction_core.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/control/progression_report.json",
+          "requiredText": [
+            "\"sessionId\": \"session_afterlife_019\"",
+            "\"newLastChaosSeaSimulationOrdinal\": 38",
+            "\"newLastGuardianProjectCycleOrdinal\": 22",
+            "\"newLastResidentAgencyCycleOrdinal\": 15"
+          ]
+        }
       ]
     }
   ]
