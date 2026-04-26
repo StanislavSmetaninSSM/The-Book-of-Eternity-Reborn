@@ -6,10 +6,11 @@ This file supplements:
 - Rules/Block_0.txt
 - Rules/Block_CLI_Operations.txt
 - CLI_API_Specification.md
+- OtherGuides/Afterlife_Contract_Matrix.md
 
 Read this file whenever `game_state/meta/soul_state.json.currentRealm` is `Chaos Sea`, `Море Хаоса`, `Shining Abode`, or `Сияющая Обитель`.
 
-The examples are intentionally operational. They show what the GM must decide, what must be written, and what must NOT be written. They are not a replacement for the full schemas.
+Before using an example, first select the matching rows in `OtherGuides/Afterlife_Contract_Matrix.md`. The matrix tells the GM which scheduler contour, pending file, direct action, canonical output surface, receipt/report, and forbidden substitution apply. These examples then show worked accepted-turn patterns. They are not a replacement for the full schemas.
 
 ==================================================
 EXAMPLE INDEX
@@ -17,6 +18,7 @@ EXAMPLE INDEX
 
 Use this index before resolving an afterlife turn:
 
+- Contract routing for all rows below: read `OtherGuides/Afterlife_Contract_Matrix.md` first.
 - Scheduler / catch-up / resident history in Chaos Sea: see example 1.
 - Active Shining core action + faction/trade/resident living world: see example 2.
 - Shining pending-bootstrap `TriggerIncarnation`: see example 3.
@@ -32,6 +34,9 @@ Use this index before resolving an afterlife turn:
 - `pending_player_guardian_foundation.json`: see example 13.
 - All `pending_shining_abode_actions.json.actionType` variants: see example 14.
 - Freeform afterlife `UpdateGuardians` commands outside strict pending files: see example 15.
+- Combined Chaos Sea scheduler + pending contract + player action: see example 16.
+- Combined active Shining scheduler + core action + trade/resident consequence: see example 17.
+- `prepare_incarnation_package` vs later Shining bootstrap handoff: see example 18.
 
 ==================================================
 GLOBAL AFTERLIFE TURN RULE
@@ -81,6 +86,20 @@ Every accepted afterlife turn must follow this order:
 10. Final audit:
    - Remove stale Mortal World outputs.
    - Do not author `afterlife_notifications.json`; the client derives it from canonical receipts/state.
+
+==================================================
+COMBINED TURN DECISION TREE
+==================================================
+
+Use this decision tree when one turn contains several obligations at once: scheduler debt, catch-up, pending files, and a player action.
+
+1. If `currentRealm = "Shining Abode"` and `preparedIncarnationPackage != null`, stop ordinary afterlife processing and use pending-bootstrap handoff rules only.
+2. Otherwise, read `progressionControl` before selecting the scene. Record every due contour and every `afterlifeCatchupContours[]` value in `gm_thoughts_markdown`.
+3. Read all pending afterlife control files before narration. A pending contract is not optional flavor; it must close through its exact canonical receipt/state surface.
+4. Declare all changed Guardians, residents, Shining factions, gates, halls, and institutions in actor scope. Do not declare a non-actor environment as a relevant actor unless it has a matching reasoning block.
+5. Resolve bounded catch-up first, then ordinary scheduler cycles, then pending contracts / direct player action. When a pending file is the client-authored mechanical form of the player action, close that contract as the action resolution and explain the ordering in reasoning.
+6. Write only afterlife surfaces and exact receipts. Do not use Mortal World `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `setWorldTime`, or `weatherChange`.
+7. Finish with `progressionProcessingReport` when any afterlife cycle was due. Every processed contour uses its own count and own `newLast*Ordinal`; never copy the largest backlog marker to unrelated contours.
 
 ==================================================
 1. VALID — CHAOS SEA WITH CATCH-UP, GUARDIAN PROJECT, RESIDENT REQUEST
@@ -3296,6 +3315,709 @@ Invalid Guardian command shortcuts:
 - `processGacha` when the Guardian has no remaining charge this return.
 - `unlockLore` with arbitrary text instead of a full `loreFragment` object.
 - `setMood` without `current`, `intensity`, `reason`, and `since`.
+
+==================================================
+16. VALID — COMBINED CHAOS SEA SCHEDULER + OFFERING + PLAYER ACTION
+==================================================
+
+Scenario:
+- Realm is ordinary `Chaos Sea`.
+- The player action is an Ink Feather Abode offering.
+- `progressionControl` also requires Chaos Sea hub, Guardian project, and resident agency cycles.
+- There is no Shining state involved in this turn.
+
+Input summary:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "afterlife_session_combo_401",
+    "requestId": "afterlife_turn_combo_401",
+    "turnNumber": 401,
+    "playerAction": "[INK_FEATHER_ACTION: ABODE_OFFERING] Я отдаю 100 Чернильных Перьев Обители Азалии.",
+    "progressionControl": {
+      "chaosSeaCyclesExpectedThisTurn": 1,
+      "guardianProjectCyclesExpectedThisTurn": 1,
+      "residentAgencyCyclesExpectedThisTurn": 1,
+      "nextChaosSeaTurnOrdinal": 44,
+      "nextGuardianProjectCycleOrdinal": 25,
+      "nextResidentAgencyCycleOrdinal": 19,
+      "mustEvaluateChaosSeaProgression": true,
+      "mustEvaluateGuardianProjectProgression": true,
+      "mustEvaluateResidentAgencyProgression": true,
+      "afterlifeCatchupRequired": false
+    }
+  },
+  "pending_abode_offering.json": {
+    "guardianId": "guard_social_azalia_001",
+    "guardianName": "Азалия",
+    "abodeId": "abode_azalia_memory_silk_001",
+    "offeringType": "ink_feathers",
+    "inkFeathersOffered": 100,
+    "returnCycleId": "return_8",
+    "createdAtUtc": "2026-04-24T15:00:00Z"
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Охват NPC-анализа
+- Режим: Mixed
+- Afterlife subtype: Chaos Sea afterlife combined turn.
+- Релевантные акторы: Азалия, Лиора
+- Почему они релевантны: Азалия получает offering и её проект получает due cycle; Лиора получает resident agency cycle.
+- Акторы вне охвата: Элиан, другие резиденты, Shining factions
+- Почему они вне охвата: этот ход не меняет их projects, receipts, faction state or resident memory.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: Душа приносит offering, а scheduler одновременно требует один проектный цикл.
+- Мысли: Азалия принимает offering как укрепление Обители, но не превращает его в mortal-world награду.
+- Действия: Азалия усиливает Обитель через guardianPowerEvents и продвигает текущий проект через guardianProjectUpdates.
+
+## Resident Thoughts
+### Лиора
+- Ситуация: В Обители стало спокойнее после offering, и у Лиоры есть due resident agency.
+- Мысли: Лиора решает зафиксировать новую осторожную надежду, но не раскрывает историю без pending history request.
+- Действия: Лиора получает thought journal entry; resident cycle считается обработанным без talk/history receipt.
+
+## Afterlife Living World / Живой мир Посмертия
+- Chaos Sea hub cycle: течение душ вокруг Обители стабилизируется после offering; это отражено в response, не в worldEventsLog.
+- Guardian project cycle: один цикл Азалии продвинут в project tracker.
+- Resident agency cycle: Лиора действует через residentThoughtJournalUpdates.
+- No Shining contours are due.
+```
+
+Correct response/state fragment:
+
+```json
+{
+  "response": "Море Хаоса не считает подношение отдельной сценой от жизни Обители. Чернильные Перья растворяются в шёлковых стенах Азалии, и вокруг её зала стихает давний шум чужих воспоминаний. Лиора впервые смотрит на этот покой не как на клетку, а как на возможность дождаться следующего честного разговора.",
+  "gm_thoughts_markdown": "<see reasoning above>",
+  "guardianProjectUpdates": [
+    {
+      "projectId": "gproj_azalia_memory_silk_001",
+      "guardianId": "guard_social_azalia_001",
+      "activeState": "active",
+      "workDone": 72,
+      "currentStage": 3,
+      "pressure": 1,
+      "stability": 79,
+      "assistAudit": {
+        "DomainRelevance": 2,
+        "RiskOrCost": 1,
+        "ScarcityOrUniqueness": 1,
+        "DirectProjectImpact": 2,
+        "assistScore": 6,
+        "classification": "meaningful assist",
+        "reason": "offering strengthened the Abode while one guardian project cycle was due",
+        "cyclesProcessed": 1
+      }
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "entryId": "thought_liora_401_after_offering",
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "turn": 401,
+      "timestamp": "2026-04-24T15:02:00Z",
+      "title": "Тишина после подношения",
+      "summary": "Лиора почувствовала, что Обитель стала устойчивее, и решила ждать следующего разговора без прежней defensiveness."
+    }
+  ],
+  "guardianPowerEvents": [
+    {
+      "eventId": "abode_offering_azalia_return_8",
+      "guardianId": "guard_social_azalia_001",
+      "delta": 2,
+      "reasonType": "offering",
+      "sourceSurface": "guardianAbodeOffering",
+      "sourceId": "return_8",
+      "title": "Подношение укрепило шёлковую память",
+      "summary": "Душа отдала 100 Чернильных Перьев Обители Азалии; сила Обители выросла в пределах offering cap.",
+      "audit": {
+        "offeringType": "ink_feathers",
+        "inkFeathersOffered": 100,
+        "returnCycleId": "return_8",
+        "capRemainingBefore": 150,
+        "baseDelta": 2,
+        "finalDelta": 2
+      }
+    }
+  ],
+  "progressionProcessingReport": {
+    "sessionId": "afterlife_session_combo_401",
+    "requestId": "afterlife_turn_combo_401",
+    "turnNumber": 401,
+    "chaosSeaCyclesProcessed": 1,
+    "guardianProjectCyclesProcessed": 1,
+    "residentAgencyCyclesProcessed": 1,
+    "newLastChaosSeaSimulationOrdinal": 44,
+    "newLastGuardianProjectCycleOrdinal": 25,
+    "newLastResidentAgencyCycleOrdinal": 19,
+    "afterlifeCatchupProcessed": false,
+    "afterlifeCatchupSummaryEventsProcessed": 0
+  }
+}
+```
+
+Required `output/ink_feather_action_result.json`:
+
+```json
+{
+  "sessionId": "afterlife_session_combo_401",
+  "requestId": "afterlife_turn_combo_401",
+  "turnNumber": 401,
+  "actionTag": "ABODE_OFFERING",
+  "resolved": true,
+  "costInFeathers": 100,
+  "resolutionType": "abodeOffering",
+  "summary": "The Abode absorbs the offering and gains power.",
+  "stateEvidence": {
+    "guardianId": "guard_social_azalia_001",
+    "abodeId": "abode_azalia_memory_silk_001",
+    "returnCycleId": "return_8",
+    "powerEventId": "abode_offering_azalia_return_8",
+    "powerGain": 2,
+    "affectedFiles": [
+      "game_state/meta/guardians.json",
+      "game_state/meta/abode_power_journal.json"
+    ]
+  }
+}
+```
+
+Do not split this into separate turns. The accepted turn closes the offering, processes all due afterlife contours, and writes one terminal signal.
+
+==================================================
+17. VALID — COMBINED ACTIVE SHINING SCHEDULER + CORE ACTION + TRADE
+==================================================
+
+Scenario:
+- Realm is ordinary active `Shining Abode`.
+- `preparedIncarnationPackage` is null, so this is not a bootstrap handoff.
+- The turn has Shining Abode, Shining faction, Shining trade, Guardian project, and resident agency debt.
+- `pending_shining_abode_actions.json` asks to support a completed project.
+- Pre-turn `shining_abode_state.gates.hasOpenDraft` is true; supporting the project changes gate inputs, so the accepted state must preserve the draft and set `gates.isStale=true`.
+- `pending_shining_trade_inventory_requests.json` asks to materialize a Shining faction trade inventory.
+
+Input summary:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "afterlife_session_shining_combo_410",
+    "requestId": "afterlife_turn_shining_combo_410",
+    "turnNumber": 410,
+    "playerAction": "Я публично поддерживаю стеклянный проход и прошу открыть новую витрину Ордена.",
+    "progressionControl": {
+      "shiningAbodeCyclesExpectedThisTurn": 1,
+      "shiningFactionCyclesExpectedThisTurn": 1,
+      "shiningTradeCyclesExpectedThisTurn": 1,
+      "guardianProjectCyclesExpectedThisTurn": 1,
+      "residentAgencyCyclesExpectedThisTurn": 1,
+      "nextShiningAbodeCycleOrdinal": 27,
+      "nextShiningFactionCycleOrdinal": 45,
+      "nextShiningTradeCycleOrdinal": 14,
+      "nextGuardianProjectCycleOrdinal": 29,
+      "nextResidentAgencyCycleOrdinal": 22,
+      "mustEvaluateShiningAbodeProgression": true,
+      "mustEvaluateShiningFactionProgression": true,
+      "mustEvaluateShiningTradeProgression": true,
+      "mustEvaluateGuardianProjectProgression": true,
+      "mustEvaluateResidentAgencyProgression": true,
+      "afterlifeCatchupRequired": false
+    }
+  },
+  "pending_shining_abode_actions.json": {
+    "requests": [
+      {
+        "requestId": "shine_support_project_410",
+        "actionType": "support_project",
+        "factionId": "shine_faction_glass_light_001",
+        "factionName": "Орден Стеклянного Света",
+        "projectId": "shine_project_glass_passage_010",
+        "projectDisplayName": "Стеклянный проход",
+        "radianceTierAtRequest": 2,
+        "quotedCostFeathers": 0,
+        "quotedCostLightSparks": 0,
+        "sourceDraftVersion": 0,
+        "selectedCardIds": [],
+        "returnCycleId": "",
+        "relicId": "",
+        "relicName": "",
+        "targetFormTag": "",
+        "propertyIndex": -1,
+        "createdAtTurn": 410,
+        "createdAtUtc": "2026-04-24T16:00:00Z"
+      }
+    ]
+  },
+  "pending_shining_trade_inventory_requests.json": {
+    "requests": [
+      {
+        "requestId": "shine_trade_glass_410",
+        "factionId": "shine_faction_glass_light_001",
+        "factionName": "Орден Стеклянного Света",
+        "tradeCycleId": "shining_return_12",
+        "derivedTradeTier": 1,
+        "derivedTradeSlotCount": 4,
+        "derivedRarityCeiling": "uncommon",
+        "derivedServiceMultiplier": 1.0,
+        "merchantProfile": "shining_faction",
+        "createdAtTurn": 410,
+        "createdAtUtc": "2026-04-24T16:00:00Z"
+      }
+    ]
+  },
+  "game_state/meta/shining_abode_state.json excerpt": {
+    "gates": {
+      "draftVersion": 12,
+      "hasOpenDraft": true,
+      "isStale": false,
+      "allCandidateBlessingCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":8}",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "effectFamily": "route",
+          "rarity": "uncommon",
+          "displayName": "Свет Стеклянного прохода",
+          "displaySummary": "Откроет 1 ранний route option к 8 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 8
+          }
+        }
+      ],
+      "availableBlessingCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":8}",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "effectFamily": "route",
+          "rarity": "uncommon",
+          "displayName": "Свет Стеклянного прохода",
+          "displaySummary": "Откроет 1 ранний route option к 8 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 8
+          }
+        }
+      ],
+      "shownBlessingCardIds": [
+        "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon"
+      ],
+      "selectedBlessingCardIds": [
+        "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon"
+      ],
+      "nextCandidateCursor": 1,
+      "rerollsRemaining": 0
+    }
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Охват NPC-анализа
+- Режим: Mixed
+- Afterlife subtype: Active Shining Abode combined turn.
+- Релевантные акторы: Орден Стеклянного Света, Элиан, Мира
+- Почему они релевантны: Орден получает support_project и trade inventory; Элиан получает guardian project cycle; Мира получает resident agency cycle.
+- Акторы вне охвата: другие Shining factions, inactive halls, Chaos Sea residents
+- Почему они вне охвата: их contracts absent, and no due contour requires their direct state mutation.
+
+## Shining Institution Thoughts
+### Орден Стеклянного Света
+- Ситуация: Душа публично поддержала completed project and requested a trade display.
+- Мысли: Институция связывает поддержку проекта с публичной дисциплиной торговли, not with Mortal World factionDataChanges.
+- Действия: Орден marks the project supported, prepares exact four-slot trade inventory, and writes matching core/trade receipts.
+
+## Guardian Thoughts
+### Элиан
+- Ситуация: Shining civic order now supports his gate-stability project.
+- Мысли: Элиан treats the institutional support as a meaningful assist, not a separate NPC scene.
+- Действия: Элиан advances his guardian project through guardianProjectUpdates.
+
+## Resident Thoughts
+### Мира
+- Ситуация: Public support makes the next passage less frightening for residents.
+- Мысли: Мира chooses to help visitors read the glass rules before they enter.
+- Действия: Мира receives residentThoughtJournalUpdates; no transfer or roster receipt is invented.
+
+## Afterlife Living World / Живой мир Посмертия
+- Shining Abode cycle: civic order stabilizes around the supported project.
+- Shining faction cycle: the faction's project support becomes canonical Shining state.
+- Shining trade cycle: exact pending trade inventory is materialized.
+- Gates side effect: because `support_project` changes inputs for the open gates draft, preserve `gates` but set `gates.isStale=true`; do not prepare an incarnation package from this stale draft.
+- Guardian project and resident agency cycles are processed through their own afterlife surfaces.
+```
+
+Correct response/state fragment:
+
+```json
+{
+  "response": "Сияющая Обитель принимает поддержку не как лозунг, а как порядок действий. Стеклянный проход получает публичную печать Ордена; рядом открывается небольшая витрина из четырёх предметов, рассчитанная на текущую силу фракции. Элиан отмечает, что путь стал устойчивее, а Мира тихо учит новых жителей читать правила света до того, как они сделают шаг.",
+  "gm_thoughts_markdown": "<see reasoning above>",
+  "game_state/meta/shining_abode_state.json patch": {
+    "gates": {
+      "draftVersion": 12,
+      "hasOpenDraft": true,
+      "isStale": true,
+      "allCandidateBlessingCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":8}",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "effectFamily": "route",
+          "rarity": "uncommon",
+          "displayName": "Свет Стеклянного прохода",
+          "displaySummary": "Откроет 1 ранний route option к 8 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 8
+          }
+        }
+      ],
+      "availableBlessingCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":8}",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "effectFamily": "route",
+          "rarity": "uncommon",
+          "displayName": "Свет Стеклянного прохода",
+          "displaySummary": "Откроет 1 ранний route option к 8 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 8
+          }
+        }
+      ],
+      "shownBlessingCardIds": [
+        "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon"
+      ],
+      "selectedBlessingCardIds": [
+        "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon"
+      ],
+      "nextCandidateCursor": 1,
+      "rerollsRemaining": 0
+    },
+    "factions[] match factionId=shine_faction_glass_light_001": {
+      "factionId": "shine_faction_glass_light_001",
+      "factionStrength": 45,
+      "projects": [
+        {
+          "projectId": "shine_project_glass_passage_010",
+          "displayName": "Стеклянный проход",
+          "summary": "Completed passage project that makes early descent routes safer.",
+          "toneTags": [
+            "disciplined",
+            "transparent"
+          ],
+          "targetFactionIds": [],
+          "projectArchetype": "passage",
+          "outputEffectFamily": "descent",
+          "tier": 1,
+          "status": "completed",
+          "isSupported": true,
+          "strengthReward": 6
+        }
+      ],
+      "tradeInventory": {
+        "tradeCycleId": "shining_return_12",
+        "generatedAtUtc": "2026-04-24T16:02:00Z",
+        "generationTradeTier": 1,
+        "generationRarityCeiling": "uncommon",
+        "serviceMultiplierSnapshot": 1.0,
+        "merchantProfile": "shining_faction",
+        "items": [
+          {
+            "slotId": "shine_trade_glass_410_1",
+            "priceInFeathers": 11,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_glass_thread_410_1",
+              "name": "Стеклянная Нить Перехода",
+              "rarity": "Common",
+              "relicType": "radiant_material",
+              "description": "Малая сияющая нить для удержания выбранного маршрута."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_410_2",
+            "priceInFeathers": 14,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_clear_oath_410_2",
+              "name": "Ясная Клятва",
+              "rarity": "Uncommon",
+              "relicType": "radiant_oath",
+              "description": "Реликвия, помогающая помнить одно правило будущего пути."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_410_3",
+            "priceInFeathers": 9,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_dawn_chip_410_3",
+              "name": "Осколок Рассветного Стекла",
+              "rarity": "Common",
+              "relicType": "radiant_memory",
+              "description": "Осколок хранит слабую память о спокойном входе."
+            }
+          },
+          {
+            "slotId": "shine_trade_glass_410_4",
+            "priceInFeathers": 16,
+            "soldOut": false,
+            "relicData": {
+              "relicId": "relic_minor_route_prism_410_4",
+              "name": "Малая Призма Маршрута",
+              "rarity": "Uncommon",
+              "relicType": "radiant_route",
+              "description": "Призма подсвечивает безопасный выбор в начале следующей жизни."
+            }
+          }
+        ]
+      },
+      "tradeInventoryReceipts": [
+        {
+          "requestId": "shine_trade_glass_410",
+          "factionId": "shine_faction_glass_light_001",
+          "factionName": "Орден Стеклянного Света",
+          "tradeCycleId": "shining_return_12",
+          "status": "ready",
+          "itemCount": 4,
+          "soldOutCount": 0,
+          "resolvedAtTurn": 410,
+          "resolvedAtUtc": "2026-04-24T16:02:00Z"
+        }
+      ]
+    },
+    "coreActionReceipts": [
+      {
+        "requestId": "shine_support_project_410",
+        "actionType": "support_project",
+        "status": "accepted",
+        "factionId": "shine_faction_glass_light_001",
+        "projectId": "shine_project_glass_passage_010",
+        "relicId": "",
+        "returnCycleId": "",
+        "targetFormTag": "",
+        "propertyIndex": -1,
+        "selectedCardIds": [],
+        "newResidentIds": [],
+        "seededProjectIds": [],
+        "generatedDraftVersion": 0,
+        "resolvedAtTurn": 410,
+        "resolvedAtUtc": "2026-04-24T16:02:00Z",
+        "reason": "player publicly supported the completed passage project"
+      }
+    ]
+  },
+  "guardianProjectUpdates": [
+    {
+      "projectId": "gproj_elian_gate_stability_001",
+      "guardianId": "guard_knowledge_elian_001",
+      "activeState": "active",
+      "workDone": 59,
+      "currentStage": 2,
+      "pressure": 1,
+      "stability": 72,
+      "assistAudit": {
+        "DomainRelevance": 2,
+        "RiskOrCost": 1,
+        "ScarcityOrUniqueness": 0,
+        "DirectProjectImpact": 2,
+        "assistScore": 5,
+        "classification": "meaningful assist",
+        "reason": "supported Shining passage project reinforces gate-stability work",
+        "cyclesProcessed": 1
+      }
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "entryId": "thought_mira_410_supported_passage",
+      "residentId": "res_mira_001",
+      "guardianId": "guard_knowledge_elian_001",
+      "turn": 410,
+      "timestamp": "2026-04-24T16:02:00Z",
+      "title": "Правила перед шагом",
+      "summary": "Мира решила объяснять новым жителям правила Стеклянного прохода до того, как они воспользуются сияющей витриной."
+    }
+  ],
+  "progressionProcessingReport": {
+    "sessionId": "afterlife_session_shining_combo_410",
+    "requestId": "afterlife_turn_shining_combo_410",
+    "turnNumber": 410,
+    "shiningAbodeCyclesProcessed": 1,
+    "shiningFactionCyclesProcessed": 1,
+    "shiningTradeCyclesProcessed": 1,
+    "guardianProjectCyclesProcessed": 1,
+    "residentAgencyCyclesProcessed": 1,
+    "newLastShiningAbodeCycleOrdinal": 27,
+    "newLastShiningFactionCycleOrdinal": 45,
+    "newLastShiningTradeCycleOrdinal": 14,
+    "newLastGuardianProjectCycleOrdinal": 29,
+    "newLastResidentAgencyCycleOrdinal": 22,
+    "afterlifeCatchupProcessed": false,
+    "afterlifeCatchupSummaryEventsProcessed": 0
+  }
+}
+```
+
+The `game_state/meta/shining_abode_state.json patch` block above is a documentation view of the canonical state mutation. In actual file output, preserve all existing required Shining roots and mutate the matched faction/project/receipt arrays in `shining_abode_state.json`; do not emit a fake top-level GameResponse key named `game_state/meta/shining_abode_state.json patch`.
+
+==================================================
+18. VALID — PREPARE PACKAGE NOW, BOOTSTRAP LATER
+==================================================
+
+This is the most important Shining lifecycle distinction:
+
+```text
+prepare_incarnation_package turn:
+- Realm: ordinary active Shining Abode.
+- preparedIncarnationPackage is currently null.
+- pending_shining_abode_actions.json.actionType = prepare_incarnation_package.
+- GM closes the core action through canonical Shining state mutation and coreActionReceipts[].
+- GM writes/updates preparedIncarnationPackage with selectedCardIds[] and selectedCards[].
+- GM does NOT write TriggerIncarnation on this same accepted turn, even if the player asks to incarnate immediately.
+- A separate explicit incarnation request is handled only on a later pending-bootstrap handoff turn, after preparedIncarnationPackage already exists in the pre-turn state.
+
+later pending-bootstrap handoff turn:
+- Realm: Shining Abode.
+- preparedIncarnationPackage already exists before the turn starts.
+- This is not ordinary active Shining roleplay.
+- GM writes TriggerIncarnation only.
+- GM preserves preparedIncarnationPackage exactly as provided.
+- Runtime consumes and clears the package after successful Mortal World bootstrap.
+```
+
+Correct active Shining `prepare_incarnation_package` closure shape:
+
+```json
+{
+  "game_state/meta/shining_abode_state.json patch": {
+    "preparedIncarnationPackage": {
+      "selectedCardIds": [
+        "card:shine_faction_glass_light_001:head:player_soul:route:rare"
+      ],
+      "selectedCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+          "sourceType": "head",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "sourceActorId": "player_soul",
+          "sourceActorName": "player_soul",
+          "effectFamily": "route",
+          "rarity": "rare",
+          "displayName": "Дар фракции «Орден Стеклянного Света»",
+          "displaySummary": "Откроет 1 ранний route option к 6 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 6
+          }
+        }
+      ],
+      "generatedFromDraftVersion": 7,
+      "preparedAtTurn": 411,
+      "preparedAtUtc": "2026-04-24T16:20:00Z"
+    },
+    "coreActionReceipts": [
+      {
+        "requestId": "shine_prepare_package_411",
+        "actionType": "prepare_incarnation_package",
+        "status": "accepted",
+        "factionId": "",
+        "projectId": "",
+        "relicId": "",
+        "returnCycleId": "",
+        "targetFormTag": "",
+        "propertyIndex": -1,
+        "selectedCardIds": [
+          "card:shine_faction_glass_light_001:head:player_soul:route:rare"
+        ],
+        "selectedCards": [
+          {
+            "cardId": "card:shine_faction_glass_light_001:head:player_soul:route:rare",
+            "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":6}",
+            "sourceType": "head",
+            "sourceFactionId": "shine_faction_glass_light_001",
+            "sourceFactionName": "Орден Стеклянного Света",
+            "sourceActorId": "player_soul",
+            "sourceActorName": "player_soul",
+            "effectFamily": "route",
+            "rarity": "rare",
+            "displayName": "Дар фракции «Орден Стеклянного Света»",
+            "displaySummary": "Откроет 1 ранний route option к 6 ходу.",
+            "effectPayload": {
+              "type": "seed_early_routes",
+              "routeOptions": 1,
+              "latestTurn": 6
+            }
+          }
+        ],
+        "newResidentIds": [],
+        "seededProjectIds": [],
+        "generatedDraftVersion": 7,
+        "resolvedAtTurn": 411,
+        "resolvedAtUtc": "2026-04-24T16:20:00Z",
+        "reason": "selected blessing cards frozen into the next-life package"
+      }
+    ]
+  }
+}
+```
+
+As in example 17, `game_state/meta/shining_abode_state.json patch` is a documentation view of the persisted state mutation. In real output, preserve the full existing Shining state root and mutate `preparedIncarnationPackage`, `gates`, and `coreActionReceipts[]` canonically.
+
+Correct later pending-bootstrap handoff response:
+
+```json
+{
+  "response": "Сияющая Обитель удерживает уже выбранный узор и не требует новой политики. Душа проходит через подготовленные врата, а frozen package остаётся на месте до runtime consumption.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Afterlife subtype: Shining pending-bootstrap handoff.\n- Релевантные акторы: нет\n- Почему они релевантны: обычные actor systems suppressed; the handoff only writes TriggerIncarnation.\n- Акторы вне охвата: Guardians, residents, Shining factions\n- Почему они вне охвата: preparedIncarnationPackage already exists and ordinary Shining progression is suppressed.\n\n## Afterlife Living World / Живой мир Посмертия\n- No ordinary Shining scheduler cycles are processed in this handoff.\n- preparedIncarnationPackage is preserved exactly for runtime bootstrap consumption.",
+  "TriggerIncarnation": {
+    "worldDescription": "Мир речных храмов, где архивы спорят с духами наводнений.",
+    "characterDescription": "Ребёнок хранителя храмовой библиотеки, родившийся рядом с затопленным порогом.",
+    "circumstances": "Семья должна выбрать, какие записи спасти до первого большого паводка.",
+    "source": "shining_prepared_package"
+  }
+}
+```
+
+Do not write during the later handoff:
+
+```text
+preparedIncarnationPackage = null
+preparedIncarnationPackageId on TriggerIncarnation
+ordinary Shining coreActionReceipts[]
+ordinary Shining trade/faction/resident progression report
+soul_state.currentRealm = "Mortal World"
+```
 
 ==================================================
 COMMON INVALID PATTERNS
