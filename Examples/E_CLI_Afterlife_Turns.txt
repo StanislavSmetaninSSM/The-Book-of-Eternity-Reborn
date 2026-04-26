@@ -4281,7 +4281,7 @@ Correct accepted response fragment:
       "stability": 7,
       "workAudit": {
         "source": "afterlife_living_world_cycle",
-        "cycleOrdinal": 22,
+        "cycleOrdinal": 38,
         "reason": "quiet Chaos Sea hub pressure gave the project uninterrupted work time"
       }
     }
