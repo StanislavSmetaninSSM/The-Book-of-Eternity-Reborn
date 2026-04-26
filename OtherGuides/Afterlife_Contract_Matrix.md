@@ -65,14 +65,16 @@ Scheduler report rule: each `newLast*Ordinal` belongs only to its own contour. D
 
 All rows below use `pending_shining_abode_actions.json` as input and close through `shining_abode_state.json.coreActionReceipts[]`. They are legal only in ordinary active `Shining Abode`.
 
+If a Shining core action mutates the faction/project inputs used by the blessing-card gates draft (`invest_in_faction`, `complete_project`, `support_project`, `unsupport_project`, or `retire_project`) and the pre-turn state has `gates.hasOpenDraft = true`, preserve the canonical `gates` object and set `gates.isStale = true`. A stale draft cannot be used for `prepare_incarnation_package`; the player must regenerate it through `open_gates`.
+
 | `actionType` | GM state responsibility | Required caution |
 |---|---|---|
 | `discover_native_faction` | Materialize the discovered Shining faction/institution and receipt | The discovered faction must be Shining state, not Mortal World faction state |
-| `invest_in_faction` | Apply faction strength/support effects and receipt | Costs/effects must match the client-authored pending request |
-| `complete_project` | Move the Shining project to completed/result state and receipt | Project-sourced effects must come from a project actually present in pre-turn Shining state |
-| `support_project` | Toggle support state and receipt | Support/unsupport toggles have quoted Light Sparks cost `0`; do not spend Light Sparks |
-| `unsupport_project` | Toggle support off and receipt | Same zero-cost rule as `support_project` |
-| `retire_project` | Move eligible project out of active rotation and receipt | Do not delete unrelated project history |
+| `invest_in_faction` | Apply faction strength/support effects and receipt | Costs/effects must match the client-authored pending request; if gates are open, mark `gates.isStale = true` |
+| `complete_project` | Move the Shining project to completed/result state and receipt | Project-sourced effects must come from a project actually present in pre-turn Shining state; if gates are open, mark `gates.isStale = true` |
+| `support_project` | Toggle support state and receipt | Support/unsupport toggles have quoted Light Sparks cost `0`; do not spend Light Sparks; if gates are open, mark `gates.isStale = true` |
+| `unsupport_project` | Toggle support off and receipt | Same zero-cost rule as `support_project`; if gates are open, mark `gates.isStale = true` |
+| `retire_project` | Move eligible project out of active rotation and receipt | Do not delete unrelated project history; if gates are open, mark `gates.isStale = true` |
 | `open_gates` | Update the canonical Shining gates blessing-card draft container and receipt | `gates` is not a custom gate registry; use the canonical draft state such as draft version/open/stale/card selection fields |
 | `prepare_incarnation_package` | Persist `preparedIncarnationPackage` and receipt with frozen selected card snapshot | Package uses `selectedCardIds`, `selectedCards`, `generatedFromDraftVersion`, `preparedAtTurn`, `preparedAtUtc`; do not use `packageId`, `createdAt*`, or `sourceDraftVersion` |
 | `pull_relic_gacha` | Add/result a Shining relic pull through Shining state and receipt | This is not direct Chaos Sea `/gacha` and not Guardian-mediated `UpdateGuardians.processGacha` |

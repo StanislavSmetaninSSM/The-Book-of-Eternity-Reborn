@@ -3501,6 +3501,7 @@ Scenario:
 - `preparedIncarnationPackage` is null, so this is not a bootstrap handoff.
 - The turn has Shining Abode, Shining faction, Shining trade, Guardian project, and resident agency debt.
 - `pending_shining_abode_actions.json` asks to support a completed project.
+- Pre-turn `shining_abode_state.gates.hasOpenDraft` is true; supporting the project changes gate inputs, so the accepted state must preserve the draft and set `gates.isStale=true`.
 - `pending_shining_trade_inventory_requests.json` asks to materialize a Shining faction trade inventory.
 
 Input summary:
@@ -3571,6 +3572,57 @@ Input summary:
         "createdAtUtc": "2026-04-24T16:00:00Z"
       }
     ]
+  },
+  "game_state/meta/shining_abode_state.json excerpt": {
+    "gates": {
+      "draftVersion": 12,
+      "hasOpenDraft": true,
+      "isStale": false,
+      "allCandidateBlessingCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":8}",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "effectFamily": "route",
+          "rarity": "uncommon",
+          "displayName": "Свет Стеклянного прохода",
+          "displaySummary": "Откроет 1 ранний route option к 8 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 8
+          }
+        }
+      ],
+      "availableBlessingCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":8}",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "effectFamily": "route",
+          "rarity": "uncommon",
+          "displayName": "Свет Стеклянного прохода",
+          "displaySummary": "Откроет 1 ранний route option к 8 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 8
+          }
+        }
+      ],
+      "shownBlessingCardIds": [
+        "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon"
+      ],
+      "selectedBlessingCardIds": [
+        "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon"
+      ],
+      "nextCandidateCursor": 1,
+      "rerollsRemaining": 0
+    }
   }
 }
 ```
@@ -3608,6 +3660,7 @@ Correct GM reasoning:
 - Shining Abode cycle: civic order stabilizes around the supported project.
 - Shining faction cycle: the faction's project support becomes canonical Shining state.
 - Shining trade cycle: exact pending trade inventory is materialized.
+- Gates side effect: because `support_project` changes inputs for the open gates draft, preserve `gates` but set `gates.isStale=true`; do not prepare an incarnation package from this stale draft.
 - Guardian project and resident agency cycles are processed through their own afterlife surfaces.
 ```
 
@@ -3618,6 +3671,55 @@ Correct response/state fragment:
   "response": "Сияющая Обитель принимает поддержку не как лозунг, а как порядок действий. Стеклянный проход получает публичную печать Ордена; рядом открывается небольшая витрина из четырёх предметов, рассчитанная на текущую силу фракции. Элиан отмечает, что путь стал устойчивее, а Мира тихо учит новых жителей читать правила света до того, как они сделают шаг.",
   "gm_thoughts_markdown": "<see reasoning above>",
   "game_state/meta/shining_abode_state.json patch": {
+    "gates": {
+      "draftVersion": 12,
+      "hasOpenDraft": true,
+      "isStale": true,
+      "allCandidateBlessingCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":8}",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "effectFamily": "route",
+          "rarity": "uncommon",
+          "displayName": "Свет Стеклянного прохода",
+          "displaySummary": "Откроет 1 ранний route option к 8 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 8
+          }
+        }
+      ],
+      "availableBlessingCards": [
+        {
+          "cardId": "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon",
+          "dedupeKey": "route:{\"routeOptions\":1,\"latestTurn\":8}",
+          "sourceType": "project",
+          "sourceFactionId": "shine_faction_glass_light_001",
+          "sourceFactionName": "Орден Стеклянного Света",
+          "effectFamily": "route",
+          "rarity": "uncommon",
+          "displayName": "Свет Стеклянного прохода",
+          "displaySummary": "Откроет 1 ранний route option к 8 ходу.",
+          "effectPayload": {
+            "type": "seed_early_routes",
+            "routeOptions": 1,
+            "latestTurn": 8
+          }
+        }
+      ],
+      "shownBlessingCardIds": [
+        "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon"
+      ],
+      "selectedBlessingCardIds": [
+        "card:shine_faction_glass_light_001:project:shine_project_glass_passage_010:route:uncommon"
+      ],
+      "nextCandidateCursor": 1,
+      "rerollsRemaining": 0
+    },
     "factions[] match factionId=shine_faction_glass_light_001": {
       "factionId": "shine_faction_glass_light_001",
       "factionStrength": 45,
