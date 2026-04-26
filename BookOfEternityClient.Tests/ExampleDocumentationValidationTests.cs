@@ -862,9 +862,17 @@ public sealed class ExampleDocumentationValidationTests
                 NullLogger<ProgressionScheduleService>.Instance);
             return await progression.ValidateAcceptedTurnOutcomeAsync(request.ProgressionControl);
         }
-        catch
+        catch (Exception ex)
         {
-            return [];
+            return
+            [
+                new ValidationIssue(
+                    "input/turn_request.json",
+                    IssueSeverity.Error,
+                    $"Progression report scenario validation failed: {ex.GetType().Name}: {ex.Message}",
+                    code: "example_progression_validation_failed",
+                    section: "ExampleDocumentationValidation")
+            ];
         }
     }
 
