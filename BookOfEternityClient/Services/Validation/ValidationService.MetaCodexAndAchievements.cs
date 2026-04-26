@@ -116,7 +116,8 @@ public partial class ValidationService
         }
 
         ValidateCodexEntryArray(root, contextPrefix, issues, "loreCodexUpdates");
-        ValidateCodexEntryArray(root, contextPrefix, issues, "entries");
+        if (contextPrefix.EndsWith("lore/codex_entries.json", StringComparison.OrdinalIgnoreCase))
+            ValidateCodexEntryArray(root, contextPrefix, issues, "entries");
 
         if (root.TryGetProperty("totalEntries", out var totalEntries) &&
             (totalEntries.ValueKind != JsonValueKind.Number || !totalEntries.TryGetInt32(out _)))

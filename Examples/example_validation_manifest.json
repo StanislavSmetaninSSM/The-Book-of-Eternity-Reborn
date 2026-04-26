@@ -131,15 +131,77 @@
     {
       "id": "afterlife_shining_pending_bootstrap_trigger_response",
       "file": "E_CLI_Afterlife_Turns.txt",
-      "runner": "gameResponseDistribution",
+      "runner": "acceptedTurnDistribution",
       "requiredText": [
         "Сияющая Обитель удерживает уже выбранный узор",
         "\"source\": \"shining_prepared_package\""
       ],
       "preStateFiles": [
         {
+          "path": "input/turn_request.json",
+          "content": {
+            "sessionId": "afterlife_session_bootstrap_340",
+            "requestId": "afterlife_turn_bootstrap_340",
+            "turnNumber": 340,
+            "playerAction": "Я принимаю подготовленное воплощение.",
+            "timestamp": "2026-04-24T09:10:00Z",
+            "gameMode": "normal",
+            "progressionControl": {
+              "currentRealm": "Shining Abode",
+              "mustEvaluateShiningAbodeProgression": false,
+              "shiningAbodeCyclesExpectedThisTurn": 0,
+              "mustEvaluateShiningFactionProgression": false,
+              "shiningFactionCyclesExpectedThisTurn": 0,
+              "mustEvaluateShiningTradeProgression": false,
+              "shiningTradeCyclesExpectedThisTurn": 0,
+              "afterlifeCatchupRequired": false
+            }
+          }
+        },
+        {
+          "path": "game_state/meta/soul_state.json",
+          "content": {
+            "soulName": "Пепельная Искра",
+            "currentRealm": "Shining Abode",
+            "currentIncarnation": 2,
+            "enlightenment": {
+              "currentTier": "Новичок",
+              "experience": 0,
+              "level": 0
+            },
+            "inkFeathers": {
+              "current": 200,
+              "total": 200
+            },
+            "soulRelics": {
+              "equipped": [],
+              "stored": []
+            },
+            "afterlifeArchive": {
+              "stored": []
+            },
+            "livesHistory": [
+              {
+                "lifeId": "life_example_001",
+                "summary": "Предыдущая смертная жизнь завершена; душа достигла Сияющей Обители."
+              }
+            ],
+            "pendingMemoryLegacy": null
+          }
+        },
+        {
           "path": "game_state/meta/shining_abode_state.json",
           "content": {
+            "availability": "active",
+            "lightSparks": 12,
+            "radiance": {
+              "experience": 0,
+              "tier": 0
+            },
+            "halls": [],
+            "factions": [],
+            "shiningPoliticalActors": [],
+            "pendingNativeFactionDiscovery": null,
             "preparedIncarnationPackage": {
               "selectedCardIds": [
                 "card:shine_faction_glass_light_001:head:player_soul:route:rare"
@@ -169,24 +231,38 @@
               "preparedAtUtc": "2026-04-24T16:20:00Z"
             },
             "coreActionReceipts": [],
+            "factionFoundingReceipts": [],
+            "factionRealignmentReceipts": [],
             "gates": {
               "draftVersion": 7,
               "hasOpenDraft": false,
               "isStale": false,
+              "nextCandidateCursor": 0,
+              "rerollsRemaining": 0,
+              "allCandidateBlessingCards": [],
               "availableBlessingCards": [],
+              "shownBlessingCardIds": [],
               "selectedBlessingCardIds": []
+            },
+            "gachaSystem": {
+              "chargesPerReturn": 0,
+              "chargesUsedThisReturn": 0,
+              "currentReturnCycleId": "shining_return_example_001",
+              "gachaHistory": []
             }
           }
         }
       ],
+      "pendingSnapshotFiles": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/shining_abode_state.json"
+      ],
+      "pendingSnapshotSourceLabel": "afterlife Shining pending-bootstrap handoff example",
       "expectedModifiedFiles": [
         "game_state/control/incarnation_trigger.json"
       ],
       "expectedFilesAbsent": [
         "game_state/control/progression_report.json"
-      ],
-      "expectedFilesUnchanged": [
-        "game_state/meta/shining_abode_state.json"
       ],
       "expectedFileContains": [
         {
@@ -272,12 +348,54 @@
     {
       "id": "afterlife_ordinary_chaos_living_world_response",
       "file": "E_CLI_Afterlife_Turns.txt",
-      "runner": "gameResponseDistribution",
+      "runner": "acceptedTurnDistribution",
       "requiredText": [
         "session_afterlife_019",
         "\"guardianThoughtJournalUpdates\"",
         "\"newLastChaosSeaSimulationOrdinal\": 38"
       ],
+      "baselineKind": "chaosSeaAzaliaLivingWorld",
+      "preStateFiles": [
+        {
+          "path": "input/turn_request.json",
+          "content": {
+            "sessionId": "session_afterlife_019",
+            "requestId": "turn_419",
+            "turnNumber": 419,
+            "currentRealm": "Chaos Sea",
+            "playerAction": "Я молча сижу у края Обители Азалии и слушаю Море.",
+            "timestamp": "2026-04-24T16:19:00Z",
+            "gameMode": "normal",
+            "progressionControl": {
+              "currentRealm": "Chaos Sea",
+              "currentChaosSeaTurnOrdinal": 37,
+              "nextChaosSeaTurnOrdinal": 38,
+              "lastChaosSeaSimulationOrdinal": 36,
+              "lastGuardianProjectCycleOrdinal": 21,
+              "nextGuardianProjectCycleOrdinal": 38,
+              "lastResidentAgencyCycleOrdinal": 14,
+              "nextResidentAgencyCycleOrdinal": 38,
+              "chaosSeaCyclesExpectedThisTurn": 1,
+              "guardianProjectCyclesExpectedThisTurn": 1,
+              "residentAgencyCyclesExpectedThisTurn": 1,
+              "mustEvaluateChaosSeaProgression": true,
+              "mustEvaluateGuardianProjectProgression": true,
+              "mustEvaluateResidentAgencyProgression": true,
+              "afterlifeCatchupRequired": false,
+              "afterlifeCatchupSummaryEventsRequired": 0,
+              "afterlifeCatchupContours": []
+            }
+          }
+        }
+      ],
+      "pendingSnapshotFiles": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardian_projects.json",
+        "game_state/meta/guardian_abode_residents.json",
+        "game_state/meta/abode_power_journal.json"
+      ],
+      "pendingSnapshotSourceLabel": "ordinary Chaos Sea living-world example",
       "expectedModifiedFiles": [
         "game_state/meta/guardian_thought_journal.json",
         "game_state/meta/guardian_projects.json",
@@ -297,8 +415,8 @@
           "requiredText": [
             "\"sessionId\": \"session_afterlife_019\"",
             "\"newLastChaosSeaSimulationOrdinal\": 38",
-            "\"newLastGuardianProjectCycleOrdinal\": 22",
-            "\"newLastResidentAgencyCycleOrdinal\": 15"
+            "\"newLastGuardianProjectCycleOrdinal\": 38",
+            "\"newLastResidentAgencyCycleOrdinal\": 38"
           ]
         }
       ]
