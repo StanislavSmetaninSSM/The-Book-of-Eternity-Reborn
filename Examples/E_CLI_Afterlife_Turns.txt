@@ -974,7 +974,7 @@ Correct response/control fragment:
 ```json
 {
   "response": "Сияющая Обитель не требует новых решений. Она только удерживает уже выбранный узор, пока душа проходит сквозь подготовленные врата. Стеклянный рассвет сжимается в точку памяти, и впереди раскрывается смертный мир храмовых архивов и речных духов.",
-  "gm_thoughts_markdown": "<see reasoning above>",
+  "gm_thoughts_markdown": "## Оценка времени и мира\n- Realm: Shining Abode.\n- preparedIncarnationPackage is present.\n- Mode: Shining Abode pending-bootstrap handoff.\n- Ordinary Shining living-world progression is suppressed; the expected ordinary Shining cycle counts are zero in this handoff request.\n- This turn only emits `TriggerIncarnation` from the frozen next-life package. The GM must preserve the package; the client transition code consumes and clears it only after successful mortal bootstrap.\n\n## Охват NPC-анализа\n- Режим: Scene-local\n- Релевантные акторы: нет\n- Почему они релевантны: Ход является lifecycle/bootstrap handoff and does not mutate Guardian/resident/faction agency.\n- Акторы вне охвата: сияющие фракции, Хранители, резиденты\n- Почему они вне охвата: pending-bootstrap handoff explicitly suppresses ordinary Shining progression.\n\n## Reasoning / Размышления NPC / Guardian Thoughts\n- No actor reasoning block is required because no structured actor updates are emitted.",
   "TriggerIncarnation": {
     "worldDescription": "Мир поздней бронзы, где города-государства спорят с духами рек.",
     "characterDescription": "Ребёнок писца, родившийся с памятью о стеклянном рассвете.",
@@ -3564,7 +3564,7 @@ Correct response/state fragment:
 ```json
 {
   "response": "Море Хаоса не считает подношение отдельной сценой от жизни Обители. Чернильные Перья растворяются в шёлковых стенах Азалии, и вокруг её зала стихает давний шум чужих воспоминаний. Лиора впервые смотрит на этот покой не как на клетку, а как на возможность дождаться следующего честного разговора.",
-  "gm_thoughts_markdown": "<see reasoning above>",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Mixed\n- Afterlife subtype: Chaos Sea afterlife combined turn.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: Азалия получает offering и её проект получает due cycle; Лиора получает resident agency cycle.\n- Акторы вне охвата: Элиан, другие резиденты, Shining factions\n- Почему они вне охвата: этот ход не меняет их projects, receipts, faction state or resident memory.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Душа приносит offering, а scheduler одновременно требует один проектный цикл.\n- Мысли: Азалия принимает offering как укрепление Обители, но не превращает его в mortal-world награду.\n- Действия: Азалия усиливает Обитель через guardianPowerEvents и продвигает текущий проект через guardianProjectUpdates.\n\n## Resident Thoughts\n### Лиора\n- Ситуация: В Обители стало спокойнее после offering, и у Лиоры есть due resident agency.\n- Мысли: Лиора решает зафиксировать новую осторожную надежду, но не раскрывает историю без pending history request.\n- Действия: Лиора получает thought journal entry; resident cycle считается обработанным без talk/history receipt.\n\n## Afterlife Living World / Живой мир Посмертия\n- Chaos Sea hub cycle: течение душ вокруг Обители стабилизируется после offering; это отражено в response, не в worldEventsLog.\n- Guardian project cycle: один цикл Азалии продвинут в project tracker.\n- Resident agency cycle: Лиора действует через residentThoughtJournalUpdates.\n- No Shining contours are due.",
   "guardianProjectUpdates": [
     {
       "projectId": "gproj_azalia_memory_silk_001",
@@ -4210,9 +4210,9 @@ Input conditions:
       "nextChaosSeaTurnOrdinal": 38,
       "lastChaosSeaSimulationOrdinal": 36,
       "lastGuardianProjectCycleOrdinal": 21,
-      "nextGuardianProjectCycleOrdinal": 22,
+      "nextGuardianProjectCycleOrdinal": 38,
       "lastResidentAgencyCycleOrdinal": 14,
-      "nextResidentAgencyCycleOrdinal": 15,
+      "nextResidentAgencyCycleOrdinal": 38,
       "chaosSeaCyclesExpectedThisTurn": 1,
       "guardianProjectCyclesExpectedThisTurn": 1,
       "residentAgencyCyclesExpectedThisTurn": 1,
@@ -4238,11 +4238,13 @@ Correct reasoning:
 - Акторы вне охвата: other Guardians, Shining factions
 - Почему они вне охвата: no Shining realm state is active, no pending Shining files exist, and the hub cycle produces local Abode pressure only.
 
+## Guardian Thoughts
 ### Азалия
 - Ситуация: The player is silent, but the Sea's pressure around her Abode still changes.
 - Мысли: Азалия notices that silence gives her current project a clean anchor instead of a new demand.
 - Действия: She advances the existing project by one small work step and records a thought.
 
+## Resident Thoughts
 ### Лиора
 - Ситуация: The quieter Abode gives Лиора enough safety to act internally.
 - Мысли: She decides not to request a conversation yet, but her agency cycle still matters.
@@ -4260,6 +4262,7 @@ Correct accepted response fragment:
 ```json
 {
   "response": "Море Хаоса не отвечает словами. Оно чуть отступает от края Обители, оставляя Азалии редкую неподвижность для работы, а Лиоре — место, где память не требует немедленного разговора.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: Ordinary Chaos Sea living-world turn without pending files.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: Азалия has a due Guardian project cycle; Лиора has a due resident agency cycle.\n- Акторы вне охвата: other Guardians, Shining factions\n- Почему они вне охвата: no Shining realm state is active, no pending Shining files exist, and the hub cycle produces local Abode pressure only.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: The player is silent, but the Sea's pressure around her Abode still changes.\n- Мысли: Азалия notices that silence gives her current project a clean anchor instead of a new demand.\n- Действия: She advances the existing project by one small work step and records a thought.\n\n## Resident Thoughts\n### Лиора\n- Ситуация: The quieter Abode gives Лиора enough safety to act internally.\n- Мысли: She decides not to request a conversation yet, but her agency cycle still matters.\n- Действия: She records a resident thought; no roster, transfer, or history request is invented.\n\n## Afterlife Living World / Живой мир Посмертия\n- Chaos Sea hub cycle: the Sea calms around this Abode rather than creating a new external event; this is described in response and closed by progression report.\n- Guardian project cycle: Азалия advances her existing project through `guardianProjectUpdates`.\n- Resident agency cycle: Лиора acts through `residentThoughtJournalUpdates`.\n- No pending files exist, so no receipt arrays are invented.",
   "guardianThoughtJournalUpdates": [
     {
       "entryId": "guardian_thought_azalia_419_silent_anchor",
@@ -4302,8 +4305,8 @@ Correct accepted response fragment:
     "guardianProjectCyclesProcessed": 1,
     "residentAgencyCyclesProcessed": 1,
     "newLastChaosSeaSimulationOrdinal": 38,
-    "newLastGuardianProjectCycleOrdinal": 22,
-    "newLastResidentAgencyCycleOrdinal": 15,
+    "newLastGuardianProjectCycleOrdinal": 38,
+    "newLastResidentAgencyCycleOrdinal": 38,
     "afterlifeCatchupProcessed": false,
     "afterlifeCatchupSummaryEventsProcessed": 0
   }
