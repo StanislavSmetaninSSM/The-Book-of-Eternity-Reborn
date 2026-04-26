@@ -3364,7 +3364,8 @@ Correct GM reasoning:
 
 ```markdown
 ## Охват NPC-анализа
-- Режим: Chaos Sea afterlife combined turn
+- Режим: Mixed
+- Afterlife subtype: Chaos Sea afterlife combined turn.
 - Релевантные акторы: Азалия, Лиора
 - Почему они релевантны: Азалия получает offering и её проект получает due cycle; Лиора получает resident agency cycle.
 - Акторы вне охвата: Элиан, другие резиденты, Shining factions
@@ -3578,7 +3579,8 @@ Correct GM reasoning:
 
 ```markdown
 ## Охват NPC-анализа
-- Режим: Active Shining Abode combined turn
+- Режим: Mixed
+- Afterlife subtype: Active Shining Abode combined turn.
 - Релевантные акторы: Орден Стеклянного Света, Элиан, Мира
 - Почему они релевантны: Орден получает support_project и trade inventory; Элиан получает guardian project cycle; Мира получает resident agency cycle.
 - Акторы вне охвата: другие Shining factions, inactive halls, Chaos Sea residents
@@ -3797,7 +3799,8 @@ prepare_incarnation_package turn:
 - pending_shining_abode_actions.json.actionType = prepare_incarnation_package.
 - GM closes the core action through canonical Shining state mutation and coreActionReceipts[].
 - GM writes/updates preparedIncarnationPackage with selectedCardIds[] and selectedCards[].
-- GM does NOT write TriggerIncarnation unless the player also has a separate explicit incarnation handoff request.
+- GM does NOT write TriggerIncarnation on this same accepted turn, even if the player asks to incarnate immediately.
+- A separate explicit incarnation request is handled only on a later pending-bootstrap handoff turn, after preparedIncarnationPackage already exists in the pre-turn state.
 
 later pending-bootstrap handoff turn:
 - Realm: Shining Abode.
@@ -3894,7 +3897,7 @@ Correct later pending-bootstrap handoff response:
 ```json
 {
   "response": "Сияющая Обитель удерживает уже выбранный узор и не требует новой политики. Душа проходит через подготовленные врата, а frozen package остаётся на месте до runtime consumption.",
-  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Shining pending-bootstrap handoff\n- Релевантные акторы: нет\n- Почему они релевантны: обычные actor systems suppressed; the handoff only writes TriggerIncarnation.\n- Акторы вне охвата: Guardians, residents, Shining factions\n- Почему они вне охвата: preparedIncarnationPackage already exists and ordinary Shining progression is suppressed.\n\n## Afterlife Living World / Живой мир Посмертия\n- No ordinary Shining scheduler cycles are processed in this handoff.\n- preparedIncarnationPackage is preserved exactly for runtime bootstrap consumption.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Afterlife subtype: Shining pending-bootstrap handoff.\n- Релевантные акторы: нет\n- Почему они релевантны: обычные actor systems suppressed; the handoff only writes TriggerIncarnation.\n- Акторы вне охвата: Guardians, residents, Shining factions\n- Почему они вне охвата: preparedIncarnationPackage already exists and ordinary Shining progression is suppressed.\n\n## Afterlife Living World / Живой мир Посмертия\n- No ordinary Shining scheduler cycles are processed in this handoff.\n- preparedIncarnationPackage is preserved exactly for runtime bootstrap consumption.",
   "TriggerIncarnation": {
     "worldDescription": "Мир речных храмов, где архивы спорят с духами наводнений.",
     "characterDescription": "Ребёнок хранителя храмовой библиотеки, родившийся рядом с затопленным порогом.",
