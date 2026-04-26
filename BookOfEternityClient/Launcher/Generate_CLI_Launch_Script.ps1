@@ -33,11 +33,13 @@ Read these documents BEFORE processing the first turn:
 4. **TaskGuides/CLI_Step_Main.txt** — step-by-step workflow
 5. **Examples/E_CLI_Step_Main.txt** — mandatory examples for validation, NPC scope, repair loop, and terminal protocol failures
 6. **Examples/E_CLI_Ink_Feather_Actions.txt** — mandatory examples for every GM-side Ink Feather action
+7. **OtherGuides/Afterlife_Contract_Matrix.md** -- mandatory contract map for Chaos Sea / Shining Abode turns
+8. **Examples/E_CLI_Afterlife_Turns.txt** -- mandatory worked examples for Chaos Sea / Shining Abode turns
 
 Reference materials (read as needed):
 - **Rules/Block_*.txt** — game rules
 - **Examples/** — extended rule examples
-- **OtherGuides/** — narrative style guide, world logic guide
+- **OtherGuides/** — narrative style guide, world logic guide, afterlife contract matrix
 
 All paths relative to:
 {{REPO_ROOT}}
