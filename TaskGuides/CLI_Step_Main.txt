@@ -14,7 +14,7 @@
                - Examples/E_CLI_Step_Main.txt (MUST-read examples for NPC scope, reasoning blocks, repair loop, and terminal protocol failures)
                - Examples/E_CLI_Ink_Feather_Actions.txt (MUST-read whenever the turn uses any GM-side INK_FEATHER_ACTION)
                - OtherGuides/Afterlife_Contract_Matrix.md (MUST-read whenever currentRealm is `Chaos Sea` or `Shining Abode`; use it to select the exact canonical state surfaces, receipts, reports, and forbidden substitutions before writing files)
-               - Examples/E_CLI_Afterlife_Turns.txt (MUST-read after the matrix whenever currentRealm is `Chaos Sea` or `Shining Abode`; use examples 14-18 for Shining core actions, freeform Guardian commands, and combined scheduler + pending-contract turns)
+               - Examples/E_CLI_Afterlife_Turns.txt (MUST-read after the matrix whenever currentRealm is `Chaos Sea` or `Shining Abode`; use examples 14-19 for Shining core actions, freeform Guardian commands, combined scheduler + pending-contract turns, and ordinary living-world turns without pending files)
                - When writing JSON/state files from PowerShell, use explicit UTF-8 and data objects only (`[ordered]@{}` / `@()`), never script blocks (`{}`)
                
             2. **Read Current Game State:**
@@ -338,6 +338,8 @@
             - Player-founded Guardian contracts: `pending_player_guardian_foundation.json` is Chaos Sea only and must close through `UpdateGuardians.create`, active Guardian/navigation updates, soul foundation markers, and `playerGuardianFoundationHistory`
             - Archive contracts: pending archive action files must close through `archiveActionResolutions`, not by inventing mortal inventory or manual notifications
             - Shining core contracts: `pending_shining_abode_actions.json` must close through canonical `shining_abode_state` mutation plus `coreActionReceipts[]`; supported action types are `discover_native_faction`, `invest_in_faction`, `complete_project`, `support_project`, `unsupport_project`, `retire_project`, `open_gates`, `prepare_incarnation_package`, `pull_relic_gacha`, and `forge_relic.*`
+            - For Shining core contracts, use `OtherGuides/Afterlife_Contract_Matrix.md` row for the exact `actionType` first, then use `Examples/E_CLI_Afterlife_Turns.txt` example 14 for receipt/state fragments; never close a Shining core action with receipt-only output or prose-only output
+            - If a Shining faction/project action changes inputs for an already-open gates draft, preserve `gates` and set `gates.isStale = true`; do not prepare an incarnation package from a stale draft
             - Shining faction founding contracts: `pending_shining_faction_foundings.json` must close through `factionFoundingReceipts[]`
             - Shining faction realignment contracts: `pending_shining_faction_realignments.json` must close through `factionRealignmentReceipts[]`
             - Shining leadership contracts: `pending_shining_faction_leadership_transitions.json` must close through faction `leadershipReceipts[]` and leadership history
@@ -351,6 +353,7 @@
             - Shining Abode cycles may change civic order, radiance pressure, gate state, ritual readiness, public mood, hall tension, Light Spark context, or consequences of Shining projects
             - Shining faction cycles may change faction strength, leadership, loyalty, resident alignment, claims, projects, unrest, alliances, or rival pressure inside the Shining Abode
             - Shining trade cycles may change availability, rarity ceilings, sold-out state, merchant profile, trade inventory, trade receipts, or derivable afterlife inbox events
+            - If no pending files exist, scheduler debt is still mandatory: use `Examples/E_CLI_Afterlife_Turns.txt` example 19 as the model for ordinary Chaos Sea living-world consequences without invented receipts
             - Step 8, player action: process the direct player action only after lifecycle, scheduler, state, pending contracts, and actor scope are known
             - Guardian conversation or quest: use Guardian state, Guardian journals, Guardian social memory, Guardian quests, and Guardian power/project surfaces
             - Guardian-mediated gacha: respect per-return charge limits, reputation tiers, base rarity, bonus audit, and relic-forging project consumption
@@ -431,7 +434,7 @@
 - If `game_state/control/pending_guardian_abode_resident_interactions.json` exists, read all `requests[]` and close each resident `talk` / `history` request in the same accepted turn through `UpdateGuardianAbodeResidentInteractionReceipts`.
 - If `game_state/control/pending_guardian_abode_resident_transfers.json` exists, read all `requests[]` and close each transfer in the same accepted turn through `UpdateGuardianAbodeResidentTransferReceipts`; accepted transfer moves the same `residentId` to the target Abode, refused transfer keeps the resident in source, and departure-only removes source presence without inventing a target.
 - If `game_state/control/pending_player_guardian_foundation.json` exists, read the ritual contract before narration; create a new Guardian actor through `UpdateGuardians.create`, keep the previous Guardian as `former_patron`, set the new mantle as `activeGuardian`, update `chaosSeaNavigation.currentAbodeId`, write `soul_state.playerFoundedGuardianId`, write `soul_state.playerGuardianFoundationStatus=founded`, and append `playerGuardianFoundationHistory`.
-- For concrete valid shapes, first choose the matching contract rows in `OtherGuides/Afterlife_Contract_Matrix.md`, then use `Examples/E_CLI_Afterlife_Turns.txt` examples 10-18 before producing the accepted turn; examples 16-18 show combined scheduler + pending-contract + player-action handling.
+- For concrete valid shapes, first choose the matching contract rows in `OtherGuides/Afterlife_Contract_Matrix.md`, then use `Examples/E_CLI_Afterlife_Turns.txt` examples 10-19 before producing the accepted turn; examples 16-18 show combined scheduler + pending-contract + player-action handling, and example 19 shows ordinary scheduler-only Chaos Sea living-world handling.
 - Ordinary resident conversations still remain soft roleplay, but they can no longer be ignored:
   - `talk` may resolve with accepted/rejected/cancelled and does not require a mechanical effect
   - `history` may resolve with accepted/rejected/cancelled, but an accepted result must leave canonical aftermath: `historyRevealed=true`, and/or `UpdateGuardianAbodeResidentHistoryLog`, and/or updated `mortalWorldImprint`

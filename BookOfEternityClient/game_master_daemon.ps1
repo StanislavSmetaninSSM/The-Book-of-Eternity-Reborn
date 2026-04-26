@@ -65,7 +65,7 @@ $script:ErrorCount = 0
 $script:StartTime = Get-Date
 $script:IsProcessing = $false
 $script:BootstrapSent = $false
-$script:AfterlifeExamplesDirective = " If game_state/meta/soul_state.json.currentRealm is Chaos Sea or Shining Abode, or progressionControl contains any afterlife mustEvaluate*/afterlifeCatchup debt, you MUST also read OtherGuides/Afterlife_Contract_Matrix.md and Examples/E_CLI_Afterlife_Turns.txt before writing or repairing files; use the matrix to select exact canonical surfaces/receipts, then use examples 16-18 for combined scheduler + pending contract + player-action turns."
+$script:AfterlifeExamplesDirective = " If game_state/meta/soul_state.json.currentRealm is Chaos Sea or Shining Abode, or progressionControl contains any afterlife mustEvaluate*/afterlifeCatchup debt, you MUST also read OtherGuides/Afterlife_Contract_Matrix.md and Examples/E_CLI_Afterlife_Turns.txt before writing or repairing files; use the matrix to select exact canonical surfaces/receipts, use example 14 for Shining core action fragments, examples 16-18 for combined scheduler + pending contract + player-action turns, and example 19 for ordinary scheduler-only Chaos Sea living-world turns."
 
 # Resolve paths
 if (!(Test-Path $GameSessionPath)) { New-Item -ItemType Directory -Path $GameSessionPath -Force | Out-Null }

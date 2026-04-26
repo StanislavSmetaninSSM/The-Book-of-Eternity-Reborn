@@ -37,6 +37,7 @@ Use this index before resolving an afterlife turn:
 - Combined Chaos Sea scheduler + pending contract + player action: see example 16.
 - Combined active Shining scheduler + core action + trade/resident consequence: see example 17.
 - `prepare_incarnation_package` vs later Shining bootstrap handoff: see example 18.
+- Ordinary Chaos Sea living world without pending files: see example 19.
 
 ==================================================
 GLOBAL AFTERLIFE TURN RULE
@@ -3010,6 +3011,91 @@ Correct `support_project` receipt fragment:
 }
 ```
 
+Detailed accepted fragments for the other faction/project actions:
+
+The receipt alone is not enough. Each fragment below assumes the matching canonical `shining_abode_state.json` mutation was also made from the pre-turn state: costs were spent exactly as quoted, faction strength was recomputed, and open gates were preserved with `isStale=true` when the action changed gate inputs.
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_invest_glass_323",
+      "actionType": "invest_in_faction",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 323,
+      "resolvedAtUtc": "2026-04-24T13:16:00Z",
+      "reason": "investment applied to faction strength and gates marked stale"
+    },
+    {
+      "requestId": "shine_complete_project_324",
+      "actionType": "complete_project",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "shine_project_glass_refinement_324",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 324,
+      "resolvedAtUtc": "2026-04-24T13:18:00Z",
+      "reason": "projectDraft materialized as one completed Shining project"
+    },
+    {
+      "requestId": "shine_unsupport_project_325",
+      "actionType": "unsupport_project",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "shine_project_glass_passage_010",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 325,
+      "resolvedAtUtc": "2026-04-24T13:22:00Z",
+      "reason": "support flag removed without spending Light Sparks"
+    },
+    {
+      "requestId": "shine_retire_project_326",
+      "actionType": "retire_project",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "shine_project_glass_passage_010",
+      "relicId": "",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 326,
+      "resolvedAtUtc": "2026-04-24T13:24:00Z",
+      "reason": "eligible completed project retired and removed from support"
+    }
+  ]
+}
+```
+
+For these four actions, common invalid outputs are: receipt without the matching state mutation, mutation without the receipt, spending Light Sparks for support toggles, creating a new project for `support_project` or `unsupport_project`, deleting retired project history, or leaving an open gates draft fresh after faction/project inputs changed.
+
 14B. Preparing the frozen next-life package:
 
 `prepare_incarnation_package` is not the same turn as Shining pending-bootstrap handoff. This action freezes selected blessing cards into `preparedIncarnationPackage`. The later `TriggerIncarnation` handoff preserves that package for runtime consumption.
@@ -3171,6 +3257,89 @@ Correct `forge_relic.retune_property` receipt fragment:
       "resolvedAtTurn": 325,
       "resolvedAtUtc": "2026-04-24T13:40:00Z",
       "reason": "property at index 1 retuned within the same band"
+    }
+  ]
+}
+```
+
+Other valid forge receipt fragments:
+
+These are receipt fragments only. The same accepted response must also update `soul_state.json` with the full canonical Soul Relic result and update `shining_abode_state.json.lightSparks` by the exact quoted cost. Do not write a detached relic fragment that is not persisted in the Soul state.
+
+```json
+{
+  "coreActionReceipts": [
+    {
+      "requestId": "shine_forge_reshape_326",
+      "actionType": "forge_relic.reshape",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_mirror_lens_001",
+      "returnCycleId": "",
+      "targetFormTag": "lens_of_dawn",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 326,
+      "resolvedAtUtc": "2026-04-24T13:42:00Z",
+      "reason": "relic form tag reshaped by supported refinement project"
+    },
+    {
+      "requestId": "shine_forge_strengthen_327",
+      "actionType": "forge_relic.strengthen_band",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_mirror_lens_001",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": 0,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 327,
+      "resolvedAtUtc": "2026-04-24T13:44:00Z",
+      "reason": "property band upgraded by one authorized step"
+    },
+    {
+      "requestId": "shine_forge_echo_328",
+      "actionType": "forge_relic.stabilize_echo",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_companion_echo_001",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 328,
+      "resolvedAtUtc": "2026-04-24T13:46:00Z",
+      "reason": "companion echo stabilized on the target relic"
+    },
+    {
+      "requestId": "shine_forge_uplift_329",
+      "actionType": "forge_relic.uplift_rarity",
+      "status": "accepted",
+      "factionId": "shine_faction_glass_light_001",
+      "projectId": "",
+      "relicId": "relic_mirror_lens_001",
+      "returnCycleId": "",
+      "targetFormTag": "",
+      "propertyIndex": -1,
+      "selectedCardIds": [],
+      "newResidentIds": [],
+      "seededProjectIds": [],
+      "generatedDraftVersion": 0,
+      "resolvedAtTurn": 329,
+      "resolvedAtUtc": "2026-04-24T13:48:00Z",
+      "reason": "rarity uplift applied with required added properties"
     }
   ]
 }
@@ -4018,6 +4187,135 @@ ordinary Shining coreActionReceipts[]
 ordinary Shining trade/faction/resident progression report
 soul_state.currentRealm = "Mortal World"
 ```
+
+==================================================
+19. VALID — ORDINARY CHAOS SEA LIVING WORLD WITHOUT PENDING FILES
+==================================================
+
+This example is for an ordinary `Chaos Sea` turn where no pending request file exists, but the scheduler still says the world is alive. The GM must not answer with dialogue only. Due contours still need reasoning, concrete afterlife consequences or a stability explanation, and a progression report.
+
+Input conditions:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "session_afterlife_019",
+    "requestId": "turn_419",
+    "turnNumber": 419,
+    "currentRealm": "Chaos Sea",
+    "playerAction": "Я молча сижу у края Обители Азалии и слушаю Море.",
+    "progressionControl": {
+      "currentRealm": "Chaos Sea",
+      "currentChaosSeaTurnOrdinal": 37,
+      "nextChaosSeaTurnOrdinal": 38,
+      "lastChaosSeaSimulationOrdinal": 36,
+      "lastGuardianProjectCycleOrdinal": 21,
+      "nextGuardianProjectCycleOrdinal": 22,
+      "lastResidentAgencyCycleOrdinal": 14,
+      "nextResidentAgencyCycleOrdinal": 15,
+      "chaosSeaCyclesExpectedThisTurn": 1,
+      "guardianProjectCyclesExpectedThisTurn": 1,
+      "residentAgencyCyclesExpectedThisTurn": 1,
+      "mustEvaluateChaosSeaProgression": true,
+      "mustEvaluateGuardianProjectProgression": true,
+      "mustEvaluateResidentAgencyProgression": true,
+      "afterlifeCatchupRequired": false,
+      "afterlifeCatchupSummaryEventsRequired": 0,
+      "afterlifeCatchupContours": []
+    }
+  }
+}
+```
+
+Correct reasoning:
+
+```markdown
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Afterlife subtype: Ordinary Chaos Sea living-world turn without pending files.
+- Релевантные акторы: Азалия, Лиора
+- Почему они релевантны: Азалия has a due Guardian project cycle; Лиора has a due resident agency cycle.
+- Акторы вне охвата: other Guardians, Shining factions
+- Почему они вне охвата: no Shining realm state is active, no pending Shining files exist, and the hub cycle produces local Abode pressure only.
+
+### Азалия
+- Ситуация: The player is silent, but the Sea's pressure around her Abode still changes.
+- Мысли: Азалия notices that silence gives her current project a clean anchor instead of a new demand.
+- Действия: She advances the existing project by one small work step and records a thought.
+
+### Лиора
+- Ситуация: The quieter Abode gives Лиора enough safety to act internally.
+- Мысли: She decides not to request a conversation yet, but her agency cycle still matters.
+- Действия: She records a resident thought; no roster, transfer, or history request is invented.
+
+## Afterlife Living World / Живой мир Посмертия
+- Chaos Sea hub cycle: the Sea calms around this Abode rather than creating a new external event; this is described in response and closed by progression report.
+- Guardian project cycle: Азалия advances her existing project through `guardianProjectUpdates`.
+- Resident agency cycle: Лиора acts through `residentThoughtJournalUpdates`.
+- No pending files exist, so no receipt arrays are invented.
+```
+
+Correct accepted response fragment:
+
+```json
+{
+  "response": "Море Хаоса не отвечает словами. Оно чуть отступает от края Обители, оставляя Азалии редкую неподвижность для работы, а Лиоре — место, где память не требует немедленного разговора.",
+  "guardianThoughtJournalUpdates": [
+    {
+      "entryId": "guardian_thought_azalia_419_silent_anchor",
+      "guardianId": "guard_social_azalia_001",
+      "turn": 419,
+      "timestamp": "2026-04-24T16:19:00Z",
+      "title": "Тихая опора",
+      "summary": "Молчание души стало не отказом, а устойчивой точкой для текущего проекта Обители."
+    }
+  ],
+  "guardianProjectUpdates": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "projectId": "gproj_azalia_silk_hall_001",
+      "workDone": 18,
+      "stability": 7,
+      "workAudit": {
+        "source": "afterlife_living_world_cycle",
+        "cycleOrdinal": 22,
+        "reason": "quiet Chaos Sea hub pressure gave the project uninterrupted work time"
+      }
+    }
+  ],
+  "residentThoughtJournalUpdates": [
+    {
+      "entryId": "thought_liora_419_quiet_edge",
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "turn": 419,
+      "timestamp": "2026-04-24T16:19:00Z",
+      "title": "Край без требования",
+      "summary": "Лиора решила, что не обязана немедленно превращать тишину в просьбу, и удержала это как самостоятельный выбор."
+    }
+  ],
+  "progressionProcessingReport": {
+    "sessionId": "session_afterlife_019",
+    "requestId": "turn_419",
+    "turnNumber": 419,
+    "chaosSeaCyclesProcessed": 1,
+    "guardianProjectCyclesProcessed": 1,
+    "residentAgencyCyclesProcessed": 1,
+    "newLastChaosSeaSimulationOrdinal": 38,
+    "newLastGuardianProjectCycleOrdinal": 22,
+    "newLastResidentAgencyCycleOrdinal": 15,
+    "afterlifeCatchupProcessed": false,
+    "afterlifeCatchupSummaryEventsProcessed": 0
+  }
+}
+```
+
+Why this is valid:
+- There are no pending files, so no closure receipts are invented.
+- The player action is quiet, but scheduler debt still produces living-world consequences.
+- The Chaos Sea hub cycle is not written to `worldEventsLog`.
+- Every processed contour advances only its own marker.
+- Resident agency is not skipped just because the resident did not speak to the player.
 
 ==================================================
 COMMON INVALID PATTERNS
