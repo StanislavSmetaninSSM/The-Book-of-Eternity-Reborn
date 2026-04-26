@@ -177,14 +177,20 @@ public sealed class ExampleDocumentationValidationTests
                 var fs = new FileSystemManager(tempRoot, NullLogger<FileSystemManager>.Instance);
                 await ApplyScenarioBaselineAsync(fs, scenario.BaselineKind);
                 await ApplyScenarioPreStateFilesAsync(fs, scenario.PreStateFiles);
+                if (string.Equals(scenario.Runner, "acceptedTurnDistribution", StringComparison.Ordinal))
+                    await ApplyScenarioAcceptedTurnValidationBaselineAsync(fs, scenario);
                 failures.AddRange(await BuildScenarioPendingTurnSnapshotAsync(fs, scenario));
+                if (string.Equals(scenario.Runner, "acceptedTurnDistribution", StringComparison.Ordinal))
+                    ClearScenarioTransientOutputFiles(fs);
                 var unchangedBefore = await SnapshotScenarioFilesAsync(fs, scenario.ExpectedFilesUnchanged);
 
                 var distributor = new StateDistributor(fs, NullLogger<StateDistributor>.Instance);
 
                 var modifiedFiles = await distributor.DistributeAsync(response);
+                string? rawGuardianProjectTrackerJson = null;
                 if (string.Equals(scenario.Runner, "acceptedTurnDistribution", StringComparison.Ordinal))
                 {
+                    rawGuardianProjectTrackerJson = await CaptureScenarioRawGuardianProjectTrackerAsync(fs);
                     await NormalizeScenarioAccumulatedStateAsync(fs, scenario);
                     failures.AddRange(await ApplyScenarioCompanionFilesAsync(fs, scenario, snippets));
                     failures.AddRange(await WriteScenarioTurnCompleteSignalAsync(fs, scenario.Id));
@@ -248,7 +254,7 @@ public sealed class ExampleDocumentationValidationTests
                 }
 
                 if (string.Equals(scenario.Runner, "acceptedTurnDistribution", StringComparison.Ordinal))
-                    failures.AddRange(await RunAcceptedTurnScenarioValidationAsync(fs, scenario.Id));
+                    failures.AddRange(await RunAcceptedTurnScenarioValidationAsync(fs, scenario.Id, rawGuardianProjectTrackerJson));
 
                 if (response.Response != null &&
                     !File.Exists(Path.Combine(tempRoot, "game_session", "output", "narrative_response.json")))
@@ -505,6 +511,163 @@ public sealed class ExampleDocumentationValidationTests
     private static string NormalizeSeparators(string path) =>
         path.Replace('\\', '/');
 
+    private static async Task ApplyScenarioAcceptedTurnValidationBaselineAsync(
+        FileSystemManager fs,
+        ExampleRuntimeScenario scenario)
+    {
+        await fs.WriteFileAtomicAsync("game_state/meta/achievements.json", """
+{
+  "unlockedAchievements": [],
+  "trackedProgress": [],
+  "stats": {
+    "totalUnlocked": 0,
+    "byCategory": {
+      "combat": 0,
+      "exploration": 0,
+      "story": 0,
+      "social": 0,
+      "crafting": 0,
+      "meta": 0,
+      "death": 0,
+      "secret": 0
+    },
+    "byRarity": {
+      "common": 0,
+      "uncommon": 0,
+      "rare": 0,
+      "epic": 0,
+      "legendary": 0
+    }
+  }
+}
+""");
+
+        await fs.WriteFileAtomicAsync("lore/codex_entries.json", """
+{
+  "entries": [],
+  "totalEntries": 0,
+  "categories": {
+    "cosmology": 0,
+    "geography": 0,
+    "history": 0,
+    "cultures": 0,
+    "creatures": 0,
+    "characters": 0,
+    "artifacts": 0,
+    "factions": 0,
+    "magic": 0,
+    "other": 0
+  }
+}
+""");
+
+        await fs.WriteFileAtomicAsync("lore/chaos_sea/soul_system_lore.json", """
+{
+  "summary": "Production-equivalent test baseline for the Chaos Sea soul system lore."
+}
+""");
+        await fs.WriteFileAtomicAsync("lore/chaos_sea/guardians_lore.json", """
+{
+  "summary": "Production-equivalent test baseline for Guardian lore."
+}
+""");
+        await fs.WriteFileAtomicAsync("lore/chaos_sea/player_chronicle.json", """
+{
+  "entries": []
+}
+""");
+
+        await fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+{
+  "items": [],
+  "equippedItems": {
+    "MainHand": null,
+    "OffHand": null,
+    "Head": null,
+    "Chest": null,
+    "Legs": null,
+    "Feet": null,
+    "Accessory1": null,
+    "Accessory2": null
+  },
+  "totalWeight": "0.0kg",
+  "maxWeight": "45.0kg"
+}
+""");
+
+        await fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+{
+  "locationId": null,
+  "name": "Production-equivalent afterlife validation baseline",
+  "coordinates": { "x": 0, "y": 0, "z": 0 },
+  "locationType": "indoor",
+  "internalDifficultyProfile": {
+    "combat": 0,
+    "environment": 0,
+    "social": 0,
+    "exploration": 0
+  },
+  "externalDifficultyProfile": {
+    "combat": 0,
+    "environment": 0,
+    "social": 0,
+    "exploration": 0
+  },
+  "tendency": "NO_CHANGE",
+  "description": "Neutral baseline location retained only so unrelated FileSystemExample mortal-world data cannot fail afterlife documentation validation.",
+  "lastEventsDescription": "#[1] - 24 апреля 2026 г., 09:10: baseline afterlife documentation validation state.",
+  "image_prompt": "neutral afterlife validation baseline",
+  "factionControl": [],
+  "adjacencyMap": [],
+  "locationStorages": [],
+  "activeThreats": []
+}
+""");
+
+        await fs.WriteFileAtomicAsync("game_state/meta/abode_power_journal.json", """
+{
+  "entries": []
+}
+""");
+
+        await fs.WriteFileAtomicAsync("game_state/world/weather.json", """
+{
+  "tendency": "NO_CHANGE",
+  "description": "Neutral afterlife validation baseline weather."
+}
+""");
+
+        foreach (var staleFixtureFile in new[]
+        {
+            "game_state/misc/multipliers.json",
+            "game_state/misc/stealth_state.json",
+            "game_state/npcs/item_journals.json",
+            "game_state/npcs/npc_journals.json",
+            "game_state/player/player_status.json"
+        })
+        {
+            if (fs.FileExists(staleFixtureFile))
+                fs.DeleteFile(staleFixtureFile);
+        }
+
+        if (ScenarioExpectsModifiedFile(scenario, "game_state/control/incarnation_trigger.json"))
+            await fs.WriteFileAtomicAsync("game_state/control/incarnation_trigger.json", "{}");
+
+        if (ScenarioExpectsModifiedFile(scenario, "game_state/control/progression_report.json"))
+            await fs.WriteFileAtomicAsync("game_state/control/progression_report.json", "{}");
+
+        await fs.WriteFileAtomicAsync("game_state/meta/guardian_project_journal.json", """{ "entries": [] }""");
+
+        if (ScenarioExpectsModifiedFile(scenario, "game_state/meta/guardian_thought_journal.json"))
+            await fs.WriteFileAtomicAsync("game_state/meta/guardian_thought_journal.json", """{ "entries": [] }""");
+    }
+
+    private static bool ScenarioExpectsModifiedFile(ExampleRuntimeScenario scenario, string relativePath)
+    {
+        return scenario.ExpectedModifiedFiles
+            .Any(path => string.Equals(NormalizeSeparators(path), relativePath, StringComparison.OrdinalIgnoreCase));
+    }
+
     private static async Task ApplyScenarioBaselineAsync(FileSystemManager fs, string baselineKind)
     {
         if (string.IsNullOrWhiteSpace(baselineKind))
@@ -637,7 +800,7 @@ public sealed class ExampleDocumentationValidationTests
       },
       "availableInteractions": [
         "talk",
-        "comfort"
+        "history"
       ]
     }
   ],
@@ -652,7 +815,7 @@ public sealed class ExampleDocumentationValidationTests
 
         await fs.WriteFileAtomicAsync("game_state/meta/abode_power_journal.json", """
 {
-  "events": []
+  "entries": []
 }
 """);
     }
@@ -671,8 +834,8 @@ public sealed class ExampleDocumentationValidationTests
   "nameVariants": {
     "default": "Азалия",
     "feminine": "Азалия",
-    "masculine": null,
-    "neutral": null
+    "masculine": "Азалия",
+    "neutral": "Азалия"
   },
   "manifestation": {
     "formFlexibility": "selective",
@@ -828,10 +991,13 @@ public sealed class ExampleDocumentationValidationTests
 
     private static async Task<List<string>> RunAcceptedTurnScenarioValidationAsync(
         FileSystemManager fs,
-        string scenarioId)
+        string scenarioId,
+        string? rawGuardianProjectTrackerJson)
     {
         var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
-        var issues = await validator.ValidateAcceptedTurnNarrativePayloadAsync();
+        var issues = await validator.ValidateGameStateAsync();
+        issues = await FilterPostNormalizerGuardianProjectAuthorityIssuesAsync(fs, issues, rawGuardianProjectTrackerJson);
+        issues.AddRange(await validator.ValidateAcceptedTurnNarrativePayloadAsync());
         issues.AddRange(await validator.ValidateAcceptedTurnInterfacePayloadAsync());
         issues.AddRange(await validator.ValidateAcceptedTurnReasoningAsync());
         issues.AddRange(await validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());
@@ -841,8 +1007,130 @@ public sealed class ExampleDocumentationValidationTests
 
         return issues
             .Where(issue => issue.Severity == IssueSeverity.Error)
-            .Select(issue => $"{scenarioId}: accepted-turn validation error {issue.Code}: {issue.Message}")
+            .Select(issue => $"{scenarioId}: accepted-turn validation error {issue.FilePath} {issue.Code}: {issue.Message}")
             .ToList();
+    }
+
+    private static async Task<string?> CaptureScenarioRawGuardianProjectTrackerAsync(FileSystemManager fs)
+    {
+        return fs.FileExists(GuardianProjectState.TrackerPath)
+            ? await fs.ReadFileAsync(GuardianProjectState.TrackerPath)
+            : null;
+    }
+
+    private static async Task<List<ValidationIssue>> FilterPostNormalizerGuardianProjectAuthorityIssuesAsync(
+        FileSystemManager fs,
+        List<ValidationIssue> issues,
+        string? rawGuardianProjectTrackerJson)
+    {
+        // Production validates after canonical normalization, when project command surfaces have been consumed.
+        // Rebuild the same authority from the raw distributed commands so docs tests still catch real divergence.
+        if (!issues.Any(IsPostNormalizerGuardianProjectAuthorityIssue) ||
+            !HasGuardianProjectCommandSurface(rawGuardianProjectTrackerJson) ||
+            !await NormalizedGuardianProjectStateMatchesRawCommandAuthorityAsync(fs, rawGuardianProjectTrackerJson))
+        {
+            return issues;
+        }
+
+        return issues
+            .Where(issue => !IsPostNormalizerGuardianProjectAuthorityIssue(issue))
+            .ToList();
+    }
+
+    private static bool IsPostNormalizerGuardianProjectAuthorityIssue(ValidationIssue issue) =>
+        string.Equals(issue.Code, "guardian_project_materialized_state_outside_authority", StringComparison.OrdinalIgnoreCase) &&
+        issue.FilePath.StartsWith(GuardianProjectState.TrackerPath, StringComparison.OrdinalIgnoreCase);
+
+    private static bool HasGuardianProjectCommandSurface(string? trackerJson)
+    {
+        var trackerRoot = TryParseJsonObject(trackerJson);
+        return trackerRoot?["startGuardianProjects"] is JsonArray ||
+               trackerRoot?["guardianProjectUpdates"] is JsonArray ||
+               trackerRoot?["completeGuardianProjects"] is JsonArray;
+    }
+
+    private static async Task<bool> NormalizedGuardianProjectStateMatchesRawCommandAuthorityAsync(
+        FileSystemManager fs,
+        string? rawGuardianProjectTrackerJson)
+    {
+        var rawTrackerRoot = TryParseJsonObject(rawGuardianProjectTrackerJson);
+        var currentTrackerRoot = TryParseJsonObject(await ReadScenarioFileAsync(fs, GuardianProjectState.TrackerPath));
+        var preTurnTrackerRoot = TryParseJsonObject(await ReadScenarioFileAsync(fs, $"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}"));
+        var preTurnGuardiansRoot = TryParseJsonObject(await ReadScenarioFileAsync(fs, "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"));
+        var currentGuardiansRoot = TryParseJsonObject(await ReadScenarioFileAsync(fs, "game_state/meta/guardians.json"));
+        if (rawTrackerRoot == null ||
+            currentTrackerRoot == null ||
+            preTurnTrackerRoot == null ||
+            preTurnGuardiansRoot == null ||
+            currentGuardiansRoot == null)
+        {
+            return false;
+        }
+
+        var turnNumber = await ReadScenarioTurnNumberAsync(fs);
+        var requirements = CanonicalStateNormalizer.ResolveRequiredCurrentGuardianProjectSoulContext(rawTrackerRoot, preTurnTrackerRoot);
+        var currentSoulStateJson = await ReadScenarioFileAsync(fs, "game_state/meta/soul_state.json");
+        var preTurnSoulStateJson = await ReadScenarioFileAsync(fs, "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json");
+        var currentLifeTransitionsJson = await ReadScenarioFileAsync(fs, "game_state/control/life_transitions.json");
+        if (!CanonicalStateNormalizer.TryResolveGuardianProjectAuthoritySoulContext(
+                currentSoulStateJson,
+                preTurnSoulStateJson,
+                currentLifeTransitionsJson,
+                turnNumber,
+                requirements,
+                out var currentIncarnation,
+                out var currentRealm,
+                out _))
+        {
+            return false;
+        }
+
+        var expectedTrackerRoot = CanonicalStateNormalizer.BuildGuardianProjectAuthorityRootForValidation(
+            preTurnTrackerRoot,
+            rawTrackerRoot,
+            preTurnGuardiansRoot,
+            currentGuardiansRoot,
+            turnNumber,
+            currentIncarnation,
+            currentRealm);
+
+        return JsonNode.DeepEquals(currentTrackerRoot, expectedTrackerRoot);
+    }
+
+    private static JsonObject? TryParseJsonObject(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(json, nodeOptions: null, documentOptions: DocumentOptions) as JsonObject;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static async Task<int> ReadScenarioTurnNumberAsync(FileSystemManager fs)
+    {
+        var turnRequestJson = await ReadScenarioFileAsync(fs, "input/turn_request.json");
+        if (string.IsNullOrWhiteSpace(turnRequestJson))
+            return 0;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(turnRequestJson, DocumentOptions);
+            return doc.RootElement.TryGetProperty("turnNumber", out var turnNumber) &&
+                   turnNumber.ValueKind == JsonValueKind.Number &&
+                   turnNumber.TryGetInt32(out var value)
+                ? value
+                : 0;
+        }
+        catch
+        {
+            return 0;
+        }
     }
 
     private static async Task<List<ValidationIssue>> RunProgressionReportScenarioValidationAsync(FileSystemManager fs)
@@ -975,7 +1263,7 @@ public sealed class ExampleDocumentationValidationTests
         var files = new JsonObject();
         var snapshotHashes = new JsonObject();
         var rollbackBaselineFiles = new JsonArray();
-        foreach (var relativePath in scenario.PendingSnapshotFiles)
+        foreach (var relativePath in EnumerateScenarioPendingSnapshotFiles(fs, scenario))
         {
             var normalizedPath = NormalizeSeparators(relativePath);
             var content = await ReadScenarioFileAsync(fs, normalizedPath);
@@ -1020,6 +1308,84 @@ public sealed class ExampleDocumentationValidationTests
             JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(fs);
         return failures;
+    }
+
+    private static IReadOnlyList<string> EnumerateScenarioPendingSnapshotFiles(
+        FileSystemManager fs,
+        ExampleRuntimeScenario scenario)
+    {
+        var files = new HashSet<string>(scenario.PendingSnapshotFiles.Select(NormalizeSeparators), StringComparer.OrdinalIgnoreCase);
+        if (!string.Equals(scenario.Runner, "acceptedTurnDistribution", StringComparison.Ordinal))
+            return files.OrderBy(path => path, StringComparer.OrdinalIgnoreCase).ToArray();
+
+        foreach (var relativePath in EnumerateScenarioRollbackTrackedFiles(fs))
+            files.Add(relativePath);
+
+        return files.OrderBy(path => path, StringComparer.OrdinalIgnoreCase).ToArray();
+    }
+
+    private static IEnumerable<string> EnumerateScenarioRollbackTrackedFiles(FileSystemManager fs)
+    {
+        var root = fs.ResolvePath("");
+        foreach (var relativeRoot in new[] { "game_state", "lore" })
+        {
+            var absoluteRoot = fs.ResolvePath(relativeRoot);
+            if (!Directory.Exists(absoluteRoot))
+                continue;
+
+            foreach (var absoluteFile in Directory.EnumerateFiles(absoluteRoot, "*", SearchOption.AllDirectories))
+            {
+                var relative = Path.GetRelativePath(root, absoluteFile).Replace('\\', '/');
+                if (IsScenarioSnapshotExcludedPath(relative))
+                    continue;
+
+                yield return relative;
+            }
+        }
+
+        foreach (var outputFile in new[]
+        {
+            "output/narrative_response.json",
+            "output/interface_updates.json",
+            "output/debug_logs.json",
+            "output/qte_offer.json",
+            "output/ink_feather_action_result.json",
+            "game_state/control/progression_report.json"
+        })
+        {
+            if (fs.FileExists(outputFile))
+                yield return outputFile;
+        }
+    }
+
+    private static bool IsScenarioSnapshotExcludedPath(string relativePath)
+    {
+        var normalized = NormalizeSeparators(relativePath);
+        return normalized.Equals("game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("game_state/control/validation_repair_request.json", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals("game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("game_state/control/pending_turn_snapshot/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Contains(".rollback.", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void ClearScenarioTransientOutputFiles(FileSystemManager fs)
+    {
+        foreach (var file in new[]
+        {
+            "output/narrative_response.json",
+            "output/interface_updates.json",
+            "output/debug_logs.json",
+            "output/ink_feather_action_result.json",
+            "output/qte_offer.json",
+            "game_state/control/progression_report.json"
+        })
+        {
+            if (fs.FileExists(file))
+                fs.DeleteFile(file);
+        }
     }
 
     private static async Task NormalizeExistingPendingTurnSnapshotAsync(FileSystemManager fs)

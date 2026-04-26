@@ -125,10 +125,18 @@ internal static class ActorJournalState
         entry["intent"] = JsonValue.Create(GetNodeString(entry["intent"]));
         entry["timestamp"] = JsonValue.Create(GetNodeString(entry["timestamp"]));
         entry["turn"] = JsonValue.Create(GetNodeInt(entry["turn"]));
-        entry["requestId"] = JsonValue.Create(GetNodeString(entry["requestId"]));
-        entry["interactionType"] = JsonValue.Create(GetNodeString(entry["interactionType"]));
-        entry["status"] = JsonValue.Create(GetNodeString(entry["status"]));
-        entry["responseMode"] = JsonValue.Create(GetNodeString(entry["responseMode"]));
+        var hasClosureMetadata =
+            entry.ContainsKey("requestId") ||
+            entry.ContainsKey("interactionType") ||
+            entry.ContainsKey("status") ||
+            entry.ContainsKey("responseMode");
+        if (hasClosureMetadata)
+        {
+            entry["requestId"] = JsonValue.Create(GetNodeString(entry["requestId"]));
+            entry["interactionType"] = JsonValue.Create(GetNodeString(entry["interactionType"]));
+            entry["status"] = JsonValue.Create(GetNodeString(entry["status"]));
+            entry["responseMode"] = JsonValue.Create(GetNodeString(entry["responseMode"]));
+        }
 
         if (entry["tags"] is not JsonArray tags)
         {
