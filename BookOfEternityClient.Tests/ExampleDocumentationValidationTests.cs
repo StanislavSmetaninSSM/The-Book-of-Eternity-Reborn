@@ -7,6 +7,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -160,7 +161,8 @@ public sealed class ExampleDocumentationValidationTests
                 continue;
             }
 
-            if (!string.Equals(scenario.Runner, "gameResponseDistribution", StringComparison.Ordinal))
+            if (!string.Equals(scenario.Runner, "gameResponseDistribution", StringComparison.Ordinal) &&
+                !string.Equals(scenario.Runner, "acceptedTurnDistribution", StringComparison.Ordinal))
             {
                 failures.Add($"{scenario.Id}: unsupported example runtime runner '{scenario.Runner}'.");
                 continue;
@@ -171,6 +173,9 @@ public sealed class ExampleDocumentationValidationTests
             {
                 CopyDirectory(TestRepoPaths.BaseSessionRoot, Path.Combine(tempRoot, "game_session"));
                 var fs = new FileSystemManager(tempRoot, NullLogger<FileSystemManager>.Instance);
+                await ApplyScenarioPreStateFilesAsync(fs, scenario.PreStateFiles);
+                var unchangedBefore = await SnapshotScenarioFilesAsync(fs, scenario.ExpectedFilesUnchanged);
+
                 var distributor = new StateDistributor(fs, NullLogger<StateDistributor>.Instance);
 
                 var modifiedFiles = await distributor.DistributeAsync(response);
@@ -185,6 +190,51 @@ public sealed class ExampleDocumentationValidationTests
                         failures.Add($"{scenario.Id}: expected distribution to modify '{expectedFile}', actual: {string.Join(", ", normalizedModifiedFiles)}");
                     }
                 }
+
+                foreach (var expectedFile in scenario.ExpectedFilesAbsent)
+                {
+                    if (File.Exists(fs.ResolvePath(expectedFile)))
+                        failures.Add($"{scenario.Id}: expected '{expectedFile}' to remain absent.");
+                }
+
+                foreach (var (relativePath, beforeContent) in unchangedBefore)
+                {
+                    var afterContent = await ReadScenarioFileAsync(fs, relativePath);
+                    if (!string.Equals(beforeContent, afterContent, StringComparison.Ordinal))
+                        failures.Add($"{scenario.Id}: expected '{relativePath}' to remain unchanged.");
+                }
+
+                foreach (var assertion in scenario.ExpectedFileContains)
+                {
+                    var content = await ReadScenarioFileAsync(fs, assertion.Path);
+                    if (content == null)
+                    {
+                        failures.Add($"{scenario.Id}: expected '{assertion.Path}' to exist.");
+                        continue;
+                    }
+
+                    foreach (var requiredText in assertion.RequiredText)
+                    {
+                        if (!content.Contains(requiredText, StringComparison.Ordinal))
+                            failures.Add($"{scenario.Id}: expected '{assertion.Path}' to contain '{requiredText}'.");
+                    }
+                }
+
+                foreach (var assertion in scenario.ExpectedFileDoesNotContain)
+                {
+                    var content = await ReadScenarioFileAsync(fs, assertion.Path);
+                    if (content == null)
+                        continue;
+
+                    foreach (var forbiddenText in assertion.ForbiddenText)
+                    {
+                        if (content.Contains(forbiddenText, StringComparison.Ordinal))
+                            failures.Add($"{scenario.Id}: expected '{assertion.Path}' not to contain '{forbiddenText}'.");
+                    }
+                }
+
+                if (string.Equals(scenario.Runner, "acceptedTurnDistribution", StringComparison.Ordinal))
+                    failures.AddRange(await RunAcceptedTurnScenarioValidationAsync(fs, scenario.Id));
 
                 if (response.Response != null &&
                     !File.Exists(Path.Combine(tempRoot, "game_session", "output", "narrative_response.json")))
@@ -217,6 +267,64 @@ public sealed class ExampleDocumentationValidationTests
             "Manifest-backed example runtime scenarios must execute through the client distribution surfaces." +
             Environment.NewLine +
             string.Join(Environment.NewLine, failures));
+    }
+
+    [Fact]
+    public void InkFeatherActionReceiptExamples_IncludeRequiredContractFields()
+    {
+        var manifest = ExampleValidationManifest.Load();
+        var snippets = ExampleSnippetExtractor.ExtractAll().ToArray();
+        var failures = new List<string>();
+
+        foreach (var snippet in snippets)
+        {
+            if (snippet.Expected == ExampleExpected.Invalid ||
+                manifest.IsSyntaxExempt(snippet) ||
+                !TryBuildJsonDocument(snippet.RawText, out var normalizedJson, out _, out _) ||
+                !TryParseJsonObject(normalizedJson, out var root) ||
+                !root.TryGetProperty("actionTag", out var actionTagElement))
+            {
+                continue;
+            }
+
+            var missing = new[]
+                {
+                    "sessionId",
+                    "requestId",
+                    "turnNumber",
+                    "actionTag",
+                    "resolved",
+                    "costInFeathers",
+                    "resolutionType",
+                    "summary",
+                    "stateEvidence"
+                }
+                .Where(field => !root.TryGetProperty(field, out _))
+                .ToArray();
+
+            if (missing.Length > 0)
+            {
+                failures.Add($"{snippet.Location}: ink-feather receipt is missing required fields: {string.Join(", ", missing)}");
+                continue;
+            }
+
+            if (actionTagElement.GetString() is "ABODE_OFFERING" &&
+                root.TryGetProperty("stateEvidence", out var stateEvidence) &&
+                stateEvidence.ValueKind == JsonValueKind.Object)
+            {
+                var missingEvidence = new[] { "powerGain", "powerEventId" }
+                    .Where(field => !stateEvidence.TryGetProperty(field, out _))
+                    .ToArray();
+                if (missingEvidence.Length > 0)
+                    failures.Add($"{snippet.Location}: ABODE_OFFERING receipt stateEvidence is missing: {string.Join(", ", missingEvidence)}");
+            }
+        }
+
+        Assert.True(
+            failures.Count == 0,
+            "Ink Feather action receipt examples must match the output/ink_feather_action_result.json contract." +
+            Environment.NewLine +
+            string.Join(Environment.NewLine, failures.Take(50)));
     }
 
     private static bool LooksLikeGameResponse(IReadOnlyCollection<string> propertyNames, ISet<string> knownResponseFields)
@@ -265,6 +373,27 @@ public sealed class ExampleDocumentationValidationTests
         catch
         {
             propertyNames = [];
+            return false;
+        }
+    }
+
+    private static bool TryParseJsonObject(string json, out JsonElement root)
+    {
+        try
+        {
+            using var document = JsonDocument.Parse(json, DocumentOptions);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                root = default;
+                return false;
+            }
+
+            root = document.RootElement.Clone();
+            return true;
+        }
+        catch
+        {
+            root = default;
             return false;
         }
     }
@@ -361,6 +490,54 @@ public sealed class ExampleDocumentationValidationTests
 
     private static string NormalizeSeparators(string path) =>
         path.Replace('\\', '/');
+
+    private static async Task ApplyScenarioPreStateFilesAsync(
+        FileSystemManager fs,
+        IReadOnlyList<ExampleRuntimePreStateFile> preStateFiles)
+    {
+        foreach (var file in preStateFiles)
+        {
+            var content = JsonSerializer.Serialize(file.Content, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+            await fs.WriteFileAtomicAsync(file.Path, content);
+        }
+    }
+
+    private static async Task<Dictionary<string, string?>> SnapshotScenarioFilesAsync(
+        FileSystemManager fs,
+        IReadOnlyList<string> relativePaths)
+    {
+        var snapshots = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var relativePath in relativePaths)
+            snapshots[relativePath] = await ReadScenarioFileAsync(fs, relativePath);
+        return snapshots;
+    }
+
+    private static async Task<string?> ReadScenarioFileAsync(FileSystemManager fs, string relativePath)
+    {
+        if (!File.Exists(fs.ResolvePath(relativePath)))
+            return null;
+
+        return await fs.ReadFileAsync(relativePath);
+    }
+
+    private static async Task<List<string>> RunAcceptedTurnScenarioValidationAsync(
+        FileSystemManager fs,
+        string scenarioId)
+    {
+        var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+        issues.AddRange(await validator.ValidateAcceptedTurnNarrativePayloadAsync());
+        issues.AddRange(await validator.ValidateAcceptedTurnInterfacePayloadAsync());
+        issues.AddRange(await validator.ValidateAcceptedTurnReasoningAsync());
+        issues.AddRange(await validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());
+        issues.AddRange(await validator.ValidateAcceptedTurnQteOfferAsync());
+        issues.AddRange(await validator.ValidatePendingMemoryLegacyApplicationAsync());
+
+        return issues
+            .Where(issue => issue.Severity == IssueSeverity.Error)
+            .Select(issue => $"{scenarioId}: accepted-turn validation error {issue.Code}: {issue.Message}")
+            .ToList();
+    }
 
     private static void CopyDirectory(string sourceDir, string destinationDir)
     {
@@ -563,7 +740,12 @@ internal sealed class ExampleRuntimeScenario
     public string File { get; set; } = "";
     public string Runner { get; set; } = "";
     public string[] RequiredText { get; set; } = [];
+    public List<ExampleRuntimePreStateFile> PreStateFiles { get; set; } = new();
     public string[] ExpectedModifiedFiles { get; set; } = [];
+    public string[] ExpectedFilesAbsent { get; set; } = [];
+    public string[] ExpectedFilesUnchanged { get; set; } = [];
+    public List<ExampleRuntimeFileContainsAssertion> ExpectedFileContains { get; set; } = new();
+    public List<ExampleRuntimeFileDoesNotContainAssertion> ExpectedFileDoesNotContain { get; set; } = new();
 
     public bool Matches(ExampleSnippet snippet)
     {
@@ -572,4 +754,22 @@ internal sealed class ExampleRuntimeScenario
 
         return RequiredText.All(text => snippet.RawText.Contains(text, StringComparison.Ordinal));
     }
+}
+
+internal sealed class ExampleRuntimePreStateFile
+{
+    public string Path { get; set; } = "";
+    public JsonElement Content { get; set; }
+}
+
+internal sealed class ExampleRuntimeFileContainsAssertion
+{
+    public string Path { get; set; } = "";
+    public string[] RequiredText { get; set; } = [];
+}
+
+internal sealed class ExampleRuntimeFileDoesNotContainAssertion
+{
+    public string Path { get; set; } = "";
+    public string[] ForbiddenText { get; set; } = [];
 }
