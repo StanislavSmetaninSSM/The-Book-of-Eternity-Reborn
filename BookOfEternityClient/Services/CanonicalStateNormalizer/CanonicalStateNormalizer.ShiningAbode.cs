@@ -15,7 +15,7 @@ public partial class CanonicalStateNormalizer
         var result = CloneObject(previous ?? ShiningAbodeState.CreateDefaultState());
 
         if (currentNode is JsonObject currentObject)
-            MergeObject(result, currentObject);
+            MergeShiningAbodeRoot(result, currentObject);
         else
             return;
 
@@ -32,5 +32,111 @@ public partial class CanonicalStateNormalizer
 
         ShiningAbodeState.NormalizeStateRoot(result, residentRoot, guardiansRoot);
         await WriteIfChangedAsync(path, currentNode, result);
+    }
+
+    private static void MergeShiningAbodeRoot(JsonObject target, JsonObject source)
+    {
+        foreach (var prop in source)
+        {
+            if (prop.Value is JsonArray sourceArray &&
+                TryGetShiningRootArrayIdentity(prop.Key, out var identityProperty))
+            {
+                MergeJsonObjectArrayByIdentity(
+                    EnsureArray(target, prop.Key),
+                    sourceArray,
+                    identityProperty,
+                    prop.Key.Equals("factions", StringComparison.OrdinalIgnoreCase)
+                        ? MergeShiningFactionObject
+                        : MergeObject);
+                continue;
+            }
+
+            target[prop.Key] = prop.Value?.DeepClone();
+        }
+    }
+
+    private static bool TryGetShiningRootArrayIdentity(string propertyName, out string identityProperty)
+    {
+        identityProperty = propertyName switch
+        {
+            "halls" => "hallId",
+            "factions" => "factionId",
+            "shiningPoliticalActors" => "actorId",
+            "coreActionReceipts" => "requestId",
+            "factionFoundingReceipts" => "requestId",
+            "factionRealignmentReceipts" => "requestId",
+            _ => string.Empty
+        };
+
+        return !string.IsNullOrWhiteSpace(identityProperty);
+    }
+
+    private static void MergeShiningFactionObject(JsonObject target, JsonObject source)
+    {
+        foreach (var prop in source)
+        {
+            if (prop.Value is JsonArray sourceArray &&
+                TryGetShiningFactionArrayIdentity(prop.Key, out var identityProperty))
+            {
+                MergeJsonObjectArrayByIdentity(EnsureArray(target, prop.Key), sourceArray, identityProperty, MergeObject);
+                continue;
+            }
+
+            if (prop.Value is JsonObject sourceObject && target[prop.Key] is JsonObject targetObject)
+            {
+                MergeObject(targetObject, sourceObject);
+                continue;
+            }
+
+            target[prop.Key] = prop.Value?.DeepClone();
+        }
+    }
+
+    private static bool TryGetShiningFactionArrayIdentity(string propertyName, out string identityProperty)
+    {
+        identityProperty = propertyName switch
+        {
+            "projects" => "projectId",
+            "tradeInventoryReceipts" => "requestId",
+            "leadershipReceipts" => "requestId",
+            "leadershipHistory" => "requestId",
+            _ => string.Empty
+        };
+
+        return !string.IsNullOrWhiteSpace(identityProperty);
+    }
+
+    private static void MergeJsonObjectArrayByIdentity(
+        JsonArray target,
+        JsonArray source,
+        string identityProperty,
+        Action<JsonObject, JsonObject> mergeExisting)
+    {
+        foreach (var sourceNode in source)
+        {
+            if (sourceNode is not JsonObject sourceItem)
+            {
+                target.Add(sourceNode?.DeepClone());
+                continue;
+            }
+
+            var sourceId = GetNodeString(sourceItem[identityProperty]);
+            if (string.IsNullOrWhiteSpace(sourceId))
+            {
+                target.Add(sourceItem.DeepClone());
+                continue;
+            }
+
+            var targetItem = target
+                .OfType<JsonObject>()
+                .FirstOrDefault(item => string.Equals(GetNodeString(item[identityProperty]), sourceId, StringComparison.OrdinalIgnoreCase));
+            if (targetItem == null)
+            {
+                target.Add(sourceItem.DeepClone());
+                continue;
+            }
+
+            mergeExisting(targetItem, sourceItem);
+        }
     }
 }

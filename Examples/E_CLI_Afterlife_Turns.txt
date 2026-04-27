@@ -2911,10 +2911,10 @@ Accepted `discover_native_faction` must:
 - spend exactly `quotedCostFeathers` from `soul_state.json.inkFeathers`;
 - spend exactly `quotedCostLightSparks` from `shining_abode_state.json.lightSparks`;
 - add exactly `+20` Radiance XP and recalculate Radiance tier canonically;
-- materialize one new hall in `halls[]`;
-- materialize one new faction with `originType = native_radiant` and `hallId` matching the receipt;
+- materialize one new hall in `halls[]`; its `hallId` must not exist in pre-turn `shining_abode_state.halls[]`;
+- materialize one new faction with `originType = native_radiant` and `hallId` matching the receipt; its `factionId` must not exist in pre-turn `shining_abode_state.factions[]`;
 - materialize `2..4` new ascended residents in `guardian_abode_residents.json`;
-- create exactly `2` seeded completed projects inside the new faction;
+- create exactly `2` seeded completed projects inside the new faction; every `projectId` must be new across all pre-turn Shining faction projects;
 - write a receipt whose `hallId`, `resolvedFactionId`, `newResidentIds[]`, and `seededProjectIds[]` point to those materialized objects.
 
 Correct `discover_native_faction` receipt fragment:
