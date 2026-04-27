@@ -20,13 +20,17 @@ public sealed class ShiningTradeRequestStateTests
 
             await ShiningTradeRequestState.WriteRequestAsync(fs, new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
             {
+                RequestId = "trade_req_old_house",
                 FactionId = "faction_old",
                 FactionName = "Старый Дом",
                 TradeCycleId = "shining_return_2",
                 DerivedTradeTier = 2,
                 DerivedTradeSlotCount = 6,
                 DerivedRarityCeiling = "rare",
-                DerivedServiceMultiplier = 1.25
+                DerivedServiceMultiplier = 1.25,
+                MerchantProfile = ShiningTradeRequestState.MerchantProfileShiningFaction,
+                CreatedAtTurn = 11,
+                CreatedAtUtc = "2026-04-27T11:00:00Z"
             });
 
             var reminder = await ShiningTradeRequestState.BuildSystemReminderFragmentAsync(fs, "Shining Abode");
@@ -35,6 +39,51 @@ public sealed class ShiningTradeRequestStateTests
             Assert.Contains("SHINING TRADE REQUESTS:", reminder);
             Assert.Contains("Старый Дом", reminder);
             Assert.Contains("slots 6", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Full pending trade DTO", reminder);
+            Assert.Contains("\"requestId\": \"trade_req_old_house\"", reminder);
+            Assert.Contains("\"derivedServiceMultiplier\": 1.25", reminder);
+            Assert.Contains("\"merchantProfile\": \"shining_faction\"", reminder);
+            Assert.Contains("\"createdAtUtc\": \"2026-04-27T11:00:00Z\"", reminder);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_DoesNotTruncatePendingTradeRequests()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            var requests = Enumerable.Range(1, 6)
+                .Select(index => new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+                {
+                    RequestId = $"trade_req_{index}",
+                    FactionId = $"faction_{index}",
+                    FactionName = $"Фракция {index}",
+                    TradeCycleId = $"shining_return_{index}",
+                    DerivedTradeTier = 2,
+                    DerivedTradeSlotCount = 6,
+                    DerivedRarityCeiling = "rare",
+                    DerivedServiceMultiplier = 1.25,
+                    CreatedAtTurn = index
+                })
+                .ToArray();
+            await ShiningTradeRequestState.WriteRequestsAsync(fs, requests);
+
+            var reminder = await ShiningTradeRequestState.BuildSystemReminderFragmentAsync(fs, "Shining Abode");
+
+            Assert.NotNull(reminder);
+            Assert.Contains("trade_req_1", reminder);
+            Assert.Contains("trade_req_6", reminder);
+            Assert.Contains("Фракция 6", reminder);
+            Assert.DoesNotContain("more pending", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("...", reminder, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {

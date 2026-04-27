@@ -19,6 +19,7 @@ public sealed class ShiningFactionRequestStateTests
 
             await ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
             {
+                RequestId = "founding_req_dawn",
                 ProposedFactionId = "faction_dawn",
                 ProposedHallId = "hall_dawn",
                 ProposedHallName = "Зал Рассвета",
@@ -289,6 +290,7 @@ public sealed class ShiningFactionRequestStateTests
 
             await ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
             {
+                RequestId = "founding_req_dawn",
                 ProposedFactionId = "faction_dawn",
                 ProposedHallId = "hall_dawn",
                 ProposedHallName = "Зал Рассвета",
@@ -305,13 +307,20 @@ public sealed class ShiningFactionRequestStateTests
             });
             await ShiningFactionRequestState.WriteRealignmentRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionRealignmentRequest
             {
+                RequestId = "realignment_req_liora",
                 ResidentId = "resident_liora",
                 ResidentName = "Лиора",
                 SourceFactionId = "faction_old",
                 SourceFactionName = "Старый Дом",
                 TargetFactionId = "faction_dawn",
                 TargetFactionName = "Хор Рассвета",
-                RealignmentMode = ShiningFactionRequestState.RealignmentModeAcceptedTransfer
+                RealignmentMode = ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
+                FactionLoyaltyLevel = 73,
+                FactionLoyaltyTier = "trusted",
+                FactionRestlessness = 18,
+                FactionRealignmentState = "ready_to_realign",
+                CreatedAtTurn = 12,
+                CreatedAtUtc = "2026-04-27T12:00:00Z"
             });
 
             var reminder = await ShiningFactionRequestState.BuildSystemReminderFragmentAsync(fs, "Shining Abode");
@@ -320,6 +329,15 @@ public sealed class ShiningFactionRequestStateTests
             Assert.Contains("SHINING ABODE POLITICAL REQUESTS:", reminder);
             Assert.Contains("Founding pending", reminder);
             Assert.Contains("Realignment pending", reminder);
+            Assert.Contains("Full pending founding DTO", reminder);
+            Assert.Contains("Full pending realignment DTO", reminder);
+            Assert.Contains("\"requestId\": \"founding_req_dawn\"", reminder);
+            Assert.Contains("\"proposedHallDescription\": \"Светлый зал\"", reminder);
+            Assert.Contains("\"supportingResidentIds\"", reminder);
+            Assert.Contains("\"requestId\": \"realignment_req_liora\"", reminder);
+            Assert.Contains("\"factionLoyaltyLevel\": 73", reminder);
+            Assert.Contains("\"factionRestlessness\": 18", reminder);
+            Assert.Contains("\"createdAtUtc\": \"2026-04-27T12:00:00Z\"", reminder);
         }
         finally
         {

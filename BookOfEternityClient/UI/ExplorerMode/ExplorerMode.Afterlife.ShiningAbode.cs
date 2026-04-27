@@ -1125,6 +1125,14 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        if (requests.Count > 0)
+        {
+            var pendingAudit = new JsonArray();
+            foreach (var request in requests)
+                pendingAudit.Add(JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            WriteJsonAuditPanel("Полный JSON pending Shining core actions", pendingAudit, Color.Gold1);
+        }
     }
 
     private void ShowShiningPendingPoliticalInspectionPanel(
@@ -1400,7 +1408,7 @@ public partial class ExplorerMode
     private static void AppendCappedSectionOverflowLine(List<string> lines, int totalCount, int cap)
     {
         if (totalCount > cap)
-            lines.Add($"  • [dim]…и ещё {totalCount - cap}[/]");
+            lines.Add($"  • [dim]…и ещё {totalCount - cap}; полный список доступен через соответствующий пункт осмотра.[/]");
     }
 
     private static void AppendShiningNamedIdList(
