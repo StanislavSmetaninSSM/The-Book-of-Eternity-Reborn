@@ -99,6 +99,13 @@
         "game_state/meta/shining_abode_state.json patch"
       ],
       "reason": "This block is explicitly documented as a state-patch view, not a real GameResponse payload."
+    },
+    {
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "requiredText": [
+        "game_state/meta/guardians.json patch"
+      ],
+      "reason": "This block is explicitly documented as a persisted Guardian state patch, not a real GameResponse payload."
     }
   ],
   "runtimeScenarios": [
@@ -125,6 +132,82 @@
       "expectedModifiedFiles": [
         "game_state/meta/soul_state.json",
         "game_state/control/life_transitions.json"
+      ]
+    },
+    {
+      "id": "afterlife_chaos_catchup_resident_history_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "afterlife_session_chaos_212",
+        "hist_liora_212_previous_life",
+        "\"afterlifeCatchupSummaryEventsProcessed\": 2"
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardian_projects.json",
+        "game_state/meta/guardian_abode_residents.json",
+        "game_state/control/progression_report.json"
+      ],
+      "expectedFilesUnchanged": [
+        "game_state/world/world_time.json",
+        "game_state/world/current_location.json",
+        "game_state/world/world_events.json",
+        "game_state/npcs/npc_core.json",
+        "game_state/factions/faction_core.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/control/progression_report.json",
+          "requiredText": [
+            "\"sessionId\": \"afterlife_session_chaos_212\"",
+            "\"newLastChaosSeaSimulationOrdinal\": 31",
+            "\"newLastGuardianProjectCycleOrdinal\": 18",
+            "\"newLastResidentAgencyCycleOrdinal\": 12",
+            "\"afterlifeCatchupProcessed\": true"
+          ]
+        },
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "requiredText": [
+            "\"requestId\": \"resident_history_212_liora\"",
+            "\"historyEntryId\": \"hist_liora_212_previous_life\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_shining_active_core_trade_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "afterlife_session_shining_305",
+        "\"thought_mira_305_glass_order\"",
+        "\"newLastShiningAbodeCycleOrdinal\": 22"
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardian_projects.json",
+        "game_state/meta/guardian_abode_residents.json",
+        "game_state/control/progression_report.json"
+      ],
+      "expectedFilesUnchanged": [
+        "game_state/world/world_time.json",
+        "game_state/world/current_location.json",
+        "game_state/world/world_events.json",
+        "game_state/npcs/npc_core.json",
+        "game_state/factions/faction_core.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/control/progression_report.json",
+          "requiredText": [
+            "\"sessionId\": \"afterlife_session_shining_305\"",
+            "\"newLastShiningAbodeCycleOrdinal\": 22",
+            "\"newLastShiningFactionCycleOrdinal\": 40",
+            "\"newLastShiningTradeCycleOrdinal\": 9",
+            "\"newLastGuardianProjectCycleOrdinal\": 20",
+            "\"newLastResidentAgencyCycleOrdinal\": 13"
+          ]
+        }
       ]
     },
     {
@@ -282,6 +365,154 @@
       ]
     },
     {
+      "id": "afterlife_shining_pending_bootstrap_example3_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "Мир поздней бронзы",
+        "Стеклянный рассвет сжимается в точку памяти",
+        "\"source\": \"shining_prepared_package\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/control/incarnation_trigger.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/control/incarnation_trigger.json",
+          "requiredText": [
+            "\"source\": \"shining_prepared_package\"",
+            "Мир поздней бронзы"
+          ]
+        }
+      ],
+      "expectedFileDoesNotContain": [
+        {
+          "path": "game_state/control/incarnation_trigger.json",
+          "forbiddenText": [
+            "preparedIncarnationPackage",
+            "preparedIncarnationPackageId"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_archive_consultation_project_fuel_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "Азалия раскрывает архивную нить северных ворот",
+        "archive_consult_azalia_241",
+        "archive_fuel_velian_242",
+        "\"resultMode\": \"pressure_relief\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/guardian_projects.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/soul_state.json",
+          "requiredText": [
+            "\"requestId\": \"archive_consult_azalia_241\"",
+            "\"requestId\": \"archive_fuel_velian_242\"",
+            "\"resultMode\": \"pressure_relief\""
+          ]
+        },
+        {
+          "path": "game_state/meta/guardian_projects.json",
+          "requiredText": [
+            "\"projectOrigin\": \"archive_consultation\"",
+            "\"archiveFuelRequestId\": \"archive_fuel_velian_242\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_ordinary_chaos_incarnation_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "Море Хаоса раскрывает новую смертную нить",
+        "Горный мир позднего средневековья",
+        "\"TriggerIncarnation\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/control/incarnation_trigger.json"
+      ],
+      "expectedFilesAbsent": [
+        "game_state/control/life_transitions.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/control/incarnation_trigger.json",
+          "requiredText": [
+            "Горный мир позднего средневековья",
+            "Ребёнок хранителя перевального архива"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_direct_chaos_gacha_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "Стеклянный Глаз Течения",
+        "soul_relic_direct_chaos_glass_eye_001",
+        "Море Хаоса принимает уже списанную плату"
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/soul_state.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/soul_state.json",
+          "requiredText": [
+            "\"relicId\": \"soul_relic_direct_chaos_glass_eye_001\"",
+            "\"rarity\": \"Rare\""
+          ]
+        }
+      ],
+      "expectedFileDoesNotContain": [
+        {
+          "path": "game_state/meta/soul_state.json",
+          "forbiddenText": [
+            "\"spend\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_guardian_mediated_gacha_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "\"command\": \"processGacha\"",
+        "\"inkFeathersSpent\": 120",
+        "soul_relic_azalia_lantern_thread_001"
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardians.json",
+        "game_state/meta/soul_state.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardians.json",
+          "requiredText": [
+            "\"command\": \"processGacha\"",
+            "\"inkFeathersSpent\": 120"
+          ]
+        },
+        {
+          "path": "game_state/meta/soul_state.json",
+          "requiredText": [
+            "\"spend\": 120",
+            "\"relicId\": \"soul_relic_azalia_lantern_thread_001\""
+          ]
+        }
+      ]
+    },
+    {
       "id": "afterlife_abode_offering_response",
       "file": "E_CLI_Afterlife_Turns.txt",
       "runner": "gameResponseDistribution",
@@ -299,6 +530,162 @@
             "\"reasonType\": \"offering\"",
             "\"sourceSurface\": \"guardianAbodeOffering\"",
             "\"delta\": 2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_resident_roster_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "abode_roster_azalia_314",
+        "res_azalia_marin_314",
+        "\"UpdateGuardianAbodeResidentRosterReceipts\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardian_abode_residents.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "requiredText": [
+            "\"residentId\": \"res_azalia_marin_314\"",
+            "\"residentId\": \"res_azalia_eiva_314\"",
+            "\"requestId\": \"abode_roster_azalia_314\"",
+            "\"rosterCount\": 2"
+          ]
+        }
+      ],
+      "expectedFileDoesNotContain": [
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "forbiddenText": [
+            "\"UpdateNPCs\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_resident_transfer_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "resident_transfer_sael_315",
+        "hist_sael_depart_315",
+        "\"UpdateGuardianAbodeResidentTransferReceipts\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardian_abode_residents.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "requiredText": [
+            "\"requestId\": \"resident_transfer_sael_315\"",
+            "\"targetGuardianId\": \"guard_light_ilarion_002\"",
+            "\"departureHistoryEntryId\": \"hist_sael_depart_315\"",
+            "\"arrivalHistoryEntryId\": \"hist_sael_arrive_315\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_guardian_social_interaction_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "guardian_social_azalia_lore_316",
+        "guardian_social_entry_azalia_lore_316",
+        "\"responseMode\": \"lore_revealed\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardian_social_journal.json",
+        "game_state/meta/guardian_thought_journal.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardian_social_journal.json",
+          "requiredText": [
+            "\"requestId\": \"guardian_social_azalia_lore_316\"",
+            "\"status\": \"accepted\"",
+            "\"responseMode\": \"lore_revealed\""
+          ]
+        },
+        {
+          "path": "game_state/meta/guardian_thought_journal.json",
+          "requiredText": [
+            "\"entryId\": \"guardian_thought_azalia_lore_316\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_player_guardian_foundation_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "foundation_tide_memory_317",
+        "guard_player_tide_memory_317",
+        "\"playerGuardianFoundationStatus\": \"founded\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardians.json",
+        "game_state/meta/soul_state.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardians.json",
+          "requiredText": [
+            "\"guardianRoleToPlayer\": \"former_patron\"",
+            "\"guardianId\": \"guard_player_tide_memory_317\"",
+            "\"foundationRequestId\": \"foundation_tide_memory_317\""
+          ]
+        },
+        {
+          "path": "game_state/meta/soul_state.json",
+          "requiredText": [
+            "\"playerFoundedGuardianId\": \"guard_player_tide_memory_317\"",
+            "\"playerGuardianFoundationStatus\": \"founded\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_freeform_guardian_commands_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "guardian_thought_azalia_326_memory_guidance",
+        "\"command\": \"updateReputation\"",
+        "\"command\": \"unlockLore\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardian_thought_journal.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardians.json",
+          "requiredText": [
+            "\"command\": \"updateReputation\"",
+            "\"command\": \"setMood\"",
+            "\"command\": \"unlockLore\""
+          ]
+        },
+        {
+          "path": "game_state/meta/guardian_thought_journal.json",
+          "requiredText": [
+            "\"entryId\": \"guardian_thought_azalia_326_memory_guidance\""
+          ]
+        }
+      ],
+      "expectedFileDoesNotContain": [
+        {
+          "path": "game_state/meta/guardians.json",
+          "forbiddenText": [
+            "\"UpdateNPCs\"",
+            "\"updateProject\""
           ]
         }
       ]
@@ -525,6 +912,131 @@
             "No `TriggerIncarnation` is written"
           ]
         }
+      ]
+    }
+  ],
+  "afterlifeExampleCoverage": [
+    {
+      "exampleNumber": 1,
+      "runtimeScenarioIds": [
+        "afterlife_chaos_catchup_resident_history_response"
+      ]
+    },
+    {
+      "exampleNumber": 2,
+      "runtimeScenarioIds": [
+        "afterlife_shining_active_core_trade_response"
+      ]
+    },
+    {
+      "exampleNumber": 3,
+      "runtimeScenarioIds": [
+        "afterlife_shining_pending_bootstrap_example3_response"
+      ]
+    },
+    {
+      "exampleNumber": 4,
+      "runtimeScenarioIds": [],
+      "exemptionReason": "The Guardian trade example intentionally shows a canonical persisted guardians.json patch rather than a real top-level GameResponse payload."
+    },
+    {
+      "exampleNumber": 5,
+      "runtimeScenarioIds": [
+        "afterlife_archive_consultation_project_fuel_response"
+      ]
+    },
+    {
+      "exampleNumber": 6,
+      "runtimeScenarioIds": [
+        "afterlife_ordinary_chaos_incarnation_response"
+      ]
+    },
+    {
+      "exampleNumber": 7,
+      "runtimeScenarioIds": [
+        "afterlife_direct_chaos_gacha_response",
+        "afterlife_guardian_mediated_gacha_response"
+      ]
+    },
+    {
+      "exampleNumber": 8,
+      "runtimeScenarioIds": [
+        "afterlife_abode_offering_response"
+      ]
+    },
+    {
+      "exampleNumber": 9,
+      "runtimeScenarioIds": [],
+      "exemptionReason": "The Shining founding/realignment/leadership example is a set of state-patch fragments; strict Shining schemas and all action names are covered by documentation coverage tests."
+    },
+    {
+      "exampleNumber": 10,
+      "runtimeScenarioIds": [
+        "afterlife_resident_roster_response"
+      ]
+    },
+    {
+      "exampleNumber": 11,
+      "runtimeScenarioIds": [
+        "afterlife_resident_transfer_response"
+      ]
+    },
+    {
+      "exampleNumber": 12,
+      "runtimeScenarioIds": [
+        "afterlife_guardian_social_interaction_response"
+      ]
+    },
+    {
+      "exampleNumber": 13,
+      "runtimeScenarioIds": [
+        "afterlife_player_guardian_foundation_response"
+      ]
+    },
+    {
+      "exampleNumber": 14,
+      "runtimeScenarioIds": [],
+      "exemptionReason": "The Shining core-action section is a matrix of receipt/state fragments, not one accepted response; supported actionType names are enforced against runtime constants."
+    },
+    {
+      "exampleNumber": 15,
+      "runtimeScenarioIds": [
+        "afterlife_freeform_guardian_commands_response"
+      ]
+    },
+    {
+      "exampleNumber": 16,
+      "runtimeScenarioIds": [
+        "afterlife_combined_chaos_scheduler_offering_response"
+      ]
+    },
+    {
+      "exampleNumber": 17,
+      "runtimeScenarioIds": [],
+      "exemptionReason": "The combined Shining example deliberately includes a documented shining_abode_state.json patch surface that is not a real GameResponse field."
+    },
+    {
+      "exampleNumber": 18,
+      "runtimeScenarioIds": [
+        "afterlife_shining_pending_bootstrap_trigger_response"
+      ]
+    },
+    {
+      "exampleNumber": 19,
+      "runtimeScenarioIds": [
+        "afterlife_ordinary_chaos_living_world_response"
+      ]
+    },
+    {
+      "exampleNumber": 20,
+      "runtimeScenarioIds": [
+        "afterlife_system_guardian_attraction_response"
+      ]
+    },
+    {
+      "exampleNumber": 21,
+      "runtimeScenarioIds": [
+        "afterlife_protected_return_guard_response"
       ]
     }
   ]
