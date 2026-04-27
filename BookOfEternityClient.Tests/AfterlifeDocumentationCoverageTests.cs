@@ -141,6 +141,27 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void RealmDocsDoNotTreatEmptyCurrentRealmAsChaosSea()
+    {
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var block0 = ReadRepoFile("Rules", "Block_0.txt");
+        var launchScript = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var launchGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
+
+        foreach (var text in new[] { daemonSpec, matrix, block0, launchScript, launchGenerator })
+        {
+            Assert.Contains("unresolved realm", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Do not infer Chaos Sea", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain("empty/`Chaos Sea`", matrix, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"Chaos Sea\" / null", launchScript, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"Chaos Sea\" / null", launchGenerator, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"Chaos Sea\" / `null` / пусто", daemonSpec, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption()
     {
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
