@@ -26,13 +26,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     {
         var preTurnSoul = CreateSoulRoot();
         await WriteNodeAsync("game_state/meta/soul_state.json", CreateSoulRoot());
-        await WriteNodeAsync("input/turn_request.json", new JsonObject
-        {
-            ["sessionId"] = "session",
-            ["requestId"] = "request",
-            ["turnNumber"] = 7,
-            ["playerAction"] = "[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит 5 Чернильных Перьев."
-        });
+        await WriteNodeAsync("input/turn_request.json", CreateDirectGachaTurnRequest());
         await WritePendingTurnSnapshotAsync(preTurnSoul);
 
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
@@ -48,13 +42,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         var currentSoul = CreateSoulRoot(currentRealm: "Shining Abode", inkFeathers: 5);
         AddStoredSoulRelic(currentSoul, "relic_new");
         await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
-        await WriteNodeAsync("input/turn_request.json", new JsonObject
-        {
-            ["sessionId"] = "session",
-            ["requestId"] = "request",
-            ["turnNumber"] = 7,
-            ["playerAction"] = "[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит 5 Чернильных Перьев."
-        });
+        await WriteNodeAsync("input/turn_request.json", CreateDirectGachaTurnRequest());
         await WritePendingTurnSnapshotAsync(preTurnSoul);
 
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
@@ -70,13 +58,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         var currentSoul = CreateSoulRoot(inkFeathers: 10);
         AddStoredSoulRelic(currentSoul, "relic_new");
         await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
-        await WriteNodeAsync("input/turn_request.json", new JsonObject
-        {
-            ["sessionId"] = "session",
-            ["requestId"] = "request",
-            ["turnNumber"] = 7,
-            ["playerAction"] = "[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит 5 Чернильных Перьев."
-        });
+        await WriteNodeAsync("input/turn_request.json", CreateDirectGachaTurnRequest());
         await WritePendingTurnSnapshotAsync(preTurnSoul);
 
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
@@ -85,10 +67,47 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
             string.Equals(issue.Code, "direct_chaos_gacha_feather_balance_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task WritePendingTurnSnapshotAsync(JsonObject preTurnSoulRoot)
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_DirectChaosGachaWithClientSpentSnapshot_Passes()
+    {
+        var rollbackSoul = CreateSoulRoot(inkFeathers: 10);
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 5);
+        var currentSoul = CreateSoulRoot(inkFeathers: 5);
+        AddStoredSoulRelic(currentSoul, "relic_new", "Rare");
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WriteNodeAsync("input/turn_request.json", CreateDirectGachaTurnRequest(baseRarity: "Rare"));
+        await WritePendingTurnSnapshotAsync(preTurnSoul, rollbackSoul);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("direct_chaos_gacha_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_DirectChaosGachaBelowBaseRarity_Fails()
+    {
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
+        var currentSoul = CreateSoulRoot(inkFeathers: 5);
+        AddStoredSoulRelic(currentSoul, "relic_new", "Common");
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WriteNodeAsync("input/turn_request.json", CreateDirectGachaTurnRequest(baseRarity: "Rare"));
+        await WritePendingTurnSnapshotAsync(preTurnSoul);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "direct_chaos_gacha_result_below_base_rarity", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task WritePendingTurnSnapshotAsync(JsonObject preTurnSoulRoot, JsonObject? rollbackSoulRoot = null)
     {
         const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
         await WriteNodeAsync(soulSnapshotPath, preTurnSoulRoot);
+
+        const string soulRollbackPath = "game_state/meta/soul_state.json.explorer.rollback.test";
+        if (rollbackSoulRoot != null)
+            await WriteNodeAsync(soulRollbackPath, rollbackSoulRoot);
 
         var soulSnapshotJson = await _fs.ReadFileAsync(soulSnapshotPath) ?? string.Empty;
         var manifest = new JsonObject
@@ -107,8 +126,15 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
                 ["game_state/meta/soul_state.json"] = PendingTurnSnapshotAuthority.ComputeSha256(soulSnapshotJson)
             },
             ["clientOwnedValidationHashes"] = new JsonObject(),
-            ["rollbackBackups"] = new JsonObject(),
-            ["rollbackBaselineFiles"] = new JsonArray(),
+            ["rollbackBackups"] = rollbackSoulRoot == null
+                ? new JsonObject()
+                : new JsonObject
+                {
+                    ["game_state/meta/soul_state.json"] = soulRollbackPath
+                },
+            ["rollbackBaselineFiles"] = rollbackSoulRoot == null
+                ? new JsonArray()
+                : new JsonArray("game_state/meta/soul_state.json"),
             ["sourceLabel"] = "обычный ход игрока"
         };
         manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
@@ -120,6 +146,18 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     {
         await _fs.WriteFileAtomicAsync(path, node.ToJsonString());
     }
+
+    private static JsonObject CreateDirectGachaTurnRequest(string baseRarity = "Common") => new()
+    {
+        ["sessionId"] = "session",
+        ["requestId"] = "request",
+        ["turnNumber"] = 7,
+        ["playerAction"] = "[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит 5 Чернильных Перьев.",
+        ["gachaBaseResult"] = new JsonObject
+        {
+            ["baseRarity"] = baseRarity
+        }
+    };
 
     private static JsonObject CreateSoulRoot(string currentRealm = "Chaos Sea", int inkFeathers = 10) => new()
     {
@@ -146,7 +184,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         }
     };
 
-    private static void AddStoredSoulRelic(JsonObject soulRoot, string relicId)
+    private static void AddStoredSoulRelic(JsonObject soulRoot, string relicId, string rarity = "Common")
     {
         var stored = soulRoot["soulRelics"]?["stored"]?.AsArray()
             ?? throw new InvalidOperationException("Expected soulRelics.stored test array.");
@@ -154,8 +192,8 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         {
             ["relicId"] = relicId,
             ["name"] = "Новая реликвия",
-            ["rarity"] = "Common",
-            ["quality"] = "Common"
+            ["rarity"] = rarity,
+            ["quality"] = rarity
         });
     }
 
