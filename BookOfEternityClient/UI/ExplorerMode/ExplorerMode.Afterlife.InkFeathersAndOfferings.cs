@@ -604,15 +604,31 @@ public partial class ExplorerMode
                         Math.Max(10, (int)(feathers * 0.15)),
                         "🎁 Пожертвовать Хранителю",
                         cost => $"[INK_FEATHER_ACTION: DONATE_TO_GUARDIAN] Игрок жертвует {cost} Чернильных Перьев Хранителю. " +
-                            "Повысь репутацию с текущим хранителем на 15-25 пунктов (пропорционально количеству потраченных перьев). " +
-                            "Перья уже списаны клиентом.");
+                            $"Повысь репутацию с текущим Хранителем ровно на {Math.Min(25, Math.Max(15, cost / 3))} по формуле reputationChange = min(25, max(15, cost / 3)). " +
+                            "Перья уже списаны клиентом.",
+                        cost => new[]
+                        {
+                            "Формула: reputationChange = min(25, max(15, cost / 3)).",
+                            $"При текущей цене {cost} Чернильных Перьев expected reputationChange = {Math.Min(25, Math.Max(15, cost / 3))}.",
+                            "GM обязан реально изменить game_state/meta/guardians.json для текущего Хранителя.",
+                            "output/ink_feather_action_result.json должен содержать stateEvidence.guardianId и stateEvidence.reputationChange."
+                        },
+                        cost => $"Репутация текущего Хранителя вырастет ровно на {Math.Min(25, Math.Max(15, cost / 3))}.");
                 else if (choice.Contains("Культивировать Просветление"))
                     await HandleGmFeatherAction(feathers,
                         Math.Max(20, (int)(feathers * 0.25)),
                         "✨ Культивировать Просветление",
                         cost => $"[INK_FEATHER_ACTION: CULTIVATE_ENLIGHTENMENT] Игрок тратит {cost} Чернильных Перьев на Культивирование Просветления. " +
-                            "Добавь значительный прогресс просветления в soul_state (enlightenment.experience). " +
-                            "Перья уже списаны клиентом.");
+                            $"Добавь ровно {cost * 2} experience в soul_state.enlightenment.experience по формуле experienceGain = costInFeathers * 2. " +
+                            "Перья уже списаны клиентом.",
+                        cost => new[]
+                        {
+                            "Формула: experienceGain = costInFeathers * 2.",
+                            $"При текущей цене {cost} Чернильных Перьев expected experienceGain = {cost * 2}.",
+                            "GM обязан реально изменить game_state/meta/soul_state.json: enlightenment.experience должен вырасти не меньше заявленного gain.",
+                            "output/ink_feather_action_result.json должен содержать stateEvidence.experienceGain."
+                        },
+                        cost => $"Просветление получит ровно {cost * 2} experience.");
                 else if (choice.Contains("Попросить об услуге"))
                     await HandleGuardianFavor(feathers);
                 else if (choice.Contains("Открыть Врата Памяти"))
@@ -623,14 +639,31 @@ public partial class ExplorerMode
                             "Создай одно active pendingMemoryLegacy для следующей смертной жизни. " +
                             "Выбери ровно один механический бонус: либо +2 к одной стартовой характеристике, либо один новый пассивный навык знаний. " +
                             "Запиши structured metaStateUpdates.memoryLegacyGrant и замени старое наследие, если оно уже существовало. " +
-                            "Перья уже списаны клиентом.");
+                            "Перья уже списаны клиентом.",
+                        cost => new[]
+                        {
+                            "Результат: создаётся active pendingMemoryLegacy для следующей смертной жизни.",
+                            "Разрешён ровно один механический бонус: +2 к одной стартовой характеристике ИЛИ один пассивный Knowledge-навык.",
+                            "GM обязан писать structured metaStateUpdates.memoryLegacyGrant; canonical pendingMemoryLegacy должен быть его projection.",
+                            "Если уже есть active pendingMemoryLegacy, новая трата заменяет старое наследие, а не складывается с ним."
+                        },
+                        _ => "Будет создано или заменено одно наследие памяти для следующей жизни.");
                 else if (choice.Contains("Создать Слепок Души"))
                     await HandleGmFeatherAction(feathers,
                         Math.Max(100, (int)(feathers * 0.50)),
                         "👤 Создать Слепок Души",
                         cost => $"[INK_FEATHER_ACTION: SOUL_IMPRINT] Игрок тратит {cost} Чернильных Перьев на Создание Слепка Души текущего компаньона. " +
-                            "Предложи выбрать NPC-компаньона и создай soulImprint запись. " +
-                            "Перья уже списаны клиентом.");
+                            "Создай soulImprint запись с идентичностью, traits/personality markers и summary текущего NPC-компаньона. " +
+                            "Слепок не обязан немедленно создавать mortal-world NPC, но должен подготовить будущий imprint/companion путь. " +
+                            "Перья уже списаны клиентом.",
+                        cost => new[]
+                        {
+                            "Результат: game_state/meta/soul_state.json получает soulImprint entry.",
+                            "Слепок должен содержать не только id/name, но и core traits или personality markers текущего компаньона.",
+                            "Это подготовка будущего companion/imprint пути; немедленный mortal-world NPC в afterlife-ходе не создаётся.",
+                            "output/ink_feather_action_result.json должен содержать stateEvidence для soul imprint."
+                        },
+                        _ => "Будет сохранён soulImprint текущего компаньона для будущего пути воплощения.");
             }
 
             // If a GM action was set, break out of the loop
@@ -762,12 +795,26 @@ public partial class ExplorerMode
         _diceRevealed = true;
     }
 
-    private async Task HandleGmFeatherAction(int feathers, int cost, string actionName, Func<int, string> buildGmAction)
+    private async Task HandleGmFeatherAction(
+        int feathers,
+        int cost,
+        string actionName,
+        Func<int, string> buildGmAction,
+        Func<int, IReadOnlyList<string>>? buildEffectLines = null,
+        Func<int, string>? buildConfirmationSummary = null)
     {
         var costDisplay = $"{cost} 🪶 (останется {feathers - cost})";
+        var effectLines = buildEffectLines?.Invoke(cost);
+        if (effectLines is { Count: > 0 })
+            ShowInkFeatherActionEffectPreview(actionName, cost, feathers, effectLines);
+
+        var confirmationSummary = buildConfirmationSummary?.Invoke(cost);
+        var title = $"[bold yellow]{Markup.Escape(actionName)} — потратить {Markup.Escape(costDisplay)}?[/]";
+        if (!string.IsNullOrWhiteSpace(confirmationSummary))
+            title += $"\n[dim]{Markup.Escape(confirmationSummary)}[/]";
 
         var confirm = Prompt(new SelectionPrompt<string>()
-            .Title($"[bold yellow]{Markup.Escape(actionName)} — потратить {Markup.Escape(costDisplay)}?[/]")
+            .Title(title)
             .AddChoices("✅ Да, потратить", "❌ Отмена"));
         if (confirm.Contains("Отмена")) return;
 
@@ -787,6 +834,27 @@ public partial class ExplorerMode
             " Также обязательно запиши output/ink_feather_action_result.json с exact sessionId/requestId/turnNumber текущего turn_request, actionTag, resolved=true, costInFeathers, resolutionType, summary и stateEvidence. stateEvidence обязан содержать affectedFiles и минимальное подтверждение реального stateful результата.";
     }
 
+    private void ShowInkFeatherActionEffectPreview(string actionName, int cost, int feathers, IReadOnlyList<string> effectLines)
+    {
+        var lines = new List<string>
+        {
+            $"[bold yellow]{Markup.Escape(actionName)}[/]",
+            $"Цена: [yellow]{cost} Чернильных Перьев[/] (останется {Math.Max(0, feathers - cost)})",
+            "",
+            "[bold]Что произойдёт после подтверждения:[/]"
+        };
+        lines.AddRange(effectLines.Select(line => $"  • {Markup.Escape(line)}"));
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" Механика afterlife Ink Feather action ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+    }
+
     private async Task HandleGuardianFavor(int feathers)
     {
         var inputCost = Prompt(new TextPrompt<int>(
@@ -800,8 +868,20 @@ public partial class ExplorerMode
 
         var costDisplay = $"{inputCost} 🪶 (останется {feathers - inputCost})";
 
+        ShowInkFeatherActionEffectPreview(
+            "🤝 Попросить об услуге",
+            inputCost,
+            feathers,
+            new[]
+            {
+                "Гарантированный минимум: репутация с текущим Хранителем должна реально вырасти.",
+                "Дополнительная услуга может быть нарративной или stateful, но не заменяет обязательный рост репутации.",
+                "GM обязан реально изменить game_state/meta/guardians.json и записать guardianId/reputationChange в stateEvidence.",
+                "Цена переменная; валидатор проверяет факт положительного reputationChange, а не фиксированную формулу."
+            });
+
         var confirm = Prompt(new SelectionPrompt<string>()
-            .Title($"[bold yellow]Предложить Хранителю {Markup.Escape(costDisplay)}?[/]")
+            .Title($"[bold yellow]Предложить Хранителю {Markup.Escape(costDisplay)}?[/]\n[dim]Минимум: репутация текущего Хранителя должна вырасти.[/]")
             .AddChoices("✅ Да, предложить", "❌ Отмена"));
         if (confirm.Contains("Отмена")) return;
 
@@ -1697,10 +1777,40 @@ public partial class ExplorerMode
                 return ValidationResult.Success();
             }));
 
+        var pendingState = _pendingTurnState != null
+            ? await _pendingTurnState.GetOrCreateAsync()
+            : null;
+        var gacha = pendingState?.GachaBaseResult ?? new GachaResult();
+        var baseRarity = string.IsNullOrWhiteSpace(gacha.BaseRarity) ? "Common" : gacha.BaseRarity;
+        var rarityColor = GetRarityColor(baseRarity);
+        var mechanicsLines = new List<string>
+        {
+            "[bold yellow]Прямая гача Моря Хаоса[/]",
+            "",
+            $"Цена будет передана GM строго как фраза: [yellow]{inputCost} Чернильных Перьев[/].",
+            "Эта фраза обязательна: валидатор извлекает из неё prepaid cost direct /gacha.",
+            "",
+            "[bold]Базовый результат текущего хода:[/]",
+            $"  • baseScore: [cyan]{gacha.BaseScore}[/]",
+            $"  • baseRarity: [{rarityColor}]{Markup.Escape(DescribeRarityLabel(baseRarity))}[/]",
+            $"  • formula: [dim]{Markup.Escape(gacha.Formula ?? "client-computed gacha base (range 4-80)")}[/]",
+            "",
+            "Пороги: 4-48 Common, 49-67 Uncommon, 68-75 Rare, 76-79 Epic, 80 Legendary.",
+            "Итог direct /gacha: нейтральная реликвия не ниже baseRarity, без репутации Хранителя, скидок, charges, Hard/Impossible или других guardian modifiers."
+        };
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", mechanicsLines)))
+        {
+            Header = new PanelHeader(" Механика direct /gacha ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+
         var costDisplay = $"{inputCost} 🪶 (останется {feathers - inputCost})";
         var confirm = Prompt(new SelectionPrompt<string>()
             .Title("[bold yellow]Прямое вытягивание из Моря Хаоса[/]\n" +
-                   $"[dim]Текущий Хранитель не участвует. Модификаторы будут нейтральными.[/]\n" +
+                   $"[dim]Текущий Хранитель не участвует. Модификаторы будут нейтральными. GM получит точную cost-фразу: {inputCost} Чернильных Перьев.[/]\n" +
                    $"[bold]Потратить {Markup.Escape(costDisplay)} на вытягивание реликвии?[/]")
             .AddChoices("✅ Да, тянуть", "❌ Отмена"));
         if (confirm.Contains("Отмена"))

@@ -2543,12 +2543,14 @@ The 'gachaBaseResult' field is a SEPARATE client-computed gacha outcome. Do NOT 
 Its thresholds remain: 4-48=Common, 49-67=Uncommon, 68-75=Rare, 76-79=Epic, 80=Legendary.
 If playerAction contains [CHAOS_SEA_DIRECT_GACHA], this is a DIRECT pull from the Chaos Sea, not a Guardian-mediated pull.
   - Do NOT apply Guardian reputation bonuses, penalties, discounts, jealousy/social effects, or other Guardian modifiers.
+  - Preserve the exact cost phrase from playerAction: '<N> Чернильных Перьев' or '<N> Ink Feathers'. The validator uses it as prepaid cost proof.
   - Treat gachaBaseResult.baseRarity as the neutral final rarity baseline with NO extra modifiers.
   - Add the relic directly to soul state via metaStateUpdates.soulRelicOperations.addRelic.
 If the pull is Guardian-mediated, the 'baseRarity' from gachaBaseResult is the MINIMUM rarity. You may ONLY upgrade it using documented modifiers:
-  - Guardian reputation bonus (Block 32): Friendly(50-129) +15%, Devoted(130-229) +30%, Legendary(230-300) +50% better rates
-  - Hard Mode (Block 0.5): +1 tier upgrade at 50% chance
-  - Impossible Mode (Block 0.6): +1 tier guaranteed, +1 more at 25% chance
+  - Abode Power rarity ceiling bonus: abodePower.currentPower >= 60 gives +1 allowed rarity step.
+  - Completed relic_forging Guardian project bonus: spend the documented one-use project bonus and record sourceProjectId.
+  - Guardian reputation affects chargesPerReturn and trade pricing, not rarity odds.
+  - Hard/Impossible mortal-world difficulty modifiers do not change afterlife Guardian gacha rarity unless validator/audit support is explicitly added.
 Guardian-mediated pulls are LIMITED per Guardian per return from mortal life:
   - Hostile(-100..-51): blocked
   - Wary/Neutral(-50..49): 1 attempt

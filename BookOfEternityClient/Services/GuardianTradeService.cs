@@ -82,7 +82,8 @@ public sealed class GuardianTradeService
         string Name,
         string Rarity,
         int PriceInFeathers,
-        string Description);
+        string Description,
+        JsonObject RelicData);
 
     public sealed record GuardianTradeOperationResult(bool Success, bool StateChanged, string Message);
 
@@ -169,7 +170,8 @@ public sealed class GuardianTradeService
                     GetNodeString(relic["name"]) ?? "Неизвестная реликвия",
                     rarity,
                     ComputeSellPrice(rarity, tier),
-                    GetNodeString(relic["description"]) ?? "");
+                    GetNodeString(relic["description"]) ?? "",
+                    CloneObject(relic));
             })
             .Where(offer => !string.IsNullOrWhiteSpace(offer.RelicId))
             .OrderByDescending(offer => GetRarityRank(offer.Rarity))

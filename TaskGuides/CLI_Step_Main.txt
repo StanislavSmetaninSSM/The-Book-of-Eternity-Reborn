@@ -358,7 +358,7 @@
             - If no pending files exist, scheduler debt is still mandatory: use `Examples/E_CLI_Afterlife_Turns.txt` example 19 as the model for ordinary Chaos Sea living-world consequences without invented receipts
             - Step 8, player action: process the direct player action only after lifecycle, scheduler, state, pending contracts, and actor scope are known
             - Guardian conversation or quest: use Guardian state, Guardian journals, Guardian social memory, Guardian quests, and Guardian power/project surfaces
-            - Guardian-mediated gacha: respect per-return charge limits, reputation tiers, base rarity, bonus audit, and relic-forging project consumption
+            - Guardian-mediated gacha: respect per-return charge limits from reputation tier, base rarity, Abode Power/relic-forging bonus audit, and relic-forging project consumption
             - Ink Feather action: use only allowed afterlife Ink Feather exceptions and write the specific canonical result surface
             - Resident interaction: close explicit requests when present, update resident thought/social/history memory when accepted, and write resident-linked quests or relics when produced
             - Shining action: mutate `shining_abode_state.json` and matching receipt arrays; do not route Shining politics through mortal `factionDataChanges`

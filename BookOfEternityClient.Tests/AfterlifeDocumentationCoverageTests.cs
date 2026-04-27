@@ -195,6 +195,32 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ChaosSeaGachaDocsMatchValidatedModifierAndCostContract()
+    {
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var guardianRules = ReadRepoFile("Rules", "Block_32_Guardians.txt");
+        var lifecyclePrompt = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+
+        foreach (var text in new[] { daemonSpec, matrix, examples, guardianRules, lifecyclePrompt })
+        {
+            Assert.Contains("[CHAOS_SEA_DIRECT_GACHA]", text, StringComparison.Ordinal);
+            Assert.Contains("Чернильных Перьев", text, StringComparison.Ordinal);
+            Assert.Contains("Ink Feathers", text, StringComparison.Ordinal);
+            Assert.Contains("Abode Power", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("relic_forging", text, StringComparison.Ordinal);
+            Assert.Contains("Guardian reputation", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain("Improve Gacha rates by", guardianRules, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Maximum Gacha benefits", guardianRules, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Guardian reputation bonus (Block 32)", lifecyclePrompt, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Hard Mode: +1 tier", guardianRules, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Impossible Mode: +1 tier", guardianRules, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples()
     {
         var entrypointPaths = new[]

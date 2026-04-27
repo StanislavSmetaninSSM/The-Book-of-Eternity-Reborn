@@ -329,12 +329,14 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 `gachaBaseResult` — отдельное client-computed поле и не означает, что какие-то кубики уже были израсходованы из `preGeneratedDices1d20`.
 Если playerAction содержит `[CHAOS_SEA_DIRECT_GACHA]`, это прямое вытягивание реликвии из Моря Хаоса, а не pull через текущего Хранителя.
 Для такого direct pull не применяй репутацию Хранителя, скидки, штрафы или другие guardian modifiers; результат должен быть нейтральным.
+Сохрани точную cost-фразу из playerAction: `<N> Чернильных Перьев` или `<N> Ink Feathers`. Валидатор извлекает из неё prepaid cost; не перефразируй и не удаляй стоимость.
 Guardian-mediated Soul Relic Gacha is LIMITED per Guardian per return from mortal life:
 - Hostile(-100..-51): blocked
 - Wary/Neutral(-50..49): 1 attempt
 - Friendly(50..129): 2 attempts
 - Devoted/Legendary(130..300): 3 attempts
 - charges reset only when the Soul returns to the Chaos Sea after a new mortal life
+Guardian-mediated rarity upgrades are limited to Abode Power rarity ceiling bonus and completed `relic_forging` project bonus. Guardian reputation controls charges/trade pricing only; Hard/Impossible mortal difficulty does not add afterlife gacha rarity steps.
 If a Guardian has no remaining attempts this return, do NOT emit `UpdateGuardians.processGacha` for that Guardian.
 Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 `UpdateGuardians` is a heterogeneous command family:

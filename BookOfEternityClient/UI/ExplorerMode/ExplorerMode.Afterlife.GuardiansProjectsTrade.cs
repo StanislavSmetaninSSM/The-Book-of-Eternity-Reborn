@@ -3794,7 +3794,7 @@ public partial class ExplorerMode
                 return;
 
             var offer = offers[selectedIndex];
-            var confirm = Confirm($"Продать «{offer.Name}» за {offer.PriceInFeathers} 🪶?", false);
+            var confirm = ShowGuardianTradeSellPreview(offer, tradeView.GuardianName);
             if (!confirm)
                 continue;
 
@@ -3807,6 +3807,31 @@ public partial class ExplorerMode
             if (result.StateChanged)
                 await _stateManager.RefreshGameStateAsync();
         }
+    }
+
+    private bool ShowGuardianTradeSellPreview(Services.GuardianTradeService.GuardianSellOffer offer, string guardianName)
+    {
+        using var relicDoc = JsonDocument.Parse(offer.RelicData.ToJsonString());
+        var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null, residentDoc: null, guardiansDoc: null);
+        lines.Insert(1, $"  💰 Вы получите: [yellow]{offer.PriceInFeathers} 🪶[/]");
+        lines.Insert(2, $"  🛡️ Покупатель: [cyan]{Markup.Escape(guardianName)}[/]");
+        lines.Insert(3, "  🔁 После продажи реликвия будет удалена из хранилища души и появится у этого Хранителя в обратном выкупе.");
+        lines.Insert(4, "  [yellow]Продажу нельзя откатить без будущего обратного выкупа у того же Хранителя.[/]");
+
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 💰 Продажа Реликвии Души ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+        WriteJsonAuditPanel("Полный JSON продаваемой Реликвии Души", offer.RelicData, Color.Gold1);
+
+        return Confirm(
+            $"Продать «{offer.Name}» за {offer.PriceInFeathers} 🪶? Реликвия перейдёт в обратный выкуп у Хранителя.",
+            false);
     }
 
     private async Task ShowGuardianBuybackMenu(string guardianId)

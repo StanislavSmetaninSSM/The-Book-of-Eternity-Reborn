@@ -362,7 +362,7 @@
 
                      System Behavior:
                      - Unlock personality-specific quest lines
-                     - Improve Gacha rates by 15%
+                     - Improve Guardian-mediated gacha access through the Friendly chargesPerReturn tier; do not treat reputation as a rarity upgrade chance
                      - Increase reward quality by 20%
                      - Provide helpful advice and encouragement
                      ```
@@ -379,7 +379,7 @@
 
                      System Behavior:
                      - Unlock advanced personal quest chains
-                     - Improve Gacha rates by 30%
+                     - Improve Guardian-mediated gacha access through the Devoted chargesPerReturn tier; do not treat reputation as a rarity upgrade chance
                      - Increase reward quality by 50%
                      - Share Guardian lore and personal stories
                      ```
@@ -396,7 +396,7 @@
 
                      System Behavior:
                      - Unlock legendary unique relics only available at this tier
-                     - Maximum Gacha benefits (50% better rates)
+                     - Maximum Guardian-mediated gacha access through the Legendary chargesPerReturn tier; rarity upgrades still require Abode Power or relic_forging project bonuses
                      - Exclusive story content and endings
                      - Guardian may assist in other Guardian relationships
                      ```
@@ -544,9 +544,10 @@
                      MANDATORY RULES:
                      1. The 'baseRarity' from gachaBaseResult is the MINIMUM rarity of the Soul Relic.
                      2. For guardian-mediated pulls, you may ONLY upgrade the rarity using documented modifiers:
-                        - Guardian reputation: Friendly(+50..+129) = +15% upgrade chance, Devoted(+130..+229) = +30%, Legendary(+230..+300) = +50%
-                        - Hard Mode: +1 tier at 50% chance (use next d20 from pool: 11-20 = upgrade)
-                        - Impossible Mode: +1 tier guaranteed, +1 more at 25% chance (use next d20: 16-20 = second upgrade)
+                        - Abode Power rarity ceiling bonus: abodePower.currentPower >= 60 gives +1 allowed rarity step
+                        - Completed relic_forging Guardian project bonus: spend the documented one-use project bonus and record sourceProjectId
+                        - Guardian reputation affects chargesPerReturn and trade pricing, not rarity odds
+                        - Hard/Impossible mortal-world difficulty modifiers do not change afterlife Guardian gacha rarity unless validator/audit support is explicitly added
                      3. Guardian-mediated pulls are LIMITED PER RETURN FROM MORTAL LIFE:
                         - Reputation tier defines the BASE attempts:
                           Hostile(-100..-51)=0, Wary/Neutral(-50..49)=1, Friendly(+50..+129)=2, Devoted/Legendary(+130..+300)=3
@@ -554,7 +555,7 @@
                         - chargesUsedThisReturn resets only when the Soul returns to the Chaos Sea after a new mortal life
                         - If chargesUsedThisReturn already equals chargesPerReturn, DO NOT emit processGacha for that Guardian
                         - If final rarity rises above the client-computed base rarity, include top-level `gachaBonusAudit` with `baseRarity`, `abodePowerBonusSteps`, `relicForgingBonusSteps`, `finalRarity`, and `sourceProjectId` when a completed `relic_forging` project was actually spent
-                     4. Direct Chaos Sea pulls via /gacha are NEUTRAL and UNLIMITED: do NOT apply guardian reputation bonuses, discounts, penalties, jealousy/social effects, or other guardian modifiers.
+                     4. Direct Chaos Sea pulls via /gacha (`[CHAOS_SEA_DIRECT_GACHA]`) are NEUTRAL and UNLIMITED: do NOT apply guardian reputation bonuses, discounts, penalties, jealousy/social effects, or other guardian modifiers. Preserve the exact playerAction cost phrase `<N> Чернильных Перьев` or `<N> Ink Feathers`; validation extracts prepaid cost from that phrase.
                      5. You MUST NOT downgrade or ignore the client-computed baseRarity.
                      6. You MUST log the full calculation in gm_thoughts_markdown, including:
                         - The base rarity determination
