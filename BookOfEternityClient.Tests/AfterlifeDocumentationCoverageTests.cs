@@ -115,6 +115,32 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeDocsExposeClientCodeFallbackWithoutReplacingPrompts()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+
+        foreach (var text in new[] { matrix, taskGuide, daemonSpec })
+        {
+            Assert.Contains("fallback", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("client code", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("canonical", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain(
+            "The GM does not need to read client code.",
+            matrix,
+            StringComparison.Ordinal);
+        Assert.Contains("normally does not need to read client code", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("FileMapping.cs", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("Validation/", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("gm_thoughts_markdown", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("pending file name", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("must not be used to invent new gameplay outcomes", matrix, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption()
     {
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
