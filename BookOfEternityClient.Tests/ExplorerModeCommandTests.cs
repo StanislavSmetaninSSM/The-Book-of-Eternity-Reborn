@@ -825,8 +825,19 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                         {
                             relicId = "relic_sell_001",
                             name = "Реликвия для продажи",
+                            quality = "Rare",
                             rarity = "Rare",
-                            description = "Подходит для теста продажи."
+                            category = "memory",
+                            description = "Подходит для теста продажи.",
+                            sourceContractMarker = "full_sale_payload_marker",
+                            effects = new
+                            {
+                                actionCheckBonuses = new
+                                {
+                                    social = 2
+                                },
+                                mirrorMemoryHook = "sale preview must expose this full relic payload"
+                            }
                         }
                     }
                     : Array.Empty<object>()

@@ -1366,9 +1366,11 @@ Guardian-forced incarnation is a different flow. It is legal only on an ordinary
 ==================================================
 
 Direct Chaos Sea `/gacha`:
+- Player action contains `[CHAOS_SEA_DIRECT_GACHA]` and an exact cost phrase such as `тратит 25 Чернильных Перьев`.
 - Does not use `UpdateGuardians.processGacha`.
 - Does not consume Guardian per-return charges.
 - The client already spent the Ink Feathers before the GM turn; preserve the post-spend balance and do not write `metaStateUpdates.inkFeatherChanges.spend`.
+- `turn_request.json.playerAction` must contain the exact prepaid cost phrase `<N> Чернильных Перьев` or `<N> Ink Feathers`; the validator extracts direct-gacha cost from that phrase.
 - Must materialize exactly one new Soul Relic in Soul/meta state.
 - Final rarity must not be below `turn_request.json.gachaBaseResult.baseRarity`.
 
@@ -1436,6 +1438,9 @@ Guardian-mediated gacha:
 - Uses `UpdateGuardians.processGacha`.
 - Requires remaining Guardian gacha charges for the current return.
 - Must also write matching `metaStateUpdates.inkFeatherChanges.spend` and `metaStateUpdates.soulRelicOperations.addRelic`.
+- Rarity may only rise through Abode Power rarity ceiling bonus and completed `relic_forging` project bonus.
+- Guardian reputation affects charges/trade pricing only; it does not add rarity upgrade chance.
+- Hard/Impossible mortal-world difficulty does not add afterlife Guardian gacha rarity steps.
 - If rarity is upgraded above the client base, include `gachaBonusAudit`. It is safe to include the audit with zero bonus steps even when rarity is unchanged.
 - The accepted Guardian state must increment `gachaSystem.chargesUsedThisReturn` and append a `gachaHistory[]` entry.
 
@@ -2651,7 +2656,7 @@ Correct response/state fragment:
         "completedQuests": []
       },
       "gachaSystem": {
-        "chargesPerReturn": 1,
+        "chargesPerReturn": 4,
         "chargesUsedThisReturn": 0,
         "gachaHistory": []
       },
@@ -2777,7 +2782,7 @@ Correct response/state fragment:
           "completedQuests": []
         },
         "gachaSystem": {
-          "chargesPerReturn": 1,
+          "chargesPerReturn": 5,
           "chargesUsedThisReturn": 0,
           "gachaHistory": []
         },

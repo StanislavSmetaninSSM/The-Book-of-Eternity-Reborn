@@ -587,6 +587,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_GuardianTradeSell_SucceedsAndRemovesRelic()
     {
         await SeedGuardianTradeStateAsync(includeStoredRelicForSale: true);
+        var sellOffers = await _guardianTradeService.GetSellableRelicsAsync("guardian_trade_001");
+        var sellOffer = Assert.Single(sellOffers);
+        Assert.Contains("full_sale_payload_marker", sellOffer.RelicData.ToJsonString(), StringComparison.OrdinalIgnoreCase);
+
         _console.QueueSelection("Выберите раздел", "💰 Продать реликвии");
         _console.QueueSelection("Действие", "🛒 Торговать");
         _console.QueueAnyConfirmResponse(true);
@@ -601,6 +605,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("Реликвия для продажи", soulRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"buybackRelics\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
         Assert.Contains("\"status\": \"available\"", guardiansRaw ?? string.Empty, StringComparison.Ordinal);
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Полный JSON продаваемой Реликвии Души", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("обратном выкупе", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1275,6 +1282,83 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             entry => entry.Title.Contains("Выберите действие", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(actionPrompt.Choices, choice => choice.Contains("Пожертвовать Хранителю", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(actionPrompt.Choices, choice => choice.Contains("Открыть Судьбу", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_InkFeathers_AfterlifeDonateShowsExactFormulaBeforeSpend()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 120 }
+        });
+        _console.QueueSelection("Выберите действие", "🎁 Пожертвовать Хранителю (−18 🪶)");
+        _console.QueueAnySelection("❌ Отмена");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/перья"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("ink_feathers_afterlife_donate_formula");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("reputationChange = min(25, max(15, cost / 3))", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("expected reputationChange = 15", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("stateEvidence.guardianId", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_InkFeathers_AfterlifeMemoryGatesShowsReplacementContract()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 120 }
+        });
+        _console.QueueSelection("Выберите действие", "🧠 Открыть Врата Памяти (−24 🪶)");
+        _console.QueueAnySelection("❌ Отмена");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/перья"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("ink_feathers_afterlife_memory_gates_contract");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("metaStateUpdates.memoryLegacyGrant", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pendingMemoryLegacy", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("заменяет старое наследие", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_DirectGachaShowsBaseMechanicsAndCostPhraseBeforeSpend()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 50 }
+        });
+        _console.QueueSelection("Выберите действие", "🎰 Вытянуть реликвию из Моря Хаоса");
+        _console.QueueAnySelection("❌ Отмена");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/gacha"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("direct_gacha_base_mechanics");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Пороги: 4-48 Common, 49-67 Uncommon, 68-75 Rare, 76-79 Epic, 80 Legendary", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("1 Чернильных Перьев", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("валидатор извлекает", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("без репутации Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
