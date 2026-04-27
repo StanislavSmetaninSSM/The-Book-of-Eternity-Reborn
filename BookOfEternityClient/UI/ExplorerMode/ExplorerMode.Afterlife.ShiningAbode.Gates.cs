@@ -633,21 +633,31 @@ public partial class ExplorerMode
     {
         var snapshot = new JsonArray();
         if (selectedIds.Count == 0 ||
-            shiningRoot["gates"]?["blessingDraft"] is not JsonArray blessingDraft)
+            shiningRoot["gates"] is not JsonObject gates)
         {
             return snapshot;
         }
 
+        var availableCards = gates["availableBlessingCards"] as JsonArray;
+        var allCandidateCards = gates["allCandidateBlessingCards"] as JsonArray;
         foreach (var selectedId in selectedIds)
         {
-            var card = blessingDraft
-                .OfType<JsonObject>()
-                .FirstOrDefault(item => string.Equals(GetNodeString(item["cardId"]), selectedId, StringComparison.OrdinalIgnoreCase));
+            var card = FindBlessingCardById(availableCards, selectedId) ??
+                       FindBlessingCardById(allCandidateCards, selectedId);
             if (card != null)
                 snapshot.Add(card.DeepClone());
         }
 
         return snapshot;
+    }
+
+    private static JsonObject? FindBlessingCardById(JsonArray? cards, string cardId)
+    {
+        if (cards == null || string.IsNullOrWhiteSpace(cardId))
+            return null;
+
+        return cards.OfType<JsonObject>()
+            .FirstOrDefault(item => string.Equals(GetNodeString(item["cardId"]), cardId, StringComparison.OrdinalIgnoreCase));
     }
 
     private JsonObject? PromptForProjectDraft(JsonObject shiningRoot, JsonObject faction)

@@ -155,6 +155,64 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync_UnresolvedPending_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRootWithLegacyNativeDiscovery();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+        await WriteLegacyNativeDiscoverySnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+
+        var issues = await InvokeValidationAsync("ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_legacy_native_discovery_missing_resolution", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync_AcceptedClosure_Passes()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRootWithLegacyNativeDiscovery();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        MaterializeLegacyNativeDiscoveryClosure(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        await WriteLegacyNativeDiscoverySnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+
+        var issues = await InvokeValidationAsync("ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_legacy_native_discovery_missing_resolution", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_legacy_native_discovery_not_cleared", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_discovery_light_sparks_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_discovery_feather_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync_DoubleSpendsReservedLightSparks_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRootWithLegacyNativeDiscovery();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        MaterializeLegacyNativeDiscoveryClosure(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        currentShiningRoot["lightSparks"] = GetNodeInt(preTurnShiningRoot["lightSparks"]) - ShiningAbodeState.GetNativeDiscoveryCost().LightSparks;
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        await WriteLegacyNativeDiscoverySnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+
+        var issues = await InvokeValidationAsync("ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_light_sparks_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedPreparePackageWithoutMaterializedPackage_Fails()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();
@@ -1308,6 +1366,61 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
+    private async Task WriteLegacyNativeDiscoverySnapshotManifestAsync(JsonObject preTurnShiningRoot, JsonObject preTurnResidentRoot, JsonObject preTurnSoulRoot)
+    {
+        const string shiningSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/shining_abode_state.json";
+        const string residentSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/guardian_abode_residents.json";
+        const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
+
+        await WriteNodeAsync(shiningSnapshotPath, preTurnShiningRoot);
+        await WriteNodeAsync(residentSnapshotPath, preTurnResidentRoot);
+        await WriteNodeAsync(soulSnapshotPath, preTurnSoulRoot);
+        await WriteNodeAsync("input/turn_request.json", new JsonObject
+        {
+            ["sessionId"] = "test-session",
+            ["requestId"] = "test-request",
+            ["turnNumber"] = 12
+        });
+
+        var manifest = new JsonObject
+        {
+            ["sessionId"] = "test-session",
+            ["requestId"] = "test-request",
+            ["turnNumber"] = 12,
+            ["requestTimestamp"] = "2026-04-16T00:00:00Z",
+            ["playerAction"] = "legacy-native-discovery",
+            ["files"] = new JsonObject
+            {
+                ["game_state/meta/shining_abode_state.json"] = shiningSnapshotPath,
+                ["game_state/meta/guardian_abode_residents.json"] = residentSnapshotPath,
+                ["game_state/meta/soul_state.json"] = soulSnapshotPath
+            },
+            ["snapshotFileHashes"] = new JsonObject
+            {
+                ["game_state/meta/shining_abode_state.json"] = ComputeSha256(await _fs.ReadFileAsync(shiningSnapshotPath) ?? ""),
+                ["game_state/meta/guardian_abode_residents.json"] = ComputeSha256(await _fs.ReadFileAsync(residentSnapshotPath) ?? ""),
+                ["game_state/meta/soul_state.json"] = ComputeSha256(await _fs.ReadFileAsync(soulSnapshotPath) ?? "")
+            },
+            ["clientOwnedValidationHashes"] = new JsonObject(),
+            ["rollbackBackups"] = new JsonObject
+            {
+                ["game_state/meta/shining_abode_state.json"] = shiningSnapshotPath,
+                ["game_state/meta/guardian_abode_residents.json"] = residentSnapshotPath,
+                ["game_state/meta/soul_state.json"] = soulSnapshotPath
+            },
+            ["rollbackBaselineFiles"] = new JsonArray(
+                "game_state/meta/shining_abode_state.json",
+                "game_state/meta/guardian_abode_residents.json",
+                "game_state/meta/soul_state.json"),
+            ["sourceLabel"] = "shining-legacy-native-discovery-tests",
+            ["manifestPayloadHash"] = string.Empty
+        };
+
+        manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await WriteNodeAsync("game_state/control/pending_turn_snapshot.json", manifest);
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+    }
+
     private async Task<List<ValidationIssue>> InvokeValidationAsync(string methodName)
     {
         var issues = new List<ValidationIssue>();
@@ -1476,6 +1589,96 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
             ["rerollsRemaining"] = 0
         };
         return root;
+    }
+
+    private static JsonObject CreateBaseShiningRootWithLegacyNativeDiscovery()
+    {
+        var root = CreateBaseShiningRoot();
+        var discoveryCost = ShiningAbodeState.GetNativeDiscoveryCost();
+        root["lightSparks"] = GetNodeInt(root["lightSparks"]) - discoveryCost.LightSparks;
+        root["pendingNativeFactionDiscovery"] = new JsonObject
+        {
+            ["requestId"] = "discover_native_faction:0016",
+            ["createdAtTurn"] = 16,
+            ["createdAtUtc"] = "2026-04-16T12:49:00Z",
+            ["radianceTierAtRequest"] = 2,
+            ["costFeathers"] = discoveryCost.Feathers,
+            ["costLightSparks"] = discoveryCost.LightSparks
+        };
+        return root;
+    }
+
+    private static void MaterializeLegacyNativeDiscoveryClosure(JsonObject currentShiningRoot, JsonObject currentResidentRoot, JsonObject currentSoulRoot)
+    {
+        currentShiningRoot["pendingNativeFactionDiscovery"] = null;
+        currentShiningRoot["radiance"]!["experience"] = GetNodeInt(currentShiningRoot["radiance"]?["experience"]) + 20;
+        currentShiningRoot["halls"]!.AsArray().Add(new JsonObject
+        {
+            ["hallId"] = "hall_native",
+            ["hallName"] = "Нативный Зал",
+            ["description"] = "Новая сияющая фракция.",
+            ["serviceTags"] = new JsonArray("social", "memory")
+        });
+        currentShiningRoot["factions"]!.AsArray().Add(new JsonObject
+        {
+            ["factionId"] = "faction_native",
+            ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+            ["hallId"] = "hall_native",
+            ["charter"] = new JsonObject
+            {
+                ["factionName"] = "Нативный Хор",
+                ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+                ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+                ["summary"] = "Открытая нативная фракция."
+            },
+            ["leadership"] = new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["headActorId"] = "actor_native_head",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            },
+            ["baseStrength"] = 35,
+            ["factionStrength"] = 43,
+            ["investCountThisAscension"] = 0,
+            ["projectArchetypesCountedThisAscension"] = new JsonArray(),
+            ["projects"] = new JsonArray(
+                CreateDiscoveryProject("project_native_a"),
+                CreateDiscoveryProject("project_native_b")),
+            ["tradeInventoryReceipts"] = new JsonArray(),
+            ["leadershipReceipts"] = new JsonArray(),
+            ["leadershipHistory"] = new JsonArray()
+        });
+        currentShiningRoot["shiningPoliticalActors"] = new JsonArray(new JsonObject
+        {
+            ["actorId"] = "actor_native_head",
+            ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+            ["displayName"] = "Архон Нативного Хора",
+            ["summary"] = "Глава новой фракции.",
+            ["originFactionId"] = "faction_native",
+            ["currentFactionId"] = "faction_native",
+            ["politicalStatus"] = ShiningAbodeState.PoliticalStatusHead
+        });
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(new JsonObject
+        {
+            ["requestId"] = "discover_native_faction:0016",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction,
+            ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+            ["factionId"] = "",
+            ["projectId"] = "",
+            ["hallId"] = "hall_native",
+            ["resolvedFactionId"] = "faction_native",
+            ["selectedCardIds"] = new JsonArray(),
+            ["newResidentIds"] = new JsonArray("resident_native_a", "resident_native_b"),
+            ["seededProjectIds"] = new JsonArray("project_native_a", "project_native_b"),
+            ["resolvedAtTurn"] = 16,
+            ["resolvedAtUtc"] = "2026-04-16T12:50:00Z",
+            ["reason"] = "legacy_discovery_resolved"
+        });
+
+        var residents = currentResidentRoot["entries"]!.AsArray();
+        residents.Add(CreateDiscoveryResident("resident_native_a", "faction_native"));
+        residents.Add(CreateDiscoveryResident("resident_native_b", "faction_native"));
+        currentSoulRoot["inkFeathers"]!["current"] = GetNodeInt(currentSoulRoot["inkFeathers"]?["current"]) - ShiningAbodeState.GetNativeDiscoveryCost().Feathers;
     }
 
     private static JsonObject CreateCard(string cardId, string sourceType, string sourceActorId, string effectFamily, string rarity) => new()

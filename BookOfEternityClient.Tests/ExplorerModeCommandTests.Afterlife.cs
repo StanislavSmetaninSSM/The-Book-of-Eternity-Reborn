@@ -2266,6 +2266,55 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public void BuildSelectedBlessingCardSnapshot_UsesCanonicalGatesCardsWithoutLegacyBlessingDraft()
+    {
+        static JsonObject Card(string cardId, string displayName) => new()
+        {
+            ["cardId"] = cardId,
+            ["dedupeKey"] = cardId,
+            ["sourceType"] = "project",
+            ["sourceFactionId"] = "faction_dawn",
+            ["sourceActorId"] = "project_passage",
+            ["effectFamily"] = "route",
+            ["rarity"] = "rare",
+            ["displayName"] = displayName,
+            ["displaySummary"] = displayName,
+            ["effectPayload"] = new JsonObject
+            {
+                ["routeSeedId"] = cardId
+            }
+        };
+
+        var shiningRoot = new JsonObject
+        {
+            ["gates"] = new JsonObject
+            {
+                ["availableBlessingCards"] = new JsonArray(
+                    Card("card_visible_a", "Видимая А"),
+                    Card("card_visible_b", "Видимая Б")),
+                ["allCandidateBlessingCards"] = new JsonArray(
+                    Card("card_visible_a", "Видимая А"),
+                    Card("card_visible_b", "Видимая Б"))
+            }
+        };
+        var method = typeof(ExplorerMode).GetMethod(
+            "BuildSelectedBlessingCardSnapshot",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        var snapshot = Assert.IsType<JsonArray>(method!.Invoke(null, new object[]
+        {
+            shiningRoot,
+            new List<string> { "card_visible_b", "card_visible_a" }
+        }));
+
+        Assert.Equal(2, snapshot.Count);
+        Assert.Equal("card_visible_b", snapshot[0]?["cardId"]?.GetValue<string>());
+        Assert.Equal("card_visible_a", snapshot[1]?["cardId"]?.GetValue<string>());
+        Assert.Null(shiningRoot["gates"]?["blessingDraft"]);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningTradeAndForge_TradeLifecycleInspectionShowsContractAndReceiptProof()
     {
         await SeedShiningInspectionStateAsync();

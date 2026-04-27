@@ -847,19 +847,25 @@ public partial class ValidationService
         var guardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
         ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
 
-        var knownPoliticalActors = new HashSet<string>(
-            (shiningRoot["shiningPoliticalActors"] as JsonArray)?.OfType<JsonObject>()
-                .Select(actor => GetNodeString(actor["actorId"]))
-                .Where(actorId => !string.IsNullOrWhiteSpace(actorId))!
-            ?? Enumerable.Empty<string>(),
-            StringComparer.OrdinalIgnoreCase);
+        var politicalActors = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+        if (shiningRoot["shiningPoliticalActors"] is JsonArray politicalActorArray)
+        {
+            foreach (var actor in politicalActorArray.OfType<JsonObject>())
+            {
+                var actorId = GetNodeString(actor["actorId"]);
+                if (!string.IsNullOrWhiteSpace(actorId) && !politicalActors.ContainsKey(actorId))
+                    politicalActors[actorId] = actor;
+            }
+        }
 
+        var exclusiveLeadershipHeads = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var factions = ShiningAbodeState.EnsureFactionsArray(shiningRoot);
         for (var i = 0; i < factions.Count; i++)
         {
             if (factions[i] is not JsonObject faction || faction["leadership"] is not JsonObject leadership)
                 continue;
 
+            var factionId = GetNodeString(faction["factionId"]) ?? $"factions[{i}]";
             var leadershipState = GetNodeString(leadership["leadershipState"]);
             if (string.Equals(leadershipState, ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
                 continue;
@@ -869,31 +875,111 @@ public partial class ValidationService
             if (string.IsNullOrWhiteSpace(headActorType) || string.IsNullOrWhiteSpace(headActorId))
                 continue;
 
-            var isResolvable = headActorType switch
+            var isResolvable = true;
+            if (string.Equals(headActorType, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase))
             {
-                var actorType when string.Equals(actorType, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) =>
-                    string.Equals(headActorId, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase),
-                var actorType when string.Equals(actorType, ShiningAbodeState.HeadActorTypeGuardian, StringComparison.OrdinalIgnoreCase) =>
-                    LeadershipGuardianExists(guardiansRoot, headActorId),
-                var actorType when string.Equals(actorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase) =>
-                    GuardianAbodeResidentState.FindResident(residentRoot, headActorId) != null,
-                var actorType when string.Equals(actorType, ShiningAbodeState.HeadActorTypeRadiantActor, StringComparison.OrdinalIgnoreCase) =>
-                    knownPoliticalActors.Contains(headActorId),
-                _ => true
-            };
+                isResolvable = string.Equals(headActorId, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase);
+            }
+            else if (string.Equals(headActorType, ShiningAbodeState.HeadActorTypeGuardian, StringComparison.OrdinalIgnoreCase))
+            {
+                isResolvable = LeadershipGuardianExists(guardiansRoot, headActorId);
+            }
+            else if (string.Equals(headActorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase))
+            {
+                var resident = residentRoot == null
+                    ? null
+                    : GuardianAbodeResidentState.FindResident(residentRoot, headActorId);
+                if (resident == null)
+                {
+                    isResolvable = false;
+                }
+                else
+                {
+                    var ascensionState = GetNodeString(resident["ascensionState"]);
+                    if (!string.Equals(ascensionState, ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{ShiningAbodeState.StatePath}.factions[{i}].leadership.headActorId",
+                            IssueSeverity.Error,
+                            "resident-глава Shining faction должен быть ascended resident.",
+                            code: "shining_leadership_resident_head_not_ascended",
+                            section: "ShiningAbode",
+                            expected: ShiningAbodeState.AscensionStateAscended,
+                            actual: string.IsNullOrWhiteSpace(ascensionState) ? "missing" : ascensionState,
+                            repairHint: "Назначай главой фракции только ascended resident или сначала переведи resident в Сияющую Обитель canonically."));
+                    }
 
-            if (isResolvable)
+                    var residentFactionId = GetNodeString(resident["shiningFactionId"]);
+                    if (!string.Equals(residentFactionId, factionId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{ShiningAbodeState.StatePath}.factions[{i}].leadership.headActorId",
+                            IssueSeverity.Error,
+                            "resident-глава должен принадлежать той же Shining faction, которой руководит.",
+                            code: "shining_leadership_resident_head_faction_mismatch",
+                            section: "ShiningAbode",
+                            expected: factionId,
+                            actual: string.IsNullOrWhiteSpace(residentFactionId) ? "missing" : residentFactionId,
+                            repairHint: "Синхронизируй resident.shiningFactionId с factionId руководимой фракции или выбери другого главу."));
+                    }
+                }
+            }
+            else if (string.Equals(headActorType, ShiningAbodeState.HeadActorTypeRadiantActor, StringComparison.OrdinalIgnoreCase))
+            {
+                if (!politicalActors.TryGetValue(headActorId, out var actor))
+                {
+                    isResolvable = false;
+                }
+                else
+                {
+                    var actorFactionId = GetNodeString(actor["currentFactionId"]);
+                    if (!string.Equals(actorFactionId, factionId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{ShiningAbodeState.StatePath}.factions[{i}].leadership.headActorId",
+                            IssueSeverity.Error,
+                            "radiant_actor-глава должен быть привязан к той же currentFactionId, которой руководит.",
+                            code: "shining_leadership_radiant_head_faction_mismatch",
+                            section: "ShiningAbode",
+                            expected: factionId,
+                            actual: string.IsNullOrWhiteSpace(actorFactionId) ? "missing" : actorFactionId,
+                            repairHint: "Синхронизируй shiningPoliticalActors[].currentFactionId с руководимой factionId или выбери другого radiant actor."));
+                    }
+                }
+            }
+
+            if (!isResolvable)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{ShiningAbodeState.StatePath}.factions[{i}].leadership.headActorId",
+                    IssueSeverity.Error,
+                    "non-player leadership должен ссылаться на существующего guardian, resident или shiningPoliticalActor",
+                    code: "shining_leadership_missing_head_actor_reference",
+                    section: "ShiningAbode",
+                    expected: "existing actor id for the declared headActorType",
+                    actual: $"{headActorType}:{headActorId}",
+                    repairHint: "Используй существующий guardian/resident/radiant actor или очисти broken leadership binding перед сохранением state."));
                 continue;
+            }
 
-            issues.Add(new ValidationIssue(
-                $"{ShiningAbodeState.StatePath}.factions[{i}].leadership.headActorId",
-                IssueSeverity.Error,
-                "non-player leadership должен ссылаться на существующего guardian, resident или shiningPoliticalActor",
-                code: "shining_leadership_missing_head_actor_reference",
-                section: "ShiningAbode",
-                expected: "existing actor id for the declared headActorType",
-                actual: $"{headActorType}:{headActorId}",
-                repairHint: "Используй существующий guardian/resident/radiant actor или очисти broken leadership binding перед сохранением state."));
+            var headKey = $"{headActorType.Trim()}:{headActorId.Trim()}";
+            if (exclusiveLeadershipHeads.TryGetValue(headKey, out var existingFactionId) &&
+                !string.Equals(existingFactionId, factionId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{ShiningAbodeState.StatePath}.factions[{i}].leadership.headActorId",
+                    IssueSeverity.Error,
+                    "Один и тот же actor не может быть текущим главой нескольких Shining factions без отдельного supported transition.",
+                    code: "shining_leadership_duplicate_head_actor",
+                    section: "ShiningAbode",
+                    expected: $"single current faction head for {headKey}",
+                    actual: $"{existingFactionId}, {factionId}",
+                    repairHint: "Оставь actor главой только одной текущей фракции; для второй фракции используй vacant/contested leadership, другого главу или явный leadership transition."));
+            }
+            else
+            {
+                exclusiveLeadershipHeads[headKey] = factionId;
+            }
         }
     }
 
