@@ -1069,6 +1069,7 @@
                     - `halls`
                     - `gates`
                     - `factions`
+                    - `shiningPoliticalActors`
                     - `coreActionReceipts`
                     - `preparedIncarnationPackage`
                     The Shining Abode cycle can change public mood, institutional tension, ritual readiness, gate pressure, civic order, and consequences of completed Shining projects. If there is a pending Shining core action, resolve it through canonical `shining_abode_state.json` mutation plus matching `coreActionReceipts[]`.
@@ -1079,7 +1080,8 @@
                     - faction strength and support
                     - halls and service tags
                     - leadership state (`secure`, `contested`, `vacant`)
-                    - head actor (`guardian`, `resident`, `player_soul`, `radiant_actor`)
+                    - head actor (`guardian`, `resident`, `player_soul`, `radiant_actor`); if `leadership.headActorType = radiant_actor`, `leadership.headActorId` must exist in `shiningPoliticalActors[].actorId`
+                    - `shiningPoliticalActors` registry and political status (`head`, `former_head`, `claimant`, `elder`, `retired`)
                     - resident loyalty and restlessness
                     - project archetypes and completed projects
                     - pending founding, realignment, and leadership transition requests
