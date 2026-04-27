@@ -40,6 +40,7 @@ Use this index before resolving an afterlife turn:
 - Ordinary Chaos Sea living world without pending files: see example 19.
 - `system_guardian_attraction.json` / deterministic Eternal Guardian attraction: see example 20.
 - `afterlife_return_guard.json` protected first afterlife turn: see example 21.
+- Direct resident action tags and hidden pending-backed routing tags: see example 22.
 
 ==================================================
 GLOBAL AFTERLIFE TURN RULE
@@ -4648,6 +4649,108 @@ Why this is valid:
 - The active guard blocks only immediate Guardian-forced reincarnation; it does not block ordinary afterlife narration.
 - The GM does not mutate the client-owned guard. Runtime consumes/clears it after accepting the protected ordinary afterlife turn.
 - The response does not confuse `afterlife_return_guard.json` with `preparedIncarnationPackage`, `AscensionTrigger`, or Mortal World return state.
+
+==================================================
+22. VALID — DIRECT RESIDENT ACTION TAGS AND PENDING-BACKED ROUTING TAGS
+==================================================
+
+This example is a routing reference for exact tags that may appear inside `input/turn_request.json.playerAction`. The GM must recognize the tag first, then choose the matching row in `OtherGuides/Afterlife_Contract_Matrix.md`.
+
+These tags are not all the same kind of contract:
+- `[ABODE_RESIDENT_RELIC_GRANT]` and `[ABODE_RESIDENT_QUEST_REQUEST]` are direct resident actions. They have no pending control file and close no receipt arrays by themselves.
+- `[GUARDIAN_TRADE_REQUEST]`, `[ARCHIVE_CONSULTATION_REQUEST]`, `[ARCHIVE_PROJECT_FUEL_REQUEST]`, `[ABODE_RESIDENT_ROSTER_REQUEST]`, and `[PLAYER_GUARDIAN_FOUNDATION]` are pending-backed routing markers. The GM must read the matching pending file and close that exact pending contract.
+
+Direct resident reward:
+
+```text
+playerAction:
+[ABODE_RESIDENT_RELIC_GRANT] Игрок принимает реликвию связи от afterlife resident 'Лиора' (residentId=res_azalia_liora_001, guardianId=guard_social_azalia_001, abodeId=abode_azalia_memory_silk_001).
+
+Required accepted-turn surfaces:
+- metaStateUpdates.soulRelicOperations.addRelic:
+  - relicType = companion_echo
+  - sourceResidentId = res_azalia_liora_001
+  - sourceGuardianId = guard_social_azalia_001
+  - companionSeed is complete: companionNameHint, originWorldSummary, futureCompanionPrompt, bondReason, coreTraits, archetypeHints, appearanceMotifs, personalityProfile, abodeDisposition, abodeDevotionLevel / abodeDevotionTier, restlessness / migrationState
+- UpdateGuardianAbodeResidents:
+  - same residentId / guardianId / abodeId
+  - bondRewardState = granted
+  - grantedRelicId = the new relic id
+  - optional bounded devotion/restlessness changes when the scene justifies them
+- residentInteractionLogUpdates:
+  - concise memory of why the resident granted the relic
+
+Forbidden for this tag:
+- no UpdateGuardianAbodeResidentInteractionReceipts
+- no UpdateGuardianAbodeResidentRosterReceipts
+- no UpdateGuardianAbodeResidentTransferReceipts
+- no pending_resident_companion_manifestation_request.json output
+- no UpdateNPCs
+```
+
+Direct resident quest:
+
+```text
+playerAction:
+[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Лиора' (residentId=res_azalia_liora_001, guardianId=guard_social_azalia_001, abodeId=abode_azalia_memory_silk_001).
+
+Required accepted-turn surfaces:
+- UpdateSoulQuests:
+  - ordinary Soul Quest identity, title, description, status, and objective data
+  - guardianId = guard_social_azalia_001 when the quest belongs to that Abode
+  - relatedAfterlifeResidentId = res_azalia_liora_001
+- UpdateGuardianAbodeResidents when resident state changes:
+  - linkedSoulQuestId = the new or progressed Soul Quest id
+  - optional bondLevel / bondTier / devotion changes when justified
+- residentInteractionLogUpdates:
+  - concise memory that the resident asked for or accepted this quest path
+
+Forbidden for this tag:
+- no Mortal UpdateQuests
+- no UpdateNPCs
+- no resident receipt arrays unless a separate pending resident file exists in game_state/control
+```
+
+Pending-backed routing tags:
+
+```text
+[GUARDIAN_TRADE_REQUEST]
+Read game_state/control/pending_guardian_trade_request.json.
+Close with guardians[].tradeInventory plus UpdateGuardianTradeInventoryReceipts.
+Do not place commandless tradeInventory inside UpdateGuardians.
+
+[ARCHIVE_CONSULTATION_REQUEST]
+Read game_state/control/pending_archive_consultation_request.json.
+Close with archiveActionResolutions and soul_state.afterlifeArchive.actionReceipts[].
+Do not create Mortal World lore, inventory, or notification output as the closure.
+
+[ARCHIVE_PROJECT_FUEL_REQUEST]
+Read game_state/control/pending_archive_project_fuel_request.json.
+Close with archiveActionResolutions.
+lore_fragment may resolve as project_work; secret_record resolves only as pressure_relief.
+
+[ABODE_RESIDENT_ROSTER_REQUEST]
+Read game_state/control/pending_guardian_abode_residents_request.json.
+Close with full UpdateGuardianAbodeResidents objects plus UpdateGuardianAbodeResidentRosterReceipts.
+Do not emit identity-only residents.
+
+[PLAYER_GUARDIAN_FOUNDATION]
+Read game_state/control/pending_player_guardian_foundation.json.
+Close with UpdateGuardians.create, canonical guardians, activeGuardian, chaosSeaNavigation, soul foundation fields, and playerGuardianFoundationHistory.
+Do not change patron roles without the authorized foundation create.
+```
+
+Correct reasoning checklist:
+- First match the exact tag in `playerAction`.
+- If the tag is direct resident reward/quest, do not search for a pending receipt to close.
+- If the tag is pending-backed, read the named pending file before writing response state.
+- Declare changed residents, Guardians, archive authority, or founded Guardian actors in `gm_thoughts_markdown`.
+- Keep all outputs inside afterlife surfaces. Never use Mortal `UpdateNPCs`, Mortal `UpdateQuests`, `worldEventsLog`, or afterlife notifications for these tags.
+
+Why this is valid:
+- It separates direct resident player actions from pending resident contracts.
+- It gives the GM exact tag names that the client puts into `playerAction`.
+- It routes every hidden pending-backed tag to the same canonical surfaces that validators and normalizers expect.
 
 ==================================================
 COMMON INVALID PATTERNS

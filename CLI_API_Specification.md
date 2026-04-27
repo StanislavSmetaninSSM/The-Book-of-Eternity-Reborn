@@ -1685,6 +1685,12 @@ Canonical Abode Power changes must flow through `guardianPowerEvents` or be clie
 - `afterlifeArchive.stored[]` entries may carry:
   - optional `sourceGuardianId`
 - `archive consultation` and `archive project fuel` are client-side afterlife actions built on top of `afterlifeArchive.stored[]`, but they now use pending client-authored requests plus GM-materialized canonical results; the client does not derive compatibility from guardian domain.
+- `playerAction` may include hidden routing tags for afterlife pending contracts. They are not optional flavor text:
+  - `[GUARDIAN_TRADE_REQUEST]` -> read `pending_guardian_trade_request.json` and close it through `guardian.tradeInventory` plus `UpdateGuardianTradeInventoryReceipts`
+  - `[ARCHIVE_CONSULTATION_REQUEST]` -> read `pending_archive_consultation_request.json` and close it through `archiveActionResolutions`
+  - `[ARCHIVE_PROJECT_FUEL_REQUEST]` -> read `pending_archive_project_fuel_request.json` and close it through `archiveActionResolutions`
+  - `[ABODE_RESIDENT_ROSTER_REQUEST]` -> read `pending_guardian_abode_residents_request.json` and close it through `UpdateGuardianAbodeResidents` plus `UpdateGuardianAbodeResidentRosterReceipts`
+  - `[PLAYER_GUARDIAN_FOUNDATION]` -> read `pending_player_guardian_foundation.json` and close it through the player-founded Guardian authority surfaces
 - `UpdateGuardianAbodeResidents` is an explicit authored roster surface for afterlife residents in a Guardian's Abode; the client does not derive residents from guardian domain.
 - `guardian_abode_residents.json` may also carry:
   - `rosterReceipts[]` from `UpdateGuardianAbodeResidentRosterReceipts`
@@ -1702,6 +1708,11 @@ Canonical Abode Power changes must flow through `guardianPowerEvents` or be clie
   - resident reward relics through `metaStateUpdates.soulRelicOperations.addRelic`
   - resident state changes such as `linkedSoulQuestId`, `historyRevealed`, `bondRewardState`, and `grantedRelicId` through `UpdateGuardianAbodeResidents`
   - revealed history fragments through `UpdateGuardianAbodeResidentHistoryLog`
+- Direct resident action tags are player-action contracts without pending files:
+  - `[ABODE_RESIDENT_RELIC_GRANT]` means the player accepts a companion-echo reward from an existing afterlife resident. The accepted turn must add a `companion_echo` Soul Relic with a complete `companionSeed`, update that resident with `bondRewardState=granted` and `grantedRelicId=<new relicId>`, and add `residentInteractionLogUpdates`.
+  - `[ABODE_RESIDENT_QUEST_REQUEST]` means the player accepts or helps a request from an existing afterlife resident. The accepted turn must use ordinary `UpdateSoulQuests` with `relatedAfterlifeResidentId`, may update the resident with `linkedSoulQuestId` / bond fields through `UpdateGuardianAbodeResidents`, and must add `residentInteractionLogUpdates`.
+  - These direct tags do not close `pending_guardian_abode_resident_interactions.json`, `pending_guardian_abode_residents_request.json`, or `pending_guardian_abode_resident_transfers.json`; do not invent `UpdateGuardianAbodeResidentInteractionReceipts`, roster receipts, or transfer receipts unless the matching pending file exists.
+  - Do not use `UpdateNPCs`, Mortal `UpdateQuests`, or `pending_resident_companion_manifestation_request.json` for these direct afterlife resident actions.
 - Accepted resident social outcomes must also leave curated memory:
   - accepted `talk` -> `residentThoughtJournalUpdates` and/or `residentInteractionLogUpdates`
   - accepted `history` -> `residentThoughtJournalUpdates` and/or `residentInteractionLogUpdates`, in addition to canonical history aftermath

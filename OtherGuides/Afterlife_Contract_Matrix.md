@@ -84,6 +84,20 @@ Scheduler report rule: each `newLast*Ordinal` belongs only to its own contour. D
 | `pending_shining_trade_inventory_requests.json` | Ordinary active Shining Abode | Faction `tradeInventory` plus faction `tradeInventoryReceipts[]` | Inventory matches derived tier/slot count/rarity/service multiplier/trade cycle; receipt has `status=ready`, `itemCount`, `soldOutCount`, timing | Do not invent one-slot inventory when request derives more slots; do not omit item `priceInFeathers` or nested `relicData` | 2, 17 |
 | `pending_resident_companion_manifestation_request.json` | MortalWorldProfile only | Nothing in afterlife; treat as stale/repair-only context | None in afterlife | Do not materialize mortal NPCs or encounters in `Chaos Sea` or `Shining Abode` | none |
 
+## PlayerAction Routing Tag Matrix
+
+These tags may appear inside `input/turn_request.json.playerAction`. Treat them as routing markers for the contract named here; do not resolve them as generic prose.
+
+| `playerAction` tag | Contract type | GM routing rule | Required/forbidden outputs | Example |
+|---|---|---|---|---|
+| `[ABODE_RESIDENT_RELIC_GRANT]` | Direct resident action, no pending file | The player accepts a companion-echo reward from an existing afterlife resident. Resolve directly through resident and Soul Relic state. | Required: `metaStateUpdates.soulRelicOperations.addRelic` with `relicType=companion_echo` and complete `companionSeed`, `UpdateGuardianAbodeResidents` with `bondRewardState=granted` and `grantedRelicId`, plus `residentInteractionLogUpdates`. Forbidden: `UpdateGuardianAbodeResidentInteractionReceipts`, roster receipts, transfer receipts, `pending_resident_companion_manifestation_request.json`, `UpdateNPCs`. | 22 |
+| `[ABODE_RESIDENT_QUEST_REQUEST]` | Direct resident action, no pending file | The player helps or accepts a request from an afterlife resident. Resolve as an ordinary Soul Quest linked back to the resident. | Required: `UpdateSoulQuests` with `relatedAfterlifeResidentId`; if resident state changes, `UpdateGuardianAbodeResidents` with `linkedSoulQuestId` or bond fields; add `residentInteractionLogUpdates`. Forbidden: invented resident request receipts unless a real pending resident file exists. | 22 |
+| `[GUARDIAN_TRADE_REQUEST]` | Pending-backed routing marker | Read `pending_guardian_trade_request.json`; close the Guardian trade row in the Pending Contract Matrix. | Materialize `guardians[].tradeInventory` and `UpdateGuardianTradeInventoryReceipts`. Do not put commandless trade inventory into `UpdateGuardians`. | 4, 22 |
+| `[ARCHIVE_CONSULTATION_REQUEST]` | Pending-backed routing marker | Read `pending_archive_consultation_request.json`; close the archive consultation row. | Use `archiveActionResolutions` and canonical `soul_state.afterlifeArchive.actionReceipts[]`; do not create mortal lore/inventory output. | 5, 22 |
+| `[ARCHIVE_PROJECT_FUEL_REQUEST]` | Pending-backed routing marker | Read `pending_archive_project_fuel_request.json`; close the archive project-fuel row. | Use `archiveActionResolutions`; `lore_fragment` may become `project_work`, while `secret_record` is only `pressure_relief`. | 5, 22 |
+| `[ABODE_RESIDENT_ROSTER_REQUEST]` | Pending-backed routing marker | Read `pending_guardian_abode_residents_request.json`; close the resident roster row. | Use full `UpdateGuardianAbodeResidents` plus `UpdateGuardianAbodeResidentRosterReceipts`. Do not emit identity-only resident fragments. | 10, 22 |
+| `[PLAYER_GUARDIAN_FOUNDATION]` | Pending-backed routing marker | Read `pending_player_guardian_foundation.json`; close the player-founded Guardian row. | Use foundation authority surfaces: `UpdateGuardians.create`, canonical `guardians`, `activeGuardian`, `chaosSeaNavigation`, soul foundation fields, and `playerGuardianFoundationHistory`. | 13, 22 |
+
 ## Shining Core Action Matrix
 
 All rows below use `pending_shining_abode_actions.json` as input and close through `shining_abode_state.json.coreActionReceipts[]`. They are legal only in ordinary active `Shining Abode`.
@@ -117,6 +131,8 @@ If a Shining core action mutates the faction/project inputs used by the blessing
 | `AscensionTrigger` | Chaos Sea only, max Enlightenment, explicit `playerChoice=Ascension` | `AscensionTrigger` / `playerChoice` to `ascension.json` | Do not combine with `TriggerLifeEnd` or manual Shining realm switch | covered by core docs |
 | Shining pending-bootstrap `TriggerIncarnation` | `Shining Abode` with non-null valid `preparedIncarnationPackage` | `TriggerIncarnation` only | Preserve `preparedIncarnationPackage` exactly; runtime consumes/clears it after successful Mortal bootstrap | 3, 18 |
 | Direct Chaos Sea `/gacha` / `[CHAOS_SEA_DIRECT_GACHA]` | Ordinary Chaos Sea | Soul Relic result through Soul/meta surfaces | Do not emit `UpdateGuardians.processGacha`; do not spend feathers a second time if the client already deducted cost | 7 |
+| `[ABODE_RESIDENT_RELIC_GRANT]` | Ordinary afterlife with explicit existing resident reward action | `metaStateUpdates.soulRelicOperations.addRelic`, `UpdateGuardianAbodeResidents`, `residentInteractionLogUpdates` | No pending file is closed by this tag; do not invent resident interaction/roster/transfer receipts | 22 |
+| `[ABODE_RESIDENT_QUEST_REQUEST]` | Ordinary afterlife with explicit existing resident quest action | `UpdateSoulQuests`, optional `UpdateGuardianAbodeResidents`, `residentInteractionLogUpdates` | The quest must carry `relatedAfterlifeResidentId`; do not route through Mortal `UpdateQuests` or NPC state | 22 |
 | Guardian-mediated gacha | Ordinary afterlife with eligible Guardian and remaining charges | `UpdateGuardians.processGacha` and resulting Soul Relic state | Respect per-return charge limits and Guardian reputation tier; direct `/gacha` does not consume Guardian charges | 7 |
 | Freeform Guardian command | Afterlife only | Supported `UpdateGuardians` command, Guardian journals/projects/power surfaces as needed | Guardians are not NPCs; actor scope must cover changed Guardians | 15 |
 | Afterlife Ink Feather action | Afterlife only and action-specific prerequisites satisfied | `output/ink_feather_action_result.json` plus the canonical state surface for the action | Afterlife whitelist is only Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, and Ink Feather Abode Offering | see Ink Feather examples |
@@ -156,3 +172,4 @@ If a Shining core action mutates the faction/project inputs used by the blessing
 | Ordinary Chaos Sea living world without pending files | 19 |
 | System Eternal Guardian attraction / `system_guardian_attraction.json` | 20 |
 | Protected first afterlife turn / `afterlife_return_guard.json` | 21 |
+| Direct resident action tags and pending-backed routing tags | 22 |
