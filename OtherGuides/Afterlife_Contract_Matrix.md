@@ -92,7 +92,7 @@ If a Shining core action mutates the faction/project inputs used by the blessing
 
 | `actionType` | GM state responsibility | Receipt must identify | Required caution |
 |---|---|---|---|
-| `discover_native_faction` | Materialize a hall, native Shining faction, 2..4 ascended residents, 2 seeded completed projects, Radiance XP, exact costs | `hallId`, `resolvedFactionId`, `newResidentIds[]`, `seededProjectIds[]` | The discovered faction must be Shining state, not Mortal World faction state |
+| `discover_native_faction` | Materialize a new hall, new native Shining faction, 2..4 new ascended residents, 2 new seeded completed projects, Radiance XP, exact costs | `hallId`, `resolvedFactionId`, `newResidentIds[]`, `seededProjectIds[]` | The discovered ids must not reuse any pre-turn Shining hall/faction/project ids; the discovered faction must be Shining state, not Mortal World faction state |
 | `invest_in_faction` | Spend exact costs, increment faction investment, recompute strength, mark gates stale when open | `factionId` | Costs/effects must match the client-authored pending request |
 | `complete_project` | Spend exact costs, append one completed project from request draft, update Radiance/faction strength, mark gates stale when open | `factionId`, completed `projectId` | Project result must come from request `projectDraft`; do not invent unrelated projects |
 | `support_project` | Set an existing completed project supported and mark gates stale when open | `factionId`, `projectId` | Support has quoted Light Sparks cost `0`; do not spend Light Sparks |

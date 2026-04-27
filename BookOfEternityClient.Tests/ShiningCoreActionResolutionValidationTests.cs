@@ -101,6 +101,60 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_DiscoverNativeFactionReusingExistingIds_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        currentShiningRoot["radiance"]!["experience"] = GetNodeInt(preTurnShiningRoot["radiance"]?["experience"]) + 20;
+        currentShiningRoot["lightSparks"] = 60;
+        var reusedFaction = ShiningAbodeState.FindFaction(currentShiningRoot, "faction_old")!;
+        reusedFaction["originType"] = ShiningAbodeState.OriginTypeNativeRadiant;
+        reusedFaction["projects"]!.AsArray().Add(CreateDiscoveryProject("project_seeded_new"));
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(new JsonObject
+        {
+            ["requestId"] = "core_req_discover",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction,
+            ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+            ["factionId"] = "",
+            ["projectId"] = "",
+            ["hallId"] = "hall_old",
+            ["resolvedFactionId"] = "faction_old",
+            ["selectedCardIds"] = new JsonArray(),
+            ["newResidentIds"] = new JsonArray("resident_new_a", "resident_new_b"),
+            ["seededProjectIds"] = new JsonArray("project_passage", "project_seeded_new"),
+            ["resolvedAtTurn"] = 16,
+            ["resolvedAtUtc"] = "2026-04-16T12:50:00Z",
+            ["reason"] = "discovered"
+        });
+
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        var residents = currentResidentRoot["entries"]!.AsArray();
+        residents.Add(CreateDiscoveryResident("resident_new_a", "faction_old"));
+        residents.Add(CreateDiscoveryResident("resident_new_b", "faction_old"));
+
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        currentSoulRoot["inkFeathers"]!["current"] = 25;
+
+        var requestRoot = new JsonObject
+        {
+            [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray(CreateDiscoverNativeFactionRequest())
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot, CloneJsonObject(requestRoot));
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_reused_existing_hall_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_reused_existing_faction_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_reused_existing_project_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedPreparePackageWithoutMaterializedPackage_Fails()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();
@@ -1439,6 +1493,53 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         {
             ["type"] = "noop"
         }
+    };
+
+    private static JsonObject CreateDiscoverNativeFactionRequest() => new()
+    {
+        ["requestId"] = "core_req_discover",
+        ["actionType"] = ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction,
+        ["factionId"] = "",
+        ["factionName"] = "",
+        ["projectId"] = "",
+        ["projectDisplayName"] = "",
+        ["radianceTierAtRequest"] = 2,
+        ["quotedCostFeathers"] = 25,
+        ["quotedCostLightSparks"] = 20,
+        ["sourceDraftVersion"] = 0,
+        ["selectedCardIds"] = new JsonArray(),
+        ["createdAtTurn"] = 16,
+        ["createdAtUtc"] = "2026-04-16T12:49:00Z"
+    };
+
+    private static JsonObject CreateDiscoveryResident(string residentId, string factionId) => new()
+    {
+        ["residentId"] = residentId,
+        ["displayName"] = residentId,
+        ["ascensionState"] = ShiningAbodeState.AscensionStateAscended,
+        ["shiningFactionId"] = factionId,
+        ["residentRole"] = ShiningAbodeState.ResidentRoleDescentSupport,
+        ["factionLoyaltyLevel"] = 50,
+        ["factionLoyaltyTier"] = ShiningAbodeState.ResolveFactionLoyaltyTier(50),
+        ["factionRestlessness"] = 10,
+        ["factionRealignmentState"] = ShiningAbodeState.ResolveFactionRealignmentState(50, 10)
+    };
+
+    private static JsonObject CreateDiscoveryProject(string projectId) => new()
+    {
+        ["projectId"] = projectId,
+        ["displayName"] = projectId,
+        ["summary"] = projectId,
+        ["toneTags"] = new JsonArray("social"),
+        ["targetFactionIds"] = new JsonArray(),
+        ["projectArchetype"] = ShiningAbodeState.ProjectArchetypePassage,
+        ["outputEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+        ["tier"] = 1,
+        ["status"] = ShiningAbodeState.ProjectStatusCompleted,
+        ["isSupported"] = false,
+        ["strengthReward"] = 8,
+        ["completedAtTurn"] = 16,
+        ["completedAtUtc"] = "2026-04-16T12:50:00Z"
     };
 
     private async Task WriteNodeAsync(string relativePath, JsonNode node)
