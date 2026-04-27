@@ -28,7 +28,15 @@ public static class GuardianManifestation
                 return currentDisplayName;
         }
 
-        return GetCanonicalName(guardian);
+        var canonicalName = GetCanonicalName(guardian);
+        if (!string.IsNullOrWhiteSpace(canonicalName))
+            return canonicalName;
+
+        var legacyName = GetString(guardian, "name");
+        if (!string.IsNullOrWhiteSpace(legacyName))
+            return legacyName;
+
+        return GetString(guardian, "guardianName");
     }
 
     public static string GetDisplayName(JsonObject guardian)
@@ -40,7 +48,15 @@ public static class GuardianManifestation
                 return currentDisplayName;
         }
 
-        return GetCanonicalName(guardian);
+        var canonicalName = GetCanonicalName(guardian);
+        if (!string.IsNullOrWhiteSpace(canonicalName))
+            return canonicalName;
+
+        var legacyName = GetNodeString(guardian["name"]);
+        if (!string.IsNullOrWhiteSpace(legacyName))
+            return legacyName;
+
+        return GetNodeString(guardian["guardianName"]);
     }
 
     public static string GetAppearanceDescription(JsonElement guardian)
