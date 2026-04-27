@@ -2,7 +2,7 @@
 
 This guide is mandatory operational context for every GM turn where `game_state/meta/soul_state.json.currentRealm` is `Chaos Sea`, `Море Хаоса`, `Shining Abode`, or `Сияющая Обитель`, and for any turn whose `progressionControl` contains afterlife debt.
 
-The GM does not need to read client code. Use this matrix to decide which afterlife contracts are active, which files must be read, which canonical surfaces must be written, and which Mortal World substitutions are forbidden. Use `Examples/E_CLI_Afterlife_Turns.txt` for full worked JSON fragments after selecting the relevant contract rows here.
+The GM normally does not need to read client code. Use this matrix to decide which afterlife contracts are active, which files must be read, which canonical surfaces must be written, and which Mortal World substitutions are forbidden. Use `Examples/E_CLI_Afterlife_Turns.txt` for full worked JSON fragments after selecting the relevant contract rows here. If the matrix and examples still leave a mechanical contract unclear, or a validation repair points at an exact schema/surface mismatch, the GM may inspect client code as a fallback source of truth for file mappings, allowed fields, validators, canonical state surfaces, receipts, reports, and normalizers. This fallback never replaces the prompts and must not be used to invent new gameplay outcomes or bypass afterlife rules.
 
 ## Universal Afterlife Rules
 

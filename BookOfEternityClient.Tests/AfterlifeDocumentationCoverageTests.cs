@@ -114,6 +114,84 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("example 21", daemonScript, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public void AfterlifeDocsExposeClientCodeFallbackWithoutReplacingPrompts()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+
+        foreach (var text in new[] { matrix, taskGuide, daemonSpec })
+        {
+            Assert.Contains("fallback", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("client code", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("canonical", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain(
+            "The GM does not need to read client code.",
+            matrix,
+            StringComparison.Ordinal);
+        Assert.Contains("normally does not need to read client code", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("FileMapping.cs", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("Validation/", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("gm_thoughts_markdown", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("pending file name", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("must not be used to invent new gameplay outcomes", matrix, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption()
+    {
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ExampleValidationManifest.Load();
+        var scenarioIds = manifest.RuntimeScenarios
+            .Where(scenario => string.Equals(scenario.File, "E_CLI_Afterlife_Turns.txt", StringComparison.OrdinalIgnoreCase))
+            .Select(scenario => scenario.Id)
+            .ToHashSet(StringComparer.Ordinal);
+
+        var exampleNumbers = Regex.Matches(examples, @"(?m)^(\d+)\. VALID ")
+            .Select(match => int.Parse(match.Groups[1].Value))
+            .OrderBy(number => number)
+            .ToArray();
+
+        Assert.Equal(Enumerable.Range(1, 21).ToArray(), exampleNumbers);
+
+        var coverageByExample = manifest.AfterlifeExampleCoverage
+            .GroupBy(entry => entry.ExampleNumber)
+            .ToDictionary(group => group.Key, group => group.ToArray());
+        var staleCoverageEntries = coverageByExample.Keys
+            .Except(exampleNumbers)
+            .OrderBy(number => number)
+            .ToArray();
+
+        Assert.Empty(staleCoverageEntries);
+
+        foreach (var exampleNumber in exampleNumbers)
+        {
+            Assert.True(
+                coverageByExample.TryGetValue(exampleNumber, out var entries),
+                $"Afterlife example {exampleNumber} must have runtime coverage or an explicit coverage exemption.");
+
+            Assert.Single(entries!);
+            var entry = entries![0];
+            if (entry.RuntimeScenarioIds.Length == 0)
+            {
+                Assert.False(
+                    string.IsNullOrWhiteSpace(entry.ExemptionReason),
+                    $"Afterlife example {exampleNumber} coverage exemption must explain why runtime validation is not practical.");
+                continue;
+            }
+
+            foreach (var scenarioId in entry.RuntimeScenarioIds)
+            {
+                Assert.True(
+                    scenarioIds.Contains(scenarioId),
+                    $"Afterlife example {exampleNumber} references missing runtime scenario '{scenarioId}'.");
+            }
+        }
+    }
+
     private static bool IsAfterlifePendingFile(string fileName) =>
         fileName.StartsWith("pending_shining_", StringComparison.Ordinal) ||
         fileName.StartsWith("pending_guardian_", StringComparison.Ordinal) ||

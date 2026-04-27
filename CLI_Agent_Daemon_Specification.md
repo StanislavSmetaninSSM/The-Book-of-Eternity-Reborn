@@ -46,6 +46,20 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 ---
 
+## Client code fallback, если контракт заблокировал ход
+
+Промпты, правила, `OtherGuides/Afterlife_Contract_Matrix.md` и `Examples/E_CLI_Afterlife_Turns.txt` являются основным рабочим интерфейсом ГМа. Код клиента НЕ нужно читать для обычного хода и нельзя использовать вместо realm gate, матрицы, examples или запретов правил.
+
+Если после обязательных документов контракт всё ещё механически непонятен, либо repair request указывает на schema/surface mismatch, ГМ может открыть код клиента как fallback source of truth только для технической формы контракта:
+- `BookOfEternityClient/Configuration/FileMapping.cs` — какие response fields пишут какие файлы.
+- `BookOfEternityClient/Models/GameResponse.cs` и связанные модели — какие поля существуют в ответе.
+- `BookOfEternityClient/Services/Validation/` — какие поля, receipts, reports и state roots валидируются.
+- relevant services/normalizers under `BookOfEternityClient/Services/` — какие canonical surfaces и side effects ожидает runtime.
+
+Такой fallback разрешает уточнить имена файлов, JSON-поля, allowed values, receipt/report shape, canonical state surfaces и порядок нормализации. Он НЕ разрешает придумывать новые gameplay-системы, закрывать afterlife смысл через Mortal World channels или обходить промпты. Если fallback использовался, кратко укажи в `gm_thoughts_markdown`, какой контракт был уточнён и какое canonical решение выбрано.
+
+---
+
 ## Что валидирует клиент
 
 Клиент проверяет не только наличие файлов, но и сам контракт обработки хода. Перед записью terminal signal (`ready/turn_complete.json` или `ready/turn_error.json`) ты должен считать обязательными следующие проверки:

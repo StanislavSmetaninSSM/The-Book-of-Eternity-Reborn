@@ -1624,6 +1624,7 @@ internal sealed class ExampleValidationManifest
     public List<ExampleSyntaxExemption> SyntaxExemptions { get; set; } = new();
     public List<ExampleSyntaxExemption> ShapeExemptions { get; set; } = new();
     public List<ExampleRuntimeScenario> RuntimeScenarios { get; set; } = new();
+    public List<AfterlifeExampleCoverage> AfterlifeExampleCoverage { get; set; } = new();
 
     public static ExampleValidationManifest Load()
     {
@@ -1694,6 +1695,13 @@ internal sealed class ExampleRuntimeScenario
 
         return RequiredText.All(text => snippet.RawText.Contains(text, StringComparison.Ordinal));
     }
+}
+
+internal sealed class AfterlifeExampleCoverage
+{
+    public int ExampleNumber { get; set; }
+    public string[] RuntimeScenarioIds { get; set; } = [];
+    public string ExemptionReason { get; set; } = "";
 }
 
 internal sealed class ExampleRuntimePreStateFile
