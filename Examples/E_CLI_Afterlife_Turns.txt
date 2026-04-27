@@ -38,6 +38,8 @@ Use this index before resolving an afterlife turn:
 - Combined active Shining scheduler + core action + trade/resident consequence: see example 17.
 - `prepare_incarnation_package` vs later Shining bootstrap handoff: see example 18.
 - Ordinary Chaos Sea living world without pending files: see example 19.
+- `system_guardian_attraction.json` / deterministic Eternal Guardian attraction: see example 20.
+- `afterlife_return_guard.json` protected first afterlife turn: see example 21.
 
 ==================================================
 GLOBAL AFTERLIFE TURN RULE
@@ -4319,6 +4321,333 @@ Why this is valid:
 - The Chaos Sea hub cycle is not written to `worldEventsLog`.
 - Every processed contour advances only its own marker.
 - Resident agency is not skipped just because the resident did not speak to the player.
+
+==================================================
+20. VALID — SYSTEM ETERNAL GUARDIAN ATTRACTION
+==================================================
+
+This example is for a deterministic Eternal Guardian attraction. The player-facing fiction is "I seek this Eternal Guardian." The technical contract is `game_state/control/system_guardian_attraction.json`, often paired with `guardians.json.pendingGuardianCreation.mode = system_preset`.
+
+The GM must not improvise a nearby Guardian archetype. The result must point to the requested preset and persist `sourcePreset` on the materialized Guardian.
+
+Important runtime marker: the canonical `turn_request.json.playerAction` for this flow starts with `[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: <presetId>]`. This is a client-authored routing tag. Keep it in the input/audit context so the runtime can clear `system_guardian_attraction.json` after acceptance, but do not present the tag to the player as diegetic speech.
+
+Input fragments:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "system_attraction_session_020",
+    "requestId": "turn_420",
+    "turnNumber": 420,
+    "currentRealm": "Chaos Sea",
+    "playerAction": "[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia] Я ищу Вечную Хранительницу Азалию.",
+    "progressionControl": {
+      "currentRealm": "Chaos Sea",
+      "mustEvaluateChaosSeaProgression": false,
+      "mustEvaluateGuardianProjectProgression": false,
+      "mustEvaluateResidentAgencyProgression": false,
+      "afterlifeCatchupRequired": false
+    }
+  },
+  "system_guardian_attraction.json": {
+    "mode": "system_guardian_attraction",
+    "targetPresetId": "azalia",
+    "targetPresetDisplayName": "Азалия",
+    "targetPresetVersion": "1.0",
+    "sourceLibrary": "built_in",
+    "targetSummary": "Дипломатичная хранительница страсти, власти и преданности.",
+    "renderedPromptPackage": "PresetId: azalia"
+  },
+  "guardians.json": {
+    "guardians": [],
+    "activeGuardian": null,
+    "pendingGuardianCreation": {
+      "mode": "system_preset",
+      "presetId": "azalia",
+      "presetDisplayName": "Азалия",
+      "presetVersion": "1.0",
+      "sourceLibrary": "built_in"
+    }
+  }
+}
+```
+
+Correct reasoning:
+
+```markdown
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Afterlife subtype: System Eternal Guardian attraction.
+- Релевантные акторы: Азалия
+- Почему они релевантны: `system_guardian_attraction.json.targetPresetId = azalia`, so this turn must materialize or route to that exact Eternal Guardian.
+- Акторы вне охвата: invented Guardians, Mortal World NPCs, Shining factions
+- Почему они вне охвата: the attraction is deterministic and has no Mortal World or Shining faction contract.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: Душа ищет именно Азалию as a built-in Eternal Guardian preset.
+- Мысли: Азалия recognizes the deterministic call and answers through her own silk-memory domain, not through a substitute archetype.
+- Действия: She manifests with stable canonical identity, discovered abode, and sourcePreset metadata.
+
+## Contract audit
+- `sourcePreset.presetId` remains `azalia`.
+- `playerAction` contains `[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia]`, so runtime may clear the attraction control file after accepted processing.
+- `activeGuardian.guardianId` points to the materialized Azalia Guardian.
+- `chaosSeaNavigation.currentAbodeId` points to Azalia's discovered Abode.
+- No `UpdateNPCs` or Mortal World state is written.
+```
+
+Correct accepted response fragment:
+
+```json
+{
+  "response": "Серебряные нити Моря Хаоса собираются в спокойный зал. Это не случайная покровительница и не похожий образ: зов отвечает именно Азалия. Её Обитель открывается как шёлковая память, где власть звучит мягко, но не отступает.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: System Eternal Guardian attraction.\n- Релевантные акторы: Азалия\n- Почему они релевантны: `system_guardian_attraction.json.targetPresetId = azalia`, so this turn must materialize or route to that exact Eternal Guardian.\n- Акторы вне охвата: invented Guardians, Mortal World NPCs, Shining factions\n- Почему они вне охвата: the attraction is deterministic and has no Mortal World or Shining faction contract.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Душа ищет именно Азалию as a built-in Eternal Guardian preset.\n- Мысли: Азалия recognizes the deterministic call and answers through her own silk-memory domain, not through a substitute archetype.\n- Действия: She manifests with stable canonical identity, discovered abode, and sourcePreset metadata.\n\n## Contract audit\n- `sourcePreset.presetId` remains `azalia`.\n- `playerAction` contains `[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia]`, so runtime may clear the attraction control file after accepted processing.\n- `activeGuardian.guardianId` points to the materialized Azalia Guardian.\n- `chaosSeaNavigation.currentAbodeId` points to Azalia's discovered Abode.\n- No `UpdateNPCs` or Mortal World state is written.",
+  "UpdateGuardians": [
+    {
+      "command": "create",
+      "data": {
+        "guardianId": "guard_system_azalia_001",
+        "canonicalName": "Азалия",
+        "domain": "Social",
+        "originType": "system_preset",
+        "sourcePreset": {
+          "presetId": "azalia",
+          "displayName": "Азалия",
+          "version": "1.0",
+          "library": "built_in"
+        },
+        "nameVariants": {
+          "default": "Азалия",
+          "feminine": "Азалия",
+          "masculine": "Азалия",
+          "neutral": "Азалия"
+        },
+        "manifestation": {
+          "formFlexibility": "selective",
+          "currentDisplayName": "Азалия",
+          "currentPresentationStyle": "feminine",
+          "currentPronouns": "она/её",
+          "appearanceDescription": "Хранительница в мягком шёлке, вокруг которой память собирается в тёплые складки."
+        },
+        "manifestationHistory": [],
+        "abode": {
+          "abodeId": "abode_azalia_memory_silk_001",
+          "name": "Обитель Шёлковой Памяти",
+          "description": "Тихая Обитель Азалии на краю Моря Хаоса, где воспоминания раскрываются без насилия.",
+          "image_prompt": "silk memory abode at the edge of a cosmic chaos sea, silver threads, warm diplomatic guardian presence",
+          "isDiscovered": true
+        },
+        "personalityProfile": {
+          "archetype": "Charming Diplomat",
+          "speechPattern": "мягкая, внимательная",
+          "coreValues": [
+            "убежище",
+            "память",
+            "бережная власть"
+          ]
+        },
+        "relationshipData": {
+          "currentReputation": 25,
+          "reputationHistory": [],
+          "lastInteraction": "2026-04-24T16:20:00Z"
+        },
+        "abodePower": {
+          "currentPower": 40,
+          "tier": "Стабильная",
+          "lastUpdatedAt": "2026-04-24T16:20:00Z",
+          "history": []
+        },
+        "guardianRelationships": [],
+        "questManagement": {
+          "availableQuests": [],
+          "activeQuests": [],
+          "completedQuests": []
+        },
+        "gachaSystem": {
+          "chargesPerReturn": 0,
+          "chargesUsedThisReturn": 0,
+          "gachaHistory": []
+        },
+        "loreFragments": [],
+        "musings": []
+      }
+    }
+  ],
+  "guardians": [
+    {
+      "guardianId": "guard_system_azalia_001",
+      "canonicalName": "Азалия",
+      "domain": "Social",
+      "originType": "system_preset",
+      "sourcePreset": {
+        "presetId": "azalia",
+        "displayName": "Азалия",
+        "version": "1.0",
+        "library": "built_in"
+      },
+      "nameVariants": {
+        "default": "Азалия",
+        "feminine": "Азалия",
+        "masculine": "Азалия",
+        "neutral": "Азалия"
+      },
+      "manifestation": {
+        "formFlexibility": "selective",
+        "currentDisplayName": "Азалия",
+        "currentPresentationStyle": "feminine",
+        "currentPronouns": "она/её",
+        "appearanceDescription": "Хранительница в мягком шёлке, вокруг которой память собирается в тёплые складки."
+      },
+      "manifestationHistory": [],
+      "abode": {
+        "abodeId": "abode_azalia_memory_silk_001",
+        "name": "Обитель Шёлковой Памяти",
+        "description": "Тихая Обитель Азалии на краю Моря Хаоса, где воспоминания раскрываются без насилия.",
+        "image_prompt": "silk memory abode at the edge of a cosmic chaos sea, silver threads, warm diplomatic guardian presence",
+        "isDiscovered": true
+      },
+      "personalityProfile": {
+        "archetype": "Charming Diplomat",
+        "speechPattern": "мягкая, внимательная",
+        "coreValues": [
+          "убежище",
+          "память",
+          "бережная власть"
+        ]
+      },
+      "relationshipData": {
+        "currentReputation": 25,
+        "reputationHistory": [],
+        "lastInteraction": "2026-04-24T16:20:00Z"
+      },
+      "abodePower": {
+        "currentPower": 40,
+        "tier": "Стабильная",
+        "lastUpdatedAt": "2026-04-24T16:20:00Z",
+        "history": []
+      },
+      "guardianRelationships": [],
+      "questManagement": {
+        "availableQuests": [],
+        "activeQuests": [],
+        "completedQuests": []
+      },
+      "gachaSystem": {
+        "chargesPerReturn": 0,
+        "chargesUsedThisReturn": 0,
+        "gachaHistory": []
+      },
+      "loreFragments": [],
+      "musings": []
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_system_azalia_001",
+    "canonicalName": "Азалия",
+    "sourcePreset": {
+      "presetId": "azalia",
+      "displayName": "Азалия",
+      "version": "1.0",
+      "library": "built_in"
+    }
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": "abode_azalia_memory_silk_001",
+    "currentGuardianId": "guard_system_azalia_001",
+    "discoveredAbodes": [
+      "abode_azalia_memory_silk_001"
+    ]
+  }
+}
+```
+
+Why this is valid:
+- The requested preset id is `azalia`, and every canonical Guardian selector points to Azalia.
+- `sourcePreset` is persisted on the Guardian and mirrored on the active selector.
+- The Abode is discovered and navigation points to it.
+- The GM does not create an NPC, Mortal World faction, or unrelated Guardian substitute.
+
+==================================================
+21. VALID — PROTECTED FIRST AFTERLIFE TURN AFTER MORTAL LIFE
+==================================================
+
+This example is for the first ordinary afterlife turn after Life Evaluation returned the soul to the Chaos Sea. `afterlife_return_guard.json` is a client-owned safety guard. The GM reads it, respects it, and leaves it alone.
+
+Input fragments:
+
+```json
+{
+  "turn_request.json": {
+    "sessionId": "protected_return_session_021",
+    "requestId": "turn_421",
+    "turnNumber": 421,
+    "currentRealm": "Chaos Sea",
+    "playerAction": "Я просто возвращаюсь в Обитель и пытаюсь понять, что произошло.",
+    "progressionControl": {
+      "currentRealm": "Chaos Sea",
+      "mustEvaluateChaosSeaProgression": false,
+      "mustEvaluateGuardianProjectProgression": false,
+      "mustEvaluateResidentAgencyProgression": false,
+      "afterlifeCatchupRequired": false
+    }
+  },
+  "afterlife_return_guard.json": {
+    "reason": "post_life_return",
+    "remainingProtectedTurns": 1,
+    "activatedAtUtc": "2026-04-24T16:20:00Z",
+    "activatedAtTurnNumber": 420,
+    "guardianId": "guard_social_azalia_001",
+    "guardianName": "Азалия"
+  }
+}
+```
+
+Correct reasoning:
+
+```markdown
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Afterlife subtype: Protected first afterlife turn after mortal life.
+- Релевантные акторы: Азалия, Лиора
+- Почему они релевантны: `afterlife_return_guard.json` names Азалия as current guardian context, and the player is returning to her Abode; Лиора is present in the current Abode roster and must be deliberately kept stable rather than silently rewritten.
+- Акторы вне охвата: forced reincarnation route, Shining re-entry, Mortal World NPCs
+- Почему они вне охвата: the guard requires one ordinary afterlife turn before any Guardian-forced reincarnation and is not a Shining bootstrap marker.
+
+## Guardian Thoughts
+### Азалия
+- Ситуация: Душа только что вернулась из смертной жизни.
+- Мысли: Азалия notices exhaustion and refuses to punish or immediately throw the soul into another body.
+- Действия: She provides a quiet ordinary afterlife scene and does not create an incarnation trigger.
+
+## Resident Thoughts
+### Лиора
+- Ситуация: Душа вернулась в Обитель, где Лиора уже присутствует as a resident.
+- Мысли: Лиора recognizes that this is not her request or history-reveal turn.
+- Действия: She remains stable in the roster; no resident receipt, transfer, history reveal, or companion manifestation is invented.
+
+## Lifecycle guard audit
+- `afterlife_return_guard.json` is preserved exactly; the GM does not clear, decrement, or rewrite it.
+- No `TriggerIncarnation` is written, especially no `source=guardian_forced`.
+- No Shining bootstrap or re-entry is invented.
+- No Mortal World state is written.
+- If the guard is malformed instead of valid, treat that as fail-closed and do not weaken protection.
+```
+
+Correct accepted response fragment:
+
+```json
+{
+  "response": "Море Хаоса не толкает тебя обратно в новую жизнь. Азалия встречает тебя у входа в Обитель и на этот раз не требует решения. Она просто оставляет рядом тёплую серебряную ткань, чтобы память о смерти стала тише.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: Protected first afterlife turn after mortal life.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: `afterlife_return_guard.json` names Азалия as current guardian context, and the player is returning to her Abode; Лиора is present in the current Abode roster and must be deliberately kept stable rather than silently rewritten.\n- Акторы вне охвата: forced reincarnation route, Shining re-entry, Mortal World NPCs\n- Почему они вне охвата: the guard requires one ordinary afterlife turn before any Guardian-forced reincarnation and is not a Shining bootstrap marker.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Душа только что вернулась из смертной жизни.\n- Мысли: Азалия notices exhaustion and refuses to punish or immediately throw the soul into another body.\n- Действия: She provides a quiet ordinary afterlife scene and does not create an incarnation trigger.\n\n## Resident Thoughts\n### Лиора\n- Ситуация: Душа вернулась в Обитель, где Лиора уже присутствует as a resident.\n- Мысли: Лиора recognizes that this is not her request or history-reveal turn.\n- Действия: She remains stable in the roster; no resident receipt, transfer, history reveal, or companion manifestation is invented.\n\n## Lifecycle guard audit\n- `afterlife_return_guard.json` is preserved exactly; the GM does not clear, decrement, or rewrite it.\n- No `TriggerIncarnation` is written, especially no `source=guardian_forced`.\n- No Shining bootstrap or re-entry is invented.\n- No Mortal World state is written.\n- If the guard is malformed instead of valid, treat that as fail-closed and do not weaken protection."
+}
+```
+
+Why this is valid:
+- The active guard blocks only immediate Guardian-forced reincarnation; it does not block ordinary afterlife narration.
+- The GM does not mutate the client-owned guard. Runtime consumes/clears it after accepting the protected ordinary afterlife turn.
+- The response does not confuse `afterlife_return_guard.json` with `preparedIncarnationPackage`, `AscensionTrigger`, or Mortal World return state.
 
 ==================================================
 COMMON INVALID PATTERNS
