@@ -809,9 +809,50 @@ public partial class ExplorerMode
         var root = doc.RootElement;
         var guardians = CollectGuardianDisplayEntries(root);
 
-        // Filter to guardians with abodes
+        var currentAbodeId = "";
+        var previousActiveGuardianId = "";
+        var previousActiveGuardianName = "";
+        var discoveredAbodeIds = new List<string>();
+        if (root.ValueKind == JsonValueKind.Object &&
+            root.TryGetProperty("chaosSeaNavigation", out var nav) && nav.ValueKind == JsonValueKind.Object)
+        {
+            currentAbodeId = GetStr(nav, "currentAbodeId", "");
+            if (nav.TryGetProperty("discoveredAbodes", out var discoveredAbodes) &&
+                discoveredAbodes.ValueKind == JsonValueKind.Array)
+            {
+                discoveredAbodeIds = discoveredAbodes.EnumerateArray()
+                    .Where(node => node.ValueKind == JsonValueKind.String)
+                    .Select(node => node.GetString() ?? "")
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(value => value, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+            }
+        }
+        if (root.ValueKind == JsonValueKind.Object &&
+            root.TryGetProperty("activeGuardian", out var activeGuardian) &&
+            activeGuardian.ValueKind == JsonValueKind.Object)
+        {
+            previousActiveGuardianId = GetStr(activeGuardian, "guardianId", "");
+            previousActiveGuardianName = GuardianManifestation.GetDisplayName(activeGuardian);
+        }
+
         var abodeGuardians = guardians
-            .Where(g => g.TryGetProperty("abode", out var ab) && ab.ValueKind == JsonValueKind.Object)
+            .Where(g =>
+            {
+                if (!g.TryGetProperty("abode", out var ab) || ab.ValueKind != JsonValueKind.Object)
+                    return false;
+
+                var abodeId = GetStr(ab, "abodeId", "");
+                var isDiscovered = ab.TryGetProperty("isDiscovered", out var isDiscoveredNode) &&
+                                   isDiscoveredNode.ValueKind == JsonValueKind.True;
+                var isCurrent = !string.IsNullOrWhiteSpace(abodeId) &&
+                                string.Equals(abodeId, currentAbodeId, StringComparison.OrdinalIgnoreCase);
+                var isInDiscoveredNavigation = !string.IsNullOrWhiteSpace(abodeId) &&
+                                               discoveredAbodeIds.Contains(abodeId, StringComparer.OrdinalIgnoreCase);
+
+                return isDiscovered || isCurrent || isInDiscoveredNavigation;
+            })
             .ToList();
 
         if (abodeGuardians.Count == 0)
@@ -819,12 +860,6 @@ public partial class ExplorerMode
             ShowEmptyPanel("Обители", "Обители ещё не открыты. Используйте /хранители для поиска.");
             return;
         }
-
-        // Current abode
-        var currentAbodeId = "";
-        if (root.ValueKind == JsonValueKind.Object &&
-            root.TryGetProperty("chaosSeaNavigation", out var nav) && nav.ValueKind == JsonValueKind.Object)
-            currentAbodeId = GetStr(nav, "currentAbodeId", "");
 
         while (true)
         {
@@ -868,9 +903,12 @@ public partial class ExplorerMode
             var selAbode = selGuardian.GetProperty("abode");
             var selAbodeId = GetStr(selAbode, "abodeId", "");
             var selAbodeName = GetStr(selAbode, "name", "???");
+            var selGuardianId = GetStr(selGuardian, "guardianId", "");
             var selGName = GuardianManifestation.GetDisplayName(selGuardian);
             if (string.IsNullOrWhiteSpace(selGName))
                 selGName = "?";
+            var targetAlreadyDiscovered = discoveredAbodeIds.Any(id => string.Equals(id, selAbodeId, StringComparison.OrdinalIgnoreCase));
+            var discoveredAbodesContract = discoveredAbodeIds.Count == 0 ? "[]" : $"[{string.Join(", ", discoveredAbodeIds)}]";
 
             if (selAbodeId == currentAbodeId)
             {
@@ -880,9 +918,14 @@ public partial class ExplorerMode
             }
 
             _pendingGmAction =
-                $"[CHAOS_SEA_TRAVEL] Душа выбирает перемещение в обитель '{selAbodeName}'" +
-                $"{(string.IsNullOrWhiteSpace(selAbodeId) ? "" : $" (abodeId={selAbodeId})")}, связанную с Хранителем '{selGName}'. " +
-                "Обработай само путешествие как полноценный ход: опиши прибытие, реакцию Хранителя и обнови chaosSeaNavigation.currentAbodeId в guardians.json.";
+                $"[CHAOS_SEA_TRAVEL] Душа выбирает перемещение в обитель '{selAbodeName}' " +
+                $"(targetAbodeId={selAbodeId}, targetGuardianId={selGuardianId}, targetGuardianName='{selGName}', " +
+                $"previousAbodeId={currentAbodeId}, previousActiveGuardianId={previousActiveGuardianId}, previousActiveGuardianName='{previousActiveGuardianName}', " +
+                $"targetAlreadyDiscovered={targetAlreadyDiscovered.ToString().ToLowerInvariant()}, discoveredAbodes={discoveredAbodesContract}). " +
+                "Обработай путешествие как полноценный afterlife-ход: опиши прибытие и реакцию Хранителя; в game_state/meta/guardians.json " +
+                "синхронно установи activeGuardian на targetGuardianId, chaosSeaNavigation.currentAbodeId на targetAbodeId, " +
+                "убедись что targetAbodeId есть в chaosSeaNavigation.discoveredAbodes и что abode.isDiscovered=true у target guardian. " +
+                "Не используй currentLocationData, UpdateNPCs, worldEventsLog, weather/time или Mortal World travel/location systems.";
 
             MarkupLine($"[cyan]🌊 Переход в обитель «{Markup.Escape(selAbodeName)}» отправляется Мастеру Игры...[/]");
             return;
