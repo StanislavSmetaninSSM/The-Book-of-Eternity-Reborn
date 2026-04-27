@@ -323,7 +323,12 @@ public partial class ValidationService
             var currentFeathers = CurrentSoulFeathers(currentSoulRoot);
             if (costMatch.Success && int.TryParse(costMatch.Groups[1].Value, out costInFeathers) && costInFeathers > 0)
             {
-                var expectedFeathers = preTurnFeathers - costInFeathers;
+                var clientSpendAlreadyInSnapshot = await IsDirectChaosSeaGachaClientSpendAlreadyInSnapshotAsync(
+                    preTurnFeathers,
+                    costInFeathers);
+                var expectedFeathers = clientSpendAlreadyInSnapshot
+                    ? preTurnFeathers
+                    : preTurnFeathers - costInFeathers;
                 if (currentFeathers != expectedFeathers)
                 {
                     issues.Add(new ValidationIssue(
@@ -364,10 +369,103 @@ public partial class ValidationService
                     actual: newRelicIds.Count == 0 ? "no_new_relics" : string.Join(", ", newRelicIds),
                     repairHint: "Добавь результат direct /gacha в soul_state через metaStateUpdates.soulRelicOperations.addRelic."));
             }
+            else
+            {
+                var newRelicId = newRelicIds.First();
+                if (TryFindSoulRelicNode(currentSoulRoot, newRelicId, out var newRelic))
+                    ValidateDirectChaosSeaGachaRarityFloor(newRelic, newRelicId, issues);
+            }
         }
         catch
         {
             // JSON shape issues are reported by normal state validation.
+        }
+    }
+
+    private async Task<bool> IsDirectChaosSeaGachaClientSpendAlreadyInSnapshotAsync(
+        int snapshotFeathers,
+        int costInFeathers)
+    {
+        var payload = await LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync();
+        if (payload?.RollbackBackups == null ||
+            payload.RollbackBackupHashes == null ||
+            !payload.RollbackBackups.TryGetValue("game_state/meta/soul_state.json", out var rollbackPath) ||
+            !payload.RollbackBackupHashes.TryGetValue("game_state/meta/soul_state.json", out var expectedHash) ||
+            string.IsNullOrWhiteSpace(rollbackPath) ||
+            string.IsNullOrWhiteSpace(expectedHash) ||
+            !PendingTurnSnapshotAuthority.IsSafeRelativePath(rollbackPath))
+        {
+            return false;
+        }
+
+        var rollbackJson = await _fs.ReadFileAsync(rollbackPath);
+        if (string.IsNullOrWhiteSpace(rollbackJson) ||
+            !string.Equals(ComputeSha256(rollbackJson), expectedHash, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(rollbackJson) is not JsonObject rollbackSoulRoot)
+                return false;
+
+            return CurrentSoulFeathers(rollbackSoulRoot) == snapshotFeathers + costInFeathers;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private void ValidateDirectChaosSeaGachaRarityFloor(
+        JsonObject newRelic,
+        string newRelicId,
+        List<ValidationIssue> issues)
+    {
+        var baseRarity = TryReadCurrentTurnGachaBaseRaritySync();
+        if (string.IsNullOrWhiteSpace(baseRarity))
+        {
+            issues.Add(new ValidationIssue(
+                "input/turn_request.json.gachaBaseResult.baseRarity",
+                IssueSeverity.Error,
+                "Direct Chaos Sea gacha требует client-computed gachaBaseResult.baseRarity для проверки редкости результата.",
+                code: "direct_chaos_gacha_missing_base_rarity",
+                section: "CHAOS_SEA_DIRECT_GACHA",
+                expected: "Common | Uncommon | Rare | Epic | Legendary",
+                actual: "missing",
+                repairHint: "Перед direct /gacha клиент должен передать gachaBaseResult.baseRarity; GM не выбирает базовую редкость самостоятельно."));
+            return;
+        }
+
+        var finalRarity = GetNodeString(newRelic["rarity"]) ?? GetNodeString(newRelic["quality"]);
+        if (string.IsNullOrWhiteSpace(finalRarity))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json.soulRelics",
+                IssueSeverity.Error,
+                "Direct Chaos Sea gacha должен materialize-ить новую Soul Relic с итоговой редкостью.",
+                code: "direct_chaos_gacha_missing_result_rarity",
+                section: "CHAOS_SEA_DIRECT_GACHA",
+                expected: $"rarity >= {baseRarity}",
+                actual: $"new relic {newRelicId} has no rarity/quality",
+                repairHint: "Сохрани у новой Soul Relic canonical rarity или quality и не опускай её ниже gachaBaseResult.baseRarity."));
+            return;
+        }
+
+        var baseRank = GetRarityRank(baseRarity);
+        var finalRank = GetRarityRank(finalRarity);
+        if (baseRank > 0 && finalRank > 0 && finalRank < baseRank)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json.soulRelics",
+                IssueSeverity.Error,
+                "Direct Chaos Sea gacha не может понизить редкость ниже client-computed gachaBaseResult.baseRarity.",
+                code: "direct_chaos_gacha_result_below_base_rarity",
+                section: "CHAOS_SEA_DIRECT_GACHA",
+                expected: $"{baseRarity} or higher",
+                actual: finalRarity,
+                repairHint: "Используй gachaBaseResult.baseRarity как минимум для новой Soul Relic direct /gacha."));
         }
     }
 
