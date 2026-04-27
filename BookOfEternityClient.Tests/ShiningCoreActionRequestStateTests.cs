@@ -50,12 +50,34 @@ public sealed class ShiningCoreActionRequestStateTests
 
             await ShiningCoreActionRequestState.WriteRequestAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
             {
+                RequestId = "core_req_complete_project",
                 ActionType = ShiningCoreActionRequestState.ActionTypeCompleteProject,
                 FactionId = "faction_old",
                 FactionName = "Старый Дом",
+                ProjectId = "project_archive",
                 ProjectDisplayName = "Архив Света",
+                ProjectDraft = new JsonObject
+                {
+                    ["displayName"] = "Архив Света",
+                    ["projectArchetype"] = "accord"
+                },
+                RadianceTierAtRequest = 3,
                 QuotedCostFeathers = 20,
-                QuotedCostLightSparks = 10
+                QuotedCostLightSparks = 10,
+                SourceDraftVersion = 4,
+                SelectedCardIds = { "card_social" },
+                SelectedCards = new JsonArray(new JsonObject
+                {
+                    ["cardId"] = "card_social",
+                    ["displayName"] = "Память Света"
+                }),
+                ReplacementProperty = new JsonObject
+                {
+                    ["propertyId"] = "prop_memory",
+                    ["displayName"] = "Память Света"
+                },
+                CreatedAtTurn = 7,
+                CreatedAtUtc = "2026-04-27T10:00:00Z"
             });
 
             var reminder = await ShiningCoreActionRequestState.BuildSystemReminderFragmentAsync(fs, "Shining Abode");
@@ -64,6 +86,17 @@ public sealed class ShiningCoreActionRequestStateTests
             Assert.Contains("SHINING ABODE CORE ACTION:", reminder);
             Assert.Contains("complete_project", reminder);
             Assert.Contains("Архив Света", reminder);
+            Assert.Contains("Full pending core-action DTO", reminder);
+            Assert.Contains("\"requestId\": \"core_req_complete_project\"", reminder);
+            Assert.Contains("\"projectId\": \"project_archive\"", reminder);
+            Assert.Contains("\"projectDraft\"", reminder);
+            Assert.Contains("\"radianceTierAtRequest\": 3", reminder);
+            Assert.Contains("\"quotedCostLightSparks\": 10", reminder);
+            Assert.Contains("\"sourceDraftVersion\": 4", reminder);
+            Assert.Contains("\"selectedCardIds\"", reminder);
+            Assert.Contains("\"selectedCards\"", reminder);
+            Assert.Contains("\"replacementProperty\"", reminder);
+            Assert.Contains("\"createdAtUtc\": \"2026-04-27T10:00:00Z\"", reminder);
         }
         finally
         {

@@ -440,15 +440,21 @@ internal static class ShiningTradeRequestState
         sb.AppendLine("SHINING TRADE REQUESTS:");
         sb.AppendLine("  - Treat these as client-authored explicit inventory contracts, not as permission to infer stock on the client.");
         sb.AppendLine("  - Resolve each request in accepted turn through faction.tradeInventory plus matching tradeInventoryReceipts[].");
-        foreach (var request in requests.Take(5))
+        foreach (var request in requests)
         {
-            sb.AppendLine($"  - {request.FactionName} ({request.FactionId}) -> cycle {request.TradeCycleId}, tier {request.DerivedTradeTier}, slots {request.DerivedTradeSlotCount}, ceiling {request.DerivedRarityCeiling}.");
+            sb.AppendLine($"  - {request.FactionName} ({request.FactionId}) -> cycle {request.TradeCycleId}, tier {request.DerivedTradeTier}, slots {request.DerivedTradeSlotCount}, ceiling {request.DerivedRarityCeiling}, service x{request.DerivedServiceMultiplier:0.00}, merchant {request.MerchantProfile}, request {request.RequestId}, created turn {request.CreatedAtTurn}, UTC {request.CreatedAtUtc}.");
+            AppendSerializedJsonBlock(sb, "Full pending trade DTO", request);
         }
 
-        if (requests.Count > 5)
-            sb.AppendLine($"  - ... and {requests.Count - 5} more pending Shining trade request(s).");
-
         return sb.ToString();
+    }
+
+    private static void AppendSerializedJsonBlock(StringBuilder sb, string title, object payload)
+    {
+        sb.AppendLine($"  - {title}:");
+        var json = JsonSerializer.Serialize(payload, JsonOpts).Replace("\r\n", "\n", StringComparison.Ordinal);
+        foreach (var line in json.Split('\n'))
+            sb.AppendLine($"    {line}");
     }
 
     public static async Task<string?> ValidateRequestAgainstCurrentStateAsync(
