@@ -32,6 +32,32 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void LegacyShiningNativeFactionDiscoveryContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var text in new[] { matrix, examples, taskGuide, operations, daemonSpec, apiSpec })
+        {
+            Assert.Contains("pendingNativeFactionDiscovery", text, StringComparison.Ordinal);
+            Assert.Contains("legacy", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("discover_native_faction", text, StringComparison.Ordinal);
+            Assert.Contains("coreActionReceipts", text, StringComparison.Ordinal);
+        }
+
+        foreach (var text in new[] { matrix, examples, taskGuide, operations, apiSpec })
+        {
+            Assert.Contains("costFeathers", text, StringComparison.Ordinal);
+            Assert.Contains("costLightSparks", text, StringComparison.Ordinal);
+            Assert.Contains("pending_shining_abode_actions.json", text, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void AfterlifePendingFilesMentionedByRuntimeAreCoveredByMatrix()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
