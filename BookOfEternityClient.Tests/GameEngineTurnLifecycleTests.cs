@@ -112,6 +112,15 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains("mortal pre-turn realm authority", log, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData("[ABODE_OFFERING] Игрок подносит Реликвию Души.", true)]
+    [InlineData("[INK_FEATHER_ACTION: ABODE_OFFERING] Игрок подносит 100 Чернильных Перьев.", true)]
+    [InlineData("[INK_FEATHER_ACTION: DONATE_TO_GUARDIAN] Игрок жертвует 60 Чернильных Перьев.", false)]
+    public void IsPendingAbodeOfferingTurnAction_DetectsPlainAndInkFeatherOfferingTags(string action, bool expected)
+    {
+        Assert.Equal(expected, GameEngine.IsPendingAbodeOfferingTurnAction(action));
+    }
+
     [Fact]
     public async Task ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes()
     {

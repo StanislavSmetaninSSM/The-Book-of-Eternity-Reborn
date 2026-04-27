@@ -1440,6 +1440,100 @@ public sealed class ShiningAbodeStateTests
         Assert.Equal(0, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
     }
 
+    [Fact]
+    public void SyncShiningReturnCycle_EmptyLegacyCycleIdPreservesUsedGachaCharges()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["gachaSystem"] = new JsonObject
+        {
+            ["chargesPerReturn"] = 3,
+            ["chargesUsedThisReturn"] = 2,
+            ["currentReturnCycleId"] = "",
+            ["gachaHistory"] = new JsonArray()
+        };
+
+        var changed = ShiningAbodeState.SyncShiningReturnCycle(root, currentIncarnation: 5, out var cycleChanged);
+
+        Assert.True(changed);
+        Assert.False(cycleChanged);
+        Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
+        Assert.Equal(2, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+    }
+
+    [Fact]
+    public void TryApplyRelicGachaAccounting_EmptyCycleIdPersistsResolvedReturnCycle()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["availability"] = ShiningAbodeState.AvailabilityActive;
+        root["radiance"] = new JsonObject
+        {
+            ["experience"] = 0,
+            ["tier"] = 0
+        };
+        root["gachaSystem"] = new JsonObject
+        {
+            ["chargesPerReturn"] = 1,
+            ["chargesUsedThisReturn"] = 0,
+            ["currentReturnCycleId"] = "",
+            ["gachaHistory"] = new JsonArray()
+        };
+        root["factions"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["factionId"] = "faction_dawn",
+                ["originType"] = ShiningAbodeState.OriginTypePlayerFounded,
+                ["hallId"] = "hall_dawn",
+                ["charter"] = new JsonObject
+                {
+                    ["factionName"] = "Хор Рассвета",
+                    ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+                    ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+                    ["summary"] = "Поют утренний свет."
+                },
+                ["leadership"] = new JsonObject
+                {
+                    ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                    ["headActorId"] = "player_soul",
+                    ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+                },
+                ["factionStrength"] = 20,
+                ["projects"] = new JsonArray()
+            }
+        };
+        var soulRoot = new JsonObject
+        {
+            ["currentIncarnation"] = 5,
+            ["inkFeathers"] = new JsonObject
+            {
+                ["current"] = 100,
+                ["total"] = 100
+            }
+        };
+
+        var applied = ShiningAbodeState.TryApplyRelicGachaAccounting(
+            root,
+            soulRoot,
+            residentRoot: null,
+            factionId: "faction_dawn",
+            requestId: "req_gacha",
+            relicId: "relic_sun",
+            relicName: "Солнечная Реликвия",
+            baseRarity: "Common",
+            finalRarity: "Common",
+            resolvedAtTurn: 17,
+            resolvedAtUtc: "2026-04-28T00:00:00Z",
+            out _,
+            out _,
+            out var error);
+
+        Assert.True(applied, error);
+        Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
+        Assert.Equal(1, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        var history = Assert.IsType<JsonArray>(root["gachaSystem"]?["gachaHistory"]);
+        Assert.Equal("shining_return_5", history[0]?["returnCycleId"]?.GetValue<string>());
+    }
+
     private static JsonObject CreateProjectSupportState(bool isSupported) => new()
     {
         ["availability"] = ShiningAbodeState.AvailabilityActive,

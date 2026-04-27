@@ -85,6 +85,26 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AfterlifeClientPrepaidInkActionWithExtraSpend_Fails()
+    {
+        var rollbackSoul = CreateSoulRoot(inkFeathers: 10, enlightenmentExperience: 0);
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 5, enlightenmentExperience: 0);
+        var currentSoul = CreateSoulRoot(inkFeathers: 0, enlightenmentExperience: 10);
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WriteNodeAsync("input/turn_request.json", CreateCultivateEnlightenmentTurnRequest());
+        await WriteCultivateEnlightenmentReceiptAsync();
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            rollbackSoul,
+            "[INK_FEATHER_ACTION: CULTIVATE_ENLIGHTENMENT] Игрок вкладывает 5 Чернильных Перьев в просветление.");
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_ink_feather_client_prepaid_double_spend", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_DirectChaosGachaBelowBaseRarity_Fails()
     {
         var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
@@ -100,7 +120,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
             string.Equals(issue.Code, "direct_chaos_gacha_result_below_base_rarity", StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task WritePendingTurnSnapshotAsync(JsonObject preTurnSoulRoot, JsonObject? rollbackSoulRoot = null)
+    private async Task WritePendingTurnSnapshotAsync(JsonObject preTurnSoulRoot, JsonObject? rollbackSoulRoot = null, string? playerAction = null)
     {
         const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
         await WriteNodeAsync(soulSnapshotPath, preTurnSoulRoot);
@@ -116,7 +136,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
             ["requestId"] = "request",
             ["turnNumber"] = 7,
             ["requestTimestamp"] = "2026-04-24T00:00:00Z",
-            ["playerAction"] = "[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит 5 Чернильных Перьев.",
+            ["playerAction"] = playerAction ?? "[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит 5 Чернильных Перьев.",
             ["files"] = new JsonObject
             {
                 ["game_state/meta/soul_state.json"] = soulSnapshotPath
@@ -159,7 +179,35 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         }
     };
 
-    private static JsonObject CreateSoulRoot(string currentRealm = "Chaos Sea", int inkFeathers = 10) => new()
+    private static JsonObject CreateCultivateEnlightenmentTurnRequest() => new()
+    {
+        ["sessionId"] = "session",
+        ["requestId"] = "request",
+        ["turnNumber"] = 7,
+        ["playerAction"] = "[INK_FEATHER_ACTION: CULTIVATE_ENLIGHTENMENT] Игрок вкладывает 5 Чернильных Перьев в просветление."
+    };
+
+    private async Task WriteCultivateEnlightenmentReceiptAsync()
+    {
+        await WriteNodeAsync("output/ink_feather_action_result.json", new JsonObject
+        {
+            ["sessionId"] = "session",
+            ["requestId"] = "request",
+            ["turnNumber"] = 7,
+            ["actionTag"] = "CULTIVATE_ENLIGHTENMENT",
+            ["resolved"] = true,
+            ["costInFeathers"] = 5,
+            ["resolutionType"] = "enlightenmentProgress",
+            ["summary"] = "Просветление продвинулось.",
+            ["stateEvidence"] = new JsonObject
+            {
+                ["experienceGain"] = 10,
+                ["affectedFiles"] = new JsonArray("game_state/meta/soul_state.json")
+            }
+        });
+    }
+
+    private static JsonObject CreateSoulRoot(string currentRealm = "Chaos Sea", int inkFeathers = 10, int enlightenmentExperience = 0) => new()
     {
         ["currentRealm"] = currentRealm,
         ["currentIncarnation"] = 2,
@@ -167,6 +215,12 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         {
             ["current"] = inkFeathers,
             ["total"] = 10
+        },
+        ["enlightenment"] = new JsonObject
+        {
+            ["experience"] = enlightenmentExperience,
+            ["level"] = 1,
+            ["currentTier"] = "Ур. 1"
         },
         ["soulRelics"] = new JsonObject
         {

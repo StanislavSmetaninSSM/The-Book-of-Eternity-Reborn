@@ -565,10 +565,19 @@ public partial class GameEngine
         }
     }
 
+    internal static bool IsPendingAbodeOfferingTurnAction(string? action)
+    {
+        if (string.IsNullOrWhiteSpace(action))
+            return false;
+
+        return action.Contains($"[INK_FEATHER_ACTION: {GuardianAbodeOfferingState.ActionTag}]", StringComparison.OrdinalIgnoreCase) ||
+               action.Contains($"[{GuardianAbodeOfferingState.ActionTag}]", StringComparison.OrdinalIgnoreCase);
+    }
+
     private async Task ProcessPlayerTurn(string action, string? extraSystemReminder = null)
     {
         var clearsSystemGuardianAttraction = action.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:", StringComparison.OrdinalIgnoreCase);
-        var clearsPendingAbodeOffering = action.Contains($"[INK_FEATHER_ACTION: {GuardianAbodeOfferingState.ActionTag}]", StringComparison.OrdinalIgnoreCase);
+        var clearsPendingAbodeOffering = IsPendingAbodeOfferingTurnAction(action);
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
 
         // Create backup of game state files before sending turn (for escape-rollback)
@@ -632,10 +641,6 @@ public partial class GameEngine
             await RestorePreTurnBackup(backedUpFiles);
             AnsiConsole.MarkupLine("[dim]Изменения локально отменены, состояние восстановлено. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
             CleanupBackup(backedUpFiles);
-            if (clearsSystemGuardianAttraction)
-                _systemGuardianLibraryService.ClearAttractionRequest();
-            if (clearsPendingAbodeOffering)
-                GuardianAbodeOfferingState.Clear(_fs);
             return;
         }
 
@@ -651,10 +656,9 @@ public partial class GameEngine
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
+            await RestorePreTurnBackup(backedUpFiles);
             await CleanupPendingTurnSnapshotAsync();
             CleanupBackup(backedUpFiles);
-            if (clearsPendingAbodeOffering)
-                GuardianAbodeOfferingState.Clear(_fs);
             return;
         }
 
@@ -671,8 +675,6 @@ public partial class GameEngine
             _qteSceneService.ClearOfferFile();
             _fs.DeleteFile("input/turn_request.json");
             await CleanupPendingTurnSnapshotAsync();
-            if (clearsPendingAbodeOffering)
-                GuardianAbodeOfferingState.Clear(_fs);
             return;
         }
         var response = await BuildGameResponseFromFiles();

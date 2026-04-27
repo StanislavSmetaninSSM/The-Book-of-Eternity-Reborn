@@ -263,6 +263,50 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
         Assert.Contains(issues, issue => string.Equals(issue.Code, "abode_resident_transfer_malformed_file", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Theory]
+    [InlineData("Chaos Sea")]
+    [InlineData("Shining Abode")]
+    public async Task ValidateGameStateAsync_PendingManifestationRequestInAfterlife_Fails(string currentRealm)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", $$"""
+        {
+          "currentRealm": "{{currentRealm}}",
+          "currentIncarnation": 4,
+          "inkFeathers": { "current": 10, "total": 10 },
+          "soulRelics": { "equipped": [], "stored": [] }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, """
+        {
+          "requests": [
+            {
+              "requestId": "manifest_1",
+              "manifestationSource": "resident_relic",
+              "relicId": "relic_alpha",
+              "relicName": "Эхо Зари",
+              "sourceResidentId": "resident_alpha",
+              "sourceGuardianId": "guardian_alpha",
+              "sourceGuardianName": "Азалия",
+              "targetIncarnation": 5,
+              "companionNameHint": "Ирия",
+              "originWorldSummary": "Будущая смертная жизнь.",
+              "futureCompanionPrompt": "Ирия должна проявиться как ранняя спутница в следующей смертной жизни.",
+              "bondReason": "Связь создана через реликвию резидента.",
+              "coreTraits": ["loyal"],
+              "archetypeHints": ["guide"],
+              "appearanceMotifs": ["dawn"],
+              "createdAtUtc": "2026-04-20T00:00:00Z"
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "pending_resident_companion_manifestation_afterlife_forbidden", StringComparison.OrdinalIgnoreCase));
+    }
+
     private async Task<List<ValidationIssue>> InvokeValidationAsync(string methodName)
     {
         var issues = new List<ValidationIssue>();
