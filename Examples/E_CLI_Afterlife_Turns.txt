@@ -2917,6 +2917,15 @@ Accepted `discover_native_faction` must:
 - create exactly `2` seeded completed projects inside the new faction;
 - write a receipt whose `hallId`, `resolvedFactionId`, `newResidentIds[]`, and `seededProjectIds[]` point to those materialized objects.
 
+Legacy `pendingNativeFactionDiscovery` closure:
+- If pre-turn `shining_abode_state.json.pendingNativeFactionDiscovery` is non-null and there is no matching `pending_shining_abode_actions.json` request, treat it as the legacy state-local version of `discover_native_faction`.
+- Use `pendingNativeFactionDiscovery.requestId` as the receipt `requestId`; use `actionType = "discover_native_faction"`.
+- Materialize the same hall/native faction/residents/projects/Radiance outcome as above.
+- Spend `pendingNativeFactionDiscovery.costFeathers` from `soul_state.json.inkFeathers`.
+- Preserve current `shining_abode_state.json.lightSparks`; the legacy queue already reserved `pendingNativeFactionDiscovery.costLightSparks`, so do not subtract Light Sparks a second time.
+- Set `shining_abode_state.json.pendingNativeFactionDiscovery = null` in the accepted state.
+- Do not create or echo a duplicate `pending_shining_abode_actions.json` request for this legacy payload.
+
 Correct `discover_native_faction` receipt fragment:
 
 ```json
