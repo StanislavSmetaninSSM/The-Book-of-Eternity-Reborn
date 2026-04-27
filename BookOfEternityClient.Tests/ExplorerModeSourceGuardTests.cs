@@ -459,4 +459,21 @@ public sealed class ExplorerModeSourceGuardTests
         Assert.Contains("_pendingGmAction = result.PendingGmAction", source, StringComparison.Ordinal);
         Assert.DoesNotContain("fit ", source, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void ExplorerMode_ChaosSeaTravelAction_MustExposeCanonicalNavigationContract()
+    {
+        var source = ReadExplorerModeSource();
+
+        Assert.Contains("[CHAOS_SEA_TRAVEL]", source, StringComparison.Ordinal);
+        Assert.Contains("targetAbodeId=", source, StringComparison.Ordinal);
+        Assert.Contains("targetGuardianId=", source, StringComparison.Ordinal);
+        Assert.Contains("previousAbodeId=", source, StringComparison.Ordinal);
+        Assert.Contains("previousActiveGuardianId=", source, StringComparison.Ordinal);
+        Assert.Contains("discoveredAbodes=", source, StringComparison.Ordinal);
+        Assert.Contains("activeGuardian", source, StringComparison.Ordinal);
+        Assert.Contains("chaosSeaNavigation.currentAbodeId", source, StringComparison.Ordinal);
+        Assert.Contains("currentLocationData", source, StringComparison.Ordinal);
+        Assert.Contains("worldEventsLog", source, StringComparison.Ordinal);
+    }
 }

@@ -523,11 +523,6 @@ public partial class ValidationService
         }
     }
 
-    private async Task<string> ResolveCurrentRealmAsync()
-    {
-        return await TryResolveCurrentRealmAsync() ?? "Chaos Sea";
-    }
-
     private async Task<string?> TryResolveCurrentRealmAsync()
     {
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
@@ -611,8 +606,7 @@ public partial class ValidationService
         return string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase) ||
-               string.IsNullOrWhiteSpace(realm);
+               string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsExactChaosSeaRealm(string? realm)
@@ -5263,6 +5257,7 @@ public partial class ValidationService
 
     private void ValidateMetaMiscContract(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
+        ValidateSoulStateRealmContract(root, contextPrefix, issues);
         ValidateMetaStateUpdates(root, contextPrefix, issues);
         ValidateAfterlifeArchiveData(root, contextPrefix, issues);
         ValidatePendingMemoryLegacy(root, contextPrefix, issues);
@@ -5284,6 +5279,29 @@ public partial class ValidationService
         ValidateDialogueOptionsData(root, contextPrefix, issues);
         ValidateMultipliersData(root, contextPrefix, issues);
         ValidateOptionalString(root, contextPrefix, issues, "image_prompt");
+    }
+
+    private void ValidateSoulStateRealmContract(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!contextPrefix.EndsWith("game_state/meta/soul_state.json", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        if (root.TryGetProperty("currentRealm", out var currentRealm) &&
+            currentRealm.ValueKind == JsonValueKind.String &&
+            !string.IsNullOrWhiteSpace(currentRealm.GetString()))
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.currentRealm",
+            IssueSeverity.Error,
+            "soul_state.currentRealm должен быть явно задан; пустой/null realm не является Chaos Sea и не может использовать afterlife fallback.",
+            code: "soul_state_unresolved_current_realm",
+            section: "Realm",
+            expected: "non-empty currentRealm such as Chaos Sea, Shining Abode, or a Mortal World realm",
+            actual: root.TryGetProperty("currentRealm", out var actualValue) ? actualValue.ValueKind.ToString() : "missing",
+            repairHint: "Восстанови authoritative soul_state.currentRealm перед обработкой хода. Не выводи realm из pending files, prompts или старого scheduler state."));
     }
 
     private void ValidatePlayerGuardianFoundationSoulStateFields(JsonElement root, string contextPrefix, List<ValidationIssue> issues)

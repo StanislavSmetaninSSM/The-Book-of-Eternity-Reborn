@@ -1106,6 +1106,56 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void TrySupportProject_AlreadySupported_FailsWithoutMarkingGatesStale()
+    {
+        var root = CreateProjectSupportState(isSupported: true);
+
+        var success = ShiningAbodeState.TrySupportProject(root, "faction_dawn", "project_dawn", out var error);
+
+        Assert.False(success);
+        Assert.Contains("support_project", error);
+        Assert.True(GetSingleProject(root)["isSupported"]?.GetValue<bool>());
+        Assert.False(root["gates"]?["isStale"]?.GetValue<bool>());
+    }
+
+    [Fact]
+    public void TrySupportProject_UnsupportedProject_TogglesSupportAndMarksGatesStale()
+    {
+        var root = CreateProjectSupportState(isSupported: false);
+
+        var success = ShiningAbodeState.TrySupportProject(root, "faction_dawn", "project_dawn", out var error);
+
+        Assert.True(success, error);
+        Assert.True(GetSingleProject(root)["isSupported"]?.GetValue<bool>());
+        Assert.True(root["gates"]?["isStale"]?.GetValue<bool>());
+    }
+
+    [Fact]
+    public void TryUnsupportProject_AlreadyUnsupported_FailsWithoutMarkingGatesStale()
+    {
+        var root = CreateProjectSupportState(isSupported: false);
+
+        var success = ShiningAbodeState.TryUnsupportProject(root, "faction_dawn", "project_dawn", out var error);
+
+        Assert.False(success);
+        Assert.Contains("unsupport_project", error);
+        Assert.False(GetSingleProject(root)["isSupported"]?.GetValue<bool>());
+        Assert.False(root["gates"]?["isStale"]?.GetValue<bool>());
+    }
+
+    [Fact]
+    public void TryUnsupportProject_SupportedProject_TogglesSupportAndMarksGatesStale()
+    {
+        var root = CreateProjectSupportState(isSupported: true);
+
+        var success = ShiningAbodeState.TryUnsupportProject(root, "faction_dawn", "project_dawn", out var error);
+
+        Assert.True(success, error);
+        Assert.False(GetSingleProject(root)["isSupported"]?.GetValue<bool>());
+        Assert.True(root["gates"]?["isStale"]?.GetValue<bool>());
+    }
+
+    [Fact]
     public void OpenGates_ThenPreparePackage_BuildsFrozenSnapshot()
     {
         var root = JsonNode.Parse("""
@@ -1389,4 +1439,73 @@ public sealed class ShiningAbodeStateTests
         Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
         Assert.Equal(0, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
     }
+
+    private static JsonObject CreateProjectSupportState(bool isSupported) => new()
+    {
+        ["availability"] = ShiningAbodeState.AvailabilityActive,
+        ["radiance"] = new JsonObject
+        {
+            ["experience"] = 250,
+            ["tier"] = 2
+        },
+        ["lightSparks"] = 80,
+        ["factions"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["factionId"] = "faction_dawn",
+                ["originType"] = ShiningAbodeState.OriginTypePlayerFounded,
+                ["hallId"] = "hall_dawn",
+                ["charter"] = new JsonObject
+                {
+                    ["factionName"] = "Хор Рассвета",
+                    ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+                    ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+                    ["summary"] = "Поют утренний свет."
+                },
+                ["leadership"] = new JsonObject
+                {
+                    ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                    ["headActorId"] = "player_soul",
+                    ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+                },
+                ["baseStrength"] = 35,
+                ["factionStrength"] = 47,
+                ["investCountThisAscension"] = 0,
+                ["projectArchetypesCountedThisAscension"] = new JsonArray(),
+                ["projects"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["projectId"] = "project_dawn",
+                        ["displayName"] = "Песнь зари",
+                        ["summary"] = "Укрепляет союз.",
+                        ["toneTags"] = new JsonArray("bright"),
+                        ["targetFactionIds"] = new JsonArray(),
+                        ["projectArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+                        ["outputEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+                        ["tier"] = 1,
+                        ["status"] = ShiningAbodeState.ProjectStatusCompleted,
+                        ["isSupported"] = isSupported,
+                        ["strengthReward"] = 8
+                    }
+                }
+            }
+        },
+        ["gates"] = new JsonObject
+        {
+            ["draftVersion"] = 1,
+            ["hasOpenDraft"] = true,
+            ["isStale"] = false,
+            ["allCandidateBlessingCards"] = new JsonArray(),
+            ["availableBlessingCards"] = new JsonArray(),
+            ["shownBlessingCardIds"] = new JsonArray(),
+            ["selectedBlessingCardIds"] = new JsonArray(),
+            ["nextCandidateCursor"] = 0,
+            ["rerollsRemaining"] = 0
+        }
+    };
+
+    private static JsonObject GetSingleProject(JsonObject root) =>
+        root["factions"]![0]!["projects"]![0]!.AsObject();
 }

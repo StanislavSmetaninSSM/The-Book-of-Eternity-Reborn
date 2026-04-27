@@ -56,7 +56,7 @@ public partial class ValidationService
         "FATE_SHIELD",
         "SEAL_IN_INK"
     };
-    private static readonly HashSet<string> ChaosSeaGmInkFeatherActions = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly HashSet<string> AfterlifeGmInkFeatherActions = new(StringComparer.OrdinalIgnoreCase)
     {
         "DONATE_TO_GUARDIAN",
         "CULTIVATE_ENLIGHTENMENT",

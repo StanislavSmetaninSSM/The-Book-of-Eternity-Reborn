@@ -7605,6 +7605,32 @@ public partial class ValidationService
         var currentHall = FindShiningHall(currentShiningRoot, hallId);
         var currentFaction = ShiningAbodeState.FindFaction(currentShiningRoot, factionId);
 
+        if (!string.IsNullOrWhiteSpace(hallId) && FindShiningHall(preTurnShiningRoot, hallId) != null)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction не может переиспользовать существующий Shining hallId.",
+                code: "shining_discovery_reused_existing_hall_id",
+                section: "ShiningAbode",
+                expected: "new hallId absent from pre-turn shining_abode_state.halls[]",
+                actual: hallId,
+                repairHint: "Для discover_native_faction создавай новый hallId, которого не было в pre-turn Shining state."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(factionId) && ShiningAbodeState.FindFaction(preTurnShiningRoot, factionId) != null)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction не может переиспользовать существующий Shining factionId.",
+                code: "shining_discovery_reused_existing_faction_id",
+                section: "ShiningAbode",
+                expected: "new factionId absent from pre-turn shining_abode_state.factions[]",
+                actual: factionId,
+                repairHint: "Для discover_native_faction создавай новый factionId, которого не было в pre-turn Shining state."));
+        }
+
         if (string.IsNullOrWhiteSpace(hallId) || currentHall == null)
         {
             issues.Add(new ValidationIssue(
@@ -7684,6 +7710,19 @@ public partial class ValidationService
         {
             foreach (var projectId in projectIds)
             {
+                if (FindShiningProject(preTurnShiningRoot, projectId) != null)
+                {
+                    issues.Add(new ValidationIssue(
+                        ShiningCoreActionRequestState.PendingActionsRequestPath,
+                        IssueSeverity.Error,
+                        "Accepted discover_native_faction не может переиспользовать существующий Shining projectId.",
+                        code: "shining_discovery_reused_existing_project_id",
+                        section: "ShiningAbode",
+                        expected: "new seededProjectId absent from all pre-turn Shining faction projects",
+                        actual: projectId,
+                        repairHint: "Seeded discovery projects должны получать новые projectId, которых не было в pre-turn Shining state."));
+                }
+
                 var project = currentProjects.OfType<JsonObject>().FirstOrDefault(item =>
                     string.Equals(GetNodeString(item["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
                 if (project == null ||
@@ -7741,6 +7780,25 @@ public partial class ValidationService
                 actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
                 repairHint: "Списывай Ink Feathers exactly по quotedCostFeathers из discovery request."));
         }
+    }
+
+    private static JsonObject? FindShiningProject(JsonObject shiningRoot, string projectId)
+    {
+        if (string.IsNullOrWhiteSpace(projectId) || shiningRoot["factions"] is not JsonArray factions)
+            return null;
+
+        foreach (var faction in factions.OfType<JsonObject>())
+        {
+            if (faction["projects"] is not JsonArray projects)
+                continue;
+
+            var project = projects.OfType<JsonObject>().FirstOrDefault(item =>
+                string.Equals(GetNodeString(item["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
+            if (project != null)
+                return project;
+        }
+
+        return null;
     }
 
     private void ValidateNonAcceptedShiningCoreActionOutcome(

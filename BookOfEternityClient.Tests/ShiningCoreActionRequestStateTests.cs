@@ -447,6 +447,64 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_SupportAlreadySupportedProject_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypeSupportProject,
+                FactionId = "faction_old",
+                ProjectId = "project_old",
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("support_project", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_UnsupportAlreadyUnsupportedProject_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            shiningRoot["factions"]![0]!["projects"]![0]!["isSupported"] = false;
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypeUnsupportProject,
+                FactionId = "faction_old",
+                ProjectId = "project_old",
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("unsupport_project", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithoutSelectedCards_Fails()
     {
         var root = CreateTempRoot();

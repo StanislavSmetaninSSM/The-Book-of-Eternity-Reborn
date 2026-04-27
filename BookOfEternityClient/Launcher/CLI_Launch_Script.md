@@ -49,7 +49,8 @@ Read `worldState.currentRealm` from game state.
 - If `currentRealm = "Shining Abode"` and `game_state/meta/shining_abode_state.json.preparedIncarnationPackage != null`, treat the turn as **Shining Abode pending-bootstrap handoff**:
   - ONLY bootstrap/materialization of the next mortal life is allowed
   - DO NOT run ordinary Guardian, Abode, Chaos Sea, Ink Feather, relic, archive, or world-setup afterlife flows
-- **"Chaos Sea"** / null → Afterlife mode (Guardians, Soul Relics, Gacha/meta systems — NO combat, NO NPCs, NO leveling)
+- **null / empty / missing** → unresolved realm fault. Do not infer Chaos Sea; do not run afterlife or mortal systems until authoritative `soul_state.currentRealm` is repaired.
+- **"Chaos Sea"** / **"Море Хаоса"** → Afterlife mode (Guardians, Soul Relics, Gacha/meta systems — NO combat, NO NPCs, NO leveling)
 - **"Shining Abode"** with `preparedIncarnationPackage = null` → Active Shining Abode afterlife mode
 - **"Mortal World"** / other → Mortal mode (Combat, NPCs, Quests, Skills — NO Guardians, NO Abodes, NO Gacha)
 - Guardians are NOT NPCs. Use UpdateGuardians (Block 32), not UpdateNPCs.

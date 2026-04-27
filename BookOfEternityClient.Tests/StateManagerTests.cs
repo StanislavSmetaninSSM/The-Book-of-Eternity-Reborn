@@ -115,6 +115,96 @@ public sealed class StateManagerTests
         }
     }
 
+    [Fact]
+    public async Task RefreshGameStateAsync_ActiveGuardianName_UsesManifestationDisplayName()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var manager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+
+            await fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+            {
+              "activeGuardian": {
+                "guardianId": "guard_social_azalia_001",
+                "canonicalName": "Азалия",
+                "manifestation": {
+                  "currentDisplayName": "Госпожа Шёлковых Нитей"
+                }
+              }
+            }
+            """);
+
+            await manager.RefreshGameStateAsync();
+
+            Assert.Equal("Госпожа Шёлковых Нитей", manager.CurrentState.ActiveGuardianName);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RefreshGameStateAsync_ActiveGuardianName_FallsBackToCanonicalName()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var manager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+
+            await fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+            {
+              "activeGuardian": {
+                "guardianId": "guard_social_azalia_001",
+                "canonicalName": "Азалия"
+              }
+            }
+            """);
+
+            await manager.RefreshGameStateAsync();
+
+            Assert.Equal("Азалия", manager.CurrentState.ActiveGuardianName);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task RefreshGameStateAsync_ActiveGuardianName_PreservesLegacyNameFallback()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var manager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+
+            await fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+            {
+              "activeGuardian": {
+                "guardianId": "guard_legacy_001",
+                "name": "Старое Имя Хранителя"
+              }
+            }
+            """);
+
+            await manager.RefreshGameStateAsync();
+
+            Assert.Equal("Старое Имя Хранителя", manager.CurrentState.ActiveGuardianName);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static string CreateTempRoot()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-state-manager-" + Guid.NewGuid().ToString("N"));

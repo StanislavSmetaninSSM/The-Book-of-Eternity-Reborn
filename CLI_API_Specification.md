@@ -338,7 +338,7 @@ CLI Agent automatically loads current game state from:
   "UpdateGuardians": "array of guardian_command_objects (see Guardian Commands below)",
   "guardians": "array of canonical guardian_objects when a contract explicitly requires full guardian-state authority",
   "activeGuardian": "canonical active guardian object or id-bearing object for guardian-state synchronization",
-  "chaosSeaNavigation": "object with currentAbodeId and discoveredAbodes for afterlife navigation",
+  "chaosSeaNavigation": "object with currentAbodeId and discoveredAbodes for afterlife navigation; [CHAOS_SEA_TRAVEL] must also keep activeGuardian synced to the target guardian and target guardian abode.isDiscovered=true",
   "playerGuardianFoundationHistory": "array of player-founded guardian foundation receipt objects",
   "UpdateGuardianAbodeResidents": "array of guardian_abode_resident_objects",
   "UpdateGuardianAbodeResidentRosterReceipts": "array of guardian_abode_resident_roster_receipt_objects",
@@ -636,6 +636,7 @@ Quest state contract notes:
 - `game_state/control/pending_resident_companion_manifestation_request.json` ← MortalWorldProfile-only next-life companion manifestation requests. In `Chaos Sea` / `Shining Abode`, treat this file as stale/repair-only context and do not materialize mortal NPCs or encounters from it.
 - `game_state/control/pending_archive_consultation_request.json` and `pending_archive_project_fuel_request.json` ← close with `archiveActionResolutions`.
 - `game_state/control/pending_shining_abode_actions.json` ← client-authored Shining core actions; close through canonical `shining_abode_state.json` mutation plus `shining_abode_state.coreActionReceipts[]`. Supported `actionType` values are `discover_native_faction`, `invest_in_faction`, `complete_project`, `support_project`, `unsupport_project`, `retire_project`, `open_gates`, `prepare_incarnation_package`, `pull_relic_gacha`, `forge_relic.reshape`, `forge_relic.retune_property`, `forge_relic.strengthen_band`, `forge_relic.stabilize_echo`, and `forge_relic.uplift_rarity`; use `OtherGuides/Afterlife_Contract_Matrix.md` plus `Examples/E_CLI_Afterlife_Turns.txt` example 14 for accepted receipt/state patterns.
+- `game_state/meta/shining_abode_state.json.pendingNativeFactionDiscovery` ← legacy state-local Shining discovery contract. If non-null, close it as legacy `discover_native_faction`: materialize the native hall/faction/residents/projects, spend only `costFeathers` from Soul, preserve current Light Sparks because `costLightSparks` was already reserved, append `coreActionReceipts[]`, set `pendingNativeFactionDiscovery = null`, and do not create a duplicate `pending_shining_abode_actions.json`.
 - `game_state/control/pending_shining_faction_foundings.json` ← close through `shining_abode_state.factionFoundingReceipts[]`.
 - `game_state/control/pending_shining_faction_realignments.json` ← close through `shining_abode_state.factionRealignmentReceipts[]`.
 - `game_state/control/pending_shining_faction_leadership_transitions.json` ← close through faction `leadershipReceipts[]` and leadership history.
@@ -725,6 +726,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - `AscensionTrigger` is valid only in Chaos Sea, only with maximum Enlightenment and explicit `playerChoice=Ascension`, and must never be mixed with `TriggerLifeEnd`.
 
 ### Afterlife Realm Model
+- Empty, missing, or `null` `currentRealm` is not `Chaos Sea`; it is an unresolved realm fault. GM must not infer realm from pending files, scheduler state, old logs, or narrative context.
 - `Chaos Sea` and `Shining Abode` are both afterlife realms for validator/runtime purposes.
 - Both afterlife realms use guardian/soul/meta systems and forbid mortal-world combat/NPC/faction/location mechanics.
 - Both afterlife realms still have a living-world scheduler through `progressionControl`. This is afterlife-specific progression, not Mortal World `worldEventsLog` / `factionDataChanges` progression.
