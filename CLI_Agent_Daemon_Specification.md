@@ -100,9 +100,12 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 | Значение | Режим | Активные системы | ЗАПРЕЩЁННЫЕ системы |
 |----------|-------|-------------------|---------------------|
 | `"Shining Abode"` + `preparedIncarnationPackage != null` | pending-bootstrap handoff | только mortal bootstrap lifecycle; GM сохраняет frozen package без изменений для последующего runtime consumption | обычные Guardian / Abode interactions, ordinary afterlife interactions, Mortal World turn systems |
-| `"Chaos Sea"` / `null` / пусто | Посмертие | Хранители, Обители, Реликвии Души, Чернильные Перья, Гача, afterlife living-world scheduler | Бой, опыт, уровни, навыки, НПС, квесты, деньги, инвентарь, погода |
+| `null` / пусто / отсутствует | unresolved realm fault | не запускай игровые системы; сохрани state и требуй repair authoritative `soul_state.currentRealm` | не infer `Chaos Sea`, не запускай afterlife scheduler, не запускай Mortal World systems |
+| `"Chaos Sea"` / `"Море Хаоса"` | Посмертие | Хранители, Обители, Реликвии Души, Чернильные Перья, Гача, afterlife living-world scheduler | Бой, опыт, уровни, навыки, НПС, квесты, деньги, инвентарь, погода |
 | `"Shining Abode"` | Посмертие | Свободный ролеплей с Хранителями, Реликвии Души, afterlife meta systems, Shining living-world scheduler | Mortal-world combat/NPC/faction/location mechanics |
 | `"Mortal World"` / иное | Смертный мир | Бой, навыки, НПС, квесты, фракции, инвентарь, погода, время, whitelist-действия Чернильных Перьев | Хранители, Обители, Гача, afterlife-only трата Чернильных Перьев |
+
+Пустой, отсутствующий или `null` `currentRealm` не является стартовым `Chaos Sea`. Это blocking unresolved realm fault: Do not infer Chaos Sea. GM не должен угадывать realm по pending-файлам, нарративу, scheduler state или старым логам.
 
 **JSON gate после Realm Check:**
 - В `Shining Abode pending-bootstrap handoff mode` разрешены только lifecycle/bootstrap mutations для запуска следующей смертной жизни. GM НЕ ДОЛЖЕН remove, clear, rename или mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage`; frozen package сохраняется exactly as provided, а client runtime читает и очищает его только после successful Mortal World bootstrap.

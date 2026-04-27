@@ -32,7 +32,8 @@ Use this loop for every `Chaos Sea` / `Shining Abode` turn before writing files:
 
 | Mode | When active | What GM may process | What GM must suppress |
 |---|---|---|---|
-| Ordinary `Chaos Sea` | `currentRealm` is empty/`Chaos Sea`/`Море Хаоса`, no active Shining package handoff | Guardians, Abodes, Soul state, Soul Relics, direct Chaos Sea gacha, afterlife Ink Feather whitelist, Guardian projects, residents, archive, ordinary incarnation and ascension choices | Mortal World combat/NPC/location/faction/time systems |
+| Unresolved realm fault | `currentRealm` is missing, null, or empty | No gameplay systems; preserve state and require authoritative `soul_state.currentRealm` repair | Do not infer Chaos Sea; do not run afterlife scheduler, pending contracts, Mortal World systems, or lifecycle handoffs |
+| Ordinary `Chaos Sea` | `currentRealm = Chaos Sea`/`Море Хаоса`, no active Shining package handoff | Guardians, Abodes, Soul state, Soul Relics, direct Chaos Sea gacha, afterlife Ink Feather whitelist, Guardian projects, residents, archive, ordinary incarnation and ascension choices | Mortal World combat/NPC/location/faction/time systems |
 | Ordinary active `Shining Abode` | `currentRealm = Shining Abode` and `shining_abode_state.json.preparedIncarnationPackage = null` | Shining civic state, Shining factions, Shining trade, Shining core actions, Guardians/residents that persist into the Abode, afterlife scheduler | Mortal World systems and ordinary Chaos-only lifecycle shortcuts that do not apply in Shining |
 | `Shining Abode pending-bootstrap handoff` | `currentRealm = Shining Abode` and `preparedIncarnationPackage` is a non-null object | Only lifecycle/bootstrap `TriggerIncarnation` for the frozen package | Ordinary Shining scheduler, Guardian/Abode roleplay, Shining core actions, trade, politics, package clearing/mutation |
 

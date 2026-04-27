@@ -314,6 +314,47 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildControlForNextTurnAsync_EmptyCurrentRealm_FailsClosedWithoutTreatingAsChaosSea()
+    {
+        await _fs.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath, """
+        {
+          "currentRealm": "Chaos Sea",
+          "currentWorldTimeInMinutes": 0,
+          "lastWorldSimulationTimeInMinutes": 0,
+          "lastFactionSimulationTimeInMinutes": 0,
+          "hasAuthoritativeWorldTimeBaseline": true,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "chaosSeaCycleEquivalentHours": 24,
+          "currentChaosSeaTurnOrdinal": 7,
+          "lastChaosSeaSimulationOrdinal": 6,
+          "lastGuardianProjectCycleOrdinal": 5,
+          "pendingWorldCycles": 0,
+          "pendingFactionCycles": 0,
+          "pendingChaosSeaCycles": 3,
+          "pendingGuardianProjectCycles": 2,
+          "lastUpdatedUtc": "2026-04-21T00:00:00.0000000Z"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": ""
+        }
+        """);
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _service.BuildControlForNextTurnAsync());
+
+        Assert.Contains("currentRealm", exception.Message, StringComparison.OrdinalIgnoreCase);
+
+        var schedule = await ReadScheduleAsync();
+        Assert.Equal("Chaos Sea", schedule.CurrentRealm);
+        Assert.Equal(3, schedule.PendingChaosSeaCycles);
+        Assert.Equal(2, schedule.PendingGuardianProjectCycles);
+        Assert.Equal(7, schedule.CurrentChaosSeaTurnOrdinal);
+    }
+
+    [Fact]
     public async Task ApplyAcceptedTurnOutcomeAsync_UnreadableCurrentRealmAfterTurn_PreservesRealmAndPendingLedger()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """

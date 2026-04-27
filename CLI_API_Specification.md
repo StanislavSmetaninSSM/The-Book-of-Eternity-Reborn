@@ -725,6 +725,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - `AscensionTrigger` is valid only in Chaos Sea, only with maximum Enlightenment and explicit `playerChoice=Ascension`, and must never be mixed with `TriggerLifeEnd`.
 
 ### Afterlife Realm Model
+- Empty, missing, or `null` `currentRealm` is not `Chaos Sea`; it is an unresolved realm fault. GM must not infer realm from pending files, scheduler state, old logs, or narrative context.
 - `Chaos Sea` and `Shining Abode` are both afterlife realms for validator/runtime purposes.
 - Both afterlife realms use guardian/soul/meta systems and forbid mortal-world combat/NPC/faction/location mechanics.
 - Both afterlife realms still have a living-world scheduler through `progressionControl`. This is afterlife-specific progression, not Mortal World `worldEventsLog` / `factionDataChanges` progression.

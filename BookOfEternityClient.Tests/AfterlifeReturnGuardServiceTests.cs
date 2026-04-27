@@ -77,6 +77,17 @@ public sealed class AfterlifeReturnGuardServiceTests : IDisposable
         Assert.Contains("malformed or semantically invalid", reminder, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_UnresolvedRealmDoesNotCountAsAfterlife()
+    {
+        await _service.ActivatePostLifeReturnAsync("guard_social_azalia_001", "Азалия", 12);
+
+        var reminder = await _service.BuildSystemReminderFragmentAsync("");
+
+        Assert.Null(reminder);
+        Assert.True(_fs.FileExists(AfterlifeReturnGuardService.GuardPath));
+    }
+
     public void Dispose()
     {
         try
