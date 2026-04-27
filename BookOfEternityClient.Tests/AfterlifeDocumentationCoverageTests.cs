@@ -32,6 +32,25 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningPoliticalActorsAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var text in new[] { matrix, examples, taskGuide, operations, daemonSpec, apiSpec })
+        {
+            Assert.Contains("shiningPoliticalActors", text, StringComparison.Ordinal);
+            Assert.Contains("radiant_actor", text, StringComparison.Ordinal);
+            Assert.Contains("headActorId", text, StringComparison.Ordinal);
+            Assert.Contains("actorId", text, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void AfterlifePendingFilesMentionedByRuntimeAreCoveredByMatrix()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

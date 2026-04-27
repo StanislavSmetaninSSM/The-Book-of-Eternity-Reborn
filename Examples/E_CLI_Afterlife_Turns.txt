@@ -1829,9 +1829,30 @@ Correct faction patch:
 }
 ```
 
+If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`; use `politicalStatus = "head"` for the current head and move replaced radiant actors to `former_head`, `elder`, `claimant`, or `retired` as appropriate.
+
+Radiant actor registry patch when a radiant actor becomes head:
+
+```json
+{
+  "shiningPoliticalActors": [
+    {
+      "actorId": "radiant_speaker_aurora_303",
+      "actorType": "radiant_actor",
+      "displayName": "Аврора, Голос Рассвета",
+      "summary": "Самостоятельная сияющая фигура, которую Рассветный Хор признал политическим голосом зала.",
+      "originFactionId": "faction_dawn_chorus",
+      "currentFactionId": "faction_dawn_chorus",
+      "politicalStatus": "head"
+    }
+  ]
+}
+```
+
 Forbidden Shining political shortcuts:
 - `factionDataChanges`.
 - ad-hoc `strength`, `tradeTier`, or `shiningAlignment` instead of canonical Shining fields.
+- `leadership.headActorType = radiant_actor` without a matching `shiningPoliticalActors[].actorId`.
 - founding receipt without exact proposed ids/hall payload/supporter list.
 - realignment accepted without resident membership update and resident history log.
 - leadership accepted/refused without matching `leadershipHistory[]` when required.

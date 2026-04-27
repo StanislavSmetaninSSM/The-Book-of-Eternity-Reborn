@@ -127,7 +127,7 @@ The GM must read these state groups before resolving afterlife scheduler debt:
 - `game_state/meta/guardians.json`: Guardian identity, reputation, mood, musings, trade inventory, relationships, buyback relics.
 - `game_state/meta/guardian_projects.json`: active/completed Guardian projects and project pressure.
 - `game_state/meta/guardian_abode_residents.json`: authored residents, resident memory, history, rewards, linked Soul Quests, Shining alignment fields.
-- `game_state/meta/shining_abode_state.json`: Shining availability, Light Sparks, Radiance, halls, gates, factions, projects, trade inventories, receipts, prepared incarnation package.
+- `game_state/meta/shining_abode_state.json`: Shining availability, Light Sparks, Radiance, halls, gates, factions, projects, `shiningPoliticalActors`, trade inventories, receipts, prepared incarnation package.
 - `game_state/control/pending_*afterlife*` and `game_state/control/pending_shining_*` files: client-authored contracts that must be resolved canonically when present.
 
 Legal afterlife progression surfaces include:
@@ -620,7 +620,7 @@ Quest state contract notes:
 - `game_state/meta/abode_power_journal.json` ← client-generated readable guardian power chronology
 - `game_state/meta/guardian_thought_journal.json` ← `guardianThoughtJournalUpdates`
 - `game_state/meta/guardian_social_journal.json` ← `guardianSocialJournalUpdates`
-- `game_state/meta/shining_abode_state.json` ← canonical Shining Abode state, Shining factions, halls, gates, radiance, Light Sparks, Shining trade inventories, Shining receipts, prepared incarnation package
+- `game_state/meta/shining_abode_state.json` ← canonical Shining Abode state, Shining factions, halls, gates, radiance, Light Sparks, `shiningPoliticalActors`, Shining trade inventories, Shining receipts, prepared incarnation package. If a faction uses `leadership.headActorType = radiant_actor`, `leadership.headActorId` must resolve to an existing `shiningPoliticalActors[].actorId`.
 - `game_state/meta/player_behavior.json` ← `playerBehaviorAssessment`, `historyManipulationCoefficient`
 - `game_state/meta/character_chronicle.json` ← `characterChronicleUpdates`
 - `game_state/meta/achievements.json` ← `achievementUnlocks`

@@ -284,6 +284,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 - `lightSparks` и `radiance` — не как смертные ресурсы, а как состояние сияющей инфраструктуры и доступных действий.
 - `halls` — какие залы реально существуют, какие услуги они дают и кто с ними связан.
 - `factions` — сила, проекты, лидерство, лояльность, restlessness, completed projects, trade tier.
+- `shiningPoliticalActors` — реестр самостоятельных сияющих политических акторов; если `factions[].leadership.headActorType = radiant_actor`, `headActorId` обязан ссылаться на существующий `shiningPoliticalActors[].actorId`, а статус актора должен отражать роль (`head`, `former_head`, `claimant`, `elder`, `retired`).
 - `gates` — готовность к следующей смертной жизни и stale/open draft state.
 - `coreActionReceipts`, `factionFoundingReceipts`, `factionRealignmentReceipts`, `leadershipReceipts`, `tradeInventoryReceipts` — закрытие pending contracts и история решений.
 
