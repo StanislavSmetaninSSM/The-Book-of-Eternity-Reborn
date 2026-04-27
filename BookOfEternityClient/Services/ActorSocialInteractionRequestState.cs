@@ -272,8 +272,11 @@ internal static class ActorSocialInteractionRequestState
                 "Each closure entry must carry requestId, guardianId, interactionType, status=accepted|rejected|cancelled, optional responseMode, title, summary, turn, and timestamp."
             };
 
-            foreach (var request in guardianRequests.Take(5))
-                lines.Add($"- guardianId={request.GuardianId}, interactionType={request.InteractionType}, guardianName={request.GuardianName}");
+            foreach (var request in guardianRequests)
+            {
+                lines.Add($"- requestId={request.RequestId}, guardianId={request.GuardianId}, interactionType={request.InteractionType}, guardianName={request.GuardianName}, createdAtTurn={request.CreatedAtTurn}, createdAtUtc={request.CreatedAtUtc}");
+                AppendSerializedJsonLines(lines, "Full pending guardian-social DTO", request);
+            }
 
             return string.Join("\n", lines);
         }
@@ -305,6 +308,14 @@ internal static class ActorSocialInteractionRequestState
             npcLines.Add($"- npcId={request.NpcId}, interactionType={request.InteractionType}, npcName={request.NpcName}");
 
         return string.Join("\n", npcLines);
+    }
+
+    private static void AppendSerializedJsonLines(List<string> lines, string title, object payload)
+    {
+        lines.Add($"  {title}:");
+        var json = JsonSerializer.Serialize(payload, JsonOpts).Replace("\r\n", "\n", StringComparison.Ordinal);
+        foreach (var line in json.Split('\n'))
+            lines.Add($"    {line}");
     }
 
     public static JsonObject? FindGuardianResolutionEntry(JsonObject? journalRoot, string guardianId, string requestId) =>

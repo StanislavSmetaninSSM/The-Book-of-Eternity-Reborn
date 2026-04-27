@@ -751,12 +751,13 @@ internal static class GuardianAbodeResidentRequestState
                     "Each resident should include personalityProfile, abodeDisposition, abodeDevotionLevel, abodeDevotionTier, restlessness, and migrationState in addition to the existing resident contract."
                 });
 
-                foreach (var request in rosterRequests.Take(ReminderEntryLimit))
+                foreach (var request in rosterRequests)
                 {
                     var founderPart = string.Equals(request.RequestMode, ResidentsRequestModeFounderAttraction, StringComparison.OrdinalIgnoreCase)
                         ? $", mode={request.RequestMode}, feature=\"{request.FounderFeatureTitle ?? "founder_call"}\""
                         : string.Empty;
-                    rosterLines.Add($"- guardianId={request.GuardianId}, abodeId={request.AbodeId}, guardianName={request.GuardianName}, abodeName={request.AbodeName}{founderPart}");
+                    rosterLines.Add($"- requestId={request.RequestId}, guardianId={request.GuardianId}, abodeId={request.AbodeId}, guardianName={request.GuardianName}, abodeName={request.AbodeName}, currentReputation={request.CurrentReputation}, requestMode={request.RequestMode}, createdAtTurn={request.CreatedAtTurn}, createdAtUtc={request.CreatedAtUtc}{founderPart}");
+                    AppendSerializedJsonLines(rosterLines, "Full pending resident-roster DTO", request);
                 }
             }
 
@@ -774,8 +775,11 @@ internal static class GuardianAbodeResidentRequestState
                     "If the scene changes resident attitude toward the Abode, update abodeDevotionLevel/restlessness/migrationState in small canonical steps derived from the outcome, current Abode Power tier, abodeDisposition, and bondLevel, and leave curated resident memory."
                 });
 
-                foreach (var request in interactionRequests.Take(ReminderEntryLimit))
-                    rosterLines.Add($"- residentId={request.ResidentId}, interactionType={request.InteractionType}, guardianId={request.GuardianId}, abodeId={request.AbodeId}");
+                foreach (var request in interactionRequests)
+                {
+                    rosterLines.Add($"- requestId={request.RequestId}, residentId={request.ResidentId}, residentName={request.ResidentName}, interactionType={request.InteractionType}, guardianId={request.GuardianId}, abodeId={request.AbodeId}, createdAtTurn={request.CreatedAtTurn}, createdAtUtc={request.CreatedAtUtc}");
+                    AppendSerializedJsonLines(rosterLines, "Full pending resident-interaction DTO", request);
+                }
             }
 
             var visiblePressuredResidents = pressuredResidents.Take(ReminderEntryLimit).ToList();
@@ -811,7 +815,6 @@ internal static class GuardianAbodeResidentRequestState
                 if (rosterLines.Count > 0)
                     rosterLines.Add(string.Empty);
 
-                var visibleTransferRequests = SelectVisibleTransferReminderRequests(transferRequests, visiblePressuredResidents, ReminderEntryLimit);
                 rosterLines.AddRange(new[]
                 {
                     "ABODE RESIDENT TRANSFER REQUESTS:",
@@ -820,14 +823,15 @@ internal static class GuardianAbodeResidentRequestState
                     "selectionMode/competition metadata are advisory only. Every transfer resolution must write guardian_abode_residents.json.transferReceipts[] and matching history entries; do not resolve transfer by prose alone."
                 });
 
-                foreach (var request in visibleTransferRequests)
+                foreach (var request in transferRequests)
                 {
                     var targetPart = string.IsNullOrWhiteSpace(request.TargetGuardianName) && string.IsNullOrWhiteSpace(request.TargetAbodeName)
                         ? "offscreen departure"
                         : $"targetGuardian={request.TargetGuardianName} ({request.TargetGuardianId}), targetAbode={request.TargetAbodeName} ({request.TargetAbodeId})";
                     var competitionPart = DescribeTransferCompetitionMetadata(request);
                     rosterLines.Add(
-                        $"- resident={request.ResidentName} ({request.ResidentId}), sourceGuardian={request.SourceGuardianName} ({request.SourceGuardianId}), sourceAbode={request.SourceAbodeName} ({request.SourceAbodeId}), mode={request.TransferMode}, migrationState={request.MigrationState}, {targetPart}{(string.IsNullOrWhiteSpace(competitionPart) ? string.Empty : $", {competitionPart}")}");
+                        $"- requestId={request.RequestId}, resident={request.ResidentName} ({request.ResidentId}), sourceGuardian={request.SourceGuardianName} ({request.SourceGuardianId}), sourceAbode={request.SourceAbodeName} ({request.SourceAbodeId}), mode={request.TransferMode}, migrationState={request.MigrationState}, devotion={request.AbodeDevotionLevel}/100 ({request.AbodeDevotionTier}), restlessness={request.Restlessness}/100, createdAtTurn={request.CreatedAtTurn}, createdAtUtc={request.CreatedAtUtc}, {targetPart}{(string.IsNullOrWhiteSpace(competitionPart) ? string.Empty : $", {competitionPart}")}");
+                    AppendSerializedJsonLines(rosterLines, "Full pending resident-transfer DTO", request);
                 }
             }
 
@@ -861,6 +865,14 @@ internal static class GuardianAbodeResidentRequestState
         return string.Join("\n", lines);
     }
 
+    private static void AppendSerializedJsonLines(List<string> lines, string title, object payload)
+    {
+        lines.Add($"  {title}:");
+        var json = JsonSerializer.Serialize(payload, JsonOpts).Replace("\r\n", "\n", StringComparison.Ordinal);
+        foreach (var line in json.Split('\n'))
+            lines.Add($"    {line}");
+    }
+
     public static string BuildResidentsRosterPendingGmActionText(PendingGuardianAbodeResidentsRequest request)
     {
         if (string.Equals(request.RequestMode, ResidentsRequestModeFounderAttraction, StringComparison.OrdinalIgnoreCase))
@@ -870,14 +882,14 @@ internal static class GuardianAbodeResidentRequestState
                 ? "Новая founded-Обитель притягивает первых резидентов и не переносит автоматически старый roster."
                 : request.FounderFeatureSummary!;
             return
-                $"[ABODE_RESIDENT_ROSTER_REQUEST] Игрок открыл founder-attraction roster новой Обители Хранителя '{request.GuardianName}' (guardianId={request.GuardianId}, abodeId={request.AbodeId}, abodeName={request.AbodeName}). " +
+                $"[ABODE_RESIDENT_ROSTER_REQUEST] Игрок открыл founder-attraction roster новой Обители Хранителя '{request.GuardianName}' (requestId={request.RequestId}, guardianId={request.GuardianId}, abodeId={request.AbodeId}, abodeName={request.AbodeName}, currentReputation={request.CurrentReputation}, requestMode={request.RequestMode}, createdAtTurn={request.CreatedAtTurn}, createdAtUtc={request.CreatedAtUtc}). " +
                 "В accepted turn materialize explicit residents через UpdateGuardianAbodeResidents в guardian_abode_residents.json и закрой request через UpdateGuardianAbodeResidentRosterReceipts. " +
                 $"Используй founder feature '{featureTitle}': {featureSummary} " +
                 "Не переноси автоматически резидентов прежнего patron guardian. Авторски создай 1-3 afterlife residents, которых новая мантия только начинает притягивать, с canonical personalityProfile, abodeDisposition, abodeDevotionLevel, abodeDevotionTier, restlessness и migrationState.";
         }
 
         return
-            $"[ABODE_RESIDENT_ROSTER_REQUEST] Игрок открыл roster Обители Хранителя '{request.GuardianName}' (guardianId={request.GuardianId}, abodeId={request.AbodeId}, abodeName={request.AbodeName}). " +
+            $"[ABODE_RESIDENT_ROSTER_REQUEST] Игрок открыл roster Обители Хранителя '{request.GuardianName}' (requestId={request.RequestId}, guardianId={request.GuardianId}, abodeId={request.AbodeId}, abodeName={request.AbodeName}, currentReputation={request.CurrentReputation}, requestMode={request.RequestMode}, createdAtTurn={request.CreatedAtTurn}, createdAtUtc={request.CreatedAtUtc}). " +
             "В accepted turn materialize explicit residents через UpdateGuardianAbodeResidents в guardian_abode_residents.json и закрой request через UpdateGuardianAbodeResidentRosterReceipts. " +
             "Не выводи roster из домена Хранителя. Авторски создай 2-4 afterlife residents с residentId, residentKind, roleLabel, bondLevel, bondTier, canGrantCompanionRelic, bondRewardState, personalityProfile, abodeDisposition, abodeDevotionLevel, abodeDevotionTier, restlessness, migrationState и mortalWorldImprint. " +
             "abodeDevotionTier и migrationState должны быть canonical derived values, а не свободным prose.";

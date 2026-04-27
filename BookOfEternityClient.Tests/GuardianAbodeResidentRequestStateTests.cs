@@ -383,6 +383,80 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
         Assert.Contains("transferReceipts[]", reminder, StringComparison.Ordinal);
         Assert.Contains("selection=системная рекомендация", reminder, StringComparison.Ordinal);
         Assert.Contains("competition=сильный зов 78/100", reminder, StringComparison.Ordinal);
+        Assert.Contains("requestId=resident_transfer_req_1", reminder, StringComparison.Ordinal);
+        Assert.Contains("createdAtTurn=41", reminder, StringComparison.Ordinal);
+        Assert.Contains("Full pending resident-transfer DTO", reminder, StringComparison.Ordinal);
+        Assert.Contains("\"selectionMode\": \"competition_recommended\"", reminder, StringComparison.Ordinal);
+        Assert.Contains("\"competitionReason\": \"цель заметно сильнее текущей Обители и обещает более устойчивый порядок.\"", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_AfterlifeRosterAndInteractionIncludeFullDtos()
+    {
+        await GuardianAbodeResidentRequestState.WriteResidentsRequestAsync(_fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest
+        {
+            RequestId = "resident_roster_req_1",
+            GuardianId = "guardian_alpha",
+            GuardianName = "Азалия",
+            AbodeId = "abode_alpha",
+            AbodeName = "Лазурная Обитель",
+            CurrentReputation = 42,
+            RequestMode = GuardianAbodeResidentRequestState.ResidentsRequestModeFounderAttraction,
+            FounderFeatureTitle = "Зов новой мантии",
+            FounderFeatureSummary = "Обитель ищет первых резидентов.",
+            CreatedAtTurn = 37,
+            CreatedAtUtc = "2026-04-16T04:37:00Z"
+        });
+        await GuardianAbodeResidentRequestState.WriteInteractionRequestAsync(_fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentInteractionRequest
+        {
+            RequestId = "resident_interaction_req_1",
+            GuardianId = "guardian_alpha",
+            GuardianName = "Азалия",
+            AbodeId = "abode_alpha",
+            AbodeName = "Лазурная Обитель",
+            ResidentId = "resident_liora",
+            ResidentName = "Лиора",
+            InteractionType = GuardianAbodeResidentState.InteractionTypeHistory,
+            CreatedAtTurn = 38,
+            CreatedAtUtc = "2026-04-16T04:38:00Z"
+        });
+
+        var reminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, "Chaos Sea");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("ABODE RESIDENT ROSTER REQUESTS:", reminder, StringComparison.Ordinal);
+        Assert.Contains("ABODE RESIDENT INTERACTION REQUESTS:", reminder, StringComparison.Ordinal);
+        Assert.Contains("requestId=resident_roster_req_1", reminder, StringComparison.Ordinal);
+        Assert.Contains("currentReputation=42", reminder, StringComparison.Ordinal);
+        Assert.Contains("Full pending resident-roster DTO", reminder, StringComparison.Ordinal);
+        Assert.Contains("\"founderFeatureSummary\": \"Обитель ищет первых резидентов.\"", reminder, StringComparison.Ordinal);
+        Assert.Contains("requestId=resident_interaction_req_1", reminder, StringComparison.Ordinal);
+        Assert.Contains("Full pending resident-interaction DTO", reminder, StringComparison.Ordinal);
+        Assert.Contains("\"residentId\": \"resident_liora\"", reminder, StringComparison.Ordinal);
+        Assert.Contains("\"createdAtUtc\": \"2026-04-16T04:38:00Z\"", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BuildResidentsRosterPendingGmActionText_IncludesRequestIdentityAndCreationMetadata()
+    {
+        var text = GuardianAbodeResidentRequestState.BuildResidentsRosterPendingGmActionText(new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest
+        {
+            RequestId = "resident_roster_req_text",
+            GuardianId = "guardian_alpha",
+            GuardianName = "Азалия",
+            AbodeId = "abode_alpha",
+            AbodeName = "Лазурная Обитель",
+            CurrentReputation = 51,
+            RequestMode = GuardianAbodeResidentRequestState.ResidentsRequestModeStandardRoster,
+            CreatedAtTurn = 39,
+            CreatedAtUtc = "2026-04-16T04:39:00Z"
+        });
+
+        Assert.Contains("requestId=resident_roster_req_text", text, StringComparison.Ordinal);
+        Assert.Contains("currentReputation=51", text, StringComparison.Ordinal);
+        Assert.Contains("requestMode=standard_roster", text, StringComparison.Ordinal);
+        Assert.Contains("createdAtTurn=39", text, StringComparison.Ordinal);
+        Assert.Contains("createdAtUtc=2026-04-16T04:39:00Z", text, StringComparison.Ordinal);
     }
 
     [Fact]
