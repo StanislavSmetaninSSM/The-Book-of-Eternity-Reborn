@@ -95,7 +95,6 @@
   "shapeExemptions": [
     {
       "file": "E_CLI_Afterlife_Turns.txt",
-      "line": 3839,
       "requiredText": [
         "game_state/meta/shining_abode_state.json patch"
       ],
@@ -417,6 +416,112 @@
             "\"newLastChaosSeaSimulationOrdinal\": 38",
             "\"newLastGuardianProjectCycleOrdinal\": 38",
             "\"newLastResidentAgencyCycleOrdinal\": 38"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_system_guardian_attraction_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "Серебряные нити Моря Хаоса собираются",
+        "\"guardianId\": \"guard_system_azalia_001\"",
+        "\"sourcePreset\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardians.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardians.json",
+          "requiredText": [
+            "\"guardianId\": \"guard_system_azalia_001\"",
+            "\"presetId\": \"azalia\"",
+            "\"library\": \"built_in\"",
+            "\"currentAbodeId\": \"abode_azalia_memory_silk_001\""
+          ]
+        }
+      ],
+      "expectedFileDoesNotContain": [
+        {
+          "path": "game_state/meta/guardians.json",
+          "forbiddenText": [
+            "\"NPCsInScene\"",
+            "\"UpdateNPCs\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_protected_return_guard_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "acceptedTurnDistribution",
+      "requiredText": [
+        "Море Хаоса не толкает тебя обратно",
+        "Protected first afterlife turn after mortal life",
+        "afterlife_return_guard.json"
+      ],
+      "baselineKind": "chaosSeaAzaliaLivingWorld",
+      "preStateFiles": [
+        {
+          "path": "input/turn_request.json",
+          "content": {
+            "sessionId": "protected_return_session_021",
+            "requestId": "turn_421",
+            "turnNumber": 421,
+            "currentRealm": "Chaos Sea",
+            "playerAction": "Я просто возвращаюсь в Обитель и пытаюсь понять, что произошло.",
+            "timestamp": "2026-04-24T16:21:00Z",
+            "gameMode": "normal",
+            "progressionControl": {
+              "currentRealm": "Chaos Sea",
+              "mustEvaluateChaosSeaProgression": false,
+              "mustEvaluateGuardianProjectProgression": false,
+              "mustEvaluateResidentAgencyProgression": false,
+              "afterlifeCatchupRequired": false
+            }
+          }
+        },
+        {
+          "path": "game_state/control/afterlife_return_guard.json",
+          "content": {
+            "reason": "post_life_return",
+            "remainingProtectedTurns": 1,
+            "activatedAtUtc": "2026-04-24T16:20:00Z",
+            "activatedAtTurnNumber": 420,
+            "guardianId": "guard_social_azalia_001",
+            "guardianName": "Азалия"
+          }
+        }
+      ],
+      "pendingSnapshotFiles": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardian_projects.json",
+        "game_state/meta/guardian_abode_residents.json",
+        "game_state/meta/abode_power_journal.json",
+        "game_state/control/afterlife_return_guard.json"
+      ],
+      "pendingSnapshotSourceLabel": "protected first afterlife return guard example",
+      "expectedFilesAbsent": [
+        "game_state/control/incarnation_trigger.json",
+        "game_state/control/progression_report.json"
+      ],
+      "expectedFilesUnchanged": [
+        "game_state/control/afterlife_return_guard.json",
+        "game_state/world/world_time.json",
+        "game_state/world/current_location.json",
+        "game_state/world/world_events.json",
+        "game_state/npcs/npc_core.json",
+        "game_state/factions/faction_core.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "output/debug_logs.json",
+          "requiredText": [
+            "afterlife_return_guard.json",
+            "No `TriggerIncarnation` is written"
           ]
         }
       ]

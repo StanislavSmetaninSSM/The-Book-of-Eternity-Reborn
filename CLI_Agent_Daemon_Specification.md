@@ -40,7 +40,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 6. **Examples/E_CLI_Step_Main.txt** — ОБЯЗАТЕЛЬНЫЕ примеры валидного NPC scope, reasoning blocks, contract repair loop и terminal protocol failures; читать перед каждым ходом и перечитывать перед каждым repair cycle и terminal protocol failure
 7. **Examples/E_CLI_Ink_Feather_Actions.txt** — ОБЯЗАТЕЛЬНЫЕ structured examples для всех GM-side Ink Feather actions; читать перед любым ходом с `[INK_FEATHER_ACTION: TAG]`
 8. **OtherGuides/Afterlife_Contract_Matrix.md** — ОБЯЗАТЕЛЬНАЯ матрица afterlife-контрактов; читать перед каждым ходом в `Chaos Sea` / `Shining Abode`, чтобы выбрать точные canonical state surfaces, receipts, reports и forbidden substitutions
-9. **Examples/E_CLI_Afterlife_Turns.txt** — ОБЯЗАТЕЛЬНЫЕ worked examples для ходов в `Chaos Sea` / `Shining Abode`; читать после матрицы перед каждым afterlife-ходом, а для Shining core actions, свободных Guardian-команд, combined scheduler+pending turns и ordinary living-world turns без pending-файлов сверять examples 14-19
+9. **Examples/E_CLI_Afterlife_Turns.txt** — ОБЯЗАТЕЛЬНЫЕ worked examples для ходов в `Chaos Sea` / `Shining Abode`; читать после матрицы перед каждым afterlife-ходом, а для Shining core actions, свободных Guardian-команд, combined scheduler+pending turns, ordinary living-world turns без pending-файлов, system Guardian attraction и protected return guard сверять examples 14-21
 
 Остальные блоки правил (`Rules/Block_*.txt`) загружай по мере необходимости в зависимости от типа действия игрока.
 
@@ -150,7 +150,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 9. **Canonical outputs:** пиши только afterlife-specific surfaces: Guardian/Soul/resident/Shining fields, receipts, journals, `progressionProcessingReport`.
 10. **No mortal channels:** не закрывай afterlife смысл через `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `weatherChange`, combat or inventory.
 
-Если в одном afterlife-ходе одновременно есть scheduler debt, pending files и прямое действие игрока, не разбивай это на несколько воображаемых ходов и не выбирай что-то одно. Сначала выбери все активные rows в `OtherGuides/Afterlife_Contract_Matrix.md`, затем обработай всё в одном accepted response в порядке выше; для эталонного порядка и форм см. `Examples/E_CLI_Afterlife_Turns.txt` examples 16-18.
+Если в одном afterlife-ходе одновременно есть scheduler debt, pending files и прямое действие игрока, не разбивай это на несколько воображаемых ходов и не выбирай что-то одно. Сначала выбери все активные rows в `OtherGuides/Afterlife_Contract_Matrix.md`, затем обработай всё в одном accepted response в порядке выше; для эталонного порядка и форм см. `Examples/E_CLI_Afterlife_Turns.txt` examples 16-18. Для `system_guardian_attraction.json` сверяй example 20, для активного `afterlife_return_guard.json` сверяй example 21.
 11. **Report:** если есть due cycles или catch-up, `progressionProcessingReport` обязателен и должен точно совпасть с expected counts/ordinals.
 12. **Final audit:** перед ready-сигналом проверь realm segregation, actor scope coverage, pending contract closure, afterlife notification ownership, and no stale mortal outputs.
 

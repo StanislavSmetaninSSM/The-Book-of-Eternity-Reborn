@@ -53,6 +53,36 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeClientOwnedControlFilesAreCoveredByMatrixAndExamples()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var fileName in new[]
+        {
+            "system_guardian_attraction.json",
+            "afterlife_return_guard.json"
+        })
+        {
+            Assert.Contains($"`{fileName}`", matrix, StringComparison.Ordinal);
+            Assert.Contains(fileName, examples, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredTerm in new[]
+        {
+            "pendingGuardianCreation",
+            "system_preset",
+            "sourcePreset",
+            "guardian_forced",
+            "fail-closed"
+        })
+        {
+            Assert.Contains(requiredTerm, matrix, StringComparison.Ordinal);
+            Assert.Contains(requiredTerm, examples, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples()
     {
         var entrypointPaths = new[]
@@ -76,8 +106,10 @@ public sealed class AfterlifeDocumentationCoverageTests
         var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
 
         Assert.Contains("example 19", taskGuide, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("examples 14-19", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("examples 14-21", daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 19", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("example 20", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("example 21", daemonScript, StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsAfterlifePendingFile(string fileName) =>
