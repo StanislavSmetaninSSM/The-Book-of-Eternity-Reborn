@@ -248,6 +248,32 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void AcceptedTurnHappyPath_MustNormalizeResolvedRuntimeArtifactsBeforePendingSnapshotCleanup()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var acceptedTurnAnchor = source.IndexOf("// Turn accepted — backup no longer needed", StringComparison.Ordinal);
+        Assert.True(acceptedTurnAnchor >= 0);
+
+        var normalizeIndex = source.IndexOf("await NormalizeRuntimeUiArtifactsAsync();", acceptedTurnAnchor, StringComparison.Ordinal);
+        var cleanupIndex = source.IndexOf("await CleanupPendingTurnSnapshotAsync();", acceptedTurnAnchor, StringComparison.Ordinal);
+
+        Assert.True(normalizeIndex >= 0);
+        Assert.True(cleanupIndex >= 0);
+        Assert.True(normalizeIndex < cleanupIndex, "resolved afterlife pending contracts must be cleaned while the accepted-turn snapshot is still available.");
+    }
+
+    [Fact]
+    public void RuntimeUiArtifactNormalizer_MustCoverAfterlifePendingContractFamilies()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.SessionAndSnapshots.cs");
+
+        Assert.Contains("await GuardianTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);", source, StringComparison.Ordinal);
+        Assert.Contains("await AfterlifeArchiveActionState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);", source, StringComparison.Ordinal);
+        Assert.Contains("await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);", source, StringComparison.Ordinal);
+        Assert.Contains("await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void CheckLifeTransitions_MustResolveCurrentRealmFromSoulStateFile_NotStaleRuntimeCache()
     {
         var source = ReadGameEngineSource();

@@ -205,8 +205,8 @@ public class StateManager
             if (root.ValueKind == JsonValueKind.Object)
             {
                 if (root.TryGetProperty("activeGuardian", out var ag) &&
-                    ag.TryGetProperty("name", out var name))
-                    state.ActiveGuardianName = name.GetString() ?? "";
+                    ag.ValueKind == JsonValueKind.Object)
+                    state.ActiveGuardianName = GuardianManifestation.GetDisplayName(ag);
             }
         });
 

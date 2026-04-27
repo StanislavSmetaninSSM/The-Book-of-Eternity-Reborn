@@ -83,7 +83,7 @@ public sealed class AfterlifeReturnGuardService
             return;
         }
 
-        if (!IsAfterlifeRealm(currentRealm))
+        if (!RealmSemantics.IsAfterlifeRealm(currentRealm))
         {
             _logger.LogInformation("afterlife_return_guard.json найден вне afterlife realm. Очистка stale guard state.");
             await ClearAsync();
@@ -113,7 +113,7 @@ public sealed class AfterlifeReturnGuardService
 
     public async Task<string?> BuildSystemReminderFragmentAsync(string? currentRealm)
     {
-        if (!IsAfterlifeRealm(currentRealm))
+        if (!RealmSemantics.IsAfterlifeRealm(currentRealm))
             return null;
 
         var (semanticState, state) = await ReadSemanticStateAsync();
@@ -228,12 +228,6 @@ public sealed class AfterlifeReturnGuardService
         await _fs.WriteFileAtomicAsync(GuardPath, JsonSerializer.Serialize(state, JsonOpts));
     }
 
-    private static bool IsAfterlifeRealm(string? realm) =>
-        string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase) ||
-        string.IsNullOrWhiteSpace(realm);
 }
 
 public enum AfterlifeReturnGuardSemanticState

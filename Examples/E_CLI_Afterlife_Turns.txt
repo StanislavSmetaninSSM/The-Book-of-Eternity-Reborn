@@ -1390,6 +1390,48 @@ Correct direct `/gacha` response fragment:
 }
 ```
 
+7A. REFERENCE — CHAOS SEA ABODE TRAVEL
+--------------------------------------
+
+`[CHAOS_SEA_TRAVEL]` is afterlife navigation, not Mortal World movement. The player action should already provide the target abode/guardian and previous navigation context. GM must keep the canonical navigation roots synchronized in `game_state/meta/guardians.json`.
+
+Canonical `game_state/meta/guardians.json patch` view. This is not an `UpdateGuardians` command: preserve the full existing Guardian objects in the actual file and change only the shown canonical roots/fields.
+
+```json
+{
+  "guardians": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "...": "preserve every existing canonical Guardian field",
+      "abode": {
+        "abodeId": "abode_azalia_silk_hall",
+        "...": "preserve every existing canonical Abode field",
+        "name": "Шёлковый Зал Азалии",
+        "isDiscovered": true
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_social_azalia_001"
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": "abode_azalia_silk_hall",
+    "discoveredAbodes": [
+      "abode_old_lantern",
+      "abode_azalia_silk_hall"
+    ]
+  }
+}
+```
+
+Narrative `response` should describe the afterlife arrival and the target Guardian's reaction, for example: "Море Хаоса разворачивает путь к Шёлковому Залу Азалии. Обитель узнаёт душу по шелесту нитей, а Азалия встречает её как нового текущего Хранителя этого места."
+
+Do not write for `[CHAOS_SEA_TRAVEL]`:
+- Mortal World `currentLocationData`.
+- `UpdateNPCs`, `NPCsInScene`, or `worldEventsLog`.
+- Travel time/weather changes.
+- Navigation that changes `chaosSeaNavigation.currentAbodeId` without matching `activeGuardian`.
+
 Guardian-mediated gacha:
 - Uses `UpdateGuardians.processGacha`.
 - Requires remaining Guardian gacha charges for the current return.
@@ -1830,9 +1872,30 @@ Correct faction patch:
 }
 ```
 
+If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`; use `politicalStatus = "head"` for the current head and move replaced radiant actors to `former_head`, `elder`, `claimant`, or `retired` as appropriate.
+
+Radiant actor registry patch when a radiant actor becomes head:
+
+```json
+{
+  "shiningPoliticalActors": [
+    {
+      "actorId": "radiant_speaker_aurora_303",
+      "actorType": "radiant_actor",
+      "displayName": "Аврора, Голос Рассвета",
+      "summary": "Самостоятельная сияющая фигура, которую Рассветный Хор признал политическим голосом зала.",
+      "originFactionId": "faction_dawn_chorus",
+      "currentFactionId": "faction_dawn_chorus",
+      "politicalStatus": "head"
+    }
+  ]
+}
+```
+
 Forbidden Shining political shortcuts:
 - `factionDataChanges`.
 - ad-hoc `strength`, `tradeTier`, or `shiningAlignment` instead of canonical Shining fields.
+- `leadership.headActorType = radiant_actor` without a matching `shiningPoliticalActors[].actorId`.
 - founding receipt without exact proposed ids/hall payload/supporter list.
 - realignment accepted without resident membership update and resident history log.
 - leadership accepted/refused without matching `leadershipHistory[]` when required.
@@ -2912,11 +2975,20 @@ Accepted `discover_native_faction` must:
 - spend exactly `quotedCostFeathers` from `soul_state.json.inkFeathers`;
 - spend exactly `quotedCostLightSparks` from `shining_abode_state.json.lightSparks`;
 - add exactly `+20` Radiance XP and recalculate Radiance tier canonically;
-- materialize one new hall in `halls[]`;
-- materialize one new faction with `originType = native_radiant` and `hallId` matching the receipt;
+- materialize one new hall in `halls[]`; its `hallId` must not exist in pre-turn `shining_abode_state.halls[]`;
+- materialize one new faction with `originType = native_radiant` and `hallId` matching the receipt; its `factionId` must not exist in pre-turn `shining_abode_state.factions[]`;
 - materialize `2..4` new ascended residents in `guardian_abode_residents.json`;
-- create exactly `2` seeded completed projects inside the new faction;
+- create exactly `2` seeded completed projects inside the new faction; every `projectId` must be new across all pre-turn Shining faction projects;
 - write a receipt whose `hallId`, `resolvedFactionId`, `newResidentIds[]`, and `seededProjectIds[]` point to those materialized objects.
+
+Legacy `pendingNativeFactionDiscovery` closure:
+- If pre-turn `shining_abode_state.json.pendingNativeFactionDiscovery` is non-null and there is no matching `pending_shining_abode_actions.json` request, treat it as the legacy state-local version of `discover_native_faction`.
+- Use `pendingNativeFactionDiscovery.requestId` as the receipt `requestId`; use `actionType = "discover_native_faction"`.
+- Materialize the same hall/native faction/residents/projects/Radiance outcome as above.
+- Spend `pendingNativeFactionDiscovery.costFeathers` from `soul_state.json.inkFeathers`.
+- Preserve current `shining_abode_state.json.lightSparks`; the legacy queue already reserved `pendingNativeFactionDiscovery.costLightSparks`, so do not subtract Light Sparks a second time.
+- Set `shining_abode_state.json.pendingNativeFactionDiscovery = null` in the accepted state.
+- Do not create or echo a duplicate `pending_shining_abode_actions.json` request for this legacy payload.
 
 Correct `discover_native_faction` receipt fragment:
 

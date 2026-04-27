@@ -32,6 +32,51 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningPoliticalActorsAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var text in new[] { matrix, examples, taskGuide, operations, daemonSpec, apiSpec })
+        {
+            Assert.Contains("shiningPoliticalActors", text, StringComparison.Ordinal);
+            Assert.Contains("radiant_actor", text, StringComparison.Ordinal);
+            Assert.Contains("headActorId", text, StringComparison.Ordinal);
+            Assert.Contains("actorId", text, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void LegacyShiningNativeFactionDiscoveryContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var text in new[] { matrix, examples, taskGuide, operations, daemonSpec, apiSpec })
+        {
+            Assert.Contains("pendingNativeFactionDiscovery", text, StringComparison.Ordinal);
+            Assert.Contains("legacy", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("discover_native_faction", text, StringComparison.Ordinal);
+            Assert.Contains("coreActionReceipts", text, StringComparison.Ordinal);
+        }
+
+        foreach (var text in new[] { matrix, examples, taskGuide, operations, apiSpec })
+        {
+            Assert.Contains("costFeathers", text, StringComparison.Ordinal);
+            Assert.Contains("costLightSparks", text, StringComparison.Ordinal);
+            Assert.Contains("pending_shining_abode_actions.json", text, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void AfterlifePendingFilesMentionedByRuntimeAreCoveredByMatrix()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
@@ -130,6 +175,26 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ChaosSeaTravelContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+
+        foreach (var text in new[] { matrix, examples })
+        {
+            Assert.Contains("[CHAOS_SEA_TRAVEL]", text, StringComparison.Ordinal);
+            Assert.Contains("activeGuardian", text, StringComparison.Ordinal);
+            Assert.Contains("currentAbodeId", text, StringComparison.Ordinal);
+            Assert.Contains("discoveredAbodes", text, StringComparison.Ordinal);
+            Assert.Contains("currentLocationData", text, StringComparison.Ordinal);
+            Assert.Contains("worldEventsLog", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("[CHAOS_SEA_TRAVEL]", daemonSpec, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples()
     {
         var entrypointPaths = new[]
@@ -184,6 +249,27 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("gm_thoughts_markdown", daemonSpec, StringComparison.Ordinal);
         Assert.Contains("pending file name", taskGuide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("must not be used to invent new gameplay outcomes", matrix, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void RealmDocsDoNotTreatEmptyCurrentRealmAsChaosSea()
+    {
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var block0 = ReadRepoFile("Rules", "Block_0.txt");
+        var launchScript = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var launchGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
+
+        foreach (var text in new[] { daemonSpec, matrix, block0, launchScript, launchGenerator })
+        {
+            Assert.Contains("unresolved realm", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Do not infer Chaos Sea", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain("empty/`Chaos Sea`", matrix, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"Chaos Sea\" / null", launchScript, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"Chaos Sea\" / null", launchGenerator, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"Chaos Sea\" / `null` / пусто", daemonSpec, StringComparison.Ordinal);
     }
 
     [Fact]

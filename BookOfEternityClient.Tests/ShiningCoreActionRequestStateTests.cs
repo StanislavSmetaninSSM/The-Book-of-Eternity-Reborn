@@ -50,12 +50,34 @@ public sealed class ShiningCoreActionRequestStateTests
 
             await ShiningCoreActionRequestState.WriteRequestAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
             {
+                RequestId = "core_req_complete_project",
                 ActionType = ShiningCoreActionRequestState.ActionTypeCompleteProject,
                 FactionId = "faction_old",
                 FactionName = "Старый Дом",
+                ProjectId = "project_archive",
                 ProjectDisplayName = "Архив Света",
+                ProjectDraft = new JsonObject
+                {
+                    ["displayName"] = "Архив Света",
+                    ["projectArchetype"] = "accord"
+                },
+                RadianceTierAtRequest = 3,
                 QuotedCostFeathers = 20,
-                QuotedCostLightSparks = 10
+                QuotedCostLightSparks = 10,
+                SourceDraftVersion = 4,
+                SelectedCardIds = { "card_social" },
+                SelectedCards = new JsonArray(new JsonObject
+                {
+                    ["cardId"] = "card_social",
+                    ["displayName"] = "Память Света"
+                }),
+                ReplacementProperty = new JsonObject
+                {
+                    ["propertyId"] = "prop_memory",
+                    ["displayName"] = "Память Света"
+                },
+                CreatedAtTurn = 7,
+                CreatedAtUtc = "2026-04-27T10:00:00Z"
             });
 
             var reminder = await ShiningCoreActionRequestState.BuildSystemReminderFragmentAsync(fs, "Shining Abode");
@@ -64,6 +86,17 @@ public sealed class ShiningCoreActionRequestStateTests
             Assert.Contains("SHINING ABODE CORE ACTION:", reminder);
             Assert.Contains("complete_project", reminder);
             Assert.Contains("Архив Света", reminder);
+            Assert.Contains("Full pending core-action DTO", reminder);
+            Assert.Contains("\"requestId\": \"core_req_complete_project\"", reminder);
+            Assert.Contains("\"projectId\": \"project_archive\"", reminder);
+            Assert.Contains("\"projectDraft\"", reminder);
+            Assert.Contains("\"radianceTierAtRequest\": 3", reminder);
+            Assert.Contains("\"quotedCostLightSparks\": 10", reminder);
+            Assert.Contains("\"sourceDraftVersion\": 4", reminder);
+            Assert.Contains("\"selectedCardIds\"", reminder);
+            Assert.Contains("\"selectedCards\"", reminder);
+            Assert.Contains("\"replacementProperty\"", reminder);
+            Assert.Contains("\"createdAtUtc\": \"2026-04-27T10:00:00Z\"", reminder);
         }
         finally
         {
@@ -439,6 +472,64 @@ public sealed class ShiningCoreActionRequestStateTests
 
             Assert.NotNull(error);
             Assert.Contains("availability", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_SupportAlreadySupportedProject_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypeSupportProject,
+                FactionId = "faction_old",
+                ProjectId = "project_old",
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("support_project", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_UnsupportAlreadyUnsupportedProject_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            shiningRoot["factions"]![0]!["projects"]![0]!["isSupported"] = false;
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypeUnsupportProject,
+                FactionId = "faction_old",
+                ProjectId = "project_old",
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("unsupport_project", error, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {

@@ -170,7 +170,7 @@ public partial class ExplorerMode
             }
 
             if (halls.Count > 3)
-                lines.Add($"  • [dim]…и ещё {halls.Count - 3} зал(а/ов).[/]");
+                lines.Add($"  • [dim]…и ещё {halls.Count - 3} зал(а/ов); полный список доступен через «Осмотреть залы и светозарных акторов».[/]");
         }
 
         if (shiningRoot["shiningPoliticalActors"] is JsonArray actors && actors.Count > 0)
@@ -190,7 +190,7 @@ public partial class ExplorerMode
             }
 
             if (actors.Count > 3)
-                lines.Add($"  • [dim]…и ещё {actors.Count - 3} актор(а/ов).[/]");
+                lines.Add($"  • [dim]…и ещё {actors.Count - 3} актор(а/ов); полный список доступен через «Осмотреть залы и светозарных акторов».[/]");
         }
 
         if (shiningRoot["factions"] is JsonArray factions && factions.Count > 0)

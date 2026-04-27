@@ -97,6 +97,30 @@ public sealed class ActorSocialInteractionRequestStateTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildSystemReminderFragmentAsync_AfterlifeIncludesFullGuardianSocialDto()
+    {
+        await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, new ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest
+        {
+            RequestId = "guardian_req_full",
+            GuardianId = "guardian_azalia",
+            GuardianName = "Азалия",
+            InteractionType = ActorSocialInteractionRequestState.GuardianInteractionTypeLore,
+            CreatedAtTurn = 15,
+            CreatedAtUtc = "2026-03-27T13:00:00Z"
+        });
+
+        var reminder = await ActorSocialInteractionRequestState.BuildSystemReminderFragmentAsync(_fs, "Chaos Sea");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("GUARDIAN SOCIAL REQUESTS", reminder, StringComparison.Ordinal);
+        Assert.Contains("requestId=guardian_req_full", reminder, StringComparison.Ordinal);
+        Assert.Contains("createdAtTurn=15", reminder, StringComparison.Ordinal);
+        Assert.Contains("Full pending guardian-social DTO", reminder, StringComparison.Ordinal);
+        Assert.Contains("\"requestId\": \"guardian_req_full\"", reminder, StringComparison.Ordinal);
+        Assert.Contains("\"createdAtUtc\": \"2026-03-27T13:00:00Z\"", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task BuildSystemReminderFragmentAsync_MortalRealm_IncludesNpcSocialRequests()
     {
         await ActorSocialInteractionRequestState.WriteNpcRequestAsync(_fs, new ActorSocialInteractionRequestState.PendingNpcSocialInteractionRequest

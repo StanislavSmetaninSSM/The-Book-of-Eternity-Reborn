@@ -168,7 +168,8 @@
                         CANONICAL FILE SOURCE: game_state/meta/soul_state.json.currentRealm
                         CONTEXT PROJECTION RULE: the runtime context exposes this same value as Context.worldState.currentRealm
 
-                        VALUE "Chaos Sea" / "Море Хаоса" / empty/null at game start → AFTERLIFE MODE
+                        VALUE empty/null/missing → UNRESOLVED REALM FAULT. Do not infer Chaos Sea. Do not run afterlife or mortal systems until authoritative soul_state.currentRealm is repaired.
+                        VALUE "Chaos Sea" / "Море Хаоса" → AFTERLIFE MODE
                         VALUE "Shining Abode" / "Сияющая Обитель" → AFTERLIFE MODE
                         VALUE "Mortal World" (or any other non-afterlife value) → MORTAL MODE
 

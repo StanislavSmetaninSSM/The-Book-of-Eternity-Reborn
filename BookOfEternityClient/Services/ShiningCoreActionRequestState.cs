@@ -315,6 +315,7 @@ internal static class ShiningCoreActionRequestState
             sb.AppendLine("  - Do not auto-select, truncate, or resolve only the first request.");
             sb.AppendLine("  - Preserve the file and surface validation/repair for shining_core_action_multiple_pending_requests.");
             sb.AppendLine($"  - Pending requests detected: {requests.Count}");
+            AppendSerializedJsonBlock(sb, "Full pending core-action DTOs", requests);
             return sb.ToString();
         }
 
@@ -354,6 +355,7 @@ internal static class ShiningCoreActionRequestState
                     sb.AppendLine($"  - Property index: {request.PropertyIndex}");
             }
 
+            AppendSerializedJsonBlock(sb, "Full pending core-action DTO", request);
             return sb.ToString();
         }
 
@@ -404,6 +406,14 @@ internal static class ShiningCoreActionRequestState
         return lines.Count == 0
             ? null
             : "SHINING ABODE STATE:\n" + string.Join('\n', lines);
+    }
+
+    private static void AppendSerializedJsonBlock(StringBuilder sb, string title, object payload)
+    {
+        sb.AppendLine($"  - {title}:");
+        var json = JsonSerializer.Serialize(payload, JsonOpts).Replace("\r\n", "\n", StringComparison.Ordinal);
+        foreach (var line in json.Split('\n'))
+            sb.AppendLine($"    {line}");
     }
 
     private static async Task<string?> ValidateDiscoverNativeFactionRequestAsync(

@@ -706,16 +706,33 @@ internal static class ShiningFactionRequestState
         sb.AppendLine("  - Treat every pending Shining political file as client-authored contract, not as optional prose.");
         sb.AppendLine("  - Resolve founding/realignment/leadership through canonical receipts and state mutation; no silent political rewrites.");
 
-        foreach (var request in foundingRequests.Take(3))
+        foreach (var request in foundingRequests)
+        {
             sb.AppendLine($"  - Founding pending: {request.Charter.FactionName} ({request.ProposedFactionId}) with {request.SupportingResidentIds.Count} supporters.");
+            AppendSerializedJsonBlock(sb, "Full pending founding DTO", request);
+        }
 
-        foreach (var request in realignmentRequests.Take(3))
+        foreach (var request in realignmentRequests)
+        {
             sb.AppendLine($"  - Realignment pending: {request.ResidentName} {request.SourceFactionName} -> {(string.IsNullOrWhiteSpace(request.TargetFactionName) ? "neutral" : request.TargetFactionName)} [{request.RealignmentMode}].");
+            AppendSerializedJsonBlock(sb, "Full pending realignment DTO", request);
+        }
 
-        foreach (var request in leadershipRequests.Take(3))
+        foreach (var request in leadershipRequests)
+        {
             sb.AppendLine($"  - Leadership pending: {request.FactionName} via {request.TransitionMode}; candidate={request.CandidateHeadActorType}:{request.CandidateHeadActorId}.");
+            AppendSerializedJsonBlock(sb, "Full pending leadership DTO", request);
+        }
 
         return sb.ToString();
+    }
+
+    private static void AppendSerializedJsonBlock(StringBuilder sb, string title, object payload)
+    {
+        sb.AppendLine($"  - {title}:");
+        var json = JsonSerializer.Serialize(payload, JsonOpts).Replace("\r\n", "\n", StringComparison.Ordinal);
+        foreach (var line in json.Split('\n'))
+            sb.AppendLine($"    {line}");
     }
 
     public static async Task<bool> IsResidentLockedByPendingFlowAsync(FileSystemManager fs, string residentId)

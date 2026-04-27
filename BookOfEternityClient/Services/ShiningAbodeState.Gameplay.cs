@@ -278,8 +278,8 @@ internal static partial class ShiningAbodeState
 
         if (GetNodeBool(project["isSupported"]))
         {
-            error = null;
-            return true;
+            error = "Проект уже поддерживается; support_project не должен быть no-op.";
+            return false;
         }
 
         if (CountSupportedProjectsAcrossState(root) >= GetSupportedProjectCap(GetNodeInt(root["radiance"]?["tier"], 0)))
@@ -304,8 +304,8 @@ internal static partial class ShiningAbodeState
 
         if (!GetNodeBool(project["isSupported"]))
         {
-            error = null;
-            return true;
+            error = "Проект уже не поддерживается; unsupport_project не должен быть no-op.";
+            return false;
         }
 
         project["isSupported"] = false;
