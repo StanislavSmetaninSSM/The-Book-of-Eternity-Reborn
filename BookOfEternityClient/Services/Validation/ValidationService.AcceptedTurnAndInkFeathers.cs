@@ -6478,8 +6478,8 @@ public partial class ValidationService
             var currentRealm = await ResolveAcceptedTurnInkFeatherRealmAsync(actionContext, issues);
             if (string.IsNullOrWhiteSpace(currentRealm))
                 return issues;
-            var isChaosSea = IsChaosSeaRealm(currentRealm);
-            if (isChaosSea && !ChaosSeaGmInkFeatherActions.Contains(actionContext.ActionTag))
+            var isAfterlifeRealm = RealmSemantics.IsAfterlifeRealm(currentRealm);
+            if (isAfterlifeRealm && !AfterlifeGmInkFeatherActions.Contains(actionContext.ActionTag))
             {
                 issues.Add(new ValidationIssue(
                     "input/turn_request.json.playerAction",
@@ -6487,13 +6487,13 @@ public partial class ValidationService
                     $"INK_FEATHER_ACTION {actionContext.ActionTag} запрещён в текущем realm {currentRealm}",
                     code: "ink_feather_wrong_realm",
                     section: "INK_FEATHER_ACTION",
-                    expected: string.Join(", ", ChaosSeaGmInkFeatherActions.OrderBy(x => x)),
+                    expected: string.Join(", ", AfterlifeGmInkFeatherActions.OrderBy(x => x)),
                     actual: actionContext.ActionTag,
-                    repairHint: "В Chaos Sea используй только Chaos-Sea Ink Feather whitelist."));
+                    repairHint: "В Chaos Sea и Shining Abode используй только afterlife Ink Feather whitelist."));
                 return issues;
             }
 
-            if (!isChaosSea && !MortalWorldGmInkFeatherActions.Contains(actionContext.ActionTag))
+            if (!isAfterlifeRealm && !MortalWorldGmInkFeatherActions.Contains(actionContext.ActionTag))
             {
                 issues.Add(new ValidationIssue(
                     "input/turn_request.json.playerAction",
