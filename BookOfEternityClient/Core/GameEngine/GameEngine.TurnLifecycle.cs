@@ -686,6 +686,7 @@ public partial class GameEngine
 
         _gameLoop.IncrementTurn();
         await _pendingTurnState.RotateAfterAcceptedTurnAsync();
+        await NormalizeRuntimeUiArtifactsAsync();
         _lastResponse = response;
         _pendingImagePrompt = null;
 
