@@ -338,7 +338,7 @@ CLI Agent automatically loads current game state from:
   "UpdateGuardians": "array of guardian_command_objects (see Guardian Commands below)",
   "guardians": "array of canonical guardian_objects when a contract explicitly requires full guardian-state authority",
   "activeGuardian": "canonical active guardian object or id-bearing object for guardian-state synchronization",
-  "chaosSeaNavigation": "object with currentAbodeId and discoveredAbodes for afterlife navigation",
+  "chaosSeaNavigation": "object with currentAbodeId and discoveredAbodes for afterlife navigation; [CHAOS_SEA_TRAVEL] must also keep activeGuardian synced to the target guardian and target guardian abode.isDiscovered=true",
   "playerGuardianFoundationHistory": "array of player-founded guardian foundation receipt objects",
   "UpdateGuardianAbodeResidents": "array of guardian_abode_resident_objects",
   "UpdateGuardianAbodeResidentRosterReceipts": "array of guardian_abode_resident_roster_receipt_objects",

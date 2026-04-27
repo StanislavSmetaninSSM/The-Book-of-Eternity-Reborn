@@ -1389,6 +1389,48 @@ Correct direct `/gacha` response fragment:
 }
 ```
 
+7A. REFERENCE — CHAOS SEA ABODE TRAVEL
+--------------------------------------
+
+`[CHAOS_SEA_TRAVEL]` is afterlife navigation, not Mortal World movement. The player action should already provide the target abode/guardian and previous navigation context. GM must keep the canonical navigation roots synchronized in `game_state/meta/guardians.json`.
+
+Canonical `game_state/meta/guardians.json patch` view. This is not an `UpdateGuardians` command: preserve the full existing Guardian objects in the actual file and change only the shown canonical roots/fields.
+
+```json
+{
+  "guardians": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "...": "preserve every existing canonical Guardian field",
+      "abode": {
+        "abodeId": "abode_azalia_silk_hall",
+        "...": "preserve every existing canonical Abode field",
+        "name": "Шёлковый Зал Азалии",
+        "isDiscovered": true
+      }
+    }
+  ],
+  "activeGuardian": {
+    "guardianId": "guard_social_azalia_001"
+  },
+  "chaosSeaNavigation": {
+    "currentAbodeId": "abode_azalia_silk_hall",
+    "discoveredAbodes": [
+      "abode_old_lantern",
+      "abode_azalia_silk_hall"
+    ]
+  }
+}
+```
+
+Narrative `response` should describe the afterlife arrival and the target Guardian's reaction, for example: "Море Хаоса разворачивает путь к Шёлковому Залу Азалии. Обитель узнаёт душу по шелесту нитей, а Азалия встречает её как нового текущего Хранителя этого места."
+
+Do not write for `[CHAOS_SEA_TRAVEL]`:
+- Mortal World `currentLocationData`.
+- `UpdateNPCs`, `NPCsInScene`, or `worldEventsLog`.
+- Travel time/weather changes.
+- Navigation that changes `chaosSeaNavigation.currentAbodeId` without matching `activeGuardian`.
+
 Guardian-mediated gacha:
 - Uses `UpdateGuardians.processGacha`.
 - Requires remaining Guardian gacha charges for the current return.

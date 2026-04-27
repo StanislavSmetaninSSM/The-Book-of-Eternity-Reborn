@@ -85,6 +85,26 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ChaosSeaTravelContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+
+        foreach (var text in new[] { matrix, examples })
+        {
+            Assert.Contains("[CHAOS_SEA_TRAVEL]", text, StringComparison.Ordinal);
+            Assert.Contains("activeGuardian", text, StringComparison.Ordinal);
+            Assert.Contains("currentAbodeId", text, StringComparison.Ordinal);
+            Assert.Contains("discoveredAbodes", text, StringComparison.Ordinal);
+            Assert.Contains("currentLocationData", text, StringComparison.Ordinal);
+            Assert.Contains("worldEventsLog", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("[CHAOS_SEA_TRAVEL]", daemonSpec, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples()
     {
         var entrypointPaths = new[]
