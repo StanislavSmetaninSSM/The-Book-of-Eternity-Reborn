@@ -80,6 +80,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains(requiredTerm, matrix, StringComparison.Ordinal);
             Assert.Contains(requiredTerm, examples, StringComparison.Ordinal);
         }
+
+        Assert.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:", examples, StringComparison.Ordinal);
     }
 
     [Fact]

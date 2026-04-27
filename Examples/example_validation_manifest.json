@@ -426,6 +426,7 @@
       "runner": "gameResponseDistribution",
       "requiredText": [
         "Серебряные нити Моря Хаоса собираются",
+        "[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia]",
         "\"guardianId\": \"guard_system_azalia_001\"",
         "\"sourcePreset\""
       ],

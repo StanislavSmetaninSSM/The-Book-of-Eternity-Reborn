@@ -4330,6 +4330,8 @@ This example is for a deterministic Eternal Guardian attraction. The player-faci
 
 The GM must not improvise a nearby Guardian archetype. The result must point to the requested preset and persist `sourcePreset` on the materialized Guardian.
 
+Important runtime marker: the canonical `turn_request.json.playerAction` for this flow starts with `[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: <presetId>]`. This is a client-authored routing tag. Keep it in the input/audit context so the runtime can clear `system_guardian_attraction.json` after acceptance, but do not present the tag to the player as diegetic speech.
+
 Input fragments:
 
 ```json
@@ -4339,7 +4341,7 @@ Input fragments:
     "requestId": "turn_420",
     "turnNumber": 420,
     "currentRealm": "Chaos Sea",
-    "playerAction": "Я ищу Вечную Хранительницу Азалию.",
+    "playerAction": "[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia] Я ищу Вечную Хранительницу Азалию.",
     "progressionControl": {
       "currentRealm": "Chaos Sea",
       "mustEvaluateChaosSeaProgression": false,
@@ -4390,6 +4392,7 @@ Correct reasoning:
 
 ## Contract audit
 - `sourcePreset.presetId` remains `azalia`.
+- `playerAction` contains `[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia]`, so runtime may clear the attraction control file after accepted processing.
 - `activeGuardian.guardianId` points to the materialized Azalia Guardian.
 - `chaosSeaNavigation.currentAbodeId` points to Azalia's discovered Abode.
 - No `UpdateNPCs` or Mortal World state is written.
@@ -4400,7 +4403,7 @@ Correct accepted response fragment:
 ```json
 {
   "response": "Серебряные нити Моря Хаоса собираются в спокойный зал. Это не случайная покровительница и не похожий образ: зов отвечает именно Азалия. Её Обитель открывается как шёлковая память, где власть звучит мягко, но не отступает.",
-  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: System Eternal Guardian attraction.\n- Релевантные акторы: Азалия\n- Почему они релевантны: `system_guardian_attraction.json.targetPresetId = azalia`, so this turn must materialize or route to that exact Eternal Guardian.\n- Акторы вне охвата: invented Guardians, Mortal World NPCs, Shining factions\n- Почему они вне охвата: the attraction is deterministic and has no Mortal World or Shining faction contract.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Душа ищет именно Азалию as a built-in Eternal Guardian preset.\n- Мысли: Азалия recognizes the deterministic call and answers through her own silk-memory domain, not through a substitute archetype.\n- Действия: She manifests with stable canonical identity, discovered abode, and sourcePreset metadata.\n\n## Contract audit\n- `sourcePreset.presetId` remains `azalia`.\n- `activeGuardian.guardianId` points to the materialized Azalia Guardian.\n- `chaosSeaNavigation.currentAbodeId` points to Azalia's discovered Abode.\n- No `UpdateNPCs` or Mortal World state is written.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Guardian-centric\n- Afterlife subtype: System Eternal Guardian attraction.\n- Релевантные акторы: Азалия\n- Почему они релевантны: `system_guardian_attraction.json.targetPresetId = azalia`, so this turn must materialize or route to that exact Eternal Guardian.\n- Акторы вне охвата: invented Guardians, Mortal World NPCs, Shining factions\n- Почему они вне охвата: the attraction is deterministic and has no Mortal World or Shining faction contract.\n\n## Guardian Thoughts\n### Азалия\n- Ситуация: Душа ищет именно Азалию as a built-in Eternal Guardian preset.\n- Мысли: Азалия recognizes the deterministic call and answers through her own silk-memory domain, not through a substitute archetype.\n- Действия: She manifests with stable canonical identity, discovered abode, and sourcePreset metadata.\n\n## Contract audit\n- `sourcePreset.presetId` remains `azalia`.\n- `playerAction` contains `[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia]`, so runtime may clear the attraction control file after accepted processing.\n- `activeGuardian.guardianId` points to the materialized Azalia Guardian.\n- `chaosSeaNavigation.currentAbodeId` points to Azalia's discovered Abode.\n- No `UpdateNPCs` or Mortal World state is written.",
   "UpdateGuardians": [
     {
       "command": "create",
