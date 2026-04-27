@@ -130,6 +130,51 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifePlayerActionRoutingTagsAreCoveredByPromptDocs()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var docs = new[] { matrix, apiSpec, taskGuide, examples };
+
+        var requiredTags = new[]
+        {
+            "[ABODE_RESIDENT_RELIC_GRANT]",
+            "[ABODE_RESIDENT_QUEST_REQUEST]",
+            $"[{GuardianTradeRequestState.ActionTag}]",
+            $"[{AfterlifeArchiveActionState.ConsultationActionTag}]",
+            $"[{AfterlifeArchiveActionState.ProjectFuelActionTag}]",
+            "[ABODE_RESIDENT_ROSTER_REQUEST]",
+            $"[{PlayerGuardianFoundationState.ActionTag}]"
+        };
+
+        foreach (var doc in docs)
+        {
+            foreach (var tag in requiredTags)
+                Assert.Contains(tag, doc, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredSurface in new[]
+        {
+            "metaStateUpdates.soulRelicOperations.addRelic",
+            "relatedAfterlifeResidentId",
+            "residentInteractionLogUpdates",
+            "UpdateGuardianTradeInventoryReceipts",
+            "archiveActionResolutions",
+            "UpdateGuardianAbodeResidentRosterReceipts",
+            "playerGuardianFoundationHistory"
+        })
+        {
+            Assert.Contains(requiredSurface, matrix, StringComparison.Ordinal);
+            Assert.Contains(requiredSurface, examples, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("no pending file", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no UpdateGuardianAbodeResidentInteractionReceipts", examples, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void ChaosSeaTravelContractIsDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
@@ -173,10 +218,11 @@ public sealed class AfterlifeDocumentationCoverageTests
         var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
 
         Assert.Contains("example 19", taskGuide, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("examples 14-21", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("examples 14-22", daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 19", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 20", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 21", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("example 22", daemonScript, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -241,7 +287,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             .OrderBy(number => number)
             .ToArray();
 
-        Assert.Equal(Enumerable.Range(1, 21).ToArray(), exampleNumbers);
+        Assert.Equal(Enumerable.Range(1, 22).ToArray(), exampleNumbers);
 
         var coverageByExample = manifest.AfterlifeExampleCoverage
             .GroupBy(entry => entry.ExampleNumber)

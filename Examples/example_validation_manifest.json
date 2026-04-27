@@ -1038,6 +1038,11 @@
       "runtimeScenarioIds": [
         "afterlife_protected_return_guard_response"
       ]
+    },
+    {
+      "exampleNumber": 22,
+      "runtimeScenarioIds": [],
+      "exemptionReason": "The direct resident action and pending-backed routing tag example is a text routing matrix, not one accepted response payload."
     }
   ]
 }
