@@ -211,14 +211,25 @@ public partial class ExplorerMode
                 if (!await EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync("обновление набора благословений"))
                     continue;
 
-                if (!ShiningAbodeState.TryRerollGatesDraft(context.Root, out var error))
+                var projectedRoot = CloneJsonObjectForPreview(context.Root);
+                string? error = null;
+                if (projectedRoot == null ||
+                    !ShiningAbodeState.TryRerollGatesDraft(projectedRoot, out error))
                 {
                     MarkupLine($"[yellow]{Markup.Escape(error ?? "Набор благословений пока нельзя обновить.")}[/]");
                     WaitForKey();
                     continue;
                 }
 
-                await SaveShiningRootAsync(context.Root);
+                if (!ConfirmShiningGatesLocalMutationPreview(
+                        "Подтвердить обновление набора Врат",
+                        BuildShiningGatesRerollPreviewLines(context.Root, projectedRoot),
+                        projectedRoot["gates"] as JsonObject))
+                {
+                    continue;
+                }
+
+                await SaveShiningRootAsync(projectedRoot);
                 MarkupLine("[green]Набор благословений обновлён.[/]");
                 WaitForKey();
                 continue;
@@ -327,9 +338,11 @@ public partial class ExplorerMode
 
         var cardId = entries.First(item => item.Item1 == selected).cardId;
         var toggledOff = selectedIds.Contains(cardId);
-        var success = toggledOff
-            ? ShiningAbodeState.TryDeselectBlessingCard(shiningRoot, cardId, out var error)
-            : ShiningAbodeState.TrySelectBlessingCard(shiningRoot, cardId, out error);
+        var projectedRoot = CloneJsonObjectForPreview(shiningRoot);
+        string? error = null;
+        var success = projectedRoot != null && (toggledOff
+            ? ShiningAbodeState.TryDeselectBlessingCard(projectedRoot, cardId, out error)
+            : ShiningAbodeState.TrySelectBlessingCard(projectedRoot, cardId, out error));
         if (!success)
         {
             MarkupLine($"[yellow]{Markup.Escape(error ?? "Не удалось обновить выбор благословения.")}[/]");
@@ -337,7 +350,17 @@ public partial class ExplorerMode
             return;
         }
 
-        await SaveShiningRootAsync(shiningRoot);
+        var selectedCard = FindBlessingCardInGates(gates, cardId);
+        if (!ConfirmShiningGatesLocalMutationPreview(
+                toggledOff ? "Подтвердить снятие благословения" : "Подтвердить выбор благословения",
+                BuildShiningBlessingSelectionPreviewLines(shiningRoot, projectedRoot!, selectedCard, cardId, toggledOff),
+                projectedRoot!["gates"] as JsonObject,
+                selectedCard))
+        {
+            return;
+        }
+
+        await SaveShiningRootAsync(projectedRoot!);
         MarkupLine(toggledOff
             ? "[green]Благословение снято с выбора.[/]"
             : "[green]Благословение выбрано.[/]");
@@ -465,6 +488,142 @@ public partial class ExplorerMode
 
         if (context.Root["preparedIncarnationPackage"] is JsonObject packageAudit)
             WriteJsonAuditPanel("Полный frozen JSON preparedIncarnationPackage", packageAudit, Color.Khaki1);
+    }
+
+    private bool ConfirmShiningGatesLocalMutationPreview(
+        string confirmationTitle,
+        IReadOnlyList<string> lines,
+        JsonObject? projectedGates,
+        JsonObject? focusedCard = null)
+    {
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🚪 Предпросмотр локального изменения Врат ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+
+        if (focusedCard != null)
+            WriteJsonAuditPanel("Полный JSON выбранной blessing card", focusedCard, Color.Khaki1);
+        WriteJsonAuditPanel("Projected canonical JSON gates после подтверждения", projectedGates, Color.Gold1);
+
+        var choice = Prompt(new SelectionPrompt<string>()
+            .Title($"[bold yellow]{Markup.Escape(confirmationTitle)}[/]")
+            .HighlightStyle(new Style(Color.Gold1))
+            .AddChoices("✅ Применить изменение", "← Отмена"));
+
+        return choice.Contains("Применить", StringComparison.OrdinalIgnoreCase) ||
+               choice.Contains("Подтвердить", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private List<string> BuildShiningBlessingSelectionPreviewLines(
+        JsonObject beforeRoot,
+        JsonObject projectedRoot,
+        JsonObject? card,
+        string cardId,
+        bool toggledOff)
+    {
+        var beforeGates = beforeRoot["gates"] as JsonObject;
+        var afterGates = projectedRoot["gates"] as JsonObject;
+        var radianceTier = GetNodeInt(beforeRoot["radiance"]?["tier"]);
+        var beforeSelected = ReadGateSelectedCardIds(beforeGates);
+        var afterSelected = ReadGateSelectedCardIds(afterGates);
+        var lines = new List<string>
+        {
+            "[bold yellow]Перед изменением выбранных карт Врат[/]",
+            "",
+            $"  Действие: [white]{(toggledOff ? "снять карту из prepared selection" : "добавить карту в prepared selection")}[/]",
+            $"  cardId: [dim]{Markup.Escape(cardId)}[/]",
+            $"  draftVersion: [dim]{GetNodeInt(beforeGates?["draftVersion"])}[/]",
+            $"  Лимит выбора по Radiance tier {radianceTier}: [white]{ShiningAbodeState.GetPickCap(radianceTier)}[/]",
+            $"  Выбрано карт: [white]{beforeSelected.Count}[/] -> [white]{afterSelected.Count}[/]",
+            $"  До: {Markup.Escape(FormatGateSelectionLabels(beforeRoot, beforeSelected))}",
+            $"  После: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, afterSelected))}",
+            "",
+            "[bold]Последствие:[/]",
+            "  • Это client-local mutation: GM turn не отправляется и pending/control file не создаётся.",
+            "  • Если позже будет prepare_incarnation_package, runtime заморозит exact selectedCards snapshot из этих id.",
+            "  • Отмена на этом экране оставляет gates JSON без изменений."
+        };
+
+        if (card != null)
+        {
+            lines.Add("");
+            lines.Add("[bold]Выбранная карта:[/]");
+            lines.AddRange(BuildShiningBlessingCardInspectionLines(
+                card,
+                new ShiningContext(beforeRoot, null, null, null),
+                !toggledOff).Select(line => $"  {line}"));
+            lines.Add($"  sourceType: [dim]{Markup.Escape(GetNodeString(card["sourceType"]) ?? string.Empty)}[/]");
+            lines.Add($"  sourceFactionId: [dim]{Markup.Escape(GetNodeString(card["sourceFactionId"]) ?? string.Empty)}[/]");
+            lines.Add($"  sourceActorId: [dim]{Markup.Escape(GetNodeString(card["sourceActorId"]) ?? string.Empty)}[/]");
+            lines.Add($"  dedupeKey: [dim]{Markup.Escape(GetNodeString(card["dedupeKey"]) ?? string.Empty)}[/]");
+            lines.Add("  Полный `effectPayload` показан в JSON панели карты ниже.");
+        }
+
+        return lines;
+    }
+
+    private List<string> BuildShiningGatesRerollPreviewLines(JsonObject beforeRoot, JsonObject projectedRoot)
+    {
+        var beforeGates = beforeRoot["gates"] as JsonObject;
+        var afterGates = projectedRoot["gates"] as JsonObject;
+        var beforeAvailable = ReadGateAvailableCardIds(beforeGates);
+        var afterAvailable = ReadGateAvailableCardIds(afterGates);
+        var removed = beforeAvailable.Except(afterAvailable, StringComparer.OrdinalIgnoreCase).ToList();
+        var added = afterAvailable.Except(beforeAvailable, StringComparer.OrdinalIgnoreCase).ToList();
+        var lines = new List<string>
+        {
+            "[bold yellow]Перед перебросом набора Врат[/]",
+            "",
+            $"  draftVersion: [dim]{GetNodeInt(beforeGates?["draftVersion"])}[/]",
+            $"  rerollsRemaining: [white]{GetNodeInt(beforeGates?["rerollsRemaining"])}[/] -> [white]{GetNodeInt(afterGates?["rerollsRemaining"])}[/]",
+            $"  nextCandidateCursor: [white]{GetNodeInt(beforeGates?["nextCandidateCursor"])}[/] -> [white]{GetNodeInt(afterGates?["nextCandidateCursor"])}[/]",
+            $"  Выбранные карты сохраняются: {Markup.Escape(FormatGateSelectionLabels(beforeRoot, ReadGateSelectedCardIds(beforeGates)))}",
+            "",
+            "[bold]Изменение текущего selectable-набора:[/]",
+            $"  • Уходят из available set: {Markup.Escape(FormatGateSelectionLabels(beforeRoot, removed))}",
+            $"  • Приходят в available set: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, added))}",
+            $"  • Новый available set: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, afterAvailable))}",
+            "",
+            "[bold]Последствие:[/]",
+            "  • Это client-local mutation: GM turn не отправляется и pending/control file не создаётся.",
+            "  • Полный projected gates JSON ниже показывает available/allCandidate/shown history/selected arrays после подтверждения.",
+            "  • Отмена на этом экране оставляет gates JSON и remaining rerolls без изменений."
+        };
+
+        return lines;
+    }
+
+    private static IReadOnlyList<string> ReadGateSelectedCardIds(JsonObject? gates) =>
+        ReadGateStringArray(gates, "selectedBlessingCardIds");
+
+    private static IReadOnlyList<string> ReadGateAvailableCardIds(JsonObject? gates)
+    {
+        return (gates?["availableBlessingCards"] as JsonArray)?.OfType<JsonObject>()
+            .Select(card => GetNodeString(card["cardId"]) ?? string.Empty)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList() ?? new List<string>();
+    }
+
+    private static IReadOnlyList<string> ReadGateStringArray(JsonObject? gates, string propertyName)
+    {
+        return (gates?[propertyName] as JsonArray)?.OfType<JsonValue>()
+            .Where(node => node.TryGetValue<string>(out _))
+            .Select(node => node.GetValue<string>())
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList() ?? new List<string>();
+    }
+
+    private static string FormatGateSelectionLabels(JsonObject root, IReadOnlyList<string> cardIds)
+    {
+        if (cardIds.Count == 0)
+            return "нет";
+
+        return string.Join(", ", cardIds.Select(id => ResolveShiningBlessingCardLabel(root, id)));
     }
 
     private IEnumerable<string> BuildShiningBlessingCardInspectionLines(JsonObject card, ShiningContext context, bool isSelected)

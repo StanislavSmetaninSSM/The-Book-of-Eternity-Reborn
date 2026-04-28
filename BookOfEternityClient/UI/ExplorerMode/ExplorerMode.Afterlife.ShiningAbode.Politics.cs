@@ -1,4 +1,6 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using Spectre.Console;
 
@@ -127,6 +129,15 @@ public partial class ExplorerMode
             return;
         }
 
+        if (!ConfirmShiningPoliticalRequestPreview(
+                "Подтвердить основание сияющей фракции",
+                ShiningFactionRequestState.PendingFoundingsRequestPath,
+                SerializePoliticalRequestForPreview(request),
+                BuildShiningFoundingRequestPreviewLines(context, request, feathers, cost.Feathers, cost.LightSparks)))
+        {
+            return;
+        }
+
         await EnsurePendingLocalTurnRollbackSnapshotAsync(
             "game_state/meta/soul_state.json",
             ShiningAbodeState.StatePath,
@@ -214,6 +225,15 @@ public partial class ExplorerMode
             return;
         }
 
+        if (!ConfirmShiningPoliticalRequestPreview(
+                "Подтвердить перестройку резидента",
+                ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                SerializePoliticalRequestForPreview(request),
+                BuildShiningRealignmentRequestPreviewLines(context, request)))
+        {
+            return;
+        }
+
         await ShiningFactionRequestState.WriteRealignmentRequestAsync(_fs, request);
         MarkupLine("[green]Создан ожидающий запрос на перестройку резидента.[/]");
         WaitForKey();
@@ -280,6 +300,15 @@ public partial class ExplorerMode
         {
             MarkupLine($"[yellow]{Markup.Escape(error)}[/]");
             WaitForKey();
+            return;
+        }
+
+        if (!ConfirmShiningPoliticalRequestPreview(
+                "Подтвердить смену главы фракции",
+                ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                SerializePoliticalRequestForPreview(request),
+                BuildShiningLeadershipRequestPreviewLines(context, request)))
+        {
             return;
         }
 
@@ -553,6 +582,189 @@ public partial class ExplorerMode
 
             return selectedId;
         }));
+    }
+
+    private bool ConfirmShiningPoliticalRequestPreview(
+        string confirmationTitle,
+        string pendingPath,
+        JsonObject? requestAudit,
+        IReadOnlyList<string> lines)
+    {
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🏛 Полный предпросмотр политического контракта ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Orange1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+
+        WriteJsonAuditPanel($"Полный JSON {pendingPath}.requests[0]", requestAudit, Color.Orange1);
+
+        var choice = Prompt(new SelectionPrompt<string>()
+            .Title($"[bold yellow]{Markup.Escape(confirmationTitle)}[/]")
+            .HighlightStyle(new Style(Color.Orange1))
+            .AddChoices("✅ Создать pending request", "← Отмена"));
+
+        return choice.Contains("Создать", StringComparison.OrdinalIgnoreCase) ||
+               choice.Contains("Подтвердить", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static JsonObject? SerializePoliticalRequestForPreview<TRequest>(TRequest request)
+    {
+        return JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) as JsonObject;
+    }
+
+    private List<string> BuildShiningFoundingRequestPreviewLines(
+        ShiningContext context,
+        ShiningFactionRequestState.PendingShiningFactionFoundingRequest request,
+        int currentFeathers,
+        int costFeathers,
+        int costLightSparks)
+    {
+        var currentLightSparks = GetNodeInt(context.Root["lightSparks"]);
+        var lines = BuildShiningPoliticalPreviewHeader(
+            "Основание новой сияющей фракции",
+            ShiningFactionRequestState.PendingFoundingsRequestPath,
+            request.RequestId,
+            request.CreatedAtTurn,
+            request.CreatedAtUtc);
+
+        lines.Add("");
+        lines.Add("[bold]Материализуемая основа:[/]");
+        lines.Add($"  • proposedFactionId: [dim]{Markup.Escape(request.ProposedFactionId)}[/]");
+        lines.Add($"  • proposedHallId: [dim]{Markup.Escape(request.ProposedHallId)}[/]");
+        lines.Add($"  • Зал: [white]{Markup.Escape(request.ProposedHallName)}[/]");
+        lines.Add($"  • Описание зала: {Markup.Escape(request.ProposedHallDescription)}");
+        lines.Add($"  • Службы зала: {Markup.Escape(string.Join(", ", request.ProposedHallServiceTags.Select(DescribeShiningHallServiceTag)))}");
+        lines.Add($"  • Фракция: [white]{Markup.Escape(request.Charter.FactionName)}[/]");
+        lines.Add($"  • Устав: {Markup.Escape(request.Charter.Summary)}");
+        lines.Add($"  • Любимый архетип: [dim]{Markup.Escape(DescribeShiningProjectArchetype(request.Charter.FavoredArchetype))}[/]");
+        lines.Add($"  • Покровительствующий эффект: [dim]{Markup.Escape(DescribeShiningEffectFamily(request.Charter.PatronEffectFamily))}[/]");
+        AppendPoliticalResidentList(lines, "Сторонники", context.ResidentRoot, request.SupportingResidentIds);
+
+        lines.Add("");
+        lines.Add("[bold]Резервируемые ресурсы:[/]");
+        lines.Add($"  • Ink Feathers: [white]{currentFeathers}[/] -> [white]{Math.Max(0, currentFeathers - costFeathers)}[/] [dim](quotedCostFeathers={request.QuotedCostFeathers})[/]");
+        lines.Add($"  • Light Sparks: [white]{currentLightSparks}[/] -> [white]{Math.Max(0, currentLightSparks - costLightSparks)}[/] [dim](quotedCostLightSparks={request.QuotedCostLightSparks})[/]");
+        lines.Add("  • Отмена на этом экране не пишет pending file и не списывает ресурсы.");
+
+        lines.Add("");
+        lines.Add("[bold]GM closure contract:[/]");
+        lines.Add("  • accepted: создать `halls[]` и `factions[]` с exact proposed ids, services, charter and supporter alignment.");
+        lines.Add("  • accepted: записать `factionFoundingReceipts[]` с requestId, costs, supportingResidentIds, resolvedAtTurn/resolvedAtUtc/status/reason.");
+        lines.Add("  • refused/withdrawn: не создавать hall/faction; закрыть только receipt с canonical status.");
+        lines.Add("  • GM не переписывает pending file как output; pending contract остаётся client-owned input.");
+        return lines;
+    }
+
+    private List<string> BuildShiningRealignmentRequestPreviewLines(
+        ShiningContext context,
+        ShiningFactionRequestState.PendingShiningFactionRealignmentRequest request)
+    {
+        var lines = BuildShiningPoliticalPreviewHeader(
+            "Перестройка сияющего резидента",
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            request.RequestId,
+            request.CreatedAtTurn,
+            request.CreatedAtUtc);
+
+        lines.Add("");
+        lines.Add("[bold]Резидент и политический путь:[/]");
+        lines.Add($"  • Резидент: [white]{Markup.Escape(request.ResidentName)}[/] [dim]({Markup.Escape(request.ResidentId)})[/]");
+        lines.Add($"  • Исходная фракция: [white]{Markup.Escape(request.SourceFactionName)}[/] [dim]({Markup.Escape(request.SourceFactionId)})[/]");
+        lines.Add($"  • Режим: [dim]{Markup.Escape(DescribeShiningRealignmentMode(request.RealignmentMode))}[/] [dim]({Markup.Escape(request.RealignmentMode)})[/]");
+        if (!string.IsNullOrWhiteSpace(request.TargetFactionId))
+            lines.Add($"  • Целевая фракция: [white]{Markup.Escape(request.TargetFactionName)}[/] [dim]({Markup.Escape(request.TargetFactionId)})[/]");
+        lines.Add($"  • Лояльность: [dim]{request.FactionLoyaltyLevel} / {Markup.Escape(DescribeShiningFactionLoyaltyTier(request.FactionLoyaltyTier))}[/]");
+        lines.Add($"  • Брожение: [dim]{request.FactionRestlessness}[/]");
+        lines.Add($"  • Состояние перестройки: [dim]{Markup.Escape(DescribeShiningFactionRealignmentState(request.FactionRealignmentState))}[/]");
+
+        lines.Add("");
+        lines.Add("[bold]GM closure contract:[/]");
+        lines.Add("  • accepted_transfer: обновить canonical resident shiningFactionId/name, loyalty/restlessness state and write resident history.");
+        lines.Add("  • departure_to_neutral: очистить faction binding у резидента и зафиксировать departed_to_neutral receipt.");
+        lines.Add("  • refused/withdrawn: не менять resident faction binding; закрыть только receipt/status/reason.");
+        lines.Add("  • Обязательно записать `factionRealignmentReceipts[]` with requestId, residentId, source/target, realignmentMode, status, resolvedAtTurn/resolvedAtUtc.");
+        return lines;
+    }
+
+    private List<string> BuildShiningLeadershipRequestPreviewLines(
+        ShiningContext context,
+        ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest request)
+    {
+        var lines = BuildShiningPoliticalPreviewHeader(
+            "Смена главы сияющей фракции",
+            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            request.RequestId,
+            request.CreatedAtTurn,
+            request.CreatedAtUtc);
+
+        lines.Add("");
+        lines.Add("[bold]Смена власти:[/]");
+        lines.Add($"  • Фракция: [white]{Markup.Escape(request.FactionName)}[/] [dim]({Markup.Escape(request.FactionId)})[/]");
+        lines.Add($"  • Режим: [dim]{Markup.Escape(DescribeShiningLeadershipMode(request.TransitionMode))}[/] [dim]({Markup.Escape(request.TransitionMode)})[/]");
+        lines.Add($"  • Текущий глава: [dim]{Markup.Escape(BuildHeadActorLabel(request.IncumbentHeadActorType, request.IncumbentHeadActorId))}[/]");
+        lines.Add(string.IsNullOrWhiteSpace(request.CandidateHeadActorId)
+            ? "  • Новый глава: [dim]не указан; accepted abdication оставит место вакантным[/]"
+            : $"  • Новый глава: [white]{Markup.Escape(BuildHeadActorLabel(request.CandidateHeadActorType, request.CandidateHeadActorId))}[/]");
+        AppendPoliticalResidentList(lines, "Сторонники перехода", context.ResidentRoot, request.SupportingResidentIds);
+
+        lines.Add("");
+        lines.Add("[bold]GM closure contract:[/]");
+        lines.Add("  • accepted: обновить faction.leadership and, for radiant_actor heads, matching `shiningPoliticalActors[]` currentFactionId/politicalStatus.");
+        lines.Add("  • accepted: записать `leadershipReceipts[]` and `leadershipHistory[]` with succeeded/abdicated/revolted/vacated event mapping.");
+        lines.Add("  • refused/withdrawn: leadership state remains unchanged except canonical receipt/history refusal marker.");
+        lines.Add("  • Candidate/supporter ids must be echoed from this request; GM must not invent a different hidden electorate.");
+        return lines;
+    }
+
+    private static List<string> BuildShiningPoliticalPreviewHeader(
+        string actionLabel,
+        string pendingPath,
+        string requestId,
+        int createdAtTurn,
+        string createdAtUtc)
+    {
+        return new List<string>
+        {
+            "[bold yellow]Перед записью political pending-контракта[/]",
+            "",
+            $"  Действие: [white]{Markup.Escape(actionLabel)}[/]",
+            $"  Файл: [dim]{Markup.Escape(pendingPath)}[/]",
+            $"  requestId: [dim]{Markup.Escape(requestId)}[/]",
+            $"  createdAtTurn: [dim]{createdAtTurn}[/]",
+            $"  createdAtUtc: [dim]{Markup.Escape(createdAtUtc)}[/]",
+            "",
+            "[bold]Правило очереди и владения:[/]",
+            "  • Этот pending file является client-owned input для следующего accepted/refused/withdrawn хода.",
+            "  • GM закрывает exact requestId через canonical receipt/history/state surfaces.",
+            "  • Mortal World factions/NPC/location/time outputs здесь запрещены."
+        };
+    }
+
+    private static void AppendPoliticalResidentList(
+        List<string> lines,
+        string label,
+        JsonObject? residentRoot,
+        IReadOnlyList<string> residentIds)
+    {
+        lines.Add($"  • {label}:");
+        if (residentIds.Count == 0)
+        {
+            lines.Add("    [dim]нет[/]");
+            return;
+        }
+
+        foreach (var residentId in residentIds)
+        {
+            var resident = (residentRoot?["entries"] as JsonArray)?.OfType<JsonObject>()
+                .FirstOrDefault(entry => string.Equals(GetNodeString(entry["residentId"]), residentId, StringComparison.OrdinalIgnoreCase));
+            var displayName = GetNodeString(resident?["displayName"]) ?? GetNodeString(resident?["residentName"]) ?? residentId;
+            var factionName = GetNodeString(resident?["shiningFactionName"]) ?? GetNodeString(resident?["shiningFactionId"]) ?? "none";
+            lines.Add($"    - {Markup.Escape(displayName)} [dim]({Markup.Escape(residentId)}, faction {Markup.Escape(factionName)})[/]");
+        }
     }
 
     private static string MapPatronFamilyToHallServiceTag(string patronEffectFamily) => patronEffectFamily switch

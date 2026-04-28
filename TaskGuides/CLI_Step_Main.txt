@@ -468,7 +468,7 @@
   - ordinary `title`, `summary`, `turn`, `timestamp`
 - Guardian social `responseMode` values: `talk_scene`, `lore_revealed`, `lore_refused`, `warning`, `refusal`, `trust_shift`, `attitude_shift`.
 - Resident interaction `responseMode` values: `talk_scene`, `history_revealed`, `history_refused`, `history_partial`, `bond_shift_only`.
-- Resident transfer `selectionMode` values: `competition_recommended`, `manual_override`, `departure_only`. If a pending transfer carries `competitionScore`, `competitionLabel`, and `competitionReason`, preserve those fields in the accepted-turn audit and never attach target competition metadata to `departure_only`.
+- Resident transfer `selectionMode` values: `competition_recommended`, `manual_override`, `departure_only`. If a pending transfer carries `competitionScore`, `competitionLabel`, and `competitionReason`, preserve those fields in the accepted-turn audit; `competitionLabel` must stay exactly one of `strong_pull`, `plausible_pull`, `weak_pull`; never attach target competition metadata to `departure_only`.
 - These journals are concise summaries, not transcripts. The full long-form continuity source remains `stories/*.jsonl`.
 - Use `Tools/Search-GmMemory.ps1` when needed; it now supports `-Source`, `-Json`, and `entityType=faction` in addition to actor/text filters.
 - Old `stories/*.jsonl` entries without `entityRefs[]` still remain searchable by text; they just cannot be treated as actor-scoped hits until newer turns write explicit actor refs.

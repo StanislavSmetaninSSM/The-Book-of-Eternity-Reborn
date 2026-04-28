@@ -3168,6 +3168,216 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_ShiningPolitics_RealignmentPreviewCanCancelWithoutWritingPendingRequest()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        _console.QueueSelection("Политика Сияющей Обители", "⇄ Создать запрос на переход между фракциями", "← Назад");
+        _console.QueueSelection("Режим перестройки", "Перейти в другую фракцию");
+        _console.QueueSelection("Подтвердить перестройку резидента", "← Отмена");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_politics"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_political_realign_preview_cancel");
+        Assert.False(_fs.FileExists(ShiningFactionRequestState.PendingRealignmentsRequestPath));
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Полный предпросмотр политического контракта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_shining_faction_realignments.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("factionRealignmentReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("realignmentMode", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("accepted_transfer", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningAbode_GatesSelectionPreviewCanCancelWithoutChangingSelection()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "🚪 Врата и благословения", "← Назад");
+        _console.QueueSelection("Врата Сияющей Обители", "🎴 Выбрать или снять благословение", "← Назад");
+        _console.QueueSelection("Подтвердить выбор благословения", "← Отмена");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_gates_selection_preview_cancel");
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(_fs.ResolvePath(ShiningAbodeState.StatePath)))!.AsObject();
+        var selectedIds = shiningRoot["gates"]!["selectedBlessingCardIds"]!.AsArray()
+            .Select(node => node!.GetValue<string>())
+            .ToArray();
+        Assert.Equal(new[] { "card_route_dawn" }, selectedIds);
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Предпросмотр локального изменения Врат", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Projected canonical JSON gates", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("client-local mutation", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("effectPayload", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningAbode_GatesRerollPreviewComparesAvailableCards()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var gates = shiningRoot["gates"]!.AsObject();
+        var allCandidates = gates["allCandidateBlessingCards"]!.AsArray();
+        var availableCards = gates["availableBlessingCards"]!.AsArray();
+        var shownIds = gates["shownBlessingCardIds"]!.AsArray();
+        var memoryCard = JsonNode.Parse("""
+        {
+          "cardId": "card_memory_echo",
+          "dedupeKey": "memory_echo",
+          "sourceType": "project",
+          "sourceFactionId": "faction_dawn",
+          "sourceActorId": "project_social",
+          "effectFamily": "memory",
+          "rarity": "Rare",
+          "displayName": "Память Эха",
+          "displaySummary": "Даёт новый вариант памяти.",
+          "effectPayload": { "options": 1 }
+        }
+        """)!.AsObject();
+        var resourceCard = JsonNode.Parse("""
+        {
+          "cardId": "card_resource_seed",
+          "dedupeKey": "resource_seed",
+          "sourceType": "head",
+          "sourceFactionId": "faction_dawn",
+          "sourceActorId": "guard_test_founder",
+          "effectFamily": "resource",
+          "rarity": "Epic",
+          "displayName": "Зерно запаса",
+          "displaySummary": "Даёт стартовые ресурсы.",
+          "effectPayload": { "common": 2 }
+        }
+        """)!.AsObject();
+        var survivalCard = JsonNode.Parse("""
+        {
+          "cardId": "card_survival_shield",
+          "dedupeKey": "survival_shield",
+          "sourceType": "project",
+          "sourceFactionId": "faction_dawn",
+          "sourceActorId": "project_refinement",
+          "effectFamily": "survival",
+          "rarity": "Rare",
+          "displayName": "Щит выживания",
+          "displaySummary": "Смягчает будущий провал.",
+          "effectPayload": { "downgrade": 1 }
+        }
+        """)!.AsObject();
+        allCandidates.Add(memoryCard.DeepClone());
+        allCandidates.Add(resourceCard.DeepClone());
+        allCandidates.Add(survivalCard.DeepClone());
+        availableCards.Add(memoryCard.DeepClone());
+        shownIds.Add("card_memory_echo");
+        gates["nextCandidateCursor"] = 3;
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString());
+
+        _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "🚪 Врата и благословения", "← Назад");
+        _console.QueueSelection("Врата Сияющей Обители", "🔁 Обновить набор благословений", "← Назад");
+        _console.QueueSelection("Подтвердить обновление набора Врат", "← Отмена");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_gates_reroll_preview_available_cards");
+        var afterRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var afterAvailableIds = afterRoot["gates"]!["availableBlessingCards"]!.AsArray()
+            .OfType<JsonObject>()
+            .Select(card => card["cardId"]!.GetValue<string>())
+            .ToArray();
+        Assert.Contains("card_social_dawn", afterAvailableIds);
+        Assert.Contains("card_memory_echo", afterAvailableIds);
+        Assert.DoesNotContain("card_resource_seed", afterAvailableIds);
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Уходят из available set: Песнь Рассвета, Память Эха", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Приходят в available set: Зерно запаса, Щит выживания", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Новый available set", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Новый shown set", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningTradeAndForge_InventoryRequestPreviewCanCancelWithoutWritingPendingRequest()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await WriteJsonAsync("input/turn_request.json", new { turnNumber = 17 });
+        _fs.DeleteFile(ShiningTradeRequestState.PendingRequestsPath);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var dawnFaction = shiningRoot["factions"]!.AsArray()
+            .OfType<JsonObject>()
+            .First(faction => string.Equals(faction["factionId"]?.GetValue<string>(), "faction_dawn", StringComparison.OrdinalIgnoreCase));
+        dawnFaction.Remove("tradeInventory");
+        dawnFaction["tradeInventoryReceipts"] = new JsonArray();
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString());
+
+        _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "⚒ Торговля и кузня", "← Назад");
+        _console.QueueSelection("Торговля и кузня Сияющей Обители", "🛒 Торговля фракции", "← Назад");
+        _console.QueueSelection("Выберите сияющую фракцию для торговли", "Хор Рассвета");
+        _console.QueueSelection("Действие", "🧾 Запросить витрину");
+        _console.QueueSelection("Подтвердить запрос сияющей витрины", "← Отмена");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_trade_inventory_preview_cancel");
+        Assert.False(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Предпросмотр сияющей торговой витрины", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_shining_trade_inventory_requests.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("derivedTradeTier", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("derivedTradeSlotCount", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("tradeInventoryReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningTradeAndForge_InventoryRequestRequiresCurrentTurn()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        _fs.DeleteFile("input/turn_request.json");
+        _fs.DeleteFile(ShiningTradeRequestState.PendingRequestsPath);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var dawnFaction = shiningRoot["factions"]!.AsArray()
+            .OfType<JsonObject>()
+            .First(faction => string.Equals(faction["factionId"]?.GetValue<string>(), "faction_dawn", StringComparison.OrdinalIgnoreCase));
+        dawnFaction.Remove("tradeInventory");
+        dawnFaction["tradeInventoryReceipts"] = new JsonArray();
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+
+        _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "⚒ Торговля и кузня", "← Назад");
+        _console.QueueSelection("Торговля и кузня Сияющей Обители", "🛒 Торговля фракции", "← Назад");
+        _console.QueueSelection("Выберите сияющую фракцию для торговли", "Хор Рассвета");
+        _console.QueueSelection("Действие", "🧾 Запросить витрину");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_trade_inventory_requires_current_turn");
+        Assert.False(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        Assert.Contains(_console.MarkupLines,
+            line => line.Contains("input/turn_request.json", StringComparison.OrdinalIgnoreCase) &&
+                    line.Contains("turnNumber", StringComparison.OrdinalIgnoreCase));
+
+        var renderedText = ExtractRenderedText();
+        Assert.DoesNotContain("Предпросмотр сияющей торговой витрины", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningAbode_PreparePackagePreviewSeparatesBootstrapHandoff()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);

@@ -5159,7 +5159,7 @@ Close with UpdateGuardianAbodeResidentTransferReceipts, matching resident state 
 Preserve selectionMode and competition metadata from the pending request:
 - selectionMode = competition_recommended | manual_override | departure_only
 - competitionScore = integer 0..100 when present
-- competitionLabel and competitionReason explain why the target Abode won or why the player overrode it
+- competitionLabel uses only `strong_pull`, `plausible_pull`, or `weak_pull`; competitionReason explains why the target Abode won or why the player overrode it
 - departure_only must not carry target Guardian/Abode competition metadata
 
 [PLAYER_GUARDIAN_FOUNDATION]
