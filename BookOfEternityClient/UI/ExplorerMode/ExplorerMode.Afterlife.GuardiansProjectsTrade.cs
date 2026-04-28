@@ -4250,11 +4250,19 @@ public partial class ExplorerMode
         var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null, residentDoc: null, guardiansDoc: null);
         lines.Insert(1, $"  🔁 Цена обратного выкупа: [yellow]{offer.PriceInFeathers} 🪶[/]");
         lines.Insert(2, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
-        lines.Insert(3, $"  💸 Продана ранее за: [grey]{offer.SoldForPrice} 🪶[/]");
-        lines.Insert(4, $"  🕰 Продана на ходу: [grey]{offer.SoldAtTurn}[/]");
+        lines.Insert(3, $"  🪶 После выкупа: [gold1]{Math.Max(0, currentFeathers - offer.PriceInFeathers)}[/]");
+        lines.Insert(4, $"  buybackEntryId: [dim]{Markup.Escape(offer.BuybackEntryId)}[/]");
+        lines.Insert(5, $"  💸 Продана ранее за: [grey]{offer.SoldForPrice} 🪶[/]");
+        lines.Insert(6, $"  🕰 Продана на ходу: [grey]{offer.SoldAtTurn}[/]");
 
         if (currentFeathers < offer.PriceInFeathers)
-            lines.Insert(5, "  [yellow]Статус выкупа: пока не хватает Чернильных Перьев.[/]");
+            lines.Insert(7, "  [yellow]Статус выкупа: пока не хватает Чернильных Перьев.[/]");
+        lines.Add("");
+        lines.Add("[bold]Canonical local transaction:[/]");
+        lines.Add("  • game_state/meta/soul_state.json: Ink Feathers уменьшаются на priceInFeathers.");
+        lines.Add("  • game_state/meta/soul_state.json: relicData возвращается в soulRelics.stored.");
+        lines.Add("  • game_state/meta/guardians.json: buybackRelics[].status меняется с available на rebought for matching buybackEntryId.");
+        lines.Add("  • GM turn не отправляется: это client-local coordinated write with full audit JSON.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -4265,6 +4273,10 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel(
+            "Полный JSON обратного выкупа у Хранителя",
+            BuildGuardianBuybackAuditNode(offer, currentFeathers),
+            Color.Gold1);
 
         var actions = new List<string>();
         if (canBuyBack)
@@ -4278,6 +4290,22 @@ public partial class ExplorerMode
 
         return action.Contains("Выкупить", StringComparison.OrdinalIgnoreCase);
     }
+
+    internal static JsonObject BuildGuardianBuybackAuditNode(Services.GuardianTradeService.GuardianBuybackOffer offer, int currentFeathers) =>
+        new()
+        {
+            ["buybackEntryId"] = offer.BuybackEntryId,
+            ["relicId"] = offer.RelicId,
+            ["relicName"] = offer.Name,
+            ["rarity"] = offer.Rarity,
+            ["priceInFeathers"] = offer.PriceInFeathers,
+            ["currentFeathers"] = currentFeathers,
+            ["projectedFeathers"] = Math.Max(0, currentFeathers - offer.PriceInFeathers),
+            ["soldForPrice"] = offer.SoldForPrice,
+            ["soldAtTurn"] = offer.SoldAtTurn,
+            ["description"] = offer.Description,
+            ["relicData"] = offer.RelicData.DeepClone()
+        };
 
     private static string DescribeFounderLoyaltyTier(string? founderLoyaltyTier) =>
         (founderLoyaltyTier ?? string.Empty).Trim().ToLowerInvariant() switch

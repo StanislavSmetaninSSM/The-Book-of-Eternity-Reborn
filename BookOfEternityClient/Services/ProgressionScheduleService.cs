@@ -35,7 +35,8 @@ public class ProgressionScheduleService
         None,
         ChaosSea,
         ShiningAbode,
-        ShiningBootstrapHandoff
+        ShiningBootstrapHandoff,
+        ShiningBootstrapPackageFault
     }
 
     private readonly record struct ProgressionScheduleSnapshot(
@@ -156,7 +157,7 @@ public class ProgressionScheduleService
 
             schedule.PendingWorldCycles = 0;
             schedule.PendingFactionCycles = 0;
-            if (afterlifeRealmKind == AfterlifeRealmKind.ShiningBootstrapHandoff)
+            if (afterlifeRealmKind is AfterlifeRealmKind.ShiningBootstrapHandoff or AfterlifeRealmKind.ShiningBootstrapPackageFault)
             {
                 ClearAfterlifePendingCycles(schedule);
             }
@@ -437,7 +438,7 @@ public class ProgressionScheduleService
         AfterlifeRealmKind realmKind,
         bool includeShiningContoursInMortalCatchup)
     {
-        if (realmKind == AfterlifeRealmKind.None || realmKind == AfterlifeRealmKind.ShiningBootstrapHandoff)
+        if (realmKind is AfterlifeRealmKind.None or AfterlifeRealmKind.ShiningBootstrapHandoff or AfterlifeRealmKind.ShiningBootstrapPackageFault)
             return new AfterlifeCatchupContext(false, 0, "none", 0, Array.Empty<string>());
 
         var mortalElapsedCycles = schedule.HasAfterlifeCatchupWorldTimeBaseline
@@ -1394,26 +1395,29 @@ public class ProgressionScheduleService
         if (!IsShiningAbodeRealm(realm))
             return AfterlifeRealmKind.None;
 
-        return await HasPreparedShiningBootstrapPackageAsync()
-            ? AfterlifeRealmKind.ShiningBootstrapHandoff
-            : AfterlifeRealmKind.ShiningAbode;
+        return await ResolvePreparedShiningBootstrapPackageModeAsync() switch
+        {
+            ShiningAbodeState.PreparedIncarnationPackageMode.ValidHandoff => AfterlifeRealmKind.ShiningBootstrapHandoff,
+            ShiningAbodeState.PreparedIncarnationPackageMode.InvalidFault => AfterlifeRealmKind.ShiningBootstrapPackageFault,
+            _ => AfterlifeRealmKind.ShiningAbode
+        };
     }
 
-    private async Task<bool> HasPreparedShiningBootstrapPackageAsync()
+    private async Task<ShiningAbodeState.PreparedIncarnationPackageMode> ResolvePreparedShiningBootstrapPackageModeAsync()
     {
         var json = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         if (string.IsNullOrWhiteSpace(json))
-            return false;
+            return ShiningAbodeState.PreparedIncarnationPackageMode.Absent;
 
         try
         {
             var root = JsonNode.Parse(json) as JsonObject;
-            return root?["preparedIncarnationPackage"] is JsonObject;
+            return ShiningAbodeState.GetPreparedIncarnationPackageMode(root);
         }
         catch (Exception ex)
         {
             _logger.LogDebug(ex, "Не удалось прочитать preparedIncarnationPackage для progression scheduler; Shining bootstrap handoff не будет считаться готовым.");
-            return false;
+            return ShiningAbodeState.PreparedIncarnationPackageMode.InvalidFault;
         }
     }
 
@@ -1428,7 +1432,7 @@ public class ProgressionScheduleService
             var root = JsonNode.Parse(json) as JsonObject;
             var availability = root?["availability"]?.GetValue<string>();
             return string.Equals(availability, ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase) &&
-                   root?["preparedIncarnationPackage"] is not JsonObject;
+                   ShiningAbodeState.GetPreparedIncarnationPackageMode(root) == ShiningAbodeState.PreparedIncarnationPackageMode.Absent;
         }
         catch (Exception ex)
         {

@@ -203,6 +203,33 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ChaosSeaHighCostPreviewAuditSurfacesAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var inkFeatherPreview = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs");
+        var tradePreview = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.Afterlife.GuardiansProjectsTrade.cs");
+        var inboxPreview = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs");
+
+        foreach (var text in new[] { matrix, examples })
+        {
+            Assert.Contains("Soul Imprint", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("stateEvidence.imprintId", text, StringComparison.Ordinal);
+            Assert.Contains("baseDelta", text, StringComparison.Ordinal);
+            Assert.Contains("finalDelta", text, StringComparison.Ordinal);
+            Assert.Contains("buybackEntryId", text, StringComparison.Ordinal);
+            Assert.Contains("projectedFeathers", text, StringComparison.Ordinal);
+            Assert.Contains("historyEntryId", text, StringComparison.Ordinal);
+            Assert.Contains("archiveActionResolutions", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("BuildSoulImprintPreviewAuditLines", inkFeatherPreview, StringComparison.Ordinal);
+        Assert.Contains("BuildAbodeOfferingPreviewAuditLines", inkFeatherPreview, StringComparison.Ordinal);
+        Assert.Contains("BuildGuardianBuybackAuditNode", tradePreview, StringComparison.Ordinal);
+        Assert.Contains("BuildResidentNotificationReceiptAuditLines", inboxPreview, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeSocialRoutingTagsResponseModesAndTransferMetadataAreDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

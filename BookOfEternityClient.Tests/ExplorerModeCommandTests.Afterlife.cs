@@ -1444,7 +1444,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("1 Чернильных Перьев", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("валидатор извлекает", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("без репутации Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guardian modifiers", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("finalRarity должен точно совпасть с baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ровно одну новую Soul Relic", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не списывает Чернильные Перья второй раз", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("не ниже baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

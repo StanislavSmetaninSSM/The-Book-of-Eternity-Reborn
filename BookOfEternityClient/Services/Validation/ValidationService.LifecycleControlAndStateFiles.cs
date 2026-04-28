@@ -1098,6 +1098,13 @@ public partial class ValidationService
                 return;
             }
 
+            var compositePreTurnShiningRoot = CloneJsonObject(preTurnShiningRoot);
+            var compositePreTurnResidentsRoot = CloneJsonObject(preTurnResidentsRoot);
+            var hasConcurrentShiningClosure = await TryApplyConcurrentShiningClosuresAsync(
+                compositePreTurnShiningRoot,
+                compositePreTurnResidentsRoot,
+                currentShiningRoot,
+                currentResidentsRoot);
             var receipts = ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot);
             foreach (var request in requests)
             {
@@ -1134,25 +1141,27 @@ public partial class ValidationService
                     ValidateAcceptedShiningCoreActionOutcome(
                         request,
                         receipt,
-                        preTurnShiningRoot,
-                        preTurnResidentsRoot,
+                        compositePreTurnShiningRoot,
+                        compositePreTurnResidentsRoot,
                         preTurnSoulRoot,
                         currentShiningRoot,
                         currentResidentsRoot,
                         currentSoulRoot,
-                        issues);
+                        issues,
+                        hasConcurrentShiningClosure);
                 }
                 else
                 {
                     ValidateNonAcceptedShiningCoreActionOutcome(
                         request,
-                        preTurnShiningRoot,
-                        preTurnResidentsRoot,
+                        compositePreTurnShiningRoot,
+                        compositePreTurnResidentsRoot,
                         preTurnSoulRoot,
                         currentShiningRoot,
                         currentResidentsRoot,
                         currentSoulRoot,
-                        issues);
+                        issues,
+                        hasConcurrentShiningClosure);
                 }
             }
         }
@@ -1362,7 +1371,8 @@ public partial class ValidationService
                     currentShiningRoot,
                     currentResidentsRoot,
                     currentSoulRoot,
-                    issues);
+                    issues,
+                    hasConcurrentPoliticalClosure: false);
             }
         }
         catch
@@ -7244,7 +7254,8 @@ public partial class ValidationService
         JsonObject currentShiningRoot,
         JsonObject currentResidentsRoot,
         JsonObject currentSoulRoot,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool hasConcurrentPoliticalClosure)
     {
         switch ((request.ActionType ?? string.Empty).Trim().ToLowerInvariant())
         {
@@ -7263,6 +7274,7 @@ public partial class ValidationService
                     currentResidentsRoot,
                     currentSoulRoot,
                     issues,
+                    hasConcurrentPoliticalClosure,
                     mutate: cloneRoot => ShiningAbodeState.TryInvestInFaction(cloneRoot, CloneJsonObject(preTurnResidentsRoot), request.FactionId, out _));
                 return;
 
@@ -7277,6 +7289,7 @@ public partial class ValidationService
                     currentResidentsRoot,
                     currentSoulRoot,
                     issues,
+                    hasConcurrentPoliticalClosure,
                     mutate: cloneRoot => ShiningAbodeState.TryCompleteProject(
                         cloneRoot,
                         CloneJsonObject(preTurnResidentsRoot),
@@ -7300,6 +7313,7 @@ public partial class ValidationService
                     currentResidentsRoot,
                     currentSoulRoot,
                     issues,
+                    hasConcurrentPoliticalClosure,
                     mutate: cloneRoot => ShiningAbodeState.TrySupportProject(cloneRoot, request.FactionId, request.ProjectId, out _));
                 return;
 
@@ -7314,6 +7328,7 @@ public partial class ValidationService
                     currentResidentsRoot,
                     currentSoulRoot,
                     issues,
+                    hasConcurrentPoliticalClosure,
                     mutate: cloneRoot => ShiningAbodeState.TryUnsupportProject(cloneRoot, request.FactionId, request.ProjectId, out _));
                 return;
 
@@ -7328,6 +7343,7 @@ public partial class ValidationService
                     currentResidentsRoot,
                     currentSoulRoot,
                     issues,
+                    hasConcurrentPoliticalClosure,
                     mutate: cloneRoot => ShiningAbodeState.TryRetireProject(cloneRoot, CloneJsonObject(preTurnResidentsRoot), request.FactionId, request.ProjectId, out _));
                 return;
 
@@ -7342,6 +7358,7 @@ public partial class ValidationService
                     currentResidentsRoot,
                     currentSoulRoot,
                     issues,
+                    hasConcurrentPoliticalClosure,
                     mutate: cloneRoot => ShiningAbodeState.TryOpenGates(cloneRoot, CloneJsonObject(preTurnResidentsRoot), out _));
                 return;
 
@@ -7400,6 +7417,7 @@ public partial class ValidationService
         JsonObject currentResidentsRoot,
         JsonObject currentSoulRoot,
         List<ValidationIssue> issues,
+        bool hasConcurrentPoliticalClosure,
         Func<JsonObject, bool> mutate)
     {
         var expectedShiningRoot = CloneJsonObject(preTurnShiningRoot);
@@ -7421,7 +7439,11 @@ public partial class ValidationService
 
         ApplyFeatherCostToSoul(expectedSoulRoot, request.QuotedCostFeathers);
 
-        if (!ShiningRootsMatchExceptCoreActionReceipts(expectedShiningRoot, currentShiningRoot))
+        if (!ShiningCoreActionProjectedStateMatches(
+                request,
+                expectedShiningRoot,
+                currentShiningRoot,
+                hasConcurrentPoliticalClosure))
         {
             issues.Add(new ValidationIssue(
                 ShiningCoreActionRequestState.PendingActionsRequestPath,
@@ -8132,10 +8154,11 @@ public partial class ValidationService
         JsonObject currentShiningRoot,
         JsonObject currentResidentsRoot,
         JsonObject currentSoulRoot,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool hasConcurrentPoliticalClosure)
     {
         var stateChanged =
-            !ShiningRootsMatchExceptCoreActionReceipts(preTurnShiningRoot, currentShiningRoot) ||
+            !ShiningCoreActionProjectedStateMatches(null, preTurnShiningRoot, currentShiningRoot, hasConcurrentPoliticalClosure) ||
             !JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot) ||
             !JsonNode.DeepEquals(preTurnSoulRoot, currentSoulRoot);
 
@@ -8212,6 +8235,360 @@ public partial class ValidationService
         }
 
         return string.Equals(receiptRelicId ?? string.Empty, request.RelicId ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task<bool> TryApplyConcurrentShiningClosuresAsync(
+        JsonObject expectedShiningRoot,
+        JsonObject expectedResidentsRoot,
+        JsonObject currentShiningRoot,
+        JsonObject currentResidentsRoot)
+    {
+        var changed = false;
+        var foundingJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningFactionRequestState.PendingFoundingsRequestPath);
+        foreach (var request in ShiningFactionRequestState.ReadFoundingRequests(foundingJson))
+        {
+            var receipt = ShiningAbodeState.FindReceipt(
+                ShiningAbodeState.EnsureFactionFoundingReceiptsArray(currentShiningRoot),
+                request.RequestId);
+            if (receipt != null &&
+                ShiningFoundingReceiptMatchesRequest(receipt, request, out _) &&
+                string.Equals(GetNodeString(receipt["status"]), ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            {
+                ApplyAcceptedFoundingToComposite(expectedShiningRoot, expectedResidentsRoot, request, receipt);
+                changed = true;
+            }
+            else if (receipt != null && ShiningFoundingReceiptMatchesRequest(receipt, request, out _))
+            {
+                ShiningAbodeState.EnsureFactionFoundingReceiptsArray(expectedShiningRoot).Add(CloneJsonObject(receipt));
+                changed = true;
+            }
+        }
+
+        var realignmentJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningFactionRequestState.PendingRealignmentsRequestPath);
+        foreach (var request in ShiningFactionRequestState.ReadRealignmentRequests(realignmentJson))
+        {
+            var receipt = ShiningAbodeState.FindReceipt(
+                ShiningAbodeState.EnsureFactionRealignmentReceiptsArray(currentShiningRoot),
+                request.RequestId);
+            if (receipt != null && ShiningRealignmentReceiptMatchesRequest(receipt, request, out _))
+            {
+                ApplyRealignmentToComposite(expectedShiningRoot, expectedResidentsRoot, currentResidentsRoot, request, receipt);
+                changed = true;
+            }
+        }
+
+        var leadershipJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath);
+        foreach (var request in ShiningFactionRequestState.ReadLeadershipTransitionRequests(leadershipJson))
+        {
+            var faction = ShiningAbodeState.FindFaction(currentShiningRoot, request.FactionId);
+            var receipt = ShiningAbodeState.FindReceipt(faction?["leadershipReceipts"] as JsonArray ?? new JsonArray(), request.RequestId);
+            if (receipt != null && ShiningLeadershipReceiptMatchesRequest(receipt, request, out _))
+            {
+                ApplyLeadershipToComposite(expectedShiningRoot, currentShiningRoot, request, receipt);
+                changed = true;
+            }
+        }
+
+        var tradeJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningTradeRequestState.PendingRequestsPath);
+        foreach (var request in ShiningTradeRequestState.ReadRequests(tradeJson))
+        {
+            if (ApplyTradeInventoryToComposite(expectedShiningRoot, currentShiningRoot, request))
+                changed = true;
+        }
+
+        return changed;
+    }
+
+    private static void ApplyAcceptedFoundingToComposite(
+        JsonObject expectedShiningRoot,
+        JsonObject expectedResidentsRoot,
+        ShiningFactionRequestState.PendingShiningFactionFoundingRequest request,
+        JsonObject receipt)
+    {
+        var halls = expectedShiningRoot["halls"] as JsonArray;
+        if (halls == null)
+        {
+            halls = new JsonArray();
+            expectedShiningRoot["halls"] = halls;
+        }
+        if (FindShiningHall(expectedShiningRoot, request.ProposedHallId) == null)
+        {
+            halls.Add(new JsonObject
+            {
+                ["hallId"] = request.ProposedHallId,
+                ["hallName"] = request.ProposedHallName,
+                ["description"] = request.ProposedHallDescription,
+                ["serviceTags"] = new JsonArray(request.ProposedHallServiceTags
+                    .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                    .Select(tag => (JsonNode?)tag.Trim())
+                    .ToArray())
+            });
+        }
+
+        var factions = expectedShiningRoot["factions"] as JsonArray;
+        if (factions == null)
+        {
+            factions = new JsonArray();
+            expectedShiningRoot["factions"] = factions;
+        }
+        if (ShiningAbodeState.FindFaction(expectedShiningRoot, request.ProposedFactionId) == null)
+        {
+            factions.Add(new JsonObject
+            {
+                ["factionId"] = request.ProposedFactionId,
+                ["originType"] = ShiningAbodeState.OriginTypePlayerFounded,
+                ["hallId"] = request.ProposedHallId,
+                ["charter"] = new JsonObject
+                {
+                    ["factionName"] = request.Charter.FactionName,
+                    ["favoredArchetype"] = request.Charter.FavoredArchetype,
+                    ["patronEffectFamily"] = request.Charter.PatronEffectFamily,
+                    ["summary"] = request.Charter.Summary
+                },
+                ["leadership"] = new JsonObject
+                {
+                    ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                    ["headActorId"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                    ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+                },
+                ["baseStrength"] = 35,
+                ["factionStrength"] = 35,
+                ["investCountThisAscension"] = 0,
+                ["projectArchetypesCountedThisAscension"] = new JsonArray(),
+                ["projects"] = new JsonArray(),
+                ["leadershipReceipts"] = new JsonArray(),
+                ["leadershipHistory"] = new JsonArray()
+            });
+        }
+
+        var supporterIds = request.SupportingResidentIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Select(id => id.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        if (expectedResidentsRoot["entries"] is JsonArray entries)
+        {
+            foreach (var resident in entries.OfType<JsonObject>())
+            {
+                var residentId = GetNodeString(resident["residentId"]);
+                if (!string.IsNullOrWhiteSpace(residentId) && supporterIds.Contains(residentId))
+                    resident["shiningFactionId"] = request.ProposedFactionId;
+            }
+        }
+
+        ShiningAbodeState.EnsureFactionFoundingReceiptsArray(expectedShiningRoot).Add(CloneJsonObject(receipt));
+        ShiningAbodeState.NormalizeStateRoot(expectedShiningRoot, expectedResidentsRoot, null);
+    }
+
+    private static void ApplyRealignmentToComposite(
+        JsonObject expectedShiningRoot,
+        JsonObject expectedResidentsRoot,
+        JsonObject currentResidentsRoot,
+        ShiningFactionRequestState.PendingShiningFactionRealignmentRequest request,
+        JsonObject receipt)
+    {
+        AddUniqueReceipt(
+            ShiningAbodeState.EnsureFactionRealignmentReceiptsArray(expectedShiningRoot),
+            receipt,
+            request.RequestId);
+
+        var status = GetNodeString(receipt["status"]) ?? string.Empty;
+        var resident = GuardianAbodeResidentState.FindResident(expectedResidentsRoot, request.ResidentId);
+        if (resident != null)
+        {
+            if (string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+                resident["shiningFactionId"] = request.TargetFactionId;
+            else if (string.Equals(status, ShiningFactionRequestState.RequestStatusDepartedToNeutral, StringComparison.OrdinalIgnoreCase))
+                resident["shiningFactionId"] = string.Empty;
+        }
+
+        CopyResidentHistoryEntryToComposite(expectedResidentsRoot, currentResidentsRoot, receipt);
+        ShiningAbodeState.NormalizeStateRoot(expectedShiningRoot, expectedResidentsRoot, null);
+    }
+
+    private static void ApplyLeadershipToComposite(
+        JsonObject expectedShiningRoot,
+        JsonObject currentShiningRoot,
+        ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest request,
+        JsonObject receipt)
+    {
+        var expectedFaction = ShiningAbodeState.FindFaction(expectedShiningRoot, request.FactionId);
+        if (expectedFaction == null)
+            return;
+
+        AddUniqueReceipt(
+            EnsureNestedArray(expectedFaction, "leadershipReceipts"),
+            receipt,
+            request.RequestId);
+
+        var currentFaction = ShiningAbodeState.FindFaction(currentShiningRoot, request.FactionId);
+        var currentHistory = currentFaction?["leadershipHistory"] as JsonArray;
+        var historyEntry = currentHistory?.OfType<JsonObject>()
+            .FirstOrDefault(entry => string.Equals(GetNodeString(entry["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase));
+        if (historyEntry != null)
+        {
+            AddUniqueReceipt(
+                EnsureNestedArray(expectedFaction, "leadershipHistory"),
+                historyEntry,
+                request.RequestId);
+        }
+
+        var status = GetNodeString(receipt["status"]) ?? string.Empty;
+        if (string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+        {
+            expectedFaction["leadership"] = string.IsNullOrWhiteSpace(request.CandidateHeadActorType) &&
+                                           string.IsNullOrWhiteSpace(request.CandidateHeadActorId)
+                ? new JsonObject
+                {
+                    ["headActorType"] = null,
+                    ["headActorId"] = null,
+                    ["leadershipState"] = ShiningAbodeState.LeadershipStateVacant
+                }
+                : new JsonObject
+                {
+                    ["headActorType"] = request.CandidateHeadActorType,
+                    ["headActorId"] = request.CandidateHeadActorId,
+                    ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+                };
+
+            ApplyRadiantActorLeadershipStatusToComposite(
+                expectedShiningRoot,
+                request.IncumbentHeadActorType,
+                request.IncumbentHeadActorId,
+                request.FactionId,
+                ShiningAbodeState.PoliticalStatusFormerHead);
+            ApplyRadiantActorLeadershipStatusToComposite(
+                expectedShiningRoot,
+                request.CandidateHeadActorType,
+                request.CandidateHeadActorId,
+                request.FactionId,
+                ShiningAbodeState.PoliticalStatusHead);
+        }
+    }
+
+    private static void ApplyRadiantActorLeadershipStatusToComposite(
+        JsonObject expectedShiningRoot,
+        string? actorType,
+        string? actorId,
+        string factionId,
+        string politicalStatus)
+    {
+        if (!string.Equals(actorType, ShiningAbodeState.HeadActorTypeRadiantActor, StringComparison.OrdinalIgnoreCase) ||
+            string.IsNullOrWhiteSpace(actorId))
+        {
+            return;
+        }
+
+        var actor = FindShiningPoliticalActor(expectedShiningRoot, actorId);
+        if (actor == null)
+            return;
+
+        actor["currentFactionId"] = factionId;
+        actor["politicalStatus"] = politicalStatus;
+    }
+
+    private static JsonObject? FindShiningPoliticalActor(JsonObject shiningRoot, string actorId)
+    {
+        if (shiningRoot["shiningPoliticalActors"] is not JsonArray actors)
+            return null;
+
+        return actors.OfType<JsonObject>()
+            .FirstOrDefault(actor => string.Equals(GetNodeString(actor["actorId"]), actorId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool ApplyTradeInventoryToComposite(
+        JsonObject expectedShiningRoot,
+        JsonObject currentShiningRoot,
+        ShiningTradeRequestState.PendingShiningTradeInventoryRequest request)
+    {
+        var currentFaction = ShiningAbodeState.FindFaction(currentShiningRoot, request.FactionId);
+        var expectedFaction = ShiningAbodeState.FindFaction(expectedShiningRoot, request.FactionId);
+        if (currentFaction == null || expectedFaction == null)
+            return false;
+
+        var tradeInventory = currentFaction["tradeInventory"] as JsonObject;
+        var receipt = ShiningTradeRequestState.FindMatchingReceipt(currentFaction, request);
+        if (!ShiningTradeRequestState.InventoryMatchesRequestContract(tradeInventory, request) ||
+            !ShiningTradeRequestState.ReceiptMatchesRequestContract(receipt, request, tradeInventory))
+        {
+            return false;
+        }
+
+        expectedFaction["tradeInventory"] = CloneJsonObject(tradeInventory!);
+        AddUniqueReceipt(
+            EnsureNestedArray(expectedFaction, ShiningTradeRequestState.ReceiptsProperty),
+            receipt!,
+            request.RequestId);
+        return true;
+    }
+
+    private static void CopyResidentHistoryEntryToComposite(
+        JsonObject expectedResidentsRoot,
+        JsonObject currentResidentsRoot,
+        JsonObject receipt)
+    {
+        var historyEntryId = GetNodeString(receipt["residentHistoryEntryId"]);
+        if (string.IsNullOrWhiteSpace(historyEntryId))
+            return;
+
+        var currentHistoryLog = currentResidentsRoot[GuardianAbodeResidentState.HistoryLogProperty] as JsonArray;
+        var historyEntry = currentHistoryLog?.OfType<JsonObject>()
+            .FirstOrDefault(entry => string.Equals(GetNodeString(entry["entryId"]), historyEntryId, StringComparison.OrdinalIgnoreCase));
+        if (historyEntry != null)
+        {
+            AddUniqueReceipt(
+                GuardianAbodeResidentState.EnsureHistoryLogArray(expectedResidentsRoot),
+                historyEntry,
+                historyEntryId,
+                idProperty: "entryId");
+        }
+    }
+
+    private static JsonArray EnsureNestedArray(JsonObject parent, string propertyName)
+    {
+        if (parent[propertyName] is JsonArray array)
+            return array;
+
+        array = new JsonArray();
+        parent[propertyName] = array;
+        return array;
+    }
+
+    private static void AddUniqueReceipt(
+        JsonArray receipts,
+        JsonObject receipt,
+        string requestId,
+        string idProperty = "requestId")
+    {
+        for (var i = receipts.Count - 1; i >= 0; i--)
+        {
+            if (receipts[i] is not JsonObject existing)
+            {
+                receipts.RemoveAt(i);
+                continue;
+            }
+
+            if (string.Equals(GetNodeString(existing[idProperty]), requestId, StringComparison.OrdinalIgnoreCase))
+                receipts.RemoveAt(i);
+        }
+
+        receipts.Add(CloneJsonObject(receipt));
+    }
+
+    private static bool ShiningCoreActionProjectedStateMatches(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest? request,
+        JsonObject expectedRoot,
+        JsonObject currentRoot,
+        bool hasConcurrentShiningClosure)
+    {
+        if (!hasConcurrentShiningClosure)
+            return ShiningRootsMatchExceptCoreActionReceipts(expectedRoot, currentRoot);
+
+        var expectedComparable = CloneJsonObject(expectedRoot);
+        var currentComparable = CloneJsonObject(currentRoot);
+        expectedComparable.Remove("coreActionReceipts");
+        currentComparable.Remove("coreActionReceipts");
+
+        return JsonNode.DeepEquals(expectedComparable, currentComparable);
     }
 
     private static bool ShiningRootsMatchExceptCoreActionReceipts(JsonObject expectedRoot, JsonObject currentRoot)
