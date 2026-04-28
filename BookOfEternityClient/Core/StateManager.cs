@@ -187,7 +187,10 @@ public class StateManager
             }
 
             if (root.TryGetProperty("preparedIncarnationPackage", out var pkg))
-                state.HasPendingShiningAbodeBootstrapPackage = pkg.ValueKind != JsonValueKind.Null;
+            {
+                state.HasPendingShiningAbodeBootstrapPackage = pkg.ValueKind == JsonValueKind.Object;
+                state.HasInvalidShiningAbodeBootstrapPackage = pkg.ValueKind is not JsonValueKind.Object and not JsonValueKind.Null;
+            }
         });
 
         // Control: Post-life guard for the first ordinary afterlife turn.

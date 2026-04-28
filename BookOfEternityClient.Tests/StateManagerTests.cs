@@ -116,6 +116,44 @@ public sealed class StateManagerTests
     }
 
     [Fact]
+    public async Task RefreshGameStateAsync_MalformedPreparedPackage_FailsClosedInsteadOfOrdinaryShining()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var manager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+            {
+              "soulName": "Тестовая душа",
+              "currentRealm": "Shining Abode",
+              "currentIncarnation": 7
+            }
+            """);
+            await fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """
+            {
+              "availability": "active",
+              "preparedIncarnationPackage": "broken package"
+            }
+            """);
+
+            await manager.RefreshGameStateAsync();
+
+            Assert.True(manager.CurrentState.HasInvalidShiningAbodeBootstrapPackage);
+            Assert.False(manager.CurrentState.HasPendingShiningAbodeBootstrapPackage);
+            Assert.False(manager.CurrentState.IsInShiningAbode);
+            Assert.False(manager.CurrentState.IsInShiningAbodePendingBootstrap);
+            Assert.True(manager.CurrentState.IsInAnyShiningAbodeState);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RefreshGameStateAsync_ActiveGuardianName_UsesManifestationDisplayName()
     {
         var root = CreateTempRoot();
