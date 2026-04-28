@@ -7050,7 +7050,7 @@ public partial class ValidationService
         out string actual)
     {
         actual =
-            $"{GetNodeString(receipt["proposedFactionId"])} / {GetNodeString(receipt["proposedHallId"])} / {GetNodeString(receipt["status"])}";
+            $"{GetNodeString(receipt["proposedFactionId"])} / {GetNodeString(receipt["proposedHallId"])} / {GetNodeString(receipt["status"])} / cost {GetNodeInt(receipt["quotedCostFeathers"])}/{GetNodeInt(receipt["quotedCostLightSparks"])}";
 
         var status = GetNodeString(receipt["status"]);
         if (!ShiningFactionRequestState.IsSupportedFoundingStatus(status) ||
@@ -7069,8 +7069,10 @@ public partial class ValidationService
                string.Equals(GetNodeString(receipt["hallName"]), request.ProposedHallName, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(receipt["factionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
-               GetNodeInt(receipt["quotedCostFeathers"]) == request.QuotedCostFeathers &&
-               GetNodeInt(receipt["quotedCostLightSparks"]) == request.QuotedCostLightSparks &&
+               request.QuotedCostFeathers == ShiningFactionRequestState.FactionFoundingCostFeathers &&
+               request.QuotedCostLightSparks == ShiningFactionRequestState.FactionFoundingCostLightSparks &&
+               GetNodeInt(receipt["quotedCostFeathers"]) == ShiningFactionRequestState.FactionFoundingCostFeathers &&
+               GetNodeInt(receipt["quotedCostLightSparks"]) == ShiningFactionRequestState.FactionFoundingCostLightSparks &&
                receiptSupporters.SetEquals(requestSupporters);
     }
 
