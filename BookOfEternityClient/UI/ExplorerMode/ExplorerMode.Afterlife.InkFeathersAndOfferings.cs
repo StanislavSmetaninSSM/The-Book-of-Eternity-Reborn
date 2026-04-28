@@ -1036,6 +1036,34 @@ public partial class ExplorerMode
                 RelicRarity = relic.Rarity,
                 ReturnCycleId = returnCycleId
             };
+            var relicLines = new List<string>
+            {
+                "[bold gold1]Подношение Реликвии Души Обители[/]",
+                "",
+                $"  Guardian: [white]{Markup.Escape(guardianNameChosen)}[/] [dim]({Markup.Escape(guardianIdChosen)})[/]",
+                $"  Relic: [white]{Markup.Escape(relic.Name)}[/] [dim]({Markup.Escape(relic.RelicId)})[/]",
+                $"  Rarity: [dim]{Markup.Escape(relic.Rarity)}[/]",
+                $"  Power gain formula: [dim]ResolvePowerGainForSoulRelicOffering({Markup.Escape(relic.Rarity)}) = +{relicPowerGain}[/]",
+                "",
+                "[bold]Client-local pre-state change:[/]",
+                "  • Реликвия будет изъята из soulRelics.stored до отправки GM.",
+                "  • Pending request фиксирует offeringType=soul_relic и relic identity.",
+                "",
+                "[bold]GM closure contract:[/]",
+                "  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.",
+                "  • audit: offeringType=soul_relic, relicId, relicName, relicRarity, returnCycleId, baseDelta, finalDelta.",
+                "  • guardian.abodePower.currentPower меняется только через power event."
+            };
+            AppendChaosSeaPendingFileRule(relicLines, GuardianAbodeOfferingState.PendingRequestPath);
+            AppendChaosSeaCommonContractRules(relicLines);
+            if (!ConfirmChaosSeaContractPreview(
+                    "Полный предпросмотр подношения реликвии",
+                    relicLines,
+                    ToChaosSeaAuditNode(relicRequest),
+                    "Полный JSON pending abode offering request"))
+            {
+                return;
+            }
 
             await EnsurePendingLocalTurnRollbackSnapshotAsync(
                 "game_state/meta/soul_state.json",
@@ -1124,6 +1152,35 @@ public partial class ExplorerMode
                 ArchiveRarity = archiveEntry.Rarity,
                 ReturnCycleId = returnCycleId
             };
+            var archiveLines = new List<string>
+            {
+                "[bold gold1]Подношение записи Архива души Обители[/]",
+                "",
+                $"  Guardian: [white]{Markup.Escape(guardianNameChosen)}[/] [dim]({Markup.Escape(guardianIdChosen)})[/]",
+                $"  Archive entry: [white]{Markup.Escape(archiveEntry.Title)}[/] [dim]({Markup.Escape(archiveEntry.ArchiveId)})[/]",
+                $"  Type/rarity: [dim]{Markup.Escape(archiveEntry.EntryType)} / {Markup.Escape(archiveEntry.Rarity)}[/]",
+                $"  offeringType: [dim]{Markup.Escape(archiveOfferingType)}[/]",
+                $"  Power gain formula: [dim]ResolvePowerGainForArchiveRarity({Markup.Escape(archiveEntry.Rarity)}) = +{archivePowerGain}[/]",
+                "",
+                "[bold]Client-local pre-state change:[/]",
+                "  • Запись будет изъята из soul_state.afterlifeArchive.stored до отправки GM.",
+                "  • Pending request фиксирует archive identity, entryType, rarity и returnCycleId.",
+                "",
+                "[bold]GM closure contract:[/]",
+                "  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.",
+                "  • audit: offeringType, archiveId, archiveTitle, archiveEntryType, archiveRarity, returnCycleId, baseDelta, finalDelta.",
+                "  • output/ink_feather_action_result.json не нужен, если offeringType не ink_feathers."
+            };
+            AppendChaosSeaPendingFileRule(archiveLines, GuardianAbodeOfferingState.PendingRequestPath);
+            AppendChaosSeaCommonContractRules(archiveLines);
+            if (!ConfirmChaosSeaContractPreview(
+                    "Полный предпросмотр подношения Архива",
+                    archiveLines,
+                    ToChaosSeaAuditNode(archiveRequest),
+                    "Полный JSON pending abode offering request"))
+            {
+                return;
+            }
 
             await EnsurePendingLocalTurnRollbackSnapshotAsync(
                 "game_state/meta/soul_state.json",
@@ -1196,6 +1253,36 @@ public partial class ExplorerMode
             InkFeathersOffered = inputCost,
             ReturnCycleId = returnCycleId
         };
+        var featherLines = new List<string>
+        {
+            "[bold gold1]Подношение Чернильных Перьев Обители[/]",
+            "",
+            $"  Guardian: [white]{Markup.Escape(guardianNameChosen)}[/] [dim]({Markup.Escape(guardianIdChosen)})[/]",
+            $"  Ink Feathers offered: [white]{inputCost}[/]",
+            $"  Balance: [white]{feathers}[/] -> [white]{feathers - inputCost}[/]",
+            $"  Return cycle: [dim]{Markup.Escape(returnCycleId)}[/]",
+            $"  Cap remaining before: [dim]{remainingCapChosen}[/]",
+            $"  Power gain formula: [dim]ResolvePowerGainForInkFeatherOffering({inputCost}) = +{powerGain}[/]",
+            "",
+            "[bold]Client-local pre-state change:[/]",
+            "  • Ink Feathers списываются клиентом до отправки GM.",
+            "  • Pending request фиксирует offeringType=ink_feathers и точную сумму.",
+            "",
+            "[bold]GM closure contract:[/]",
+            "  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.",
+            "  • output/ink_feather_action_result.json обязателен: actionTag=ABODE_OFFERING, resolved=true, costInFeathers, resolutionType=abodeOffering.",
+            "  • stateEvidence должен иметь powerGain, powerEventId, guardianId и affectedFiles."
+        };
+        AppendChaosSeaPendingFileRule(featherLines, GuardianAbodeOfferingState.PendingRequestPath);
+        AppendChaosSeaCommonContractRules(featherLines);
+        if (!ConfirmChaosSeaContractPreview(
+                "Полный предпросмотр подношения Перьев",
+                featherLines,
+                ToChaosSeaAuditNode(request),
+                "Полный JSON pending abode offering request"))
+        {
+            return;
+        }
 
         await EnsurePendingLocalTurnRollbackSnapshotAsync(
             "game_state/meta/soul_state.json",
@@ -1446,11 +1533,49 @@ public partial class ExplorerMode
             entry.ArchiveId,
             Math.Max(1, _stateManager.CurrentState.Incarnation),
             _stateManager.CurrentState.CurrentRealm,
-            await TryReadCurrentTurnNumberAsync());
+            await TryReadCurrentTurnNumberAsync(),
+            commit: false);
 
         if (result == null)
         {
             MarkupLine("[red]❌ Не удалось провести архивную консультацию.[/]");
+            return false;
+        }
+
+        var consultationLines = new List<string>
+        {
+            "[bold yellow]Архивная консультация[/]",
+            "",
+            $"  Guardian: [white]{Markup.Escape(result.GuardianName)}[/] [dim]({Markup.Escape(result.GuardianId)})[/]",
+            $"  Archive entry: [white]{Markup.Escape(result.ArchiveTitle)}[/] [dim]({Markup.Escape(result.ArchiveId)})[/]",
+            $"  Type: [dim]{Markup.Escape(result.ArchiveEntryType)}[/]",
+            $"  Target incarnation: [dim]{result.TargetIncarnation}[/]",
+            "",
+            "[bold]Client-local pre-state change:[/]",
+            "  • Запись резервируется в soul_state.afterlifeArchive.stored до ответа GM.",
+            "  • Pending request фиксирует requestedMode=consultation.",
+            "",
+            "[bold]GM closure contract:[/]",
+            "  • archiveActionResolutions с requestId, archiveId, requestedMode=consultation, guardianId, status.",
+            "  • accepted consultation требует machine-readable outcome fields.",
+            "  • lore_fragment whitelist: guaranteedArchiveQuestCount, questHookCount, specialQuestLineUnlocks.",
+            "  • secret_record whitelist: visibleRivalClueBonus, archiveWarningTierBonus.",
+            "  • Отказ или отмена возвращают запись в Архив."
+        };
+        AppendChaosSeaPendingFileRule(consultationLines, result.PendingRequestPath);
+        AppendChaosSeaCommonContractRules(consultationLines);
+        if (!ConfirmChaosSeaContractPreview(
+                "Полный предпросмотр архивной консультации",
+                consultationLines,
+                JsonNode.Parse(result.PendingRequestJson),
+                "Полный JSON pending archive consultation request"))
+        {
+            return false;
+        }
+
+        if (!await _afterlifeArchiveConsultationService.CommitPreparedRequestAsync(result))
+        {
+            MarkupLine("[red]❌ Не удалось безопасно зафиксировать архивную консультацию.[/]");
             return false;
         }
 
@@ -1527,11 +1652,48 @@ public partial class ExplorerMode
             guardian.GuardianName,
             entry.ArchiveId,
             _stateManager.CurrentState.CurrentRealm,
-            await TryReadCurrentTurnNumberAsync());
+            await TryReadCurrentTurnNumberAsync(),
+            commit: false);
 
         if (result == null)
         {
             MarkupLine("[red]❌ Не удалось вложить запись в проект.[/]");
+            return false;
+        }
+
+        var fuelLines = new List<string>
+        {
+            "[bold yellow]Архивная подпитка проекта[/]",
+            "",
+            $"  Guardian: [white]{Markup.Escape(result.GuardianName)}[/] [dim]({Markup.Escape(result.GuardianId)})[/]",
+            $"  Project: [white]{Markup.Escape(result.ProjectName)}[/] [dim]({Markup.Escape(result.ProjectId)})[/]",
+            $"  Archive entry: [white]{Markup.Escape(result.ArchiveTitle)}[/] [dim]({Markup.Escape(result.ArchiveId)})[/]",
+            "",
+            "[bold]Client-local pre-state change:[/]",
+            "  • Запись резервируется в soul_state.afterlifeArchive.stored до ответа GM.",
+            "  • Pending request фиксирует requestedMode=project_fuel и targetProjectId.",
+            "",
+            "[bold]GM closure contract:[/]",
+            "  • archiveActionResolutions с requestId, archiveId, requestedMode=project_fuel, guardianId, targetProjectId, status.",
+            "  • Принятый результат должен иметь resultMode и resultAmount>0.",
+            "  • lore_fragment разрешён только project_work.",
+            "  • secret_record разрешён только pressure_relief.",
+            "  • journal entry eventType=assisted должен сохранить archiveFuelRequestId и archiveId."
+        };
+        AppendChaosSeaPendingFileRule(fuelLines, result.PendingRequestPath);
+        AppendChaosSeaCommonContractRules(fuelLines);
+        if (!ConfirmChaosSeaContractPreview(
+                "Полный предпросмотр архивной подпитки проекта",
+                fuelLines,
+                JsonNode.Parse(result.PendingRequestJson),
+                "Полный JSON ожидающего запроса подпитки проекта Архивом"))
+        {
+            return false;
+        }
+
+        if (!await _afterlifeArchiveProjectFuelService.CommitPreparedRequestAsync(result))
+        {
+            MarkupLine("[red]❌ Не удалось безопасно зафиксировать архивную подпитку проекта.[/]");
             return false;
         }
 
@@ -1806,6 +1968,18 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel(
+            "Полный JSON direct Chaos Sea gacha contract",
+            BuildChaosSeaDirectActionAudit(
+                "CHAOS_SEA_DIRECT_GACHA",
+                $"[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит {inputCost} Чернильных Перьев.",
+                ("costInFeathers", inputCost),
+                ("currentFeathers", feathers),
+                ("projectedFeathers", feathers - inputCost),
+                ("baseScore", gacha.BaseScore),
+                ("baseRarity", baseRarity),
+                ("formula", gacha.Formula ?? "client-computed gacha base (range 4-80)")),
+            Color.Gold1);
 
         var costDisplay = $"{inputCost} 🪶 (останется {feathers - inputCost})";
         var confirm = Prompt(new SelectionPrompt<string>()

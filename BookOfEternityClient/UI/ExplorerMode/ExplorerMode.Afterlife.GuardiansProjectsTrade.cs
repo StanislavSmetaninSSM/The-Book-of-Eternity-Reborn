@@ -279,6 +279,8 @@ public partial class ExplorerMode
             if (selected.Contains("Искать новую обитель"))
             {
                 await ShowSearchAbodePrompt();
+                if (_pendingGmAction != null)
+                    return;
                 continue;
             }
 
@@ -917,7 +919,7 @@ public partial class ExplorerMode
                 continue;
             }
 
-            _pendingGmAction =
+            var travelAction =
                 $"[CHAOS_SEA_TRAVEL] Душа выбирает перемещение в обитель '{selAbodeName}' " +
                 $"(targetAbodeId={selAbodeId}, targetGuardianId={selGuardianId}, targetGuardianName='{selGName}', " +
                 $"previousAbodeId={currentAbodeId}, previousActiveGuardianId={previousActiveGuardianId}, previousActiveGuardianName='{previousActiveGuardianName}', " +
@@ -926,6 +928,41 @@ public partial class ExplorerMode
                 "синхронно установи activeGuardian на targetGuardianId, chaosSeaNavigation.currentAbodeId на targetAbodeId, " +
                 "убедись что targetAbodeId есть в chaosSeaNavigation.discoveredAbodes и что abode.isDiscovered=true у target guardian. " +
                 "Не используй currentLocationData, UpdateNPCs, worldEventsLog, weather/time или Mortal World travel/location systems.";
+            var travelLines = new List<string>
+            {
+                "[bold cyan]Переход между Обителями[/]",
+                "",
+                $"  From abode: [dim]{Markup.Escape(currentAbodeId)}[/]",
+                $"  From activeGuardian: [dim]{Markup.Escape(previousActiveGuardianId)}[/] {Markup.Escape(previousActiveGuardianName)}",
+                $"  Target abode: [white]{Markup.Escape(selAbodeName)}[/] [dim]({Markup.Escape(selAbodeId)})[/]",
+                $"  Target guardian: [white]{Markup.Escape(selGName)}[/] [dim]({Markup.Escape(selGuardianId)})[/]",
+                $"  Уже открыта игроком: [dim]{targetAlreadyDiscovered.ToString().ToLowerInvariant()}[/]",
+                $"  discoveredAbodes до хода: [dim]{Markup.Escape(discoveredAbodesContract)}[/]",
+                "",
+                "[bold]Canonical accepted outcome:[/]",
+                "  • guardians.json.activeGuardian = targetGuardianId.",
+                "  • guardians.json.chaosSeaNavigation.currentAbodeId = targetAbodeId.",
+                "  • targetAbodeId присутствует в chaosSeaNavigation.discoveredAbodes.",
+                "  • target guardian abode.isDiscovered=true.",
+                "  • Путешествие отыгрывается как полноценный afterlife ход, но не как Mortal World travel."
+            };
+            AppendChaosSeaCommonContractRules(travelLines);
+            if (!ConfirmChaosSeaContractPreview(
+                    "Полный предпросмотр перехода Моря Хаоса",
+                    travelLines,
+                    BuildChaosSeaDirectActionAudit(
+                        "CHAOS_SEA_TRAVEL",
+                        travelAction,
+                        ("previousAbodeId", currentAbodeId),
+                        ("previousActiveGuardianId", previousActiveGuardianId),
+                        ("targetAbodeId", selAbodeId),
+                        ("targetGuardianId", selGuardianId),
+                        ("targetAlreadyDiscovered", targetAlreadyDiscovered))))
+            {
+                continue;
+            }
+
+            _pendingGmAction = travelAction;
 
             MarkupLine($"[cyan]🌊 Переход в обитель «{Markup.Escape(selAbodeName)}» отправляется Мастеру Игры...[/]");
             return;
@@ -2280,11 +2317,37 @@ public partial class ExplorerMode
                     InteractionType = ActorSocialInteractionRequestState.GuardianInteractionTypeTalk,
                     CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
                 };
-                await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, request);
-                _pendingGmAction =
+                var actionText =
                     $"[GUARDIAN_SOCIAL_TALK_REQUEST] Игрок обращается к Хранителю '{guardianName}' (guardianId={guardianId}, requestId={request.RequestId}) с обычным разговором. " +
                     "В следующем подтверждённом ходе отыграй сцену и обязательно закрой этот разговор записью в журнале общения Хранителя с requestId, guardianId, interactionType=talk, status=accepted|rejected|cancelled, optional responseMode, title, summary, turn и timestamp. " +
                     "Журнал мыслей Хранителя остаётся рекомендуемым дополнением, но запись о закрытии разговора обязательна.";
+                var lines = new List<string>
+                {
+                    "[bold cyan]Разговор с Хранителем[/]",
+                    "",
+                    $"  Guardian: [white]{Markup.Escape(guardianName)}[/] [dim]({Markup.Escape(guardianId)})[/]",
+                    $"  requestId: [dim]{Markup.Escape(request.RequestId)}[/]",
+                    $"  interactionType: [dim]{ActorSocialInteractionRequestState.GuardianInteractionTypeTalk}[/]",
+                    "",
+                    "[bold]GM closure contract:[/]",
+                    "  • Закрыть через guardian social journal receipt.",
+                    "  • Обязательные поля: requestId, guardianId, interactionType=talk, status, title, summary, turn, timestamp.",
+                    "  • status: accepted | rejected | cancelled.",
+                    "  • guardian thought journal optional, но social closure entry обязательна."
+                };
+                AppendChaosSeaPendingFileRule(lines, ActorSocialInteractionRequestState.PendingGuardianRequestPath);
+                AppendChaosSeaCommonContractRules(lines);
+                if (!ConfirmChaosSeaContractPreview(
+                        "Полный предпросмотр разговора с Хранителем",
+                        lines,
+                        ToChaosSeaAuditNode(request),
+                        "Полный JSON pending guardian social request"))
+                {
+                    return;
+                }
+
+                await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, request);
+                _pendingGmAction = actionText;
                 MarkupLine("[cyan]Разговор с Хранителем отправлен GM.[/]");
                 return;
             }
@@ -2304,11 +2367,37 @@ public partial class ExplorerMode
                     InteractionType = ActorSocialInteractionRequestState.GuardianInteractionTypeLore,
                     CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
                 };
-                await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, request);
-                _pendingGmAction =
+                var actionText =
                     $"[GUARDIAN_SOCIAL_LORE_REQUEST] Игрок просит Хранителя '{guardianName}' (guardianId={guardianId}, requestId={request.RequestId}) поделиться знанием или лором. " +
                     "В следующем подтверждённом ходе отыграй сцену и обязательно закрой этот запрос записью в журнале общения Хранителя с requestId, guardianId, interactionType=lore, status=accepted|rejected|cancelled, optional responseMode=lore_revealed|lore_refused|warning|refusal, title, summary, turn и timestamp. " +
                     "Если знание действительно раскрыто, при необходимости добавь журнал мыслей Хранителя и связанные игровые последствия отдельно от самой записи о закрытии запроса.";
+                var lines = new List<string>
+                {
+                    "[bold cyan]Вопрос Хранителю о знании[/]",
+                    "",
+                    $"  Guardian: [white]{Markup.Escape(guardianName)}[/] [dim]({Markup.Escape(guardianId)})[/]",
+                    $"  requestId: [dim]{Markup.Escape(request.RequestId)}[/]",
+                    $"  interactionType: [dim]{ActorSocialInteractionRequestState.GuardianInteractionTypeLore}[/]",
+                    "",
+                    "[bold]GM closure contract:[/]",
+                    "  • Закрыть через guardian social journal receipt.",
+                    "  • Обязательные поля: requestId, guardianId, interactionType=lore, status, responseMode, title, summary, turn, timestamp.",
+                    "  • responseMode whitelist: lore_revealed | lore_refused | warning | refusal.",
+                    "  • Если лор раскрыт, все игровые последствия оформляются отдельными canonical updates."
+                };
+                AppendChaosSeaPendingFileRule(lines, ActorSocialInteractionRequestState.PendingGuardianRequestPath);
+                AppendChaosSeaCommonContractRules(lines);
+                if (!ConfirmChaosSeaContractPreview(
+                        "Полный предпросмотр вопроса о знании",
+                        lines,
+                        ToChaosSeaAuditNode(request),
+                        "Полный JSON pending guardian lore request"))
+                {
+                    return;
+                }
+
+                await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, request);
+                _pendingGmAction = actionText;
                 MarkupLine("[cyan]Вопрос о знании отправлен GM.[/]");
                 return;
             }
@@ -2490,6 +2579,39 @@ public partial class ExplorerMode
                         FounderFeatureSummary = isFoundedGuardian ? founderFeatureSummary : null,
                         CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
                     };
+                    var rosterLines = new List<string>
+                    {
+                        "[bold cyan]Запрос состава обитателей Обители[/]",
+                        "",
+                        $"  Guardian: [white]{Markup.Escape(guardianName)}[/] [dim]({Markup.Escape(guardianId)})[/]",
+                        $"  Abode: [white]{Markup.Escape(abodeName)}[/] [dim]({Markup.Escape(abodeId)})[/]",
+                        $"  currentReputation: [dim]{reputation}[/]",
+                        $"  requestMode: [dim]{Markup.Escape(request.RequestMode)}[/]",
+                        "",
+                        "[bold]GM materialization contract:[/]",
+                        "  • Создать явный guardian_abode_residents.json roster для указанной Обители.",
+                        "  • Каждый resident должен иметь полный canonical resident object: residentKind, originType, bond/devotion/restlessness/migration, isPresent, futureCompanionPrompt и т.д.",
+                        "  • Старые жители других Обителей не переносятся автоматически.",
+                        "  • Закрытие запроса должно оставить state, который валидатор сможет связать с guardianId/abodeId/requestId."
+                    };
+                    if (isFoundedGuardian)
+                    {
+                        rosterLines.Add("");
+                        rosterLines.Add("[bold]Основанная мантия:[/]");
+                        rosterLines.Add($"  • Дар основания: [white]{Markup.Escape(founderFeatureTitle)}[/]");
+                        rosterLines.Add($"  • Summary: [dim]{Markup.Escape(founderFeatureSummary)}[/]");
+                    }
+                    AppendChaosSeaPendingFileRule(rosterLines, GuardianAbodeResidentRequestState.PendingResidentsRequestPath);
+                    AppendChaosSeaCommonContractRules(rosterLines);
+                    if (!ConfirmChaosSeaContractPreview(
+                            "Полный предпросмотр запроса резидентов Обители",
+                            rosterLines,
+                            ToChaosSeaAuditNode(request),
+                            "Полный JSON pending guardian abode residents request"))
+                    {
+                        return;
+                    }
+
                     await GuardianAbodeResidentRequestState.WriteResidentsRequestAsync(_fs, request);
                     _pendingGmAction = GuardianAbodeResidentRequestState.BuildResidentsRosterPendingGmActionText(request);
                 }
@@ -2809,25 +2931,87 @@ public partial class ExplorerMode
 
         if (action.StartsWith("💎", StringComparison.Ordinal))
         {
-            _pendingGmAction =
+            var actionText =
                 $"[ABODE_RESIDENT_RELIC_GRANT] Игрок принимает реликвию связи от afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, abodeId={abodeId}, abodeName={abodeName}). " +
                 "В следующем подтверждённом ходе выдай новую Реликвию Души через metaStateUpdates.soulRelicOperations.addRelic. " +
                 $"Реликвия должна иметь relicType={GuardianAbodeResidentState.RelicTypeCompanionEcho}, sourceResidentId={resident.ResidentId}, sourceGuardianId={guardianId}, sourceGuardianName={guardianName}, rarity не ниже Rare и complete companionSeed с companionNameHint, originWorldSummary, futureCompanionPrompt, bondReason, coreTraits, archetypeHints, appearanceMotifs, rich personalityProfile, abodeDisposition, abodeDevotionLevel/abodeDevotionTier и restlessness/migrationState. " +
                 $"Также обнови resident state через UpdateGuardianAbodeResidents так, чтобы bondRewardState стал '{GuardianAbodeResidentState.RewardStateGranted}', а grantedRelicId указывал на выданную реликвию. " +
                 "Если вручение заметно меняет отношение резидента к Обители, обнови также abodeDevotionLevel/restlessness/migrationState в bounded canonical steps, выведенных из outcome, текущей силы Обители, abodeDisposition и bondLevel. " +
                 "Не забудь добавить residentInteractionLogUpdates с кратким summary вручения реликвии и его последствия.";
+            var relicGrantLines = new List<string>
+            {
+                "[bold cyan]Получение реликвии связи от резидента[/]",
+                "",
+                $"  Resident: [white]{Markup.Escape(resident.DisplayName)}[/] [dim]({Markup.Escape(resident.ResidentId)})[/]",
+                $"  Guardian/Abode: [dim]{Markup.Escape(guardianId)} / {Markup.Escape(abodeId)}[/]",
+                $"  Текущий bond: [dim]{Markup.Escape(resident.BondTier)} {resident.BondLevel}/100[/]",
+                $"  Текущий reward state: [dim]{Markup.Escape(resident.BondRewardState)}[/]",
+                "",
+                "[bold]Accepted state changes:[/]",
+                $"  • Добавить Soul Relic с relicType={GuardianAbodeResidentState.RelicTypeCompanionEcho}.",
+                "  • Редкость новой реликвии не ниже Rare.",
+                "  • companionSeed должен быть полным: companionNameHint, originWorldSummary, futureCompanionPrompt, bondReason, traits, archetypeHints, appearanceMotifs, personalityProfile, abodeDisposition.",
+                $"  • UpdateGuardianAbodeResidents: bondRewardState={GuardianAbodeResidentState.RewardStateGranted}, grantedRelicId = id новой реликвии.",
+                "  • Добавить residentInteractionLogUpdates с памятью вручения."
+            };
+            AppendChaosSeaCommonContractRules(relicGrantLines);
+            if (!ConfirmChaosSeaContractPreview(
+                    "Полный предпросмотр реликвии связи",
+                    relicGrantLines,
+                    BuildChaosSeaDirectActionAudit(
+                        "ABODE_RESIDENT_RELIC_GRANT",
+                        actionText,
+                        ("residentId", resident.ResidentId),
+                        ("guardianId", guardianId),
+                        ("abodeId", abodeId),
+                        ("requiredRelicType", GuardianAbodeResidentState.RelicTypeCompanionEcho))))
+            {
+                return;
+            }
+
+            _pendingGmAction = actionText;
             MarkupLine("[cyan]Реликвия связи запрошена у GM.[/]");
             return;
         }
 
         if (action.StartsWith("🧵", StringComparison.Ordinal))
         {
-            _pendingGmAction =
+            var actionText =
                 $"[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, abodeId={abodeId}). " +
                 "В принятом ходе отыграй просьбу и явно создай или продвинь обычный квест души через UpdateSoulQuests. " +
                 $"Квест души должен иметь guardianId={guardianId}, relatedAfterlifeResidentId={resident.ResidentId} и понятные игроку title/description. " +
                 "При необходимости также обнови resident bondLevel/bondTier, linkedSoulQuestId и abodeDevotionLevel/restlessness/migrationState через UpdateGuardianAbodeResidents; состояние обитателя в Обители меняй только небольшими каноническими шагами, выведенными из исхода квеста, текущей силы Обители, abodeDisposition и bondLevel. " +
                 "Оставь residentInteractionLogUpdates с короткой сводкой просьбы и прогресса, чтобы у ГМа оставалась связная память этого шага.";
+            var residentQuestLines = new List<string>
+            {
+                "[bold cyan]Личная просьба резидента[/]",
+                "",
+                $"  Resident: [white]{Markup.Escape(resident.DisplayName)}[/] [dim]({Markup.Escape(resident.ResidentId)})[/]",
+                $"  Guardian/Abode: [dim]{Markup.Escape(guardianId)} / {Markup.Escape(abodeId)}[/]",
+                $"  linkedSoulQuestId сейчас: [dim]{Markup.Escape(resident.LinkedSoulQuestId)}[/]",
+                "",
+                "[bold]Accepted state changes:[/]",
+                "  • Создать или продвинуть обычный Soul Quest через UpdateSoulQuests.",
+                "  • Новый/обновлённый квест должен иметь guardianId и relatedAfterlifeResidentId.",
+                "  • При изменении связи использовать bounded resident state steps.",
+                "  • Добавить residentInteractionLogUpdates с памятью просьбы."
+            };
+            AppendChaosSeaCommonContractRules(residentQuestLines);
+            if (!ConfirmChaosSeaContractPreview(
+                    "Полный предпросмотр просьбы резидента",
+                    residentQuestLines,
+                    BuildChaosSeaDirectActionAudit(
+                        "ABODE_RESIDENT_QUEST_REQUEST",
+                        actionText,
+                        ("residentId", resident.ResidentId),
+                        ("guardianId", guardianId),
+                        ("abodeId", abodeId),
+                        ("linkedSoulQuestId", resident.LinkedSoulQuestId))))
+            {
+                return;
+            }
+
+            _pendingGmAction = actionText;
             MarkupLine("[cyan]Личная просьба обитателя отправлена GM.[/]");
             return;
         }
@@ -2857,14 +3041,40 @@ public partial class ExplorerMode
                 InteractionType = GuardianAbodeResidentState.InteractionTypeHistory,
                 CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
             };
-            await GuardianAbodeResidentRequestState.WriteInteractionRequestAsync(_fs, request);
-            _pendingGmAction =
+            var actionText =
                 $"[ABODE_RESIDENT_HISTORY_REQUEST] Игрок просит afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, requestId={request.RequestId}) раскрыть прошлую историю. " +
                 "В следующем подтверждённом ходе обязательно закрой этот запрос через UpdateGuardianAbodeResidentInteractionReceipts со status=accepted|rejected|cancelled. " +
                 "Если история действительно раскрыта, либо установи historyRevealed=true, либо добавь запись через UpdateGuardianAbodeResidentHistoryLog, либо обнови mortalWorldImprint. " +
                 "После accepted ответа обязательно добавь residentThoughtJournalUpdates и/или residentInteractionLogUpdates с краткой памятью результата сцены. " +
                 "Если сцена заметно меняет отношение резидента к Обители, обнови abodeDevotionLevel/restlessness/migrationState через UpdateGuardianAbodeResidents только в bounded canonical steps, выведенных из responseMode/outcome, текущей силы Обители, abodeDisposition и bondLevel. " +
                 "Обычный отказ допустим, но он тоже должен быть явно закрыт receipt-ом.";
+            var historyLines = new List<string>
+            {
+                "[bold cyan]Раскрытие прошлой истории резидента[/]",
+                "",
+                $"  Resident: [white]{Markup.Escape(resident.DisplayName)}[/] [dim]({Markup.Escape(resident.ResidentId)})[/]",
+                $"  requestId: [dim]{Markup.Escape(request.RequestId)}[/]",
+                $"  historyRevealed сейчас: [dim]{resident.HistoryRevealed.ToString().ToLowerInvariant()}[/]",
+                "",
+                "[bold]GM closure contract:[/]",
+                "  • UpdateGuardianAbodeResidentInteractionReceipts с requestId, residentId, interactionType=history, status.",
+                "  • Если accepted: historyRevealed=true и/или UpdateGuardianAbodeResidentHistoryLog и/или mortalWorldImprint.",
+                "  • Добавить residentThoughtJournalUpdates и/или residentInteractionLogUpdates.",
+                "  • Отказ или отмена тоже закрываются receipt-ом."
+            };
+            AppendChaosSeaPendingFileRule(historyLines, GuardianAbodeResidentRequestState.PendingInteractionsRequestPath);
+            AppendChaosSeaCommonContractRules(historyLines);
+            if (!ConfirmChaosSeaContractPreview(
+                    "Полный предпросмотр истории резидента",
+                    historyLines,
+                    ToChaosSeaAuditNode(request),
+                    "Полный JSON pending resident history request"))
+            {
+                return;
+            }
+
+            await GuardianAbodeResidentRequestState.WriteInteractionRequestAsync(_fs, request);
+            _pendingGmAction = actionText;
             MarkupLine("[cyan]История обитателя запрошена у GM.[/]");
             return;
         }
@@ -2902,12 +3112,38 @@ public partial class ExplorerMode
                 InteractionType = GuardianAbodeResidentState.InteractionTypeTalk,
                 CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
             };
-            await GuardianAbodeResidentRequestState.WriteInteractionRequestAsync(_fs, request);
-            _pendingGmAction =
+            var actionText =
                 $"[ABODE_RESIDENT_TALK] Игрок разговаривает с afterlife resident '{resident.DisplayName}' (residentId={resident.ResidentId}, guardianId={guardianId}, abodeId={abodeId}, abodeName={abodeName}, requestId={request.RequestId}). " +
                 "В следующем подтверждённом ходе отыграй сцену и обязательно закрой этот разговор через UpdateGuardianAbodeResidentInteractionReceipts со status=accepted|rejected|cancelled. " +
                 "После accepted ответа обязательно оставь residentThoughtJournalUpdates и/или residentInteractionLogUpdates с краткой памятью результата сцены. " +
                 "Если были meaningful state changes, обнови resident state через UpdateGuardianAbodeResidents; abodeDevotionLevel/restlessness/migrationState меняй только в bounded canonical steps, выведенных из responseMode/outcome, текущей силы Обители, abodeDisposition и bondLevel.";
+            var talkLines = new List<string>
+            {
+                "[bold cyan]Разговор с резидентом Обители[/]",
+                "",
+                $"  Resident: [white]{Markup.Escape(resident.DisplayName)}[/] [dim]({Markup.Escape(resident.ResidentId)})[/]",
+                $"  requestId: [dim]{Markup.Escape(request.RequestId)}[/]",
+                $"  bond/devotion: [dim]{Markup.Escape(resident.BondTier)} {resident.BondLevel}/100; {Markup.Escape(resident.AbodeDevotionTier)} {resident.AbodeDevotionLevel}/100[/]",
+                "",
+                "[bold]GM closure contract:[/]",
+                "  • UpdateGuardianAbodeResidentInteractionReceipts с requestId, residentId, interactionType=talk, status.",
+                "  • accepted response должен оставить residentThoughtJournalUpdates и/или residentInteractionLogUpdates.",
+                "  • State changes только через UpdateGuardianAbodeResidents bounded steps.",
+                "  • Отказ или отмена тоже закрываются receipt-ом."
+            };
+            AppendChaosSeaPendingFileRule(talkLines, GuardianAbodeResidentRequestState.PendingInteractionsRequestPath);
+            AppendChaosSeaCommonContractRules(talkLines);
+            if (!ConfirmChaosSeaContractPreview(
+                    "Полный предпросмотр разговора с резидентом",
+                    talkLines,
+                    ToChaosSeaAuditNode(request),
+                    "Полный JSON pending resident talk request"))
+            {
+                return;
+            }
+
+            await GuardianAbodeResidentRequestState.WriteInteractionRequestAsync(_fs, request);
+            _pendingGmAction = actionText;
             MarkupLine("[cyan]Разговор с обитателем Обители отправлен GM.[/]");
             return;
         }
@@ -3472,6 +3708,43 @@ public partial class ExplorerMode
             CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
         };
 
+        var transferLines = new List<string>
+        {
+            "[bold cyan]Переход резидента между Обителями[/]",
+            "",
+            $"  Resident: [white]{Markup.Escape(resident.DisplayName)}[/] [dim]({Markup.Escape(resident.ResidentId)})[/]",
+            $"  Source: [white]{Markup.Escape(sourceGuardianName)} / {Markup.Escape(sourceAbodeName)}[/] [dim]({Markup.Escape(sourceGuardianId)} / {Markup.Escape(sourceAbodeId)})[/]",
+            string.Equals(choice.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase)
+                ? "  Target: [yellow]уход без новой Обители[/]"
+                : $"  Target: [white]{Markup.Escape(choice.TargetGuardianName)} / {Markup.Escape(choice.TargetAbodeName)}[/] [dim]({Markup.Escape(choice.TargetGuardianId)} / {Markup.Escape(choice.TargetAbodeId)})[/]",
+            $"  transferMode: [dim]{Markup.Escape(choice.TransferMode)}[/]",
+            $"  selectionMode: [dim]{Markup.Escape(choice.SelectionMode)}[/]",
+            $"  current devotion/restlessness: [dim]{resident.AbodeDevotionLevel}/100; {resident.Restlessness}/100[/]"
+        };
+        if (choice.CompetitionScore.HasValue)
+        {
+            transferLines.Add($"  competitionScore: [dim]{choice.CompetitionScore.Value}/100[/]");
+            transferLines.Add($"  competitionLabel: [dim]{Markup.Escape(choice.CompetitionLabel ?? string.Empty)}[/]");
+            transferLines.Add($"  competitionReason: [dim]{Markup.Escape(choice.CompetitionReason ?? string.Empty)}[/]");
+        }
+        transferLines.Add("");
+        transferLines.Add("[bold]GM closure contract:[/]");
+        transferLines.Add("  • Закрыть через UpdateGuardianAbodeResidentTransferReceipts с requestId, residentId, transferMode, status.");
+        transferLines.Add("  • accepted transfer: тот же residentId переносится в target guardian/abode, source departure и target arrival фиксируются history entries.");
+        transferLines.Add("  • departure_only: resident перестаёт быть present в source roster и получает departure history entry.");
+        transferLines.Add("  • refused: resident остаётся в source abode, receipt.status=refused и создаётся отказная history entry.");
+        transferLines.Add("  • Резидент не может одновременно остаться present в source и появиться present в target.");
+        AppendChaosSeaPendingFileRule(transferLines, GuardianAbodeResidentRequestState.PendingTransfersRequestPath);
+        AppendChaosSeaCommonContractRules(transferLines);
+        if (!ConfirmChaosSeaContractPreview(
+                "Полный предпросмотр перехода резидента",
+                transferLines,
+                ToChaosSeaAuditNode(request),
+                "Полный JSON pending resident transfer request"))
+        {
+            return false;
+        }
+
         await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(_fs, request);
 
         if (string.Equals(choice.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase))
@@ -3527,12 +3800,61 @@ public partial class ExplorerMode
 
         while (true)
         {
-            var view = await _guardianTradeService.EnsureTradeInventoryAsync(guardianId, _stateManager.CurrentState.Incarnation, await TryReadCurrentTurnNumberAsync());
+            var view = await _guardianTradeService.EnsureTradeInventoryAsync(guardianId, _stateManager.CurrentState.Incarnation, await TryReadCurrentTurnNumberAsync(), createPendingRequests: false);
             if (view == null)
             {
                 MarkupLine("[red]❌ Не удалось загрузить витрину Хранителя.[/]");
                 WaitForKey();
                 return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(view.PendingInventoryRequestJson) &&
+                !string.IsNullOrWhiteSpace(view.PendingInventoryRequestPath))
+            {
+                var requestAudit = JsonNode.Parse(view.PendingInventoryRequestJson);
+                var tradeLines = new List<string>
+                {
+                    "[bold cyan]Подготовка торговой витрины Хранителя[/]",
+                    "",
+                    $"  Guardian: [white]{Markup.Escape(view.GuardianName)}[/] [dim]({Markup.Escape(view.GuardianId)})[/]",
+                    $"  Return cycle: [dim]{Markup.Escape(view.TradeCycleId)}[/]",
+                    $"  Репутация: [dim]{view.CurrentReputation} / {Markup.Escape(view.ReputationTierLabel)}[/]",
+                    $"  Домен: [dim]{Markup.Escape(view.DomainDisplay)}[/]",
+                    "",
+                    "[bold]GM materialization contract:[/]",
+                    "  • Прочитать pending_guardian_trade_request.json как client-authored contract.",
+                    "  • Сгенерировать explicit guardian.tradeInventory для текущего return cycle.",
+                    "  • Не выводить ассортимент только из prose/domain; слоты, потолок редкости и projectBonusSignature берутся из request.",
+                    $"  • Закрыть через {GuardianTradeRequestState.UpdateReceiptsProperty} с requestId, tradeCycleId, itemCount, resolvedAtTurn, resolvedAtUtc.",
+                    "  • До receipt-а покупки заблокированы, а витрина считается неподтверждённой."
+                };
+                AppendChaosSeaPendingFileRule(tradeLines, view.PendingInventoryRequestPath);
+                AppendChaosSeaCommonContractRules(tradeLines);
+                if (!ConfirmChaosSeaContractPreview(
+                        "Полный предпросмотр торговли Хранителя",
+                        tradeLines,
+                        requestAudit,
+                        "Полный JSON pending guardian trade request"))
+                {
+                    return;
+                }
+
+                try
+                {
+                    await GuardianTradeRequestState.WritePreparedJsonAsync(_fs, view.PendingInventoryRequestJson);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MarkupLine($"[red]❌ Не удалось записать pending_guardian_trade_request.json: {Markup.Escape(ex.Message)}[/]");
+                    MarkupLine("[yellow]Проверьте текущий pending-файл и откройте торговлю заново после исправления конфликта.[/]");
+                    WaitForKey();
+                    return;
+                }
+
+                if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
+                    _pendingGmAction = view.PendingGmAction;
+                MarkupLine("[cyan]Витрина Хранителя подготавливается. Запрос на формирование ассортимента отправлен GM.[/]");
+                continue;
             }
 
             if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
@@ -3707,15 +4029,24 @@ public partial class ExplorerMode
         lines.Insert(1, $"  💰 Цена: [yellow]{offer.PriceInFeathers} 🪶[/]");
         lines.Insert(2, $"  🛍️ Источник витрины: [cyan]{Markup.Escape(GuardianTradeDisplayDomain(offer.DomainTag))}[/]");
         lines.Insert(3, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
+        lines.Insert(4, $"  🪶 После покупки: [gold1]{Math.Max(0, currentFeathers - offer.PriceInFeathers)}[/]");
+        lines.Insert(5, $"  slotId: [dim]{Markup.Escape(offer.SlotId)}[/]");
 
         if (offer.SoldOut)
         {
-            lines.Insert(4, "  [red]Статус витрины: слот уже распродан в текущем возвращении.[/]");
+            lines.Insert(6, "  [red]Статус витрины: слот уже распродан в текущем возвращении.[/]");
         }
         else if (currentFeathers < offer.PriceInFeathers)
         {
-            lines.Insert(4, "  [yellow]Статус покупки: пока не хватает Чернильных Перьев для покупки.[/]");
+            lines.Insert(6, "  [yellow]Статус покупки: пока не хватает Чернильных Перьев для покупки.[/]");
         }
+        lines.Add("");
+        lines.Add("[bold]Canonical local transaction:[/]");
+        lines.Add("  • game_state/meta/soul_state.json: Ink Feathers уменьшаются на priceInFeathers.");
+        lines.Add("  • game_state/meta/soul_state.json: relicData клонируется в soulRelics.stored.");
+        lines.Add("  • game_state/meta/guardians.json: выбранный tradeInventory.items[].soldOut=true.");
+        lines.Add("  • Guardian buyback/sell history не создаётся при покупке; это именно покупка из готовой витрины.");
+        lines.Add("  • GM turn не отправляется: это client-local coordinated write.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -3726,6 +4057,19 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel(
+            "Полный JSON покупки у Хранителя",
+            new JsonObject
+            {
+                ["slotId"] = offer.SlotId,
+                ["priceInFeathers"] = offer.PriceInFeathers,
+                ["currentFeathers"] = currentFeathers,
+                ["projectedFeathers"] = Math.Max(0, currentFeathers - offer.PriceInFeathers),
+                ["soldOut"] = offer.SoldOut,
+                ["domainTag"] = offer.DomainTag,
+                ["relicData"] = offer.RelicData.DeepClone()
+            },
+            Color.Gold1);
 
         var actions = new List<string>();
         if (canBuy)

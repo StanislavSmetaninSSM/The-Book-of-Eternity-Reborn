@@ -87,6 +87,12 @@ Scheduler report rule: each `newLast*Ordinal` belongs only to its own contour. D
 | `pending_resident_companion_manifestation_request.json` | MortalWorldProfile only | Nothing in afterlife; treat as stale/repair-only context | None in afterlife. This file may originate from an afterlife resident reward or imprint, but closure happens only after Mortal bootstrap through MortalWorldProfile NPC/quest surfaces using source fields such as `sourceResidentId`, `sourceImprintId`, `sourceGuardianId`, `futureCompanionPrompt`, and `targetIncarnation`. | Do not materialize mortal NPCs or encounters in `Chaos Sea` or `Shining Abode` | 22 |
 | `shining_abode_state.json.pendingNativeFactionDiscovery` | Legacy ordinary active Shining Abode state-local discovery payload | Close as legacy `discover_native_faction`: materialize one hall, one `native_radiant` faction, 2..4 ascended residents, exactly 2 seeded completed projects, +20 Radiance XP, spend `costFeathers` from Soul, preserve current Light Sparks because the legacy queue already reserved `costLightSparks`, set `pendingNativeFactionDiscovery = null`, and append `coreActionReceipts[]` with the same `requestId` and `actionType=discover_native_faction` | `requestId`, `hallId`, `resolvedFactionId`, `newResidentIds[]`, `seededProjectIds[]`, `resolvedAtTurn`, `resolvedAtUtc` | Do not create a duplicate `pending_shining_abode_actions.json`; do not leave the legacy field non-null after accepted closure; do not use Mortal World factions | 14A |
 
+## Preview Ownership Rules
+
+- A contract-backed preview is a player-facing audit for a GM-resolved afterlife action. If the preview names a `playerAction` tag, pending/control file, request id, cost, or closure surface, the GM must close that exact contract through the matrix row for the tag/file.
+- A client-local mutation preview is not an afterlife-turn contract. Soul Relic equip/unequip is the canonical local example: no GM turn is sent, no pending/control file is created, no receipt/progression report/gm_thoughts output is required, and no existing pending contract is closed.
+- Do not convert a client-local preview into GM-authored state. Only the client applies the listed local state mutation after the player confirms the preview.
+
 ## PlayerAction Routing Tag Matrix
 
 These tags may appear inside `input/turn_request.json.playerAction`. Treat them as routing markers for the contract named here; do not resolve them as generic prose.

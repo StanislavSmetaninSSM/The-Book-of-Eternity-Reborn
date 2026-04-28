@@ -220,6 +220,78 @@ public sealed class AfterlifeArchiveConsultationServiceTests : IDisposable
         Assert.True(soulDoc.RootElement.GetProperty("afterlifeArchive").GetProperty("unexpected").GetBoolean());
     }
 
+    [Fact]
+    public async Task CommitPreparedRequestAsync_NewPendingFileAppears_FailsWithoutOverwriting()
+    {
+        await SeedSoulStateAsync("archive_lore_001", "lore_fragment", "Rare");
+        await SeedGuardianAsync("guardian_azalia", "Азалия", 120);
+
+        var result = await _service.CreateRequestAsync(
+            "guardian_azalia",
+            "Азалия",
+            "archive_lore_001",
+            currentIncarnation: 1,
+            currentRealm: "Chaos Sea",
+            currentTurn: 7,
+            commit: false);
+
+        Assert.NotNull(result);
+        const string concurrentPendingJson = """
+        {
+          "requestId": "consult_req_concurrent",
+          "guardianId": "guardian_other",
+          "guardianName": "Другой Хранитель",
+          "archiveId": "archive_other",
+          "archiveTitle": "Другая запись",
+          "archiveEntryType": "lore_fragment",
+          "archiveRarity": "Rare",
+          "archiveSourceKind": "codex",
+          "requestedMode": "consultation",
+          "targetIncarnation": 2,
+          "createdAtTurn": 8
+        }
+        """;
+        await _fs.WriteFileAtomicAsync(AfterlifeArchiveActionState.ConsultationRequestPath, concurrentPendingJson);
+
+        var committed = await _service.CommitPreparedRequestAsync(result!);
+
+        Assert.False(committed);
+        Assert.Equal(concurrentPendingJson, await _fs.ReadFileAsync(AfterlifeArchiveActionState.ConsultationRequestPath));
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        var storedEntry = soulDoc.RootElement.GetProperty("afterlifeArchive").GetProperty("stored").EnumerateArray().Single();
+        Assert.False(storedEntry.TryGetProperty("reservation", out _));
+    }
+
+    [Fact]
+    public async Task CommitPreparedRequestAsync_SoulStateChanged_FailsWithoutWritingPendingRequest()
+    {
+        await SeedSoulStateAsync("archive_lore_001", "lore_fragment", "Rare");
+        await SeedGuardianAsync("guardian_azalia", "Азалия", 120);
+
+        var result = await _service.CreateRequestAsync(
+            "guardian_azalia",
+            "Азалия",
+            "archive_lore_001",
+            currentIncarnation: 1,
+            currentRealm: "Chaos Sea",
+            currentTurn: 7,
+            commit: false);
+
+        Assert.NotNull(result);
+        await SeedSoulStateAsync("archive_lore_changed", "lore_fragment", "Common");
+
+        var committed = await _service.CommitPreparedRequestAsync(result!);
+
+        Assert.False(committed);
+        Assert.False(_fs.FileExists(AfterlifeArchiveActionState.ConsultationRequestPath));
+
+        using var soulDoc = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        var storedEntry = soulDoc.RootElement.GetProperty("afterlifeArchive").GetProperty("stored").EnumerateArray().Single();
+        Assert.Equal("archive_lore_changed", storedEntry.GetProperty("archiveId").GetString());
+        Assert.False(storedEntry.TryGetProperty("reservation", out _));
+    }
+
     private async Task SeedSoulStateAsync(string archiveId, string entryType, string rarity)
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

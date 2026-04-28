@@ -111,6 +111,27 @@ internal static class GuardianTradeRequestState
         await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(request, JsonOpts));
     }
 
+    public static async Task WritePreparedJsonAsync(FileSystemManager fs, string requestJson)
+    {
+        if (string.IsNullOrWhiteSpace(requestJson))
+            throw new InvalidOperationException("Prepared pending_guardian_trade_request.json is empty.");
+
+        PendingGuardianTradeRequest? request;
+        try
+        {
+            request = JsonSerializer.Deserialize<PendingGuardianTradeRequest>(requestJson, JsonOpts);
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidOperationException("Prepared pending_guardian_trade_request.json is malformed.", ex);
+        }
+
+        if (request == null)
+            throw new InvalidOperationException("Prepared pending_guardian_trade_request.json is malformed.");
+
+        await WriteAsync(fs, request);
+    }
+
     public static async Task<PendingGuardianTradeRequest?> ReadAsync(FileSystemManager fs)
         => (await ReadStateAsync(fs)).Request;
 

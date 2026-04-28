@@ -4,7 +4,11 @@ namespace BookOfEternityClient.Services;
 
 internal static class CoordinatedStateWriteHelper
 {
-    internal sealed record PlannedWrite(string Path, string? PreviousJson, string? NextJson);
+    internal sealed record PlannedWrite(
+        string Path,
+        string? PreviousJson,
+        string? NextJson,
+        bool RequireCurrentBaseline = false);
 
     public static async Task<bool> TryCommitAsync(
         FileSystemManager fs,
@@ -14,6 +18,15 @@ internal static class CoordinatedStateWriteHelper
 
         try
         {
+            foreach (var write in writes)
+            {
+                if (write.RequireCurrentBaseline &&
+                    !await CurrentMatchesExpectedBaselineAsync(fs, write))
+                {
+                    return false;
+                }
+            }
+
             foreach (var write in writes)
             {
                 await ApplyWriteAsync(fs, write.Path, write.NextJson);
@@ -36,6 +49,12 @@ internal static class CoordinatedStateWriteHelper
 
             return false;
         }
+    }
+
+    private static async Task<bool> CurrentMatchesExpectedBaselineAsync(FileSystemManager fs, PlannedWrite write)
+    {
+        var currentJson = await fs.ReadFileAsync(write.Path);
+        return string.Equals(currentJson, write.PreviousJson, StringComparison.Ordinal);
     }
 
     private static async Task<bool> TryRestoreAsync(FileSystemManager fs, PlannedWrite write)
