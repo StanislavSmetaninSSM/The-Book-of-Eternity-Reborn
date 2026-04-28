@@ -2193,6 +2193,228 @@ Invalid roster shortcuts:
 - Writing `UpdateNPCs` for residents.
 - Receipt without matching `requestId`.
 - Resident object without `mortalWorldImprint.futureCompanionPrompt`, `isPresent`, `residentKind`, `originType`, `bondTier`, or canonical abode devotion fields.
+- For `requestMode = founder_attraction`, transferring residents from the former patron's Abode instead of creating first residents attracted by `founderFeatureTitle` / `founderFeatureSummary`.
+
+10B. VALID — FOUNDER-ATTRACTION RESIDENT ROSTER
+
+`founder_attraction` is a distinct roster mode. It appears after the player has founded a new Guardian/Abode, and the client asks the GM to materialize the first residents drawn by that founded Abode's feature. The GM must use the request's `founderFeatureTitle` and `founderFeatureSummary` as creative constraints. The GM must not move the old patron's residents and must not treat the former Guardian's roster as inherited property.
+
+Input fragment:
+
+```json
+{
+  "pending_guardian_abode_residents_request.json": {
+    "requests": [
+      {
+        "requestId": "abode_roster_founder_lumen_318",
+        "guardianId": "guard_founder_lumen_001",
+        "guardianName": "Люмен",
+        "abodeId": "abode_lumen_first_lantern_001",
+        "abodeName": "Обитель Первого Фонаря",
+        "currentReputation": 0,
+        "requestMode": "founder_attraction",
+        "founderFeatureTitle": "Первый Фонарь",
+        "founderFeatureSummary": "Новая founded-Обитель зажигает маяк для душ, которые ищут безопасное начало без переноса старых клятв.",
+        "createdAtTurn": 318,
+        "createdAtUtc": "2026-04-24T12:00:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Оценка времени и мира
+- Realm: Chaos Sea.
+- pending_guardian_abode_residents_request.json exists with requestMode=founder_attraction.
+- The current Guardian is player-founded; the request's founderFeatureTitle/founderFeatureSummary define the first-resident attraction theme.
+
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Люмен, Ирис, Тарн
+- Почему они релевантны: Люмен owns the new founded Abode; Ирис and Тарн are first residents created by the founder feature.
+- Акторы вне охвата: previous patron's residents, Mortal World NPCs
+- Почему они вне охвата: founder_attraction creates a new first roster and does not transfer old-patron residents.
+
+## Guardian Thoughts
+### Люмен
+- Ситуация: The founded Abode is no longer an empty title; the First Lantern begins attracting souls.
+- Внутренние мысли: Люмен wants residents who answer the new mantle rather than old obligations.
+- Действия: Люмен welcomes first residents shaped by the beacon feature and records them as new Abode residents.
+
+### Ирис
+- Ситуация: Ирис follows the First Lantern because she remembers being lost between lives.
+- Внутренние мысли: She wants a beginning that does not demand an inherited oath.
+- Действия: She becomes a present resident of Люмен's Abode and takes a guiding role.
+
+### Тарн
+- Ситуация: Тарн arrives as a traveler-soul drawn by the safe-start beacon.
+- Внутренние мысли: He is not settled yet, but the new Abode gives him a reason to pause.
+- Действия: He joins as a wavering resident, available for future talk/history hooks.
+```
+
+Correct response/state fragment:
+
+```json
+{
+  "UpdateGuardianAbodeResidents": [
+    {
+      "residentId": "res_lumen_iris_318",
+      "guardianId": "guard_founder_lumen_001",
+      "abodeId": "abode_lumen_first_lantern_001",
+      "displayName": "Ирис",
+      "residentKind": "attendant_spirit",
+      "originType": "native_spirit",
+      "roleLabel": "Хранительница первого огня",
+      "summary": "Дух безопасного начала, который появился у Первого Фонаря и помогает новым душам не наследовать чужие клятвы.",
+      "bondLevel": 12,
+      "bondTier": "stranger",
+      "canGrantCompanionRelic": false,
+      "bondRewardState": "none",
+      "historyRevealed": false,
+      "isPresent": true,
+      "mortalWorldImprint": {
+        "originWorldSummary": "Родилась из памяти о домах, где огонь оставляли для тех, кто возвращается поздно.",
+        "futureCompanionPrompt": "If later carried into a mortal life, appear as a lantern-bearing helper who guides frightened beginnings.",
+        "bondReason": "Ирис доверяет душам, которые начинают заново без насилия над прошлым.",
+        "coreTraits": [
+          "gentle",
+          "watchful",
+          "guiding"
+        ],
+        "archetypeHints": [
+          "lantern_keeper",
+          "first_resident"
+        ],
+        "appearanceMotifs": [
+          "тёплый фонарь",
+          "пепельный плащ"
+        ]
+      },
+      "availableInteractions": [
+        "talk",
+        "history"
+      ],
+      "personalityProfile": {
+        "archetype": "First Lantern Keeper",
+        "worldview": "Новое начало должно быть мягким, иначе оно станет чужой цепью.",
+        "culturalLayer": "Погребальные маяки и огни возвращения",
+        "coreValues": [
+          "shelter",
+          "mercy",
+          "new_beginnings"
+        ],
+        "personalityTraits": [
+          {
+            "traitName": "loyalty",
+            "value": 4,
+            "valueDescription": "Wants to belong, but waits for proof that the new Abode is kind."
+          },
+          {
+            "traitName": "restlessness",
+            "value": 2,
+            "valueDescription": "Rarely wanders while the lantern remains lit."
+          }
+        ]
+      },
+      "abodeDisposition": {
+        "powerSensitivity": "medium",
+        "migrationDisposition": "rooted",
+        "communalOrientation": "high",
+        "stabilityNeed": "high"
+      },
+      "abodeDevotionLevel": 46,
+      "abodeDevotionTier": "attached",
+      "restlessness": 12,
+      "migrationState": "settled"
+    },
+    {
+      "residentId": "res_lumen_tarn_318",
+      "guardianId": "guard_founder_lumen_001",
+      "abodeId": "abode_lumen_first_lantern_001",
+      "displayName": "Тарн",
+      "residentKind": "wayfaring_soul",
+      "originType": "traveler_soul",
+      "roleLabel": "Путник у нового порога",
+      "summary": "Странствующая душа, привлечённая обещанием безопасного начала без наследования прежнего roster.",
+      "bondLevel": 8,
+      "bondTier": "stranger",
+      "canGrantCompanionRelic": false,
+      "bondRewardState": "none",
+      "historyRevealed": false,
+      "isPresent": true,
+      "mortalWorldImprint": {
+        "originWorldSummary": "Последняя жизнь Тарна закончилась на дороге к дому, которого больше не существовало.",
+        "futureCompanionPrompt": "If later carried into a mortal life, appear as a wary traveler who can find a safe threshold.",
+        "bondReason": "Тарн уважает Обитель, которая не требует старых клятв от новых душ.",
+        "coreTraits": [
+          "wary",
+          "honest",
+          "threshold_seeking"
+        ],
+        "archetypeHints": [
+          "wayfarer",
+          "threshold_guest"
+        ],
+        "appearanceMotifs": [
+          "дорожный посох",
+          "свет на сапогах"
+        ]
+      },
+      "availableInteractions": [
+        "talk",
+        "history"
+      ],
+      "personalityProfile": {
+        "archetype": "Threshold Wayfarer",
+        "worldview": "Пристанище ценно только тогда, когда из него можно уйти по своей воле.",
+        "culturalLayer": "Дорожные обеты и ночные маяки",
+        "coreValues": [
+          "choice",
+          "safety",
+          "truth"
+        ],
+        "personalityTraits": [
+          {
+            "traitName": "loyalty",
+            "value": 3,
+            "valueDescription": "Needs time before naming a place home."
+          },
+          {
+            "traitName": "restlessness",
+            "value": 6,
+            "valueDescription": "Can stay, but tests every threshold."
+          }
+        ]
+      },
+      "abodeDisposition": {
+        "powerSensitivity": "low",
+        "migrationDisposition": "wandering",
+        "communalOrientation": "medium",
+        "stabilityNeed": "medium"
+      },
+      "abodeDevotionLevel": 28,
+      "abodeDevotionTier": "guest",
+      "restlessness": 34,
+      "migrationState": "wavering"
+    }
+  ],
+  "UpdateGuardianAbodeResidentRosterReceipts": [
+    {
+      "requestId": "abode_roster_founder_lumen_318",
+      "guardianId": "guard_founder_lumen_001",
+      "guardianName": "Люмен",
+      "abodeId": "abode_lumen_first_lantern_001",
+      "abodeName": "Обитель Первого Фонаря",
+      "rosterCount": 2,
+      "resolvedAtTurn": 318,
+      "resolvedAtUtc": "2026-04-24T12:07:00Z"
+    }
+  ]
+}
+```
 
 ==================================================
 11. VALID — GUARDIAN ABODE RESIDENT TRANSFER REQUEST

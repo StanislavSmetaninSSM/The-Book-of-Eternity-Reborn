@@ -567,6 +567,30 @@
       ]
     },
     {
+      "id": "afterlife_founder_attraction_resident_roster_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "abode_roster_founder_lumen_318",
+        "res_lumen_iris_318",
+        "\"UpdateGuardianAbodeResidentRosterReceipts\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardian_abode_residents.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "requiredText": [
+            "\"residentId\": \"res_lumen_iris_318\"",
+            "\"residentId\": \"res_lumen_tarn_318\"",
+            "\"requestId\": \"abode_roster_founder_lumen_318\"",
+            "\"rosterCount\": 2"
+          ]
+        }
+      ]
+    },
+    {
       "id": "afterlife_resident_transfer_response",
       "file": "E_CLI_Afterlife_Turns.txt",
       "runner": "gameResponseDistribution",

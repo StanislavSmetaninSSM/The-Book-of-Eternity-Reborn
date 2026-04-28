@@ -130,6 +130,25 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void FounderAttractionResidentRosterModeIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var doc in new[] { matrix, examples })
+        {
+            Assert.Contains(GuardianAbodeResidentRequestState.ResidentsRequestModeFounderAttraction, doc, StringComparison.Ordinal);
+            Assert.Contains("founderFeatureTitle", doc, StringComparison.Ordinal);
+            Assert.Contains("founderFeatureSummary", doc, StringComparison.Ordinal);
+            Assert.Contains("old-patron residents", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("afterlife_founder_attraction_resident_roster_response", manifest, StringComparison.Ordinal);
+        Assert.Contains("abode_roster_founder_lumen_318", manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifePlayerActionRoutingTagsAreCoveredByPromptDocs()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
