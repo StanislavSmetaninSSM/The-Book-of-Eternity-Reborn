@@ -1329,6 +1329,45 @@ Canonical state after normalization must retain matching archive action receipts
 }
 ```
 
+Exceptional/system archive update shape:
+
+Use `afterlifeArchiveUpdates` only when a system or exceptional afterlife reward creates/removes archive entries directly. Do not use it to close `pending_archive_consultation_request.json` or `pending_archive_project_fuel_request.json`; those close through `archiveActionResolutions`.
+
+```json
+{
+  "afterlifeArchiveUpdates": [
+    {
+      "command": "add",
+      "entry": {
+        "archiveId": "archive_system_azalia_silk_warning_001",
+        "entryType": "lore_fragment",
+        "title": "Предупреждение шёлковой памяти",
+        "summary": "Азалия оставила системный архивный фрагмент о том, как безопасно читать опасные воспоминания.",
+        "rarity": "rare",
+        "sourceLife": 8,
+        "sourceKind": "system",
+        "sourceGuardianId": "guard_social_azalia_001",
+        "sourceGuardianName": "Азалия",
+        "sourceEntryId": "guardian_social_entry_azalia_lore_316",
+        "tags": [
+          "afterlife",
+          "guardian_lore"
+        ],
+        "acquiredAtUtc": "2026-04-24T09:26:00Z"
+      }
+    },
+    {
+      "command": "remove",
+      "archiveId": "archive_obsolete_duplicate_001"
+    }
+  ]
+}
+```
+
+Notification rule:
+- Do not write `afterlife_notifications.json`.
+- The client derives notifications from canonical archive action receipts, Guardian trade ready receipts, resident roster/interaction/transfer receipts, Guardian social entries, Shining core/trade receipts, and later consumed `pendingShiningBlessingEffects`.
+
 ==================================================
 6. VALID — ORDINARY CHAOS SEA TRIGGERINCARNATION
 ==================================================
@@ -2909,6 +2948,12 @@ Invalid foundation shortcuts:
 ==================================================
 
 `pending_shining_abode_actions.json` is the canonical client-authored contract for active Shining Abode actions. It is not optional flavor. If the file exists, the GM must close exactly the pending request through `game_state/meta/shining_abode_state.json.coreActionReceipts[]` and the exact state mutation required by that `actionType`.
+
+Queue and mode rules:
+- The file contains exactly one active Shining core request (`request` or `requests[0]`), not a GM-managed queue. Do not invent a second simultaneous Shining core request.
+- Ordinary active Shining uses `shining_abode_state.json.availability = active` or another accepted value such as `sealed_until_next_ascension`; pending-bootstrap is not an `availability` value.
+- Pending-bootstrap is derived from non-null valid `preparedIncarnationPackage`; in that mode the GM preserves the package and does not process ordinary Shining core actions.
+- Cost fields in receipts identify the accepted request, but resource spends, Radiance XP, strength changes, gate invalidation, and package creation must also be reflected through canonical Shining/Soul state deltas.
 
 Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. Refused, withdrawn, or expired outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged.
 
@@ -4742,7 +4787,7 @@ This example is a routing reference for exact tags that may appear inside `input
 
 These tags are not all the same kind of contract:
 - `[ABODE_RESIDENT_RELIC_GRANT]` and `[ABODE_RESIDENT_QUEST_REQUEST]` are direct resident actions. They have no pending control file and close no receipt arrays by themselves.
-- `[GUARDIAN_TRADE_REQUEST]`, `[ARCHIVE_CONSULTATION_REQUEST]`, `[ARCHIVE_PROJECT_FUEL_REQUEST]`, `[ABODE_RESIDENT_ROSTER_REQUEST]`, and `[PLAYER_GUARDIAN_FOUNDATION]` are pending-backed routing markers. The GM must read the matching pending file and close that exact pending contract.
+- `[GUARDIAN_TRADE_REQUEST]`, `[GUARDIAN_SOCIAL_TALK_REQUEST]`, `[GUARDIAN_SOCIAL_LORE_REQUEST]`, `[ARCHIVE_CONSULTATION_REQUEST]`, `[ARCHIVE_PROJECT_FUEL_REQUEST]`, `[ABODE_RESIDENT_ROSTER_REQUEST]`, `[ABODE_RESIDENT_HISTORY_REQUEST]`, `[ABODE_RESIDENT_TALK]`, `[ABODE_RESIDENT_TRANSFER_REQUEST]`, and `[PLAYER_GUARDIAN_FOUNDATION]` are pending-backed routing markers. The GM must read the matching pending file and close that exact pending contract.
 
 Direct resident reward:
 
@@ -4803,6 +4848,16 @@ Read game_state/control/pending_guardian_trade_request.json.
 Close with guardians[].tradeInventory plus UpdateGuardianTradeInventoryReceipts.
 Do not place commandless tradeInventory inside UpdateGuardians.
 
+[GUARDIAN_SOCIAL_TALK_REQUEST]
+Read game_state/control/pending_guardian_social_interactions.json.
+Close the matching interactionType=talk request through guardianSocialJournalUpdates.
+Allowed Guardian responseMode values: talk_scene, lore_revealed, lore_refused, warning, refusal, trust_shift, attitude_shift.
+
+[GUARDIAN_SOCIAL_LORE_REQUEST]
+Read game_state/control/pending_guardian_social_interactions.json.
+Close the matching interactionType=lore request through guardianSocialJournalUpdates.
+For a lore request use lore_revealed when lore is actually revealed; use lore_refused, warning, or refusal when the Guardian withholds it.
+
 [ARCHIVE_CONSULTATION_REQUEST]
 Read game_state/control/pending_archive_consultation_request.json.
 Close with archiveActionResolutions and soul_state.afterlifeArchive.actionReceipts[].
@@ -4818,10 +4873,66 @@ Read game_state/control/pending_guardian_abode_residents_request.json.
 Close with full UpdateGuardianAbodeResidents objects plus UpdateGuardianAbodeResidentRosterReceipts.
 Do not emit identity-only residents.
 
+[ABODE_RESIDENT_HISTORY_REQUEST]
+Read game_state/control/pending_guardian_abode_resident_interactions.json.
+Close the matching interactionType=history request with UpdateGuardianAbodeResidentInteractionReceipts.
+Accepted history requires UpdateGuardianAbodeResidentHistoryLog and a receipt historyEntryId that points to that entry.
+Allowed resident responseMode values: talk_scene, history_revealed, history_refused, history_partial, bond_shift_only.
+
+[ABODE_RESIDENT_TALK]
+Read game_state/control/pending_guardian_abode_resident_interactions.json.
+Close the matching interactionType=talk request with UpdateGuardianAbodeResidentInteractionReceipts.
+Use talk_scene for a normal conversation, bond_shift_only when only bond/devotion changes, and do not invent a history log for plain talk.
+
+[ABODE_RESIDENT_TRANSFER_REQUEST]
+Read game_state/control/pending_guardian_abode_resident_transfers.json.
+Close with UpdateGuardianAbodeResidentTransferReceipts, matching resident state changes, and departure/arrival history.
+Preserve selectionMode and competition metadata from the pending request:
+- selectionMode = competition_recommended | manual_override | departure_only
+- competitionScore = integer 0..100 when present
+- competitionLabel and competitionReason explain why the target Abode won or why the player overrode it
+- departure_only must not carry target Guardian/Abode competition metadata
+
 [PLAYER_GUARDIAN_FOUNDATION]
 Read game_state/control/pending_player_guardian_foundation.json.
 Close with UpdateGuardians.create, canonical guardians, activeGuardian, chaosSeaNavigation, soul foundation fields, and playerGuardianFoundationHistory.
 Do not change patron roles without the authorized foundation create.
+```
+
+Afterlife-origin companion manifestation handoff:
+
+```text
+pending_resident_companion_manifestation_request.json is not closable in Chaos Sea or Shining Abode.
+
+It can still originate from afterlife resident rewards or imprint-bearing Soul Relics. When it appears later in MortalWorldProfile, the GM must preserve and use:
+- requestId
+- manifestationSource = resident_relic | imprint_relic
+- relicId / relicName
+- sourceResidentId when the source is an afterlife resident
+- sourceImprintId when the source is an embedded soul imprint
+- sourceGuardianId / sourceGuardianName
+- targetIncarnation
+- companionNameHint
+- originWorldSummary
+- futureCompanionPrompt
+- bondReason
+
+Mortal closure writes an ordinary Mortal NPC/quest path and sets sourceCompanionRelicId plus sourceAfterlifeResidentId or sourceSoulImprintId when applicable.
+```
+
+Post-bootstrap Shining blessing effects:
+
+```text
+pendingShiningBlessingEffects is runtime-created from preparedIncarnationPackage.selectedCards after Shining bootstrap.
+The GM does not author this object during afterlife turns. Later Mortal turns consume it through normal Mortal surfaces:
+- memorySelection.status = pending_pre_turn_one_selection -> pre-turn-one memory selection UI/runtime.
+- resourceGrant.status = applied_at_bootstrap -> already applied at bootstrap; preserve audit only.
+- relicRefinementEntitlements.status = pending_relic_entitlement -> Shining forge receipts consume rerolls/freeShape/freeRetune.
+- pendingSocialEffects.status = pending_first_relation_commit -> first qualifying NPC/faction relation commit.
+- pendingRouteEffects.status = pending_early_route_seed -> world route event seeds before latestTurn.
+- pendingLoreEffects.status = pending_lore_insertion -> world lore event insertion before latestTurn.
+- pendingSurvivalEffects.status = pending_first_ruinous_failure -> first ruinous failure mitigation.
+- pendingDescentEffects.status = pending_resident_descent -> later companion manifestation/descent closure.
 ```
 
 Correct reasoning checklist:
