@@ -294,9 +294,110 @@ public sealed class AfterlifeArchiveStateTests
     }
 
     [Fact]
-    public void ApplyActionResolutions_SameRequestIdDifferentArchiveIdentity_KeepsDistinctReceipts()
+    public void ApplyActionResolutions_OrphanConsultationResolution_FailClosed()
     {
         var root = new JsonObject();
+        AfterlifeArchiveState.NormalizeShape(root);
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            AfterlifeArchiveState.ApplyActionResolutions(root, new JsonArray
+            {
+                new JsonObject
+                {
+                    ["requestId"] = "req_orphan",
+                    ["archiveId"] = "archive_orphan",
+                    ["requestedMode"] = AfterlifeArchiveActionState.RequestedModeConsultation,
+                    ["status"] = AfterlifeArchiveActionState.ResolutionStatusAccepted,
+                    [AfterlifeArchiveActionState.ConsultationOutcomeGuaranteedArchiveQuestCount] = 1,
+                    [AfterlifeArchiveActionState.ConsultationOutcomeQuestHookCount] = 0,
+                    [AfterlifeArchiveActionState.ConsultationOutcomeSpecialQuestLineUnlocks] = 0,
+                    [AfterlifeArchiveActionState.ConsultationOutcomeVisibleRivalClueBonus] = 0,
+                    [AfterlifeArchiveActionState.ConsultationOutcomeArchiveWarningTierBonus] = 0
+                }
+            }, currentTurn: 14));
+
+        Assert.Contains("archiveActionResolutions", exception.Message, StringComparison.Ordinal);
+        Assert.Empty(AfterlifeArchiveState.EnsureActionReceiptsArray(root));
+    }
+
+    [Fact]
+    public void ApplyActionResolutions_OrphanProjectFuelResolution_FailClosed()
+    {
+        var root = new JsonObject();
+        AfterlifeArchiveState.NormalizeShape(root);
+
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            AfterlifeArchiveState.ApplyActionResolutions(root, new JsonArray
+            {
+                new JsonObject
+                {
+                    ["requestId"] = "req_orphan",
+                    ["archiveId"] = "archive_orphan",
+                    ["requestedMode"] = AfterlifeArchiveActionState.RequestedModeProjectFuel,
+                    ["status"] = AfterlifeArchiveActionState.ResolutionStatusAccepted,
+                    ["targetProjectId"] = "project_alpha",
+                    ["resultMode"] = AfterlifeArchiveActionState.ProjectFuelResultModeProjectWork,
+                    ["resultAmount"] = 2
+                }
+            }, currentTurn: 14));
+
+        Assert.Contains("archiveActionResolutions", exception.Message, StringComparison.Ordinal);
+        Assert.Empty(AfterlifeArchiveState.EnsureActionReceiptsArray(root));
+    }
+
+    [Fact]
+    public void ApplyActionResolutions_SameRequestIdDifferentArchiveIdentity_KeepsDistinctReceipts()
+    {
+        var root = new JsonObject
+        {
+            ["afterlifeArchive"] = new JsonObject
+            {
+                ["stored"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["archiveId"] = "archive_001",
+                        ["entryType"] = AfterlifeArchiveState.EntryTypeLoreFragment,
+                        ["title"] = "Первая запись",
+                        ["summary"] = "Описание",
+                        ["rarity"] = "Rare",
+                        ["sourceLife"] = 1,
+                        ["sourceKind"] = AfterlifeArchiveState.SourceKindCodex,
+                        ["acquiredAtUtc"] = "2026-03-26T00:00:00Z",
+                        ["reservation"] = new JsonObject
+                        {
+                            ["reservationKind"] = AfterlifeArchiveState.ReservationKindConsultation,
+                            ["requestId"] = "req_shared",
+                            ["guardianId"] = "guardian_alpha",
+                            ["guardianName"] = "Азалия",
+                            ["createdAtTurn"] = 10,
+                            ["createdAtUtc"] = "2026-03-26T00:00:00Z"
+                        }
+                    },
+                    new JsonObject
+                    {
+                        ["archiveId"] = "archive_002",
+                        ["entryType"] = AfterlifeArchiveState.EntryTypeSecretRecord,
+                        ["title"] = "Вторая запись",
+                        ["summary"] = "Описание",
+                        ["rarity"] = "Epic",
+                        ["sourceLife"] = 1,
+                        ["sourceKind"] = AfterlifeArchiveState.SourceKindCodex,
+                        ["acquiredAtUtc"] = "2026-03-26T00:00:00Z",
+                        ["reservation"] = new JsonObject
+                        {
+                            ["reservationKind"] = AfterlifeArchiveState.ReservationKindProjectFuel,
+                            ["requestId"] = "req_shared",
+                            ["guardianId"] = "guardian_alpha",
+                            ["guardianName"] = "Азалия",
+                            ["targetProjectId"] = "project_alpha",
+                            ["createdAtTurn"] = 10,
+                            ["createdAtUtc"] = "2026-03-26T00:00:00Z"
+                        }
+                    }
+                }
+            }
+        };
 
         AfterlifeArchiveState.NormalizeShape(root);
         AfterlifeArchiveState.ApplyActionResolutions(root, new JsonArray

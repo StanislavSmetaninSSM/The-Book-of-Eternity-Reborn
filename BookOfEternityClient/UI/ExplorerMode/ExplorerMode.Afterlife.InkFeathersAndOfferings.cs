@@ -1958,7 +1958,8 @@ public partial class ExplorerMode
             $"  • formula: [dim]{Markup.Escape(gacha.Formula ?? "client-computed gacha base (range 4-80)")}[/]",
             "",
             "Пороги: 4-48 Common, 49-67 Uncommon, 68-75 Rare, 76-79 Epic, 80 Legendary.",
-            "Итог direct /gacha: нейтральная реликвия не ниже baseRarity, без репутации Хранителя, скидок, charges, Hard/Impossible или других guardian modifiers."
+            "Итог direct /gacha: finalRarity должен точно совпасть с baseRarity. Апгрейдов, даунгрейдов и guardian modifiers нет.",
+            "GM материализует ровно одну новую Soul Relic, не удаляет существующие реликвии и не списывает Чернильные Перья второй раз."
         };
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", mechanicsLines)))
         {
@@ -2005,8 +2006,8 @@ public partial class ExplorerMode
         _pendingGmAction =
             $"[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит {inputCost} Чернильных Перьев. " +
             "Это НЕ гача через текущего Хранителя: не применять репутацию Хранителя, его скидки, штрафы, социальные факторы, улучшенные или ухудшенные шансы. " +
-            "Результат должен быть нейтральным и опираться на базовую редкость призыва, уже переданную в текущем запросе хода, без дополнительных модификаторов. " +
-            "Реликвию нужно добавить напрямую в soul state игрока через metaStateUpdates.soulRelicOperations.addRelic. Перья уже списаны клиентом.";
+            "Результат должен быть нейтральным: finalRarity обязан точно совпадать с turn_request.gachaBaseResult.baseRarity, без апгрейдов или даунгрейдов. " +
+            "Реликвию нужно добавить напрямую в soul state игрока через metaStateUpdates.soulRelicOperations.addRelic как ровно одну новую Soul Relic; существующие реликвии не удалять. Перья уже списаны клиентом, GM не списывает их второй раз.";
     }
 
     // ═══ New commands: Effects, Combat, Weather/Time, Chronicle ═══
