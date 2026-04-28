@@ -668,6 +668,14 @@ public partial class ExplorerMode
 
             if (choice.Contains("Запросить", StringComparison.Ordinal))
             {
+                var currentTurn = await TryReadCurrentTurnNumberAsync();
+                if (currentTurn <= 0)
+                {
+                    MarkupLine("[red]❌ Нельзя создать pending Shining trade request: input/turn_request.json отсутствует, повреждён или не содержит положительный turnNumber.[/]");
+                    WaitForKey();
+                    continue;
+                }
+
                 var request = new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
                 {
                     FactionId = view.FactionId,
@@ -678,7 +686,7 @@ public partial class ExplorerMode
                     DerivedRarityCeiling = view.RarityCeiling,
                     DerivedServiceMultiplier = view.ServiceMultiplier,
                     MerchantProfile = ShiningTradeRequestState.MerchantProfileShiningFaction,
-                    CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
+                    CreatedAtTurn = currentTurn
                 };
 
                 var error = await ShiningTradeRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);

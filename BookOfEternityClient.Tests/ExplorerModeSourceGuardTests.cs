@@ -255,7 +255,9 @@ public sealed class ExplorerModeSourceGuardTests
         var source = ReadExplorerModeSource();
 
         Assert.Contains("ShiningTradeRequestState", source, StringComparison.Ordinal);
-        Assert.Contains("ShiningTradeService.RequestInventoryAsync", source, StringComparison.Ordinal);
+        Assert.Contains("ShiningTradeRequestState.WriteRequestAsync", source, StringComparison.Ordinal);
+        Assert.Contains("currentTurn <= 0", source, StringComparison.Ordinal);
+        Assert.Contains("input/turn_request.json отсутствует", source, StringComparison.Ordinal);
         Assert.DoesNotContain("tradeInventory\"] =", source, StringComparison.Ordinal);
     }
 

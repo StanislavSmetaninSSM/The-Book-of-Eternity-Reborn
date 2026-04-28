@@ -571,10 +571,10 @@ public partial class ExplorerMode
     {
         var beforeGates = beforeRoot["gates"] as JsonObject;
         var afterGates = projectedRoot["gates"] as JsonObject;
-        var beforeShown = ReadGateShownCardIds(beforeGates);
-        var afterShown = ReadGateShownCardIds(afterGates);
-        var removed = beforeShown.Except(afterShown, StringComparer.OrdinalIgnoreCase).ToList();
-        var added = afterShown.Except(beforeShown, StringComparer.OrdinalIgnoreCase).ToList();
+        var beforeAvailable = ReadGateAvailableCardIds(beforeGates);
+        var afterAvailable = ReadGateAvailableCardIds(afterGates);
+        var removed = beforeAvailable.Except(afterAvailable, StringComparer.OrdinalIgnoreCase).ToList();
+        var added = afterAvailable.Except(beforeAvailable, StringComparer.OrdinalIgnoreCase).ToList();
         var lines = new List<string>
         {
             "[bold yellow]Перед перебросом набора Врат[/]",
@@ -584,14 +584,14 @@ public partial class ExplorerMode
             $"  nextCandidateCursor: [white]{GetNodeInt(beforeGates?["nextCandidateCursor"])}[/] -> [white]{GetNodeInt(afterGates?["nextCandidateCursor"])}[/]",
             $"  Выбранные карты сохраняются: {Markup.Escape(FormatGateSelectionLabels(beforeRoot, ReadGateSelectedCardIds(beforeGates)))}",
             "",
-            "[bold]Изменение показанного набора:[/]",
-            $"  • Уходят из shown set: {Markup.Escape(FormatGateSelectionLabels(beforeRoot, removed))}",
-            $"  • Приходят в shown set: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, added))}",
-            $"  • Новый shown set: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, afterShown))}",
+            "[bold]Изменение текущего selectable-набора:[/]",
+            $"  • Уходят из available set: {Markup.Escape(FormatGateSelectionLabels(beforeRoot, removed))}",
+            $"  • Приходят в available set: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, added))}",
+            $"  • Новый available set: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, afterAvailable))}",
             "",
             "[bold]Последствие:[/]",
             "  • Это client-local mutation: GM turn не отправляется и pending/control file не создаётся.",
-            "  • Полный projected gates JSON ниже показывает available/allCandidate/shown/selected arrays после подтверждения.",
+            "  • Полный projected gates JSON ниже показывает available/allCandidate/shown history/selected arrays после подтверждения.",
             "  • Отмена на этом экране оставляет gates JSON и remaining rerolls без изменений."
         };
 
@@ -601,8 +601,13 @@ public partial class ExplorerMode
     private static IReadOnlyList<string> ReadGateSelectedCardIds(JsonObject? gates) =>
         ReadGateStringArray(gates, "selectedBlessingCardIds");
 
-    private static IReadOnlyList<string> ReadGateShownCardIds(JsonObject? gates) =>
-        ReadGateStringArray(gates, "shownBlessingCardIds");
+    private static IReadOnlyList<string> ReadGateAvailableCardIds(JsonObject? gates)
+    {
+        return (gates?["availableBlessingCards"] as JsonArray)?.OfType<JsonObject>()
+            .Select(card => GetNodeString(card["cardId"]) ?? string.Empty)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList() ?? new List<string>();
+    }
 
     private static IReadOnlyList<string> ReadGateStringArray(JsonObject? gates, string propertyName)
     {
