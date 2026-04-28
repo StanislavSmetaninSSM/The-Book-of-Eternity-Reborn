@@ -3839,7 +3839,18 @@ public partial class ExplorerMode
                     return;
                 }
 
-                await _fs.WriteFileAtomicAsync(view.PendingInventoryRequestPath, view.PendingInventoryRequestJson);
+                try
+                {
+                    await GuardianTradeRequestState.WritePreparedJsonAsync(_fs, view.PendingInventoryRequestJson);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MarkupLine($"[red]❌ Не удалось записать pending_guardian_trade_request.json: {Markup.Escape(ex.Message)}[/]");
+                    MarkupLine("[yellow]Проверьте текущий pending-файл и откройте торговлю заново после исправления конфликта.[/]");
+                    WaitForKey();
+                    return;
+                }
+
                 if (!string.IsNullOrWhiteSpace(view.PendingGmAction))
                     _pendingGmAction = view.PendingGmAction;
                 MarkupLine("[cyan]Витрина Хранителя подготавливается. Запрос на формирование ассортимента отправлен GM.[/]");
