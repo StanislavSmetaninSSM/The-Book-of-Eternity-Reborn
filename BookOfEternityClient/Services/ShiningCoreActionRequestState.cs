@@ -627,12 +627,12 @@ internal static class ShiningCoreActionRequestState
             return Task.FromResult<string?>("prepare_incarnation_package требует минимум одну выбранную карту.");
         if (selectedCardIds.Count != selectedCardIds.Distinct(StringComparer.OrdinalIgnoreCase).Count())
             return Task.FromResult<string?>("prepare_incarnation_package не допускает duplicate selectedCardIds.");
-        if (!SelectedCardSnapshotMatchesIds(request.SelectedCards, selectedCardIds))
-            return Task.FromResult<string?>("prepare_incarnation_package.selectedCards должен быть snapshot-first и совпадать с ordered selectedCardIds.");
 
         var cloneRoot = JsonNode.Parse(shiningRoot.ToJsonString())!.AsObject();
         if (cloneRoot["gates"] is not JsonObject gates)
             return Task.FromResult<string?>("gates недоступны.");
+        if (!SelectedCardSnapshotMatchesDraft(request.SelectedCards, selectedCardIds, gates))
+            return Task.FromResult<string?>("prepare_incarnation_package.selectedCards должен быть ordered snapshot текущих gates.availableBlessingCards[].");
 
         gates["selectedBlessingCardIds"] = new JsonArray(selectedCardIds.Select(id => (JsonNode?)id).ToArray());
         var currentDraftVersion = GetNodeInt(gates["draftVersion"]);
@@ -854,12 +854,15 @@ internal static class ShiningCoreActionRequestState
                selectedReceiptCards.SequenceEqual(selectedRequestCards, StringComparer.OrdinalIgnoreCase);
     }
 
-    private static bool SelectedCardSnapshotMatchesIds(JsonArray? selectedCards, IReadOnlyList<string> selectedCardIds)
+    private static bool SelectedCardSnapshotMatchesDraft(JsonArray? selectedCards, IReadOnlyList<string> selectedCardIds, JsonObject gates)
     {
         if (selectedCards == null || selectedCards.Count == 0)
             return false;
 
         if (selectedCards.Count != selectedCardIds.Count)
+            return false;
+
+        if (gates["availableBlessingCards"] is not JsonArray availableCards)
             return false;
 
         for (var i = 0; i < selectedCardIds.Count; i++)
@@ -870,6 +873,11 @@ internal static class ShiningCoreActionRequestState
             if (!string.Equals(GetNodeString(card["cardId"])?.Trim() ?? string.Empty, selectedCardIds[i], StringComparison.OrdinalIgnoreCase))
                 return false;
 
+            var draftCard = availableCards.OfType<JsonObject>().FirstOrDefault(candidate =>
+                string.Equals(GetNodeString(candidate["cardId"])?.Trim() ?? string.Empty, selectedCardIds[i], StringComparison.OrdinalIgnoreCase));
+            if (draftCard == null)
+                return false;
+
             if (!ShiningAbodeState.IsSupportedCardSourceType(GetNodeString(card["sourceType"])) ||
                 !ShiningAbodeState.IsSupportedEffectFamily(GetNodeString(card["effectFamily"])) ||
                 !ShiningAbodeState.IsSupportedRarity(GetNodeString(card["rarity"])) ||
@@ -877,9 +885,19 @@ internal static class ShiningCoreActionRequestState
             {
                 return false;
             }
+
+            if (!JsonNode.DeepEquals(CloneCardForRequestSnapshotComparison(card), CloneCardForRequestSnapshotComparison(draftCard)))
+                return false;
         }
 
         return true;
+    }
+
+    private static JsonObject CloneCardForRequestSnapshotComparison(JsonObject card)
+    {
+        var clone = card.DeepClone().AsObject();
+        clone.Remove("_effectiveStrength");
+        return clone;
     }
 
     private static bool ProjectIdentityMatches(PendingShiningCoreActionRequest request, string? receiptProjectId)

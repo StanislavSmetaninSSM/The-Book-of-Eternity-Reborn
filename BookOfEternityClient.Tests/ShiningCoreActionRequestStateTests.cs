@@ -717,6 +717,41 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithMutatedSelectedSnapshot_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var mutatedCard = CreateCard("card_social", "social", "uncommon");
+            mutatedCard["rarity"] = ShiningAbodeState.RarityRare;
+            mutatedCard["effectPayload"] = new JsonObject
+            {
+                ["type"] = "mutated"
+            };
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                SourceDraftVersion = 1,
+                SelectedCardIds = new List<string> { "card_social" },
+                SelectedCards = new JsonArray(mutatedCard),
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("selectedCards", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithSelectedSnapshot_Passes()
     {
         var root = CreateTempRoot();
