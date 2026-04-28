@@ -32,6 +32,45 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningCoreActionSchemaAndStatusesMatchRuntime()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var docs = new[] { matrix, examples, apiSpec, daemonSpec };
+
+        var statuses = typeof(ShiningCoreActionRequestState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string) &&
+                            field.Name.StartsWith("RequestStatus", StringComparison.Ordinal))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(
+            new[]
+            {
+                ShiningCoreActionRequestState.RequestStatusAccepted,
+                ShiningCoreActionRequestState.RequestStatusRefused,
+                ShiningCoreActionRequestState.RequestStatusWithdrawn
+            }.OrderBy(value => value, StringComparer.Ordinal),
+            statuses);
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("pending_shining_abode_actions.json", doc, StringComparison.Ordinal);
+            Assert.Contains("requests[]", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain("requests[0]", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain("expired", doc, StringComparison.OrdinalIgnoreCase);
+
+            foreach (var status in statuses)
+                Assert.Contains(status, doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ShiningPoliticalActorsAreDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
