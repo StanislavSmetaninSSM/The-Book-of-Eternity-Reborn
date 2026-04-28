@@ -1922,6 +1922,38 @@ Correct faction patch:
 
 If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`; use `politicalStatus = "head"` for the current head and move replaced radiant actors to `former_head`, `elder`, `claimant`, or `retired` as appropriate.
 
+Canonical leadership transition matrix:
+
+| Pending `transitionMode` | Receipt `status` | Canonical leadership state | Required `leadershipHistory.eventType` |
+|---|---|---|---|
+| `peaceful_succession` | `accepted` | Candidate becomes head with `leadershipState = secure` | `succeeded` |
+| `revolt` | `accepted` | Candidate becomes head with `leadershipState = secure`; the receipt/history must preserve the revolt context | `revolted` |
+| `abdication` with candidate | `accepted` | Candidate becomes head with `leadershipState = secure` | `abdicated` |
+| `abdication` without candidate | `accepted` | Faction becomes vacant: empty `headActorType`, empty `headActorId`, `leadershipState = vacant` | `vacated` |
+| any transition mode | `refused` | Incumbent leadership remains unchanged | `refused` |
+| any transition mode | `withdrawn` | No leadership mutation; no `leadershipHistory[]` entry is required for the withdrawn request | none |
+
+Allowed leadership receipt statuses are only `accepted`, `refused`, and `withdrawn`. Do not use `departed_to_neutral` for leadership; that status belongs to resident faction realignment only.
+
+Compact non-peaceful mapping example:
+
+```json
+{
+  "transitionMode": "revolt",
+  "status": "accepted",
+  "leadershipHistory": [
+    {
+      "eventId": "leadership_evt_dawn_revolt_304",
+      "requestId": "shining_leadership_dawn_revolt_304",
+      "eventType": "revolted",
+      "summary": "A supported revolt replaced the incumbent with the named candidate.",
+      "turnNumber": 304,
+      "occurredAtUtc": "2026-04-24T10:44:00Z"
+    }
+  ]
+}
+```
+
 Radiant actor registry patch when a radiant actor becomes head:
 
 ```json

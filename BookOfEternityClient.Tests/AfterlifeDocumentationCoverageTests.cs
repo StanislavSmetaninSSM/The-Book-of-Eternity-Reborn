@@ -51,6 +51,56 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningLeadershipTransitionModesAndHistoryMappingsAreDocumented()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var docs = new[] { matrix, examples };
+
+        var transitionModes = typeof(ShiningFactionRequestState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string) &&
+                            field.Name.StartsWith("TransitionMode", StringComparison.Ordinal))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(
+            new[]
+            {
+                ShiningFactionRequestState.TransitionModeAbdication,
+                ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                ShiningFactionRequestState.TransitionModeRevolt
+            }.OrderBy(value => value, StringComparer.Ordinal),
+            transitionModes);
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("pending_shining_faction_leadership_transitions.json", doc, StringComparison.Ordinal);
+
+            foreach (var transitionMode in transitionModes)
+                Assert.Contains(transitionMode, doc, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredTerm in new[]
+        {
+            "accepted",
+            "refused",
+            "withdrawn",
+            "succeeded",
+            "revolted",
+            "abdicated",
+            "vacated",
+            "leadershipHistory.eventType",
+            "departed_to_neutral"
+        })
+        {
+            Assert.Contains(requiredTerm, examples, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void LegacyShiningNativeFactionDiscoveryContractIsDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
