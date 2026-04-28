@@ -194,22 +194,13 @@ public partial class ExplorerMode
                 break;
 
             case ShiningCoreActionRequestState.ActionTypeInvestInFaction:
-                AppendProjectedFactionDelta(lines, context, request, clone => ShiningAbodeState.TryInvestInFaction(clone, CloneJsonObjectForPreview(context.ResidentRoot), request.FactionId, out _));
+                AppendProjectedFactionDelta(lines, context, request);
                 lines.Add("  • investCountThisAscension увеличивается на 1; лимит 3 investment за ascension.");
                 lines.Add("  • Сила фракции пересчитывается canonically; если открыт draft Врат, он становится stale.");
                 break;
 
             case ShiningCoreActionRequestState.ActionTypeCompleteProject:
-                AppendProjectedFactionDelta(lines, context, request, clone => ShiningAbodeState.TryCompleteProject(
-                    clone,
-                    CloneJsonObjectForPreview(context.ResidentRoot),
-                    request.FactionId,
-                    request.ProjectDraft?.DeepClone().AsObject() ?? new JsonObject(),
-                    request.CreatedAtTurn,
-                    projectIdOverride: null,
-                    completedAtUtc: request.CreatedAtUtc,
-                    out _,
-                    out _));
+                AppendProjectedFactionDelta(lines, context, request);
                 lines.Add("  • Новый project должен быть materialized as completed project с canonical strengthReward по tier.");
                 lines.Add("  • Если archetype ещё не считался в этом ascension, Radiance XP получает +10 и tier пересчитывается.");
                 lines.Add("  • Если открыт draft Врат, он становится stale.");
@@ -292,21 +283,25 @@ public partial class ExplorerMode
     private void AppendProjectedFactionDelta(
         List<string> lines,
         ShiningContext context,
-        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
-        Func<JsonObject, bool> mutate)
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
     {
         var beforeFaction = FindShiningFactionForPreview(context.Root, request.FactionId);
-        var clone = CloneJsonObjectForPreview(context.Root);
-        if (clone == null || !mutate(clone))
+        if (!ShiningCoreActionRequestState.TryBuildProjectedShiningRootForPreview(
+                request,
+                context.Root,
+                context.ResidentRoot,
+                out var projectedRoot))
+        {
             return;
+        }
 
-        var afterFaction = FindShiningFactionForPreview(clone, request.FactionId);
+        var afterFaction = FindShiningFactionForPreview(projectedRoot, request.FactionId);
         if (beforeFaction == null || afterFaction == null)
             return;
 
         lines.Add($"  • Сила фракции: {GetNodeInt(beforeFaction["factionStrength"])} -> {GetNodeInt(afterFaction["factionStrength"])}.");
-        lines.Add($"  • Light Sparks state: {GetNodeInt(context.Root["lightSparks"])} -> {GetNodeInt(clone["lightSparks"])}.");
-        lines.Add($"  • Radiance XP: {GetNodeInt(context.Root["radiance"]?["experience"])} -> {GetNodeInt(clone["radiance"]?["experience"])}.");
+        lines.Add($"  • Light Sparks state: {GetNodeInt(context.Root["lightSparks"])} -> {GetNodeInt(projectedRoot["lightSparks"])}.");
+        lines.Add($"  • Radiance XP: {GetNodeInt(context.Root["radiance"]?["experience"])} -> {GetNodeInt(projectedRoot["radiance"]?["experience"])}.");
     }
 
     private void AppendProjectedProjectSupportDelta(
@@ -356,7 +351,7 @@ public partial class ExplorerMode
                 var currentRarity = relic == null ? string.Empty : ResolveForgeRarityKey(relic);
                 lines.Add($"  • rarity: {Markup.Escape(DescribeForgeRarity(currentRarity))} -> {Markup.Escape(DescribeForgeRarity(GetNextForgeRarityKey(currentRarity)))}.");
                 if (request.AddedProperties is { Count: > 0 })
-                    AppendShiningForgePropertyBlock(lines, "Added properties", request.AddedProperties);
+                    AppendShiningForgePropertyBlock(lines, "Добавленные свойства", request.AddedProperties);
                 break;
         }
     }

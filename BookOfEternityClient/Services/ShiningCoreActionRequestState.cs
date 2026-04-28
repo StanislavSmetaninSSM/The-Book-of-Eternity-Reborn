@@ -248,6 +248,62 @@ internal static class ShiningCoreActionRequestState
         }, JsonOpts));
     }
 
+    public static bool TryBuildProjectedShiningRootForPreview(
+        PendingShiningCoreActionRequest request,
+        JsonObject shiningRoot,
+        JsonObject? residentRoot,
+        out JsonObject projectedRoot)
+    {
+        projectedRoot = JsonNode.Parse(shiningRoot.ToJsonString())!.AsObject();
+        var projectedResidents = residentRoot == null ? null : JsonNode.Parse(residentRoot.ToJsonString())!.AsObject();
+
+        switch ((request.ActionType ?? string.Empty).Trim().ToLowerInvariant())
+        {
+            case ActionTypeInvestInFaction:
+                return ShiningAbodeState.TryInvestInFaction(projectedRoot, projectedResidents, request.FactionId, out _);
+
+            case ActionTypeCompleteProject:
+                return request.ProjectDraft != null &&
+                       ShiningAbodeState.TryCompleteProject(
+                           projectedRoot,
+                           projectedResidents,
+                           request.FactionId,
+                           request.ProjectDraft.DeepClone().AsObject(),
+                           request.CreatedAtTurn,
+                           projectIdOverride: null,
+                           completedAtUtc: request.CreatedAtUtc,
+                           out _,
+                           out _);
+
+            case ActionTypeSupportProject:
+                return ShiningAbodeState.TrySupportProject(projectedRoot, request.FactionId, request.ProjectId, out _);
+
+            case ActionTypeUnsupportProject:
+                return ShiningAbodeState.TryUnsupportProject(projectedRoot, request.FactionId, request.ProjectId, out _);
+
+            case ActionTypeRetireProject:
+                return ShiningAbodeState.TryRetireProject(projectedRoot, projectedResidents, request.FactionId, request.ProjectId, out _);
+
+            case ActionTypeOpenGates:
+                return ShiningAbodeState.TryOpenGates(projectedRoot, projectedResidents, out _);
+
+            case ActionTypePrepareIncarnationPackage:
+                if (projectedRoot["gates"] is JsonObject gates)
+                {
+                    gates["selectedBlessingCardIds"] = new JsonArray(
+                        request.SelectedCardIds
+                            .Where(id => !string.IsNullOrWhiteSpace(id))
+                            .Select(id => (JsonNode?)id.Trim())
+                            .ToArray());
+                }
+
+                return ShiningAbodeState.TryPrepareIncarnationPackage(projectedRoot, request.CreatedAtTurn, out _);
+
+            default:
+                return false;
+        }
+    }
+
     public static void ClearRequests(FileSystemManager fs) => fs.DeleteFile(PendingActionsRequestPath);
 
     public static async Task EnsureHealthyAsync(FileSystemManager fs, string? currentRealm)
