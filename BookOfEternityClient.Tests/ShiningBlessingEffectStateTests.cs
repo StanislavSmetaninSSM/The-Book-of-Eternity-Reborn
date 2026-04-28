@@ -74,6 +74,58 @@ public sealed class ShiningBlessingEffectStateTests
     }
 
     [Fact]
+    public async Task MaterializeForBootstrapAsync_RetryAfterPartialResourceGrantDoesNotDuplicateResources()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
+            {
+                ["soulName"] = "Soul",
+                ["currentRealm"] = "Mortal World",
+                ["currentIncarnation"] = 3,
+                ["inkFeathers"] = new JsonObject { ["current"] = 0, ["total"] = 0 },
+                ["soulRelics"] = new JsonObject { ["equipped"] = new JsonArray(), ["stored"] = new JsonArray() }
+            }.ToJsonString());
+            await fs.WriteFileAtomicAsync("game_state/core/player_status.json", new JsonObject
+            {
+                ["money"] = 150,
+                ["_shiningBootstrapResourceGrantIds"] = new JsonArray("shining_bootstrap_resource:42:3:card_resource")
+            }.ToJsonString());
+            await fs.WriteFileAtomicAsync("game_state/inventory/items.json", new JsonObject
+            {
+                ["items"] = new JsonArray(),
+                ["equipment"] = new JsonObject(),
+                ["resources"] = new JsonObject()
+            }.ToJsonString());
+
+            var result = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 3);
+
+            Assert.True(result.Success);
+            Assert.True(result.StateChanged);
+
+            var statusRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/core/player_status.json")!)!.AsObject();
+            Assert.Equal(150, statusRoot["money"]!.GetValue<int>());
+
+            var inventoryRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/inventory/items.json")!)!.AsObject();
+            var resources = inventoryRoot["resources"]!.AsObject();
+            Assert.Equal(2, resources["common"]!.GetValue<int>());
+            Assert.Equal(1, resources["uncommon"]!.GetValue<int>());
+
+            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var resourceGrant = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["resourceGrant"]!.AsObject();
+            Assert.Equal("shining_bootstrap_resource:42:3:card_resource", resourceGrant["grantId"]!.GetValue<string>());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task MaterializeForBootstrapAsync_InvalidPreparedPackage_FailsBeforeWritingEffects()
     {
         var root = CreateTempRoot();
