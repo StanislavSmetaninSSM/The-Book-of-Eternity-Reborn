@@ -573,8 +573,12 @@ internal static partial class ShiningAbodeState
             return;
         }
 
-        if (!string.IsNullOrWhiteSpace(shiningFactionId) && !FactionExists(shiningRoot, shiningFactionId))
+        if (shiningRoot != null &&
+            !string.IsNullOrWhiteSpace(shiningFactionId) &&
+            !FactionExists(shiningRoot, shiningFactionId))
+        {
             shiningFactionId = string.Empty;
+        }
 
         if (string.IsNullOrWhiteSpace(shiningFactionId))
         {
@@ -591,6 +595,21 @@ internal static partial class ShiningAbodeState
 
         var residentRole = GetNodeString(resident["residentRole"]);
         resident["residentRole"] = IsSupportedResidentRole(residentRole) ? residentRole : DeriveDefaultResidentRole(resident);
+
+        if (shiningRoot == null)
+        {
+            var preservedLoyalty = Math.Clamp(GetNodeInt(resident["factionLoyaltyLevel"], 50), 0, 100);
+            var preservedRestlessness = Math.Clamp(GetNodeInt(resident["factionRestlessness"], 0), 0, 100);
+            var preservedRealignment = GetNodeString(resident["factionRealignmentState"]);
+
+            resident["factionLoyaltyLevel"] = preservedLoyalty;
+            resident["factionLoyaltyTier"] = ResolveFactionLoyaltyTier(preservedLoyalty);
+            resident["factionRestlessness"] = preservedRestlessness;
+            resident["factionRealignmentState"] = IsSupportedFactionRealignmentState(preservedRealignment)
+                ? preservedRealignment
+                : ResolveFactionRealignmentState(preservedLoyalty, preservedRestlessness);
+            return;
+        }
 
         var faction = FindFaction(shiningRoot, shiningFactionId);
         var loyalty = DeriveFactionLoyaltyLevel(resident, faction);
