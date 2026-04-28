@@ -610,8 +610,10 @@ public partial class ExplorerMode
                         {
                             "Формула: reputationChange = min(25, max(15, cost / 3)).",
                             $"При текущей цене {cost} Чернильных Перьев expected reputationChange = {Math.Min(25, Math.Max(15, cost / 3))}.",
-                            "GM обязан реально изменить game_state/meta/guardians.json для текущего Хранителя.",
-                            "output/ink_feather_action_result.json должен содержать stateEvidence.guardianId и stateEvidence.reputationChange."
+                            $"Чернильные Перья: {feathers} -> {Math.Max(0, feathers - cost)}.",
+                            "GM обязан указать target guardian identity: guardianId, guardianName и текущий relationship/reputation context.",
+                            "GM обязан реально изменить game_state/meta/guardians.json для текущего Хранителя и показать before/after reputation delta.",
+                            "output/ink_feather_action_result.json должен содержать stateEvidence.guardianId, stateEvidence.guardianName, stateEvidence.reputationChange и affectedFiles."
                         },
                         cost => $"Репутация текущего Хранителя вырастет ровно на {Math.Min(25, Math.Max(15, cost / 3))}.");
                 else if (choice.Contains("Культивировать Просветление"))
@@ -656,19 +658,59 @@ public partial class ExplorerMode
                             "Создай soulImprint запись с идентичностью, traits/personality markers и summary текущего NPC-компаньона. " +
                             "Слепок не обязан немедленно создавать mortal-world NPC, но должен подготовить будущий imprint/companion путь. " +
                             "Перья уже списаны клиентом.",
-                        cost => new[]
-                        {
-                            "Результат: game_state/meta/soul_state.json получает soulImprint entry.",
-                            "Слепок должен содержать не только id/name, но и core traits или personality markers текущего компаньона.",
-                            "Это подготовка будущего companion/imprint пути; немедленный mortal-world NPC в afterlife-ходе не создаётся.",
-                            "output/ink_feather_action_result.json должен содержать stateEvidence для soul imprint."
-                        },
+                        cost => BuildSoulImprintPreviewAuditLines(cost, feathers),
                         _ => "Будет сохранён soulImprint текущего компаньона для будущего пути воплощения.");
             }
 
             // If a GM action was set, break out of the loop
             if (_pendingGmAction != null) return;
         }
+    }
+
+    internal static IReadOnlyList<string> BuildSoulImprintPreviewAuditLines(int costInFeathers, int currentFeathers)
+    {
+        var projectedFeathers = Math.Max(0, currentFeathers - costInFeathers);
+        return new[]
+        {
+            "Результат: game_state/meta/soul_state.json получает soulImprint entry.",
+            $"Чернильные Перья: {currentFeathers} -> {projectedFeathers}.",
+            "Аудит source/target: GM должен явно назвать текущего companion/NPC source, включая sourceCompanionId или NPCId, если известны, companionName/NPCName, relationship role и текущий контекст связи.",
+            "Обязательный soulImprint payload: imprintId, sourceCompanionId или NPCId, companionName/NPCName, summary, coreTraits, personalityMarkers, relationshipMarkers, appearanceMotifs и futureCompanionPrompt/companion path hint.",
+            "output/ink_feather_action_result.json должен содержать stateEvidence.imprintId, stateEvidence.companionName, stateEvidence.affectedFiles с game_state/meta/soul_state.json и summary реального stateful результата.",
+            "Это подготовка будущего companion/imprint пути; немедленный Mortal World NPC в afterlife-ходе не создаётся."
+        };
+    }
+
+    internal static IReadOnlyList<string> BuildAbodeOfferingPreviewAuditLines(
+        string offeringType,
+        string consumedObjectLabel,
+        string consumedObjectId,
+        string consumedObjectKind,
+        string consumedObjectRarity,
+        int currentPower,
+        int basePowerGain,
+        int? currentFeathers = null,
+        int? costInFeathers = null,
+        int? capRemainingBefore = null)
+    {
+        var projectedPower = AbodePowerRules.ClampCurrentPower(currentPower + Math.Max(0, basePowerGain));
+        var finalDelta = Math.Max(0, projectedPower - AbodePowerRules.ClampCurrentPower(currentPower));
+        var lines = new List<string>
+        {
+            "[bold]Прогноз state/resource delta:[/]",
+            $"  • Abode Power: {AbodePowerRules.ClampCurrentPower(currentPower)} -> {projectedPower} (baseDelta={Math.Max(0, basePowerGain)}, finalDelta={finalDelta}).",
+            $"  • offeringType: {offeringType}.",
+            $"  • Consumed object: {consumedObjectLabel} ({consumedObjectId}); kind={consumedObjectKind}; rarity={consumedObjectRarity}.",
+            "  • Обязательный guardianPowerEvents audit: reasonType=offering, sourceSurface=guardianAbodeOffering, returnCycleId, baseDelta, finalDelta and powerEventId.",
+            "  • Обязательное affected state: game_state/meta/guardians.json plus game_state/meta/abode_power_journal.json; relic/archive offerings also affect game_state/meta/soul_state.json."
+        };
+
+        if (currentFeathers.HasValue && costInFeathers.HasValue)
+            lines.Add($"  • Ink Feathers: {Math.Max(0, currentFeathers.Value)} -> {Math.Max(0, currentFeathers.Value - Math.Max(0, costInFeathers.Value))}.");
+        if (capRemainingBefore.HasValue)
+            lines.Add($"  • Return-cycle offering cap remaining before: {Math.Max(0, capRemainingBefore.Value)}.");
+
+        return lines;
     }
 
     private async Task HandleRevealFate(int feathers)
@@ -876,7 +918,9 @@ public partial class ExplorerMode
             {
                 "Гарантированный минимум: репутация с текущим Хранителем должна реально вырасти.",
                 "Дополнительная услуга может быть нарративной или stateful, но не заменяет обязательный рост репутации.",
-                "GM обязан реально изменить game_state/meta/guardians.json и записать guardianId/reputationChange в stateEvidence.",
+                $"Чернильные Перья: {feathers} -> {Math.Max(0, feathers - inputCost)}.",
+                "GM обязан указать target guardian identity: guardianId, guardianName и текущий relationship/reputation context.",
+                "GM обязан реально изменить game_state/meta/guardians.json, показать before/after reputation delta и записать guardianId/reputationChange в stateEvidence.",
                 "Цена переменная; валидатор проверяет факт положительного reputationChange, а не фиксированную формулу."
             });
 
@@ -965,6 +1009,7 @@ public partial class ExplorerMode
         var chosenGuardian = guardians[selectedIndex];
         var guardianIdChosen = GetStr(chosenGuardian, "guardianId", "");
         var guardianNameChosen = GuardianManifestation.GetDisplayName(chosenGuardian);
+        var currentAbodePowerChosen = AbodePowerRules.GetCurrentPower(chosenGuardian);
         var alreadyOfferedChosen = journalDoc == null
             ? 0
             : GuardianAbodeOfferingState.CountOfferedInkFeathersForReturnCycle(journalDoc.RootElement, guardianIdChosen, returnCycleId);
@@ -1048,12 +1093,21 @@ public partial class ExplorerMode
                 "[bold]Client-local pre-state change:[/]",
                 "  • Реликвия будет изъята из soulRelics.stored до отправки GM.",
                 "  • Pending request фиксирует offeringType=soul_relic и relic identity.",
-                "",
-                "[bold]GM closure contract:[/]",
-                "  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.",
-                "  • audit: offeringType=soul_relic, relicId, relicName, relicRarity, returnCycleId, baseDelta, finalDelta.",
-                "  • guardian.abodePower.currentPower меняется только через power event."
+                ""
             };
+            relicLines.AddRange(BuildAbodeOfferingPreviewAuditLines(
+                GuardianAbodeOfferingState.OfferingTypeSoulRelic,
+                relic.Name,
+                relic.RelicId,
+                "soul_relic",
+                relic.Rarity,
+                currentAbodePowerChosen,
+                relicPowerGain));
+            relicLines.Add("");
+            relicLines.Add("[bold]GM closure contract:[/]");
+            relicLines.Add("  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.");
+            relicLines.Add("  • audit: offeringType=soul_relic, relicId, relicName, relicRarity, returnCycleId, baseDelta, finalDelta.");
+            relicLines.Add("  • guardian.abodePower.currentPower меняется только через power event.");
             AppendChaosSeaPendingFileRule(relicLines, GuardianAbodeOfferingState.PendingRequestPath);
             AppendChaosSeaCommonContractRules(relicLines);
             if (!ConfirmChaosSeaContractPreview(
@@ -1165,12 +1219,21 @@ public partial class ExplorerMode
                 "[bold]Client-local pre-state change:[/]",
                 "  • Запись будет изъята из soul_state.afterlifeArchive.stored до отправки GM.",
                 "  • Pending request фиксирует archive identity, entryType, rarity и returnCycleId.",
-                "",
-                "[bold]GM closure contract:[/]",
-                "  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.",
-                "  • audit: offeringType, archiveId, archiveTitle, archiveEntryType, archiveRarity, returnCycleId, baseDelta, finalDelta.",
-                "  • output/ink_feather_action_result.json не нужен, если offeringType не ink_feathers."
+                ""
             };
+            archiveLines.AddRange(BuildAbodeOfferingPreviewAuditLines(
+                archiveOfferingType,
+                archiveEntry.Title,
+                archiveEntry.ArchiveId,
+                archiveEntry.EntryType,
+                archiveEntry.Rarity,
+                currentAbodePowerChosen,
+                archivePowerGain));
+            archiveLines.Add("");
+            archiveLines.Add("[bold]GM closure contract:[/]");
+            archiveLines.Add("  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.");
+            archiveLines.Add("  • audit: offeringType, archiveId, archiveTitle, archiveEntryType, archiveRarity, returnCycleId, baseDelta, finalDelta.");
+            archiveLines.Add("  • output/ink_feather_action_result.json не нужен, если offeringType не ink_feathers.");
             AppendChaosSeaPendingFileRule(archiveLines, GuardianAbodeOfferingState.PendingRequestPath);
             AppendChaosSeaCommonContractRules(archiveLines);
             if (!ConfirmChaosSeaContractPreview(
@@ -1267,12 +1330,24 @@ public partial class ExplorerMode
             "[bold]Client-local pre-state change:[/]",
             "  • Ink Feathers списываются клиентом до отправки GM.",
             "  • Pending request фиксирует offeringType=ink_feathers и точную сумму.",
-            "",
-            "[bold]GM closure contract:[/]",
-            "  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.",
-            "  • output/ink_feather_action_result.json обязателен: actionTag=ABODE_OFFERING, resolved=true, costInFeathers, resolutionType=abodeOffering.",
-            "  • stateEvidence должен иметь powerGain, powerEventId, guardianId и affectedFiles."
+            ""
         };
+        featherLines.AddRange(BuildAbodeOfferingPreviewAuditLines(
+            GuardianAbodeOfferingState.OfferingTypeInkFeathers,
+            "Ink Feathers",
+            inputCost.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            "ink_feathers",
+            "none",
+            currentAbodePowerChosen,
+            powerGain,
+            feathers,
+            inputCost,
+            remainingCapChosen));
+        featherLines.Add("");
+        featherLines.Add("[bold]GM closure contract:[/]");
+        featherLines.Add("  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.");
+        featherLines.Add("  • output/ink_feather_action_result.json обязателен: actionTag=ABODE_OFFERING, resolved=true, costInFeathers, resolutionType=abodeOffering.");
+        featherLines.Add("  • stateEvidence должен иметь powerGain, powerEventId, guardianId и affectedFiles.");
         AppendChaosSeaPendingFileRule(featherLines, GuardianAbodeOfferingState.PendingRequestPath);
         AppendChaosSeaCommonContractRules(featherLines);
         if (!ConfirmChaosSeaContractPreview(

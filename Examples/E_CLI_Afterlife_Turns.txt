@@ -41,6 +41,7 @@ Use this index before resolving an afterlife turn:
 - `system_guardian_attraction.json` / deterministic Eternal Guardian attraction: see example 20.
 - `afterlife_return_guard.json` protected first afterlife turn: see example 21.
 - Direct resident action tags and hidden pending-backed routing tags: see example 22.
+- Player-facing Chaos Sea audit previews and notification receipt detail surfaces: see the audit checklist after example 22.
 
 ==================================================
 GLOBAL AFTERLIFE TURN RULE
@@ -4922,6 +4923,42 @@ Required handling:
 - only the client applies the listed client-local mutation to game_state/meta/soul_state.json after player confirmation
 
 The GM must not invent an accepted-turn response for this preview and must not add UpdateGuardians, UpdateNPCs, output files, afterlife notifications, or Mortal World state for it.
+```
+
+Player-facing Chaos Sea audit preview checklist:
+
+```text
+The GM does not author these previews, but the prompts/examples must teach the same mechanical expectations the player sees before confirming costly or destructive Chaos Sea actions.
+
+Soul Imprint:
+- Preview shows Ink Feathers before/after.
+- Preview names the companion/NPC source identity: sourceCompanionId or NPCId when known, companionName/NPCName, relationship role, current context.
+- GM closure must write a soulImprint entry in game_state/meta/soul_state.json with imprintId, source identity, summary, coreTraits, personalityMarkers, relationshipMarkers, appearanceMotifs, and futureCompanionPrompt.
+- output/ink_feather_action_result.json stateEvidence includes stateEvidence.imprintId, stateEvidence.companionName, stateEvidence.affectedFiles, and confirms that no Mortal World NPC was created during the afterlife turn.
+
+Guardian donation/favor:
+- Preview shows target Guardian identity and the reputation delta contract.
+- Donation uses reputationChange = min(25, max(15, cost / 3)).
+- Favor has variable cost but still requires a positive reputation/state result and stateEvidence.guardianId, guardianName, reputationChange, and affectedFiles.
+
+Abode Offering:
+- Preview shows consumed object details before confirmation: offeringType, relicId/relicName/relicRarity or archiveId/archiveTitle/archiveEntryType/archiveRarity or inkFeathersOffered.
+- Preview shows Abode Power current -> projected, baseDelta, finalDelta, returnCycleId, and remaining offering cap when relevant.
+- GM closure writes guardianPowerEvents.reasonType=offering, sourceSurface=guardianAbodeOffering, powerEventId, baseDelta, finalDelta, and the matching journal event.
+- Only offeringType=ink_feathers also writes output/ink_feather_action_result.json; relic/archive offerings close through guardianPowerEvents and journal proof only.
+
+Resident notifications:
+- Notification detail surfaces must show the resident id/name, current presence, current Guardian/Abode, matching receipt requestId, receipt type, status, responseMode or transferMode, historyEntryId when present, and current bond/devotion/restlessness/migration snapshot.
+- The GM must not write afterlife_notifications.json directly; notifications are derived from resident receipts and canonical resident state.
+
+Guardian trade and buyback:
+- Guardian trade inventory request previews show pending_guardian_trade_request.json and the GM receipt requirement UpdateGuardianTradeInventoryReceipts.
+- Purchase/buyback previews are client-local coordinated writes: no GM turn, but the player sees slotId or buybackEntryId, priceInFeathers, currentFeathers, projectedFeathers, sold-out/buyback status, and full cloned relicData.
+- Buyback writes the matching buybackRelics entry from status=available to status=rebought and returns relicData to soulRelics.stored.
+
+Archive consultation/project fuel:
+- Preview shows archiveId/title/type/rarity, reservation status, pending request path, and closure through archiveActionResolutions plus soul_state.afterlifeArchive.actionReceipts[].
+- lore_fragment may resolve as project_work; secret_record may resolve as pressure_relief only.
 ```
 
 Afterlife-origin companion manifestation handoff:
