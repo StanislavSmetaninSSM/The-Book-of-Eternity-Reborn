@@ -4899,6 +4899,27 @@ Close with UpdateGuardians.create, canonical guardians, activeGuardian, chaosSea
 Do not change patron roles without the authorized foundation create.
 ```
 
+Client-local Soul Relic equip/unequip preview:
+
+```text
+This preview is not an input/turn_request.json playerAction and not a GM contract.
+
+The player may see a local preview such as:
+- Экипировать Реликвию Души: move one relic from soulRelics.stored[] to soulRelics.equipped[].
+- Снять Реликвию Души: move one relic from soulRelics.equipped[] to soulRelics.stored[].
+
+Required handling:
+- no GM turn is sent
+- no pending/control file is created
+- no receipt array is written
+- no progression_report.json is written
+- no gm_thoughts_markdown is required
+- no existing pending contract is closed
+- only the client applies the listed client-local mutation to game_state/meta/soul_state.json after player confirmation
+
+The GM must not invent an accepted-turn response for this preview and must not add UpdateGuardians, UpdateNPCs, output files, afterlife notifications, or Mortal World state for it.
+```
+
 Afterlife-origin companion manifestation handoff:
 
 ```text

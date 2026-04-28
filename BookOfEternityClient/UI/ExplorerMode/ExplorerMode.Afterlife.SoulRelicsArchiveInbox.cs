@@ -1434,12 +1434,13 @@ public partial class ExplorerMode
                     "  • gameplayStatus.currentSlot = выбранный слот.",
                     "  • GM turn не отправляется: это client-local mutation."
                 };
-                AppendChaosSeaCommonContractRules(equipLines);
+                AppendChaosSeaLocalPreviewRules(equipLines);
                 if (!ConfirmChaosSeaContractPreview(
                         "Полный предпросмотр экипировки реликвии",
                         equipLines,
                         JsonNode.Parse(relic.GetRawText()),
                         "Полный JSON реликвии перед экипировкой",
+                        confirmationTitle: "Подтвердить локальную экипировку реликвии",
                         confirmChoice: "✅ Экипировать"))
                 {
                     return false;
@@ -1465,12 +1466,13 @@ public partial class ExplorerMode
                     "  • gameplayStatus.currentSlot=\"\".",
                     "  • GM turn не отправляется: это client-local mutation."
                 };
-                AppendChaosSeaCommonContractRules(unequipLines);
+                AppendChaosSeaLocalPreviewRules(unequipLines);
                 if (!ConfirmChaosSeaContractPreview(
                         "Полный предпросмотр снятия реликвии",
                         unequipLines,
                         JsonNode.Parse(relic.GetRawText()),
                         "Полный JSON реликвии перед снятием",
+                        confirmationTitle: "Подтвердить локальное снятие реликвии",
                         confirmChoice: "✅ Снять"))
                 {
                     return false;

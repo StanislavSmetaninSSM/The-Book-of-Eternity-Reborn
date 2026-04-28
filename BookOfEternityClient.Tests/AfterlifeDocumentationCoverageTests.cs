@@ -175,6 +175,34 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifePreviewOwnershipRulesDistinguishGmContractsFromClientLocalMutations()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var actionPreviews = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.Afterlife.ChaosSea.ActionPreviews.cs");
+        var soulRelicPreview = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs");
+
+        foreach (var text in new[] { matrix, examples })
+        {
+            Assert.Contains("client-local mutation", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("no GM turn", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("no pending/control file", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Soul Relic equip/unequip", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("contract-backed preview", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no receipt", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no progression_report.json", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no gm_thoughts_markdown", examples, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("AppendChaosSeaLocalPreviewRules", actionPreviews, StringComparison.Ordinal);
+        Assert.Contains("AppendChaosSeaLocalPreviewRules(equipLines)", soulRelicPreview, StringComparison.Ordinal);
+        Assert.Contains("AppendChaosSeaLocalPreviewRules(unequipLines)", soulRelicPreview, StringComparison.Ordinal);
+        Assert.DoesNotContain("AppendChaosSeaCommonContractRules(equipLines)", soulRelicPreview, StringComparison.Ordinal);
+        Assert.DoesNotContain("AppendChaosSeaCommonContractRules(unequipLines)", soulRelicPreview, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeSocialRoutingTagsResponseModesAndTransferMetadataAreDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

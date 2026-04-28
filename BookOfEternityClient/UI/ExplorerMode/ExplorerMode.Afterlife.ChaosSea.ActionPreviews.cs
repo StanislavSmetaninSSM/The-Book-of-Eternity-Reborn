@@ -89,6 +89,16 @@ public partial class ExplorerMode
         lines.Add("  • Forbidden side effects: currentLocationData, worldEventsLog, Mortal World UpdateNPCs и смена смертного мира без явного bootstrap.");
     }
 
+    private static void AppendChaosSeaLocalPreviewRules(List<string> lines)
+    {
+        lines.Add("");
+        lines.Add("[bold]Правила локального предпросмотра Посмертия:[/]");
+        lines.Add("  • Это client-local mutation, not an afterlife-turn contract.");
+        lines.Add("  • GM turn не отправляется; GM не пишет receipts, progression_report, gm_thoughts_markdown или output files.");
+        lines.Add("  • Pending/control file не создаётся и никакой existing pending contract не закрывается.");
+        lines.Add("  • После подтверждения клиент меняет только перечисленные local state surfaces.");
+    }
+
     private static void AppendChaosSeaPendingFileRule(List<string> lines, string path)
     {
         lines.Add($"  • Pending/control файл: [dim]{Markup.Escape(path)}[/]");
