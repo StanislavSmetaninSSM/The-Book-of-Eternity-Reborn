@@ -12,9 +12,10 @@ public partial class ExplorerMode
         ShiningContext context,
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
         string confirmationTitle = "Подтвердить действие Обители",
-        string confirmChoice = "✅ Создать pending request")
+        string confirmChoice = "✅ Создать pending request",
+        int relicRerollsToCommit = 0)
     {
-        var lines = BuildShiningCoreActionRequestPreviewLines(context, request);
+        var lines = BuildShiningCoreActionRequestPreviewLines(context, request, relicRerollsToCommit);
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -40,7 +41,8 @@ public partial class ExplorerMode
 
     private List<string> BuildShiningCoreActionRequestPreviewLines(
         ShiningContext context,
-        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        int relicRerollsToCommit = 0)
     {
         var actionType = request.ActionType?.Trim() ?? string.Empty;
         var lines = new List<string>
@@ -60,7 +62,7 @@ public partial class ExplorerMode
         };
 
         AppendShiningCoreRequestTargetLines(lines, context, request);
-        AppendShiningCoreRequestCostLines(lines, context, request);
+        AppendShiningCoreRequestCostLines(lines, context, request, relicRerollsToCommit);
         AppendShiningCoreRequestActionEffectLines(lines, context, request);
         AppendShiningCoreRequestClosureLines(lines, request);
 
@@ -160,7 +162,8 @@ public partial class ExplorerMode
     private static void AppendShiningCoreRequestCostLines(
         List<string> lines,
         ShiningContext context,
-        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        int relicRerollsToCommit = 0)
     {
         var currentFeathers = CurrentInkFeathersForPreview(context.SoulRoot);
         var currentLightSparks = GetNodeInt(context.Root["lightSparks"]);
@@ -171,6 +174,11 @@ public partial class ExplorerMode
         lines.Add("[bold]Стоимость и ресурсы:[/]");
         lines.Add($"  • Ink Feathers: [white]{currentFeathers}[/] -> [white]{nextFeathers}[/] [dim](quotedCostFeathers={request.QuotedCostFeathers})[/]");
         lines.Add($"  • Light Sparks: [white]{currentLightSparks}[/] -> [white]{nextLightSparks}[/] [dim](quotedCostLightSparks={request.QuotedCostLightSparks})[/]");
+        if (relicRerollsToCommit > 0)
+        {
+            var currentRelicRerolls = ShiningBlessingEffectState.GetPendingRelicRerolls(context.SoulRoot);
+            lines.Add($"  • Blessing relic rerolls: [white]{currentRelicRerolls}[/] -> [white]{Math.Max(0, currentRelicRerolls - relicRerollsToCommit)}[/] [dim](spent only after this confirmation; cancel preserves entitlement)[/]");
+        }
 
         if (request.QuotedCostFeathers == 0 && request.QuotedCostLightSparks == 0)
             lines.Add("  • Это действие не списывает ресурсы; GM всё равно должен записать closure receipt.");

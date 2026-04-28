@@ -521,6 +521,51 @@ public sealed class ShiningStateValidationTests
     }
 
     [Fact]
+    public void ValidateShiningAbodeStateFile_GatesBlessingCardUnsupportedTokens_RaiseExplicitErrors()
+    {
+        var card = CreateBlessingCard("card_bad_gates");
+        card["sourceType"] = "broken_source";
+        card["effectFamily"] = "broken_family";
+        card["rarity"] = "mythic";
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["gates"]!["hasOpenDraft"] = true;
+        root["gates"]!["allCandidateBlessingCards"] = new JsonArray(card.DeepClone());
+        root["gates"]!["availableBlessingCards"] = new JsonArray(card.DeepClone());
+        root["gates"]!["shownBlessingCardIds"] = new JsonArray("card_bad_gates");
+        root["gates"]!["selectedBlessingCardIds"] = new JsonArray("card_bad_gates");
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_invalid_blessing_card_source_type", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_invalid_blessing_card_effect_family", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_invalid_blessing_card_rarity", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_PreparedPackageBlessingCardUnsupportedTokens_RaiseExplicitErrors()
+    {
+        var card = CreateBlessingCard("card_bad_package");
+        card["sourceType"] = "broken_source";
+        card["effectFamily"] = "broken_family";
+        card["rarity"] = "mythic";
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["preparedIncarnationPackage"] = new JsonObject
+        {
+            ["generatedFromDraftVersion"] = 4,
+            ["preparedAtTurn"] = 155,
+            ["preparedAtUtc"] = "2026-04-19T10:00:00Z",
+            ["selectedCardIds"] = new JsonArray("card_bad_package"),
+            ["selectedCards"] = new JsonArray(card)
+        };
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_invalid_blessing_card_source_type", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_invalid_blessing_card_effect_family", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_invalid_blessing_card_rarity", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void ValidateShiningAbodeStateFile_PreparePackageReceiptWithStaleSelectedCards_RaisesExplicitError()
     {
         var root = JsonNode.Parse("""
@@ -886,6 +931,72 @@ public sealed class ShiningStateValidationTests
         ["guardians"] = new JsonArray(),
         ["activeGuardian"] = null
     };
+
+    private static JsonObject CreateMinimalShiningStateForBlessingCardValidation() => new()
+    {
+        ["availability"] = ShiningAbodeState.AvailabilityActive,
+        ["radiance"] = new JsonObject
+        {
+            ["experience"] = 380,
+            ["tier"] = 3
+        },
+        ["lightSparks"] = 40,
+        ["halls"] = new JsonArray(),
+        ["factions"] = new JsonArray(),
+        ["shiningPoliticalActors"] = new JsonArray(),
+        ["factionFoundingReceipts"] = new JsonArray(),
+        ["factionRealignmentReceipts"] = new JsonArray(),
+        ["coreActionReceipts"] = new JsonArray(),
+        ["gates"] = new JsonObject
+        {
+            ["draftVersion"] = 0,
+            ["hasOpenDraft"] = false,
+            ["isStale"] = false,
+            ["allCandidateBlessingCards"] = new JsonArray(),
+            ["availableBlessingCards"] = new JsonArray(),
+            ["shownBlessingCardIds"] = new JsonArray(),
+            ["selectedBlessingCardIds"] = new JsonArray(),
+            ["nextCandidateCursor"] = 0,
+            ["rerollsRemaining"] = 0
+        },
+        ["gachaSystem"] = new JsonObject
+        {
+            ["chargesPerReturn"] = 0,
+            ["chargesUsedThisReturn"] = 0,
+            ["currentReturnCycleId"] = "return_1",
+            ["gachaHistory"] = new JsonArray()
+        }
+    };
+
+    private static JsonObject CreateBlessingCard(string cardId) => new()
+    {
+        ["cardId"] = cardId,
+        ["dedupeKey"] = cardId,
+        ["sourceType"] = ShiningAbodeState.CardSourceTypeProject,
+        ["sourceFactionId"] = "faction_dawn",
+        ["sourceActorId"] = "project_dawn",
+        ["effectFamily"] = ShiningAbodeState.EffectFamilyRoute,
+        ["rarity"] = ShiningAbodeState.RarityRare,
+        ["displayName"] = "Тропа",
+        ["displaySummary"] = "Открывает путь.",
+        ["effectPayload"] = new JsonObject()
+    };
+
+    private static List<ValidationIssue> InvokeShiningStateValidation(JsonObject root)
+    {
+        using var document = JsonDocument.Parse(root.ToJsonString());
+        var validator = new ValidationService(
+            new FileSystemManager(Path.GetTempPath(), NullLogger<FileSystemManager>.Instance),
+            NullLogger<ValidationService>.Instance);
+        var issues = new List<ValidationIssue>();
+        var method = typeof(ValidationService).GetMethod(
+            "ValidateShiningAbodeStateFile",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        method!.Invoke(validator, new object[] { document.RootElement, ShiningAbodeState.StatePath, issues });
+        return issues;
+    }
 
     private static JsonObject CreateEmptyResidentRoot() => new()
     {

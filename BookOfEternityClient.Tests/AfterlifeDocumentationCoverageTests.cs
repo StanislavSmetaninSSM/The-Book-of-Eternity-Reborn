@@ -552,6 +552,53 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningBlessingCardTokensAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var docs = new[] { matrix, examples };
+
+        var sourceTypes = typeof(ShiningAbodeState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string) &&
+                            field.Name.StartsWith("CardSourceType", StringComparison.Ordinal))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
+        var effectFamilies = typeof(ShiningAbodeState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string) &&
+                            field.Name.StartsWith("EffectFamily", StringComparison.Ordinal))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
+        var rarities = typeof(ShiningAbodeState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string) &&
+                            field.Name.StartsWith("Rarity", StringComparison.Ordinal))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.NotEmpty(sourceTypes);
+        Assert.NotEmpty(effectFamilies);
+        Assert.NotEmpty(rarities);
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("sourceType", doc, StringComparison.Ordinal);
+            Assert.Contains("effectFamily", doc, StringComparison.Ordinal);
+            Assert.Contains("rarity", doc, StringComparison.Ordinal);
+
+            foreach (var value in sourceTypes.Concat(effectFamilies).Concat(rarities))
+                Assert.Contains(value, doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ResidentCompanionManifestationHandoffIsDocumentedForAfterlifeOrigin()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
