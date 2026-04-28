@@ -183,12 +183,13 @@ internal static class AfterlifeArchiveState
             if (!hasMatchingReservation && !hasMatchingReceipt)
                 throw new InvalidOperationException(InvalidArchiveActionResolutionItemMessage);
 
-            if (hasMatchingReservation)
+            if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
             {
-                if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
-                    RemoveEntry(stored, archiveId!);
-                else if (entry != null)
-                    ClearReservation(entry);
+                RemoveEntry(stored, archiveId!);
+            }
+            else if (hasMatchingReservation && entry != null)
+            {
+                ClearReservation(entry);
             }
 
             UpsertActionReceipt(receipts, new JsonObject
