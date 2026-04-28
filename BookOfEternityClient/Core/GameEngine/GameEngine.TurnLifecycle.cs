@@ -1315,6 +1315,7 @@ public partial class GameEngine
             // === PHASE 3: Update realm and send life evaluation to GM ===
             if (!await UpdateSoulStateRealm("Chaos Sea", lifeSummary))
                 throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для перехода в Море Хаоса после завершения смертной жизни.");
+            await RefreshRuntimeStateAsync();
             _fs.ClearCurrentWorldLore();
 
             // Clean up transition signal BEFORE sending turn (avoid re-trigger)
@@ -1715,10 +1716,12 @@ public partial class GameEngine
 
             // Update soul state: switch realm to Mortal World and increment incarnation
             localStateMutated = true;
+            var newIncarnationNumber = _stateManager.CurrentState.Incarnation + 1;
             if (!await UpdateSoulStateRealm("Mortal World", incrementIncarnation: true))
                 throw new InvalidOperationException("Не удалось безопасно обновить soul_state.currentRealm для начала новой смертной жизни.");
+            await RefreshRuntimeStateAsync();
             await _rivalSoulArcService.ResetForNewLifeAsync();
-            await _guardianCorrectionService.ApplyForNewLifeAsync(_stateManager.CurrentState.Incarnation + 1);
+            await _guardianCorrectionService.ApplyForNewLifeAsync(newIncarnationNumber);
             await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, "Mortal World");
 
             // Initialize fresh mortal status
@@ -1755,7 +1758,7 @@ public partial class GameEngine
                 var blessingResult = await ShiningBlessingEffectState.MaterializeForBootstrapAsync(
                     _fs,
                     preparedShiningPackage,
-                    _stateManager.CurrentState.Incarnation + 1);
+                    newIncarnationNumber);
                 if (!blessingResult.Success)
                 {
                     _logger.LogWarning("Не удалось materialize pendingShiningBlessingEffects during bootstrap: {ErrorMessage}", blessingResult.ErrorMessage);
@@ -1775,7 +1778,7 @@ public partial class GameEngine
             // Mark new incarnation in story
             await _storyService.AppendMarkerAsync(
                 "Chaos Sea", 0,
-                "INCARNATION", $"Душа воплощается в новую смертную жизнь. Инкарнация #{_stateManager.CurrentState.Incarnation + 1}.",
+                "INCARNATION", $"Душа воплощается в новую смертную жизнь. Инкарнация #{newIncarnationNumber}.",
                 await BuildGuardianStoryEntityRefsAsync(payload.GuardianId));
 
             // Initialize characteristics for new incarnation

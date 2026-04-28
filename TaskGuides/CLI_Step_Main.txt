@@ -189,6 +189,7 @@
                - MUST NOT satisfy afterlife progression with `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `setWorldTime`, or `weatherChange`
                - MUST write `progressionProcessingReport` with exact processed counts and per-contour `newLast*Ordinal` values
                - MUST keep Shining bootstrap handoff separate: if `preparedIncarnationPackage` is active, process bootstrap only and do not run ordinary Shining living-world cycles
+               - If `preparedIncarnationPackage` is malformed/non-object, fail closed: preserve it for repair and do not treat the turn as ordinary active Shining Abode
 
             5. **MANDATORY Afterlife Decision Questions:**
                - Chaos Sea: What did the Sea itself do while the player focused elsewhere?
@@ -320,6 +321,7 @@
             - Step 1, realm gate: read `game_state/meta/soul_state.json.currentRealm` and classify the mode as ordinary Chaos Sea, ordinary active Shining Abode, or Shining Abode pending-bootstrap handoff
             - Step 2, lifecycle guards: read relevant control/state markers before narration: `afterlife_return_guard.json`, `ascension.json`, `incarnation_trigger.json`, and `shining_abode_state.json.preparedIncarnationPackage`
             - If pending-bootstrap handoff is active, suppress ordinary Shining living-world progression and process only the frozen next-life bootstrap package
+            - If the package marker is malformed, suppress ordinary Shining processing and surface repair instead of deleting/nulling the package
             - If ascension, incarnation, return, or life evaluation is active, keep that lifecycle separate; never combine `TriggerLifeEnd`, `AscensionTrigger`, New Game+, and Shining bootstrap in one logical outcome
             - Step 3, scheduler first: read `input/turn_request.json.progressionControl` before choosing the scene resolution, relevant actors, or response tone
             - Treat every `mustEvaluate* = true` as mandatory work for this turn, even if the player action is conversational
