@@ -105,7 +105,7 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
-    public async Task BuildSystemReminderFragmentAsync_PendingBootstrapSuppressesOrdinaryCoreActionReminder()
+    public async Task BuildSystemReminderFragmentAsync_PendingBootstrapBlocksAndPreservesCoreActionReminder()
     {
         var root = CreateTempRoot();
         try
@@ -121,7 +121,15 @@ public sealed class ShiningCoreActionRequestStateTests
                 "selectedCards": [
                   {
                     "cardId": "card_memory",
-                    "displayName": "Память Света"
+                    "dedupeKey": "memory:card_memory",
+                    "sourceType": "project",
+                    "sourceFactionId": "faction_old",
+                    "sourceActorId": "project_old",
+                    "effectFamily": "memory",
+                    "rarity": "common",
+                    "displayName": "Память Света",
+                    "displaySummary": "Сохраняет эхо.",
+                    "effectPayload": {}
                   }
                 ]
               }
@@ -136,7 +144,11 @@ public sealed class ShiningCoreActionRequestStateTests
 
             var reminder = await ShiningCoreActionRequestState.BuildSystemReminderFragmentAsync(fs, "Shining Abode");
 
-            Assert.Null(reminder);
+            Assert.NotNull(reminder);
+            Assert.Contains("SHINING ABODE CORE ACTIONS BLOCKED", reminder);
+            Assert.Contains("pending-bootstrap handoff", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Preserve pending_shining_abode_actions.json", reminder);
+            Assert.Contains("core_req_open_gates", reminder);
         }
         finally
         {
@@ -164,7 +176,7 @@ public sealed class ShiningCoreActionRequestStateTests
 
             Assert.NotNull(reminder);
             Assert.Contains("SHINING ABODE CORE ACTIONS BLOCKED", reminder);
-            Assert.Contains("malformed/non-object", reminder);
+            Assert.Contains("malformed or fails bootstrap validation", reminder);
         }
         finally
         {
@@ -356,6 +368,118 @@ public sealed class ShiningCoreActionRequestStateTests
             await ShiningCoreActionRequestState.EnsureHealthyAsync(fs, "Shining Abode");
 
             Assert.False(fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_AcceptedPullRelicGachaWithGeneratedRelicId_ClearsPendingRequest()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+            await WritePendingRequestsAsync(
+                fs,
+                new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    RequestId = "core_req_gacha",
+                    ActionType = ShiningCoreActionRequestState.ActionTypePullRelicGacha,
+                    FactionId = "faction_old",
+                    ReturnCycleId = "shining_return_2",
+                    RelicId = "",
+                    CreatedAtTurn = 8
+                });
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            shiningRoot["gachaSystem"] = new JsonObject
+            {
+                ["gachaHistory"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["requestId"] = "core_req_gacha",
+                        ["relicId"] = "relic_generated_001",
+                        ["returnCycleId"] = "shining_return_2"
+                    }
+                }
+            };
+            ((JsonArray)shiningRoot["coreActionReceipts"]!).Add(new JsonObject
+            {
+                ["requestId"] = "core_req_gacha",
+                ["actionType"] = ShiningCoreActionRequestState.ActionTypePullRelicGacha,
+                ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+                ["factionId"] = "faction_old",
+                ["relicId"] = "relic_generated_001",
+                ["returnCycleId"] = "shining_return_2",
+                ["selectedCardIds"] = new JsonArray(),
+                ["newResidentIds"] = new JsonArray(),
+                ["seededProjectIds"] = new JsonArray(),
+                ["generatedDraftVersion"] = 0,
+                ["resolvedAtTurn"] = 9,
+                ["resolvedAtUtc"] = "2026-04-17T00:10:00Z"
+            });
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            await ShiningCoreActionRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            Assert.False(fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task EnsureHealthyAsync_NonAcceptedPullRelicGachaWithGeneratedRelicId_DoesNotClearPendingRequest()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+            await WritePendingRequestsAsync(
+                fs,
+                new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    RequestId = "core_req_gacha_refused",
+                    ActionType = ShiningCoreActionRequestState.ActionTypePullRelicGacha,
+                    FactionId = "faction_old",
+                    ReturnCycleId = "shining_return_2",
+                    RelicId = "",
+                    CreatedAtTurn = 8
+                });
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            ((JsonArray)shiningRoot["coreActionReceipts"]!).Add(new JsonObject
+            {
+                ["requestId"] = "core_req_gacha_refused",
+                ["actionType"] = ShiningCoreActionRequestState.ActionTypePullRelicGacha,
+                ["status"] = ShiningCoreActionRequestState.RequestStatusRefused,
+                ["factionId"] = "faction_old",
+                ["relicId"] = "relic_should_not_exist",
+                ["returnCycleId"] = "shining_return_2",
+                ["selectedCardIds"] = new JsonArray(),
+                ["newResidentIds"] = new JsonArray(),
+                ["seededProjectIds"] = new JsonArray(),
+                ["generatedDraftVersion"] = 0,
+                ["resolvedAtTurn"] = 9,
+                ["resolvedAtUtc"] = "2026-04-17T00:10:00Z"
+            });
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            await ShiningCoreActionRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            Assert.True(fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+            var request = Assert.Single(await ShiningCoreActionRequestState.ReadRequestsAsync(fs));
+            Assert.Equal("core_req_gacha_refused", request.RequestId);
         }
         finally
         {
@@ -624,6 +748,153 @@ public sealed class ShiningCoreActionRequestStateTests
 
             Assert.NotNull(error);
             Assert.Contains("минимум одну", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithSelectedIdsButMissingSnapshots_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                SourceDraftVersion = 1,
+                SelectedCardIds = new List<string> { "card_social" },
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("selectedCards", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithEmptySelectedSnapshots_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                SourceDraftVersion = 1,
+                SelectedCardIds = new List<string> { "card_social" },
+                SelectedCards = new JsonArray(),
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("selectedCards", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithMalformedSelectedSnapshot_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var malformedCard = CreateCard("card_social", "social", "uncommon");
+            malformedCard.Remove("effectPayload");
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                SourceDraftVersion = 1,
+                SelectedCardIds = new List<string> { "card_social" },
+                SelectedCards = new JsonArray(malformedCard),
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("selectedCards", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithMutatedSelectedSnapshot_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var mutatedCard = CreateCard("card_social", "social", "uncommon");
+            mutatedCard["rarity"] = ShiningAbodeState.RarityRare;
+            mutatedCard["effectPayload"] = new JsonObject
+            {
+                ["type"] = "mutated"
+            };
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                SourceDraftVersion = 1,
+                SelectedCardIds = new List<string> { "card_social" },
+                SelectedCards = new JsonArray(mutatedCard),
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("selectedCards", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithSelectedSnapshot_Passes()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                SourceDraftVersion = 1,
+                SelectedCardIds = new List<string> { "card_social" },
+                SelectedCards = new JsonArray(CreateCard("card_social", "social", "uncommon")),
+                CreatedAtTurn = 5
+            });
+
+            Assert.Null(error);
         }
         finally
         {

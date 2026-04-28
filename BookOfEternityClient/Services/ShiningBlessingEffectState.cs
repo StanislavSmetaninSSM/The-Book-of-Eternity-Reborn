@@ -28,6 +28,7 @@ internal static class ShiningBlessingEffectState
     public const string SurvivalStatusPendingFirstRuinousFailure = "pending_first_ruinous_failure";
     public const string DescentStatusPendingResidentDescent = "pending_resident_descent";
     public const string RelicStatusPendingEntitlement = "pending_relic_entitlement";
+    private const string BootstrapResourceGrantMarkersProperty = "_shiningBootstrapResourceGrantIds";
 
     public sealed record BootstrapMaterializationResult(
         bool Success,
@@ -90,15 +91,28 @@ internal static class ShiningBlessingEffectState
         }
 
         var effectState = BuildPendingEffectsFromPreparedPackage(preparedPackage, currentIncarnation);
-        await ApplyImmediateBootstrapEffectsAsync(fs, effectState);
         var summaryLines = new List<string>();
         TryPrimeDescentEffects(soulRoot, effectState, 0, summaryLines);
         summaryLines.InsertRange(0, BuildActivationSummaryLines(effectState));
 
         soulRoot[SoulStateProperty] = effectState;
-        await fs.WriteFileAtomicAsync(
+        var soulStateJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var writes = await BuildImmediateBootstrapEffectWritesAsync(fs, effectState);
+        writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
             "game_state/meta/soul_state.json",
-            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts));
+            soulStateJson,
+            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts),
+            RequireCurrentBaseline: true));
+
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(fs, writes.ToArray()))
+        {
+            return new BootstrapMaterializationResult(
+                false,
+                false,
+                null,
+                Array.Empty<string>(),
+                "Не удалось атомарно materialize сияющие благословения: состояние изменилось во время bootstrap.");
+        }
 
         return new BootstrapMaterializationResult(
             true,
@@ -679,27 +693,89 @@ internal static class ShiningBlessingEffectState
         return result;
     }
 
-    private static async Task ApplyImmediateBootstrapEffectsAsync(FileSystemManager fs, JsonObject effectState)
+    private static async Task<List<CoordinatedStateWriteHelper.PlannedWrite>> BuildImmediateBootstrapEffectWritesAsync(
+        FileSystemManager fs,
+        JsonObject effectState)
     {
+        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>();
         if (effectState["resourceGrant"] is not JsonObject resourceGrant)
-            return;
+            return writes;
 
         var money = Math.Max(0, GetNodeInt(resourceGrant["money"], 0));
         var common = Math.Max(0, GetNodeInt(resourceGrant["common"], 0));
         var uncommon = Math.Max(0, GetNodeInt(resourceGrant["uncommon"], 0));
         if (money <= 0 && common <= 0 && uncommon <= 0)
-            return;
+            return writes;
 
+        var grantId = BuildBootstrapResourceGrantId(effectState, resourceGrant);
+        resourceGrant["grantId"] = grantId;
+
+        var statusJson = await fs.ReadFileAsync("game_state/core/player_status.json");
         var statusRoot = await ReadJsonObjectAsync(fs, "game_state/core/player_status.json") ?? new JsonObject();
-        statusRoot["money"] = GetNodeInt(statusRoot["money"], 0) + money;
-        await fs.WriteFileAtomicAsync("game_state/core/player_status.json", statusRoot.ToJsonString(JsonOpts));
+        if (!HasBootstrapResourceGrantMarker(statusRoot, grantId))
+        {
+            statusRoot["money"] = GetNodeInt(statusRoot["money"], 0) + money;
+            AddBootstrapResourceGrantMarker(statusRoot, grantId);
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                "game_state/core/player_status.json",
+                statusJson,
+                statusRoot.ToJsonString(JsonOpts),
+                RequireCurrentBaseline: true));
+        }
 
+        var itemsJson = await fs.ReadFileAsync("game_state/inventory/items.json");
         var itemsRoot = await ReadJsonObjectAsync(fs, "game_state/inventory/items.json") ?? BuildDefaultInventoryRoot();
-        var resources = itemsRoot["resources"] as JsonObject ?? new JsonObject();
-        resources["common"] = GetNodeInt(resources["common"], 0) + common;
-        resources["uncommon"] = GetNodeInt(resources["uncommon"], 0) + uncommon;
-        itemsRoot["resources"] = resources;
-        await fs.WriteFileAtomicAsync("game_state/inventory/items.json", itemsRoot.ToJsonString(JsonOpts));
+        if (!HasBootstrapResourceGrantMarker(itemsRoot, grantId))
+        {
+            var resources = itemsRoot["resources"] as JsonObject ?? new JsonObject();
+            resources["common"] = GetNodeInt(resources["common"], 0) + common;
+            resources["uncommon"] = GetNodeInt(resources["uncommon"], 0) + uncommon;
+            itemsRoot["resources"] = resources;
+            AddBootstrapResourceGrantMarker(itemsRoot, grantId);
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                "game_state/inventory/items.json",
+                itemsJson,
+                itemsRoot.ToJsonString(JsonOpts),
+                RequireCurrentBaseline: true));
+        }
+
+        return writes;
+    }
+
+    private static string BuildBootstrapResourceGrantId(JsonObject effectState, JsonObject resourceGrant)
+    {
+        var preparedAtTurn = GetNodeInt(effectState["sourcePackagePreparedAtTurn"], 0);
+        var incarnation = GetNodeInt(effectState["currentIncarnation"], 0);
+        var sourceCardIds = ReadStringArray(resourceGrant["sourceCardIds"])
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Select(id => id.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(id => id, StringComparer.OrdinalIgnoreCase);
+        return $"shining_bootstrap_resource:{preparedAtTurn}:{incarnation}:{string.Join("+", sourceCardIds)}";
+    }
+
+    private static bool HasBootstrapResourceGrantMarker(JsonObject root, string grantId)
+    {
+        if (root[BootstrapResourceGrantMarkersProperty] is not JsonArray markers)
+            return false;
+
+        return markers
+            .OfType<JsonValue>()
+            .Any(value => value.TryGetValue<string>(out var existing) &&
+                          string.Equals(existing, grantId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static void AddBootstrapResourceGrantMarker(JsonObject root, string grantId)
+    {
+        var markers = root[BootstrapResourceGrantMarkersProperty] as JsonArray;
+        if (markers == null)
+        {
+            markers = new JsonArray();
+            root[BootstrapResourceGrantMarkersProperty] = markers;
+        }
+
+        if (!HasBootstrapResourceGrantMarker(root, grantId))
+            markers.Add(grantId);
     }
 
     private static IReadOnlyList<string> BuildActivationSummaryLines(JsonObject effectState)

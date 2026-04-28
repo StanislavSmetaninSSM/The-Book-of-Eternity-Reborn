@@ -178,12 +178,18 @@ internal static class AfterlifeArchiveState
 
             var entry = FindEntry(stored, archiveId!);
             var reservation = GetReservationObject(entry);
-            if (ReservationMatchesRequest(reservation, requestId!, requestedMode!))
+            var hasMatchingReservation = ReservationMatchesRequest(reservation, requestId!, requestedMode!);
+            var hasMatchingReceipt = HasActionReceipt(receipts, requestId!, archiveId!, requestedMode!);
+            if (!hasMatchingReservation && !hasMatchingReceipt)
+                throw new InvalidOperationException(InvalidArchiveActionResolutionItemMessage);
+
+            if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
             {
-                if (string.Equals(status, AfterlifeArchiveActionState.ResolutionStatusAccepted, StringComparison.OrdinalIgnoreCase))
-                    RemoveEntry(stored, archiveId!);
-                else if (entry != null)
-                    ClearReservation(entry);
+                RemoveEntry(stored, archiveId!);
+            }
+            else if (hasMatchingReservation && entry != null)
+            {
+                ClearReservation(entry);
             }
 
             UpsertActionReceipt(receipts, new JsonObject

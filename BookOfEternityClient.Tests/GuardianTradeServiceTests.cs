@@ -2,6 +2,7 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -697,6 +698,67 @@ public sealed class GuardianTradeServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuyAsync_DuplicateSlotIds_FailsWithoutMutatingState()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeBuybackEntry: false);
+        await DuplicateFirstGuardianTradeSlotAsync();
+
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var beforeGuardians = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var beforeSoul = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await service.BuyAsync("guardian_alpha", "trade_1", currentIncarnation: 1, currentTurn: 13);
+
+        Assert.False(result.Success);
+        Assert.False(result.StateChanged);
+        Assert.Contains("duplicate slotId", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeGuardians, await _fs.ReadFileAsync("game_state/meta/guardians.json"));
+        Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public void InventoryMatchesRequestContract_DuplicateSlotIds_Fails()
+    {
+        var inventory = new JsonObject
+        {
+            ["tradeCycleId"] = "return_1",
+            ["generatedAtUtc"] = "2026-03-26T00:00:00Z",
+            ["generationReputationTier"] = "Friendly",
+            ["pricingReputationTier"] = "Friendly",
+            ["projectBonusSignature"] = "0|0|0",
+            ["upgradedTradeSlots"] = 0,
+            ["elevatedTradeSlots"] = 0,
+            ["effectiveRarityCeilingBonusSteps"] = 0,
+            ["items"] = new JsonArray(
+                CreateGuardianTradeSlot("trade_1", "relic_1"),
+                CreateGuardianTradeSlot("trade_1", "relic_2"))
+        };
+        var request = new GuardianTradeRequestState.PendingGuardianTradeRequest
+        {
+            GuardianId = "guardian_alpha",
+            ReturnCycleId = "return_1",
+            CurrentReputation = 120,
+            DerivedTradeSlotCount = 2,
+            EffectiveRarityCeilingBonusSteps = 0,
+            ProjectBonusSignature = "0|0|0"
+        };
+
+        Assert.False(GuardianTradeRequestState.InventoryMatchesRequestContract(inventory, request));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GuardianTradeInventoryDuplicateSlotIds_Fails()
+    {
+        await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: true, includeTradeReceipt: true, includeBuybackEntry: false);
+        await DuplicateFirstGuardianTradeSlotAsync();
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_trade_inventory_duplicate_slot_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task BuyAsync_StaleInventoryRequest_UsesRealCurrentTurnInPendingRequest()
     {
         await SeedMinimalGuardianTradeStateAsync(includeTradeInventory: false, includeTradeReceipt: false, includeBuybackEntry: false);
@@ -943,6 +1005,37 @@ public sealed class GuardianTradeServiceTests : IDisposable
         Assert.Equal("relic_keep", removeRelic.GetProperty("relicId").GetString());
         Assert.True(metaStateUpdates.TryGetProperty("memoryLegacyGrant", out _));
     }
+
+    private async Task DuplicateFirstGuardianTradeSlotAsync()
+    {
+        var guardiansRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
+        DuplicateFirstSlot(guardiansRoot["guardians"]!.AsArray()[0]!.AsObject());
+        DuplicateFirstSlot(guardiansRoot["activeGuardian"]!.AsObject());
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansRoot.ToJsonString());
+    }
+
+    private static void DuplicateFirstSlot(JsonObject guardian)
+    {
+        var items = guardian["tradeInventory"]!["items"]!.AsArray();
+        items.Add(items[0]!.DeepClone());
+    }
+
+    private static JsonObject CreateGuardianTradeSlot(string slotId, string relicId) => new()
+    {
+        ["slotId"] = slotId,
+        ["priceInFeathers"] = 30,
+        ["domainTag"] = "Сны и Переходы",
+        ["soldOut"] = false,
+        ["rarityBonusStepsApplied"] = 0,
+        ["relicData"] = new JsonObject
+        {
+            ["relicId"] = relicId,
+            ["name"] = $"Реликвия {relicId}",
+            ["rarity"] = "Common",
+            ["quality"] = "Common",
+            ["description"] = "Тестовая реликвия."
+        }
+    };
 
     private async Task SeedMinimalGuardianTradeStateAsync(bool includeTradeInventory, bool includeTradeReceipt, bool includeBuybackEntry)
     {

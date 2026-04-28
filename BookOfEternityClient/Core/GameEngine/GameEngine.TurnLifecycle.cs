@@ -2265,10 +2265,13 @@ setCharacteristics: Use ONLY for extraordinary events (divine intervention, meta
 REALM SEGREGATION — ABSOLUTE LAW:
 Read Context.worldState.currentRealm (projected from game_state/meta/soul_state.json.currentRealm) BEFORE applying any mechanic.
 
-IF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_abode_state.json.preparedIncarnationPackage != null:
+IF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_abode_state.json.preparedIncarnationPackage is a VALID bootstrap package object:
   TREAT THIS AS Shining Abode pending-bootstrap handoff, NOT as ordinary active Shining Abode.
   ALLOWED: only mortal bootstrap / next-life materialization. GM MUST preserve game_state/meta/shining_abode_state.json.preparedIncarnationPackage exactly as provided; do not remove, clear, rename, or mutate it. The client runtime consumes and clears the frozen package only after successful Mortal World bootstrap.
   FORBIDDEN: ordinary Guardian interactions, ordinary Abode interactions, ordinary afterlife interactions, archive/relic/world-setup meta flows, Mortal World systems.
+
+IF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_abode_state.json.preparedIncarnationPackage is present but not a valid bootstrap package:
+  TREAT THIS AS Shining Abode package fault. Fail closed, preserve the package and pending Shining contracts for repair, and do NOT process ordinary Shining gameplay or handoff.
 
 ELSE IF REALM = Chaos Sea:
   FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
