@@ -361,7 +361,16 @@ internal static class ShiningBlessingEffectState
     public static async Task<bool> ConsumeRelicRerollAsync(
         FileSystemManager fs,
         int currentTurnNumber)
+        => await ConsumeRelicRerollsAsync(fs, currentTurnNumber, rerollsToConsume: 1);
+
+    public static async Task<bool> ConsumeRelicRerollsAsync(
+        FileSystemManager fs,
+        int currentTurnNumber,
+        int rerollsToConsume)
     {
+        if (rerollsToConsume <= 0)
+            return true;
+
         var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
         if (soulRoot?[SoulStateProperty] is not JsonObject effectState ||
             effectState["relicRefinementEntitlements"] is not JsonObject entitlements ||
@@ -371,11 +380,11 @@ internal static class ShiningBlessingEffectState
         }
 
         var rerollsRemaining = Math.Max(0, GetNodeInt(entitlements["rerolls"], 0));
-        if (rerollsRemaining <= 0)
+        if (rerollsRemaining < rerollsToConsume)
             return false;
 
-        entitlements["rerolls"] = rerollsRemaining - 1;
-        entitlements["rerollsSpent"] = GetNodeInt(entitlements["rerollsSpent"], 0) + 1;
+        entitlements["rerolls"] = rerollsRemaining - rerollsToConsume;
+        entitlements["rerollsSpent"] = GetNodeInt(entitlements["rerollsSpent"], 0) + rerollsToConsume;
         if (GetNodeInt(entitlements["rerolls"], 0) <= 0 &&
             !GetNodeBool(entitlements["freeShape"]) &&
             !GetNodeBool(entitlements["freeRetune"]))

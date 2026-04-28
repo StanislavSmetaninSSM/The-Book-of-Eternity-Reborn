@@ -775,15 +775,54 @@ public partial class ValidationService
             return;
         RequireString(card, contextPrefix, issues, "cardId");
         RequireString(card, contextPrefix, issues, "dedupeKey");
-        RequireString(card, contextPrefix, issues, "sourceType");
+        var sourceType = RequireString(card, contextPrefix, issues, "sourceType");
         RequireString(card, contextPrefix, issues, "sourceFactionId");
         ValidateOptionalString(card, contextPrefix, issues, "sourceFactionName");
         ValidateOptionalString(card, contextPrefix, issues, "sourceActorId");
         ValidateOptionalString(card, contextPrefix, issues, "sourceActorName");
-        RequireString(card, contextPrefix, issues, "effectFamily");
-        RequireString(card, contextPrefix, issues, "rarity");
+        var effectFamily = RequireString(card, contextPrefix, issues, "effectFamily");
+        var rarity = RequireString(card, contextPrefix, issues, "rarity");
         RequireString(card, contextPrefix, issues, "displayName");
         RequireString(card, contextPrefix, issues, "displaySummary");
+        if (!string.IsNullOrWhiteSpace(sourceType) && !ShiningAbodeState.IsSupportedCardSourceType(sourceType))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.sourceType",
+                IssueSeverity.Error,
+                "Blessing card sourceType должен быть canonical source token",
+                code: "shining_abode_invalid_blessing_card_source_type",
+                section: "ShiningAbode",
+                expected: "head | project | resident_descent",
+                actual: sourceType,
+                repairHint: "Используй только поддерживаемые sourceType значения для gates/preparedIncarnationPackage blessing cards."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(effectFamily) && !ShiningAbodeState.IsSupportedEffectFamily(effectFamily))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.effectFamily",
+                IssueSeverity.Error,
+                "Blessing card effectFamily должен быть canonical effect family",
+                code: "shining_abode_invalid_blessing_card_effect_family",
+                section: "ShiningAbode",
+                expected: "lore | social | resource | memory | descent | survival | relic | route",
+                actual: effectFamily,
+                repairHint: "Используй только поддерживаемые effectFamily значения для gates/preparedIncarnationPackage blessing cards."));
+        }
+
+        if (!string.IsNullOrWhiteSpace(rarity) && !ShiningAbodeState.IsSupportedRarity(rarity))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.rarity",
+                IssueSeverity.Error,
+                "Blessing card rarity должен быть canonical Shining rarity",
+                code: "shining_abode_invalid_blessing_card_rarity",
+                section: "ShiningAbode",
+                expected: "common | uncommon | rare | epic | legendary | radiant",
+                actual: rarity,
+                repairHint: "Используй только поддерживаемые rarity значения для gates/preparedIncarnationPackage blessing cards."));
+        }
+
         if (!card.TryGetProperty("effectPayload", out var effectPayload) || !RequireObject(effectPayload, $"{contextPrefix}.effectPayload", issues))
         {
             issues.Add(new ValidationIssue($"{contextPrefix}.effectPayload", IssueSeverity.Error, "Blessing card должен содержать effectPayload object", code: "shining_abode_missing_card_payload", section: "ShiningAbode"));

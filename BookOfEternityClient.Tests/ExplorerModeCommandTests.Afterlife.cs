@@ -3237,6 +3237,55 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var soulPath = _fs.ResolvePath("game_state/meta/soul_state.json");
+        var soulRoot = JsonNode.Parse(await File.ReadAllTextAsync(soulPath))!.AsObject();
+        soulRoot[ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
+        {
+            ["applicationState"] = "active",
+            ["materializedAtUtc"] = "2026-04-19T10:00:00Z",
+            ["currentIncarnation"] = 7,
+            ["sourcePackagePreparedAtTurn"] = 155,
+            ["sourceCardIds"] = new JsonArray("card_relic_reroll"),
+            ["sourceCardCount"] = 1,
+            ["relicRefinementEntitlements"] = new JsonObject
+            {
+                ["rerolls"] = 1,
+                ["freeShape"] = false,
+                ["freeRetune"] = false,
+                ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
+                ["sourceCardIds"] = new JsonArray("card_relic_reroll")
+            }
+        };
+        await File.WriteAllTextAsync(soulPath, soulRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+
+        _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "⚒ Торговля и кузня", "← Назад");
+        _console.QueueSelection("Торговля и кузня Сияющей Обители", "⚒ Создать запрос на перековку", "← Назад");
+        _console.QueueSelection("Выберите фракцию для кузни", "Хор Рассвета");
+        _console.QueueSelection("Выберите действие кузни", "Перековать форму реликвии");
+        _console.QueueSelection("Выберите Реликвию Души для перековки", "Стекло Пути");
+        _console.QueueSelection("Новая форма реликвии", "🔄 Перебросить благословением (1)", "✅ Использовать предложенную форму");
+        _console.QueueSelection("Подтвердить запрос на перековку", "← Отмена");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_forge_reroll_cancel_preserves_entitlement");
+        Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+        var afterRoot = JsonNode.Parse(await File.ReadAllTextAsync(soulPath))!.AsObject();
+        var entitlements = afterRoot[ShiningBlessingEffectState.SoulStateProperty]!["relicRefinementEntitlements"]!.AsObject();
+        Assert.Equal(1, entitlements["rerolls"]!.GetValue<int>());
+        Assert.Equal(ShiningBlessingEffectState.RelicStatusPendingEntitlement, entitlements["status"]!.GetValue<string>());
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Blessing relic rerolls", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("cancel preserves entitlement", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningTradeAndForge_ReshapeFallbackHumanizesPromptAndNormalizesCanonicalFormTag()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
