@@ -1001,7 +1001,10 @@ public partial class ExplorerMode
         if (offeringMode.StartsWith("💎", StringComparison.Ordinal))
         {
             var relicChoices = storedRelics
-                .Select(relic => $"{Markup.Escape(relic.Name)} [dim]({Markup.Escape(relic.Rarity)})[/]")
+                .Select(relic =>
+                    relic.HasValidRarity
+                        ? $"{Markup.Escape(relic.Name)} [dim]({Markup.Escape(relic.Rarity)} via {Markup.Escape(relic.RaritySource)})[/]"
+                        : $"{Markup.Escape(relic.Name)} [red](invalid rarity: {Markup.Escape(relic.RarityIssue)})[/]")
                 .ToList();
             relicChoices.Add("[dim]← Назад[/]");
 
@@ -1018,6 +1021,14 @@ public partial class ExplorerMode
                 return;
 
             var relic = storedRelics[relicIndex];
+            if (!relic.HasValidRarity)
+            {
+                MarkupLine($"[red]❌ Нельзя поднести реликвию «{Markup.Escape(relic.Name)}»: {Markup.Escape(relic.RarityIssue)}.[/]");
+                MarkupLine($"[dim]Для destructive offering требуется одно из полей rarity, quality, relicRarity со значением: {Markup.Escape(GuardianAbodeOfferingState.DescribeCanonicalSoulRelicRarities())}.[/]");
+                WaitForKey();
+                return;
+            }
+
             var relicPowerGain = GuardianAbodeOfferingState.ResolvePowerGainForSoulRelicOffering(relic.Rarity);
             var relicConfirm = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold yellow]Поднести реликвию {Markup.Escape(relic.Name)} Обители {Markup.Escape(guardianNameChosen)}?[/]\n" +
@@ -1318,7 +1329,13 @@ public partial class ExplorerMode
             "stateEvidence должен содержать affectedFiles и минимальное подтверждение реального stateful результата.";
     }
 
-    private sealed record AbodeOfferingRelic(string RelicId, string Name, string Rarity);
+    private sealed record AbodeOfferingRelic(
+        string RelicId,
+        string Name,
+        string Rarity,
+        string RaritySource,
+        bool HasValidRarity,
+        string RarityIssue);
 
     private async Task<List<AbodeOfferingRelic>> ReadStoredSoulRelicsForAbodeOfferingAsync()
     {
@@ -1341,13 +1358,41 @@ public partial class ExplorerMode
 
                 var relicId = GetRelicIdentity(relic);
                 var name = GetStr(relic, "name", relicId);
-                var rarity = GetStr(relic, "rarity", "common");
+                var rarity = ResolveSoulRelicOfferingRarity(relic, out var raritySource);
+                var hasValidRarity = GuardianAbodeOfferingState.IsCanonicalSoulRelicRarity(rarity);
+                var rarityIssue = hasValidRarity
+                    ? string.Empty
+                    : string.IsNullOrWhiteSpace(rarity)
+                        ? "missing rarity/quality/relicRarity"
+                        : $"unsupported {raritySource}='{rarity}'";
                 if (!string.IsNullOrWhiteSpace(relicId))
-                    result.Add(new AbodeOfferingRelic(relicId, name, rarity));
+                    result.Add(new AbodeOfferingRelic(relicId, name, rarity, raritySource, hasValidRarity, rarityIssue));
             }
         }
 
         return result;
+    }
+
+    private static string ResolveSoulRelicOfferingRarity(JsonElement relic, out string sourceField)
+    {
+        foreach (var fieldName in new[] { "rarity", "quality", "relicRarity" })
+        {
+            if (!relic.TryGetProperty(fieldName, out var value) ||
+                value.ValueKind != JsonValueKind.String)
+            {
+                continue;
+            }
+
+            var rarity = value.GetString()?.Trim();
+            if (!string.IsNullOrWhiteSpace(rarity))
+            {
+                sourceField = fieldName;
+                return rarity;
+            }
+        }
+
+        sourceField = "rarity/quality/relicRarity";
+        return string.Empty;
     }
 
     private async Task<List<AfterlifeArchiveEntrySummary>> ReadStoredAfterlifeArchiveEntriesAsync()

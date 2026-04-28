@@ -1552,6 +1552,7 @@ Scenario:
 - Player action contains `[INK_FEATHER_ACTION: ABODE_OFFERING]`.
 - `game_state/control/pending_abode_offering.json` exists and targets a specific Guardian and return cycle.
 - This example is only for `offeringType = ink_feathers`; non-feather offerings use plain `[ABODE_OFFERING]`.
+- For `offeringType = soul_relic`, the client snapshots a canonical `relicRarity` from the stored Soul Relic fields in this order: `rarity`, then `quality`, then `relicRarity`. The GM must preserve that pending `relicRarity` in `guardianPowerEvents[].audit.relicRarity` and must not silently downgrade a `quality`-only or `relicRarity`-only relic to `common`.
 - The GM must also read `Examples/E_CLI_Ink_Feather_Actions.txt`, section `VALID — ABODE_OFFERING`.
 
 Input fragment:
@@ -1636,6 +1637,7 @@ Forbidden:
 - Using another Guardian or another return cycle.
 - Writing only narrative without `guardianPowerEvents.reasonType = offering`.
 - Writing `output/ink_feather_action_result.json` for non-feather offerings such as `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`.
+- For `soul_relic`, recomputing rarity from another field, defaulting missing rarity to `common`, or writing an audit `relicRarity` different from `pending_abode_offering.json.relicRarity`.
 
 ==================================================
 9. VALID — SHINING FACTION FOUNDING, REALIGNMENT, LEADERSHIP
