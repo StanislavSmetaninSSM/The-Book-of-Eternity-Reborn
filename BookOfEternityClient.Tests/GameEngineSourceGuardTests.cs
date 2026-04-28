@@ -102,6 +102,15 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("TryCommitCoordinatedGameStateWritesAsync(", turnLifecycleSource, StringComparison.Ordinal);
         Assert.DoesNotContain("await UpdateSoulStateRealm(\"Shining Abode\");", mainMenuSource, StringComparison.Ordinal);
         Assert.DoesNotContain("await UpdateSoulStateRealm(\"Shining Abode\");", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("if (!await UpdateSoulStateRealm(\"Chaos Sea\", lifeSummary))", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.Contains("if (!await UpdateSoulStateRealm(\"Mortal World\", incrementIncarnation: true))", turnLifecycleSource, StringComparison.Ordinal);
+        Assert.True(
+            turnLifecycleSource.IndexOf("if (!await UpdateSoulStateRealm(\"Chaos Sea\", lifeSummary))", StringComparison.Ordinal) <
+            turnLifecycleSource.IndexOf("_fs.ClearCurrentWorldLore();", StringComparison.Ordinal));
+        Assert.True(
+            turnLifecycleSource.IndexOf("if (!await UpdateSoulStateRealm(\"Mortal World\", incrementIncarnation: true))", StringComparison.Ordinal) <
+            turnLifecycleSource.IndexOf("await _rivalSoulArcService.ResetForNewLifeAsync();", StringComparison.Ordinal));
+        Assert.Contains("await RefreshRuntimeStateAsync();", turnLifecycleSource, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -410,13 +419,12 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
-    public void OrdinaryReturnToChaosSea_MustPurgePendingShiningRequests()
+    public void OrdinaryReturnToChaosSea_MustBlockInsteadOfPurgingPendingShiningRequests()
     {
         var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
 
-        Assert.Contains("ShiningCoreActionRequestState.ClearRequests(_fs);", source, StringComparison.Ordinal);
-        Assert.Contains("ShiningTradeRequestState.ClearRequests(_fs);", source, StringComparison.Ordinal);
-        Assert.Contains("ShiningFactionRequestState.ClearAllRequests(_fs);", source, StringComparison.Ordinal);
+        Assert.Contains("GetExistingShiningPendingContractPaths()", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("ShiningCoreActionRequestState.ClearRequests(_fs);\r\n        ShiningTradeRequestState.ClearRequests(_fs);\r\n        ShiningFactionRequestState.ClearAllRequests(_fs);", source, StringComparison.Ordinal);
     }
 
     [Fact]

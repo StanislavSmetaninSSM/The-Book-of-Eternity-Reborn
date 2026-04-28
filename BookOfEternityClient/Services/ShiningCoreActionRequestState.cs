@@ -296,6 +296,22 @@ internal static class ShiningCoreActionRequestState
         if (!RealmSemantics.IsAfterlifeRealm(currentRealm))
             return null;
 
+        if (IsShiningRealm(currentRealm))
+        {
+            var handoffRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
+            if (handoffRoot?["preparedIncarnationPackage"] is JsonObject)
+                return null;
+
+            if (handoffRoot != null &&
+                handoffRoot.ContainsKey("preparedIncarnationPackage") &&
+                handoffRoot["preparedIncarnationPackage"] != null)
+            {
+                return "SHINING ABODE CORE ACTIONS BLOCKED:\n" +
+                       "  - preparedIncarnationPackage is malformed/non-object, so the realm mode is fail-closed.\n" +
+                       "  - Do not process ordinary Shining core actions until the package is repaired or cleared by valid runtime flow.";
+            }
+        }
+
         var requestState = await ReadRequestsStateAsync(fs);
         if (requestState.IsMalformed)
         {

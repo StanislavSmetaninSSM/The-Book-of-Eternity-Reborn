@@ -637,8 +637,9 @@ Quest state contract notes:
 - `game_state/control/pending_resident_companion_manifestation_request.json` ← MortalWorldProfile-only next-life companion manifestation requests. In `Chaos Sea` / `Shining Abode`, treat this file as stale/repair-only context and do not materialize mortal NPCs or encounters from it.
 - `game_state/control/pending_archive_consultation_request.json` and `pending_archive_project_fuel_request.json` ← close with `archiveActionResolutions`.
 - `game_state/control/pending_shining_abode_actions.json` ← client-authored Shining core actions; contains exactly one active `request`/`requests[0]`, not a GM-managed queue; close through canonical `shining_abode_state.json` mutation plus `shining_abode_state.coreActionReceipts[]`. Supported `actionType` values are `discover_native_faction`, `invest_in_faction`, `complete_project`, `support_project`, `unsupport_project`, `retire_project`, `open_gates`, `prepare_incarnation_package`, `pull_relic_gacha`, `forge_relic.reshape`, `forge_relic.retune_property`, `forge_relic.strengthen_band`, `forge_relic.stabilize_echo`, and `forge_relic.uplift_rarity`; use `OtherGuides/Afterlife_Contract_Matrix.md` plus `Examples/E_CLI_Afterlife_Turns.txt` example 14 for accepted receipt/state patterns.
+- For `complete_project`, `favoredArchetype` is a cost-only rule: matching archetype reduces the quoted completion cost by 5 Ink Feathers and 5 Light Sparks, but `strengthReward` is always tier-based (`tier 1 = 8`, `tier 2 = 12`, `tier 3 = 16`).
 - `game_state/meta/shining_abode_state.json.pendingNativeFactionDiscovery` ← legacy state-local Shining discovery contract. If non-null, close it as legacy `discover_native_faction`: materialize the native hall/faction/residents/projects, spend only `costFeathers` from Soul, preserve current Light Sparks because `costLightSparks` was already reserved, append `coreActionReceipts[]`, set `pendingNativeFactionDiscovery = null`, and do not create a duplicate `pending_shining_abode_actions.json`.
-- `game_state/control/pending_shining_faction_foundings.json` ← close through `shining_abode_state.factionFoundingReceipts[]`.
+- `game_state/control/pending_shining_faction_foundings.json` ← close through `shining_abode_state.factionFoundingReceipts[]`; both pending request and receipt carry exact cost audit fields `quotedCostFeathers = 25` and `quotedCostLightSparks = 15`.
 - `game_state/control/pending_shining_faction_realignments.json` ← close through `shining_abode_state.factionRealignmentReceipts[]`.
 - `game_state/control/pending_shining_faction_leadership_transitions.json` ← close through faction `leadershipReceipts[]` and leadership history.
 - `game_state/control/pending_shining_trade_inventory_requests.json` ← close through faction `tradeInventory` plus `tradeInventoryReceipts[]`; supports `requests[]`, but `(factionId, tradeCycleId)` is the uniqueness key and duplicate contracts for the same faction/cycle are invalid.
@@ -723,7 +724,8 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - `TriggerLifeEnd` is Mortal World only; it starts the later Life Evaluation lifecycle and must not be emitted from Chaos Sea or Shining Abode.
 - `TriggerIncarnation` is valid from ordinary Chaos Sea, or from `Shining Abode pending-bootstrap handoff mode` when an existing `preparedIncarnationPackage` is present and preserved for later runtime bootstrap consumption; it must not be mixed with ordinary Shining living-world progression.
 - In `Shining Abode pending-bootstrap handoff mode`, GM must not remove, clear, rename, or mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage` in the accepted `TriggerIncarnation` turn. Preserve the package exactly as provided; the client runtime reads it after accepting the trigger, materializes the frozen blessing/world setup, and clears it only after successful Mortal World bootstrap.
-- If the Shining handoff package is missing or malformed, do not "repair" it by deleting or nulling the package. Preserve the current state and use the normal validation repair/error path so the bootstrap contract can be fixed without losing the prepared package.
+- If the Shining handoff package is missing, malformed, or present as a non-object value, do not "repair" it by deleting or nulling the package and do not treat the realm as ordinary active Shining. Preserve the current state and use the normal validation repair/error path so the bootstrap contract can be fixed without losing the prepared package.
+- Client-owned `return_to_chaos_sea` is allowed only when there are no active Shining pending contracts. Resolve or repair `pending_shining_abode_actions.json`, Shining trade inventory requests, Shining founding requests, Shining realignment requests, and Shining leadership transition requests before sealing the Abode.
 - `AscensionTrigger` is valid only in Chaos Sea, only with maximum Enlightenment and explicit `playerChoice=Ascension`, and must never be mixed with `TriggerLifeEnd`.
 
 ### Afterlife Realm Model
@@ -775,7 +777,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - Guardian project, resident agency, Shining Abode, Shining faction, and Shining trade progression when mandated by `progressionControl`
 - `progressionProcessingReport` for afterlife scheduler debt and bounded catch-up acknowledgement
 - Soul Relic Gacha processing
-- Direct Chaos Sea gacha via `/gacha` remains a Chaos-Sea-specific exception and does not use current Guardian modifiers
+- Direct Chaos Sea gacha via `/gacha` remains a Chaos-Sea-specific exception and does not use current Guardian modifiers; its result rarity must equal `turn_request.json.gachaBaseResult.baseRarity` exactly, with no upgrade or downgrade path
 - Abode navigation data
 - Explicit afterlife Ink Feather whitelist actions may also legally produce guardian/meta/soul outputs.
 
@@ -1550,7 +1552,7 @@ Each Guardian object should carry:
   // Charges reset only when the Soul returns to the Chaos Sea after a new mortal life.
   // If a Guardian has no remaining charges this return, do NOT emit processGacha for that Guardian.
   // A successful processGacha consumes one Guardian charge for the current return.
-  // Direct Chaos Sea pull via /gacha should NOT use processGacha.
+  // Direct Chaos Sea pull via /gacha should NOT use processGacha and must keep final rarity exactly equal to gachaBaseResult.baseRarity.
   // It should resolve directly into soul/meta state without guardian-specific modifiers and without consuming Guardian charges.
   // --- Inner Life Commands (Block_32_extension_2) ---
   // Add Guardian musings (1-2 per turn)

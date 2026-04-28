@@ -54,6 +54,8 @@ public sealed class ShiningFactionRequestStateTests
             var request = Assert.Single(requests);
             Assert.Equal("hall_dawn_v2", request.ProposedHallId);
             Assert.Equal("Зал Второго Рассвета", request.ProposedHallName);
+            Assert.Equal(ShiningFactionRequestState.FactionFoundingCostFeathers, request.QuotedCostFeathers);
+            Assert.Equal(ShiningFactionRequestState.FactionFoundingCostLightSparks, request.QuotedCostLightSparks);
         }
         finally
         {
@@ -502,6 +504,8 @@ public sealed class ShiningFactionRequestStateTests
                 ["hallId"] = "hall_new",
                 ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
                 ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael", "resident_serit"),
+                ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+                ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
                 ["resolvedAtTurn"] = 41,
                 ["resolvedAtUtc"] = "2026-04-21T12:00:00Z"
             });

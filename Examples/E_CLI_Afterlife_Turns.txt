@@ -1411,7 +1411,7 @@ Direct Chaos Sea `/gacha`:
 - The client already spent the Ink Feathers before the GM turn; preserve the post-spend balance and do not write `metaStateUpdates.inkFeatherChanges.spend`.
 - `turn_request.json.playerAction` must contain the exact prepaid cost phrase `<N> Чернильных Перьев` or `<N> Ink Feathers`; the validator extracts direct-gacha cost from that phrase.
 - Must materialize exactly one new Soul Relic in Soul/meta state.
-- Final rarity must not be below `turn_request.json.gachaBaseResult.baseRarity`.
+- Final rarity must equal `turn_request.json.gachaBaseResult.baseRarity` exactly. Direct `/gacha` has no upgrade or downgrade path.
 
 Correct direct `/gacha` response fragment:
 
@@ -1672,6 +1672,8 @@ Input fragment:
           "res_liora_001",
           "res_tavian_001"
         ],
+        "quotedCostFeathers": 25,
+        "quotedCostLightSparks": 15,
         "createdAtTurn": 301,
         "createdAtUtc": "2026-04-24T10:10:00Z"
       }
@@ -1734,6 +1736,8 @@ Correct Shining state patch:
         "res_liora_001",
         "res_tavian_001"
       ],
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
       "resolvedAtTurn": 301,
       "resolvedAtUtc": "2026-04-24T10:12:00Z",
       "reason": "player founded a social-memory Shining faction"
@@ -2951,6 +2955,8 @@ Queue and mode rules:
 - Pending-bootstrap is derived from non-null valid `preparedIncarnationPackage`; in that mode the GM preserves the package and does not process ordinary Shining core actions.
 - Cost fields in receipts identify the accepted request, but resource spends, Radiance XP, strength changes, gate invalidation, and package creation must also be reflected through canonical Shining/Soul state deltas.
 
+Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. Refused, withdrawn, or expired outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged.
+
 Supported `actionType` values:
 
 ```text
@@ -2979,7 +2985,7 @@ Common accepted receipt fields for every Shining core action:
   "status": "accepted",
   "factionId": "same factionId as request, or empty string when request has none",
   "projectId": "same projectId as request; for complete_project this may be the newly created projectId",
-  "relicId": "same relicId as request, or empty string",
+  "relicId": "same relicId as request, or for pull_relic_gacha the newly materialized result relicId",
   "returnCycleId": "same returnCycleId as request, or empty string",
   "targetFormTag": "same targetFormTag as request, or empty string",
   "propertyIndex": -1,
@@ -2994,7 +3000,7 @@ Common accepted receipt fields for every Shining core action:
 ```
 
 Important receipt rules:
-- Always keep `requestId`, `actionType`, target ids, `selectedCardIds`, `returnCycleId`, `targetFormTag`, and `propertyIndex` synchronized with the pending request.
+- Always keep `requestId`, `actionType`, target ids, `selectedCardIds`, `returnCycleId`, `targetFormTag`, and `propertyIndex` synchronized with the pending request. Exception: `pull_relic_gacha` introduces a new non-empty result `relicId` in the receipt because the pending request cannot know that id in advance.
 - Always include `selectedCardIds`, `newResidentIds`, and `seededProjectIds`; use empty arrays when the action does not use them.
 - Always include positive `resolvedAtTurn` and non-empty ISO `resolvedAtUtc`.
 - `status = refused` or `withdrawn` closes the request but must not apply the accepted state mutation.
@@ -3086,6 +3092,7 @@ invest_in_faction
 complete_project
   Request requires: factionId, projectDraft, quoted costs from the canonical quote.
   State result: spend exact costs, append one completed project generated from projectDraft, possibly add Radiance XP for a newly counted archetype, recompute factionStrength, mark gates stale.
+  Favored archetype is cost-only: if projectDraft.projectArchetype matches faction.charter.favoredArchetype, the quote is 5 Feathers and 5 Light Sparks cheaper; strengthReward is still tier-only (tier 1 = 8, tier 2 = 12, tier 3 = 16).
   Receipt target: factionId and non-empty projectId of the completed project.
 
 support_project

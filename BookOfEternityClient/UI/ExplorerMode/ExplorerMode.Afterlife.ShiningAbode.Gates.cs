@@ -58,7 +58,7 @@ public partial class ExplorerMode
         }
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-        MarkupLine($"[green]Создан ожидающий запрос действия Обители: завершение проекта. На принятом ходу нужно материализовать завершённый проект и списать {cost.Feathers} / {cost.LightSparks}.[/]");
+        MarkupLine($"[green]Создан ожидающий запрос действия Обители: завершение проекта. На принятом ходу нужно материализовать завершённый проект и списать {cost.Feathers} / {cost.LightSparks}. Любимый архетип влияет только на эту цену; strengthReward проекта определяется только tier: 8/12/16.[/]");
         WaitForKey();
     }
 
@@ -187,12 +187,18 @@ public partial class ExplorerMode
 
             if (choice.Contains("благословение", StringComparison.Ordinal))
             {
+                if (!await EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync("выбор благословения"))
+                    continue;
+
                 await HandleBlessingSelectionAsync(context.Root);
                 continue;
             }
 
             if (choice.Contains("Обновить набор", StringComparison.Ordinal))
             {
+                if (!await EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync("обновление набора благословений"))
+                    continue;
+
                 if (!ShiningAbodeState.TryRerollGatesDraft(context.Root, out var error))
                 {
                     MarkupLine($"[yellow]{Markup.Escape(error ?? "Набор благословений пока нельзя обновить.")}[/]");
@@ -235,6 +241,27 @@ public partial class ExplorerMode
                 return;
             }
         }
+    }
+
+    private async Task<bool> EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync(string actionLabel)
+    {
+        var pendingState = await ShiningCoreActionRequestState.ReadRequestsStateAsync(_fs);
+        if (pendingState.IsMalformed)
+        {
+            MarkupLine($"[yellow]Нельзя выполнить {Markup.Escape(actionLabel)}: pending_shining_abode_actions.json повреждён. Сначала исправьте или очистите pending core-action contract.[/]");
+            WaitForKey();
+            return false;
+        }
+
+        if (pendingState.Requests.Count > 0)
+        {
+            MarkupLine($"[yellow]Нельзя выполнить {Markup.Escape(actionLabel)}, пока существует pending Shining core action. Сначала дождитесь принятого хода ГМа или repair для pending_shining_abode_actions.json.[/]");
+            MarkupLine($"[dim]Активный requestId: {Markup.Escape(pendingState.Requests[0].RequestId)}; actionType: {Markup.Escape(pendingState.Requests[0].ActionType)}[/]");
+            WaitForKey();
+            return false;
+        }
+
+        return true;
     }
 
     private async Task HandleBlessingSelectionAsync(JsonObject shiningRoot)

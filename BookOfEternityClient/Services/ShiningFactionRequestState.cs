@@ -14,6 +14,8 @@ internal static class ShiningFactionRequestState
     public const string PendingLeadershipTransitionsRequestPath = "game_state/control/pending_shining_faction_leadership_transitions.json";
 
     public const string RequestsProperty = "requests";
+    public const int FactionFoundingCostFeathers = 25;
+    public const int FactionFoundingCostLightSparks = 15;
 
     public const string RealignmentModeAcceptedTransfer = "accepted_transfer";
     public const string RealignmentModeRefusedTransfer = "refused_transfer";
@@ -121,6 +123,12 @@ internal static class ShiningFactionRequestState
 
         [JsonPropertyName("supportingResidentIds")]
         public List<string> SupportingResidentIds { get; set; } = new();
+
+        [JsonPropertyName("quotedCostFeathers")]
+        public int QuotedCostFeathers { get; set; } = FactionFoundingCostFeathers;
+
+        [JsonPropertyName("quotedCostLightSparks")]
+        public int QuotedCostLightSparks { get; set; } = FactionFoundingCostLightSparks;
 
         [JsonPropertyName("createdAtTurn")]
         public int CreatedAtTurn { get; set; }
@@ -258,6 +266,12 @@ internal static class ShiningFactionRequestState
             string.IsNullOrWhiteSpace(request.Charter.Summary))
         {
             return "Charter founding-фракции должен содержать валидные factionName, favoredArchetype, patronEffectFamily и summary.";
+        }
+
+        if (request.QuotedCostFeathers != FactionFoundingCostFeathers ||
+            request.QuotedCostLightSparks != FactionFoundingCostLightSparks)
+        {
+            return $"Founding request должен фиксировать canonical cost: {FactionFoundingCostFeathers} Ink Feathers и {FactionFoundingCostLightSparks} Light Sparks.";
         }
 
         var hallTags = request.ProposedHallServiceTags
@@ -1130,6 +1144,8 @@ internal static class ShiningFactionRequestState
 
         if (!string.Equals(GetNodeString(receipt["proposedFactionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) ||
             !string.Equals(GetNodeString(receipt["proposedHallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) ||
+            GetNodeInt(receipt["quotedCostFeathers"]) != request.QuotedCostFeathers ||
+            GetNodeInt(receipt["quotedCostLightSparks"]) != request.QuotedCostLightSparks ||
             !receiptSupporters.SetEquals(requestSupporters))
         {
             return false;

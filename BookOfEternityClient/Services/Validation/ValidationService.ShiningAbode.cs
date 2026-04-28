@@ -1394,6 +1394,8 @@ public partial class ValidationService
         RequireString(receipt, contextPrefix, issues, "hallId");
         RequireString(receipt, contextPrefix, issues, "status");
         RequireArrayOfStrings(receipt, contextPrefix, issues, "supportingResidentIds");
+        ValidateIntegerField(receipt, contextPrefix, issues, "quotedCostFeathers");
+        ValidateIntegerField(receipt, contextPrefix, issues, "quotedCostLightSparks");
         ValidateIntegerField(receipt, contextPrefix, issues, "resolvedAtTurn");
         ValidateOptionalString(receipt, contextPrefix, issues, "resolvedAtUtc");
         ValidateOptionalString(receipt, contextPrefix, issues, "reason");
@@ -1572,6 +1574,8 @@ public partial class ValidationService
         RequireString(request, contextPrefix, issues, "proposedHallName");
         RequireString(request, contextPrefix, issues, "proposedHallDescription");
         RequireArrayOfStrings(request, contextPrefix, issues, "proposedHallServiceTags");
+        ValidateIntegerField(request, contextPrefix, issues, "quotedCostFeathers");
+        ValidateIntegerField(request, contextPrefix, issues, "quotedCostLightSparks");
         ValidateIntegerField(request, contextPrefix, issues, "createdAtTurn");
         ValidateOptionalString(request, contextPrefix, issues, "createdAtUtc");
         if (request.TryGetProperty("charter", out var charter))

@@ -105,6 +105,74 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
+    public async Task BuildSystemReminderFragmentAsync_PendingBootstrapSuppressesOrdinaryCoreActionReminder()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, """
+            {
+              "availability": "active",
+              "preparedIncarnationPackage": {
+                "selectedCardIds": ["card_memory"],
+                "selectedCards": [
+                  {
+                    "cardId": "card_memory",
+                    "displayName": "Память Света"
+                  }
+                ]
+              }
+            }
+            """);
+            await ShiningCoreActionRequestState.WriteRequestAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                RequestId = "core_req_open_gates",
+                ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+                CreatedAtTurn = 7
+            });
+
+            var reminder = await ShiningCoreActionRequestState.BuildSystemReminderFragmentAsync(fs, "Shining Abode");
+
+            Assert.Null(reminder);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_MalformedPreparedPackageBlocksOrdinaryCoreActions()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, """
+            {
+              "availability": "active",
+              "preparedIncarnationPackage": "broken package"
+            }
+            """);
+
+            var reminder = await ShiningCoreActionRequestState.BuildSystemReminderFragmentAsync(fs, "Shining Abode");
+
+            Assert.NotNull(reminder);
+            Assert.Contains("SHINING ABODE CORE ACTIONS BLOCKED", reminder);
+            Assert.Contains("malformed/non-object", reminder);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_ChaosSeaClearsPendingRequests()
     {
         var root = CreateTempRoot();

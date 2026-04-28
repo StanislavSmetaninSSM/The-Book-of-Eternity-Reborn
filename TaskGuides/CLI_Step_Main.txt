@@ -189,6 +189,7 @@
                - MUST NOT satisfy afterlife progression with `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `setWorldTime`, or `weatherChange`
                - MUST write `progressionProcessingReport` with exact processed counts and per-contour `newLast*Ordinal` values
                - MUST keep Shining bootstrap handoff separate: if `preparedIncarnationPackage` is active, process bootstrap only and do not run ordinary Shining living-world cycles
+               - If `preparedIncarnationPackage` is malformed/non-object, fail closed: preserve it for repair and do not treat the turn as ordinary active Shining Abode
 
             5. **MANDATORY Afterlife Decision Questions:**
                - Chaos Sea: What did the Sea itself do while the player focused elsewhere?
@@ -320,6 +321,7 @@
             - Step 1, realm gate: read `game_state/meta/soul_state.json.currentRealm` and classify the mode as ordinary Chaos Sea, ordinary active Shining Abode, or Shining Abode pending-bootstrap handoff
             - Step 2, lifecycle guards: read relevant control/state markers before narration: `afterlife_return_guard.json`, `ascension.json`, `incarnation_trigger.json`, and `shining_abode_state.json.preparedIncarnationPackage`
             - If pending-bootstrap handoff is active, suppress ordinary Shining living-world progression and process only the frozen next-life bootstrap package
+            - If the package marker is malformed, suppress ordinary Shining processing and surface repair instead of deleting/nulling the package
             - If ascension, incarnation, return, or life evaluation is active, keep that lifecycle separate; never combine `TriggerLifeEnd`, `AscensionTrigger`, New Game+, and Shining bootstrap in one logical outcome
             - Step 3, scheduler first: read `input/turn_request.json.progressionControl` before choosing the scene resolution, relevant actors, or response tone
             - Treat every `mustEvaluate* = true` as mandatory work for this turn, even if the player action is conversational
@@ -342,7 +344,8 @@
             - Legacy Shining discovery: if `shining_abode_state.json.pendingNativeFactionDiscovery` is non-null, it is an active legacy state-local `discover_native_faction` contract, not a normal control file. Close it before any new discovery request: materialize the native hall/faction/residents/projects, spend `costFeathers` from Soul, preserve current Light Sparks because `costLightSparks` was already reserved by the legacy queue, append `coreActionReceipts[]`, and set `pendingNativeFactionDiscovery = null`
             - For Shining core contracts, use `OtherGuides/Afterlife_Contract_Matrix.md` row for the exact `actionType` first, then use `Examples/E_CLI_Afterlife_Turns.txt` example 14 for receipt/state fragments; never close a Shining core action with receipt-only output or prose-only output
             - If a Shining faction/project action changes inputs for an already-open gates draft, preserve `gates` and set `gates.isStale = true`; do not prepare an incarnation package from a stale draft
-            - Shining faction founding contracts: `pending_shining_faction_foundings.json` must close through `factionFoundingReceipts[]`
+            - For Shining `complete_project`, favored archetype is cost-only: it discounts the quoted completion cost by 5 Feathers/5 Light Sparks, but `strengthReward` is only tier-based (`8/12/16`)
+            - Shining faction founding contracts: `pending_shining_faction_foundings.json` must close through `factionFoundingReceipts[]`; preserve `quotedCostFeathers = 25` and `quotedCostLightSparks = 15` from the request in the receipt
             - Shining faction realignment contracts: `pending_shining_faction_realignments.json` must close through `factionRealignmentReceipts[]`
             - Shining leadership contracts: `pending_shining_faction_leadership_transitions.json` must close through faction `leadershipReceipts[]` and leadership history
             - Shining trade contracts: `pending_shining_trade_inventory_requests.json` must close through faction `tradeInventory` plus `tradeInventoryReceipts[]`
@@ -424,7 +427,7 @@
             - `npcInteractionJournalUpdates` writes `game_state/npcs/npc_interaction_journal.json`; NPCs already have `NPCJournals` for current thoughts, and this new surface is for concise past interaction summaries
             - Resident-linked soul quests remain ordinary `UpdateSoulQuests`, but may carry `relatedAfterlifeResidentId`
             - If a resident grants a future-life companion reward, add a Soul Relic through `metaStateUpdates.soulRelicOperations.addRelic` with `relicType = companion_echo` and a complete `companionSeed`; do NOT reuse `soulImprint` for this path
-            - Direct `/gacha` remains neutral and does not consume Guardian charges
+            - Direct `/gacha` remains neutral, does not consume Guardian charges, and must keep final rarity exactly equal to `gachaBaseResult.baseRarity`
             - Files: Update game_state/meta/guardians.json, game_state/meta/guardian_abode_residents.json, game_state/quests/soul_quests.json
 - If `game_state/control/pending_abode_offering.json` exists, treat it as client-authored input only and resolve it through `guardianPowerEvents` with `reasonType = offering`
 - Whitelisted offering types may be `ink_feathers`, `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`

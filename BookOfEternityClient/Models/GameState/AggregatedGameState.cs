@@ -29,6 +29,7 @@ public class AggregatedGameState
     public string ActiveGuardianName { get; set; } = string.Empty;
     public string ShiningAbodeAvailability { get; set; } = string.Empty;
     public bool HasPendingShiningAbodeBootstrapPackage { get; set; }
+    public bool HasInvalidShiningAbodeBootstrapPackage { get; set; }
     public bool HasBlockingAfterlifeReturnGuard { get; set; }
     public int ShiningRadianceExperience { get; set; }
     public int ShiningRadianceTier { get; set; }
@@ -58,12 +59,12 @@ public class AggregatedGameState
     /// <summary>
     /// True only for ordinary active Shining Abode mode, not the pending-bootstrap handoff state.
     /// </summary>
-    public bool IsInShiningAbode => IsShiningAbodeRealmBucket && !HasPendingShiningAbodeBootstrapPackage;
+    public bool IsInShiningAbode => IsShiningAbodeRealmBucket && !HasPendingShiningAbodeBootstrapPackage && !HasInvalidShiningAbodeBootstrapPackage;
 
     /// <summary>
     /// True when the soul is still in the Shining Abode realm bucket, but control has already been handed to mortal bootstrap.
     /// </summary>
-    public bool IsInShiningAbodePendingBootstrap => IsShiningAbodeRealmBucket && HasPendingShiningAbodeBootstrapPackage;
+    public bool IsInShiningAbodePendingBootstrap => IsShiningAbodeRealmBucket && HasPendingShiningAbodeBootstrapPackage && !HasInvalidShiningAbodeBootstrapPackage;
 
     public bool IsInAfterlifeRealm => IsInChaosSea || IsInAnyShiningAbodeState;
 
@@ -74,6 +75,7 @@ public class AggregatedGameState
         IsInChaosSea &&
         HasActiveStoredShiningAbode &&
         !HasPendingShiningAbodeBootstrapPackage &&
+        !HasInvalidShiningAbodeBootstrapPackage &&
         !HasBlockingAfterlifeReturnGuard;
 }
 
