@@ -938,6 +938,47 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_NonAcceptedRelicGachaWithResultRelicId_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(new JsonObject
+        {
+            ["requestId"] = "core_req_shining_gacha_refused",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypePullRelicGacha,
+            ["status"] = ShiningCoreActionRequestState.RequestStatusRefused,
+            ["factionId"] = "faction_old",
+            ["projectId"] = "",
+            ["hallId"] = "",
+            ["resolvedFactionId"] = "",
+            ["relicId"] = "relic_should_not_exist",
+            ["relicName"] = "",
+            ["returnCycleId"] = "shining_return_2",
+            ["baseRarity"] = "",
+            ["finalRarity"] = "",
+            ["selectedCardIds"] = new JsonArray(),
+            ["newResidentIds"] = new JsonArray(),
+            ["seededProjectIds"] = new JsonArray(),
+            ["generatedDraftVersion"] = 0,
+            ["resolvedAtTurn"] = 17,
+            ["resolvedAtUtc"] = "2026-04-16T13:00:00Z",
+            ["reason"] = "gacha_refused"
+        });
+
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+        var requestRoot = CreateShiningGachaRequestRoot("core_req_shining_gacha_refused", "shining_return_2");
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot, requestRoot);
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedRelicGachaWithExistingRelicMutation_Fails()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();

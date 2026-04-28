@@ -8163,7 +8163,7 @@ public partial class ValidationService
                string.Equals(GetNodeString(receipt["actionType"]), request.ActionType, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["factionId"]) ?? string.Empty, request.FactionId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                ShiningCoreActionProjectIdentityMatches(request, GetNodeString(receipt["projectId"])) &&
-               ShiningCoreActionRelicIdentityMatches(request, GetNodeString(receipt["relicId"])) &&
+               ShiningCoreActionRelicIdentityMatches(request, GetNodeString(receipt["relicId"]), status) &&
                string.Equals(GetNodeString(receipt["returnCycleId"]) ?? string.Empty, request.ReturnCycleId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["targetFormTag"]) ?? string.Empty, request.TargetFormTag ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                (receipt["propertyIndex"] is JsonValue propertyIndexNode &&
@@ -8194,13 +8194,17 @@ public partial class ValidationService
 
     private static bool ShiningCoreActionRelicIdentityMatches(
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
-        string? receiptRelicId)
+        string? receiptRelicId,
+        string? receiptStatus)
     {
         if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
         {
-            return string.IsNullOrWhiteSpace(request.RelicId)
+            if (!string.IsNullOrWhiteSpace(request.RelicId))
+                return string.Equals(receiptRelicId, request.RelicId, StringComparison.OrdinalIgnoreCase);
+
+            return string.Equals(receiptStatus, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase)
                 ? !string.IsNullOrWhiteSpace(receiptRelicId)
-                : string.Equals(receiptRelicId, request.RelicId, StringComparison.OrdinalIgnoreCase);
+                : string.IsNullOrWhiteSpace(receiptRelicId);
         }
 
         return string.Equals(receiptRelicId ?? string.Empty, request.RelicId ?? string.Empty, StringComparison.OrdinalIgnoreCase);
