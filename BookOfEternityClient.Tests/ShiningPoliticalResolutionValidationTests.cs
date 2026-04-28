@@ -47,6 +47,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
                 ["summary"] = "Союз резидентов, которые строят силу через согласие."
             },
             ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael", "resident_serit"),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
             ["createdAtTurn"] = 184,
             ["createdAtUtc"] = "2026-04-16T15:20:00Z"
         };
@@ -95,6 +97,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
             ["hallId"] = proposedHallId,
             ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
             ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael", "resident_serit"),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
             ["resolvedAtTurn"] = 184,
             ["resolvedAtUtc"] = "2026-04-16T15:24:00Z",
             ["reason"] = "founding_accepted"
@@ -126,6 +130,70 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningFoundingResolutionAsync_CorruptedEchoedFoundingCost_Fails()
+    {
+        const string requestId = "founding_req_corrupted_cost";
+        var request = new JsonObject
+        {
+            ["requestId"] = requestId,
+            ["proposedFactionId"] = "faction_corrupted_cost",
+            ["proposedHallId"] = "hall_corrupted_cost",
+            ["proposedHallName"] = "Зал Ошибочной Цены",
+            ["proposedHallDescription"] = "Зал с повреждённой стоимостью основания.",
+            ["proposedHallServiceTags"] = new JsonArray("social", "lore"),
+            ["charter"] = new JsonObject
+            {
+                ["factionName"] = "Дом Ошибочной Цены",
+                ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+                ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+                ["summary"] = "Проверяет, что request не становится источником цены."
+            },
+            ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael", "resident_serit"),
+            ["quotedCostFeathers"] = 999,
+            ["quotedCostLightSparks"] = 999,
+            ["createdAtTurn"] = 184,
+            ["createdAtUtc"] = "2026-04-16T15:20:00Z"
+        };
+
+        var shiningRoot = CreateBaseShiningRoot();
+        ((JsonArray)shiningRoot["factionFoundingReceipts"]!).Add(new JsonObject
+        {
+            ["requestId"] = requestId,
+            ["proposedFactionId"] = "faction_corrupted_cost",
+            ["proposedHallId"] = "hall_corrupted_cost",
+            ["hallName"] = "Зал Ошибочной Цены",
+            ["factionId"] = "faction_corrupted_cost",
+            ["hallId"] = "hall_corrupted_cost",
+            ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
+            ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael", "resident_serit"),
+            ["quotedCostFeathers"] = 999,
+            ["quotedCostLightSparks"] = 999,
+            ["resolvedAtTurn"] = 184,
+            ["resolvedAtUtc"] = "2026-04-16T15:24:00Z",
+            ["reason"] = "founding_accepted"
+        });
+
+        await SeedCurrentStateAsync(shiningRoot, CreateBaseResidentRoot());
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_shining_founding_corrupted_cost.json";
+        await WriteNodeAsync(backupPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request)
+        });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [ShiningFactionRequestState.PendingFoundingsRequestPath] = backupPath
+        });
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningFoundingResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_founding_receipt_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningFoundingResolutionAsync_AcceptedFoundingWithoutClosureMarkers_Fails()
     {
         const string requestId = "founding_req_missing_closure";
@@ -145,6 +213,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
                 ["summary"] = "Собирает утренние клятвы."
             },
             ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael"),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
             ["createdAtTurn"] = 184,
             ["createdAtUtc"] = "2026-04-16T15:20:00Z"
         };
@@ -193,6 +263,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
             ["hallId"] = "hall_dawn_choir",
             ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
             ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael"),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
             ["resolvedAtTurn"] = 0,
             ["resolvedAtUtc"] = "",
             ["reason"] = "founding_accepted"

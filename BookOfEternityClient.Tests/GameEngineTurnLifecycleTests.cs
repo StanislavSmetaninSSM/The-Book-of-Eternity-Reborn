@@ -122,6 +122,43 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CollectIncarnationBlockersAsync_SystemGuardianAttractionBlocksIncarnation()
+    {
+        await WriteJsonAsync(SystemGuardianLibraryService.AttractionRequestPath, new
+        {
+            mode = "system_guardian_attraction",
+            targetPresetId = "eternal_tide_001",
+            targetPresetDisplayName = "Прилив Памяти",
+            targetPresetVersion = "1.0",
+            sourceLibrary = "built_in",
+            targetSummary = "Извечный Хранитель памяти.",
+            renderedPromptPackage = "Досье Хранителя.",
+            _lastUpdated = "2026-04-27T12:00:00Z"
+        });
+
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        Assert.Contains(blockers, blocker =>
+            blocker.Contains("притяжение к извечному Хранителю", StringComparison.OrdinalIgnoreCase) &&
+            blocker.Contains("отмените attraction contract", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task CollectIncarnationBlockersAsync_MalformedSystemGuardianAttractionBlocksIncarnation()
+    {
+        await _fs.WriteFileAtomicAsync(SystemGuardianLibraryService.AttractionRequestPath, "{ malformed");
+
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        Assert.Contains(blockers, blocker =>
+            blocker.Contains("system_guardian_attraction.json повреждён", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes()
     {
         await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new

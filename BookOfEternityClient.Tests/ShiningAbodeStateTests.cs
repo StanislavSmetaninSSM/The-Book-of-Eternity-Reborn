@@ -1534,6 +1534,70 @@ public sealed class ShiningAbodeStateTests
         Assert.Equal("shining_return_5", history[0]?["returnCycleId"]?.GetValue<string>());
     }
 
+    [Fact]
+    public void TryCompleteProject_FavoredArchetypeDiscountsCostButNotStrengthReward()
+    {
+        var root = CreateProjectSupportState(isSupported: false);
+        root["lightSparks"] = 100;
+        var faction = root["factions"]![0]!.AsObject();
+        faction["projects"] = new JsonArray();
+        faction["projectArchetypesCountedThisAscension"] = new JsonArray();
+
+        var favoredDraft = BuildProjectDraft(
+            "Проект согласия",
+            ShiningAbodeState.ProjectArchetypeAccord,
+            ShiningAbodeState.EffectFamilySocial,
+            tier: 2);
+        var nonFavoredDraft = BuildProjectDraft(
+            "Проект памяти",
+            ShiningAbodeState.ProjectArchetypeRemembrance,
+            ShiningAbodeState.EffectFamilyMemory,
+            tier: 2);
+
+        Assert.True(ShiningAbodeState.TryQuoteProjectCompletion(
+            root,
+            residentRoot: null,
+            factionId: "faction_dawn",
+            favoredDraft,
+            out var favoredCost,
+            out var favoredQuoteError), favoredQuoteError);
+        Assert.Equal(new ShiningAbodeState.ResourceCost(25, 10), favoredCost);
+
+        Assert.True(ShiningAbodeState.TryQuoteProjectCompletion(
+            root,
+            residentRoot: null,
+            factionId: "faction_dawn",
+            nonFavoredDraft,
+            out var nonFavoredCost,
+            out var nonFavoredQuoteError), nonFavoredQuoteError);
+        Assert.Equal(new ShiningAbodeState.ResourceCost(30, 15), nonFavoredCost);
+
+        Assert.True(ShiningAbodeState.TryCompleteProject(
+            root,
+            residentRoot: null,
+            factionId: "faction_dawn",
+            favoredDraft,
+            currentTurnNumber: 44,
+            projectIdOverride: "project_favored",
+            completedAtUtc: "2026-04-28T00:00:00Z",
+            out _,
+            out var favoredCompletionError), favoredCompletionError);
+        Assert.True(ShiningAbodeState.TryCompleteProject(
+            root,
+            residentRoot: null,
+            factionId: "faction_dawn",
+            nonFavoredDraft,
+            currentTurnNumber: 45,
+            projectIdOverride: "project_non_favored",
+            completedAtUtc: "2026-04-28T00:01:00Z",
+            out _,
+            out var nonFavoredCompletionError), nonFavoredCompletionError);
+
+        var projects = faction["projects"]!.AsArray().OfType<JsonObject>().ToList();
+        Assert.Equal(12, projects.Single(project => project["projectId"]?.GetValue<string>() == "project_favored")["strengthReward"]?.GetValue<int>());
+        Assert.Equal(12, projects.Single(project => project["projectId"]?.GetValue<string>() == "project_non_favored")["strengthReward"]?.GetValue<int>());
+    }
+
     private static JsonObject CreateProjectSupportState(bool isSupported) => new()
     {
         ["availability"] = ShiningAbodeState.AvailabilityActive,
@@ -1598,6 +1662,17 @@ public sealed class ShiningAbodeStateTests
             ["nextCandidateCursor"] = 0,
             ["rerollsRemaining"] = 0
         }
+    };
+
+    private static JsonObject BuildProjectDraft(string displayName, string archetype, string effectFamily, int tier) => new()
+    {
+        ["displayName"] = displayName,
+        ["summary"] = "Проверочный проект.",
+        ["toneTags"] = new JsonArray("radiant"),
+        ["targetFactionIds"] = new JsonArray(),
+        ["projectArchetype"] = archetype,
+        ["outputEffectFamily"] = effectFamily,
+        ["tier"] = tier
     };
 
     private static JsonObject GetSingleProject(JsonObject root) =>

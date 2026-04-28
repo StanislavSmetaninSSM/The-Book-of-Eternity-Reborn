@@ -1513,7 +1513,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     [Fact]
     public async Task TryProcessCommand_ShiningTradeAndForge_TradeLifecycleInspectionLabelsSameCycleFallbackAsHistorical()
     {
-        await SeedShiningInspectionStateAsync();
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
         var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
         var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))?.AsObject()
             ?? throw new InvalidOperationException("Expected seeded shining abode state.");
@@ -1546,6 +1546,31 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Последняя запись этого цикла", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Подтверждение исхода:\r\n    [dim]Строгое подтверждение текущего контракта не найдено", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningTradeAndForge_OverviewMarksWrongCycleInventoryAsStale()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))?.AsObject()
+            ?? throw new InvalidOperationException("Expected seeded shining abode state.");
+        var faction = shiningRoot["factions"]?.AsArray()[0]?.AsObject()
+            ?? throw new InvalidOperationException("Expected faction.");
+        faction["tradeInventory"]!.AsObject()["tradeCycleId"] = "shining_return_stale";
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        _console.QueueAnySelection("⚒ Торговля и кузня", "← Назад", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_trade_overview_stale_inventory");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("витрина: устарела или не совпадает с текущим контрактом", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("витрина: готова", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1643,6 +1668,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                         summary = "Собирает утренние клятвы."
                     },
                     supportingResidentIds = new[] { "resident_mirael", "resident_sel" },
+                    quotedCostFeathers = ShiningFactionRequestState.FactionFoundingCostFeathers,
+                    quotedCostLightSparks = ShiningFactionRequestState.FactionFoundingCostLightSparks,
                     createdAtTurn = 161,
                     createdAtUtc = "2026-04-19T11:15:00Z"
                 }
@@ -1705,6 +1732,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Зал Грядущего Рассвета", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Идентификатор запроса: founding_pending_1", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Службы зала", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стоимость: 25 Перьев / 15 Искр Света", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Орин", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Режим перехода: согласованный переход", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("задумывается о переходе", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -2647,6 +2675,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Устав фракции: Поют утренний свет.", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Описание зала: Поющие своды собирают отзвуки верности.", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стоимость: 25 Перьев / 15 Искр Света", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Орин признал, что зов Хора Рассвета звучит для него яснее прежней верности.", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Открыта в UTC: 2026-04-19T10:24:00Z", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Причина решения: целевая фракция приняла переход", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -3960,6 +3989,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                     patronEffectFamily = "social",
                     status = "accepted",
                     supportingResidentIds = new[] { "resident_mirael", "resident_sel" },
+                    quotedCostFeathers = ShiningFactionRequestState.FactionFoundingCostFeathers,
+                    quotedCostLightSparks = ShiningFactionRequestState.FactionFoundingCostLightSparks,
                     resolvedAtTurn = 153,
                     resolvedAtUtc = "2026-04-19T09:55:00Z",
                     reason = "founding_accepted"

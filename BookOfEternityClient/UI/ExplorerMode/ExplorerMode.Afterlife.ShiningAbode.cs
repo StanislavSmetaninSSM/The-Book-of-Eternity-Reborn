@@ -795,6 +795,7 @@ public partial class ExplorerMode
             $"  • Базовая сила: [white]{baseStrength}[/]",
             $"  • Происхождение: {Markup.Escape(originType)}",
             $"  • Любимый архетип проектов: {Markup.Escape(favoredArchetype)}",
+            "  • Точный эффект любимого архетипа: снижает только цену завершения matching проекта на 5 Перьев и 5 Искр Света; награда силы остаётся строго по tier: 8/12/16.",
             $"  • Покровительствующая семья эффекта: {Markup.Escape(patronEffectFamily)}",
             $"  • Инвестиций за это Вознесение: [white]{investCountThisAscension}[/]",
             $"  • Архетипы проектов, уже учтённые за это Вознесение: {Markup.Escape(countedArchetypes.Count == 0 ? "нет" : string.Join(", ", countedArchetypes))}",
@@ -1102,6 +1103,7 @@ public partial class ExplorerMode
                     lines.Add($"    Архетип: [dim]{Markup.Escape(DescribeShiningProjectArchetype(GetNodeString(projectDraft["projectArchetype"])))}[/]");
                     lines.Add($"    Семейство эффекта: [dim]{Markup.Escape(DescribeShiningEffectFamily(GetNodeString(projectDraft["outputEffectFamily"])))}[/]");
                     lines.Add($"    Уровень проекта: [dim]{GetNodeInt(projectDraft["tier"])}[/]");
+                    lines.Add("    Любимый архетип: [dim]может снизить цену completion, но не меняет strengthReward; сила проекта определяется только tier 8/12/16[/]");
                     AppendShiningNamedIdList(
                         lines,
                         "Целевые фракции",
@@ -1169,6 +1171,7 @@ public partial class ExplorerMode
                     lines.Add($"    Устав фракции: [dim]{Markup.Escape(request.Charter.Summary)}[/]");
                     lines.Add($"    Любимый архетип: [dim]{Markup.Escape(DescribeShiningProjectArchetype(request.Charter.FavoredArchetype))}[/]");
                     lines.Add($"    Покровительствующий эффект: [dim]{Markup.Escape(DescribeShiningEffectFamily(request.Charter.PatronEffectFamily))}[/]");
+                    lines.Add($"    Стоимость: [dim]{request.QuotedCostFeathers} Перьев / {request.QuotedCostLightSparks} Искр Света, уже зарезервирована при создании pending contract[/]");
                     AppendShiningStringList(
                         lines,
                         "    Сторонники",
@@ -1308,6 +1311,10 @@ public partial class ExplorerMode
                     var patronEffectFamily = GetNodeString(receipt["patronEffectFamily"]);
                     if (!string.IsNullOrWhiteSpace(patronEffectFamily))
                         lines.Add($"    Покровительствующий эффект: [dim]{Markup.Escape(DescribeShiningEffectFamily(patronEffectFamily))}[/]");
+                    var quotedCostFeathers = GetNodeInt(receipt["quotedCostFeathers"]);
+                    var quotedCostLightSparks = GetNodeInt(receipt["quotedCostLightSparks"]);
+                    if (quotedCostFeathers > 0 || quotedCostLightSparks > 0)
+                        lines.Add($"    Стоимость: [dim]{quotedCostFeathers} Перьев / {quotedCostLightSparks} Искр Света, зарезервирована pending contract[/]");
                     AppendShiningStableNamedIdList(
                         lines,
                         "    Сторонники",

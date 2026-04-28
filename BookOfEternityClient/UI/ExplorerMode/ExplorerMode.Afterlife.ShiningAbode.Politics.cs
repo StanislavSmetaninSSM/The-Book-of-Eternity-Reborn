@@ -14,7 +14,11 @@ public partial class ExplorerMode
             return;
 
         var feathers = await ReadInkFeathersBalance();
-        var cost = new { Feathers = 25, LightSparks = 15 };
+        var cost = new
+        {
+            Feathers = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            LightSparks = ShiningFactionRequestState.FactionFoundingCostLightSparks
+        };
         if (feathers < cost.Feathers)
         {
             MarkupLine($"[red]Недостаточно Перьев. Нужно {cost.Feathers}.[/]");
@@ -110,6 +114,8 @@ public partial class ExplorerMode
                 Summary = summary
             },
             SupportingResidentIds = supporterIds,
+            QuotedCostFeathers = cost.Feathers,
+            QuotedCostLightSparks = cost.LightSparks,
             CreatedAtTurn = _stateManager.CurrentState.TurnNumber + 1
         };
 
@@ -146,7 +152,7 @@ public partial class ExplorerMode
             throw;
         }
 
-        MarkupLine("[green]Создан ожидающий запрос на основание сияющей фракции.[/]");
+        MarkupLine($"[green]Создан ожидающий запрос на основание сияющей фракции. Зарезервировано {cost.Feathers} Перьев и {cost.LightSparks} Искр Света; эти суммы записаны в pending contract.[/]");
         WaitForKey();
     }
 

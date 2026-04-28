@@ -58,7 +58,7 @@ public partial class ExplorerMode
         }
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-        MarkupLine($"[green]Создан ожидающий запрос действия Обители: завершение проекта. На принятом ходу нужно материализовать завершённый проект и списать {cost.Feathers} / {cost.LightSparks}.[/]");
+        MarkupLine($"[green]Создан ожидающий запрос действия Обители: завершение проекта. На принятом ходу нужно материализовать завершённый проект и списать {cost.Feathers} / {cost.LightSparks}. Любимый архетип влияет только на эту цену; strengthReward проекта определяется только tier: 8/12/16.[/]");
         WaitForKey();
     }
 

@@ -236,9 +236,7 @@ internal static partial class ShiningAbodeState
             ["tier"] = tier,
             ["status"] = ProjectStatusCompleted,
             ["isSupported"] = false,
-            ["strengthReward"] = ResolveProjectStrengthReward(
-                tier,
-                string.Equals(GetNodeString(faction["charter"]?["favoredArchetype"]), projectArchetype, StringComparison.OrdinalIgnoreCase)),
+            ["strengthReward"] = ResolveProjectStrengthReward(tier),
             ["completedAtTurn"] = currentTurnNumber,
             ["completedAtUtc"] = string.IsNullOrWhiteSpace(completedAtUtc) ? DateTime.UtcNow.ToString("o") : completedAtUtc
         };

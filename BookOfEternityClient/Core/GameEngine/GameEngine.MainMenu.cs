@@ -973,6 +973,14 @@ public partial class GameEngine
                 : "есть незакрытый ритуал основания собственного Хранителя.");
         }
 
+        var attractionState = await _systemGuardianLibraryService.ReadAttractionRequestDisplayStateAsync();
+        if (attractionState.FilePresent)
+        {
+            blockers.Add(attractionState.IsMalformed
+                ? "system_guardian_attraction.json повреждён и требует явного исправления или отмены до воплощения."
+                : "есть незакрытое притяжение к извечному Хранителю; дождитесь его разрешения GM или явно отмените attraction contract перед воплощением.");
+        }
+
         if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingResidentsRequestPath))
         {
             blockers.Add(await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs)
