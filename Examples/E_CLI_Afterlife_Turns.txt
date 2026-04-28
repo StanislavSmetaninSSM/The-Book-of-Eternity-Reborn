@@ -1920,7 +1920,7 @@ Correct faction patch:
 }
 ```
 
-If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`; use `politicalStatus = "head"` for the current head and move replaced radiant actors to `former_head`, `elder`, `claimant`, or `retired` as appropriate.
+If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`, use `currentFactionId = <factionId>` and `politicalStatus = "head"` for the current head, and move the replaced radiant head to `politicalStatus = "former_head"` in the same accepted state.
 
 Radiant actor registry patch when a radiant actor becomes head:
 

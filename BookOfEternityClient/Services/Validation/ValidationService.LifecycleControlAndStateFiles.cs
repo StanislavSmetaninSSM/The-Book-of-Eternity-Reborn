@@ -8449,7 +8449,50 @@ public partial class ValidationService
                     ["headActorId"] = request.CandidateHeadActorId,
                     ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
                 };
+
+            ApplyRadiantActorLeadershipStatusToComposite(
+                expectedShiningRoot,
+                request.IncumbentHeadActorType,
+                request.IncumbentHeadActorId,
+                request.FactionId,
+                ShiningAbodeState.PoliticalStatusFormerHead);
+            ApplyRadiantActorLeadershipStatusToComposite(
+                expectedShiningRoot,
+                request.CandidateHeadActorType,
+                request.CandidateHeadActorId,
+                request.FactionId,
+                ShiningAbodeState.PoliticalStatusHead);
         }
+    }
+
+    private static void ApplyRadiantActorLeadershipStatusToComposite(
+        JsonObject expectedShiningRoot,
+        string? actorType,
+        string? actorId,
+        string factionId,
+        string politicalStatus)
+    {
+        if (!string.Equals(actorType, ShiningAbodeState.HeadActorTypeRadiantActor, StringComparison.OrdinalIgnoreCase) ||
+            string.IsNullOrWhiteSpace(actorId))
+        {
+            return;
+        }
+
+        var actor = FindShiningPoliticalActor(expectedShiningRoot, actorId);
+        if (actor == null)
+            return;
+
+        actor["currentFactionId"] = factionId;
+        actor["politicalStatus"] = politicalStatus;
+    }
+
+    private static JsonObject? FindShiningPoliticalActor(JsonObject shiningRoot, string actorId)
+    {
+        if (shiningRoot["shiningPoliticalActors"] is not JsonArray actors)
+            return null;
+
+        return actors.OfType<JsonObject>()
+            .FirstOrDefault(actor => string.Equals(GetNodeString(actor["actorId"]), actorId, StringComparison.OrdinalIgnoreCase));
     }
 
     private static bool ApplyTradeInventoryToComposite(

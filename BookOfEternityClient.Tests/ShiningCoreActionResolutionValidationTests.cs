@@ -224,6 +224,87 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedOpenGatesWithConcurrentRadiantLeadership_Passes()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRootWithRadiantLeadershipActors();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var leadershipRequest = CreateRadiantLeadershipRequest("shining_leadership_radiant_1");
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        MaterializeAcceptedRadiantLeadership(currentShiningRoot, leadershipRequest);
+        Assert.True(ShiningAbodeState.TryOpenGates(currentShiningRoot, CloneJsonObject(currentResidentRoot), out _));
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(CreateOpenGatesReceipt(
+            "core_req_open_gates_with_radiant_leadership",
+            GetNodeInt(currentShiningRoot["gates"]?["draftVersion"])));
+
+        var coreRequestRoot = CreateOpenGatesRequestRoot("core_req_open_gates_with_radiant_leadership");
+        var leadershipRequestRoot = new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(leadershipRequest.DeepClone())
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, coreRequestRoot);
+        await WriteNodeAsync(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, leadershipRequestRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            coreRequestRoot,
+            new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
+            {
+                [ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath] = leadershipRequestRoot
+            });
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_projected_state_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_ConcurrentRadiantLeadershipDoesNotHideActorRegistryMutation()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRootWithRadiantLeadershipActors();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var leadershipRequest = CreateRadiantLeadershipRequest("shining_leadership_radiant_bad_actor");
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        MaterializeAcceptedRadiantLeadership(currentShiningRoot, leadershipRequest);
+        Assert.True(ShiningAbodeState.TryOpenGates(currentShiningRoot, CloneJsonObject(currentResidentRoot), out _));
+        FindTestRadiantActor(currentShiningRoot, "actor_new_head")!["displayName"] = "Недопустимо изменённый архонт";
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(CreateOpenGatesReceipt(
+            "core_req_open_gates_with_bad_radiant_actor",
+            GetNodeInt(currentShiningRoot["gates"]?["draftVersion"])));
+
+        var coreRequestRoot = CreateOpenGatesRequestRoot("core_req_open_gates_with_bad_radiant_actor");
+        var leadershipRequestRoot = new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(leadershipRequest.DeepClone())
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, coreRequestRoot);
+        await WriteNodeAsync(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, leadershipRequestRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            coreRequestRoot,
+            new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
+            {
+                [ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath] = leadershipRequestRoot
+            });
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_projected_state_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedOpenGatesWithConcurrentTrade_Passes()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();
@@ -1938,6 +2019,97 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         ["resolvedAtUtc"] = "2026-04-16T12:30:00Z",
         ["reason"] = "gates_opened"
     };
+
+    private static JsonObject CreateBaseShiningRootWithRadiantLeadershipActors()
+    {
+        var root = CreateBaseShiningRoot();
+        var faction = ShiningAbodeState.FindFaction(root, "faction_old")!;
+        faction["leadership"] = new JsonObject
+        {
+            ["headActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+            ["headActorId"] = "actor_old_head",
+            ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+        };
+        root["shiningPoliticalActors"] = new JsonArray(
+            CreateRadiantActor("actor_old_head", "Старый Архонт", "faction_old", ShiningAbodeState.PoliticalStatusHead),
+            CreateRadiantActor("actor_new_head", "Новый Архонт", "", ShiningAbodeState.PoliticalStatusElder));
+        return root;
+    }
+
+    private static JsonObject CreateRadiantLeadershipRequest(string requestId) => new()
+    {
+        ["requestId"] = requestId,
+        ["factionId"] = "faction_old",
+        ["factionName"] = "Старый Дом",
+        ["transitionMode"] = ShiningFactionRequestState.TransitionModeAbdication,
+        ["incumbentHeadActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+        ["incumbentHeadActorId"] = "actor_old_head",
+        ["candidateHeadActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+        ["candidateHeadActorId"] = "actor_new_head",
+        ["supportingResidentIds"] = new JsonArray(),
+        ["createdAtTurn"] = 14,
+        ["createdAtUtc"] = "2026-04-16T12:24:00Z"
+    };
+
+    private static void MaterializeAcceptedRadiantLeadership(JsonObject shiningRoot, JsonObject request)
+    {
+        var faction = ShiningAbodeState.FindFaction(shiningRoot, request["factionId"]!.GetValue<string>())!;
+        faction["leadership"] = new JsonObject
+        {
+            ["headActorType"] = request["candidateHeadActorType"]!.GetValue<string>(),
+            ["headActorId"] = request["candidateHeadActorId"]!.GetValue<string>(),
+            ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+        };
+        faction["leadershipReceipts"]!.AsArray().Add(CreateLeadershipReceipt(request));
+        faction["leadershipHistory"]!.AsArray().Add(CreateLeadershipHistoryEntry(request));
+
+        FindTestRadiantActor(shiningRoot, request["incumbentHeadActorId"]!.GetValue<string>())!["politicalStatus"] = ShiningAbodeState.PoliticalStatusFormerHead;
+        var candidate = FindTestRadiantActor(shiningRoot, request["candidateHeadActorId"]!.GetValue<string>())!;
+        candidate["currentFactionId"] = request["factionId"]!.GetValue<string>();
+        candidate["politicalStatus"] = ShiningAbodeState.PoliticalStatusHead;
+    }
+
+    private static JsonObject CreateLeadershipReceipt(JsonObject request) => new()
+    {
+        ["requestId"] = request["requestId"]!.GetValue<string>(),
+        ["factionName"] = request["factionName"]!.GetValue<string>(),
+        ["transitionMode"] = request["transitionMode"]!.GetValue<string>(),
+        ["previousHeadActorType"] = request["incumbentHeadActorType"]!.GetValue<string>(),
+        ["previousHeadActorId"] = request["incumbentHeadActorId"]!.GetValue<string>(),
+        ["previousHeadLabel"] = "Старый Архонт",
+        ["newHeadActorType"] = request["candidateHeadActorType"]!.GetValue<string>(),
+        ["newHeadActorId"] = request["candidateHeadActorId"]!.GetValue<string>(),
+        ["newHeadLabel"] = "Новый Архонт",
+        ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
+        ["resolvedAtTurn"] = 14,
+        ["resolvedAtUtc"] = "2026-04-16T12:29:00Z",
+        ["reason"] = "radiant_actor_abdicated"
+    };
+
+    private static JsonObject CreateLeadershipHistoryEntry(JsonObject request) => new()
+    {
+        ["eventId"] = "leadership_evt_" + request["requestId"]!.GetValue<string>(),
+        ["requestId"] = request["requestId"]!.GetValue<string>(),
+        ["eventType"] = "abdicated",
+        ["summary"] = "Старый сияющий актор передал руководство новому актору.",
+        ["turnNumber"] = 14,
+        ["occurredAtUtc"] = "2026-04-16T12:29:00Z"
+    };
+
+    private static JsonObject CreateRadiantActor(string actorId, string displayName, string currentFactionId, string politicalStatus) => new()
+    {
+        ["actorId"] = actorId,
+        ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+        ["displayName"] = displayName,
+        ["summary"] = "Сияющий политический актор.",
+        ["originFactionId"] = "faction_old",
+        ["currentFactionId"] = currentFactionId,
+        ["politicalStatus"] = politicalStatus
+    };
+
+    private static JsonObject? FindTestRadiantActor(JsonObject shiningRoot, string actorId) =>
+        (shiningRoot["shiningPoliticalActors"] as JsonArray)?.OfType<JsonObject>()
+            .FirstOrDefault(actor => string.Equals(actor["actorId"]?.GetValue<string>(), actorId, StringComparison.OrdinalIgnoreCase));
 
     private static JsonObject CreateFoundingRequest(string requestId, string proposedFactionId, string proposedHallId) => new()
     {
