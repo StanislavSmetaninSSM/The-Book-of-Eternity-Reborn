@@ -395,6 +395,40 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ResidentTransferCompetitionLabelsAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var docs = new[] { matrix, taskGuide, examples };
+
+        var labels = typeof(GuardianAbodeResidentState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string) &&
+                            field.Name.StartsWith("TransferCompetitionLabel", StringComparison.Ordinal))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(
+            new[]
+            {
+                GuardianAbodeResidentState.TransferCompetitionLabelPlausiblePull,
+                GuardianAbodeResidentState.TransferCompetitionLabelStrongPull,
+                GuardianAbodeResidentState.TransferCompetitionLabelWeakPull
+            }.OrderBy(value => value, StringComparer.Ordinal),
+            labels);
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("competitionLabel", doc, StringComparison.Ordinal);
+            foreach (var label in labels)
+                Assert.Contains(label, doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void AfterlifeArchiveUpdatesAndDerivedNotificationTriggersAreDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

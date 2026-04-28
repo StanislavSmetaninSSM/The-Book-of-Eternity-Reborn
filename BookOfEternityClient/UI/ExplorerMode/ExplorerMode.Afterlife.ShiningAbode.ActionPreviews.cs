@@ -249,7 +249,15 @@ public partial class ExplorerMode
 
             case ShiningCoreActionRequestState.ActionTypePullRelicGacha:
                 lines.Add($"  • Return cycle: [dim]{Markup.Escape(request.ReturnCycleId)}[/].");
-                lines.Add($"  • chargesUsedThisReturn увеличится на 1; projected bonus ceiling: +{request.ProjectedGachaBonusSteps} rarity step(s).");
+                var gachaSystem = context.Root["gachaSystem"] as JsonObject;
+                var chargesUsed = GetNodeInt(gachaSystem?["chargesUsedThisReturn"]);
+                var chargesPerReturn = GetNodeInt(gachaSystem?["chargesPerReturn"]);
+                lines.Add($"  • chargesUsedThisReturn: {chargesUsed} -> {chargesUsed + 1} из {chargesPerReturn}; projected bonus ceiling: +{request.ProjectedGachaBonusSteps} rarity step(s).");
+                if (FindShiningFactionForPreview(context.Root, request.FactionId) is JsonObject gachaFaction)
+                {
+                    lines.Add($"  • Bonus contributors: Radiance tier {GetNodeInt(context.Root["radiance"]?["tier"])}, factionStrength {GetNodeInt(gachaFaction["factionStrength"])}, supported projects/residents from current Shining state.");
+                    lines.Add($"  • Trade/forge context for same faction: tradeTier {ShiningAbodeState.GetTradeTier(GetNodeInt(gachaFaction["factionStrength"]))}, rarity ceiling {Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(GetNodeInt(gachaFaction["factionStrength"])))}.");
+                }
                 lines.Add("  • GM берёт `turn_request.gachaBaseResult.baseRarity` as rarity floor, может поднять итог не выше projected bonus ceiling.");
                 lines.Add("  • Soul state получает ровно одну новую Soul Relic с id/name из receipt; unrelated Soul fields не меняются.");
                 lines.Add("  • gachaSystem получает currentReturnCycleId, chargesUsedThisReturn и gachaHistory entry.");
@@ -322,7 +330,31 @@ public partial class ExplorerMode
         if (project == null)
             return;
 
+        var radianceTier = GetNodeInt(context.Root["radiance"]?["tier"]);
+        var supportedBefore = ShiningAbodeState.CountSupportedProjectsAcrossState(context.Root);
+        var supportedCap = ShiningAbodeState.GetSupportedProjectCap(radianceTier);
         lines.Add($"  • Project support flag: {GetNodeBool(project["isSupported"])} -> {support}.");
+        lines.Add($"  • Support cap по Radiance tier {radianceTier}: {supportedBefore}/{supportedCap} сейчас.");
+        lines.Add($"  • Архетип: {Markup.Escape(DescribeShiningProjectArchetype(GetNodeString(project["projectArchetype"])))}; effect family: {Markup.Escape(DescribeShiningEffectFamily(GetNodeString(project["outputEffectFamily"])))}; tier {GetNodeInt(project["tier"])}.");
+        if (!string.IsNullOrWhiteSpace(GetNodeString(project["summary"])))
+            lines.Add($"  • Summary: {Markup.Escape(GetNodeString(project["summary"])!)}");
+        AppendShiningStringList(lines, "Тоновые метки", project["toneTags"] as JsonArray);
+        AppendShiningNamedIdList(lines, "Целевые фракции", project["targetFactionIds"] as JsonArray, id => ResolveShiningFactionLabel(context.Root, id));
+
+        if (ShiningCoreActionRequestState.TryBuildProjectedShiningRootForPreview(
+                request,
+                context.Root,
+                context.ResidentRoot,
+                out var projectedRoot) &&
+            FindShiningFactionForPreview(context.Root, request.FactionId) is JsonObject beforeFaction &&
+            FindShiningFactionForPreview(projectedRoot, request.FactionId) is JsonObject afterFaction)
+        {
+            var beforeStrength = GetNodeInt(beforeFaction["factionStrength"]);
+            var afterStrength = GetNodeInt(afterFaction["factionStrength"]);
+            lines.Add($"  • Faction strength/trade tier: {beforeStrength} / tier {ShiningAbodeState.GetTradeTier(beforeStrength)} -> {afterStrength} / tier {ShiningAbodeState.GetTradeTier(afterStrength)}.");
+            lines.Add($"  • Trade slots/rarity/service after mutation: {ShiningAbodeState.GetTradeStockItemCount(afterFaction, context.ResidentRoot)} slots, ceiling {Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(afterStrength))}, service x{ShiningAbodeState.GetServiceMultiplier(afterStrength):0.00}.");
+            lines.Add($"  • Gacha bonus after mutation: +{ShiningAbodeState.GetProjectedShiningGachaBonusSteps(projectedRoot, context.ResidentRoot, afterFaction)} rarity step(s).");
+        }
     }
 
     private void AppendShiningForgeContractEffectLines(
@@ -331,8 +363,16 @@ public partial class ExplorerMode
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
     {
         var relic = FindSoulRelicForPreview(context.SoulRoot, request.RelicId);
+        var faction = FindShiningFactionForPreview(context.Root, request.FactionId);
         lines.Add("  • Mutates exactly one Soul Relic plus resource costs and blessing entitlement lifecycle.");
         lines.Add("  • Shining resident state must remain unchanged.");
+        if (faction != null)
+        {
+            var strength = GetNodeInt(faction["factionStrength"]);
+            var serviceMultiplier = ShiningAbodeState.GetServiceMultiplier(strength);
+            lines.Add($"  • Forge pricing context: factionStrength {strength}, serviceMultiplier x{serviceMultiplier:0.00}, quotedCostFeathers={request.QuotedCostFeathers}, quotedCostLightSparks={request.QuotedCostLightSparks}.");
+        }
+        lines.Add("  • Pending JSON ниже содержит exact mutation payload: relicId, targetFormTag/propertyIndex/replacementProperty/addedProperties.");
 
         switch ((request.ActionType ?? string.Empty).Trim().ToLowerInvariant())
         {

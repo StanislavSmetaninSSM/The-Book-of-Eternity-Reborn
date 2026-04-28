@@ -121,7 +121,7 @@ These tags may appear inside `input/turn_request.json.playerAction`. Treat them 
 
 - Guardian social `responseMode` values are `talk_scene`, `lore_revealed`, `lore_refused`, `warning`, `refusal`, `trust_shift`, and `attitude_shift`. Use them only on `guardianSocialJournalUpdates` / Guardian social closure entries.
 - Resident interaction `responseMode` values are `talk_scene`, `history_revealed`, `history_refused`, `history_partial`, and `bond_shift_only`. Use them on `UpdateGuardianAbodeResidentInteractionReceipts` and matching resident journal/history outputs.
-- Resident transfer `selectionMode` values are `competition_recommended`, `manual_override`, and `departure_only`. When the pending request carries a competition decision, preserve `competitionScore` in the range `0..100`, plus non-empty `competitionLabel` and `competitionReason`; `departure_only` must not carry target Guardian/Abode competition metadata.
+- Resident transfer `selectionMode` values are `competition_recommended`, `manual_override`, and `departure_only`. When the pending request carries a competition decision, preserve `competitionScore` in the range `0..100`, `competitionLabel` exactly as one of `strong_pull`, `plausible_pull`, `weak_pull`, and non-empty `competitionReason`; `departure_only` must not carry target Guardian/Abode competition metadata.
 
 ## Shining Core Action Matrix
 

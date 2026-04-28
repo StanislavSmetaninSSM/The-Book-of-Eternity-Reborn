@@ -668,13 +668,42 @@ public partial class ExplorerMode
 
             if (choice.Contains("Запросить", StringComparison.Ordinal))
             {
-                var result = await ShiningTradeService.RequestInventoryAsync(_fs, factionId, await TryReadCurrentTurnNumberAsync());
-                MarkupLine(result.Success
-                    ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
-                    : $"[red]❌ {Markup.Escape(result.Message)}[/]");
+                var request = new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+                {
+                    FactionId = view.FactionId,
+                    FactionName = view.FactionName,
+                    TradeCycleId = view.TradeCycleId,
+                    DerivedTradeTier = view.TradeTier,
+                    DerivedTradeSlotCount = view.StockItemCount,
+                    DerivedRarityCeiling = view.RarityCeiling,
+                    DerivedServiceMultiplier = view.ServiceMultiplier,
+                    MerchantProfile = ShiningTradeRequestState.MerchantProfileShiningFaction,
+                    CreatedAtTurn = await TryReadCurrentTurnNumberAsync()
+                };
+
+                var error = await ShiningTradeRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    MarkupLine($"[red]❌ {Markup.Escape(error)}[/]");
+                    WaitForKey();
+                    continue;
+                }
+
+                if (!ConfirmShiningTradeInventoryRequestPreview(request))
+                    continue;
+
+                error = await ShiningTradeRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    MarkupLine($"[red]❌ {Markup.Escape(error)}[/]");
+                    WaitForKey();
+                    continue;
+                }
+
+                await ShiningTradeRequestState.WriteRequestAsync(_fs, request);
+                MarkupLine($"[green]✅ Создан ожидающий запрос сияющей торговли для фракции «{Markup.Escape(request.FactionName)}». В принятом ходе GM должен явно оформить tradeInventory и receipt.[/]");
                 WaitForKey();
-                if (result.StateChanged)
-                    await _stateManager.RefreshGameStateAsync();
+                await _stateManager.RefreshGameStateAsync();
                 continue;
             }
 
@@ -833,6 +862,8 @@ public partial class ExplorerMode
             Expand = true
         });
 
+        WriteJsonAuditPanel("Полный JSON Shining trade offer and relicData", BuildShiningTradeOfferAuditNode(offer), Color.Gold1);
+
         var actions = new List<string>();
         if (canBuy)
             actions.Add("🛍 Купить");
@@ -847,6 +878,71 @@ public partial class ExplorerMode
             ? ShiningTradeBuyDecision.Buy
             : ShiningTradeBuyDecision.Back;
     }
+
+    private bool ConfirmShiningTradeInventoryRequestPreview(ShiningTradeRequestState.PendingShiningTradeInventoryRequest request)
+    {
+        var lines = new List<string>
+        {
+            "[bold yellow]Перед записью pending Shining trade inventory request[/]",
+            "",
+            $"  Файл: [dim]{Markup.Escape(ShiningTradeRequestState.PendingRequestsPath)}[/]",
+            $"  requestId: [dim]{Markup.Escape(request.RequestId)}[/]",
+            $"  Фракция: [white]{Markup.Escape(request.FactionName)}[/] [dim]({Markup.Escape(request.FactionId)})[/]",
+            $"  tradeCycleId: [dim]{Markup.Escape(request.TradeCycleId)}[/]",
+            $"  createdAtTurn: [dim]{request.CreatedAtTurn}[/]",
+            $"  createdAtUtc: [dim]{Markup.Escape(request.CreatedAtUtc)}[/]",
+            "",
+            "[bold]Derived contract values:[/]",
+            $"  • derivedTradeTier: [white]{request.DerivedTradeTier}[/]",
+            $"  • derivedTradeSlotCount: [white]{request.DerivedTradeSlotCount}[/]",
+            $"  • derivedRarityCeiling: [white]{Markup.Escape(request.DerivedRarityCeiling)}[/]",
+            $"  • derivedServiceMultiplier: [white]{request.DerivedServiceMultiplier:0.00}[/]",
+            $"  • merchantProfile: [dim]{Markup.Escape(request.MerchantProfile)}[/]",
+            "",
+            "[bold]GM closure contract:[/]",
+            "  • accepted/ready: materialize exact `faction.tradeInventory` for this requestId/tradeCycleId.",
+            "  • tradeInventory must include generatedAtUtc, generationTradeTier, generationRarityCeiling, serviceMultiplierSnapshot, merchantProfile and `items[]`.",
+            "  • Each item requires unique slotId, priceInFeathers, soldOut boolean and nested relicData.",
+            "  • Close through `tradeInventoryReceipts[]` with requestId, factionId, tradeCycleId, status=ready, itemCount, soldOutCount, resolvedAtTurn/resolvedAtUtc.",
+            "  • Cancel here leaves no pending file changes."
+        };
+
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🧾 Предпросмотр сияющей торговой витрины ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Cyan1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+
+        WriteJsonAuditPanel(
+            "Полный JSON pending_shining_trade_inventory_requests.json.requests[0]",
+            JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) as JsonObject,
+            Color.Cyan1);
+
+        var choice = Prompt(new SelectionPrompt<string>()
+            .Title("[bold yellow]Подтвердить запрос сияющей витрины[/]")
+            .HighlightStyle(new Style(Color.Cyan1))
+            .AddChoices("✅ Создать pending request", "← Отмена"));
+
+        return choice.Contains("Создать", StringComparison.OrdinalIgnoreCase) ||
+               choice.Contains("Подтвердить", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static JsonObject BuildShiningTradeOfferAuditNode(ShiningTradeService.ShiningTradeOffer offer) =>
+        new()
+        {
+            ["sourceSurface"] = "shining_trade_inventory",
+            ["slotId"] = offer.SlotId,
+            ["name"] = offer.Name,
+            ["rarity"] = offer.Rarity,
+            ["priceInFeathers"] = offer.PriceInFeathers,
+            ["soldOut"] = offer.SoldOut,
+            ["description"] = offer.Description,
+            ["relicData"] = offer.RelicData.DeepClone()
+        };
 
     private async Task HandleShiningForgeRequestAsync(ShiningContext context)
     {
