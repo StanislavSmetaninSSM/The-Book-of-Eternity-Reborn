@@ -189,7 +189,7 @@
                - MUST NOT satisfy afterlife progression with `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `setWorldTime`, or `weatherChange`
                - MUST write `progressionProcessingReport` with exact processed counts and per-contour `newLast*Ordinal` values
                - MUST keep Shining bootstrap handoff separate: if `preparedIncarnationPackage` is active, process bootstrap only and do not run ordinary Shining living-world cycles
-               - If `preparedIncarnationPackage` is malformed/non-object, fail closed: preserve it for repair and do not treat the turn as ordinary active Shining Abode
+               - If `preparedIncarnationPackage` is malformed, non-object, or fails bootstrap package validation, fail closed: preserve it and pending Shining files for repair and do not treat the turn as ordinary active Shining Abode
 
             5. **MANDATORY Afterlife Decision Questions:**
                - Chaos Sea: What did the Sea itself do while the player focused elsewhere?
@@ -320,7 +320,7 @@
             - Use this procedure for every accepted turn while `soul_state.json.currentRealm` is `Chaos Sea` or `Shining Abode`; do not treat afterlife as a simple dialogue scene
             - Step 1, realm gate: read `game_state/meta/soul_state.json.currentRealm` and classify the mode as ordinary Chaos Sea, ordinary active Shining Abode, or Shining Abode pending-bootstrap handoff
             - Step 2, lifecycle guards: read relevant control/state markers before narration: `afterlife_return_guard.json`, `ascension.json`, `incarnation_trigger.json`, and `shining_abode_state.json.preparedIncarnationPackage`
-            - If pending-bootstrap handoff is active, suppress ordinary Shining living-world progression and process only the frozen next-life bootstrap package
+            - If pending-bootstrap handoff is active, suppress ordinary Shining living-world progression and process only the frozen next-life bootstrap package; if the package is present but invalid, preserve it and all pending Shining files for repair
             - If the package marker is malformed, suppress ordinary Shining processing and surface repair instead of deleting/nulling the package
             - If ascension, incarnation, return, or life evaluation is active, keep that lifecycle separate; never combine `TriggerLifeEnd`, `AscensionTrigger`, New Game+, and Shining bootstrap in one logical outcome
             - Step 3, scheduler first: read `input/turn_request.json.progressionControl` before choosing the scene resolution, relevant actors, or response tone
@@ -493,7 +493,7 @@
 - Do not arbitrarily reduce this list to one request because of relic slots. If multiple equipped companion-carrying relics exist, process all of them; slot overlap is not a limiter for next-life companion manifestation.
 - For accepted `archive consultation`, include machine-readable whitelist outcome fields in `archiveActionResolutions`: `guaranteedArchiveQuestCount`, `questHookCount`, `specialQuestLineUnlocks`, `visibleRivalClueBonus`, `archiveWarningTierBonus`.
 - For accepted `archive project fuel`, include machine-readable `resultMode = project_work | pressure_relief` and `resultAmount > 0` in `archiveActionResolutions`, in addition to the canonical journal/tracker result.
-- `pendingShiningBlessingEffects` is created by runtime after Shining prepared-package bootstrap. Do not author it during afterlife. In Mortal turns, close its deferred families through ordinary Mortal surfaces: `memorySelection.status=pending_pre_turn_one_selection`, `resourceGrant.status=applied_at_bootstrap`, `relicRefinementEntitlements.status=pending_relic_entitlement`, `pendingSocialEffects.status=pending_first_relation_commit`, `pendingRouteEffects.status=pending_early_route_seed`, `pendingLoreEffects.status=pending_lore_insertion`, `pendingSurvivalEffects.status=pending_first_ruinous_failure`, and `pendingDescentEffects.status=pending_resident_descent`.
+- `pendingShiningBlessingEffects` is created by runtime after Shining prepared-package bootstrap. Do not author it during afterlife. In Mortal turns, close its deferred families through ordinary Mortal surfaces: `memorySelection.status=pending_pre_turn_one_selection`, `resourceGrant.status=applied_at_bootstrap`, `relicRefinementEntitlements.status=pending_relic_entitlement`, `pendingSocialEffects.status=pending_first_relation_commit`, `pendingRouteEffects.status=pending_early_route_seed`, `pendingLoreEffects.status=pending_lore_insertion`, `pendingSurvivalEffects.status=pending_first_ruinous_failure`, and `pendingDescentEffects.status=pending_resident_descent`. Treat `resourceGrant.grantId` and hidden `_shiningBootstrapResourceGrantIds` player/inventory markers as client-owned idempotency audit data; never create, clear, or use them as GM-authored spend receipts.
             - If Guardian reveals lore: add loreCodexUpdates with discoveryContext referencing the Guardian
             
             **Generate the same logical turn result as API mode** (per Block_2.txt master schema),

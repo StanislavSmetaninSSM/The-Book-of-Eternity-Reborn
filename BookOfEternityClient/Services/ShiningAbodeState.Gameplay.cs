@@ -43,7 +43,9 @@ internal static partial class ShiningAbodeState
         [RarityCommon] = 1,
         [RarityUncommon] = 2,
         [RarityRare] = 3,
-        [RarityRadiant] = 4
+        [RarityEpic] = 4,
+        [RarityLegendary] = 5,
+        [RarityRadiant] = 6
     };
 
     private static readonly IReadOnlyDictionary<string, HashSet<string>> ArchetypeFamilyCompatibility = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase)
@@ -1351,11 +1353,18 @@ internal static partial class ShiningAbodeState
     {
         RarityCommon => RarityUncommon,
         RarityUncommon => RarityRare,
-        RarityRare => RarityRadiant,
+        RarityRare => RarityEpic,
+        RarityEpic => RarityLegendary,
+        RarityLegendary => RarityRadiant,
         _ => RarityRadiant
     };
 
-    private static string MinRarity(string left, string right) => GetRarityWeight(left) <= GetRarityWeight(right) ? left : right;
+    internal static string ResolveLowerBlessingCardRarity(string left, string right) =>
+        GetRarityWeight(left) <= GetRarityWeight(right) ? left : right;
+
+    private static string MinRarity(string left, string right) => ResolveLowerBlessingCardRarity(left, right);
+
+    internal static int GetBlessingCardRarityWeight(string? rarity) => GetRarityWeight(rarity);
 
     private static int GetRarityWeight(string? rarity) => !string.IsNullOrWhiteSpace(rarity) && RarityWeight.TryGetValue(rarity, out var weight) ? weight : 0;
 

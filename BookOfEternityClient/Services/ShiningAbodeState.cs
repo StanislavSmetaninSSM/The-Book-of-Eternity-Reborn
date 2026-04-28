@@ -4,6 +4,13 @@ namespace BookOfEternityClient.Services;
 
 internal static partial class ShiningAbodeState
 {
+    public enum PreparedIncarnationPackageMode
+    {
+        Absent,
+        ValidHandoff,
+        InvalidFault
+    }
+
     public const string StatePath = "game_state/meta/shining_abode_state.json";
 
     public const string AvailabilityActive = "active";
@@ -225,6 +232,23 @@ internal static partial class ShiningAbodeState
     public static bool IsSupportedRarity(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedRarities.Contains(value);
     public static bool IsSupportedFactionLoyaltyTier(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedFactionLoyaltyTiers.Contains(value);
     public static bool IsSupportedFactionRealignmentState(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedFactionRealignmentStates.Contains(value);
+
+    public static PreparedIncarnationPackageMode GetPreparedIncarnationPackageMode(JsonObject? root)
+    {
+        if (root == null ||
+            !root.ContainsKey("preparedIncarnationPackage") ||
+            root["preparedIncarnationPackage"] == null)
+        {
+            return PreparedIncarnationPackageMode.Absent;
+        }
+
+        if (root["preparedIncarnationPackage"] is not JsonObject preparedPackage)
+            return PreparedIncarnationPackageMode.InvalidFault;
+
+        return string.IsNullOrWhiteSpace(ValidatePreparedIncarnationPackageForBootstrap(preparedPackage))
+            ? PreparedIncarnationPackageMode.ValidHandoff
+            : PreparedIncarnationPackageMode.InvalidFault;
+    }
 
     public static string? ValidateRawOwnerStateForActionableMode(JsonObject root)
     {
@@ -573,8 +597,12 @@ internal static partial class ShiningAbodeState
             return;
         }
 
-        if (!string.IsNullOrWhiteSpace(shiningFactionId) && !FactionExists(shiningRoot, shiningFactionId))
+        if (shiningRoot != null &&
+            !string.IsNullOrWhiteSpace(shiningFactionId) &&
+            !FactionExists(shiningRoot, shiningFactionId))
+        {
             shiningFactionId = string.Empty;
+        }
 
         if (string.IsNullOrWhiteSpace(shiningFactionId))
         {
@@ -591,6 +619,21 @@ internal static partial class ShiningAbodeState
 
         var residentRole = GetNodeString(resident["residentRole"]);
         resident["residentRole"] = IsSupportedResidentRole(residentRole) ? residentRole : DeriveDefaultResidentRole(resident);
+
+        if (shiningRoot == null)
+        {
+            var preservedLoyalty = Math.Clamp(GetNodeInt(resident["factionLoyaltyLevel"], 50), 0, 100);
+            var preservedRestlessness = Math.Clamp(GetNodeInt(resident["factionRestlessness"], 0), 0, 100);
+            var preservedRealignment = GetNodeString(resident["factionRealignmentState"]);
+
+            resident["factionLoyaltyLevel"] = preservedLoyalty;
+            resident["factionLoyaltyTier"] = ResolveFactionLoyaltyTier(preservedLoyalty);
+            resident["factionRestlessness"] = preservedRestlessness;
+            resident["factionRealignmentState"] = IsSupportedFactionRealignmentState(preservedRealignment)
+                ? preservedRealignment
+                : ResolveFactionRealignmentState(preservedLoyalty, preservedRestlessness);
+            return;
+        }
 
         var faction = FindFaction(shiningRoot, shiningFactionId);
         var loyalty = DeriveFactionLoyaltyLevel(resident, faction);

@@ -156,6 +156,50 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task EnsureHealthyAsync_PendingBootstrapPreservesTradeRequestAndShowsBlockingReminder()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            shiningRoot["preparedIncarnationPackage"] = CreateValidPreparedPackage();
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+            await ShiningTradeRequestState.WriteRequestAsync(fs, new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+            {
+                RequestId = "trade_req_blocked_handoff",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TradeCycleId = "shining_return_2",
+                DerivedTradeTier = 2,
+                DerivedTradeSlotCount = 6,
+                DerivedRarityCeiling = "rare",
+                DerivedServiceMultiplier = 1.25,
+                MerchantProfile = ShiningTradeRequestState.MerchantProfileShiningFaction,
+                CreatedAtTurn = 10
+            });
+
+            await ShiningTradeRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            Assert.True(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+            var request = Assert.Single(await ShiningTradeRequestState.ReadRequestsAsync(fs));
+            Assert.Equal("trade_req_blocked_handoff", request.RequestId);
+            var reminder = await ShiningTradeRequestState.BuildSystemReminderFragmentAsync(fs, "Shining Abode");
+            Assert.NotNull(reminder);
+            Assert.Contains("SHINING TRADE REQUESTS BLOCKED", reminder);
+            Assert.Contains("pending-bootstrap handoff", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("trade_req_blocked_handoff", reminder);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_MalformedPendingFile_PreservesCorruptedContract()
     {
         var root = CreateTempRoot();
@@ -1028,6 +1072,27 @@ public sealed class ShiningTradeRequestStateTests
             }
         }.ToJsonString());
     }
+
+    private static JsonObject CreateValidPreparedPackage() => new()
+    {
+        ["selectedCardIds"] = new JsonArray("card_memory"),
+        ["selectedCards"] = new JsonArray(new JsonObject
+        {
+            ["cardId"] = "card_memory",
+            ["dedupeKey"] = "memory:card_memory",
+            ["sourceType"] = "project",
+            ["sourceFactionId"] = "faction_old",
+            ["sourceActorId"] = "project_old",
+            ["effectFamily"] = "memory",
+            ["rarity"] = "common",
+            ["displayName"] = "Память Света",
+            ["displaySummary"] = "Сохраняет эхо.",
+            ["effectPayload"] = new JsonObject()
+        }),
+        ["generatedFromDraftVersion"] = 1,
+        ["preparedAtTurn"] = 10,
+        ["preparedAtUtc"] = "2026-04-17T00:10:00Z"
+    };
 
     private static string CreateTempRoot()
     {

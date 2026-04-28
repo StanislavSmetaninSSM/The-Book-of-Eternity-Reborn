@@ -212,11 +212,15 @@ public sealed class GuardianTradeService
         if (guardian["tradeInventory"] is not JsonObject tradeInventory || tradeInventory["items"] is not JsonArray items)
             return new GuardianTradeOperationResult(false, false, "Витрина Хранителя недоступна.");
 
-        var slot = items.OfType<JsonObject>().FirstOrDefault(item =>
-            string.Equals(GetNodeString(item["slotId"]), slotId, StringComparison.OrdinalIgnoreCase));
-        if (slot == null)
+        var matchingSlots = items.OfType<JsonObject>()
+            .Where(item => string.Equals(GetNodeString(item["slotId"]), slotId, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (matchingSlots.Count == 0)
             return new GuardianTradeOperationResult(false, false, "Выбранный товар не найден.");
+        if (matchingSlots.Count > 1)
+            return new GuardianTradeOperationResult(false, false, $"Витрина Хранителя повреждена: duplicate slotId '{slotId}'. Покупка заблокирована до repair.");
 
+        var slot = matchingSlots[0];
         if (GetNodeBool(slot["soldOut"]))
             return new GuardianTradeOperationResult(false, false, "Этот товар уже выкуплен в текущем возвращении.");
 
@@ -444,6 +448,25 @@ public sealed class GuardianTradeService
             var tradeInventory = guardian["tradeInventory"] as JsonObject;
             var pendingRequestState = await GuardianTradeRequestState.ReadStateAsync(_fs);
             var pendingRequest = pendingRequestState.Request;
+            if (GuardianTradeRequestState.TryFindDuplicateTradeSlotId(tradeInventory, out var duplicateSlotId))
+            {
+                inventoryStatusMessage = $"Витрина Хранителя повреждена: duplicate slotId '{duplicateSlotId}'. Покупка заблокирована до repair.";
+                return (
+                    tier,
+                    BuildTradeView(
+                        guardian,
+                        cycleId,
+                        blocked,
+                        blockedReason,
+                        inventoryReady,
+                        inventoryRequestPending,
+                        inventoryRequestCreatedThisCall,
+                        inventoryStatusMessage,
+                        pendingGmAction),
+                    changed,
+                    trackerChanged);
+            }
+
             if (TradeInventoryMatchesContract(tradeInventory, cycleId, derivedState))
             {
                 var requestMatchesCurrentContract = pendingRequest != null &&
@@ -921,7 +944,8 @@ public sealed class GuardianTradeService
             return false;
         }
 
-        return items.OfType<JsonObject>().All(item =>
+        return GuardianTradeRequestState.HasUniqueTradeSlotIds(tradeInventory) &&
+               items.OfType<JsonObject>().All(item =>
             !string.IsNullOrWhiteSpace(GetNodeString(item["slotId"])) &&
             item["priceInFeathers"] is JsonValue &&
             GetNodeInt(item["priceInFeathers"], -1) >= 0 &&

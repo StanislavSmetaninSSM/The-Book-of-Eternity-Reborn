@@ -1444,7 +1444,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("1 Чернильных Перьев", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("валидатор извлекает", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("без репутации Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guardian modifiers", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("finalRarity должен точно совпасть с baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ровно одну новую Soul Relic", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не списывает Чернильные Перья второй раз", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("не ниже baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -3525,6 +3529,44 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("культурный слой: Glass Gardens", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ценности: верность, память, милосердие", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("черты: тихий, наблюдательный, терпеливый", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("quality", "Rare")]
+    [InlineData("relicRarity", "Epic")]
+    public async Task TryProcessCommand_AbodeOfferingSoulRelic_UsesRarityAliases(string rarityField, string rarity)
+    {
+        await SeedAbodeOfferingRelicAliasStateAsync(rarityField, rarity);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/подношение_обители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors($"abode_offering_{rarityField}_alias");
+        var pendingJson = await _fs.ReadFileAsync(GuardianAbodeOfferingState.PendingRequestPath);
+        Assert.False(string.IsNullOrWhiteSpace(pendingJson));
+        using var pendingDoc = JsonDocument.Parse(pendingJson!);
+        Assert.Equal(GuardianAbodeOfferingState.OfferingTypeSoulRelic, pendingDoc.RootElement.GetProperty("offeringType").GetString());
+        Assert.Equal("relic_alias_001", pendingDoc.RootElement.GetProperty("relicId").GetString());
+        Assert.Equal(rarity, pendingDoc.RootElement.GetProperty("relicRarity").GetString());
+        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
+            choice => choice.Contains($"via {rarityField}", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_AbodeOfferingSoulRelic_InvalidAliasRarityDoesNotCreatePendingRequest()
+    {
+        await SeedAbodeOfferingRelicAliasStateAsync("quality", "Mythic");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/подношение_обители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("abode_offering_invalid_relic_alias");
+        Assert.False(_fs.FileExists(GuardianAbodeOfferingState.PendingRequestPath));
+        Assert.Contains(_console.MarkupLines,
+            line => line.Contains("Нельзя поднести реликвию", StringComparison.OrdinalIgnoreCase) &&
+                    line.Contains("unsupported quality='Mythic'", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -6376,6 +6418,73 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.NotNull(soulRaw);
         Assert.DoesNotContain("\"current\": 50", soulRaw, StringComparison.Ordinal);
         Assert.True(File.Exists(_fs.ResolvePath(PendingTurnStateService.PendingDiceStatePath)));
+    }
+
+    private async Task SeedAbodeOfferingRelicAliasStateAsync(string rarityField, string rarity)
+    {
+        var relic = new JsonObject
+        {
+            ["relicId"] = "relic_alias_001",
+            ["name"] = "Реликвия с алиасом редкости",
+            ["description"] = "Реликвия для проверки destructive offering rarity alias.",
+            ["formTag"] = "alias_test",
+            ["properties"] = new JsonArray()
+        };
+        relic[rarityField] = rarity;
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new JsonObject
+        {
+            ["soulName"] = "Тестовая Душа",
+            ["currentRealm"] = "Chaos Sea",
+            ["currentIncarnation"] = 4,
+            ["inkFeathers"] = new JsonObject
+            {
+                ["current"] = 3,
+                ["total"] = 3
+            },
+            ["soulRelics"] = new JsonObject
+            {
+                ["stored"] = new JsonArray(relic),
+                ["equipped"] = new JsonArray()
+            }
+        });
+
+        var guardian = new JsonObject
+        {
+            ["guardianId"] = "guard_abode_alias_001",
+            ["canonicalName"] = "Азалия",
+            ["domain"] = "Social",
+            ["manifestation"] = new JsonObject
+            {
+                ["currentDisplayName"] = "Азалия",
+                ["formFlexibility"] = "selective",
+                ["currentPresentationStyle"] = "feminine",
+                ["currentPronouns"] = "она/её",
+                ["appearanceDescription"] = "Тестовая форма хранительницы."
+            },
+            ["abodePower"] = new JsonObject
+            {
+                ["currentPower"] = 35,
+                ["tier"] = "Хрупкая",
+                ["lastUpdatedAt"] = "2026-03-23T00:00:00Z",
+                ["history"] = new JsonArray()
+            },
+            ["relationshipData"] = new JsonObject
+            {
+                ["currentReputation"] = 25,
+                ["reputationHistory"] = new JsonArray()
+            }
+        };
+
+        await WriteJsonAsync("game_state/meta/guardians.json", new JsonObject
+        {
+            ["guardians"] = new JsonArray(guardian),
+            ["chaosSeaNavigation"] = new JsonObject()
+        });
+        await WriteJsonAsync(GuardianPowerEventState.JournalPath, new JsonObject
+        {
+            ["entries"] = new JsonArray()
+        });
     }
 
 
