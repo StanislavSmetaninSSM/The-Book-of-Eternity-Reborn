@@ -142,11 +142,13 @@ public sealed class AfterlifeArchiveConsultationService
                     new CoordinatedStateWriteHelper.PlannedWrite(
                         AfterlifeArchiveActionState.ConsultationRequestPath,
                         preConsultationRequestJson,
-                        postConsultationRequestJson),
+                        postConsultationRequestJson,
+                        RequireCurrentBaseline: true),
                     new CoordinatedStateWriteHelper.PlannedWrite(
                         "game_state/meta/soul_state.json",
                         preSoulJson,
-                        postSoulJson)))
+                        postSoulJson,
+                        RequireCurrentBaseline: true)))
         {
             return null;
         }
@@ -191,11 +193,13 @@ public sealed class AfterlifeArchiveConsultationService
             new CoordinatedStateWriteHelper.PlannedWrite(
                 result.PendingRequestPath,
                 result.PreviousPendingRequestJson,
-                result.PendingRequestJson),
+                result.PendingRequestJson,
+                RequireCurrentBaseline: true),
             new CoordinatedStateWriteHelper.PlannedWrite(
                 result.SoulStatePath,
                 result.PreviousSoulStateJson,
-                result.ReservedSoulStateJson));
+                result.ReservedSoulStateJson,
+                RequireCurrentBaseline: true));
     }
 
     private async Task<int> ReadGuardianReputationAsync(string guardianId)
