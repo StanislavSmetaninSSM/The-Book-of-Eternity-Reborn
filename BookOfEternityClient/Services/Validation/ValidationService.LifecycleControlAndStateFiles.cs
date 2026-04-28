@@ -1162,6 +1162,215 @@ public partial class ValidationService
         }
     }
 
+    private async Task ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync(List<ValidationIssue> issues)
+    {
+        var currentShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var currentHasLegacyPending = false;
+        try
+        {
+            currentHasLegacyPending = JsonNode.Parse(currentShiningJson ?? string.Empty) is JsonObject currentProbe &&
+                                      currentProbe["pendingNativeFactionDiscovery"] is JsonObject;
+        }
+        catch
+        {
+            // parse issues are reported elsewhere
+        }
+
+        var preTurnShiningJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(preTurnShiningJson))
+        {
+            if (currentHasLegacyPending)
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningAbodeState.StatePath,
+                    IssueSeverity.Error,
+                    "Accepted turn содержит live pendingNativeFactionDiscovery, но отсутствует validated pre-turn shining_abode_state.json для строгой проверки closure.",
+                    code: "shining_legacy_native_discovery_missing_pre_turn_shining_state",
+                    section: "ShiningAbode",
+                    expected: "validated pending turn snapshot with pre-turn shining_abode_state.json",
+                    actual: "current pendingNativeFactionDiscovery object",
+                    repairHint: "Сохраняй pre-turn shining_abode_state.json в pending_turn_snapshot перед accepted turn с legacy pendingNativeFactionDiscovery и закрывай его в этом же ходе."));
+            }
+
+            return;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(preTurnShiningJson) is not JsonObject preTurnShiningProbe ||
+                preTurnShiningProbe["pendingNativeFactionDiscovery"] is not JsonObject pendingDiscovery)
+            {
+                return;
+            }
+        }
+        catch
+        {
+            return;
+        }
+
+        var currentResidentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        var currentSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(currentShiningJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                ShiningAbodeState.StatePath,
+                "shining_legacy_native_discovery_missing_current_shining_state",
+                "Legacy pendingNativeFactionDiscovery требует current shining_abode_state.json для строгой проверки результата.",
+                "Не удаляй shining_abode_state.json на accepted turn с pendingNativeFactionDiscovery; materialize native faction, запиши receipt и очисти pendingNativeFactionDiscovery.");
+        }
+
+        if (string.IsNullOrWhiteSpace(currentResidentsJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                GuardianAbodeResidentState.StatePath,
+                "shining_legacy_native_discovery_missing_current_resident_state",
+                "Legacy pendingNativeFactionDiscovery требует current guardian_abode_residents.json для проверки новых residents.",
+                "Оставь guardian_abode_residents.json доступным и materialize 2..4 ascended residents из discovery receipt.");
+        }
+
+        if (string.IsNullOrWhiteSpace(currentSoulJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                "game_state/meta/soul_state.json",
+                "shining_legacy_native_discovery_missing_current_soul_state",
+                "Legacy pendingNativeFactionDiscovery требует current soul_state.json для проверки Ink Feather cost.",
+                "Оставь soul_state.json доступным на accepted turn с pendingNativeFactionDiscovery.");
+        }
+
+        if (string.IsNullOrWhiteSpace(currentShiningJson) ||
+            string.IsNullOrWhiteSpace(currentResidentsJson) ||
+            string.IsNullOrWhiteSpace(currentSoulJson))
+        {
+            return;
+        }
+
+        var preTurnResidentsJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            GuardianAbodeResidentState.StatePath,
+            issues,
+            code: "shining_legacy_native_discovery_missing_pre_turn_resident_state",
+            section: "ShiningAbode",
+            message: "Legacy pendingNativeFactionDiscovery resolution требует validated pre-turn guardian_abode_residents.json.",
+            repairHint: "Сохраняй canonical pre-turn guardian_abode_residents.json в validated pending snapshot для строгой проверки новых discovery residents.");
+        var preTurnSoulJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            issues,
+            code: "shining_legacy_native_discovery_missing_pre_turn_soul_state",
+            section: "ShiningAbode",
+            message: "Legacy pendingNativeFactionDiscovery resolution требует validated pre-turn soul_state.json.",
+            repairHint: "Сохраняй canonical pre-turn soul_state.json в validated pending snapshot для проверки Ink Feather cost.");
+        if (string.IsNullOrWhiteSpace(preTurnResidentsJson) ||
+            string.IsNullOrWhiteSpace(preTurnSoulJson))
+        {
+            return;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(preTurnShiningJson) is not JsonObject preTurnShiningRoot ||
+                preTurnShiningRoot["pendingNativeFactionDiscovery"] is not JsonObject pendingDiscovery ||
+                JsonNode.Parse(preTurnResidentsJson) is not JsonObject preTurnResidentsRoot ||
+                JsonNode.Parse(preTurnSoulJson) is not JsonObject preTurnSoulRoot ||
+                JsonNode.Parse(currentShiningJson) is not JsonObject currentShiningRoot ||
+                JsonNode.Parse(currentResidentsJson) is not JsonObject currentResidentsRoot ||
+                JsonNode.Parse(currentSoulJson) is not JsonObject currentSoulRoot)
+            {
+                return;
+            }
+
+            GuardianAbodeResidentState.NormalizeShape(preTurnResidentsRoot);
+            GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
+            var guardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
+            ShiningAbodeState.NormalizeStateRoot(preTurnShiningRoot, preTurnResidentsRoot, guardiansRoot);
+            ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, currentResidentsRoot, guardiansRoot);
+
+            var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                RequestId = GetNodeString(pendingDiscovery["requestId"]) ?? string.Empty,
+                ActionType = ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction,
+                RadianceTierAtRequest = GetNodeInt(pendingDiscovery["radianceTierAtRequest"]),
+                QuotedCostFeathers = GetNodeInt(pendingDiscovery["costFeathers"]),
+                QuotedCostLightSparks = 0,
+                CreatedAtTurn = GetNodeInt(pendingDiscovery["createdAtTurn"]),
+                CreatedAtUtc = GetNodeString(pendingDiscovery["createdAtUtc"]) ?? string.Empty
+            };
+
+            var receipts = ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot);
+            var receipt = ShiningAbodeState.FindReceipt(receipts, request.RequestId);
+            if (receipt == null)
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningAbodeState.StatePath,
+                    IssueSeverity.Error,
+                    "Legacy pendingNativeFactionDiscovery не был закрыт в текущем accepted turn.",
+                    code: "shining_legacy_native_discovery_missing_resolution",
+                    section: "ShiningAbode",
+                    repairHint: "Закрой pendingNativeFactionDiscovery через coreActionReceipts[] с actionType=discover_native_faction, materialize native faction/residents/projects и очисти pendingNativeFactionDiscovery."));
+                return;
+            }
+
+            if (!ShiningCoreActionReceiptMatchesRequest(receipt, request, out var receiptActual))
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningAbodeState.StatePath,
+                    IssueSeverity.Error,
+                    "Legacy pendingNativeFactionDiscovery receipt не совпадает с state-local contract.",
+                    code: "shining_legacy_native_discovery_receipt_mismatch",
+                    section: "ShiningAbode",
+                    expected: $"{request.ActionType} / {request.RequestId}",
+                    actual: receiptActual,
+                    repairHint: "Синхронизируй coreActionReceipts[] с pendingNativeFactionDiscovery.requestId и actionType=discover_native_faction."));
+                return;
+            }
+
+            if (currentShiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningAbodeState.StatePath,
+                    IssueSeverity.Error,
+                    "Legacy pendingNativeFactionDiscovery должен быть очищен после закрытия accepted turn.",
+                    code: "shining_legacy_native_discovery_not_cleared",
+                    section: "ShiningAbode",
+                    expected: "pendingNativeFactionDiscovery = null",
+                    actual: "pendingNativeFactionDiscovery object",
+                    repairHint: "После materialization и matching coreActionReceipts[] установи shining_abode_state.pendingNativeFactionDiscovery в null."));
+            }
+
+            var status = GetNodeString(receipt["status"]) ?? string.Empty;
+            if (string.Equals(status, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            {
+                ValidateAcceptedShiningNativeDiscoveryOutcome(
+                    request,
+                    receipt,
+                    preTurnShiningRoot,
+                    preTurnResidentsRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentResidentsRoot,
+                    currentSoulRoot,
+                    issues);
+            }
+            else
+            {
+                ValidateNonAcceptedShiningCoreActionOutcome(
+                    request,
+                    preTurnShiningRoot,
+                    preTurnResidentsRoot,
+                    preTurnSoulRoot,
+                    currentShiningRoot,
+                    currentResidentsRoot,
+                    currentSoulRoot,
+                    issues);
+            }
+        }
+        catch
+        {
+            // parse issues are reported elsewhere
+        }
+    }
+
     private async Task ValidatePendingShiningRealignmentResolutionAsync(List<ValidationIssue> issues)
     {
         var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(

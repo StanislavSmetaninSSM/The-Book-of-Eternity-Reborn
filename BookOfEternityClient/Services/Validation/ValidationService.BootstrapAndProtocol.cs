@@ -501,6 +501,8 @@ public partial class ValidationService
             _fs.FileExists("ready/turn_error.json"))
         {
             await ValidatePendingShiningCoreActionResolutionAsync(issues);
+            if (_fs.FileExists("ready/turn_complete.json"))
+                await ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync(issues);
             await ValidatePendingShiningTradeInventoryResolutionAsync(issues);
             await ValidatePendingAbodeOfferingResolutionAsync(issues);
             await ValidatePendingGuardianTradeRequestResolutionAsync(issues);

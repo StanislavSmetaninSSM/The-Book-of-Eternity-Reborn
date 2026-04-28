@@ -3184,7 +3184,7 @@ Accepted `prepare_incarnation_package` must:
 - require a fresh open gates draft;
 - use `sourceDraftVersion` matching current `gates.draftVersion`;
 - use non-empty unique `selectedCardIds`;
-- if `selectedCards` exists in the request, keep it in the same order as `selectedCardIds`;
+- pending request must include `selectedCards[]` copied from canonical `gates.availableBlessingCards[]`/`gates.allCandidateBlessingCards[]` in the same order as `selectedCardIds[]`;
 - write `preparedIncarnationPackage` with `selectedCardIds[]` and full `selectedCards[]`;
 - reset/clean gates exactly as the canonical Shining helper does;
 - not spend Ink Feathers by itself;

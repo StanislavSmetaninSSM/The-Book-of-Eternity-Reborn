@@ -710,11 +710,197 @@ public sealed class ShiningStateValidationTests
         }
     }
 
+    [Fact]
+    public async Task ValidateShiningLeadershipHeadReferencesAsync_ResidentHeadMustBeAscendedAndAligned()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteNodeAsync(fs, ShiningAbodeState.StatePath, CreateLeadershipStateRoot(new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypeResident,
+                ["headActorId"] = "resident_liora",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            }));
+            await WriteNodeAsync(fs, "game_state/meta/guardians.json", CreateMinimalGuardiansRoot());
+            await WriteNodeAsync(fs, GuardianAbodeResidentState.StatePath, new JsonObject
+            {
+                ["entries"] = new JsonArray(new JsonObject
+                {
+                    ["residentId"] = "resident_liora",
+                    ["displayName"] = "Лиора",
+                    ["ascensionState"] = ShiningAbodeState.AscensionStateRemainedInChaosSea,
+                    ["shiningFactionId"] = "faction_other"
+                }),
+                ["thoughtJournal"] = new JsonArray(),
+                ["interactionLog"] = new JsonArray(),
+                ["historyLog"] = new JsonArray(),
+                ["transferReceipts"] = new JsonArray(),
+                ["interactionReceipts"] = new JsonArray(),
+                ["rosterReceipts"] = new JsonArray()
+            });
+
+            var issues = await InvokeLeadershipValidationAsync(fs);
+
+            Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_resident_head_not_ascended", StringComparison.OrdinalIgnoreCase));
+            Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_resident_head_faction_mismatch", StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateShiningLeadershipHeadReferencesAsync_RadiantHeadMustBeAlignedAndExclusive()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var shiningRoot = CreateLeadershipStateRoot(new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["headActorId"] = "actor_shared",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            });
+            var factions = shiningRoot["factions"]!.AsArray();
+            factions.Add(CreateFaction("faction_other", new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["headActorId"] = "actor_shared",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateContested
+            }));
+            shiningRoot["shiningPoliticalActors"] = new JsonArray(new JsonObject
+            {
+                ["actorId"] = "actor_shared",
+                ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["displayName"] = "Архон",
+                ["summary"] = "Shared actor.",
+                ["originFactionId"] = "faction_main",
+                ["currentFactionId"] = "faction_main",
+                ["politicalStatus"] = ShiningAbodeState.PoliticalStatusHead
+            });
+
+            await WriteNodeAsync(fs, ShiningAbodeState.StatePath, shiningRoot);
+            await WriteNodeAsync(fs, "game_state/meta/guardians.json", CreateMinimalGuardiansRoot());
+            await WriteNodeAsync(fs, GuardianAbodeResidentState.StatePath, CreateEmptyResidentRoot());
+
+            var issues = await InvokeLeadershipValidationAsync(fs);
+
+            Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_radiant_head_faction_mismatch", StringComparison.OrdinalIgnoreCase));
+            Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_duplicate_head_actor", StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static string CreateTempRoot()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-shining-validation-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
         return root;
+    }
+
+    private static async Task<List<ValidationIssue>> InvokeLeadershipValidationAsync(FileSystemManager fs)
+    {
+        var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+        var issues = new List<ValidationIssue>();
+        var method = typeof(ValidationService).GetMethod(
+            "ValidateShiningLeadershipHeadReferencesAsync",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        var task = method!.Invoke(validator, new object[] { issues }) as Task;
+        Assert.NotNull(task);
+        await task!;
+        return issues;
+    }
+
+    private static JsonObject CreateLeadershipStateRoot(JsonObject leadership) => new()
+    {
+        ["availability"] = ShiningAbodeState.AvailabilityActive,
+        ["radiance"] = new JsonObject
+        {
+            ["experience"] = 150,
+            ["tier"] = 1
+        },
+        ["lightSparks"] = 55,
+        ["halls"] = new JsonArray(),
+        ["factions"] = new JsonArray(CreateFaction("faction_main", leadership)),
+        ["shiningPoliticalActors"] = new JsonArray(),
+        ["factionFoundingReceipts"] = new JsonArray(),
+        ["factionRealignmentReceipts"] = new JsonArray(),
+        ["coreActionReceipts"] = new JsonArray(),
+        ["pendingNativeFactionDiscovery"] = null,
+        ["gates"] = new JsonObject
+        {
+            ["draftVersion"] = 0,
+            ["hasOpenDraft"] = false,
+            ["isStale"] = false,
+            ["allCandidateBlessingCards"] = new JsonArray(),
+            ["availableBlessingCards"] = new JsonArray(),
+            ["shownBlessingCardIds"] = new JsonArray(),
+            ["selectedBlessingCardIds"] = new JsonArray(),
+            ["nextCandidateCursor"] = 0,
+            ["rerollsRemaining"] = 0
+        },
+        ["gachaSystem"] = new JsonObject
+        {
+            ["chargesPerReturn"] = 0,
+            ["chargesUsedThisReturn"] = 0,
+            ["currentReturnCycleId"] = "return_1",
+            ["gachaHistory"] = new JsonArray()
+        }
+    };
+
+    private static JsonObject CreateFaction(string factionId, JsonObject leadership) => new()
+    {
+        ["factionId"] = factionId,
+        ["originType"] = ShiningAbodeState.OriginTypeNativeRadiant,
+        ["hallId"] = $"hall_{factionId}",
+        ["charter"] = new JsonObject
+        {
+            ["factionName"] = factionId,
+            ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+            ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+            ["summary"] = factionId
+        },
+        ["leadership"] = leadership,
+        ["baseStrength"] = 30,
+        ["factionStrength"] = 30,
+        ["investCountThisAscension"] = 0,
+        ["projects"] = new JsonArray(),
+        ["tradeInventoryReceipts"] = new JsonArray(),
+        ["leadershipReceipts"] = new JsonArray(),
+        ["leadershipHistory"] = new JsonArray()
+    };
+
+    private static JsonObject CreateMinimalGuardiansRoot() => new()
+    {
+        ["guardians"] = new JsonArray(),
+        ["activeGuardian"] = null
+    };
+
+    private static JsonObject CreateEmptyResidentRoot() => new()
+    {
+        ["entries"] = new JsonArray(),
+        ["thoughtJournal"] = new JsonArray(),
+        ["interactionLog"] = new JsonArray(),
+        ["historyLog"] = new JsonArray(),
+        ["transferReceipts"] = new JsonArray(),
+        ["interactionReceipts"] = new JsonArray(),
+        ["rosterReceipts"] = new JsonArray()
+    };
+
+    private static async Task WriteNodeAsync(FileSystemManager fs, string relativePath, JsonNode node)
+    {
+        await fs.WriteFileAtomicAsync(relativePath, node.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
     }
 
     private static void CleanupTempRoot(string root)
