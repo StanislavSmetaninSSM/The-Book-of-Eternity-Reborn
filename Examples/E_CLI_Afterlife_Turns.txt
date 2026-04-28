@@ -1920,7 +1920,7 @@ Correct faction patch:
 }
 ```
 
-If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`; use `politicalStatus = "head"` for the current head and move replaced radiant actors to `former_head`, `elder`, `claimant`, or `retired` as appropriate.
+If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`, use `currentFactionId = <factionId>` and `politicalStatus = "head"` for the current head, and move the replaced radiant head to `politicalStatus = "former_head"` in the same accepted state.
 
 Radiant actor registry patch when a radiant actor becomes head:
 
@@ -2956,6 +2956,8 @@ Queue and mode rules:
 - Cost fields in receipts identify the accepted request, but resource spends, Radiance XP, strength changes, gate invalidation, and package creation must also be reflected through canonical Shining/Soul state deltas.
 
 Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. Refused, withdrawn, or expired outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged.
+
+If the same accepted turn also closes a Shining political/trade/resident pending contract, the final state is the composition of all accepted closures. For example, accepted faction founding first materializes the hall/faction and supporter resident alignment, then `open_gates` builds its draft from that updated Shining state; both `factionFoundingReceipts[]` and `coreActionReceipts[]` must be present.
 
 Supported `actionType` values:
 
