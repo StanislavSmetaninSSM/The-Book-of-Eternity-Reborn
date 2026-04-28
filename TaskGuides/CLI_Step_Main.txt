@@ -424,7 +424,7 @@
             - `npcInteractionJournalUpdates` writes `game_state/npcs/npc_interaction_journal.json`; NPCs already have `NPCJournals` for current thoughts, and this new surface is for concise past interaction summaries
             - Resident-linked soul quests remain ordinary `UpdateSoulQuests`, but may carry `relatedAfterlifeResidentId`
             - If a resident grants a future-life companion reward, add a Soul Relic through `metaStateUpdates.soulRelicOperations.addRelic` with `relicType = companion_echo` and a complete `companionSeed`; do NOT reuse `soulImprint` for this path
-            - Direct `/gacha` remains neutral and does not consume Guardian charges
+            - Direct `/gacha` remains neutral, does not consume Guardian charges, and must keep final rarity exactly equal to `gachaBaseResult.baseRarity`
             - Files: Update game_state/meta/guardians.json, game_state/meta/guardian_abode_residents.json, game_state/quests/soul_quests.json
 - If `game_state/control/pending_abode_offering.json` exists, treat it as client-authored input only and resolve it through `guardianPowerEvents` with `reasonType = offering`
 - Whitelisted offering types may be `ink_feathers`, `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`

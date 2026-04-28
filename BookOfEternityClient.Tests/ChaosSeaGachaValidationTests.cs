@@ -117,7 +117,23 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "direct_chaos_gacha_result_below_base_rarity", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "direct_chaos_gacha_result_rarity_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_DirectChaosGachaAboveBaseRarity_Fails()
+    {
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
+        var currentSoul = CreateSoulRoot(inkFeathers: 5);
+        AddStoredSoulRelic(currentSoul, "relic_new", "Legendary");
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WriteNodeAsync("input/turn_request.json", CreateDirectGachaTurnRequest(baseRarity: "Rare"));
+        await WritePendingTurnSnapshotAsync(preTurnSoul);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "direct_chaos_gacha_result_rarity_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     private async Task WritePendingTurnSnapshotAsync(JsonObject preTurnSoulRoot, JsonObject? rollbackSoulRoot = null, string? playerAction = null)

@@ -7256,11 +7256,10 @@ public partial class ValidationService
                     preTurnResidentsRoot,
                     preTurnSoulRoot,
                     currentShiningRoot,
+                    currentResidentsRoot,
                     currentSoulRoot,
                     issues,
-                    mutate: cloneRoot => ShiningAbodeState.TryInvestInFaction(cloneRoot, CloneJsonObject(preTurnResidentsRoot), request.FactionId, out _),
-                    compareShining: expectedRoot => ShiningFactionAndGatesMatch(expectedRoot, currentShiningRoot, request.FactionId, compareGates: true),
-                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                    mutate: cloneRoot => ShiningAbodeState.TryInvestInFaction(cloneRoot, CloneJsonObject(preTurnResidentsRoot), request.FactionId, out _));
                 return;
 
             case ShiningCoreActionRequestState.ActionTypeCompleteProject:
@@ -7271,6 +7270,7 @@ public partial class ValidationService
                     preTurnResidentsRoot,
                     preTurnSoulRoot,
                     currentShiningRoot,
+                    currentResidentsRoot,
                     currentSoulRoot,
                     issues,
                     mutate: cloneRoot => ShiningAbodeState.TryCompleteProject(
@@ -7282,10 +7282,7 @@ public partial class ValidationService
                         GetNodeString(receipt["projectId"]),
                         GetNodeString(receipt["resolvedAtUtc"]),
                         out _,
-                        out _),
-                    compareShining: expectedRoot => JsonNode.DeepEquals(expectedRoot["radiance"], currentShiningRoot["radiance"]) &&
-                                                  ShiningFactionAndGatesMatch(expectedRoot, currentShiningRoot, request.FactionId, compareGates: true),
-                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                        out _));
                 return;
 
             case ShiningCoreActionRequestState.ActionTypeSupportProject:
@@ -7296,11 +7293,10 @@ public partial class ValidationService
                     preTurnResidentsRoot,
                     preTurnSoulRoot,
                     currentShiningRoot,
+                    currentResidentsRoot,
                     currentSoulRoot,
                     issues,
-                    mutate: cloneRoot => ShiningAbodeState.TrySupportProject(cloneRoot, request.FactionId, request.ProjectId, out _),
-                    compareShining: expectedRoot => ProjectAndGatesMatch(expectedRoot, currentShiningRoot, request.FactionId, request.ProjectId, compareGates: true),
-                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                    mutate: cloneRoot => ShiningAbodeState.TrySupportProject(cloneRoot, request.FactionId, request.ProjectId, out _));
                 return;
 
             case ShiningCoreActionRequestState.ActionTypeUnsupportProject:
@@ -7311,11 +7307,10 @@ public partial class ValidationService
                     preTurnResidentsRoot,
                     preTurnSoulRoot,
                     currentShiningRoot,
+                    currentResidentsRoot,
                     currentSoulRoot,
                     issues,
-                    mutate: cloneRoot => ShiningAbodeState.TryUnsupportProject(cloneRoot, request.FactionId, request.ProjectId, out _),
-                    compareShining: expectedRoot => ProjectAndGatesMatch(expectedRoot, currentShiningRoot, request.FactionId, request.ProjectId, compareGates: true),
-                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                    mutate: cloneRoot => ShiningAbodeState.TryUnsupportProject(cloneRoot, request.FactionId, request.ProjectId, out _));
                 return;
 
             case ShiningCoreActionRequestState.ActionTypeRetireProject:
@@ -7326,11 +7321,10 @@ public partial class ValidationService
                     preTurnResidentsRoot,
                     preTurnSoulRoot,
                     currentShiningRoot,
+                    currentResidentsRoot,
                     currentSoulRoot,
                     issues,
-                    mutate: cloneRoot => ShiningAbodeState.TryRetireProject(cloneRoot, CloneJsonObject(preTurnResidentsRoot), request.FactionId, request.ProjectId, out _),
-                    compareShining: expectedRoot => ProjectAndGatesMatch(expectedRoot, currentShiningRoot, request.FactionId, request.ProjectId, compareGates: true),
-                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                    mutate: cloneRoot => ShiningAbodeState.TryRetireProject(cloneRoot, CloneJsonObject(preTurnResidentsRoot), request.FactionId, request.ProjectId, out _));
                 return;
 
             case ShiningCoreActionRequestState.ActionTypeOpenGates:
@@ -7341,11 +7335,10 @@ public partial class ValidationService
                     preTurnResidentsRoot,
                     preTurnSoulRoot,
                     currentShiningRoot,
+                    currentResidentsRoot,
                     currentSoulRoot,
                     issues,
-                    mutate: cloneRoot => ShiningAbodeState.TryOpenGates(cloneRoot, CloneJsonObject(preTurnResidentsRoot), out _),
-                    compareShining: expectedRoot => JsonNode.DeepEquals(expectedRoot["gates"], currentShiningRoot["gates"]),
-                    compareSoul: expectedSoul => CurrentSoulFeathers(expectedSoul) == CurrentSoulFeathers(currentSoulRoot));
+                    mutate: cloneRoot => ShiningAbodeState.TryOpenGates(cloneRoot, CloneJsonObject(preTurnResidentsRoot), out _));
                 return;
 
             case ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage:
@@ -7353,8 +7346,10 @@ public partial class ValidationService
                     request,
                     receipt,
                     preTurnShiningRoot,
+                    preTurnResidentsRoot,
                     preTurnSoulRoot,
                     currentShiningRoot,
+                    currentResidentsRoot,
                     currentSoulRoot,
                     issues);
                 return;
@@ -7367,6 +7362,7 @@ public partial class ValidationService
                     preTurnResidentsRoot,
                     preTurnSoulRoot,
                     currentShiningRoot,
+                    currentResidentsRoot,
                     currentSoulRoot,
                     issues);
                 return;
@@ -7383,6 +7379,7 @@ public partial class ValidationService
                     preTurnResidentsRoot,
                     preTurnSoulRoot,
                     currentShiningRoot,
+                    currentResidentsRoot,
                     currentSoulRoot,
                     issues);
                 return;
@@ -7396,11 +7393,10 @@ public partial class ValidationService
         JsonObject preTurnResidentsRoot,
         JsonObject preTurnSoulRoot,
         JsonObject currentShiningRoot,
+        JsonObject currentResidentsRoot,
         JsonObject currentSoulRoot,
         List<ValidationIssue> issues,
-        Func<JsonObject, bool> mutate,
-        Func<JsonObject, bool> compareShining,
-        Func<JsonObject, bool> compareSoul)
+        Func<JsonObject, bool> mutate)
     {
         var expectedShiningRoot = CloneJsonObject(preTurnShiningRoot);
         var expectedSoulRoot = CloneJsonObject(preTurnSoulRoot);
@@ -7421,7 +7417,7 @@ public partial class ValidationService
 
         ApplyFeatherCostToSoul(expectedSoulRoot, request.QuotedCostFeathers);
 
-        if (!compareShining(expectedShiningRoot))
+        if (!ShiningRootsMatchExceptCoreActionReceipts(expectedShiningRoot, currentShiningRoot))
         {
             issues.Add(new ValidationIssue(
                 ShiningCoreActionRequestState.PendingActionsRequestPath,
@@ -7432,6 +7428,17 @@ public partial class ValidationService
                 expected: $"{request.ActionType} accepted projected state",
                 actual: $"{GetNodeString(receipt["actionType"])} receipt resolvedAtTurn={GetNodeInt(receipt["resolvedAtTurn"])}",
                 repairHint: "Для accepted core action materialize-ь shining_abode_state.json exactly as canonical helper projection dictates."));
+        }
+
+        if (!JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentState.StatePath,
+                IssueSeverity.Error,
+                "Accepted Shining core action не должен менять resident state, если этот action не является discover_native_faction.",
+                code: "shining_core_action_unexpected_resident_state_change",
+                section: "ShiningAbode",
+                repairHint: "Не меняй guardian_abode_residents.json во время обычного Shining core action outcome; resident deltas должны закрываться отдельным resident contract."));
         }
 
         if (GetNodeInt(expectedShiningRoot["lightSparks"]) != GetNodeInt(currentShiningRoot["lightSparks"]))
@@ -7447,7 +7454,7 @@ public partial class ValidationService
                 repairHint: "При accepted Shining core action списывай lightSparks exactly по canonical projected Shining-side cost."));
         }
 
-        if (!compareSoul(expectedSoulRoot))
+        if (CurrentSoulFeathers(expectedSoulRoot) != CurrentSoulFeathers(currentSoulRoot))
         {
             issues.Add(new ValidationIssue(
                 "game_state/meta/soul_state.json",
@@ -7459,6 +7466,17 @@ public partial class ValidationService
                 actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
                 repairHint: "При accepted Shining core action списывай Ink Feathers exactly по quotedCostFeathers из client-authored request."));
         }
+
+        if (!JsonNode.DeepEquals(expectedSoulRoot, currentSoulRoot))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Accepted Shining core action изменил Soul state вне разрешённого Ink Feather cost delta.",
+                code: "shining_core_action_unexpected_soul_state_change",
+                section: "ShiningAbode",
+                repairHint: "Для этого Shining core action оставь soul_state.json equal to pre-turn snapshot except exact quotedCostFeathers debit."));
+        }
     }
 
     private void ValidateAcceptedProjectedShiningForgeAction(
@@ -7468,6 +7486,7 @@ public partial class ValidationService
         JsonObject preTurnResidentsRoot,
         JsonObject preTurnSoulRoot,
         JsonObject currentShiningRoot,
+        JsonObject currentResidentsRoot,
         JsonObject currentSoulRoot,
         List<ValidationIssue> issues)
     {
@@ -7501,11 +7520,7 @@ public partial class ValidationService
             return;
         }
 
-        var shiningMatches =
-            JsonNode.DeepEquals(expectedShiningRoot["factions"], currentShiningRoot["factions"]) &&
-            JsonNode.DeepEquals(expectedShiningRoot["gates"], currentShiningRoot["gates"]) &&
-            JsonNode.DeepEquals(expectedShiningRoot["radiance"], currentShiningRoot["radiance"]) &&
-            GetNodeInt(expectedShiningRoot["lightSparks"]) == GetNodeInt(currentShiningRoot["lightSparks"]);
+        var shiningMatches = ShiningRootsMatchExceptCoreActionReceipts(expectedShiningRoot, currentShiningRoot);
         if (!shiningMatches)
         {
             issues.Add(new ValidationIssue(
@@ -7515,6 +7530,17 @@ public partial class ValidationService
                 code: "shining_forge_action_projected_state_mismatch",
                 section: "ShiningAbode",
                 repairHint: "При accepted forge action меняй только canonical Shining resources/state, предсказанные forge helper’ом."));
+        }
+
+        if (!JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentState.StatePath,
+                IssueSeverity.Error,
+                "Accepted forge action не должен менять resident state.",
+                code: "shining_forge_action_unexpected_resident_state_change",
+                section: "ShiningAbode",
+                repairHint: "Forge actions изменяют только Shining resources/receipts and target Soul Relic; resident state должен закрываться отдельным contract."));
         }
 
         var soulRelicsMatch = JsonNode.DeepEquals(expectedSoulRoot["soulRelics"], currentSoulRoot["soulRelics"]);
@@ -7528,6 +7554,17 @@ public partial class ValidationService
                 code: "shining_forge_action_soul_state_mismatch",
                 section: "ShiningAbode",
                 repairHint: "При accepted forge action обновляй Soul Relic и Ink Feather cost exactly as canonical forge projection dictates."));
+        }
+
+        if (!JsonNode.DeepEquals(expectedSoulRoot, currentSoulRoot))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Accepted forge action изменил Soul state вне canonical forge projection.",
+                code: "shining_forge_action_unexpected_soul_state_change",
+                section: "ShiningAbode",
+                repairHint: "Forge action должен materialize-ить exactly projected Soul Relic mutation, resource cost and blessing entitlement lifecycle without unrelated soul_state edits."));
         }
 
         var expectedEntitlements = expectedSoulRoot[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"];
@@ -7567,8 +7604,10 @@ public partial class ValidationService
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
         JsonObject receipt,
         JsonObject preTurnShiningRoot,
+        JsonObject preTurnResidentsRoot,
         JsonObject preTurnSoulRoot,
         JsonObject currentShiningRoot,
+        JsonObject currentResidentsRoot,
         JsonObject currentSoulRoot,
         List<ValidationIssue> issues)
     {
@@ -7617,8 +7656,7 @@ public partial class ValidationService
             return;
         }
 
-        if (!JsonNode.DeepEquals(expectedShiningRoot["preparedIncarnationPackage"], currentShiningRoot["preparedIncarnationPackage"]) ||
-            !JsonNode.DeepEquals(expectedShiningRoot["gates"], currentShiningRoot["gates"]))
+        if (!ShiningRootsMatchExceptCoreActionReceipts(expectedShiningRoot, currentShiningRoot))
         {
             issues.Add(new ValidationIssue(
                 ShiningCoreActionRequestState.PendingActionsRequestPath,
@@ -7627,6 +7665,17 @@ public partial class ValidationService
                 code: "shining_prepare_package_state_mismatch",
                 section: "ShiningAbode",
                 repairHint: "При accepted prepare_incarnation_package записывай preparedIncarnationPackage и очищай gates exactly как canonical helper projection dictates."));
+        }
+
+        if (!JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentState.StatePath,
+                IssueSeverity.Error,
+                "prepare_incarnation_package не должен менять resident state.",
+                code: "shining_prepare_package_unexpected_resident_state_change",
+                section: "ShiningAbode",
+                repairHint: "При prepare_incarnation_package меняй только Shining gates/prepared package/receipt surfaces."));
         }
 
         var expectedSelectedCards = expectedShiningRoot["preparedIncarnationPackage"]?["selectedCards"];
@@ -7656,6 +7705,17 @@ public partial class ValidationService
                 actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
                 repairHint: "Не списывай Ink Feathers на accepted prepare_incarnation_package, если client request не содержит feather cost."));
         }
+
+        if (!JsonNode.DeepEquals(preTurnSoulRoot, currentSoulRoot))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "prepare_incarnation_package не должен менять Soul state.",
+                code: "shining_prepare_package_unexpected_soul_state_change",
+                section: "ShiningAbode",
+                repairHint: "Оставь soul_state.json unchanged; prepared package lives in shining_abode_state.json until runtime consumes it."));
+        }
     }
 
     private void ValidateAcceptedShiningRelicGachaOutcome(
@@ -7665,6 +7725,7 @@ public partial class ValidationService
         JsonObject preTurnResidentsRoot,
         JsonObject preTurnSoulRoot,
         JsonObject currentShiningRoot,
+        JsonObject currentResidentsRoot,
         JsonObject currentSoulRoot,
         List<ValidationIssue> issues)
     {
@@ -7792,15 +7853,26 @@ public partial class ValidationService
             return;
         }
 
-        if (!JsonNode.DeepEquals(expectedShiningRoot["gachaSystem"], currentShiningRoot["gachaSystem"]))
+        if (!ShiningRootsMatchExceptCoreActionReceipts(expectedShiningRoot, currentShiningRoot))
         {
             issues.Add(new ValidationIssue(
                 ShiningAbodeState.StatePath,
                 IssueSeverity.Error,
-                "Accepted Shining gacha не materialize-ила canonical gachaSystem accounting/historical outcome.",
+                "Accepted Shining gacha не materialize-ила exact canonical Shining state outcome.",
                 code: "shining_gacha_system_mismatch",
                 section: "ShiningAbode",
-                repairHint: "Обновляй gachaSystem chargesUsedThisReturn, currentReturnCycleId и gachaHistory exactly по accepted pull receipt."));
+                repairHint: "Обновляй только gachaSystem chargesUsedThisReturn/currentReturnCycleId/gachaHistory and coreActionReceipts exactly по accepted pull receipt; не меняй unrelated Shining state."));
+        }
+
+        if (!JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentState.StatePath,
+                IssueSeverity.Error,
+                "Accepted Shining gacha не должна менять resident state.",
+                code: "shining_gacha_unexpected_resident_state_change",
+                section: "ShiningAbode",
+                repairHint: "Shining relic gacha закрывает только gachaSystem, receipt, Ink Feather cost и одну новую Soul Relic; resident changes require separate contract."));
         }
 
         if (CurrentSoulFeathers(expectedSoulRoot) != CurrentSoulFeathers(currentSoulRoot))
@@ -7814,6 +7886,22 @@ public partial class ValidationService
                 expected: CurrentSoulFeathers(expectedSoulRoot).ToString(),
                 actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
                 repairHint: "Списывай Ink Feathers exactly по quotedCostFeathers из pull_relic_gacha request."));
+        }
+
+        if (newRelicIds.SetEquals(new[] { relicId }) &&
+            TryFindSoulRelicNode(currentSoulRoot, relicId, out var materializedRelic) &&
+            TryAppendRelicCloneToMatchingExpectedCollection(expectedSoulRoot, currentSoulRoot, relicId, materializedRelic))
+        {
+            if (!JsonNode.DeepEquals(expectedSoulRoot, currentSoulRoot))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "Accepted Shining gacha изменил Soul state вне разрешённого diff: exact Ink Feather cost plus exactly one new Soul Relic.",
+                    code: "shining_gacha_soul_state_diff_mismatch",
+                    section: "ShiningAbode",
+                    repairHint: "Сохраняй все pre-turn Soul Relic nodes and unrelated soul_state fields byte-for-byte/canonically unchanged; добавляй только receipt.relicId and exact quotedCostFeathers debit."));
+            }
         }
     }
 
@@ -8041,63 +8129,10 @@ public partial class ValidationService
         JsonObject currentSoulRoot,
         List<ValidationIssue> issues)
     {
-        var stateChanged = false;
-        switch ((request.ActionType ?? string.Empty).Trim().ToLowerInvariant())
-        {
-            case ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction:
-                stateChanged =
-                    GetNodeInt(preTurnShiningRoot["lightSparks"]) != GetNodeInt(currentShiningRoot["lightSparks"]) ||
-                    GetNodeInt(preTurnShiningRoot["radiance"]?["experience"]) != GetNodeInt(currentShiningRoot["radiance"]?["experience"]) ||
-                    CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot) ||
-                    ((preTurnShiningRoot["halls"] as JsonArray)?.Count ?? 0) != ((currentShiningRoot["halls"] as JsonArray)?.Count ?? 0) ||
-                    ((preTurnShiningRoot["factions"] as JsonArray)?.Count ?? 0) != ((currentShiningRoot["factions"] as JsonArray)?.Count ?? 0) ||
-                    ((preTurnResidentsRoot["entries"] as JsonArray)?.Count ?? 0) != ((currentResidentsRoot["entries"] as JsonArray)?.Count ?? 0);
-                break;
-
-            case ShiningCoreActionRequestState.ActionTypeInvestInFaction:
-            case ShiningCoreActionRequestState.ActionTypeCompleteProject:
-            case ShiningCoreActionRequestState.ActionTypeSupportProject:
-            case ShiningCoreActionRequestState.ActionTypeUnsupportProject:
-            case ShiningCoreActionRequestState.ActionTypeRetireProject:
-                stateChanged =
-                    !ShiningFactionAndGatesMatch(preTurnShiningRoot, currentShiningRoot, request.FactionId, compareGates: true) ||
-                    GetNodeInt(preTurnShiningRoot["lightSparks"]) != GetNodeInt(currentShiningRoot["lightSparks"]) ||
-                    CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot) ||
-                    GetNodeInt(preTurnShiningRoot["radiance"]?["experience"]) != GetNodeInt(currentShiningRoot["radiance"]?["experience"]);
-                break;
-
-            case ShiningCoreActionRequestState.ActionTypeOpenGates:
-                stateChanged = !JsonNode.DeepEquals(preTurnShiningRoot["gates"], currentShiningRoot["gates"]) ||
-                               CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot);
-                break;
-
-            case ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage:
-                stateChanged = !JsonNode.DeepEquals(preTurnShiningRoot["preparedIncarnationPackage"], currentShiningRoot["preparedIncarnationPackage"]) ||
-                               !JsonNode.DeepEquals(preTurnShiningRoot["gates"], currentShiningRoot["gates"]) ||
-                               CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot);
-                break;
-
-            case ShiningCoreActionRequestState.ActionTypePullRelicGacha:
-                stateChanged =
-                    !JsonNode.DeepEquals(preTurnShiningRoot["gachaSystem"], currentShiningRoot["gachaSystem"]) ||
-                    CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot) ||
-                    !JsonNode.DeepEquals(preTurnSoulRoot["soulRelics"], currentSoulRoot["soulRelics"]);
-                break;
-
-            case ShiningCoreActionRequestState.ActionTypeForgeRelicReshape:
-            case ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty:
-            case ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand:
-            case ShiningCoreActionRequestState.ActionTypeForgeRelicStabilizeEcho:
-            case ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity:
-                stateChanged =
-                    GetNodeInt(preTurnShiningRoot["lightSparks"]) != GetNodeInt(currentShiningRoot["lightSparks"]) ||
-                    CurrentSoulFeathers(preTurnSoulRoot) != CurrentSoulFeathers(currentSoulRoot) ||
-                    !JsonNode.DeepEquals(preTurnSoulRoot["soulRelics"], currentSoulRoot["soulRelics"]) ||
-                    !JsonNode.DeepEquals(
-                        preTurnSoulRoot[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"],
-                        currentSoulRoot[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"]);
-                break;
-        }
+        var stateChanged =
+            !ShiningRootsMatchExceptCoreActionReceipts(preTurnShiningRoot, currentShiningRoot) ||
+            !JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot) ||
+            !JsonNode.DeepEquals(preTurnSoulRoot, currentSoulRoot);
 
         if (stateChanged)
         {
@@ -8127,7 +8162,7 @@ public partial class ValidationService
                string.Equals(GetNodeString(receipt["actionType"]), request.ActionType, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["factionId"]) ?? string.Empty, request.FactionId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                ShiningCoreActionProjectIdentityMatches(request, GetNodeString(receipt["projectId"])) &&
-               string.Equals(GetNodeString(receipt["relicId"]) ?? string.Empty, request.RelicId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               ShiningCoreActionRelicIdentityMatches(request, GetNodeString(receipt["relicId"])) &&
                string.Equals(GetNodeString(receipt["returnCycleId"]) ?? string.Empty, request.ReturnCycleId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["targetFormTag"]) ?? string.Empty, request.TargetFormTag ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                (receipt["propertyIndex"] is JsonValue propertyIndexNode &&
@@ -8156,31 +8191,27 @@ public partial class ValidationService
         return string.Equals(receiptProjectId ?? string.Empty, request.ProjectId ?? string.Empty, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool ShiningFactionAndGatesMatch(JsonObject expectedRoot, JsonObject currentRoot, string factionId, bool compareGates)
+    private static bool ShiningCoreActionRelicIdentityMatches(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        string? receiptRelicId)
     {
-        var expectedFaction = ShiningAbodeState.FindFaction(expectedRoot, factionId);
-        var currentFaction = ShiningAbodeState.FindFaction(currentRoot, factionId);
-        if (!JsonNode.DeepEquals(expectedFaction, currentFaction))
-            return false;
+        if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
+        {
+            return string.IsNullOrWhiteSpace(request.RelicId)
+                ? !string.IsNullOrWhiteSpace(receiptRelicId)
+                : string.Equals(receiptRelicId, request.RelicId, StringComparison.OrdinalIgnoreCase);
+        }
 
-        return !compareGates || JsonNode.DeepEquals(expectedRoot["gates"], currentRoot["gates"]);
+        return string.Equals(receiptRelicId ?? string.Empty, request.RelicId ?? string.Empty, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool ProjectAndGatesMatch(JsonObject expectedRoot, JsonObject currentRoot, string factionId, string projectId, bool compareGates)
+    private static bool ShiningRootsMatchExceptCoreActionReceipts(JsonObject expectedRoot, JsonObject currentRoot)
     {
-        var expectedFaction = ShiningAbodeState.FindFaction(expectedRoot, factionId);
-        var currentFaction = ShiningAbodeState.FindFaction(currentRoot, factionId);
-        if (expectedFaction?["projects"] is not JsonArray expectedProjects || currentFaction?["projects"] is not JsonArray currentProjects)
-            return false;
-
-        var expectedProject = expectedProjects.OfType<JsonObject>().FirstOrDefault(project =>
-            string.Equals(GetNodeString(project["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
-        var currentProject = currentProjects.OfType<JsonObject>().FirstOrDefault(project =>
-            string.Equals(GetNodeString(project["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
-        if (!JsonNode.DeepEquals(expectedProject, currentProject))
-            return false;
-
-        return !compareGates || JsonNode.DeepEquals(expectedRoot["gates"], currentRoot["gates"]);
+        var expectedComparable = CloneJsonObject(expectedRoot);
+        var currentComparable = CloneJsonObject(currentRoot);
+        expectedComparable.Remove("coreActionReceipts");
+        currentComparable.Remove("coreActionReceipts");
+        return JsonNode.DeepEquals(expectedComparable, currentComparable);
     }
 
     private static JsonObject CloneJsonObject(JsonObject source) => JsonNode.Parse(source.ToJsonString())!.AsObject();
@@ -8259,6 +8290,52 @@ public partial class ValidationService
                 relic = candidate;
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    private static bool TryAppendRelicCloneToMatchingExpectedCollection(
+        JsonObject expectedSoulRoot,
+        JsonObject currentSoulRoot,
+        string relicId,
+        JsonObject materializedRelic)
+    {
+        if (expectedSoulRoot["soulRelics"] is JsonObject expectedRelics &&
+            currentSoulRoot["soulRelics"] is JsonObject currentRelics)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (currentRelics[collectionName] is not JsonArray currentCollection ||
+                    !currentCollection.OfType<JsonObject>().Any(candidate =>
+                    {
+                        var candidateId = GetNodeString(candidate["relicId"]) ?? GetNodeString(candidate["id"]);
+                        return string.Equals(candidateId, relicId, StringComparison.OrdinalIgnoreCase);
+                    }))
+                {
+                    continue;
+                }
+
+                if (expectedRelics[collectionName] is not JsonArray expectedCollection)
+                {
+                    expectedCollection = new JsonArray();
+                    expectedRelics[collectionName] = expectedCollection;
+                }
+
+                expectedCollection.Add(materializedRelic.DeepClone());
+                return true;
+            }
+        }
+        else if (expectedSoulRoot["soulRelics"] is JsonArray expectedFlatCollection &&
+                 currentSoulRoot["soulRelics"] is JsonArray currentFlatCollection &&
+                 currentFlatCollection.OfType<JsonObject>().Any(candidate =>
+                 {
+                     var candidateId = GetNodeString(candidate["relicId"]) ?? GetNodeString(candidate["id"]);
+                     return string.Equals(candidateId, relicId, StringComparison.OrdinalIgnoreCase);
+                 }))
+        {
+            expectedFlatCollection.Add(materializedRelic.DeepClone());
+            return true;
         }
 
         return false;
