@@ -95,11 +95,11 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 Для обычного realm routing этого достаточно, но есть один lifecycle override:
 
-- если `currentRealm = "Shining Abode"` и одновременно `game_state/meta/shining_abode_state.json.preparedIncarnationPackage != null`, runtime должен трактовать это не как обычную активную Сияющую Обитель, а как `Shining Abode pending-bootstrap handoff mode`
+- если `currentRealm = "Shining Abode"` и одновременно `game_state/meta/shining_abode_state.json.preparedIncarnationPackage` является валидным bootstrap package object, runtime должен трактовать это не как обычную активную Сияющую Обитель, а как `Shining Abode pending-bootstrap handoff mode`
 
 | Значение | Режим | Активные системы | ЗАПРЕЩЁННЫЕ системы |
 |----------|-------|-------------------|---------------------|
-| `"Shining Abode"` + `preparedIncarnationPackage != null` | pending-bootstrap handoff | только mortal bootstrap lifecycle; GM сохраняет frozen package без изменений для последующего runtime consumption | обычные Guardian / Abode interactions, ordinary afterlife interactions, Mortal World turn systems |
+| `"Shining Abode"` + valid `preparedIncarnationPackage` | pending-bootstrap handoff | только mortal bootstrap lifecycle; GM сохраняет frozen package без изменений для последующего runtime consumption | обычные Guardian / Abode interactions, ordinary afterlife interactions, Mortal World turn systems |
 | `null` / пусто / отсутствует | unresolved realm fault | не запускай игровые системы; сохрани state и требуй repair authoritative `soul_state.currentRealm` | не infer `Chaos Sea`, не запускай afterlife scheduler, не запускай Mortal World systems |
 | `"Chaos Sea"` / `"Море Хаоса"` | Посмертие | Хранители, Обители, Реликвии Души, Чернильные Перья, Гача, afterlife living-world scheduler | Бой, опыт, уровни, навыки, НПС, квесты, деньги, инвентарь, погода |
 | `"Shining Abode"` | Посмертие | Свободный ролеплей с Хранителями, Реликвии Души, afterlife meta systems, Shining living-world scheduler | Mortal-world combat/NPC/faction/location mechanics |
@@ -109,7 +109,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 **JSON gate после Realm Check:**
 - В `Shining Abode pending-bootstrap handoff mode` разрешены только lifecycle/bootstrap mutations для запуска следующей смертной жизни. GM НЕ ДОЛЖЕН remove, clear, rename или mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage`; frozen package сохраняется exactly as provided, а client runtime читает и очищает его только после successful Mortal World bootstrap.
-- Если `preparedIncarnationPackage` присутствует, но не является валидным object/snapshot, это fail-closed package fault: не считай ход ordinary active Shining Abode, не закрывай ordinary Shining core actions и не очищай пакет вручную.
+- Если `preparedIncarnationPackage` присутствует, но не является валидным object/snapshot, это fail-closed package fault: не считай ход ordinary active Shining Abode, не закрывай ordinary Shining core/trade/political actions, не удаляй pending Shining files и не очищай пакет вручную.
 - В `Chaos Sea` и `Shining Abode` запрещены: `experienceGained`, `statsIncreased`, `statsDecreased`, `currentPoiseChange`, `currentEnergyChange`, `currentHealthChange`, `moneyChange`, `activeSkillChanges`, `passiveSkillChanges`, `skillMasteryChanges`, `UpdateInventory`, `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, `worldEventsLog`, `factionDataChanges`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`, `enemiesData`, `alliesData`, `combat_log_markdown`.
 - Этот запрет относится к смертным world/faction/location/NPC channels. Он не отменяет afterlife living-world scheduler: если `progressionControl.mustEvaluate* = true`, ГМ обязан обработать afterlife-контуры через Guardian/Abode/Soul/Shining-specific surfaces и `progressionProcessingReport`.
 - В `Mortal World` запрещены: `UpdateGuardians`, Guardian-specific reputation/project/musings/lore commands, Abode navigation data, Soul Relic Gacha processing, afterlife-only spending of Ink Feathers.
@@ -302,7 +302,7 @@ Hidden afterlife routing tags are machine contracts, not prose hints: `[GUARDIAN
 - Guardian/resident cycles в Сияющей Обители продолжают работать: Хранители и резиденты не замораживаются после Вознесения.
 
 **2. Bootstrap handoff exception:**
-- Если `currentRealm = "Shining Abode"` и `preparedIncarnationPackage != null`, это pending-bootstrap handoff mode. В этом режиме не запускай обычную Shining progression; обрабатывай только lifecycle/bootstrap mutations для следующей смертной жизни.
+- Если `currentRealm = "Shining Abode"` и `preparedIncarnationPackage` является валидным bootstrap package object, это pending-bootstrap handoff mode. В этом режиме не запускай обычную Shining progression; обрабатывай только lifecycle/bootstrap mutations для следующей смертной жизни. Если package present but invalid, это package fault: сохраняй package/pending files и жди repair.
 - В обычной активной `Shining Abode` scheduler-долг обязателен так же, как в `Chaos Sea`.
 
 **3. Report contract:**

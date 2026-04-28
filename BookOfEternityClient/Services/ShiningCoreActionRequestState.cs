@@ -328,6 +328,8 @@ internal static class ShiningCoreActionRequestState
             ClearRequests(fs);
             return;
         }
+        if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+            return;
 
         var requestState = await ReadRequestsStateAsync(fs);
         if (requestState.IsMalformed)
@@ -352,20 +354,11 @@ internal static class ShiningCoreActionRequestState
         if (!RealmSemantics.IsAfterlifeRealm(currentRealm))
             return null;
 
+        var packageMode = ShiningAbodeState.PreparedIncarnationPackageMode.Absent;
         if (IsShiningRealm(currentRealm))
         {
             var handoffRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
-            if (handoffRoot?["preparedIncarnationPackage"] is JsonObject)
-                return null;
-
-            if (handoffRoot != null &&
-                handoffRoot.ContainsKey("preparedIncarnationPackage") &&
-                handoffRoot["preparedIncarnationPackage"] != null)
-            {
-                return "SHINING ABODE CORE ACTIONS BLOCKED:\n" +
-                       "  - preparedIncarnationPackage is malformed/non-object, so the realm mode is fail-closed.\n" +
-                       "  - Do not process ordinary Shining core actions until the package is repaired or cleared by valid runtime flow.";
-            }
+            packageMode = ShiningAbodeState.GetPreparedIncarnationPackageMode(handoffRoot);
         }
 
         var requestState = await ReadRequestsStateAsync(fs);
@@ -379,6 +372,29 @@ internal static class ShiningCoreActionRequestState
         }
 
         var requests = requestState.Requests;
+        if (IsShiningRealm(currentRealm) &&
+            packageMode != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+        {
+            if (requests.Count == 0)
+            {
+                return packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.InvalidFault
+                    ? "SHINING ABODE CORE ACTIONS BLOCKED:\n" +
+                      "  - preparedIncarnationPackage is malformed or fails bootstrap validation, so the realm mode is fail-closed.\n" +
+                      "  - Do not process ordinary Shining core actions until the package is repaired or cleared by valid runtime flow."
+                    : null;
+            }
+
+            var blocked = new StringBuilder();
+            blocked.AppendLine("SHINING ABODE CORE ACTIONS BLOCKED:");
+            blocked.AppendLine(packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.ValidHandoff
+                ? "  - Valid preparedIncarnationPackage puts the realm in pending-bootstrap handoff mode."
+                : "  - preparedIncarnationPackage is malformed or fails bootstrap validation, so the realm mode is fail-closed.");
+            blocked.AppendLine("  - Preserve pending_shining_abode_actions.json; do not delete, truncate, or process ordinary Shining core actions during this mode.");
+            blocked.AppendLine($"  - Pending requests detected: {requests.Count}");
+            AppendSerializedJsonBlock(blocked, "Blocked pending core-action DTOs", requests);
+            return blocked.ToString();
+        }
+
         if (requests.Count > 1)
         {
             var sb = new StringBuilder();
@@ -738,8 +754,11 @@ internal static class ShiningCoreActionRequestState
 
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
             return "Shining core action допустим только при availability = active.";
-        if (shiningRoot["preparedIncarnationPackage"] is JsonObject)
+        var packageMode = ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot);
+        if (packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.ValidHandoff)
             return "Shining core action недопустим, пока preparedIncarnationPackage ожидает bootstrap.";
+        if (packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.InvalidFault)
+            return "Shining core action недопустим: preparedIncarnationPackage повреждён или не проходит bootstrap validation.";
 
         return null;
     }
@@ -843,15 +862,34 @@ internal static class ShiningCoreActionRequestState
             .Select(id => id.Trim())
             .ToList();
 
+        var status = GetNodeString(receipt["status"]);
         return string.Equals(GetNodeString(receipt["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["actionType"]), request.ActionType, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["factionId"]) ?? string.Empty, request.FactionId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                ProjectIdentityMatches(request, GetNodeString(receipt["projectId"])) &&
-               string.Equals(GetNodeString(receipt["relicId"]) ?? string.Empty, request.RelicId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               RelicIdentityMatches(request, receipt, status) &&
                string.Equals(GetNodeString(receipt["returnCycleId"]) ?? string.Empty, request.ReturnCycleId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["targetFormTag"]) ?? string.Empty, request.TargetFormTag ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                receiptPropertyIndex == request.PropertyIndex &&
                selectedReceiptCards.SequenceEqual(selectedRequestCards, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static bool RelicIdentityMatches(
+        PendingShiningCoreActionRequest request,
+        JsonObject receipt,
+        string? status)
+    {
+        var requestRelicId = request.RelicId ?? string.Empty;
+        var receiptRelicId = GetNodeString(receipt["relicId"]) ?? string.Empty;
+        if (string.Equals(request.ActionType, ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(status, RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+        {
+            return !string.IsNullOrWhiteSpace(receiptRelicId) &&
+                   (string.IsNullOrWhiteSpace(requestRelicId) ||
+                    string.Equals(receiptRelicId, requestRelicId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        return string.Equals(receiptRelicId, requestRelicId, StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool SelectedCardSnapshotMatchesIds(JsonArray? selectedCards, IReadOnlyList<string> selectedCardIds)

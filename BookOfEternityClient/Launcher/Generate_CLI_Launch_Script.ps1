@@ -69,7 +69,7 @@ Do NOT look for or use legacy `custom_rules`.
 
 ### PHASE 0: REALM CHECK (NEVER SKIP)
 Read `worldState.currentRealm` from game state.
-- If `currentRealm = "Shining Abode"` and `game_state/meta/shining_abode_state.json.preparedIncarnationPackage != null`, treat the turn as **Shining Abode pending-bootstrap handoff**:
+- If `currentRealm = "Shining Abode"` and `game_state/meta/shining_abode_state.json.preparedIncarnationPackage` is a valid bootstrap package object, treat the turn as **Shining Abode pending-bootstrap handoff**:
   - ONLY bootstrap/materialization of the next mortal life is allowed
   - DO NOT run ordinary Guardian, Abode, Chaos Sea, Ink Feather, relic, archive, or world-setup afterlife flows
 - **null / empty / missing** → unresolved realm fault. Do not infer Chaos Sea; do not run afterlife or mortal systems until authoritative `soul_state.currentRealm` is repaired.
@@ -83,6 +83,7 @@ Read `worldState.currentRealm` from game state.
 - Mortal World: analyze elapsed time, NPC thoughts, world/faction progression
 - Chaos Sea / active Shining Abode: review Guardian/afterlife state and update only the Guardian mood, projects, musings, lore unlocks or other meta surfaces that this turn actually changes
 - Shining Abode pending-bootstrap handoff: do not advance ordinary afterlife systems; only materialize/bootstrap the prepared next life
+- Shining Abode package fault: if `preparedIncarnationPackage` is present but invalid, preserve it and all pending Shining files for repair; do not process ordinary Shining gameplay
 
 ### PHASE 2: PROCESS PLAYER ACTION
 - Read input/turn_request.json

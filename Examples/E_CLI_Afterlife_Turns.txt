@@ -98,7 +98,7 @@ COMBINED TURN DECISION TREE
 
 Use this decision tree when one turn contains several obligations at once: scheduler debt, catch-up, pending files, and a player action.
 
-1. If `currentRealm = "Shining Abode"` and `preparedIncarnationPackage != null`, stop ordinary afterlife processing and use pending-bootstrap handoff rules only.
+1. If `currentRealm = "Shining Abode"` and `preparedIncarnationPackage` is a valid bootstrap package object, stop ordinary afterlife processing and use pending-bootstrap handoff rules only. If the package is present but malformed or fails bootstrap validation, treat it as a package fault: preserve it and all pending Shining files for repair, and do not process ordinary Shining gameplay.
 2. Otherwise, read `progressionControl` before selecting the scene. Record every due contour and every `afterlifeCatchupContours[]` value in `gm_thoughts_markdown`.
 3. Read all pending afterlife control files before narration. A pending contract is not optional flavor; it must close through its exact canonical receipt/state surface.
 4. Declare all changed Guardians, residents, Shining factions, gates, halls, and institutions in actor scope. Do not declare a non-actor environment as a relevant actor unless it has a matching reasoning block.
