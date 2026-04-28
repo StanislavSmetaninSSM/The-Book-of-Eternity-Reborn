@@ -1418,11 +1418,64 @@ public partial class ExplorerMode
 
             if (action.Contains("Экипировать"))
             {
+                var equipLines = new List<string>
+                {
+                    "[bold yellow]Экипировать Реликвию Души[/]",
+                    "",
+                    $"  Реликвия: [white]{Markup.Escape(name)}[/] [dim]({Markup.Escape(relicId)})[/]",
+                    $"  Слот: [dim]{Markup.Escape(slot)}[/]",
+                    "  From: soulRelics.stored[]",
+                    "  To: soulRelics.equipped[]",
+                    "",
+                    "[bold]Canonical local state changes:[/]",
+                    "  • game_state/meta/soul_state.json: удалить реликвию из stored[].",
+                    "  • game_state/meta/soul_state.json: добавить тот же JSON object в equipped[].",
+                    "  • gameplayStatus.equipped=true.",
+                    "  • gameplayStatus.currentSlot = выбранный слот.",
+                    "  • GM turn не отправляется: это client-local mutation."
+                };
+                AppendChaosSeaCommonContractRules(equipLines);
+                if (!ConfirmChaosSeaContractPreview(
+                        "Полный предпросмотр экипировки реликвии",
+                        equipLines,
+                        JsonNode.Parse(relic.GetRawText()),
+                        "Полный JSON реликвии перед экипировкой",
+                        confirmChoice: "✅ Экипировать"))
+                {
+                    return false;
+                }
+
                 await EquipSoulRelicLocal(relicId, name, slot);
                 return true;
             }
             if (action.Contains("Снять"))
             {
+                var unequipLines = new List<string>
+                {
+                    "[bold yellow]Снять Реликвию Души[/]",
+                    "",
+                    $"  Реликвия: [white]{Markup.Escape(name)}[/] [dim]({Markup.Escape(relicId)})[/]",
+                    "  From: soulRelics.equipped[]",
+                    "  To: soulRelics.stored[]",
+                    "",
+                    "[bold]Canonical local state changes:[/]",
+                    "  • game_state/meta/soul_state.json: удалить реликвию из equipped[].",
+                    "  • game_state/meta/soul_state.json: добавить тот же JSON object в stored[].",
+                    "  • gameplayStatus.equipped=false.",
+                    "  • gameplayStatus.currentSlot=\"\".",
+                    "  • GM turn не отправляется: это client-local mutation."
+                };
+                AppendChaosSeaCommonContractRules(unequipLines);
+                if (!ConfirmChaosSeaContractPreview(
+                        "Полный предпросмотр снятия реликвии",
+                        unequipLines,
+                        JsonNode.Parse(relic.GetRawText()),
+                        "Полный JSON реликвии перед снятием",
+                        confirmChoice: "✅ Снять"))
+                {
+                    return false;
+                }
+
                 await UnequipSoulRelicLocal(relicId, name);
                 return true;
             }

@@ -38,7 +38,13 @@ public sealed class AfterlifeArchiveConsultationService
         string ArchiveEntryType,
         string Summary,
         int TargetIncarnation,
-        string PendingGmAction);
+        string PendingGmAction,
+        string PendingRequestPath,
+        string PendingRequestJson,
+        string? PreviousPendingRequestJson,
+        string SoulStatePath,
+        string ReservedSoulStateJson,
+        string? PreviousSoulStateJson);
 
     public async Task<ConsultationRequestResult?> CreateRequestAsync(
         string guardianId,
@@ -46,7 +52,8 @@ public sealed class AfterlifeArchiveConsultationService
         string archiveId,
         int currentIncarnation,
         string? currentRealm,
-        int currentTurn)
+        int currentTurn,
+        bool commit = true)
     {
         if (!IsAfterlifeRealm(currentRealm) ||
             string.IsNullOrWhiteSpace(guardianId) ||
@@ -129,16 +136,17 @@ public sealed class AfterlifeArchiveConsultationService
                 affectedArchiveIds: new[] { archiveId },
                 affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts);
 
-        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
-                _fs,
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    AfterlifeArchiveActionState.ConsultationRequestPath,
-                    preConsultationRequestJson,
-                    postConsultationRequestJson),
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    "game_state/meta/soul_state.json",
-                    preSoulJson,
-                    postSoulJson)))
+        if (commit &&
+            !await CoordinatedStateWriteHelper.TryCommitAsync(
+                    _fs,
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        AfterlifeArchiveActionState.ConsultationRequestPath,
+                        preConsultationRequestJson,
+                        postConsultationRequestJson),
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        "game_state/meta/soul_state.json",
+                        preSoulJson,
+                        postSoulJson)))
         {
             return null;
         }
@@ -167,7 +175,27 @@ public sealed class AfterlifeArchiveConsultationService
             request.ArchiveEntryType,
             summary,
             request.TargetIncarnation,
-            gmAction);
+            gmAction,
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            postConsultationRequestJson,
+            preConsultationRequestJson,
+            "game_state/meta/soul_state.json",
+            postSoulJson,
+            preSoulJson);
+    }
+
+    public async Task<bool> CommitPreparedRequestAsync(ConsultationRequestResult result)
+    {
+        return await CoordinatedStateWriteHelper.TryCommitAsync(
+            _fs,
+            new CoordinatedStateWriteHelper.PlannedWrite(
+                result.PendingRequestPath,
+                result.PreviousPendingRequestJson,
+                result.PendingRequestJson),
+            new CoordinatedStateWriteHelper.PlannedWrite(
+                result.SoulStatePath,
+                result.PreviousSoulStateJson,
+                result.ReservedSoulStateJson));
     }
 
     private async Task<int> ReadGuardianReputationAsync(string guardianId)

@@ -258,6 +258,41 @@ public partial class ExplorerMode
         if (preset == null)
             return;
 
+        var actionText = _systemGuardianLibraryService.BuildAttractionActionText(preset);
+        var lines = new List<string>
+        {
+            "[bold magenta1]Притяжение извечного Хранителя[/]",
+            "",
+            $"  Preset: [white]{Markup.Escape(preset.DisplayName)}[/] [dim]({Markup.Escape(preset.PresetId)})[/]",
+            $"  Domain: [dim]{Markup.Escape(preset.Domain)}[/]",
+            $"  Archetype: [dim]{Markup.Escape(preset.Archetype)}[/]",
+            $"  Abode: [dim]{Markup.Escape(preset.AbodeName)}[/]",
+            $"  Tone: [dim]{Markup.Escape(preset.Tone)}[/]",
+            "",
+            "[bold]GM materialization contract:[/]",
+            "  • Создать/проявить Хранителя из system guardian preset, а не произвольного нового Хранителя.",
+            "  • Сохранить targetPresetId/targetPresetDisplayName связь в authored state.",
+            "  • playerAction содержит hidden marker CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:presetId; runtime очищает control file только при этом marker.",
+            "  • Обновить guardians.json и navigation как afterlife state, без Mortal World NPC/location side effects."
+        };
+        AppendChaosSeaPendingFileRule(lines, SystemGuardianLibraryService.AttractionRequestPath);
+        AppendChaosSeaCommonContractRules(lines);
+        if (!ConfirmChaosSeaContractPreview(
+                "Полный предпросмотр притяжения Хранителя",
+                lines,
+                BuildChaosSeaDirectActionAudit(
+                    "CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION",
+                    actionText,
+                    ("presetId", preset.PresetId),
+                    ("displayName", preset.DisplayName),
+                    ("domain", preset.Domain),
+                    ("abodeName", preset.AbodeName)),
+                "Полный JSON system guardian attraction contract",
+                confirmChoice: "✅ Создать притяжение"))
+        {
+            return;
+        }
+
         try
         {
             await _systemGuardianLibraryService.WriteAttractionRequestAsync(preset);
@@ -268,7 +303,7 @@ public partial class ExplorerMode
             return;
         }
 
-        _pendingGmAction = _systemGuardianLibraryService.BuildAttractionActionText(preset);
+        _pendingGmAction = actionText;
         MarkupLine($"[magenta1]🧲 Притяжение к «{Markup.Escape(preset.DisplayName)}» подготовлено. Запрос отправится Мастеру Игры как следующий ход.[/]");
     }
 

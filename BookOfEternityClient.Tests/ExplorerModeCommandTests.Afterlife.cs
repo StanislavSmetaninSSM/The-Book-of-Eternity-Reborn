@@ -651,8 +651,94 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             entry => entry.Title.Contains("Выберите раздел", StringComparison.OrdinalIgnoreCase) &&
                      entry.Choices.Contains("🔄 Проверить витрину", StringComparer.Ordinal) &&
                      !entry.Choices.Contains("🛍 Купить реликвии", StringComparer.Ordinal));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Полный предпросмотр торговли Хранителя", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_guardian_trade_request.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("UpdateGuardianTradeInventoryReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
         var pendingRequestRaw = await _fs.ReadFileAsync("game_state/control/pending_guardian_trade_request.json");
         Assert.Contains("\"guardianId\": \"guardian_trade_001\"", pendingRequestRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"derivedTradeSlotCount\":", pendingRequestRaw ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("\"projectBonusSignature\":", pendingRequestRaw ?? string.Empty, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_AbodesTravel_ShowsFullContractPreviewBeforeGmAction()
+    {
+        await WriteJsonAsync("input/turn_request.json", new { turnNumber = 14 });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 25 }
+        });
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_target_001",
+                    canonicalName = "Мириэль",
+                    domain = "Magic",
+                    abode = new
+                    {
+                        abodeId = "abode_target_001",
+                        name = "Сад Переходов",
+                        isDiscovered = true
+                    },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Мириэль"
+                    },
+                    relationshipData = new { currentReputation = 80 }
+                },
+                new
+                {
+                    guardianId = "guardian_current_001",
+                    canonicalName = "Азалия",
+                    domain = "Social",
+                    abode = new
+                    {
+                        abodeId = "abode_current_001",
+                        name = "Шелковая Обитель",
+                        isDiscovered = true
+                    },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия"
+                    },
+                    relationshipData = new { currentReputation = 120 }
+                }
+            },
+            activeGuardian = new
+            {
+                guardianId = "guardian_current_001",
+                canonicalName = "Азалия",
+                manifestation = new
+                {
+                    currentDisplayName = "Азалия"
+                }
+            },
+            chaosSeaNavigation = new
+            {
+                currentAbodeId = "abode_current_001",
+                discoveredAbodes = new[] { "abode_current_001" }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        string? gmAction = null;
+        var ex = await Record.ExceptionAsync(async () => gmAction = await _explorer.TryProcessCommand("/обители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("chaos_sea_travel_preview");
+        Assert.Contains("CHAOS_SEA_TRAVEL", gmAction ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("targetAbodeId=abode_target_001", gmAction ?? string.Empty, StringComparison.Ordinal);
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Полный предпросмотр перехода Моря Хаоса", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guardians.json.activeGuardian = targetGuardianId", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("abode_target_001", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -4230,6 +4316,103 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_AfterlifeArchive_Consultation_ShowsFullContractPreviewBeforeWritingRequest()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("input/turn_request.json", new { turnNumber = 16 });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 2,
+            inkFeathers = new { current = 25 },
+            afterlifeArchive = new
+            {
+                stored = new[]
+                {
+                    new
+                    {
+                        archiveId = "archive_consult_preview_1",
+                        entryType = "lore_fragment",
+                        title = "Пепельная хроника",
+                        summary = "Тестовая архивная запись для консультации.",
+                        rarity = "Rare",
+                        sourceLife = 2,
+                        sourceKind = "codex",
+                        acquiredAtUtc = "2026-03-26T00:00:00Z"
+                    }
+                },
+                actionReceipts = Array.Empty<object>()
+            }
+        });
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_archive_1",
+                    canonicalName = "Азалия",
+                    domain = "Knowledge",
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия"
+                    },
+                    relationshipData = new
+                    {
+                        currentReputation = 88
+                    },
+                    abode = new
+                    {
+                        abodeId = "abode_archive_1",
+                        name = "Тихая Обитель",
+                        isDiscovered = true
+                    }
+                }
+            },
+            activeGuardian = new
+            {
+                guardianId = "guardian_archive_1",
+                canonicalName = "Азалия",
+                manifestation = new
+                {
+                    currentDisplayName = "Азалия"
+                }
+            },
+            chaosSeaNavigation = new
+            {
+                currentAbodeId = "abode_archive_1",
+                discoveredAbodes = new[] { "abode_archive_1" }
+            }
+        });
+        await WriteJsonAsync(GuardianProjectState.TrackerPath, new
+        {
+            activeProjects = Array.Empty<object>(),
+            completedProjects = Array.Empty<object>(),
+            temporaryProjectModifiers = Array.Empty<object>()
+        });
+        _console.QueueSelection("Действие", "🔮 Консультация с дружественным Хранителем");
+        await _stateManager.RefreshGameStateAsync();
+
+        string? gmAction = null;
+        var ex = await Record.ExceptionAsync(async () => gmAction = await _explorer.TryProcessCommand("/архив_души"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("archive_consultation_preview");
+        Assert.Contains("ARCHIVE_CONSULTATION_REQUEST", gmAction ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("archive_consult_preview_1", gmAction ?? string.Empty, StringComparison.Ordinal);
+        var pendingRaw = await _fs.ReadFileAsync(AfterlifeArchiveActionState.ConsultationRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("\"archiveId\": \"archive_consult_preview_1\"", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("\"requestedMode\": \"consultation\"", pendingRaw, StringComparison.Ordinal);
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Полный предпросмотр архивной консультации", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_archive_consultation_request.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("archiveActionResolutions", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("requestedMode", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeArchiveCandidates_ShowsFullCandidateContent()
     {
         await SeedAfterlifeStateAsync();
@@ -5935,6 +6118,171 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("\"requests\": [", pendingRaw, StringComparison.Ordinal);
         Assert.Contains("guardian_resident_001", pendingRaw, StringComparison.Ordinal);
         Assert.Contains("abode_social_azalia_001", pendingRaw, StringComparison.Ordinal);
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Полный предпросмотр запроса резидентов Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_guardian_abode_residents_request.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("requestMode", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guardian_abode_residents.json roster", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Guardians_ResidentTransfer_ShowsFullContractPreviewBeforeWritingRequest()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("input/turn_request.json", new { turnNumber = 22 });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 25 }
+        });
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_source_001",
+                    canonicalName = "Азалия",
+                    domain = "Social",
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия"
+                    },
+                    relationshipData = new { currentReputation = 120 },
+                    abodePower = new
+                    {
+                        currentPower = 12,
+                        tier = "Хрупкая",
+                        history = Array.Empty<object>()
+                    },
+                    abode = new
+                    {
+                        abodeId = "abode_source_001",
+                        name = "Лазурная Обитель",
+                        isDiscovered = true
+                    }
+                },
+                new
+                {
+                    guardianId = "guardian_target_001",
+                    canonicalName = "Мириэль",
+                    domain = "Magic",
+                    manifestation = new
+                    {
+                        currentDisplayName = "Мириэль"
+                    },
+                    relationshipData = new { currentReputation = 90 },
+                    abodePower = new
+                    {
+                        currentPower = 82,
+                        tier = "Сияющая",
+                        history = Array.Empty<object>()
+                    },
+                    abode = new
+                    {
+                        abodeId = "abode_target_001",
+                        name = "Сад Перекрёстков",
+                        isDiscovered = true
+                    }
+                }
+            },
+            activeGuardian = new
+            {
+                guardianId = "guardian_source_001",
+                canonicalName = "Азалия",
+                manifestation = new
+                {
+                    currentDisplayName = "Азалия"
+                },
+                abode = new
+                {
+                    abodeId = "abode_source_001",
+                    name = "Лазурная Обитель"
+                }
+            },
+            chaosSeaNavigation = new
+            {
+                currentAbodeId = "abode_source_001",
+                discoveredAbodes = new[] { "abode_source_001", "abode_target_001" }
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentState.StatePath, new
+        {
+            entries = new object[]
+            {
+                new
+                {
+                    residentId = "resident_ember_001",
+                    guardianId = "guardian_source_001",
+                    abodeId = "abode_source_001",
+                    displayName = "Лиора",
+                    residentKind = "ascended_soul",
+                    originType = "mortal_echo",
+                    roleLabel = "Певчая",
+                    summary = "Берегла клятвы на мостах памяти.",
+                    bondLevel = 72,
+                    bondTier = "trusted",
+                    abodeDevotionLevel = 18,
+                    abodeDevotionTier = "uncertain",
+                    restlessness = 94,
+                    migrationState = "ready_to_transfer",
+                    historyRevealed = true,
+                    bondRewardState = "none",
+                    isPresent = true,
+                    mortalWorldImprint = new
+                    {
+                        originWorldSummary = "Бывшая гонец при храме дорог.",
+                        futureCompanionPrompt = "Вернётся как тихий проводник через лазурные мосты.",
+                        bondReason = "Она сохранила песнь клятвы.",
+                        coreTraits = new[] { "верная" },
+                        archetypeHints = new[] { "проводник" },
+                        appearanceMotifs = new[] { "лазурная нить" }
+                    },
+                    personalityProfile = new
+                    {
+                        archetype = "Witness",
+                        worldview = "Hopeful",
+                        culturalLayer = "Glass Gardens",
+                        coreValues = new[] { "память" },
+                        personalityTraits = Array.Empty<object>()
+                    },
+                    abodeDisposition = new
+                    {
+                        powerSensitivity = "high",
+                        migrationDisposition = "seeks_stronger_abode",
+                        communalOrientation = "medium",
+                        stabilityNeed = "high"
+                    }
+                }
+            },
+            thoughtJournal = Array.Empty<object>(),
+            interactionLog = Array.Empty<object>(),
+            historyLog = Array.Empty<object>(),
+            transferReceipts = Array.Empty<object>(),
+            interactionReceipts = Array.Empty<object>(),
+            rosterReceipts = Array.Empty<object>()
+        });
+        _console.QueueSelection("Действие", "🏛 Обитатели Обители", "🚪 Разрешить переход в другую Обитель");
+        await _stateManager.RefreshGameStateAsync();
+
+        string? gmAction = null;
+        var ex = await Record.ExceptionAsync(async () => gmAction = await _explorer.TryProcessCommand("/хранители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardian_resident_transfer_preview");
+        Assert.Contains("ABODE_RESIDENT_TRANSFER_REQUEST", gmAction ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains("resident_ember_001", gmAction ?? string.Empty, StringComparison.Ordinal);
+        var pendingRaw = await _fs.ReadFileAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("\"residentId\": \"resident_ember_001\"", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("\"targetGuardianId\": \"guardian_target_001\"", pendingRaw, StringComparison.Ordinal);
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Полный предпросмотр перехода резидента", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_guardian_abode_resident_transfers.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("UpdateGuardianAbodeResidentTransferReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("resident_ember_001", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
