@@ -101,6 +101,127 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedOpenGatesWithConcurrentFounding_Passes()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var foundingRequest = CreateFoundingRequest("founding_req_dawn_choir", "faction_dawn_choir", "hall_dawn_choir");
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        MaterializeAcceptedFounding(currentShiningRoot, currentResidentRoot, foundingRequest);
+        Assert.True(ShiningAbodeState.TryOpenGates(currentShiningRoot, CloneJsonObject(currentResidentRoot), out _));
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(CreateOpenGatesReceipt(
+            "core_req_open_gates_with_founding",
+            GetNodeInt(currentShiningRoot["gates"]?["draftVersion"])));
+
+        var coreRequestRoot = CreateOpenGatesRequestRoot("core_req_open_gates_with_founding");
+        var foundingRequestRoot = new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(foundingRequest.DeepClone())
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, coreRequestRoot);
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, foundingRequestRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            coreRequestRoot,
+            new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
+            {
+                [ShiningFactionRequestState.PendingFoundingsRequestPath] = foundingRequestRoot
+            });
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_projected_state_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_unexpected_resident_state_change", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_ConcurrentFoundingDoesNotHideUnrelatedCoreSurfaceMutation()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var foundingRequest = CreateFoundingRequest("founding_req_dawn_choir", "faction_dawn_choir", "hall_dawn_choir");
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        MaterializeAcceptedFounding(currentShiningRoot, currentResidentRoot, foundingRequest);
+        Assert.True(ShiningAbodeState.TryOpenGates(currentShiningRoot, CloneJsonObject(currentResidentRoot), out _));
+        currentShiningRoot["radiance"]!["experience"] = 999;
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(CreateOpenGatesReceipt(
+            "core_req_open_gates_with_bad_radiance",
+            GetNodeInt(currentShiningRoot["gates"]?["draftVersion"])));
+
+        var coreRequestRoot = CreateOpenGatesRequestRoot("core_req_open_gates_with_bad_radiance");
+        var foundingRequestRoot = new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(foundingRequest.DeepClone())
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, coreRequestRoot);
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, foundingRequestRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            coreRequestRoot,
+            new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
+            {
+                [ShiningFactionRequestState.PendingFoundingsRequestPath] = foundingRequestRoot
+            });
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_projected_state_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedOpenGatesWithConcurrentTrade_Passes()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        var faction = ShiningAbodeState.FindFaction(currentShiningRoot, "faction_old")!;
+        faction["tradeInventory"] = CreateTradeInventory();
+        faction["tradeInventoryReceipts"] = new JsonArray(CreateTradeReceipt());
+        Assert.True(ShiningAbodeState.TryOpenGates(currentShiningRoot, CloneJsonObject(currentResidentRoot), out _));
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(CreateOpenGatesReceipt(
+            "core_req_open_gates_with_trade",
+            GetNodeInt(currentShiningRoot["gates"]?["draftVersion"])));
+
+        var coreRequestRoot = CreateOpenGatesRequestRoot("core_req_open_gates_with_trade");
+        var tradeRequestRoot = CreateTradeRequestRoot();
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, coreRequestRoot);
+        await WriteNodeAsync(ShiningTradeRequestState.PendingRequestsPath, tradeRequestRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            coreRequestRoot,
+            new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
+            {
+                [ShiningTradeRequestState.PendingRequestsPath] = tradeRequestRoot
+            });
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_projected_state_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_unexpected_resident_state_change", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_DiscoverNativeFactionReusingExistingIds_Fails()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();
@@ -1739,6 +1860,195 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         })
     };
 
+    private static JsonObject CreateOpenGatesRequestRoot(string requestId) => new()
+    {
+        [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray(new JsonObject
+        {
+            ["requestId"] = requestId,
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypeOpenGates,
+            ["factionId"] = "",
+            ["factionName"] = "",
+            ["projectId"] = "",
+            ["projectDisplayName"] = "",
+            ["radianceTierAtRequest"] = 0,
+            ["quotedCostFeathers"] = 0,
+            ["quotedCostLightSparks"] = 0,
+            ["sourceDraftVersion"] = 0,
+            ["selectedCardIds"] = new JsonArray(),
+            ["createdAtTurn"] = 14,
+            ["createdAtUtc"] = "2026-04-16T12:25:00Z"
+        })
+    };
+
+    private static JsonObject CreateOpenGatesReceipt(string requestId, int generatedDraftVersion) => new()
+    {
+        ["requestId"] = requestId,
+        ["actionType"] = ShiningCoreActionRequestState.ActionTypeOpenGates,
+        ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+        ["factionId"] = "",
+        ["projectId"] = "",
+        ["hallId"] = "",
+        ["resolvedFactionId"] = "",
+        ["selectedCardIds"] = new JsonArray(),
+        ["newResidentIds"] = new JsonArray(),
+        ["seededProjectIds"] = new JsonArray(),
+        ["generatedDraftVersion"] = generatedDraftVersion,
+        ["resolvedAtTurn"] = 14,
+        ["resolvedAtUtc"] = "2026-04-16T12:30:00Z",
+        ["reason"] = "gates_opened"
+    };
+
+    private static JsonObject CreateFoundingRequest(string requestId, string proposedFactionId, string proposedHallId) => new()
+    {
+        ["requestId"] = requestId,
+        ["proposedFactionId"] = proposedFactionId,
+        ["proposedHallId"] = proposedHallId,
+        ["proposedHallName"] = "Зал Рассветного Хора",
+        ["proposedHallDescription"] = "Светлый зал для союзов, клятв и общих песен.",
+        ["proposedHallServiceTags"] = new JsonArray("social", "lore"),
+        ["charter"] = new JsonObject
+        {
+            ["factionName"] = "Хор Рассвета",
+            ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+            ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+            ["summary"] = "Союз резидентов, которые строят силу через согласие."
+        },
+        ["supportingResidentIds"] = new JsonArray("resident_liora"),
+        ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+        ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
+        ["createdAtTurn"] = 184,
+        ["createdAtUtc"] = "2026-04-16T15:20:00Z"
+    };
+
+    private static void MaterializeAcceptedFounding(JsonObject shiningRoot, JsonObject residentRoot, JsonObject request)
+    {
+        var proposedFactionId = request["proposedFactionId"]!.GetValue<string>();
+        var proposedHallId = request["proposedHallId"]!.GetValue<string>();
+        var hallName = request["proposedHallName"]!.GetValue<string>();
+        var hallDescription = request["proposedHallDescription"]!.GetValue<string>();
+        var serviceTags = request["proposedHallServiceTags"]!.AsArray();
+        var charter = request["charter"]!.DeepClone().AsObject();
+        var supporters = request["supportingResidentIds"]!.DeepClone().AsArray();
+
+        shiningRoot["halls"]!.AsArray().Add(new JsonObject
+        {
+            ["hallId"] = proposedHallId,
+            ["hallName"] = hallName,
+            ["description"] = hallDescription,
+            ["serviceTags"] = serviceTags.DeepClone()
+        });
+        shiningRoot["factions"]!.AsArray().Add(new JsonObject
+        {
+            ["factionId"] = proposedFactionId,
+            ["originType"] = ShiningAbodeState.OriginTypePlayerFounded,
+            ["hallId"] = proposedHallId,
+            ["charter"] = charter,
+            ["leadership"] = new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["headActorId"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            },
+            ["baseStrength"] = 35,
+            ["factionStrength"] = 35,
+            ["investCountThisAscension"] = 0,
+            ["projectArchetypesCountedThisAscension"] = new JsonArray(),
+            ["projects"] = new JsonArray(),
+            ["leadershipReceipts"] = new JsonArray(),
+            ["leadershipHistory"] = new JsonArray()
+        });
+        ShiningAbodeState.EnsureFactionFoundingReceiptsArray(shiningRoot).Add(new JsonObject
+        {
+            ["requestId"] = request["requestId"]!.GetValue<string>(),
+            ["proposedFactionId"] = proposedFactionId,
+            ["proposedHallId"] = proposedHallId,
+            ["hallName"] = hallName,
+            ["factionId"] = proposedFactionId,
+            ["hallId"] = proposedHallId,
+            ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
+            ["supportingResidentIds"] = supporters.DeepClone(),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
+            ["resolvedAtTurn"] = 184,
+            ["resolvedAtUtc"] = "2026-04-16T15:24:00Z",
+            ["reason"] = "founding_accepted"
+        });
+
+        foreach (var resident in residentRoot["entries"]!.AsArray().OfType<JsonObject>())
+        {
+            if (supporters.OfType<JsonValue>().Any(value => value.TryGetValue<string>(out var id) &&
+                                                            string.Equals(id, resident["residentId"]?.GetValue<string>(), StringComparison.OrdinalIgnoreCase)))
+            {
+                resident["shiningFactionId"] = proposedFactionId;
+            }
+        }
+
+        ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, null);
+    }
+
+    private static JsonObject CreateTradeRequestRoot() => new()
+    {
+        [ShiningTradeRequestState.RequestsProperty] = new JsonArray(new JsonObject
+        {
+            ["requestId"] = "shine_trade_req_old_2",
+            ["factionId"] = "faction_old",
+            ["factionName"] = "Старый Дом",
+            ["tradeCycleId"] = "shining_return_2",
+            ["derivedTradeTier"] = 1,
+            ["derivedTradeSlotCount"] = 4,
+            ["derivedRarityCeiling"] = ShiningAbodeState.RarityUncommon,
+            ["derivedServiceMultiplier"] = 1.0,
+            ["merchantProfile"] = ShiningTradeRequestState.MerchantProfileShiningFaction,
+            ["createdAtTurn"] = 14,
+            ["createdAtUtc"] = "2026-04-16T12:26:00Z"
+        })
+    };
+
+    private static JsonObject CreateTradeInventory() => new()
+    {
+        ["tradeCycleId"] = "shining_return_2",
+        ["generatedAtUtc"] = "2026-04-16T12:31:00Z",
+        ["generationTradeTier"] = 1,
+        ["generationRarityCeiling"] = ShiningAbodeState.RarityUncommon,
+        ["merchantProfile"] = ShiningTradeRequestState.MerchantProfileShiningFaction,
+        ["serviceMultiplierSnapshot"] = 1.0,
+        ["items"] = new JsonArray
+        {
+            CreateTradeSlot("shine_slot_1", 40, "shine_relic_1", ShiningAbodeState.RarityUncommon),
+            CreateTradeSlot("shine_slot_2", 30, "shine_relic_2", ShiningAbodeState.RarityCommon),
+            CreateTradeSlot("shine_slot_3", 30, "shine_relic_3", ShiningAbodeState.RarityCommon),
+            CreateTradeSlot("shine_slot_4", 30, "shine_relic_4", ShiningAbodeState.RarityCommon)
+        }
+    };
+
+    private static JsonObject CreateTradeReceipt() => new()
+    {
+        ["requestId"] = "shine_trade_req_old_2",
+        ["factionId"] = "faction_old",
+        ["tradeCycleId"] = "shining_return_2",
+        ["status"] = ShiningTradeRequestState.ReceiptStatusReady,
+        ["itemCount"] = 4,
+        ["soldOutCount"] = 0,
+        ["resolvedAtTurn"] = 14,
+        ["resolvedAtUtc"] = "2026-04-16T12:31:30Z"
+    };
+
+    private static JsonObject CreateTradeSlot(string slotId, int priceInFeathers, string relicId, string quality) => new()
+    {
+        ["slotId"] = slotId,
+        ["priceInFeathers"] = priceInFeathers,
+        ["soldOut"] = false,
+        ["relicData"] = new JsonObject
+        {
+            ["id"] = relicId,
+            ["name"] = $"Trade Relic {slotId}",
+            ["quality"] = quality,
+            ["rarity"] = quality,
+            ["formTag"] = "ring",
+            ["properties"] = new JsonArray("trade_echo")
+        }
+    };
+
     private static JsonObject CreateTurnRequestWithBaseRarity(string baseRarity) => new()
     {
         ["sessionId"] = "test-session",
@@ -1750,7 +2060,12 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         }
     };
 
-    private async Task WritePendingTurnSnapshotManifestAsync(JsonObject preTurnShiningRoot, JsonObject preTurnResidentRoot, JsonObject preTurnSoulRoot, JsonObject requestRoot)
+    private async Task WritePendingTurnSnapshotManifestAsync(
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnResidentRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject requestRoot,
+        IReadOnlyDictionary<string, JsonObject>? additionalTrackedFiles = null)
     {
         const string requestSnapshotPath = "game_state/control/pending_turn_snapshot/pre_shining_core_action_request.json";
         const string shiningSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/shining_abode_state.json";
@@ -1761,12 +2076,58 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         await WriteNodeAsync(shiningSnapshotPath, preTurnShiningRoot);
         await WriteNodeAsync(residentSnapshotPath, preTurnResidentRoot);
         await WriteNodeAsync(soulSnapshotPath, preTurnSoulRoot);
+        var additionalSnapshotPaths = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (additionalTrackedFiles != null)
+        {
+            foreach (var (path, node) in additionalTrackedFiles)
+            {
+                var snapshotPath = "game_state/control/pending_turn_snapshot/" + NormalizeRelativePath(path).Replace("/", "_");
+                additionalSnapshotPaths[path] = snapshotPath;
+                await WriteNodeAsync(snapshotPath, node);
+            }
+        }
+
         await WriteNodeAsync("input/turn_request.json", new JsonObject
         {
             ["sessionId"] = "test-session",
             ["requestId"] = "test-request",
             ["turnNumber"] = 12
         });
+
+        var files = new JsonObject
+        {
+            [NormalizeRelativePath(ShiningCoreActionRequestState.PendingActionsRequestPath)] = requestSnapshotPath,
+            ["game_state/meta/shining_abode_state.json"] = shiningSnapshotPath,
+            ["game_state/meta/guardian_abode_residents.json"] = residentSnapshotPath,
+            ["game_state/meta/soul_state.json"] = soulSnapshotPath
+        };
+        var snapshotFileHashes = new JsonObject
+        {
+            [NormalizeRelativePath(ShiningCoreActionRequestState.PendingActionsRequestPath)] = ComputeSha256(await _fs.ReadFileAsync(requestSnapshotPath) ?? ""),
+            ["game_state/meta/shining_abode_state.json"] = ComputeSha256(await _fs.ReadFileAsync(shiningSnapshotPath) ?? ""),
+            ["game_state/meta/guardian_abode_residents.json"] = ComputeSha256(await _fs.ReadFileAsync(residentSnapshotPath) ?? ""),
+            ["game_state/meta/soul_state.json"] = ComputeSha256(await _fs.ReadFileAsync(soulSnapshotPath) ?? "")
+        };
+        var rollbackBackups = new JsonObject
+        {
+            [NormalizeRelativePath(ShiningCoreActionRequestState.PendingActionsRequestPath)] = requestSnapshotPath,
+            ["game_state/meta/shining_abode_state.json"] = shiningSnapshotPath,
+            ["game_state/meta/guardian_abode_residents.json"] = residentSnapshotPath,
+            ["game_state/meta/soul_state.json"] = soulSnapshotPath
+        };
+        var rollbackBaselineFiles = new JsonArray(
+            NormalizeRelativePath(ShiningCoreActionRequestState.PendingActionsRequestPath),
+            "game_state/meta/shining_abode_state.json",
+            "game_state/meta/guardian_abode_residents.json",
+            "game_state/meta/soul_state.json");
+        foreach (var (path, snapshotPath) in additionalSnapshotPaths)
+        {
+            var normalizedPath = NormalizeRelativePath(path);
+            files[normalizedPath] = snapshotPath;
+            snapshotFileHashes[normalizedPath] = ComputeSha256(await _fs.ReadFileAsync(snapshotPath) ?? "");
+            rollbackBackups[normalizedPath] = snapshotPath;
+            rollbackBaselineFiles.Add(normalizedPath);
+        }
 
         var manifest = new JsonObject
         {
@@ -1775,33 +2136,11 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
             ["turnNumber"] = 12,
             ["requestTimestamp"] = "2026-04-16T00:00:00Z",
             ["playerAction"] = "test",
-            ["files"] = new JsonObject
-            {
-                [NormalizeRelativePath(ShiningCoreActionRequestState.PendingActionsRequestPath)] = requestSnapshotPath,
-                ["game_state/meta/shining_abode_state.json"] = shiningSnapshotPath,
-                ["game_state/meta/guardian_abode_residents.json"] = residentSnapshotPath,
-                ["game_state/meta/soul_state.json"] = soulSnapshotPath
-            },
-            ["snapshotFileHashes"] = new JsonObject
-            {
-                [NormalizeRelativePath(ShiningCoreActionRequestState.PendingActionsRequestPath)] = ComputeSha256(await _fs.ReadFileAsync(requestSnapshotPath) ?? ""),
-                ["game_state/meta/shining_abode_state.json"] = ComputeSha256(await _fs.ReadFileAsync(shiningSnapshotPath) ?? ""),
-                ["game_state/meta/guardian_abode_residents.json"] = ComputeSha256(await _fs.ReadFileAsync(residentSnapshotPath) ?? ""),
-                ["game_state/meta/soul_state.json"] = ComputeSha256(await _fs.ReadFileAsync(soulSnapshotPath) ?? "")
-            },
+            ["files"] = files,
+            ["snapshotFileHashes"] = snapshotFileHashes,
             ["clientOwnedValidationHashes"] = new JsonObject(),
-            ["rollbackBackups"] = new JsonObject
-            {
-                [NormalizeRelativePath(ShiningCoreActionRequestState.PendingActionsRequestPath)] = requestSnapshotPath,
-                ["game_state/meta/shining_abode_state.json"] = shiningSnapshotPath,
-                ["game_state/meta/guardian_abode_residents.json"] = residentSnapshotPath,
-                ["game_state/meta/soul_state.json"] = soulSnapshotPath
-            },
-            ["rollbackBaselineFiles"] = new JsonArray(
-                NormalizeRelativePath(ShiningCoreActionRequestState.PendingActionsRequestPath),
-                "game_state/meta/shining_abode_state.json",
-                "game_state/meta/guardian_abode_residents.json",
-                "game_state/meta/soul_state.json"),
+            ["rollbackBackups"] = rollbackBackups,
+            ["rollbackBaselineFiles"] = rollbackBaselineFiles,
             ["sourceLabel"] = "shining-core-resolution-tests",
             ["manifestPayloadHash"] = string.Empty
         };

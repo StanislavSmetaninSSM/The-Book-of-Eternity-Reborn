@@ -124,6 +124,8 @@ All rows below use `pending_shining_abode_actions.json` as input and close throu
 
 For every Shining core action, materialize only the canonical projected diff for that exact request plus its matching `coreActionReceipts[]` entry. Accepted outcomes are validated against the projected Shining/Soul/resident state; refused, withdrawn, or expired outcomes must leave canonical Shining, Soul, and resident state unchanged except for the closure receipt.
 
+If one accepted active Shining turn closes a core action and another Shining pending contract, apply the contracts compositionally. Example: an accepted `pending_shining_faction_foundings.json` may create a new hall/faction and move supporter residents, while an accepted `open_gates` core action rebuilds gates from that resulting Shining state. Do not discard either side as "unrelated"; the final files must contain every independent receipt and the combined canonical state.
+
 Legacy `shining_abode_state.json.pendingNativeFactionDiscovery` is not the normal queue, but if it is present in a pre-turn save it is an active state-local contract and must be closed before starting a new `discover_native_faction` request. Use the row above and example 14A; do not duplicate it into `pending_shining_abode_actions.json`.
 
 If a Shining core action mutates the faction/project inputs used by the blessing-card gates draft (`invest_in_faction`, `complete_project`, `support_project`, `unsupport_project`, or `retire_project`) and the pre-turn state has `gates.hasOpenDraft = true`, preserve the canonical `gates` object and set `gates.isStale = true`. A stale draft cannot be used for `prepare_incarnation_package`; the player must regenerate it through `open_gates`.
