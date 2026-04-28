@@ -5200,7 +5200,7 @@ Soul Imprint:
 
 Guardian donation/favor:
 - Preview shows target Guardian identity and the reputation delta contract.
-- Donation uses reputationChange = min(25, max(15, cost / 3)).
+- Donation uses reputationChange = min(25, max(15, cost / 3)), and the target Guardian's currentReputation must increase by exactly that same amount from the validated pre-turn baseline. A smaller or larger positive delta is still invalid.
 - Favor has variable cost but still requires a positive reputation/state result and stateEvidence.guardianId, guardianName, reputationChange, and affectedFiles.
 
 Abode Offering:

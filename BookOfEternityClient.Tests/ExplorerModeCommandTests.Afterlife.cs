@@ -16,6 +16,44 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class ExplorerModeCommandTests : IDisposable
 {
     [Fact]
+    public void NormalizeLegacyFlatSoulRelics_SplitsRelicsIntoCanonicalCollections()
+    {
+        var root = JsonNode.Parse("""
+        {
+          "soulRelics": [
+            {
+              "relicId": "relic_equipped",
+              "name": "Клинок Памяти",
+              "gameplayStatus": {
+                "equipped": true,
+                "currentSlot": "weapon"
+              }
+            },
+            {
+              "relicId": "relic_stored",
+              "name": "Кольцо Тишины",
+              "gameplayStatus": {
+                "equipped": false,
+                "currentSlot": ""
+              }
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var changed = ExplorerMode.NormalizeLegacyFlatSoulRelics(root);
+
+        Assert.True(changed);
+        var relics = Assert.IsType<JsonObject>(root["soulRelics"]);
+        var equipped = Assert.IsType<JsonArray>(relics["equipped"]);
+        var stored = Assert.IsType<JsonArray>(relics["stored"]);
+        Assert.Single(equipped);
+        Assert.Single(stored);
+        Assert.Equal("relic_equipped", equipped[0]?["relicId"]?.GetValue<string>());
+        Assert.Equal("relic_stored", stored[0]?["relicId"]?.GetValue<string>());
+    }
+
+    [Fact]
     public async Task TryProcessCommand_GuardianProjects_RendersTrackerAndJournal()
     {
         await SeedAfterlifeStateAsync();

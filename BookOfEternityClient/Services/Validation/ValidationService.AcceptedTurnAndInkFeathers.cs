@@ -1036,8 +1036,7 @@ public partial class ValidationService
 
         var currentReputation = TryReadGuardianCurrentReputationFromPolicyContext(guardianPolicyContext, guardianId);
         if (!currentReputation.HasValue ||
-            !previousReputation.HasValue ||
-            currentReputation.Value <= previousReputation.Value)
+            !previousReputation.HasValue)
         {
             issues.Add(new ValidationIssue(
                 "game_state/meta/guardians.json",
@@ -1048,6 +1047,24 @@ public partial class ValidationService
                 expected: $">{previousReputation?.ToString() ?? "pre-turn reputation"}",
                 actual: currentReputation?.ToString() ?? "missing guardian",
                 repairHint: "После DONATE_TO_GUARDIAN увеличь репутацию текущего Хранителя и зафиксируй это в guardians.json."));
+            return;
+        }
+
+        if (expectedReputationChange.HasValue)
+        {
+            var actualReputationChange = currentReputation.Value - previousReputation.Value;
+            if (actualReputationChange != expectedReputationChange.Value)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json",
+                    IssueSeverity.Error,
+                    "После DONATE_TO_GUARDIAN репутация Хранителя должна измениться ровно на formula-backed reputationChange",
+                    code: "ink_feather_guardian_reputation_delta_mismatch",
+                    section: context.ActionTag,
+                    expected: $"{previousReputation.Value} + {expectedReputationChange.Value} = {previousReputation.Value + expectedReputationChange.Value}",
+                    actual: currentReputation.Value.ToString(),
+                    repairHint: "Синхронизируй guardians.json с stateEvidence.reputationChange: currentReputation должен вырасти ровно на min(25, max(15, cost / 3))."));
+            }
         }
     }
 

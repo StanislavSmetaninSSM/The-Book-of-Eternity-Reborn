@@ -11,7 +11,8 @@ using BookOfEternityClient.Services;
 namespace BookOfEternityClient.UI;
 
 public partial class ExplorerMode
-{private async Task ShowSoulRelics()
+{
+    private async Task ShowSoulRelics()
     {
         if (!EnsureOrdinaryAfterlifeInteractionAvailable(_loc.T("soul_relics")))
             return;
@@ -34,6 +35,26 @@ public partial class ExplorerMode
             {
                 ShowEmptyPanel(_loc.T("soul_relics"), "Реликвии души ещё не найдены");
                 return;
+            }
+
+            if (relics.ValueKind == JsonValueKind.Array &&
+                await EnsureCanonicalSoulRelicCollectionsAsync())
+            {
+                await _stateManager.RefreshGameStateAsync();
+                doc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
+                if (doc == null)
+                {
+                    ShowEmptyPanel(_loc.T("soul_relics"), "Данные реликвий недоступны");
+                    return;
+                }
+
+                root = doc.RootElement;
+                if (!root.TryGetProperty("soulRelics", out relics) ||
+                    relics.ValueKind != JsonValueKind.Object)
+                {
+                    ShowEmptyPanel(_loc.T("soul_relics"), "Реликвии души ещё не найдены");
+                    return;
+                }
             }
 
             var allRelics = new List<(string Id, string Name, string Status, JsonElement Data, int IndexInArray)>();
@@ -2445,6 +2466,70 @@ public partial class ExplorerMode
         _ => domainTag
     };
 
+    private async Task<bool> EnsureCanonicalSoulRelicCollectionsAsync()
+    {
+        const string path = "game_state/meta/soul_state.json";
+        var json = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject root ||
+                !NormalizeLegacyFlatSoulRelics(root))
+            {
+                return false;
+            }
+
+            await _fs.WriteFileAtomicAsync(path, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    internal static bool NormalizeLegacyFlatSoulRelics(JsonObject root)
+    {
+        if (root["soulRelics"] is not JsonArray flatRelics)
+            return false;
+
+        var equipped = new JsonArray();
+        var stored = new JsonArray();
+
+        foreach (var relicNode in flatRelics)
+        {
+            if (relicNode is not JsonObject relicObject)
+                continue;
+
+            var clone = relicObject.DeepClone();
+            if (IsLegacyFlatRelicEquipped(clone))
+                equipped.Add(clone);
+            else
+                stored.Add(clone);
+        }
+
+        root["soulRelics"] = new JsonObject
+        {
+            ["equipped"] = equipped,
+            ["stored"] = stored
+        };
+        return true;
+    }
+
+    private static bool IsLegacyFlatRelicEquipped(JsonNode relicNode)
+    {
+        if (relicNode["gameplayStatus"] is JsonObject gameplayStatus &&
+            gameplayStatus["equipped"] is JsonValue equippedValue &&
+            equippedValue.TryGetValue<bool>(out var equipped))
+        {
+            return equipped;
+        }
+
+        return false;
+    }
+
     /// <summary>
     /// Moves a relic from stored[] to equipped[] in soul_state.json.
     /// </summary>
@@ -2457,6 +2542,9 @@ public partial class ExplorerMode
         try
         {
             var node = JsonNode.Parse(json);
+            if (node is JsonObject root)
+                NormalizeLegacyFlatSoulRelics(root);
+
             var relicsNode = node?["soulRelics"];
             if (relicsNode == null) return;
 
@@ -2495,7 +2583,7 @@ public partial class ExplorerMode
             equippedArr.Add(target);
 
             // Write back
-                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
             await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
 
             MarkupLine($"[green]✅ Реликвия «{Markup.Escape(relicName)}» экипирована![/]");
@@ -2521,6 +2609,9 @@ public partial class ExplorerMode
         try
         {
             var node = JsonNode.Parse(json);
+            if (node is JsonObject root)
+                NormalizeLegacyFlatSoulRelics(root);
+
             var relicsNode = node?["soulRelics"];
             if (relicsNode == null) return;
 
@@ -2546,7 +2637,7 @@ public partial class ExplorerMode
 
             storedArr.Add(target);
 
-                var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+            var opts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
             await _fs.WriteFileAtomicAsync(path, node!.ToJsonString(opts));
 
             MarkupLine($"[green]✅ Реликвия «{Markup.Escape(relicName)}» снята и убрана в хранилище.[/]");
