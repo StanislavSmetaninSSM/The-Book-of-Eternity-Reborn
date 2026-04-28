@@ -775,7 +775,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - Guardian project, resident agency, Shining Abode, Shining faction, and Shining trade progression when mandated by `progressionControl`
 - `progressionProcessingReport` for afterlife scheduler debt and bounded catch-up acknowledgement
 - Soul Relic Gacha processing
-- Direct Chaos Sea gacha via `/gacha` remains a Chaos-Sea-specific exception and does not use current Guardian modifiers
+- Direct Chaos Sea gacha via `/gacha` remains a Chaos-Sea-specific exception and does not use current Guardian modifiers; its result rarity must equal `turn_request.json.gachaBaseResult.baseRarity` exactly, with no upgrade or downgrade path
 - Abode navigation data
 - Explicit afterlife Ink Feather whitelist actions may also legally produce guardian/meta/soul outputs.
 
@@ -1550,7 +1550,7 @@ Each Guardian object should carry:
   // Charges reset only when the Soul returns to the Chaos Sea after a new mortal life.
   // If a Guardian has no remaining charges this return, do NOT emit processGacha for that Guardian.
   // A successful processGacha consumes one Guardian charge for the current return.
-  // Direct Chaos Sea pull via /gacha should NOT use processGacha.
+  // Direct Chaos Sea pull via /gacha should NOT use processGacha and must keep final rarity exactly equal to gachaBaseResult.baseRarity.
   // It should resolve directly into soul/meta state without guardian-specific modifiers and without consuming Guardian charges.
   // --- Inner Life Commands (Block_32_extension_2) ---
   // Add Guardian musings (1-2 per turn)

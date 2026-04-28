@@ -373,7 +373,7 @@ public partial class ValidationService
             {
                 var newRelicId = newRelicIds.First();
                 if (TryFindSoulRelicNode(currentSoulRoot, newRelicId, out var newRelic))
-                    ValidateDirectChaosSeaGachaRarityFloor(newRelic, newRelicId, issues);
+                    ValidateDirectChaosSeaGachaExactRarity(newRelic, newRelicId, issues);
             }
         }
         catch
@@ -472,7 +472,7 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateDirectChaosSeaGachaRarityFloor(
+    private void ValidateDirectChaosSeaGachaExactRarity(
         JsonObject newRelic,
         string newRelicId,
         List<ValidationIssue> issues)
@@ -501,25 +501,41 @@ public partial class ValidationService
                 "Direct Chaos Sea gacha должен materialize-ить новую Soul Relic с итоговой редкостью.",
                 code: "direct_chaos_gacha_missing_result_rarity",
                 section: "CHAOS_SEA_DIRECT_GACHA",
-                expected: $"rarity >= {baseRarity}",
+                expected: baseRarity,
                 actual: $"new relic {newRelicId} has no rarity/quality",
-                repairHint: "Сохрани у новой Soul Relic canonical rarity или quality и не опускай её ниже gachaBaseResult.baseRarity."));
+                repairHint: "Сохрани у новой Soul Relic canonical rarity или quality exactly equal to gachaBaseResult.baseRarity."));
             return;
         }
 
         var baseRank = GetRarityRank(baseRarity);
         var finalRank = GetRarityRank(finalRarity);
-        if (baseRank > 0 && finalRank > 0 && finalRank < baseRank)
+        if (finalRank == 0)
         {
             issues.Add(new ValidationIssue(
                 "game_state/meta/soul_state.json.soulRelics",
                 IssueSeverity.Error,
-                "Direct Chaos Sea gacha не может понизить редкость ниже client-computed gachaBaseResult.baseRarity.",
-                code: "direct_chaos_gacha_result_below_base_rarity",
+                "Direct Chaos Sea gacha должен materialize-ить новую Soul Relic с canonical итоговой редкостью.",
+                code: "direct_chaos_gacha_result_rarity_mismatch",
                 section: "CHAOS_SEA_DIRECT_GACHA",
-                expected: $"{baseRarity} or higher",
+                expected: baseRarity,
                 actual: finalRarity,
-                repairHint: "Используй gachaBaseResult.baseRarity как минимум для новой Soul Relic direct /gacha."));
+                repairHint: "Для direct /gacha используй exact canonical rarity from gachaBaseResult.baseRarity; unknown rarity values are not valid outcomes."));
+            return;
+        }
+
+        if (baseRank > 0 &&
+            finalRank > 0 &&
+            !string.Equals(finalRarity, baseRarity, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json.soulRelics",
+                IssueSeverity.Error,
+                "Direct Chaos Sea gacha не имеет пути повышения или понижения редкости: итоговая редкость должна точно совпадать с client-computed gachaBaseResult.baseRarity.",
+                code: "direct_chaos_gacha_result_rarity_mismatch",
+                section: "CHAOS_SEA_DIRECT_GACHA",
+                expected: baseRarity,
+                actual: finalRarity,
+                repairHint: "Для direct /gacha используй gachaBaseResult.baseRarity как exact final rarity; upgrades допустимы только в Guardian-mediated или Shining banner flow."));
         }
     }
 

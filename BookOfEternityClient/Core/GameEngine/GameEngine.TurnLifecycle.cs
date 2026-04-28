@@ -2549,7 +2549,7 @@ Its thresholds remain: 4-48=Common, 49-67=Uncommon, 68-75=Rare, 76-79=Epic, 80=L
 If playerAction contains [CHAOS_SEA_DIRECT_GACHA], this is a DIRECT pull from the Chaos Sea, not a Guardian-mediated pull.
   - Do NOT apply Guardian reputation bonuses, penalties, discounts, jealousy/social effects, or other Guardian modifiers.
   - Preserve the exact cost phrase from playerAction: '<N> Чернильных Перьев' or '<N> Ink Feathers'. The validator uses it as prepaid cost proof.
-  - Treat gachaBaseResult.baseRarity as the neutral final rarity baseline with NO extra modifiers.
+  - Treat gachaBaseResult.baseRarity as the exact final rarity. Direct /gacha has NO upgrade or downgrade path.
   - Add the relic directly to soul state via metaStateUpdates.soulRelicOperations.addRelic.
 If the pull is Guardian-mediated, the 'baseRarity' from gachaBaseResult is the MINIMUM rarity. You may ONLY upgrade it using documented modifiers:
   - Abode Power rarity ceiling bonus: abodePower.currentPower >= 60 gives +1 allowed rarity step.
@@ -2573,7 +2573,7 @@ Completed recipe-driven guardian projects may be TEMPORARY:
   - lore_research life-bound hook/clue bonuses last only for the target incarnation
   - soul_preparation applies only to the next life and is consumed at correction resolution
 Direct /gacha remains neutral and does NOT consume Guardian charges.
-You MUST NOT downgrade or ignore the client-computed baseRarity. Log the full calculation in gm_thoughts_markdown.
+You MUST NOT downgrade, upgrade, or ignore the client-computed baseRarity for direct /gacha. Log the full calculation in gm_thoughts_markdown.
 
 SHINING RELIC GACHA:
 If game_state/control/pending_shining_abode_actions.json exists with actionType=pull_relic_gacha, treat it as a faction-banner relic pull inside the active Shining Abode.

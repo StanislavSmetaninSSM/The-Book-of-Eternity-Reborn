@@ -1372,7 +1372,7 @@ Direct Chaos Sea `/gacha`:
 - The client already spent the Ink Feathers before the GM turn; preserve the post-spend balance and do not write `metaStateUpdates.inkFeatherChanges.spend`.
 - `turn_request.json.playerAction` must contain the exact prepaid cost phrase `<N> Чернильных Перьев` or `<N> Ink Feathers`; the validator extracts direct-gacha cost from that phrase.
 - Must materialize exactly one new Soul Relic in Soul/meta state.
-- Final rarity must not be below `turn_request.json.gachaBaseResult.baseRarity`.
+- Final rarity must equal `turn_request.json.gachaBaseResult.baseRarity` exactly. Direct `/gacha` has no upgrade or downgrade path.
 
 Correct direct `/gacha` response fragment:
 
@@ -2906,6 +2906,8 @@ Invalid foundation shortcuts:
 
 `pending_shining_abode_actions.json` is the canonical client-authored contract for active Shining Abode actions. It is not optional flavor. If the file exists, the GM must close exactly the pending request through `game_state/meta/shining_abode_state.json.coreActionReceipts[]` and the exact state mutation required by that `actionType`.
 
+Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. Refused, withdrawn, or expired outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged.
+
 Supported `actionType` values:
 
 ```text
@@ -2934,7 +2936,7 @@ Common accepted receipt fields for every Shining core action:
   "status": "accepted",
   "factionId": "same factionId as request, or empty string when request has none",
   "projectId": "same projectId as request; for complete_project this may be the newly created projectId",
-  "relicId": "same relicId as request, or empty string",
+  "relicId": "same relicId as request, or for pull_relic_gacha the newly materialized result relicId",
   "returnCycleId": "same returnCycleId as request, or empty string",
   "targetFormTag": "same targetFormTag as request, or empty string",
   "propertyIndex": -1,
@@ -2949,7 +2951,7 @@ Common accepted receipt fields for every Shining core action:
 ```
 
 Important receipt rules:
-- Always keep `requestId`, `actionType`, target ids, `selectedCardIds`, `returnCycleId`, `targetFormTag`, and `propertyIndex` synchronized with the pending request.
+- Always keep `requestId`, `actionType`, target ids, `selectedCardIds`, `returnCycleId`, `targetFormTag`, and `propertyIndex` synchronized with the pending request. Exception: `pull_relic_gacha` introduces a new non-empty result `relicId` in the receipt because the pending request cannot know that id in advance.
 - Always include `selectedCardIds`, `newResidentIds`, and `seededProjectIds`; use empty arrays when the action does not use them.
 - Always include positive `resolvedAtTurn` and non-empty ISO `resolvedAtUtc`.
 - `status = refused` or `withdrawn` closes the request but must not apply the accepted state mutation.

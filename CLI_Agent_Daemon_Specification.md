@@ -328,7 +328,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 Используй `preGeneratedDices1d20` из `turn_request.json` для всех бросков кубиков.
 Начинай использовать этот пул с ПЕРВОГО кубика списка.
 `gachaBaseResult` — отдельное client-computed поле и не означает, что какие-то кубики уже были израсходованы из `preGeneratedDices1d20`.
-Если playerAction содержит `[CHAOS_SEA_DIRECT_GACHA]`, это прямое вытягивание реликвии из Моря Хаоса, а не pull через текущего Хранителя.
+Если playerAction содержит `[CHAOS_SEA_DIRECT_GACHA]`, это прямое вытягивание реликвии из Моря Хаоса, а не pull через текущего Хранителя. Итоговая редкость обязана точно совпасть с `turn_request.json.gachaBaseResult.baseRarity`: direct `/gacha` не имеет пути повышения или понижения редкости.
 Для такого direct pull не применяй репутацию Хранителя, скидки, штрафы или другие guardian modifiers; результат должен быть нейтральным.
 Сохрани точную cost-фразу из playerAction: `<N> Чернильных Перьев` или `<N> Ink Feathers`. Валидатор извлекает из неё prepaid cost; не перефразируй и не удаляй стоимость.
 Guardian-mediated Soul Relic Gacha is LIMITED per Guardian per return from mortal life:
