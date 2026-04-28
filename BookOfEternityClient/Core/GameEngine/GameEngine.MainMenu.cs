@@ -1276,6 +1276,15 @@ public partial class GameEngine
             return false;
         }
 
+        var blockingPendingContracts = GetExistingShiningPendingContractPaths();
+        if (blockingPendingContracts.Count > 0)
+        {
+            AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока есть активные Shining pending contracts. Сначала дождитесь их закрытия или repair.[/]");
+            foreach (var path in blockingPendingContracts)
+                AnsiConsole.MarkupLine($"[dim]• {Markup.Escape(path)}[/]");
+            return false;
+        }
+
         var previousShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         var previousSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(previousSoulJson))
@@ -1316,12 +1325,24 @@ public partial class GameEngine
             return false;
         }
 
-        ShiningCoreActionRequestState.ClearRequests(_fs);
-        ShiningTradeRequestState.ClearRequests(_fs);
-        ShiningFactionRequestState.ClearAllRequests(_fs);
-
         await RefreshRuntimeStateAsync();
         return true;
+    }
+
+    private IReadOnlyList<string> GetExistingShiningPendingContractPaths()
+    {
+        var paths = new[]
+        {
+            ShiningCoreActionRequestState.PendingActionsRequestPath,
+            ShiningTradeRequestState.PendingRequestsPath,
+            ShiningFactionRequestState.PendingFoundingsRequestPath,
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath
+        };
+
+        return paths
+            .Where(_fs.FileExists)
+            .ToList();
     }
 
     private async Task HandleReturnToChaosSeaFromShiningAbode()
