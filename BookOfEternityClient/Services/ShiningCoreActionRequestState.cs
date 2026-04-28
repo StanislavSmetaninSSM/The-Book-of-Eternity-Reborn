@@ -857,16 +857,29 @@ internal static class ShiningCoreActionRequestState
     private static bool SelectedCardSnapshotMatchesIds(JsonArray? selectedCards, IReadOnlyList<string> selectedCardIds)
     {
         if (selectedCards == null || selectedCards.Count == 0)
-            return true;
+            return false;
 
-        var snapshotIds = selectedCards
-            .OfType<JsonObject>()
-            .Select(card => GetNodeString(card["cardId"])?.Trim() ?? string.Empty)
-            .Where(id => !string.IsNullOrWhiteSpace(id))
-            .ToList();
+        if (selectedCards.Count != selectedCardIds.Count)
+            return false;
 
-        return snapshotIds.Count == selectedCardIds.Count &&
-               snapshotIds.SequenceEqual(selectedCardIds, StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < selectedCardIds.Count; i++)
+        {
+            if (selectedCards[i] is not JsonObject card)
+                return false;
+
+            if (!string.Equals(GetNodeString(card["cardId"])?.Trim() ?? string.Empty, selectedCardIds[i], StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            if (!ShiningAbodeState.IsSupportedCardSourceType(GetNodeString(card["sourceType"])) ||
+                !ShiningAbodeState.IsSupportedEffectFamily(GetNodeString(card["effectFamily"])) ||
+                !ShiningAbodeState.IsSupportedRarity(GetNodeString(card["rarity"])) ||
+                card["effectPayload"] is not JsonObject)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static bool ProjectIdentityMatches(PendingShiningCoreActionRequest request, string? receiptProjectId)

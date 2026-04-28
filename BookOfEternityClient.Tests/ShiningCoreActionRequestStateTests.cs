@@ -632,6 +632,118 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithSelectedIdsButMissingSnapshots_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                SourceDraftVersion = 1,
+                SelectedCardIds = new List<string> { "card_social" },
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("selectedCards", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithEmptySelectedSnapshots_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                SourceDraftVersion = 1,
+                SelectedCardIds = new List<string> { "card_social" },
+                SelectedCards = new JsonArray(),
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("selectedCards", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithMalformedSelectedSnapshot_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var malformedCard = CreateCard("card_social", "social", "uncommon");
+            malformedCard.Remove("effectPayload");
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                SourceDraftVersion = 1,
+                SelectedCardIds = new List<string> { "card_social" },
+                SelectedCards = new JsonArray(malformedCard),
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("selectedCards", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithSelectedSnapshot_Passes()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                SourceDraftVersion = 1,
+                SelectedCardIds = new List<string> { "card_social" },
+                SelectedCards = new JsonArray(CreateCard("card_social", "social", "uncommon")),
+                CreatedAtTurn = 5
+            });
+
+            Assert.Null(error);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ValidateRequestAgainstCurrentStateAsync_PreparePackageWithDuplicateSelectedCards_Fails()
     {
         var root = CreateTempRoot();
