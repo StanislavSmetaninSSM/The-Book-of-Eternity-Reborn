@@ -1273,6 +1273,76 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void TryOpenGates_RadiantTierThreeProjectUpgradesRareToEpic()
+    {
+        var root = JsonNode.Parse("""
+        {
+          "availability": "active",
+          "radiance": {
+            "experience": 700,
+            "tier": 4
+          },
+          "lightSparks": 100,
+          "halls": [],
+          "factions": [
+            {
+              "factionId": "faction_dawn",
+              "originType": "player_founded",
+              "hallId": "hall_dawn",
+              "charter": {
+                "factionName": "Хор Рассвета",
+                "favoredArchetype": "accord",
+                "patronEffectFamily": "social",
+                "summary": "Поют утренний свет."
+              },
+              "leadership": {
+                "headActorType": "player_soul",
+                "headActorId": "player_soul",
+                "leadershipState": "secure"
+              },
+              "baseStrength": 80,
+              "factionStrength": 80,
+              "investCountThisAscension": 0,
+              "projects": [
+                {
+                  "projectId": "project_rare_upgrade",
+                  "displayName": "Большой Хор",
+                  "summary": "Усиливает сияющее согласие.",
+                  "toneTags": ["radiant"],
+                  "targetFactionIds": [],
+                  "projectArchetype": "accord",
+                  "outputEffectFamily": "social",
+                  "tier": 3,
+                  "status": "completed",
+                  "isSupported": true,
+                  "strengthReward": 16
+                }
+              ]
+            }
+          ],
+          "gates": {
+            "draftVersion": 0,
+            "hasOpenDraft": false,
+            "isStale": false,
+            "allCandidateBlessingCards": [],
+            "availableBlessingCards": [],
+            "shownBlessingCardIds": [],
+            "selectedBlessingCardIds": [],
+            "nextCandidateCursor": 0,
+            "rerollsRemaining": 0
+          }
+        }
+        """)!.AsObject();
+
+        Assert.True(ShiningAbodeState.TryOpenGates(root, residentRoot: null, out var error), error);
+
+        var allCards = Assert.IsType<JsonArray>(root["gates"]?["allCandidateBlessingCards"]);
+        var projectCard = Assert.Single(allCards.OfType<JsonObject>(), card =>
+            string.Equals(card["sourceActorId"]?.GetValue<string>(), "project_rare_upgrade", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(ShiningAbodeState.RarityEpic, projectCard["rarity"]?.GetValue<string>());
+    }
+
+    [Fact]
     public void NormalizeStateRoot_HydratesPreparePackageReceiptSnapshotFromMatchingPreparedPackage()
     {
         var root = JsonNode.Parse("""

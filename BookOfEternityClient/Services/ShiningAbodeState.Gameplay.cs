@@ -1353,7 +1353,9 @@ internal static partial class ShiningAbodeState
     {
         RarityCommon => RarityUncommon,
         RarityUncommon => RarityRare,
-        RarityRare => RarityRadiant,
+        RarityRare => RarityEpic,
+        RarityEpic => RarityLegendary,
+        RarityLegendary => RarityRadiant,
         _ => RarityRadiant
     };
 
