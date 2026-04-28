@@ -148,6 +148,7 @@ internal static partial class ShiningAbodeState
         inkFeathers["current"] = current;
         soulRoot["inkFeathers"] = inkFeathers;
 
+        gachaSystem["currentReturnCycleId"] = returnCycleId;
         gachaSystem["chargesUsedThisReturn"] = GetNodeInt(gachaSystem["chargesUsedThisReturn"], 0) + 1;
         var history = EnsureArray(gachaSystem, "gachaHistory");
         history.Add(new JsonObject
@@ -185,6 +186,12 @@ internal static partial class ShiningAbodeState
         var currentReturnCycleId = GetNodeString(gachaSystem["currentReturnCycleId"]) ?? string.Empty;
         if (string.Equals(currentReturnCycleId, nextReturnCycleId, StringComparison.OrdinalIgnoreCase))
             return false;
+
+        if (string.IsNullOrWhiteSpace(currentReturnCycleId))
+        {
+            gachaSystem["currentReturnCycleId"] = nextReturnCycleId;
+            return true;
+        }
 
         gachaSystem["currentReturnCycleId"] = nextReturnCycleId;
         gachaSystem["chargesUsedThisReturn"] = 0;

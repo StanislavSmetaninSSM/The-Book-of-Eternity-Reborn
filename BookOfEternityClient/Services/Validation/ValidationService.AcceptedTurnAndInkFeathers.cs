@@ -323,7 +323,7 @@ public partial class ValidationService
             var currentFeathers = CurrentSoulFeathers(currentSoulRoot);
             if (costMatch.Success && int.TryParse(costMatch.Groups[1].Value, out costInFeathers) && costInFeathers > 0)
             {
-                var clientSpendAlreadyInSnapshot = await IsDirectChaosSeaGachaClientSpendAlreadyInSnapshotAsync(
+                var clientSpendAlreadyInSnapshot = await IsClientInkFeatherSpendAlreadyInSnapshotAsync(
                     preTurnFeathers,
                     costInFeathers);
                 var expectedFeathers = clientSpendAlreadyInSnapshot
@@ -382,7 +382,7 @@ public partial class ValidationService
         }
     }
 
-    private async Task<bool> IsDirectChaosSeaGachaClientSpendAlreadyInSnapshotAsync(
+    private async Task<bool> IsClientInkFeatherSpendAlreadyInSnapshotAsync(
         int snapshotFeathers,
         int costInFeathers)
     {
@@ -415,6 +415,60 @@ public partial class ValidationService
         catch
         {
             return false;
+        }
+    }
+
+    private async Task ValidateAfterlifeClientPrepaidInkFeatherBalanceAsync(
+        InkFeatherActionContext context,
+        List<ValidationIssue> issues)
+    {
+        if (!context.ParsedCostInFeathers.HasValue || context.ParsedCostInFeathers.Value <= 0)
+            return;
+
+        var preTurnSoulJson = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json");
+        var currentSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(preTurnSoulJson) || string.IsNullOrWhiteSpace(currentSoulJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(preTurnSoulJson) is not JsonObject preTurnSoulRoot ||
+                JsonNode.Parse(currentSoulJson) is not JsonObject currentSoulRoot)
+            {
+                return;
+            }
+
+            var preTurnFeathers = CurrentSoulFeathers(preTurnSoulRoot);
+            if (!await IsClientInkFeatherSpendAlreadyInSnapshotAsync(preTurnFeathers, context.ParsedCostInFeathers.Value))
+                return;
+
+            var currentFeathers = CurrentSoulFeathers(currentSoulRoot);
+            var repeatedStructuredSpend = 0;
+            if (currentSoulRoot["metaStateUpdates"] is JsonObject metaStateUpdates &&
+                metaStateUpdates["inkFeatherChanges"] is JsonObject inkFeatherChanges)
+            {
+                repeatedStructuredSpend = GetNodeInt(inkFeatherChanges["spend"]);
+            }
+
+            var hasRepeatedStructuredSpend = repeatedStructuredSpend > 0;
+            if (currentFeathers == preTurnFeathers && !hasRepeatedStructuredSpend)
+                return;
+
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json.inkFeathers.current",
+                IssueSeverity.Error,
+                "Afterlife Ink Feather action уже был списан клиентом до отправки хода; GM output не должен списывать Чернильные Перья повторно.",
+                code: "afterlife_ink_feather_client_prepaid_double_spend",
+                section: context.ActionTag,
+                expected: preTurnFeathers.ToString(),
+                actual: hasRepeatedStructuredSpend
+                    ? $"current={currentFeathers}; metaStateUpdates.inkFeatherChanges.spend={repeatedStructuredSpend}"
+                    : currentFeathers.ToString(),
+                repairHint: "Убери metaStateUpdates.inkFeatherChanges.spend или любой ручной повторный расход для client-prepaid afterlife action; материализуй только promised non-feather outcome."));
+        }
+        catch
+        {
+            // JSON shape issues are reported by normal state validation.
         }
     }
 
@@ -6590,6 +6644,9 @@ public partial class ValidationService
                     repairHint: "В Chaos Sea и Shining Abode используй только afterlife Ink Feather whitelist."));
                 return issues;
             }
+
+            if (isAfterlifeRealm)
+                await ValidateAfterlifeClientPrepaidInkFeatherBalanceAsync(actionContext, issues);
 
             if (!isAfterlifeRealm && !MortalWorldGmInkFeatherActions.Contains(actionContext.ActionTag))
             {

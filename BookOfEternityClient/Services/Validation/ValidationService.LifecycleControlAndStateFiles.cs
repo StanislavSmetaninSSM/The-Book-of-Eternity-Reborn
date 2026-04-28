@@ -532,6 +532,7 @@ public partial class ValidationService
             {
                 GuardianAbodeResidentRequestState.ManifestationRequestsProperty
             }, issues);
+        await ValidatePendingResidentCompanionManifestationRealmContextAsync(issues);
         await ValidateFlexibleStateFile(ActorSocialInteractionRequestState.PendingGuardianRequestPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -3023,6 +3024,26 @@ public partial class ValidationService
                 actual: currentRealm,
                 repairHint: "Не создавай и не разрешай pending_player_guardian_foundation.json вне Моря Хаоса."));
         }
+    }
+
+    private async Task ValidatePendingResidentCompanionManifestationRealmContextAsync(List<ValidationIssue> issues)
+    {
+        if (!_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath))
+            return;
+
+        var currentRealm = await TryResolveCurrentRealmAsync();
+        if (!RealmSemantics.IsAfterlifeRealm(currentRealm))
+            return;
+
+        issues.Add(new ValidationIssue(
+            GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+            IssueSeverity.Error,
+            "pending_resident_companion_manifestation_request.json является MortalWorldProfile-only contract и не может быть live pending file в afterlife realm.",
+            code: "pending_resident_companion_manifestation_afterlife_forbidden",
+            section: "AfterlifeResidents",
+            expected: "file absent while currentRealm is Chaos Sea or Shining Abode",
+            actual: currentRealm ?? "unknown current realm",
+            repairHint: "В afterlife не создавай и не обрабатывай pending_resident_companion_manifestation_request.json; оставь файл только для следующей смертной жизни или убери stale contract через repair."));
     }
 
     private void ValidatePendingAbodeOfferingConsumptionProof(
