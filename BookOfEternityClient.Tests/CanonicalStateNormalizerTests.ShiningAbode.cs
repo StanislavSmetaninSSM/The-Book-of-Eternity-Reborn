@@ -129,6 +129,71 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_UnreadableShiningStatePreservesResidentFactionMembership()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_azalia",
+              "canonicalName": "Азалия",
+              "manifestation": {
+                "currentDisplayName": "Азалия"
+              },
+              "relationshipData": {
+                "currentReputation": 90,
+                "reputationHistory": []
+              },
+              "abodePower": {
+                "currentPower": 42,
+                "tier": "Стабильная",
+                "lastUpdatedAt": "2026-04-18T00:00:00Z",
+                "history": []
+              },
+              "guardianRelationships": []
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(GuardianAbodeResidentState.StatePath, """
+        {
+          "entries": [
+            {
+              "residentId": "resident_mira_001",
+              "guardianId": "guardian_azalia",
+              "displayName": "Мира",
+              "residentKind": "echo",
+              "originType": "afterlife",
+              "bondLevel": 72,
+              "abodeDevotionLevel": 74,
+              "ascensionState": "ascended",
+              "shiningFactionId": "faction_dawn",
+              "residentRole": "social_support",
+              "factionLoyaltyLevel": 68,
+              "factionRestlessness": 12,
+              "factionRealignmentState": "settled"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, "{ malformed");
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        using var residentsDoc = JsonDocument.Parse((await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath))!);
+        var resident = residentsDoc.RootElement.GetProperty("entries")[0];
+        Assert.Equal("ascended", resident.GetProperty("ascensionState").GetString());
+        Assert.Equal("faction_dawn", resident.GetProperty("shiningFactionId").GetString());
+        Assert.Equal("social_support", resident.GetProperty("residentRole").GetString());
+        Assert.Equal(68, resident.GetProperty("factionLoyaltyLevel").GetInt32());
+        Assert.Equal("devoted", resident.GetProperty("factionLoyaltyTier").GetString());
+        Assert.Equal(12, resident.GetProperty("factionRestlessness").GetInt32());
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_PlayerFoundedGuardianKeepsFoundedShiningProjection()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", $$"""

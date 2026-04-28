@@ -260,7 +260,34 @@ internal static class GuardianTradeRequestState
             return false;
 
         return tradeInventory["items"] is JsonArray items &&
-               items.Count == request.DerivedTradeSlotCount;
+               items.Count == request.DerivedTradeSlotCount &&
+               HasUniqueTradeSlotIds(tradeInventory);
+    }
+
+    public static bool HasUniqueTradeSlotIds(JsonObject? tradeInventory) =>
+        !TryFindDuplicateTradeSlotId(tradeInventory, out _);
+
+    public static bool TryFindDuplicateTradeSlotId(JsonObject? tradeInventory, out string duplicateSlotId)
+    {
+        duplicateSlotId = string.Empty;
+        if (tradeInventory?["items"] is not JsonArray items)
+            return false;
+
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var item in items.OfType<JsonObject>())
+        {
+            var slotId = GetNodeString(item["slotId"]);
+            if (string.IsNullOrWhiteSpace(slotId))
+                continue;
+
+            if (!seen.Add(slotId.Trim()))
+            {
+                duplicateSlotId = slotId.Trim();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static JsonObject? FindMatchingReceipt(JsonObject guardian, PendingGuardianTradeRequest request)

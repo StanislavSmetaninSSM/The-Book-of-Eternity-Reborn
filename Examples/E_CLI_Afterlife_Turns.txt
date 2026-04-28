@@ -41,6 +41,7 @@ Use this index before resolving an afterlife turn:
 - `system_guardian_attraction.json` / deterministic Eternal Guardian attraction: see example 20.
 - `afterlife_return_guard.json` protected first afterlife turn: see example 21.
 - Direct resident action tags and hidden pending-backed routing tags: see example 22.
+- Player-facing Chaos Sea audit previews and notification receipt detail surfaces: see the audit checklist after example 22.
 
 ==================================================
 GLOBAL AFTERLIFE TURN RULE
@@ -97,7 +98,7 @@ COMBINED TURN DECISION TREE
 
 Use this decision tree when one turn contains several obligations at once: scheduler debt, catch-up, pending files, and a player action.
 
-1. If `currentRealm = "Shining Abode"` and `preparedIncarnationPackage != null`, stop ordinary afterlife processing and use pending-bootstrap handoff rules only.
+1. If `currentRealm = "Shining Abode"` and `preparedIncarnationPackage` is a valid bootstrap package object, stop ordinary afterlife processing and use pending-bootstrap handoff rules only. If the package is present but malformed or fails bootstrap validation, treat it as a package fault: preserve it and all pending Shining files for repair, and do not process ordinary Shining gameplay.
 2. Otherwise, read `progressionControl` before selecting the scene. Record every due contour and every `afterlifeCatchupContours[]` value in `gm_thoughts_markdown`.
 3. Read all pending afterlife control files before narration. A pending contract is not optional flavor; it must close through its exact canonical receipt/state surface.
 4. Declare all changed Guardians, residents, Shining factions, gates, halls, and institutions in actor scope. Do not declare a non-actor environment as a relevant actor unless it has a matching reasoning block.
@@ -1062,6 +1063,7 @@ Correct GM procedure:
 - `tradeInventory.tradeCycleId` must equal `returnCycleId`.
 - `generationReputationTier` and `pricingReputationTier` must be derived from `currentReputation`; here `65` means `Friendly`.
 - `items.length` must equal `derivedTradeSlotCount`.
+- Every `tradeInventory.items[].slotId` must be unique inside this inventory. The client buys by `slotId`; duplicates make the purchase target ambiguous and are invalid.
 - Close through `UpdateGuardianTradeInventoryReceipts`; matching stock without a ready receipt is invalid.
 - Do not write `afterlife_notifications.json`; the client derives the ready inbox event.
 - The fragment below shows the canonical persisted Guardian state patch; preserve all other fields on the existing Guardian object.
@@ -1134,6 +1136,7 @@ Forbidden in this example:
 - `afterlife_notifications.json` manual writes.
 - `pending_guardian_trade_request.json` mutation in GM output.
 - `tradeInventory.items.length` different from `derivedTradeSlotCount`.
+- duplicated `tradeInventory.items[].slotId`.
 - ready receipt with a different `requestId`, `abodeId`, or `tradeCycleId`.
 
 ==================================================
@@ -1552,6 +1555,7 @@ Scenario:
 - Player action contains `[INK_FEATHER_ACTION: ABODE_OFFERING]`.
 - `game_state/control/pending_abode_offering.json` exists and targets a specific Guardian and return cycle.
 - This example is only for `offeringType = ink_feathers`; non-feather offerings use plain `[ABODE_OFFERING]`.
+- For `offeringType = soul_relic`, the client snapshots a canonical `relicRarity` from the stored Soul Relic fields in this order: `rarity`, then `quality`, then `relicRarity`. The GM must preserve that pending `relicRarity` in `guardianPowerEvents[].audit.relicRarity` and must not silently downgrade a `quality`-only or `relicRarity`-only relic to `common`.
 - The GM must also read `Examples/E_CLI_Ink_Feather_Actions.txt`, section `VALID — ABODE_OFFERING`.
 
 Input fragment:
@@ -1636,6 +1640,7 @@ Forbidden:
 - Using another Guardian or another return cycle.
 - Writing only narrative without `guardianPowerEvents.reasonType = offering`.
 - Writing `output/ink_feather_action_result.json` for non-feather offerings such as `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`.
+- For `soul_relic`, recomputing rarity from another field, defaulting missing rarity to `common`, or writing an audit `relicRarity` different from `pending_abode_offering.json.relicRarity`.
 
 ==================================================
 9. VALID — SHINING FACTION FOUNDING, REALIGNMENT, LEADERSHIP
@@ -1644,6 +1649,10 @@ Forbidden:
 This section contains three independent Shining political pending-contract examples. Each example is a patch fragment; preserve all other required roots of `shining_abode_state.json` and `guardian_abode_residents.json`.
 
 9A. Founding a new Shining faction:
+
+Resource reservation rule:
+- Creating `pending_shining_faction_foundings.json` is a client-local reservation: the client has already deducted `quotedCostFeathers = 25` from `soul_state.inkFeathers.current` and `quotedCostLightSparks = 15` from `shining_abode_state.json.lightSparks` before the GM receives the turn.
+- On `status = accepted`, do not restore pre-reservation resource balances. The accepted response may spend additional resources only if another valid same-turn Shining contract explicitly authorizes that spend, but it must never make current Feathers/Sparks higher than the validated pre-turn reserved balances.
 
 Input fragment:
 
@@ -1920,7 +1929,7 @@ Correct faction patch:
 }
 ```
 
-If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`; use `politicalStatus = "head"` for the current head and move replaced radiant actors to `former_head`, `elder`, `claimant`, or `retired` as appropriate.
+If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`, use `currentFactionId = <factionId>` and `politicalStatus = "head"` for the current head, and move the replaced radiant head to `politicalStatus = "former_head"` in the same accepted state.
 
 Canonical leadership transition matrix:
 
@@ -1977,6 +1986,7 @@ Forbidden Shining political shortcuts:
 - ad-hoc `strength`, `tradeTier`, or `shiningAlignment` instead of canonical Shining fields.
 - `leadership.headActorType = radiant_actor` without a matching `shiningPoliticalActors[].actorId`.
 - founding receipt without exact proposed ids/hall payload/supporter list.
+- accepted founding that writes old pre-reservation `lightSparks` or `soul_state.inkFeathers.current` and effectively refunds the client-reserved founding cost.
 - realignment accepted without resident membership update and resident history log.
 - leadership accepted/refused without matching `leadershipHistory[]` when required.
 
@@ -2225,6 +2235,228 @@ Invalid roster shortcuts:
 - Writing `UpdateNPCs` for residents.
 - Receipt without matching `requestId`.
 - Resident object without `mortalWorldImprint.futureCompanionPrompt`, `isPresent`, `residentKind`, `originType`, `bondTier`, or canonical abode devotion fields.
+- For `requestMode = founder_attraction`, transferring residents from the former patron's Abode instead of creating first residents attracted by `founderFeatureTitle` / `founderFeatureSummary`.
+
+10B. VALID — FOUNDER-ATTRACTION RESIDENT ROSTER
+
+`founder_attraction` is a distinct roster mode. It appears after the player has founded a new Guardian/Abode, and the client asks the GM to materialize the first residents drawn by that founded Abode's feature. The GM must use the request's `founderFeatureTitle` and `founderFeatureSummary` as creative constraints. The GM must not move the old patron's residents and must not treat the former Guardian's roster as inherited property.
+
+Input fragment:
+
+```json
+{
+  "pending_guardian_abode_residents_request.json": {
+    "requests": [
+      {
+        "requestId": "abode_roster_founder_lumen_318",
+        "guardianId": "guard_founder_lumen_001",
+        "guardianName": "Люмен",
+        "abodeId": "abode_lumen_first_lantern_001",
+        "abodeName": "Обитель Первого Фонаря",
+        "currentReputation": 0,
+        "requestMode": "founder_attraction",
+        "founderFeatureTitle": "Первый Фонарь",
+        "founderFeatureSummary": "Новая founded-Обитель зажигает маяк для душ, которые ищут безопасное начало без переноса старых клятв.",
+        "createdAtTurn": 318,
+        "createdAtUtc": "2026-04-24T12:00:00Z"
+      }
+    ]
+  }
+}
+```
+
+Correct GM reasoning:
+
+```markdown
+## Оценка времени и мира
+- Realm: Chaos Sea.
+- pending_guardian_abode_residents_request.json exists with requestMode=founder_attraction.
+- The current Guardian is player-founded; the request's founderFeatureTitle/founderFeatureSummary define the first-resident attraction theme.
+
+## Охват NPC-анализа
+- Режим: Guardian-centric
+- Релевантные акторы: Люмен, Ирис, Тарн
+- Почему они релевантны: Люмен owns the new founded Abode; Ирис and Тарн are first residents created by the founder feature.
+- Акторы вне охвата: previous patron's residents, Mortal World NPCs
+- Почему они вне охвата: founder_attraction creates a new first roster and does not transfer old-patron residents.
+
+## Guardian Thoughts
+### Люмен
+- Ситуация: The founded Abode is no longer an empty title; the First Lantern begins attracting souls.
+- Внутренние мысли: Люмен wants residents who answer the new mantle rather than old obligations.
+- Действия: Люмен welcomes first residents shaped by the beacon feature and records them as new Abode residents.
+
+### Ирис
+- Ситуация: Ирис follows the First Lantern because she remembers being lost between lives.
+- Внутренние мысли: She wants a beginning that does not demand an inherited oath.
+- Действия: She becomes a present resident of Люмен's Abode and takes a guiding role.
+
+### Тарн
+- Ситуация: Тарн arrives as a traveler-soul drawn by the safe-start beacon.
+- Внутренние мысли: He is not settled yet, but the new Abode gives him a reason to pause.
+- Действия: He joins as a wavering resident, available for future talk/history hooks.
+```
+
+Correct response/state fragment:
+
+```json
+{
+  "UpdateGuardianAbodeResidents": [
+    {
+      "residentId": "res_lumen_iris_318",
+      "guardianId": "guard_founder_lumen_001",
+      "abodeId": "abode_lumen_first_lantern_001",
+      "displayName": "Ирис",
+      "residentKind": "attendant_spirit",
+      "originType": "native_spirit",
+      "roleLabel": "Хранительница первого огня",
+      "summary": "Дух безопасного начала, который появился у Первого Фонаря и помогает новым душам не наследовать чужие клятвы.",
+      "bondLevel": 12,
+      "bondTier": "stranger",
+      "canGrantCompanionRelic": false,
+      "bondRewardState": "none",
+      "historyRevealed": false,
+      "isPresent": true,
+      "mortalWorldImprint": {
+        "originWorldSummary": "Родилась из памяти о домах, где огонь оставляли для тех, кто возвращается поздно.",
+        "futureCompanionPrompt": "If later carried into a mortal life, appear as a lantern-bearing helper who guides frightened beginnings.",
+        "bondReason": "Ирис доверяет душам, которые начинают заново без насилия над прошлым.",
+        "coreTraits": [
+          "gentle",
+          "watchful",
+          "guiding"
+        ],
+        "archetypeHints": [
+          "lantern_keeper",
+          "first_resident"
+        ],
+        "appearanceMotifs": [
+          "тёплый фонарь",
+          "пепельный плащ"
+        ]
+      },
+      "availableInteractions": [
+        "talk",
+        "history"
+      ],
+      "personalityProfile": {
+        "archetype": "First Lantern Keeper",
+        "worldview": "Новое начало должно быть мягким, иначе оно станет чужой цепью.",
+        "culturalLayer": "Погребальные маяки и огни возвращения",
+        "coreValues": [
+          "shelter",
+          "mercy",
+          "new_beginnings"
+        ],
+        "personalityTraits": [
+          {
+            "traitName": "loyalty",
+            "value": 4,
+            "valueDescription": "Wants to belong, but waits for proof that the new Abode is kind."
+          },
+          {
+            "traitName": "restlessness",
+            "value": 2,
+            "valueDescription": "Rarely wanders while the lantern remains lit."
+          }
+        ]
+      },
+      "abodeDisposition": {
+        "powerSensitivity": "medium",
+        "migrationDisposition": "rooted",
+        "communalOrientation": "high",
+        "stabilityNeed": "high"
+      },
+      "abodeDevotionLevel": 46,
+      "abodeDevotionTier": "attached",
+      "restlessness": 12,
+      "migrationState": "settled"
+    },
+    {
+      "residentId": "res_lumen_tarn_318",
+      "guardianId": "guard_founder_lumen_001",
+      "abodeId": "abode_lumen_first_lantern_001",
+      "displayName": "Тарн",
+      "residentKind": "wayfaring_soul",
+      "originType": "traveler_soul",
+      "roleLabel": "Путник у нового порога",
+      "summary": "Странствующая душа, привлечённая обещанием безопасного начала без наследования прежнего roster.",
+      "bondLevel": 8,
+      "bondTier": "stranger",
+      "canGrantCompanionRelic": false,
+      "bondRewardState": "none",
+      "historyRevealed": false,
+      "isPresent": true,
+      "mortalWorldImprint": {
+        "originWorldSummary": "Последняя жизнь Тарна закончилась на дороге к дому, которого больше не существовало.",
+        "futureCompanionPrompt": "If later carried into a mortal life, appear as a wary traveler who can find a safe threshold.",
+        "bondReason": "Тарн уважает Обитель, которая не требует старых клятв от новых душ.",
+        "coreTraits": [
+          "wary",
+          "honest",
+          "threshold_seeking"
+        ],
+        "archetypeHints": [
+          "wayfarer",
+          "threshold_guest"
+        ],
+        "appearanceMotifs": [
+          "дорожный посох",
+          "свет на сапогах"
+        ]
+      },
+      "availableInteractions": [
+        "talk",
+        "history"
+      ],
+      "personalityProfile": {
+        "archetype": "Threshold Wayfarer",
+        "worldview": "Пристанище ценно только тогда, когда из него можно уйти по своей воле.",
+        "culturalLayer": "Дорожные обеты и ночные маяки",
+        "coreValues": [
+          "choice",
+          "safety",
+          "truth"
+        ],
+        "personalityTraits": [
+          {
+            "traitName": "loyalty",
+            "value": 3,
+            "valueDescription": "Needs time before naming a place home."
+          },
+          {
+            "traitName": "restlessness",
+            "value": 6,
+            "valueDescription": "Can stay, but tests every threshold."
+          }
+        ]
+      },
+      "abodeDisposition": {
+        "powerSensitivity": "low",
+        "migrationDisposition": "wandering",
+        "communalOrientation": "medium",
+        "stabilityNeed": "medium"
+      },
+      "abodeDevotionLevel": 28,
+      "abodeDevotionTier": "guest",
+      "restlessness": 34,
+      "migrationState": "wavering"
+    }
+  ],
+  "UpdateGuardianAbodeResidentRosterReceipts": [
+    {
+      "requestId": "abode_roster_founder_lumen_318",
+      "guardianId": "guard_founder_lumen_001",
+      "guardianName": "Люмен",
+      "abodeId": "abode_lumen_first_lantern_001",
+      "abodeName": "Обитель Первого Фонаря",
+      "rosterCount": 2,
+      "resolvedAtTurn": 318,
+      "resolvedAtUtc": "2026-04-24T12:07:00Z"
+    }
+  ]
+}
+```
 
 ==================================================
 11. VALID — GUARDIAN ABODE RESIDENT TRANSFER REQUEST
@@ -2982,12 +3214,15 @@ Invalid foundation shortcuts:
 `pending_shining_abode_actions.json` is the canonical client-authored contract for active Shining Abode actions. It is not optional flavor. If the file exists, the GM must close exactly the pending request through `game_state/meta/shining_abode_state.json.coreActionReceipts[]` and the exact state mutation required by that `actionType`.
 
 Queue and mode rules:
-- The file contains exactly one active Shining core request (`request` or `requests[0]`), not a GM-managed queue. Do not invent a second simultaneous Shining core request.
+- The file root is always `requests[]`; it contains exactly one active Shining core request, not a GM-managed queue. Do not write a singular root request property and do not invent a second simultaneous Shining core request.
 - Ordinary active Shining uses `shining_abode_state.json.availability = active` or another accepted value such as `sealed_until_next_ascension`; pending-bootstrap is not an `availability` value.
 - Pending-bootstrap is derived from non-null valid `preparedIncarnationPackage`; in that mode the GM preserves the package and does not process ordinary Shining core actions.
 - Cost fields in receipts identify the accepted request, but resource spends, Radiance XP, strength changes, gate invalidation, and package creation must also be reflected through canonical Shining/Soul state deltas.
+- Blessing-card rarity order is `common -> uncommon -> rare -> epic -> legendary -> radiant`; project-card bonuses upgrade only one step on that ladder, so a `rare` project card becomes `epic`, not immediately `radiant`.
 
-Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. Refused, withdrawn, or expired outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged.
+Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. `refused` and `withdrawn` outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged. Supported receipt statuses are only `accepted`, `refused`, and `withdrawn`.
+
+If the same accepted turn also closes a Shining political/trade/resident pending contract, the final state is the composition of all accepted closures. For example, accepted faction founding first materializes the hall/faction and supporter resident alignment, then `open_gates` builds its draft from that updated Shining state; both `factionFoundingReceipts[]` and `coreActionReceipts[]` must be present.
 
 Supported `actionType` values:
 
@@ -3268,7 +3503,7 @@ Accepted `prepare_incarnation_package` must:
 - require a fresh open gates draft;
 - use `sourceDraftVersion` matching current `gates.draftVersion`;
 - use non-empty unique `selectedCardIds`;
-- pending request must include `selectedCards[]` copied from canonical `gates.availableBlessingCards[]`/`gates.allCandidateBlessingCards[]` in the same order as `selectedCardIds[]`;
+- pending request must include `selectedCards[]` copied from canonical current `gates.availableBlessingCards[]` in the same order as `selectedCardIds[]`; matching only by id is not enough because `rarity`, `sourceType`, `effectFamily`, and `effectPayload` are part of the contract;
 - write `preparedIncarnationPackage` with `selectedCardIds[]` and full `selectedCards[]`;
 - reset/clean gates exactly as the canonical Shining helper does;
 - not spend Ink Feathers by itself;
@@ -4950,6 +5185,42 @@ Required handling:
 - only the client applies the listed client-local mutation to game_state/meta/soul_state.json after player confirmation
 
 The GM must not invent an accepted-turn response for this preview and must not add UpdateGuardians, UpdateNPCs, output files, afterlife notifications, or Mortal World state for it.
+```
+
+Player-facing Chaos Sea audit preview checklist:
+
+```text
+The GM does not author these previews, but the prompts/examples must teach the same mechanical expectations the player sees before confirming costly or destructive Chaos Sea actions.
+
+Soul Imprint:
+- Preview shows Ink Feathers before/after.
+- Preview names the companion/NPC source identity: sourceCompanionId or NPCId when known, companionName/NPCName, relationship role, current context.
+- GM closure must write a soulImprint entry in game_state/meta/soul_state.json with imprintId, source identity, summary, coreTraits, personalityMarkers, relationshipMarkers, appearanceMotifs, and futureCompanionPrompt.
+- output/ink_feather_action_result.json stateEvidence includes stateEvidence.imprintId, stateEvidence.companionName, stateEvidence.affectedFiles, and confirms that no Mortal World NPC was created during the afterlife turn.
+
+Guardian donation/favor:
+- Preview shows target Guardian identity and the reputation delta contract.
+- Donation uses reputationChange = min(25, max(15, cost / 3)).
+- Favor has variable cost but still requires a positive reputation/state result and stateEvidence.guardianId, guardianName, reputationChange, and affectedFiles.
+
+Abode Offering:
+- Preview shows consumed object details before confirmation: offeringType, relicId/relicName/relicRarity or archiveId/archiveTitle/archiveEntryType/archiveRarity or inkFeathersOffered.
+- Preview shows Abode Power current -> projected, baseDelta, finalDelta, returnCycleId, and remaining offering cap when relevant.
+- GM closure writes guardianPowerEvents.reasonType=offering, sourceSurface=guardianAbodeOffering, powerEventId, baseDelta, finalDelta, and the matching journal event.
+- Only offeringType=ink_feathers also writes output/ink_feather_action_result.json; relic/archive offerings close through guardianPowerEvents and journal proof only.
+
+Resident notifications:
+- Notification detail surfaces must show the resident id/name, current presence, current Guardian/Abode, matching receipt requestId, receipt type, status, responseMode or transferMode, historyEntryId when present, and current bond/devotion/restlessness/migration snapshot.
+- The GM must not write afterlife_notifications.json directly; notifications are derived from resident receipts and canonical resident state.
+
+Guardian trade and buyback:
+- Guardian trade inventory request previews show pending_guardian_trade_request.json and the GM receipt requirement UpdateGuardianTradeInventoryReceipts.
+- Purchase/buyback previews are client-local coordinated writes: no GM turn, but the player sees slotId or buybackEntryId, priceInFeathers, currentFeathers, projectedFeathers, sold-out/buyback status, and full cloned relicData.
+- Buyback writes the matching buybackRelics entry from status=available to status=rebought and returns relicData to soulRelics.stored.
+
+Archive consultation/project fuel:
+- Preview shows archiveId/title/type/rarity, reservation status, pending request path, and closure through archiveActionResolutions plus soul_state.afterlifeArchive.actionReceipts[].
+- lore_fragment may resolve as project_work; secret_record may resolve as pressure_relief only.
 ```
 
 Afterlife-origin companion manifestation handoff:

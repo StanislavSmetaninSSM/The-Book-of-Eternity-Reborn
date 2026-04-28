@@ -831,6 +831,99 @@ public partial class ExplorerMode
         {
             lines.Add($"  Присутствие: [dim]{(isPresent ? "сейчас в Обители" : "уже покинул Обитель")}[/]");
         }
+
+        lines.AddRange(BuildResidentNotificationReceiptAuditLines(residentsDoc.RootElement, notification, resident));
+    }
+
+    internal static IReadOnlyList<string> BuildResidentNotificationReceiptAuditLines(
+        JsonElement residentRoot,
+        AfterlifeNotificationState.NotificationEntry notification,
+        JsonObject? resident)
+    {
+        var lines = new List<string>();
+        var requestId = notification.RequestId?.Trim() ?? string.Empty;
+        var residentId = notification.ResidentId?.Trim() ?? string.Empty;
+        if (residentRoot.ValueKind != JsonValueKind.Object || string.IsNullOrWhiteSpace(residentId))
+            return lines;
+
+        var wroteReceiptHeader = false;
+        void AddReceiptHeader()
+        {
+            if (wroteReceiptHeader)
+                return;
+            lines.Add("");
+            lines.Add("  [bold]Точный resident receipt и state audit:[/]");
+            wroteReceiptHeader = true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(requestId))
+        {
+            var interaction = GuardianAbodeResidentState.CollectInteractionReceipts(residentRoot, residentId)
+                .FirstOrDefault(receipt => string.Equals(receipt.RequestId, requestId, StringComparison.OrdinalIgnoreCase));
+            if (interaction != null)
+            {
+                AddReceiptHeader();
+                lines.Add($"  Квитанция: [dim]interaction[/] requestId=[dim]{Markup.Escape(interaction.RequestId)}[/] status=[dim]{Markup.Escape(interaction.Status)}[/] type=[dim]{Markup.Escape(interaction.InteractionType)}[/]");
+                if (!string.IsNullOrWhiteSpace(interaction.ResponseMode))
+                    lines.Add($"  Response mode: [dim]{Markup.Escape(interaction.ResponseMode)}[/]");
+                if (!string.IsNullOrWhiteSpace(interaction.HistoryEntryId))
+                    lines.Add($"  History entry: [dim]{Markup.Escape(interaction.HistoryEntryId)}[/]");
+                if (!string.IsNullOrWhiteSpace(interaction.AbodeId) || !string.IsNullOrWhiteSpace(interaction.GuardianId))
+                    lines.Add($"  Область receipt: guardianId=[dim]{Markup.Escape(interaction.GuardianId)}[/], abodeId=[dim]{Markup.Escape(interaction.AbodeId)}[/]");
+                if (interaction.ResolvedAtTurn > 0 || !string.IsNullOrWhiteSpace(interaction.ResolvedAtUtc))
+                    lines.Add($"  Resolved: turn [dim]{interaction.ResolvedAtTurn}[/], utc [dim]{Markup.Escape(interaction.ResolvedAtUtc)}[/]");
+            }
+
+            var transfer = GuardianAbodeResidentState.CollectTransferReceipts(residentRoot, residentId)
+                .FirstOrDefault(receipt => string.Equals(receipt.RequestId, requestId, StringComparison.OrdinalIgnoreCase));
+            if (transfer != null)
+            {
+                AddReceiptHeader();
+                lines.Add($"  Квитанция: [dim]transfer[/] requestId=[dim]{Markup.Escape(transfer.RequestId)}[/] status=[dim]{Markup.Escape(transfer.Status)}[/] mode=[dim]{Markup.Escape(transfer.TransferMode)}[/]");
+                lines.Add($"  Source: [dim]{Markup.Escape(transfer.SourceGuardianName)}[/] ({Markup.Escape(transfer.SourceGuardianId)}) / [dim]{Markup.Escape(transfer.SourceAbodeId)}[/]");
+                lines.Add($"  Target: [dim]{Markup.Escape(transfer.TargetGuardianName)}[/] ({Markup.Escape(transfer.TargetGuardianId)}) / [dim]{Markup.Escape(transfer.TargetAbodeId)}[/]");
+                if (!string.IsNullOrWhiteSpace(transfer.DepartureHistoryEntryId) || !string.IsNullOrWhiteSpace(transfer.ArrivalHistoryEntryId))
+                    lines.Add($"  History: departure=[dim]{Markup.Escape(transfer.DepartureHistoryEntryId)}[/], arrival=[dim]{Markup.Escape(transfer.ArrivalHistoryEntryId)}[/]");
+            }
+
+            var guardianId = GetNodeString(resident?["guardianId"]) ?? notification.GuardianId ?? string.Empty;
+            var abodeId = GetNodeString(resident?["abodeId"]) ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(guardianId) && !string.IsNullOrWhiteSpace(abodeId))
+            {
+                var roster = GuardianAbodeResidentState.CollectRosterReceipts(residentRoot, guardianId, abodeId)
+                    .FirstOrDefault(receipt => string.Equals(receipt.RequestId, requestId, StringComparison.OrdinalIgnoreCase));
+                if (roster != null)
+                {
+                    AddReceiptHeader();
+                    lines.Add($"  Квитанция: [dim]roster[/] requestId=[dim]{Markup.Escape(roster.RequestId)}[/] rosterCount=[dim]{roster.RosterCount}[/]");
+                    lines.Add($"  Область roster: guardian=[dim]{Markup.Escape(roster.GuardianName)}[/] ({Markup.Escape(roster.GuardianId)}), abodeId=[dim]{Markup.Escape(roster.AbodeId)}[/]");
+                    if (roster.ResolvedAtTurn > 0 || !string.IsNullOrWhiteSpace(roster.ResolvedAtUtc))
+                        lines.Add($"  Resolved: turn [dim]{roster.ResolvedAtTurn}[/], utc [dim]{Markup.Escape(roster.ResolvedAtUtc)}[/]");
+                }
+            }
+        }
+
+        if (resident == null)
+            return lines;
+
+        AddReceiptHeader();
+        var residentGuardianId = GetNodeString(resident["guardianId"]) ?? notification.GuardianId ?? string.Empty;
+        var residentAbodeId = GetNodeString(resident["abodeId"]) ?? string.Empty;
+        var bondLevel = GetNodeInt(resident["bondLevel"]);
+        var bondTier = GetNodeString(resident["bondTier"]) ?? string.Empty;
+        var devotionLevel = GetNodeInt(resident["abodeDevotionLevel"]);
+        var devotionTier = GetNodeString(resident["abodeDevotionTier"]) ?? string.Empty;
+        var restlessness = GetNodeInt(resident["restlessness"]);
+        var migrationState = GetNodeString(resident["migrationState"]) ?? string.Empty;
+        var presence = resident["isPresent"] is JsonValue presenceValue &&
+                       presenceValue.TryGetValue<bool>(out var residentIsPresent)
+            ? residentIsPresent ? "present" : "absent"
+            : "unknown";
+
+        lines.Add($"  Текущее состояние резидента: guardianId=[dim]{Markup.Escape(residentGuardianId)}[/], abodeId=[dim]{Markup.Escape(residentAbodeId)}[/], isPresent=[dim]{Markup.Escape(presence)}[/].");
+        lines.Add($"  Bond/devotion: bondLevel=[dim]{bondLevel}[/] bondTier=[dim]{Markup.Escape(bondTier)}[/], abodeDevotionLevel=[dim]{devotionLevel}[/] abodeDevotionTier=[dim]{Markup.Escape(devotionTier)}[/].");
+        lines.Add($"  Migration pressure: restlessness=[dim]{restlessness}[/], migrationState=[dim]{Markup.Escape(migrationState)}[/].");
+        return lines;
     }
 
     private async Task AppendShiningNotificationDetailLinesAsync(AfterlifeNotificationState.NotificationEntry notification, List<string> lines)

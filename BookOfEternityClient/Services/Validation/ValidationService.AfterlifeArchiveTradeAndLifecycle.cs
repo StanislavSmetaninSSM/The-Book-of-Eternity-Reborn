@@ -2225,6 +2225,28 @@ public partial class ValidationService
                 actual: pricingTier));
         }
 
+        if (!tradeInventory.TryGetProperty("items", out var items) || items.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{tradeContext}.items",
+                IssueSeverity.Warning,
+                "tradeInventory.items должен быть массивом торговых слотов"));
+            return;
+        }
+
+        if (TryFindDuplicateGuardianTradeSlotId(items, out var duplicateSlotId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{tradeContext}.items",
+                IssueSeverity.Error,
+                "guardian tradeInventory содержит duplicated item.slotId; локальная покупка по slotId становится неоднозначной.",
+                code: "guardian_trade_inventory_duplicate_slot_id",
+                section: "tradeInventory",
+                expected: "unique tradeInventory.items[].slotId per inventory",
+                actual: duplicateSlotId,
+                repairHint: "Сделай каждый tradeInventory.items[].slotId уникальным внутри одной витрины Хранителя."));
+        }
+
         if (!TryResolveGuardianDerivedStateForValidation(
                 guardian,
                 tradeContext,
@@ -2239,15 +2261,6 @@ public partial class ValidationService
         }
 
         var expectedSlotCount = derivedState.TradeSlotCount;
-        if (!tradeInventory.TryGetProperty("items", out var items) || items.ValueKind != JsonValueKind.Array)
-        {
-            issues.Add(new ValidationIssue(
-                $"{tradeContext}.items",
-                IssueSeverity.Warning,
-                $"tradeInventory.items должен быть массивом из {expectedSlotCount} торговых слотов"));
-            return;
-        }
-
         if (items.GetArrayLength() != expectedSlotCount)
         {
             issues.Add(new ValidationIssue(
@@ -2927,6 +2940,32 @@ public partial class ValidationService
             return;
         }
 
+        if (TryFindDuplicateGuardianTradeSlotId(activeItems, out var activeDuplicateSlotId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{activeGuardianContext}.tradeInventory.items",
+                IssueSeverity.Error,
+                "activeGuardian tradeInventory содержит duplicated item.slotId; mirror нельзя сравнить как однозначную витрину.",
+                code: "guardian_trade_inventory_duplicate_slot_id",
+                section: "tradeInventory",
+                expected: "unique activeGuardian.tradeInventory.items[].slotId",
+                actual: activeDuplicateSlotId));
+            return;
+        }
+
+        if (TryFindDuplicateGuardianTradeSlotId(arrayItems, out var arrayDuplicateSlotId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{guardianArrayContext}.tradeInventory.items",
+                IssueSeverity.Error,
+                "guardians[] tradeInventory содержит duplicated item.slotId; active/array mirror нельзя сравнить как однозначную витрину.",
+                code: "guardian_trade_inventory_duplicate_slot_id",
+                section: "tradeInventory",
+                expected: "unique guardians[].tradeInventory.items[].slotId",
+                actual: arrayDuplicateSlotId));
+            return;
+        }
+
         var activeBySlot = activeItems.EnumerateArray()
             .Where(item => item.ValueKind == JsonValueKind.Object)
             .Select(item => (SlotId: GetFirstNonEmptyString(item, "slotId"), Signature: BuildGuardianTradeSlotSignature(item)))
@@ -3005,6 +3044,33 @@ public partial class ValidationService
                 expected: arraySignature,
                 actual: activeSignature));
         }
+    }
+
+
+    private static bool TryFindDuplicateGuardianTradeSlotId(JsonElement items, out string duplicateSlotId)
+    {
+        duplicateSlotId = string.Empty;
+        if (items.ValueKind != JsonValueKind.Array)
+            return false;
+
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var item in items.EnumerateArray())
+        {
+            if (item.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var slotId = GetFirstNonEmptyString(item, "slotId");
+            if (string.IsNullOrWhiteSpace(slotId))
+                continue;
+
+            if (!seen.Add(slotId.Trim()))
+            {
+                duplicateSlotId = slotId.Trim();
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

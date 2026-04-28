@@ -386,12 +386,13 @@ internal static class ShiningTradeRequestState
                 return;
 
             ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
-            if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase) ||
-                shiningRoot["preparedIncarnationPackage"] is JsonObject)
+            if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
             {
                 fs.DeleteFile(PendingRequestsPath);
                 return;
             }
+            if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+                return;
 
             requests.RemoveAll(request =>
             {
@@ -435,6 +436,25 @@ internal static class ShiningTradeRequestState
         var requests = requestState.Requests;
         if (requests.Count == 0)
             return null;
+
+        if (IsShiningRealm(currentRealm))
+        {
+            var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
+            var packageMode = ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot);
+            if (packageMode != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+            {
+                var blocked = new StringBuilder();
+                blocked.AppendLine("SHINING TRADE REQUESTS BLOCKED:");
+                blocked.AppendLine(packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.ValidHandoff
+                    ? "  - Valid preparedIncarnationPackage puts the realm in pending-bootstrap handoff mode."
+                    : "  - preparedIncarnationPackage is malformed or fails bootstrap validation, so the realm mode is fail-closed.");
+                blocked.AppendLine("  - Preserve pending_shining_trade_inventory_requests.json; do not delete, truncate, or process ordinary Shining trade during this mode.");
+                blocked.AppendLine($"  - Pending requests detected: {requests.Count}");
+                foreach (var request in requests)
+                    AppendSerializedJsonBlock(blocked, "Blocked pending trade DTO", request);
+                return blocked.ToString();
+            }
+        }
 
         var sb = new StringBuilder();
         sb.AppendLine("SHINING TRADE REQUESTS:");
@@ -562,8 +582,11 @@ internal static class ShiningTradeRequestState
 
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
             return "Shining trade request допустим только при availability = active.";
-        if (shiningRoot["preparedIncarnationPackage"] is JsonObject)
+        var packageMode = ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot);
+        if (packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.ValidHandoff)
             return "Shining trade request недопустим, пока preparedIncarnationPackage ожидает bootstrap.";
+        if (packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.InvalidFault)
+            return "Shining trade request недопустим: preparedIncarnationPackage повреждён или не проходит bootstrap validation.";
 
         return null;
     }
