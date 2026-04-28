@@ -7889,19 +7889,20 @@ public partial class ValidationService
         }
 
         if (newRelicIds.SetEquals(new[] { relicId }) &&
-            TryFindSoulRelicNode(currentSoulRoot, relicId, out var materializedRelic) &&
-            TryAppendRelicCloneToMatchingExpectedCollection(expectedSoulRoot, currentSoulRoot, relicId, materializedRelic))
+            TryFindSoulRelicNode(currentSoulRoot, relicId, out var materializedRelic))
         {
-            if (!JsonNode.DeepEquals(expectedSoulRoot, currentSoulRoot))
-            {
-                issues.Add(new ValidationIssue(
-                    "game_state/meta/soul_state.json",
-                    IssueSeverity.Error,
-                    "Accepted Shining gacha изменил Soul state вне разрешённого diff: exact Ink Feather cost plus exactly one new Soul Relic.",
-                    code: "shining_gacha_soul_state_diff_mismatch",
-                    section: "ShiningAbode",
-                    repairHint: "Сохраняй все pre-turn Soul Relic nodes and unrelated soul_state fields byte-for-byte/canonically unchanged; добавляй только receipt.relicId and exact quotedCostFeathers debit."));
-            }
+            TryAppendRelicCloneToMatchingExpectedCollection(expectedSoulRoot, currentSoulRoot, relicId, materializedRelic);
+        }
+
+        if (!JsonNode.DeepEquals(expectedSoulRoot, currentSoulRoot))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Accepted Shining gacha изменил Soul state вне разрешённого diff: exact Ink Feather cost plus exactly one new Soul Relic.",
+                code: "shining_gacha_soul_state_diff_mismatch",
+                section: "ShiningAbode",
+                repairHint: "Сохраняй все pre-turn Soul Relic nodes and unrelated soul_state fields byte-for-byte/canonically unchanged; добавляй только receipt.relicId and exact quotedCostFeathers debit."));
         }
     }
 

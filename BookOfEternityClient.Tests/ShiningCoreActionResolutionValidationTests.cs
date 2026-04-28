@@ -1068,6 +1068,79 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedRelicGachaWithMissingPreTurnRelicContainerAndUnrelatedSoulMutation_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        preTurnSoulRoot.Remove("soulRelics");
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        Assert.True(ShiningAbodeState.TryApplyRelicGachaAccounting(
+            currentShiningRoot,
+            currentSoulRoot,
+            CloneJsonObject(preTurnResidentRoot),
+            "faction_old",
+            "core_req_shining_gacha_missing_container",
+            "relic_gacha_missing_container",
+            "Сияющий Осколок",
+            "Uncommon",
+            "Rare",
+            17,
+            "2026-04-16T13:00:00Z",
+            out _,
+            out _,
+            out _));
+        currentSoulRoot["soulName"] = "Недопустимо изменённое имя";
+        currentSoulRoot["soulRelics"] = new JsonObject
+        {
+            ["equipped"] = new JsonArray(),
+            ["stored"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["relicId"] = "relic_gacha_missing_container",
+                    ["name"] = "Сияющий Осколок",
+                    ["rarity"] = "Rare"
+                }
+            }
+        };
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(new JsonObject
+        {
+            ["requestId"] = "core_req_shining_gacha_missing_container",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypePullRelicGacha,
+            ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+            ["factionId"] = "faction_old",
+            ["projectId"] = "",
+            ["hallId"] = "",
+            ["resolvedFactionId"] = "",
+            ["relicId"] = "relic_gacha_missing_container",
+            ["relicName"] = "Сияющий Осколок",
+            ["returnCycleId"] = "shining_return_2",
+            ["baseRarity"] = "Uncommon",
+            ["finalRarity"] = "Rare",
+            ["selectedCardIds"] = new JsonArray(),
+            ["newResidentIds"] = new JsonArray(),
+            ["seededProjectIds"] = new JsonArray(),
+            ["generatedDraftVersion"] = 0,
+            ["resolvedAtTurn"] = 17,
+            ["resolvedAtUtc"] = "2026-04-16T13:00:00Z",
+            ["reason"] = "shining_gacha_resolved"
+        });
+
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, currentSoulRoot);
+        var requestRoot = CreateShiningGachaRequestRoot("core_req_shining_gacha_missing_container", "shining_return_2");
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot, requestRoot);
+        await WriteNodeAsync("input/turn_request.json", CreateTurnRequestWithBaseRarity("Uncommon"));
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_gacha_soul_state_diff_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedInvestWithoutLightSparksDebit_Fails()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();

@@ -509,6 +509,20 @@ public partial class ValidationService
 
         var baseRank = GetRarityRank(baseRarity);
         var finalRank = GetRarityRank(finalRarity);
+        if (finalRank == 0)
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json.soulRelics",
+                IssueSeverity.Error,
+                "Direct Chaos Sea gacha должен materialize-ить новую Soul Relic с canonical итоговой редкостью.",
+                code: "direct_chaos_gacha_result_rarity_mismatch",
+                section: "CHAOS_SEA_DIRECT_GACHA",
+                expected: baseRarity,
+                actual: finalRarity,
+                repairHint: "Для direct /gacha используй exact canonical rarity from gachaBaseResult.baseRarity; unknown rarity values are not valid outcomes."));
+            return;
+        }
+
         if (baseRank > 0 &&
             finalRank > 0 &&
             !string.Equals(finalRarity, baseRarity, StringComparison.OrdinalIgnoreCase))
