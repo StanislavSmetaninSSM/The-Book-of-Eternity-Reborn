@@ -175,6 +175,210 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeSocialRoutingTagsResponseModesAndTransferMetadataAreDocumented()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var docs = new[] { matrix, apiSpec, taskGuide, daemonSpec, examples };
+
+        foreach (var tag in new[]
+        {
+            "[GUARDIAN_SOCIAL_TALK_REQUEST]",
+            "[GUARDIAN_SOCIAL_LORE_REQUEST]",
+            "[ABODE_RESIDENT_HISTORY_REQUEST]",
+            "[ABODE_RESIDENT_TALK]",
+            "[ABODE_RESIDENT_TRANSFER_REQUEST]"
+        })
+        {
+            foreach (var doc in docs)
+                Assert.Contains(tag, doc, StringComparison.Ordinal);
+        }
+
+        foreach (var responseMode in new[]
+        {
+            ActorSocialInteractionRequestState.ResponseModeTalkScene,
+            ActorSocialInteractionRequestState.ResponseModeLoreRevealed,
+            ActorSocialInteractionRequestState.ResponseModeLoreRefused,
+            ActorSocialInteractionRequestState.ResponseModeWarning,
+            ActorSocialInteractionRequestState.ResponseModeRefusal,
+            ActorSocialInteractionRequestState.ResponseModeTrustShift,
+            ActorSocialInteractionRequestState.ResponseModeAttitudeShift,
+            GuardianAbodeResidentState.ResponseModeHistoryRevealed,
+            GuardianAbodeResidentState.ResponseModeHistoryRefused,
+            GuardianAbodeResidentState.ResponseModeHistoryPartial,
+            GuardianAbodeResidentState.ResponseModeBondShiftOnly
+        })
+        {
+            foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
+                Assert.Contains(responseMode, doc, StringComparison.Ordinal);
+        }
+
+        foreach (var transferTerm in new[]
+        {
+            GuardianAbodeResidentRequestState.TransferSelectionModeCompetitionRecommended,
+            GuardianAbodeResidentRequestState.TransferSelectionModeManualOverride,
+            GuardianAbodeResidentRequestState.TransferSelectionModeDepartureOnly,
+            "competitionScore",
+            "competitionLabel",
+            "competitionReason"
+        })
+        {
+            foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
+                Assert.Contains(transferTerm, doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void AfterlifeArchiveUpdatesAndDerivedNotificationTriggersAreDocumented()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var term in new[]
+        {
+            "afterlifeArchiveUpdates",
+            "afterlife_notifications.json",
+            "pendingShiningBlessingEffects"
+        })
+        {
+            foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
+                Assert.Contains(term, doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var term in new[]
+        {
+            "command",
+            "add",
+            "remove",
+            "archiveId",
+            "entryType",
+            "sourceLife",
+            "acquiredAtUtc"
+        })
+        {
+            foreach (var doc in new[] { matrix, apiSpec, examples })
+                Assert.Contains(term, doc, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void ShiningForgePromptDocsUseExactActionTypesWithoutWildcard()
+    {
+        var mandatoryDocs = new[]
+        {
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt"),
+            ReadRepoFile("Rules", "Block_CLI_Operations.txt"),
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+        };
+
+        var forgeActionTypes = typeof(ShiningCoreActionRequestState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .Where(value => value.StartsWith("forge_relic.", StringComparison.Ordinal))
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.NotEmpty(forgeActionTypes);
+
+        foreach (var doc in mandatoryDocs)
+        {
+            Assert.DoesNotContain("forge_relic.*", doc, StringComparison.Ordinal);
+            foreach (var actionType in forgeActionTypes)
+                Assert.Contains(actionType, doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void ShiningQueueLimitsAvailabilityAndControlSurfacesAreDocumented()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, examples })
+        {
+            Assert.Contains("pending_shining_abode_actions.json", doc, StringComparison.Ordinal);
+            Assert.Contains("one active", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec })
+        {
+            Assert.Contains("(factionId, tradeCycleId)", doc, StringComparison.Ordinal);
+            Assert.Contains("pending_shining_trade_inventory_requests.json", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { matrix, apiSpec, examples })
+        {
+            Assert.Contains("availability", doc, StringComparison.Ordinal);
+            Assert.Contains("active", doc, StringComparison.Ordinal);
+            Assert.Contains("sealed_until_next_ascension", doc, StringComparison.Ordinal);
+            Assert.Contains("preparedIncarnationPackage", doc, StringComparison.Ordinal);
+            Assert.Contains("system_guardian_attraction.json", doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void ShiningBlessingPostBootstrapEffectsAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var term in new[]
+        {
+            ShiningBlessingEffectState.SoulStateProperty,
+            ShiningBlessingEffectState.MemoryStatusPendingPreTurnOneSelection,
+            ShiningBlessingEffectState.ResourceStatusAppliedAtBootstrap,
+            ShiningBlessingEffectState.RelicStatusPendingEntitlement,
+            ShiningBlessingEffectState.SocialStatusPendingFirstRelationCommit,
+            ShiningBlessingEffectState.RouteStatusPendingEarlyRouteSeed,
+            ShiningBlessingEffectState.LoreStatusPendingLoreInsertion,
+            ShiningBlessingEffectState.SurvivalStatusPendingFirstRuinousFailure,
+            ShiningBlessingEffectState.DescentStatusPendingResidentDescent
+        })
+        {
+            foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
+                Assert.Contains(term, doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void ResidentCompanionManifestationHandoffIsDocumentedForAfterlifeOrigin()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var term in new[]
+        {
+            "pending_resident_companion_manifestation_request.json",
+            "MortalWorldProfile",
+            "sourceResidentId",
+            "sourceImprintId",
+            "sourceGuardianId",
+            "futureCompanionPrompt",
+            "targetIncarnation"
+        })
+        {
+            foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
+                Assert.Contains(term, doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ChaosSeaTravelContractIsDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
