@@ -4,6 +4,13 @@ namespace BookOfEternityClient.Services;
 
 internal static partial class ShiningAbodeState
 {
+    public enum PreparedIncarnationPackageMode
+    {
+        Absent,
+        ValidHandoff,
+        InvalidFault
+    }
+
     public const string StatePath = "game_state/meta/shining_abode_state.json";
 
     public const string AvailabilityActive = "active";
@@ -225,6 +232,23 @@ internal static partial class ShiningAbodeState
     public static bool IsSupportedRarity(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedRarities.Contains(value);
     public static bool IsSupportedFactionLoyaltyTier(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedFactionLoyaltyTiers.Contains(value);
     public static bool IsSupportedFactionRealignmentState(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedFactionRealignmentStates.Contains(value);
+
+    public static PreparedIncarnationPackageMode GetPreparedIncarnationPackageMode(JsonObject? root)
+    {
+        if (root == null ||
+            !root.ContainsKey("preparedIncarnationPackage") ||
+            root["preparedIncarnationPackage"] == null)
+        {
+            return PreparedIncarnationPackageMode.Absent;
+        }
+
+        if (root["preparedIncarnationPackage"] is not JsonObject preparedPackage)
+            return PreparedIncarnationPackageMode.InvalidFault;
+
+        return string.IsNullOrWhiteSpace(ValidatePreparedIncarnationPackageForBootstrap(preparedPackage))
+            ? PreparedIncarnationPackageMode.ValidHandoff
+            : PreparedIncarnationPackageMode.InvalidFault;
+    }
 
     public static string? ValidateRawOwnerStateForActionableMode(JsonObject root)
     {

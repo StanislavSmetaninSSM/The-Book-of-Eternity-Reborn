@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models.GameState;
@@ -188,8 +189,19 @@ public class StateManager
 
             if (root.TryGetProperty("preparedIncarnationPackage", out var pkg))
             {
-                state.HasPendingShiningAbodeBootstrapPackage = pkg.ValueKind == JsonValueKind.Object;
-                state.HasInvalidShiningAbodeBootstrapPackage = pkg.ValueKind is not JsonValueKind.Object and not JsonValueKind.Null;
+                var packageMode = ShiningAbodeState.PreparedIncarnationPackageMode.Absent;
+                if (pkg.ValueKind == JsonValueKind.Object &&
+                    JsonNode.Parse(root.GetRawText()) is JsonObject shiningRoot)
+                {
+                    packageMode = ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot);
+                }
+                else if (pkg.ValueKind != JsonValueKind.Null)
+                {
+                    packageMode = ShiningAbodeState.PreparedIncarnationPackageMode.InvalidFault;
+                }
+
+                state.HasPendingShiningAbodeBootstrapPackage = packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.ValidHandoff;
+                state.HasInvalidShiningAbodeBootstrapPackage = packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.InvalidFault;
             }
         });
 

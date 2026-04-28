@@ -610,7 +610,7 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task BuildControlForNextTurnAsync_MalformedShiningStateKeepsOrdinaryShiningProgression()
+    public async Task BuildControlForNextTurnAsync_MalformedShiningPackageSuppressesOrdinaryShiningProgression()
     {
         await _fs.WriteFileAtomicAsync(ProgressionScheduleService.SchedulePath, """
         {
@@ -659,23 +659,54 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
         var schedule = await ReadScheduleAsync();
 
         Assert.Equal(0, control.ChaosSeaCyclesExpectedThisTurn);
-        Assert.Equal(2, control.GuardianProjectCyclesExpectedThisTurn);
-        Assert.Equal(3, control.ResidentAgencyCyclesExpectedThisTurn);
-        Assert.Equal(4, control.ShiningAbodeCyclesExpectedThisTurn);
-        Assert.Equal(5, control.ShiningFactionCyclesExpectedThisTurn);
-        Assert.Equal(6, control.ShiningTradeCyclesExpectedThisTurn);
-        Assert.Equal(14, control.NextChaosSeaTurnOrdinal);
-        Assert.Equal(10, control.NextGuardianProjectCycleOrdinal);
-        Assert.Equal(11, control.NextResidentAgencyCycleOrdinal);
-        Assert.Equal(12, control.NextShiningAbodeCycleOrdinal);
-        Assert.Equal(13, control.NextShiningFactionCycleOrdinal);
-        Assert.Equal(14, control.NextShiningTradeCycleOrdinal);
-        Assert.True(control.MustEvaluateShiningAbodeProgression);
-        Assert.Equal(2, schedule.PendingGuardianProjectCycles);
-        Assert.Equal(3, schedule.PendingResidentAgencyCycles);
-        Assert.Equal(4, schedule.PendingShiningAbodeCycles);
-        Assert.Equal(5, schedule.PendingShiningFactionCycles);
-        Assert.Equal(6, schedule.PendingShiningTradeCycles);
+        Assert.Equal(0, control.GuardianProjectCyclesExpectedThisTurn);
+        Assert.Equal(0, control.ResidentAgencyCyclesExpectedThisTurn);
+        Assert.Equal(0, control.ShiningAbodeCyclesExpectedThisTurn);
+        Assert.Equal(0, control.ShiningFactionCyclesExpectedThisTurn);
+        Assert.Equal(0, control.ShiningTradeCyclesExpectedThisTurn);
+        Assert.Equal(8, control.NextChaosSeaTurnOrdinal);
+        Assert.Equal(6, control.NextGuardianProjectCycleOrdinal);
+        Assert.Equal(5, control.NextResidentAgencyCycleOrdinal);
+        Assert.Equal(8, control.NextShiningAbodeCycleOrdinal);
+        Assert.Equal(8, control.NextShiningFactionCycleOrdinal);
+        Assert.Equal(8, control.NextShiningTradeCycleOrdinal);
+        Assert.False(control.MustEvaluateShiningAbodeProgression);
+        Assert.Equal(0, schedule.PendingGuardianProjectCycles);
+        Assert.Equal(0, schedule.PendingResidentAgencyCycles);
+        Assert.Equal(0, schedule.PendingShiningAbodeCycles);
+        Assert.Equal(0, schedule.PendingShiningFactionCycles);
+        Assert.Equal(0, schedule.PendingShiningTradeCycles);
+    }
+
+    [Fact]
+    public async Task BuildControlForNextTurnAsync_InvalidShiningPackageObjectSuppressesOrdinaryShiningProgression()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Shining Abode"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, """
+        {
+          "availability": "active",
+          "preparedIncarnationPackage": {
+            "selectedCardIds": ["card_1"],
+            "selectedCards": []
+          }
+        }
+        """);
+
+        var control = await _service.BuildControlForNextTurnAsync();
+
+        Assert.Equal(0, control.ChaosSeaCyclesExpectedThisTurn);
+        Assert.Equal(0, control.GuardianProjectCyclesExpectedThisTurn);
+        Assert.Equal(0, control.ResidentAgencyCyclesExpectedThisTurn);
+        Assert.Equal(0, control.ShiningAbodeCyclesExpectedThisTurn);
+        Assert.Equal(0, control.ShiningFactionCyclesExpectedThisTurn);
+        Assert.Equal(0, control.ShiningTradeCyclesExpectedThisTurn);
+        Assert.False(control.MustEvaluateShiningAbodeProgression);
+        Assert.False(control.AfterlifeCatchupRequired);
     }
 
     [Fact]
@@ -837,7 +868,20 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
           "availability": "active",
           "preparedIncarnationPackage": {
             "selectedCardIds": ["card_1"],
-            "selectedCards": [{ "cardId": "card_1" }]
+            "selectedCards": [
+              {
+                "cardId": "card_1",
+                "dedupeKey": "memory:card_1",
+                "sourceType": "project",
+                "sourceFactionId": "faction_old",
+                "sourceActorId": "project_old",
+                "effectFamily": "memory",
+                "rarity": "common",
+                "displayName": "Память",
+                "displaySummary": "Сохраняет эхо.",
+                "effectPayload": {}
+              }
+            ]
           }
         }
         """);
