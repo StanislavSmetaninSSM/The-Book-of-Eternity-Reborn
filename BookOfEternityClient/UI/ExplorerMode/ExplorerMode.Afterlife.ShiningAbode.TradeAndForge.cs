@@ -735,6 +735,9 @@ public partial class ExplorerMode
             return;
         }
 
+        if (!ConfirmShiningCoreActionRequestPreview(context, request))
+            return;
+
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
         MarkupLine($"[green]Запрос на сияющий призыв реликвии создан. Следующий подтверждённый ход должен взять базовую редкость призыва, применить бонус до +{projectedBonusSteps} и проявить Реликвию Души.[/]");
         WaitForKey();
@@ -920,19 +923,6 @@ public partial class ExplorerMode
             return;
         }
 
-        if (!ConfirmShiningForgeRequest(
-                faction,
-                relicChoice.Value,
-                actionType,
-                targetFormTag,
-                propertyIndex,
-                replacementProperty,
-                addedProperties,
-                cost))
-        {
-            return;
-        }
-
         var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
         {
             ActionType = actionType,
@@ -955,6 +945,15 @@ public partial class ExplorerMode
         {
             MarkupLine($"[yellow]{Markup.Escape(error)}[/]");
             WaitForKey();
+            return;
+        }
+
+        if (!ConfirmShiningCoreActionRequestPreview(
+                context,
+                request,
+                confirmationTitle: "Подтвердить запрос на перековку",
+                confirmChoice: "✅ Создать запрос"))
+        {
             return;
         }
 

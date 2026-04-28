@@ -313,7 +313,7 @@ public partial class ExplorerMode
             }
 
             if (choice.Contains("Запросить открытие", StringComparison.Ordinal))
-                await HandleNativeFactionDiscoveryAsync(context.Root, feathers);
+                await HandleNativeFactionDiscoveryAsync(context, feathers);
             else if (choice.Contains("Инвестировать", StringComparison.Ordinal))
                 await HandleShiningFactionInvestmentAsync(context);
             else if (choice.Contains("Завершить проект", StringComparison.Ordinal))
@@ -347,7 +347,7 @@ public partial class ExplorerMode
         return choices;
     }
 
-    private async Task HandleNativeFactionDiscoveryAsync(JsonObject shiningRoot, int feathers)
+    private async Task HandleNativeFactionDiscoveryAsync(ShiningContext context, int feathers)
     {
         var discoveryCost = ShiningAbodeState.GetNativeDiscoveryCost();
         if (feathers < discoveryCost.Feathers)
@@ -360,7 +360,7 @@ public partial class ExplorerMode
         var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
         {
             ActionType = ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction,
-            RadianceTierAtRequest = GetNodeInt(shiningRoot["radiance"]?["tier"]),
+            RadianceTierAtRequest = GetNodeInt(context.Root["radiance"]?["tier"]),
             QuotedCostFeathers = discoveryCost.Feathers,
             QuotedCostLightSparks = discoveryCost.LightSparks,
             CreatedAtTurn = _stateManager.CurrentState.TurnNumber + 1
@@ -372,6 +372,9 @@ public partial class ExplorerMode
             WaitForKey();
             return;
         }
+
+        if (!ConfirmShiningCoreActionRequestPreview(context, request))
+            return;
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
         MarkupLine("[green]Создан ожидающий запрос действия Обители: открытие нативной фракции. На принятом ходу нужно материализовать новую фракцию и записать подтверждение.[/]");
@@ -445,6 +448,9 @@ public partial class ExplorerMode
             WaitForKey();
             return;
         }
+
+        if (!ConfirmShiningCoreActionRequestPreview(context, request))
+            return;
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
         MarkupLine("[green]Создан ожидающий запрос действия Обители: инвестиция во фракцию. На принятом ходу нужно применить каноническое усиление и записать подтверждение.[/]");

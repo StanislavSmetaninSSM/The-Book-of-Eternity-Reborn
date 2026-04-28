@@ -3016,6 +3016,57 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_ShiningAbode_InvestmentPreviewCanCancelWithoutWritingPendingRequest()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "✨ Основные действия", "← Назад");
+        _console.QueueSelection("Основные действия Сияющей Обители", "📈 Инвестировать во фракцию", "← Назад");
+        _console.QueueSelection("Инвестиция во фракцию", "Хор Рассвета");
+        _console.QueueSelection("Подтвердить действие Обители", "← Отмена");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_investment_preview_cancel");
+        Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Полный предпросмотр контракта Сияющей Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_shining_abode_actions.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("quotedCostFeathers", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("coreActionReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Пока этот request не закрыт", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningAbode_PreparePackagePreviewSeparatesBootstrapHandoff()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "🚪 Врата и благословения", "← Назад");
+        _console.QueueSelection("Врата Сияющей Обители", "🌱 Подготовить новую жизнь");
+        _console.QueueSelection("Подтвердить действие Обители", "✅ Создать pending request");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_prepare_package_preview");
+
+        var pendingRaw = await _fs.ReadFileAsync(ShiningCoreActionRequestState.PendingActionsRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("\"actionType\": \"prepare_incarnation_package\"", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("\"sourceDraftVersion\": 4", pendingRaw, StringComparison.Ordinal);
+        Assert.Contains("\"selectedCards\"", pendingRaw, StringComparison.Ordinal);
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("preparedIncarnationPackage", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("TriggerIncarnation", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Runtime позже сам", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Soul state и ресурсы не меняются", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningTradeAndForge_ForgeAuthoringUsesPreviewDrivenFlow()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);

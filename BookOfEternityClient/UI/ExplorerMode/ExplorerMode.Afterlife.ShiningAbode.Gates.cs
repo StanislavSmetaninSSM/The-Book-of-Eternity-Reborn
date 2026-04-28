@@ -57,6 +57,9 @@ public partial class ExplorerMode
             return;
         }
 
+        if (!ConfirmShiningCoreActionRequestPreview(context, request))
+            return;
+
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
         MarkupLine($"[green]Создан ожидающий запрос действия Обители: завершение проекта. На принятом ходу нужно материализовать завершённый проект и списать {cost.Feathers} / {cost.LightSparks}. Любимый архетип влияет только на эту цену; strengthReward проекта определяется только tier: 8/12/16.[/]");
         WaitForKey();
@@ -86,6 +89,9 @@ public partial class ExplorerMode
             return;
         }
 
+        if (!ConfirmShiningCoreActionRequestPreview(context, request))
+            return;
+
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
         MarkupLine(support
             ? "[green]Создан ожидающий запрос действия Обители: поддержка проекта. На принятом ходу нужно включить поддержку проекта и пометить черновик Врат устаревшим, если он открыт.[/]"
@@ -114,6 +120,9 @@ public partial class ExplorerMode
             WaitForKey();
             return;
         }
+
+        if (!ConfirmShiningCoreActionRequestPreview(context, request))
+            return;
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
         MarkupLine("[green]Создан ожидающий запрос действия Обители: отправка проекта в историю. На принятом ходу нужно перенести проект в историю, пересчитать силу и записать подтверждение.[/]");
@@ -171,6 +180,9 @@ public partial class ExplorerMode
                     WaitForKey();
                     continue;
                 }
+
+                if (!ConfirmShiningCoreActionRequestPreview(context, request))
+                    continue;
 
                 await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
                 MarkupLine("[green]Создан ожидающий запрос действия Обители: открытие Врат. На принятом ходу нужно материализовать зафиксированный набор и записать подтверждение.[/]");
@@ -234,6 +246,9 @@ public partial class ExplorerMode
                     WaitForKey();
                     continue;
                 }
+
+                if (!ConfirmShiningCoreActionRequestPreview(context, request))
+                    continue;
 
                 await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
                 MarkupLine("[green]Создан ожидающий запрос действия Обители: подготовка новой жизни. На принятом ходу нужно записать зафиксированный пакет и перевести runtime в режим стартовой передачи.[/]");
