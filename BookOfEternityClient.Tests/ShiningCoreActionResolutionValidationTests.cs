@@ -183,6 +183,47 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_ConcurrentFoundingDoesNotHideUnrelatedResidentMutation()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var foundingRequest = CreateFoundingRequest("founding_req_dawn_choir", "faction_dawn_choir", "hall_dawn_choir");
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        MaterializeAcceptedFounding(currentShiningRoot, currentResidentRoot, foundingRequest);
+        currentResidentRoot["entries"]!.AsArray()[0]!.AsObject()["displayName"] = "Недопустимо изменённая Лиора";
+        Assert.True(ShiningAbodeState.TryOpenGates(currentShiningRoot, CloneJsonObject(currentResidentRoot), out _));
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(CreateOpenGatesReceipt(
+            "core_req_open_gates_with_bad_resident",
+            GetNodeInt(currentShiningRoot["gates"]?["draftVersion"])));
+
+        var coreRequestRoot = CreateOpenGatesRequestRoot("core_req_open_gates_with_bad_resident");
+        var foundingRequestRoot = new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(foundingRequest.DeepClone())
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, coreRequestRoot);
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, foundingRequestRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            coreRequestRoot,
+            new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
+            {
+                [ShiningFactionRequestState.PendingFoundingsRequestPath] = foundingRequestRoot
+            });
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_unexpected_resident_state_change", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedOpenGatesWithConcurrentTrade_Passes()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();

@@ -7456,8 +7456,7 @@ public partial class ValidationService
                 repairHint: "Для accepted core action materialize-ь shining_abode_state.json exactly as canonical helper projection dictates."));
         }
 
-        if (!hasConcurrentPoliticalClosure &&
-            !JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot))
+        if (!JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot))
         {
             issues.Add(new ValidationIssue(
                 GuardianAbodeResidentState.StatePath,
@@ -8160,7 +8159,7 @@ public partial class ValidationService
     {
         var stateChanged =
             !ShiningCoreActionProjectedStateMatches(null, preTurnShiningRoot, currentShiningRoot, hasConcurrentPoliticalClosure) ||
-            (!hasConcurrentPoliticalClosure && !JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot)) ||
+            !JsonNode.DeepEquals(preTurnResidentsRoot, currentResidentsRoot) ||
             !JsonNode.DeepEquals(preTurnSoulRoot, currentSoulRoot);
 
         if (stateChanged)
