@@ -74,6 +74,8 @@ public sealed class GuardianTradeService
         bool InventoryRequestCreatedThisCall,
         string? InventoryStatusMessage,
         string? PendingGmAction,
+        string? PendingInventoryRequestPath,
+        string? PendingInventoryRequestJson,
         IReadOnlyList<GuardianTradeOffer> Offers,
         IReadOnlyList<GuardianBuybackOffer> BuybackOffers);
 
@@ -93,7 +95,7 @@ public sealed class GuardianTradeService
         _logger = logger;
     }
 
-    public async Task<GuardianTradeView?> EnsureTradeInventoryAsync(string guardianId, int currentIncarnation, int currentTurn)
+    public async Task<GuardianTradeView?> EnsureTradeInventoryAsync(string guardianId, int currentIncarnation, int currentTurn, bool createPendingRequests = true)
     {
         if (currentTurn <= 0)
             throw new ArgumentOutOfRangeException(nameof(currentTurn), "Подготовка или проверка витрины Хранителя требует актуальный номер хода.");
@@ -109,7 +111,7 @@ public sealed class GuardianTradeService
 
         var preGuardiansJson = root.ToJsonString(JsonOpts);
         var preTrackerJson = trackerRoot?.ToJsonString(JsonOpts);
-        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(root, guardian, currentIncarnation, currentTurn, trackerRoot);
+        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(root, guardian, currentIncarnation, currentTurn, trackerRoot, createPendingRequests);
         if (changed || trackerChanged)
         {
             var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
@@ -201,7 +203,7 @@ public sealed class GuardianTradeService
         if (!GuardianTradeAllowedHere(guardiansRoot, guardian))
             return new GuardianTradeOperationResult(false, false, "Торговать можно только с текущим активным Хранителем в обители, где вы сейчас находитесь.");
 
-        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(guardiansRoot, guardian, currentIncarnation, currentTurn, trackerRoot);
+        var (_, view, changed, trackerChanged) = await EnsureTradeInventoryStateAsync(guardiansRoot, guardian, currentIncarnation, currentTurn, trackerRoot, createPendingRequests: true);
         if (view.TradeBlocked)
             return new GuardianTradeOperationResult(false, false, view.BlockReason ?? "Торговля недоступна.");
         if (!view.InventoryReady)
@@ -415,7 +417,8 @@ public sealed class GuardianTradeService
         JsonObject guardian,
         int currentIncarnation,
         int currentTurn,
-        JsonObject? trackerRoot)
+        JsonObject? trackerRoot,
+        bool createPendingRequests)
     {
         var guardianId = GetNodeString(guardian["guardianId"]) ?? "";
         var guardianName = GuardianManifestation.GetDisplayName(guardian);
@@ -433,6 +436,7 @@ public sealed class GuardianTradeService
         var inventoryRequestCreatedThisCall = false;
         string? inventoryStatusMessage = null;
         string? pendingGmAction = null;
+        string? pendingInventoryRequestJson = null;
         var blockedReason = blocked ? BuildTradeBlockedReason(root, guardian, reputation) : null;
 
         if (!blocked)
@@ -519,9 +523,13 @@ public sealed class GuardianTradeService
                             ProjectBonusSignature = GuardianProjectState.BuildTradeBonusSignature(derivedState),
                             CreatedAtTurn = Math.Max(0, currentTurn)
                         };
-                        await GuardianTradeRequestState.WriteAsync(_fs, pendingRequest);
-                        inventoryRequestPending = true;
-                        inventoryRequestCreatedThisCall = true;
+                        pendingInventoryRequestJson = JsonSerializer.Serialize(pendingRequest, JsonOpts);
+                        if (createPendingRequests)
+                        {
+                            await GuardianTradeRequestState.WriteAsync(_fs, pendingRequest);
+                            inventoryRequestPending = true;
+                            inventoryRequestCreatedThisCall = true;
+                        }
                     }
 
                     inventoryStatusMessage = inventoryRequestCreatedThisCall
@@ -598,9 +606,13 @@ public sealed class GuardianTradeService
                         ProjectBonusSignature = GuardianProjectState.BuildTradeBonusSignature(derivedState),
                         CreatedAtTurn = Math.Max(0, currentTurn)
                     };
-                    await GuardianTradeRequestState.WriteAsync(_fs, pendingRequest);
-                    inventoryRequestPending = true;
-                    inventoryRequestCreatedThisCall = true;
+                    pendingInventoryRequestJson = JsonSerializer.Serialize(pendingRequest, JsonOpts);
+                    if (createPendingRequests)
+                    {
+                        await GuardianTradeRequestState.WriteAsync(_fs, pendingRequest);
+                        inventoryRequestPending = true;
+                        inventoryRequestCreatedThisCall = true;
+                    }
                     pendingGmAction =
                         $"[{GuardianTradeRequestState.ActionTag}] Игрок открывает торговлю с Хранителем {guardianName} ({guardianId}), но актуальная витрина отсутствует или устарела. " +
                         $"Обязательно прочитай {GuardianTradeRequestState.PendingRequestPath} как client-authored contract. " +
@@ -626,7 +638,8 @@ public sealed class GuardianTradeService
                 inventoryRequestPending,
                 inventoryRequestCreatedThisCall,
                 inventoryStatusMessage,
-                pendingGmAction),
+                pendingGmAction,
+                pendingInventoryRequestJson),
             changed,
             trackerChanged);
     }
@@ -640,7 +653,8 @@ public sealed class GuardianTradeService
         bool inventoryRequestPending,
         bool inventoryRequestCreatedThisCall,
         string? inventoryStatusMessage,
-        string? pendingGmAction)
+        string? pendingGmAction,
+        string? pendingInventoryRequestJson = null)
     {
         var guardianId = GetNodeString(guardian["guardianId"]) ?? "";
         var guardianName = GuardianManifestation.GetDisplayName(guardian);
@@ -687,6 +701,8 @@ public sealed class GuardianTradeService
             inventoryRequestCreatedThisCall,
             inventoryStatusMessage,
             pendingGmAction,
+            string.IsNullOrWhiteSpace(pendingInventoryRequestJson) ? null : GuardianTradeRequestState.PendingRequestPath,
+            pendingInventoryRequestJson,
             offers,
             buybackOffers);
     }

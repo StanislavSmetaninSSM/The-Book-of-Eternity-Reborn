@@ -1,6 +1,7 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -110,6 +111,59 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
             ReturnCycleId = "return_2",
             DerivedTradeSlotCount = 2
         }));
+
+        Assert.True(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
+        Assert.Equal("{", await _fs.ReadFileAsync(GuardianTradeRequestState.PendingRequestPath));
+    }
+
+    [Fact]
+    public async Task GuardianTradeRequest_WritePreparedJsonAsync_ExistingForeignRequest_ThrowsWithoutOverwrite()
+    {
+        await GuardianTradeRequestState.WriteAsync(_fs, new GuardianTradeRequestState.PendingGuardianTradeRequest
+        {
+            RequestId = "guardian_trade_existing",
+            GuardianId = "guardian_alpha",
+            GuardianName = "Азалия",
+            AbodeId = "abode_alpha",
+            ReturnCycleId = "return_2",
+            DerivedTradeSlotCount = 2
+        });
+
+        var incomingJson = JsonSerializer.Serialize(new GuardianTradeRequestState.PendingGuardianTradeRequest
+        {
+            RequestId = "guardian_trade_incoming",
+            GuardianId = "guardian_beta",
+            GuardianName = "Варак",
+            AbodeId = "abode_beta",
+            ReturnCycleId = "return_3",
+            DerivedTradeSlotCount = 4
+        });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => GuardianTradeRequestState.WritePreparedJsonAsync(_fs, incomingJson));
+
+        var pending = await GuardianTradeRequestState.ReadAsync(_fs);
+        Assert.NotNull(pending);
+        Assert.Equal("guardian_trade_existing", pending!.RequestId);
+        Assert.Equal("guardian_alpha", pending.GuardianId);
+        Assert.Equal("return_2", pending.ReturnCycleId);
+    }
+
+    [Fact]
+    public async Task GuardianTradeRequest_WritePreparedJsonAsync_MalformedExistingFile_ThrowsAndPreservesCorruption()
+    {
+        await _fs.WriteFileAtomicAsync(GuardianTradeRequestState.PendingRequestPath, "{");
+
+        var incomingJson = JsonSerializer.Serialize(new GuardianTradeRequestState.PendingGuardianTradeRequest
+        {
+            RequestId = "guardian_trade_incoming",
+            GuardianId = "guardian_alpha",
+            GuardianName = "Азалия",
+            AbodeId = "abode_alpha",
+            ReturnCycleId = "return_2",
+            DerivedTradeSlotCount = 2
+        });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => GuardianTradeRequestState.WritePreparedJsonAsync(_fs, incomingJson));
 
         Assert.True(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
         Assert.Equal("{", await _fs.ReadFileAsync(GuardianTradeRequestState.PendingRequestPath));

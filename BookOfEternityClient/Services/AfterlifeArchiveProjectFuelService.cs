@@ -38,14 +38,21 @@ public sealed class AfterlifeArchiveProjectFuelService
         string ArchiveId,
         string ArchiveTitle,
         string Summary,
-        string PendingGmAction);
+        string PendingGmAction,
+        string PendingRequestPath,
+        string PendingRequestJson,
+        string? PreviousPendingRequestJson,
+        string SoulStatePath,
+        string ReservedSoulStateJson,
+        string? PreviousSoulStateJson);
 
     public async Task<ProjectFuelRequestResult?> CreateRequestAsync(
         string guardianId,
         string guardianName,
         string archiveId,
         string? currentRealm,
-        int currentTurn)
+        int currentTurn,
+        bool commit = true)
     {
         if (!IsAfterlifeRealm(currentRealm) ||
             string.IsNullOrWhiteSpace(guardianId) ||
@@ -150,16 +157,19 @@ public sealed class AfterlifeArchiveProjectFuelService
                 affectedArchiveIds: new[] { archiveId },
                 affectedArchiveRequestIds: new[] { request.RequestId })).ToJsonString(JsonOpts);
 
-        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
-                _fs,
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    AfterlifeArchiveActionState.ProjectFuelRequestPath,
-                    preProjectFuelRequestJson,
-                    postProjectFuelRequestJson),
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    "game_state/meta/soul_state.json",
-                    preSoulJson,
-                    postSoulJson)))
+        if (commit &&
+            !await CoordinatedStateWriteHelper.TryCommitAsync(
+                    _fs,
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        AfterlifeArchiveActionState.ProjectFuelRequestPath,
+                        preProjectFuelRequestJson,
+                        postProjectFuelRequestJson,
+                        RequireCurrentBaseline: true),
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        "game_state/meta/soul_state.json",
+                        preSoulJson,
+                        postSoulJson,
+                        RequireCurrentBaseline: true)))
         {
             return null;
         }
@@ -187,7 +197,29 @@ public sealed class AfterlifeArchiveProjectFuelService
             archiveId,
             request.ArchiveTitle,
             summary,
-            gmAction);
+            gmAction,
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            postProjectFuelRequestJson,
+            preProjectFuelRequestJson,
+            "game_state/meta/soul_state.json",
+            postSoulJson,
+            preSoulJson);
+    }
+
+    public async Task<bool> CommitPreparedRequestAsync(ProjectFuelRequestResult result)
+    {
+        return await CoordinatedStateWriteHelper.TryCommitAsync(
+            _fs,
+            new CoordinatedStateWriteHelper.PlannedWrite(
+                result.PendingRequestPath,
+                result.PreviousPendingRequestJson,
+                result.PendingRequestJson,
+                RequireCurrentBaseline: true),
+            new CoordinatedStateWriteHelper.PlannedWrite(
+                result.SoulStatePath,
+                result.PreviousSoulStateJson,
+                result.ReservedSoulStateJson,
+                RequireCurrentBaseline: true));
     }
 
     private async Task<int> ReadGuardianReputationAsync(string guardianId)
