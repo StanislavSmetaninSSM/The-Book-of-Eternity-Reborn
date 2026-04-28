@@ -7069,6 +7069,8 @@ public partial class ValidationService
                string.Equals(GetNodeString(receipt["hallName"]), request.ProposedHallName, StringComparison.Ordinal) &&
                string.Equals(GetNodeString(receipt["factionId"]), request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["hallId"]), request.ProposedHallId, StringComparison.OrdinalIgnoreCase) &&
+               GetNodeInt(receipt["quotedCostFeathers"]) == request.QuotedCostFeathers &&
+               GetNodeInt(receipt["quotedCostLightSparks"]) == request.QuotedCostLightSparks &&
                receiptSupporters.SetEquals(requestSupporters);
     }
 

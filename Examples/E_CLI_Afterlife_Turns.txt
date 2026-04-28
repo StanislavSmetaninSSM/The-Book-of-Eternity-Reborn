@@ -1633,6 +1633,8 @@ Input fragment:
           "res_liora_001",
           "res_tavian_001"
         ],
+        "quotedCostFeathers": 25,
+        "quotedCostLightSparks": 15,
         "createdAtTurn": 301,
         "createdAtUtc": "2026-04-24T10:10:00Z"
       }
@@ -1695,6 +1697,8 @@ Correct Shining state patch:
         "res_liora_001",
         "res_tavian_001"
       ],
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
       "resolvedAtTurn": 301,
       "resolvedAtUtc": "2026-04-24T10:12:00Z",
       "reason": "player founded a social-memory Shining faction"
@@ -3041,6 +3045,7 @@ invest_in_faction
 complete_project
   Request requires: factionId, projectDraft, quoted costs from the canonical quote.
   State result: spend exact costs, append one completed project generated from projectDraft, possibly add Radiance XP for a newly counted archetype, recompute factionStrength, mark gates stale.
+  Favored archetype is cost-only: if projectDraft.projectArchetype matches faction.charter.favoredArchetype, the quote is 5 Feathers and 5 Light Sparks cheaper; strengthReward is still tier-only (tier 1 = 8, tier 2 = 12, tier 3 = 16).
   Receipt target: factionId and non-empty projectId of the completed project.
 
 support_project

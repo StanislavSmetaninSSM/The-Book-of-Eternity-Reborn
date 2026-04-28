@@ -28,7 +28,7 @@ public partial class ExplorerMode
 
             Clear();
             Write(BuildShiningOverviewPanel(context.Root, context.ResidentRoot, context.GuardiansRoot));
-            Write(BuildShiningTradeAndForgePanel(context.Root, context.ResidentRoot, tradeRequests));
+            Write(BuildShiningTradeAndForgePanel(context.Root, context.SoulRoot, context.ResidentRoot, tradeRequests));
 
             var choice = Prompt(new SelectionPrompt<string>()
                 .Title("[bold yellow]Торговля и кузня Сияющей Обители[/]")
@@ -289,6 +289,7 @@ public partial class ExplorerMode
 
     private Panel BuildShiningTradeAndForgePanel(
         JsonObject shiningRoot,
+        JsonObject? soulRoot,
         JsonObject? residentRoot,
         IReadOnlyList<ShiningTradeRequestState.PendingShiningTradeInventoryRequest> tradeRequests)
     {
@@ -325,13 +326,35 @@ public partial class ExplorerMode
                 var hasRefinement = ShiningAbodeState.FactionHasSupportedProjectArchetype(faction, ShiningAbodeState.ProjectArchetypeRefinement);
                 var gachaBonusSteps = ShiningAbodeState.GetProjectedShiningGachaBonusSteps(shiningRoot, residentRoot, faction);
                 var tradeStatus = tradeTier >= 1 ? "активна" : "спит";
-                var hasInventory = faction["tradeInventory"] is JsonObject;
-                var hasPendingRequest = tradeRequests.Any(request => string.Equals(request.FactionId, factionId, StringComparison.OrdinalIgnoreCase));
+                var currentContract = BuildShiningTradeContractSnapshot(soulRoot, residentRoot, faction);
+                var sameCycleRequests = tradeRequests
+                    .Where(request =>
+                        string.Equals(request.FactionId, factionId, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(request.TradeCycleId, currentContract.TradeCycleId, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                var matchingPendingRequest = sameCycleRequests.Count == 1 ? sameCycleRequests[0] : null;
+                var hasDuplicatePendingRequests = sameCycleRequests.Count > 1;
+                var tradeInventory = faction["tradeInventory"] as JsonObject;
+                var inventoryMatchesCurrentContract = ShiningTradeRequestState.InventoryMatchesRequestContract(tradeInventory, currentContract);
+                var inventoryReady = matchingPendingRequest != null
+                    ? ShiningTradeRequestState.HasReadyInventoryForCurrentContract(faction, matchingPendingRequest)
+                    : ShiningTradeRequestState.FindLatestAuthoritativeReadyReceiptForCurrentCycle(faction, currentContract.TradeCycleId) != null &&
+                      inventoryMatchesCurrentContract;
                 lines.Add($"• {Markup.Escape(factionName)} [dim]({Markup.Escape(factionId)})[/]");
                 lines.Add($"  торговля {tradeStatus}, уровень {tradeTier}, витрина {stockCount}, потолок {Markup.Escape(rarityCeiling)}, услуги x{serviceMultiplier:0.00}, очищение {(hasRefinement ? "раскрыто" : "не раскрыто")}, бонус призыва +{gachaBonusSteps}");
                 if (tradeTier >= 1)
                 {
-                    var inventoryState = hasInventory ? "готова" : hasPendingRequest ? "ожидает решения" : "не запрошена";
+                    var inventoryState = inventoryReady
+                        ? "готова по текущему контракту"
+                        : hasDuplicatePendingRequests
+                        ? "несколько pending-запросов одного цикла"
+                        : matchingPendingRequest != null
+                        ? "ожидает решения"
+                        : tradeInventory != null
+                        ? inventoryMatchesCurrentContract
+                            ? "есть подходящая витрина без canonical ready receipt"
+                            : "устарела или не совпадает с текущим контрактом"
+                        : "не запрошена";
                     lines.Add($"  витрина: {inventoryState}");
                 }
             }

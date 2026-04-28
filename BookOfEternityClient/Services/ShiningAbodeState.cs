@@ -796,9 +796,7 @@ internal static partial class ShiningAbodeState
             isSupported = false;
         project["isSupported"] = isSupported;
 
-        project["strengthReward"] = ResolveProjectStrengthReward(
-            tier,
-            string.Equals(project["projectArchetype"]?.GetValue<string>(), favoredArchetype, StringComparison.OrdinalIgnoreCase));
+        project["strengthReward"] = ResolveProjectStrengthReward(tier);
         project["completedAtTurn"] = Math.Max(0, GetNodeInt(project["completedAtTurn"], 0));
         project["completedAtUtc"] = GetNodeString(project["completedAtUtc"]) ?? string.Empty;
     }
@@ -1495,7 +1493,7 @@ internal static partial class ShiningAbodeState
         };
     }
 
-    private static int ResolveProjectStrengthReward(int tier, bool favoredArchetypeMatch)
+    private static int ResolveProjectStrengthReward(int tier)
     {
         return Math.Clamp(tier, 1, 3) switch
         {

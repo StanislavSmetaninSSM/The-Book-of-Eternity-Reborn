@@ -47,6 +47,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
                 ["summary"] = "Союз резидентов, которые строят силу через согласие."
             },
             ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael", "resident_serit"),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
             ["createdAtTurn"] = 184,
             ["createdAtUtc"] = "2026-04-16T15:20:00Z"
         };
@@ -95,6 +97,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
             ["hallId"] = proposedHallId,
             ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
             ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael", "resident_serit"),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
             ["resolvedAtTurn"] = 184,
             ["resolvedAtUtc"] = "2026-04-16T15:24:00Z",
             ["reason"] = "founding_accepted"
@@ -145,6 +149,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
                 ["summary"] = "Собирает утренние клятвы."
             },
             ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael"),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
             ["createdAtTurn"] = 184,
             ["createdAtUtc"] = "2026-04-16T15:20:00Z"
         };
@@ -193,6 +199,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
             ["hallId"] = "hall_dawn_choir",
             ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
             ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael"),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
             ["resolvedAtTurn"] = 0,
             ["resolvedAtUtc"] = "",
             ["reason"] = "founding_accepted"
