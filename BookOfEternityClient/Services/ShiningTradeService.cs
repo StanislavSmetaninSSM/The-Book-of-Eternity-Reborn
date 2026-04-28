@@ -435,8 +435,11 @@ internal static class ShiningTradeService
 
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
             return "Сияющая торговля доступна только когда Обитель активна.";
-        if (shiningRoot["preparedIncarnationPackage"] is JsonObject)
+        var packageMode = ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot);
+        if (packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.ValidHandoff)
             return "Сияющая торговля недоступна, пока пакет новой жизни ждёт следующего воплощения.";
+        if (packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.InvalidFault)
+            return "Сияющая торговля недоступна: preparedIncarnationPackage повреждён или не проходит bootstrap validation.";
         if (tradeTier <= 0)
             return "У этой фракции торговая витрина текущего цикла пока не открывается.";
 
