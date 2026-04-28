@@ -632,6 +632,8 @@ internal static class ShiningFactionRequestState
             ClearAllRequests(fs);
             return;
         }
+        if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+            return;
 
         var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
         if (residentRoot != null)
@@ -714,6 +716,29 @@ internal static class ShiningFactionRequestState
         var leadershipRequests = await ReadLeadershipTransitionRequestsAsync(fs);
         if (foundingRequests.Count == 0 && realignmentRequests.Count == 0 && leadershipRequests.Count == 0)
             return null;
+
+        if (IsShiningRealm(currentRealm))
+        {
+            var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
+            var packageMode = ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot);
+            if (packageMode != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+            {
+                var blocked = new StringBuilder();
+                blocked.AppendLine("SHINING ABODE POLITICAL REQUESTS BLOCKED:");
+                blocked.AppendLine(packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.ValidHandoff
+                    ? "  - Valid preparedIncarnationPackage puts the realm in pending-bootstrap handoff mode."
+                    : "  - preparedIncarnationPackage is malformed or fails bootstrap validation, so the realm mode is fail-closed.");
+                blocked.AppendLine("  - Preserve Shining political pending files; do not delete, truncate, or process ordinary Shining politics during this mode.");
+                blocked.AppendLine($"  - Pending requests detected: {foundingRequests.Count + realignmentRequests.Count + leadershipRequests.Count}");
+                foreach (var request in foundingRequests)
+                    AppendSerializedJsonBlock(blocked, "Blocked pending founding DTO", request);
+                foreach (var request in realignmentRequests)
+                    AppendSerializedJsonBlock(blocked, "Blocked pending realignment DTO", request);
+                foreach (var request in leadershipRequests)
+                    AppendSerializedJsonBlock(blocked, "Blocked pending leadership DTO", request);
+                return blocked.ToString();
+            }
+        }
 
         var sb = new StringBuilder();
         sb.AppendLine("SHINING ABODE POLITICAL REQUESTS:");
@@ -848,8 +873,11 @@ internal static class ShiningFactionRequestState
 
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
             return "Shining political request допустим только при availability = active.";
-        if (shiningRoot["preparedIncarnationPackage"] is JsonObject)
+        var packageMode = ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot);
+        if (packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.ValidHandoff)
             return "Shining political request недопустим, пока preparedIncarnationPackage ожидает bootstrap.";
+        if (packageMode == ShiningAbodeState.PreparedIncarnationPackageMode.InvalidFault)
+            return "Shining political request недопустим: preparedIncarnationPackage повреждён или не проходит bootstrap validation.";
 
         return null;
     }

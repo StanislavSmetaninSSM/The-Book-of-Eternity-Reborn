@@ -117,6 +117,7 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
         {
             [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request)
         });
+        await WriteValidatedSnapshotStateAsync(CreateBaseShiningRoot(), CreateSoulStateRoot(currentFeathers: 75));
         await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             [ShiningFactionRequestState.PendingFoundingsRequestPath] = backupPath
@@ -127,6 +128,56 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_founding_missing_resolution", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_founding_missing_faction_materialization", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_founding_supporter_not_reassigned", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_founding_reserved_light_sparks_rollback", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_founding_reserved_ink_feathers_rollback", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidatePendingShiningFoundingResolutionAsync_AcceptedFoundingRestoredLightSparks_Fails()
+    {
+        const string requestId = "founding_req_light_sparks_rollback";
+        var request = CreateFoundingRequest(requestId, "faction_light_sparks_rollback", "hall_light_sparks_rollback");
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        currentShiningRoot["lightSparks"] = GetNodeInt(preTurnShiningRoot["lightSparks"]) + ShiningFactionRequestState.FactionFoundingCostLightSparks;
+        var residentRoot = CreateBaseResidentRoot();
+        AddAcceptedFoundingMaterialization(currentShiningRoot, residentRoot, request);
+
+        await SeedCurrentStateAsync(currentShiningRoot, residentRoot, currentFeathers: 75);
+        await SeedFoundingPendingSnapshotAsync(
+            request,
+            preTurnShiningRoot,
+            CreateSoulStateRoot(currentFeathers: 75),
+            "game_state/control/pending_turn_snapshot/pre_shining_founding_light_sparks_rollback.json");
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningFoundingResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_founding_reserved_light_sparks_rollback", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidatePendingShiningFoundingResolutionAsync_AcceptedFoundingRestoredInkFeathers_Fails()
+    {
+        const string requestId = "founding_req_feather_rollback";
+        var request = CreateFoundingRequest(requestId, "faction_feather_rollback", "hall_feather_rollback");
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var residentRoot = CreateBaseResidentRoot();
+        AddAcceptedFoundingMaterialization(currentShiningRoot, residentRoot, request);
+
+        await SeedCurrentStateAsync(
+            currentShiningRoot,
+            residentRoot,
+            currentFeathers: 75 + ShiningFactionRequestState.FactionFoundingCostFeathers);
+        await SeedFoundingPendingSnapshotAsync(
+            request,
+            preTurnShiningRoot,
+            CreateSoulStateRoot(currentFeathers: 75),
+            "game_state/control/pending_turn_snapshot/pre_shining_founding_feather_rollback.json");
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningFoundingResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_founding_reserved_ink_feathers_rollback", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -686,14 +737,9 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_missing_history", StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task SeedCurrentStateAsync(JsonObject shiningRoot, JsonObject residentRoot)
+    private async Task SeedCurrentStateAsync(JsonObject shiningRoot, JsonObject residentRoot, int currentFeathers = 75)
     {
-        await WriteNodeAsync("game_state/meta/soul_state.json", new JsonObject
-        {
-            ["currentRealm"] = "Shining Abode",
-            ["currentIncarnation"] = 2,
-            ["soulName"] = "Тестовая душа"
-        });
+        await WriteNodeAsync("game_state/meta/soul_state.json", CreateSoulStateRoot(currentFeathers));
         await WriteNodeAsync("game_state/meta/guardians.json", new JsonObject
         {
             ["guardians"] = new JsonArray
@@ -810,6 +856,99 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
         return root;
     }
 
+    private static JsonObject CreateSoulStateRoot(int currentFeathers) => new()
+    {
+        ["currentRealm"] = "Shining Abode",
+        ["currentIncarnation"] = 2,
+        ["soulName"] = "Тестовая душа",
+        ["inkFeathers"] = new JsonObject
+        {
+            ["current"] = currentFeathers,
+            ["total"] = Math.Max(currentFeathers, 100)
+        }
+    };
+
+    private static JsonObject CreateFoundingRequest(string requestId, string proposedFactionId, string proposedHallId) => new()
+    {
+        ["requestId"] = requestId,
+        ["proposedFactionId"] = proposedFactionId,
+        ["proposedHallId"] = proposedHallId,
+        ["proposedHallName"] = "Зал Проверки Резервов",
+        ["proposedHallDescription"] = "Зал для проверки, что GM не откатывает локально зарезервированные ресурсы.",
+        ["proposedHallServiceTags"] = new JsonArray("social", "lore"),
+        ["charter"] = new JsonObject
+        {
+            ["factionName"] = "Дом Проверки Резервов",
+            ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+            ["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+            ["summary"] = "Проверяет защиту founding resource reservation."
+        },
+        ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael", "resident_serit"),
+        ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+        ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
+        ["createdAtTurn"] = 184,
+        ["createdAtUtc"] = "2026-04-16T15:20:00Z"
+    };
+
+    private static void AddAcceptedFoundingMaterialization(JsonObject shiningRoot, JsonObject residentRoot, JsonObject request)
+    {
+        var factionId = request["proposedFactionId"]?.GetValue<string>() ?? string.Empty;
+        var hallId = request["proposedHallId"]?.GetValue<string>() ?? string.Empty;
+        var hallName = request["proposedHallName"]?.GetValue<string>() ?? string.Empty;
+        var hallDescription = request["proposedHallDescription"]?.GetValue<string>() ?? string.Empty;
+        var charter = request["charter"]?.AsObject() ?? new JsonObject();
+        var supporters = request["supportingResidentIds"]?.AsArray()
+            .OfType<JsonValue>()
+            .Select(value => value.GetValue<string>())
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToArray() ?? Array.Empty<string>();
+
+        ((JsonArray)shiningRoot["halls"]!).Add(new JsonObject
+        {
+            ["hallId"] = hallId,
+            ["hallName"] = hallName,
+            ["description"] = hallDescription,
+            ["serviceTags"] = new JsonArray("social", "lore")
+        });
+        ((JsonArray)shiningRoot["factions"]!).Add(new JsonObject
+        {
+            ["factionId"] = factionId,
+            ["originType"] = ShiningAbodeState.OriginTypePlayerFounded,
+            ["hallId"] = hallId,
+            ["charter"] = CloneJsonObject(charter),
+            ["leadership"] = new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["headActorId"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            },
+            ["baseStrength"] = 35,
+            ["factionStrength"] = 44,
+            ["investCountThisAscension"] = 0,
+            ["projectArchetypesCountedThisAscension"] = new JsonArray(),
+            ["projects"] = new JsonArray(),
+            ["leadershipReceipts"] = new JsonArray(),
+            ["leadershipHistory"] = new JsonArray()
+        });
+        ((JsonArray)shiningRoot["factionFoundingReceipts"]!).Add(new JsonObject
+        {
+            ["requestId"] = request["requestId"]?.GetValue<string>() ?? string.Empty,
+            ["proposedFactionId"] = factionId,
+            ["proposedHallId"] = hallId,
+            ["hallName"] = hallName,
+            ["factionId"] = factionId,
+            ["hallId"] = hallId,
+            ["status"] = ShiningFactionRequestState.RequestStatusAccepted,
+            ["supportingResidentIds"] = new JsonArray(supporters.Select(value => (JsonNode?)value).ToArray()),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
+            ["resolvedAtTurn"] = 184,
+            ["resolvedAtUtc"] = "2026-04-16T15:24:00Z",
+            ["reason"] = "founding_accepted"
+        });
+        MoveResidentsToFaction(residentRoot, factionId, supporters);
+    }
+
     private static JsonObject CreateBaseResidentRoot()
     {
         return new JsonObject
@@ -849,6 +988,51 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
                 string.Equals(entry["residentId"]?.GetValue<string>(), residentId, StringComparison.OrdinalIgnoreCase));
             resident["shiningFactionId"] = factionId;
         }
+    }
+
+    private static JsonObject CloneJsonObject(JsonObject source) =>
+        JsonNode.Parse(source.ToJsonString())!.AsObject();
+
+    private static int GetNodeInt(JsonNode? node)
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<int>(out var intValue))
+                return intValue;
+            if (value.TryGetValue<long>(out var longValue))
+                return (int)longValue;
+            if (value.TryGetValue<string>(out var stringValue) && int.TryParse(stringValue, out var parsed))
+                return parsed;
+        }
+
+        return 0;
+    }
+
+    private async Task SeedFoundingPendingSnapshotAsync(
+        JsonObject request,
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnSoulRoot,
+        string backupPath)
+    {
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(backupPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteValidatedSnapshotStateAsync(preTurnShiningRoot, preTurnSoulRoot);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [ShiningFactionRequestState.PendingFoundingsRequestPath] = backupPath
+        });
+    }
+
+    private async Task WriteValidatedSnapshotStateAsync(JsonObject preTurnShiningRoot, JsonObject preTurnSoulRoot)
+    {
+        await WriteNodeAsync($"game_state/control/pending_turn_snapshot/{ShiningAbodeState.StatePath}", preTurnShiningRoot);
+        await WriteNodeAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", preTurnSoulRoot);
     }
 
     private async Task<List<ValidationIssue>> InvokeValidationAsync(string methodName)

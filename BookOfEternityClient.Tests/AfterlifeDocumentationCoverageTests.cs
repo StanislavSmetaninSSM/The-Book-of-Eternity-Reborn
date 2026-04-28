@@ -32,6 +32,45 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningCoreActionSchemaAndStatusesMatchRuntime()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var docs = new[] { matrix, examples, apiSpec, daemonSpec };
+
+        var statuses = typeof(ShiningCoreActionRequestState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string) &&
+                            field.Name.StartsWith("RequestStatus", StringComparison.Ordinal))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(
+            new[]
+            {
+                ShiningCoreActionRequestState.RequestStatusAccepted,
+                ShiningCoreActionRequestState.RequestStatusRefused,
+                ShiningCoreActionRequestState.RequestStatusWithdrawn
+            }.OrderBy(value => value, StringComparer.Ordinal),
+            statuses);
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("pending_shining_abode_actions.json", doc, StringComparison.Ordinal);
+            Assert.Contains("requests[]", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain("requests[0]", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain("expired", doc, StringComparison.OrdinalIgnoreCase);
+
+            foreach (var status in statuses)
+                Assert.Contains(status, doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ShiningPoliticalActorsAreDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
@@ -219,6 +258,33 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("AppendChaosSeaLocalPreviewRules(unequipLines)", soulRelicPreview, StringComparison.Ordinal);
         Assert.DoesNotContain("AppendChaosSeaCommonContractRules(equipLines)", soulRelicPreview, StringComparison.Ordinal);
         Assert.DoesNotContain("AppendChaosSeaCommonContractRules(unequipLines)", soulRelicPreview, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ChaosSeaHighCostPreviewAuditSurfacesAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var inkFeatherPreview = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs");
+        var tradePreview = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.Afterlife.GuardiansProjectsTrade.cs");
+        var inboxPreview = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs");
+
+        foreach (var text in new[] { matrix, examples })
+        {
+            Assert.Contains("Soul Imprint", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("stateEvidence.imprintId", text, StringComparison.Ordinal);
+            Assert.Contains("baseDelta", text, StringComparison.Ordinal);
+            Assert.Contains("finalDelta", text, StringComparison.Ordinal);
+            Assert.Contains("buybackEntryId", text, StringComparison.Ordinal);
+            Assert.Contains("projectedFeathers", text, StringComparison.Ordinal);
+            Assert.Contains("historyEntryId", text, StringComparison.Ordinal);
+            Assert.Contains("archiveActionResolutions", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("BuildSoulImprintPreviewAuditLines", inkFeatherPreview, StringComparison.Ordinal);
+        Assert.Contains("BuildAbodeOfferingPreviewAuditLines", inkFeatherPreview, StringComparison.Ordinal);
+        Assert.Contains("BuildGuardianBuybackAuditNode", tradePreview, StringComparison.Ordinal);
+        Assert.Contains("BuildResidentNotificationReceiptAuditLines", inboxPreview, StringComparison.Ordinal);
     }
 
     [Fact]

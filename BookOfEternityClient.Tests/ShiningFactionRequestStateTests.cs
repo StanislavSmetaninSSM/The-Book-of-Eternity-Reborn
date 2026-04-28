@@ -444,6 +444,52 @@ public sealed class ShiningFactionRequestStateTests
     }
 
     [Fact]
+    public async Task EnsureHealthyAsync_PendingBootstrapPreservesPoliticalRequestsAndShowsBlockingReminder()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            var shiningRoot = await ReadJsonAsync(fs, ShiningAbodeState.StatePath) ?? throw new InvalidOperationException("Expected shining state.");
+            shiningRoot["preparedIncarnationPackage"] = CreateValidPreparedPackage();
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+            await ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+            {
+                RequestId = "founding_req_blocked_handoff",
+                ProposedFactionId = "faction_dawn",
+                ProposedHallId = "hall_dawn",
+                ProposedHallName = "Зал Рассвета",
+                ProposedHallDescription = "Светлый зал",
+                ProposedHallServiceTags = { "social" },
+                Charter = new ShiningFactionRequestState.FactionCharterPayload
+                {
+                    FactionName = "Хор Рассвета",
+                    FavoredArchetype = "accord",
+                    PatronEffectFamily = "social",
+                    Summary = "Поют утренний свет."
+                }
+            });
+
+            await ShiningFactionRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            var founding = Assert.Single(await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs));
+            Assert.Equal("founding_req_blocked_handoff", founding.RequestId);
+            var reminder = await ShiningFactionRequestState.BuildSystemReminderFragmentAsync(fs, "Shining Abode");
+            Assert.NotNull(reminder);
+            Assert.Contains("SHINING ABODE POLITICAL REQUESTS BLOCKED", reminder);
+            Assert.Contains("pending-bootstrap handoff", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("founding_req_blocked_handoff", reminder);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_ActiveShining_ReconcilesResolvedPoliticalRequests()
     {
         var root = CreateTempRoot();
@@ -1080,6 +1126,27 @@ public sealed class ShiningFactionRequestStateTests
         var json = await fs.ReadFileAsync(path);
         return string.IsNullOrWhiteSpace(json) ? null : JsonNode.Parse(json) as JsonObject;
     }
+
+    private static JsonObject CreateValidPreparedPackage() => new()
+    {
+        ["selectedCardIds"] = new JsonArray("card_memory"),
+        ["selectedCards"] = new JsonArray(new JsonObject
+        {
+            ["cardId"] = "card_memory",
+            ["dedupeKey"] = "memory:card_memory",
+            ["sourceType"] = "project",
+            ["sourceFactionId"] = "faction_old",
+            ["sourceActorId"] = "project_old",
+            ["effectFamily"] = "memory",
+            ["rarity"] = "common",
+            ["displayName"] = "Память Света",
+            ["displaySummary"] = "Сохраняет эхо.",
+            ["effectPayload"] = new JsonObject()
+        }),
+        ["generatedFromDraftVersion"] = 1,
+        ["preparedAtTurn"] = 10,
+        ["preparedAtUtc"] = "2026-04-17T00:10:00Z"
+    };
 
     private static void CleanupTempRoot(string root)
     {
