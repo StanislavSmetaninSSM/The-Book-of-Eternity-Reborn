@@ -1650,6 +1650,10 @@ This section contains three independent Shining political pending-contract examp
 
 9A. Founding a new Shining faction:
 
+Resource reservation rule:
+- Creating `pending_shining_faction_foundings.json` is a client-local reservation: the client has already deducted `quotedCostFeathers = 25` from `soul_state.inkFeathers.current` and `quotedCostLightSparks = 15` from `shining_abode_state.json.lightSparks` before the GM receives the turn.
+- On `status = accepted`, do not restore pre-reservation resource balances. The accepted response may spend additional resources only if another valid same-turn Shining contract explicitly authorizes that spend, but it must never make current Feathers/Sparks higher than the validated pre-turn reserved balances.
+
 Input fragment:
 
 ```json
@@ -1950,6 +1954,7 @@ Forbidden Shining political shortcuts:
 - ad-hoc `strength`, `tradeTier`, or `shiningAlignment` instead of canonical Shining fields.
 - `leadership.headActorType = radiant_actor` without a matching `shiningPoliticalActors[].actorId`.
 - founding receipt without exact proposed ids/hall payload/supporter list.
+- accepted founding that writes old pre-reservation `lightSparks` or `soul_state.inkFeathers.current` and effectively refunds the client-reserved founding cost.
 - realignment accepted without resident membership update and resident history log.
 - leadership accepted/refused without matching `leadershipHistory[]` when required.
 

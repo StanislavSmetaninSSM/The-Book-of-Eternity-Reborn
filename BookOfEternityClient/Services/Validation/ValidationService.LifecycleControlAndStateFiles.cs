@@ -851,6 +851,7 @@ public partial class ValidationService
 
         var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(shiningJson))
         {
             AddMissingShiningResolutionCurrentFileIssue(
@@ -871,8 +872,33 @@ public partial class ValidationService
                 "Оставь guardian_abode_residents.json доступным на accepted turn с pending Shining founding.");
         }
 
+        if (string.IsNullOrWhiteSpace(soulJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                "game_state/meta/soul_state.json",
+                "shining_founding_missing_current_soul_state",
+                "Resolved Shining founding request требует current soul_state.json для строгой проверки зарезервированных Ink Feathers.",
+                "Оставь soul_state.json доступным на accepted turn с pending Shining founding; не возвращай клиентом уже зарезервированные Перья.");
+        }
+
         if (string.IsNullOrWhiteSpace(shiningJson) || string.IsNullOrWhiteSpace(residentsJson))
             return;
+
+        var preTurnShiningJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            ShiningAbodeState.StatePath,
+            issues,
+            code: "shining_founding_missing_pre_turn_shining_state",
+            section: "ShiningAbode",
+            message: "Shining founding resolution требует validated pre-turn shining_abode_state.json для проверки, что GM не откатил локально зарезервированные Light Sparks.",
+            repairHint: "Сохраняй canonical pre-turn shining_abode_state.json в validated pending snapshot после создания founding pending request.");
+        var preTurnSoulJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            issues,
+            code: "shining_founding_missing_pre_turn_soul_state",
+            section: "ShiningAbode",
+            message: "Shining founding resolution требует validated pre-turn soul_state.json для проверки, что GM не откатил локально зарезервированные Ink Feathers.",
+            repairHint: "Сохраняй canonical pre-turn soul_state.json в validated pending snapshot после создания founding pending request.");
 
         try
         {
@@ -882,6 +908,9 @@ public partial class ValidationService
                 return;
             }
 
+            var currentSoulRoot = TryParseJsonObject(soulJson);
+            var preTurnShiningRoot = TryParseJsonObject(preTurnShiningJson);
+            var preTurnSoulRoot = TryParseJsonObject(preTurnSoulJson);
             var currentGuardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
             GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
             ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, currentResidentsRoot, currentGuardiansRoot);
@@ -921,6 +950,13 @@ public partial class ValidationService
                 var currentHall = FindShiningHall(currentShiningRoot, request.ProposedHallId);
                 if (string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
                 {
+                    ValidateAcceptedShiningFoundingReservedResources(
+                        issues,
+                        currentShiningRoot,
+                        currentSoulRoot,
+                        preTurnShiningRoot,
+                        preTurnSoulRoot);
+
                     var hallActual = currentHall == null ? "hall_missing" : string.Empty;
                     if (currentHall == null || !ShiningHallMatchesFoundingRequest(currentHall, request, out hallActual))
                     {
@@ -7084,6 +7120,50 @@ public partial class ValidationService
                GetNodeInt(receipt["quotedCostFeathers"]) == ShiningFactionRequestState.FactionFoundingCostFeathers &&
                GetNodeInt(receipt["quotedCostLightSparks"]) == ShiningFactionRequestState.FactionFoundingCostLightSparks &&
                receiptSupporters.SetEquals(requestSupporters);
+    }
+
+    private static void ValidateAcceptedShiningFoundingReservedResources(
+        List<ValidationIssue> issues,
+        JsonObject currentShiningRoot,
+        JsonObject? currentSoulRoot,
+        JsonObject? preTurnShiningRoot,
+        JsonObject? preTurnSoulRoot)
+    {
+        if (preTurnShiningRoot != null)
+        {
+            var preTurnLightSparks = GetNodeInt(preTurnShiningRoot["lightSparks"]);
+            var currentLightSparks = GetNodeInt(currentShiningRoot["lightSparks"]);
+            if (currentLightSparks > preTurnLightSparks)
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningFactionRequestState.PendingFoundingsRequestPath,
+                    IssueSeverity.Error,
+                    "Accepted Shining founding откатил локально зарезервированные Light Sparks.",
+                    code: "shining_founding_reserved_light_sparks_rollback",
+                    section: "ShiningAbode",
+                    expected: $"lightSparks <= validated pre-turn reserved balance {preTurnLightSparks}",
+                    actual: currentLightSparks.ToString(),
+                    repairHint: "Не восстанавливай pre-reservation Light Sparks в GM output. Founding cost уже зарезервирован клиентом при создании pending request."));
+            }
+        }
+
+        if (currentSoulRoot == null || preTurnSoulRoot == null)
+            return;
+
+        var preTurnFeathers = CurrentSoulFeathers(preTurnSoulRoot);
+        var currentFeathers = CurrentSoulFeathers(currentSoulRoot);
+        if (currentFeathers > preTurnFeathers)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningFactionRequestState.PendingFoundingsRequestPath,
+                IssueSeverity.Error,
+                "Accepted Shining founding откатил локально зарезервированные Ink Feathers.",
+                code: "shining_founding_reserved_ink_feathers_rollback",
+                section: "ShiningAbode",
+                expected: $"inkFeathers.current <= validated pre-turn reserved balance {preTurnFeathers}",
+                actual: currentFeathers.ToString(),
+                repairHint: "Не восстанавливай pre-reservation Ink Feathers в GM output. Founding cost уже зарезервирован клиентом при создании pending request."));
+        }
     }
 
     private static bool ShiningHallMatchesFoundingRequest(
