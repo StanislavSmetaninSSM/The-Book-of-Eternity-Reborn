@@ -1062,6 +1062,7 @@ Correct GM procedure:
 - `tradeInventory.tradeCycleId` must equal `returnCycleId`.
 - `generationReputationTier` and `pricingReputationTier` must be derived from `currentReputation`; here `65` means `Friendly`.
 - `items.length` must equal `derivedTradeSlotCount`.
+- Every `tradeInventory.items[].slotId` must be unique inside this inventory. The client buys by `slotId`; duplicates make the purchase target ambiguous and are invalid.
 - Close through `UpdateGuardianTradeInventoryReceipts`; matching stock without a ready receipt is invalid.
 - Do not write `afterlife_notifications.json`; the client derives the ready inbox event.
 - The fragment below shows the canonical persisted Guardian state patch; preserve all other fields on the existing Guardian object.
@@ -1134,6 +1135,7 @@ Forbidden in this example:
 - `afterlife_notifications.json` manual writes.
 - `pending_guardian_trade_request.json` mutation in GM output.
 - `tradeInventory.items.length` different from `derivedTradeSlotCount`.
+- duplicated `tradeInventory.items[].slotId`.
 - ready receipt with a different `requestId`, `abodeId`, or `tradeCycleId`.
 
 ==================================================
