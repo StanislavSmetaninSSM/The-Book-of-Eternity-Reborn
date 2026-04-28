@@ -1598,6 +1598,59 @@ public sealed class ShiningAbodeStateTests
         Assert.Equal(12, projects.Single(project => project["projectId"]?.GetValue<string>() == "project_non_favored")["strengthReward"]?.GetValue<int>());
     }
 
+    [Theory]
+    [InlineData(ShiningAbodeState.RarityCommon, 1)]
+    [InlineData(ShiningAbodeState.RarityUncommon, 2)]
+    [InlineData(ShiningAbodeState.RarityRare, 3)]
+    [InlineData(ShiningAbodeState.RarityEpic, 4)]
+    [InlineData(ShiningAbodeState.RarityLegendary, 5)]
+    [InlineData(ShiningAbodeState.RarityRadiant, 6)]
+    public void BlessingCardRarityWeight_CoversEverySupportedRarity(string rarity, int expectedWeight)
+    {
+        Assert.True(ShiningAbodeState.IsSupportedRarity(rarity));
+        Assert.Equal(expectedWeight, ShiningAbodeState.GetBlessingCardRarityWeight(rarity));
+    }
+
+    [Fact]
+    public void BlessingCardRarityWeight_SortsEverySupportedRarityInDescendingPower()
+    {
+        var rarities = GetSupportedBlessingRarities();
+
+        var sorted = rarities
+            .OrderByDescending(ShiningAbodeState.GetBlessingCardRarityWeight)
+            .ToArray();
+
+        Assert.Equal(
+            new[]
+            {
+                ShiningAbodeState.RarityRadiant,
+                ShiningAbodeState.RarityLegendary,
+                ShiningAbodeState.RarityEpic,
+                ShiningAbodeState.RarityRare,
+                ShiningAbodeState.RarityUncommon,
+                ShiningAbodeState.RarityCommon
+            },
+            sorted);
+    }
+
+    [Fact]
+    public void ResolveLowerBlessingCardRarity_UsesCompleteSupportedLadder()
+    {
+        var rarities = GetSupportedBlessingRarities();
+
+        for (var leftIndex = 0; leftIndex < rarities.Length; leftIndex++)
+        {
+            for (var rightIndex = 0; rightIndex < rarities.Length; rightIndex++)
+            {
+                var expected = rarities[Math.Min(leftIndex, rightIndex)];
+
+                Assert.Equal(
+                    expected,
+                    ShiningAbodeState.ResolveLowerBlessingCardRarity(rarities[leftIndex], rarities[rightIndex]));
+            }
+        }
+    }
+
     private static JsonObject CreateProjectSupportState(bool isSupported) => new()
     {
         ["availability"] = ShiningAbodeState.AvailabilityActive,
@@ -1674,6 +1727,16 @@ public sealed class ShiningAbodeStateTests
         ["outputEffectFamily"] = effectFamily,
         ["tier"] = tier
     };
+
+    private static string[] GetSupportedBlessingRarities() =>
+    [
+        ShiningAbodeState.RarityCommon,
+        ShiningAbodeState.RarityUncommon,
+        ShiningAbodeState.RarityRare,
+        ShiningAbodeState.RarityEpic,
+        ShiningAbodeState.RarityLegendary,
+        ShiningAbodeState.RarityRadiant
+    ];
 
     private static JsonObject GetSingleProject(JsonObject root) =>
         root["factions"]![0]!["projects"]![0]!.AsObject();
