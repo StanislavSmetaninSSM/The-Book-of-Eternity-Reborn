@@ -267,6 +267,20 @@ public sealed class AfterlifeDocumentationCoverageTests
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
 
+        var notificationTypes = typeof(AfterlifeNotificationState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string) &&
+                            field.Name.StartsWith("Type", StringComparison.Ordinal))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.NotEmpty(notificationTypes);
+
+        foreach (var notificationType in notificationTypes)
+            Assert.Contains(notificationType, matrix, StringComparison.Ordinal);
+
         foreach (var term in new[]
         {
             "afterlifeArchiveUpdates",
@@ -291,6 +305,26 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             foreach (var doc in new[] { matrix, apiSpec, examples })
                 Assert.Contains(term, doc, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void AfterlifeLocalLifecycleRoutesAreDocumented()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+
+        foreach (var routeName in new[] { "return_to_chaos_sea", "reenter_shining_abode" })
+        {
+            foreach (var doc in new[] { matrix, apiSpec, daemonSpec })
+                Assert.Contains(routeName, doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { matrix, apiSpec })
+        {
+            Assert.Contains("client-owned", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("No GM-authored output", doc, StringComparison.OrdinalIgnoreCase);
         }
     }
 
