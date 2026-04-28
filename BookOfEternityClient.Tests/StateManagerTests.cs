@@ -116,6 +116,35 @@ public sealed class StateManagerTests
     }
 
     [Fact]
+    public async Task RefreshGameStateAsync_LegacyNumericInkFeathers_LoadsBalance()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var manager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+            {
+              "soulName": "Тестовая душа",
+              "currentRealm": "Chaos Sea",
+              "currentIncarnation": 7,
+              "inkFeathers": 64
+            }
+            """);
+
+            await manager.RefreshGameStateAsync();
+
+            Assert.Equal(64, manager.CurrentState.InkFeathers);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task RefreshGameStateAsync_MalformedPreparedPackage_FailsClosedInsteadOfOrdinaryShining()
     {
         var root = CreateTempRoot();

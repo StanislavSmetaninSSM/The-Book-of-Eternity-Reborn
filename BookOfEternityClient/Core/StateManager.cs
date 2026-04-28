@@ -130,9 +130,21 @@ public class StateManager
             state.CurrentRealm = GetString(root, "currentRealm", "");
             if (root.TryGetProperty("currentIncarnation", out var inc))
                 state.Incarnation = inc.GetInt32();
-            if (root.TryGetProperty("inkFeathers", out var feathers) &&
-                feathers.TryGetProperty("current", out var current))
-                state.InkFeathers = current.GetInt32();
+            if (root.TryGetProperty("inkFeathers", out var feathers))
+            {
+                if (feathers.ValueKind == JsonValueKind.Number &&
+                    feathers.TryGetInt32(out var flatFeathers))
+                {
+                    state.InkFeathers = flatFeathers;
+                }
+                else if (feathers.ValueKind == JsonValueKind.Object &&
+                         feathers.TryGetProperty("current", out var current) &&
+                         current.ValueKind == JsonValueKind.Number &&
+                         current.TryGetInt32(out var currentFeathers))
+                {
+                    state.InkFeathers = currentFeathers;
+                }
+            }
             if (root.TryGetProperty("enlightenment", out var enl) &&
                 enl.TryGetProperty("currentTier", out var tier))
                 state.EnlightenmentTier = tier.GetString() ?? "Новичок";

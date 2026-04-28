@@ -1070,8 +1070,9 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
 - `pendingMemoryLegacy` may temporarily carry `applicationState = "applied-awaiting-turn-accept"` during an incarnation turn. This means the client has already applied the reward locally but has NOT consumed it yet; do not strip or reset this state manually.
 - If the client detects that an `applied-awaiting-turn-accept` legacy no longer survives in runtime files, it reverts the legacy back to `pending` instead of consuming it.
 - `SEAL_IN_INK` is deferred and MUST create `game_state/control/pending_ink_actions.json` with `actionTag = SEAL_IN_INK`, `status = awaiting-item-choice`, `costInFeathers`, and `upgradeTierDelta = 1`.
+- `DONATE_TO_GUARDIAN` requires exact formula proof: `stateEvidence.reputationChange = min(25, max(15, costInFeathers / 3))`, and the target Guardian's `game_state/meta/guardians.json` `relationshipData.currentReputation` must increase by exactly the same number from the validated pre-turn baseline. Any positive-but-different delta is invalid.
 - `GUARDIAN_FAVOR` no longer requires a typed quest/buff outcome.
-- The guaranteed mechanical minimum is:
+- For `GUARDIAN_FAVOR`, the guaranteed mechanical minimum is:
   - `guardianId`
   - `reputationChange > 0`
   - real guardian reputation increase in `game_state/meta/guardians.json`

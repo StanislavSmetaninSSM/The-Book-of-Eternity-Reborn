@@ -23403,7 +23403,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var issues = await validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "ink_feather_guardian_reputation_missing", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "ink_feather_guardian_reputation_delta_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -23914,7 +23914,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "ink_feather_guardian_action_invalid_validated_snapshot_data", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "ink_feather_guardian_reputation_missing", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "ink_feather_guardian_reputation_delta_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -35156,7 +35156,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "ink_feather_guardian_action_invalid_validated_snapshot_data", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "ink_feather_guardian_reputation_missing", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "ink_feather_guardian_reputation_delta_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -35290,7 +35290,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "ink_feather_guardian_action_invalid_validated_snapshot_data", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "ink_feather_guardian_reputation_missing", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "ink_feather_guardian_reputation_delta_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

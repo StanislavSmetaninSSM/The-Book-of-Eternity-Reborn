@@ -159,6 +159,11 @@ internal static class PlayerGuardianFoundationState
         var existingState = await ReadStateAsync(fs);
         if (existingState.IsMalformed)
             throw new InvalidOperationException("pending_player_guardian_foundation.json повреждён и должен быть исправлен или очищен до записи нового foundation request.");
+        if (existingState.Request != null &&
+            !string.Equals(existingState.Request.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("pending_player_guardian_foundation.json already contains a live player guardian foundation contract and cannot be overwritten without explicit canonical closure.");
+        }
 
         await fs.WriteFileAtomicAsync(PendingRequestPath, JsonSerializer.Serialize(request, JsonOpts));
     }

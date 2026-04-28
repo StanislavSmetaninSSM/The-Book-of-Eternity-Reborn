@@ -193,6 +193,45 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
     }
 
     [Fact]
+    public async Task PlayerGuardianFoundation_WriteAsync_ExistingForeignRequest_ThrowsWithoutOverwrite()
+    {
+        await PlayerGuardianFoundationState.WriteAsync(_fs, new PlayerGuardianFoundationState.PendingPlayerGuardianFoundationRequest
+        {
+            RequestId = "foundation_existing",
+            FounderSoulName = "Душа",
+            PreviousGuardianId = "guardian_alpha",
+            PreviousGuardianName = "Азалия",
+            SourceShiningAvailability = ShiningAbodeState.AvailabilitySealedUntilNextAscension,
+            ProposedDisplayName = "Северин",
+            MantleSummary = "Страж сумерек",
+            MantleCreed = "Храни зов",
+            AppearanceMotifs = new List<string> { "нить", "заря" },
+            DominantAspect = "path",
+            CreatedAtTurn = 7
+        });
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => PlayerGuardianFoundationState.WriteAsync(_fs, new PlayerGuardianFoundationState.PendingPlayerGuardianFoundationRequest
+        {
+            RequestId = "foundation_incoming",
+            FounderSoulName = "Другая Душа",
+            PreviousGuardianId = "guardian_beta",
+            PreviousGuardianName = "Варак",
+            SourceShiningAvailability = ShiningAbodeState.AvailabilitySealedUntilNextAscension,
+            ProposedDisplayName = "Лириан",
+            MantleSummary = "Страж эха",
+            MantleCreed = "Помни путь",
+            AppearanceMotifs = new List<string> { "эхо" },
+            DominantAspect = "memory",
+            CreatedAtTurn = 8
+        }));
+
+        var pending = await PlayerGuardianFoundationState.ReadAsync(_fs);
+        Assert.NotNull(pending);
+        Assert.Equal("foundation_existing", pending!.RequestId);
+        Assert.Equal("guardian_alpha", pending.PreviousGuardianId);
+    }
+
+    [Fact]
     public async Task ManifestationRequests_MalformedBundle_DoesNotRewriteSurvivingSubset()
     {
         await _fs.WriteFileAtomicAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, """
