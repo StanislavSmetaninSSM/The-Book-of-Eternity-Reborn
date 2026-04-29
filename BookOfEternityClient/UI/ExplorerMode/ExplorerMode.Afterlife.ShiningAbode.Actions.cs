@@ -154,8 +154,8 @@ public partial class ExplorerMode
         if (shiningRoot["halls"] is JsonArray halls && halls.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Залы Обители:[/]");
-            foreach (var hall in halls.OfType<JsonObject>().Take(3))
+            lines.Add("[bold]Залы Обители:[/] [dim](показаны все без сокращения)[/]");
+            foreach (var hall in halls.OfType<JsonObject>())
             {
                 var hallName = GetNodeString(hall["hallName"]) ?? GetNodeString(hall["hallId"]) ?? "?";
                 var description = GetNodeString(hall["description"]) ?? string.Empty;
@@ -168,16 +168,13 @@ public partial class ExplorerMode
                     : string.Empty;
                 lines.Add($"  • {Markup.Escape(hallName)} — {Markup.Escape(string.IsNullOrWhiteSpace(description) ? "описание пока не заполнено" : description)}{summarySuffix}");
             }
-
-            if (halls.Count > 3)
-                lines.Add($"  • [dim]…и ещё {halls.Count - 3} зал(а/ов); полный список доступен через «Осмотреть залы и светозарных акторов».[/]");
         }
 
         if (shiningRoot["shiningPoliticalActors"] is JsonArray actors && actors.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Светозарные акторы:[/]");
-            foreach (var actor in actors.OfType<JsonObject>().Take(3))
+            lines.Add("[bold]Светозарные акторы:[/] [dim](показаны все без сокращения)[/]");
+            foreach (var actor in actors.OfType<JsonObject>())
             {
                 var actorName = GetNodeString(actor["displayName"]) ?? GetNodeString(actor["actorId"]) ?? "?";
                 var summary = GetNodeString(actor["summary"]) ?? string.Empty;
@@ -188,18 +185,14 @@ public partial class ExplorerMode
                     : string.Empty;
                 lines.Add($"  • {Markup.Escape(actorName)} — {Markup.Escape(string.IsNullOrWhiteSpace(summary) ? "без сводки" : summary)} [dim]({Markup.Escape(status)})[/]{factionSuffix}");
             }
-
-            if (actors.Count > 3)
-                lines.Add($"  • [dim]…и ещё {actors.Count - 3} актор(а/ов); полный список доступен через «Осмотреть залы и светозарных акторов».[/]");
         }
 
         if (shiningRoot["factions"] is JsonArray factions && factions.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Сильнейшие фракции:[/]");
+            lines.Add("[bold]Сильнейшие фракции:[/] [dim](показаны все без сокращения)[/]");
             foreach (var faction in factions.OfType<JsonObject>()
-                         .OrderByDescending(item => GetNodeInt(item["factionStrength"]))
-                         .Take(5))
+                         .OrderByDescending(item => GetNodeInt(item["factionStrength"])))
             {
                 var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "?";
                 var strength = GetNodeInt(faction["factionStrength"]);
@@ -215,7 +208,6 @@ public partial class ExplorerMode
                 var tradeState = tradeTier >= 1 ? "активна" : "спит";
                 lines.Add($"  • {Markup.Escape(factionName)} — сила [white]{strength}[/] [dim]({Markup.Escape(band)})[/], участников {memberCount}, торговля {tradeState} [dim](уровень торговли {tradeTier}, витрина {tradeStock}, потолок {Markup.Escape(tradeRarity)})[/], услуги x{serviceMultiplier:0.00}, глава {Markup.Escape(BuildHeadActorLabel(leaderType, leaderId, residentRoot, guardiansRoot, shiningRoot))}");
             }
-            AppendCappedSectionOverflowLine(lines, factions.Count, 5);
 
             var latestTradeReceipts = factions.OfType<JsonObject>()
                 .SelectMany(faction =>
@@ -226,30 +218,23 @@ public partial class ExplorerMode
                         ?? Enumerable.Empty<(string FactionName, JsonObject Faction, JsonObject Receipt)>();
                 })
                 .OrderByDescending(item => GetNodeInt(item.Receipt["resolvedAtTurn"]))
-                .Take(5)
                 .ToList();
             if (latestTradeReceipts.Count > 0)
             {
                 lines.Add("");
-                lines.Add("[bold]Последние исходы торговли:[/]");
+                lines.Add("[bold]Все исходы торговли:[/] [dim](без сокращения)[/]");
                 foreach (var item in latestTradeReceipts)
                     lines.Add($"  • {Markup.Escape(BuildShiningTradeReceiptSummary(item.FactionName, item.Faction, item.Receipt))}");
-                AppendCappedSectionOverflowLine(
-                    lines,
-                    factions.OfType<JsonObject>().SelectMany(faction => (faction["tradeInventoryReceipts"] as JsonArray)?.OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>()).Count(),
-                    5);
             }
         }
 
         if (shiningRoot["coreActionReceipts"] is JsonArray receipts && receipts.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Последние исходы Обители:[/]");
+            lines.Add("[bold]Все исходы Обители:[/] [dim](без сокращения)[/]");
             foreach (var receipt in receipts.OfType<JsonObject>()
-                         .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"]))
-                         .Take(5))
+                         .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"])))
                 lines.Add($"  • {Markup.Escape(BuildShiningCoreReceiptSummary(receipt, shiningRoot))}");
-            AppendCappedSectionOverflowLine(lines, receipts.Count, 5);
         }
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))

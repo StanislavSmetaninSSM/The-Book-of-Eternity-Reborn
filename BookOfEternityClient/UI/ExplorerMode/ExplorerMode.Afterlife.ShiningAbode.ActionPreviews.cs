@@ -57,8 +57,8 @@ public partial class ExplorerMode
             "",
             "[bold]Правило очереди:[/]",
             "  • Пока этот request не закрыт accepted/refused/withdrawn receipt, другой Shining core action создавать нельзя.",
-            "  • GM закрывает контракт только через canonical `shining_abode_state.json` mutation plus `coreActionReceipts[]`.",
-            "  • Mortal World factions/NPC/location/time outputs здесь запрещены."
+            "  • GM закрывает контракт только каноническим изменением `shining_abode_state.json` и записью в `coreActionReceipts[]`.",
+            "  • Выводы смертного мира, фракции смертного мира, NPC, локации и время здесь запрещены."
         };
 
         AppendShiningCoreRequestTargetLines(lines, context, request);
@@ -111,18 +111,18 @@ public partial class ExplorerMode
             {
                 lines.Add($"    Статус: [dim]{Markup.Escape(DescribeShiningProjectStatus(GetNodeString(project["status"])))}[/]");
                 lines.Add($"    Поддержка сейчас: [dim]{(GetNodeBool(project["isSupported"]) ? "да" : "нет")}[/]");
-                lines.Add($"    Strength reward: [dim]{GetNodeInt(project["strengthReward"])}[/]");
+            lines.Add($"    Награда силы: [dim]{GetNodeInt(project["strengthReward"])}[/]");
             }
         }
 
         if (request.ProjectDraft is JsonObject draft)
         {
-            lines.Add("  • Черновик нового completed project:");
+            lines.Add("  • Черновик нового завершённого проекта:");
             lines.Add($"    Название: [white]{Markup.Escape(GetNodeString(draft["displayName"]) ?? "без названия")}[/]");
-            lines.Add($"    Tier: [dim]{GetNodeInt(draft["tier"])}[/]");
+            lines.Add($"    Уровень проекта: [dim]{GetNodeInt(draft["tier"])}[/]");
             lines.Add($"    Архетип: [dim]{Markup.Escape(DescribeShiningProjectArchetype(GetNodeString(draft["projectArchetype"])))}[/]");
-            lines.Add($"    Effect family: [dim]{Markup.Escape(DescribeShiningEffectFamily(GetNodeString(draft["outputEffectFamily"])))}[/]");
-            lines.Add($"    Strength reward по tier: [dim]{ResolveShiningProjectStrengthRewardForPreview(GetNodeInt(draft["tier"]))}[/]");
+            lines.Add($"    Семейство эффекта: [dim]{Markup.Escape(DescribeShiningEffectFamily(GetNodeString(draft["outputEffectFamily"])))}[/]");
+            lines.Add($"    Награда силы по уровню проекта: [dim]{ResolveShiningProjectStrengthRewardForPreview(GetNodeInt(draft["tier"]))}[/]");
             lines.Add("    Любимый архетип фракции меняет только quoted cost, но не strengthReward.");
             AppendShiningNamedIdList(lines, "Целевые фракции", draft["targetFactionIds"] as JsonArray, id => ResolveShiningFactionLabel(context.Root, id));
             AppendShiningStringList(lines, "Тоновые метки", draft["toneTags"] as JsonArray);
@@ -172,12 +172,12 @@ public partial class ExplorerMode
 
         lines.Add("");
         lines.Add("[bold]Стоимость и ресурсы:[/]");
-        lines.Add($"  • Ink Feathers: [white]{currentFeathers}[/] -> [white]{nextFeathers}[/] [dim](quotedCostFeathers={request.QuotedCostFeathers})[/]");
-        lines.Add($"  • Light Sparks: [white]{currentLightSparks}[/] -> [white]{nextLightSparks}[/] [dim](quotedCostLightSparks={request.QuotedCostLightSparks})[/]");
+        lines.Add($"  • Чернильные Перья: [white]{currentFeathers}[/] -> [white]{nextFeathers}[/] [dim](quotedCostFeathers={request.QuotedCostFeathers})[/]");
+        lines.Add($"  • Искры Света: [white]{currentLightSparks}[/] -> [white]{nextLightSparks}[/] [dim](quotedCostLightSparks={request.QuotedCostLightSparks})[/]");
         if (relicRerollsToCommit > 0)
         {
             var currentRelicRerolls = ShiningBlessingEffectState.GetPendingRelicRerolls(context.SoulRoot);
-            lines.Add($"  • Blessing relic rerolls: [white]{currentRelicRerolls}[/] -> [white]{Math.Max(0, currentRelicRerolls - relicRerollsToCommit)}[/] [dim](spent only after this confirmation; cancel preserves entitlement)[/]");
+            lines.Add($"  • Перебросы реликвий от благословений: [white]{currentRelicRerolls}[/] -> [white]{Math.Max(0, currentRelicRerolls - relicRerollsToCommit)}[/] [dim](списываются только после подтверждения; отмена сохраняет право)[/]");
         }
 
         if (request.QuotedCostFeathers == 0 && request.QuotedCostLightSparks == 0)
@@ -190,7 +190,7 @@ public partial class ExplorerMode
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
     {
         lines.Add("");
-        lines.Add("[bold]Ожидаемый accepted outcome:[/]");
+        lines.Add("[bold]Ожидаемый принятый исход:[/]");
 
         switch ((request.ActionType ?? string.Empty).Trim().ToLowerInvariant())
         {
@@ -282,7 +282,7 @@ public partial class ExplorerMode
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
     {
         lines.Add("");
-        lines.Add("[bold]GM closure contract:[/]");
+        lines.Add("[bold]Контракт закрытия для GM:[/]");
         lines.Add("  • Required receipt fields: requestId, actionType, status, resolvedAtTurn, resolvedAtUtc.");
         lines.Add("  • For accepted status, canonical state must exactly match the action helper projection.");
         lines.Add("  • For refused/withdrawn status, state remains unchanged except `coreActionReceipts[]`.");

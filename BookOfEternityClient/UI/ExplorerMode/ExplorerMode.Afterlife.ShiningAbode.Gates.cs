@@ -535,16 +535,16 @@ public partial class ExplorerMode
         {
             "[bold yellow]Перед изменением выбранных карт Врат[/]",
             "",
-            $"  Действие: [white]{(toggledOff ? "снять карту из prepared selection" : "добавить карту в prepared selection")}[/]",
+            $"  Действие: [white]{(toggledOff ? "снять карту из подготовленного выбора" : "добавить карту в подготовленный выбор")}[/]",
             $"  cardId: [dim]{Markup.Escape(cardId)}[/]",
             $"  draftVersion: [dim]{GetNodeInt(beforeGates?["draftVersion"])}[/]",
-            $"  Лимит выбора по Radiance tier {radianceTier}: [white]{ShiningAbodeState.GetPickCap(radianceTier)}[/]",
+            $"  Лимит выбора по уровню Сияния {radianceTier}: [white]{ShiningAbodeState.GetPickCap(radianceTier)}[/]",
             $"  Выбрано карт: [white]{beforeSelected.Count}[/] -> [white]{afterSelected.Count}[/]",
             $"  До: {Markup.Escape(FormatGateSelectionLabels(beforeRoot, beforeSelected))}",
             $"  После: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, afterSelected))}",
             "",
             "[bold]Последствие:[/]",
-            "  • Это client-local mutation: GM turn не отправляется и pending/control file не создаётся.",
+            "  • Это локальное действие клиента: ход GM не отправляется и pending/control file не создаётся.",
             "  • Если позже будет prepare_incarnation_package, runtime заморозит exact selectedCards snapshot из этих id.",
             "  • Отмена на этом экране оставляет gates JSON без изменений."
         };
@@ -584,18 +584,71 @@ public partial class ExplorerMode
             $"  nextCandidateCursor: [white]{GetNodeInt(beforeGates?["nextCandidateCursor"])}[/] -> [white]{GetNodeInt(afterGates?["nextCandidateCursor"])}[/]",
             $"  Выбранные карты сохраняются: {Markup.Escape(FormatGateSelectionLabels(beforeRoot, ReadGateSelectedCardIds(beforeGates)))}",
             "",
-            "[bold]Изменение текущего selectable-набора:[/]",
-            $"  • Уходят из available set: {Markup.Escape(FormatGateSelectionLabels(beforeRoot, removed))}",
-            $"  • Приходят в available set: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, added))}",
-            $"  • Новый available set: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, afterAvailable))}",
-            "",
-            "[bold]Последствие:[/]",
-            "  • Это client-local mutation: GM turn не отправляется и pending/control file не создаётся.",
-            "  • Полный projected gates JSON ниже показывает available/allCandidate/shown history/selected arrays после подтверждения.",
-            "  • Отмена на этом экране оставляет gates JSON и remaining rerolls без изменений."
+            "[bold]Изменение текущего selectable-набора карт:[/]",
+            $"  • Уходят из доступного набора: {Markup.Escape(FormatGateSelectionLabels(beforeRoot, removed))}",
+            $"  • Приходят в доступный набор: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, added))}",
+            $"  • Новый доступный набор: {Markup.Escape(FormatGateSelectionLabels(projectedRoot, afterAvailable))}",
         };
 
+        AppendShiningGatesRerollCardInspectionSection(
+            lines,
+            "Полные карты, уходящие из selectable-набора",
+            beforeRoot,
+            beforeGates,
+            removed);
+        AppendShiningGatesRerollCardInspectionSection(
+            lines,
+            "Полные карты, приходящие в selectable-набор",
+            projectedRoot,
+            afterGates,
+            added);
+        AppendShiningGatesRerollCardInspectionSection(
+            lines,
+            "Итоговый selectable-набор после подтверждения",
+            projectedRoot,
+            afterGates,
+            afterAvailable);
+
+        lines.AddRange(new[]
+        {
+            "",
+            "[bold]Последствие:[/]",
+            "  • Это локальное действие клиента: ход GM не отправляется и pending/control file не создаётся.",
+            "  • Полный projected gates JSON ниже показывает available/allCandidate/shown history/selected arrays после подтверждения.",
+            "  • Отмена на этом экране оставляет gates JSON и remaining rerolls без изменений."
+        });
+
         return lines;
+    }
+
+    private void AppendShiningGatesRerollCardInspectionSection(
+        List<string> lines,
+        string title,
+        JsonObject root,
+        JsonObject? gates,
+        IReadOnlyList<string> cardIds)
+    {
+        lines.Add("");
+        lines.Add($"[bold]{Markup.Escape(title)}:[/]");
+        if (cardIds.Count == 0 || gates == null)
+        {
+            lines.Add("  • [dim]нет[/]");
+            return;
+        }
+
+        var context = new ShiningContext(root, null, null, null);
+        foreach (var cardId in cardIds)
+        {
+            var card = FindBlessingCardInGates(gates, cardId);
+            if (card == null)
+            {
+                lines.Add($"  • [dim]{Markup.Escape(cardId)} — карта отсутствует в projected gates JSON[/]");
+                continue;
+            }
+
+            foreach (var cardLine in BuildShiningBlessingCardInspectionLines(card, context, isSelected: false))
+                lines.Add($"  {cardLine}");
+        }
     }
 
     private static IReadOnlyList<string> ReadGateSelectedCardIds(JsonObject? gates) =>

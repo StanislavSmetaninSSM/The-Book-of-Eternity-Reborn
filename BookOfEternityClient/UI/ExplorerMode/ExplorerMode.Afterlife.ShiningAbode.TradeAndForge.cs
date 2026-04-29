@@ -123,6 +123,14 @@ public partial class ExplorerMode
                 else if (duplicatePendingRequests)
                 {
                     lines.Add("  Ожидающий запрос: [red]для текущего цикла найдено несколько конкурирующих торговых контрактов[/]");
+                    foreach (var duplicateRequest in matchingRequests.OrderBy(item => item.CreatedAtTurn).ThenBy(item => item.CreatedAtUtc, StringComparer.OrdinalIgnoreCase))
+                    {
+                        lines.Add($"    • requestId: [dim]{Markup.Escape(duplicateRequest.RequestId)}[/]");
+                        lines.Add($"      Фракция: [dim]{Markup.Escape(duplicateRequest.FactionName)} ({Markup.Escape(duplicateRequest.FactionId)})[/]");
+                        lines.Add($"      Цикл: [dim]{Markup.Escape(duplicateRequest.TradeCycleId)}[/]");
+                        lines.Add($"      Расчётные значения: [dim]уровень {duplicateRequest.DerivedTradeTier}, слотов {duplicateRequest.DerivedTradeSlotCount}, редкость {Markup.Escape(duplicateRequest.DerivedRarityCeiling)}, услуги x{duplicateRequest.DerivedServiceMultiplier:0.00}[/]");
+                        lines.Add($"      Создан: [dim]ход {duplicateRequest.CreatedAtTurn}, UTC {Markup.Escape(duplicateRequest.CreatedAtUtc)}[/]");
+                    }
                 }
                 else
                 {
@@ -313,8 +321,7 @@ public partial class ExplorerMode
         else
         {
             foreach (var faction in factions.OfType<JsonObject>()
-                         .OrderByDescending(item => GetNodeInt(item["factionStrength"]))
-                         .Take(6))
+                         .OrderByDescending(item => GetNodeInt(item["factionStrength"])))
             {
                 var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
                 var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
@@ -358,22 +365,19 @@ public partial class ExplorerMode
                     lines.Add($"  витрина: {inventoryState}");
                 }
             }
-            AppendCappedSectionOverflowLine(lines, factions.Count, 6);
         }
 
         if (gachaSystem["gachaHistory"] is JsonArray history && history.Count > 0)
         {
             lines.Add("");
-            lines.Add("[bold]Последние призывы реликвий:[/]");
+            lines.Add("[bold]Все призывы реликвий:[/] [dim](без сокращения)[/]");
             foreach (var entry in history.OfType<JsonObject>()
-                         .OrderByDescending(item => GetNodeInt(item["turnNumber"]))
-                         .Take(5))
+                         .OrderByDescending(item => GetNodeInt(item["turnNumber"])))
             {
                 var factionName = GetNodeString(entry["factionName"]) ?? GetNodeString(entry["factionId"]) ?? "фракция";
                 var relicName = GetNodeString(entry["relicName"]) ?? GetNodeString(entry["relicId"]) ?? "реликвия";
                 lines.Add($"  • {Markup.Escape(factionName)} — {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["baseRarity"])))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["finalRarity"])))}, {Markup.Escape(relicName)}");
             }
-            AppendCappedSectionOverflowLine(lines, history.Count, 5);
         }
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -832,7 +836,7 @@ public partial class ExplorerMode
 
             var offer = view.Offers[selectedIndex];
             var canBuy = !offer.SoldOut && feathers >= offer.PriceInFeathers;
-            var decision = ShowShiningTradeBuyPreview(offer, feathers, canBuy);
+            var decision = ShowShiningTradeBuyPreview(offer, view, feathers, canBuy);
             if (decision != ShiningTradeBuyDecision.Buy)
                 continue;
 
@@ -847,18 +851,26 @@ public partial class ExplorerMode
         }
     }
 
-    private ShiningTradeBuyDecision ShowShiningTradeBuyPreview(ShiningTradeService.ShiningTradeOffer offer, int currentFeathers, bool canBuy)
+    private ShiningTradeBuyDecision ShowShiningTradeBuyPreview(
+        ShiningTradeService.ShiningTradeOffer offer,
+        ShiningTradeService.ShiningTradeView view,
+        int currentFeathers,
+        bool canBuy)
     {
         using var relicDoc = JsonDocument.Parse(offer.RelicData.ToJsonString());
+        var projectedFeathers = Math.Max(0, currentFeathers - Math.Max(0, offer.PriceInFeathers));
         var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null, residentDoc: null, guardiansDoc: null);
         lines.Insert(1, $"  💰 Цена: [yellow]{offer.PriceInFeathers} 🪶[/]");
-        lines.Insert(2, "  🛍️ Источник витрины: [cyan]сияющая фракция[/]");
-        lines.Insert(3, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
+        lines.Insert(2, $"  🛍️ Источник витрины: [cyan]{Markup.Escape(view.FactionName)}[/] [dim]({Markup.Escape(view.FactionId)})[/]");
+        lines.Insert(3, $"  Цикл торговли: [dim]{Markup.Escape(view.TradeCycleId)}[/], уровень торговли {view.TradeTier}, потолок редкости {Markup.Escape(DescribeForgeRarity(view.RarityCeiling))}, услуги x{view.ServiceMultiplier:0.00}");
+        lines.Insert(4, $"  Слот витрины: [dim]{Markup.Escape(offer.SlotId)}[/], распродан: {(offer.SoldOut ? "[red]да[/]" : "[green]нет[/]")}");
+        lines.Insert(5, $"  🪶 Чернильные Перья: [gold1]{currentFeathers}[/] -> [gold1]{projectedFeathers}[/]");
+        lines.Insert(6, "  Канонический локальный исход: списать Перья, добавить Реликвию Души в soul_state, пометить слот витрины как soldOut=true; GM turn не отправляется.");
 
         if (offer.SoldOut)
-            lines.Insert(4, "  [red]Статус витрины: слот уже распродан.[/]");
+            lines.Insert(7, "  [red]Статус витрины: слот уже распродан.[/]");
         else if (currentFeathers < offer.PriceInFeathers)
-            lines.Insert(4, "  [yellow]Статус покупки: пока не хватает Чернильных Перьев для покупки.[/]");
+            lines.Insert(7, "  [yellow]Статус покупки: пока не хватает Чернильных Перьев для покупки.[/]");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -870,7 +882,7 @@ public partial class ExplorerMode
             Expand = true
         });
 
-        WriteJsonAuditPanel("Полный JSON Shining trade offer and relicData", BuildShiningTradeOfferAuditNode(offer), Color.Gold1);
+        WriteJsonAuditPanel("Полный JSON покупки сияющей витрины: предложение, чек и фрагмент состояния", BuildShiningTradeOfferAuditNode(offer, view, currentFeathers), Color.Gold1);
 
         var actions = new List<string>();
         if (canBuy)
@@ -900,14 +912,14 @@ public partial class ExplorerMode
             $"  createdAtTurn: [dim]{request.CreatedAtTurn}[/]",
             $"  createdAtUtc: [dim]{Markup.Escape(request.CreatedAtUtc)}[/]",
             "",
-            "[bold]Derived contract values:[/]",
+            "[bold]Расчётные значения контракта:[/]",
             $"  • derivedTradeTier: [white]{request.DerivedTradeTier}[/]",
             $"  • derivedTradeSlotCount: [white]{request.DerivedTradeSlotCount}[/]",
             $"  • derivedRarityCeiling: [white]{Markup.Escape(request.DerivedRarityCeiling)}[/]",
             $"  • derivedServiceMultiplier: [white]{request.DerivedServiceMultiplier:0.00}[/]",
             $"  • merchantProfile: [dim]{Markup.Escape(request.MerchantProfile)}[/]",
             "",
-            "[bold]GM closure contract:[/]",
+            "[bold]Контракт закрытия для GM:[/]",
             "  • accepted/ready: materialize exact `faction.tradeInventory` for this requestId/tradeCycleId.",
             "  • tradeInventory must include generatedAtUtc, generationTradeTier, generationRarityCeiling, serviceMultiplierSnapshot, merchantProfile and `items[]`.",
             "  • Each item requires unique slotId, priceInFeathers, soldOut boolean and nested relicData.",
@@ -939,17 +951,47 @@ public partial class ExplorerMode
                choice.Contains("Подтвердить", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static JsonObject BuildShiningTradeOfferAuditNode(ShiningTradeService.ShiningTradeOffer offer) =>
+    private static JsonObject BuildShiningTradeOfferAuditNode(
+        ShiningTradeService.ShiningTradeOffer offer,
+        ShiningTradeService.ShiningTradeView view,
+        int currentFeathers) =>
         new()
         {
-            ["sourceSurface"] = "shining_trade_inventory",
-            ["slotId"] = offer.SlotId,
-            ["name"] = offer.Name,
-            ["rarity"] = offer.Rarity,
-            ["priceInFeathers"] = offer.PriceInFeathers,
-            ["soldOut"] = offer.SoldOut,
-            ["description"] = offer.Description,
-            ["relicData"] = offer.RelicData.DeepClone()
+            ["sourceSurface"] = "shining_trade_purchase_preview",
+            ["factionId"] = view.FactionId,
+            ["factionName"] = view.FactionName,
+            ["tradeCycleId"] = view.TradeCycleId,
+            ["tradeTier"] = view.TradeTier,
+            ["stockItemCount"] = view.StockItemCount,
+            ["rarityCeiling"] = view.RarityCeiling,
+            ["serviceMultiplier"] = view.ServiceMultiplier,
+            ["currentInkFeathers"] = currentFeathers,
+            ["projectedInkFeathers"] = Math.Max(0, currentFeathers - Math.Max(0, offer.PriceInFeathers)),
+            ["affectedFiles"] = new JsonArray("game_state/meta/soul_state.json", ShiningAbodeState.StatePath),
+            ["expectedLocalReceipt"] = new JsonObject
+            {
+                ["slotId"] = offer.SlotId,
+                ["tradeCycleId"] = view.TradeCycleId,
+                ["costInFeathers"] = offer.PriceInFeathers,
+                ["soldOutAfterPurchase"] = true,
+                ["gmTurnSent"] = false
+            },
+            ["expectedStateFragment"] = new JsonObject
+            {
+                ["soul_state.inkFeathers.current"] = Math.Max(0, currentFeathers - Math.Max(0, offer.PriceInFeathers)),
+                ["soul_state.soulRelics.stored.add"] = offer.RelicData.DeepClone(),
+                ["shining_abode_state.factions[].tradeInventory.items[].soldOut"] = true
+            },
+            ["offer"] = new JsonObject
+            {
+                ["slotId"] = offer.SlotId,
+                ["name"] = offer.Name,
+                ["rarity"] = offer.Rarity,
+                ["priceInFeathers"] = offer.PriceInFeathers,
+                ["soldOut"] = offer.SoldOut,
+                ["description"] = offer.Description,
+                ["relicData"] = offer.RelicData.DeepClone()
+            }
         };
 
     private async Task HandleShiningForgeRequestAsync(ShiningContext context)

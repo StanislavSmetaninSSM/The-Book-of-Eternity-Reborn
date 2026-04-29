@@ -2851,7 +2851,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("shining_politics_overflow_indicator");
         var renderedText = ExtractRenderedText();
-        Assert.Contains("…и ещё 1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("без сокращения", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Фракция переполнения 5", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("…и ещё", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -3212,7 +3214,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Предпросмотр локального изменения Врат", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Projected canonical JSON gates", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("client-local mutation", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("локальное действие клиента", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("effectPayload", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -3297,9 +3299,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("card_resource_seed", afterAvailableIds);
 
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Уходят из available set: Песнь Рассвета, Память Эха", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Приходят в available set: Зерно запаса, Щит выживания", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Новый available set", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Уходят из доступного набора: Песнь Рассвета, Память Эха", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Приходят в доступный набор: Зерно запаса, Щит выживания", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Новый доступный набор", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Полные карты, уходящие из selectable-набора", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Полные карты, приходящие в selectable-набор", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Итоговый selectable-набор после подтверждения", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Новый shown set", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -3491,8 +3496,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Equal(ShiningBlessingEffectState.RelicStatusPendingEntitlement, entitlements["status"]!.GetValue<string>());
 
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Blessing relic rerolls", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("cancel preserves entitlement", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Перебросы реликвий от благословений", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("отмена сохраняет право", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
