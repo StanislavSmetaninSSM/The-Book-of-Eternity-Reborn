@@ -308,11 +308,7 @@ public partial class ExplorerMode
             return false;
         }
 
-        var choice = Prompt(new SelectionPrompt<string>()
-            .Title("[bold cyan]Подтвердить локальное переименование души?[/]")
-            .HighlightStyle(new Style(Color.Cyan1))
-            .AddChoices("✅ Да, переименовать", "← Отмена"));
-        return choice.Contains("Да", StringComparison.OrdinalIgnoreCase);
+        return Confirm("[yellow]Применить локальное переименование души?[/]", true);
     }
 
     private async Task ShowManifestationRequestInspectionAsync(

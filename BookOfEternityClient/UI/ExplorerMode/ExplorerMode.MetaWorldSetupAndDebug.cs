@@ -1007,11 +1007,7 @@ public partial class ExplorerMode
             after == null ? new JsonObject { ["exists"] = false, ["deleted"] = true } : JsonSerializer.SerializeToNode(after, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
             Color.Cyan1);
 
-        var choice = Prompt(new SelectionPrompt<string>()
-            .Title("[bold cyan]Подтвердить локальную запись подготовки мира?[/]")
-            .HighlightStyle(new Style(Color.Cyan1))
-            .AddChoices("✅ Да, записать", "← Отмена"));
-        return choice.Contains("Да", StringComparison.OrdinalIgnoreCase);
+        return Confirm("[yellow]Записать локальную подготовку следующего мира?[/]", true);
     }
 
     private async Task<WorldDirectiveService.WorldDirectives> PromptWorldDirectivesAsync(

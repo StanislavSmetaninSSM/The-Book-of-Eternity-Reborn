@@ -449,6 +449,30 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
     [Fact]
 
+    public async Task TryProcessCommand_SoulInfo_RenameSoul_CancelPreviewDoesNotWrite()
+    {
+        await SeedAfterlifeStateAsync();
+
+        _console.QueueAnySelection("✏️ Сменить имя души", "← Назад");
+        _console.QueueAskResponse("Новое имя души", "Пепельная Искра");
+        _console.QueueAnyConfirmResponse(false);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/душа"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("soul_rename_cancel");
+        Assert.True(_console.ConfirmPrompts.Any(prompt => prompt.Contains("переименование души", StringComparison.OrdinalIgnoreCase)),
+            BuildConsoleDiagnostics("soul_rename_cancel"));
+
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        Assert.NotNull(soulRaw);
+        Assert.Contains("\"soulName\": \"Тестовая Душа\"", soulRaw, StringComparison.Ordinal);
+        Assert.DoesNotContain("Пепельная Искра", soulRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+
     public async Task TryProcessCommand_Guardians_SystemAttraction_WritesRequestAndReturnsGmAction()
     {
         await SeedAfterlifeStateAsync();
