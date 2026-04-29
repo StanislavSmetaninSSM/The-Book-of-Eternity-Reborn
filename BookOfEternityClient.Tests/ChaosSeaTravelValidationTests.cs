@@ -31,7 +31,7 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
             currentAbodeId: "abode_other_001",
             discoveredAbodes: new[] { "abode_current_001", "abode_target_001", "abode_other_001" },
             targetAbodeDiscovered: true));
-        await WritePendingTurnSnapshotAsync(CreateSoulRoot());
+        await WritePendingTurnSnapshotAsync(CreateSoulRoot(), CreatePreTurnGuardiansRoot());
 
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
@@ -49,7 +49,7 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
             currentAbodeId: "abode_target_001",
             discoveredAbodes: new[] { "abode_current_001" },
             targetAbodeDiscovered: true));
-        await WritePendingTurnSnapshotAsync(CreateSoulRoot());
+        await WritePendingTurnSnapshotAsync(CreateSoulRoot(), CreatePreTurnGuardiansRoot());
 
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
@@ -67,12 +67,30 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
             currentAbodeId: "abode_target_001",
             discoveredAbodes: new[] { "abode_current_001", "abode_target_001" },
             targetAbodeDiscovered: true));
-        await WritePendingTurnSnapshotAsync(CreateSoulRoot(currentRealm: "Shining Abode"));
+        await WritePendingTurnSnapshotAsync(CreateSoulRoot(currentRealm: "Shining Abode"), CreatePreTurnGuardiansRoot());
 
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "chaos_sea_travel_invalid_realm", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_ChaosSeaTravelTargetAddedOnlyAfterTurn_Fails()
+    {
+        await WriteNodeAsync("game_state/meta/soul_state.json", CreateSoulRoot());
+        await WriteNodeAsync("input/turn_request.json", CreateTravelTurnRequest());
+        await WriteNodeAsync("game_state/meta/guardians.json", CreateGuardiansRoot(
+            activeGuardianId: "guardian_target_001",
+            currentAbodeId: "abode_target_001",
+            discoveredAbodes: new[] { "abode_current_001", "abode_target_001" },
+            targetAbodeDiscovered: true));
+        await WritePendingTurnSnapshotAsync(CreateSoulRoot(), CreatePreTurnGuardiansRoot(targetPreviouslyDiscovered: false));
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "chaos_sea_travel_target_not_discovered", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -85,7 +103,7 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
             currentAbodeId: "ABODE_TARGET_001",
             discoveredAbodes: new[] { "abode_current_001", "ABODE_TARGET_001" },
             targetAbodeDiscovered: true));
-        await WritePendingTurnSnapshotAsync(CreateSoulRoot());
+        await WritePendingTurnSnapshotAsync(CreateSoulRoot(), CreatePreTurnGuardiansRoot());
 
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
@@ -93,12 +111,15 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
             issue.Code?.StartsWith("chaos_sea_travel_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
-    private async Task WritePendingTurnSnapshotAsync(JsonObject preTurnSoulRoot)
+    private async Task WritePendingTurnSnapshotAsync(JsonObject preTurnSoulRoot, JsonObject preTurnGuardiansRoot)
     {
         const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
+        const string guardiansSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json";
         await WriteNodeAsync(soulSnapshotPath, preTurnSoulRoot);
+        await WriteNodeAsync(guardiansSnapshotPath, preTurnGuardiansRoot);
 
         var soulSnapshotJson = await _fs.ReadFileAsync(soulSnapshotPath) ?? string.Empty;
+        var guardiansSnapshotJson = await _fs.ReadFileAsync(guardiansSnapshotPath) ?? string.Empty;
         var manifest = new JsonObject
         {
             ["sessionId"] = "session",
@@ -108,11 +129,13 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
             ["playerAction"] = TravelPlayerAction,
             ["files"] = new JsonObject
             {
-                ["game_state/meta/soul_state.json"] = soulSnapshotPath
+                ["game_state/meta/soul_state.json"] = soulSnapshotPath,
+                ["game_state/meta/guardians.json"] = guardiansSnapshotPath
             },
             ["snapshotFileHashes"] = new JsonObject
             {
-                ["game_state/meta/soul_state.json"] = PendingTurnSnapshotAuthority.ComputeSha256(soulSnapshotJson)
+                ["game_state/meta/soul_state.json"] = PendingTurnSnapshotAuthority.ComputeSha256(soulSnapshotJson),
+                ["game_state/meta/guardians.json"] = PendingTurnSnapshotAuthority.ComputeSha256(guardiansSnapshotJson)
             },
             ["clientOwnedValidationHashes"] = new JsonObject(),
             ["rollbackBackups"] = new JsonObject(),
@@ -152,6 +175,14 @@ public sealed class ChaosSeaTravelValidationTests : IDisposable
             ["total"] = 10
         }
     };
+
+    private static JsonObject CreatePreTurnGuardiansRoot(bool targetPreviouslyDiscovered = true) => CreateGuardiansRoot(
+        activeGuardianId: "guardian_current_001",
+        currentAbodeId: "abode_current_001",
+        discoveredAbodes: targetPreviouslyDiscovered
+            ? new[] { "abode_current_001", "abode_target_001" }
+            : new[] { "abode_current_001" },
+        targetAbodeDiscovered: targetPreviouslyDiscovered);
 
     private static JsonObject CreateGuardiansRoot(
         string activeGuardianId,

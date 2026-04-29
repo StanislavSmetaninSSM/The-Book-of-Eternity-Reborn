@@ -760,6 +760,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("activeGuardian", text, StringComparison.Ordinal);
             Assert.Contains("currentAbodeId", text, StringComparison.Ordinal);
             Assert.Contains("discoveredAbodes", text, StringComparison.Ordinal);
+            Assert.Contains("pre-turn", text, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("currentLocationData", text, StringComparison.Ordinal);
             Assert.Contains("worldEventsLog", text, StringComparison.Ordinal);
         }

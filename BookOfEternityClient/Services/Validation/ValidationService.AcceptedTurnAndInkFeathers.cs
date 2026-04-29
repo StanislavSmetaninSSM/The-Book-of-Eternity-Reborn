@@ -437,6 +437,54 @@ public partial class ValidationService
             }
         }
 
+        var preTurnGuardiansJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            issues,
+            code: "chaos_sea_travel_missing_pre_turn_guardians_state",
+            section: "CHAOS_SEA_TRAVEL",
+            message: "CHAOS_SEA_TRAVEL требует validated pre-turn guardians snapshot для проверки уже открытой цели.",
+            repairHint: "Сохраняй validated snapshot copy of game_state/meta/guardians.json перед accepted travel turn; travel не может сам открывать свою цель.");
+        if (!string.IsNullOrWhiteSpace(preTurnGuardiansJson))
+        {
+            try
+            {
+                if (JsonNode.Parse(preTurnGuardiansJson) is JsonObject preTurnGuardiansRoot)
+                {
+                    if (!ContainsString(preTurnGuardiansRoot["chaosSeaNavigation"]?["discoveredAbodes"], targetAbodeId))
+                    {
+                        issues.Add(new ValidationIssue(
+                            "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.chaosSeaNavigation.discoveredAbodes",
+                            IssueSeverity.Error,
+                            "CHAOS_SEA_TRAVEL должен выбирать targetAbodeId из pre-turn discoveredAbodes.",
+                            code: "chaos_sea_travel_target_not_discovered",
+                            section: "CHAOS_SEA_TRAVEL",
+                            expected: $"pre-turn discoveredAbodes contains {targetAbodeId}",
+                            actual: preTurnGuardiansRoot["chaosSeaNavigation"]?["discoveredAbodes"]?.ToJsonString() ?? "missing",
+                            repairHint: "Не принимай travel turn к обители, которая не была открыта до хода; сначала нужен отдельный discovery/поиск, затем travel."));
+                    }
+
+                    var preTurnTargetGuardian = FindGuardianNode(preTurnGuardiansRoot["guardians"], targetGuardianId);
+                    if (preTurnTargetGuardian?["abode"] is not JsonObject preTurnTargetAbode ||
+                        preTurnTargetAbode["isDiscovered"]?.GetValueKind() != JsonValueKind.True)
+                    {
+                        issues.Add(new ValidationIssue(
+                            "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.guardians[].abode.isDiscovered",
+                            IssueSeverity.Error,
+                            "CHAOS_SEA_TRAVEL требует pre-turn discovered state у target guardian abode.",
+                            code: "chaos_sea_travel_target_abode_not_previously_marked_discovered",
+                            section: "CHAOS_SEA_TRAVEL",
+                            expected: "true before the turn",
+                            actual: preTurnTargetGuardian?["abode"]?["isDiscovered"]?.ToJsonString() ?? "missing",
+                            repairHint: "Travel может вести только к уже materialized и открытой обители; не выставляй isDiscovered=true впервые в самом travel turn."));
+                    }
+                }
+            }
+            catch
+            {
+                // JSON shape issues are reported by normal state validation.
+            }
+        }
+
         var currentGuardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
         if (string.IsNullOrWhiteSpace(currentGuardiansJson))
         {
