@@ -155,10 +155,16 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     [Fact]
     public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentRelicGrantWithoutCompanionEcho_Fails()
     {
+        var preTurnSoul = CreateSoulRoot();
+        var preTurnResidents = CreateResidentRoot("resident_liora");
         await WriteNodeAsync("game_state/meta/soul_state.json", CreateSoulRoot());
         await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", CreateResidentRoot("resident_liora"));
         await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(
             "[ABODE_RESIDENT_RELIC_GRANT] Игрок принимает реликвию связи от afterlife resident 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia)."));
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            playerAction: "[ABODE_RESIDENT_RELIC_GRANT] Игрок принимает реликвию связи от afterlife resident 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia).",
+            preTurnResidentRoot: preTurnResidents);
 
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
@@ -169,15 +175,115 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     [Fact]
     public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestWithoutSoulQuest_Fails()
     {
+        var preTurnSoul = CreateSoulRoot();
+        var preTurnResidents = CreateResidentRoot("resident_liora");
+        var preTurnQuests = CreateSoulQuestRoot();
         await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", CreateResidentRoot("resident_liora", includeInteractionLog: true));
         await WriteNodeAsync("game_state/quests/soul_quests.json", new JsonObject { ["quests"] = new JsonArray() });
         await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(
             "[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia)."));
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            playerAction: "[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia).",
+            preTurnResidentRoot: preTurnResidents,
+            preTurnSoulQuestsRoot: preTurnQuests);
 
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "abode_resident_quest_request_missing_linked_soul_quest", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentRelicGrantWithOnlyPreExistingReward_Fails()
+    {
+        var preTurnSoul = CreateSoulRoot();
+        AddCompanionEchoRelic(preTurnSoul, "relic_liora_echo");
+        var currentSoul = preTurnSoul.DeepClone().AsObject();
+        var preTurnResidents = CreateResidentRoot("resident_liora", includeInteractionLog: true);
+        SetResidentRewardGranted(preTurnResidents, "relic_liora_echo");
+        var currentResidents = preTurnResidents.DeepClone().AsObject();
+        var playerAction = "[ABODE_RESIDENT_RELIC_GRANT] Игрок принимает реликвию связи от afterlife resident 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia).";
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", currentResidents);
+        await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(playerAction));
+        await WritePendingTurnSnapshotAsync(preTurnSoul, playerAction: playerAction, preTurnResidentRoot: preTurnResidents);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "abode_resident_relic_grant_no_new_companion_echo_relic", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentRelicGrantWithNewReward_Passes()
+    {
+        var preTurnSoul = CreateSoulRoot();
+        var currentSoul = preTurnSoul.DeepClone().AsObject();
+        AddCompanionEchoRelic(currentSoul, "relic_liora_echo");
+        var preTurnResidents = CreateResidentRoot("resident_liora");
+        var currentResidents = preTurnResidents.DeepClone().AsObject();
+        SetResidentRewardGranted(currentResidents, "relic_liora_echo");
+        AddResidentInteractionLog(currentResidents, "resident_liora", "log_liora_relic");
+        var playerAction = "[ABODE_RESIDENT_RELIC_GRANT] Игрок принимает реликвию связи от afterlife resident 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia).";
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", currentResidents);
+        await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(playerAction));
+        await WritePendingTurnSnapshotAsync(preTurnSoul, playerAction: playerAction, preTurnResidentRoot: preTurnResidents);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code.StartsWith("abode_resident_relic_grant_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestWithOnlyPreExistingQuest_Fails()
+    {
+        var preTurnSoul = CreateSoulRoot();
+        var preTurnResidents = CreateResidentRoot("resident_liora", includeInteractionLog: true);
+        var currentResidents = preTurnResidents.DeepClone().AsObject();
+        var preTurnQuests = CreateSoulQuestRoot("quest_liora", "resident_liora");
+        var currentQuests = preTurnQuests.DeepClone().AsObject();
+        var playerAction = "[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia).";
+        await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", currentResidents);
+        await WriteNodeAsync("game_state/quests/soul_quests.json", currentQuests);
+        await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(playerAction));
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            playerAction: playerAction,
+            preTurnResidentRoot: preTurnResidents,
+            preTurnSoulQuestsRoot: preTurnQuests);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "abode_resident_quest_request_no_current_turn_quest_change", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestWithNewQuest_Passes()
+    {
+        var preTurnSoul = CreateSoulRoot();
+        var preTurnResidents = CreateResidentRoot("resident_liora");
+        var currentResidents = preTurnResidents.DeepClone().AsObject();
+        AddResidentInteractionLog(currentResidents, "resident_liora", "log_liora_quest_new");
+        var preTurnQuests = CreateSoulQuestRoot();
+        var currentQuests = CreateSoulQuestRoot("quest_liora", "resident_liora");
+        var playerAction = "[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia).";
+        await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", currentResidents);
+        await WriteNodeAsync("game_state/quests/soul_quests.json", currentQuests);
+        await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(playerAction));
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            playerAction: playerAction,
+            preTurnResidentRoot: preTurnResidents,
+            preTurnSoulQuestsRoot: preTurnQuests);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code.StartsWith("abode_resident_quest_request_", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -211,7 +317,12 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
             string.Equals(issue.Code, "ink_feather_soul_imprint_missing_source_provenance", StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task WritePendingTurnSnapshotAsync(JsonObject preTurnSoulRoot, JsonObject? rollbackSoulRoot = null, string? playerAction = null)
+    private async Task WritePendingTurnSnapshotAsync(
+        JsonObject preTurnSoulRoot,
+        JsonObject? rollbackSoulRoot = null,
+        string? playerAction = null,
+        JsonObject? preTurnResidentRoot = null,
+        JsonObject? preTurnSoulQuestsRoot = null)
     {
         const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
         await WriteNodeAsync(soulSnapshotPath, preTurnSoulRoot);
@@ -221,6 +332,32 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
             await WriteNodeAsync(soulRollbackPath, rollbackSoulRoot);
 
         var soulSnapshotJson = await _fs.ReadFileAsync(soulSnapshotPath) ?? string.Empty;
+        var files = new JsonObject
+        {
+            ["game_state/meta/soul_state.json"] = soulSnapshotPath
+        };
+        var snapshotHashes = new JsonObject
+        {
+            ["game_state/meta/soul_state.json"] = PendingTurnSnapshotAuthority.ComputeSha256(soulSnapshotJson)
+        };
+        if (preTurnResidentRoot != null)
+        {
+            const string residentSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/guardian_abode_residents.json";
+            await WriteNodeAsync(residentSnapshotPath, preTurnResidentRoot);
+            files[GuardianAbodeResidentState.StatePath] = residentSnapshotPath;
+            snapshotHashes[GuardianAbodeResidentState.StatePath] =
+                PendingTurnSnapshotAuthority.ComputeSha256(await _fs.ReadFileAsync(residentSnapshotPath) ?? string.Empty);
+        }
+
+        if (preTurnSoulQuestsRoot != null)
+        {
+            const string questSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/quests/soul_quests.json";
+            await WriteNodeAsync(questSnapshotPath, preTurnSoulQuestsRoot);
+            files["game_state/quests/soul_quests.json"] = questSnapshotPath;
+            snapshotHashes["game_state/quests/soul_quests.json"] =
+                PendingTurnSnapshotAuthority.ComputeSha256(await _fs.ReadFileAsync(questSnapshotPath) ?? string.Empty);
+        }
+
         var manifest = new JsonObject
         {
             ["sessionId"] = "session",
@@ -228,14 +365,8 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
             ["turnNumber"] = 7,
             ["requestTimestamp"] = "2026-04-24T00:00:00Z",
             ["playerAction"] = playerAction ?? "[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит 5 Чернильных Перьев.",
-            ["files"] = new JsonObject
-            {
-                ["game_state/meta/soul_state.json"] = soulSnapshotPath
-            },
-            ["snapshotFileHashes"] = new JsonObject
-            {
-                ["game_state/meta/soul_state.json"] = PendingTurnSnapshotAuthority.ComputeSha256(soulSnapshotJson)
-            },
+            ["files"] = files,
+            ["snapshotFileHashes"] = snapshotHashes,
             ["clientOwnedValidationHashes"] = new JsonObject(),
             ["rollbackBackups"] = rollbackSoulRoot == null
                 ? new JsonObject()
@@ -315,6 +446,51 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
                 ["summary"] = "Лиора попросила помощи.",
                 ["turn"] = 7,
                 ["timestamp"] = "2026-04-24T00:00:00Z"
+            });
+        }
+
+        return root;
+    }
+
+    private static void SetResidentRewardGranted(JsonObject residentRoot, string relicId)
+    {
+        var resident = residentRoot["entries"]?.AsArray().OfType<JsonObject>().First()
+                       ?? throw new InvalidOperationException("Expected resident test entry.");
+        resident["bondRewardState"] = "granted";
+        resident["grantedRelicId"] = relicId;
+    }
+
+    private static void AddResidentInteractionLog(JsonObject residentRoot, string residentId, string entryId)
+    {
+        var log = residentRoot["interactionLog"]?.AsArray()
+                  ?? throw new InvalidOperationException("Expected interactionLog test array.");
+        log.Add(new JsonObject
+        {
+            ["entryId"] = entryId,
+            ["residentId"] = residentId,
+            ["title"] = "Память Лиоры",
+            ["summary"] = "Лиора оставила новую память текущего хода.",
+            ["turn"] = 7,
+            ["timestamp"] = "2026-04-24T00:00:00Z"
+        });
+    }
+
+    private static JsonObject CreateSoulQuestRoot(string? questId = null, string residentId = "resident_liora")
+    {
+        var root = new JsonObject
+        {
+            ["quests"] = new JsonArray()
+        };
+        if (!string.IsNullOrWhiteSpace(questId))
+        {
+            root["quests"]!.AsArray().Add(new JsonObject
+            {
+                ["questId"] = questId,
+                ["title"] = "Просьба Лиоры",
+                ["description"] = "Помочь Лиоре удержать память Обители.",
+                ["status"] = "active",
+                ["relatedAfterlifeResidentId"] = residentId,
+                ["objectives"] = new JsonArray("Выслушать Лиору")
             });
         }
 
@@ -407,6 +583,28 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
             ["name"] = "Новая реликвия",
             ["rarity"] = rarity,
             ["quality"] = rarity
+        });
+    }
+
+    private static void AddCompanionEchoRelic(JsonObject soulRoot, string relicId)
+    {
+        var stored = soulRoot["soulRelics"]?["stored"]?.AsArray()
+            ?? throw new InvalidOperationException("Expected soulRelics.stored test array.");
+        stored.Add(new JsonObject
+        {
+            ["relicId"] = relicId,
+            ["name"] = "Эхо Лиоры",
+            ["rarity"] = "Rare",
+            ["quality"] = "Rare",
+            ["relicType"] = GuardianAbodeResidentState.RelicTypeCompanionEcho,
+            ["companionSeed"] = new JsonObject
+            {
+                ["sourceResidentId"] = "resident_liora",
+                ["sourceGuardianId"] = "guardian_azalia",
+                ["companionNameHint"] = "Лиора",
+                ["originWorldSummary"] = "Память Обители Азалии.",
+                ["futureCompanionPrompt"] = "Лиора может вернуться спутницей в следующей жизни."
+            }
         });
     }
 

@@ -7713,16 +7713,31 @@ public partial class ValidationService
 
         var soulRoot = await ReadJsonObjectForSpecialActionAsync("game_state/meta/soul_state.json", "ABODE_RESIDENT_RELIC_GRANT", issues);
         var residentRoot = await ReadJsonObjectForSpecialActionAsync(GuardianAbodeResidentState.StatePath, "ABODE_RESIDENT_RELIC_GRANT", issues);
-        if (soulRoot == null || residentRoot == null)
+        var preTurnSoulRoot = await ReadPreTurnJsonObjectForSpecialActionAsync("game_state/meta/soul_state.json", "ABODE_RESIDENT_RELIC_GRANT", issues);
+        var preTurnResidentRoot = await ReadPreTurnJsonObjectForSpecialActionAsync(GuardianAbodeResidentState.StatePath, "ABODE_RESIDENT_RELIC_GRANT", issues);
+        if (soulRoot == null || residentRoot == null || preTurnSoulRoot == null || preTurnResidentRoot == null)
             return;
 
         GuardianAbodeResidentState.NormalizeShape(residentRoot);
-        var matchingRelic = EnumerateSoulRelicObjects(soulRoot).FirstOrDefault(relic =>
-            string.Equals(GetNodeString(relic["relicType"]), GuardianAbodeResidentState.RelicTypeCompanionEcho, StringComparison.OrdinalIgnoreCase) &&
-            relic["companionSeed"] is JsonObject seed &&
-            string.Equals(GetNodeString(seed["sourceResidentId"]), residentId, StringComparison.OrdinalIgnoreCase));
-        var relicId = GetNodeString(matchingRelic?["relicId"]) ?? GetNodeString(matchingRelic?["id"]);
-        if (matchingRelic == null || string.IsNullOrWhiteSpace(relicId))
+        GuardianAbodeResidentState.NormalizeShape(preTurnResidentRoot);
+        var preTurnRelicIds = EnumerateSoulRelicObjects(preTurnSoulRoot)
+            .Select(GetSoulRelicId)
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var matchingRelics = EnumerateSoulRelicObjects(soulRoot)
+            .Where(relic =>
+                string.Equals(GetNodeString(relic["relicType"]), GuardianAbodeResidentState.RelicTypeCompanionEcho, StringComparison.OrdinalIgnoreCase) &&
+                relic["companionSeed"] is JsonObject seed &&
+                string.Equals(GetNodeString(seed["sourceResidentId"]), residentId, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var matchingRelic = matchingRelics.FirstOrDefault(relic =>
+        {
+            var candidateRelicId = GetSoulRelicId(relic);
+            return !string.IsNullOrWhiteSpace(candidateRelicId) &&
+                   !preTurnRelicIds.Contains(candidateRelicId);
+        });
+        var relicId = GetSoulRelicId(matchingRelic);
+        if (matchingRelics.Count == 0 || matchingRelics.All(relic => string.IsNullOrWhiteSpace(GetSoulRelicId(relic))))
         {
             issues.Add(new ValidationIssue(
                 "game_state/meta/soul_state.json.soulRelics",
@@ -7734,8 +7749,34 @@ public partial class ValidationService
                 actual: "missing",
                 repairHint: "Добавь Soul Relic с relicType=companion_echo и complete companionSeed.sourceResidentId/sourceGuardianId/companionNameHint/originWorldSummary/futureCompanionPrompt."));
         }
+        else if (matchingRelic == null || string.IsNullOrWhiteSpace(relicId))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json.soulRelics",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_RELIC_GRANT должен добавить новую companion_echo Soul Relic в текущем accepted turn, а не ссылаться на старую.",
+                code: "abode_resident_relic_grant_no_new_companion_echo_relic",
+                section: "ABODE_RESIDENT_RELIC_GRANT",
+                expected: $"new companion_echo relic absent from pre-turn snapshot with companionSeed.sourceResidentId={residentId}",
+                actual: "only pre-existing matching relics found",
+                repairHint: "Добавь новую Soul Relic с новым relicId и companionSeed.sourceResidentId указанного resident; ранее выданная реликвия не закрывает новый direct marker."));
+        }
 
         var resident = FindResidentNode(residentRoot, residentId);
+        var preTurnResident = FindResidentNode(preTurnResidentRoot, residentId);
+        if (preTurnResident == null)
+        {
+            issues.Add(new ValidationIssue(
+                $"{GuardianAbodeResidentState.StatePath}.entries",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_RELIC_GRANT должен применяться к resident, существовавшему до хода.",
+                code: "abode_resident_relic_grant_missing_pre_turn_resident",
+                section: "ABODE_RESIDENT_RELIC_GRANT",
+                expected: $"pre-turn residentId={residentId}",
+                actual: "missing pre-turn resident",
+                repairHint: "Direct resident relic grant закрывает награду существующего resident; не создавай нового resident как доказательство этого marker."));
+        }
+
         if (resident == null)
         {
             issues.Add(new ValidationIssue(
@@ -7752,6 +7793,11 @@ public partial class ValidationService
         {
             var rewardState = GetNodeString(resident["bondRewardState"]);
             var grantedRelicId = GetNodeString(resident["grantedRelicId"]);
+            var preTurnRewardState = GetNodeString(preTurnResident?["bondRewardState"]);
+            var preTurnGrantedRelicId = GetNodeString(preTurnResident?["grantedRelicId"]);
+            var alreadyGrantedPreTurn = string.Equals(preTurnRewardState, "granted", StringComparison.OrdinalIgnoreCase) &&
+                                        !string.IsNullOrWhiteSpace(grantedRelicId) &&
+                                        string.Equals(preTurnGrantedRelicId, grantedRelicId, StringComparison.OrdinalIgnoreCase);
             if (!string.Equals(rewardState, "granted", StringComparison.OrdinalIgnoreCase) ||
                 string.IsNullOrWhiteSpace(grantedRelicId) ||
                 (!string.IsNullOrWhiteSpace(relicId) && !string.Equals(grantedRelicId, relicId, StringComparison.OrdinalIgnoreCase)))
@@ -7766,19 +7812,31 @@ public partial class ValidationService
                     actual: $"bondRewardState={rewardState ?? "missing"}, grantedRelicId={grantedRelicId ?? "missing"}",
                     repairHint: "Обнови того же resident через UpdateGuardianAbodeResidents/entries: bondRewardState=granted и grantedRelicId=id companion_echo relic."));
             }
+            else if (alreadyGrantedPreTurn)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{GuardianAbodeResidentState.StatePath}.entries[].bondRewardState",
+                    IssueSeverity.Error,
+                    "ABODE_RESIDENT_RELIC_GRANT должен перевести resident reward state в текущем accepted turn, а не переиспользовать уже выданную награду.",
+                    code: "abode_resident_relic_grant_no_current_turn_resident_transition",
+                    section: "ABODE_RESIDENT_RELIC_GRANT",
+                    expected: "pre-turn resident reward was not already granted to the current relic id",
+                    actual: $"pre-turn bondRewardState={preTurnRewardState}, grantedRelicId={preTurnGrantedRelicId}",
+                    repairHint: "Не закрывай новый resident reward marker старым resident state; текущий ход должен выдать новую реликвию и обновить resident state."));
+            }
         }
 
-        if (!ResidentInteractionLogContains(residentRoot, residentId))
+        if (!ResidentInteractionLogContainsNewEntry(residentRoot, preTurnResidentRoot, residentId))
         {
             issues.Add(new ValidationIssue(
                 $"{GuardianAbodeResidentState.StatePath}.{GuardianAbodeResidentState.InteractionLogProperty}",
                 IssueSeverity.Error,
-                "ABODE_RESIDENT_RELIC_GRANT должен оставить residentInteractionLogUpdates/interactionLog память о даровании реликвии.",
-                code: "abode_resident_relic_grant_missing_interaction_log",
+                "ABODE_RESIDENT_RELIC_GRANT должен оставить новую residentInteractionLogUpdates/interactionLog память о даровании реликвии в текущем accepted turn.",
+                code: "abode_resident_relic_grant_missing_new_interaction_log",
                 section: "ABODE_RESIDENT_RELIC_GRANT",
-                expected: $"interaction log entry for residentId={residentId}",
-                actual: "missing",
-                repairHint: "Добавь residentInteractionLogUpdates с entryId, residentId, title, summary, turn и timestamp."));
+                expected: $"new interaction log entry for residentId={residentId} absent from pre-turn snapshot",
+                actual: "missing new entry",
+                repairHint: "Добавь новую residentInteractionLogUpdates запись с entryId, residentId, title, summary, turn и timestamp."));
         }
     }
 
@@ -7804,10 +7862,13 @@ public partial class ValidationService
 
         var residentRoot = await ReadJsonObjectForSpecialActionAsync(GuardianAbodeResidentState.StatePath, "ABODE_RESIDENT_QUEST_REQUEST", issues);
         var questsRoot = await ReadJsonObjectForSpecialActionAsync("game_state/quests/soul_quests.json", "ABODE_RESIDENT_QUEST_REQUEST", issues);
-        if (residentRoot == null || questsRoot == null)
+        var preTurnResidentRoot = await ReadPreTurnJsonObjectForSpecialActionAsync(GuardianAbodeResidentState.StatePath, "ABODE_RESIDENT_QUEST_REQUEST", issues);
+        var preTurnQuestsRoot = await ReadPreTurnJsonObjectForSpecialActionAsync("game_state/quests/soul_quests.json", "ABODE_RESIDENT_QUEST_REQUEST", issues);
+        if (residentRoot == null || questsRoot == null || preTurnResidentRoot == null || preTurnQuestsRoot == null)
             return;
 
         GuardianAbodeResidentState.NormalizeShape(residentRoot);
+        GuardianAbodeResidentState.NormalizeShape(preTurnResidentRoot);
         var quest = EnumerateQuestObjects(questsRoot).FirstOrDefault(candidate =>
             string.Equals(GetNodeString(candidate["relatedAfterlifeResidentId"]), residentId, StringComparison.OrdinalIgnoreCase));
         var questId = GetNodeString(quest?["questId"]) ?? GetNodeString(quest?["id"]);
@@ -7823,18 +7884,35 @@ public partial class ValidationService
                 actual: "missing",
                 repairHint: "Запиши UpdateSoulQuests/quests с questId, title/description/objectives и relatedAfterlifeResidentId того resident."));
         }
+        else
+        {
+            var preTurnQuest = EnumerateQuestObjects(preTurnQuestsRoot).FirstOrDefault(candidate =>
+                string.Equals(GetNodeString(candidate["questId"]) ?? GetNodeString(candidate["id"]), questId, StringComparison.OrdinalIgnoreCase));
+            if (preTurnQuest != null && JsonNode.DeepEquals(preTurnQuest, quest))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/quests/soul_quests.json.UpdateSoulQuests",
+                    IssueSeverity.Error,
+                    "ABODE_RESIDENT_QUEST_REQUEST должен создать или продвинуть resident-linked Soul Quest в текущем accepted turn, а не переиспользовать старое состояние.",
+                    code: "abode_resident_quest_request_no_current_turn_quest_change",
+                    section: "ABODE_RESIDENT_QUEST_REQUEST",
+                    expected: $"new or changed Soul Quest for residentId={residentId} absent from pre-turn snapshot",
+                    actual: $"questId={questId} unchanged from pre-turn snapshot",
+                    repairHint: "Создай новый Soul Quest с новым questId или измени существующий resident-linked quest через UpdateSoulQuests/objectives/progress/status."));
+            }
+        }
 
-        if (!ResidentInteractionLogContains(residentRoot, residentId))
+        if (!ResidentInteractionLogContainsNewEntry(residentRoot, preTurnResidentRoot, residentId))
         {
             issues.Add(new ValidationIssue(
                 $"{GuardianAbodeResidentState.StatePath}.{GuardianAbodeResidentState.InteractionLogProperty}",
                 IssueSeverity.Error,
-                "ABODE_RESIDENT_QUEST_REQUEST должен оставить residentInteractionLogUpdates/interactionLog память о просьбе или принятом пути.",
-                code: "abode_resident_quest_request_missing_interaction_log",
+                "ABODE_RESIDENT_QUEST_REQUEST должен оставить новую residentInteractionLogUpdates/interactionLog память о просьбе или принятом пути в текущем accepted turn.",
+                code: "abode_resident_quest_request_missing_new_interaction_log",
                 section: "ABODE_RESIDENT_QUEST_REQUEST",
-                expected: $"interaction log entry for residentId={residentId}",
-                actual: "missing",
-                repairHint: "Добавь residentInteractionLogUpdates с entryId, residentId, title, summary, turn и timestamp."));
+                expected: $"new interaction log entry for residentId={residentId} absent from pre-turn snapshot",
+                actual: "missing new entry",
+                repairHint: "Добавь новую residentInteractionLogUpdates запись с entryId, residentId, title, summary, turn и timestamp."));
         }
     }
 
@@ -7877,6 +7955,45 @@ public partial class ValidationService
         }
     }
 
+    private async Task<JsonObject?> ReadPreTurnJsonObjectForSpecialActionAsync(
+        string path,
+        string section,
+        List<ValidationIssue> issues)
+    {
+        var json = await ReadValidatedCurrentPreTurnTrackedFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            issues.Add(new ValidationIssue(
+                path,
+                IssueSeverity.Error,
+                $"{section} требует validated pre-turn snapshot для доказательства current-turn изменения.",
+                code: $"{section.ToLowerInvariant()}_missing_pre_turn_snapshot",
+                section: section,
+                expected: $"validated pre-turn snapshot for {path}",
+                actual: "missing or empty",
+                repairHint: "Accepted-turn validation должна иметь pending_turn_snapshot entry/hash для этого файла; без baseline нельзя принять stale no-op as valid result."));
+            return null;
+        }
+
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject;
+        }
+        catch
+        {
+            issues.Add(new ValidationIssue(
+                path,
+                IssueSeverity.Error,
+                $"{section} требует readable validated pre-turn JSON object in {path}.",
+                code: $"{section.ToLowerInvariant()}_invalid_pre_turn_snapshot_json",
+                section: section,
+                expected: "valid pre-turn JSON object",
+                actual: "invalid JSON",
+                repairHint: "Исправь validated pre-turn snapshot; special action validator не может доказать same-turn delta поверх malformed baseline."));
+            return null;
+        }
+    }
+
     private static IEnumerable<JsonObject> EnumerateSoulRelicObjects(JsonObject soulRoot)
     {
         if (soulRoot["soulRelics"] is JsonObject soulRelicsObject)
@@ -7897,6 +8014,9 @@ public partial class ValidationService
         }
     }
 
+    private static string? GetSoulRelicId(JsonObject? relic) =>
+        GetNodeString(relic?["relicId"]) ?? GetNodeString(relic?["id"]);
+
     private static JsonObject? FindResidentNode(JsonObject residentRoot, string residentId)
     {
         if (residentRoot[GuardianAbodeResidentState.EntriesProperty] is not JsonArray entries)
@@ -7908,21 +8028,36 @@ public partial class ValidationService
                 string.Equals(GetNodeString(resident["residentId"]), residentId, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static bool ResidentInteractionLogContains(JsonObject residentRoot, string residentId)
+    private static bool ResidentInteractionLogContainsNewEntry(JsonObject residentRoot, JsonObject preTurnResidentRoot, string residentId)
+    {
+        var preTurnSignatures = EnumerateResidentInteractionLogEntries(preTurnResidentRoot, residentId)
+            .Select(BuildResidentInteractionLogSignature)
+            .ToHashSet(StringComparer.Ordinal);
+
+        return EnumerateResidentInteractionLogEntries(residentRoot, residentId)
+            .Select(BuildResidentInteractionLogSignature)
+            .Any(signature => !preTurnSignatures.Contains(signature));
+    }
+
+    private static IEnumerable<JsonObject> EnumerateResidentInteractionLogEntries(JsonObject residentRoot, string residentId)
     {
         foreach (var propertyName in new[] { GuardianAbodeResidentState.InteractionLogProperty, GuardianAbodeResidentState.UpdateInteractionLogProperty })
         {
             if (residentRoot[propertyName] is not JsonArray log)
                 continue;
 
-            if (log.OfType<JsonObject>().Any(entry =>
-                    string.Equals(GetNodeString(entry["residentId"]), residentId, StringComparison.OrdinalIgnoreCase)))
-            {
-                return true;
-            }
+            foreach (var entry in log.OfType<JsonObject>())
+                if (string.Equals(GetNodeString(entry["residentId"]), residentId, StringComparison.OrdinalIgnoreCase))
+                    yield return entry;
         }
+    }
 
-        return false;
+    private static string BuildResidentInteractionLogSignature(JsonObject entry)
+    {
+        var entryId = GetNodeString(entry["entryId"]);
+        return !string.IsNullOrWhiteSpace(entryId)
+            ? $"entryId:{entryId}"
+            : entry.DeepClone().ToJsonString();
     }
 
     private static IEnumerable<JsonObject> EnumerateQuestObjects(JsonObject questsRoot)

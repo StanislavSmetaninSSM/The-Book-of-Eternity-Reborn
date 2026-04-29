@@ -5156,17 +5156,24 @@ playerAction:
 
 Required accepted-turn surfaces:
 - metaStateUpdates.soulRelicOperations.addRelic:
+  - this must be a new relic added by this accepted turn; an already stored companion echo is not enough
   - relicType = companion_echo
   - sourceResidentId = res_azalia_liora_001
   - sourceGuardianId = guard_social_azalia_001
   - companionSeed is complete: companionNameHint, originWorldSummary, futureCompanionPrompt, bondReason, coreTraits, archetypeHints, appearanceMotifs, personalityProfile, abodeDisposition, abodeDevotionLevel / abodeDevotionTier, restlessness / migrationState
 - UpdateGuardianAbodeResidents:
   - same residentId / guardianId / abodeId
+  - this must transition the existing pre-turn resident in this accepted turn
   - bondRewardState = granted
   - grantedRelicId = the new relic id
   - optional bounded devotion/restlessness changes when the scene justifies them
 - residentInteractionLogUpdates:
-  - concise memory of why the resident granted the relic
+  - new current-turn concise memory of why the resident granted the relic
+
+Do not satisfy this tag with stale state:
+- a pre-existing `companion_echo` relic with the same `sourceResidentId` is not a new reward
+- a resident that was already granted (`bondRewardState=granted`) to the same `grantedRelicId` before the turn is not a current-turn reward transition
+- an old interaction log entry is not enough; write a new `residentInteractionLogUpdates` entry for this accepted turn
 
 Forbidden for this tag:
 - no UpdateGuardianAbodeResidentInteractionReceipts
@@ -5184,6 +5191,7 @@ playerAction:
 
 Required accepted-turn surfaces:
 - UpdateSoulQuests:
+  - this must create a new Soul Quest or progress/change an existing resident-linked Soul Quest in this accepted turn
   - ordinary Soul Quest identity, title, description, status, and objective data
   - guardianId = guard_social_azalia_001 when the quest belongs to that Abode
   - relatedAfterlifeResidentId = res_azalia_liora_001
@@ -5191,7 +5199,12 @@ Required accepted-turn surfaces:
   - linkedSoulQuestId = the new or progressed Soul Quest id
   - optional bondLevel / bondTier / devotion changes when justified
 - residentInteractionLogUpdates:
-  - concise memory that the resident asked for or accepted this quest path
+  - new current-turn concise memory that the resident asked for or accepted this quest path
+
+Do not satisfy this tag with stale state:
+- an unchanged pre-existing Soul Quest with `relatedAfterlifeResidentId` is not enough
+- an old resident interaction log entry is not enough; write a new `residentInteractionLogUpdates` entry for this accepted turn
+- use `UpdateSoulQuests` / `soul_quests.json`; do not route through Mortal `UpdateQuests`
 
 Forbidden for this tag:
 - no Mortal UpdateQuests
