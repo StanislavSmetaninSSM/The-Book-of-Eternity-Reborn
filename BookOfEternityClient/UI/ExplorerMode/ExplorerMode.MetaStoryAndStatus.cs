@@ -175,6 +175,7 @@ public partial class ExplorerMode
         {
             table.AddRow("[bold yellow]── СИЯЮЩАЯ ОБИТЕЛЬ ──[/]", "", "");
             table.AddRow("[yellow]/guardians[/]", "[yellow]/хранители[/]", "[yellow]Информация о хранителях[/]");
+            table.AddRow("[yellow]/abodes[/]", "[yellow]/обители[/]", "[yellow]Навигация по Обителям Хранителей; доступно только в afterlife/Море Хаоса и Сияющей Обители[/]");
             table.AddRow("[yellow]/abode_power[/]", "[yellow]/сила_обители[/]", "[yellow]Журнал силы Обителей и её причин[/]");
             table.AddRow("[yellow]/abode_offering[/]", "[yellow]/подношение_обители[/]", "[yellow]Поднести Перья, Реликвию Души или запись Архива выбранной Обители[/]");
             table.AddRow("[yellow]/guardian_projects[/]", "[yellow]/проекты_хранителей[/]", "[yellow]Подробный журнал проектов хранителей[/]");
@@ -200,6 +201,7 @@ public partial class ExplorerMode
             // Chaos Sea commands
             table.AddRow("[bold blue]── МОРЕ ХАОСА (загробная жизнь) ──[/]", "", "");
             table.AddRow("[blue]/guardians[/]", "[blue]/хранители[/]", "[blue]Информация о хранителях[/]");
+            table.AddRow("[blue]/abodes[/]", "[blue]/обители[/]", "[blue]Навигация по Обителям Хранителей; Chaos Sea-only переходы без Mortal World travel[/]");
             table.AddRow("[blue]/abode_power[/]", "[blue]/сила_обители[/]", "[blue]Журнал силы Обителей и её причин[/]");
             table.AddRow("[blue]/abode_offering[/]", "[blue]/подношение_обители[/]", "[blue]Поднести Перья, Реликвию Души или запись Архива выбранной Обители[/]");
             table.AddRow("[blue]/guardian_projects[/]", "[blue]/проекты_хранителей[/]", "[blue]Подробный журнал проектов хранителей[/]");

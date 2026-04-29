@@ -918,14 +918,17 @@ public partial class GameEngine
         if (string.IsNullOrWhiteSpace(charDesc) && string.IsNullOrWhiteSpace(worldDesc))
             parts.Add("Хранитель выбирает мир и обстоятельства рождения для души.");
 
-        await _worldDirectiveService.UpsertPendingSetupFromIncarnationPromptAsync(charDesc, worldDesc, circumstances);
-        await _scenarioCoreService.RefreshFromPendingSetupAsync();
-
         var action =
             string.Join(" ", parts) +
             " В этом accepted turn не переключай душу локально в Mortal World и не создавай первый mortal bootstrap. " +
             "Сначала выполни только canonical TriggerIncarnation в game_state/control/incarnation_trigger.json, используя pending incarnation_world_setup как входной контракт. " +
             "После принятого TriggerIncarnation клиент сам выполнит локальный переход и запустит отдельный следующий ход для первого Mortal World bootstrap.";
+
+        if (!ConfirmIncarnationContractPreview(charDesc, worldDesc, circumstances, action))
+            return;
+
+        await _worldDirectiveService.UpsertPendingSetupFromIncarnationPromptAsync(charDesc, worldDesc, circumstances);
+        await _scenarioCoreService.RefreshFromPendingSetupAsync();
 
         await ProcessPlayerTurn(action);
     }
@@ -938,76 +941,76 @@ public partial class GameEngine
         if (pendingConsultationState.Exists)
         {
             blockers.Add(pendingConsultationState.IsMalformed
-                ? "pending_archive_consultation_request.json повреждён и требует явного исправления."
-                : "есть незакрытый запрос на архивную консультацию.");
+                ? await BuildPendingFileBlockerAsync(AfterlifeArchiveActionState.ConsultationRequestPath, "повреждённый запрос на архивную консультацию", "archiveActionResolutions + soul_state.afterlifeArchive.actionReceipts[]")
+                : BuildArchiveConsultationBlocker(pendingConsultationState.Request));
         }
 
         var pendingProjectFuelState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs);
         if (pendingProjectFuelState.Exists)
         {
             blockers.Add(pendingProjectFuelState.IsMalformed
-                ? "pending_archive_project_fuel_request.json повреждён и требует явного исправления."
-                : "есть незакрытый запрос на архивную подпитку проекта.");
+                ? await BuildPendingFileBlockerAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath, "повреждённый запрос на архивную подпитку проекта", "archiveActionResolutions + project/log effect only if request permits it")
+                : BuildArchiveProjectFuelBlocker(pendingProjectFuelState.Request));
         }
 
         if (_fs.FileExists(GuardianAbodeOfferingState.PendingRequestPath))
         {
             blockers.Add(await GuardianAbodeOfferingState.ReadAsync(_fs) == null
-                ? "pending_abode_offering.json повреждён и требует явного исправления."
-                : "есть незакрытое подношение Обители.");
+                ? await BuildPendingFileBlockerAsync(GuardianAbodeOfferingState.PendingRequestPath, "повреждённое подношение Обители", "guardianPowerEvents.reasonType=offering; ink_feathers also require output/ink_feather_action_result.json")
+                : await BuildPendingFileBlockerAsync(GuardianAbodeOfferingState.PendingRequestPath, "незакрытое подношение Обители", "guardianPowerEvents.reasonType=offering; ink_feathers also require output/ink_feather_action_result.json"));
         }
 
         var guardianTradeState = await GuardianTradeRequestState.ReadStateAsync(_fs);
         if (guardianTradeState.Exists)
         {
             blockers.Add(guardianTradeState.IsMalformed
-                ? "pending_guardian_trade_request.json повреждён и требует явного исправления."
-                : "есть незакрытый запрос на торговую витрину Хранителя.");
+                ? await BuildPendingFileBlockerAsync(GuardianTradeRequestState.PendingRequestPath, "повреждённый запрос на торговую витрину Хранителя", "UpdateGuardians + guardian tradeInventory + tradeInventoryReceipts[]")
+                : BuildGuardianTradeBlocker(guardianTradeState.Request));
         }
 
         var foundationState = await PlayerGuardianFoundationState.ReadStateAsync(_fs);
         if (foundationState.Exists)
         {
             blockers.Add(foundationState.IsMalformed
-                ? "pending_player_guardian_foundation.json повреждён и требует явного исправления."
-                : "есть незакрытый ритуал основания собственного Хранителя.");
+                ? await BuildPendingFileBlockerAsync(PlayerGuardianFoundationState.PendingRequestPath, "повреждённый ритуал основания собственного Хранителя", "UpdateGuardians.create + guardians/activeGuardian + playerGuardianFoundationHistory")
+                : BuildFoundationBlocker(foundationState.Request));
         }
 
         var attractionState = await _systemGuardianLibraryService.ReadAttractionRequestDisplayStateAsync();
         if (attractionState.FilePresent)
         {
             blockers.Add(attractionState.IsMalformed
-                ? "system_guardian_attraction.json повреждён и требует явного исправления или отмены до воплощения."
-                : "есть незакрытое притяжение к извечному Хранителю; дождитесь его разрешения GM или явно отмените attraction contract перед воплощением.");
+                ? await BuildPendingFileBlockerAsync(SystemGuardianLibraryService.AttractionRequestPath, "повреждённое притяжение к извечному Хранителю", "UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation or explicit client cancellation")
+                : await BuildPendingFileBlockerAsync(SystemGuardianLibraryService.AttractionRequestPath, "незакрытое притяжение к извечному Хранителю", "UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation or explicit client cancellation"));
         }
 
         if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingResidentsRequestPath))
         {
             blockers.Add(await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs)
-                ? "pending_guardian_abode_residents_request.json повреждён и требует явного исправления."
-                : "есть незакрытый запрос на обновление состава Обители.");
+                ? await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, "повреждённый запрос на обновление состава Обители", "UpdateGuardianAbodeResidents + roster receipts/history")
+                : await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, "незакрытый запрос на обновление состава Обители", "UpdateGuardianAbodeResidents + roster receipts/history"));
         }
 
         if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath))
         {
             blockers.Add(await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs)
-                ? "pending_guardian_abode_resident_interactions.json повреждён и требует явного исправления."
-                : "есть незакрытый запрос общения с резидентом Обители.");
+                ? await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, "повреждённый запрос общения с резидентом Обители", "residentInteractionLogUpdates + matching interaction receipts")
+                : await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, "незакрытый запрос общения с резидентом Обители", "residentInteractionLogUpdates + matching interaction receipts"));
         }
 
         if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingTransfersRequestPath))
         {
             blockers.Add(await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs)
-                ? "pending_guardian_abode_resident_transfers.json повреждён и требует явного исправления."
-                : "есть незакрытый запрос перехода резидента между Обителями.");
+                ? await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "повреждённый запрос перехода резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state")
+                : await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "незакрытый запрос перехода резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state"));
         }
 
         var guardianSocialState = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs);
         if (guardianSocialState.FilePresent)
         {
             blockers.Add(guardianSocialState.IsMalformed
-                ? "pending_guardian_social_interactions.json повреждён и требует явного исправления."
-                : "есть незакрытый социальный запрос к Хранителю.");
+                ? await BuildPendingFileBlockerAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "повреждённый социальный запрос к Хранителю", "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType")
+                : await BuildPendingFileBlockerAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "незакрытый социальный запрос к Хранителю", "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType"));
         }
 
         return blockers;
@@ -1068,11 +1071,7 @@ public partial class GameEngine
         var dossierLines = dossier
             .Replace("\r\n", "\n")
             .Split('\n')
-            .Take(18)
             .ToList();
-
-        if (!string.IsNullOrWhiteSpace(dossier) && dossierLines.Count < dossier.Split('\n').Length)
-            dossierLines.Add("[dim]…[/]");
 
         var lines = new List<string>
         {
@@ -1104,7 +1103,192 @@ public partial class GameEngine
             Expand = true
         });
 
+        WriteMainMenuJsonAuditPanel("Полный JSON system guardian preset", BuildSystemGuardianPresetAuditNode(preset), Color.Cyan1);
+
         return AnsiConsole.Confirm("[yellow]Выбрать этого хранителя для новой игры?[/]", true);
+    }
+
+    private bool ConfirmIncarnationContractPreview(string characterDescription, string worldDescription, string circumstances, string playerAction)
+    {
+        var lines = new List<string>
+        {
+            "[bold yellow]⚔️ Предпросмотр воплощения через Врата Души[/]",
+            "",
+            "Это GM-authored lifecycle contract, а не локальный переход в смертный мир.",
+            "GM должен записать только canonical TriggerIncarnation в game_state/control/incarnation_trigger.json.",
+            $"Pending setup перед отправкой будет записан в [dim]{WorldDirectiveService.PendingSetupPath}[/].",
+            "",
+            "[bold]Accepted outcome:[/]",
+            "  • game_state/control/incarnation_trigger.json содержит TriggerIncarnation для следующего mortal bootstrap.",
+            "  • currentRealm остаётся Chaos Sea до клиентского bootstrap handoff.",
+            "  • клиент сам создаёт первый Mortal World turn после принятого trigger.",
+            "",
+            "[bold]Rejected/repair outcome:[/]",
+            "  • если GM не может закрыть trigger строго, он не должен переключать мир вручную.",
+            "  • pending setup сохраняется как client-owned входной контракт для ремонта.",
+            "",
+            "[bold]Запрещено в accepted turn:[/]",
+            "  • TriggerLifeEnd, Life Evaluation rewards, Mortal World currentLocationData/worldEventsLog/UpdateNPCs.",
+            "  • Создание первого mortal bootstrap в том же ответе.",
+            "  • Ручная смена soul_state.currentRealm на Mortal World."
+        };
+
+        var audit = new JsonObject
+        {
+            ["playerAction"] = playerAction,
+            ["requiredOutputFile"] = "game_state/control/incarnation_trigger.json",
+            ["pendingSetupFile"] = WorldDirectiveService.PendingSetupPath,
+            ["expectedResponseSurface"] = "TriggerIncarnation",
+            ["characterDescription"] = characterDescription,
+            ["worldDescription"] = worldDescription,
+            ["circumstances"] = circumstances,
+            ["affectedFiles"] = new JsonArray
+            {
+                "game_state/control/incarnation_trigger.json",
+                WorldDirectiveService.PendingSetupPath,
+                "game_state/meta/soul_state.json"
+            },
+            ["forbiddenSameTurnSurfaces"] = new JsonArray
+            {
+                "TriggerLifeEnd",
+                "Life Evaluation rewards",
+                "currentLocationData",
+                "worldEventsLog",
+                "UpdateNPCs",
+                "Mortal World bootstrap state"
+            }
+        };
+
+        AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" ⚔️ Полный контракт /incarnate ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Yellow),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+        WriteMainMenuJsonAuditPanel("Полный JSON-аудит /incarnate contract", audit, Color.Yellow);
+
+        return AnsiConsole.Confirm("[yellow]Отправить этот контракт GM?[/]", true);
+    }
+
+    private async Task<string> BuildPendingFileBlockerAsync(string path, string title, string closure)
+    {
+        var raw = await _fs.ReadFileAsync(path);
+        var identity = DescribePendingFileIdentity(raw);
+        return $"{path}: {title}; {identity}; закрытие: {closure}.";
+    }
+
+    private static string BuildArchiveConsultationBlocker(AfterlifeArchiveActionState.PendingArchiveConsultationRequest? request) =>
+        request == null
+            ? $"{AfterlifeArchiveActionState.ConsultationRequestPath}: unreadable; закрытие: archiveActionResolutions + soul_state.afterlifeArchive.actionReceipts[]."
+            : $"{AfterlifeArchiveActionState.ConsultationRequestPath}: requestId={request.RequestId}, archiveId={request.ArchiveId}, requestedMode={request.RequestedMode}; закрытие: archiveActionResolutions + soul_state.afterlifeArchive.actionReceipts[].";
+
+    private static string BuildArchiveProjectFuelBlocker(AfterlifeArchiveActionState.PendingArchiveProjectFuelRequest? request) =>
+        request == null
+            ? $"{AfterlifeArchiveActionState.ProjectFuelRequestPath}: unreadable; закрытие: archiveActionResolutions + allowed project/log effect."
+            : $"{AfterlifeArchiveActionState.ProjectFuelRequestPath}: requestId={request.RequestId}, archiveId={request.ArchiveId}, targetProjectId={request.TargetProjectId}, requestedMode={request.RequestedMode}; закрытие: archiveActionResolutions + allowed project/log effect.";
+
+    private static string BuildGuardianTradeBlocker(GuardianTradeRequestState.PendingGuardianTradeRequest? request) =>
+        request == null
+            ? $"{GuardianTradeRequestState.PendingRequestPath}: unreadable; закрытие: UpdateGuardians + guardian tradeInventory + tradeInventoryReceipts[]."
+            : $"{GuardianTradeRequestState.PendingRequestPath}: requestId={request.RequestId}, guardianId={request.GuardianId}, returnCycleId={request.ReturnCycleId}, derivedTradeSlotCount={request.DerivedTradeSlotCount}; закрытие: UpdateGuardians + guardian tradeInventory + tradeInventoryReceipts[].";
+
+    private static string BuildFoundationBlocker(PlayerGuardianFoundationState.PendingPlayerGuardianFoundationRequest? request) =>
+        request == null
+            ? $"{PlayerGuardianFoundationState.PendingRequestPath}: unreadable; закрытие: UpdateGuardians.create + guardians/activeGuardian + playerGuardianFoundationHistory."
+            : $"{PlayerGuardianFoundationState.PendingRequestPath}: requestId={request.RequestId}, proposedDisplayName={request.ProposedDisplayName}, previousGuardianId={request.PreviousGuardianId}; закрытие: UpdateGuardians.create + guardians/activeGuardian + playerGuardianFoundationHistory.";
+
+    private static string DescribePendingFileIdentity(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+            return "identity unavailable: file is empty or unreadable";
+
+        try
+        {
+            var node = JsonNode.Parse(raw);
+            var root = node as JsonObject;
+            if (root == null)
+                return "identity unavailable: root is not an object";
+
+            var source = root;
+            if (root["requests"] is JsonArray { Count: > 0 } requests && requests[0] is JsonObject firstRequest)
+                source = firstRequest;
+
+            var parts = new[]
+            {
+                ("requestId", GetAuditNodeString(source["requestId"])),
+                ("actionType", GetAuditNodeString(source["actionType"])),
+                ("guardianId", GetAuditNodeString(source["guardianId"])),
+                ("residentId", GetAuditNodeString(source["residentId"])),
+                ("targetProjectId", GetAuditNodeString(source["targetProjectId"])),
+                ("tradeCycleId", GetAuditNodeString(source["tradeCycleId"]))
+            }
+            .Where(part => !string.IsNullOrWhiteSpace(part.Item2))
+            .Select(part => $"{part.Item1}={part.Item2}")
+            .ToArray();
+
+            return parts.Length == 0
+                ? "identity fields not found; inspect full pending JSON"
+                : string.Join(", ", parts);
+        }
+        catch (Exception ex)
+        {
+            return $"identity unavailable: malformed JSON ({ex.GetType().Name})";
+        }
+    }
+
+    private static string? GetAuditNodeString(JsonNode? node) =>
+        node is JsonValue value && value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text)
+            ? text
+            : null;
+
+    private static JsonObject BuildSystemGuardianPresetAuditNode(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset) =>
+        new()
+        {
+            ["presetId"] = preset.PresetId,
+            ["displayName"] = preset.DisplayName,
+            ["summary"] = preset.Summary,
+            ["libraryKind"] = preset.LibraryKind,
+            ["version"] = preset.Version,
+            ["domain"] = preset.Domain,
+            ["archetype"] = preset.Archetype,
+            ["tone"] = preset.Tone,
+            ["coreValues"] = new JsonArray(preset.CoreValues.Select(value => JsonValue.Create(value)).ToArray<JsonNode?>()),
+            ["defaultNameVariant"] = preset.DefaultNameVariant,
+            ["feminineNameVariant"] = preset.FeminineNameVariant,
+            ["masculineNameVariant"] = preset.MasculineNameVariant,
+            ["neutralNameVariant"] = preset.NeutralNameVariant,
+            ["formFlexibility"] = preset.FormFlexibility,
+            ["defaultPresentationStyle"] = preset.DefaultPresentationStyle,
+            ["defaultPronouns"] = preset.DefaultPronouns,
+            ["defaultAppearanceDescription"] = preset.DefaultAppearanceDescription,
+            ["abodeName"] = preset.AbodeName,
+            ["abodeTheme"] = preset.AbodeTheme,
+            ["mustPreserve"] = new JsonArray(preset.MustPreserve.Select(value => JsonValue.Create(value)).ToArray<JsonNode?>()),
+            ["canVary"] = new JsonArray(preset.CanVary.Select(value => JsonValue.Create(value)).ToArray<JsonNode?>()),
+            ["forbidden"] = new JsonArray(preset.Forbidden.Select(value => JsonValue.Create(value)).ToArray<JsonNode?>()),
+            ["searchLabel"] = preset.SearchLabel,
+            ["searchKeywords"] = new JsonArray(preset.SearchKeywords.Select(value => JsonValue.Create(value)).ToArray<JsonNode?>()),
+            ["directoryName"] = preset.DirectoryName,
+            ["directoryPath"] = preset.DirectoryPath,
+            ["manifestPath"] = preset.ManifestPath,
+            ["dossierPath"] = preset.DossierPath,
+            ["dossierMarkdown"] = preset.DossierMarkdown,
+            ["promptPackage"] = preset.PromptPackage
+        };
+
+    private static void WriteMainMenuJsonAuditPanel(string title, JsonNode node, Color borderColor)
+    {
+        var json = node.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        AnsiConsole.Write(new Panel(new Text(json))
+        {
+            Header = new PanelHeader($" {Markup.Escape(title)} ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(borderColor),
+            Padding = new Padding(1, 1),
+            Expand = true
+        });
     }
 
     private static void OpenFolderOrPrintPath(string directoryPath)

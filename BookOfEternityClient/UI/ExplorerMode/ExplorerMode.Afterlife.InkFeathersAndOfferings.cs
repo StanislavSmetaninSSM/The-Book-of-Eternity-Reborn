@@ -681,6 +681,57 @@ public partial class ExplorerMode
         };
     }
 
+    internal static JsonObject BuildInkFeatherActionAuditNode(
+        string actionTag,
+        string playerAction,
+        int costInFeathers,
+        int currentFeathers,
+        IReadOnlyList<string> effectLines) =>
+        new()
+        {
+            ["actionTag"] = actionTag,
+            ["playerAction"] = playerAction,
+            ["costInFeathers"] = costInFeathers,
+            ["currentFeathers"] = currentFeathers,
+            ["projectedFeathers"] = Math.Max(0, currentFeathers - costInFeathers),
+            ["alreadyDeductedByClient"] = true,
+            ["requiredOutputFile"] = "output/ink_feather_action_result.json",
+            ["requiredReceiptFields"] = new JsonArray
+            {
+                "sessionId",
+                "requestId",
+                "turnNumber",
+                "actionTag",
+                "resolved",
+                "costInFeathers",
+                "resolutionType",
+                "summary",
+                "stateEvidence"
+            },
+            ["requiredStateEvidence"] = new JsonArray
+            {
+                "affectedFiles",
+                "statefulResultId or domain-specific identity",
+                "before/after delta where applicable"
+            },
+            ["effectPreview"] = new JsonArray(effectLines.Select(line => JsonValue.Create(line)).ToArray<JsonNode?>())
+        };
+
+    private static string ExtractInkFeatherActionTag(string gmAction)
+    {
+        const string prefix = "[INK_FEATHER_ACTION:";
+        var start = gmAction.IndexOf(prefix, StringComparison.OrdinalIgnoreCase);
+        if (start < 0)
+            return "INK_FEATHER_ACTION";
+
+        start += prefix.Length;
+        var end = gmAction.IndexOf(']', start);
+        if (end <= start)
+            return "INK_FEATHER_ACTION";
+
+        return gmAction[start..end].Trim();
+    }
+
     internal static IReadOnlyList<string> BuildAbodeOfferingPreviewAuditLines(
         string offeringType,
         string consumedObjectLabel,
@@ -846,19 +897,42 @@ public partial class ExplorerMode
         Func<int, string>? buildConfirmationSummary = null)
     {
         var costDisplay = $"{cost} 🪶 (останется {feathers - cost})";
-        var effectLines = buildEffectLines?.Invoke(cost);
-        if (effectLines is { Count: > 0 })
-            ShowInkFeatherActionEffectPreview(actionName, cost, feathers, effectLines);
-
+        var effectLines = buildEffectLines?.Invoke(cost) ?? Array.Empty<string>();
         var confirmationSummary = buildConfirmationSummary?.Invoke(cost);
-        var title = $"[bold yellow]{Markup.Escape(actionName)} — потратить {Markup.Escape(costDisplay)}?[/]";
+        var gmAction = buildGmAction(cost);
+        var actionTag = ExtractInkFeatherActionTag(gmAction);
+        var previewLines = new List<string>
+        {
+            $"[bold yellow]{Markup.Escape(actionName)}[/]",
+            $"Action tag: [white]{Markup.Escape(actionTag)}[/]",
+            $"Цена: [yellow]{cost} Чернильных Перьев[/]",
+            $"Чернильные Перья: [gold1]{feathers}[/] -> [gold1]{Math.Max(0, feathers - cost)}[/]",
+            "",
+            "[bold]GM closure contract:[/]",
+            "  • output/ink_feather_action_result.json обязателен.",
+            "  • Required receipt fields: sessionId, requestId, turnNumber, actionTag, resolved, costInFeathers, resolutionType, summary, stateEvidence.",
+            "  • stateEvidence обязан содержать affectedFiles и доказательство реального canonical state результата.",
+            "  • Перья уже списывает клиент; GM не списывает их второй раз.",
+            "",
+            "[bold]Ожидаемый результат:[/]"
+        };
+        if (effectLines.Count > 0)
+            previewLines.AddRange(effectLines.Select(line => $"  • {Markup.Escape(line)}"));
+        else
+            previewLines.Add("  • GM выбирает stateful результат согласно actionTag и доказывает его через stateEvidence.");
         if (!string.IsNullOrWhiteSpace(confirmationSummary))
-            title += $"\n[dim]{Markup.Escape(confirmationSummary)}[/]";
+            previewLines.Add($"  • Итог перед подтверждением: {Markup.Escape(confirmationSummary)}");
+        AppendChaosSeaCommonContractRules(previewLines);
 
-        var confirm = Prompt(new SelectionPrompt<string>()
-            .Title(title)
-            .AddChoices("✅ Да, потратить", "❌ Отмена"));
-        if (confirm.Contains("Отмена")) return;
+        if (!ConfirmChaosSeaContractPreview(
+                $"Полный контракт Ink Feather action — {actionName}",
+                previewLines,
+                BuildInkFeatherActionAuditNode(actionTag, gmAction, cost, feathers, effectLines),
+                "Полный JSON-аудит output/ink_feather_action_result.json",
+                confirmChoice: $"✅ Да, потратить {Markup.Escape(costDisplay)}"))
+        {
+            return;
+        }
 
         await EnsurePendingLocalTurnRollbackSnapshotAsync("game_state/meta/soul_state.json");
         if (!await DeductInkFeathers(cost))
@@ -872,7 +946,7 @@ public partial class ExplorerMode
         MarkupLine($"[green]✅ Списано {cost} 🪶. Действие отправлено Мастеру Игры.[/]");
         WaitForKey();
 
-        _pendingGmAction = buildGmAction(cost) +
+        _pendingGmAction = gmAction +
             " Также обязательно запиши output/ink_feather_action_result.json с exact sessionId/requestId/turnNumber текущего turn_request, actionTag, resolved=true, costInFeathers, resolutionType, summary и stateEvidence. stateEvidence обязан содержать affectedFiles и минимальное подтверждение реального stateful результата.";
     }
 
@@ -909,25 +983,46 @@ public partial class ExplorerMode
             }));
 
         var costDisplay = $"{inputCost} 🪶 (останется {feathers - inputCost})";
+        var gmAction = $"[INK_FEATHER_ACTION: GUARDIAN_FAVOR] Игрок предлагает Хранителю {inputCost} Чернильных Перьев в обмен на услугу. " +
+            "Игрок может просить о чём-то, а может просто передавать перья в дар. " +
+            "Гарантированный механический минимум: репутация с текущим Хранителем должна вырасти. " +
+            "Перья уже списаны клиентом. Обязательно запиши output/ink_feather_action_result.json с guardianId, reputationChange и stateEvidence; всё остальное зависит от ролеплея и может быть добавлено дополнительно.";
+        var effectLines = new[]
+        {
+            "Гарантированный минимум: репутация с текущим Хранителем должна реально вырасти.",
+            "Дополнительная услуга может быть нарративной или stateful, но не заменяет обязательный рост репутации.",
+            $"Чернильные Перья: {feathers} -> {Math.Max(0, feathers - inputCost)}.",
+            "GM обязан указать target guardian identity: guardianId, guardianName и текущий relationship/reputation context.",
+            "GM обязан реально изменить game_state/meta/guardians.json, показать before/after reputation delta и записать guardianId/reputationChange в stateEvidence.",
+            "Цена переменная; валидатор проверяет факт положительного reputationChange, а не фиксированную формулу."
+        };
+        var previewLines = new List<string>
+        {
+            "[bold yellow]🤝 Попросить Хранителя об услуге[/]",
+            "Action tag: [white]GUARDIAN_FAVOR[/]",
+            $"Цена: [yellow]{inputCost} Чернильных Перьев[/]",
+            $"Чернильные Перья: [gold1]{feathers}[/] -> [gold1]{Math.Max(0, feathers - inputCost)}[/]",
+            "",
+            "[bold]GM closure contract:[/]",
+            "  • output/ink_feather_action_result.json обязателен.",
+            "  • Required fields: sessionId, requestId, turnNumber, actionTag, resolved, costInFeathers, resolutionType, summary, stateEvidence.",
+            "  • stateEvidence обязан содержать guardianId, guardianName, reputationChange, affectedFiles и before/after reputation audit.",
+            "  • Перья уже списывает клиент; GM не списывает их второй раз.",
+            "",
+            "[bold]Ожидаемый результат:[/]"
+        };
+        previewLines.AddRange(effectLines.Select(line => $"  • {Markup.Escape(line)}"));
+        AppendChaosSeaCommonContractRules(previewLines);
 
-        ShowInkFeatherActionEffectPreview(
-            "🤝 Попросить об услуге",
-            inputCost,
-            feathers,
-            new[]
-            {
-                "Гарантированный минимум: репутация с текущим Хранителем должна реально вырасти.",
-                "Дополнительная услуга может быть нарративной или stateful, но не заменяет обязательный рост репутации.",
-                $"Чернильные Перья: {feathers} -> {Math.Max(0, feathers - inputCost)}.",
-                "GM обязан указать target guardian identity: guardianId, guardianName и текущий relationship/reputation context.",
-                "GM обязан реально изменить game_state/meta/guardians.json, показать before/after reputation delta и записать guardianId/reputationChange в stateEvidence.",
-                "Цена переменная; валидатор проверяет факт положительного reputationChange, а не фиксированную формулу."
-            });
-
-        var confirm = Prompt(new SelectionPrompt<string>()
-            .Title($"[bold yellow]Предложить Хранителю {Markup.Escape(costDisplay)}?[/]\n[dim]Минимум: репутация текущего Хранителя должна вырасти.[/]")
-            .AddChoices("✅ Да, предложить", "❌ Отмена"));
-        if (confirm.Contains("Отмена")) return;
+        if (!ConfirmChaosSeaContractPreview(
+                "Полный контракт услуги Хранителя",
+                previewLines,
+                BuildInkFeatherActionAuditNode("GUARDIAN_FAVOR", gmAction, inputCost, feathers, effectLines),
+                "Полный JSON-аудит GUARDIAN_FAVOR receipt",
+                confirmChoice: $"✅ Да, предложить {Markup.Escape(costDisplay)}"))
+        {
+            return;
+        }
 
         await EnsurePendingLocalTurnRollbackSnapshotAsync("game_state/meta/soul_state.json");
         if (!await DeductInkFeathers(inputCost))
@@ -941,10 +1036,7 @@ public partial class ExplorerMode
         MarkupLine($"[green]✅ Списано {inputCost} 🪶. Запрос услуги отправлен Хранителю.[/]");
         WaitForKey();
 
-        _pendingGmAction = $"[INK_FEATHER_ACTION: GUARDIAN_FAVOR] Игрок предлагает Хранителю {inputCost} Чернильных Перьев в обмен на услугу. " +
-            "Игрок может просить о чём-то, а может просто передавать перья в дар. " +
-            "Гарантированный механический минимум: репутация с текущим Хранителем должна вырасти. " +
-            "Перья уже списаны клиентом. Обязательно запиши output/ink_feather_action_result.json с guardianId, reputationChange и stateEvidence; всё остальное зависит от ролеплея и может быть добавлено дополнительно.";
+        _pendingGmAction = gmAction;
     }
 
     private async Task ShowAbodeOffering()
