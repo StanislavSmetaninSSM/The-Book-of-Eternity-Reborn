@@ -950,7 +950,7 @@ Instead:
 - every accepted Life Evaluation turn activates `game_state/control/afterlife_return_guard.json` with `reason = post_life_return`
 - `afterlife_return_guard.json` is only a protective guard for the first ordinary afterlife turn after Life Evaluation
 - `afterlife_return_guard.json` is **not** a separate lifecycle completion marker and must not be interpreted as automatic return to `Shining Abode`
-- ordinary afterlife turn consumption applies only to a semantic-valid `afterlife_return_guard.json`; malformed guard or parsed guard with the wrong `reason` is not consumed by ordinary turns and remains blocked until runtime normalization clears it
+- ordinary afterlife turn consumption applies only to a semantic-valid `afterlife_return_guard.json`; malformed guard or parsed guard with the wrong `reason` is not consumed by ordinary turns and remains blocked fail-closed until validation repair or explicit client/runtime clear
 - current v1 ordinary post-life route does **not** automatically return the soul to active Shining Abode
 - later access from `Chaos Sea` into an already-stored active Shining Abode uses a separate explicit afterlife route `reenter_shining_abode`
 - `AscensionTrigger` remains reserved for maximum-Enlightenment ascension into Shining Abode and is not reused as the generic re-entry path after every post-life return
@@ -963,7 +963,7 @@ Instead:
 - `shining_abode_state.availability = active`
 - `preparedIncarnationPackage = null`
 - `game_state/control/afterlife_return_guard.json` is absent, or semantic-valid (`reason = post_life_return`) and inactive
-- malformed/unreadable `afterlife_return_guard.json`, or a parsed guard with the wrong `reason`, blocks re-entry fail-closed until runtime health normalization clears it
+- malformed/unreadable `afterlife_return_guard.json`, or a parsed guard with the wrong `reason`, blocks re-entry fail-closed until validation repair or explicit client/runtime clear
 - it is executed as a client-owned local lifecycle command, not as a GM-authored accepted turn
 
 `reenter_shining_abode` performs:
@@ -1151,7 +1151,7 @@ These are non-binding presentation examples over fixed mechanics.
 - normal post-life return in current v1 runtime ends in `Chaos Sea`, not `Shining Abode`
 - this normal post-life route does not auto-seal Shining Abode and does not mutate stored `availability`; only explicit `return_to_chaos_sea` seals it
 - `afterlife_return_guard.json(reason=post_life_return)` is always activated after accepted Life Evaluation and is a protective first-afterlife-turn guard, not a separate completion marker
-- malformed `afterlife_return_guard.json`, or a parsed guard whose `reason != post_life_return`, must not weaken protection of the mandatory first ordinary afterlife turn; for `reenter_shining_abode` it is treated fail-closed until runtime normalization clears it
+- malformed `afterlife_return_guard.json`, or a parsed guard whose `reason != post_life_return`, must not weaken protection of the mandatory first ordinary afterlife turn; for `reenter_shining_abode` it is treated fail-closed until validation repair or explicit client/runtime clear
 - ordinary afterlife turn consumption decrements or clears only a semantic-valid `afterlife_return_guard.json`; malformed or wrong-`reason` guard state is never consumed by ordinary afterlife turns
 - ordinary Shining Abode operations fail when `currentRealm != Shining Abode`
 - ordinary later access from `Chaos Sea` into an already-active Shining Abode uses explicit `reenter_shining_abode`, not `AscensionTrigger`

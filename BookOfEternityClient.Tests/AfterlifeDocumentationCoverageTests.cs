@@ -549,6 +549,38 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifePromptDocsDescribeReturnGuardAndRealmWrongPendingSemantics()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var implementationPlan = ReadRepoFile("OtherGuides", "Shining_Abode_Implementation_Plan.md");
+        var endgamePlan = ReadRepoFile("OtherGuides", "Shining_Abode_Endgame_Design_Plan.md");
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, examples, implementationPlan, endgamePlan })
+        {
+            Assert.Contains("afterlife_return_guard.json", doc, StringComparison.Ordinal);
+            Assert.Contains("fail-closed", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("explicit client/runtime clear", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, operations, taskGuide, examples })
+        {
+            Assert.Contains("pending_resident_companion_manifestation_request.json", doc, StringComparison.Ordinal);
+            Assert.Contains("MortalWorldProfile-only", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("malformed", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("repair", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain("runtime normalization clears", implementationPlan, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("runtime health normalization clears", implementationPlan, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("runtime-normalization", endgamePlan, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void AfterlifePromptDocsCoverRealmSegregationAndMortalOnlyPendingFiles()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
@@ -771,6 +803,33 @@ public sealed class AfterlifeDocumentationCoverageTests
 
             foreach (var value in sourceTypes.Concat(effectFamilies).Concat(rarities))
                 Assert.Contains(value, doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void ShiningGatesLocalMutationsAndResidentNormalizerAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var docs = new[] { matrix, apiSpec, daemonSpec, operations, taskGuide, examples };
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("selectedBlessingCardIds", doc, StringComparison.Ordinal);
+            Assert.Contains("shownBlessingCardIds", doc, StringComparison.Ordinal);
+            Assert.Contains("rerollsRemaining", doc, StringComparison.Ordinal);
+            Assert.Contains("nextCandidateCursor", doc, StringComparison.Ordinal);
+            Assert.Contains("GM turn", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("coreActionReceipts[]", doc, StringComparison.Ordinal);
+            Assert.Contains("remained_in_chaos_sea", doc, StringComparison.Ordinal);
+            Assert.Contains("factionLoyaltyTier", doc, StringComparison.Ordinal);
+            Assert.Contains("factionRestlessness", doc, StringComparison.Ordinal);
+            Assert.Contains("factionRealignmentState", doc, StringComparison.Ordinal);
+            Assert.Contains("shiningAlignment", doc, StringComparison.Ordinal);
         }
     }
 
