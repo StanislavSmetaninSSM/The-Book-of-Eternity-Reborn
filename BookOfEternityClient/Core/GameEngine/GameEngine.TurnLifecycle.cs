@@ -1697,12 +1697,21 @@ public partial class GameEngine
             if (preparedShiningPackage?["selectedCards"] is JsonArray selectedCards && selectedCards.Count > 0)
             {
                 parts.Add($"Frozen Shining package несёт {selectedCards.Count} blessing card(s) в следующий mortal bootstrap.");
-                foreach (var card in selectedCards.OfType<JsonObject>().Take(4))
+                foreach (var card in selectedCards.OfType<JsonObject>())
                 {
+                    var cardId = GetNodeString(card["cardId"]);
                     var displayName = GetNodeString(card["displayName"]);
                     var displaySummary = GetNodeString(card["displaySummary"]);
-                    if (!string.IsNullOrWhiteSpace(displayName) || !string.IsNullOrWhiteSpace(displaySummary))
-                        parts.Add($"Shining blessing: {displayName} — {displaySummary}".TrimEnd(' ', '—'));
+                    var blessingLabel = !string.IsNullOrWhiteSpace(displayName)
+                        ? displayName
+                        : cardId;
+                    if (!string.IsNullOrWhiteSpace(blessingLabel) || !string.IsNullOrWhiteSpace(displaySummary))
+                    {
+                        var identity = string.IsNullOrWhiteSpace(cardId) || string.Equals(cardId, blessingLabel, StringComparison.OrdinalIgnoreCase)
+                            ? string.Empty
+                            : $" ({cardId})";
+                        parts.Add($"Shining blessing: {blessingLabel}{identity} — {displaySummary}".TrimEnd(' ', '—'));
+                    }
                 }
             }
 
@@ -2117,6 +2126,7 @@ public partial class GameEngine
         else if (isShiningAbode)
         {
             AnsiConsole.MarkupLine("[dim]  Свободный ролеплей с Хранителями в Сияющей Обители[/]");
+            AnsiConsole.MarkupLine("[dim]  /сияющая_обитель /shining_abode │ /сияющая_политика /shining_politics[/]");
             AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /душа │ /вернуться_в_море_хаоса /новая_игра+ │ /help[/]");
         }
         else if (isChaosSea)

@@ -1171,6 +1171,8 @@ public partial class ValidationService
                     continue;
                 }
 
+                ValidateShiningCoreActionReceiptAuditFields(receipt, request, issues);
+
                 var status = GetNodeString(receipt["status"]) ?? string.Empty;
                 if (string.Equals(status, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
                 {
@@ -1369,6 +1371,9 @@ public partial class ValidationService
                     repairHint: "Синхронизируй coreActionReceipts[] с pendingNativeFactionDiscovery.requestId и actionType=discover_native_faction."));
                 return;
             }
+
+            ValidateRequiredCoreActionReceiptIntAudit(receipt, request, "quotedCostFeathers", request.QuotedCostFeathers, issues);
+            ValidateRequiredCoreActionReceiptIntAudit(receipt, request, "quotedCostLightSparks", request.QuotedCostLightSparks, issues);
 
             if (currentShiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
             {
@@ -8286,6 +8291,279 @@ public partial class ValidationService
                 actual: CurrentSoulFeathers(currentSoulRoot).ToString(),
                 repairHint: "Списывай Ink Feathers exactly по quotedCostFeathers из discovery request."));
         }
+
+        ValidateAcceptedShiningNativeDiscoveryConstrainedDiff(
+            request,
+            receipt,
+            hallId,
+            factionId,
+            residentIds,
+            preTurnShiningRoot,
+            preTurnResidentsRoot,
+            preTurnSoulRoot,
+            currentShiningRoot,
+            currentResidentsRoot,
+            currentSoulRoot,
+            issues);
+    }
+
+    private void ValidateAcceptedShiningNativeDiscoveryConstrainedDiff(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        JsonObject receipt,
+        string hallId,
+        string factionId,
+        IReadOnlySet<string> residentIds,
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnResidentsRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject currentShiningRoot,
+        JsonObject currentResidentsRoot,
+        JsonObject currentSoulRoot,
+        List<ValidationIssue> issues)
+    {
+        var allowedShiningTopLevel = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "pendingNativeFactionDiscovery",
+            "radiance",
+            "lightSparks",
+            "halls",
+            "factions",
+            "coreActionReceipts",
+            "shiningPoliticalActors"
+        };
+        ValidateObjectPropertiesUnchangedExcept(
+            preTurnShiningRoot,
+            currentShiningRoot,
+            allowedShiningTopLevel,
+            ShiningAbodeState.StatePath,
+            "shining_discovery_unexpected_shining_state_change",
+            issues,
+            "Accepted discover_native_faction может менять только native discovery surfaces: pending slot, resources/radiance, halls, factions, political actors and receipt.");
+
+        ValidateExistingArrayItemsUnchangedById(
+            preTurnShiningRoot["halls"],
+            currentShiningRoot["halls"],
+            "hallId",
+            ShiningAbodeState.StatePath,
+            "shining_discovery_existing_hall_changed",
+            issues,
+            "Accepted discover_native_faction не должен менять pre-existing halls.");
+        ValidateNoUnexpectedNewArrayItemsById(
+            preTurnShiningRoot["halls"],
+            currentShiningRoot["halls"],
+            "hallId",
+            new[] { hallId },
+            ShiningAbodeState.StatePath,
+            "shining_discovery_unexpected_new_hall",
+            issues,
+            "Accepted discover_native_faction должен добавлять только hallId из receipt.");
+
+        ValidateExistingArrayItemsUnchangedById(
+            preTurnShiningRoot["factions"],
+            currentShiningRoot["factions"],
+            "factionId",
+            ShiningAbodeState.StatePath,
+            "shining_discovery_existing_faction_changed",
+            issues,
+            "Accepted discover_native_faction не должен менять pre-existing factions/projects.");
+        ValidateNoUnexpectedNewArrayItemsById(
+            preTurnShiningRoot["factions"],
+            currentShiningRoot["factions"],
+            "factionId",
+            new[] { factionId },
+            ShiningAbodeState.StatePath,
+            "shining_discovery_unexpected_new_faction",
+            issues,
+            "Accepted discover_native_faction должен добавлять только factionId из receipt.");
+
+        ValidateExistingArrayItemsUnchangedById(
+            preTurnResidentsRoot["entries"],
+            currentResidentsRoot["entries"],
+            "residentId",
+            GuardianAbodeResidentState.StatePath,
+            "shining_discovery_existing_resident_changed",
+            issues,
+            "Accepted discover_native_faction не должен менять pre-existing residents.");
+        ValidateNoUnexpectedNewArrayItemsById(
+            preTurnResidentsRoot["entries"],
+            currentResidentsRoot["entries"],
+            "residentId",
+            residentIds,
+            GuardianAbodeResidentState.StatePath,
+            "shining_discovery_unexpected_new_resident",
+            issues,
+            "Accepted discover_native_faction должен добавлять только newResidentIds из receipt.");
+
+        var expectedSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        ApplyFeatherCostToSoul(expectedSoulRoot, request.QuotedCostFeathers);
+        if (!JsonNode.DeepEquals(expectedSoulRoot, currentSoulRoot))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Accepted discover_native_faction изменил Soul state вне разрешённого Ink Feather cost delta.",
+                code: "shining_discovery_unexpected_soul_state_change",
+                section: "ShiningAbode",
+                repairHint: "Для discover_native_faction оставь soul_state.json equal to pre-turn snapshot except exact quotedCostFeathers debit."));
+        }
+
+        ValidateExistingArrayItemsUnchangedById(
+            preTurnShiningRoot["shiningPoliticalActors"],
+            currentShiningRoot["shiningPoliticalActors"],
+            "actorId",
+            ShiningAbodeState.StatePath,
+            "shining_discovery_existing_political_actor_changed",
+            issues,
+            "Accepted discover_native_faction не должен менять pre-existing Shining political actors.");
+        ValidateNoUnexpectedNativeDiscoveryPoliticalActors(
+            preTurnShiningRoot["shiningPoliticalActors"],
+            currentShiningRoot["shiningPoliticalActors"],
+            factionId,
+            ShiningAbodeState.StatePath,
+            issues);
+    }
+
+    private static void ValidateObjectPropertiesUnchangedExcept(
+        JsonObject expected,
+        JsonObject actual,
+        IReadOnlySet<string> allowedChangedProperties,
+        string filePath,
+        string code,
+        List<ValidationIssue> issues,
+        string repairHint)
+    {
+        foreach (var propertyName in expected.Select(pair => pair.Key).Union(actual.Select(pair => pair.Key), StringComparer.OrdinalIgnoreCase))
+        {
+            if (allowedChangedProperties.Contains(propertyName))
+                continue;
+
+            expected.TryGetPropertyValue(propertyName, out var expectedNode);
+            actual.TryGetPropertyValue(propertyName, out var actualNode);
+            if (JsonNode.DeepEquals(expectedNode, actualNode))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                filePath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction изменил Shining state вне разрешённого constrained diff.",
+                code: code,
+                section: "ShiningAbode",
+                expected: $"{propertyName} unchanged",
+                actual: propertyName,
+                repairHint: repairHint));
+        }
+    }
+
+    private static void ValidateExistingArrayItemsUnchangedById(
+        JsonNode? expectedNode,
+        JsonNode? actualNode,
+        string idProperty,
+        string filePath,
+        string code,
+        List<ValidationIssue> issues,
+        string repairHint)
+    {
+        var expectedById = IndexObjectsById(expectedNode, idProperty);
+        var actualById = IndexObjectsById(actualNode, idProperty);
+        foreach (var (id, expectedItem) in expectedById)
+        {
+            if (!actualById.TryGetValue(id, out var actualItem) ||
+                !JsonNode.DeepEquals(expectedItem, actualItem))
+            {
+                issues.Add(new ValidationIssue(
+                    filePath,
+                    IssueSeverity.Error,
+                    "Accepted discover_native_faction изменил pre-existing объект вне разрешённого constrained diff.",
+                    code: code,
+                    section: "ShiningAbode",
+                    expected: $"{idProperty}={id} unchanged",
+                    actual: actualById.ContainsKey(id) ? "changed" : "missing",
+                    repairHint: repairHint));
+            }
+        }
+    }
+
+    private static void ValidateNoUnexpectedNewArrayItemsById(
+        JsonNode? expectedNode,
+        JsonNode? actualNode,
+        string idProperty,
+        IEnumerable<string> allowedNewIds,
+        string filePath,
+        string code,
+        List<ValidationIssue> issues,
+        string repairHint)
+    {
+        var expectedIds = IndexObjectsById(expectedNode, idProperty).Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var actualIds = IndexObjectsById(actualNode, idProperty).Keys.ToList();
+        var allowed = allowedNewIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var id in actualIds)
+        {
+            if (expectedIds.Contains(id) || allowed.Contains(id))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                filePath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction добавил объект вне разрешённого constrained diff.",
+                code: code,
+                section: "ShiningAbode",
+                expected: allowed.Count == 0 ? "no new ids" : string.Join(", ", allowed),
+                actual: id,
+                repairHint: repairHint));
+        }
+    }
+
+    private static Dictionary<string, JsonObject> IndexObjectsById(JsonNode? node, string idProperty)
+    {
+        var result = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+        if (node is not JsonArray array)
+            return result;
+
+        foreach (var item in array.OfType<JsonObject>())
+        {
+            var id = GetNodeString(item[idProperty]);
+            if (!string.IsNullOrWhiteSpace(id) && !result.ContainsKey(id))
+                result[id] = item;
+        }
+
+        return result;
+    }
+
+    private static void ValidateNoUnexpectedNativeDiscoveryPoliticalActors(
+        JsonNode? expectedNode,
+        JsonNode? actualNode,
+        string factionId,
+        string filePath,
+        List<ValidationIssue> issues)
+    {
+        var expectedIds = IndexObjectsById(expectedNode, "actorId").Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var actualById = IndexObjectsById(actualNode, "actorId");
+        foreach (var (id, actor) in actualById)
+        {
+            if (expectedIds.Contains(id))
+                continue;
+
+            var currentFactionId = GetNodeString(actor["currentFactionId"]);
+            var originFactionId = GetNodeString(actor["originFactionId"]);
+            if (string.Equals(currentFactionId, factionId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(originFactionId, factionId, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            issues.Add(new ValidationIssue(
+                filePath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction добавил political actor вне новой native faction.",
+                code: "shining_discovery_unexpected_new_political_actor",
+                section: "ShiningAbode",
+                expected: $"new actor.currentFactionId/originFactionId = {factionId}",
+                actual: $"{id}: current={currentFactionId ?? "missing"}, origin={originFactionId ?? "missing"}",
+                repairHint: "Discovery может добавлять только radiant actors, принадлежащие новой materialized native faction; не меняй чужую политическую карту."));
+        }
     }
 
     private static JsonObject? FindShiningProject(JsonObject shiningRoot, string projectId)
@@ -8360,7 +8638,7 @@ public partial class ValidationService
                (receipt["propertyIndex"] is JsonValue propertyIndexNode &&
                 propertyIndexNode.TryGetValue<int>(out var propertyIndex)
                     ? propertyIndex
-                    : -1) == request.PropertyIndex &&
+                   : -1) == request.PropertyIndex &&
                ReadOrderedStringList(receipt["selectedCardIds"]).SequenceEqual(
                    request.SelectedCardIds.Where(id => !string.IsNullOrWhiteSpace(id)).Select(id => id.Trim()),
                    StringComparer.OrdinalIgnoreCase);
@@ -8371,6 +8649,78 @@ public partial class ValidationService
         return !receipt.ContainsKey(propertyName) ||
                receipt[propertyName] is null ||
                GetNodeInt(receipt[propertyName]) == expected;
+    }
+
+    private static void ValidateShiningCoreActionReceiptAuditFields(
+        JsonObject receipt,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        List<ValidationIssue> issues)
+    {
+        ValidateRequiredCoreActionReceiptIntAudit(receipt, request, "quotedCostFeathers", request.QuotedCostFeathers, issues);
+        ValidateRequiredCoreActionReceiptIntAudit(receipt, request, "quotedCostLightSparks", request.QuotedCostLightSparks, issues);
+
+        if (!ShiningCoreActionForgePayloadMatches(request, receipt))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningCoreActionRequestState.PendingActionsRequestPath,
+                IssueSeverity.Error,
+                "Shining forge receipt не совпадает с client-authored mutation payload.",
+                code: "shining_core_action_receipt_forge_payload_mismatch",
+                section: "ShiningAbode",
+                expected: "receipt replacementProperty/addedProperties exactly match pending request",
+                actual: $"replacementProperty={receipt["replacementProperty"]?.ToJsonString() ?? "missing"}; addedProperties={receipt["addedProperties"]?.ToJsonString() ?? "missing"}",
+                repairHint: "Для forge receipts echo canonical mutation payload из pending request: replacementProperty для retune_property и addedProperties для uplift_rarity."));
+        }
+    }
+
+    private static void ValidateRequiredCoreActionReceiptIntAudit(
+        JsonObject receipt,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        string propertyName,
+        int expected,
+        List<ValidationIssue> issues)
+    {
+        if (receipt.ContainsKey(propertyName) &&
+            receipt[propertyName] is not null &&
+            GetNodeInt(receipt[propertyName]) == expected)
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            ShiningCoreActionRequestState.PendingActionsRequestPath,
+            IssueSeverity.Error,
+            "Shining core action receipt должен явно echo quoted cost из pending request.",
+            code: "shining_core_action_receipt_cost_audit_mismatch",
+            section: "ShiningAbode",
+            expected: $"{propertyName}={expected}",
+            actual: $"{propertyName}={receipt[propertyName]?.ToJsonString() ?? "missing"} for {request.ActionType}/{request.RequestId}",
+            repairHint: "Добавь quotedCostFeathers и quotedCostLightSparks в coreActionReceipts[] и синхронизируй их с pending_shining_abode_actions.json."));
+    }
+
+    private static bool ShiningCoreActionForgePayloadMatches(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        JsonObject receipt)
+    {
+        if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty, StringComparison.OrdinalIgnoreCase))
+            return JsonNode.DeepEquals(request.ReplacementProperty, receipt["replacementProperty"]);
+
+        if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity, StringComparison.OrdinalIgnoreCase))
+            return JsonNode.DeepEquals(request.AddedProperties, receipt["addedProperties"]);
+
+        if (IsShiningForgeActionType(request.ActionType))
+            return receipt["replacementProperty"] is null && receipt["addedProperties"] is null;
+
+        return true;
+    }
+
+    private static bool IsShiningForgeActionType(string? actionType)
+    {
+        return string.Equals(actionType, ShiningCoreActionRequestState.ActionTypeForgeRelicReshape, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(actionType, ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(actionType, ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(actionType, ShiningCoreActionRequestState.ActionTypeForgeRelicStabilizeEcho, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(actionType, ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity, StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool ShiningCoreActionGeneratedDraftVersionMatches(

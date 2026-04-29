@@ -48,6 +48,8 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
             ["selectedCardIds"] = new JsonArray(),
             ["newResidentIds"] = new JsonArray(),
             ["seededProjectIds"] = new JsonArray(),
+            ["quotedCostFeathers"] = 0,
+            ["quotedCostLightSparks"] = 0,
             ["generatedDraftVersion"] = GetNodeInt(currentShiningRoot["gates"]?["draftVersion"]),
             ["resolvedAtTurn"] = 14,
             ["resolvedAtUtc"] = "2026-04-16T12:30:00Z",
@@ -511,6 +513,43 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedDiscoveryWithUnrelatedStateMutations_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        MaterializeLegacyNativeDiscoveryClosure(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        currentShiningRoot["lightSparks"] = GetNodeInt(preTurnShiningRoot["lightSparks"]) - ShiningAbodeState.GetNativeDiscoveryCost().LightSparks;
+        currentShiningRoot["gates"]!["draftVersion"] = 99;
+        currentResidentRoot["entries"]!.AsArray()[0]!.AsObject()["displayName"] = "Подменённая Лиора";
+        currentSoulRoot["soulName"] = "Подменённая душа";
+
+        var receipt = ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).OfType<JsonObject>().Single();
+        receipt["requestId"] = "core_req_discover";
+        receipt["quotedCostFeathers"] = 25;
+        receipt["quotedCostLightSparks"] = 20;
+        receipt["generatedDraftVersion"] = 0;
+
+        var requestRoot = new JsonObject
+        {
+            [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray(CreateDiscoverNativeFactionRequest())
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot, CloneJsonObject(requestRoot));
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_unexpected_shining_state_change", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_existing_resident_changed", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_unexpected_soul_state_change", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync_UnresolvedPending_Fails()
     {
         var preTurnShiningRoot = CreateBaseShiningRootWithLegacyNativeDiscovery();
@@ -546,6 +585,29 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_legacy_native_discovery_not_cleared", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_discovery_light_sparks_cost_mismatch", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_discovery_feather_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_cost_audit_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync_MissingReceiptCostAudit_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRootWithLegacyNativeDiscovery();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        MaterializeLegacyNativeDiscoveryClosure(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        var receipt = ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).OfType<JsonObject>().Single();
+        receipt.Remove("quotedCostFeathers");
+        receipt.Remove("quotedCostLightSparks");
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        await WriteLegacyNativeDiscoverySnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+
+        var issues = await InvokeValidationAsync("ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_cost_audit_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2190,6 +2252,8 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         ["selectedCardIds"] = new JsonArray(),
         ["newResidentIds"] = new JsonArray(),
         ["seededProjectIds"] = new JsonArray(),
+        ["quotedCostFeathers"] = 0,
+        ["quotedCostLightSparks"] = 0,
         ["generatedDraftVersion"] = generatedDraftVersion,
         ["resolvedAtTurn"] = 14,
         ["resolvedAtUtc"] = "2026-04-16T12:30:00Z",

@@ -785,7 +785,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             chaosSeaNavigation = new
             {
                 currentAbodeId = "abode_current_001",
-                discoveredAbodes = new[] { "abode_current_001" }
+                discoveredAbodes = new[] { "abode_current_001", "abode_target_001" }
             }
         });
         await _stateManager.RefreshGameStateAsync();
@@ -801,6 +801,81 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Полный предпросмотр перехода Моря Хаоса", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("guardians.json.activeGuardian = targetGuardianId", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("abode_target_001", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_AbodesTravel_IgnoresGuardianOnlyDiscoveryWithoutNavigationMembership()
+    {
+        await WriteJsonAsync("input/turn_request.json", new { turnNumber = 14 });
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 25 }
+        });
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_target_001",
+                    canonicalName = "Мириэль",
+                    domain = "Magic",
+                    abode = new
+                    {
+                        abodeId = "abode_target_001",
+                        name = "Сад Переходов",
+                        isDiscovered = true
+                    },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Мириэль"
+                    },
+                    relationshipData = new { currentReputation = 80 }
+                },
+                new
+                {
+                    guardianId = "guardian_current_001",
+                    canonicalName = "Азалия",
+                    domain = "Social",
+                    abode = new
+                    {
+                        abodeId = "abode_current_001",
+                        name = "Шелковая Обитель",
+                        isDiscovered = true
+                    },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия"
+                    },
+                    relationshipData = new { currentReputation = 120 }
+                }
+            },
+            activeGuardian = new
+            {
+                guardianId = "guardian_current_001",
+                canonicalName = "Азалия",
+                manifestation = new
+                {
+                    currentDisplayName = "Азалия"
+                }
+            },
+            chaosSeaNavigation = new
+            {
+                currentAbodeId = "ABODE_CURRENT_001",
+                discoveredAbodes = new[] { "abode_current_001" }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var gmAction = await _explorer.TryProcessCommand("/обители");
+
+        AssertNoHiddenExplorerErrors("chaos_sea_abodes_navigation_membership");
+        Assert.DoesNotContain("CHAOS_SEA_TRAVEL", gmAction ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
+            choice => choice.Contains("Сад Переходов", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2160,6 +2235,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Зафиксированные карты", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Тропа возвращения", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("card_route_dawn", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("путь", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("effectPayload", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Семя маршрута", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("\"routeSeedId\"", renderedText, StringComparison.OrdinalIgnoreCase);
     }

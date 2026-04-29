@@ -1632,10 +1632,11 @@ internal static class AfterlifeNotificationState
 
     private static string BuildShiningCoreReceiptSummary(JsonObject receipt, JsonObject shiningRoot)
     {
-        _ = shiningRoot;
         var actionType = GetNodeString(receipt["actionType"]) ?? "action";
         var status = DescribeShiningResolutionStatus(GetNodeString(receipt["status"]));
         var actionLabel = DescribeShiningCoreActionLabel(actionType);
+        var requestId = GetNodeString(receipt["requestId"]);
+        var requestSuffix = string.IsNullOrWhiteSpace(requestId) ? string.Empty : $" Request {requestId}.";
         var factionLabel = GetNodeString(receipt["factionName"]) ??
                            GetNodeString(receipt["factionId"]) ??
                            GetNodeString(receipt["resolvedFactionId"]) ??
@@ -1645,27 +1646,98 @@ internal static class AfterlifeNotificationState
         return actionType switch
         {
             ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction =>
-                $"{actionLabel} — {status}. Зал «{hallLabel}», фракция «{factionLabel}», резидентов {(receipt["newResidentIds"] as JsonArray)?.Count ?? 0}, стартовых проектов {(receipt["seededProjectIds"] as JsonArray)?.Count ?? 0}.",
+                $"{actionLabel} — {status}. Зал «{hallLabel}», фракция «{factionLabel}», новые резиденты: {BuildShiningIdList(receipt["newResidentIds"] as JsonArray, shiningRoot, "resident")}; стартовые проекты: {BuildShiningIdList(receipt["seededProjectIds"] as JsonArray, shiningRoot, "project")}.{requestSuffix}",
             ShiningCoreActionRequestState.ActionTypeInvestInFaction =>
-                $"{actionLabel} — {status}. Усилена фракция «{factionLabel}».",
+                $"{actionLabel} — {status}. Фракция «{factionLabel}», сила {GetNodeInt(receipt["previousFactionStrength"], GetNodeInt(receipt["factionStrengthBefore"], 0))} -> {GetNodeInt(receipt["newFactionStrength"], GetNodeInt(receipt["factionStrengthAfter"], 0))}, delta {GetNodeInt(receipt["factionStrengthDelta"], 0)}.{requestSuffix}",
             ShiningCoreActionRequestState.ActionTypeCompleteProject =>
-                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}».",
+                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}», strengthReward {GetNodeInt(receipt["strengthReward"], 0)}, gatesMarkedStale={GetNodeBool(receipt["gatesMarkedStale"])}.{requestSuffix}",
             ShiningCoreActionRequestState.ActionTypeSupportProject =>
-                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}».",
+                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}», поддержка включена, gatesMarkedStale={GetNodeBool(receipt["gatesMarkedStale"])}.{requestSuffix}",
             ShiningCoreActionRequestState.ActionTypeUnsupportProject =>
-                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}».",
+                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}», поддержка снята, gatesMarkedStale={GetNodeBool(receipt["gatesMarkedStale"])}.{requestSuffix}",
             ShiningCoreActionRequestState.ActionTypeRetireProject =>
-                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}».",
+                $"{actionLabel} — {status}. Проект «{projectLabel}» фракции «{factionLabel}» отправлен в историю, gatesMarkedStale={GetNodeBool(receipt["gatesMarkedStale"])}.{requestSuffix}",
             ShiningCoreActionRequestState.ActionTypeOpenGates =>
-                $"{actionLabel} — {status}. Новый набор благословений готов [версия {GetNodeInt(receipt["generatedDraftVersion"], 0)}].",
+                $"{actionLabel} — {status}. Новый набор благословений готов: версия {GetNodeInt(receipt["generatedDraftVersion"], 0)} / draftVersion {GetNodeInt(receipt["generatedDraftVersion"], 0)}, карт {((receipt["availableBlessingCardIds"] as JsonArray)?.Count ?? (receipt["availableBlessingCards"] as JsonArray)?.Count ?? 0)}.{requestSuffix}",
             ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage =>
-                $"{actionLabel} — {status}. Для следующей жизни зафиксировано {((receipt["selectedCardIds"] as JsonArray)?.Count ?? 0)} карт(ы).",
+                $"{actionLabel} — {status}. Для следующей жизни зафиксировано {BuildShiningSelectedCardSummary(receipt)}; draftVersion {GetNodeInt(receipt["generatedDraftVersion"], GetNodeInt(receipt["sourceDraftVersion"], 0))}.{requestSuffix}",
             ShiningCoreActionRequestState.ActionTypePullRelicGacha =>
-                $"{actionLabel} — {status}. Баннер «{factionLabel}», редкость {DescribeShiningRarity(GetNodeString(receipt["baseRarity"]))} -> {DescribeShiningRarity(GetNodeString(receipt["finalRarity"]))}, реликвия «{GetNodeString(receipt["relicName"]) ?? GetNodeString(receipt["relicId"]) ?? "реликвия"}».",
+                $"{actionLabel} — {status}. Баннер «{factionLabel}», returnCycleId {GetNodeString(receipt["returnCycleId"]) ?? "?"}, редкость {DescribeShiningRarity(GetNodeString(receipt["baseRarity"]))} -> {DescribeShiningRarity(GetNodeString(receipt["finalRarity"]))}, реликвия «{GetNodeString(receipt["relicName"]) ?? GetNodeString(receipt["relicId"]) ?? "реликвия"}» ({GetNodeString(receipt["relicId"]) ?? "id не указан"}).{requestSuffix}",
             _ when ShiningAbodeState.IsForgeActionType(actionType) =>
-                $"{actionLabel} — {status}. {(GetNodeString(receipt["relicName"]) ?? GetNodeString(receipt["relicId"]) ?? "реликвия")}{BuildShiningForgeReceiptSuffix(receipt)}.",
-            _ => $"{actionLabel} — {status}."
+                $"{actionLabel} — {status}. {(GetNodeString(receipt["relicName"]) ?? GetNodeString(receipt["relicId"]) ?? "реликвия")} ({GetNodeString(receipt["relicId"]) ?? "id не указан"}){BuildShiningForgeReceiptSuffix(receipt)}{BuildShiningForgeReceiptDetailSuffix(receipt)}.{requestSuffix}",
+            _ => $"{actionLabel} — {status}.{requestSuffix}"
         };
+    }
+
+    private static string BuildShiningIdList(JsonArray? ids, JsonObject shiningRoot, string kind)
+    {
+        if (ids == null || ids.Count == 0)
+            return "нет";
+
+        var labels = ids
+            .Select(GetNodeString)
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Select(id => kind switch
+            {
+                "project" => ResolveShiningProjectLabel(shiningRoot, null, id),
+                _ => id!
+            })
+            .ToList();
+        return labels.Count == 0 ? "нет" : string.Join(", ", labels);
+    }
+
+    private static string BuildShiningSelectedCardSummary(JsonObject receipt)
+    {
+        if (receipt["selectedCards"] is JsonArray selectedCards && selectedCards.Count > 0)
+        {
+            var labels = selectedCards.OfType<JsonObject>()
+                .Select(card =>
+                {
+                    var cardId = GetNodeString(card["cardId"]) ?? "?";
+                    var name = GetNodeString(card["displayName"]) ?? GetNodeString(card["name"]) ?? cardId;
+                    var rarity = DescribeShiningRarity(GetNodeString(card["rarity"]));
+                    var family = HumanizeProtocolToken(GetNodeString(card["effectFamily"]));
+                    return $"{name} ({cardId}, {rarity}, {family})";
+                })
+                .ToList();
+            if (labels.Count > 0)
+                return $"{labels.Count} карт(ы): {string.Join(", ", labels)}";
+        }
+
+        if (receipt["selectedCardIds"] is JsonArray selectedCardIds && selectedCardIds.Count > 0)
+        {
+            var ids = selectedCardIds.Select(GetNodeString).Where(id => !string.IsNullOrWhiteSpace(id)).ToList();
+            return ids.Count == 0 ? "0 карт" : $"{ids.Count} карт(ы): {string.Join(", ", ids)}";
+        }
+
+        return "0 карт";
+    }
+
+    private static string BuildShiningForgeReceiptDetailSuffix(JsonObject receipt)
+    {
+        var details = new List<string>();
+        if (receipt["replacementProperty"] is JsonObject replacementProperty)
+            details.Add($"replacementProperty={BuildShiningForgePropertyLabel(replacementProperty)}");
+        if (receipt["addedProperties"] is JsonArray addedProperties && addedProperties.Count > 0)
+        {
+            var labels = addedProperties.OfType<JsonObject>()
+                .Select(BuildShiningForgePropertyLabel)
+                .ToList();
+            if (labels.Count > 0)
+                details.Add($"addedProperties={string.Join(", ", labels)}");
+        }
+        if (GetNodeInt(receipt["chargesUsedAfter"], -1) >= 0)
+            details.Add($"charges {GetNodeInt(receipt["chargesUsedBefore"], 0)}->{GetNodeInt(receipt["chargesUsedAfter"], 0)}");
+
+        return details.Count == 0 ? string.Empty : $"; {string.Join("; ", details)}";
+    }
+
+    private static string BuildShiningForgePropertyLabel(JsonObject property)
+    {
+        var name = GetNodeString(property["name"]) ?? GetNodeString(property["propertyId"]) ?? GetNodeString(property["stat"]) ?? "property";
+        var band = GetNodeString(property["band"]) ?? (property["band"] == null ? "unknown" : GetNodeInt(property["band"], 0).ToString());
+        var effectFamily = HumanizeProtocolToken(GetNodeString(property["effectFamily"]));
+        return $"{name} [band={band}, effect={effectFamily}]";
     }
 
     private static string BuildShiningFoundingReceiptSummary(JsonObject receipt)
@@ -2967,6 +3039,22 @@ internal static class AfterlifeNotificationState
             return number;
 
         return fallback;
+    }
+
+    private static bool GetNodeBool(JsonNode? node)
+    {
+        if (node is JsonValue value && value.TryGetValue<bool>(out var boolValue))
+            return boolValue;
+
+        return false;
+    }
+
+    private static string HumanizeProtocolToken(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "?";
+
+        return value.Replace('_', ' ').Replace('-', ' ').Trim();
     }
 
     private static bool SetIfDifferent(JsonObject obj, string propertyName, string value)

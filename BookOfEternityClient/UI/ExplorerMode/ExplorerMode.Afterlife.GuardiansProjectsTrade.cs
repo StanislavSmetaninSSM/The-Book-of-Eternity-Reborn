@@ -869,7 +869,7 @@ public partial class ExplorerMode
                 var isInDiscoveredNavigation = !string.IsNullOrWhiteSpace(abodeId) &&
                                                discoveredAbodeIds.Contains(abodeId, StringComparer.OrdinalIgnoreCase);
 
-                return isDiscovered || isCurrent || isInDiscoveredNavigation;
+                return isCurrent || (isDiscovered && isInDiscoveredNavigation);
             })
             .ToList();
 
@@ -889,7 +889,8 @@ public partial class ExplorerMode
                 var ab = g.GetProperty("abode");
                 var abName = GetStr(ab, "name", "???");
                 var abId = GetStr(ab, "abodeId", "");
-                var isCurrent = abId == currentAbodeId;
+                var isCurrent = !string.IsNullOrWhiteSpace(abId) &&
+                                string.Equals(abId, currentAbodeId, StringComparison.OrdinalIgnoreCase);
                 var domain = GetStr(g, "domain", "");
                 var domainRu = domain switch
                 {
@@ -928,7 +929,7 @@ public partial class ExplorerMode
             var targetAlreadyDiscovered = discoveredAbodeIds.Any(id => string.Equals(id, selAbodeId, StringComparison.OrdinalIgnoreCase));
             var discoveredAbodesContract = discoveredAbodeIds.Count == 0 ? "[]" : $"[{string.Join(", ", discoveredAbodeIds)}]";
 
-            if (selAbodeId == currentAbodeId)
+            if (string.Equals(selAbodeId, currentAbodeId, StringComparison.OrdinalIgnoreCase))
             {
                 MarkupLine($"[dim]Вы уже находитесь в обители «{Markup.Escape(selAbodeName)}».[/]");
                 WaitForKey();

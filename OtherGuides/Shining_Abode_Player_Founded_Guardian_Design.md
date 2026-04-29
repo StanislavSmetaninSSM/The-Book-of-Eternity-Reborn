@@ -822,7 +822,8 @@ Validator должен fail-ить:
 
 - `former patron narrative follow-up (GM-driven, no dedicated subsystem)`
   - реализовано как GM-facing reminder language, `/guardians` surfacing, foundation notification summary и inbox detail;
-  - прежний guardian с ролью `former_patron` может получать narrative follow-up через обычные GM-driven разговоры, квесты, world events и afterlife notifications;
+  - прежний guardian с ролью `former_patron` может получать narrative follow-up через обычные GM-driven Guardian talks, Guardian journals, Guardian/Soul quests, `guardianPowerEvents`, foundation history/receipts, and derived afterlife notifications;
+  - не использовать `worldEventsLog` для этого follow-up: это Mortal World surface и rejected в afterlife; `afterlife_notifications.json` тоже не primary GM proof surface, а client-derived inbox from canonical receipts/state;
   - отдельная diplomacy-state machine по-прежнему не нужна и не вводится.
 
 - `founder-specific bonuses`

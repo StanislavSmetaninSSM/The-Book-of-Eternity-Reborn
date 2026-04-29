@@ -455,10 +455,7 @@ public partial class ExplorerMode
             .Select(entry =>
             {
                 var residentId = GetNodeString(entry["residentId"]) ?? string.Empty;
-                var displayName = GetNodeString(entry["displayName"]) ?? residentId;
-                var factionId = GetNodeString(entry["shiningFactionId"]) ?? "none";
-                var factionLabel = GetNodeString(entry["shiningFactionName"]) ?? factionId;
-                var label = $"{displayName} [dim](фракция {factionLabel})[/]";
+                var label = BuildShiningResidentPoliticalChoiceLabel(entry);
                 return (Label: label, ResidentId: residentId);
             })
             .Where(item => !alreadySelected.Any(selected => string.Equals(selected, item.ResidentId, StringComparison.OrdinalIgnoreCase)))
@@ -480,9 +477,8 @@ public partial class ExplorerMode
                              string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase)))
             {
                 var residentId = GetNodeString(resident["residentId"]) ?? string.Empty;
-                var residentName = GetNodeString(resident["displayName"]) ?? residentId;
                 choices.Add(new ShiningActorChoice(
-                    $"{residentName} [dim](резидент той же фракции)[/]",
+                    BuildShiningResidentPoliticalChoiceLabel(resident),
                     ShiningAbodeState.HeadActorTypeResident,
                     residentId));
             }
@@ -492,12 +488,11 @@ public partial class ExplorerMode
         if (context.GuardiansRoot?["activeGuardian"] is JsonObject activeGuardian)
         {
             var guardianId = GetNodeString(activeGuardian["guardianId"]) ?? string.Empty;
-            var guardianName = GetNodeString(activeGuardian["guardianName"]) ?? guardianId;
             if (!string.IsNullOrWhiteSpace(guardianId))
             {
                 seenGuardianIds.Add(guardianId);
                 choices.Add(new ShiningActorChoice(
-                    $"{guardianName} [dim](хранитель)[/]",
+                    BuildShiningGuardianPoliticalChoiceLabel(activeGuardian, isActive: true),
                     ShiningAbodeState.HeadActorTypeGuardian,
                     guardianId));
             }
@@ -508,11 +503,10 @@ public partial class ExplorerMode
             foreach (var guardian in guardians.OfType<JsonObject>())
             {
                 var guardianId = GetNodeString(guardian["guardianId"]) ?? string.Empty;
-                var guardianName = GetNodeString(guardian["guardianName"]) ?? guardianId;
                 if (string.IsNullOrWhiteSpace(guardianId) || !seenGuardianIds.Add(guardianId))
                     continue;
                 choices.Add(new ShiningActorChoice(
-                    $"{guardianName} [dim](хранитель)[/]",
+                    BuildShiningGuardianPoliticalChoiceLabel(guardian, isActive: false),
                     ShiningAbodeState.HeadActorTypeGuardian,
                     guardianId));
             }
@@ -523,9 +517,8 @@ public partial class ExplorerMode
             foreach (var actor in politicalActors.OfType<JsonObject>())
             {
                 var actorId = GetNodeString(actor["actorId"]) ?? string.Empty;
-                var displayName = GetNodeString(actor["displayName"]) ?? actorId;
                 choices.Add(new ShiningActorChoice(
-                    $"{displayName} [dim](светозарный актор)[/]",
+                    BuildShiningRadiantActorPoliticalChoiceLabel(actor, context.Root),
                     ShiningAbodeState.HeadActorTypeRadiantActor,
                     actorId));
             }
@@ -539,6 +532,43 @@ public partial class ExplorerMode
             return null;
 
         return choices.First(choice => choice.Label == selected);
+    }
+
+    private static string BuildShiningResidentPoliticalChoiceLabel(JsonObject resident)
+    {
+        var residentId = GetNodeString(resident["residentId"]) ?? string.Empty;
+        var residentName = GetNodeString(resident["displayName"]) ?? GetNodeString(resident["residentName"]) ?? residentId;
+        var ascensionState = GetNodeString(resident["ascensionState"]) ?? "unknown";
+        var factionId = GetNodeString(resident["shiningFactionId"]) ?? "none";
+        var factionLabel = GetNodeString(resident["shiningFactionName"]) ?? factionId;
+        var role = DescribeShiningResidentRole(GetNodeString(resident["residentRole"]));
+        var loyaltyLevel = GetNodeInt(resident["factionLoyaltyLevel"]);
+        var loyaltyTier = DescribeShiningFactionLoyaltyTier(GetNodeString(resident["factionLoyaltyTier"]));
+        var restlessness = GetNodeInt(resident["factionRestlessness"]);
+        var realignmentState = DescribeShiningFactionRealignmentState(GetNodeString(resident["factionRealignmentState"]));
+        return $"{Markup.Escape(residentName)} [dim]({Markup.Escape(residentId)}; фракция {Markup.Escape(factionLabel)}/{Markup.Escape(factionId)}; ascension={Markup.Escape(ascensionState)}; роль {Markup.Escape(role)}; лояльность {loyaltyLevel}/{Markup.Escape(loyaltyTier)}; брожение {restlessness}; перестройка {Markup.Escape(realignmentState)})[/]";
+    }
+
+    private static string BuildShiningGuardianPoliticalChoiceLabel(JsonObject guardian, bool isActive)
+    {
+        var guardianId = GetNodeString(guardian["guardianId"]) ?? string.Empty;
+        var guardianName = GetNodeString(guardian["guardianName"]) ?? GetNodeString(guardian["name"]) ?? guardianId;
+        var domain = GetNodeString(guardian["domain"]) ?? "domain не указан";
+        var roleToPlayer = GetNodeString(guardian["guardianRoleToPlayer"]) ?? GetNodeString(guardian["roleToPlayer"]) ?? "role не указана";
+        var activeTag = isActive ? "activeGuardian" : "known guardian";
+        return $"{Markup.Escape(guardianName)} [dim]({Markup.Escape(guardianId)}; хранитель; {activeTag}; domain={Markup.Escape(domain)}; roleToPlayer={Markup.Escape(roleToPlayer)})[/]";
+    }
+
+    private static string BuildShiningRadiantActorPoliticalChoiceLabel(JsonObject actor, JsonObject shiningRoot)
+    {
+        var actorId = GetNodeString(actor["actorId"]) ?? string.Empty;
+        var displayName = GetNodeString(actor["displayName"]) ?? actorId;
+        var status = DescribeShiningPoliticalStatus(GetNodeString(actor["politicalStatus"]));
+        var factionId = GetNodeString(actor["currentFactionId"]) ?? "none";
+        var factionName = ResolveShiningFactionLabel(shiningRoot, factionId);
+        var summary = GetNodeString(actor["summary"]);
+        var suffix = string.IsNullOrWhiteSpace(summary) ? string.Empty : $"; {summary}";
+        return $"{Markup.Escape(displayName)} [dim]({Markup.Escape(actorId)}; светозарный актор; статус {Markup.Escape(status)}; фракция {Markup.Escape(factionName)}/{Markup.Escape(factionId)}{Markup.Escape(suffix)})[/]";
     }
 
     private static JsonObject? FindShiningFactionNode(JsonObject shiningRoot, string factionId)

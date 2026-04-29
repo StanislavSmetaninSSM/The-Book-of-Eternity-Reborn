@@ -33,7 +33,20 @@ public partial class ExplorerMode
                 tradeRequests.Count,
                 foundingRequests.Count,
                 realignmentRequests.Count,
-                leadershipRequests.Count);
+                leadershipRequests.Count,
+                coreRequests.FirstOrDefault() is { } firstCoreRequest
+                    ? $"{DescribeShiningCoreActionLabel(firstCoreRequest.ActionType)} / requestId={firstCoreRequest.RequestId}"
+                    : null,
+                tradeRequests.FirstOrDefault() is { } firstTradeRequest
+                    ? $"Shining trade / requestId={firstTradeRequest.RequestId}, factionId={firstTradeRequest.FactionId}, tradeCycleId={firstTradeRequest.TradeCycleId}"
+                    : null,
+                foundingRequests.FirstOrDefault() is { } firstFoundingRequest
+                    ? $"founding / requestId={firstFoundingRequest.RequestId}, factionId={firstFoundingRequest.ProposedFactionId}"
+                    : realignmentRequests.FirstOrDefault() is { } firstRealignmentRequest
+                        ? $"realignment / requestId={firstRealignmentRequest.RequestId}, residentId={firstRealignmentRequest.ResidentId}"
+                        : leadershipRequests.FirstOrDefault() is { } firstLeadershipRequest
+                            ? $"leadership / requestId={firstLeadershipRequest.RequestId}, factionId={firstLeadershipRequest.FactionId}"
+                            : null);
             if (overviewSignalsPanel != null)
                 Write(overviewSignalsPanel);
             Write(BuildShiningOverviewPanel(context.Root, context.ResidentRoot, context.GuardiansRoot));
@@ -353,7 +366,10 @@ public partial class ExplorerMode
         int tradeRequestCount,
         int foundingRequestCount,
         int realignmentRequestCount,
-        int leadershipRequestCount)
+        int leadershipRequestCount,
+        string? firstCoreRequestLabel = null,
+        string? firstTradeRequestLabel = null,
+        string? firstPoliticalRequestLabel = null)
     {
         var lines = new List<string>();
 
@@ -399,7 +415,10 @@ public partial class ExplorerMode
             tradeRequestCount,
             foundingRequestCount,
             realignmentRequestCount,
-            leadershipRequestCount);
+            leadershipRequestCount,
+            firstCoreRequestLabel,
+            firstTradeRequestLabel,
+            firstPoliticalRequestLabel);
 
         lines.InsertRange(0, new[]
         {
@@ -1015,9 +1034,12 @@ public partial class ExplorerMode
         {
             var receiptAudit = new JsonArray();
             foreach (var receipt in receipts)
-                receiptAudit.Add(receipt.DeepClone());
-            WriteJsonAuditPanel("Полный JSON coreActionReceipts[]", receiptAudit, Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON shining_abode_state.json после исходов", context.Root, Color.Gold1);
+                receiptAudit.Add(CloneShiningJsonForPlayerFacingAudit(receipt));
+            WriteJsonAuditPanel("JSON coreActionReceipts[] для просмотра (скрытые runtime details удалены)", receiptAudit, Color.Gold1);
+            WriteJsonAuditPanel(
+                "JSON shining_abode_state.json после исходов для просмотра (скрытые runtime details удалены)",
+                CloneShiningJsonForPlayerFacingAudit(context.Root),
+                Color.Gold1);
         }
     }
 
@@ -1190,6 +1212,9 @@ public partial class ExplorerMode
                     lines.Add($"    Создан на ходу: [dim]{request.CreatedAtTurn}[/]");
                     if (!string.IsNullOrWhiteSpace(request.CreatedAtUtc))
                         lines.Add($"    Создан в UTC: [dim]{Markup.Escape(request.CreatedAtUtc)}[/]");
+                    lines.Add("    GM closure contract:");
+                    lines.Add("      accepted: создать `halls[]`, `factions[]`, aligned supporter residents and `factionFoundingReceipts[]` with exact requestId/costs/supporters/status/time.");
+                    lines.Add("      refused/withdrawn: не создавать hall/faction; закрыть только `factionFoundingReceipts[]` with canonical refusal status/reason/time.");
                 }
             }
 
@@ -1212,6 +1237,9 @@ public partial class ExplorerMode
                     lines.Add($"    Создан на ходу: [dim]{request.CreatedAtTurn}[/]");
                     if (!string.IsNullOrWhiteSpace(request.CreatedAtUtc))
                         lines.Add($"    Создан в UTC: [dim]{Markup.Escape(request.CreatedAtUtc)}[/]");
+                    lines.Add("    GM closure contract:");
+                    lines.Add("      accepted_transfer: обновить resident `shiningFactionId/name`, loyalty/restlessness/realignment state, history entry and `factionRealignmentReceipts[]`.");
+                    lines.Add("      departure_to_neutral/refused/withdrawn: не изобретать новую фракцию; закрыть canonical receipt/status/reason and only apply the allowed resident binding change.");
                 }
             }
 
@@ -1236,6 +1264,9 @@ public partial class ExplorerMode
                     lines.Add($"    Создан на ходу: [dim]{request.CreatedAtTurn}[/]");
                     if (!string.IsNullOrWhiteSpace(request.CreatedAtUtc))
                         lines.Add($"    Создан в UTC: [dim]{Markup.Escape(request.CreatedAtUtc)}[/]");
+                    lines.Add("    GM closure contract:");
+                    lines.Add("      accepted: обновить `factions[].leadership`, `leadershipReceipts[]`, `leadershipHistory[]` and matching `shiningPoliticalActors[]` when head is radiant_actor.");
+                    lines.Add("      refused/withdrawn: leadership remains unchanged except canonical receipt/history refusal marker with exact requestId/candidate/supporters.");
                 }
             }
         }
@@ -1444,9 +1475,16 @@ public partial class ExplorerMode
     private static string FormatShiningReceiptAuditValue(JsonNode node)
     {
         if (node is JsonArray array)
-            return $"{array.Count} элемент(ов)";
+        {
+            if (array.Count == 0)
+                return "[]";
+
+            return string.Join("; ", array.Select(item => item == null ? "null" : FormatShiningReceiptAuditValue(item)));
+        }
+
         if (node is JsonObject obj)
-            return $"{obj.Count} полей";
+            return FormatShiningReceiptAuditObject(obj);
+
         if (node is JsonValue value)
         {
             if (value.TryGetValue<string>(out var text))
@@ -1461,8 +1499,83 @@ public partial class ExplorerMode
                 return doubleValue.ToString("0.###");
         }
 
-        return node.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        return node.ToJsonString();
     }
+
+    private static string FormatShiningReceiptAuditObject(JsonObject obj)
+    {
+        var cardId = GetNodeString(obj["cardId"]);
+        if (!string.IsNullOrWhiteSpace(cardId))
+        {
+            var displayName = GetNodeString(obj["displayName"]) ?? GetNodeString(obj["name"]) ?? cardId;
+            var rarity = DescribeForgeRarity(GetNodeString(obj["rarity"]) ?? string.Empty);
+            var effectFamily = DescribeShiningEffectFamily(GetNodeString(obj["effectFamily"]));
+            var sourceType = DescribeShiningBlessingReceiptSourceType(GetNodeString(obj["sourceType"]));
+            var sourceFactionId = GetNodeString(obj["sourceFactionId"]);
+            var sourceActorId = GetNodeString(obj["sourceActorId"]);
+            var parts = new List<string>
+            {
+                $"{displayName} ({cardId})",
+                $"редкость {rarity}",
+                $"эффект {effectFamily}"
+            };
+
+            if (!string.IsNullOrWhiteSpace(sourceType))
+                parts.Add($"источник {sourceType}");
+            if (!string.IsNullOrWhiteSpace(sourceFactionId))
+                parts.Add($"фракция {sourceFactionId}");
+            if (!string.IsNullOrWhiteSpace(sourceActorId))
+                parts.Add($"актор {sourceActorId}");
+
+            return string.Join(", ", parts);
+        }
+
+        if (obj.ContainsKey("propertyId") ||
+            obj.ContainsKey("stat") ||
+            obj.ContainsKey("band") ||
+            obj.ContainsKey("effectFamily"))
+        {
+            return $"{DescribeShiningForgePropertyLabel(obj)} {obj.ToJsonString()}";
+        }
+
+        return obj.ToJsonString();
+    }
+
+    private static JsonNode? CloneShiningJsonForPlayerFacingAudit(JsonNode? node)
+    {
+        if (node == null)
+            return null;
+
+        var clone = node.DeepClone();
+        RemoveShiningBlessingRuntimePayloads(clone);
+        return clone;
+    }
+
+    private static void RemoveShiningBlessingRuntimePayloads(JsonNode? node)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                obj.Remove("effectPayload");
+                foreach (var child in obj.Select(pair => pair.Value).ToList())
+                    RemoveShiningBlessingRuntimePayloads(child);
+                break;
+            case JsonArray array:
+                foreach (var child in array)
+                    RemoveShiningBlessingRuntimePayloads(child);
+                break;
+        }
+    }
+
+    private static string DescribeShiningBlessingReceiptSourceType(string? sourceType) =>
+        (sourceType ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "head" => "глава фракции",
+            "project" => "проект",
+            "resident_descent" => "резидент",
+            "" => string.Empty,
+            _ => sourceType ?? string.Empty
+        };
 
     private static void AppendShiningResolutionAuditLines(List<string> lines, JsonObject receipt, int indent = 2)
     {
@@ -2134,13 +2247,25 @@ public partial class ExplorerMode
         int tradeRequestCount,
         int foundingRequestCount,
         int realignmentRequestCount,
-        int leadershipRequestCount)
+        int leadershipRequestCount,
+        string? firstCoreRequestLabel,
+        string? firstTradeRequestLabel,
+        string? firstPoliticalRequestLabel)
     {
         if (shiningRoot["preparedIncarnationPackage"] is JsonObject)
             return "Пакет следующей жизни уже готов: переходи к новому воплощению.";
 
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), "active", StringComparison.OrdinalIgnoreCase))
             return "Верни Обитель в активное состояние, прежде чем продолжать обычные действия.";
+
+        if (coreRequestCount > 0)
+            return $"Сначала дождись accepted/repair для pending core action: {firstCoreRequestLabel ?? $"{coreRequestCount} request(s)"}; она блокирует новые Врата и core actions.";
+
+        if (tradeRequestCount > 0)
+            return $"Сначала проверь pending Shining trade: {firstTradeRequestLabel ?? $"{tradeRequestCount} request(s)"}; витрина ждёт canonical receipt/state.";
+
+        if (foundingRequestCount + realignmentRequestCount + leadershipRequestCount > 0)
+            return $"Сначала проверь pending Shining politics: {firstPoliticalRequestLabel ?? $"{foundingRequestCount + realignmentRequestCount + leadershipRequestCount} request(s)"}; политический контракт блокирует часть действий.";
 
         if (shiningRoot["gates"] is JsonObject gates)
         {
@@ -2155,9 +2280,6 @@ public partial class ExplorerMode
                     : "Набор Врат уже открыт: выбери благословения для следующей жизни.";
             }
         }
-
-        if (coreRequestCount + tradeRequestCount + foundingRequestCount + realignmentRequestCount + leadershipRequestCount > 0)
-            return "Проверь очереди и последние решения: часть действий уже ждёт принятого хода.";
 
         if ((shiningRoot["factions"] as JsonArray)?.Count is 0)
             return "Сначала запроси открытие нативной фракции.";

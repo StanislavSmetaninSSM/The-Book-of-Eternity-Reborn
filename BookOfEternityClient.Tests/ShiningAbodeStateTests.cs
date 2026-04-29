@@ -1343,6 +1343,61 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void TryOpenGates_InvalidPreparedIncarnationPackageBlocksOrdinaryActions()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["availability"] = ShiningAbodeState.AvailabilityActive;
+        root["preparedIncarnationPackage"] = "broken package";
+
+        var opened = ShiningAbodeState.TryOpenGates(root, residentRoot: null, out var error);
+
+        Assert.False(opened);
+        Assert.Contains("preparedIncarnationPackage", error, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void TryRerollGatesDraft_WithoutEnoughReplacementCards_DoesNotMutateShownHistory()
+    {
+        var root = JsonNode.Parse("""
+        {
+          "availability": "active",
+          "radiance": { "experience": 250, "tier": 2 },
+          "lightSparks": 100,
+          "halls": [],
+          "factions": [],
+          "preparedIncarnationPackage": null,
+          "gates": {
+            "draftVersion": 4,
+            "hasOpenDraft": true,
+            "isStale": false,
+            "allCandidateBlessingCards": [
+              { "cardId": "card_a", "dedupeKey": "a", "sourceType": "faction", "sourceFactionId": "faction_a", "sourceActorId": "faction_a", "effectFamily": "social", "rarity": "common", "displayName": "A", "displaySummary": "A", "effectPayload": { "type": "noop" } },
+              { "cardId": "card_b", "dedupeKey": "b", "sourceType": "faction", "sourceFactionId": "faction_b", "sourceActorId": "faction_b", "effectFamily": "route", "rarity": "common", "displayName": "B", "displaySummary": "B", "effectPayload": { "type": "noop" } },
+              { "cardId": "card_c", "dedupeKey": "c", "sourceType": "faction", "sourceFactionId": "faction_c", "sourceActorId": "faction_c", "effectFamily": "lore", "rarity": "common", "displayName": "C", "displaySummary": "C", "effectPayload": { "type": "noop" } }
+            ],
+            "availableBlessingCards": [
+              { "cardId": "card_a", "dedupeKey": "a", "sourceType": "faction", "sourceFactionId": "faction_a", "sourceActorId": "faction_a", "effectFamily": "social", "rarity": "common", "displayName": "A", "displaySummary": "A", "effectPayload": { "type": "noop" } },
+              { "cardId": "card_b", "dedupeKey": "b", "sourceType": "faction", "sourceFactionId": "faction_b", "sourceActorId": "faction_b", "effectFamily": "route", "rarity": "common", "displayName": "B", "displaySummary": "B", "effectPayload": { "type": "noop" } }
+            ],
+            "shownBlessingCardIds": [ "card_a", "card_b" ],
+            "selectedBlessingCardIds": [],
+            "nextCandidateCursor": 2,
+            "rerollsRemaining": 1
+          }
+        }
+        """)!.AsObject();
+        var beforeShown = root["gates"]?["shownBlessingCardIds"]?.DeepClone();
+        var beforeAvailable = root["gates"]?["availableBlessingCards"]?.DeepClone();
+
+        var rerolled = ShiningAbodeState.TryRerollGatesDraft(root, out var error);
+
+        Assert.False(rerolled);
+        Assert.Contains("replacement", error, StringComparison.OrdinalIgnoreCase);
+        Assert.True(JsonNode.DeepEquals(beforeShown, root["gates"]?["shownBlessingCardIds"]));
+        Assert.True(JsonNode.DeepEquals(beforeAvailable, root["gates"]?["availableBlessingCards"]));
+    }
+
+    [Fact]
     public void NormalizeStateRoot_HydratesPreparePackageReceiptSnapshotFromMatchingPreparedPackage()
     {
         var root = JsonNode.Parse("""
