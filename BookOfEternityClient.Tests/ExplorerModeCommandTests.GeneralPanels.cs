@@ -158,14 +158,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         });
 
         _console.QueueAnySelection("🧹 Очистить подготовку мира", "← Назад");
-        _console.QueueAnyConfirmResponse(false);
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/world_setup"));
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("world_setup_clear_cancel");
-        Assert.True(_console.ConfirmPrompts.Any(prompt => prompt.Contains("подготовку следующего мира", StringComparison.OrdinalIgnoreCase)),
+        Assert.True(_console.ConfirmPrompts.Any(prompt => prompt.Contains("Очистить локальную подготовку следующего мира", StringComparison.OrdinalIgnoreCase)),
             BuildConsoleDiagnostics("world_setup_clear_cancel"));
 
         var raw = await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath);

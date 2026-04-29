@@ -1007,7 +1007,12 @@ public partial class ExplorerMode
             after == null ? new JsonObject { ["exists"] = false, ["deleted"] = true } : JsonSerializer.SerializeToNode(after, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
             Color.Cyan1);
 
-        return Confirm("[yellow]Записать локальную подготовку следующего мира?[/]", true);
+        var isClearOperation = after == null;
+        return Confirm(
+            isClearOperation
+                ? "[yellow]Очистить локальную подготовку следующего мира?[/]"
+                : "[yellow]Записать локальную подготовку следующего мира?[/]",
+            defaultValue: !isClearOperation);
     }
 
     private async Task<WorldDirectiveService.WorldDirectives> PromptWorldDirectivesAsync(
