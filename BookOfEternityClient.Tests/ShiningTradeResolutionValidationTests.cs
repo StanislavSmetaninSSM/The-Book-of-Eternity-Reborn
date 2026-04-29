@@ -313,6 +313,110 @@ public sealed class ShiningTradeResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public void ValidateShiningTradeInventoryObject_DuplicateRelicIds_Fails()
+    {
+        var issues = new List<ValidationIssue>();
+        var tradeInventory = new JsonObject
+        {
+            ["tradeCycleId"] = "shining_return_2",
+            ["generatedAtUtc"] = "2026-04-17T01:00:00Z",
+            ["generationTradeTier"] = 2,
+            ["generationRarityCeiling"] = "rare",
+            ["serviceMultiplierSnapshot"] = 1.25,
+            ["merchantProfile"] = "shining_faction",
+            ["items"] = new JsonArray
+            {
+                CreateTradeSlot("slot_1", 70, "relic_dup", "Rare"),
+                CreateTradeSlot("slot_2", 30, "relic_dup", "Common")
+            }
+        };
+
+        using var document = JsonDocument.Parse(tradeInventory.ToJsonString());
+        var method = typeof(ValidationService).GetMethod(
+            "ValidateShiningTradeInventoryObject",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        method!.Invoke(_validator, new object[] { document.RootElement, "test.tradeInventory", issues });
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_trade_inventory_duplicate_relic_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidatePendingShiningTradeInventoryResolutionAsync_OwnedRelicIdCollision_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var faction = currentShiningRoot["factions"]!.AsArray()[0]!.AsObject();
+        faction["tradeInventory"] = new JsonObject
+        {
+            ["tradeCycleId"] = "shining_return_2",
+            ["generatedAtUtc"] = "2026-04-17T01:00:00Z",
+            ["generationTradeTier"] = 2,
+            ["generationRarityCeiling"] = "rare",
+            ["serviceMultiplierSnapshot"] = 1.25,
+            ["merchantProfile"] = "shining_faction",
+            ["items"] = new JsonArray
+            {
+                CreateTradeSlot("slot_1", 70, "relic_owned", "Rare"),
+                CreateTradeSlot("slot_2", 30, "relic_trade_2", "Common"),
+                CreateTradeSlot("slot_3", 30, "relic_trade_3", "Common"),
+                CreateTradeSlot("slot_4", 30, "relic_trade_4", "Common"),
+                CreateTradeSlot("slot_5", 30, "relic_trade_5", "Common"),
+                CreateTradeSlot("slot_6", 30, "relic_trade_6", "Common")
+            }
+        };
+        faction["tradeInventoryReceipts"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["requestId"] = "shining_trade_req_owned",
+                ["factionId"] = "faction_old",
+                ["factionName"] = "Старый Дом",
+                ["tradeCycleId"] = "shining_return_2",
+                ["status"] = "ready",
+                ["itemCount"] = 6,
+                ["soldOutCount"] = 0,
+                ["resolvedAtTurn"] = 14,
+                ["resolvedAtUtc"] = "2026-04-17T01:00:00Z"
+            }
+        };
+
+        await WriteNodeAsync(ShiningAbodeState.StatePath, currentShiningRoot);
+        await WriteNodeAsync("game_state/meta/soul_state.json", new JsonObject
+        {
+            ["soulRelics"] = new JsonObject
+            {
+                ["equipped"] = new JsonArray(),
+                ["stored"] = new JsonArray(CreateTradeSlot("owned_source", 1, "relic_owned", "Rare")["relicData"]!.DeepClone())
+            }
+        });
+        await WriteNodeAsync(GuardianAbodeResidentState.StatePath, new JsonObject { ["entries"] = new JsonArray() });
+        await WriteNodeAsync("game_state/meta/guardians.json", new JsonObject
+        {
+            ["guardians"] = new JsonArray(new JsonObject
+            {
+                ["guardianId"] = "guardian_old",
+                ["guardianName"] = "Азалия"
+            })
+        });
+        await WriteNodeAsync("ready/turn_complete.json", new JsonObject { ["accepted"] = true });
+
+        var requestRoot = new JsonObject
+        {
+            [ShiningTradeRequestState.RequestsProperty] = new JsonArray
+            {
+                CreatePendingTradeRequest("shining_trade_req_owned")
+            }
+        };
+        await WriteNodeAsync(ShiningTradeRequestState.PendingRequestsPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, requestRoot);
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningTradeInventoryResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_trade_inventory_owned_relic_id_collision", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningTradeInventoryRequestContextAsync_DuplicateSameCycleFactionRequests_Fails()
     {
         await WriteNodeAsync("game_state/meta/soul_state.json", new JsonObject

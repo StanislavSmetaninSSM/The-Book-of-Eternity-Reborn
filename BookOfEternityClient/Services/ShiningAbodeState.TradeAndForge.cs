@@ -472,13 +472,14 @@ internal static partial class ShiningAbodeState
             return true;
         }
 
-        if (addedProperties == null || addedProperties.Count < missingCount)
+        var addedPropertyObjects = addedProperties?.OfType<JsonObject>().ToList() ?? new List<JsonObject>();
+        if (addedPropertyObjects.Count < missingCount)
         {
             error = $"Для uplift_rarity не хватает {missingCount} additional properties до минимального property count новой rarity.";
             return false;
         }
 
-        foreach (var propertyNode in addedProperties.OfType<JsonObject>().Take(missingCount))
+        foreach (var propertyNode in addedPropertyObjects.Take(missingCount))
         {
             if (propertyNode["band"] == null)
             {
@@ -542,9 +543,9 @@ internal static partial class ShiningAbodeState
 
     private static string GetSoulRelicRarity(JsonObject relic)
     {
-        var rarity = GetNodeString(relic["rarity"]);
+        var rarity = GetNodeString(relic["quality"]);
         if (string.IsNullOrWhiteSpace(rarity))
-            rarity = GetNodeString(relic["quality"]);
+            rarity = GetNodeString(relic["rarity"]);
 
         return (rarity ?? string.Empty).Trim().ToLowerInvariant();
     }
@@ -553,8 +554,12 @@ internal static partial class ShiningAbodeState
     {
         if (!string.IsNullOrWhiteSpace(GetNodeString(relic["quality"])) || relic.ContainsKey("quality"))
             relic["quality"] = rarity;
-        else
+
+        if (!string.IsNullOrWhiteSpace(GetNodeString(relic["rarity"])) || relic.ContainsKey("rarity"))
             relic["rarity"] = rarity;
+
+        if (!relic.ContainsKey("quality") && !relic.ContainsKey("rarity"))
+            relic["quality"] = rarity;
     }
 
     private static string UpgradeSoulRelicRarity(string rarity)

@@ -530,6 +530,24 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningTradePromptDocsRequireUniqueNewRelicIdentities()
+    {
+        var mandatoryDocs = new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+        };
+
+        foreach (var doc in mandatoryDocs)
+        {
+            Assert.Contains("relicData.relicId", doc, StringComparison.Ordinal);
+            Assert.Contains("soulRelics.equipped", doc, StringComparison.Ordinal);
+            Assert.Contains("soulRelics.stored", doc, StringComparison.Ordinal);
+            Assert.Contains("unique", doc, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void ShiningQueueLimitsAvailabilityAndControlSurfacesAreDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

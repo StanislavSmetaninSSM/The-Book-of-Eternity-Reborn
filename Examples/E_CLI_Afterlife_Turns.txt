@@ -862,6 +862,7 @@ Why this is valid:
 - The Shining state file is the canonical place for halls, gates, radiance, factions, and trade receipts.
 - The pending core action is closed through `coreActionReceipts[]`.
 - The pending trade request is closed through faction `tradeInventory` plus faction `tradeInventoryReceipts[]`.
+- Every Shining trade `tradeInventory.items[].relicData.relicId` is unique in the inventory and absent from the player's existing `soulRelics.equipped[]` / `soulRelics.stored[]`; these ids become new Soul Relic identities on local purchase.
 - Shining faction progress is not written through Mortal World faction fields.
 - The resident is handled through resident afterlife state, not NPC state.
 - The scheduler report advances each contour by its own expected count.

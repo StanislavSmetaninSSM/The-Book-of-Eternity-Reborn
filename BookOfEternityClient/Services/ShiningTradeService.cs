@@ -386,18 +386,24 @@ internal static class ShiningTradeService
             return new ShiningTradeOperationResult(false, false, "Цена товара повреждена.");
         if (slot["relicData"] is not JsonObject relicData)
             return new ShiningTradeOperationResult(false, false, "Данные реликвии повреждены.");
+        var tradeRelicId = GetNodeString(relicData["relicId"]) ?? GetNodeString(relicData["id"]);
+        if (string.IsNullOrWhiteSpace(tradeRelicId))
+            return new ShiningTradeOperationResult(false, false, "Данные реликвии повреждены: отсутствует relicId.");
 
         var preBuyShiningJson = shiningRoot.ToJsonString(JsonOpts);
         var preBuySoulJson = soulRoot.ToJsonString(JsonOpts);
 
         NormalizeInkFeathersShape(soulRoot);
         GuardianPolicyContracts.EnsureStrictCanonicalSoulStateRootsForPolicySensitiveWrite(soulRoot);
+        NormalizeSoulRelicsShape(soulRoot);
+        if (SoulRelicIdExists(soulRoot, tradeRelicId))
+            return new ShiningTradeOperationResult(false, false, "Покупка заблокирована: Soul Relic с таким relicId уже есть у души.");
+
         if (!TryModifyInkFeathers(soulRoot, -price))
             return new ShiningTradeOperationResult(false, false, "Недостаточно Чернильных Перьев.");
 
-        NormalizeSoulRelicsShape(soulRoot);
         var stored = ((JsonObject)soulRoot["soulRelics"]!)["stored"]!.AsArray();
-        UpsertRelic(stored, relicData.DeepClone().AsObject());
+        stored.Add(relicData.DeepClone().AsObject());
         slot["soldOut"] = true;
         UpdateLatestReadyReceiptSoldOutCount(faction, GetNodeString(tradeInventory["tradeCycleId"]));
 
@@ -406,7 +412,7 @@ internal static class ShiningTradeService
             new GuardianPolicyContracts.SoulStatePatchConflictContext(
                 GuardianPolicyContracts.SoulStatePatchTouchedDomains.InkFeathers |
                 GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
-                upsertedSoulRelicIds: new[] { GetNodeString(relicData["relicId"]) ?? string.Empty })).ToJsonString(JsonOpts);
+                upsertedSoulRelicIds: new[] { tradeRelicId })).ToJsonString(JsonOpts);
         var postBuyShiningJson = shiningRoot.ToJsonString(JsonOpts);
 
         if (!await TryCommitCoordinatedStateWritesAsync(
@@ -643,28 +649,27 @@ internal static class ShiningTradeService
         };
     }
 
-    private static void UpsertRelic(JsonArray array, JsonObject relic)
+    private static bool SoulRelicIdExists(JsonObject soulRoot, string relicId)
     {
-        var relicId = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]);
         if (string.IsNullOrWhiteSpace(relicId))
-        {
-            array.Add(relic.DeepClone());
-            return;
-        }
+            return false;
 
-        for (var i = 0; i < array.Count; i++)
+        if (soulRoot["soulRelics"] is not JsonObject soulRelics)
+            return false;
+
+        foreach (var collectionName in new[] { "equipped", "stored" })
         {
-            if (array[i] is not JsonObject existing)
+            if (soulRelics[collectionName] is not JsonArray collection)
                 continue;
 
-            var existingId = GetNodeString(existing["relicId"]) ?? GetNodeString(existing["id"]);
-            if (!string.Equals(existingId, relicId, StringComparison.OrdinalIgnoreCase))
-                continue;
-
-            array[i] = relic.DeepClone();
-            return;
+            foreach (var relic in collection.OfType<JsonObject>())
+            {
+                var existingId = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]);
+                if (string.Equals(existingId, relicId, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
         }
 
-        array.Add(relic.DeepClone());
+        return false;
     }
 }

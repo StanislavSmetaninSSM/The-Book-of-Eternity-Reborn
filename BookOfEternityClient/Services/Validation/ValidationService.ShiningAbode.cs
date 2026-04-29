@@ -1194,6 +1194,7 @@ public partial class ValidationService
 
         var index = 0;
         var seenSlotIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var seenRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var item in items.EnumerateArray())
         {
             var itemContext = $"{contextPrefix}.items[{index++}]";
@@ -1229,6 +1230,20 @@ public partial class ValidationService
             }
 
             ValidateMinimalSoulRelicObject(relicData, $"{itemContext}.relicData", issues, "ShiningAbode");
+            var relicId = GetFirstNonEmptyString(relicData, "relicId", "id");
+            if (!string.IsNullOrWhiteSpace(relicId) && !seenRelicIds.Add(relicId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.relicData.relicId",
+                    IssueSeverity.Error,
+                    "Shining tradeInventory.items не должен содержать duplicate relicData.relicId",
+                    code: "shining_trade_inventory_duplicate_relic_id",
+                    section: "ShiningAbode",
+                    expected: "unique relicData.relicId per trade inventory item",
+                    actual: relicId,
+                    repairHint: "Каждый слот сияющей витрины должен материализовать новую уникальную Soul Relic identity; не повторяй relicId между слотами."));
+            }
+
             var relicRarity = GetFirstNonEmptyString(relicData, "quality", "rarity");
             if (!string.IsNullOrWhiteSpace(relicRarity) &&
                 !string.IsNullOrWhiteSpace(generationRarityCeiling) &&
