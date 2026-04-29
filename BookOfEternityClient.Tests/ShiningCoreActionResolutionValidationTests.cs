@@ -101,6 +101,30 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_ReceiptCostMismatch_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        Assert.True(ShiningAbodeState.TryOpenGates(currentShiningRoot, CloneJsonObject(preTurnResidentRoot), out _));
+        var receipt = CreateOpenGatesReceipt("core_req_open_gates", GetNodeInt(currentShiningRoot["gates"]?["draftVersion"]));
+        receipt["quotedCostFeathers"] = 5;
+        receipt["quotedCostLightSparks"] = 0;
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(receipt);
+
+        var requestRoot = CreateOpenGatesRequestRoot("core_req_open_gates");
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot, requestRoot);
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedOpenGatesWithConcurrentFounding_Passes()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();
@@ -368,6 +392,9 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
             ["selectedCardIds"] = new JsonArray(),
             ["newResidentIds"] = new JsonArray("resident_new_a", "resident_new_b"),
             ["seededProjectIds"] = new JsonArray("project_passage", "project_seeded_new"),
+            ["quotedCostFeathers"] = 25,
+            ["quotedCostLightSparks"] = 20,
+            ["generatedDraftVersion"] = 0,
             ["resolvedAtTurn"] = 16,
             ["resolvedAtUtc"] = "2026-04-16T12:50:00Z",
             ["reason"] = "discovered"
@@ -395,6 +422,46 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_reused_existing_hall_id", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_reused_existing_faction_id", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_reused_existing_project_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedNewDiscoveryWithLegacyPendingLeftLive_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        MaterializeLegacyNativeDiscoveryClosure(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        currentShiningRoot["lightSparks"] = GetNodeInt(preTurnShiningRoot["lightSparks"]) - ShiningAbodeState.GetNativeDiscoveryCost().LightSparks;
+        currentShiningRoot["pendingNativeFactionDiscovery"] = new JsonObject
+        {
+            ["requestId"] = "legacy_should_be_cleared",
+            ["createdAtTurn"] = 16,
+            ["createdAtUtc"] = "2026-04-16T12:49:00Z",
+            ["radianceTierAtRequest"] = 2,
+            ["costFeathers"] = 25,
+            ["costLightSparks"] = 20
+        };
+        var receipt = ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).OfType<JsonObject>().Single();
+        receipt["requestId"] = "core_req_discover";
+        receipt["quotedCostFeathers"] = 25;
+        receipt["quotedCostLightSparks"] = 20;
+        receipt["generatedDraftVersion"] = 0;
+
+        var requestRoot = new JsonObject
+        {
+            [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray(CreateDiscoverNativeFactionRequest())
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot, CloneJsonObject(requestRoot));
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_discovery_legacy_pending_not_cleared", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -678,6 +745,69 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
 
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_prepare_package_state_mismatch", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_prepare_package_receipt_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_PreparePackageGeneratedDraftMismatch_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var gates = preTurnShiningRoot["gates"]!.AsObject();
+        gates["selectedBlessingCardIds"] = new JsonArray("card_social");
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        Assert.True(ShiningAbodeState.TryPrepareIncarnationPackage(currentShiningRoot, 15, out _, "2026-04-16T12:40:00Z"));
+        var selectedCards = (currentShiningRoot["preparedIncarnationPackage"]?["selectedCards"] as JsonArray)?.DeepClone().AsArray()
+            ?? throw new InvalidOperationException("Expected selectedCards snapshot from prepared package.");
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(new JsonObject
+        {
+            ["requestId"] = "core_req_prepare_package",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+            ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+            ["factionId"] = "",
+            ["projectId"] = "",
+            ["hallId"] = "",
+            ["resolvedFactionId"] = "",
+            ["selectedCardIds"] = new JsonArray("card_social"),
+            ["selectedCards"] = selectedCards,
+            ["newResidentIds"] = new JsonArray(),
+            ["seededProjectIds"] = new JsonArray(),
+            ["generatedDraftVersion"] = 0,
+            ["quotedCostFeathers"] = 0,
+            ["quotedCostLightSparks"] = 0,
+            ["resolvedAtTurn"] = 15,
+            ["resolvedAtUtc"] = "2026-04-16T12:40:00Z",
+            ["reason"] = "package_prepared"
+        });
+
+        var requestRoot = new JsonObject
+        {
+            [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray(new JsonObject
+            {
+                ["requestId"] = "core_req_prepare_package",
+                ["actionType"] = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                ["factionId"] = "",
+                ["factionName"] = "",
+                ["projectId"] = "",
+                ["projectDisplayName"] = "",
+                ["radianceTierAtRequest"] = 0,
+                ["quotedCostFeathers"] = 0,
+                ["quotedCostLightSparks"] = 0,
+                ["sourceDraftVersion"] = 1,
+                ["selectedCardIds"] = new JsonArray("card_social"),
+                ["createdAtTurn"] = 15,
+                ["createdAtUtc"] = "2026-04-16T12:39:00Z"
+            })
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot, requestRoot);
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2667,6 +2797,9 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
             ["selectedCardIds"] = new JsonArray(),
             ["newResidentIds"] = new JsonArray("resident_native_a", "resident_native_b"),
             ["seededProjectIds"] = new JsonArray("project_native_a", "project_native_b"),
+            ["quotedCostFeathers"] = ShiningAbodeState.GetNativeDiscoveryCost().Feathers,
+            ["quotedCostLightSparks"] = 0,
+            ["generatedDraftVersion"] = 0,
             ["resolvedAtTurn"] = 16,
             ["resolvedAtUtc"] = "2026-04-16T12:50:00Z",
             ["reason"] = "legacy_discovery_resolved"
