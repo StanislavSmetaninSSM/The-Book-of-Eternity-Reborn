@@ -891,9 +891,6 @@ public partial class GameEngine
 
         AnsiConsole.WriteLine();
 
-        // Each incarnation must create a fresh mortal-world lore set.
-        _fs.ClearCurrentWorldLore();
-
         // World description
         AnsiConsole.MarkupLine("[cyan]Опишите мир, в который хотите воплотиться:[/]");
         AnsiConsole.MarkupLine("[dim](Жанр, сеттинг, особенности... или оставьте пустым — Хранитель выберет)[/]");
@@ -926,6 +923,9 @@ public partial class GameEngine
 
         if (!ConfirmIncarnationContractPreview(charDesc, worldDesc, circumstances, action))
             return;
+
+        // Each accepted incarnation request must create a fresh mortal-world lore set.
+        _fs.ClearCurrentWorldLore();
 
         await _worldDirectiveService.UpsertPendingSetupFromIncarnationPromptAsync(charDesc, worldDesc, circumstances);
         await _scenarioCoreService.RefreshFromPendingSetupAsync();

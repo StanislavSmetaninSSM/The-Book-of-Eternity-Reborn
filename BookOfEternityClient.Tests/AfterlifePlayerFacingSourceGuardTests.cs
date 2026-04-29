@@ -14,6 +14,9 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("Полный контракт /incarnate", mainMenu, StringComparison.Ordinal);
         Assert.Contains("game_state/control/incarnation_trigger.json", mainMenu, StringComparison.Ordinal);
         Assert.Contains("ConfirmIncarnationContractPreview", mainMenu, StringComparison.Ordinal);
+        Assert.True(
+            mainMenu.IndexOf("if (!ConfirmIncarnationContractPreview", StringComparison.Ordinal) <
+            mainMenu.IndexOf("_fs.ClearCurrentWorldLore();", StringComparison.Ordinal));
 
         Assert.Contains("BuildInkFeatherActionAuditNode", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("output/ink_feather_action_result.json", inkFeathers, StringComparison.Ordinal);
