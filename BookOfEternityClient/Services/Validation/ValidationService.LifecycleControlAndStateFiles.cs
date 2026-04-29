@@ -8287,7 +8287,7 @@ public partial class ValidationService
                string.Equals(GetNodeString(receipt["targetFormTag"]) ?? string.Empty, request.TargetFormTag ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                OptionalCoreActionReceiptIntAuditMatches(receipt, "quotedCostFeathers", request.QuotedCostFeathers) &&
                OptionalCoreActionReceiptIntAuditMatches(receipt, "quotedCostLightSparks", request.QuotedCostLightSparks) &&
-               ShiningCoreActionGeneratedDraftVersionMatches(request, GetNodeInt(receipt["generatedDraftVersion"])) &&
+               ShiningCoreActionGeneratedDraftVersionMatches(request, status, GetNodeInt(receipt["generatedDraftVersion"])) &&
                (receipt["propertyIndex"] is JsonValue propertyIndexNode &&
                 propertyIndexNode.TryGetValue<int>(out var propertyIndex)
                     ? propertyIndex
@@ -8306,8 +8306,12 @@ public partial class ValidationService
 
     private static bool ShiningCoreActionGeneratedDraftVersionMatches(
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        string? receiptStatus,
         int receiptGeneratedDraftVersion)
     {
+        if (!string.Equals(receiptStatus, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            return receiptGeneratedDraftVersion == 0;
+
         if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage, StringComparison.OrdinalIgnoreCase))
             return receiptGeneratedDraftVersion == request.SourceDraftVersion;
 

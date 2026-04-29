@@ -101,6 +101,52 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_RefusedOpenGatesWithoutDraftVersion_Passes()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var receipt = CreateOpenGatesReceipt("core_req_open_gates_refused", generatedDraftVersion: 0);
+        receipt["status"] = ShiningCoreActionRequestState.RequestStatusRefused;
+        receipt["reason"] = "player_refused";
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(receipt);
+
+        var requestRoot = CreateOpenGatesRequestRoot("core_req_open_gates_refused");
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot, requestRoot);
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_unexpected_state_change_after_non_accept", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedOpenGatesWithoutDraftVersion_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        Assert.True(ShiningAbodeState.TryOpenGates(currentShiningRoot, CloneJsonObject(preTurnResidentRoot), out _));
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(
+            CreateOpenGatesReceipt("core_req_open_gates_missing_draft", generatedDraftVersion: 0));
+
+        var requestRoot = CreateOpenGatesRequestRoot("core_req_open_gates_missing_draft");
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot, requestRoot);
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_ReceiptCostMismatch_Fails()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();
