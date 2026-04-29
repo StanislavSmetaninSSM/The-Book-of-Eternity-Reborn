@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -63,7 +64,6 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("pending_shining_abode_actions.json", doc, StringComparison.Ordinal);
             Assert.Contains("requests[]", doc, StringComparison.Ordinal);
             Assert.DoesNotContain("requests[0]", doc, StringComparison.Ordinal);
-            Assert.DoesNotContain("expired", doc, StringComparison.OrdinalIgnoreCase);
 
             foreach (var status in statuses)
                 Assert.Contains(status, doc, StringComparison.Ordinal);
@@ -498,6 +498,79 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifePromptDocsCoverRealmSegregationAndMortalOnlyPendingFiles()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var docs = new[] { matrix, apiSpec, daemonSpec, taskGuide, examples };
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("game_state/world/*", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/npcs/*", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/factions/*", doc, StringComparison.Ordinal);
+            Assert.Contains("pending_npc_social_interactions.json", doc, StringComparison.Ordinal);
+            Assert.Contains("MortalWorldProfile-only", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("stale/repair", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.NotEmpty(FileMapping.FieldToFile.Where(pair =>
+            pair.Value.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||
+            pair.Value.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase) ||
+            pair.Value.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
+    public void AfterlifePromptDocsCoverGuardianProvocationAndArchiveCandidateManifest()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var docs = new[] { matrix, apiSpec, daemonSpec, taskGuide, examples };
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("[GUARDIAN_PROVOCATION]", doc, StringComparison.Ordinal);
+            Assert.Contains("[GUARDIAN_PROVOCATION: guardianId]", doc, StringComparison.Ordinal);
+            Assert.Contains("guardianId", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { matrix, taskGuide, examples, apiSpec })
+        {
+            Assert.Contains("archive_candidate_manifest.json", doc, StringComparison.Ordinal);
+            Assert.Contains("client-owned", doc, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void AfterlifePromptDocsCoverGuardianProjectStartsAndShiningBlessingTerminalAudits()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var docs = new[] { matrix, apiSpec, daemonSpec, taskGuide, examples };
+
+        Assert.Contains("startGuardianProjects", matrix, StringComparison.Ordinal);
+        foreach (var doc in docs)
+        {
+            Assert.Contains("pendingShiningBlessingEffects", doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningBlessingEffectState.GenericStatusConsumed, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningBlessingEffectState.GenericStatusExpired, doc, StringComparison.Ordinal);
+            Assert.Contains("consumedAtTurn", doc, StringComparison.Ordinal);
+            Assert.Contains("consumedAtUtc", doc, StringComparison.Ordinal);
+            Assert.Contains("expiredAtTurn", doc, StringComparison.Ordinal);
+            Assert.Contains("expiredAtUtc", doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ShiningForgePromptDocsUseExactActionTypesWithoutWildcard()
     {
         var mandatoryDocs = new[]
@@ -526,6 +599,24 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.DoesNotContain("forge_relic.*", doc, StringComparison.Ordinal);
             foreach (var actionType in forgeActionTypes)
                 Assert.Contains(actionType, doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void ShiningTradePromptDocsRequireUniqueNewRelicIdentities()
+    {
+        var mandatoryDocs = new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+        };
+
+        foreach (var doc in mandatoryDocs)
+        {
+            Assert.Contains("relicData.relicId", doc, StringComparison.Ordinal);
+            Assert.Contains("soulRelics.equipped", doc, StringComparison.Ordinal);
+            Assert.Contains("soulRelics.stored", doc, StringComparison.Ordinal);
+            Assert.Contains("unique", doc, StringComparison.OrdinalIgnoreCase);
         }
     }
 

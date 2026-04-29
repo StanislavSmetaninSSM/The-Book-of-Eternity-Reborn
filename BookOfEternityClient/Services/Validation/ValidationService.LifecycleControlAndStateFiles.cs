@@ -1643,6 +1643,7 @@ public partial class ValidationService
 
         var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(shiningJson))
         {
             AddMissingShiningResolutionCurrentFileIssue(
@@ -1662,6 +1663,10 @@ public partial class ValidationService
             var currentResidentsRoot = !string.IsNullOrWhiteSpace(residentsJson)
                 ? JsonNode.Parse(residentsJson) as JsonObject
                 : null;
+            var currentSoulRoot = !string.IsNullOrWhiteSpace(soulJson)
+                ? JsonNode.Parse(soulJson) as JsonObject
+                : null;
+            var ownedSoulRelicIds = CollectOwnedSoulRelicIds(currentSoulRoot);
             var currentGuardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
             ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, currentResidentsRoot, currentGuardiansRoot);
 
@@ -1694,6 +1699,8 @@ public partial class ValidationService
                     continue;
                 }
 
+                AddShiningTradeInventoryOwnedRelicCollisions(tradeInventory, ownedSoulRelicIds, issues);
+
                 if (!ShiningTradeRequestState.ReceiptMatchesRequestContract(
                         ShiningTradeRequestState.FindMatchingReceipt(faction, request),
                         request,
@@ -1712,6 +1719,68 @@ public partial class ValidationService
         catch
         {
             // parse issues reported elsewhere
+        }
+    }
+
+    private static HashSet<string> CollectOwnedSoulRelicIds(JsonObject? soulRoot)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var soulRelics = soulRoot?["soulRelics"];
+        if (soulRelics is JsonObject soulRelicsObject)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (soulRelicsObject[collectionName] is not JsonArray collection)
+                    continue;
+
+                foreach (var relic in collection.OfType<JsonObject>())
+                {
+                    var relicId = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]);
+                    if (!string.IsNullOrWhiteSpace(relicId))
+                        result.Add(relicId);
+                }
+            }
+        }
+        else if (soulRelics is JsonArray flatCollection)
+        {
+            foreach (var relic in flatCollection.OfType<JsonObject>())
+            {
+                var relicId = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]);
+                if (!string.IsNullOrWhiteSpace(relicId))
+                    result.Add(relicId);
+            }
+        }
+
+        return result;
+    }
+
+    private static void AddShiningTradeInventoryOwnedRelicCollisions(
+        JsonObject? tradeInventory,
+        HashSet<string> ownedSoulRelicIds,
+        List<ValidationIssue> issues)
+    {
+        if (tradeInventory?["items"] is not JsonArray items || ownedSoulRelicIds.Count == 0)
+            return;
+
+        var index = 0;
+        foreach (var item in items.OfType<JsonObject>())
+        {
+            var relicData = item["relicData"] as JsonObject;
+            var relicId = GetNodeString(relicData?["relicId"]) ?? GetNodeString(relicData?["id"]);
+            if (!string.IsNullOrWhiteSpace(relicId) && ownedSoulRelicIds.Contains(relicId))
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningTradeRequestState.PendingRequestsPath,
+                    IssueSeverity.Error,
+                    "Shining tradeInventory не должен материализовать relicData.relicId, который уже есть в soul_state.soulRelics.",
+                    code: "shining_trade_inventory_owned_relic_id_collision",
+                    section: "ShiningAbode",
+                    expected: "new unique Soul Relic identity",
+                    actual: $"items[{index}].relicData.relicId={relicId}",
+                    repairHint: "Для каждого торгового слота создай новый relicId, отсутствующий в soulRelics.equipped и soulRelics.stored."));
+            }
+
+            index++;
         }
     }
 
@@ -3267,7 +3336,7 @@ public partial class ValidationService
             issues,
             code: "player_guardian_foundation_invalid_validated_snapshot_context",
             section: "PlayerGuardianFoundation");
-        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
+        if (currentRealm != null && !IsExactChaosSeaRealm(currentRealm))
         {
             issues.Add(new ValidationIssue(
                 requestPath,
@@ -8029,6 +8098,18 @@ public partial class ValidationService
         var projectIds = ReadStringSet(receipt["seededProjectIds"]);
         var currentHall = FindShiningHall(currentShiningRoot, hallId);
         var currentFaction = ShiningAbodeState.FindFaction(currentShiningRoot, factionId);
+        if (currentShiningRoot["pendingNativeFactionDiscovery"] is not null)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction через pending_shining_abode_actions.json должен очищать legacy pendingNativeFactionDiscovery.",
+                code: "shining_discovery_legacy_pending_not_cleared",
+                section: "ShiningAbode",
+                expected: "pendingNativeFactionDiscovery = null",
+                actual: "pendingNativeFactionDiscovery present",
+                repairHint: "После accepted new discover_native_faction не оставляй legacy shining_abode_state.pendingNativeFactionDiscovery live; этот legacy slot должен быть null.")); 
+        }
 
         if (!string.IsNullOrWhiteSpace(hallId) && FindShiningHall(preTurnShiningRoot, hallId) != null)
         {
@@ -8260,7 +8341,7 @@ public partial class ValidationService
         out string actual)
     {
         actual =
-            $"{GetNodeString(receipt["actionType"])} / {GetNodeString(receipt["status"])} / {GetNodeString(receipt["factionId"])} / {GetNodeString(receipt["projectId"])}";
+            $"{GetNodeString(receipt["actionType"])} / {GetNodeString(receipt["status"])} / {GetNodeString(receipt["factionId"])} / {GetNodeString(receipt["projectId"])} / cost {GetNodeInt(receipt["quotedCostFeathers"])}/{GetNodeInt(receipt["quotedCostLightSparks"])} / draft {GetNodeInt(receipt["generatedDraftVersion"])}";
 
         var status = GetNodeString(receipt["status"]);
         return ShiningCoreActionRequestState.IsSupportedStatus(status) &&
@@ -8273,6 +8354,9 @@ public partial class ValidationService
                ShiningCoreActionRelicIdentityMatches(request, GetNodeString(receipt["relicId"]), status) &&
                string.Equals(GetNodeString(receipt["returnCycleId"]) ?? string.Empty, request.ReturnCycleId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["targetFormTag"]) ?? string.Empty, request.TargetFormTag ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               OptionalCoreActionReceiptIntAuditMatches(receipt, "quotedCostFeathers", request.QuotedCostFeathers) &&
+               OptionalCoreActionReceiptIntAuditMatches(receipt, "quotedCostLightSparks", request.QuotedCostLightSparks) &&
+               ShiningCoreActionGeneratedDraftVersionMatches(request, status, GetNodeInt(receipt["generatedDraftVersion"])) &&
                (receipt["propertyIndex"] is JsonValue propertyIndexNode &&
                 propertyIndexNode.TryGetValue<int>(out var propertyIndex)
                     ? propertyIndex
@@ -8280,6 +8364,30 @@ public partial class ValidationService
                ReadOrderedStringList(receipt["selectedCardIds"]).SequenceEqual(
                    request.SelectedCardIds.Where(id => !string.IsNullOrWhiteSpace(id)).Select(id => id.Trim()),
                    StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static bool OptionalCoreActionReceiptIntAuditMatches(JsonObject receipt, string propertyName, int expected)
+    {
+        return !receipt.ContainsKey(propertyName) ||
+               receipt[propertyName] is null ||
+               GetNodeInt(receipt[propertyName]) == expected;
+    }
+
+    private static bool ShiningCoreActionGeneratedDraftVersionMatches(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        string? receiptStatus,
+        int receiptGeneratedDraftVersion)
+    {
+        if (!string.Equals(receiptStatus, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            return receiptGeneratedDraftVersion == 0;
+
+        if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage, StringComparison.OrdinalIgnoreCase))
+            return receiptGeneratedDraftVersion == request.SourceDraftVersion;
+
+        if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypeOpenGates, StringComparison.OrdinalIgnoreCase))
+            return receiptGeneratedDraftVersion > 0;
+
+        return receiptGeneratedDraftVersion == 0;
     }
 
     private static bool HasCanonicalShiningPoliticalClosure(JsonObject receipt) =>

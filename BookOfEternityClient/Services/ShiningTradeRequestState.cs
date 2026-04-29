@@ -294,6 +294,7 @@ internal static class ShiningTradeRequestState
             return false;
 
         var seenSlotIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var seenRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var item in items.OfType<JsonObject>())
         {
             var slotId = GetNodeString(item["slotId"]);
@@ -305,6 +306,10 @@ internal static class ShiningTradeRequestState
             {
                 return false;
             }
+
+            var relicId = GetNodeString(relicData["relicId"]) ?? GetNodeString(relicData["id"]);
+            if (string.IsNullOrWhiteSpace(relicId) || !seenRelicIds.Add(relicId))
+                return false;
 
             var rarity = GetNodeString(relicData["quality"]) ?? GetNodeString(relicData["rarity"]) ?? string.Empty;
             if (!ShiningAbodeState.IsSoulRelicRarityAllowedForTradeCeiling(rarity, request.DerivedRarityCeiling))

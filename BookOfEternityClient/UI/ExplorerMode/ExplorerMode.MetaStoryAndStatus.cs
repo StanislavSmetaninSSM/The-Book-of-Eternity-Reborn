@@ -168,7 +168,6 @@ public partial class ExplorerMode
         if (isPendingShiningAbodeBootstrap)
         {
             table.AddRow("[bold khaki1]── SHINING ABODE HANDOFF ──[/]", "", "");
-            table.AddRow("[khaki1]/status[/]", "[khaki1]/статус[/]", "[khaki1]Проверить, что handoff package всё ещё ожидает bootstrap следующей жизни[/]");
             table.AddRow("[khaki1]/help[/]", "[khaki1]/помощь[/]", "[khaki1]Показать этот экран; обычные команды Обители и Моря Хаоса пока недоступны[/]");
         }
         else if (isShiningAbode)

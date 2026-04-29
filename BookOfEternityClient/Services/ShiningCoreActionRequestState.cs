@@ -592,6 +592,10 @@ internal static class ShiningCoreActionRequestState
         JsonObject shiningRoot,
         bool support)
     {
+        var zeroCostError = ValidateZeroCostRequest(request, support ? ActionTypeSupportProject : ActionTypeUnsupportProject);
+        if (zeroCostError != null)
+            return Task.FromResult<string?>(zeroCostError);
+
         if (string.IsNullOrWhiteSpace(request.FactionId) || string.IsNullOrWhiteSpace(request.ProjectId))
             return Task.FromResult<string?>("Project support mutation требует factionId и projectId.");
 
@@ -607,6 +611,10 @@ internal static class ShiningCoreActionRequestState
         JsonObject shiningRoot,
         JsonObject? residentRoot)
     {
+        var zeroCostError = ValidateZeroCostRequest(request, ActionTypeRetireProject);
+        if (zeroCostError != null)
+            return Task.FromResult<string?>(zeroCostError);
+
         if (string.IsNullOrWhiteSpace(request.FactionId) || string.IsNullOrWhiteSpace(request.ProjectId))
             return Task.FromResult<string?>("retire_project требует factionId и projectId.");
 
@@ -621,7 +629,10 @@ internal static class ShiningCoreActionRequestState
         JsonObject shiningRoot,
         JsonObject? residentRoot)
     {
-        _ = request;
+        var zeroCostError = ValidateZeroCostRequest(request, ActionTypeOpenGates);
+        if (zeroCostError != null)
+            return Task.FromResult<string?>(zeroCostError);
+
         var cloneRoot = JsonNode.Parse(shiningRoot.ToJsonString())!.AsObject();
         var cloneResidents = residentRoot == null ? null : JsonNode.Parse(residentRoot.ToJsonString())!.AsObject();
         var success = ShiningAbodeState.TryOpenGates(cloneRoot, cloneResidents, out var error);
@@ -632,6 +643,10 @@ internal static class ShiningCoreActionRequestState
         PendingShiningCoreActionRequest request,
         JsonObject shiningRoot)
     {
+        var zeroCostError = ValidateZeroCostRequest(request, ActionTypePrepareIncarnationPackage);
+        if (zeroCostError != null)
+            return Task.FromResult<string?>(zeroCostError);
+
         if (request.SourceDraftVersion <= 0)
             return Task.FromResult<string?>("prepare_incarnation_package требует sourceDraftVersion.");
 
@@ -657,6 +672,13 @@ internal static class ShiningCoreActionRequestState
 
         var success = ShiningAbodeState.TryPrepareIncarnationPackage(cloneRoot, request.CreatedAtTurn, out var error);
         return Task.FromResult(success ? null : error ?? "prepare_incarnation_package не прошёл canonical validation.");
+    }
+
+    private static string? ValidateZeroCostRequest(PendingShiningCoreActionRequest request, string actionType)
+    {
+        return request.QuotedCostFeathers == 0 && request.QuotedCostLightSparks == 0
+            ? null
+            : $"Quoted cost для {actionType} должен быть ровно 0 Feathers / 0 Light Sparks.";
     }
 
     private static async Task<string?> ValidateForgeActionRequestAsync(

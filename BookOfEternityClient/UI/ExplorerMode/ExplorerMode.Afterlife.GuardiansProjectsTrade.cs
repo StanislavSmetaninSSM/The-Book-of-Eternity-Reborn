@@ -804,6 +804,13 @@ public partial class ExplorerMode
     {
         if (!EnsureOrdinaryAfterlifeInteractionAvailable("Обители"))
             return;
+        if (!_stateManager.CurrentState.IsInChaosSea)
+        {
+            ShowEmptyPanel(
+                "Обители",
+                "Переход между Обителями через [CHAOS_SEA_TRAVEL] доступен только в обычном Море Хаоса. В Сияющей Обители эта навигация не меняет realm и потому заблокирована.");
+            return;
+        }
 
         var doc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
         if (doc == null) { ShowEmptyPanel("Обители", "Данные хранителей недоступны"); return; }

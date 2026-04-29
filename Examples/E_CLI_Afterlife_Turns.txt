@@ -862,6 +862,7 @@ Why this is valid:
 - The Shining state file is the canonical place for halls, gates, radiance, factions, and trade receipts.
 - The pending core action is closed through `coreActionReceipts[]`.
 - The pending trade request is closed through faction `tradeInventory` plus faction `tradeInventoryReceipts[]`.
+- Every Shining trade `tradeInventory.items[].relicData.relicId` is unique in the inventory and absent from the player's existing `soulRelics.equipped[]` / `soulRelics.stored[]`; these ids become new Soul Relic identities on local purchase.
 - Shining faction progress is not written through Mortal World faction fields.
 - The resident is handled through resident afterlife state, not NPC state.
 - The scheduler report advances each contour by its own expected count.
@@ -1402,6 +1403,39 @@ Do not write in ordinary Chaos Sea `TriggerIncarnation`:
 - Mortal World `currentLocationData`, `worldEventsLog`, `UpdateNPCs`, `UpdateQuests`, or weather/time outputs.
 
 Guardian-forced incarnation is a different flow. It is legal only on an ordinary player-driven Chaos Sea turn as a reaction to explicit provocation against the current active Guardian, and then it must include the extra guardian-forced fields described in `TaskGuides/CLI_Step_Main.txt`.
+
+6A. VALID — GUARDIAN PROVOCATION TAG EVIDENCE
+---------------------------------------------
+
+The runtime accepts exact `playerAction` tags as deterministic evidence for Guardian-forced incarnation. This is the input context, not a GM response surface:
+
+```text
+input/turn_request.json:
+playerAction = "[GUARDIAN_PROVOCATION: guardian_azalia] Игрок deliberately insults Азалия and demands punishment."
+turnNumber = 77
+```
+
+Correct GM response:
+
+```json
+{
+  "TriggerIncarnation": {
+    "source": "guardian_forced",
+    "guardianId": "guardian_azalia",
+    "severityBand": "harsh",
+    "reason": "The player explicitly provoked the current Guardian.",
+    "provocationSummary": "The player used the GUARDIAN_PROVOCATION tag and insulted Azalia directly.",
+    "worldDescription": "A cold frontier world where oaths have immediate metaphysical weight.",
+    "characterDescription": "A child born under a debt-mark, watched by oath-keepers.",
+    "circumstances": "The first winter begins with a public obligation that cannot be ignored."
+  }
+}
+```
+
+Why this is valid:
+- `[GUARDIAN_PROVOCATION]` without an id is accepted as explicit provocation evidence.
+- `[GUARDIAN_PROVOCATION: guardianId]` is accepted only when the id exactly matches `TriggerIncarnation.guardianId`.
+- This tag is evidence, not a pending file. It does not authorize Shining handoff, protected post-life turns, or forcing one Guardian's punishment through another Guardian's id.
 
 ==================================================
 7. VALID — DIRECT CHAOS SEA GACHA VS GUARDIAN-MEDIATED GACHA
@@ -5223,12 +5257,17 @@ Guardian trade and buyback:
 Archive consultation/project fuel:
 - Preview shows archiveId/title/type/rarity, reservation status, pending request path, and closure through archiveActionResolutions plus soul_state.afterlifeArchive.actionReceipts[].
 - lore_fragment may resolve as project_work; secret_record may resolve as pressure_relief only.
+
+Archive candidate manifest:
+- `game_state/control/archive_candidate_manifest.json` is client-owned Life Evaluation / archive-candidate state, not a GM pending contract.
+- The GM may read it as context or repair evidence, but must not edit, clear, or close it with a receipt.
 ```
 
 Afterlife-origin companion manifestation handoff:
 
 ```text
 pending_resident_companion_manifestation_request.json is not closable in Chaos Sea or Shining Abode.
+pending_npc_social_interactions.json is also MortalWorldProfile-only. If it exists during Chaos Sea or Shining Abode, treat it as stale/repair-only context: do not close it through npcInteractionJournalUpdates, do not write UpdateNPCs, and do not mutate game_state/npcs/*.
 
 It can still originate from afterlife resident rewards or imprint-bearing Soul Relics. When it appears later in MortalWorldProfile, the GM must preserve and use:
 - requestId
@@ -5259,6 +5298,8 @@ The GM does not author this object during afterlife turns. Later Mortal turns co
 - pendingLoreEffects.status = pending_lore_insertion -> world lore event insertion before latestTurn.
 - pendingSurvivalEffects.status = pending_first_ruinous_failure -> first ruinous failure mitigation.
 - pendingDescentEffects.status = pending_resident_descent -> later companion manifestation/descent closure.
+- Terminal status consumed -> preserve consumedAtTurn and consumedAtUtc.
+- Terminal status expired -> preserve expiredAtTurn and expiredAtUtc.
 ```
 
 Correct reasoning checklist:
@@ -5313,6 +5354,7 @@ Why invalid:
 - `UpdateNPCs` is for regular mortal NPCs, not Guardians or afterlife residents.
 - `currentLocationData` is Mortal World location state; afterlife uses Abodes and Shining state.
 - `timeChange` is Mortal World time; afterlife scheduler uses `progressionControl` and `progressionProcessingReport`.
+- File-level rule: in Chaos Sea or Shining Abode, any response surface mapped to `game_state/world/*`, `game_state/npcs/*`, or `game_state/factions/*` is forbidden unless a future matrix row explicitly says otherwise.
 
 Correct replacement:
 
