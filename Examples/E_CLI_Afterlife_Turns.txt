@@ -1471,7 +1471,7 @@ Correct direct `/gacha` response fragment:
 7A. REFERENCE — CHAOS SEA ABODE TRAVEL
 --------------------------------------
 
-`[CHAOS_SEA_TRAVEL]` is afterlife navigation, not Mortal World movement. The player action should already provide the target abode/guardian and previous navigation context. GM must keep the canonical navigation roots synchronized in `game_state/meta/guardians.json`.
+`[CHAOS_SEA_TRAVEL]` is afterlife navigation, not Mortal World movement. The player action should already provide the target abode/guardian and previous navigation context. The target abode must already be present in the validated pre-turn `game_state/meta/guardians.json.chaosSeaNavigation.discoveredAbodes[]`, and the target Guardian's pre-turn `abode.isDiscovered` must already be `true`. GM must keep the canonical navigation roots synchronized in the accepted `game_state/meta/guardians.json`. Do not redirect the soul to a different discovered abode, and do not make a stale/manual travel legal by adding the target to `discoveredAbodes` during the same turn: accepted state must use the exact `targetAbodeId` and `targetGuardianId` from `playerAction`.
 
 Canonical `game_state/meta/guardians.json patch` view. This is not an `UpdateGuardians` command: preserve the full existing Guardian objects in the actual file and change only the shown canonical roots/fields.
 
@@ -1509,6 +1509,7 @@ Do not write for `[CHAOS_SEA_TRAVEL]`:
 - `UpdateNPCs`, `NPCsInScene`, or `worldEventsLog`.
 - Travel time/weather changes.
 - Navigation that changes `chaosSeaNavigation.currentAbodeId` without matching `activeGuardian`.
+- Same-turn discovery of the target abode. If the target was not in pre-turn `discoveredAbodes`, refuse/repair the travel instead of adding it and moving there.
 
 Guardian-mediated gacha:
 - Uses `UpdateGuardians.processGacha`.
