@@ -41,7 +41,8 @@ Use this index before resolving an afterlife turn:
 - `system_guardian_attraction.json` / deterministic Eternal Guardian attraction: see example 20.
 - `afterlife_return_guard.json` protected first afterlife turn: see example 21.
 - Direct resident action tags and hidden pending-backed routing tags: see example 22.
-- Player-facing Chaos Sea audit previews and notification receipt detail surfaces: see the audit checklist after example 22.
+- Freeform Chaos Sea Abode search from `/обители`: see example 23.
+- Player-facing Chaos Sea audit previews and notification receipt detail surfaces: see the audit checklist after example 23.
 
 ==================================================
 GLOBAL AFTERLIFE TURN RULE
@@ -5221,6 +5222,113 @@ Required handling:
 - only the client applies the listed client-local mutation to game_state/meta/soul_state.json after player confirmation
 
 The GM must not invent an accepted-turn response for this preview and must not add UpdateGuardians, UpdateNPCs, output files, afterlife notifications, or Mortal World state for it.
+```
+
+==================================================
+23. VALID — FREEFORM CHAOS SEA ABODE SEARCH
+==================================================
+
+This example covers the free search mode inside `/обители` -> `Искать новую обитель` -> `Свободный поиск мыслью`.
+
+The client shows the player a preview, but does not create a pending/control file. The next typed free-text player action is an ordinary GM-authored Chaos Sea turn. The GM must resolve the search through afterlife Guardian/Abode surfaces only.
+
+Input pattern:
+
+```text
+currentRealm: Chaos Sea
+playerAction:
+Ищу хранителя боевых искусств, который сможет научить душу дисциплине без жестокости.
+```
+
+Mandatory contract:
+- This is not client-local. The GM writes an accepted afterlife turn if the search has narrative or state consequences.
+- There is no `game_state/control/pending_*` file for freeform Abode search.
+- The GM must explicitly show the d20-style outcome tier from the prompt fiction: failure, distant signal, found Abode, or rare Guardian.
+- The GM must not use Mortal World travel/location systems.
+- Any stateful outcome must carry explicit ids and source reasoning: `guardianId`, `guardianName`, `abodeId` or location label, and `reason/source = chaos_sea_abode_search`.
+
+Outcome A — failure:
+
+```text
+Allowed:
+- response describes the failed search and why the Sea gives no stable route.
+- gm_thoughts_markdown explains that no Guardian/Abode was materialized.
+
+Forbidden:
+- no hidden Guardian in guardians.json
+- no activeGuardian change
+- no chaosSeaNavigation.currentAbodeId change
+- no pending file invented for a future search
+- no currentLocationData, UpdateNPCs, worldEventsLog, timeChange, or weatherChange
+```
+
+Outcome B — distant signal:
+
+```text
+Allowed:
+- response describes a distant clue, omen, name-fragment, domain trace, or silhouette.
+- if the clue is only narrative, do not write state.
+- if the clue becomes stateful, materialize an explicit Guardian/Abode clue through supported Guardian surfaces and include guardianId, guardianName, abodeId/location label, and reason/source = chaos_sea_abode_search.
+
+Forbidden:
+- do not teleport the player silently.
+- do not set activeGuardian/currentAbodeId unless the fiction says the soul actually arrives.
+- do not create an anonymous pending/nearby clue file outside the documented control-file matrix.
+```
+
+Outcome C — found Abode / rare Guardian:
+
+```text
+Required accepted-turn surfaces:
+- UpdateGuardians.create when the Guardian is new:
+  - command = create
+  - data = full canonical Guardian object, not an identity-only fragment
+  - data.guardianId is stable and unique
+  - data.canonicalName / manifestation display name matches the found Guardian
+  - data.abode.abodeId is stable and unique
+  - data.abode.name or location label is non-empty
+  - data.abode.isDiscovered = true
+  - relationship/mood/reputation context records that this first contact came from reason/source = chaos_sea_abode_search
+- If the Guardian already exists, use only supported Guardian update surfaces and preserve the canonical object.
+- Canonical guardians.json roots:
+  - activeGuardian.guardianId = found guardianId when the player arrives there now
+  - chaosSeaNavigation.currentAbodeId = found abodeId when the player arrives there now
+  - chaosSeaNavigation.discoveredAbodes[] contains found abodeId
+- gm_thoughts_markdown:
+  - lists the found Guardian as a relevant actor
+  - contains a matching `### GuardianName` reasoning block
+  - states the search outcome, source = chaos_sea_abode_search, and why this is afterlife Abode navigation rather than Mortal travel
+```
+
+Concrete successful-search data points:
+
+```text
+Narrative response:
+Море Хаоса отвечает на поиск дисциплины без жестокости. Из тумана выходит Обитель Тихого Удара, где Хранитель Каэль принимает душу не как ученика боли, а как ученика равновесия.
+
+Create/update surface:
+UpdateGuardians.create with a FULL canonical Guardian object, not the abbreviated notes below.
+
+Required ids and labels:
+- guardianId = guard_search_kael_quiet_strike_001
+- guardianName / canonicalName = Каэль
+- domain = Combat
+- abodeId = abode_kael_quiet_strike_001
+- abode name/location label = Обитель Тихого Удара
+- source/reason = chaos_sea_abode_search
+
+Navigation if the soul actually arrives:
+- activeGuardian.guardianId = guard_search_kael_quiet_strike_001
+- chaosSeaNavigation.currentAbodeId = abode_kael_quiet_strike_001
+- chaosSeaNavigation.discoveredAbodes contains abode_kael_quiet_strike_001
+- the created/updated Guardian abode has isDiscovered = true
+
+Reasoning scope:
+- Режим: Guardian-centric
+- Afterlife subtype: Freeform Chaos Sea Abode search
+- Релевантные акторы: Каэль
+- Matching block: ### Каэль
+- The block explains situation, thoughts, and actions.
 ```
 
 Player-facing Chaos Sea audit preview checklist:

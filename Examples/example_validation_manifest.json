@@ -1067,6 +1067,11 @@
       "exampleNumber": 22,
       "runtimeScenarioIds": [],
       "exemptionReason": "The direct resident action and pending-backed routing tag example is a text routing matrix, not one accepted response payload."
+    },
+    {
+      "exampleNumber": 23,
+      "runtimeScenarioIds": [],
+      "exemptionReason": "The freeform Chaos Sea Abode search example documents a direct GM-authored contract with multiple outcome branches rather than one accepted response payload."
     }
   ]
 }
