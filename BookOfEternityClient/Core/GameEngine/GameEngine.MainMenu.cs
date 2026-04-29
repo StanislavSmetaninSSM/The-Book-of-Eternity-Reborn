@@ -980,8 +980,8 @@ public partial class GameEngine
         if (attractionState.FilePresent)
         {
             blockers.Add(attractionState.IsMalformed
-                ? await BuildPendingFileBlockerAsync(SystemGuardianLibraryService.AttractionRequestPath, "повреждённое притяжение к извечному Хранителю", "UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation or explicit client cancellation")
-                : await BuildPendingFileBlockerAsync(SystemGuardianLibraryService.AttractionRequestPath, "незакрытое притяжение к извечному Хранителю", "UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation or explicit client cancellation"));
+                ? await BuildPendingFileBlockerAsync(SystemGuardianLibraryService.AttractionRequestPath, "system_guardian_attraction.json повреждён: притяжение к извечному Хранителю", "UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation или отмените attraction contract через client cancellation")
+                : await BuildPendingFileBlockerAsync(SystemGuardianLibraryService.AttractionRequestPath, "незакрытое притяжение к извечному Хранителю", "UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation или отмените attraction contract через client cancellation"));
         }
 
         if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingResidentsRequestPath))

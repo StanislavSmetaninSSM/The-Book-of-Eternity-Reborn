@@ -4187,7 +4187,7 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteJsonAuditPanel("Полный JSON продажи Реликвии Души", BuildGuardianSellAuditNode(offer, guardianName, currentFeathers), Color.Gold1);
+        WriteJsonAuditPanel("Полный JSON продаваемой Реликвии Души", BuildGuardianSellAuditNode(offer, guardianName, currentFeathers), Color.Gold1);
 
         return Confirm(
             $"Продать «{offer.Name}» за {offer.PriceInFeathers} 🪶? Реликвия перейдёт в обратный выкуп у Хранителя.",
