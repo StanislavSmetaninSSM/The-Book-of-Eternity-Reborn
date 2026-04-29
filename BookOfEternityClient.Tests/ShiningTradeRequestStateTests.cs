@@ -538,6 +538,44 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task BuyAsync_ExistingRelicId_FailsWithoutOverwritingSoulRelic()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+
+            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            soulRoot["soulRelics"]!["stored"]!.AsArray().Add(new JsonObject
+            {
+                ["relicId"] = "relic_trade_1",
+                ["name"] = "Already Owned",
+                ["quality"] = "Rare"
+            });
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
+
+            var result = await ShiningTradeService.BuyAsync(fs, "faction_old", "slot_1", currentTurn: 11);
+            var postSoulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var stored = postSoulRoot["soulRelics"]!["stored"]!.AsArray();
+            var postShiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var slot = postShiningRoot["factions"]!.AsArray()[0]!["tradeInventory"]!["items"]!.AsArray()[0]!.AsObject();
+
+            Assert.False(result.Success);
+            Assert.Contains("уже есть у души", result.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Single(stored);
+            Assert.Equal("Already Owned", stored[0]!["name"]!.GetValue<string>());
+            Assert.Equal(80, postSoulRoot["inkFeathers"]!["current"]!.GetValue<int>());
+            Assert.False(slot["soldOut"]!.GetValue<bool>());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task BuyAsync_WhenSoulWriteFails_RollsBackShiningInventoryState()
     {
         var root = CreateTempRoot();

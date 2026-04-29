@@ -1643,6 +1643,7 @@ public partial class ValidationService
 
         var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         var residentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(shiningJson))
         {
             AddMissingShiningResolutionCurrentFileIssue(
@@ -1662,6 +1663,10 @@ public partial class ValidationService
             var currentResidentsRoot = !string.IsNullOrWhiteSpace(residentsJson)
                 ? JsonNode.Parse(residentsJson) as JsonObject
                 : null;
+            var currentSoulRoot = !string.IsNullOrWhiteSpace(soulJson)
+                ? JsonNode.Parse(soulJson) as JsonObject
+                : null;
+            var ownedSoulRelicIds = CollectOwnedSoulRelicIds(currentSoulRoot);
             var currentGuardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
             ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, currentResidentsRoot, currentGuardiansRoot);
 
@@ -1694,6 +1699,8 @@ public partial class ValidationService
                     continue;
                 }
 
+                AddShiningTradeInventoryOwnedRelicCollisions(tradeInventory, ownedSoulRelicIds, issues);
+
                 if (!ShiningTradeRequestState.ReceiptMatchesRequestContract(
                         ShiningTradeRequestState.FindMatchingReceipt(faction, request),
                         request,
@@ -1712,6 +1719,68 @@ public partial class ValidationService
         catch
         {
             // parse issues reported elsewhere
+        }
+    }
+
+    private static HashSet<string> CollectOwnedSoulRelicIds(JsonObject? soulRoot)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var soulRelics = soulRoot?["soulRelics"];
+        if (soulRelics is JsonObject soulRelicsObject)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (soulRelicsObject[collectionName] is not JsonArray collection)
+                    continue;
+
+                foreach (var relic in collection.OfType<JsonObject>())
+                {
+                    var relicId = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]);
+                    if (!string.IsNullOrWhiteSpace(relicId))
+                        result.Add(relicId);
+                }
+            }
+        }
+        else if (soulRelics is JsonArray flatCollection)
+        {
+            foreach (var relic in flatCollection.OfType<JsonObject>())
+            {
+                var relicId = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]);
+                if (!string.IsNullOrWhiteSpace(relicId))
+                    result.Add(relicId);
+            }
+        }
+
+        return result;
+    }
+
+    private static void AddShiningTradeInventoryOwnedRelicCollisions(
+        JsonObject? tradeInventory,
+        HashSet<string> ownedSoulRelicIds,
+        List<ValidationIssue> issues)
+    {
+        if (tradeInventory?["items"] is not JsonArray items || ownedSoulRelicIds.Count == 0)
+            return;
+
+        var index = 0;
+        foreach (var item in items.OfType<JsonObject>())
+        {
+            var relicData = item["relicData"] as JsonObject;
+            var relicId = GetNodeString(relicData?["relicId"]) ?? GetNodeString(relicData?["id"]);
+            if (!string.IsNullOrWhiteSpace(relicId) && ownedSoulRelicIds.Contains(relicId))
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningTradeRequestState.PendingRequestsPath,
+                    IssueSeverity.Error,
+                    "Shining tradeInventory не должен материализовать relicData.relicId, который уже есть в soul_state.soulRelics.",
+                    code: "shining_trade_inventory_owned_relic_id_collision",
+                    section: "ShiningAbode",
+                    expected: "new unique Soul Relic identity",
+                    actual: $"items[{index}].relicData.relicId={relicId}",
+                    repairHint: "Для каждого торгового слота создай новый relicId, отсутствующий в soulRelics.equipped и soulRelics.stored."));
+            }
+
+            index++;
         }
     }
 
