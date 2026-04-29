@@ -780,7 +780,19 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Abodes_ShiningAbodeDoesNotEmitChaosSeaTravel()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await _stateManager.RefreshGameStateAsync();
 
+        var gmAction = await _explorer.TryProcessCommand("/обители");
+
+        Assert.Equal("", gmAction);
+        AssertNoHiddenExplorerErrors("shining_abode_abodes_blocked");
+        Assert.DoesNotContain("CHAOS_SEA_TRAVEL", gmAction ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeInbox_MarksNotificationReadOnlyAfterExplicitAction()
     {
         await SeedAfterlifeStateAsync();
@@ -6416,6 +6428,22 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Вернуться в Море Хаоса и запечатать Сияющую Обитель без запуска Нового Цикла", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("New Game+ reset", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Help_PendingBootstrapDoesNotAdvertiseMortalOnlyStatus()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: true);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/помощь"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("help_pending_bootstrap_no_status");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("SHINING ABODE HANDOFF", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/status", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/статус", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

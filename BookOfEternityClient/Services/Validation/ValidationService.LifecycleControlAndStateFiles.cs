@@ -3267,7 +3267,7 @@ public partial class ValidationService
             issues,
             code: "player_guardian_foundation_invalid_validated_snapshot_context",
             section: "PlayerGuardianFoundation");
-        if (currentRealm != null && !IsChaosSeaRealm(currentRealm))
+        if (currentRealm != null && !IsExactChaosSeaRealm(currentRealm))
         {
             issues.Add(new ValidationIssue(
                 requestPath,
