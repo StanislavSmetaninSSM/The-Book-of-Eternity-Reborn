@@ -133,7 +133,7 @@ internal static class ShiningTradeService
             inventoryStatusMessage = requestState.IsMalformed
                 ? "Ожидающий торговый запрос сияющей фракции повреждён. Новая витрина заблокирована, пока этот контракт не будет исправлен или очищен."
                 : duplicatePendingRequests
-                ? "Для этой фракции найдено несколько ожидающих запросов одного цикла. Торговля заблокирована, пока не останется один канонический контракт."
+                ? BuildDuplicatePendingTradeRequestsMessage(matchingRequests)
                 : inventoryRequestPending
                 ? "Витрина сияющей фракции уже запрошена и ждёт канонического подтверждения."
                 : "Для этой фракции витрина текущего цикла ещё не подготовлена.";
@@ -174,6 +174,27 @@ internal static class ShiningTradeService
             inventoryRequestPending,
             inventoryStatusMessage,
             offers);
+    }
+
+    private static string BuildDuplicatePendingTradeRequestsMessage(
+        IReadOnlyList<ShiningTradeRequestState.PendingShiningTradeInventoryRequest> requests)
+    {
+        var lines = new List<string>
+        {
+            "Для этой фракции найдено несколько ожидающих запросов одного цикла. Торговля заблокирована, пока не останется один канонический контракт.",
+            "Полный список конкурирующих запросов:"
+        };
+
+        foreach (var request in requests.OrderBy(item => item.CreatedAtTurn).ThenBy(item => item.CreatedAtUtc, StringComparer.OrdinalIgnoreCase))
+        {
+            lines.Add(
+                $"- requestId={request.RequestId}; factionId={request.FactionId}; factionName={request.FactionName}; tradeCycleId={request.TradeCycleId}; " +
+                $"derivedTradeTier={request.DerivedTradeTier}; derivedTradeSlotCount={request.DerivedTradeSlotCount}; " +
+                $"derivedRarityCeiling={request.DerivedRarityCeiling}; derivedServiceMultiplier={request.DerivedServiceMultiplier:0.00}; " +
+                $"createdAtTurn={request.CreatedAtTurn}; createdAtUtc={request.CreatedAtUtc}");
+        }
+
+        return string.Join(Environment.NewLine, lines);
     }
 
     public static async Task<ShiningTradeOperationResult> RequestInventoryAsync(

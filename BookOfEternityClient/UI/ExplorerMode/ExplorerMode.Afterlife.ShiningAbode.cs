@@ -150,8 +150,8 @@ public partial class ExplorerMode
             if (context?.Root["factions"] is JsonArray factions && factions.Count > 0)
             {
                 lines.Add("");
-                lines.Add("[bold]Текущее распределение власти:[/]");
-                foreach (var faction in factions.OfType<JsonObject>().Take(5))
+                lines.Add("[bold]Текущее распределение власти:[/] [dim](показаны все фракции без сокращения)[/]");
+                foreach (var faction in factions.OfType<JsonObject>())
                 {
                     var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
                     var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "?";
@@ -162,57 +162,48 @@ public partial class ExplorerMode
                     var memberCount = CountResidentsInFaction(context.ResidentRoot, factionId);
                     lines.Add($"  • {Markup.Escape(factionName)} — зал {Markup.Escape(hallName)}, глава {Markup.Escape(BuildHeadActorLabel(headActorType, headActorId, context.ResidentRoot, context.GuardiansRoot, context.Root))}, участников {memberCount}, состояние {Markup.Escape(state)}");
                 }
-
-                AppendCappedSectionOverflowLine(lines, factions.Count, 5);
             }
 
             if (foundingRequests.Count > 0)
             {
                 lines.Add("");
-                lines.Add("[bold]Ожидают решения:[/] основание фракций");
-                foreach (var request in foundingRequests.Take(5))
+                lines.Add("[bold]Ожидают решения:[/] основание фракций [dim](все pending-запросы)[/]");
+                foreach (var request in foundingRequests)
                     lines.Add($"  • {Markup.Escape(request.Charter.FactionName)} — новый зал {Markup.Escape(request.ProposedHallName)}, сторонников {request.SupportingResidentIds.Count}");
-                AppendCappedSectionOverflowLine(lines, foundingRequests.Count, 5);
             }
 
             if (realignmentRequests.Count > 0)
             {
                 lines.Add("");
-                lines.Add("[bold]Ожидают решения:[/] переходы между фракциями");
-                foreach (var request in realignmentRequests.Take(5))
+                lines.Add("[bold]Ожидают решения:[/] переходы между фракциями [dim](все pending-запросы)[/]");
+                foreach (var request in realignmentRequests)
                     lines.Add($"  • {Markup.Escape(request.ResidentName)} — {Markup.Escape(request.SourceFactionName)} -> {Markup.Escape(string.IsNullOrWhiteSpace(request.TargetFactionName) ? "нейтраль" : request.TargetFactionName)} [dim]({Markup.Escape(DescribeShiningRealignmentMode(request.RealignmentMode))})[/]");
-                AppendCappedSectionOverflowLine(lines, realignmentRequests.Count, 5);
             }
 
             if (leadershipRequests.Count > 0)
             {
                 lines.Add("");
-                lines.Add("[bold]Ожидают решения:[/] смена власти");
-                foreach (var request in leadershipRequests.Take(5))
+                lines.Add("[bold]Ожидают решения:[/] смена власти [dim](все pending-запросы)[/]");
+                foreach (var request in leadershipRequests)
                     lines.Add($"  • {Markup.Escape(request.FactionName)} — {Markup.Escape(DescribeShiningLeadershipMode(request.TransitionMode))} -> {Markup.Escape(BuildHeadActorLabel(request.CandidateHeadActorType, request.CandidateHeadActorId))}");
-                AppendCappedSectionOverflowLine(lines, leadershipRequests.Count, 5);
             }
 
             if (context?.Root["factionFoundingReceipts"] is JsonArray foundingReceipts && foundingReceipts.Count > 0)
             {
                 lines.Add("");
-                lines.Add("[bold]Последние решения:[/] основания фракций");
+                lines.Add("[bold]Все решения:[/] основания фракций [dim](без сокращения)[/]");
                 foreach (var receipt in foundingReceipts.OfType<JsonObject>()
-                             .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"]))
-                             .Take(5))
+                             .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"])))
                     lines.Add($"  • {Markup.Escape(BuildShiningFoundingReceiptSummary(receipt))}");
-                AppendCappedSectionOverflowLine(lines, foundingReceipts.Count, 5);
             }
 
             if (context?.Root["factionRealignmentReceipts"] is JsonArray realignmentReceipts && realignmentReceipts.Count > 0)
             {
                 lines.Add("");
-                lines.Add("[bold]Последние решения:[/] переходы между фракциями");
+                lines.Add("[bold]Все решения:[/] переходы между фракциями [dim](без сокращения)[/]");
                 foreach (var receipt in realignmentReceipts.OfType<JsonObject>()
-                             .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"]))
-                             .Take(5))
+                             .OrderByDescending(item => GetNodeInt(item["resolvedAtTurn"])))
                     lines.Add($"  • {Markup.Escape(BuildShiningRealignmentReceiptSummary(receipt))}");
-                AppendCappedSectionOverflowLine(lines, realignmentReceipts.Count, 5);
             }
 
             if (context?.Root["factions"] is JsonArray resolvedFactions)
@@ -226,17 +217,13 @@ public partial class ExplorerMode
                             ?? Enumerable.Empty<(string FactionName, JsonObject Receipt)>();
                     })
                     .OrderByDescending(item => GetNodeInt(item.Receipt["resolvedAtTurn"]))
-                    .Take(5)
                     .ToList();
                 if (latestLeadershipReceipts.Count > 0)
                 {
                     lines.Add("");
-                    lines.Add("[bold]Последние решения:[/] смена власти");
+                    lines.Add("[bold]Все решения:[/] смена власти [dim](без сокращения)[/]");
                     foreach (var item in latestLeadershipReceipts)
                         lines.Add($"  • {Markup.Escape(BuildShiningLeadershipReceiptSummary(item.FactionName, item.Receipt))}");
-                    AppendCappedSectionOverflowLine(lines, resolvedFactions.OfType<JsonObject>()
-                        .SelectMany(faction => (faction["leadershipReceipts"] as JsonArray)?.OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>())
-                        .Count(), 5);
                 }
             }
 
@@ -755,6 +742,11 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        if (context.Root["halls"] is JsonArray hallsAudit)
+            WriteJsonAuditPanel("Полный JSON halls[]", hallsAudit, Color.Gold1);
+        if (context.Root["shiningPoliticalActors"] is JsonArray actorsAudit)
+            WriteJsonAuditPanel("Полный JSON shiningPoliticalActors[]", actorsAudit, Color.Orange1);
     }
 
     private void ShowShiningFactionPoliticalInspectionPanel(ShiningContext context)
@@ -921,6 +913,7 @@ public partial class ExplorerMode
                 lines.Add("");
                 lines.Add($"[bold]{Markup.Escape(BuildShiningCoreReceiptSummary(receipt, context.Root))}[/]");
                 AppendShiningResolutionAuditLines(lines, receipt);
+                AppendShiningReceiptConsequenceLines(lines, receipt);
 
                 switch (actionType)
                 {
@@ -1017,6 +1010,15 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        if (receipts.Count > 0)
+        {
+            var receiptAudit = new JsonArray();
+            foreach (var receipt in receipts)
+                receiptAudit.Add(receipt.DeepClone());
+            WriteJsonAuditPanel("Полный JSON coreActionReceipts[]", receiptAudit, Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON shining_abode_state.json после исходов", context.Root, Color.Gold1);
+        }
     }
 
     private void ShowShiningPendingCoreActionInspectionPanel(
@@ -1110,6 +1112,13 @@ public partial class ExplorerMode
                         projectDraft["targetFactionIds"] as JsonArray,
                         id => ResolveShiningFactionLabel(context.Root, id));
                     AppendShiningStringList(lines, "Тоновые метки", projectDraft["toneTags"] as JsonArray);
+                }
+
+                lines.Add("  Полный контракт, который должен закрыть GM:");
+                foreach (var previewLine in BuildShiningCoreActionRequestPreviewLines(context, request)
+                             .Where(line => !string.IsNullOrWhiteSpace(line)))
+                {
+                    lines.Add($"    {previewLine}");
                 }
 
                 lines.Add($"  Создан на ходу: [dim]{request.CreatedAtTurn}[/]");
@@ -1386,6 +1395,73 @@ public partial class ExplorerMode
         });
 
         WriteJsonAuditPanel("Полный JSON political state and receipts", context.Root, Color.Orange1);
+    }
+
+    private static void AppendShiningReceiptConsequenceLines(List<string> lines, JsonObject receipt, int indent = 2)
+    {
+        var fields = new (string Key, string Label)[]
+        {
+            ("quotedCostFeathers", "Списанные/заявленные Чернильные Перья"),
+            ("quotedCostLightSparks", "Списанные/заявленные Искры Света"),
+            ("costInFeathers", "Стоимость в Чернильных Перьях"),
+            ("costLightSparks", "Стоимость в Искрах Света"),
+            ("radianceXpGained", "Полученный опыт Сияния"),
+            ("factionStrengthDelta", "Изменение силы фракции"),
+            ("previousFactionStrength", "Сила фракции до исхода"),
+            ("newFactionStrength", "Сила фракции после исхода"),
+            ("factionStrengthBefore", "Сила фракции до исхода"),
+            ("factionStrengthAfter", "Сила фракции после исхода"),
+            ("chargesUsedBefore", "Заряды сияющей гачи до исхода"),
+            ("chargesUsedAfter", "Заряды сияющей гачи после исхода"),
+            ("chargesRemaining", "Оставшиеся заряды сияющей гачи"),
+            ("gatesMarkedStale", "Открытый набор Врат помечен устаревшим"),
+            ("generatedDraftVersion", "Версия набора Врат"),
+            ("sourceDraftVersion", "Исходная версия набора Врат"),
+            ("baseRarity", "Базовая редкость"),
+            ("finalRarity", "Итоговая редкость"),
+            ("selectedCardIds", "Выбранные карты"),
+            ("selectedCards", "Зафиксированные снимки карт"),
+            ("replacementProperty", "Новое свойство перековки"),
+            ("addedProperties", "Добавленные свойства перековки")
+        };
+
+        var consequenceLines = new List<string>();
+        foreach (var (key, label) in fields)
+        {
+            if (!receipt.TryGetPropertyValue(key, out var node) || node == null)
+                continue;
+
+            consequenceLines.Add($"{new string(' ', indent)}• {label} [dim]({Markup.Escape(key)})[/]: {Markup.Escape(FormatShiningReceiptAuditValue(node))}");
+        }
+
+        if (consequenceLines.Count == 0)
+            return;
+
+        lines.Add($"{new string(' ', indent)}Ключевые последствия receipt:");
+        lines.AddRange(consequenceLines);
+    }
+
+    private static string FormatShiningReceiptAuditValue(JsonNode node)
+    {
+        if (node is JsonArray array)
+            return $"{array.Count} элемент(ов)";
+        if (node is JsonObject obj)
+            return $"{obj.Count} полей";
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<string>(out var text))
+                return text;
+            if (value.TryGetValue<bool>(out var boolValue))
+                return boolValue ? "да" : "нет";
+            if (value.TryGetValue<int>(out var intValue))
+                return intValue.ToString();
+            if (value.TryGetValue<long>(out var longValue))
+                return longValue.ToString();
+            if (value.TryGetValue<double>(out var doubleValue))
+                return doubleValue.ToString("0.###");
+        }
+
+        return node.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
     }
 
     private static void AppendShiningResolutionAuditLines(List<string> lines, JsonObject receipt, int indent = 2)

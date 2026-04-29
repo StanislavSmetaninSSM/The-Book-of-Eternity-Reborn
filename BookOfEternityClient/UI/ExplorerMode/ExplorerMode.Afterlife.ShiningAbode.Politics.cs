@@ -646,12 +646,12 @@ public partial class ExplorerMode
 
         lines.Add("");
         lines.Add("[bold]Резервируемые ресурсы:[/]");
-        lines.Add($"  • Ink Feathers: [white]{currentFeathers}[/] -> [white]{Math.Max(0, currentFeathers - costFeathers)}[/] [dim](quotedCostFeathers={request.QuotedCostFeathers})[/]");
-        lines.Add($"  • Light Sparks: [white]{currentLightSparks}[/] -> [white]{Math.Max(0, currentLightSparks - costLightSparks)}[/] [dim](quotedCostLightSparks={request.QuotedCostLightSparks})[/]");
+        lines.Add($"  • Чернильные Перья: [white]{currentFeathers}[/] -> [white]{Math.Max(0, currentFeathers - costFeathers)}[/] [dim](quotedCostFeathers={request.QuotedCostFeathers})[/]");
+        lines.Add($"  • Искры Света: [white]{currentLightSparks}[/] -> [white]{Math.Max(0, currentLightSparks - costLightSparks)}[/] [dim](quotedCostLightSparks={request.QuotedCostLightSparks})[/]");
         lines.Add("  • Отмена на этом экране не пишет pending file и не списывает ресурсы.");
 
         lines.Add("");
-        lines.Add("[bold]GM closure contract:[/]");
+        lines.Add("[bold]Контракт закрытия для GM:[/]");
         lines.Add("  • accepted: создать `halls[]` и `factions[]` с exact proposed ids, services, charter and supporter alignment.");
         lines.Add("  • accepted: записать `factionFoundingReceipts[]` с requestId, costs, supportingResidentIds, resolvedAtTurn/resolvedAtUtc/status/reason.");
         lines.Add("  • refused/withdrawn: не создавать hall/faction; закрыть только receipt с canonical status.");
@@ -682,7 +682,7 @@ public partial class ExplorerMode
         lines.Add($"  • Состояние перестройки: [dim]{Markup.Escape(DescribeShiningFactionRealignmentState(request.FactionRealignmentState))}[/]");
 
         lines.Add("");
-        lines.Add("[bold]GM closure contract:[/]");
+        lines.Add("[bold]Контракт закрытия для GM:[/]");
         lines.Add("  • accepted_transfer: обновить canonical resident shiningFactionId/name, loyalty/restlessness state and write resident history.");
         lines.Add("  • departure_to_neutral: очистить faction binding у резидента и зафиксировать departed_to_neutral receipt.");
         lines.Add("  • refused/withdrawn: не менять resident faction binding; закрыть только receipt/status/reason.");
@@ -712,7 +712,7 @@ public partial class ExplorerMode
         AppendPoliticalResidentList(lines, "Сторонники перехода", context.ResidentRoot, request.SupportingResidentIds);
 
         lines.Add("");
-        lines.Add("[bold]GM closure contract:[/]");
+        lines.Add("[bold]Контракт закрытия для GM:[/]");
         lines.Add("  • accepted: обновить faction.leadership and, for radiant_actor heads, matching `shiningPoliticalActors[]` currentFactionId/politicalStatus.");
         lines.Add("  • accepted: записать `leadershipReceipts[]` and `leadershipHistory[]` with succeeded/abdicated/revolted/vacated event mapping.");
         lines.Add("  • refused/withdrawn: leadership state remains unchanged except canonical receipt/history refusal marker.");
