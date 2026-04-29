@@ -1372,6 +1372,9 @@ public partial class ValidationService
                 return;
             }
 
+            ValidateRequiredCoreActionReceiptIntAudit(receipt, request, "quotedCostFeathers", request.QuotedCostFeathers, issues);
+            ValidateRequiredCoreActionReceiptIntAudit(receipt, request, "quotedCostLightSparks", request.QuotedCostLightSparks, issues);
+
             if (currentShiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
             {
                 issues.Add(new ValidationIssue(

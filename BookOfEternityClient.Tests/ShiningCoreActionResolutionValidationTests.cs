@@ -585,6 +585,29 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_legacy_native_discovery_not_cleared", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_discovery_light_sparks_cost_mismatch", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_discovery_feather_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_cost_audit_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync_MissingReceiptCostAudit_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRootWithLegacyNativeDiscovery();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        MaterializeLegacyNativeDiscoveryClosure(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        var receipt = ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).OfType<JsonObject>().Single();
+        receipt.Remove("quotedCostFeathers");
+        receipt.Remove("quotedCostLightSparks");
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentSoulRoot);
+        await WriteLegacyNativeDiscoverySnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+
+        var issues = await InvokeValidationAsync("ValidateLegacyPendingShiningNativeFactionDiscoveryResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_cost_audit_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
