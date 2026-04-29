@@ -2136,6 +2136,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Зафиксированные карты", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Тропа возвращения", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("card_route_dawn", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("путь", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("effectPayload", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Семя маршрута", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("\"routeSeedId\"", renderedText, StringComparison.OrdinalIgnoreCase);
     }

@@ -1507,8 +1507,24 @@ public partial class ExplorerMode
             var displayName = GetNodeString(obj["displayName"]) ?? GetNodeString(obj["name"]) ?? cardId;
             var rarity = DescribeForgeRarity(GetNodeString(obj["rarity"]) ?? string.Empty);
             var effectFamily = DescribeShiningEffectFamily(GetNodeString(obj["effectFamily"]));
-            var effectPayload = obj["effectPayload"]?.ToJsonString() ?? "{}";
-            return $"{displayName} ({cardId}), редкость {rarity}, эффект {effectFamily}, effectPayload={effectPayload}";
+            var sourceType = DescribeShiningBlessingReceiptSourceType(GetNodeString(obj["sourceType"]));
+            var sourceFactionId = GetNodeString(obj["sourceFactionId"]);
+            var sourceActorId = GetNodeString(obj["sourceActorId"]);
+            var parts = new List<string>
+            {
+                $"{displayName} ({cardId})",
+                $"редкость {rarity}",
+                $"эффект {effectFamily}"
+            };
+
+            if (!string.IsNullOrWhiteSpace(sourceType))
+                parts.Add($"источник {sourceType}");
+            if (!string.IsNullOrWhiteSpace(sourceFactionId))
+                parts.Add($"фракция {sourceFactionId}");
+            if (!string.IsNullOrWhiteSpace(sourceActorId))
+                parts.Add($"актор {sourceActorId}");
+
+            return string.Join(", ", parts);
         }
 
         if (obj.ContainsKey("propertyId") ||
@@ -1521,6 +1537,16 @@ public partial class ExplorerMode
 
         return obj.ToJsonString();
     }
+
+    private static string DescribeShiningBlessingReceiptSourceType(string? sourceType) =>
+        (sourceType ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "head" => "глава фракции",
+            "project" => "проект",
+            "resident_descent" => "резидент",
+            "" => string.Empty,
+            _ => sourceType ?? string.Empty
+        };
 
     private static void AppendShiningResolutionAuditLines(List<string> lines, JsonObject receipt, int indent = 2)
     {
