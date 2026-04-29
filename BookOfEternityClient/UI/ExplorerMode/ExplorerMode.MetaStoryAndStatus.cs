@@ -187,7 +187,6 @@ public partial class ExplorerMode
             table.AddRow("[yellow]/soul_quests[/]", "[yellow]/квесты_души[/]", "[yellow]Квесты хранителей[/]");
             table.AddRow("[gold1]/feathers[/]", "[gold1]/перья[/]", "[gold1]🪶 Чернильные перья[/]");
             table.AddRow("[cyan]/world_setup[/]", "[cyan]/настройка_мира[/]", "[cyan]Подготовить следующий смертный мир[/]");
-            table.AddRow("[magenta]/guardian_corrections[/]", "[magenta]/коррективы_хранителя[/]", "[magenta]Просмотр корректив текущей смертной жизни[/]");
             table.AddRow("", "", "");
             table.AddRow("[blue]/return_to_chaos_sea[/]", "[blue]/вернуться_в_море_хаоса[/]", "[blue]Вернуться в Море Хаоса и запечатать Сияющую Обитель без запуска Нового Цикла[/]");
             table.AddRow("[bold gold1]/new_game_plus[/]", "[bold gold1]/новая_игра+[/]", "[bold gold1]Начать Новый Цикл, сохранив Реликвии Души и Хранителей[/]");
@@ -215,7 +214,6 @@ public partial class ExplorerMode
             table.AddRow("[gold1]/gacha[/]", "[gold1]/гача[/]", "[gold1]Прямое вытягивание реликвии из Моря Хаоса (без модификаторов Хранителя)[/]");
             table.AddRow("[gold1]/feathers[/]", "[gold1]/перья[/]", "[gold1]🪶 Чернильные перья (способности души)[/]");
             table.AddRow("[cyan]/world_setup[/]", "[cyan]/настройка_мира[/]", "[cyan]Подготовить следующий смертный мир[/]");
-            table.AddRow("[magenta]/guardian_corrections[/]", "[magenta]/коррективы_хранителя[/]", "[magenta]Просмотр корректив текущей смертной жизни[/]");
             table.AddRow("", "", "");
             table.AddRow("[yellow]/incarnate[/]", "[yellow]/воплотиться[/]", "[yellow]⚔️ Войти в смертную жизнь через Врата Души[/]");
             if (_stateManager.CurrentState.CanReenterShiningAbode)

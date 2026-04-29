@@ -629,6 +629,9 @@ public partial class ExplorerMode
                         .AddChoices(profiles.Select(profile => $"{profile.Name} ({profile.FileName})")));
                 var profile = profiles.First(p => $"{p.Name} ({p.FileName})" == selectedLabel);
                 var setup = _worldDirectiveService.CreatePendingSetupFromProfile(profile);
+                if (!ConfirmPendingWorldSetupWritePreview("Применить профиль мира", pending, setup, "profile_apply"))
+                    continue;
+
                 await _worldDirectiveService.WritePendingSetupAsync(setup);
                 if (_scenarioCoreService != null)
                     await _scenarioCoreService.RefreshFromPendingSetupAsync();
@@ -645,7 +648,7 @@ public partial class ExplorerMode
 
             if (choice == "🧹 Очистить подготовку мира")
             {
-                if (Confirm("[yellow]Очистить сохранённую подготовку следующего мира?[/]", false))
+                if (ConfirmPendingWorldSetupWritePreview("Очистить подготовку мира", pending, null, "clear"))
                 {
                     _worldDirectiveService.ClearPendingSetup();
                     if (_scenarioCoreService != null)
@@ -934,11 +937,81 @@ public partial class ExplorerMode
             StartingCircumstances = startingCircumstances,
             WorldDirectives = edited
         };
+        if (!ConfirmPendingWorldSetupWritePreview("Сохранить подготовку мира", existing, setup, "manual_edit"))
+            return;
+
         await _worldDirectiveService.WritePendingSetupAsync(setup);
         if (_scenarioCoreService != null)
             await _scenarioCoreService.RefreshFromPendingSetupAsync();
         MarkupLine("[green]Подготовка следующего мира сохранена.[/]");
         WaitForKey();
+    }
+
+    private bool ConfirmPendingWorldSetupWritePreview(
+        string title,
+        WorldDirectiveService.PendingWorldSetup? before,
+        WorldDirectiveService.PendingWorldSetup? after,
+        string operation)
+    {
+        Clear();
+        var lines = new List<string>
+        {
+            $"[bold cyan]{Markup.Escape(title)}[/]",
+            "",
+            "[bold]Тип изменения:[/] client-local подготовка следующей смертной жизни; GM turn не отправляется.",
+            $"[bold]Операция:[/] {Markup.Escape(operation)}",
+            "[bold]Affected files:[/]",
+            $"  • {WorldDirectiveService.PendingSetupPath}",
+            $"  • {ScenarioCoreService.ManifestPath} [dim](перестраивается из pending setup или удаляется при очистке)[/]",
+            "",
+            "[bold]Последствия:[/]",
+            "  • Эти данные будут прочитаны при следующем /incarnate или bootstrap новой жизни.",
+            "  • Отмена на этом экране ничего не пишет и не очищает.",
+            "  • Это не Ascension, не New Game+ и не GM-authored contract."
+        };
+
+        if (before != null)
+        {
+            lines.Add("");
+            lines.Add($"[bold]Было:[/] mode={Markup.Escape(before.Mode)}, profile={Markup.Escape(before.ProfileName ?? before.ProfileId ?? "нет")}, worldTitle={Markup.Escape(before.WorldDirectives.WorldTitle)}");
+        }
+
+        if (after != null)
+        {
+            lines.Add($"[bold]Станет:[/] mode={Markup.Escape(after.Mode)}, profile={Markup.Escape(after.ProfileName ?? after.ProfileId ?? "нет")}, worldTitle={Markup.Escape(after.WorldDirectives.WorldTitle)}");
+            if (!string.IsNullOrWhiteSpace(after.CharacterDescription))
+                lines.Add($"  Character: [dim]{Markup.Escape(TruncateForUi(after.CharacterDescription, 220))}[/]");
+            if (!string.IsNullOrWhiteSpace(after.StartingCircumstances))
+                lines.Add($"  Circumstances: [dim]{Markup.Escape(TruncateForUi(after.StartingCircumstances, 220))}[/]");
+        }
+        else
+        {
+            lines.Add("[bold]Станет:[/] pending setup и scenario core будут очищены.");
+        }
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🌍 Предпросмотр подготовки мира ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Cyan1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+
+        WriteJsonAuditPanel(
+            "До: game_state/control/incarnation_world_setup.json",
+            before == null ? new JsonObject { ["exists"] = false } : JsonSerializer.SerializeToNode(before, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+            Color.Grey);
+        WriteJsonAuditPanel(
+            "После: game_state/control/incarnation_world_setup.json",
+            after == null ? new JsonObject { ["exists"] = false, ["deleted"] = true } : JsonSerializer.SerializeToNode(after, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+            Color.Cyan1);
+
+        var choice = Prompt(new SelectionPrompt<string>()
+            .Title("[bold cyan]Подтвердить локальную запись подготовки мира?[/]")
+            .HighlightStyle(new Style(Color.Cyan1))
+            .AddChoices("✅ Да, записать", "← Отмена"));
+        return choice.Contains("Да", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task<WorldDirectiveService.WorldDirectives> PromptWorldDirectivesAsync(
