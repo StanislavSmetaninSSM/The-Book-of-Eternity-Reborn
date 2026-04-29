@@ -5134,6 +5134,8 @@ Correct accepted response fragment:
 Why this is valid:
 - The active guard blocks only immediate Guardian-forced reincarnation; it does not block ordinary afterlife narration.
 - The GM does not mutate the client-owned guard. Runtime consumes/clears it after accepting the protected ordinary afterlife turn.
+- If `afterlife_return_guard.json` is malformed, treat it as fail-closed: preserve it for repair and do not weaken the protection in GM output.
+- For `return_to_chaos_sea`, Shining pending files with non-empty `requests[]` or malformed JSON block the local route. A valid explicit-empty `{ "requests": [] }` file is not an actionable GM contract and may be removed by runtime as stale local state.
 - The response does not confuse `afterlife_return_guard.json` with `preparedIncarnationPackage`, `AscensionTrigger`, or Mortal World return state.
 
 ==================================================

@@ -43,11 +43,17 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("закрытие:", mainMenu, StringComparison.Ordinal);
 
         Assert.DoesNotContain("[yellow]/abodes", help, StringComparison.Ordinal);
+        Assert.Contains("[blue]/chaos_sea", help, StringComparison.Ordinal);
+        Assert.Contains("[blue]/море_хаоса", help, StringComparison.Ordinal);
         Assert.Contains("[blue]/abodes", help, StringComparison.Ordinal);
         Assert.DoesNotContain("/реликвии /хранители /обители /душа", lifecycle, StringComparison.Ordinal);
         Assert.Contains("/реликвии /хранители /обители /гача /душа", lifecycle, StringComparison.Ordinal);
+        Assert.Contains("CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction)", lifecycle, StringComparison.Ordinal);
+        Assert.Contains("CleanupAfterCancelledChaosSeaMarkerTurn(action)", lifecycle, StringComparison.Ordinal);
+        Assert.Contains("[\"/chaos_sea\"] = ShowGuardians", ReadSource("UI", "ExplorerMode.cs"), StringComparison.Ordinal);
         Assert.Contains("string.Equals(command, \"/abodes\"", explorerPrivate, StringComparison.Ordinal);
         Assert.Contains("string.Equals(command, \"/обители\"", explorerPrivate, StringComparison.Ordinal);
+        Assert.Contains("string.Equals(command, \"/chaos_sea\"", explorerPrivate, StringComparison.Ordinal);
 
         Assert.Contains("BuildGuardianSellAuditNode", trade, StringComparison.Ordinal);
         Assert.Contains("generatedBuybackEntryFields", trade, StringComparison.Ordinal);

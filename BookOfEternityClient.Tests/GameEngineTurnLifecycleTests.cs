@@ -441,6 +441,40 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task GetBlockingShiningPendingContractPathsAsync_DeletesExplicitEmptyFilesButKeepsMalformedAndActive()
+    {
+        await WriteJsonAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, new
+        {
+            requests = Array.Empty<object>()
+        });
+        await WriteJsonAsync(ShiningTradeRequestState.PendingRequestsPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "trade-request-1",
+                    factionId = "faction-alpha",
+                    tradeCycleId = "shining_return_4",
+                    createdAtTurn = 12
+                }
+            }
+        });
+        await _fs.WriteFileAtomicAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, "{ malformed");
+
+        var engine = CreateGameEngine();
+
+        var blockingPaths = await InvokePrivateAsync<IReadOnlyList<string>>(engine, "GetBlockingShiningPendingContractPathsAsync");
+
+        Assert.DoesNotContain(ShiningCoreActionRequestState.PendingActionsRequestPath, blockingPaths);
+        Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+        Assert.Contains(ShiningTradeRequestState.PendingRequestsPath, blockingPaths);
+        Assert.Contains(ShiningFactionRequestState.PendingFoundingsRequestPath, blockingPaths);
+        Assert.True(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
+    }
+
+    [Fact]
     public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_BlocksLegacyPendingNativeDiscovery()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

@@ -1865,6 +1865,30 @@ public partial class ValidationService
 
         var imprintId = GetStringValue(stateEvidence, "imprintId");
         var companionName = GetStringValue(stateEvidence, "companionName");
+        var sourceCompanionId = GetFirstString(
+            stateEvidence,
+            "sourceCompanionId",
+            "companionId",
+            "sourceCompanionRelicId");
+        var sourceNpcId = GetFirstString(
+            stateEvidence,
+            "NPCId",
+            "npcId",
+            "sourceNpcId",
+            "sourceNPCId");
+        if (string.IsNullOrWhiteSpace(sourceCompanionId) && string.IsNullOrWhiteSpace(sourceNpcId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{InkFeatherActionResultPath}.stateEvidence",
+                IssueSeverity.Error,
+                "SOUL_IMPRINT receipt должен содержать source companion/NPC provenance, а не только имя imprint.",
+                code: "ink_feather_soul_imprint_missing_source_provenance",
+                section: context.ActionTag,
+                expected: "stateEvidence.sourceCompanionId or stateEvidence.NPCId/sourceNpcId",
+                actual: stateEvidence.ToString(),
+                repairHint: "Добавь sourceCompanionId/companionId или NPCId/sourceNpcId в stateEvidence и в persisted soulImprint payload."));
+        }
+
         var changedFiles = await ValidateAffectedFilesChangedAsync(
             stateEvidence,
             context.ActionTag,
@@ -1897,6 +1921,20 @@ public partial class ValidationService
                 expected: "name/id + description/summary + preserved core traits/personality markers",
                 actual: "weak imprint object",
                 repairHint: "SOUL_IMPRINT должен сохранять не только идентификатор, но и минимально осмысленные core traits или personality markers текущего компаньона."));
+        }
+        else if (!await SoulImprintHasSourceProvenanceAsync(imprintId, companionName, sourceCompanionId, sourceNpcId))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json.soulImprint",
+                IssueSeverity.Error,
+                "Persisted soulImprint должен сохранять source companion/NPC provenance из receipt.",
+                code: "ink_feather_soul_imprint_persisted_source_provenance_missing",
+                section: context.ActionTag,
+                expected: string.IsNullOrWhiteSpace(sourceCompanionId)
+                    ? $"NPCId/sourceNpcId={sourceNpcId}"
+                    : $"sourceCompanionId/companionId={sourceCompanionId}",
+                actual: "missing or mismatched source provenance",
+                repairHint: "Сохрани sourceCompanionId/companionId или NPCId/sourceNpcId внутри soulImprint вместе с summary и traits."));
         }
     }
 
@@ -6399,6 +6437,60 @@ public partial class ValidationService
         return false;
     }
 
+    private async Task<bool> SoulImprintHasSourceProvenanceAsync(
+        string? imprintId,
+        string? companionName,
+        string? sourceCompanionId,
+        string? sourceNpcId)
+    {
+        if (string.IsNullOrWhiteSpace(sourceCompanionId) && string.IsNullOrWhiteSpace(sourceNpcId))
+            return false;
+
+        var json = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("soulImprint", out var imprint) || imprint.ValueKind == JsonValueKind.Null)
+                return false;
+
+            if (imprint.ValueKind == JsonValueKind.Object)
+            {
+                return SoulImprintObjectMatchesSourceProvenance(
+                    imprint,
+                    imprintId,
+                    companionName,
+                    sourceCompanionId,
+                    sourceNpcId);
+            }
+
+            if (imprint.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in imprint.EnumerateArray())
+                {
+                    if (item.ValueKind == JsonValueKind.Object &&
+                        SoulImprintObjectMatchesSourceProvenance(
+                            item,
+                            imprintId,
+                            companionName,
+                            sourceCompanionId,
+                            sourceNpcId))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+
+        return false;
+    }
+
     private static bool SoulImprintObjectMatchesMinimalContract(JsonElement imprint, string? imprintId, string? companionName)
     {
         if (!string.IsNullOrWhiteSpace(imprintId))
@@ -6430,6 +6522,55 @@ public partial class ValidationService
             personalityTraits.GetArrayLength() > 0;
 
         return (hasName || hasReference) && hasDescription && (hasCoreTraitsArray || hasPersonalityTraits);
+    }
+
+    private static bool SoulImprintObjectMatchesSourceProvenance(
+        JsonElement imprint,
+        string? imprintId,
+        string? companionName,
+        string? sourceCompanionId,
+        string? sourceNpcId)
+    {
+        if (!SoulImprintObjectMatchesIdentity(imprint, imprintId, companionName))
+            return false;
+
+        if (!string.IsNullOrWhiteSpace(sourceCompanionId))
+        {
+            var currentCompanionId = GetFirstString(
+                imprint,
+                "sourceCompanionId",
+                "companionId",
+                "sourceCompanionRelicId");
+            return string.Equals(currentCompanionId, sourceCompanionId, StringComparison.OrdinalIgnoreCase);
+        }
+
+        var currentNpcId = GetFirstString(
+            imprint,
+            "NPCId",
+            "npcId",
+            "sourceNpcId",
+            "sourceNPCId");
+        return !string.IsNullOrWhiteSpace(sourceNpcId) &&
+               string.Equals(currentNpcId, sourceNpcId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool SoulImprintObjectMatchesIdentity(JsonElement imprint, string? imprintId, string? companionName)
+    {
+        if (!string.IsNullOrWhiteSpace(imprintId))
+        {
+            var currentId = GetFirstString(imprint, "imprintId", "id");
+            if (!string.Equals(currentId, imprintId, StringComparison.OrdinalIgnoreCase))
+                return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(companionName))
+        {
+            var currentName = GetFirstString(imprint, "NPCName", "name", "companionName", "originalName");
+            if (!string.Equals(currentName, companionName, StringComparison.OrdinalIgnoreCase))
+                return false;
+        }
+
+        return true;
     }
 
     private static string GetFirstString(JsonElement element, params string[] propertyNames)
@@ -6889,6 +7030,8 @@ public partial class ValidationService
             var playerAction = actionEl.GetString() ?? string.Empty;
             await ValidateDirectChaosSeaGachaOutcomeAsync(playerAction, issues);
             await ValidateChaosSeaTravelOutcomeAsync(playerAction, issues);
+            await ValidateAbodeResidentRelicGrantOutcomeAsync(playerAction, issues);
+            await ValidateAbodeResidentQuestRequestOutcomeAsync(playerAction, issues);
 
             var actionContext = ParseInkFeatherActionContext(requestDoc.RootElement, playerAction);
             if (actionContext == null)
@@ -7545,6 +7688,252 @@ public partial class ValidationService
         catch (JsonException)
         {
             return false;
+        }
+    }
+
+    private async Task ValidateAbodeResidentRelicGrantOutcomeAsync(string playerAction, List<ValidationIssue> issues)
+    {
+        if (!playerAction.Contains("[ABODE_RESIDENT_RELIC_GRANT]", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var residentId = ExtractChaosSeaTravelActionValue(playerAction, "residentId");
+        if (string.IsNullOrWhiteSpace(residentId))
+        {
+            issues.Add(new ValidationIssue(
+                "input/turn_request.json.playerAction",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_RELIC_GRANT должен явно фиксировать residentId.",
+                code: "abode_resident_relic_grant_missing_resident_id",
+                section: "ABODE_RESIDENT_RELIC_GRANT",
+                expected: "residentId=<afterlife resident id>",
+                actual: playerAction,
+                repairHint: "Передавай direct resident reward marker только с residentId, guardianId и abodeId из текущей Обители."));
+            return;
+        }
+
+        var soulRoot = await ReadJsonObjectForSpecialActionAsync("game_state/meta/soul_state.json", "ABODE_RESIDENT_RELIC_GRANT", issues);
+        var residentRoot = await ReadJsonObjectForSpecialActionAsync(GuardianAbodeResidentState.StatePath, "ABODE_RESIDENT_RELIC_GRANT", issues);
+        if (soulRoot == null || residentRoot == null)
+            return;
+
+        GuardianAbodeResidentState.NormalizeShape(residentRoot);
+        var matchingRelic = EnumerateSoulRelicObjects(soulRoot).FirstOrDefault(relic =>
+            string.Equals(GetNodeString(relic["relicType"]), GuardianAbodeResidentState.RelicTypeCompanionEcho, StringComparison.OrdinalIgnoreCase) &&
+            relic["companionSeed"] is JsonObject seed &&
+            string.Equals(GetNodeString(seed["sourceResidentId"]), residentId, StringComparison.OrdinalIgnoreCase));
+        var relicId = GetNodeString(matchingRelic?["relicId"]) ?? GetNodeString(matchingRelic?["id"]);
+        if (matchingRelic == null || string.IsNullOrWhiteSpace(relicId))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json.soulRelics",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_RELIC_GRANT должен materialize-ить companion_echo Soul Relic для указанного resident.",
+                code: "abode_resident_relic_grant_missing_companion_echo_relic",
+                section: "ABODE_RESIDENT_RELIC_GRANT",
+                expected: $"companion_echo relic with companionSeed.sourceResidentId={residentId}",
+                actual: "missing",
+                repairHint: "Добавь Soul Relic с relicType=companion_echo и complete companionSeed.sourceResidentId/sourceGuardianId/companionNameHint/originWorldSummary/futureCompanionPrompt."));
+        }
+
+        var resident = FindResidentNode(residentRoot, residentId);
+        if (resident == null)
+        {
+            issues.Add(new ValidationIssue(
+                $"{GuardianAbodeResidentState.StatePath}.entries",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_RELIC_GRANT должен обновить существующего afterlife resident.",
+                code: "abode_resident_relic_grant_missing_resident_update",
+                section: "ABODE_RESIDENT_RELIC_GRANT",
+                expected: $"residentId={residentId}",
+                actual: "missing resident",
+                repairHint: "Сохрани resident в guardian_abode_residents.json и установи bondRewardState=granted плюс grantedRelicId."));
+        }
+        else
+        {
+            var rewardState = GetNodeString(resident["bondRewardState"]);
+            var grantedRelicId = GetNodeString(resident["grantedRelicId"]);
+            if (!string.Equals(rewardState, "granted", StringComparison.OrdinalIgnoreCase) ||
+                string.IsNullOrWhiteSpace(grantedRelicId) ||
+                (!string.IsNullOrWhiteSpace(relicId) && !string.Equals(grantedRelicId, relicId, StringComparison.OrdinalIgnoreCase)))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{GuardianAbodeResidentState.StatePath}.entries[].bondRewardState",
+                    IssueSeverity.Error,
+                    "ABODE_RESIDENT_RELIC_GRANT должен отметить resident reward как granted и связать его с новой реликвией.",
+                    code: "abode_resident_relic_grant_resident_reward_not_granted",
+                    section: "ABODE_RESIDENT_RELIC_GRANT",
+                    expected: string.IsNullOrWhiteSpace(relicId) ? "bondRewardState=granted and grantedRelicId=<new relic id>" : $"bondRewardState=granted and grantedRelicId={relicId}",
+                    actual: $"bondRewardState={rewardState ?? "missing"}, grantedRelicId={grantedRelicId ?? "missing"}",
+                    repairHint: "Обнови того же resident через UpdateGuardianAbodeResidents/entries: bondRewardState=granted и grantedRelicId=id companion_echo relic."));
+            }
+        }
+
+        if (!ResidentInteractionLogContains(residentRoot, residentId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{GuardianAbodeResidentState.StatePath}.{GuardianAbodeResidentState.InteractionLogProperty}",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_RELIC_GRANT должен оставить residentInteractionLogUpdates/interactionLog память о даровании реликвии.",
+                code: "abode_resident_relic_grant_missing_interaction_log",
+                section: "ABODE_RESIDENT_RELIC_GRANT",
+                expected: $"interaction log entry for residentId={residentId}",
+                actual: "missing",
+                repairHint: "Добавь residentInteractionLogUpdates с entryId, residentId, title, summary, turn и timestamp."));
+        }
+    }
+
+    private async Task ValidateAbodeResidentQuestRequestOutcomeAsync(string playerAction, List<ValidationIssue> issues)
+    {
+        if (!playerAction.Contains("[ABODE_RESIDENT_QUEST_REQUEST]", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var residentId = ExtractChaosSeaTravelActionValue(playerAction, "residentId");
+        if (string.IsNullOrWhiteSpace(residentId))
+        {
+            issues.Add(new ValidationIssue(
+                "input/turn_request.json.playerAction",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_QUEST_REQUEST должен явно фиксировать residentId.",
+                code: "abode_resident_quest_request_missing_resident_id",
+                section: "ABODE_RESIDENT_QUEST_REQUEST",
+                expected: "residentId=<afterlife resident id>",
+                actual: playerAction,
+                repairHint: "Передавай direct resident quest marker только с residentId, guardianId и abodeId из текущей Обители."));
+            return;
+        }
+
+        var residentRoot = await ReadJsonObjectForSpecialActionAsync(GuardianAbodeResidentState.StatePath, "ABODE_RESIDENT_QUEST_REQUEST", issues);
+        var questsRoot = await ReadJsonObjectForSpecialActionAsync("game_state/quests/soul_quests.json", "ABODE_RESIDENT_QUEST_REQUEST", issues);
+        if (residentRoot == null || questsRoot == null)
+            return;
+
+        GuardianAbodeResidentState.NormalizeShape(residentRoot);
+        var quest = EnumerateQuestObjects(questsRoot).FirstOrDefault(candidate =>
+            string.Equals(GetNodeString(candidate["relatedAfterlifeResidentId"]), residentId, StringComparison.OrdinalIgnoreCase));
+        var questId = GetNodeString(quest?["questId"]) ?? GetNodeString(quest?["id"]);
+        if (quest == null || string.IsNullOrWhiteSpace(questId))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/quests/soul_quests.json.UpdateSoulQuests",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_QUEST_REQUEST должен создать или обновить Soul Quest, связанный с afterlife resident.",
+                code: "abode_resident_quest_request_missing_linked_soul_quest",
+                section: "ABODE_RESIDENT_QUEST_REQUEST",
+                expected: $"Soul Quest with relatedAfterlifeResidentId={residentId}",
+                actual: "missing",
+                repairHint: "Запиши UpdateSoulQuests/quests с questId, title/description/objectives и relatedAfterlifeResidentId того resident."));
+        }
+
+        if (!ResidentInteractionLogContains(residentRoot, residentId))
+        {
+            issues.Add(new ValidationIssue(
+                $"{GuardianAbodeResidentState.StatePath}.{GuardianAbodeResidentState.InteractionLogProperty}",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_QUEST_REQUEST должен оставить residentInteractionLogUpdates/interactionLog память о просьбе или принятом пути.",
+                code: "abode_resident_quest_request_missing_interaction_log",
+                section: "ABODE_RESIDENT_QUEST_REQUEST",
+                expected: $"interaction log entry for residentId={residentId}",
+                actual: "missing",
+                repairHint: "Добавь residentInteractionLogUpdates с entryId, residentId, title, summary, turn и timestamp."));
+        }
+    }
+
+    private async Task<JsonObject?> ReadJsonObjectForSpecialActionAsync(
+        string path,
+        string section,
+        List<ValidationIssue> issues)
+    {
+        var json = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            issues.Add(new ValidationIssue(
+                path,
+                IssueSeverity.Error,
+                $"{section} требует readable canonical state file {path}.",
+                code: $"{section.ToLowerInvariant()}_missing_state_file",
+                section: section,
+                expected: "JSON object",
+                actual: "missing or empty",
+                repairHint: $"Запиши {path} как JSON object с canonical state, требуемым для {section}."));
+            return null;
+        }
+
+        try
+        {
+            return JsonNode.Parse(json) as JsonObject;
+        }
+        catch
+        {
+            issues.Add(new ValidationIssue(
+                path,
+                IssueSeverity.Error,
+                $"{section} требует readable JSON object in {path}.",
+                code: $"{section.ToLowerInvariant()}_invalid_state_json",
+                section: section,
+                expected: "valid JSON object",
+                actual: "invalid JSON",
+                repairHint: $"Исправь {path}; special action validator не может доказать результат поверх malformed JSON."));
+            return null;
+        }
+    }
+
+    private static IEnumerable<JsonObject> EnumerateSoulRelicObjects(JsonObject soulRoot)
+    {
+        if (soulRoot["soulRelics"] is JsonObject soulRelicsObject)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (soulRelicsObject[collectionName] is not JsonArray collection)
+                    continue;
+
+                foreach (var relic in collection.OfType<JsonObject>())
+                    yield return relic;
+            }
+        }
+        else if (soulRoot["soulRelics"] is JsonArray flatCollection)
+        {
+            foreach (var relic in flatCollection.OfType<JsonObject>())
+                yield return relic;
+        }
+    }
+
+    private static JsonObject? FindResidentNode(JsonObject residentRoot, string residentId)
+    {
+        if (residentRoot[GuardianAbodeResidentState.EntriesProperty] is not JsonArray entries)
+            return null;
+
+        return entries
+            .OfType<JsonObject>()
+            .FirstOrDefault(resident =>
+                string.Equals(GetNodeString(resident["residentId"]), residentId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool ResidentInteractionLogContains(JsonObject residentRoot, string residentId)
+    {
+        foreach (var propertyName in new[] { GuardianAbodeResidentState.InteractionLogProperty, GuardianAbodeResidentState.UpdateInteractionLogProperty })
+        {
+            if (residentRoot[propertyName] is not JsonArray log)
+                continue;
+
+            if (log.OfType<JsonObject>().Any(entry =>
+                    string.Equals(GetNodeString(entry["residentId"]), residentId, StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static IEnumerable<JsonObject> EnumerateQuestObjects(JsonObject questsRoot)
+    {
+        foreach (var propertyName in new[] { "quests", "UpdateSoulQuests" })
+        {
+            if (questsRoot[propertyName] is not JsonArray quests)
+                continue;
+
+            foreach (var quest in quests.OfType<JsonObject>())
+                yield return quest;
         }
     }
 

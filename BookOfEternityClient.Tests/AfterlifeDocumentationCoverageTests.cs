@@ -494,7 +494,12 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             Assert.Contains("client-owned", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("No GM-authored output", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("requests", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("malformed", doc, StringComparison.OrdinalIgnoreCase);
         }
+
+        Assert.Contains("{ \"requests\": [] }", matrix, StringComparison.Ordinal);
+        Assert.Contains("{ \"requests\": [] }", apiSpec, StringComparison.Ordinal);
     }
 
     [Fact]

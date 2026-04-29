@@ -388,6 +388,7 @@ public partial class GameEngine
                     _lastResponse = lateResponse;
                     _pendingImagePrompt = null;
                     _gameLoop.IncrementTurn();
+                    CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction);
                     await CheckLifeTransitions();
                     await CheckAscensionTrigger();
                     if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
@@ -576,8 +577,6 @@ public partial class GameEngine
 
     private async Task ProcessPlayerTurn(string action, string? extraSystemReminder = null)
     {
-        var clearsSystemGuardianAttraction = action.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:", StringComparison.OrdinalIgnoreCase);
-        var clearsPendingAbodeOffering = IsPendingAbodeOfferingTurnAction(action);
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
 
         // Create backup of game state files before sending turn (for escape-rollback)
@@ -639,6 +638,7 @@ public partial class GameEngine
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
             await RestorePreTurnBackup(backedUpFiles);
+            CleanupAfterCancelledChaosSeaMarkerTurn(action);
             AnsiConsole.MarkupLine("[dim]Изменения локально отменены, состояние восстановлено. Если GM завершит уже отправленный ход позже, он будет обработан как отложенный ответ.[/]");
             CleanupBackup(backedUpFiles);
             return;
@@ -681,10 +681,7 @@ public partial class GameEngine
 
         // Turn accepted — backup no longer needed
         CleanupBackup(backedUpFiles);
-        if (clearsSystemGuardianAttraction)
-            _systemGuardianLibraryService.ClearAttractionRequest();
-        if (clearsPendingAbodeOffering)
-            GuardianAbodeOfferingState.Clear(_fs);
+        CleanupAfterAcceptedChaosSeaMarkerTurn(action);
 
         _gameLoop.IncrementTurn();
         await _pendingTurnState.RotateAfterAcceptedTurnAsync();
@@ -729,6 +726,26 @@ public partial class GameEngine
 
         // Cleanup ready signal
         _fs.DeleteFile("ready/turn_complete.json");
+    }
+
+    private void CleanupAfterAcceptedChaosSeaMarkerTurn(string? action)
+    {
+        if (string.IsNullOrWhiteSpace(action))
+            return;
+
+        if (action.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:", StringComparison.OrdinalIgnoreCase))
+            _systemGuardianLibraryService.ClearAttractionRequest();
+        if (IsPendingAbodeOfferingTurnAction(action))
+            GuardianAbodeOfferingState.Clear(_fs);
+    }
+
+    private void CleanupAfterCancelledChaosSeaMarkerTurn(string? action)
+    {
+        if (string.IsNullOrWhiteSpace(action))
+            return;
+
+        if (action.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:", StringComparison.OrdinalIgnoreCase))
+            _systemGuardianLibraryService.ClearAttractionRequest();
     }
 
     private void OverlayExplorerLocalRollbackSnapshot(

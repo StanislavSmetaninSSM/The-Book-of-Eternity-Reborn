@@ -152,6 +152,65 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
             string.Equals(issue.Code, "direct_chaos_gacha_result_rarity_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentRelicGrantWithoutCompanionEcho_Fails()
+    {
+        await WriteNodeAsync("game_state/meta/soul_state.json", CreateSoulRoot());
+        await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", CreateResidentRoot("resident_liora"));
+        await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(
+            "[ABODE_RESIDENT_RELIC_GRANT] Игрок принимает реликвию связи от afterlife resident 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia)."));
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "abode_resident_relic_grant_missing_companion_echo_relic", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestWithoutSoulQuest_Fails()
+    {
+        await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", CreateResidentRoot("resident_liora", includeInteractionLog: true));
+        await WriteNodeAsync("game_state/quests/soul_quests.json", new JsonObject { ["quests"] = new JsonArray() });
+        await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(
+            "[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia)."));
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "abode_resident_quest_request_missing_linked_soul_quest", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_SoulImprintWithoutSourceProvenance_Fails()
+    {
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
+        var currentSoul = CreateSoulRoot(inkFeathers: 5);
+        currentSoul["soulImprint"] = new JsonObject
+        {
+            ["imprintId"] = "imprint_liora",
+            ["companionName"] = "Лиора",
+            ["summary"] = "Слепок памяти Лиоры.",
+            ["personalityTraits"] = new JsonArray("верность")
+        };
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WriteNodeAsync("input/turn_request.json", new JsonObject
+        {
+            ["sessionId"] = "session",
+            ["requestId"] = "request",
+            ["turnNumber"] = 7,
+            ["playerAction"] = "[INK_FEATHER_ACTION: SOUL_IMPRINT] Игрок тратит 5 Чернильных Перьев на Создание Слепка Души текущего компаньона."
+        });
+        await WriteSoulImprintReceiptAsync(includeSourceProvenance: false);
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            playerAction: "[INK_FEATHER_ACTION: SOUL_IMPRINT] Игрок тратит 5 Чернильных Перьев на Создание Слепка Души текущего компаньона.");
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "ink_feather_soul_imprint_missing_source_provenance", StringComparison.OrdinalIgnoreCase));
+    }
+
     private async Task WritePendingTurnSnapshotAsync(JsonObject preTurnSoulRoot, JsonObject? rollbackSoulRoot = null, string? playerAction = null)
     {
         const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
@@ -219,6 +278,49 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         ["playerAction"] = "[INK_FEATHER_ACTION: CULTIVATE_ENLIGHTENMENT] Игрок вкладывает 5 Чернильных Перьев в просветление."
     };
 
+    private static JsonObject CreateResidentActionTurnRequest(string playerAction) => new()
+    {
+        ["sessionId"] = "session",
+        ["requestId"] = "request",
+        ["turnNumber"] = 7,
+        ["playerAction"] = playerAction
+    };
+
+    private static JsonObject CreateResidentRoot(string residentId, bool includeInteractionLog = false)
+    {
+        var root = new JsonObject
+        {
+            ["entries"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["residentId"] = residentId,
+                    ["guardianId"] = "guardian_azalia",
+                    ["abodeId"] = "abode_azalia",
+                    ["displayName"] = "Лиора",
+                    ["bondRewardState"] = "eligible",
+                    ["grantedRelicId"] = ""
+                }
+            },
+            ["interactionLog"] = new JsonArray()
+        };
+
+        if (includeInteractionLog)
+        {
+            root["interactionLog"]!.AsArray().Add(new JsonObject
+            {
+                ["entryId"] = "log_liora_quest",
+                ["residentId"] = residentId,
+                ["title"] = "Просьба Лиоры",
+                ["summary"] = "Лиора попросила помощи.",
+                ["turn"] = 7,
+                ["timestamp"] = "2026-04-24T00:00:00Z"
+            });
+        }
+
+        return root;
+    }
+
     private async Task WriteCultivateEnlightenmentReceiptAsync()
     {
         await WriteNodeAsync("output/ink_feather_action_result.json", new JsonObject
@@ -236,6 +338,31 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
                 ["experienceGain"] = 10,
                 ["affectedFiles"] = new JsonArray("game_state/meta/soul_state.json")
             }
+        });
+    }
+
+    private async Task WriteSoulImprintReceiptAsync(bool includeSourceProvenance)
+    {
+        var stateEvidence = new JsonObject
+        {
+            ["imprintId"] = "imprint_liora",
+            ["companionName"] = "Лиора",
+            ["affectedFiles"] = new JsonArray("game_state/meta/soul_state.json")
+        };
+        if (includeSourceProvenance)
+            stateEvidence["sourceCompanionId"] = "companion_liora";
+
+        await WriteNodeAsync("output/ink_feather_action_result.json", new JsonObject
+        {
+            ["sessionId"] = "session",
+            ["requestId"] = "request",
+            ["turnNumber"] = 7,
+            ["actionTag"] = "SOUL_IMPRINT",
+            ["resolved"] = true,
+            ["costInFeathers"] = 5,
+            ["resolutionType"] = "soulImprint",
+            ["summary"] = "Слепок создан.",
+            ["stateEvidence"] = stateEvidence
         });
     }
 
