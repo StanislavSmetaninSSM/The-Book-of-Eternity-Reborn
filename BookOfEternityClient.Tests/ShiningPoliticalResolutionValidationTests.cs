@@ -342,6 +342,48 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingWithUnrelatedMutations_Fails()
+    {
+        var request = CreateFoundingRequest("founding_req_unrelated_mutations", "faction_unrelated_mutations", "hall_unrelated_mutations");
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        AddAcceptedFoundingMaterialization(currentShiningRoot, currentResidentRoot, request);
+
+        currentShiningRoot["radiance"]!["experience"] = 999;
+        var unrelatedResident = currentResidentRoot["entries"]!.AsArray()
+            .OfType<JsonObject>()
+            .First(entry => string.Equals(entry["residentId"]?.GetValue<string>(), "resident_outsider", StringComparison.OrdinalIgnoreCase));
+        unrelatedResident["factionRestlessness"] = 99;
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentFeathers: 80);
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_shining_founding_unrelated_mutations.json";
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(backupPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteValidatedSnapshotStateAsync(
+            preTurnShiningRoot,
+            CreateSoulStateRoot(currentFeathers: 75),
+            preTurnResidentRoot);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [ShiningFactionRequestState.PendingFoundingsRequestPath] = backupPath
+        });
+
+        var issues = await InvokeValidationAsync("ValidateShiningClosureCompositeDiffAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_resident_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameState_PendingShiningFoundingsWithDuplicateRequestId_Fails()
     {
         var shiningRoot = CreateBaseShiningRoot();
@@ -1029,9 +1071,13 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
         });
     }
 
-    private async Task WriteValidatedSnapshotStateAsync(JsonObject preTurnShiningRoot, JsonObject preTurnSoulRoot)
+    private async Task WriteValidatedSnapshotStateAsync(
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject? preTurnResidentRoot = null)
     {
         await WriteNodeAsync($"game_state/control/pending_turn_snapshot/{ShiningAbodeState.StatePath}", preTurnShiningRoot);
+        await WriteNodeAsync($"game_state/control/pending_turn_snapshot/{GuardianAbodeResidentState.StatePath}", preTurnResidentRoot ?? CreateBaseResidentRoot());
         await WriteNodeAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", preTurnSoulRoot);
     }
 
