@@ -1468,6 +1468,13 @@ public partial class GameEngine
             return false;
         }
 
+        if (shiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
+        {
+            AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока legacy pendingNativeFactionDiscovery ожидает GM-closure. Сначала дождитесь закрытия или repair/refund.[/]");
+            AnsiConsole.MarkupLine($"[dim]• {Markup.Escape(ShiningAbodeState.StatePath)}.pendingNativeFactionDiscovery[/]");
+            return false;
+        }
+
         var blockingPendingContracts = GetExistingShiningPendingContractPaths();
         if (blockingPendingContracts.Count > 0)
         {

@@ -728,6 +728,8 @@ This is a fragment. Preserve all existing Shining root fields, halls, factions, 
       "requestId": "shine_core_open_gate_305",
       "actionType": "open_gates",
       "status": "accepted",
+      "quotedCostFeathers": 0,
+      "quotedCostLightSparks": 0,
       "factionId": "shine_faction_glass_light_001",
       "selectedCardIds": [],
       "newResidentIds": [],
@@ -3339,7 +3341,8 @@ Accepted `discover_native_faction` must:
 - materialize one new faction with `originType = native_radiant` and `hallId` matching the receipt; its `factionId` must not exist in pre-turn `shining_abode_state.factions[]`;
 - materialize `2..4` new ascended residents in `guardian_abode_residents.json`;
 - create exactly `2` seeded completed projects inside the new faction; every `projectId` must be new across all pre-turn Shining faction projects;
-- write a receipt whose `hallId`, `resolvedFactionId`, `newResidentIds[]`, and `seededProjectIds[]` point to those materialized objects.
+- write a receipt whose `hallId`, `resolvedFactionId`, `newResidentIds[]`, and `seededProjectIds[]` point to those materialized objects;
+- keep the accepted diff constrained to discovery surfaces: do not change pre-existing halls, factions/projects, residents, political actors, or unrelated Soul state.
 
 Legacy `pendingNativeFactionDiscovery` closure:
 - If pre-turn `shining_abode_state.json.pendingNativeFactionDiscovery` is non-null and there is no matching `pending_shining_abode_actions.json` request, treat it as the legacy state-local version of `discover_native_faction`.
@@ -3349,6 +3352,7 @@ Legacy `pendingNativeFactionDiscovery` closure:
 - Preserve current `shining_abode_state.json.lightSparks`; the legacy queue already reserved `pendingNativeFactionDiscovery.costLightSparks`, so do not subtract Light Sparks a second time.
 - Set `shining_abode_state.json.pendingNativeFactionDiscovery = null` in the accepted state.
 - Do not create or echo a duplicate `pending_shining_abode_actions.json` request for this legacy payload.
+- Do not use the legacy closure to edit unrelated existing Shining state; only the newly discovered hall/faction/residents/projects, Radiance, Soul Feather debit, pending slot, and receipt may change.
 
 Correct `discover_native_faction` receipt fragment:
 
@@ -3359,6 +3363,8 @@ Correct `discover_native_faction` receipt fragment:
       "requestId": "shine_discover_native_321",
       "actionType": "discover_native_faction",
       "status": "accepted",
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 20,
       "factionId": "",
       "projectId": "",
       "relicId": "",
@@ -3420,6 +3426,8 @@ open_gates
   Receipt target: empty ids, generatedDraftVersion = the resulting gates.draftVersion.
 ```
 
+Every `coreActionReceipts[]` entry that closes `pending_shining_abode_actions.json` must echo the exact `quotedCostFeathers` and `quotedCostLightSparks` from the pending request, including zero-cost actions. Forge receipts have one extra audit rule: `forge_relic.retune_property` must echo the request `replacementProperty`, `forge_relic.uplift_rarity` must echo request `addedProperties`, and other forge actions must not invent those payload fields.
+
 Correct `support_project` receipt fragment:
 
 ```json
@@ -3429,6 +3437,8 @@ Correct `support_project` receipt fragment:
       "requestId": "shine_support_project_322",
       "actionType": "support_project",
       "status": "accepted",
+      "quotedCostFeathers": 0,
+      "quotedCostLightSparks": 0,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "shine_project_glass_passage_010",
       "relicId": "",
@@ -3458,6 +3468,8 @@ The receipt alone is not enough. Each fragment below assumes the matching canoni
       "requestId": "shine_invest_glass_323",
       "actionType": "invest_in_faction",
       "status": "accepted",
+      "quotedCostFeathers": 10,
+      "quotedCostLightSparks": 5,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "",
       "relicId": "",
@@ -3476,6 +3488,8 @@ The receipt alone is not enough. Each fragment below assumes the matching canoni
       "requestId": "shine_complete_project_324",
       "actionType": "complete_project",
       "status": "accepted",
+      "quotedCostFeathers": 20,
+      "quotedCostLightSparks": 10,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "shine_project_glass_refinement_324",
       "relicId": "",
@@ -3494,6 +3508,8 @@ The receipt alone is not enough. Each fragment below assumes the matching canoni
       "requestId": "shine_unsupport_project_325",
       "actionType": "unsupport_project",
       "status": "accepted",
+      "quotedCostFeathers": 0,
+      "quotedCostLightSparks": 0,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "shine_project_glass_passage_010",
       "relicId": "",
@@ -3512,6 +3528,8 @@ The receipt alone is not enough. Each fragment below assumes the matching canoni
       "requestId": "shine_retire_project_326",
       "actionType": "retire_project",
       "status": "accepted",
+      "quotedCostFeathers": 0,
+      "quotedCostLightSparks": 0,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "shine_project_glass_passage_010",
       "relicId": "",
@@ -3555,6 +3573,8 @@ Correct receipt fragment:
       "requestId": "shine_prepare_package_323",
       "actionType": "prepare_incarnation_package",
       "status": "accepted",
+      "quotedCostFeathers": 0,
+      "quotedCostLightSparks": 0,
       "factionId": "",
       "projectId": "",
       "relicId": "",
@@ -3617,6 +3637,8 @@ Correct receipt fragment:
       "requestId": "shine_pull_glass_324",
       "actionType": "pull_relic_gacha",
       "status": "accepted",
+      "quotedCostFeathers": 30,
+      "quotedCostLightSparks": 0,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "",
       "relicId": "relic_shining_glass_oath_324",
@@ -3653,7 +3675,7 @@ forge_relic.reshape
 forge_relic.retune_property
   Requires: propertyIndex and replacementProperty with the same canonical band as the old property.
   State result: relic.properties[propertyIndex] becomes replacementProperty.
-  Receipt identity: factionId, relicId, propertyIndex.
+  Receipt identity: factionId, relicId, propertyIndex, exact replacementProperty copied from the request.
 
 forge_relic.strengthen_band
   Requires: propertyIndex pointing to a property with upgradeable band.
@@ -3668,7 +3690,7 @@ forge_relic.stabilize_echo
 forge_relic.uplift_rarity
   Requires: canonical rarity below legendary and enough addedProperties if the next rarity requires more properties.
   State result: relic rarity upgrades one step; missing minimum properties are appended from addedProperties.
-  Receipt identity: factionId, relicId.
+  Receipt identity: factionId, relicId, exact addedProperties copied from the request.
 ```
 
 Correct `forge_relic.retune_property` receipt fragment:
@@ -3680,12 +3702,20 @@ Correct `forge_relic.retune_property` receipt fragment:
       "requestId": "shine_forge_retune_325",
       "actionType": "forge_relic.retune_property",
       "status": "accepted",
+      "quotedCostFeathers": 20,
+      "quotedCostLightSparks": 15,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "",
       "relicId": "relic_mirror_lens_001",
       "returnCycleId": "",
       "targetFormTag": "",
       "propertyIndex": 1,
+      "replacementProperty": {
+        "propertyId": "prop_mirror_lens_dawn_focus",
+        "name": "Dawn Focus",
+        "stat": "route_clarity",
+        "band": "rare"
+      },
       "selectedCardIds": [],
       "newResidentIds": [],
       "seededProjectIds": [],
@@ -3709,6 +3739,8 @@ These are receipt fragments only. The same accepted response must also update `s
       "requestId": "shine_forge_reshape_326",
       "actionType": "forge_relic.reshape",
       "status": "accepted",
+      "quotedCostFeathers": 10,
+      "quotedCostLightSparks": 10,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "",
       "relicId": "relic_mirror_lens_001",
@@ -3727,6 +3759,8 @@ These are receipt fragments only. The same accepted response must also update `s
       "requestId": "shine_forge_strengthen_327",
       "actionType": "forge_relic.strengthen_band",
       "status": "accepted",
+      "quotedCostFeathers": 30,
+      "quotedCostLightSparks": 20,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "",
       "relicId": "relic_mirror_lens_001",
@@ -3745,6 +3779,8 @@ These are receipt fragments only. The same accepted response must also update `s
       "requestId": "shine_forge_echo_328",
       "actionType": "forge_relic.stabilize_echo",
       "status": "accepted",
+      "quotedCostFeathers": 25,
+      "quotedCostLightSparks": 15,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "",
       "relicId": "relic_companion_echo_001",
@@ -3763,12 +3799,22 @@ These are receipt fragments only. The same accepted response must also update `s
       "requestId": "shine_forge_uplift_329",
       "actionType": "forge_relic.uplift_rarity",
       "status": "accepted",
+      "quotedCostFeathers": 45,
+      "quotedCostLightSparks": 30,
       "factionId": "shine_faction_glass_light_001",
       "projectId": "",
       "relicId": "relic_mirror_lens_001",
       "returnCycleId": "",
       "targetFormTag": "",
       "propertyIndex": -1,
+      "addedProperties": [
+        {
+          "propertyId": "prop_mirror_lens_legendary_refraction",
+          "name": "Legendary Refraction",
+          "stat": "radiant_memory",
+          "band": "legendary"
+        }
+      ],
       "selectedCardIds": [],
       "newResidentIds": [],
       "seededProjectIds": [],
@@ -3785,6 +3831,8 @@ Invalid Shining core-action shortcuts:
 - Closing `pending_shining_abode_actions.json` only in prose.
 - Writing `factionDataChanges` or `factionProjectUpdates` for Shining faction/project actions.
 - Omitting empty receipt arrays such as `selectedCardIds`, `newResidentIds`, or `seededProjectIds`.
+- Omitting exact receipt cost audit fields `quotedCostFeathers` and `quotedCostLightSparks`.
+- Omitting the exact forge request payload from receipts (`replacementProperty` for retune, `addedProperties` for uplift).
 - Accepted receipt with target ids that do not exactly match the pending request.
 - `prepare_incarnation_package` receipt without `selectedCards[]` snapshot.
 - `pull_relic_gacha` using `UpdateGuardians.processGacha` or direct `/gacha` rules.
@@ -4423,6 +4471,8 @@ Correct response/state fragment:
         "requestId": "shine_support_project_410",
         "actionType": "support_project",
         "status": "accepted",
+        "quotedCostFeathers": 0,
+        "quotedCostLightSparks": 0,
         "factionId": "shine_faction_glass_light_001",
         "projectId": "shine_project_glass_passage_010",
         "relicId": "",
@@ -4556,6 +4606,8 @@ Correct active Shining `prepare_incarnation_package` closure shape:
         "requestId": "shine_prepare_package_411",
         "actionType": "prepare_incarnation_package",
         "status": "accepted",
+        "quotedCostFeathers": 0,
+        "quotedCostLightSparks": 0,
         "factionId": "",
         "projectId": "",
         "relicId": "",
