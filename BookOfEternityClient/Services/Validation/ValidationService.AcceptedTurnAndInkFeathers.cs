@@ -382,6 +382,208 @@ public partial class ValidationService
         }
     }
 
+    private async Task ValidateChaosSeaTravelOutcomeAsync(string playerAction, List<ValidationIssue> issues)
+    {
+        if (!playerAction.Contains("[CHAOS_SEA_TRAVEL]", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var targetAbodeId = ExtractChaosSeaTravelActionValue(playerAction, "targetAbodeId");
+        var targetGuardianId = ExtractChaosSeaTravelActionValue(playerAction, "targetGuardianId");
+        if (string.IsNullOrWhiteSpace(targetAbodeId) || string.IsNullOrWhiteSpace(targetGuardianId))
+        {
+            issues.Add(new ValidationIssue(
+                "input/turn_request.json.playerAction",
+                IssueSeverity.Error,
+                "CHAOS_SEA_TRAVEL должен явно фиксировать targetAbodeId и targetGuardianId.",
+                code: "chaos_sea_travel_missing_target",
+                section: "CHAOS_SEA_TRAVEL",
+                expected: "targetAbodeId and targetGuardianId in playerAction",
+                actual: playerAction,
+                repairHint: "Не принимай travel turn без точной цели: playerAction обязан содержать targetAbodeId=<id> и targetGuardianId=<id>."));
+            return;
+        }
+
+        var preTurnSoulJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            issues,
+            code: "chaos_sea_travel_missing_pre_turn_soul_state",
+            section: "CHAOS_SEA_TRAVEL",
+            message: "CHAOS_SEA_TRAVEL требует validated pre-turn soul_state snapshot для проверки realm.",
+            repairHint: "Сохраняй validated snapshot copy of game_state/meta/soul_state.json перед accepted travel turn.");
+        if (!string.IsNullOrWhiteSpace(preTurnSoulJson))
+        {
+            try
+            {
+                if (JsonNode.Parse(preTurnSoulJson) is JsonObject preTurnSoulRoot)
+                {
+                    var preTurnRealm = GetNodeString(preTurnSoulRoot["currentRealm"]);
+                    if (!IsExactChaosSeaRealm(preTurnRealm))
+                    {
+                        issues.Add(new ValidationIssue(
+                            "input/turn_request.json.playerAction",
+                            IssueSeverity.Error,
+                            "CHAOS_SEA_TRAVEL допустим только из точного realm Моря Хаоса.",
+                            code: "chaos_sea_travel_invalid_realm",
+                            section: "CHAOS_SEA_TRAVEL",
+                            expected: "Chaos Sea",
+                            actual: preTurnRealm ?? "unknown pre-turn realm",
+                            repairHint: "Не используй [CHAOS_SEA_TRAVEL] из Shining Abode, pending-bootstrap или смертного realm."));
+                    }
+                }
+            }
+            catch
+            {
+                // JSON shape issues are reported by normal state validation.
+            }
+        }
+
+        var currentGuardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(currentGuardiansJson))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/guardians.json",
+                IssueSeverity.Error,
+                "CHAOS_SEA_TRAVEL должен materialize-ить guardians.json после перехода.",
+                code: "chaos_sea_travel_missing_guardians_state",
+                section: "CHAOS_SEA_TRAVEL",
+                expected: "game_state/meta/guardians.json with activeGuardian and chaosSeaNavigation",
+                actual: "missing or empty",
+                repairHint: "После travel turn запиши activeGuardian, guardians[] и chaosSeaNavigation в game_state/meta/guardians.json."));
+            return;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(currentGuardiansJson) is not JsonObject root)
+                return;
+
+            var activeGuardianId = GetNodeString(root["activeGuardian"]?["guardianId"]) ??
+                                   GetNodeString(root["activeGuardian"]?["id"]);
+            if (!string.Equals(activeGuardianId, targetGuardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.activeGuardian.guardianId",
+                    IssueSeverity.Error,
+                    "CHAOS_SEA_TRAVEL должен сделать targetGuardianId активным Хранителем.",
+                    code: "chaos_sea_travel_active_guardian_mismatch",
+                    section: "CHAOS_SEA_TRAVEL",
+                    expected: targetGuardianId,
+                    actual: activeGuardianId ?? "missing",
+                    repairHint: "Синхронно установи activeGuardian.guardianId в targetGuardianId из playerAction."));
+            }
+
+            var currentAbodeId = GetNodeString(root["chaosSeaNavigation"]?["currentAbodeId"]);
+            if (!string.Equals(currentAbodeId, targetAbodeId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.chaosSeaNavigation.currentAbodeId",
+                    IssueSeverity.Error,
+                    "CHAOS_SEA_TRAVEL должен установить currentAbodeId в targetAbodeId.",
+                    code: "chaos_sea_travel_current_abode_mismatch",
+                    section: "CHAOS_SEA_TRAVEL",
+                    expected: targetAbodeId,
+                    actual: currentAbodeId ?? "missing",
+                    repairHint: "Синхронно установи chaosSeaNavigation.currentAbodeId в targetAbodeId из playerAction."));
+            }
+
+            if (!ContainsString(root["chaosSeaNavigation"]?["discoveredAbodes"], targetAbodeId))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.chaosSeaNavigation.discoveredAbodes",
+                    IssueSeverity.Error,
+                    "CHAOS_SEA_TRAVEL должен оставлять targetAbodeId в discoveredAbodes.",
+                    code: "chaos_sea_travel_target_not_discovered",
+                    section: "CHAOS_SEA_TRAVEL",
+                    expected: $"discoveredAbodes contains {targetAbodeId}",
+                    actual: root["chaosSeaNavigation"]?["discoveredAbodes"]?.ToJsonString() ?? "missing",
+                    repairHint: "Добавь targetAbodeId в chaosSeaNavigation.discoveredAbodes; travel не должен вести в неизвестную для навигации обитель."));
+            }
+
+            var targetGuardian = FindGuardianNode(root["guardians"], targetGuardianId);
+            var targetGuardianAbodeId = GetNodeString(targetGuardian?["abode"]?["abodeId"]) ??
+                                        GetNodeString(targetGuardian?["abode"]?["id"]);
+            if (targetGuardian == null ||
+                !string.Equals(targetGuardianAbodeId, targetAbodeId, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.guardians",
+                    IssueSeverity.Error,
+                    "CHAOS_SEA_TRAVEL должен materialize-ить target guardian с target abode.",
+                    code: "chaos_sea_travel_target_guardian_abode_mismatch",
+                    section: "CHAOS_SEA_TRAVEL",
+                    expected: $"{targetGuardianId} with abodeId {targetAbodeId}",
+                    actual: targetGuardian == null ? "target guardian missing" : $"abodeId={targetGuardianAbodeId ?? "missing"}",
+                    repairHint: "Убедись, что guardians[] содержит targetGuardianId, а его abode.abodeId совпадает с targetAbodeId из playerAction."));
+            }
+
+            if (targetGuardian?["abode"] is not JsonObject abode ||
+                abode["isDiscovered"]?.GetValueKind() != JsonValueKind.True)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/guardians.json.guardians[].abode.isDiscovered",
+                    IssueSeverity.Error,
+                    "CHAOS_SEA_TRAVEL требует discovered state у target guardian abode.",
+                    code: "chaos_sea_travel_target_abode_not_marked_discovered",
+                    section: "CHAOS_SEA_TRAVEL",
+                    expected: "true",
+                    actual: targetGuardian?["abode"]?["isDiscovered"]?.ToJsonString() ?? "missing",
+                    repairHint: "Установи abode.isDiscovered=true у target guardian, иначе travel state расходится с navigation discovery."));
+            }
+        }
+        catch
+        {
+            // JSON shape issues are reported by normal state validation.
+        }
+    }
+
+    private static string? ExtractChaosSeaTravelActionValue(string playerAction, string key)
+    {
+        var match = Regex.Match(
+            playerAction,
+            $@"\b{Regex.Escape(key)}\s*=\s*(?:'(?<quoted>[^']*)'|""(?<quoted>[^""]*)""|(?<plain>[^,\)\s]+))",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        if (!match.Success)
+            return null;
+
+        var value = match.Groups["quoted"].Success
+            ? match.Groups["quoted"].Value
+            : match.Groups["plain"].Value;
+        return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    }
+
+    private static JsonObject? FindGuardianNode(JsonNode? guardiansNode, string guardianId)
+    {
+        if (guardiansNode is not JsonArray guardians)
+            return null;
+
+        foreach (var item in guardians)
+        {
+            if (item is not JsonObject guardian)
+                continue;
+
+            var currentGuardianId = GetNodeString(guardian["guardianId"]) ?? GetNodeString(guardian["id"]);
+            if (string.Equals(currentGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+                return guardian;
+        }
+
+        return null;
+    }
+
+    private static bool ContainsString(JsonNode? node, string expected)
+    {
+        if (node is not JsonArray array)
+            return false;
+
+        foreach (var item in array)
+        {
+            var value = GetNodeString(item);
+            if (string.Equals(value, expected, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
     private async Task<bool> IsClientInkFeatherSpendAlreadyInSnapshotAsync(
         int snapshotFeathers,
         int costInFeathers)
@@ -6638,6 +6840,7 @@ public partial class ValidationService
 
             var playerAction = actionEl.GetString() ?? string.Empty;
             await ValidateDirectChaosSeaGachaOutcomeAsync(playerAction, issues);
+            await ValidateChaosSeaTravelOutcomeAsync(playerAction, issues);
 
             var actionContext = ParseInkFeatherActionContext(requestDoc.RootElement, playerAction);
             if (actionContext == null)
