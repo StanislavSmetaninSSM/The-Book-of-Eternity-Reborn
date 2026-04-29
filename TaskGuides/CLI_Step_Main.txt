@@ -50,6 +50,7 @@
             **AfterlifeProfile (`Chaos Sea` / `Shining Abode`):**
                - Allowed: Guardians, Abodes, Soul Relics, afterlife Ink Feather whitelist actions, Gacha, Soul-system/meta progression, afterlife living-world scheduler, Shining-specific systems when in Shining Abode, `progressionProcessingReport`
                - Forbidden: combat, experience, leveling, stat gains/losses, regular NPC mechanics, mortal quests, normal inventory management, Mortal World factions, weather, world time, mortal location system
+               - File-level forbidden rule: during AfterlifeProfile, do not write any response surface mapped to `game_state/world/*`, `game_state/npcs/*`, or `game_state/factions/*`
                - Afterlife Ink Feather whitelist: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when `pending_abode_offering.json.offeringType = ink_feathers`
                - `Sell Relic` is a separate guardian trade interaction and is NOT an Ink Feather action
                - Local guardian trade (`Buy / Sell` Soul Relics) is client-side, but canonically belongs to the current active Guardian's abode
@@ -80,6 +81,7 @@
                - If `game_state/control/system_guardian_attraction.json` exists, the soul is deliberately seeking that exact Eternal Guardian; this attraction is deterministic for the turn and must resolve to the requested preset
                - If `game_state/control/afterlife_return_guard.json` exists with `remainingProtectedTurns > 0`, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any forced re-incarnation
                - Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn and only as a reaction to explicit player provocation against the current active Guardian
+               - Deterministic provocation evidence is exact `playerAction` tag `[GUARDIAN_PROVOCATION]` or `[GUARDIAN_PROVOCATION: guardianId]`; the id form is valid only when it matches the `TriggerIncarnation.guardianId`
                - For guardian-forced `TriggerIncarnation`, write `source='guardian_forced'`, `guardianId`, `severityBand='harsh'|'severe'`, `reason`, `provocationSummary`, plus the normal `worldDescription`, `characterDescription`, `circumstances`
                - A guardian-forced incarnation start must be harsh but survivable; do NOT create an unwinnable deathtrap
                - Do NOT use MortalWorldProfile-only systems here: rival soul arcs, local NPC trade, QTE offers, mortal world news/clues, mortal locations, mortal factions, or Mortal-World Ink Feather actions
@@ -458,7 +460,7 @@
   - Guardians: `guardianThoughtJournalUpdates` = current thoughts, `guardianSocialJournalUpdates` = important past interactions
   - Residents: `residentThoughtJournalUpdates` = current thoughts, `residentInteractionLogUpdates` = important past interactions, `UpdateGuardianAbodeResidentHistoryLog` = revealed past
 - If `game_state/control/pending_guardian_social_interactions.json` exists, close each request in the same accepted turn through `guardianSocialJournalUpdates`.
-- If `game_state/control/pending_npc_social_interactions.json` exists, close each request in the same accepted turn through `npcInteractionJournalUpdates`.
+- If `game_state/control/pending_npc_social_interactions.json` exists, close each request only in the same accepted MortalWorldProfile turn through `npcInteractionJournalUpdates`. In `Chaos Sea` or `Shining Abode`, this file is MortalWorldProfile-only stale/repair context: do not close it, do not write `npcInteractionJournalUpdates`, and do not mutate `game_state/npcs/*`.
 - These guardian/NPC social closures are machine-readable journal entries with:
   - `requestId`
   - actor id (`guardianId` or `npcId`)
@@ -493,7 +495,7 @@
 - Do not arbitrarily reduce this list to one request because of relic slots. If multiple equipped companion-carrying relics exist, process all of them; slot overlap is not a limiter for next-life companion manifestation.
 - For accepted `archive consultation`, include machine-readable whitelist outcome fields in `archiveActionResolutions`: `guaranteedArchiveQuestCount`, `questHookCount`, `specialQuestLineUnlocks`, `visibleRivalClueBonus`, `archiveWarningTierBonus`.
 - For accepted `archive project fuel`, include machine-readable `resultMode = project_work | pressure_relief` and `resultAmount > 0` in `archiveActionResolutions`, in addition to the canonical journal/tracker result.
-- `pendingShiningBlessingEffects` is created by runtime after Shining prepared-package bootstrap. Do not author it during afterlife. In Mortal turns, close its deferred families through ordinary Mortal surfaces: `memorySelection.status=pending_pre_turn_one_selection`, `resourceGrant.status=applied_at_bootstrap`, `relicRefinementEntitlements.status=pending_relic_entitlement`, `pendingSocialEffects.status=pending_first_relation_commit`, `pendingRouteEffects.status=pending_early_route_seed`, `pendingLoreEffects.status=pending_lore_insertion`, `pendingSurvivalEffects.status=pending_first_ruinous_failure`, and `pendingDescentEffects.status=pending_resident_descent`. Treat `resourceGrant.grantId` and hidden `_shiningBootstrapResourceGrantIds` player/inventory markers as client-owned idempotency audit data; never create, clear, or use them as GM-authored spend receipts.
+- `pendingShiningBlessingEffects` is created by runtime after Shining prepared-package bootstrap. Do not author it during afterlife. In Mortal turns, close its deferred families through ordinary Mortal surfaces: `memorySelection.status=pending_pre_turn_one_selection`, `resourceGrant.status=applied_at_bootstrap`, `relicRefinementEntitlements.status=pending_relic_entitlement`, `pendingSocialEffects.status=pending_first_relation_commit`, `pendingRouteEffects.status=pending_early_route_seed`, `pendingLoreEffects.status=pending_lore_insertion`, `pendingSurvivalEffects.status=pending_first_ruinous_failure`, and `pendingDescentEffects.status=pending_resident_descent`. Terminal states are `consumed` with `consumedAtTurn`/`consumedAtUtc` and `expired` with `expiredAtTurn`/`expiredAtUtc`. Treat `resourceGrant.grantId` and hidden `_shiningBootstrapResourceGrantIds` player/inventory markers as client-owned idempotency audit data; never create, clear, or use them as GM-authored spend receipts.
             - If Guardian reveals lore: add loreCodexUpdates with discoveryContext referencing the Guardian
             
             **Generate the same logical turn result as API mode** (per Block_2.txt master schema),
