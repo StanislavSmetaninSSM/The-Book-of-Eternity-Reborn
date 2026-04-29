@@ -126,6 +126,7 @@ public partial class ExplorerMode
         {
             Clear();
             Write(panel);
+            WriteJsonAuditPanel("Полный JSON game_state/meta/soul_state.json", root, Color.Cyan1);
 
             var isPendingBootstrap = _stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
             var choices = new List<string>();
@@ -163,6 +164,9 @@ public partial class ExplorerMode
                 }
 
                 var requestedName = Ask("[cyan]Новое имя души[/]");
+                if (!await ConfirmSoulRenameLocalPreviewAsync(root, requestedName))
+                    continue;
+
                 var result = await _soulIdentityService.RenameSoulAsync(requestedName);
                 if (!result.Success)
                 {
@@ -186,6 +190,125 @@ public partial class ExplorerMode
             else if (choice.Contains("пути воплощения", StringComparison.OrdinalIgnoreCase))
                 await ShowManifestationRequestInspectionAsync(currentManifestationRequests);
         }
+    }
+
+    private async Task<bool> ConfirmSoulRenameLocalPreviewAsync(JsonElement currentSoulRoot, string requestedName)
+    {
+        var normalizedNewName = SoulIdentityService.NormalizeSoulName(requestedName);
+        var currentSoulName = GetStr(currentSoulRoot, "soulName", "");
+        var previousSoulNames = new List<string>();
+        if (currentSoulRoot.TryGetProperty("previousSoulNames", out var previousNamesNode) &&
+            previousNamesNode.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in previousNamesNode.EnumerateArray())
+            {
+                if (entry.ValueKind == JsonValueKind.String)
+                {
+                    var normalized = SoulIdentityService.NormalizeSoulName(entry.GetString());
+                    if (!string.IsNullOrWhiteSpace(normalized) &&
+                        !previousSoulNames.Contains(normalized, StringComparer.OrdinalIgnoreCase))
+                    {
+                        previousSoulNames.Add(normalized);
+                    }
+                }
+            }
+        }
+
+        var blockers = new List<string>();
+        if (string.IsNullOrWhiteSpace(normalizedNewName))
+            blockers.Add("новое имя души пустое после нормализации");
+
+        var changed = !string.Equals(currentSoulName, normalizedNewName, StringComparison.OrdinalIgnoreCase);
+        var nextPreviousNames = previousSoulNames
+            .Where(name => !string.Equals(name, normalizedNewName, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (changed && !string.IsNullOrWhiteSpace(currentSoulName) &&
+            !nextPreviousNames.Contains(currentSoulName, StringComparer.OrdinalIgnoreCase))
+        {
+            nextPreviousNames.Add(currentSoulName);
+        }
+
+        JsonObject beforeRoot;
+        JsonObject afterRoot;
+        try
+        {
+            beforeRoot = JsonNode.Parse(currentSoulRoot.GetRawText()) as JsonObject ?? new JsonObject();
+            afterRoot = JsonNode.Parse(currentSoulRoot.GetRawText()) as JsonObject ?? new JsonObject();
+        }
+        catch
+        {
+            blockers.Add("текущий soul_state.json не удалось преобразовать в JSON preview");
+            beforeRoot = new JsonObject();
+            afterRoot = new JsonObject();
+        }
+
+        if (blockers.Count == 0)
+        {
+            afterRoot["soulName"] = normalizedNewName;
+            afterRoot["previousSoulNames"] = new JsonArray(nextPreviousNames.Select(name => JsonValue.Create(name)).ToArray<JsonNode?>());
+        }
+
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        var touchesPendingGuardianCreation = false;
+        if (!string.IsNullOrWhiteSpace(guardiansJson))
+        {
+            try
+            {
+                touchesPendingGuardianCreation = JsonNode.Parse(guardiansJson) is JsonObject guardiansRoot &&
+                    guardiansRoot["pendingGuardianCreation"] is JsonObject;
+            }
+            catch
+            {
+                touchesPendingGuardianCreation = false;
+            }
+        }
+
+        Clear();
+        var lines = new List<string>
+        {
+            "[bold cyan]Смена имени души[/]",
+            "",
+            "[bold]Тип изменения:[/] client-local; GM turn не отправляется.",
+            $"[bold]Имя:[/] {Markup.Escape(currentSoulName)} -> {Markup.Escape(normalizedNewName)}",
+            $"[bold]Changed:[/] {(changed ? "yes" : "no; будет только canonical previousSoulNames normalization при необходимости")}",
+            "[bold]Affected files:[/]",
+            "  • game_state/meta/soul_state.json",
+            touchesPendingGuardianCreation
+                ? "  • game_state/meta/guardians.json [dim](pendingGuardianCreation.soulName sync)[/]"
+                : "  • game_state/meta/guardians.json [dim](не меняется: pendingGuardianCreation не найден)[/]",
+            "",
+            "[bold]Последствия:[/]",
+            "  • Старое имя попадёт в previousSoulNames, если имя действительно меняется.",
+            "  • Реликвии, Перья, Архив, realm и инкарнация не должны меняться.",
+            "  • Отмена на этом экране ничего не пишет."
+        };
+
+        if (blockers.Count > 0)
+        {
+            lines.Add("");
+            lines.Add("[red]Блокеры:[/]");
+            foreach (var blocker in blockers)
+                lines.Add($"  • {Markup.Escape(blocker)}");
+        }
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🌊 Предпросмотр имени души ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(blockers.Count == 0 ? Color.Cyan1 : Color.Red),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+        WriteJsonAuditPanel("До: soul_state.json", beforeRoot, Color.Grey);
+        WriteJsonAuditPanel("После: soul_state.json preview", afterRoot, blockers.Count == 0 ? Color.Cyan1 : Color.Red);
+
+        if (blockers.Count > 0)
+        {
+            WaitForKey();
+            return false;
+        }
+
+        return Confirm("[yellow]Применить локальное переименование души?[/]", true);
     }
 
     private async Task ShowManifestationRequestInspectionAsync(

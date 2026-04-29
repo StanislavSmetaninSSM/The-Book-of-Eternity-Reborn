@@ -820,6 +820,48 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void FreeformChaosSeaAbodeSearchContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var launcherGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
+        var launcherScript = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var source = ReadRepoFile(
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.Afterlife.GuardiansProjectsTrade.cs");
+
+        foreach (var text in new[] { matrix, examples, daemonSpec, taskGuide, launcherGenerator, launcherScript })
+        {
+            Assert.Contains("freeform", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Abode search", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var text in new[] { matrix, examples, daemonSpec, taskGuide, source })
+        {
+            Assert.Contains("chaos_sea_abode_search", text, StringComparison.Ordinal);
+            Assert.Contains("guardianId", text, StringComparison.Ordinal);
+            Assert.Contains("guardianName", text, StringComparison.Ordinal);
+            Assert.Contains("abodeId", text, StringComparison.Ordinal);
+        }
+
+        foreach (var text in new[] { matrix, examples })
+        {
+            Assert.Contains("UpdateGuardians.create", text, StringComparison.Ordinal);
+            Assert.Contains("activeGuardian", text, StringComparison.Ordinal);
+            Assert.Contains("chaosSeaNavigation", text, StringComparison.Ordinal);
+            Assert.Contains("currentAbodeId", text, StringComparison.Ordinal);
+            Assert.Contains("currentLocationData", text, StringComparison.Ordinal);
+            Assert.Contains("UpdateNPCs", text, StringComparison.Ordinal);
+            Assert.Contains("worldEventsLog", text, StringComparison.Ordinal);
+            Assert.Contains("example 23", text, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void ChaosSeaGachaDocsMatchValidatedModifierAndCostContract()
     {
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
@@ -869,11 +911,12 @@ public sealed class AfterlifeDocumentationCoverageTests
         var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
 
         Assert.Contains("example 19", taskGuide, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("examples 14-22", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("examples 14-23", daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 19", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 20", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 21", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 22", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("example 23", daemonScript, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -938,7 +981,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             .OrderBy(number => number)
             .ToArray();
 
-        Assert.Equal(Enumerable.Range(1, 22).ToArray(), exampleNumbers);
+        Assert.Equal(Enumerable.Range(1, 23).ToArray(), exampleNumbers);
 
         var coverageByExample = manifest.AfterlifeExampleCoverage
             .GroupBy(entry => entry.ExampleNumber)

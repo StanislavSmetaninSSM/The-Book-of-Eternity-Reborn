@@ -1422,6 +1422,64 @@ public partial class GameEngine
 
         soulRoot["currentRealm"] = "Shining Abode";
         var nextSoulJson = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts);
+        var reenterPreviewLines = new List<string>
+        {
+            "[bold yellow]Возврат в активную Сияющую Обитель[/]",
+            "",
+            "[bold]Тип изменения:[/] client-local coordinated write; GM turn не отправляется.",
+            "[bold]Это НЕ Ascension, НЕ New Game+ и НЕ новое воплощение.[/]",
+            "[bold]Affected files:[/]",
+            $"  • {ShiningAbodeState.StatePath} [dim](ordinary active state normalization)[/]",
+            "  • game_state/meta/soul_state.json [dim](currentRealm: Chaos Sea -> Shining Abode)[/]",
+            "",
+            "[bold]Блокеры уже проверены:[/]",
+            "  • shining_abode_state.availability == active",
+            "  • preparedIncarnationPackage отсутствует",
+            $"  • {AfterlifeReturnGuardService.GuardPath} не содержит активный post-life guard",
+            "",
+            "[bold]Последствия подтверждения:[/] вы возвращаетесь в уже существующую Обитель; pending GM action не создаётся."
+        };
+        AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", reenterPreviewLines)))
+        {
+            Header = new PanelHeader(" ✨ Предпросмотр reenter_shining_abode ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+        AnsiConsole.Write(new Panel(new Text(new JsonObject
+        {
+            ["operation"] = "reenter_shining_abode",
+            ["gmTurnInvolved"] = false,
+            ["before"] = new JsonObject
+            {
+                ["soulCurrentRealm"] = "Chaos Sea",
+                ["shiningAvailability"] = GetNodeString(shiningRoot["availability"]) ?? "unknown"
+            },
+            ["after"] = new JsonObject
+            {
+                ["soulCurrentRealm"] = "Shining Abode",
+                ["shiningAvailability"] = GetNodeString(normalizedRoot["availability"]) ?? "active"
+            },
+            ["affectedFiles"] = new JsonArray(
+                JsonValue.Create(ShiningAbodeState.StatePath),
+                JsonValue.Create("game_state/meta/soul_state.json"))
+        }.ToJsonString(JsonOpts)))
+        {
+            Header = new PanelHeader(" JSON audit ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(1, 1),
+            Expand = true
+        });
+
+        var confirmReenter = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            .Title("[bold yellow]Подтвердить локальный возврат в Сияющую Обитель?[/]")
+            .HighlightStyle(new Style(Color.Gold1))
+            .AddChoices("✅ Да, вернуться", "← Отмена"));
+        if (!confirmReenter.Contains("Да", StringComparison.OrdinalIgnoreCase))
+            return;
+
         try
         {
             if (!await TryCommitCoordinatedGameStateWritesAsync(

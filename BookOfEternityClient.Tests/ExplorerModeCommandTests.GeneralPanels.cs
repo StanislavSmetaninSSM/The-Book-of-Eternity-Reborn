@@ -144,6 +144,36 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
     [Fact]
 
+    public async Task TryProcessCommand_WorldSetup_ClearFlow_CancelPreviewPreservesPendingSetup()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync(WorldDirectiveService.PendingSetupPath, new
+        {
+            mode = "manual",
+            worldDirectives = new
+            {
+                worldTitle = "Тестовый Мир",
+                settingSummary = "Подготовка для smoke test."
+            }
+        });
+
+        _console.QueueAnySelection("🧹 Очистить подготовку мира", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/world_setup"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("world_setup_clear_cancel");
+        Assert.True(_console.ConfirmPrompts.Any(prompt => prompt.Contains("Очистить локальную подготовку следующего мира", StringComparison.OrdinalIgnoreCase)),
+            BuildConsoleDiagnostics("world_setup_clear_cancel"));
+
+        var raw = await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath);
+        Assert.NotNull(raw);
+        Assert.Contains("\"worldTitle\": \"Тестовый Мир\"", raw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+
     public async Task TryProcessCommand_WorldSetup_EditFlow_PersistsLargeDetailedDescriptionBlock()
     {
         await SeedAfterlifeStateAsync();
@@ -168,6 +198,33 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Первый абзац подробного описания мира.", raw, StringComparison.Ordinal);
         Assert.Contains("Второй абзац с дополнительными свободными правилами и ограничениями.", raw, StringComparison.Ordinal);
         Assert.Contains("detailedWorldDescription", raw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+
+    public async Task TryProcessCommand_WorldSetup_EditFlow_CancelPreviewDoesNotCreatePendingSetup()
+    {
+        await SeedAfterlifeStateAsync();
+        _console.QueueAnySelection("✏️ Создать / редактировать подготовку мира", "↩️ Оставить текущее значение", "↩️ Оставить текущее значение", "✏️ Изменить текст", "← Назад");
+        _console.QueueAskResponse("Название мира", "Этернум");
+        _console.QueueAskResponse("Жанр", "Dark fantasy");
+        _console.QueueAskResponse("Эпоха", "Поздняя бронза");
+        _console.QueueAskResponse("Тон", "Мрачный, медитативный");
+        _console.QueueAskResponse("Краткая сводка", "Мир башен, глубин и древних договоров.");
+        _console.QueueReadLineResponses("\\p");
+        _console.QueueAnyConfirmResponse(false);
+        _clipboard.Text = "Первый абзац подробного описания мира.";
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/world_setup"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("world_setup_edit_cancel");
+        Assert.True(_console.ConfirmPrompts.Any(prompt => prompt.Contains("подготовку следующего мира", StringComparison.OrdinalIgnoreCase)),
+            BuildConsoleDiagnostics("world_setup_edit_cancel"));
+
+        var raw = await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath);
+        Assert.Null(raw);
     }
 
     [Fact]

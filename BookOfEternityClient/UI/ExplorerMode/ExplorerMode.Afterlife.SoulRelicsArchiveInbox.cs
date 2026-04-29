@@ -260,12 +260,16 @@ public partial class ExplorerMode
                 actions.Add("🛡 Открыть связанного Хранителя");
             if (!string.IsNullOrWhiteSpace(entry.ReservedForProjectId))
                 actions.Add("🔬 Открыть целевой проект");
-            var consultationAvailable = await CanUseArchiveConsultationAsync(entry);
-            if (consultationAvailable)
+            var consultationBlocker = await DescribeArchiveConsultationBlockerAsync(entry);
+            if (consultationBlocker == null)
                 actions.Add("🔮 Консультация с дружественным Хранителем");
-            var projectFuelAvailable = await CanUseArchiveProjectFuelAsync(entry);
-            if (projectFuelAvailable)
+            else
+                actions.Add($"[dim]🔒 Консультация недоступна — {Markup.Escape(consultationBlocker)}[/]");
+            var projectFuelBlocker = await DescribeArchiveProjectFuelBlockerAsync(entry);
+            if (projectFuelBlocker == null)
                 actions.Add("⚙️ Вложить запись в активный проект Хранителя");
+            else
+                actions.Add($"[dim]🔒 Подпитка проекта недоступна — {Markup.Escape(projectFuelBlocker)}[/]");
             if (entry.IsReserved)
                 actions.Add("[dim]Запись ожидает ответа GM[/]");
             actions.Add("← Назад");
@@ -299,6 +303,10 @@ public partial class ExplorerMode
                     continue;
                 }
             }
+            else if (action.Contains("🔒", StringComparison.Ordinal))
+            {
+                ShowEmptyPanel("📚 Архив души", Markup.Escape(action));
+            }
             else if (action.StartsWith("🛡", StringComparison.Ordinal))
             {
                 if (await TryShowLinkedArchiveGuardianAsync(entry.SourceGuardianId))
@@ -323,6 +331,54 @@ public partial class ExplorerMode
 
             WaitForKey();
         }
+    }
+
+    private async Task<string?> DescribeArchiveConsultationBlockerAsync(AfterlifeArchiveEntrySummary entry)
+    {
+        if (_afterlifeArchiveConsultationService == null)
+            return "сервис архивной консультации недоступен";
+        if (!IsAfterlifeRealm(_stateManager.CurrentState.CurrentRealm))
+            return $"текущий realm={_stateManager.CurrentState.CurrentRealm}; нужен afterlife realm";
+        if (!AfterlifeArchiveState.IsAllowedEntryType(entry.EntryType))
+            return $"тип записи {entry.EntryType} не входит в whitelist консультации";
+        if (entry.IsReserved)
+            return $"запись уже зарезервирована: reservationKind={entry.ReservationKind}, guardianId={entry.ReservedForGuardianId}, projectId={entry.ReservedForProjectId}";
+
+        var pendingRequestState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
+        if (pendingRequestState.Exists)
+            return pendingRequestState.IsMalformed
+                ? $"{AfterlifeArchiveActionState.ConsultationRequestPath} повреждён или неполон"
+                : $"{AfterlifeArchiveActionState.ConsultationRequestPath} уже содержит requestId={pendingRequestState.Request?.RequestId ?? "unknown"}";
+
+        var guardians = await ReadGuardiansForArchiveOperationAsync(entry);
+        if (guardians.Count == 0)
+            return "нет дружественных Хранителей с reputation>=50";
+
+        return null;
+    }
+
+    private async Task<string?> DescribeArchiveProjectFuelBlockerAsync(AfterlifeArchiveEntrySummary entry)
+    {
+        if (_afterlifeArchiveProjectFuelService == null)
+            return "сервис архивной подпитки проекта недоступен";
+        if (!IsAfterlifeRealm(_stateManager.CurrentState.CurrentRealm))
+            return $"текущий realm={_stateManager.CurrentState.CurrentRealm}; нужен afterlife realm";
+        if (entry.IsReserved)
+            return $"запись уже зарезервирована: reservationKind={entry.ReservationKind}, guardianId={entry.ReservedForGuardianId}, projectId={entry.ReservedForProjectId}";
+
+        var pendingRequestState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs);
+        if (pendingRequestState.Exists)
+            return pendingRequestState.IsMalformed
+                ? $"{AfterlifeArchiveActionState.ProjectFuelRequestPath} повреждён или неполон"
+                : $"{AfterlifeArchiveActionState.ProjectFuelRequestPath} уже содержит requestId={pendingRequestState.Request?.RequestId ?? "unknown"}";
+
+        var guardians = await ReadGuardiansForArchiveOperationAsync(entry);
+        if (guardians.Count == 0)
+            return "нет дружественных Хранителей с reputation>=50";
+        if (!guardians.Any(item => item.FuelAvailable))
+            return "нет дружественного Хранителя с активным проектом; требуется active project target";
+
+        return null;
     }
 
     private async Task ShowAfterlifeInbox()
@@ -412,6 +468,7 @@ public partial class ExplorerMode
             "Полный JSON afterlife notification",
             JsonSerializer.SerializeToNode(notification, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
             Color.Yellow);
+        await WriteAfterlifeNotificationMatchedReceiptAuditPanelsAsync(notification);
 
         var actions = new List<string>();
         if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianTradeInventoryReady, StringComparison.OrdinalIgnoreCase) &&
@@ -574,6 +631,96 @@ public partial class ExplorerMode
 
         if (selected.Contains("Отметить", StringComparison.OrdinalIgnoreCase))
             await AfterlifeNotificationState.MarkReadAsync(_fs, notification.NotificationId);
+    }
+
+    private async Task WriteAfterlifeNotificationMatchedReceiptAuditPanelsAsync(AfterlifeNotificationState.NotificationEntry notification)
+    {
+        var requestId = notification.RequestId?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(requestId))
+            return;
+
+        var searchedPaths = new[]
+        {
+            "game_state/meta/guardians.json",
+            GuardianAbodeResidentState.StatePath,
+            "game_state/meta/soul_state.json",
+            ShiningAbodeState.StatePath
+        };
+        var matches = new List<(string Path, string JsonPath, JsonObject Object)>();
+        foreach (var path in searchedPaths)
+        {
+            var json = await _fs.ReadFileAsync(path);
+            if (string.IsNullOrWhiteSpace(json))
+                continue;
+
+            try
+            {
+                if (JsonNode.Parse(json) is not JsonObject root)
+                    continue;
+
+                foreach (var match in FindJsonObjectsByRequestId(root, requestId, "$"))
+                    matches.Add((path, match.Path, match.Object));
+            }
+            catch
+            {
+                matches.Add((path, "$", new JsonObject
+                {
+                    ["unreadable"] = true,
+                    ["searchedRequestId"] = requestId
+                }));
+            }
+        }
+
+        if (matches.Count == 0)
+        {
+            WriteJsonAuditPanel(
+                "Receipt search paths: совпадений по requestId не найдено",
+                new JsonObject
+                {
+                    ["requestId"] = requestId,
+                    ["searchedPaths"] = new JsonArray(searchedPaths.Select(path => JsonValue.Create(path)).ToArray<JsonNode?>())
+                },
+                Color.Grey);
+            return;
+        }
+
+        var index = 1;
+        foreach (var match in matches)
+        {
+            WriteJsonAuditPanel(
+                $"Matched receipt/state object #{index}: {match.Path} {match.JsonPath}",
+                JsonNode.Parse(match.Object.ToJsonString()),
+                Color.Yellow);
+            index += 1;
+        }
+    }
+
+    private static IEnumerable<(string Path, JsonObject Object)> FindJsonObjectsByRequestId(JsonNode? node, string requestId, string path)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                if (string.Equals(GetNodeString(obj["requestId"]), requestId, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(GetNodeString(obj["archiveFuelRequestId"]), requestId, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(GetNodeString(obj["archiveConsultationRequestId"]), requestId, StringComparison.OrdinalIgnoreCase))
+                {
+                    yield return (path, obj);
+                }
+
+                foreach (var property in obj)
+                {
+                    foreach (var match in FindJsonObjectsByRequestId(property.Value, requestId, $"{path}.{property.Key}"))
+                        yield return match;
+                }
+                break;
+            case JsonArray array:
+                for (var i = 0; i < array.Count; i++)
+                {
+                    foreach (var match in FindJsonObjectsByRequestId(array[i], requestId, $"{path}[{i}]"))
+                        yield return match;
+                }
+                break;
+        }
     }
 
     private async Task ShowShiningNotificationExactResolutionAsync(AfterlifeNotificationState.NotificationEntry notification)
@@ -1299,6 +1446,9 @@ public partial class ExplorerMode
 
             if (action.StartsWith("💾", StringComparison.Ordinal))
             {
+                if (!await ConfirmArchiveCandidateLocalMutationPreviewAsync(candidate, manifest, archive: true, archivedCount, archivedSecretCount))
+                    continue;
+
                 if (await _afterlifeArchiveCandidateService.ArchiveCandidateAsync(candidate.CandidateId))
                 {
                     await _stateManager.RefreshGameStateAsync();
@@ -1313,6 +1463,9 @@ public partial class ExplorerMode
                 continue;
             }
 
+            if (!await ConfirmArchiveCandidateLocalMutationPreviewAsync(candidate, manifest, archive: false, archivedCount, archivedSecretCount))
+                continue;
+
             if (await _afterlifeArchiveCandidateService.SkipCandidateAsync(candidate.CandidateId))
             {
                 MarkupLine($"[yellow]Пропущено:[/] {Markup.Escape(candidate.Title)}");
@@ -1325,6 +1478,153 @@ public partial class ExplorerMode
             WaitForKey();
         }
     }
+
+    private async Task<bool> ConfirmArchiveCandidateLocalMutationPreviewAsync(
+        AfterlifeArchiveCandidateSummary candidate,
+        AfterlifeArchiveCandidateService.CandidateManifest manifest,
+        bool archive,
+        int archivedCount,
+        int archivedSecretCount)
+    {
+        var isSecret = string.Equals(candidate.ProposedEntryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase);
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var duplicateExists = false;
+        if (!string.IsNullOrWhiteSpace(soulJson))
+        {
+            try
+            {
+                if (JsonNode.Parse(soulJson) is JsonObject soulRoot)
+                {
+                    var stored = AfterlifeArchiveState.EnsureStoredArray(soulRoot);
+                    duplicateExists = stored.OfType<JsonObject>().Any(entry =>
+                        string.Equals(GetNodeString(entry["sourceEntryId"]), candidate.SourceEntryId, StringComparison.OrdinalIgnoreCase));
+                }
+            }
+            catch
+            {
+                duplicateExists = true;
+            }
+        }
+
+        var blockers = new List<string>();
+        if (!string.Equals(candidate.Status, AfterlifeArchiveCandidateService.StatusPending, StringComparison.OrdinalIgnoreCase))
+            blockers.Add($"status={candidate.Status}; можно менять только pending candidates");
+        if (archive && archivedCount >= AfterlifeArchiveCandidateService.MaxArchivedPerLife)
+            blockers.Add($"лимит жизни исчерпан: {archivedCount}/{AfterlifeArchiveCandidateService.MaxArchivedPerLife}");
+        if (archive && isSecret && archivedSecretCount >= AfterlifeArchiveCandidateService.MaxSecretArchivedPerLife)
+            blockers.Add($"лимит secret_record исчерпан: {archivedSecretCount}/{AfterlifeArchiveCandidateService.MaxSecretArchivedPerLife}");
+        if (archive && duplicateExists)
+            blockers.Add($"в afterlifeArchive.stored уже есть запись с sourceEntryId={candidate.SourceEntryId}");
+
+        Clear();
+        var archiveId = $"archive_{candidate.SourceEntryId}";
+        var lines = new List<string>
+        {
+            archive ? "[bold yellow]Сохранить кандидата в Архив души[/]" : "[bold yellow]Пропустить кандидата Архива[/]",
+            "",
+            "[bold]Тип изменения:[/] client-local; GM turn не отправляется.",
+            $"[bold]Candidate:[/] {Markup.Escape(candidate.Title)} [dim]({Markup.Escape(candidate.CandidateId)})[/]",
+            $"[bold]Archive id:[/] [dim]{Markup.Escape(archiveId)}[/]",
+            $"[bold]Source:[/] life #{candidate.SourceLife}, {Markup.Escape(candidate.SourceKind)}, sourceEntryId={Markup.Escape(candidate.SourceEntryId)}",
+            $"[bold]Entry type/rarity:[/] {Markup.Escape(candidate.ProposedEntryType)} / {Markup.Escape(candidate.Rarity)}",
+            $"[bold]Limits:[/] archived {archivedCount}/{AfterlifeArchiveCandidateService.MaxArchivedPerLife}; secret {archivedSecretCount}/{AfterlifeArchiveCandidateService.MaxSecretArchivedPerLife}",
+            "[bold]Affected files:[/]",
+            $"  • {AfterlifeArchiveCandidateService.ManifestPath}",
+            archive ? "  • game_state/meta/soul_state.json [dim](afterlifeArchive.stored gains one entry)[/]" : "  • game_state/meta/soul_state.json [dim](unchanged)[/]",
+            "",
+            archive
+                ? "[bold]После подтверждения:[/] candidate.status=archived, archivedAtUtc set, skippedAtUtc cleared; stored archive entry becomes usable for afterlife archive actions."
+                : "[bold]После подтверждения:[/] candidate.status=skipped, skippedAtUtc set; soul archive remains unchanged."
+        };
+
+        if (blockers.Count > 0)
+        {
+            lines.Add("");
+            lines.Add("[red]Блокеры:[/]");
+            foreach (var blocker in blockers)
+                lines.Add($"  • {Markup.Escape(blocker)}");
+        }
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🗂 Предпросмотр кандидата Архива ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(blockers.Count == 0 ? Color.Yellow : Color.Red),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+
+        var audit = new JsonObject
+        {
+            ["operation"] = archive ? "archive" : "skip",
+            ["sourceLife"] = manifest.SourceLife,
+            ["candidate"] = BuildArchiveCandidateAuditNode(candidate),
+            ["limits"] = new JsonObject
+            {
+                ["archivedBefore"] = archivedCount,
+                ["maxArchivedPerLife"] = AfterlifeArchiveCandidateService.MaxArchivedPerLife,
+                ["secretArchivedBefore"] = archivedSecretCount,
+                ["maxSecretArchivedPerLife"] = AfterlifeArchiveCandidateService.MaxSecretArchivedPerLife
+            },
+            ["predictedWrites"] = new JsonArray(
+                archive
+                    ? new JsonNode?[]
+                    {
+                        JsonValue.Create(AfterlifeArchiveCandidateService.ManifestPath),
+                        JsonValue.Create("game_state/meta/soul_state.json")
+                    }
+                    : new JsonNode?[]
+                    {
+                        JsonValue.Create(AfterlifeArchiveCandidateService.ManifestPath)
+                    }),
+            ["archiveEntryPreview"] = archive
+                ? new JsonObject
+                {
+                    ["archiveId"] = archiveId,
+                    ["entryType"] = candidate.ProposedEntryType,
+                    ["title"] = candidate.Title,
+                    ["summary"] = candidate.Summary,
+                    ["content"] = candidate.Content,
+                    ["rarity"] = candidate.Rarity,
+                    ["sourceLife"] = candidate.SourceLife,
+                    ["sourceKind"] = candidate.SourceKind,
+                    ["sourceEntryId"] = candidate.SourceEntryId,
+                    ["tags"] = new JsonArray(candidate.Tags.Select(tag => JsonValue.Create(tag)).ToArray<JsonNode?>())
+                }
+                : null,
+            ["blockers"] = new JsonArray(blockers.Select(blocker => JsonValue.Create(blocker)).ToArray<JsonNode?>())
+        };
+        WriteJsonAuditPanel("Полный JSON предпросмотра archive candidate mutation", audit, blockers.Count == 0 ? Color.Yellow : Color.Red);
+
+        if (blockers.Count > 0)
+        {
+            WaitForKey();
+            return false;
+        }
+
+        var choice = Prompt(new SelectionPrompt<string>()
+            .Title(archive ? "[bold yellow]Сохранить запись в Архив?[/]" : "[bold yellow]Пропустить кандидата?[/]")
+            .HighlightStyle(new Style(Color.Yellow))
+            .AddChoices(archive ? "✅ Да, сохранить" : "✅ Да, пропустить", "← Отмена"));
+        return choice.Contains("Да", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static JsonObject BuildArchiveCandidateAuditNode(AfterlifeArchiveCandidateSummary candidate) =>
+        new()
+        {
+            ["candidateId"] = candidate.CandidateId,
+            ["sourceKind"] = candidate.SourceKind,
+            ["sourceEntryId"] = candidate.SourceEntryId,
+            ["sourceLife"] = candidate.SourceLife,
+            ["proposedEntryType"] = candidate.ProposedEntryType,
+            ["title"] = candidate.Title,
+            ["summary"] = candidate.Summary,
+            ["content"] = candidate.Content,
+            ["rarity"] = candidate.Rarity,
+            ["status"] = candidate.Status,
+            ["discoveredAt"] = candidate.DiscoveredAt,
+            ["tags"] = new JsonArray(candidate.Tags.Select(tag => JsonValue.Create(tag)).ToArray<JsonNode?>())
+        };
 
     private async Task<bool> TryShowCodexEntryByIdAsync(string? sourceEntryId)
     {
