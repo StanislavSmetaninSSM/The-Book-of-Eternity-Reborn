@@ -175,7 +175,6 @@ public partial class ExplorerMode
         {
             table.AddRow("[bold yellow]── СИЯЮЩАЯ ОБИТЕЛЬ ──[/]", "", "");
             table.AddRow("[yellow]/guardians[/]", "[yellow]/хранители[/]", "[yellow]Информация о хранителях[/]");
-            table.AddRow("[yellow]/abodes[/]", "[yellow]/обители[/]", "[yellow]Навигация по Обителям Хранителей; доступно только в afterlife/Море Хаоса и Сияющей Обители[/]");
             table.AddRow("[yellow]/abode_power[/]", "[yellow]/сила_обители[/]", "[yellow]Журнал силы Обителей и её причин[/]");
             table.AddRow("[yellow]/abode_offering[/]", "[yellow]/подношение_обители[/]", "[yellow]Поднести Перья, Реликвию Души или запись Архива выбранной Обители[/]");
             table.AddRow("[yellow]/guardian_projects[/]", "[yellow]/проекты_хранителей[/]", "[yellow]Подробный журнал проектов хранителей[/]");

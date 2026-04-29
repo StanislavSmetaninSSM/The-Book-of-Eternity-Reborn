@@ -34,6 +34,7 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         var mainMenu = ReadSource("Core", "GameEngine", "GameEngine.MainMenu.cs");
         var help = ReadSource("UI", "ExplorerMode", "ExplorerMode.MetaStoryAndStatus.cs");
         var lifecycle = ReadSource("Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+        var explorerPrivate = ReadSource("UI", "ExplorerMode", "ExplorerMode.PrivateImplementation.cs");
         var trade = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.GuardiansProjectsTrade.cs");
         var inbox = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs");
 
@@ -41,9 +42,12 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("requestId=", mainMenu, StringComparison.Ordinal);
         Assert.Contains("закрытие:", mainMenu, StringComparison.Ordinal);
 
-        Assert.Contains("/abodes", help, StringComparison.Ordinal);
-        Assert.Contains("/обители", help, StringComparison.Ordinal);
-        Assert.Contains("/обители", lifecycle, StringComparison.Ordinal);
+        Assert.DoesNotContain("[yellow]/abodes", help, StringComparison.Ordinal);
+        Assert.Contains("[blue]/abodes", help, StringComparison.Ordinal);
+        Assert.DoesNotContain("/реликвии /хранители /обители /душа", lifecycle, StringComparison.Ordinal);
+        Assert.Contains("/реликвии /хранители /обители /гача /душа", lifecycle, StringComparison.Ordinal);
+        Assert.Contains("string.Equals(command, \"/abodes\"", explorerPrivate, StringComparison.Ordinal);
+        Assert.Contains("string.Equals(command, \"/обители\"", explorerPrivate, StringComparison.Ordinal);
 
         Assert.Contains("BuildGuardianSellAuditNode", trade, StringComparison.Ordinal);
         Assert.Contains("generatedBuybackEntryFields", trade, StringComparison.Ordinal);

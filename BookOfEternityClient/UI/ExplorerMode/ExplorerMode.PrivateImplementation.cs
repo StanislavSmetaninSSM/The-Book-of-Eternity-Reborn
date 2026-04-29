@@ -152,7 +152,9 @@ public partial class ExplorerMode
 
     private static bool IsExactChaosSeaCommand(string command) =>
         string.Equals(command, "/gacha", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(command, "/гача", StringComparison.OrdinalIgnoreCase);
+        string.Equals(command, "/гача", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/abodes", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/обители", StringComparison.OrdinalIgnoreCase);
 
     // Commands ONLY available in Mortal Life
     private readonly Dictionary<string, Func<Task>> _mortalOnlyCommands;

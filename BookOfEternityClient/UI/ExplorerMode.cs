@@ -211,7 +211,7 @@ public partial class ExplorerMode
             if (IsExactChaosSeaCommand(cmd) && !_stateManager.CurrentState.IsInChaosSea)
             {
                 MarkupLine("[yellow]⚠️ Эта команда доступна только в Море Хаоса.[/]");
-                MarkupLine("[dim]В Сияющей Обители и во время bootstrap прямое вытягивание из Моря Хаоса недоступно.[/]");
+                MarkupLine("[dim]В Сияющей Обители и во время bootstrap прямые команды Моря Хаоса недоступны.[/]");
                 WaitForKey();
                 return "";
             }

@@ -2117,7 +2117,7 @@ public partial class GameEngine
         else if (isShiningAbode)
         {
             AnsiConsole.MarkupLine("[dim]  Свободный ролеплей с Хранителями в Сияющей Обители[/]");
-            AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /обители /душа │ /вернуться_в_море_хаоса /новая_игра+ │ /help[/]");
+            AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /душа │ /вернуться_в_море_хаоса /новая_игра+ │ /help[/]");
         }
         else if (isChaosSea)
         {
