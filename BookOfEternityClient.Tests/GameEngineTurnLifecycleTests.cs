@@ -441,6 +441,61 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_BlocksLegacyPendingNativeDiscovery()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Испытующая Душа",
+            currentRealm = "Shining Abode",
+            currentIncarnation = 4,
+            inkFeathers = new { current = 32, total = 64 }
+        });
+        await WriteJsonAsync("game_state/meta/shining_abode_state.json", new
+        {
+            availability = "active",
+            radiance = new { experience = 22, tier = 3 },
+            lightSparks = 68,
+            halls = Array.Empty<object>(),
+            factions = Array.Empty<object>(),
+            shiningPoliticalActors = Array.Empty<object>(),
+            preparedIncarnationPackage = (object?)null,
+            pendingNativeFactionDiscovery = new
+            {
+                requestId = "discover_native_faction:0041",
+                createdAtTurn = 41,
+                createdAtUtc = "2026-04-19T00:00:00Z",
+                radianceTierAtRequest = 3,
+                costFeathers = 25,
+                costLightSparks = 20
+            },
+            gates = new
+            {
+                hasOpenDraft = false,
+                isStale = false,
+                openedThisAscension = false,
+                draftOpenedAtTurn = (int?)null,
+                draftOpenedAtUtc = (string?)null,
+                blessingDraft = Array.Empty<object>(),
+                selectedBlessingCardIds = Array.Empty<string>()
+            }
+        });
+
+        var engine = CreateGameEngine();
+        var stateManager = GetPrivateField<StateManager>(engine, "_stateManager");
+        await stateManager.RefreshGameStateAsync();
+
+        var completed = await InvokePrivateAsync<bool>(engine, "TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync");
+
+        Assert.False(completed);
+        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json")!)!.AsObject();
+        Assert.Equal("Shining Abode", soulRoot["currentRealm"]?.GetValue<string>());
+        Assert.NotNull(shiningRoot["pendingNativeFactionDiscovery"]);
+        Assert.Equal(ShiningAbodeState.AvailabilityActive, shiningRoot["availability"]?.GetValue<string>());
+        Assert.Equal("Shining Abode", stateManager.CurrentState.CurrentRealm);
+    }
+
+    [Fact]
     public async Task UpdateSoulStateRealm_WriteFailureReturnsFalseAndLeavesSoulStateUnchanged()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

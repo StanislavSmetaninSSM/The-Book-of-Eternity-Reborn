@@ -84,13 +84,14 @@ Read `worldState.currentRealm` from game state.
 - Chaos Sea / active Shining Abode: review Guardian/afterlife state and update only the Guardian mood, projects, musings, lore unlocks or other meta surfaces that this turn actually changes
 - Shining Abode pending-bootstrap handoff: do not advance ordinary afterlife systems; only materialize/bootstrap the prepared next life
 - Shining Abode package fault: if `preparedIncarnationPackage` is present but invalid, preserve it and all pending Shining files for repair; do not process ordinary Shining gameplay
+- Active Shining Abode with `pendingNativeFactionDiscovery` is still blocked by that legacy discovery contract: close or repair it before any local `return_to_chaos_sea` path can seal the Abode.
 
 ### PHASE 2: PROCESS PLAYER ACTION
 - Read input/turn_request.json
 - Preserve `sessionId`, `requestId`, and `turnNumber` from turn_request.json
 - Apply Rules/Block_*.txt mechanics
 - Use preGeneratedDices1d20 from turn_request for all dice rolls
-- This 5-phase GM loop applies only to GM-driven turns. Client-owned local lifecycle commands such as `reenter_shining_abode` and `return_to_chaos_sea` are handled by the client outside this GM pipeline and should not be synthesized as accepted GM turns.
+- This 5-phase GM loop applies only to GM-driven turns. Client-owned local lifecycle commands such as `reenter_shining_abode` and `return_to_chaos_sea` are handled by the client outside this GM pipeline and should not be synthesized as accepted GM turns; `return_to_chaos_sea` is blocked while Shining pending contracts or legacy `pendingNativeFactionDiscovery` exist.
 
 ### PHASE 3: GENERATE RESPONSE
 - Full JSON per CLI_API_Specification.md schema

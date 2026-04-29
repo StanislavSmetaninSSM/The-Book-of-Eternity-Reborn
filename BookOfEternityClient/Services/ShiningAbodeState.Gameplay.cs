@@ -507,7 +507,7 @@ internal static partial class ShiningAbodeState
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var nextCursor = Math.Clamp(GetNodeInt(gates["nextCandidateCursor"], 0), 0, allCandidates.Count);
 
-        var replacements = new List<JsonObject>();
+        var replacements = new List<(JsonObject Card, string CardId)>();
         while (nextCursor < allCandidates.Count && replacements.Count < 2)
         {
             var candidate = allCandidates[nextCursor++];
@@ -515,9 +515,8 @@ internal static partial class ShiningAbodeState
             if (string.IsNullOrWhiteSpace(candidateId) || shownIds.Contains(candidateId))
                 continue;
 
-            replacements.Add(CloneObject(candidate));
+            replacements.Add((CloneObject(candidate), candidateId));
             shownIds.Add(candidateId);
-            shown.Add(candidateId);
         }
 
         if (replacements.Count < 2)
@@ -542,7 +541,10 @@ internal static partial class ShiningAbodeState
         }
 
         foreach (var replacement in replacements)
-            availableCards.Add(replacement);
+        {
+            shown.Add(replacement.CardId);
+            availableCards.Add(replacement.Card);
+        }
 
         var sorted = availableCards.OfType<JsonObject>()
             .OrderByDescending(card => GetRarityWeight(GetNodeString(card["rarity"])))
@@ -727,9 +729,12 @@ internal static partial class ShiningAbodeState
             return false;
         }
 
-        if (root["preparedIncarnationPackage"] is JsonObject)
+        var packageMode = GetPreparedIncarnationPackageMode(root);
+        if (packageMode != PreparedIncarnationPackageMode.Absent)
         {
-            error = "Сейчас активен frozen handoff к следующей жизни; обычные действия Сияющей Обители заблокированы.";
+            error = packageMode == PreparedIncarnationPackageMode.ValidHandoff
+                ? "Сейчас активен frozen handoff к следующей жизни; обычные действия Сияющей Обители заблокированы."
+                : "preparedIncarnationPackage повреждён или не проходит bootstrap validation; обычные действия Сияющей Обители заблокированы до repair.";
             return false;
         }
 
