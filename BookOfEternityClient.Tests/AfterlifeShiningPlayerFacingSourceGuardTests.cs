@@ -61,6 +61,8 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("newResidentIds[]", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("seededProjectIds[]", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("generatedDraftVersion", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("ShiningCoreActionRequestState.ActionTypeOpenGates", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("Math.Max(1, request.SourceDraftVersion + 1)", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("quotedCostFeathers", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("quotedCostLightSparks", actionPreviewSource, StringComparison.Ordinal);
     }

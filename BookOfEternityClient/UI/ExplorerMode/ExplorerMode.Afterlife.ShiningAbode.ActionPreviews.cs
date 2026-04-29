@@ -349,6 +349,9 @@ public partial class ExplorerMode
 
     private static int ResolveExpectedReceiptDraftVersionForPreview(ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
     {
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeOpenGates, StringComparison.OrdinalIgnoreCase))
+            return Math.Max(1, request.SourceDraftVersion + 1);
+
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage, StringComparison.OrdinalIgnoreCase))
             return Math.Max(0, request.SourceDraftVersion);
 
