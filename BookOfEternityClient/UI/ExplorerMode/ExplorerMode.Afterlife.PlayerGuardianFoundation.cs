@@ -42,6 +42,10 @@ public partial class ExplorerMode
                 Padding = new Padding(2, 1),
                 Expand = true
             });
+            WriteJsonAuditPanel(
+                $"Полный JSON {PlayerGuardianFoundationState.PendingRequestPath}",
+                ToChaosSeaAuditNode(pendingRequest),
+                Color.Gold1);
 
             var action = Prompt(new SelectionPrompt<string>()
                 .Title("[bold]Действие:[/]")
@@ -183,41 +187,6 @@ public partial class ExplorerMode
             _ => string.Empty
         };
 
-        Clear();
-        var confirmationLines = new List<string>
-        {
-            "[bold gold1]👑 Подтверждение ритуала[/]",
-            "",
-            "Будет создан [white]новый Хранитель[/], а не переписана ваша душа.",
-            $"Новый Хранитель: [white]{Markup.Escape(proposedDisplayName)}[/]",
-            $"Сущность: [dim]{Markup.Escape(mantleSummary)}[/]",
-            $"Кредо: [dim]{Markup.Escape(mantleCreed)}[/]",
-            $"Мотивы: [dim]{Markup.Escape(string.Join(", ", appearanceMotifs))}[/]",
-            $"Прежний покровитель сохранится: [white]{Markup.Escape(context.PreviousGuardianName)}[/]",
-            "[dim]Новая мантия станет вашим активным Хранителем по умолчанию.[/]",
-            "[dim]Ветка основания доступна один раз на сохранение и не стирает вашу личность души игрока.[/]",
-            $"[dim]После основания вы получите бонус основания: +{PlayerGuardianFoundationState.DefaultFounderExtraGachaChargesPerReturn} доп. попытка гачи за возвращение.[/]",
-            "[dim]Новая Обитель будет притягивать собственных обитателей отдельной веткой заселения, а не автоматически забирать их у прежнего покровителя.[/]"
-        };
-        if (!string.IsNullOrWhiteSpace(dominantAspect))
-            confirmationLines.Add($"Аспект: [dim]{Markup.Escape(DescribeFoundationAspect(dominantAspect))}[/]");
-
-        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", confirmationLines)))
-        {
-            Header = new PanelHeader(" 👑 Подтверждение ", Justify.Center),
-            Border = BoxBorder.Double,
-            BorderStyle = new Style(Color.Gold1),
-            Padding = new Padding(2, 1),
-            Expand = true
-        });
-
-        var confirmation = Prompt(new SelectionPrompt<string>()
-            .Title("[bold]Продолжить?[/]")
-            .HighlightStyle(new Style(Color.Gold1))
-            .AddChoices("✅ Учредить мантию", "← Отмена"));
-        if (!confirmation.StartsWith("✅", StringComparison.Ordinal))
-            return;
-
         var request = new PlayerGuardianFoundationState.PendingPlayerGuardianFoundationRequest
         {
             FounderSoulName = context.SoulName,
@@ -237,6 +206,42 @@ public partial class ExplorerMode
         {
             ShowEmptyPanel("Учредить собственного Хранителя", validationError);
             WaitForKey();
+            return;
+        }
+
+        var confirmationLines = new List<string>
+        {
+            "[bold gold1]👑 Подтверждение ритуала[/]",
+            "",
+            "Будет создан [white]новый Хранитель[/], а не переписана ваша душа.",
+            $"Новый Хранитель: [white]{Markup.Escape(proposedDisplayName)}[/]",
+            $"Сущность: [dim]{Markup.Escape(mantleSummary)}[/]",
+            $"Кредо: [dim]{Markup.Escape(mantleCreed)}[/]",
+            $"Мотивы: [dim]{Markup.Escape(string.Join(", ", appearanceMotifs))}[/]",
+            $"Прежний покровитель сохранится: [white]{Markup.Escape(context.PreviousGuardianName)}[/]",
+            "[dim]Новая мантия станет вашим активным Хранителем по умолчанию.[/]",
+            "[dim]Ветка основания доступна один раз на сохранение и не стирает вашу личность души игрока.[/]",
+            $"[dim]После основания вы получите бонус основания: +{PlayerGuardianFoundationState.DefaultFounderExtraGachaChargesPerReturn} доп. попытка гачи за возвращение.[/]",
+            "[dim]Новая Обитель будет притягивать собственных обитателей отдельной веткой заселения, а не автоматически забирать их у прежнего покровителя.[/]",
+            "",
+            "[bold]GM closure contract:[/]",
+            "  • GM закрывает pending через UpdateGuardians.create, canonical guardians/activeGuardian и playerGuardianFoundationHistory.",
+            "  • Старый Хранитель сохраняется как former_patron, новая мантия становится activeGuardian.",
+            "  • Ритуал не переписывает душу игрока в Хранителя и не переносит жителей/торговлю/Сияющую политику автоматически.",
+            "  • Accepted response должен материализовать новую Обитель и foundation bonus; refused/repair не должен удалять pending JSON."
+        };
+        if (!string.IsNullOrWhiteSpace(dominantAspect))
+            confirmationLines.Add($"Аспект: [dim]{Markup.Escape(DescribeFoundationAspect(dominantAspect))}[/]");
+        AppendChaosSeaPendingFileRule(confirmationLines, PlayerGuardianFoundationState.PendingRequestPath);
+        AppendChaosSeaCommonContractRules(confirmationLines);
+
+        if (!ConfirmChaosSeaContractPreview(
+                "Полный pending contract основания Хранителя",
+                confirmationLines,
+                ToChaosSeaAuditNode(request),
+                $"Полный JSON {PlayerGuardianFoundationState.PendingRequestPath}",
+                confirmChoice: "✅ Учредить мантию"))
+        {
             return;
         }
 

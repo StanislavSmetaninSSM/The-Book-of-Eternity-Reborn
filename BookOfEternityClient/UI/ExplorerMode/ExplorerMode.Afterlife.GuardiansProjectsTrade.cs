@@ -4145,7 +4145,8 @@ public partial class ExplorerMode
                 return;
 
             var offer = offers[selectedIndex];
-            var confirm = ShowGuardianTradeSellPreview(offer, tradeView.GuardianName);
+            var currentFeathers = await ReadInkFeathersBalance();
+            var confirm = ShowGuardianTradeSellPreview(offer, tradeView.GuardianName, currentFeathers);
             if (!confirm)
                 continue;
 
@@ -4160,14 +4161,22 @@ public partial class ExplorerMode
         }
     }
 
-    private bool ShowGuardianTradeSellPreview(Services.GuardianTradeService.GuardianSellOffer offer, string guardianName)
+    private bool ShowGuardianTradeSellPreview(Services.GuardianTradeService.GuardianSellOffer offer, string guardianName, int currentFeathers)
     {
         using var relicDoc = JsonDocument.Parse(offer.RelicData.ToJsonString());
         var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null, residentDoc: null, guardiansDoc: null);
         lines.Insert(1, $"  💰 Вы получите: [yellow]{offer.PriceInFeathers} 🪶[/]");
-        lines.Insert(2, $"  🛡️ Покупатель: [cyan]{Markup.Escape(guardianName)}[/]");
-        lines.Insert(3, "  🔁 После продажи реликвия будет удалена из хранилища души и появится у этого Хранителя в обратном выкупе.");
-        lines.Insert(4, "  [yellow]Продажу нельзя откатить без будущего обратного выкупа у того же Хранителя.[/]");
+        lines.Insert(2, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
+        lines.Insert(3, $"  🪶 После продажи: [gold1]{currentFeathers + offer.PriceInFeathers}[/]");
+        lines.Insert(4, $"  🛡️ Покупатель: [cyan]{Markup.Escape(guardianName)}[/]");
+        lines.Insert(5, "  🔁 После продажи реликвия будет удалена из хранилища души и появится у этого Хранителя в обратном выкупе.");
+        lines.Insert(6, "  [yellow]Продажу нельзя откатить без будущего обратного выкупа у того же Хранителя.[/]");
+        lines.Add("");
+        lines.Add("[bold]Canonical local transaction:[/]");
+        lines.Add("  • game_state/meta/soul_state.json: Ink Feathers увеличиваются на sellPrice.");
+        lines.Add("  • game_state/meta/soul_state.json: relicId удаляется из soulRelics.stored.");
+        lines.Add("  • game_state/meta/guardians.json: buybackRelics[] получает новую available запись с relicData, soldForPrice, buybackPrice, soldAtTurn и guardianId.");
+        lines.Add("  • GM turn не отправляется: это client-local coordinated write with full audit JSON.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -4178,12 +4187,44 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteJsonAuditPanel("Полный JSON продаваемой Реликвии Души", offer.RelicData, Color.Gold1);
+        WriteJsonAuditPanel("Полный JSON продажи Реликвии Души", BuildGuardianSellAuditNode(offer, guardianName, currentFeathers), Color.Gold1);
 
         return Confirm(
             $"Продать «{offer.Name}» за {offer.PriceInFeathers} 🪶? Реликвия перейдёт в обратный выкуп у Хранителя.",
             false);
     }
+
+    internal static JsonObject BuildGuardianSellAuditNode(Services.GuardianTradeService.GuardianSellOffer offer, string guardianName, int currentFeathers) =>
+        new()
+        {
+            ["guardianName"] = guardianName,
+            ["relicId"] = offer.RelicId,
+            ["relicName"] = offer.Name,
+            ["rarity"] = offer.Rarity,
+            ["sellPriceInFeathers"] = offer.PriceInFeathers,
+            ["currentFeathers"] = currentFeathers,
+            ["projectedFeathers"] = currentFeathers + offer.PriceInFeathers,
+            ["affectedFiles"] = new JsonArray
+            {
+                "game_state/meta/soul_state.json",
+                "game_state/meta/guardians.json"
+            },
+            ["localTransaction"] = "remove soulRelics.stored relic, add guardian buybackRelics available entry, increase Ink Feathers",
+            ["generatedBuybackEntryFields"] = new JsonArray
+            {
+                "buybackEntryId",
+                "guardianId",
+                "guardianName",
+                "relicId",
+                "relicData",
+                "soldForPrice",
+                "buybackPrice",
+                "soldAtTurn",
+                "soldAtUtc",
+                "status=available"
+            },
+            ["relicData"] = offer.RelicData.DeepClone()
+        };
 
     private async Task ShowGuardianBuybackMenu(string guardianId)
     {

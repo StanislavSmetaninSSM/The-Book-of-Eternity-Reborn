@@ -199,6 +199,7 @@ public partial class ExplorerMode
             // Chaos Sea commands
             table.AddRow("[bold blue]── МОРЕ ХАОСА (загробная жизнь) ──[/]", "", "");
             table.AddRow("[blue]/guardians[/]", "[blue]/хранители[/]", "[blue]Информация о хранителях[/]");
+            table.AddRow("[blue]/abodes[/]", "[blue]/обители[/]", "[blue]Навигация по Обителям Хранителей; Chaos Sea-only переходы без Mortal World travel[/]");
             table.AddRow("[blue]/abode_power[/]", "[blue]/сила_обители[/]", "[blue]Журнал силы Обителей и её причин[/]");
             table.AddRow("[blue]/abode_offering[/]", "[blue]/подношение_обители[/]", "[blue]Поднести Перья, Реликвию Души или запись Архива выбранной Обители[/]");
             table.AddRow("[blue]/guardian_projects[/]", "[blue]/проекты_хранителей[/]", "[blue]Подробный журнал проектов хранителей[/]");

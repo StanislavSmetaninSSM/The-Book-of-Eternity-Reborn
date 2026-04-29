@@ -2123,9 +2123,9 @@ public partial class GameEngine
         {
             AnsiConsole.MarkupLine("[dim]  Говорите с Хранителем: торговать, квесты, реликвии души, вытягивание реликвий, сменить хранителя[/]");
             if (_stateManager.CurrentState.CanReenterShiningAbode)
-                AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /гача /душа │ /воплотиться /вернуться_в_обитель │ /help[/]");
+                AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /обители /гача /душа │ /воплотиться /вернуться_в_обитель │ /help[/]");
             else
-                AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /гача /душа │ /воплотиться │ /help[/]");
+                AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /обители /гача /душа │ /воплотиться │ /help[/]");
         }
         else
         {

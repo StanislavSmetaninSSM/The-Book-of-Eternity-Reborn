@@ -408,6 +408,10 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel(
+            "Полный JSON afterlife notification",
+            JsonSerializer.SerializeToNode(notification, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+            Color.Yellow);
 
         var actions = new List<string>();
         if (string.Equals(notification.NotificationType, AfterlifeNotificationState.TypeGuardianTradeInventoryReady, StringComparison.OrdinalIgnoreCase) &&

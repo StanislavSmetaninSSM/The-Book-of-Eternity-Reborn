@@ -378,7 +378,6 @@ public partial class ExplorerMode
                 .Trim()
                 .Replace("\r\n", "\n")
                 .Split('\n')
-                .Take(18)
                 .Select(line => Markup.Escape(line)));
         }
 
@@ -391,6 +390,8 @@ public partial class ExplorerMode
             Expand = true
         });
 
+        WriteJsonAuditPanel("Полный JSON system guardian preset", BuildSystemGuardianPresetAuditNode(preset), Color.Magenta1);
+
         var action = Prompt(new SelectionPrompt<string>()
             .Title("[cyan]Действия:[/]")
             .HighlightStyle(new Style(Color.Cyan1))
@@ -398,6 +399,41 @@ public partial class ExplorerMode
 
         return action.StartsWith("✅", StringComparison.Ordinal);
     }
+
+    private static JsonObject BuildSystemGuardianPresetAuditNode(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset) =>
+        new()
+        {
+            ["presetId"] = preset.PresetId,
+            ["displayName"] = preset.DisplayName,
+            ["summary"] = preset.Summary,
+            ["libraryKind"] = preset.LibraryKind,
+            ["version"] = preset.Version,
+            ["domain"] = preset.Domain,
+            ["archetype"] = preset.Archetype,
+            ["tone"] = preset.Tone,
+            ["coreValues"] = new JsonArray(preset.CoreValues.Select(value => JsonValue.Create(value)).ToArray<JsonNode?>()),
+            ["defaultNameVariant"] = preset.DefaultNameVariant,
+            ["feminineNameVariant"] = preset.FeminineNameVariant,
+            ["masculineNameVariant"] = preset.MasculineNameVariant,
+            ["neutralNameVariant"] = preset.NeutralNameVariant,
+            ["formFlexibility"] = preset.FormFlexibility,
+            ["defaultPresentationStyle"] = preset.DefaultPresentationStyle,
+            ["defaultPronouns"] = preset.DefaultPronouns,
+            ["defaultAppearanceDescription"] = preset.DefaultAppearanceDescription,
+            ["abodeName"] = preset.AbodeName,
+            ["abodeTheme"] = preset.AbodeTheme,
+            ["mustPreserve"] = new JsonArray(preset.MustPreserve.Select(value => JsonValue.Create(value)).ToArray<JsonNode?>()),
+            ["canVary"] = new JsonArray(preset.CanVary.Select(value => JsonValue.Create(value)).ToArray<JsonNode?>()),
+            ["forbidden"] = new JsonArray(preset.Forbidden.Select(value => JsonValue.Create(value)).ToArray<JsonNode?>()),
+            ["searchLabel"] = preset.SearchLabel,
+            ["searchKeywords"] = new JsonArray(preset.SearchKeywords.Select(value => JsonValue.Create(value)).ToArray<JsonNode?>()),
+            ["directoryName"] = preset.DirectoryName,
+            ["directoryPath"] = preset.DirectoryPath,
+            ["manifestPath"] = preset.ManifestPath,
+            ["dossierPath"] = preset.DossierPath,
+            ["dossierMarkdown"] = preset.DossierMarkdown,
+            ["promptPackage"] = preset.PromptPackage
+        };
 
     private void OpenFolderOrPrintPath(string directoryPath)
     {
