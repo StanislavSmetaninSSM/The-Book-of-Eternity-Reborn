@@ -61,6 +61,42 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_PendingFoundationFromShiningSnapshot_FailsWrongRealm()
+    {
+        var request = CreateFoundationRequest();
+        var preTurnSoul = CreateSoulState();
+        preTurnSoul["currentRealm"] = "Shining Abode";
+        var preTurnGuardians = CreateGuardiansRoot(CreateGuardian("guardian_old", "Азалия", "abode_old"), "guardian_old", "abode_old");
+
+        await WriteJsonAsync(PlayerGuardianFoundationState.PendingRequestPath, request);
+        await WriteJsonAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteJsonAsync("game_state/meta/guardians.json", preTurnGuardians);
+        await WriteJsonAsync(GuardianPowerEventState.JournalPath, new { entries = Array.Empty<object>() });
+        await WriteChaosSeaLoreBootstrapAsync();
+        await WriteJsonAsync("ready/turn_complete.json", new { status = "ok" });
+
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", preTurnSoul);
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/guardians.json", preTurnGuardians);
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{GuardianPowerEventState.JournalPath}", new { entries = Array.Empty<object>() });
+        await WriteJsonAsync($"game_state/control/pending_turn_snapshot/{GuardianProjectState.TrackerPath}", new
+        {
+            activeProjects = Array.Empty<object>(),
+            completedProjects = Array.Empty<object>(),
+            temporaryProjectModifiers = Array.Empty<object>()
+        });
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_player_guardian_foundation.json";
+        await WriteJsonAsync(backupPath, request);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [PlayerGuardianFoundationState.PendingRequestPath] = backupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "player_guardian_foundation_wrong_realm", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_FoundedGuardianWithoutSoulStatus_Fails()
     {
         await WriteSuccessfulFoundationResolutionAsync(includeSoulStatus: false);
