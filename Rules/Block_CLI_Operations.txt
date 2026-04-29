@@ -1010,11 +1010,11 @@
                     | Contour | What GM simulates | Legal output surfaces | Required report fields |
                     |---|---|---|---|
                     | `Chaos Sea` hub | Sea-wide omens, metaphysical pressure, soul currents, public consequences of Guardian politics, changes visible from the hub | `response`, `gm_thoughts_markdown`, Guardian/Abode/Soul-specific state when a concrete system changes | `chaosSeaCyclesProcessed`, `newLastChaosSeaSimulationOrdinal` |
-                    | Guardian projects | Project progress/completion, Guardian musings, lore discoveries, rivalry/social consequences, abode power events | `guardianProjectUpdates`, `completeGuardianProjects`, `guardianThoughtJournalUpdates`, `guardianSocialJournalUpdates`, `guardianPowerEvents`, `UpdateGuardians` when documented by Block 32 | `guardianProjectCyclesProcessed`, `newLastGuardianProjectCycleOrdinal` |
+                    | Guardian projects | Project start/progress/completion, Guardian musings, lore discoveries, rivalry/social consequences, abode power events | `startGuardianProjects`, `guardianProjectUpdates`, `completeGuardianProjects`, `guardianThoughtJournalUpdates`, `guardianSocialJournalUpdates`, `guardianPowerEvents`, `UpdateGuardians` when documented by Block 32 | `guardianProjectCyclesProcessed`, `newLastGuardianProjectCycleOrdinal` |
                     | Resident agency | Resident choices, conversations, history, requests, resident-linked Soul Quests, resident-origin relic grants | `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`, `UpdateGuardianAbodeResidentHistoryLog`, `UpdateGuardianAbodeResidentInteractionReceipts`, `UpdateSoulQuests`, resident/relic-specific afterlife surfaces | `residentAgencyCyclesProcessed`, `newLastResidentAgencyCycleOrdinal` |
                     | Shining Abode | Public mood, ascended social order, ritual/civic changes, abode-level crises/opportunities | Shining/afterlife state surfaces and Guardian/Soul surfaces; never Mortal World location/weather/time fields | `shiningAbodeCyclesProcessed`, `newLastShiningAbodeCycleOrdinal` |
                     | Shining factions | Strategic movement of Shining-specific factions/institutions | Shining-specific state/surfaces only; never Mortal World `factionDataChanges` or `factionProjectUpdates` | `shiningFactionCyclesProcessed`, `newLastShiningFactionCycleOrdinal` |
-                    | Shining trade | Trade availability, Guardian/Soul Relic economy, receipts, sell-side/buyback consequences | Guardian trade inventory, trade receipts, afterlife notification derivation surfaces; do not hand-author client-owned notifications | `shiningTradeCyclesProcessed`, `newLastShiningTradeCycleOrdinal` |
+                    | Shining trade | Shining faction trade availability, faction Soul Relic economy, receipts, sold-out/availability consequences | Shining faction `tradeInventory`, faction `tradeInventoryReceipts[]`, availability/sold-out state; do not use Guardian trade inventory and do not hand-author client-owned notifications | `shiningTradeCyclesProcessed`, `newLastShiningTradeCycleOrdinal` |
 
                     **2.3 Chaos Sea hub contour**
                     When `mustEvaluateChaosSeaProgression=true`, decide what changed in the sea itself since the last accepted afterlife turn:
@@ -1034,6 +1034,7 @@
 
                     **2.4 Guardian project contour**
                     When `mustEvaluateGuardianProjectProgression=true`, review active Guardian projects and current Guardian politics:
+                    - start a new Guardian project through `startGuardianProjects` only when the due cycle logically creates a new project and the one-active-project invariant allows it
                     - advance work/stage/pressure/stability where the project logically progresses
                     - complete projects that have reached their outcome point
                     - create `guardianThoughtJournalUpdates` when the project changes a Guardian's inner stance
@@ -1043,6 +1044,7 @@
                     Do not:
                     - mutate Guardians through `UpdateNPCs`
                     - invent more than one active project per Guardian in v1
+                    - start a project through `UpdateGuardians` or a prose-only journal instead of `startGuardianProjects`
                     - silently skip a due project cycle because the player is talking to someone else
 
                     **2.5 Resident agency contour**
@@ -1096,7 +1098,7 @@
                     - `tradeInventory`
                     - `tradeInventoryReceipts`
                     - pending Shining trade inventory requests
-                    If a pending trade request exists, close it canonically with matching inventory and receipt. If no request exists, the cycle may still adjust availability, sold-out state, or civic trade context if the state supports it. Do not hand-author `afterlife_notifications.json`; the client derives Shining trade notifications from canonical receipts.
+                    If a pending trade request exists, close it canonically with matching faction inventory and faction receipt. If no request exists, the cycle may still adjust availability, sold-out state, or civic trade context if the state supports it. Do not write Guardian `tradeInventory`, `UpdateGuardianTradeInventoryReceipts`, or Guardian buyback surfaces for Shining trade; those belong to Guardian trade, not Shining faction trade. Do not hand-author `afterlife_notifications.json`; the client derives Shining trade notifications from canonical receipts.
 
                     **2.9 Bounded afterlife catch-up**
                     Catch-up exists to summarize long mortal absences or long realm absences without creating unbounded GM workload.

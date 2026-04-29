@@ -99,7 +99,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 
 | Значение | Режим | Активные системы | ЗАПРЕЩЁННЫЕ системы |
 |----------|-------|-------------------|---------------------|
-| `"Shining Abode"` + valid `preparedIncarnationPackage` | pending-bootstrap handoff | только mortal bootstrap lifecycle; GM сохраняет frozen package без изменений для последующего runtime consumption | обычные Guardian / Abode interactions, ordinary afterlife interactions, Mortal World turn systems |
+| `"Shining Abode"` + valid `preparedIncarnationPackage` | pending-bootstrap handoff | только `TriggerIncarnation` / `game_state/control/incarnation_trigger.json`; GM сохраняет frozen package без изменений для последующего runtime consumption | обычные Guardian / Abode interactions, ordinary afterlife interactions, Mortal World turn systems, GM-side Mortal bootstrap materialization |
 | `null` / пусто / отсутствует | unresolved realm fault | не запускай игровые системы; сохрани state и требуй repair authoritative `soul_state.currentRealm` | не infer `Chaos Sea`, не запускай afterlife scheduler, не запускай Mortal World systems |
 | `"Chaos Sea"` / `"Море Хаоса"` | Посмертие | Хранители, Обители, Реликвии Души, Чернильные Перья, Гача, afterlife living-world scheduler | Бой, опыт, уровни, навыки, НПС, квесты, деньги, инвентарь, погода |
 | `"Shining Abode"` | Посмертие | Свободный ролеплей с Хранителями, Реликвии Души, afterlife meta systems, Shining living-world scheduler | Mortal-world combat/NPC/faction/location mechanics |
@@ -108,9 +108,10 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 Пустой, отсутствующий или `null` `currentRealm` не является стартовым `Chaos Sea`. Это blocking unresolved realm fault: Do not infer Chaos Sea. GM не должен угадывать realm по pending-файлам, нарративу, scheduler state или старым логам.
 
 **JSON gate после Realm Check:**
-- В `Shining Abode pending-bootstrap handoff mode` разрешены только lifecycle/bootstrap mutations для запуска следующей смертной жизни. GM НЕ ДОЛЖЕН remove, clear, rename или mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage`; frozen package сохраняется exactly as provided, а client runtime читает и очищает его только после successful Mortal World bootstrap.
+- В `Shining Abode pending-bootstrap handoff mode` GM пишет только `TriggerIncarnation` / `game_state/control/incarnation_trigger.json`. GM НЕ ДОЛЖЕН remove, clear, rename или mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage`; frozen package сохраняется exactly as provided, а client runtime читает и очищает его только после successful Mortal World bootstrap.
 - Если `preparedIncarnationPackage` присутствует, но не является валидным object/snapshot, это fail-closed package fault: не считай ход ordinary active Shining Abode, не закрывай ordinary Shining core/trade/political actions, не удаляй pending Shining files и не очищай пакет вручную.
 - В `Chaos Sea` и `Shining Abode` запрещены: `experienceGained`, `statsIncreased`, `statsDecreased`, `currentPoiseChange`, `currentEnergyChange`, `currentHealthChange`, `moneyChange`, `activeSkillChanges`, `passiveSkillChanges`, `skillMasteryChanges`, `UpdateInventory`, `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, `worldEventsLog`, `factionDataChanges`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`, `enemiesData`, `alliesData`, `combat_log_markdown`.
+- File-level rule: в `Chaos Sea` / `Shining Abode` ни один response surface не должен писать или менять файлы, mapped to `game_state/world/*`, `game_state/npcs/*`, or `game_state/factions/*`.
 - Этот запрет относится к смертным world/faction/location/NPC channels. Он не отменяет afterlife living-world scheduler: если `progressionControl.mustEvaluate* = true`, ГМ обязан обработать afterlife-контуры через Guardian/Abode/Soul/Shining-specific surfaces и `progressionProcessingReport`.
 - В `Mortal World` запрещены: `UpdateGuardians`, Guardian-specific reputation/project/musings/lore commands, Abode navigation data, Soul Relic Gacha processing, afterlife-only spending of Ink Feathers.
 - В `Mortal World` разрешены только explicit Ink Feather exceptions: `Reveal Fate`, `Rewrite Fate`, `Sacrifice to Chaos`, `Absorb Feathers`, `Learn Skill`, `Fate Shield`, `Seal in Ink`.
@@ -259,7 +260,7 @@ Hidden afterlife routing tags are machine contracts, not prose hints: `[GUARDIAN
 
 **1. Scheduler-долг Моря Хаоса** — прочитай `progressionControl` до обработки действия игрока:
 - `mustEvaluateChaosSeaProgression` → обработай hub-события Моря Хаоса: метафизическое давление, омуты душ, космические приметы, изменения обстановки между Обителями, последствия прошлых решений Души.
-- `mustEvaluateGuardianProjectProgression` → обработай проекты Хранителей: `guardianProjectUpdates`, `completeGuardianProjects`, musings, lore unlocks, abode power events, репутационные/политические последствия между Хранителями.
+- `mustEvaluateGuardianProjectProgression` → обработай проекты Хранителей: `startGuardianProjects`, `guardianProjectUpdates`, `completeGuardianProjects`, musings, lore unlocks, abode power events, репутационные/политические последствия между Хранителями.
 - `mustEvaluateResidentAgencyProgression` → обработай резидентов Обителей: `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`, `UpdateGuardianAbodeResidentHistoryLog`, resident-linked `UpdateSoulQuests`, resident relic grants или другие documented resident surfaces.
 - `afterlifeCatchupRequired` → не симулируй все raw elapsed cycles. Создай ровно `afterlifeCatchupSummaryEventsRequired` крупных summary outcomes с учетом `afterlifeCatchupPressureTier` и `afterlifeCatchupContours`.
 
@@ -283,7 +284,7 @@ Hidden afterlife routing tags are machine contracts, not prose hints: `[GUARDIAN
 **1. Scheduler-долг Сияющей Обители** — это активный afterlife living world, а не статичная сцена:
 - `mustEvaluateShiningAbodeProgression` → обработай состояние Обители: общественное настроение, кризисы, ритуалы, сияющие институты, последствия присутствия Души и Хранителей.
 - `mustEvaluateShiningFactionProgression` → обработай сияющие фракции через Shining-specific state/surfaces, не через Mortal World `factionDataChanges`.
-- `mustEvaluateShiningTradeProgression` → обработай сияющую торговлю, trade inventories/receipts, доступность предложений и derivable afterlife notifications.
+- `mustEvaluateShiningTradeProgression` → обработай сияющую торговлю через Shining faction `tradeInventory`, faction `tradeInventoryReceipts[]`, доступность/sold-out state и derivable afterlife notifications; не используй Guardian trade inventory для Shining trade.
 - `mustEvaluateGuardianProjectProgression` → Хранители продолжают действовать в Сияющей Обители; их проекты и отношения не заморожены.
 - `mustEvaluateResidentAgencyProgression` → резиденты Обителей продолжают принимать решения, отвечать, менять историю и создавать resident-linked последствия.
 - `afterlifeCatchupRequired` → оформи bounded epoch-summary, а не пошаговую симуляцию тысяч циклов.
@@ -304,7 +305,7 @@ Hidden afterlife routing tags are machine contracts, not prose hints: `[GUARDIAN
 - Guardian/resident cycles в Сияющей Обители продолжают работать: Хранители и резиденты не замораживаются после Вознесения.
 
 **2. Bootstrap handoff exception:**
-- Если `currentRealm = "Shining Abode"` и `preparedIncarnationPackage` является валидным bootstrap package object, это pending-bootstrap handoff mode. В этом режиме не запускай обычную Shining progression; обрабатывай только lifecycle/bootstrap mutations для следующей смертной жизни. Если package present but invalid, это package fault: сохраняй package/pending files и жди repair.
+- Если `currentRealm = "Shining Abode"` и `preparedIncarnationPackage` является валидным bootstrap package object, это pending-bootstrap handoff mode. В этом режиме не запускай обычную Shining progression; пиши только `TriggerIncarnation` и сохраняй package for client-side bootstrap. Если package present but invalid, это package fault: сохраняй package/pending files и жди repair.
 - В обычной активной `Shining Abode` scheduler-долг обязателен так же, как в `Chaos Sea`.
 
 **3. Report contract:**
@@ -380,9 +381,9 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 - этот normal post-life route не меняет stored `shining_abode_state.availability`; он остаётся тем же until explicit `return_to_chaos_sea`
 - accepted Life Evaluation turn всегда активирует client-owned `game_state/control/afterlife_return_guard.json` с `reason = post_life_return`, но это только protective guard первого ordinary afterlife turn
 - `afterlife_return_guard.json` не является отдельным lifecycle completion marker и не должен переинтерпретироваться как automatic return в `Shining Abode`
-- ordinary afterlife turn consumes this guard only when it is semantic-valid (`reason = post_life_return`); malformed guard state, or a parsed guard with the wrong `reason`, is not consumed by ordinary turns and remains blocked until runtime normalization clears it
+- ordinary afterlife turn consumes this guard only when it is semantic-valid (`reason = post_life_return`); malformed guard state, or a parsed guard with the wrong `reason`, is not consumed by ordinary turns and remains blocked fail-closed until validation repair or an explicit client/runtime clear removes it
 - `AscensionTrigger` — реальный переход из Chaos Sea в Shining Abode; допускается только при maximum Enlightenment и явном `playerChoice=Ascension`, никогда не смешивается с `TriggerLifeEnd`
-- ordinary later re-entry from `Chaos Sea` into an already-stored active Shining Abode uses a separate explicit client-owned local `reenter_shining_abode` route; it is allowed only when stored `shining_abode_state.availability = active` and `afterlife_return_guard.json` is absent, or semantic-valid (`reason = post_life_return`) and inactive; malformed guard state, or a parsed guard with the wrong `reason`, blocks re-entry fail-closed until runtime normalization clears it; this route does not reset ascension-local Shining Abode counters and does not refill `lightSparks`
+- ordinary later re-entry from `Chaos Sea` into an already-stored active Shining Abode uses a separate explicit client-owned local `reenter_shining_abode` route; it is allowed only when stored `shining_abode_state.availability = active` and `afterlife_return_guard.json` is absent, or semantic-valid (`reason = post_life_return`) and inactive; malformed guard state, or a parsed guard with the wrong `reason`, blocks re-entry fail-closed until validation repair or an explicit client/runtime clear removes it; this route does not reset ascension-local Shining Abode counters and does not refill `lightSparks`
 - explicit client-owned local `return_to_chaos_sea` is a Shining-Abode-local seal/exit route and must not be collapsed into destructive optional New Game+ reset
 - `return_to_chaos_sea` is blocked while any Shining pending contract is still present (`pending_shining_abode_actions.json`, Shining trade inventory, founding, realignment, or leadership transition requests); those contracts must resolve or be repaired before the Abode is sealed
 - optional New Game+ from active Shining Abode remains the separate global reset path that resets Enlightenment and Ink Feathers while preserving Soul Relics and Guardians

@@ -498,6 +498,57 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifePromptDocsDescribeHandoffAsTriggerOnlyAndFileLevelForbiddenRule()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var launchScript = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var launchGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
+        var docs = new[] { matrix, apiSpec, daemonSpec, launchScript, launchGenerator };
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("TriggerIncarnation", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/world/*", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/npcs/*", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/factions/*", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { apiSpec, daemonSpec, launchScript, launchGenerator })
+        {
+            Assert.Contains("client", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Mortal bootstrap", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.DoesNotContain("ONLY bootstrap/materialization", launchScript, StringComparison.Ordinal);
+        Assert.DoesNotContain("ONLY bootstrap/materialization", launchGenerator, StringComparison.Ordinal);
+        Assert.DoesNotContain("GM sends player to Mortal World", apiSpec, StringComparison.Ordinal);
+        Assert.Contains("validation repair", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("runtime normalization clears", daemonSpec, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AfterlifePromptDocsDescribeGuardianProjectStartAndShiningFactionTradeSurfaces()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var docs = new[] { matrix, apiSpec, daemonSpec, operations };
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("startGuardianProjects", doc, StringComparison.Ordinal);
+            Assert.Contains("faction `tradeInventory`", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("tradeInventoryReceipts", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("do not use Guardian trade inventory", operations, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Do not use Guardian trade inventory", apiSpec, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifePromptDocsCoverRealmSegregationAndMortalOnlyPendingFiles()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

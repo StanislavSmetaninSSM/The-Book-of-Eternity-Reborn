@@ -112,7 +112,7 @@ The GM must treat every `mustEvaluate* = true` field as mandatory processing deb
 | `residentAgencyCyclesExpectedThisTurn` / `mustEvaluateResidentAgencyProgression` | Mandatory agency for authored afterlife residents in Guardian Abodes: their choices, conversations, requests, memory/history changes, resident-linked Soul Quests, or relic grants. |
 | `shiningAbodeCyclesExpectedThisTurn` / `mustEvaluateShiningAbodeProgression` | Mandatory Shining Abode state progression: public mood, order, crises, ascended social changes, and abode-level consequences. |
 | `shiningFactionCyclesExpectedThisTurn` / `mustEvaluateShiningFactionProgression` | Mandatory Shining faction progression using Shining-specific state, not Mortal World `factionDataChanges`. |
-| `shiningTradeCyclesExpectedThisTurn` / `mustEvaluateShiningTradeProgression` | Mandatory Shining trade/economy progression using Shining/Guardian trade surfaces, receipts, and afterlife notifications derivation rules. |
+| `shiningTradeCyclesExpectedThisTurn` / `mustEvaluateShiningTradeProgression` | Mandatory Shining trade/economy progression using Shining faction `tradeInventory`, faction `tradeInventoryReceipts[]`, availability/sold-out state, and afterlife notification derivation rules. Do not use Guardian trade inventory for Shining trade. |
 | `next*Ordinal` / `last*Ordinal` | Per-contour scheduler markers. Do not invent ordinals; report the new last marker matching the processed count for that exact contour. |
 | `afterlifeCatchup*` | Bounded catch-up summary. Do not simulate all raw elapsed cycles; produce exactly `afterlifeCatchupSummaryEventsRequired` meaningful summary outcomes affecting `afterlifeCatchupContours`. |
 
@@ -382,7 +382,7 @@ CLI Agent automatically loads current game state from:
   
   // LIFE CONTROL
   "TriggerLifeEnd": "object with mandatory reason and summary (Mortal World only; reason must be Death|Voluntary; triggers a separate Life Evaluation request after the turn is accepted)",
-  "TriggerIncarnation": "object with mandatory worldDescription, characterDescription, circumstances (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that preserves the existing preparedIncarnationPackage for later runtime bootstrap consumption; GM sends player to Mortal World)",
+  "TriggerIncarnation": "object with mandatory worldDescription, characterDescription, circumstances (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that preserves the existing preparedIncarnationPackage; GM writes only the trigger and the client performs Mortal bootstrap after accepting it)",
   "AscensionTrigger": "boolean (real Chaos Sea-only ascension transition; valid only if Enlightenment is 100% and playerChoice=Ascension; must not be combined with TriggerLifeEnd)",
   "playerChoice": "string (required only with AscensionTrigger; must equal Ascension)"
 }
@@ -687,7 +687,7 @@ Quest state contract notes:
 
 #### **GAME FLOW CONTROL**
 - `game_state/control/life_transitions.json` ← `TriggerLifeEnd` (Mortal World only; `reason` must be `Death` or `Voluntary`)
-- `game_state/control/incarnation_trigger.json` ← `TriggerIncarnation` (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that preserves `preparedIncarnationPackage` for later runtime bootstrap consumption; GM sends player to Mortal World: `{ "worldDescription": "...", "characterDescription": "...", "circumstances": "..." }`)
+- `game_state/control/incarnation_trigger.json` ← `TriggerIncarnation` (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that preserves `preparedIncarnationPackage`; GM writes only the trigger object `{ "worldDescription": "...", "characterDescription": "...", "circumstances": "..." }`, and the client performs Mortal bootstrap after accepting it)
 - `game_state/control/incarnation_world_setup.json` ← client-authored pending world setup chosen before incarnation; GM must read it when authoring `TriggerIncarnation` and the first Mortal World bootstrap
 - `game_state/control/ascension.json` ← `AscensionTrigger`, `playerChoice` (real Chaos Sea-only ascension transition; only when Enlightenment is max and `playerChoice=Ascension`; never combine with `TriggerLifeEnd`)
 - `game_state/control/validation_repair_request.json` ← client-written contract repair request when a GM turn is rejected after validation
@@ -726,7 +726,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - `TriggerLifeEnd` is Mortal World only; it starts the later Life Evaluation lifecycle and must not be emitted from Chaos Sea or Shining Abode.
 - `TriggerIncarnation` is valid from ordinary Chaos Sea, or from `Shining Abode pending-bootstrap handoff mode` when an existing `preparedIncarnationPackage` is present and preserved for later runtime bootstrap consumption; it must not be mixed with ordinary Shining living-world progression.
 - Guardian-forced `TriggerIncarnation.source=guardian_forced` is valid only on ordinary player-driven Chaos Sea turns with explicit provocation against the current Guardian. Deterministic evidence tags are `[GUARDIAN_PROVOCATION]` and `[GUARDIAN_PROVOCATION: guardianId]`; the id form must match `TriggerIncarnation.guardianId`.
-- In `Shining Abode pending-bootstrap handoff mode`, GM must not remove, clear, rename, or mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage` in the accepted `TriggerIncarnation` turn. Preserve the package exactly as provided; the client runtime reads it after accepting the trigger, materializes the frozen blessing/world setup, and clears it only after successful Mortal World bootstrap.
+- In `Shining Abode pending-bootstrap handoff mode`, GM must not remove, clear, rename, or mutate `game_state/meta/shining_abode_state.json.preparedIncarnationPackage` in the accepted `TriggerIncarnation` turn. The GM writes only `TriggerIncarnation` / `game_state/control/incarnation_trigger.json` and preserves the package exactly as provided; the client runtime reads it after accepting the trigger, materializes the frozen blessing/world setup, and clears it only after successful Mortal World bootstrap.
 - If the Shining handoff package is missing, malformed, or present as a non-object value, do not "repair" it by deleting or nulling the package and do not treat the realm as ordinary active Shining. Preserve the current state and use the normal validation repair/error path so the bootstrap contract can be fixed without losing the prepared package.
 - Client-owned `reenter_shining_abode` is a local Chaos Sea route into an already stored active Shining Abode. No GM-authored output is required or allowed for this route. It does not reset ascension-local counters and does not refill Light Sparks.
 - Client-owned `return_to_chaos_sea` is allowed only when there are no active Shining pending contracts. Resolve or repair `pending_shining_abode_actions.json`, Shining trade inventory requests, Shining founding requests, Shining realignment requests, and Shining leadership transition requests before sealing the Abode.
@@ -738,7 +738,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - Both afterlife realms use guardian/soul/meta systems and forbid mortal-world combat/NPC/faction/location mechanics.
 - Both afterlife realms still have a living-world scheduler through `progressionControl`. This is afterlife-specific progression, not Mortal World `worldEventsLog` / `factionDataChanges` progression.
 - `Shining Abode` is the ascended endgame free-roleplay zone above the Chaos Sea and still uses afterlife guardian/soul/meta systems instead of Mortal World systems.
-- `Shining Abode pending-bootstrap handoff mode` is not an ordinary active Shining turn; process only lifecycle/bootstrap mutation and suppress ordinary Guardian/Shining scheduler progression for that handoff.
+- `Shining Abode pending-bootstrap handoff mode` is not an ordinary active Shining turn; write only the `TriggerIncarnation` lifecycle control, preserve the prepared package, and suppress ordinary Guardian/Shining scheduler progression for that handoff.
 
 ### Contract Repair Handshake
 - `validation_repair_request.json` is authoritative when the client rejects an already written GM turn after validation.
@@ -788,6 +788,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 ### Forbidden In Afterlife Realms
 - Combat, experience, leveling, stat gains/losses, regular inventory management, regular NPC mechanics,
   mortal quests, Mortal World faction/world progression, weather, time progression, mortal location tracking.
+- File-level rule: during `Chaos Sea` / `Shining Abode`, no response surface may write or mutate any file mapped to `game_state/world/*`, `game_state/npcs/*`, or `game_state/factions/*`. Use Guardian/Soul/resident/Shining afterlife surfaces instead.
 
 ### Forbidden In Mortal World
 - Guardian presence as active entities, Guardian reputation changes, Abode navigation, Gacha, afterlife-only Ink Feather spending.
