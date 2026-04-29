@@ -279,6 +279,7 @@ public partial class ExplorerMode
                 return;
 
             var feathers = await ReadInkFeathersBalance();
+            var coreRequests = await ShiningCoreActionRequestState.ReadRequestsAsync(_fs);
             Clear();
             Write(BuildShiningOverviewPanel(context.Root, context.ResidentRoot, context.GuardiansRoot));
             MarkupLine($"[dim]Перья: {feathers} • Искры Света: {GetNodeInt(context.Root["lightSparks"])}[/]");
@@ -286,7 +287,7 @@ public partial class ExplorerMode
             var choice = Prompt(new SelectionPrompt<string>()
                 .Title("[bold yellow]Основные действия Сияющей Обители[/]")
                 .HighlightStyle(new Style(Color.Gold1))
-                .AddChoices(BuildShiningActionChoices(context.Root)));
+                .AddChoices(BuildShiningActionChoices(context, feathers, coreRequests)));
 
             if (choice.Contains("Назад", StringComparison.Ordinal))
                 return;
@@ -312,24 +313,95 @@ public partial class ExplorerMode
         }
     }
 
-    private static IReadOnlyList<string> BuildShiningActionChoices(JsonObject shiningRoot)
+    private static IReadOnlyList<string> BuildShiningActionChoices(
+        ShiningContext context,
+        int feathers,
+        IReadOnlyList<ShiningCoreActionRequestState.PendingShiningCoreActionRequest> coreRequests)
     {
+        var shiningRoot = context.Root;
+        var lightSparks = GetNodeInt(shiningRoot["lightSparks"]);
+        var pendingBlocker = coreRequests.Count > 0 ? $"pending core action {coreRequests[0].RequestId}" : null;
+        var discoveryCost = ShiningAbodeState.GetNativeDiscoveryCost();
         var choices = new List<string>
         {
-            "🔍 Запросить открытие нативной фракции"
+            BuildShiningActionChoiceWithState(
+                "🔍 Запросить открытие нативной фракции",
+                pendingBlocker == null &&
+                shiningRoot["pendingNativeFactionDiscovery"] is not JsonObject &&
+                feathers >= discoveryCost.Feathers &&
+                lightSparks >= discoveryCost.LightSparks,
+                $"{discoveryCost.Feathers} Перьев / {discoveryCost.LightSparks} Искр",
+                pendingBlocker ??
+                (shiningRoot["pendingNativeFactionDiscovery"] is JsonObject pendingDiscovery
+                    ? $"legacy pendingNativeFactionDiscovery {GetNodeString(pendingDiscovery["requestId"]) ?? "без requestId"}"
+                    : feathers < discoveryCost.Feathers
+                        ? "не хватает Перьев"
+                        : lightSparks < discoveryCost.LightSparks
+                            ? "не хватает Искр Света"
+                            : null))
         };
         if (shiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
             choices.Add("🔎 Осмотреть ожидающее открытие нативной фракции");
+
+        var factionCount = (shiningRoot["factions"] as JsonArray)?.OfType<JsonObject>().Count() ?? 0;
+        var investCost = ShiningAbodeState.GetFactionInvestmentCost();
+        var investEligibleCount = (shiningRoot["factions"] as JsonArray)?.OfType<JsonObject>()
+            .Count(faction => GetNodeInt(faction["investCountThisAscension"]) < 3) ?? 0;
+        var completedProjects = CountShiningProjects(shiningRoot, project =>
+            string.Equals(GetNodeString(project["status"]), ShiningAbodeState.ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase));
+        var supportEligible = CountShiningProjects(shiningRoot, project =>
+            string.Equals(GetNodeString(project["status"]), ShiningAbodeState.ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase) &&
+            !GetNodeBool(project["isSupported"]));
+        var supportedProjects = CountShiningProjects(shiningRoot, project => GetNodeBool(project["isSupported"]));
+
         choices.AddRange(new[]
         {
-            "📈 Инвестировать во фракцию",
-            "🧩 Завершить проект",
-            "🪄 Поддержать проект",
-            "↩️ Снять поддержку проекта",
-            "🕯️ Отправить проект в историю",
+            BuildShiningActionChoiceWithState(
+                "📈 Инвестировать во фракцию",
+                pendingBlocker == null && factionCount > 0 && investEligibleCount > 0 && feathers >= investCost.Feathers && lightSparks >= investCost.LightSparks,
+                $"{investCost.Feathers} Перьев / {investCost.LightSparks} Искр; eligible factions {investEligibleCount}",
+                pendingBlocker ?? (factionCount == 0 ? "нет фракций" : investEligibleCount == 0 ? "лимит инвестиций исчерпан" : feathers < investCost.Feathers ? "не хватает Перьев" : lightSparks < investCost.LightSparks ? "не хватает Искр Света" : null)),
+            BuildShiningActionChoiceWithState(
+                "🧩 Завершить проект",
+                pendingBlocker == null && factionCount > 0,
+                "quote зависит от tier/projectDraft; preview покажет exact cost до записи pending",
+                pendingBlocker ?? (factionCount == 0 ? "нет фракций" : null)),
+            BuildShiningActionChoiceWithState(
+                "🪄 Поддержать проект",
+                pendingBlocker == null && supportEligible > 0,
+                $"0 Перьев / 0 Искр; eligible completed projects {supportEligible}",
+                pendingBlocker ?? (supportEligible == 0 ? "нет completed unsupported projects" : null)),
+            BuildShiningActionChoiceWithState(
+                "↩️ Снять поддержку проекта",
+                pendingBlocker == null && supportedProjects > 0,
+                $"0 Перьев / 0 Искр; supported projects {supportedProjects}",
+                pendingBlocker ?? (supportedProjects == 0 ? "нет supported projects" : null)),
+            BuildShiningActionChoiceWithState(
+                "🕯️ Отправить проект в историю",
+                pendingBlocker == null && completedProjects > 0,
+                $"0 Перьев / 0 Искр; completed projects {completedProjects}",
+                pendingBlocker ?? (completedProjects == 0 ? "нет completed projects" : null)),
             "← Назад"
         });
         return choices;
+    }
+
+    private static string BuildShiningActionChoiceWithState(string label, bool enabled, string quote, string? disabledReason)
+    {
+        var state = enabled
+            ? $"[green]доступно[/], {quote}"
+            : $"[red]заблокировано[/]: {disabledReason ?? "условия не выполнены"}; {quote}";
+        return $"{label} [dim]— {state}[/]";
+    }
+
+    private static int CountShiningProjects(JsonObject shiningRoot, Func<JsonObject, bool> predicate)
+    {
+        if (shiningRoot["factions"] is not JsonArray factions)
+            return 0;
+
+        return factions.OfType<JsonObject>()
+            .SelectMany(faction => (faction["projects"] as JsonArray)?.OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>())
+            .Count(predicate);
     }
 
     private async Task HandleNativeFactionDiscoveryAsync(ShiningContext context, int feathers)

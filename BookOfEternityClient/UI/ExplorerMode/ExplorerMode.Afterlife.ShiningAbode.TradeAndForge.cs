@@ -841,9 +841,7 @@ public partial class ExplorerMode
                 continue;
 
             var result = await ShiningTradeService.BuyAsync(_fs, factionId, offer.SlotId, await TryReadCurrentTurnNumberAsync());
-            MarkupLine(result.Success
-                ? $"[green]✅ {Markup.Escape(result.Message)}[/]"
-                : $"[red]❌ {Markup.Escape(result.Message)}[/]");
+            ShowShiningTradePurchaseResult(offer, view, feathers, result);
             WaitForKey();
 
             if (result.StateChanged)
@@ -897,6 +895,61 @@ public partial class ExplorerMode
         return action.Contains("Купить", StringComparison.OrdinalIgnoreCase)
             ? ShiningTradeBuyDecision.Buy
             : ShiningTradeBuyDecision.Back;
+    }
+
+    private void ShowShiningTradePurchaseResult(
+        ShiningTradeService.ShiningTradeOffer offer,
+        ShiningTradeService.ShiningTradeView view,
+        int prePurchaseFeathers,
+        ShiningTradeService.ShiningTradeOperationResult result)
+    {
+        var relicId = GetNodeString(offer.RelicData["relicId"]) ?? GetNodeString(offer.RelicData["id"]) ?? "?";
+        var projectedFeathers = result.Success
+            ? Math.Max(0, prePurchaseFeathers - Math.Max(0, offer.PriceInFeathers))
+            : prePurchaseFeathers;
+        var lines = new List<string>
+        {
+            result.Success
+                ? "[green]✅ Покупка сияющей витрины зафиксирована[/]"
+                : "[red]❌ Покупка сияющей витрины не выполнена[/]",
+            $"  Сообщение: [dim]{Markup.Escape(result.Message)}[/]",
+            $"  Фракция: [white]{Markup.Escape(view.FactionName)}[/] [dim]({Markup.Escape(view.FactionId)})[/]",
+            $"  Цикл торговли: [dim]{Markup.Escape(view.TradeCycleId)}[/]",
+            $"  Слот: [dim]{Markup.Escape(offer.SlotId)}[/]",
+            $"  Реликвия: [white]{Markup.Escape(offer.Name)}[/] [dim]({Markup.Escape(relicId)})[/]",
+            $"  Цена: [yellow]{offer.PriceInFeathers} Перьев[/]",
+            $"  Баланс Перьев: [gold1]{prePurchaseFeathers}[/] -> [gold1]{projectedFeathers}[/]",
+            result.Success
+                ? "  Sold-out state: [green]выбранный слот теперь soldOut=true[/]"
+                : "  Sold-out state: [dim]не изменён[/]",
+            result.Success
+                ? "  Receipt/update: локальная покупка не создаёт GM-turn; она обновляет `soul_state.json` и `shining_abode_state.json` coordinated write."
+                : "  Receipt/update: состояние не должно измениться."
+        };
+
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🛒 Итог сияющей покупки ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(result.Success ? Color.Green : Color.Red),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+
+        var audit = BuildShiningTradeOfferAuditNode(offer, view, prePurchaseFeathers);
+        audit["purchaseResult"] = new JsonObject
+        {
+            ["success"] = result.Success,
+            ["stateChanged"] = result.StateChanged,
+            ["message"] = result.Message,
+            ["finalInkFeathers"] = projectedFeathers,
+            ["relicId"] = relicId,
+            ["slotId"] = offer.SlotId,
+            ["tradeCycleId"] = view.TradeCycleId,
+            ["soldOutAfterPurchase"] = result.Success
+        };
+        WriteJsonAuditPanel("Полный JSON итога покупки сияющей витрины", audit, result.Success ? Color.Green : Color.Red);
     }
 
     private bool ConfirmShiningTradeInventoryRequestPreview(ShiningTradeRequestState.PendingShiningTradeInventoryRequest request)
