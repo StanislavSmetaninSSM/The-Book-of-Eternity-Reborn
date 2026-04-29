@@ -672,6 +672,33 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_FreeCoreActionWithNonzeroCost_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+                QuotedCostFeathers = 1,
+                QuotedCostLightSparks = 0,
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("0 Feathers / 0 Light Sparks", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ValidateRequestAgainstCurrentStateAsync_SupportAlreadySupportedProject_Fails()
     {
         var root = CreateTempRoot();

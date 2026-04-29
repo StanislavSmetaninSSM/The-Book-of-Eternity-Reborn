@@ -8029,6 +8029,18 @@ public partial class ValidationService
         var projectIds = ReadStringSet(receipt["seededProjectIds"]);
         var currentHall = FindShiningHall(currentShiningRoot, hallId);
         var currentFaction = ShiningAbodeState.FindFaction(currentShiningRoot, factionId);
+        if (currentShiningRoot["pendingNativeFactionDiscovery"] is not null)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                "Accepted discover_native_faction через pending_shining_abode_actions.json должен очищать legacy pendingNativeFactionDiscovery.",
+                code: "shining_discovery_legacy_pending_not_cleared",
+                section: "ShiningAbode",
+                expected: "pendingNativeFactionDiscovery = null",
+                actual: "pendingNativeFactionDiscovery present",
+                repairHint: "После accepted new discover_native_faction не оставляй legacy shining_abode_state.pendingNativeFactionDiscovery live; этот legacy slot должен быть null.")); 
+        }
 
         if (!string.IsNullOrWhiteSpace(hallId) && FindShiningHall(preTurnShiningRoot, hallId) != null)
         {
@@ -8260,7 +8272,7 @@ public partial class ValidationService
         out string actual)
     {
         actual =
-            $"{GetNodeString(receipt["actionType"])} / {GetNodeString(receipt["status"])} / {GetNodeString(receipt["factionId"])} / {GetNodeString(receipt["projectId"])}";
+            $"{GetNodeString(receipt["actionType"])} / {GetNodeString(receipt["status"])} / {GetNodeString(receipt["factionId"])} / {GetNodeString(receipt["projectId"])} / cost {GetNodeInt(receipt["quotedCostFeathers"])}/{GetNodeInt(receipt["quotedCostLightSparks"])} / draft {GetNodeInt(receipt["generatedDraftVersion"])}";
 
         var status = GetNodeString(receipt["status"]);
         return ShiningCoreActionRequestState.IsSupportedStatus(status) &&
@@ -8273,6 +8285,9 @@ public partial class ValidationService
                ShiningCoreActionRelicIdentityMatches(request, GetNodeString(receipt["relicId"]), status) &&
                string.Equals(GetNodeString(receipt["returnCycleId"]) ?? string.Empty, request.ReturnCycleId ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(receipt["targetFormTag"]) ?? string.Empty, request.TargetFormTag ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
+               OptionalCoreActionReceiptIntAuditMatches(receipt, "quotedCostFeathers", request.QuotedCostFeathers) &&
+               OptionalCoreActionReceiptIntAuditMatches(receipt, "quotedCostLightSparks", request.QuotedCostLightSparks) &&
+               ShiningCoreActionGeneratedDraftVersionMatches(request, status, GetNodeInt(receipt["generatedDraftVersion"])) &&
                (receipt["propertyIndex"] is JsonValue propertyIndexNode &&
                 propertyIndexNode.TryGetValue<int>(out var propertyIndex)
                     ? propertyIndex
@@ -8280,6 +8295,30 @@ public partial class ValidationService
                ReadOrderedStringList(receipt["selectedCardIds"]).SequenceEqual(
                    request.SelectedCardIds.Where(id => !string.IsNullOrWhiteSpace(id)).Select(id => id.Trim()),
                    StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static bool OptionalCoreActionReceiptIntAuditMatches(JsonObject receipt, string propertyName, int expected)
+    {
+        return !receipt.ContainsKey(propertyName) ||
+               receipt[propertyName] is null ||
+               GetNodeInt(receipt[propertyName]) == expected;
+    }
+
+    private static bool ShiningCoreActionGeneratedDraftVersionMatches(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        string? receiptStatus,
+        int receiptGeneratedDraftVersion)
+    {
+        if (!string.Equals(receiptStatus, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            return receiptGeneratedDraftVersion == 0;
+
+        if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage, StringComparison.OrdinalIgnoreCase))
+            return receiptGeneratedDraftVersion == request.SourceDraftVersion;
+
+        if (string.Equals(request.ActionType, ShiningCoreActionRequestState.ActionTypeOpenGates, StringComparison.OrdinalIgnoreCase))
+            return receiptGeneratedDraftVersion > 0;
+
+        return receiptGeneratedDraftVersion == 0;
     }
 
     private static bool HasCanonicalShiningPoliticalClosure(JsonObject receipt) =>
