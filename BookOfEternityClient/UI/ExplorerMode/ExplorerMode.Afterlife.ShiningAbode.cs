@@ -1034,9 +1034,12 @@ public partial class ExplorerMode
         {
             var receiptAudit = new JsonArray();
             foreach (var receipt in receipts)
-                receiptAudit.Add(receipt.DeepClone());
-            WriteJsonAuditPanel("Полный JSON coreActionReceipts[]", receiptAudit, Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON shining_abode_state.json после исходов", context.Root, Color.Gold1);
+                receiptAudit.Add(CloneShiningJsonForPlayerFacingAudit(receipt));
+            WriteJsonAuditPanel("JSON coreActionReceipts[] для просмотра (скрытые runtime details удалены)", receiptAudit, Color.Gold1);
+            WriteJsonAuditPanel(
+                "JSON shining_abode_state.json после исходов для просмотра (скрытые runtime details удалены)",
+                CloneShiningJsonForPlayerFacingAudit(context.Root),
+                Color.Gold1);
         }
     }
 
@@ -1536,6 +1539,32 @@ public partial class ExplorerMode
         }
 
         return obj.ToJsonString();
+    }
+
+    private static JsonNode? CloneShiningJsonForPlayerFacingAudit(JsonNode? node)
+    {
+        if (node == null)
+            return null;
+
+        var clone = node.DeepClone();
+        RemoveShiningBlessingRuntimePayloads(clone);
+        return clone;
+    }
+
+    private static void RemoveShiningBlessingRuntimePayloads(JsonNode? node)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                obj.Remove("effectPayload");
+                foreach (var child in obj.Select(pair => pair.Value).ToList())
+                    RemoveShiningBlessingRuntimePayloads(child);
+                break;
+            case JsonArray array:
+                foreach (var child in array)
+                    RemoveShiningBlessingRuntimePayloads(child);
+                break;
+        }
     }
 
     private static string DescribeShiningBlessingReceiptSourceType(string? sourceType) =>

@@ -70,6 +70,20 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.DoesNotContain(".Take(18)", explorerPrivate, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void ShiningPlayerFacingSurfacesDoNotDumpRawBlessingPayloads()
+    {
+        var lifecycle = ReadSource("Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+        var shiningAbode = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.ShiningAbode.cs");
+
+        Assert.DoesNotContain("Shining blessing effectPayload", lifecycle, StringComparison.Ordinal);
+        Assert.DoesNotContain("effectPayload.ToJsonString", lifecycle, StringComparison.Ordinal);
+        Assert.Contains("CloneShiningJsonForPlayerFacingAudit", shiningAbode, StringComparison.Ordinal);
+        Assert.Contains("RemoveShiningBlessingRuntimePayloads", shiningAbode, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteJsonAuditPanel(\"Полный JSON coreActionReceipts[]\"", shiningAbode, StringComparison.Ordinal);
+        Assert.DoesNotContain("WriteJsonAuditPanel(\"Полный JSON shining_abode_state.json", shiningAbode, StringComparison.Ordinal);
+    }
+
     private static string ReadSource(params string[] pathParts) =>
         File.ReadAllText(Path.Combine(
             new[] { TestRepoPaths.RepoRoot, "BookOfEternityClient" }.Concat(pathParts).ToArray()));

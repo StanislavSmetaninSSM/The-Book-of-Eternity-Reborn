@@ -1699,13 +1699,19 @@ public partial class GameEngine
                 parts.Add($"Frozen Shining package несёт {selectedCards.Count} blessing card(s) в следующий mortal bootstrap.");
                 foreach (var card in selectedCards.OfType<JsonObject>())
                 {
+                    var cardId = GetNodeString(card["cardId"]);
                     var displayName = GetNodeString(card["displayName"]);
                     var displaySummary = GetNodeString(card["displaySummary"]);
-                    if (!string.IsNullOrWhiteSpace(displayName) || !string.IsNullOrWhiteSpace(displaySummary))
-                        parts.Add($"Shining blessing: {displayName} — {displaySummary}".TrimEnd(' ', '—'));
-                    var effectPayload = card["effectPayload"] as JsonObject;
-                    if (effectPayload != null)
-                        parts.Add($"Shining blessing effectPayload: {effectPayload.ToJsonString(JsonOpts)}.");
+                    var blessingLabel = !string.IsNullOrWhiteSpace(displayName)
+                        ? displayName
+                        : cardId;
+                    if (!string.IsNullOrWhiteSpace(blessingLabel) || !string.IsNullOrWhiteSpace(displaySummary))
+                    {
+                        var identity = string.IsNullOrWhiteSpace(cardId) || string.Equals(cardId, blessingLabel, StringComparison.OrdinalIgnoreCase)
+                            ? string.Empty
+                            : $" ({cardId})";
+                        parts.Add($"Shining blessing: {blessingLabel}{identity} — {displaySummary}".TrimEnd(' ', '—'));
+                    }
                 }
             }
 
