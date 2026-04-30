@@ -287,6 +287,32 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestWithOldAndNewQuest_Passes()
+    {
+        var preTurnSoul = CreateSoulRoot();
+        var preTurnResidents = CreateResidentRoot("resident_liora");
+        var currentResidents = preTurnResidents.DeepClone().AsObject();
+        AddResidentInteractionLog(currentResidents, "resident_liora", "log_liora_quest_second");
+        var preTurnQuests = CreateSoulQuestRoot("quest_liora_old", "resident_liora");
+        var currentQuests = preTurnQuests.DeepClone().AsObject();
+        AddSoulQuest(currentQuests, "quest_liora_new", "resident_liora");
+        var playerAction = "[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia).";
+        await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", currentResidents);
+        await WriteNodeAsync("game_state/quests/soul_quests.json", currentQuests);
+        await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(playerAction));
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            playerAction: playerAction,
+            preTurnResidentRoot: preTurnResidents,
+            preTurnSoulQuestsRoot: preTurnQuests);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code.StartsWith("abode_resident_quest_request_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_SoulImprintWithoutSourceProvenance_Fails()
     {
         var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
@@ -483,18 +509,23 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         };
         if (!string.IsNullOrWhiteSpace(questId))
         {
-            root["quests"]!.AsArray().Add(new JsonObject
-            {
-                ["questId"] = questId,
-                ["title"] = "Просьба Лиоры",
-                ["description"] = "Помочь Лиоре удержать память Обители.",
-                ["status"] = "active",
-                ["relatedAfterlifeResidentId"] = residentId,
-                ["objectives"] = new JsonArray("Выслушать Лиору")
-            });
+            AddSoulQuest(root, questId, residentId);
         }
 
         return root;
+    }
+
+    private static void AddSoulQuest(JsonObject root, string questId, string residentId)
+    {
+        root["quests"]!.AsArray().Add(new JsonObject
+        {
+            ["questId"] = questId,
+            ["title"] = "Просьба Лиоры",
+            ["description"] = "Помочь Лиоре удержать память Обители.",
+            ["status"] = "active",
+            ["relatedAfterlifeResidentId"] = residentId,
+            ["objectives"] = new JsonArray("Выслушать Лиору")
+        });
     }
 
     private async Task WriteCultivateEnlightenmentReceiptAsync()

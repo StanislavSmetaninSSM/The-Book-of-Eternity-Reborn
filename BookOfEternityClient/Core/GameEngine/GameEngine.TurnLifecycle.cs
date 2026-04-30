@@ -741,11 +741,8 @@ public partial class GameEngine
 
     private void CleanupAfterCancelledChaosSeaMarkerTurn(string? action)
     {
-        if (string.IsNullOrWhiteSpace(action))
-            return;
-
-        if (action.Contains("[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:", StringComparison.OrdinalIgnoreCase))
-            _systemGuardianLibraryService.ClearAttractionRequest();
+        // Rollback restores pre-turn marker files. Keep system_guardian_attraction.json
+        // so a later GM response can still validate against the original contract.
     }
 
     private void OverlayExplorerLocalRollbackSnapshot(

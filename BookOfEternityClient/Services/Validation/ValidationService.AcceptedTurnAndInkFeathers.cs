@@ -7869,10 +7869,17 @@ public partial class ValidationService
 
         GuardianAbodeResidentState.NormalizeShape(residentRoot);
         GuardianAbodeResidentState.NormalizeShape(preTurnResidentRoot);
-        var quest = EnumerateQuestObjects(questsRoot).FirstOrDefault(candidate =>
-            string.Equals(GetNodeString(candidate["relatedAfterlifeResidentId"]), residentId, StringComparison.OrdinalIgnoreCase));
-        var questId = GetNodeString(quest?["questId"]) ?? GetNodeString(quest?["id"]);
-        if (quest == null || string.IsNullOrWhiteSpace(questId))
+        var quests = EnumerateQuestObjects(questsRoot)
+            .Select(quest => new
+            {
+                Quest = quest,
+                QuestId = GetNodeString(quest["questId"]) ?? GetNodeString(quest["id"])
+            })
+            .Where(entry =>
+                !string.IsNullOrWhiteSpace(entry.QuestId) &&
+                string.Equals(GetNodeString(entry.Quest["relatedAfterlifeResidentId"]), residentId, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (quests.Count == 0)
         {
             issues.Add(new ValidationIssue(
                 "game_state/quests/soul_quests.json.UpdateSoulQuests",
@@ -7886,9 +7893,18 @@ public partial class ValidationService
         }
         else
         {
-            var preTurnQuest = EnumerateQuestObjects(preTurnQuestsRoot).FirstOrDefault(candidate =>
-                string.Equals(GetNodeString(candidate["questId"]) ?? GetNodeString(candidate["id"]), questId, StringComparison.OrdinalIgnoreCase));
-            if (preTurnQuest != null && JsonNode.DeepEquals(preTurnQuest, quest))
+            var preTurnQuestsById = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+            foreach (var preTurnQuest in EnumerateQuestObjects(preTurnQuestsRoot))
+            {
+                var preTurnQuestId = GetNodeString(preTurnQuest["questId"]) ?? GetNodeString(preTurnQuest["id"]);
+                if (!string.IsNullOrWhiteSpace(preTurnQuestId) && !preTurnQuestsById.ContainsKey(preTurnQuestId))
+                    preTurnQuestsById[preTurnQuestId] = preTurnQuest;
+            }
+
+            var hasCurrentTurnQuestChange = quests.Any(entry =>
+                !preTurnQuestsById.TryGetValue(entry.QuestId!, out var preTurnQuest) ||
+                !JsonNode.DeepEquals(preTurnQuest, entry.Quest));
+            if (!hasCurrentTurnQuestChange)
             {
                 issues.Add(new ValidationIssue(
                     "game_state/quests/soul_quests.json.UpdateSoulQuests",
@@ -7897,7 +7913,7 @@ public partial class ValidationService
                     code: "abode_resident_quest_request_no_current_turn_quest_change",
                     section: "ABODE_RESIDENT_QUEST_REQUEST",
                     expected: $"new or changed Soul Quest for residentId={residentId} absent from pre-turn snapshot",
-                    actual: $"questId={questId} unchanged from pre-turn snapshot",
+                    actual: $"questIds={string.Join(", ", quests.Select(entry => entry.QuestId))} unchanged from pre-turn snapshot",
                     repairHint: "Создай новый Soul Quest с новым questId или измени существующий resident-linked quest через UpdateSoulQuests/objectives/progress/status."));
             }
         }
