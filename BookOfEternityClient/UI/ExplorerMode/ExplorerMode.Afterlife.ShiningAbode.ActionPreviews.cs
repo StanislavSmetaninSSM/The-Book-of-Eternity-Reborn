@@ -288,7 +288,7 @@ public partial class ExplorerMode
         lines.Add("");
         lines.Add("[bold]Контракт закрытия для GM:[/]");
         lines.Add("  • Every `coreActionReceipts[]` entry must include the full validator schema: requestId, actionType, factionId, projectId, relicId, returnCycleId, targetFormTag, quotedCostFeathers, quotedCostLightSparks, selectedCardIds[], newResidentIds[], seededProjectIds[], generatedDraftVersion, status, resolvedAtTurn, resolvedAtUtc, reason.");
-        lines.Add($"  • Echo exact request values: factionId=`{Markup.Escape(request.FactionId)}`, projectId=`{Markup.Escape(request.ProjectId)}`, relicId=`{Markup.Escape(request.RelicId)}`, returnCycleId=`{Markup.Escape(request.ReturnCycleId)}`, targetFormTag=`{Markup.Escape(request.TargetFormTag)}`.");
+        lines.Add($"  • Echo exact request values: factionId=`{Markup.Escape(request.FactionId)}`, projectId=`{Markup.Escape(request.ProjectId)}`, relicId=`{Markup.Escape(request.RelicId)}`, returnCycleId=`{Markup.Escape(request.ReturnCycleId)}`, targetFormTag=`{Markup.Escape(BuildTargetFormTagReceiptScaffoldValue(request))}`.");
         lines.Add($"  • Echo quoted costs exactly: quotedCostFeathers={request.QuotedCostFeathers}, quotedCostLightSparks={request.QuotedCostLightSparks}; do not recompute them in prose.");
         lines.Add("  • For accepted status, canonical state must exactly match the action helper projection.");
         lines.Add("  • For refused/withdrawn status, state remains unchanged except `coreActionReceipts[]`.");
@@ -340,7 +340,7 @@ public partial class ExplorerMode
             ["projectId"] = request.ProjectId,
             ["relicId"] = request.RelicId,
             ["returnCycleId"] = request.ReturnCycleId,
-            ["targetFormTag"] = request.TargetFormTag,
+            ["targetFormTag"] = BuildTargetFormTagReceiptScaffoldValue(request),
             ["quotedCostFeathers"] = request.QuotedCostFeathers,
             ["quotedCostLightSparks"] = request.QuotedCostLightSparks,
             ["selectedCardIds"] = selectedCardIds,
@@ -357,6 +357,8 @@ public partial class ExplorerMode
             receipt["selectedCards"] = CloneShiningJsonForPlayerFacingAudit(selectedCards);
         if (!string.IsNullOrWhiteSpace(request.RelicName))
             receipt["relicName"] = request.RelicName;
+        if (string.Equals(status, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            AddAcceptedGeneratedReceiptScaffoldFields(receipt, request);
         if (request.PropertyIndex >= 0)
             receipt["propertyIndex"] = request.PropertyIndex;
         if (request.ReplacementProperty != null)
@@ -365,6 +367,60 @@ public partial class ExplorerMode
             receipt["addedProperties"] = CloneShiningJsonForPlayerFacingAudit(request.AddedProperties);
 
         return receipt;
+    }
+
+    private static string BuildTargetFormTagReceiptScaffoldValue(ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.TargetFormTag))
+            return string.Empty;
+
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeForgeRelicReshape, StringComparison.OrdinalIgnoreCase))
+            return "copy pending_shining_abode_actions.json.targetFormTag";
+
+        return request.TargetFormTag;
+    }
+
+    private static void AddAcceptedGeneratedReceiptScaffoldFields(
+        JsonObject receipt,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
+        {
+            if (string.IsNullOrWhiteSpace(GetNodeString(receipt["relicId"])))
+                receipt["relicId"] = "generated_shining_relic_id";
+
+            receipt["relicName"] = string.IsNullOrWhiteSpace(request.RelicName)
+                ? "generated Shining Soul Relic name"
+                : request.RelicName;
+            receipt["baseRarity"] = "copy input/turn_request.json.gachaBaseResult.baseRarity";
+            receipt["finalRarity"] = request.ProjectedGachaBonusSteps > 0
+                ? $"baseRarity or higher by <= {request.ProjectedGachaBonusSteps} step(s)"
+                : "same as baseRarity";
+            return;
+        }
+
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction, StringComparison.OrdinalIgnoreCase))
+        {
+            receipt["hallId"] = "generated_native_hall_id";
+            receipt["hallName"] = "generated native hall name";
+            receipt["resolvedFactionId"] = "generated_native_faction_id";
+            receipt["factionName"] = "generated native faction name";
+            receipt["charterSummary"] = "generated native faction charter summary";
+            receipt["favoredArchetype"] = "generated native faction archetype";
+            receipt["patronEffectFamily"] = "generated native faction effect family";
+            receipt["newResidentIds"] = new JsonArray(
+                "generated_ascended_resident_id_1",
+                "generated_ascended_resident_id_2");
+            receipt["newResidentNames"] = new JsonArray(
+                "generated resident name 1",
+                "generated resident name 2");
+            receipt["seededProjectIds"] = new JsonArray(
+                "generated_completed_project_id_1",
+                "generated_completed_project_id_2");
+            receipt["seededProjectNames"] = new JsonArray(
+                "generated completed project name 1",
+                "generated completed project name 2");
+        }
     }
 
     private static int ResolveAcceptedReceiptDraftVersionForPreview(
