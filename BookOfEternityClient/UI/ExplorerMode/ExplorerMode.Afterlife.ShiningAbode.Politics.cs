@@ -662,6 +662,7 @@ public partial class ExplorerMode
 
         if (string.Equals(pendingPath, ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase))
         {
+            var charter = request["charter"] as JsonObject;
             return new JsonObject
             {
                 ["accepted"] = new JsonObject
@@ -689,7 +690,7 @@ public partial class ExplorerMode
                         {
                             ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
                             ["hallName"] = GetNodeString(request["proposedHallName"]) ?? string.Empty,
-                            ["hallDescription"] = GetNodeString(request["proposedHallDescription"]) ?? "copy proposedHallDescription",
+                            ["description"] = GetNodeString(request["proposedHallDescription"]) ?? "copy proposedHallDescription",
                             ["serviceTags"] = CloneShiningJsonForPlayerFacingAudit(request["proposedHallServiceTags"]),
                             ["originType"] = "player_founded",
                             ["factionIds"] = new JsonArray
@@ -705,10 +706,10 @@ public partial class ExplorerMode
                             ["originType"] = "player_founded",
                             ["charter"] = new JsonObject
                             {
-                                ["factionName"] = GetNodeString(request["proposedFactionName"]) ?? GetNodeString(request["proposedHallName"]) ?? "copy proposed faction name",
-                                ["summary"] = GetNodeString(request["factionSummary"]) ?? GetNodeString(request["proposedHallDescription"]) ?? "GM-authored faction charter summary",
-                                ["favoredArchetype"] = GetNodeString(request["favoredProjectArchetype"]) ?? "accord",
-                                ["patronEffectFamily"] = GetNodeString(request["patronEffectFamily"]) ?? "social"
+                                ["factionName"] = GetNodeString(charter?["factionName"]) ?? "copy charter.factionName",
+                                ["summary"] = GetNodeString(charter?["summary"]) ?? "copy charter.summary",
+                                ["favoredArchetype"] = GetNodeString(charter?["favoredArchetype"]) ?? "copy charter.favoredArchetype",
+                                ["patronEffectFamily"] = GetNodeString(charter?["patronEffectFamily"]) ?? "copy charter.patronEffectFamily"
                             },
                             ["baseStrength"] = 35,
                             ["factionStrength"] = 35,
