@@ -23,6 +23,44 @@ public sealed class ExplorerModeAfterlifeAuditSurfaceTests
     }
 
     [Fact]
+    public void MemoryGatesPreviewAuditLines_ExposeExistingLegacyAndCanonicalReplacementSchema()
+    {
+        var soulRoot = new JsonObject
+        {
+            ["pendingMemoryLegacy"] = new JsonObject
+            {
+                ["legacyId"] = "legacy_memory_old",
+                ["legacyType"] = "stat_bonus",
+                ["grantSource"] = "archive",
+                ["applicationState"] = "pending",
+                ["grantSnapshot"] = new JsonObject
+                {
+                    ["sourceTurn"] = 41,
+                    ["sourceActionTag"] = "ARCHIVE"
+                },
+                ["bonus"] = new JsonObject
+                {
+                    ["playerStatBonus"] = 2,
+                    ["characteristic"] = "Wisdom"
+                }
+            }
+        };
+
+        var lines = ExplorerMode.BuildMemoryGatesPreviewAuditLines(24, 120, soulRoot);
+        var text = string.Join("\n", lines);
+
+        Assert.Contains("120 -> 96", text, StringComparison.Ordinal);
+        Assert.Contains("legacy_memory_old", text, StringComparison.Ordinal);
+        Assert.Contains("grantSource=archive", text, StringComparison.Ordinal);
+        Assert.Contains("full before payload", text, StringComparison.Ordinal);
+        Assert.Contains("grantSnapshot", text, StringComparison.Ordinal);
+        Assert.Contains("Canonical after payload schema", text, StringComparison.Ordinal);
+        Assert.Contains("pendingMemoryLegacy.legacyId", text, StringComparison.Ordinal);
+        Assert.Contains("memory_gates", text, StringComparison.Ordinal);
+        Assert.Contains("exactly one mechanical bonus", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AbodeOfferingPreviewAuditLines_ShowConsumedObjectAndPowerDelta()
     {
         var lines = ExplorerMode.BuildAbodeOfferingPreviewAuditLines(

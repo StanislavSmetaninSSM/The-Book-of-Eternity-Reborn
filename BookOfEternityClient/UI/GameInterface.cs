@@ -406,6 +406,17 @@ public class GameInterface
         if (!string.IsNullOrEmpty(state.EnlightenmentTier))
             parts.Add($"[mediumpurple2]✨ {EscapeMarkup(state.EnlightenmentTier)}[/]");
 
+        if (state.IsInShiningAbode)
+        {
+            parts.Add($"[gold1]✨ Radiance: {state.ShiningRadianceExperience} XP / tier {state.ShiningRadianceTier}[/]");
+            parts.Add($"[yellow]✦ Light Sparks: {state.ShiningLightSparks}[/]");
+            parts.Add("[dim]Полный Shining audit: /status или /shining_abode[/]");
+        }
+        else if (state.IsInShiningAbodePendingBootstrap)
+        {
+            parts.Add("[khaki1]✨ Shining handoff: prepared package ожидает TriggerIncarnation[/]");
+        }
+
         var panel = new Panel(ConsoleLayout.CreateFactGrid(parts.ToArray()))
         {
             Border = BoxBorder.Rounded,

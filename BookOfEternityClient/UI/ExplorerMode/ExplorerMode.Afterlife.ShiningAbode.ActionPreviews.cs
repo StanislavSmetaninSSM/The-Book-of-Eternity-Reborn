@@ -416,6 +416,7 @@ public partial class ExplorerMode
             {
                 ["shining_abode_state"] = BuildShiningCoreStateSummaryForPreview(projectedRoot, context.ResidentRoot, request)
             };
+            result["projectedStateFragment"] = BuildShiningCoreProjectedStateFragment(context.Root, projectedRoot, request);
             changedSurfaces.Add("game_state/meta/shining_abode_state.json");
         }
         else
@@ -492,6 +493,53 @@ public partial class ExplorerMode
         }
 
         return result;
+    }
+
+    private static JsonObject BuildShiningCoreProjectedStateFragment(
+        JsonObject beforeRoot,
+        JsonObject projectedRoot,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        var fragment = new JsonObject
+        {
+            ["purpose"] = "Full sanitized before/after Shining state fragment used by GM preview; hidden blessing effectPayload keys are replaced by safeEffectDetails.",
+            ["actionType"] = request.ActionType,
+            ["beforeFullShiningRoot"] = CloneShiningJsonForPlayerFacingAudit(beforeRoot),
+            ["afterFullShiningRoot"] = CloneShiningJsonForPlayerFacingAudit(projectedRoot)
+        };
+
+        if (beforeRoot["gates"] is JsonObject || projectedRoot["gates"] is JsonObject)
+        {
+            fragment["gates"] = new JsonObject
+            {
+                ["before"] = CloneShiningJsonForPlayerFacingAudit(beforeRoot["gates"]),
+                ["after"] = CloneShiningJsonForPlayerFacingAudit(projectedRoot["gates"])
+            };
+        }
+
+        var beforeFaction = FindShiningFactionForPreview(beforeRoot, request.FactionId);
+        var afterFaction = FindShiningFactionForPreview(projectedRoot, request.FactionId);
+        if (beforeFaction != null || afterFaction != null)
+        {
+            fragment["targetFaction"] = new JsonObject
+            {
+                ["before"] = CloneShiningJsonForPlayerFacingAudit(beforeFaction),
+                ["after"] = CloneShiningJsonForPlayerFacingAudit(afterFaction)
+            };
+        }
+
+        var beforeProject = FindShiningProjectForPreview(beforeRoot, request.FactionId, request.ProjectId);
+        var afterProject = FindShiningProjectForPreview(projectedRoot, request.FactionId, request.ProjectId);
+        if (beforeProject != null || afterProject != null)
+        {
+            fragment["targetProject"] = new JsonObject
+            {
+                ["before"] = CloneShiningJsonForPlayerFacingAudit(beforeProject),
+                ["after"] = CloneShiningJsonForPlayerFacingAudit(afterProject)
+            };
+        }
+
+        return fragment;
     }
 
     private static JsonObject BuildShiningCoreStateSummaryForPreview(

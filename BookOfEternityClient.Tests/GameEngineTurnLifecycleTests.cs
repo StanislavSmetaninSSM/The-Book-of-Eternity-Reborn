@@ -568,7 +568,9 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             item.Contains(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) &&
             item.Contains("trade-request-1", StringComparison.OrdinalIgnoreCase) &&
             item.Contains("shining_return_4", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(ShiningFactionRequestState.PendingFoundingsRequestPath, blockingPaths);
+        Assert.Contains(blockingPaths, item =>
+            item.Contains(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) &&
+            item.Contains("malformed", StringComparison.OrdinalIgnoreCase));
         Assert.True(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
         Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
     }

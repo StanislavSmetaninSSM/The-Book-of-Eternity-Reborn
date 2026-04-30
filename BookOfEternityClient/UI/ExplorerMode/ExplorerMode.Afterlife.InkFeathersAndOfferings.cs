@@ -757,6 +757,8 @@ public partial class ExplorerMode
                 else if (choice.Contains("Попросить об услуге"))
                     await HandleGuardianFavor(feathers);
                 else if (choice.Contains("Открыть Врата Памяти"))
+                {
+                    var currentSoulRoot = await ReadSoulRootForInkFeatherPreviewAsync();
                     await HandleGmFeatherAction(feathers,
                         Math.Max(15, (int)(feathers * 0.20)),
                         "🧠 Открыть Врата Памяти",
@@ -765,14 +767,9 @@ public partial class ExplorerMode
                             "Выбери ровно один механический бонус: либо +2 к одной стартовой характеристике, либо один новый пассивный навык знаний. " +
                             "Запиши structured metaStateUpdates.memoryLegacyGrant и замени старое наследие, если оно уже существовало. " +
                             "Перья уже списаны клиентом.",
-                        cost => new[]
-                        {
-                            "Результат: создаётся active pendingMemoryLegacy для следующей смертной жизни.",
-                            "Разрешён ровно один механический бонус: +2 к одной стартовой характеристике ИЛИ один пассивный Knowledge-навык.",
-                            "GM обязан писать structured metaStateUpdates.memoryLegacyGrant; canonical pendingMemoryLegacy должен быть его projection.",
-                            "Если уже есть active pendingMemoryLegacy, новая трата заменяет старое наследие, а не складывается с ним."
-                        },
+                        cost => BuildMemoryGatesPreviewAuditLines(cost, feathers, currentSoulRoot),
                         _ => "Будет создано или заменено одно наследие памяти для следующей жизни.");
+                }
                 else if (choice.Contains("Создать Слепок Души"))
                     await HandleGmFeatherAction(feathers,
                         Math.Max(100, (int)(feathers * 0.50)),
@@ -788,6 +785,56 @@ public partial class ExplorerMode
             // If a GM action was set, break out of the loop
             if (_pendingGmAction != null) return;
         }
+    }
+
+    private async Task<JsonObject?> ReadSoulRootForInkFeatherPreviewAsync()
+    {
+        var raw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(raw))
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(raw) as JsonObject;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    internal static IReadOnlyList<string> BuildMemoryGatesPreviewAuditLines(int costInFeathers, int currentFeathers, JsonObject? currentSoulRoot)
+    {
+        var lines = new List<string>
+        {
+            "Результат: создаётся active pendingMemoryLegacy для следующей смертной жизни.",
+            "Разрешён ровно один механический бонус: +2 к одной стартовой характеристике ИЛИ один пассивный Knowledge-навык.",
+            "GM обязан писать structured metaStateUpdates.memoryLegacyGrant; canonical pendingMemoryLegacy должен быть его projection.",
+            $"Чернильные Перья: {currentFeathers} -> {Math.Max(0, currentFeathers - costInFeathers)}.",
+            "Если уже есть active pendingMemoryLegacy, новая трата заменяет старое наследие, а не складывается с ним."
+        };
+
+        if (currentSoulRoot?["pendingMemoryLegacy"] is JsonObject existingLegacy)
+        {
+            lines.Add("Текущее наследие перед заменой:");
+            lines.Add($"  legacyId={GetNodeString(existingLegacy["legacyId"]) ?? "unknown"}; legacyType={GetNodeString(existingLegacy["legacyType"]) ?? "unknown"}; grantSource={GetNodeString(existingLegacy["grantSource"]) ?? "unknown"}; applicationState={GetNodeString(existingLegacy["applicationState"]) ?? "unknown"}.");
+            lines.Add($"  full before payload={existingLegacy.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed).Replace("\r", "").Replace("\n", " ")}");
+        }
+        else
+        {
+            lines.Add("Текущее наследие перед созданием: pendingMemoryLegacy отсутствует; это первое наследие памяти.");
+        }
+
+        lines.Add("Canonical after payload schema:");
+        lines.Add("  pendingMemoryLegacy.legacyId: new non-empty id.");
+        lines.Add("  pendingMemoryLegacy.legacyType: stat_bonus или knowledge_skill.");
+        lines.Add("  pendingMemoryLegacy.grantSource: memory_gates.");
+        lines.Add("  pendingMemoryLegacy.applicationState: pending.");
+        lines.Add("  pendingMemoryLegacy.grantSnapshot: source turn/request/cost plus selected bonus.");
+        lines.Add("  pendingMemoryLegacy.bonus: exactly one mechanical bonus (+2 stat OR one passive Knowledge skill).");
+        lines.Add("  source ids/context: carry sourceLifeHint/sourceGuardianId/sourceActionTag when known.");
+
+        return lines;
     }
 
     internal static IReadOnlyList<string> BuildSoulImprintPreviewAuditLines(int costInFeathers, int currentFeathers)
@@ -2294,8 +2341,15 @@ public partial class ExplorerMode
             "",
             "Пороги: 4-48 Common, 49-67 Uncommon, 68-75 Rare, 76-79 Epic, 80 Legendary.",
             "Итог direct /gacha: finalRarity должен точно совпасть с baseRarity. Апгрейдов, даунгрейдов и guardian modifiers нет.",
-            "GM материализует ровно одну новую Soul Relic, не удаляет существующие реликвии и не списывает Чернильные Перья второй раз."
+            "GM материализует ровно одну новую Soul Relic, не удаляет существующие реликвии и не списывает Чернильные Перья второй раз.",
+            "",
+            "[bold]Before/after authority:[/]",
+            $"  • Чернильные Перья: {feathers} -> {feathers - inputCost}; это уже сделает клиент до отправки GM.",
+            "  • Soul Relics before: validator берёт pre-turn snapshot из game_state/control/pending_turn_snapshot.",
+            "  • Soul Relics after: ровно один новый relicId в soulRelics.stored/equipped; unrelated soul fields unchanged.",
+            "  • Accepted response proof: metaStateUpdates.soulRelicOperations.addRelic plus direct_chaos_gacha_result receipt data."
         };
+        AppendChaosSeaCommonContractRules(mechanicsLines);
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", mechanicsLines)))
         {
             Header = new PanelHeader(" Механика direct /gacha ", Justify.Center),
@@ -2314,7 +2368,20 @@ public partial class ExplorerMode
                 ("projectedFeathers", feathers - inputCost),
                 ("baseScore", gacha.BaseScore),
                 ("baseRarity", baseRarity),
-                ("formula", gacha.Formula ?? "client-computed gacha base (range 4-80)")),
+                ("formula", gacha.Formula ?? "client-computed gacha base (range 4-80)"),
+                ("snapshotAuthorityPath", "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json"),
+                ("acceptedPreTurnAuthority", "validated snapshot soul_state before GM output"),
+                ("expectedSoulRelicDelta", "append exactly one new Soul Relic; do not delete, replace, or mutate existing relics"),
+                ("forbiddenSurfaces", new JsonArray
+                {
+                    "TriggerLifeEnd",
+                    "TriggerIncarnation",
+                    "currentLocationData",
+                    "worldEventsLog",
+                    "UpdateNPCs",
+                    "Mortal World factions",
+                    "second Ink Feather spend"
+                })),
             Color.Gold1);
 
         var costDisplay = $"{inputCost} 🪶 (останется {feathers - inputCost})";

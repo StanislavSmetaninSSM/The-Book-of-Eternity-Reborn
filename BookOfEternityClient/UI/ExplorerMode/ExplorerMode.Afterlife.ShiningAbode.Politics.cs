@@ -689,16 +689,35 @@ public partial class ExplorerMode
                         {
                             ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
                             ["hallName"] = GetNodeString(request["proposedHallName"]) ?? string.Empty,
+                            ["hallDescription"] = GetNodeString(request["proposedHallDescription"]) ?? "copy proposedHallDescription",
                             ["serviceTags"] = CloneShiningJsonForPlayerFacingAudit(request["proposedHallServiceTags"]),
-                            ["originType"] = "player_founded"
+                            ["originType"] = "player_founded",
+                            ["factionIds"] = new JsonArray
+                            {
+                                GetNodeString(request["proposedFactionId"]) ?? string.Empty
+                            },
+                            ["createdByRequestId"] = GetNodeString(request["requestId"]) ?? string.Empty
                         },
                         ["factions.add"] = new JsonObject
                         {
                             ["factionId"] = GetNodeString(request["proposedFactionId"]) ?? string.Empty,
                             ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
                             ["originType"] = "player_founded",
+                            ["charter"] = new JsonObject
+                            {
+                                ["factionName"] = GetNodeString(request["proposedFactionName"]) ?? GetNodeString(request["proposedHallName"]) ?? "copy proposed faction name",
+                                ["summary"] = GetNodeString(request["factionSummary"]) ?? GetNodeString(request["proposedHallDescription"]) ?? "GM-authored faction charter summary",
+                                ["favoredArchetype"] = GetNodeString(request["favoredProjectArchetype"]) ?? "accord",
+                                ["patronEffectFamily"] = GetNodeString(request["patronEffectFamily"]) ?? "social"
+                            },
                             ["baseStrength"] = 35,
                             ["factionStrength"] = 35,
+                            ["investCountThisAscension"] = 0,
+                            ["projectArchetypesCountedThisAscension"] = new JsonArray(),
+                            ["projects"] = new JsonArray(),
+                            ["tradeInventoryReceipts"] = new JsonArray(),
+                            ["leadershipReceipts"] = new JsonArray(),
+                            ["leadershipHistory"] = new JsonArray(),
                             ["leadership"] = new JsonObject
                             {
                                 ["headActorType"] = "player_soul",
@@ -706,7 +725,22 @@ public partial class ExplorerMode
                                 ["leadershipState"] = "secure"
                             }
                         },
-                        ["residents.update"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"])
+                        ["residents.update"] = new JsonObject
+                        {
+                            ["supportingResidentIds"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"]),
+                            ["requiredPerResidentFields"] = new JsonArray
+                            {
+                                "residentId",
+                                "ascensionState=ascended",
+                                "shiningFactionId=proposedFactionId",
+                                "residentRole",
+                                "factionLoyaltyLevel",
+                                "factionLoyaltyTier",
+                                "factionRestlessness",
+                                "factionRealignmentState"
+                            },
+                            ["beforeAfterRule"] = "each supporter remains the same resident object but gains canonical Shining faction binding to the new faction"
+                        }
                     }
                 },
                 ["refusedOrWithdrawn"] = new JsonObject

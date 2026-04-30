@@ -1567,6 +1567,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("metaStateUpdates.memoryLegacyGrant", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("pendingMemoryLegacy", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("заменяет старое наследие", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Canonical after payload schema", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("grantSnapshot", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("applicationState: pending", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1597,6 +1600,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("finalRarity должен точно совпасть с baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ровно одну новую Soul Relic", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("не списывает Чернильные Перья второй раз", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_turn_snapshot", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("TriggerLifeEnd", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("не ниже baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -6566,6 +6571,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("/status", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("локальные Врата", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("expected state delta", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Карта аудита Shining", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("full/canonical JSON", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("trade lifecycle", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("New Game+ reset", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -6589,6 +6597,46 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_Status_ChaosSeaShowsFullPendingContractAudit()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 },
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = Array.Empty<object>()
+            },
+            pendingMemoryLegacy = new
+            {
+                legacyId = "legacy_status_001",
+                legacyType = "knowledge_skill",
+                grantSource = "memory_gates",
+                applicationState = "pending",
+                skillName = "Echo Cartography",
+                grantSnapshot = new
+                {
+                    requestId = "memory_gates_status_001",
+                    costInFeathers = 24
+                }
+            },
+            soulImprint = new
+            {
+                imprintId = "imprint_status_001",
+                sourceCompanionId = "companion_status_001",
+                companionName = "Лиора",
+                summary = "Будущий спутник помнит берег Моря Хаоса.",
+                futureCompanionPrompt = "Лиора должна вернуться как проводник через туман.",
+                coreTraits = new[] { "верность", "память" },
+                relationshipMarkers = new[] { "saved_at_sea" },
+                sourceProvenance = new
+                {
+                    sourceRealm = "Chaos Sea",
+                    sourceTurn = 12
+                }
+            }
+        });
         await WriteJsonAsync(GuardianAbodeOfferingState.PendingRequestPath, new
         {
             requestId = "offering_status_001",
@@ -6614,6 +6662,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("offering_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("full payload", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/afterlife_inbox", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Next-life payloads", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("legacy_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Echo Cartography", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("imprint_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("futureCompanionPrompt", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sourceProvenance", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -6631,6 +6685,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Radiance", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Light Sparks", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("draftVersion", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Selected blessing cards", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тропа возвращения", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("effect:", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("pending_shining_trade_inventory_requests.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("shining_trade_memory_7", renderedText, StringComparison.OrdinalIgnoreCase);
     }
