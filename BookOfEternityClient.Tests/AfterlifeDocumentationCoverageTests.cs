@@ -71,6 +71,31 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningClosureCompositeDiffRulesAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var doc in new[] { matrix, examples })
+        {
+            Assert.Contains("game_state/control/pending_turn_snapshot", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/meta/shining_abode_state.json", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/meta/guardian_abode_residents.json", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/meta/soul_state.json", doc, StringComparison.Ordinal);
+            Assert.Contains("shining_closure_missing_pre_turn_shining_state", doc, StringComparison.Ordinal);
+            Assert.Contains("shining_closure_missing_pre_turn_resident_state", doc, StringComparison.Ordinal);
+            Assert.Contains("shining_closure_missing_pre_turn_soul_state", doc, StringComparison.Ordinal);
+            Assert.Contains("shining_closure_unexpected_shining_state_diff", doc, StringComparison.Ordinal);
+            Assert.Contains("shining_closure_unexpected_resident_state_diff", doc, StringComparison.Ordinal);
+            Assert.Contains("shining_closure_unexpected_soul_state_diff", doc, StringComparison.Ordinal);
+            Assert.Contains("ABODE_OFFERING", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("shining_closure composite diff rules", manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ShiningPoliticalActorsAreDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
