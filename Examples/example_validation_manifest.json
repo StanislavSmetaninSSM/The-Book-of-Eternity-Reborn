@@ -428,6 +428,41 @@
       ]
     },
     {
+      "id": "afterlife_guardian_project_sabotage_power_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "guardian_project_update_sabotage_example_001",
+        "\"sabotageAudit\"",
+        "\"reasonType\": \"rival_strike\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardian_projects.json",
+        "game_state/meta/guardians.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardian_projects.json",
+          "requiredText": [
+            "\"projectId\": \"gproj_azalia_silk_hall_001\"",
+            "\"sabotageAudit\"",
+            "\"sabotageSeverityScore\": 6",
+            "\"classification\": \"major sabotage\""
+          ]
+        },
+        {
+          "path": "game_state/meta/guardians.json",
+          "requiredText": [
+            "guardian_project_update_sabotage_example_001",
+            "\"reasonType\": \"rival_strike\"",
+            "\"sourceSurface\": \"guardianProjectUpdates\"",
+            "\"delta\": -2",
+            "\"relatedGuardianId\": \"guard_rival_morren_002\""
+          ]
+        }
+      ]
+    },
+    {
       "id": "afterlife_ordinary_chaos_incarnation_response",
       "file": "E_CLI_Afterlife_Turns.txt",
       "runner": "gameResponseDistribution",
@@ -529,6 +564,67 @@
           "requiredText": [
             "\"reasonType\": \"offering\"",
             "\"sourceSurface\": \"guardianAbodeOffering\"",
+            "\"delta\": 2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_abode_offering_soul_relic_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "abode_offering_azalia_soul_relic_return_5",
+        "\"offeringType\": \"soul_relic\"",
+        "\"relicId\": \"soul_relic_lantern_memory_rare_001\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardians.json"
+      ],
+      "expectedFilesAbsent": [
+        "output/ink_feather_action_result.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardians.json",
+          "requiredText": [
+            "abode_offering_azalia_soul_relic_return_5",
+            "\"reasonType\": \"offering\"",
+            "\"sourceSurface\": \"guardianAbodeOffering\"",
+            "\"offeringType\": \"soul_relic\"",
+            "\"relicId\": \"soul_relic_lantern_memory_rare_001\"",
+            "\"relicRarity\": \"Rare\"",
+            "\"delta\": 2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_abode_offering_archive_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "abode_offering_azalia_archive_return_5",
+        "\"offeringType\": \"archive_lore_fragment\"",
+        "\"archiveEntryType\": \"lore_fragment\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/guardians.json"
+      ],
+      "expectedFilesAbsent": [
+        "output/ink_feather_action_result.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardians.json",
+          "requiredText": [
+            "abode_offering_azalia_archive_return_5",
+            "\"reasonType\": \"offering\"",
+            "\"sourceSurface\": \"guardianAbodeOffering\"",
+            "\"offeringType\": \"archive_lore_fragment\"",
+            "\"archiveId\": \"archive_life_7_broken_oath\"",
+            "\"archiveEntryType\": \"lore_fragment\"",
+            "\"archiveRarity\": \"Rare\"",
             "\"delta\": 2"
           ]
         }
@@ -1113,7 +1209,8 @@
     {
       "exampleNumber": 5,
       "runtimeScenarioIds": [
-        "afterlife_archive_consultation_project_fuel_response"
+        "afterlife_archive_consultation_project_fuel_response",
+        "afterlife_guardian_project_sabotage_power_response"
       ]
     },
     {
@@ -1132,7 +1229,9 @@
     {
       "exampleNumber": 8,
       "runtimeScenarioIds": [
-        "afterlife_abode_offering_response"
+        "afterlife_abode_offering_response",
+        "afterlife_abode_offering_soul_relic_response",
+        "afterlife_abode_offering_archive_response"
       ]
     },
     {

@@ -89,6 +89,13 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("quotedCostLightSparks = 0", matrix, StringComparison.Ordinal);
         Assert.Contains("\"quotedCostFeathers\": 0", examples, StringComparison.Ordinal);
         Assert.Contains("\"quotedCostLightSparks\": 0", examples, StringComparison.Ordinal);
+
+        var commonReceiptSkeleton = ExtractRequiredSection(
+            examples,
+            "Common accepted receipt fields for every Shining core action:",
+            "Important receipt rules:");
+        Assert.Contains("\"quotedCostFeathers\": 0", commonReceiptSkeleton, StringComparison.Ordinal);
+        Assert.Contains("\"quotedCostLightSparks\": 0", commonReceiptSkeleton, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -142,7 +149,8 @@ public sealed class AfterlifeDocumentationCoverageTests
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
-        var combined = matrix + examples;
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var combined = matrix + examples + manifest;
 
         foreach (var term in new[]
         {
@@ -159,7 +167,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             "DamageAchieved",
             "PlayerComplicity",
             "sabotageSeverityScore",
-            "grand strike"
+            "grand strike",
+            "guardian_project_update_sabotage_example_001",
+            "afterlife_guardian_project_sabotage_power_response"
         })
         {
             Assert.Contains(term, combined, StringComparison.Ordinal);
@@ -182,7 +192,11 @@ public sealed class AfterlifeDocumentationCoverageTests
             "guardianAbodeOffering",
             "guardianPowerEvents",
             "Do not write `output/ink_feather_action_result.json`",
-            "afterlife_abode_offering_response"
+            "afterlife_abode_offering_response",
+            "afterlife_abode_offering_soul_relic_response",
+            "afterlife_abode_offering_archive_response",
+            "abode_offering_azalia_soul_relic_return_5",
+            "abode_offering_azalia_archive_return_5"
         })
         {
             Assert.Contains(term, combined, StringComparison.Ordinal);
@@ -928,6 +942,9 @@ public sealed class AfterlifeDocumentationCoverageTests
         var apiSpec = ReadRepoFile("CLI_API_Specification.md");
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var launcherGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
+        var launcherGenerated = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
 
         foreach (var doc in new[] { matrix, apiSpec, daemonSpec, examples })
         {
@@ -949,6 +966,16 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("preparedIncarnationPackage", doc, StringComparison.Ordinal);
             Assert.Contains("system_guardian_attraction.json", doc, StringComparison.Ordinal);
         }
+
+        foreach (var doc in new[] { matrix, apiSpec, examples, taskGuide, launcherGenerator, launcherGenerated })
+        {
+            Assert.Contains("availability = active", doc, StringComparison.Ordinal);
+            Assert.Contains("preparedIncarnationPackage", doc, StringComparison.Ordinal);
+        }
+
+        Assert.DoesNotContain("availability = active` or another accepted value", examples, StringComparison.Ordinal);
+        Assert.DoesNotContain("preparedIncarnationPackage = null` → Active Shining Abode", launcherGenerator, StringComparison.Ordinal);
+        Assert.DoesNotContain("preparedIncarnationPackage = null` → Active Shining Abode", launcherGenerated, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1326,6 +1353,18 @@ public sealed class AfterlifeDocumentationCoverageTests
             "pending_archive_project_fuel_request.json" or
             "pending_player_guardian_foundation.json" or
             "pending_resident_companion_manifestation_request.json";
+
+    private static string ExtractRequiredSection(string text, string startMarker, string endMarker)
+    {
+        var start = text.IndexOf(startMarker, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Missing section start marker: {startMarker}");
+
+        start += startMarker.Length;
+        var end = text.IndexOf(endMarker, start, StringComparison.Ordinal);
+        Assert.True(end >= 0, $"Missing section end marker: {endMarker}");
+
+        return text[start..end];
+    }
 
     private static string ReadRepoFile(params string[] parts) =>
         File.ReadAllText(Path.Combine(new[] { TestRepoPaths.RepoRoot }.Concat(parts).ToArray()));
