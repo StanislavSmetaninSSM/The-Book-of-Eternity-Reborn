@@ -69,6 +69,23 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Null(receipt["finalRarity"]);
     }
 
+    [Fact]
+    public void AcceptedForgeReshapeReceiptScaffold_EchoesExactTargetFormTag()
+    {
+        var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+        {
+            RequestId = "core_forge_reshape_preview",
+            ActionType = ShiningCoreActionRequestState.ActionTypeForgeRelicReshape,
+            RelicId = "relic_routeglass",
+            RelicName = "Стекло Пути",
+            TargetFormTag = "solar_crown"
+        };
+
+        var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusAccepted);
+
+        Assert.Equal("solar_crown", GetString(receipt["targetFormTag"]));
+    }
+
     private static JsonObject BuildReceiptScaffold(
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
         string status)

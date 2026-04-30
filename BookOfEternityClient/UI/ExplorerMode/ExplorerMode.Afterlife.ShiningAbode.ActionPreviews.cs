@@ -340,7 +340,7 @@ public partial class ExplorerMode
             ["projectId"] = request.ProjectId,
             ["relicId"] = request.RelicId,
             ["returnCycleId"] = request.ReturnCycleId,
-            ["targetFormTag"] = BuildTargetFormTagReceiptScaffoldValue(request),
+            ["targetFormTag"] = request.TargetFormTag ?? string.Empty,
             ["quotedCostFeathers"] = request.QuotedCostFeathers,
             ["quotedCostLightSparks"] = request.QuotedCostLightSparks,
             ["selectedCardIds"] = selectedCardIds,
@@ -373,9 +373,6 @@ public partial class ExplorerMode
     {
         if (string.IsNullOrWhiteSpace(request.TargetFormTag))
             return string.Empty;
-
-        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeForgeRelicReshape, StringComparison.OrdinalIgnoreCase))
-            return "copy pending_shining_abode_actions.json.targetFormTag";
 
         return request.TargetFormTag;
     }
