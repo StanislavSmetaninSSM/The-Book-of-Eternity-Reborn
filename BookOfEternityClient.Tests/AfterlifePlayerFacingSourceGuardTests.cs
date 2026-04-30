@@ -29,6 +29,9 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("BuildMemoryGatesPreviewAuditLines", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("full before payload", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("Canonical after payload schema", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("sourceLifeHint: required non-empty", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("non-empty playerStatBonus", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("group=Knowledge", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("snapshotAuthorityPath", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("acceptedPreTurnAuthority", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("expectedSoulRelicDelta", inkFeathers, StringComparison.Ordinal);
@@ -53,6 +56,7 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("DescribeBlockingShiningPendingContractAsync", mainMenu, StringComparison.Ordinal);
         Assert.Contains("DescribeShiningPendingClosure", mainMenu, StringComparison.Ordinal);
         Assert.Contains("BuildShiningPendingBlockerIdentitySummary", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("missing requests[] array", mainMenu, StringComparison.Ordinal);
         Assert.Contains("requestId=", mainMenu, StringComparison.Ordinal);
         Assert.Contains("закрытие:", mainMenu, StringComparison.Ordinal);
         Assert.Contains("full payload", mainMenu, StringComparison.Ordinal);

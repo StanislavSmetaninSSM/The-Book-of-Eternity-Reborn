@@ -831,12 +831,13 @@ public partial class ExplorerMode
         lines.Add("Canonical after payload schema:");
         lines.Add("  pendingMemoryLegacy.legacyId: new non-empty id.");
         lines.Add("  pendingMemoryLegacy.legacyType: startingCharacteristicBonus или startingPassiveKnowledgeSkill.");
+        lines.Add("  pendingMemoryLegacy.sourceLifeHint: required non-empty source-life summary; grantSnapshot.sourceLifeHint must match structured metaStateUpdates.memoryLegacyGrant.sourceLifeHint.");
         lines.Add("  pendingMemoryLegacy.grantSource: memoryLegacyGrant.");
         lines.Add("  pendingMemoryLegacy.applicationState: pending.");
-        lines.Add("  pendingMemoryLegacy.grantSnapshot: exact structured metaStateUpdates.memoryLegacyGrant object, including legacyId, legacyType, source turn/request/cost and selected bonus.");
+        lines.Add("  pendingMemoryLegacy.grantSnapshot: exact structured metaStateUpdates.memoryLegacyGrant object, including legacyId, legacyType, sourceLifeHint, source turn/request/cost and selected bonus.");
         lines.Add("  pendingMemoryLegacy for startingCharacteristicBonus: characteristic plus bonus=2.");
-        lines.Add("  pendingMemoryLegacy for startingPassiveKnowledgeSkill: skillName, skillDescription, group=Knowledge and non-empty structuredBonuses.");
-        lines.Add("  source ids/context: carry sourceLifeHint/sourceGuardianId/sourceActionTag when known.");
+        lines.Add("  pendingMemoryLegacy for startingPassiveKnowledgeSkill: skillName, skillDescription, group=Knowledge, non-empty playerStatBonus and non-empty structuredBonuses.");
+        lines.Add("  optional source ids/context: carry sourceGuardianId/sourceActionTag when known.");
 
         return lines;
     }

@@ -557,6 +557,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             }
         });
         await _fs.WriteFileAtomicAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, "{ malformed");
+        await WriteJsonAsync(ShiningFactionRequestState.PendingRealignmentsRequestPath, new { });
 
         var engine = CreateGameEngine();
 
@@ -571,8 +572,16 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains(blockingPaths, item =>
             item.Contains(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) &&
             item.Contains("malformed", StringComparison.OrdinalIgnoreCase));
+        var wrongShapeBlocker = Assert.Single(
+            blockingPaths,
+            item => item.Contains(ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("missing requests[] array", wrongShapeBlocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("repair", wrongShapeBlocker, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("active Shining pending contract", wrongShapeBlocker, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("root full payload", wrongShapeBlocker, StringComparison.OrdinalIgnoreCase);
         Assert.True(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
         Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
+        Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingRealignmentsRequestPath));
     }
 
     [Fact]

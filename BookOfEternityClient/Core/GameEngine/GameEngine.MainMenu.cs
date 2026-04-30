@@ -1867,10 +1867,14 @@ public partial class GameEngine
             if (JsonNode.Parse(json) is not JsonObject root)
                 return $"{path}: malformed Shining pending contract root\n  закрытие: repair JSON object before Soul Gates";
 
+            if (root["requests"] is not JsonArray requests)
+                return $"{path}: malformed Shining pending contract root: missing requests[] array\n  закрытие: repair or remove the malformed file before Soul Gates";
+
+            if (requests.Count == 0)
+                return $"{path}: empty Shining pending contract\n  закрытие: repair or remove the empty file before Soul Gates";
+
             var closure = DescribeShiningPendingClosure(path);
-            var payloads = root["requests"] is JsonArray requests && requests.Count > 0
-                ? requests.Select((node, index) => (Node: node as JsonObject, Index: (int?)index)).ToArray()
-                : new[] { (Node: root, Index: (int?)null) };
+            var payloads = requests.Select((node, index) => (Node: node as JsonObject, Index: (int?)index)).ToArray();
 
             var lines = new List<string>
             {

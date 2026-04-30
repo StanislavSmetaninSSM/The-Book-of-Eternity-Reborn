@@ -1573,9 +1573,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("startingCharacteristicBonus", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("startingPassiveKnowledgeSkill", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("memoryLegacyGrant", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sourceLifeHint", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("group=Knowledge", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("playerStatBonus", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("optional source ids/context", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("stat_bonus", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("knowledge_skill", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("grantSource: memory_gates", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("source ids/context: carry sourceLifeHint", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

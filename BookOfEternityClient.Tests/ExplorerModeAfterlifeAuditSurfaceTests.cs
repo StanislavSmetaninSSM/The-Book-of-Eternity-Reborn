@@ -59,11 +59,16 @@ public sealed class ExplorerModeAfterlifeAuditSurfaceTests
         Assert.Contains("startingCharacteristicBonus", text, StringComparison.Ordinal);
         Assert.Contains("startingPassiveKnowledgeSkill", text, StringComparison.Ordinal);
         Assert.Contains("memoryLegacyGrant", text, StringComparison.Ordinal);
+        Assert.Contains("sourceLifeHint", text, StringComparison.Ordinal);
+        Assert.Contains("group=Knowledge", text, StringComparison.Ordinal);
+        Assert.Contains("playerStatBonus", text, StringComparison.Ordinal);
         Assert.Contains("bonus=2", text, StringComparison.Ordinal);
         Assert.Contains("structuredBonuses", text, StringComparison.Ordinal);
+        Assert.Contains("optional source ids/context", text, StringComparison.Ordinal);
         Assert.DoesNotContain("stat_bonus", text, StringComparison.Ordinal);
         Assert.DoesNotContain("knowledge_skill", text, StringComparison.Ordinal);
         Assert.DoesNotContain("grantSource: memory_gates", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("source ids/context: carry sourceLifeHint", text, StringComparison.Ordinal);
     }
 
     [Fact]
