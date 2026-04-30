@@ -29,6 +29,10 @@ public partial class ExplorerMode
 
         var requestAudit = JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) as JsonObject;
         WriteJsonAuditPanel("Полный JSON pending_shining_abode_actions.json.requests[0]", requestAudit, Color.Gold1);
+        WriteJsonAuditPanel(
+            "Ожидаемый каркас coreActionReceipts[] (скрытые runtime details удалены)",
+            BuildShiningCoreExpectedReceiptAuditNode(context, request),
+            Color.Gold1);
 
         var choice = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]{Markup.Escape(confirmationTitle)}[/]")
@@ -283,17 +287,160 @@ public partial class ExplorerMode
     {
         lines.Add("");
         lines.Add("[bold]Контракт закрытия для GM:[/]");
-        lines.Add("  • Required receipt fields: requestId, actionType, status, resolvedAtTurn, resolvedAtUtc.");
+        lines.Add("  • Every `coreActionReceipts[]` entry must include the full validator schema: requestId, actionType, factionId, projectId, relicId, returnCycleId, targetFormTag, quotedCostFeathers, quotedCostLightSparks, selectedCardIds[], newResidentIds[], seededProjectIds[], generatedDraftVersion, status, resolvedAtTurn, resolvedAtUtc, reason.");
+        lines.Add($"  • Echo exact request values: factionId=`{Markup.Escape(request.FactionId)}`, projectId=`{Markup.Escape(request.ProjectId)}`, relicId=`{Markup.Escape(request.RelicId)}`, returnCycleId=`{Markup.Escape(request.ReturnCycleId)}`, targetFormTag=`{Markup.Escape(BuildTargetFormTagReceiptScaffoldValue(request))}`.");
+        lines.Add($"  • Echo quoted costs exactly: quotedCostFeathers={request.QuotedCostFeathers}, quotedCostLightSparks={request.QuotedCostLightSparks}; do not recompute them in prose.");
         lines.Add("  • For accepted status, canonical state must exactly match the action helper projection.");
         lines.Add("  • For refused/withdrawn status, state remains unchanged except `coreActionReceipts[]`.");
         lines.Add("  • `pending_shining_abode_actions.json` is client-owned input; GM must not rewrite it as output.");
 
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction, StringComparison.OrdinalIgnoreCase))
+            lines.Add("  • discover_native_faction accepted receipt must fill newResidentIds[] and seededProjectIds[] with every materialized resident/project id; refused/withdrawn keeps both arrays empty.");
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeOpenGates, StringComparison.OrdinalIgnoreCase))
+            lines.Add("  • open_gates accepted receipt must set generatedDraftVersion to the new positive gates.draftVersion; refused/withdrawn may keep generatedDraftVersion=0.");
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage, StringComparison.OrdinalIgnoreCase))
-            lines.Add("  • prepare receipt must include selectedCardIds and selectedCards snapshot matching the frozen package.");
+            lines.Add("  • prepare receipt must include selectedCardIds[] and selectedCards snapshot matching the frozen package, with generatedDraftVersion equal to sourceDraftVersion.");
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
             lines.Add("  • gacha receipt must include baseRarity, finalRarity, relicId, relicName and returnCycleId.");
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeCompleteProject, StringComparison.OrdinalIgnoreCase) &&
+            string.IsNullOrWhiteSpace(request.ProjectId))
+            lines.Add("  • complete_project accepted receipt must fill projectId with the new generated completed project id; refused/withdrawn keeps projectId empty.");
         if (ShiningAbodeState.IsForgeActionType(request.ActionType))
             lines.Add("  • forge receipt must echo relicId/relicName and mutation fields such as targetFormTag/propertyIndex/replacementProperty/addedProperties.");
+    }
+
+    private static JsonObject BuildShiningCoreExpectedReceiptAuditNode(
+        ShiningContext context,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        return new JsonObject
+        {
+            ["accepted"] = BuildShiningCoreExpectedReceiptAuditNode(
+                request,
+                status: "accepted",
+                generatedDraftVersion: ResolveAcceptedReceiptDraftVersionForPreview(context, request)),
+            ["refusedOrWithdrawn"] = BuildShiningCoreExpectedReceiptAuditNode(
+                request,
+                status: "refused|withdrawn",
+                generatedDraftVersion: 0)
+        };
+    }
+
+    private static JsonObject BuildShiningCoreExpectedReceiptAuditNode(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        string status,
+        int generatedDraftVersion)
+    {
+        var selectedCardIds = new JsonArray(request.SelectedCardIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Select(id => (JsonNode?)id)
+            .ToArray());
+        var receipt = new JsonObject
+        {
+            ["requestId"] = request.RequestId,
+            ["actionType"] = request.ActionType,
+            ["factionId"] = request.FactionId,
+            ["projectId"] = request.ProjectId,
+            ["relicId"] = request.RelicId,
+            ["returnCycleId"] = request.ReturnCycleId,
+            ["targetFormTag"] = request.TargetFormTag ?? string.Empty,
+            ["quotedCostFeathers"] = request.QuotedCostFeathers,
+            ["quotedCostLightSparks"] = request.QuotedCostLightSparks,
+            ["selectedCardIds"] = selectedCardIds,
+            ["newResidentIds"] = new JsonArray(),
+            ["seededProjectIds"] = new JsonArray(),
+            ["generatedDraftVersion"] = generatedDraftVersion,
+            ["status"] = status,
+            ["resolvedAtTurn"] = "current turn number",
+            ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
+            ["reason"] = "canonical human-readable closure reason"
+        };
+
+        if (request.SelectedCards is JsonArray selectedCards)
+            receipt["selectedCards"] = CloneShiningJsonForPlayerFacingAudit(selectedCards);
+        if (!string.IsNullOrWhiteSpace(request.RelicName))
+            receipt["relicName"] = request.RelicName;
+        if (string.Equals(status, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+            AddAcceptedGeneratedReceiptScaffoldFields(receipt, request);
+        if (request.PropertyIndex >= 0)
+            receipt["propertyIndex"] = request.PropertyIndex;
+        if (request.ReplacementProperty != null)
+            receipt["replacementProperty"] = CloneShiningJsonForPlayerFacingAudit(request.ReplacementProperty);
+        if (request.AddedProperties != null)
+            receipt["addedProperties"] = CloneShiningJsonForPlayerFacingAudit(request.AddedProperties);
+
+        return receipt;
+    }
+
+    private static string BuildTargetFormTagReceiptScaffoldValue(ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.TargetFormTag))
+            return string.Empty;
+
+        return request.TargetFormTag;
+    }
+
+    private static void AddAcceptedGeneratedReceiptScaffoldFields(
+        JsonObject receipt,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
+        {
+            if (string.IsNullOrWhiteSpace(GetNodeString(receipt["relicId"])))
+                receipt["relicId"] = "generated_shining_relic_id";
+
+            receipt["relicName"] = string.IsNullOrWhiteSpace(request.RelicName)
+                ? "generated Shining Soul Relic name"
+                : request.RelicName;
+            receipt["baseRarity"] = "copy input/turn_request.json.gachaBaseResult.baseRarity";
+            receipt["finalRarity"] = request.ProjectedGachaBonusSteps > 0
+                ? $"baseRarity or higher by <= {request.ProjectedGachaBonusSteps} step(s)"
+                : "same as baseRarity";
+            return;
+        }
+
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction, StringComparison.OrdinalIgnoreCase))
+        {
+            receipt["hallId"] = "generated_native_hall_id";
+            receipt["hallName"] = "generated native hall name";
+            receipt["resolvedFactionId"] = "generated_native_faction_id";
+            receipt["factionName"] = "generated native faction name";
+            receipt["charterSummary"] = "generated native faction charter summary";
+            receipt["favoredArchetype"] = "generated native faction archetype";
+            receipt["patronEffectFamily"] = "generated native faction effect family";
+            receipt["newResidentIds"] = new JsonArray(
+                "generated_ascended_resident_id_1",
+                "generated_ascended_resident_id_2");
+            receipt["newResidentNames"] = new JsonArray(
+                "generated resident name 1",
+                "generated resident name 2");
+            receipt["seededProjectIds"] = new JsonArray(
+                "generated_completed_project_id_1",
+                "generated_completed_project_id_2");
+            receipt["seededProjectNames"] = new JsonArray(
+                "generated completed project name 1",
+                "generated completed project name 2");
+            return;
+        }
+
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeCompleteProject, StringComparison.OrdinalIgnoreCase) &&
+            string.IsNullOrWhiteSpace(request.ProjectId))
+        {
+            receipt["projectId"] = "generated_completed_project_id";
+        }
+    }
+
+    private static int ResolveAcceptedReceiptDraftVersionForPreview(
+        ShiningContext context,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeOpenGates, StringComparison.OrdinalIgnoreCase))
+            return Math.Max(1, GetNodeInt(context.Root["gates"]?["draftVersion"]) + 1);
+
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage, StringComparison.OrdinalIgnoreCase))
+            return Math.Max(0, request.SourceDraftVersion);
+
+        return 0;
     }
 
     private void AppendProjectedFactionDelta(
