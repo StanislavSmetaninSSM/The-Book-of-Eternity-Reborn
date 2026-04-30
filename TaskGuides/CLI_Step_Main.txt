@@ -192,6 +192,7 @@
                - MUST write `progressionProcessingReport` with exact processed counts and per-contour `newLast*Ordinal` values
                - MUST keep Shining bootstrap handoff separate: if `preparedIncarnationPackage` is active, process bootstrap only and do not run ordinary Shining living-world cycles
                - If `preparedIncarnationPackage` is malformed, non-object, or fails bootstrap package validation, fail closed: preserve it and pending Shining files for repair and do not treat the turn as ordinary active Shining Abode
+               - Shining Gates select/deselect/reroll is client-local: no GM turn, no pending file, no `coreActionReceipts[]`, and only local `gates.selectedBlessingCardIds`, `shownBlessingCardIds`, `availableBlessingCards`, `rerollsRemaining`, `nextCandidateCursor` change
 
             5. **MANDATORY Afterlife Decision Questions:**
                - Chaos Sea: What did the Sea itself do while the player focused elsewhere?
@@ -359,6 +360,7 @@
             - Resident agency cycles may change resident thoughts, memories, history, faction alignment, linked Soul Quests, reward state, relic grants, or interaction logs
             - Shining Abode cycles may change civic order, radiance pressure, gate state, ritual readiness, public mood, hall tension, Light Spark context, or consequences of Shining projects
             - Shining faction cycles may change faction strength, leadership, `shiningPoliticalActors`, loyalty, resident alignment, claims, projects, unrest, alliances, or rival pressure inside the Shining Abode; when leadership uses `headActorType=radiant_actor`, the `headActorId` must resolve to `shiningPoliticalActors[].actorId`
+            - Shining resident affiliation is canonicalized: non-ascended residents or residents pointing at a missing Shining faction lose `shiningFactionId`/`residentRole`, become `remained_in_chaos_sea`, and reset `factionLoyaltyLevel`, `factionLoyaltyTier`, `factionRestlessness`, and `factionRealignmentState`; do not rely on `shiningAlignment`
             - Shining trade cycles may change availability, rarity ceilings, sold-out state, merchant profile, trade inventory, trade receipts, or derivable afterlife inbox events
             - If no pending files exist, scheduler debt is still mandatory: use `Examples/E_CLI_Afterlife_Turns.txt` example 19 as the model for ordinary Chaos Sea living-world consequences without invented receipts
             - Step 8, player action: process the direct player action only after lifecycle, scheduler, state, pending contracts, and actor scope are known
@@ -462,6 +464,7 @@
   - Residents: `residentThoughtJournalUpdates` = current thoughts, `residentInteractionLogUpdates` = important past interactions, `UpdateGuardianAbodeResidentHistoryLog` = revealed past
 - If `game_state/control/pending_guardian_social_interactions.json` exists, close each request in the same accepted turn through `guardianSocialJournalUpdates`.
 - If `game_state/control/pending_npc_social_interactions.json` exists, close each request only in the same accepted MortalWorldProfile turn through `npcInteractionJournalUpdates`. In `Chaos Sea` or `Shining Abode`, this file is MortalWorldProfile-only stale/repair context: do not close it, do not write `npcInteractionJournalUpdates`, and do not mutate `game_state/npcs/*`.
+- If `game_state/control/pending_resident_companion_manifestation_request.json` exists in `Chaos Sea` or `Shining Abode`, treat it the same way: it is MortalWorldProfile-only next-life context. Do not materialize Mortal NPCs/encounters, `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, or `worldEventsLog`; malformed files are preserved for repair, not closed by afterlife receipts.
 - These guardian/NPC social closures are machine-readable journal entries with:
   - `requestId`
   - actor id (`guardianId` or `npcId`)

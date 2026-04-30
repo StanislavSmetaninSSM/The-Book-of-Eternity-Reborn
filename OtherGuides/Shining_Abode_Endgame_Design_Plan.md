@@ -679,10 +679,10 @@ Stale draft нельзя:
 - этот normal route не seal'ит Сияющую Обитель и не меняет сохранённое `shining_abode_state.availability`; seal происходит только через явный `return_to_chaos_sea`
 - после каждой принятой оценки жизни runtime активирует `game_state/control/afterlife_return_guard.json` с `reason = post_life_return`, но это только protective guard первого ordinary afterlife turn
 - этот guard не является отдельным completion-marker’ом и не означает automatic return в `Shining Abode`
-- ordinary afterlife turn consum’ит этот guard только если он semantic-valid; повреждённый guard или parsed guard с неверным `reason` обычным ходом не расходуется и остаётся blocking до runtime-normalization
+- ordinary afterlife turn consumes this guard только если он semantic-valid; повреждённый guard или parsed guard с неверным `reason` обычным ходом не расходуется и остаётся blocking до validation repair или explicit client/runtime clear
 - ordinary post-life route не возвращает игрока в active Shining Abode автоматически
 - если `shining_abode_state.availability` уже хранится как `active`, обратный вход из `Chaos Sea` делается через отдельное действие `reenter_shining_abode`
-- `reenter_shining_abode` допустим только если `afterlife_return_guard.json` отсутствует или semantic-valid (`reason = post_life_return`) и неактивен; повреждённый guard или parsed guard с неверным `reason` блокирует re-entry fail-closed до runtime-normalization
+- `reenter_shining_abode` допустим только если `afterlife_return_guard.json` отсутствует или semantic-valid (`reason = post_life_return`) и неактивен; повреждённый guard или parsed guard с неверным `reason` блокирует re-entry fail-closed до validation repair или explicit client/runtime clear
 - `reenter_shining_abode` возвращает игрока в активную Сияющую Обитель с текущим stored остатком `Искр Света` и без нового ascension reset
 - `AscensionTrigger` остаётся отдельным переходом maximum-Enlightenment ascension и не подменяет этот ordinary re-entry route
 - и `reenter_shining_abode`, и `return_to_chaos_sea` выполняются как client-owned local lifecycle commands, а не как GM-authored accepted turns

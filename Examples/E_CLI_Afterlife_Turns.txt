@@ -3260,6 +3260,19 @@ Queue and mode rules:
 - Blessing-card token fields are strict in both `gates.*BlessingCards[]` and `preparedIncarnationPackage.selectedCards[]`: `sourceType = head | project | resident_descent`; `effectFamily = lore | social | resource | memory | descent | survival | relic | route`; `rarity = common | uncommon | rare | epic | legendary | radiant`.
 - Forge blessing rerolls are client-side `pendingShiningBlessingEffects.relicRefinementEntitlements`: the player preview shows before/after reroll counts, cancel preserves the entitlement, and the client consumes rerolls only after final forge-request confirmation.
 
+Client-owned local Gates operations:
+- Selecting a blessing card, deselecting it, or rerolling the open Gates draft is not a GM turn.
+- These operations create no `pending_shining_abode_actions.json`, no `coreActionReceipts[]`, no `TriggerIncarnation`, and no accepted-turn receipt.
+- They only mutate local `gates` draft fields: `selectedBlessingCardIds`, `shownBlessingCardIds`, `availableBlessingCards`, `rerollsRemaining`, and `nextCandidateCursor`.
+- The GM reads those fields as current context on a later real turn. Do not invent a receipt because a card was selected locally.
+- Local selection/reroll is blocked if the draft is stale, a package is already prepared, or an unresolved Shining core pending request exists.
+
+Shining resident normalizer side effects:
+- A resident is Shining-aligned only when `ascensionState = "ascended"` and `shiningFactionId` points to an existing Shining faction.
+- If not ascended, runtime normalizes the resident to `ascensionState = "remained_in_chaos_sea"`, clears `shiningFactionId` and `residentRole`, sets `factionLoyaltyLevel = 0`, `factionLoyaltyTier = "alienated"`, `factionRestlessness = 0`, and `factionRealignmentState = "settled"`.
+- If ascended but `shiningFactionId` is missing or points to a non-existing faction, the same affiliation reset applies.
+- If ascended and faction exists, runtime derives/validates `residentRole`, `factionLoyaltyLevel`, `factionLoyaltyTier`, `factionRestlessness`, and `factionRealignmentState`. Do not use non-canonical `shiningAlignment`.
+
 Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. `refused` and `withdrawn` outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged. Supported receipt statuses are only `accepted`, `refused`, and `withdrawn`.
 
 If the same accepted turn also closes a Shining political/trade/resident pending contract, the final state is the composition of all accepted closures. For example, accepted faction founding first materializes the hall/faction and supporter resident alignment, then `open_gates` builds its draft from that updated Shining state; both `factionFoundingReceipts[]` and `coreActionReceipts[]` must be present.
@@ -5136,7 +5149,7 @@ Correct accepted response fragment:
 Why this is valid:
 - The active guard blocks only immediate Guardian-forced reincarnation; it does not block ordinary afterlife narration.
 - The GM does not mutate the client-owned guard. Runtime consumes/clears it after accepting the protected ordinary afterlife turn.
-- If `afterlife_return_guard.json` is malformed, treat it as fail-closed: preserve it for repair and do not weaken the protection in GM output.
+- That consumption rule applies only to a semantic-valid guard with `reason = post_life_return`. If `afterlife_return_guard.json` is malformed, unreadable, or parsed with the wrong `reason`, the GM leaves it intact; the route remains fail-closed until validation repair or explicit client/runtime clear.
 - For `return_to_chaos_sea`, Shining pending files with non-empty `requests[]` or malformed JSON block the local route. A valid explicit-empty `{ "requests": [] }` file is not an actionable GM contract and may be removed by runtime as stale local state.
 - The response does not confuse `afterlife_return_guard.json` with `preparedIncarnationPackage`, `AscensionTrigger`, or Mortal World return state.
 
@@ -5446,6 +5459,7 @@ Afterlife-origin companion manifestation handoff:
 ```text
 pending_resident_companion_manifestation_request.json is not closable in Chaos Sea or Shining Abode.
 pending_npc_social_interactions.json is also MortalWorldProfile-only. If it exists during Chaos Sea or Shining Abode, treat it as stale/repair-only context: do not close it through npcInteractionJournalUpdates, do not write UpdateNPCs, and do not mutate game_state/npcs/*.
+Valid realm-wrong pending files may be ignored or client-cleared by runtime health logic when they are explicit stale clutter. Malformed realm-wrong pending files are preserved for repair; do not "fix" them by writing an afterlife receipt or by materializing MortalWorldProfile NPCs.
 
 It can still originate from afterlife resident rewards or imprint-bearing Soul Relics. When it appears later in MortalWorldProfile, the GM must preserve and use:
 - requestId

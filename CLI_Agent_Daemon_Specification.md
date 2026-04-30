@@ -298,6 +298,19 @@ Hidden afterlife routing tags are machine contracts, not prose hints: `[GUARDIAN
 - `gates` — готовность к следующей смертной жизни и stale/open draft state.
 - `coreActionReceipts`, `factionFoundingReceipts`, `factionRealignmentReceipts`, `leadershipReceipts`, `tradeInventoryReceipts` — закрытие pending contracts и история решений.
 
+**1.A.1. Локальные действия Врат, которые НЕ являются GM turn:**
+- Выбор, снятие выбора и reroll карт Врат в активной Сияющей Обители выполняются клиентом локально.
+- Эти операции не создают `pending_shining_abode_actions.json`, не требуют `coreActionReceipts[]`, не пишут `TriggerIncarnation` и не должны закрываться narrative-only GM response.
+- Они меняют только локальные поля draft-контейнера `gates`: `selectedBlessingCardIds`, `shownBlessingCardIds`, `availableBlessingCards`, `rerollsRemaining`, `nextCandidateCursor`.
+- Если GM видит такие изменения в state, он читает их как текущий контекст. Не придумывай для них receipt, pending file, Shining core action или Mortal bootstrap.
+- Если draft stale, package already prepared, or Shining core pending request exists, эти локальные операции blocked client-side and should not be resolved by GM.
+
+**1.A.2. Shining resident normalizer side effects:**
+- Resident belongs to Shining faction only when `ascensionState = ascended` and `shiningFactionId` points to an existing Shining faction.
+- If not ascended, runtime normalizes the resident to `ascensionState = remained_in_chaos_sea`, clears `shiningFactionId` and `residentRole`, sets `factionLoyaltyLevel = 0`, `factionLoyaltyTier = alienated`, `factionRestlessness = 0`, and `factionRealignmentState = settled`.
+- If ascended but `shiningFactionId` does not resolve to a faction, the same Shining affiliation fields are cleared/reset.
+- If the faction is valid, runtime derives/validates `residentRole`, `factionLoyaltyLevel`, `factionLoyaltyTier`, `factionRestlessness`, and `factionRealignmentState`; do not preserve ad-hoc `shiningAlignment`.
+
 **1.B. Как выбирать последствия Сияющей Обители:**
 - Shining Abode cycle отвечает за общую жизнь Обители: напряжение между залами, публичные ритуалы, реакцию radiant actors, последствия completed projects, состояние gates и civic order.
 - Shining faction cycle отвечает за институции: founding, realignment, leadership, faction strength, resident loyalty, claims, support and project consequences.
@@ -386,6 +399,7 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 - ordinary later re-entry from `Chaos Sea` into an already-stored active Shining Abode uses a separate explicit client-owned local `reenter_shining_abode` route; it is allowed only when stored `shining_abode_state.availability = active` and `afterlife_return_guard.json` is absent, or semantic-valid (`reason = post_life_return`) and inactive; malformed guard state, or a parsed guard with the wrong `reason`, blocks re-entry fail-closed until validation repair or an explicit client/runtime clear removes it; this route does not reset ascension-local Shining Abode counters and does not refill `lightSparks`
 - explicit client-owned local `return_to_chaos_sea` is a Shining-Abode-local seal/exit route and must not be collapsed into destructive optional New Game+ reset
 - `return_to_chaos_sea` is blocked while any Shining pending contract is still present (`pending_shining_abode_actions.json`, Shining trade inventory, founding, realignment, leadership transition requests, or legacy `shining_abode_state.json.pendingNativeFactionDiscovery`); those contracts must resolve or be repaired before the Abode is sealed
+- For Shining pending files with a `requests[]` root, a valid explicit empty `requests[]` file is stale client clutter and may be removed by runtime health logic; malformed files or non-empty `requests[]` remain blocking until repair or explicit cleanup.
 - optional New Game+ from active Shining Abode remains the separate global reset path that resets Enlightenment and Ink Feathers while preserving Soul Relics and Guardians
 - Guardian-to-guardian politics should use canonical `guardianRelationships[]` as a directed standing network with `attitudeScore (-100..100)` and derived `attitudeTier (trusted|ally|neutral|competitive|rival|enemy)`; do not confuse this with player-facing Guardian reputation
 - for political Guardian behavior, use canonical `guardianRelationships[]` as mandatory targeting context: weight `rival|enemy` targets above `neutral`, treat `competitive` as valid but non-preferred pressure, treat `neutral` as valid but weakly motivated pressure, require an explicit betrayal reason before `offensive_intrigue` against an `ally|trusted` target, and allow temporary coalition behavior only when two Guardians are non-hostile toward each other, both mark the same third Guardian as `rival|enemy`, and there is an explicit current political project trace against that same target
